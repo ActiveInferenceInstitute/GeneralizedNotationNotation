@@ -19,9 +19,9 @@ src/tests/test_audio_integration.py::TestAudioGNNIntegration::test_audio_backend
 src/tests/test_audio_integration.py::TestAudioGNNIntegration::test_audio_features_availability PASSED
 src/tests/test_audio_integration.py::TestAudioPipelineIntegration::test_audio_step_execution 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:44 [    INFO] audio: Processing audio
-2026-03-17 16:27:44 [ WARNING] audio: No GNN files found for audio processing
-2026-03-17 16:27:44 [   ERROR] audio: ❌ Audio processing failed
+2026-03-18 10:07:16 [    INFO] audio: Processing audio
+2026-03-18 10:07:16 [ WARNING] audio: No GNN files found for audio processing
+2026-03-18 10:07:16 [   ERROR] audio: ❌ Audio processing failed
 PASSED
 src/tests/test_audio_integration.py::TestAudioPipelineIntegration::test_audio_sonification PASSED
 src/tests/test_audio_integration.py::TestAudioExportIntegration::test_audio_file_writing PASSED
@@ -93,4 +93,4 @@ PASSED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_g
 PASSED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function
 PASSED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function
 PASSED src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function
-================================================== 38 passed in 0.26s ==================================================
+================================================== 38 passed in 0.19s ==================================================

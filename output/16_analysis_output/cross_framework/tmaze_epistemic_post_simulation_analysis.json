@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-17T16:54:24.068648",
+  "timestamp": "2026-03-18T09:28:56.260714",
   "execution_results_dir": "output/12_execute_output/tmaze_epistemic",
   "framework_results": {
     "rxinfer": {
@@ -30,7 +30,23 @@
     "jax": {
       "framework": "jax",
       "result_count": 1,
-      "analyses": []
+      "analyses": [
+        {
+          "framework": "jax",
+          "model_name": "tmaze_epistemic",
+          "free_energy_count": 2,
+          "free_energy_values": [
+            0.0,
+            1.3816
+          ],
+          "mean_free_energy": 0.6908,
+          "std_free_energy": 0.6908,
+          "min_free_energy": 0.0,
+          "max_free_energy": 1.3816,
+          "free_energy_trend": 1.3815999999999995,
+          "free_energy_decreasing": "False"
+        }
+      ]
     },
     "discopy": {
       "framework": "discopy",
@@ -51,27 +67,38 @@
     ],
     "framework_count": 7,
     "comparisons": {
+      "free_energy": {
+        "jax": {
+          "mean": 0.6908,
+          "min": 0.0,
+          "max": 1.3816
+        }
+      },
+      "best_free_energy": {
+        "framework": "jax",
+        "mean_fe": 0.6908
+      },
       "execution_time": {
-        "rxinfer": 16.070903,
-        "numpyro": 0.099699,
-        "activeinference_jl": 12.904077,
-        "pymdp": 2.914666,
-        "pytorch": 0.039289,
-        "jax": 0.032029,
-        "discopy": 0.056201
+        "rxinfer": 19.842934,
+        "numpyro": 1.345201,
+        "activeinference_jl": 13.219248,
+        "pymdp": 1.961335,
+        "pytorch": 0.78901,
+        "jax": 1.158242,
+        "discopy": 0.684978
       },
       "fastest_execution": {
-        "framework": "jax",
-        "time": 0.032029
+        "framework": "discopy",
+        "time": 0.684978
       },
       "success_rates": {
         "rxinfer": true,
-        "numpyro": false,
+        "numpyro": true,
         "activeinference_jl": true,
         "pymdp": true,
-        "pytorch": false,
-        "jax": false,
-        "discopy": false
+        "pytorch": true,
+        "jax": true,
+        "discopy": true
       }
     }
   }

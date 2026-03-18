@@ -8,30 +8,30 @@ src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontolo
 src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options PASSED
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
-2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-03-18 10:15:18 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-18 10:15:18 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
-2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-03-18 10:15:18 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-18 10:15:18 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
-2026-03-17 16:43:20 [    INFO] ontology: Validated 1 annotations: 0 valid, 1 invalid
+2026-03-18 10:15:18 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-18 10:15:18 [    INFO] ontology: Validated 1 annotations: 0 valid, 1 invalid
 PASSED
 src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
-2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-03-18 10:15:18 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-18 10:15:18 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED
 src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration PASSED
 src/tests/test_ontology_overall.py::test_ontology_module_completeness PASSED
 src/tests/test_ontology_overall.py::test_ontology_module_performance 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
-2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-03-18 10:15:18 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-18 10:15:18 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED
 
 ======================================================== PASSES ========================================================
@@ -71,4 +71,4 @@ PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontolog
 PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration
 PASSED src/tests/test_ontology_overall.py::test_ontology_module_completeness
 PASSED src/tests/test_ontology_overall.py::test_ontology_module_performance
-================================================== 12 passed in 0.14s ==================================================
+================================================== 12 passed in 0.02s ==================================================

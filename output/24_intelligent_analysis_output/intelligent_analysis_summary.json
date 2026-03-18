@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-03-17T16:55:06.044365",
+  "timestamp": "2026-03-18T09:30:30.341311",
   "overall_status": "SUCCESS",
-  "health_score": 90.0,
+  "health_score": 100,
   "failure_count": 0,
   "red_flag_count": 0,
-  "yellow_flag_count": 3,
-  "bottleneck_count": 2,
+  "yellow_flag_count": 4,
+  "bottleneck_count": 4,
   "recommendation_count": 6,
   "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
   "data_file": "output/24_intelligent_analysis_output/analysis_data.json"

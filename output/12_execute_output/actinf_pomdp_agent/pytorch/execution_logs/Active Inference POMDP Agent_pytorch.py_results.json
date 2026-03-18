@@ -3,24 +3,142 @@
   "model_name": "actinf_pomdp_agent",
   "script_name": "Active Inference POMDP Agent_pytorch.py",
   "script_path": "output/11_render_output/actinf_pomdp_agent/pytorch/Active Inference POMDP Agent_pytorch.py",
-  "success": false,
-  "return_code": 1,
-  "execution_time": 0.033864,
-  "timestamp": "2026-03-17T16:49:27.560698",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.473976,
+  "timestamp": "2026-03-18T09:22:05.432929",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [],
-    "actions": [],
+    "observations": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "actions": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0
+    ],
     "policy": [],
-    "raw_output": "ERROR: PyTorch not installed. Install with: uv sync --extra ml-ai\n",
-    "raw_error": ""
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.002s\nResults saved to: output/12_execute_output/actinf_pomdp_agent/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.0,
+        0.9999999999999997,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ],
+      [
+        0.0,
+        0.9999999999999999,
+        0.0
+      ]
+    ],
+    "num_timesteps": 15
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 66,
+    "stdout_length": 280,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/actinf_pomdp_agent/pytorch"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/actinf_pomdp_agent/pytorch/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
   }
 }

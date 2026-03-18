@@ -574,6 +574,19 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             if framework == "pymdp":
                 env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
 
+            # Direct JAX/NumPyro/PyTorch output into execute output dir for collection/analysis
+            impl_output_dir = results_dir / model_name / framework
+            sim_data_dir = impl_output_dir / "simulation_data"
+            if framework == "jax":
+                sim_data_dir.mkdir(parents=True, exist_ok=True)
+                env["GNN_OUTPUT_DIR"] = str(sim_data_dir)
+            elif framework == "numpyro":
+                sim_data_dir.mkdir(parents=True, exist_ok=True)
+                env["NUMPYRO_OUTPUT_DIR"] = str(sim_data_dir)
+            elif framework == "pytorch":
+                sim_data_dir.mkdir(parents=True, exist_ok=True)
+                env["PYTORCH_OUTPUT_DIR"] = str(sim_data_dir)
+
             result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [executor, script_name],
                 capture_output=True,

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.237712,
-  "timestamp": "2026-03-17T16:49:29.094250",
+  "execution_time": 3.918417,
+  "timestamp": "2026-03-18T09:23:04.478671",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,40 +14,40 @@
     "observations": [
       1,
       1,
-      1,
-      1,
-      1,
       3,
-      1,
-      1,
-      1,
       0,
       0,
-      1,
       0,
       0,
-      0
+      0,
+      3,
+      3,
+      2,
+      3,
+      3,
+      2,
+      2
     ],
     "actions": [
       3,
       3,
-      3,
-      3,
-      3,
       1,
       3,
       3,
       3,
       3,
       3,
+      1,
+      1,
       3,
-      3,
+      0,
+      1,
       3,
       3
     ],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-17 16:49:30,188 - __main__ - INFO - A matrix shape: (4, 4)\n2026-03-17 16:49:30,189 - __main__ - INFO - B matrix shape: (4, 4, 4)\n2026-03-17 16:49:30,189 - __main__ - INFO - C vector shape: (4,)\n2026-03-17 16:49:30,189 - __main__ - INFO - D vector shape: (4,)\n2026-03-17 16:49:30,189 - __main__ - INFO - Starting PyMDP simulation for Deep Planning Horizon POMDP\n2026-03-17 16:49:30,189 - __main__ - INFO - Output directory: output/pymdp_simulations/Deep Planning Horizon POMDP\n2026-03-17 16:49:30,189 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-17 16:49:30,189 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (4, 4, 4) to (4, 4, 4)\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(4, 4), B=(4, 4, 4), C=(4,), D=(4,)\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-17 16:49:30,190 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-17 16:49:30,192 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=1, obs=1, belief=[0.05 0.9  0.03 0.03], action=3.0\n2026-03-17 16:49:30,193 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=1, obs=1, belief=[0.01 0.98 0.   0.  ], action=3.0\n2026-03-17 16:49:30,194 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=1, obs=1, belief=[0.01 0.98 0.   0.  ], action=3.0\n2026-03-17 16:49:30,195 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=1, obs=1, belief=[0.01 0.98 0.   0.  ], action=3.0\n2026-03-17 16:49:30,196 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=1, obs=1, belief=[0.01 0.98 0.   0.  ], action=3.0\n2026-03-17 16:49:30,197 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=1, obs=3, belief=[0.02 0.15 0.04 0.79], action=1.0\n2026-03-17 16:49:30,198 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=1, obs=1, belief=[0.01 0.85 0.02 0.12], action=3.0\n2026-03-17 16:49:30,200 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=1, obs=1, belief=[0.01 0.98 0.01 0.01], action=3.0\n2026-03-17 16:49:30,200 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=1, obs=1, belief=[0.01 0.98 0.   0.  ], action=3.0\n2026-03-17 16:49:30,201 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=0, obs=0, belief=[0.7  0.26 0.02 0.02], action=3.0\n2026-03-17 16:49:30,201 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=0, obs=0, belief=[0.96 0.03 0.01 0.01], action=3.0\n2026-03-17 16:49:30,201 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=0, obs=1, belief=[0.24 0.73 0.02 0.02], action=3.0\n2026-03-17 16:49:30,202 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=0, obs=0, belief=[0.87 0.11 0.01 0.01], action=3.0\n2026-03-17 16:49:30,202 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=0, obs=0, belief=[0.98 0.01 0.   0.  ], action=3.0\n2026-03-17 16:49:30,202 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=0, obs=0, belief=[0.98 0.01 0.   0.  ], action=3.0\n2026-03-17 16:49:30,202 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-17 16:49:30,203 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Deep Planning Horizon POMDP/simulation_results.json\n2026-03-17 16:49:30,203 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-17 16:49:30,203 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-17 16:49:30,203 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-17 16:49:30,203 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-17 16:49:30,203 - __main__ - INFO - Results summary:\n2026-03-17 16:49:30,203 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-17 16:49:30,203 - __main__ - INFO -   Success: True\n2026-03-17 16:49:30,203 - __main__ - INFO -   Output: output/pymdp_simulations/Deep Planning Horizon POMDP\n",
+    "raw_error": "2026-03-18 09:23:08,160 - __main__ - INFO - A matrix shape: (4, 4)\n2026-03-18 09:23:08,160 - __main__ - INFO - B matrix shape: (4, 4, 4)\n2026-03-18 09:23:08,160 - __main__ - INFO - C vector shape: (4,)\n2026-03-18 09:23:08,160 - __main__ - INFO - D vector shape: (4,)\n2026-03-18 09:23:08,160 - __main__ - INFO - Starting PyMDP simulation for Deep Planning Horizon POMDP\n2026-03-18 09:23:08,161 - __main__ - INFO - Output directory: output/pymdp_simulations/Deep Planning Horizon POMDP\n2026-03-18 09:23:08,161 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-18 09:23:08,161 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (4, 4, 4) to (4, 4, 4)\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(4, 4), B=(4, 4, 4), C=(4,), D=(4,)\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-18 09:23:08,161 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-18 09:23:08,162 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=1, obs=1, belief=[0.05 0.9  0.03 0.03], action=3.0\n2026-03-18 09:23:08,162 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=1, obs=1, belief=[0.01 0.98 0.   0.  ], action=3.0\n2026-03-18 09:23:08,163 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=0, obs=3, belief=[0.02 0.15 0.04 0.79], action=1.0\n2026-03-18 09:23:08,163 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=0, obs=0, belief=[0.53 0.12 0.05 0.3 ], action=3.0\n2026-03-18 09:23:08,163 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=0, obs=0, belief=[0.95 0.02 0.01 0.02], action=3.0\n2026-03-18 09:23:08,164 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=0, obs=0, belief=[0.98 0.01 0.   0.  ], action=3.0\n2026-03-18 09:23:08,164 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=0, obs=0, belief=[0.98 0.01 0.   0.  ], action=3.0\n2026-03-18 09:23:08,164 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=0, obs=0, belief=[0.98 0.01 0.   0.  ], action=3.0\n2026-03-18 09:23:08,165 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=3, obs=3, belief=[0.15 0.02 0.04 0.79], action=1.0\n2026-03-18 09:23:08,165 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=3, obs=3, belief=[0.01 0.   0.01 0.99], action=1.0\n2026-03-18 09:23:08,165 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=3, obs=2, belief=[0.   0.   0.68 0.32], action=3.0\n2026-03-18 09:23:08,166 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=3, obs=3, belief=[0.01 0.01 0.09 0.9 ], action=0.0\n2026-03-18 09:23:08,166 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=3, obs=3, belief=[0.   0.   0.01 0.99], action=1.0\n2026-03-18 09:23:08,166 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=2, obs=2, belief=[0.   0.   0.68 0.32], action=3.0\n2026-03-18 09:23:08,167 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=2, obs=2, belief=[0.01 0.01 0.96 0.03], action=3.0\n2026-03-18 09:23:08,167 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-18 09:23:08,167 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Deep Planning Horizon POMDP/simulation_results.json\n2026-03-18 09:23:08,167 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-18 09:23:08,167 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-18 09:23:08,167 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-18 09:23:08,167 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-18 09:23:08,167 - __main__ - INFO - Results summary:\n2026-03-18 09:23:08,167 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-18 09:23:08,168 - __main__ - INFO -   Success: True\n2026-03-18 09:23:08,168 - __main__ - INFO -   Output: output/pymdp_simulations/Deep Planning Horizon POMDP\n",
     "beliefs": [
       [
         0.050000000000000065,
@@ -62,82 +62,82 @@
         0.004887377815554634
       ],
       [
-        0.00847300222547172,
-        0.983347798336468,
-        0.004089599719030001,
-        0.004089599719030001
+        0.022660356568703677,
+        0.14610465851411678,
+        0.0437492097324832,
+        0.7874857751846964
       ],
       [
-        0.00832169382148648,
-        0.9835648880365784,
-        0.004056709070967471,
-        0.004056709070967471
+        0.5337368749825477,
+        0.11509276115289378,
+        0.05003008583548157,
+        0.30114027802907706
       ],
       [
-        0.008313033746912224,
-        0.9835765457660647,
-        0.004055210243511634,
-        0.004055210243511638
+        0.9528381599515255,
+        0.021294956628417877,
+        0.008188808413196077,
+        0.017678075006860472
       ],
       [
-        0.022396959489130605,
-        0.14722822459184023,
-        0.043703937679949005,
-        0.7866708782390802
+        0.9820864551733525,
+        0.009160526448908449,
+        0.004260891601502322,
+        0.004492126776236735
       ],
       [
-        0.011974899582080189,
-        0.8458502768830009,
-        0.02025576593594433,
-        0.12191905759897463
+        0.9835015538736953,
+        0.00836299589890383,
+        0.0040649755122540284,
+        0.00407047471514671
       ],
       [
-        0.009582900713194467,
-        0.9776632157666689,
-        0.0050135563360584195,
-        0.007740327184078196
+        0.9835732115196679,
+        0.008315425529664518,
+        0.004055616160387355,
+        0.004055746790280188
       ],
       [
-        0.008413979245196301,
-        0.9833250908049537,
-        0.004097921642106282,
-        0.004163008307743872
+        0.14722743627938034,
+        0.022397210631828434,
+        0.04370393427155833,
+        0.7866714188172329
       ],
       [
-        0.7046695309593274,
-        0.2571399622804441,
-        0.019091615009961153,
-        0.01909889175026745
+        0.005101356773425216,
+        0.0009286135032166606,
+        0.008934894820480167,
+        0.9850351349028781
       ],
       [
-        0.9625885134783749,
-        0.02601058734542602,
-        0.005700337937952782,
-        0.005700561238246362
+        0.0008340433467669586,
+        0.00030790715088369373,
+        0.682966395471695,
+        0.3158916540306544
       ],
       [
-        0.2367504158443758,
-        0.7271125026804075,
-        0.018068529033779517,
-        0.018068552441437194
+        0.008631458457136143,
+        0.008604346197628726,
+        0.08756467335653044,
+        0.8951995219887046
       ],
       [
-        0.8706820683921845,
-        0.1071674851866739,
-        0.01107522250890426,
-        0.01107522391223736
+        0.003288439925580097,
+        0.0002909270848714435,
+        0.00538575827640121,
+        0.9910348747131473
       ],
       [
-        0.9763867649845914,
-        0.014318984147559952,
-        0.004647125415579013,
-        0.004647125452269663
+        0.0005403978739270521,
+        0.00014472567216166417,
+        0.6766479212871006,
+        0.32266695516681076
       ],
       [
-        0.9831655256110592,
-        0.008648319958128791,
-        0.004093077214967676,
-        0.004093077215844301
+        0.005279332128400964,
+        0.005266839325104437,
+        0.9585537619930852,
+        0.030900066553409312
       ]
     ],
     "num_timesteps": 15

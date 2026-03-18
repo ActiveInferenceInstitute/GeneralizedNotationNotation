@@ -10,7 +10,7 @@ src/tests/test_mcp_overall.py::TestMCPTool::test_mcp_tool_execution PASSED
 src/tests/test_mcp_overall.py::TestMCPResource::test_mcp_resource_creation PASSED
 src/tests/test_mcp_overall.py::TestMCPServer::test_mcp_server_instantiation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:35 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-03-18 10:07:14 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
 PASSED
 src/tests/test_mcp_overall.py::TestMCPServer::test_mcp_server_has_methods PASSED
 src/tests/test_mcp_overall.py::TestMCPErrors::test_mcp_error PASSED
@@ -18,188 +18,188 @@ src/tests/test_mcp_overall.py::TestMCPErrors::test_mcp_tool_execution_error PASS
 src/tests/test_mcp_overall.py::TestMCPErrors::test_mcp_validation_error PASSED
 src/tests/test_mcp_overall.py::TestMCPProcessing::test_process_mcp 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:35 [    INFO] test_mcp: 🚀 Starting step: Processing MCP
-2026-03-17 16:27:35 [    INFO] mcp: MCP SDK found at /Users/4d/Documents/GitHub/generalizednotationnotation/src/mcp/sdk (version: 1.0.0)
-2026-03-17 16:27:35 [    INFO] mcp: Discovering MCP modules in /Users/4d/Documents/GitHub/generalizednotationnotation/src
-2026-03-17 16:27:35 [    INFO] src.research.mcp: research module MCP tools registered (4 tools).
-2026-03-17 16:27:35 [    INFO] src.ml_integration.mcp: ml_integration module MCP tools registered (4 domain tools).
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module research: 5 tools, 0 resources (load: 0.005s, import: 0.004s, register: 0.002s)
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module ml_integration: 5 tools, 0 resources (load: 0.006s, import: 0.004s, register: 0.002s)
-2026-03-17 16:27:35 [    INFO] src.pipeline.mcp: Registering pipeline MCP tools
-2026-03-17 16:27:35 [    INFO] src.visualization.mcp: visualization module MCP tools registered (4 domain tools).
-2026-03-17 16:27:35 [    INFO] src.pipeline.mcp: Successfully registered pipeline MCP tools
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module visualization: 5 tools, 0 resources (load: 0.008s, import: 0.008s, register: 0.000s)
-2026-03-17 16:27:35 [    INFO] src.intelligent_analysis.mcp: intelligent_analysis module MCP tools registered (3 domain tools).
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module pipeline: 9 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module intelligent_analysis: 10 tools, 0 resources (load: 0.009s, import: 0.007s, register: 0.001s)
-2026-03-17 16:27:35 [    INFO] src.model_registry.mcp: Successfully registered model registry MCP tools
-2026-03-17 16:27:35 [    INFO] src.security.mcp: security module MCP tools registered (4 tools).
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module model_registry: 5 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.001s)
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module security: 7 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.001s)
-2026-03-17 16:27:35 [    INFO] src.analysis.mcp: analysis module MCP tools registered (4 tools).
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module analysis: 4 tools, 0 resources (load: 0.009s, import: 0.007s, register: 0.001s)
-2026-03-17 16:27:35 [    INFO] src.integration.mcp: integration module MCP tools registered (4 tools).
-2026-03-17 16:27:35 [    INFO] src.llm.mcp: Initializing LLM module prior to MCP registration...
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module integration: 4 tools, 0 resources (load: 0.004s, import: 0.003s, register: 0.001s)
-2026-03-17 16:27:35 [    INFO] src.website.mcp: website module MCP tools registered (6 tools).
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module website: 5 tools, 0 resources (load: 0.005s, import: 0.004s, register: 0.000s)
-2026-03-17 16:27:35 [    INFO] src.tests.mcp: Tests module MCP tools registered.
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module tests: 3 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.000s)
-2026-03-17 16:27:35 [    INFO] src.template.mcp: Successfully registered template MCP tools
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module template: 3 tools, 0 resources (load: 0.017s, import: 0.017s, register: 0.000s)
-2026-03-17 16:27:35 [    INFO] src.setup.mcp: UV-based setup module MCP tools registered.
-2026-03-17 16:27:35 [    INFO] src.llm.llm_processor: Initialized 1 provider(s)
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module setup: 8 tools, 0 resources (load: 0.162s, import: 0.162s, register: 0.000s)
-2026-03-17 16:27:35 [    INFO] src.llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:27:35 [    INFO] src.llm.llm_processor: Initialized ollama provider
-2026-03-17 16:27:35 [   ERROR] src.llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:27:35 [   ERROR] src.llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:27:35 [   ERROR] src.llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:27:35 [   ERROR] src.llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:27:35 [    INFO] src.llm.llm_processor: LLM Processor initialized with 1/4 providers
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module mcp: 0 tools, 0 resources (load: 0.151s, import: 0.151s, register: 0.000s)
-2026-03-17 16:27:35 [    INFO] src.cli.mcp: cli module MCP tools registered (2 tools).
-2026-03-17 16:27:35 [    INFO] mcp: Successfully loaded module cli: 2 tools, 0 resources (load: 0.001s, import: 0.001s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] src.llm.mcp: LLM processor initialized successfully.
-2026-03-17 16:27:36 [    INFO] src.llm.mcp: llm module MCP tools registered (5 real domain tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module llm: 5 tools, 0 resources (load: 0.355s, import: 0.012s, register: 0.010s)
-2026-03-17 16:27:36 [    INFO] src.ontology.mcp: ontology module MCP tools registered (5 tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module ontology: 4 tools, 0 resources (load: 0.026s, import: 0.024s, register: 0.002s)
-2026-03-17 16:27:36 [    INFO] src.utils.mcp: Registering utils MCP tools
-2026-03-17 16:27:36 [    INFO] src.utils.mcp: Successfully registered utils MCP tools
-2026-03-17 16:27:36 [    INFO] src.audio.mcp: audio module MCP tools registered (6 tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module utils: 8 tools, 0 resources (load: 0.331s, import: 0.330s, register: 0.001s)
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module audio: 10 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
-2026-03-17 16:27:36 [    INFO] src.type_checker.mcp: Type checker module MCP tools registered.
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module type_checker: 2 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] src.api.mcp: api module MCP tools registered.
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module api: 5 tools, 0 resources (load: 0.003s, import: 0.002s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] src.report.mcp: report module MCP tools registered (5 domain tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module report: 5 tools, 0 resources (load: 0.008s, import: 0.008s, register: 0.001s)
-2026-03-17 16:27:36 [    INFO] src.sapf.mcp: sapf module MCP tools registered (4 tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module sapf: 3 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
-2026-03-17 16:27:36 [    INFO] src.gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
-2026-03-17 16:27:36 [    INFO] src.gnn.mcp: Enhanced capabilities available: True
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module gnn: 10 tools, 1 resources (load: 0.393s, import: 0.393s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] src.render.mcp: render module MCP tools registered (5 tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module render: 4 tools, 0 resources (load: 0.759s, import: 0.757s, register: 0.001s)
-2026-03-17 16:27:36 [    INFO] src.export.mcp: export module MCP tools registered (5 domain tools).
-2026-03-17 16:27:36 [    INFO] src.gui.mcp: gui module MCP tools registered (3 domain tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module gui: 4 tools, 0 resources (load: 0.421s, import: 0.420s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module export: 4 tools, 0 resources (load: 0.028s, import: 0.027s, register: 0.001s)
-2026-03-17 16:27:36 [    INFO] src.validation.mcp: validation module MCP tools registered (4 tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module validation: 10 tools, 0 resources (load: 0.006s, import: 0.003s, register: 0.002s)
-2026-03-17 16:27:36 [    INFO] src.advanced_visualization.mcp: advanced_visualization module MCP tools registered (4 domain tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module advanced_visualization: 4 tools, 0 resources (load: 0.009s, import: 0.009s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] src.execute.mcp: execute module MCP tools registered (5 real domain tools).
-2026-03-17 16:27:36 [    INFO] mcp: Successfully loaded module execute: 5 tools, 0 resources (load: 0.619s, import: 0.618s, register: 0.000s)
-2026-03-17 16:27:36 [    INFO] src.mcp.sympy_mcp: Successfully registered SymPy MCP tools
-2026-03-17 16:27:36 [    INFO] mcp: Enhanced module discovery completed in 1.01s: 31 modules, 133 tools, 1 resources
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] test_mcp: Auto-discovered 31 modules via initialize()
-2026-03-17 16:27:36 [    INFO] test_mcp: 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_tpfzauf/mcp_output/mcp_results.json
-2026-03-17 16:27:36 [    INFO] test_mcp: 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_tpfzauf/mcp_output/registered_tools.json
-2026-03-17 16:27:36 [    INFO] test_mcp: ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_tpfzauf/mcp_output/mcp_processing_summary.json
-2026-03-17 16:27:36 [    INFO] test_mcp: ✅ MCP processing completed successfully - 133 tools from 31 modules registered
+2026-03-18 10:07:14 [    INFO] test_mcp: 🚀 Starting step: Processing MCP
+2026-03-18 10:07:14 [    INFO] mcp: MCP SDK found at /Users/4d/Documents/GitHub/generalizednotationnotation/src/mcp/sdk (version: 1.0.0)
+2026-03-18 10:07:14 [    INFO] mcp: Discovering MCP modules in /Users/4d/Documents/GitHub/generalizednotationnotation/src
+2026-03-18 10:07:14 [    INFO] src.research.mcp: research module MCP tools registered (4 tools).
+2026-03-18 10:07:14 [    INFO] src.ml_integration.mcp: ml_integration module MCP tools registered (4 domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module ml_integration: 5 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module research: 5 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.002s)
+2026-03-18 10:07:14 [    INFO] src.pipeline.mcp: Registering pipeline MCP tools
+2026-03-18 10:07:14 [    INFO] src.intelligent_analysis.mcp: intelligent_analysis module MCP tools registered (3 domain tools).
+2026-03-18 10:07:14 [    INFO] src.visualization.mcp: visualization module MCP tools registered (4 domain tools).
+2026-03-18 10:07:14 [    INFO] src.pipeline.mcp: Successfully registered pipeline MCP tools
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module intelligent_analysis: 4 tools, 0 resources (load: 0.006s, import: 0.006s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module visualization: 5 tools, 0 resources (load: 0.007s, import: 0.006s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module pipeline: 8 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.model_registry.mcp: Successfully registered model registry MCP tools
+2026-03-18 10:07:14 [    INFO] src.security.mcp: security module MCP tools registered (4 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module model_registry: 4 tools, 0 resources (load: 0.004s, import: 0.003s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module security: 4 tools, 0 resources (load: 0.004s, import: 0.004s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.integration.mcp: integration module MCP tools registered (4 tools).
+2026-03-18 10:07:14 [    INFO] src.llm.mcp: Initializing LLM module prior to MCP registration...
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module integration: 4 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.llm.llm_processor: Initialized 1 provider(s)
+2026-03-18 10:07:14 [    INFO] src.analysis.mcp: analysis module MCP tools registered (4 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module analysis: 4 tools, 0 resources (load: 0.009s, import: 0.008s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.website.mcp: website module MCP tools registered (6 tools).
+2026-03-18 10:07:14 [    INFO] src.llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:07:14 [    INFO] src.llm.llm_processor: Initialized ollama provider
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module website: 5 tools, 0 resources (load: 0.005s, import: 0.004s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.tests.mcp: Tests module MCP tools registered.
+2026-03-18 10:07:14 [   ERROR] src.llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:07:14 [   ERROR] src.llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module tests: 3 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+2026-03-18 10:07:14 [   ERROR] src.llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:07:14 [   ERROR] src.llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:07:14 [    INFO] src.llm.llm_processor: LLM Processor initialized with 1/4 providers
+2026-03-18 10:07:14 [    INFO] src.llm.mcp: LLM processor initialized successfully.
+2026-03-18 10:07:14 [    INFO] src.llm.mcp: llm module MCP tools registered (5 real domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module llm: 5 tools, 0 resources (load: 0.015s, import: 0.009s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.template.mcp: Successfully registered template MCP tools
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module template: 3 tools, 0 resources (load: 0.004s, import: 0.003s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.setup.mcp: UV-based setup module MCP tools registered.
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module setup: 8 tools, 0 resources (load: 0.008s, import: 0.008s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.cli.mcp: cli module MCP tools registered (2 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module cli: 2 tools, 0 resources (load: 0.006s, import: 0.006s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module mcp: 0 tools, 0 resources (load: 0.015s, import: 0.015s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.ontology.mcp: ontology module MCP tools registered (5 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module ontology: 4 tools, 0 resources (load: 0.003s, import: 0.003s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.audio.mcp: audio module MCP tools registered (6 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module audio: 6 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.utils.mcp: Registering utils MCP tools
+2026-03-18 10:07:14 [    INFO] src.utils.mcp: Successfully registered utils MCP tools
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module utils: 5 tools, 0 resources (load: 0.028s, import: 0.027s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.type_checker.mcp: Type checker module MCP tools registered.
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module type_checker: 2 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.api.mcp: api module MCP tools registered.
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module api: 5 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.report.mcp: report module MCP tools registered (5 domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module report: 5 tools, 0 resources (load: 0.008s, import: 0.007s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.sapf.mcp: sapf module MCP tools registered (4 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module sapf: 3 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
+2026-03-18 10:07:14 [    INFO] src.gnn.mcp: Enhanced capabilities available: True
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module gnn: 10 tools, 1 resources (load: 0.031s, import: 0.029s, register: 0.001s)
+2026-03-18 10:07:14 [    INFO] src.render.mcp: render module MCP tools registered (5 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module render: 4 tools, 0 resources (load: 0.059s, import: 0.059s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.export.mcp: export module MCP tools registered (5 domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module export: 4 tools, 0 resources (load: 0.012s, import: 0.012s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.validation.mcp: validation module MCP tools registered (4 tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module validation: 4 tools, 0 resources (load: 0.005s, import: 0.005s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.gui.mcp: gui module MCP tools registered (3 domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module gui: 3 tools, 0 resources (load: 0.039s, import: 0.038s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.advanced_visualization.mcp: advanced_visualization module MCP tools registered (4 domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module advanced_visualization: 4 tools, 0 resources (load: 0.006s, import: 0.006s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.execute.mcp: execute module MCP tools registered (5 real domain tools).
+2026-03-18 10:07:14 [    INFO] mcp: Successfully loaded module execute: 5 tools, 0 resources (load: 0.028s, import: 0.028s, register: 0.000s)
+2026-03-18 10:07:14 [    INFO] src.mcp.sympy_mcp: Successfully registered SymPy MCP tools
+2026-03-18 10:07:14 [    INFO] mcp: Enhanced module discovery completed in 0.10s: 31 modules, 133 tools, 1 resources
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] test_mcp: Auto-discovered 31 modules via initialize()
+2026-03-18 10:07:14 [    INFO] test_mcp: 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchy466wn/mcp_output/mcp_results.json
+2026-03-18 10:07:14 [    INFO] test_mcp: 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchy466wn/mcp_output/registered_tools.json
+2026-03-18 10:07:14 [    INFO] test_mcp: ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchy466wn/mcp_output/mcp_processing_summary.json
+2026-03-18 10:07:14 [    INFO] test_mcp: ✅ MCP processing completed successfully - 133 tools from 31 modules registered
 PASSED
 src/tests/test_mcp_overall.py::TestMCPProcessing::test_mcp_output_files 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] test_mcp_files: 🚀 Starting step: Processing MCP
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] test_mcp_files: Auto-discovered 31 modules via initialize()
-2026-03-17 16:27:36 [    INFO] test_mcp_files: 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp9nc02i5w/mcp_files_output/mcp_results.json
-2026-03-17 16:27:36 [    INFO] test_mcp_files: 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp9nc02i5w/mcp_files_output/registered_tools.json
-2026-03-17 16:27:36 [    INFO] test_mcp_files: ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp9nc02i5w/mcp_files_output/mcp_processing_summary.json
-2026-03-17 16:27:36 [    INFO] test_mcp_files: ✅ MCP processing completed successfully - 133 tools from 31 modules registered
+2026-03-18 10:07:14 [    INFO] test_mcp_files: 🚀 Starting step: Processing MCP
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] test_mcp_files: Auto-discovered 31 modules via initialize()
+2026-03-18 10:07:14 [    INFO] test_mcp_files: 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvkzzw20k/mcp_files_output/mcp_results.json
+2026-03-18 10:07:14 [    INFO] test_mcp_files: 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvkzzw20k/mcp_files_output/registered_tools.json
+2026-03-18 10:07:14 [    INFO] test_mcp_files: ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvkzzw20k/mcp_files_output/mcp_processing_summary.json
+2026-03-18 10:07:14 [    INFO] test_mcp_files: ✅ MCP processing completed successfully - 133 tools from 31 modules registered
 PASSED
 src/tests/test_mcp_overall.py::TestMCPUtilities::test_list_available_tools PASSED
 src/tests/test_mcp_overall.py::TestMCPUtilities::test_get_available_tools PASSED
 src/tests/test_mcp_overall.py::TestMCPUtilities::test_initialize_function 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_overall.py::TestMCPCaching::test_cache_feature_enabled PASSED
 src/tests/test_mcp_overall.py::TestMCPCaching::test_rate_limiting_feature_enabled PASSED
 src/tests/test_mcp_overall.py::TestMCPIntegration::test_full_mcp_workflow PASSED
 src/tests/test_mcp_overall.py::TestMCPIntegration::test_mcp_with_gnn_files 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] test_mcp_gnn: 🚀 Starting step: Processing MCP
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] test_mcp_gnn: Auto-discovered 31 modules via initialize()
-2026-03-17 16:27:36 [    INFO] test_mcp_gnn: 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpz0dp9ad7/mcp_gnn_output/mcp_results.json
-2026-03-17 16:27:36 [    INFO] test_mcp_gnn: 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpz0dp9ad7/mcp_gnn_output/registered_tools.json
-2026-03-17 16:27:36 [    INFO] test_mcp_gnn: ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpz0dp9ad7/mcp_gnn_output/mcp_processing_summary.json
-2026-03-17 16:27:36 [    INFO] test_mcp_gnn: ✅ MCP processing completed successfully - 133 tools from 31 modules registered
+2026-03-18 10:07:14 [    INFO] test_mcp_gnn: 🚀 Starting step: Processing MCP
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] test_mcp_gnn: Auto-discovered 31 modules via initialize()
+2026-03-18 10:07:14 [    INFO] test_mcp_gnn: 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprhzl49is/mcp_gnn_output/mcp_results.json
+2026-03-18 10:07:14 [    INFO] test_mcp_gnn: 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprhzl49is/mcp_gnn_output/registered_tools.json
+2026-03-18 10:07:14 [    INFO] test_mcp_gnn: ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprhzl49is/mcp_gnn_output/mcp_processing_summary.json
+2026-03-18 10:07:14 [    INFO] test_mcp_gnn: ✅ MCP processing completed successfully - 133 tools from 31 modules registered
 PASSED
 src/tests/test_mcp_performance.py::TestMCPToolRegistrationPerformance::test_tool_registration_speed 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPToolRegistrationPerformance::test_repeated_initialization_performance 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPToolExecutionPerformance::test_tool_lookup_speed 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPToolExecutionPerformance::test_module_discovery_performance 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPThroughput::test_concurrent_tool_access 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPThroughput::test_tool_count_consistency 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPMemoryPerformance::test_memory_usage_stable 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPServerPerformance::test_server_creation_speed 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPServerPerformance::test_resource_listing_performance 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 PASSED
 src/tests/test_mcp_performance.py::TestMCPBenchmarks::test_initialization_benchmark 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 
 MCP Init Benchmark: avg=0.000s, min=0.000s, max=0.000s
 PASSED
 src/tests/test_mcp_performance.py::TestMCPBenchmarks::test_tool_execution_benchmark 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:36 [    INFO] mcp: MCP initialization completed successfully
+2026-03-18 10:07:14 [    INFO] mcp: MCP initialization completed successfully
 
-Tool access: 1155 ops/sec
+Tool access: 32830 ops/sec
 PASSED
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:37 [    INFO] gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
-2026-03-17 16:27:37 [    INFO] gnn.mcp: Enhanced capabilities available: True
+2026-03-18 10:07:15 [    INFO] gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
+2026-03-18 10:07:15 [    INFO] gnn.mcp: Enhanced capabilities available: True
 PASSED
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:37 [    INFO] export.mcp: export module MCP tools registered (5 domain tools).
+2026-03-18 10:07:15 [    INFO] export.mcp: export module MCP tools registered (5 domain tools).
 PASSED
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:37 [    INFO] utils.mcp: Registering utils MCP tools
-2026-03-17 16:27:37 [    INFO] utils.mcp: Successfully registered utils MCP tools
+2026-03-18 10:07:15 [    INFO] utils.mcp: Registering utils MCP tools
+2026-03-18 10:07:15 [    INFO] utils.mcp: Successfully registered utils MCP tools
 PASSED
 
 ======================================================== PASSES ========================================================
@@ -213,10 +213,10 @@ INFO     mcp:models.py:296 MCP SDK found at /Users/4d/Documents/GitHub/generaliz
 INFO     mcp:mcp.py:204 Discovering MCP modules in /Users/4d/Documents/GitHub/generalizednotationnotation/src
 DEBUG    mcp:mcp.py:231 No MCP module found in /Users/4d/Documents/GitHub/generalizednotationnotation/src/output
 DEBUG    mcp:mcp.py:231 No MCP module found in /Users/4d/Documents/GitHub/generalizednotationnotation/src/lsp
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.research.mcp (import: 0.004s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.research.mcp (import: 0.003s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_research
 DEBUG    mcp:mcp.py:534 Registered tool: list_research_topics
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.ml_integration.mcp (import: 0.004s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.ml_integration.mcp (import: 0.003s)
 DEBUG    mcp:mcp.py:534 Registered tool: read_research_results
 DEBUG    mcp:mcp.py:534 Registered tool: get_research_module_info
 INFO     src.research.mcp:mcp.py:168 research module MCP tools registered (4 tools).
@@ -225,12 +225,16 @@ DEBUG    mcp:mcp.py:534 Registered tool: check_ml_frameworks
 DEBUG    mcp:mcp.py:534 Registered tool: list_ml_integration_targets
 DEBUG    mcp:mcp.py:534 Registered tool: get_ml_module_info
 INFO     src.ml_integration.mcp:mcp.py:179 ml_integration module MCP tools registered (4 domain tools).
-INFO     mcp:mcp.py:392 Successfully loaded module research: 5 tools, 0 resources (load: 0.005s, import: 0.004s, register: 0.002s)
-INFO     mcp:mcp.py:392 Successfully loaded module ml_integration: 5 tools, 0 resources (load: 0.006s, import: 0.004s, register: 0.002s)
+INFO     mcp:mcp.py:392 Successfully loaded module ml_integration: 5 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.001s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.intelligent_analysis.mcp (import: 0.006s)
+INFO     mcp:mcp.py:392 Successfully loaded module research: 5 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.002s)
+DEBUG    mcp:mcp.py:534 Registered tool: process_intelligent_analysis
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.visualization.mcp (import: 0.006s)
+DEBUG    mcp:mcp.py:534 Registered tool: get_analysis_capabilities
 DEBUG    mcp:mcp.py:349 Loaded MCP module: src.pipeline.mcp (import: 0.001s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.visualization.mcp (import: 0.008s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.intelligent_analysis.mcp (import: 0.007s)
+DEBUG    mcp:mcp.py:534 Registered tool: get_intelligent_analysis_module_info
 INFO     src.pipeline.mcp:mcp.py:196 Registering pipeline MCP tools
+INFO     src.intelligent_analysis.mcp:mcp.py:157 intelligent_analysis module MCP tools registered (3 domain tools).
 DEBUG    mcp:mcp.py:534 Registered tool: process_visualization
 DEBUG    mcp:mcp.py:534 Registered tool: get_visualization_options
 DEBUG    mcp:mcp.py:534 Registered tool: list_visualization_artifacts
@@ -241,66 +245,83 @@ DEBUG    mcp:mcp.py:534 Registered tool: get_pipeline_status
 DEBUG    mcp:mcp.py:534 Registered tool: validate_pipeline_dependencies
 DEBUG    mcp:mcp.py:534 Registered tool: get_pipeline_config_info
 INFO     src.pipeline.mcp:mcp.py:239 Successfully registered pipeline MCP tools
-DEBUG    mcp:mcp.py:534 Registered tool: process_intelligent_analysis
-INFO     mcp:mcp.py:392 Successfully loaded module visualization: 5 tools, 0 resources (load: 0.008s, import: 0.008s, register: 0.000s)
-DEBUG    mcp:mcp.py:534 Registered tool: get_analysis_capabilities
-DEBUG    mcp:mcp.py:534 Registered tool: get_intelligent_analysis_module_info
-INFO     src.intelligent_analysis.mcp:mcp.py:157 intelligent_analysis module MCP tools registered (3 domain tools).
-INFO     mcp:mcp.py:392 Successfully loaded module pipeline: 9 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
-INFO     mcp:mcp.py:392 Successfully loaded module intelligent_analysis: 10 tools, 0 resources (load: 0.009s, import: 0.007s, register: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module intelligent_analysis: 4 tools, 0 resources (load: 0.006s, import: 0.006s, register: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module visualization: 5 tools, 0 resources (load: 0.007s, import: 0.006s, register: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module pipeline: 8 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
 DEBUG    mcp:mcp.py:349 Loaded MCP module: src.model_registry.mcp (import: 0.003s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.security.mcp (import: 0.003s)
 DEBUG    mcp:mcp.py:534 Registered tool: model_registry.register_model
 DEBUG    mcp:mcp.py:534 Registered tool: model_registry.get_model
 DEBUG    mcp:mcp.py:534 Registered tool: model_registry.search_models
 DEBUG    mcp:mcp.py:534 Registered tool: model_registry.list_models
 INFO     src.model_registry.mcp:mcp.py:145 Successfully registered model registry MCP tools
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.security.mcp (import: 0.004s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_security
 DEBUG    mcp:mcp.py:534 Registered tool: scan_gnn_file
 DEBUG    mcp:mcp.py:534 Registered tool: get_security_report
 DEBUG    mcp:mcp.py:534 Registered tool: list_security_checks
 INFO     src.security.mcp:mcp.py:215 security module MCP tools registered (4 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module model_registry: 5 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.001s)
-INFO     mcp:mcp.py:392 Successfully loaded module security: 7 tools, 0 resources (load: 0.005s, import: 0.003s, register: 0.001s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.analysis.mcp (import: 0.007s)
-DEBUG    mcp:mcp.py:534 Registered tool: process_analysis
-DEBUG    mcp:mcp.py:534 Registered tool: get_analysis_results
-DEBUG    mcp:mcp.py:534 Registered tool: compute_complexity_metrics
-DEBUG    mcp:mcp.py:534 Registered tool: list_analysis_tools
-INFO     src.analysis.mcp:mcp.py:225 analysis module MCP tools registered (4 tools).
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.integration.mcp (import: 0.003s)
+INFO     mcp:mcp.py:392 Successfully loaded module model_registry: 4 tools, 0 resources (load: 0.004s, import: 0.003s, register: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module security: 4 tools, 0 resources (load: 0.004s, import: 0.004s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.integration.mcp (import: 0.002s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_integration
 DEBUG    mcp:mcp.py:534 Registered tool: list_supported_integrations
 DEBUG    mcp:mcp.py:534 Registered tool: get_integration_status
 DEBUG    mcp:mcp.py:534 Registered tool: check_integration_dependencies
-INFO     mcp:mcp.py:392 Successfully loaded module analysis: 4 tools, 0 resources (load: 0.009s, import: 0.007s, register: 0.001s)
 INFO     src.integration.mcp:mcp.py:194 integration module MCP tools registered (4 tools).
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.llm.mcp (import: 0.012s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.llm.mcp (import: 0.009s)
 DEBUG    mcp:mcp.py:354 Calling initialize_llm_module for src.llm.mcp
 INFO     src.llm.mcp:mcp.py:224 Initializing LLM module prior to MCP registration...
 DEBUG    asyncio:selector_events.py:64 Using selector: KqueueSelector
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.analysis.mcp (import: 0.008s)
+INFO     mcp:mcp.py:392 Successfully loaded module integration: 4 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.001s)
+DEBUG    mcp:mcp.py:534 Registered tool: process_analysis
+DEBUG    mcp:mcp.py:534 Registered tool: get_analysis_results
+DEBUG    mcp:mcp.py:534 Registered tool: compute_complexity_metrics
+DEBUG    src.llm.llm_processor:llm_processor.py:62 python-dotenv not available, skipping .env file loading
+DEBUG    mcp:mcp.py:534 Registered tool: list_analysis_tools
+INFO     src.llm.llm_processor:llm_processor.py:84 Initialized 1 provider(s)
+INFO     src.analysis.mcp:mcp.py:225 analysis module MCP tools registered (4 tools).
+INFO     mcp:mcp.py:392 Successfully loaded module analysis: 4 tools, 0 resources (load: 0.009s, import: 0.008s, register: 0.001s)
 DEBUG    mcp:mcp.py:349 Loaded MCP module: src.website.mcp (import: 0.004s)
-INFO     mcp:mcp.py:392 Successfully loaded module integration: 4 tools, 0 resources (load: 0.004s, import: 0.003s, register: 0.001s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_website
 DEBUG    mcp:mcp.py:534 Registered tool: build_website_from_pipeline_output
 DEBUG    mcp:mcp.py:534 Registered tool: get_website_status
 DEBUG    mcp:mcp.py:534 Registered tool: list_generated_website_pages
 DEBUG    mcp:mcp.py:534 Registered tool: get_website_module_info
 INFO     src.website.mcp:mcp.py:279 website module MCP tools registered (6 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module website: 5 tools, 0 resources (load: 0.005s, import: 0.004s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.tests.mcp (import: 0.002s)
+INFO     src.llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
+INFO     src.llm.llm_processor:llm_processor.py:197 Initialized ollama provider
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.tests.mcp (import: 0.001s)
 DEBUG    mcp:mcp.py:534 Registered tool: run_all_tests
+INFO     mcp:mcp.py:392 Successfully loaded module website: 5 tools, 0 resources (load: 0.005s, import: 0.004s, register: 0.001s)
 DEBUG    mcp:mcp.py:534 Registered tool: run_unit_tests
+DEBUG    src.llm.providers.openai_provider:openai_provider.py:99 OpenAI library not installed - OpenAI provider will not be available
 DEBUG    mcp:mcp.py:534 Registered tool: run_integration_tests
+DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize openai provider (may not be configured)
 INFO     src.tests.mcp:mcp.py:141 Tests module MCP tools registered.
-INFO     mcp:mcp.py:392 Successfully loaded module tests: 3 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.template.mcp (import: 0.017s)
+ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: uv pip install aiohttp>=3.9.0
+DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize openrouter provider (may not be configured)
+INFO     mcp:mcp.py:392 Successfully loaded module tests: 3 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: uv pip install aiohttp>=3.9.0
+DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize perplexity provider (may not be configured)
+INFO     src.llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
+INFO     src.llm.mcp:mcp.py:235 LLM processor initialized successfully.
+DEBUG    mcp:mcp.py:534 Registered tool: process_llm
+DEBUG    mcp:mcp.py:534 Registered tool: analyze_gnn_with_llm
+DEBUG    mcp:mcp.py:534 Registered tool: generate_llm_documentation
+DEBUG    mcp:mcp.py:534 Registered tool: get_llm_providers
+DEBUG    mcp:mcp.py:534 Registered tool: get_llm_module_info
+INFO     src.llm.mcp:mcp.py:319 llm module MCP tools registered (5 real domain tools).
+INFO     mcp:mcp.py:392 Successfully loaded module llm: 5 tools, 0 resources (load: 0.015s, import: 0.009s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.template.mcp (import: 0.003s)
 DEBUG    mcp:mcp.py:534 Registered tool: template.process_file
 DEBUG    mcp:mcp.py:534 Registered tool: template.process_directory
 DEBUG    mcp:mcp.py:534 Registered tool: template.get_info
 INFO     src.template.mcp:mcp.py:131 Successfully registered template MCP tools
-INFO     mcp:mcp.py:392 Successfully loaded module template: 3 tools, 0 resources (load: 0.017s, import: 0.017s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.setup.mcp (import: 0.162s)
+INFO     mcp:mcp.py:392 Successfully loaded module template: 3 tools, 0 resources (load: 0.004s, import: 0.003s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.setup.mcp (import: 0.008s)
 DEBUG    mcp:mcp.py:534 Registered tool: ensure_directory_exists
 DEBUG    mcp:mcp.py:534 Registered tool: find_project_gnn_files
 DEBUG    mcp:mcp.py:534 Registered tool: get_standard_output_paths
@@ -310,60 +331,39 @@ DEBUG    mcp:mcp.py:534 Registered tool: setup_uv_project_structure
 DEBUG    mcp:mcp.py:534 Registered tool: install_uv_dependency
 DEBUG    mcp:mcp.py:534 Registered tool: sync_uv_dependencies
 INFO     src.setup.mcp:mcp.py:358 UV-based setup module MCP tools registered.
-DEBUG    src.llm.llm_processor:llm_processor.py:60 No .env file found in llm directory
-INFO     src.llm.llm_processor:llm_processor.py:84 Initialized 1 provider(s)
-INFO     mcp:mcp.py:392 Successfully loaded module setup: 8 tools, 0 resources (load: 0.162s, import: 0.162s, register: 0.000s)
-INFO     src.llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
-INFO     src.llm.llm_processor:llm_processor.py:197 Initialized ollama provider
-DEBUG    src.llm.providers.openai_provider:openai_provider.py:99 OpenAI library not installed - OpenAI provider will not be available
-DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize openai provider (may not be configured)
-ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-ERROR    src.llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: uv pip install aiohttp>=3.9.0
-DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize openrouter provider (may not be configured)
-ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: uv pip install aiohttp>=3.9.0
-DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize perplexity provider (may not be configured)
-INFO     src.llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.mcp.mcp (import: 0.151s)
-INFO     mcp:mcp.py:392 Successfully loaded module mcp: 0 tools, 0 resources (load: 0.151s, import: 0.151s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.cli.mcp (import: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module setup: 8 tools, 0 resources (load: 0.008s, import: 0.008s, register: 0.001s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.cli.mcp (import: 0.006s)
 DEBUG    mcp:mcp.py:534 Registered tool: cli.health
 DEBUG    mcp:mcp.py:534 Registered tool: cli.preflight
 INFO     src.cli.mcp:mcp.py:59 cli module MCP tools registered (2 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module cli: 2 tools, 0 resources (load: 0.001s, import: 0.001s, register: 0.000s)
-INFO     src.llm.mcp:mcp.py:235 LLM processor initialized successfully.
-DEBUG    mcp:mcp.py:534 Registered tool: process_llm
-DEBUG    mcp:mcp.py:534 Registered tool: analyze_gnn_with_llm
-DEBUG    mcp:mcp.py:534 Registered tool: generate_llm_documentation
-DEBUG    mcp:mcp.py:534 Registered tool: get_llm_providers
-DEBUG    mcp:mcp.py:534 Registered tool: get_llm_module_info
-INFO     src.llm.mcp:mcp.py:319 llm module MCP tools registered (5 real domain tools).
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.ontology.mcp (import: 0.024s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.mcp.mcp (import: 0.015s)
+INFO     mcp:mcp.py:392 Successfully loaded module cli: 2 tools, 0 resources (load: 0.006s, import: 0.006s, register: 0.000s)
+INFO     mcp:mcp.py:392 Successfully loaded module mcp: 0 tools, 0 resources (load: 0.015s, import: 0.015s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.ontology.mcp (import: 0.003s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_ontology
 DEBUG    mcp:mcp.py:534 Registered tool: validate_ontology_terms
 DEBUG    mcp:mcp.py:534 Registered tool: extract_ontology_annotations
 DEBUG    mcp:mcp.py:534 Registered tool: list_standard_ontology_terms
-INFO     mcp:mcp.py:392 Successfully loaded module llm: 5 tools, 0 resources (load: 0.355s, import: 0.012s, register: 0.010s)
 INFO     src.ontology.mcp:mcp.py:210 ontology module MCP tools registered (5 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module ontology: 4 tools, 0 resources (load: 0.026s, import: 0.024s, register: 0.002s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.utils.mcp (import: 0.330s)
-INFO     src.utils.mcp:mcp.py:289 Registering utils MCP tools
+INFO     mcp:mcp.py:392 Successfully loaded module ontology: 4 tools, 0 resources (load: 0.003s, import: 0.003s, register: 0.000s)
 DEBUG    mcp:mcp.py:349 Loaded MCP module: src.audio.mcp (import: 0.001s)
-DEBUG    mcp:mcp.py:534 Registered tool: get_system_info
-DEBUG    mcp:mcp.py:534 Registered tool: get_environment_info
-DEBUG    mcp:mcp.py:534 Registered tool: get_file_info
-DEBUG    mcp:mcp.py:534 Registered tool: get_logging_info
-DEBUG    mcp:mcp.py:534 Registered tool: validate_dependencies
 DEBUG    mcp:mcp.py:534 Registered tool: process_audio
 DEBUG    mcp:mcp.py:534 Registered tool: check_audio_backends
-INFO     src.utils.mcp:mcp.py:351 Successfully registered utils MCP tools
 DEBUG    mcp:mcp.py:534 Registered tool: get_audio_generation_options
 DEBUG    mcp:mcp.py:534 Registered tool: analyze_audio_characteristics
 DEBUG    mcp:mcp.py:534 Registered tool: validate_audio_content
 DEBUG    mcp:mcp.py:534 Registered tool: get_audio_module_info
 INFO     src.audio.mcp:mcp.py:240 audio module MCP tools registered (6 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module utils: 8 tools, 0 resources (load: 0.331s, import: 0.330s, register: 0.001s)
-INFO     mcp:mcp.py:392 Successfully loaded module audio: 10 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module audio: 6 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.utils.mcp (import: 0.027s)
+INFO     src.utils.mcp:mcp.py:289 Registering utils MCP tools
+DEBUG    mcp:mcp.py:534 Registered tool: get_system_info
+DEBUG    mcp:mcp.py:534 Registered tool: get_environment_info
+DEBUG    mcp:mcp.py:534 Registered tool: get_file_info
+DEBUG    mcp:mcp.py:534 Registered tool: get_logging_info
+DEBUG    mcp:mcp.py:534 Registered tool: validate_dependencies
+INFO     src.utils.mcp:mcp.py:351 Successfully registered utils MCP tools
+INFO     mcp:mcp.py:392 Successfully loaded module utils: 5 tools, 0 resources (load: 0.028s, import: 0.027s, register: 0.001s)
 DEBUG    mcp:mcp.py:349 Loaded MCP module: src.type_checker.mcp (import: 0.002s)
 DEBUG    mcp:mcp.py:534 Registered tool: validate_gnn_files
 DEBUG    mcp:mcp.py:534 Registered tool: validate_single_gnn_file
@@ -376,15 +376,15 @@ DEBUG    mcp:mcp.py:534 Registered tool: gnn_cancel_job
 DEBUG    mcp:mcp.py:534 Registered tool: gnn_list_jobs
 DEBUG    mcp:mcp.py:534 Registered tool: gnn_get_pipeline_tools
 INFO     src.api.mcp:mcp.py:160 api module MCP tools registered.
-INFO     mcp:mcp.py:392 Successfully loaded module api: 5 tools, 0 resources (load: 0.003s, import: 0.002s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.report.mcp (import: 0.008s)
+INFO     mcp:mcp.py:392 Successfully loaded module api: 5 tools, 0 resources (load: 0.002s, import: 0.002s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.report.mcp (import: 0.007s)
 DEBUG    mcp:mcp.py:534 Registered tool: generate_report
 DEBUG    mcp:mcp.py:534 Registered tool: process_report
 DEBUG    mcp:mcp.py:534 Registered tool: list_report_formats
 DEBUG    mcp:mcp.py:534 Registered tool: read_report
 DEBUG    mcp:mcp.py:534 Registered tool: get_report_module_info
 INFO     src.report.mcp:mcp.py:204 report module MCP tools registered (5 domain tools).
-INFO     mcp:mcp.py:392 Successfully loaded module report: 5 tools, 0 resources (load: 0.008s, import: 0.008s, register: 0.001s)
+INFO     mcp:mcp.py:392 Successfully loaded module report: 5 tools, 0 resources (load: 0.008s, import: 0.007s, register: 0.001s)
 DEBUG    mcp:mcp.py:349 Loaded MCP module: src.sapf.mcp (import: 0.001s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_sapf
 DEBUG    mcp:mcp.py:534 Registered tool: get_sapf_module_info
@@ -392,8 +392,7 @@ DEBUG    mcp:mcp.py:534 Registered tool: list_audio_artifacts
 DEBUG    mcp:mcp.py:481 Tool 'check_audio_backends' already registered, updating with new version
 DEBUG    mcp:mcp.py:534 Registered tool: check_audio_backends
 INFO     src.sapf.mcp:mcp.py:186 sapf module MCP tools registered (4 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module sapf: 3 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.gnn.mcp (import: 0.393s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.gnn.mcp (import: 0.029s)
 DEBUG    mcp:mcp.py:534 Registered tool: get_gnn_documentation
 DEBUG    mcp:mcp.py:534 Registered tool: validate_gnn_content
 DEBUG    mcp:mcp.py:534 Registered tool: parse_gnn_content
@@ -403,58 +402,59 @@ DEBUG    mcp:mcp.py:534 Registered tool: process_gnn_directory
 DEBUG    mcp:mcp.py:534 Registered tool: run_round_trip_tests
 DEBUG    mcp:mcp.py:534 Registered tool: validate_directory_cross_format_consistency
 DEBUG    mcp:mcp.py:534 Registered tool: get_gnn_schema_info
+INFO     mcp:mcp.py:392 Successfully loaded module sapf: 3 tools, 0 resources (load: 0.002s, import: 0.001s, register: 0.001s)
 DEBUG    mcp:mcp.py:534 Registered tool: get_gnn_module_info
 DEBUG    mcp:mcp.py:586 Registered resource: gnn://documentation/{doc_name}
 INFO     src.gnn.mcp:mcp.py:869 Enhanced GNN MCP tools and resources registered successfully.
 INFO     src.gnn.mcp:mcp.py:870 Enhanced capabilities available: True
-INFO     mcp:mcp.py:392 Successfully loaded module gnn: 10 tools, 1 resources (load: 0.393s, import: 0.393s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.render.mcp (import: 0.757s)
+INFO     mcp:mcp.py:392 Successfully loaded module gnn: 10 tools, 1 resources (load: 0.031s, import: 0.029s, register: 0.001s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.render.mcp (import: 0.059s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_render
 DEBUG    mcp:mcp.py:534 Registered tool: list_render_frameworks
 DEBUG    mcp:mcp.py:534 Registered tool: render_gnn_to_format
 DEBUG    mcp:mcp.py:534 Registered tool: get_render_module_info
 INFO     src.render.mcp:mcp.py:208 render module MCP tools registered (5 tools).
-INFO     mcp:mcp.py:392 Successfully loaded module render: 4 tools, 0 resources (load: 0.759s, import: 0.757s, register: 0.001s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.export.mcp (import: 0.027s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.validation.mcp (import: 0.003s)
+INFO     mcp:mcp.py:392 Successfully loaded module render: 4 tools, 0 resources (load: 0.059s, import: 0.059s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.export.mcp (import: 0.012s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_export
 DEBUG    mcp:mcp.py:534 Registered tool: list_export_formats
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.gui.mcp (import: 0.420s)
 DEBUG    mcp:mcp.py:534 Registered tool: validate_export_format
 DEBUG    mcp:mcp.py:534 Registered tool: export_single_gnn_file
 INFO     src.export.mcp:mcp.py:179 export module MCP tools registered (5 domain tools).
+INFO     mcp:mcp.py:392 Successfully loaded module export: 4 tools, 0 resources (load: 0.012s, import: 0.012s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.validation.mcp (import: 0.005s)
+DEBUG    mcp:mcp.py:534 Registered tool: process_validation
+DEBUG    mcp:mcp.py:534 Registered tool: validate_gnn_file
+DEBUG    mcp:mcp.py:534 Registered tool: get_validation_report
+DEBUG    mcp:mcp.py:534 Registered tool: check_schema_compliance
+INFO     src.validation.mcp:mcp.py:232 validation module MCP tools registered (4 tools).
+INFO     mcp:mcp.py:392 Successfully loaded module validation: 4 tools, 0 resources (load: 0.005s, import: 0.005s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.gui.mcp (import: 0.038s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_gui
 DEBUG    mcp:mcp.py:534 Registered tool: list_available_guis
 DEBUG    mcp:mcp.py:534 Registered tool: get_gui_module_info
 INFO     src.gui.mcp:mcp.py:152 gui module MCP tools registered (3 domain tools).
-DEBUG    execute.discopy_translator_module.translator:translator.py:24 DisCoPy not available: No module named 'discopy'
-DEBUG    mcp:mcp.py:534 Registered tool: process_validation
-DEBUG    execute.discopy_translator_module.translator:translator.py:34 JAX library available
-DEBUG    mcp:mcp.py:534 Registered tool: validate_gnn_file
-DEBUG    execute.discopy_translator_module.translator:translator.py:44 Matplotlib library available
-DEBUG    mcp:mcp.py:534 Registered tool: get_validation_report
-INFO     mcp:mcp.py:392 Successfully loaded module gui: 4 tools, 0 resources (load: 0.421s, import: 0.420s, register: 0.000s)
-INFO     mcp:mcp.py:392 Successfully loaded module export: 4 tools, 0 resources (load: 0.028s, import: 0.027s, register: 0.001s)
-DEBUG    mcp:mcp.py:534 Registered tool: check_schema_compliance
-DEBUG    execute.discopy_translator_module.visualize_jax_output:visualize_jax_output.py:25 Matplotlib available for JAX output visualization
-INFO     src.validation.mcp:mcp.py:232 validation module MCP tools registered (4 tools).
-DEBUG    execute.discopy_translator_module.visualize_jax_output:visualize_jax_output.py:35 JAX available for output processing
-INFO     mcp:mcp.py:392 Successfully loaded module validation: 10 tools, 0 resources (load: 0.006s, import: 0.003s, register: 0.002s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.advanced_visualization.mcp (import: 0.009s)
+INFO     mcp:mcp.py:392 Successfully loaded module gui: 3 tools, 0 resources (load: 0.039s, import: 0.038s, register: 0.000s)
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.advanced_visualization.mcp (import: 0.006s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_advanced_visualization
 DEBUG    mcp:mcp.py:534 Registered tool: check_visualization_capabilities
 DEBUG    mcp:mcp.py:534 Registered tool: list_d2_visualization_types
 DEBUG    mcp:mcp.py:534 Registered tool: get_advanced_visualization_module_info
 INFO     src.advanced_visualization.mcp:mcp.py:181 advanced_visualization module MCP tools registered (4 domain tools).
-INFO     mcp:mcp.py:392 Successfully loaded module advanced_visualization: 4 tools, 0 resources (load: 0.009s, import: 0.009s, register: 0.000s)
-DEBUG    mcp:mcp.py:349 Loaded MCP module: src.execute.mcp (import: 0.618s)
+INFO     mcp:mcp.py:392 Successfully loaded module advanced_visualization: 4 tools, 0 resources (load: 0.006s, import: 0.006s, register: 0.000s)
+DEBUG    execute.discopy_translator_module.translator:translator.py:24 DisCoPy not available: No module named 'discopy'
+DEBUG    execute.discopy_translator_module.translator:translator.py:36 JAX not available: No module named 'jax.numpy'; 'jax' is not a package
+DEBUG    execute.discopy_translator_module.translator:translator.py:44 Matplotlib library available
+DEBUG    execute.discopy_translator_module.visualize_jax_output:visualize_jax_output.py:25 Matplotlib available for JAX output visualization
+DEBUG    execute.discopy_translator_module.visualize_jax_output:visualize_jax_output.py:37 JAX not available: No module named 'jax.numpy'; 'jax' is not a package
+DEBUG    mcp:mcp.py:349 Loaded MCP module: src.execute.mcp (import: 0.028s)
 DEBUG    mcp:mcp.py:534 Registered tool: process_execute
 DEBUG    mcp:mcp.py:534 Registered tool: execute_gnn_model
 DEBUG    mcp:mcp.py:534 Registered tool: execute_pymdp_simulation
 DEBUG    mcp:mcp.py:534 Registered tool: check_execute_dependencies
 DEBUG    mcp:mcp.py:534 Registered tool: get_execute_module_info
 INFO     src.execute.mcp:mcp.py:261 execute module MCP tools registered (5 real domain tools).
-INFO     mcp:mcp.py:392 Successfully loaded module execute: 5 tools, 0 resources (load: 0.619s, import: 0.618s, register: 0.000s)
+INFO     mcp:mcp.py:392 Successfully loaded module execute: 5 tools, 0 resources (load: 0.028s, import: 0.028s, register: 0.000s)
 DEBUG    mcp:mcp.py:273 Discovering core MCP tools in /Users/4d/Documents/GitHub/generalizednotationnotation/src/mcp
 DEBUG    src.mcp.sympy_mcp:sympy_mcp.py:26 Registering SymPy MCP tools...
 DEBUG    mcp:mcp.py:534 Registered tool: sympy_validate_equation
@@ -466,13 +466,13 @@ DEBUG    mcp:mcp.py:534 Registered tool: sympy_get_latex
 DEBUG    mcp:mcp.py:534 Registered tool: sympy_initialize
 DEBUG    mcp:mcp.py:534 Registered tool: sympy_cleanup
 INFO     src.mcp.sympy_mcp:sympy_mcp.py:171 Successfully registered SymPy MCP tools
-DEBUG    mcp:mcp.py:297 Loaded sympy_mcp: 8 tools in 0.001s
-INFO     mcp:mcp.py:313 Enhanced module discovery completed in 1.01s: 31 modules, 133 tools, 1 resources
+DEBUG    mcp:mcp.py:297 Loaded sympy_mcp: 8 tools in 0.000s
+INFO     mcp:mcp.py:313 Enhanced module discovery completed in 0.10s: 31 modules, 133 tools, 1 resources
 INFO     mcp:mcp.py:1396 MCP initialization completed successfully
 INFO     test_mcp:processor.py:210 Auto-discovered 31 modules via initialize()
-INFO     test_mcp:processor.py:225 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_tpfzauf/mcp_output/mcp_results.json
-INFO     test_mcp:processor.py:231 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_tpfzauf/mcp_output/registered_tools.json
-INFO     test_mcp:processor.py:249 ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_tpfzauf/mcp_output/mcp_processing_summary.json
+INFO     test_mcp:processor.py:225 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchy466wn/mcp_output/mcp_results.json
+INFO     test_mcp:processor.py:231 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchy466wn/mcp_output/registered_tools.json
+INFO     test_mcp:processor.py:249 ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchy466wn/mcp_output/mcp_processing_summary.json
 INFO     test_mcp:structured_logging.py:438 ✅ MCP processing completed successfully - 133 tools from 31 modules registered
 _______________________________________ TestMCPProcessing.test_mcp_output_files ________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -480,9 +480,9 @@ INFO     test_mcp_files:structured_logging.py:428 🚀 Starting step: Processing
 DEBUG    mcp:mcp.py:197 MCP modules already discovered. Skipping redundant discovery.
 INFO     mcp:mcp.py:1396 MCP initialization completed successfully
 INFO     test_mcp_files:processor.py:210 Auto-discovered 31 modules via initialize()
-INFO     test_mcp_files:processor.py:225 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp9nc02i5w/mcp_files_output/mcp_results.json
-INFO     test_mcp_files:processor.py:231 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp9nc02i5w/mcp_files_output/registered_tools.json
-INFO     test_mcp_files:processor.py:249 ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp9nc02i5w/mcp_files_output/mcp_processing_summary.json
+INFO     test_mcp_files:processor.py:225 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvkzzw20k/mcp_files_output/mcp_results.json
+INFO     test_mcp_files:processor.py:231 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvkzzw20k/mcp_files_output/registered_tools.json
+INFO     test_mcp_files:processor.py:249 ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpvkzzw20k/mcp_files_output/mcp_processing_summary.json
 INFO     test_mcp_files:structured_logging.py:438 ✅ MCP processing completed successfully - 133 tools from 31 modules registered
 ______________________________________ TestMCPUtilities.test_initialize_function _______________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -494,9 +494,9 @@ INFO     test_mcp_gnn:structured_logging.py:428 🚀 Starting step: Processing M
 DEBUG    mcp:mcp.py:197 MCP modules already discovered. Skipping redundant discovery.
 INFO     mcp:mcp.py:1396 MCP initialization completed successfully
 INFO     test_mcp_gnn:processor.py:210 Auto-discovered 31 modules via initialize()
-INFO     test_mcp_gnn:processor.py:225 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpz0dp9ad7/mcp_gnn_output/mcp_results.json
-INFO     test_mcp_gnn:processor.py:231 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpz0dp9ad7/mcp_gnn_output/registered_tools.json
-INFO     test_mcp_gnn:processor.py:249 ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpz0dp9ad7/mcp_gnn_output/mcp_processing_summary.json
+INFO     test_mcp_gnn:processor.py:225 📋 Detailed MCP report saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprhzl49is/mcp_gnn_output/mcp_results.json
+INFO     test_mcp_gnn:processor.py:231 🔧 Registered tools saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprhzl49is/mcp_gnn_output/registered_tools.json
+INFO     test_mcp_gnn:processor.py:249 ✅ MCP summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprhzl49is/mcp_gnn_output/mcp_processing_summary.json
 INFO     test_mcp_gnn:structured_logging.py:438 ✅ MCP processing completed successfully - 133 tools from 31 modules registered
 ___________________________ TestMCPToolRegistrationPerformance.test_tool_registration_speed ____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -570,9 +570,8 @@ ________________________________ TestMCPToolExecution.test_utils_system_info_exe
 INFO     utils.mcp:mcp.py:289 Registering utils MCP tools
 INFO     utils.mcp:mcp.py:351 Successfully registered utils MCP tools
 ================================================= slowest 10 durations =================================================
-1.02s call     src/tests/test_mcp_overall.py::TestMCPProcessing::test_process_mcp
 
-(9 durations < 1s hidden.)
+(10 durations < 1s hidden.)
 =============================================== short test summary info ================================================
 PASSED src/tests/test_mcp_overall.py::TestMCPModule::test_module_imports
 PASSED src/tests/test_mcp_overall.py::TestMCPModule::test_features_available
@@ -609,4 +608,4 @@ PASSED src/tests/test_mcp_performance.py::TestMCPBenchmarks::test_tool_execution
 PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution
 PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution
 PASSED src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution
-================================================== 35 passed in 2.61s ==================================================
+================================================== 35 passed in 0.20s ==================================================

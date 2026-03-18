@@ -670,7 +670,7 @@ class GNNTypeChecker:
 markdown-link-check doc/**/*.md
 
 # Validate cross-references
-python scripts/validate_cross_references.py
+uv run python src/19_research.py --verbose
 ```
 
 **Spell Check**:

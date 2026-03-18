@@ -146,6 +146,20 @@ def collect_execution_outputs(
             if jax_dir.exists():
                 found_files.extend(jax_dir.rglob("*.png"))
                 found_files.extend(jax_dir.rglob("*.json"))
+        elif framework == "numpyro":
+            # NumPyro writes simulation_results.json under NUMPYRO_OUTPUT_DIR (default: script cwd)
+            found_files.extend(script_dir.glob("simulation_results.json"))
+            numpyro_out = script_dir / "numpyro_outputs"
+            if numpyro_out.exists():
+                found_files.extend(numpyro_out.rglob("*.json"))
+                found_files.extend(numpyro_out.rglob("*.csv"))
+        elif framework == "pytorch":
+            # PyTorch writes simulation_results.json under PYTORCH_OUTPUT_DIR (default: script cwd)
+            found_files.extend(script_dir.glob("simulation_results.json"))
+            pytorch_out = script_dir / "pytorch_outputs"
+            if pytorch_out.exists():
+                found_files.extend(pytorch_out.rglob("*.json"))
+                found_files.extend(pytorch_out.rglob("*.csv"))
 
         if not found_files:
             found_files.extend(script_dir.rglob("*.png"))
@@ -265,6 +279,10 @@ def extract_simulation_data_from_files(
             enhanced_data = extract_discopy_data_from_files(output_dir, logger)
         elif framework == "jax":
             enhanced_data = extract_jax_data_from_files(output_dir, logger)
+        elif framework == "numpyro":
+            enhanced_data = extract_pymdp_like_data_from_files(output_dir, logger, "numpyro")
+        elif framework == "pytorch":
+            enhanced_data = extract_pymdp_like_data_from_files(output_dir, logger, "pytorch")
 
     except Exception as e:
         logger.warning(f"Failed to extract simulation data from files for {framework}: {e}")
@@ -314,6 +332,29 @@ def extract_pymdp_data_from_files(output_dir: Path, logger: logging.Logger) -> D
     except Exception as e:
         logger.warning(f"Error extracting PyMDP data from files: {e}")
 
+    return data
+
+
+def extract_pymdp_like_data_from_files(output_dir: Path, logger: logging.Logger, label: str = "pymdp_like") -> Dict[str, Any]:
+    """Extract simulation data from simulation_data/simulation_results.json (NumPyro, PyTorch, etc.)."""
+    data = {}
+    try:
+        sim_data_dir = output_dir / "simulation_data"
+        if sim_data_dir.exists():
+            results_files = list(sim_data_dir.glob("*simulation_results.json"))
+            if results_files:
+                results_file = results_files[0]
+                try:
+                    with open(results_file, 'r') as f:
+                        results = json.load(f)
+                    for key in ("beliefs", "actions", "observations", "free_energy", "num_timesteps", "model_parameters"):
+                        if key in results:
+                            data[key] = results[key]
+                    logger.info(f"Extracted {label} data from {results_file.name}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse {results_file}: {e}")
+    except Exception as e:
+        logger.warning(f"Error extracting {label} data from files: {e}")
     return data
 
 

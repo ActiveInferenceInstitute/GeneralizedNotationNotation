@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-17T16:54:24.064544",
+  "timestamp": "2026-03-18T09:28:56.252140",
   "execution_results_dir": "output/12_execute_output/hmm_baseline",
   "framework_results": {
     "rxinfer": {
@@ -30,7 +30,23 @@
     "jax": {
       "framework": "jax",
       "result_count": 1,
-      "analyses": []
+      "analyses": [
+        {
+          "framework": "jax",
+          "model_name": "hmm_baseline",
+          "free_energy_count": 2,
+          "free_energy_values": [
+            1.7032,
+            1.644
+          ],
+          "mean_free_energy": 1.6736,
+          "std_free_energy": 0.02960000000000007,
+          "min_free_energy": 1.644,
+          "max_free_energy": 1.7032,
+          "free_energy_trend": -0.05920000000000014,
+          "free_energy_decreasing": "True"
+        }
+      ]
     },
     "discopy": {
       "framework": "discopy",
@@ -51,27 +67,38 @@
     ],
     "framework_count": 7,
     "comparisons": {
+      "free_energy": {
+        "jax": {
+          "mean": 1.6736,
+          "min": 1.644,
+          "max": 1.7032
+        }
+      },
+      "best_free_energy": {
+        "framework": "jax",
+        "mean_fe": 1.6736
+      },
       "execution_time": {
-        "rxinfer": 32.349944,
-        "numpyro": 0.038072,
-        "activeinference_jl": 24.44706,
-        "pymdp": 1.243759,
-        "pytorch": 0.027166,
-        "jax": 0.020445,
-        "discopy": 0.049152
+        "rxinfer": 16.541946,
+        "numpyro": 6.116841,
+        "activeinference_jl": 13.251858,
+        "pymdp": 9.264893,
+        "pytorch": 4.10594,
+        "jax": 6.756163,
+        "discopy": 1.758197
       },
       "fastest_execution": {
-        "framework": "jax",
-        "time": 0.020445
+        "framework": "discopy",
+        "time": 1.758197
       },
       "success_rates": {
         "rxinfer": true,
-        "numpyro": false,
+        "numpyro": true,
         "activeinference_jl": true,
         "pymdp": true,
-        "pytorch": false,
-        "jax": false,
-        "discopy": false
+        "pytorch": true,
+        "jax": true,
+        "discopy": true
       }
     }
   }

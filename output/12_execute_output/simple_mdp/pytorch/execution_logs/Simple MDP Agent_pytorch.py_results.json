@@ -3,24 +3,157 @@
   "model_name": "simple_mdp",
   "script_name": "Simple MDP Agent_pytorch.py",
   "script_path": "output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py",
-  "success": false,
-  "return_code": 1,
-  "execution_time": 0.258521,
-  "timestamp": "2026-03-17T16:49:14.083389",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 0.775113,
+  "timestamp": "2026-03-18T09:21:30.538917",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [],
-    "actions": [],
+    "observations": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "actions": [
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
     "policy": [],
-    "raw_output": "ERROR: PyTorch not installed. Install with: uv sync --extra ml-ai\n",
-    "raw_error": ""
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.020s\nResults saved to: output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.9999999999999996,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.9999999999999999,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "num_timesteps": 15
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 66,
+    "stdout_length": 272,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/simple_mdp/pytorch"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
   }
 }

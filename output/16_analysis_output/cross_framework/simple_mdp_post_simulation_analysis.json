@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-17T16:54:24.057795",
+  "timestamp": "2026-03-18T09:28:56.237781",
   "execution_results_dir": "output/12_execute_output/simple_mdp",
   "framework_results": {
     "rxinfer": {
@@ -194,10 +194,10 @@
               -2.814123228292838
             ],
             [
-              -0.11412322829283977,
-              -2.514123228292838,
-              -2.814123228292838,
-              -2.814123228292838
+              -2.514123228292834,
+              -0.11412322829284038,
+              -2.814123228292836,
+              -2.814123228292836
             ],
             [
               -0.11412322829283977,
@@ -236,10 +236,10 @@
               -2.814123228292838
             ],
             [
-              -0.11412322829283977,
-              -2.514123228292838,
-              -2.814123228292838,
-              -2.814123228292838
+              -2.514123228292834,
+              -0.11412322829284038,
+              -2.814123228292836,
+              -2.814123228292836
             ],
             [
               -0.11412322829283977,
@@ -254,13 +254,13 @@
               -2.814123228292838
             ]
           ],
-          "mean_free_energy": -2.064123228292839,
-          "std_free_energy": 4.864753555590494e-16,
+          "mean_free_energy": -2.0641232282928383,
+          "std_free_energy": 6.586907452451086e-16,
           "min_free_energy": -2.0641232282928383,
-          "max_free_energy": -2.064123228292838,
+          "max_free_energy": -2.0641232282928366,
           "free_energy_trend": 0.0,
           "free_energy_decreasing": "False",
-          "convergence_variance": 0.0,
+          "convergence_variance": 7.231224964525941e-31,
           "converged": true
         }
       ]
@@ -295,26 +295,26 @@
     "framework_count": 7,
     "comparisons": {
       "execution_time": {
-        "rxinfer": 22.153463,
-        "numpyro": 0.092524,
-        "activeinference_jl": 19.225177,
-        "pymdp": 6.234595,
-        "pytorch": 0.258521,
-        "jax": 0.045649,
-        "discopy": 0.137938
+        "rxinfer": 26.096308,
+        "numpyro": 1.275439,
+        "activeinference_jl": 22.524014,
+        "pymdp": 1.955625,
+        "pytorch": 0.775113,
+        "jax": 1.110699,
+        "discopy": 0.397186
       },
       "fastest_execution": {
-        "framework": "jax",
-        "time": 0.045649
+        "framework": "discopy",
+        "time": 0.397186
       },
       "success_rates": {
         "rxinfer": true,
-        "numpyro": false,
+        "numpyro": true,
         "activeinference_jl": true,
         "pymdp": true,
-        "pytorch": false,
-        "jax": false,
-        "discopy": false
+        "pytorch": true,
+        "jax": true,
+        "discopy": true
       }
     }
   }

@@ -5,109 +5,109 @@
   "script_path": "output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 7.022286,
-  "timestamp": "2026-03-17T16:49:14.563363",
+  "execution_time": 1.948165,
+  "timestamp": "2026-03-18T09:21:34.919411",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      1,
-      1,
-      1,
-      0,
-      0
-    ],
-    "actions": [
-      0,
-      0,
       0,
       0,
       0,
       1,
       1,
       0,
-      1,
+      0,
       1,
       0,
-      0,
+      1,
+      1,
+      1,
       0,
       1,
       1
     ],
+    "actions": [
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-17 16:49:20,990 - __main__ - INFO - A matrix shape: (2, 2)\n2026-03-17 16:49:20,990 - __main__ - INFO - B matrix shape: (2, 2, 2)\n2026-03-17 16:49:20,990 - __main__ - INFO - C vector shape: (2,)\n2026-03-17 16:49:20,990 - __main__ - INFO - D vector shape: (2,)\n2026-03-17 16:49:20,990 - __main__ - INFO - E vector shape: (2,)\n2026-03-17 16:49:20,990 - __main__ - INFO - Starting PyMDP simulation for Two State Bistable POMDP\n2026-03-17 16:49:20,990 - __main__ - INFO - Output directory: output/pymdp_simulations/Two State Bistable POMDP\n2026-03-17 16:49:20,990 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-03-17 16:49:20,990 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (2, 2, 2) to (2, 2, 2)\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(2, 2), B=(2, 2, 2), C=(2,), D=(2,)\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-17 16:49:20,991 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-17 16:49:20,992 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=1, obs=1, belief=[0.2 0.8], action=0.0\n2026-03-17 16:49:20,992 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=1, obs=1, belief=[0.11 0.89], action=0.0\n2026-03-17 16:49:20,992 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=1, obs=1, belief=[0.09 0.91], action=0.0\n2026-03-17 16:49:20,992 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=1, obs=1, belief=[0.08 0.92], action=0.0\n2026-03-17 16:49:20,993 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=1, obs=1, belief=[0.08 0.92], action=0.0\n2026-03-17 16:49:20,993 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=1, obs=0, belief=[0.59 0.41], action=1.0\n2026-03-17 16:49:20,993 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=0, obs=0, belief=[0.79 0.21], action=1.0\n2026-03-17 16:49:20,994 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=1, obs=1, belief=[0.13 0.87], action=0.0\n2026-03-17 16:49:20,995 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=0, obs=0, belief=[0.62 0.38], action=1.0\n2026-03-17 16:49:20,995 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=0, obs=0, belief=[0.78 0.22], action=1.0\n2026-03-17 16:49:20,996 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=1, obs=1, belief=[0.14 0.86], action=0.0\n2026-03-17 16:49:20,996 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=1, obs=1, belief=[0.09 0.91], action=0.0\n2026-03-17 16:49:20,997 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=1, obs=1, belief=[0.08 0.92], action=0.0\n2026-03-17 16:49:20,997 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=1, obs=0, belief=[0.59 0.41], action=1.0\n2026-03-17 16:49:20,998 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=0, obs=0, belief=[0.79 0.21], action=1.0\n2026-03-17 16:49:20,998 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-17 16:49:20,998 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Two State Bistable POMDP/simulation_results.json\n2026-03-17 16:49:20,998 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-17 16:49:20,998 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-17 16:49:20,998 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-17 16:49:20,998 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-17 16:49:20,998 - __main__ - INFO - Results summary:\n2026-03-17 16:49:20,998 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-17 16:49:20,998 - __main__ - INFO -   Success: True\n2026-03-17 16:49:20,998 - __main__ - INFO -   Output: output/pymdp_simulations/Two State Bistable POMDP\n",
+    "raw_error": "2026-03-18 09:21:36,611 - __main__ - INFO - A matrix shape: (2, 2)\n2026-03-18 09:21:36,611 - __main__ - INFO - B matrix shape: (2, 2, 2)\n2026-03-18 09:21:36,611 - __main__ - INFO - C vector shape: (2,)\n2026-03-18 09:21:36,611 - __main__ - INFO - D vector shape: (2,)\n2026-03-18 09:21:36,611 - __main__ - INFO - E vector shape: (2,)\n2026-03-18 09:21:36,611 - __main__ - INFO - Starting PyMDP simulation for Two State Bistable POMDP\n2026-03-18 09:21:36,611 - __main__ - INFO - Output directory: output/pymdp_simulations/Two State Bistable POMDP\n2026-03-18 09:21:36,611 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-03-18 09:21:36,611 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-18 09:21:36,611 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-18 09:21:36,611 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-18 09:21:36,611 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (2, 2, 2) to (2, 2, 2)\n2026-03-18 09:21:36,611 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-18 09:21:36,611 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(2, 2), B=(2, 2, 2), C=(2,), D=(2,)\n2026-03-18 09:21:36,611 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-18 09:21:36,612 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-18 09:21:36,612 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-18 09:21:36,612 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=1, obs=0, belief=[0.8 0.2], action=1.0\n2026-03-18 09:21:36,612 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=0, obs=0, belief=[0.7 0.3], action=1.0\n2026-03-18 09:21:36,612 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=0, obs=0, belief=[0.74 0.26], action=1.0\n2026-03-18 09:21:36,613 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=1, obs=1, belief=[0.14 0.86], action=0.0\n2026-03-18 09:21:36,613 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=1, obs=1, belief=[0.09 0.91], action=0.0\n2026-03-18 09:21:36,613 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=0, obs=0, belief=[0.6 0.4], action=1.0\n2026-03-18 09:21:36,613 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=1, obs=0, belief=[0.78 0.22], action=1.0\n2026-03-18 09:21:36,613 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=0, obs=1, belief=[0.13 0.87], action=0.0\n2026-03-18 09:21:36,614 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=0, obs=0, belief=[0.62 0.38], action=1.0\n2026-03-18 09:21:36,614 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=1, obs=1, belief=[0.18 0.82], action=0.0\n2026-03-18 09:21:36,614 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=1, obs=1, belief=[0.1 0.9], action=0.0\n2026-03-18 09:21:36,614 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=1, obs=1, belief=[0.09 0.91], action=0.0\n2026-03-18 09:21:36,614 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=0, obs=0, belief=[0.59 0.41], action=1.0\n2026-03-18 09:21:36,615 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=1, obs=1, belief=[0.19 0.81], action=0.0\n2026-03-18 09:21:36,615 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=1, obs=1, belief=[0.1 0.9], action=0.0\n2026-03-18 09:21:36,615 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-18 09:21:36,615 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Two State Bistable POMDP/simulation_results.json\n2026-03-18 09:21:36,615 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-18 09:21:36,615 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-18 09:21:36,615 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-18 09:21:36,615 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-18 09:21:36,615 - __main__ - INFO - Results summary:\n2026-03-18 09:21:36,615 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-18 09:21:36,615 - __main__ - INFO -   Success: True\n2026-03-18 09:21:36,615 - __main__ - INFO -   Output: output/pymdp_simulations/Two State Bistable POMDP\n",
     "beliefs": [
       [
-        0.20000000000000004,
-        0.8
+        0.8,
+        0.20000000000000004
       ],
       [
-        0.10666666666666677,
-        0.8933333333333332
+        0.7047619047619047,
+        0.29523809523809535
       ],
       [
-        0.08704883227176227,
-        0.9129511677282378
+        0.7447983014861995,
+        0.25520169851380053
       ],
       [
-        0.08314576634512331,
-        0.9168542336548766
+        0.1436835846088925,
+        0.8563164153911075
       ],
       [
-        0.08237786019586256,
-        0.9176221398041374
+        0.09461637003594402,
+        0.9053836299640561
       ],
       [
-        0.589070412295361,
-        0.41092958770463905
+        0.5966951772920577,
+        0.4033048227079422
       ],
       [
-        0.7870648888795424,
-        0.21293511112045768
+        0.7844670244840268,
+        0.21553297551597325
       ],
       [
-        0.1329993323772274,
-        0.8670006676227726
+        0.13364220328607074,
+        0.8663577967139292
       ],
       [
-        0.6196265397510882,
-        0.3803734602489119
+        0.6199984639069055,
+        0.3800015360930945
       ],
       [
-        0.7765029244871874,
-        0.22349707551281273
+        0.17829503056712995,
+        0.8217049694328701
       ],
       [
-        0.1356241026059085,
-        0.8643758973940916
+        0.10194283866265194,
+        0.8980571613373481
       ],
       [
-        0.09294562153668041,
-        0.9070543784633196
+        0.08610233134563504,
+        0.9138976686543648
       ],
       [
-        0.08431132216045913,
-        0.9156886778395408
+        0.591407466783827,
+        0.408592533216173
       ],
       [
-        0.5902854678492178,
-        0.40971453215078235
+        0.18694342864247857,
+        0.8130565713575215
       ],
       [
-        0.7866525508568226,
-        0.21334744914317744
+        0.10381285148876772,
+        0.8961871485112324
       ]
     ],
     "num_timesteps": 15
@@ -115,7 +115,7 @@
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 227,
-    "stderr_length": 4637,
+    "stderr_length": 4629,
     "output_directory": "output/12_execute_output/two_state_bistable/pymdp"
   },
   "collected_outputs": {

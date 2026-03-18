@@ -3,25 +3,25 @@ collecting ... collected 11 items
 
 src/tests/test_analysis_overall.py::TestAnalysisOverall::test_process_analysis_flow 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:44 [    INFO] analysis: Processing analysis
-2026-03-17 16:46:44 [    INFO] analysis: Looking for execution results in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output
-2026-03-17 16:46:44 [ WARNING] analysis: Execution directory not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output. Skipping post-simulation analysis.
-2026-03-17 16:46:44 [    INFO] analysis: Generating ActiveInference.jl visualizations...
-2026-03-17 16:46:44 [    INFO] analysis.activeinference_jl: No ActiveInference.jl output directories found
-2026-03-17 16:46:44 [    INFO] analysis: Generating DisCoPy visualizations...
-2026-03-17 16:46:44 [    INFO] analysis.discopy.analyzer: Searching for DisCoPy results in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output
-2026-03-17 16:46:44 [    INFO] analysis.discopy.analyzer: Found 0 DisCoPy directories
-2026-03-17 16:46:44 [    INFO] analysis: Generating JAX visualizations...
-2026-03-17 16:46:44 [    INFO] analysis: Generating RxInfer visualizations...
-2026-03-17 16:46:44 [    INFO] analysis: Generating PyTorch visualizations...
-2026-03-17 16:46:44 [    INFO] analysis: Generating NumPyro visualizations...
-2026-03-17 16:46:44 [    INFO] analysis: ✅ Analysis processing completed successfully
+2026-03-18 10:15:35 [    INFO] analysis: Processing analysis
+2026-03-18 10:15:35 [    INFO] analysis: Looking for execution results in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output
+2026-03-18 10:15:35 [ WARNING] analysis: Execution directory not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output. Skipping post-simulation analysis.
+2026-03-18 10:15:35 [    INFO] analysis: Generating ActiveInference.jl visualizations...
+2026-03-18 10:15:35 [    INFO] analysis.activeinference_jl: No ActiveInference.jl output directories found
+2026-03-18 10:15:35 [    INFO] analysis: Generating DisCoPy visualizations...
+2026-03-18 10:15:35 [    INFO] analysis.discopy.analyzer: Searching for DisCoPy results in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output
+2026-03-18 10:15:35 [    INFO] analysis.discopy.analyzer: Found 0 DisCoPy directories
+2026-03-18 10:15:35 [    INFO] analysis: Generating JAX visualizations...
+2026-03-18 10:15:35 [    INFO] analysis: Generating RxInfer visualizations...
+2026-03-18 10:15:35 [    INFO] analysis: Generating PyTorch visualizations...
+2026-03-18 10:15:35 [    INFO] analysis: Generating NumPyro visualizations...
+2026-03-18 10:15:35 [    INFO] analysis: ✅ Analysis processing completed successfully
 PASSED
 src/tests/test_analysis_overall.py::TestAnalysisOverall::test_process_analysis_no_files 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:44 [    INFO] analysis: Processing analysis
-2026-03-17 16:46:44 [ WARNING] analysis: No GNN files found for analysis
-2026-03-17 16:46:44 [   ERROR] analysis: ❌ Analysis processing failed
+2026-03-18 10:15:35 [    INFO] analysis: Processing analysis
+2026-03-18 10:15:35 [ WARNING] analysis: No GNN files found for analysis
+2026-03-18 10:15:35 [   ERROR] analysis: ❌ Analysis processing failed
 PASSED
 src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_belief_heatmaps PASSED
 src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_action_analysis PASSED
@@ -37,19 +37,19 @@ src/tests/test_analysis_overall.py::TestAnalysisModuleImports::test_visualizatio
 ____________________________________ TestAnalysisOverall.test_process_analysis_flow ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     analysis::0 Processing analysis
-INFO     analysis:processor.py:173 Looking for execution results in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output
-WARNING  analysis:processor.py:260 Execution directory not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output. Skipping post-simulation analysis.
+INFO     analysis:processor.py:173 Looking for execution results in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output
+WARNING  analysis:processor.py:260 Execution directory not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output. Skipping post-simulation analysis.
 INFO     analysis:processor.py:267 Generating ActiveInference.jl visualizations...
 INFO     analysis.activeinference_jl:analyzer.py:66 No ActiveInference.jl output directories found
 INFO     analysis:processor.py:284 Generating DisCoPy visualizations...
-INFO     analysis.discopy.analyzer:analyzer.py:42 Searching for DisCoPy results in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output
+INFO     analysis.discopy.analyzer:analyzer.py:42 Searching for DisCoPy results in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output
 INFO     analysis.discopy.analyzer:analyzer.py:43 Found 0 DisCoPy directories
 INFO     analysis:processor.py:299 Generating JAX visualizations...
 INFO     analysis:processor.py:314 Generating RxInfer visualizations...
 INFO     analysis:processor.py:329 Generating PyTorch visualizations...
-DEBUG    analysis.pytorch.analyzer:analyzer.py:55 No PyTorch simulation_results.json found under /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output
+DEBUG    analysis.pytorch.analyzer:analyzer.py:55 No PyTorch simulation_results.json found under /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output
 INFO     analysis:processor.py:344 Generating NumPyro visualizations...
-DEBUG    analysis.numpyro.analyzer:analyzer.py:55 No NumPyro simulation_results.json found under /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp21ujy6cp/12_execute_output
+DEBUG    analysis.numpyro.analyzer:analyzer.py:55 No NumPyro simulation_results.json found under /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpjxs25s5w/12_execute_output
 INFO     analysis::0 ✅ Analysis processing completed successfully
 __________________________________ TestAnalysisOverall.test_process_analysis_no_files __________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -536,7 +536,7 @@ DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/System/Library/AssetsV2/com_apple_MobileAsset_Font7/12cc699be28fb04f3e3c4969a0378a87b920b174.asset/AssetData/BMHannaAir-Regular.otf', name='BM Hanna Air', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/System/Library/Fonts/Supplemental/Bodoni 72 Smallcaps Book.ttf', name='Bodoni 72 Smallcaps', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1515 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12aba94c0>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x117683b60>
 DEBUG    matplotlib.font_manager:font_manager.py:1471 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0.
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/cmb10.ttf', name='cmb10', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizFiveSymReg.ttf', name='STIXSizeFiveSym', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
@@ -1017,7 +1017,7 @@ DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(
 DEBUG    matplotlib.font_manager:font_manager.py:1515 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0 to DejaVu Sans ('/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
 ____________________________ TestPostSimulationVisualization.test_generate_action_analysis _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12ac74830>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x1177474a0>
 DEBUG    matplotlib.font_manager:font_manager.py:1471 findfont: Matching sans\-serif:style=normal:variant=normal:weight=bold:stretch=normal:size=14.0.
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/cmb10.ttf', name='cmb10', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.335
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizFiveSymReg.ttf', name='STIXSizeFiveSym', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.335
@@ -1511,4 +1511,4 @@ PASSED src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test
 PASSED src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_analyze_policy_convergence
 PASSED src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_compare_framework_results
 PASSED src/tests/test_analysis_overall.py::TestAnalysisModuleImports::test_visualization_function_exports
-================================================== 11 passed in 1.14s ==================================================
+================================================== 11 passed in 0.96s ==================================================

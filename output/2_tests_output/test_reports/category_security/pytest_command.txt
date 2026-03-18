@@ -1,5 +1,5 @@
 Category: security
 Success: True
 Duration: 2.01s
-Peak Memory: 39.36 MB
+Peak Memory: 45.55 MB
 CPU Usage: 0.0%

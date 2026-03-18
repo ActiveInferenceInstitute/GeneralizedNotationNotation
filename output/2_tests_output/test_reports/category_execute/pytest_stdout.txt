@@ -1,5 +1,5 @@
 ================================================= test session starts ==================================================
-collecting ... collected 94 items
+collecting ... collected 95 items
 
 src/tests/test_execute_overall.py::TestExecuteOverall::test_executor_initialization PASSED
 src/tests/test_execute_overall.py::TestExecuteOverall::test_parse_frameworks_parameter_all PASSED
@@ -10,90 +10,69 @@ src/tests/test_execute_overall.py::TestExecuteOverall::test_find_executable_scri
 src/tests/test_execute_overall.py::TestExecuteOverall::test_find_executable_scripts_with_framework_filter PASSED
 src/tests/test_execute_overall.py::TestExecuteOverall::test_collect_execution_outputs 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] test: Found 1 output files to collect for pymdp
-2026-03-17 16:35:43 [    INFO] test: Copied output.json -> simulation_data/output.json
-2026-03-17 16:35:43 [    INFO] test: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
+2026-03-18 10:11:25 [    INFO] test: Found 1 output files to collect for pymdp
+2026-03-18 10:11:25 [    INFO] test: Copied output.json -> simulation_data/output.json
+2026-03-18 10:11:25 [    INFO] test: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
 PASSED
 src/tests/test_execute_overall.py::TestExecuteOverall::test_process_execution_flow 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute: Processing execute - searching for rendered implementations
-2026-03-17 16:35:43 [    INFO] execute: Requested frameworks: ['pymdp']
-2026-03-17 16:35:43 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprvvhd228/render/11_render_output
-2026-03-17 16:35:43 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprvvhd228/render/11_render_output
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found in render output
-2026-03-17 16:35:43 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprvvhd228/output/summaries/execution_report.md
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found to run
+2026-03-18 10:11:25 [    INFO] execute: Processing execute - searching for rendered implementations
+2026-03-18 10:11:25 [    INFO] execute: Requested frameworks: ['pymdp']
+2026-03-18 10:11:25 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpel7xitli/render/11_render_output
+2026-03-18 10:11:25 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpel7xitli/render/11_render_output
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found in render output
+2026-03-18 10:11:25 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpel7xitli/output/summaries/execution_report.md
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found to run
 PASSED
 src/tests/test_execute_overall.py::TestExecuteOverall::test_process_execution_with_render_output 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute: Processing execute - searching for rendered implementations
-2026-03-17 16:35:43 [    INFO] execute: Requested frameworks: ['pymdp']
-2026-03-17 16:35:43 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp519_waas/output/11_render_output
-2026-03-17 16:35:43 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp519_waas/output/11_render_output
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found in render output
-2026-03-17 16:35:43 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp519_waas/output/summaries/execution_report.md
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found to run
+2026-03-18 10:11:25 [    INFO] execute: Processing execute - searching for rendered implementations
+2026-03-18 10:11:25 [    INFO] execute: Requested frameworks: ['pymdp']
+2026-03-18 10:11:25 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv91mp7mc/output/11_render_output
+2026-03-18 10:11:25 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv91mp7mc/output/11_render_output
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found in render output
+2026-03-18 10:11:25 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv91mp7mc/output/summaries/execution_report.md
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found to run
 PASSED
 src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_success PASSED
+src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_skipped_when_dependency_missing PASSED
 src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_timeout_handling PASSED
 src/tests/test_execute_overall.py::TestExecuteIntegration::test_execute_uses_render_output 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute: Processing execute - searching for rendered implementations
-2026-03-17 16:35:43 [    INFO] execute: Requested frameworks: ['pymdp']
-2026-03-17 16:35:43 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoidkho81/render/11_render_output
-2026-03-17 16:35:43 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoidkho81/render/11_render_output
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found in render output
-2026-03-17 16:35:43 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoidkho81/output/summaries/execution_report.md
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found to run
+2026-03-18 10:11:25 [    INFO] execute: Processing execute - searching for rendered implementations
+2026-03-18 10:11:25 [    INFO] execute: Requested frameworks: ['pymdp']
+2026-03-18 10:11:25 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1fi3o2aw/render/11_render_output
+2026-03-18 10:11:25 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1fi3o2aw/render/11_render_output
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found in render output
+2026-03-18 10:11:25 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1fi3o2aw/output/summaries/execution_report.md
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found to run
 PASSED
 src/tests/test_execute_overall.py::TestExecuteIntegration::test_execution_summary_structure 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute: Processing execute - searching for rendered implementations
-2026-03-17 16:35:43 [    INFO] execute: Requested frameworks: ['pymdp']
-2026-03-17 16:35:43 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp6ivbaq7k/render/11_render_output
-2026-03-17 16:35:43 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp6ivbaq7k/render/11_render_output
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found in render output
-2026-03-17 16:35:43 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp6ivbaq7k/output/summaries/execution_report.md
-2026-03-17 16:35:43 [ WARNING] execute: ⚠️ No executable scripts found to run
+2026-03-18 10:11:25 [    INFO] execute: Processing execute - searching for rendered implementations
+2026-03-18 10:11:25 [    INFO] execute: Requested frameworks: ['pymdp']
+2026-03-18 10:11:25 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpgspebxh4/render/11_render_output
+2026-03-18 10:11:25 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpgspebxh4/render/11_render_output
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found in render output
+2026-03-18 10:11:25 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpgspebxh4/output/summaries/execution_report.md
+2026-03-18 10:11:25 [ WARNING] execute: ⚠️ No executable scripts found to run
 PASSED
 src/tests/test_execute_overall.py::TestJAXExecute::test_find_jax_executable_scripts 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] test: Found python script: actinf_model/jax/actinf_model_jax.py
+2026-03-18 10:11:25 [    INFO] test: Found python script: actinf_model/jax/actinf_model_jax.py
 PASSED
-src/tests/test_execute_overall.py::TestJAXExecute::test_execute_jax_script 
----------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] test: Executing jax script: actinf_model_jax
-2026-03-17 16:35:43 [    INFO] test: ✅ Successfully executed actinf_model_jax
-2026-03-17 16:35:43 [    INFO] test: Script output: {"success": true, "framework": "jax", "model_name": "actinf_model", "num_timesteps": 10, "actions": [0, 1, 2, 0, 1, 2, 0, 1, 2, 0], "beliefs": [[0.33, 0.33, 0.34], [0.33, 0.33, 0.34], [0.33, 0.33, 0.3...
-2026-03-17 16:35:43 [    INFO] test: Collecting execution outputs for jax script actinf_model_jax
-2026-03-17 16:35:43 [    INFO] test: Found 1 output files to collect for jax
-2026-03-17 16:35:43 [    INFO] test: Copied simulation_results.json -> simulation_data/simulation_results.json
-2026-03-17 16:35:43 [    INFO] test: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
-2026-03-17 16:35:43 [    INFO] test: Extracting simulation data from collected files for jax
-2026-03-17 16:35:43 [    INFO] test: Extracted PyMDP data from simulation_results.json
-2026-03-17 16:35:43 [    INFO] test: Extracted 3 data fields from files
-PASSED
+src/tests/test_execute_overall.py::TestJAXExecute::test_execute_jax_script PASSED
 src/tests/test_execute_overall.py::TestJAXExecute::test_determine_jax_framework PASSED
 src/tests/test_execute_overall.py::TestJAXExecute::test_process_execution_with_jax_framework_filter 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute: Processing execute - searching for rendered implementations
-2026-03-17 16:35:43 [    INFO] execute: Requested frameworks: ['jax']
-2026-03-17 16:35:43 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpf8ahvsy5/output/11_render_output
-2026-03-17 16:35:43 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpf8ahvsy5/output/11_render_output
-2026-03-17 16:35:43 [    INFO] execute: Found python script: actinf_model/jax/actinf_model_jax.py
-2026-03-17 16:35:43 [    INFO] execute: Found 1 executable scripts to run
-2026-03-17 16:35:43 [    INFO] execute: Executing jax script: actinf_model_jax.py
-2026-03-17 16:35:43 [    INFO] execute: ✅ Successfully executed actinf_model_jax.py
-2026-03-17 16:35:43 [    INFO] execute: Script output: {"success": true, "framework": "jax", "model_name": "actinf_model", "num_timesteps": 10, "actions": [0, 1, 2, 0, 1, 2, 0, 1, 2, 0], "beliefs": [[0.33, 0.33, 0.34], [0.33, 0.33, 0.34], [0.33, 0.33, 0.3...
-2026-03-17 16:35:43 [    INFO] execute: Collecting execution outputs for jax script actinf_model_jax.py
-2026-03-17 16:35:43 [    INFO] execute: Found 1 output files to collect for jax
-2026-03-17 16:35:43 [    INFO] execute: Copied simulation_results.json -> simulation_data/simulation_results.json
-2026-03-17 16:35:43 [    INFO] execute: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
-2026-03-17 16:35:43 [    INFO] execute: Extracting simulation data from collected files for jax
-2026-03-17 16:35:43 [    INFO] execute: Extracted PyMDP data from simulation_results.json
-2026-03-17 16:35:43 [    INFO] execute: Extracted 3 data fields from files
-2026-03-17 16:35:43 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpf8ahvsy5/output_exec/summaries/execution_report.md
-2026-03-17 16:35:43 [    INFO] execute: ✅ Execute processing completed successfully
+2026-03-18 10:11:25 [    INFO] execute: Processing execute - searching for rendered implementations
+2026-03-18 10:11:25 [    INFO] execute: Requested frameworks: ['jax']
+2026-03-18 10:11:25 [    INFO] execute: Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp4gd95v7c/output/11_render_output
+2026-03-18 10:11:25 [    INFO] execute: Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp4gd95v7c/output/11_render_output
+2026-03-18 10:11:25 [    INFO] execute: Found python script: actinf_model/jax/actinf_model_jax.py
+2026-03-18 10:11:25 [    INFO] execute: Found 1 executable scripts to run
+2026-03-18 10:11:25 [    INFO] execute: Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp4gd95v7c/output_exec/summaries/execution_report.md
+2026-03-18 10:11:25 [    INFO] execute: ✅ Execute completed: 0 succeeded, 1 skipped (dependency not installed)
 PASSED
 src/tests/test_execute_path_collection.py::TestPathDeduplication::test_normalize_and_deduplicate_paths_empty SKIPPED
 src/tests/test_execute_path_collection.py::TestPathDeduplication::test_normalize_and_deduplicate_paths_single SKIPPED
@@ -107,58 +86,58 @@ src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_agent_creation PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_simple_simulation_execution 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Using PyMDP (inferactively-pymdp) API
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Starting simple PyMDP simulation
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Transposed B from (1, 2, 2) to (2, 2, 1)
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: B matrix normalized (columns sum to 1.0)
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Created matrices: A=(2, 2), B=(2, 2, 1), C=(2,), D=(2,)
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Wrapped arrays in obj_array format (except E)
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Successfully created PyMDP agent
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Simulation timesteps: 20 (from GNN spec)
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 0: true_s=1, obs=1, belief=[0.1 0.9], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 1: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 2: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 3: true_s=0, obs=0, belief=[0.94 0.06], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 4: true_s=1, obs=1, belief=[0.26 0.74], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 5: true_s=1, obs=1, belief=[0.06 0.94], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 6: true_s=0, obs=0, belief=[0.73 0.27], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 7: true_s=0, obs=0, belief=[0.94 0.06], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 8: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 9: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 10: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 11: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 12: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 13: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 14: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 15: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 16: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 17: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 18: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Step 19: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: Saving raw simulation data for analysis step...
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: 💾 Saved raw simulation data to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-121/test_pymdp_simple_simulation_e0/pymdp_output/simulation_results.json
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: 📊 Validation: beliefs_valid=True, sum_to_one=True
-2026-03-17 16:35:43 [    INFO] execute.pymdp.simple_simulation: 📈 Trace data saved: 20 timesteps, ready for analysis step visualization
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Using PyMDP (inferactively-pymdp) API
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Starting simple PyMDP simulation
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Transposed B from (1, 2, 2) to (2, 2, 1)
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: B matrix normalized (columns sum to 1.0)
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Created matrices: A=(2, 2), B=(2, 2, 1), C=(2,), D=(2,)
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Wrapped arrays in obj_array format (except E)
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Successfully created PyMDP agent
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Simulation timesteps: 20 (from GNN spec)
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 0: true_s=1, obs=1, belief=[0.1 0.9], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 1: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 2: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 3: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 4: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 5: true_s=1, obs=0, belief=[0.72 0.28], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 6: true_s=1, obs=1, belief=[0.16 0.84], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 7: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 8: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 9: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 10: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 11: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 12: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 13: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 14: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 15: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 16: true_s=0, obs=1, belief=[0.16 0.84], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 17: true_s=0, obs=0, belief=[0.79 0.21], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 18: true_s=0, obs=1, belief=[0.19 0.81], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Step 19: true_s=0, obs=0, belief=[0.8 0.2], action=0.0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: Saving raw simulation data for analysis step...
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: 💾 Saved raw simulation data to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-18/test_pymdp_simple_simulation_e0/pymdp_output/simulation_results.json
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: 📊 Validation: beliefs_valid=True, sum_to_one=True
+2026-03-18 10:11:25 [    INFO] execute.pymdp.simple_simulation: 📈 Trace data saved: 20 timesteps, ready for analysis step visualization
 PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_package_detection_with_real_installation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_is_correct_pymdp_package_with_real_installation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_validate_pymdp_for_execution_with_real_installation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPErrorHandling::test_package_detection_structure 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPErrorHandling::test_validation_structure 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPModernAPI::test_modern_import_works PASSED
 src/tests/test_execute_pymdp_integration.py::TestPyMDPModernAPI::test_agent_has_required_methods PASSED
@@ -168,109 +147,109 @@ not found: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_file
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_pymdp_renderer_exists SKIPPEDmd)
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_pymdp_simulation_creation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
-2026-03-17 16:35:43 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
+2026-03-18 10:11:25 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
 PASSED
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_pymdp_simulation_run 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
-2026-03-17 16:35:43 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
-2026-03-17 16:35:43 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
-2026-03-17 16:35:43 [   ERROR] execute.pymdp.pymdp_simulation: No agent available - create model first
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
+2026-03-18 10:11:25 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-03-18 10:11:25 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-03-18 10:11:25 [   ERROR] execute.pymdp.pymdp_simulation: No agent available - create model first
 PASSED
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_full_integration SKIPPED (GNN
 file not found: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md)
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_detect_pymdp_installation_structure 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_is_correct_pymdp_package 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_get_pymdp_installation_instructions 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_validate_pymdp_for_execution_structure 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_attempt_pymdp_auto_install 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Attempting to install inferactively-pymdp using UV sync...
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Successfully installed inferactively-pymdp using UV sync
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Attempting to install inferactively-pymdp using UV sync...
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Successfully installed inferactively-pymdp using UV sync
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetectionIntegration::test_detection_consistency 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetectionIntegration::test_validation_uses_detection 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetectionIntegration::test_instructions_are_actionable 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPRealInstallation::test_real_installation_detection 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPRealInstallation::test_real_installation_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_package.py::TestPyMDPRealInstallation::test_wrong_package_detection 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-03-18 10:11:25 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_gnn_parameter_integration 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_matrix_construction 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_serialization 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=1
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.01 seconds
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=3
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.01 seconds
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_simulation_creation_with_gnn_config 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_simulation_creation_with_minimal_config 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_simulation_run 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=1
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=1
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=3
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=3
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_visualization_creation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=3
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=3
-2026-03-17 16:35:43 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=1
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=1, action=1
+2026-03-18 10:11:25 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
 PASSED
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPUtils::test_numpy_conversion PASSED
 src/tests/test_execute_pymdp_utils.py::TestNumpySerialization::test_convert_numpy_for_json PASSED
@@ -310,84 +289,58 @@ src/tests/test_execute_pymdp_visualizer.py::test_comprehensive_visualization PAS
 ======================================================== PASSES ========================================================
 __________________________________ TestExecuteOverall.test_collect_execution_outputs ___________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test:data_extractors.py:164 Found 1 output files to collect for pymdp
-INFO     test:data_extractors.py:215 Copied output.json -> simulation_data/output.json
-INFO     test:data_extractors.py:222 Collected 1 output files: 0 visualizations, 1 data files, 0 traces
+INFO     test:data_extractors.py:178 Found 1 output files to collect for pymdp
+INFO     test:data_extractors.py:229 Copied output.json -> simulation_data/output.json
+INFO     test:data_extractors.py:236 Collected 1 output files: 0 visualizations, 1 data files, 0 traces
 ____________________________________ TestExecuteOverall.test_process_execution_flow ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute::0 Processing execute - searching for rendered implementations
-INFO     execute:processor.py:191 Requested frameworks: ['pymdp']
-INFO     execute:processor.py:213 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprvvhd228/render/11_render_output
-INFO     execute:processor.py:216 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprvvhd228/render/11_render_output
+INFO     execute:processor.py:241 Requested frameworks: ['pymdp']
+INFO     execute:processor.py:263 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpel7xitli/render/11_render_output
+INFO     execute:processor.py:266 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpel7xitli/render/11_render_output
 WARNING  execute::0 ⚠️ No executable scripts found in render output
-INFO     execute:processor.py:751 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmprvvhd228/output/summaries/execution_report.md
+INFO     execute:processor.py:843 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpel7xitli/output/summaries/execution_report.md
 WARNING  execute::0 ⚠️ No executable scripts found to run
 _____________________________ TestExecuteOverall.test_process_execution_with_render_output _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute::0 Processing execute - searching for rendered implementations
-INFO     execute:processor.py:191 Requested frameworks: ['pymdp']
-INFO     execute:processor.py:213 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp519_waas/output/11_render_output
-INFO     execute:processor.py:216 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp519_waas/output/11_render_output
+INFO     execute:processor.py:241 Requested frameworks: ['pymdp']
+INFO     execute:processor.py:263 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv91mp7mc/output/11_render_output
+INFO     execute:processor.py:266 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv91mp7mc/output/11_render_output
 WARNING  execute::0 ⚠️ No executable scripts found in render output
-INFO     execute:processor.py:751 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp519_waas/output/summaries/execution_report.md
+INFO     execute:processor.py:843 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv91mp7mc/output/summaries/execution_report.md
 WARNING  execute::0 ⚠️ No executable scripts found to run
 ________________________________ TestExecuteIntegration.test_execute_uses_render_output ________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute::0 Processing execute - searching for rendered implementations
-INFO     execute:processor.py:191 Requested frameworks: ['pymdp']
-INFO     execute:processor.py:213 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoidkho81/render/11_render_output
-INFO     execute:processor.py:216 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoidkho81/render/11_render_output
+INFO     execute:processor.py:241 Requested frameworks: ['pymdp']
+INFO     execute:processor.py:263 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1fi3o2aw/render/11_render_output
+INFO     execute:processor.py:266 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1fi3o2aw/render/11_render_output
 WARNING  execute::0 ⚠️ No executable scripts found in render output
-INFO     execute:processor.py:751 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoidkho81/output/summaries/execution_report.md
+INFO     execute:processor.py:843 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1fi3o2aw/output/summaries/execution_report.md
 WARNING  execute::0 ⚠️ No executable scripts found to run
 _______________________________ TestExecuteIntegration.test_execution_summary_structure ________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute::0 Processing execute - searching for rendered implementations
-INFO     execute:processor.py:191 Requested frameworks: ['pymdp']
-INFO     execute:processor.py:213 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp6ivbaq7k/render/11_render_output
-INFO     execute:processor.py:216 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp6ivbaq7k/render/11_render_output
+INFO     execute:processor.py:241 Requested frameworks: ['pymdp']
+INFO     execute:processor.py:263 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpgspebxh4/render/11_render_output
+INFO     execute:processor.py:266 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpgspebxh4/render/11_render_output
 WARNING  execute::0 ⚠️ No executable scripts found in render output
-INFO     execute:processor.py:751 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp6ivbaq7k/output/summaries/execution_report.md
+INFO     execute:processor.py:843 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpgspebxh4/output/summaries/execution_report.md
 WARNING  execute::0 ⚠️ No executable scripts found to run
 ___________________________________ TestJAXExecute.test_find_jax_executable_scripts ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test:processor.py:393 Found python script: actinf_model/jax/actinf_model_jax.py
-________________________________________ TestJAXExecute.test_execute_jax_script ________________________________________
--------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test:processor.py:442 Executing jax script: actinf_model_jax
-INFO     test:processor.py:529 ✅ Successfully executed actinf_model_jax
-INFO     test:processor.py:531 Script output: {"success": true, "framework": "jax", "model_name": "actinf_model", "num_timesteps": 10, "actions": [0, 1, 2, 0, 1, 2, 0, 1, 2, 0], "beliefs": [[0.33, 0.33, 0.34], [0.33, 0.33, 0.34], [0.33, 0.33, 0.3...
-INFO     test:processor.py:634 Collecting execution outputs for jax script actinf_model_jax
-INFO     test:data_extractors.py:164 Found 1 output files to collect for jax
-INFO     test:data_extractors.py:215 Copied simulation_results.json -> simulation_data/simulation_results.json
-INFO     test:data_extractors.py:222 Collected 1 output files: 0 visualizations, 1 data files, 0 traces
-DEBUG    test:processor.py:649 Updated results JSON with collected outputs
-INFO     test:processor.py:653 Extracting simulation data from collected files for jax
-INFO     test:data_extractors.py:302 Extracted PyMDP data from simulation_results.json
-INFO     test:processor.py:660 Extracted 3 data fields from files
-DEBUG    test:processor.py:668 Updated results JSON with enhanced simulation data
+INFO     test:processor.py:454 Found python script: actinf_model/jax/actinf_model_jax.py
 ___________________________ TestJAXExecute.test_process_execution_with_jax_framework_filter ____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute::0 Processing execute - searching for rendered implementations
-INFO     execute:processor.py:191 Requested frameworks: ['jax']
-INFO     execute:processor.py:213 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpf8ahvsy5/output/11_render_output
-INFO     execute:processor.py:216 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpf8ahvsy5/output/11_render_output
-INFO     execute:processor.py:393 Found python script: actinf_model/jax/actinf_model_jax.py
-INFO     execute:processor.py:233 Found 1 executable scripts to run
-INFO     execute:processor.py:442 Executing jax script: actinf_model_jax.py
-INFO     execute:processor.py:529 ✅ Successfully executed actinf_model_jax.py
-INFO     execute:processor.py:531 Script output: {"success": true, "framework": "jax", "model_name": "actinf_model", "num_timesteps": 10, "actions": [0, 1, 2, 0, 1, 2, 0, 1, 2, 0], "beliefs": [[0.33, 0.33, 0.34], [0.33, 0.33, 0.34], [0.33, 0.33, 0.3...
-INFO     execute:processor.py:634 Collecting execution outputs for jax script actinf_model_jax.py
-INFO     execute:data_extractors.py:164 Found 1 output files to collect for jax
-INFO     execute:data_extractors.py:215 Copied simulation_results.json -> simulation_data/simulation_results.json
-INFO     execute:data_extractors.py:222 Collected 1 output files: 0 visualizations, 1 data files, 0 traces
-DEBUG    execute:processor.py:649 Updated results JSON with collected outputs
-INFO     execute:processor.py:653 Extracting simulation data from collected files for jax
-INFO     execute:data_extractors.py:302 Extracted PyMDP data from simulation_results.json
-INFO     execute:processor.py:660 Extracted 3 data fields from files
-DEBUG    execute:processor.py:668 Updated results JSON with enhanced simulation data
-INFO     execute:processor.py:751 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpf8ahvsy5/output_exec/summaries/execution_report.md
-INFO     execute::0 ✅ Execute processing completed successfully
+INFO     execute:processor.py:241 Requested frameworks: ['jax']
+INFO     execute:processor.py:263 Found render output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp4gd95v7c/output/11_render_output
+INFO     execute:processor.py:266 Searching for executable scripts in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp4gd95v7c/output/11_render_output
+INFO     execute:processor.py:454 Found python script: actinf_model/jax/actinf_model_jax.py
+INFO     execute:processor.py:283 Found 1 executable scripts to run
+INFO     execute:processor.py:843 Generated execution report: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp4gd95v7c/output_exec/summaries/execution_report.md
+INFO     execute::0 ✅ Execute completed: 0 succeeded, 1 skipped (dependency not installed)
 ____________________________ TestPyMDPRealExecution.test_pymdp_simple_simulation_execution _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:48 Using PyMDP (inferactively-pymdp) API
@@ -400,26 +353,26 @@ INFO     execute.pymdp.simple_simulation:simple_simulation.py:156 Successfully c
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:161 Simulation timesteps: 20 (from GNN spec)
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 0: true_s=1, obs=1, belief=[0.1 0.9], action=0.0
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 1: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 2: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 3: true_s=0, obs=0, belief=[0.94 0.06], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 4: true_s=1, obs=1, belief=[0.26 0.74], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 5: true_s=1, obs=1, belief=[0.06 0.94], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 6: true_s=0, obs=0, belief=[0.73 0.27], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 7: true_s=0, obs=0, belief=[0.94 0.06], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 8: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 9: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 10: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 11: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 12: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 13: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 14: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 15: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 16: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 17: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 18: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 19: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 2: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 3: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 4: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 5: true_s=1, obs=0, belief=[0.72 0.28], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 6: true_s=1, obs=1, belief=[0.16 0.84], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 7: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 8: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 9: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 10: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 11: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 12: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 13: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 14: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 15: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 16: true_s=0, obs=1, belief=[0.16 0.84], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 17: true_s=0, obs=0, belief=[0.79 0.21], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 18: true_s=0, obs=1, belief=[0.19 0.81], action=0.0
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:210 Step 19: true_s=0, obs=0, belief=[0.8 0.2], action=0.0
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:214 Saving raw simulation data for analysis step...
-INFO     execute.pymdp.simple_simulation:simple_simulation.py:264 💾 Saved raw simulation data to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-121/test_pymdp_simple_simulation_e0/pymdp_output/simulation_results.json
+INFO     execute.pymdp.simple_simulation:simple_simulation.py:264 💾 Saved raw simulation data to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-18/test_pymdp_simple_simulation_e0/pymdp_output/simulation_results.json
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:265 📊 Validation: beliefs_valid=True, sum_to_one=True
 INFO     execute.pymdp.simple_simulation:simple_simulation.py:267 📈 Trace data saved: 20 timesteps, ready for analysis step visualization
 ______________________ TestPyMDPRealExecution.test_pymdp_package_detection_with_real_installation ______________________
@@ -497,7 +450,7 @@ ________________________________________ TestPyMDPSimulation.test_serialization 
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:263 Initialized from GNN config: 4 states, 4 actions, 2 observations
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:582 Created PyMDP model: 4S, 4A, 2O
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:729 Starting PyMDP simulation: GNN_POMDP
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 0: state=0, obs=0, action=1
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 0: state=0, obs=0, action=3
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:802 Simulation completed in 0.01 seconds
 _____________________________ TestPyMDPSimulation.test_simulation_creation_with_gnn_config _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -512,16 +465,16 @@ _______________________________________ TestPyMDPSimulation.test_simulation_run 
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:263 Initialized from GNN config: 4 states, 4 actions, 2 observations
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:582 Created PyMDP model: 4S, 4A, 2O
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:729 Starting PyMDP simulation: GNN_POMDP
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 0: state=0, obs=0, action=1
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 5: state=0, obs=0, action=1
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 0: state=0, obs=0, action=3
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 5: state=0, obs=0, action=3
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:802 Simulation completed in 0.02 seconds
 ___________________________________ TestPyMDPSimulation.test_visualization_creation ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:263 Initialized from GNN config: 4 states, 4 actions, 2 observations
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:582 Created PyMDP model: 4S, 4A, 2O
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:729 Starting PyMDP simulation: GNN_POMDP
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 0: state=0, obs=0, action=3
-INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 5: state=0, obs=0, action=3
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 0: state=0, obs=0, action=1
+INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:774 Timestep 5: state=0, obs=1, action=1
 INFO     execute.pymdp.pymdp_simulation:pymdp_simulation.py:802 Simulation completed in 0.02 seconds
 DEBUG    matplotlib.font_manager:font_manager.py:1471 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0.
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/cmb10.ttf', name='cmb10', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
@@ -1001,7 +954,7 @@ DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/System/Library/AssetsV2/com_apple_MobileAsset_Font7/12cc699be28fb04f3e3c4969a0378a87b920b174.asset/AssetData/BMHannaAir-Regular.otf', name='BM Hanna Air', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/System/Library/Fonts/Supplemental/Bodoni 72 Smallcaps Book.ttf', name='Bodoni 72 Smallcaps', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1515 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x10e5fef90>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12853c320>
 DEBUG    matplotlib.font_manager:font_manager.py:1471 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=12.0.
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/cmb10.ttf', name='cmb10', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizFiveSymReg.ttf', name='STIXSizeFiveSym', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
@@ -1960,30 +1913,31 @@ DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(
 DEBUG    matplotlib.font_manager:font_manager.py:1515 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=14.0 to DejaVu Sans ('/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
 ___________________________ TestPyMDPVisualizationModule.test_belief_evolution_visualization ___________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x10feb0f80>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x128449e50>
 ___________________________________________________ test_visualizer ____________________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11c2c4860>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12f579250>
 ______________________________________________ test_pipeline_integration _______________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11c4c2b40>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12f70dcd0>
 ____________________________________ TestPyMDPVisualizer.test_belief_visualization _____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11c3d5e80>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x129e8ff20>
 _________________________________ TestPyMDPVisualizer.test_comprehensive_visualization _________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11973af90>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x1291ea660>
 ______________________________________________ test_belief_visualization _______________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11c741fa0>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12f619c10>
 ___________________________________________ test_comprehensive_visualization ___________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11c752ea0>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x12f692ea0>
 ================================================= slowest 10 durations =================================================
-1.17s call     src/tests/test_execute_pymdp_visualization_module.py::TestPyMDPVisualizationModule::test_performance_metrics_visualization
-1.01s call     src/tests/test_execute_pymdp_visualization_module.py::TestPyMDPVisualizationModule::test_discrete_state_visualization
+1.76s call     src/tests/test_execute_pymdp_visualization_module.py::TestPyMDPVisualizationModule::test_performance_metrics_visualization
+1.30s call     src/tests/test_execute_pymdp_visualization_module.py::TestPyMDPVisualizationModule::test_belief_evolution_visualization
+1.11s call     src/tests/test_execute_pymdp_visualization_module.py::TestPyMDPVisualizationModule::test_discrete_state_visualization
 
-(8 durations < 1s hidden.)
+(7 durations < 1s hidden.)
 =============================================== short test summary info ================================================
 PASSED src/tests/test_execute_overall.py::TestExecuteOverall::test_executor_initialization
 PASSED src/tests/test_execute_overall.py::TestExecuteOverall::test_parse_frameworks_parameter_all
@@ -1996,6 +1950,7 @@ PASSED src/tests/test_execute_overall.py::TestExecuteOverall::test_collect_execu
 PASSED src/tests/test_execute_overall.py::TestExecuteOverall::test_process_execution_flow
 PASSED src/tests/test_execute_overall.py::TestExecuteOverall::test_process_execution_with_render_output
 PASSED src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_success
+PASSED src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_skipped_when_dependency_missing
 PASSED src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_timeout_handling
 PASSED src/tests/test_execute_overall.py::TestExecuteIntegration::test_execute_uses_render_output
 PASSED src/tests/test_execute_overall.py::TestExecuteIntegration::test_execution_summary_structure
@@ -2079,4 +2034,4 @@ SKIPPED [1] src/tests/test_execute_path_collection.py:176: Path collection not a
 SKIPPED [1] src/tests/test_execute_pymdp_integration_module.py:49: GNN file not found: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md
 SKIPPED [1] src/tests/test_execute_pymdp_integration_module.py:68: GNN file not found: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md
 SKIPPED [1] src/tests/test_execute_pymdp_integration_module.py:111: GNN file not found: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md
-============================================ 83 passed, 11 skipped in 9.93s ============================================
+=========================================== 84 passed, 11 skipped in 10.40s ============================================

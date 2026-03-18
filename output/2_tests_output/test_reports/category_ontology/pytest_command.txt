@@ -1,5 +1,5 @@
 Category: ontology
 Success: True
-Duration: 24.29s
-Peak Memory: 31.27 MB
+Duration: 2.01s
+Peak Memory: 36.19 MB
 CPU Usage: 0.0%

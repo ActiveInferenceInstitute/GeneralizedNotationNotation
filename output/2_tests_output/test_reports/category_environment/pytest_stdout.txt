@@ -8,8 +8,9 @@ src/tests/test_environment_dependencies.py::TestCoreDependencies::test_logging_a
 src/tests/test_environment_dependencies.py::TestVisualizationDependencies::test_matplotlib_available PASSED
 src/tests/test_environment_dependencies.py::TestVisualizationDependencies::test_seaborn_available PASSED
 src/tests/test_environment_dependencies.py::TestAudioDependencies::test_audio_backends PASSED
-src/tests/test_environment_dependencies.py::TestAudioDependencies::test_librosa_availability PASSED
-src/tests/test_environment_dependencies.py::TestAudioDependencies::test_soundfile_availability PASSED
+src/tests/test_environment_dependencies.py::TestAudioDependencies::test_librosa_availability SKIPPED (librosa
+not installed)
+src/tests/test_environment_dependencies.py::TestAudioDependencies::test_soundfile_availability SKIPPED
 src/tests/test_environment_dependencies.py::TestMLDependencies::test_scipy_available PASSED
 src/tests/test_environment_dependencies.py::TestMLDependencies::test_pymdp_available PASSED
 src/tests/test_environment_dependencies.py::TestDependencyVersions::test_python_version PASSED
@@ -30,12 +31,12 @@ src/tests/test_environment_integration.py::TestEnvironmentPipelineIntegration::t
 src/tests/test_environment_integration.py::TestEnvironmentPipelineIntegration::test_temp_directory_creation PASSED
 src/tests/test_environment_integration.py::TestEnvironmentLoggingIntegration::test_logging_configuration 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:56 [    INFO] test_env: Info message
-2026-03-17 16:43:56 [ WARNING] test_env: Warning message
+2026-03-18 10:15:26 [    INFO] test_env: Info message
+2026-03-18 10:15:26 [ WARNING] test_env: Warning message
 PASSED
 src/tests/test_environment_integration.py::TestEnvironmentLoggingIntegration::test_log_file_creation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:57 [    INFO] test_log_file: Test log entry
+2026-03-18 10:15:26 [    INFO] test_log_file: Test log entry
 PASSED
 src/tests/test_environment_integration.py::TestEnvironmentResourceIntegration::test_input_directory_access PASSED
 src/tests/test_environment_integration.py::TestEnvironmentResourceIntegration::test_memory_availability PASSED
@@ -46,170 +47,170 @@ src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info PASSED
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:57 [    INFO] setup.uv_management: 🔍 Checking system requirements...
-2026-03-17 16:43:57 [    INFO] setup.uv_management: ✅ Python version check passed: 3.12.11
-2026-03-17 16:43:57 [    INFO] setup.uv_management: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-2026-03-17 16:43:57 [    INFO] setup.uv_management: ✅ Disk space check passed: 15.34GB free
-2026-03-17 16:43:57 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
-2026-03-17 16:43:58 [    INFO] setup.uv_management: 📦 Found 324 installed packages using UV
-2026-03-17 16:43:58 [    INFO] setup.uv_management: 📋 Key installed packages:
-2026-03-17 16:43:58 [    INFO] setup.uv_management:   - pytest: 9.0.2
-2026-03-17 16:43:58 [    INFO] setup.uv_management:   - numpy: 2.3.5
-2026-03-17 16:43:58 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
-2026-03-17 16:43:58 [    INFO] setup.uv_management:   - scipy: 1.17.0
-2026-03-17 16:43:58 [    INFO] setup.uv_management:   - psutil: 7.2.1
-2026-03-17 16:43:58 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 🔍 Checking system requirements...
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Python version check passed: 3.12.11
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Disk space check passed: 34.92GB free
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📦 Found 126 installed packages using UV
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Key installed packages:
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pytest: 9.0.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - numpy: 2.3.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - scipy: 1.17.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - psutil: 7.2.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
 PASSED
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup PASSED
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:44:03 [    INFO] setup.uv_management: 📦 Installing dependencies from pyproject.toml using UV sync
-2026-03-17 16:45:25 [    INFO] setup.uv_management: ✅ Dependencies synchronized using UV sync in 82.6s
-2026-03-17 16:45:26 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
-2026-03-17 16:45:26 [    INFO] setup.uv_management: 📦 Found 106 installed packages using UV
-2026-03-17 16:45:26 [    INFO] setup.uv_management: 📋 Installed packages:
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - alabaster: 1.0.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - anyio: 4.12.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - appnope: 0.1.4
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - asttokens: 3.0.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - attrs: 25.4.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - autograd: 1.8.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - babel: 2.17.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - certifi: 2026.1.4
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - charset-normalizer: 3.4.4
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - click: 8.3.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - comm: 0.2.3
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - contourpy: 1.3.3
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - cycler: 0.12.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - debugpy: 1.8.19
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - decorator: 5.2.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - defusedxml: 0.7.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - docutils: 0.22.4
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - et-xmlfile: 2.0.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - executing: 2.2.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - fastjsonschema: 2.21.2
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - fonttools: 4.61.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - generalized-notation-notation: 1.3.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - h11: 0.16.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - httpcore: 1.0.9
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - httpx: 0.28.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - idna: 3.11
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - imagesize: 1.4.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - importlib-metadata: 8.7.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - inferactively-pymdp: 0.0.7.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - iniconfig: 2.3.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - ipykernel: 7.1.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - ipython: 9.9.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - ipython-pygments-lexers: 1.1.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jedi: 0.19.2
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jinja2: 3.1.6
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jsonschema: 4.26.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jsonschema-specifications: 2025.9.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jupyter-cache: 1.0.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jupyter-client: 8.8.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - jupyter-core: 5.9.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - kiwisolver: 1.4.9
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - markdown: 3.10
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - markdown-it-py: 4.0.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - markupsafe: 3.0.3
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - matplotlib-inline: 0.2.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - mdit-py-plugins: 0.5.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - mdurl: 0.1.2
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - myst-nb: 1.3.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - myst-parser: 5.0.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - nbclient: 0.10.4
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - nbformat: 5.10.4
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - nest-asyncio: 1.6.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - networkx: 3.6.1
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - nose: 1.3.7
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - numpy: 2.3.5
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - openpyxl: 3.1.5
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - packaging: 25.0
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - pandas: 2.3.3
-2026-03-17 16:45:26 [    INFO] setup.uv_management:   - parso: 0.8.5
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pexpect: 4.9.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pillow: 12.1.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - platformdirs: 4.5.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pluggy: 1.6.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - prompt-toolkit: 3.0.52
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - protobuf: 6.33.5
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - psutil: 7.2.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - ptyprocess: 0.7.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pure-eval: 0.2.3
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - py: 1.11.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pygments: 2.19.2
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pyparsing: 3.3.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pytest: 9.0.2
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - python-dateutil: 2.9.0.post0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pytz: 2025.2
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pyyaml: 6.0.3
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pyzmq: 27.1.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - referencing: 0.37.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - requests: 2.32.5
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - roman-numerals: 4.1.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - rpds-py: 0.30.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - scipy: 1.17.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - seaborn: 0.13.2
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - six: 1.17.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - snowballstemmer: 3.0.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinx: 9.1.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinx-rtd-theme: 3.1.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-applehelp: 2.0.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-devhelp: 2.0.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-htmlhelp: 2.1.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-jquery: 4.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-jsmath: 1.0.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-qthelp: 2.0.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sphinxcontrib-serializinghtml: 2.0.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - sqlalchemy: 2.0.45
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - stack-data: 0.6.3
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - tabulate: 0.9.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - toml: 0.10.2
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - tornado: 6.5.5
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - traitlets: 5.14.3
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - typing-extensions: 4.15.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - tzdata: 2025.3
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - urllib3: 2.6.3
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - wcwidth: 0.2.14
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - xlsxwriter: 3.2.9
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - zipp: 3.23.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📦 Installing dependencies from pyproject.toml using UV sync
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Dependencies synchronized using UV sync in 0.2s
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📦 Found 106 installed packages using UV
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Installed packages:
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - alabaster: 1.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - anyio: 4.12.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - appnope: 0.1.4
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - asttokens: 3.0.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - attrs: 25.4.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - autograd: 1.8.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - babel: 2.17.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - certifi: 2026.1.4
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - charset-normalizer: 3.4.4
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - click: 8.3.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - comm: 0.2.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - contourpy: 1.3.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - cycler: 0.12.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - debugpy: 1.8.19
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - decorator: 5.2.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - defusedxml: 0.7.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - docutils: 0.22.4
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - et-xmlfile: 2.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - executing: 2.2.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - fastjsonschema: 2.21.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - fonttools: 4.61.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - generalized-notation-notation: 1.3.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - h11: 0.16.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - httpcore: 1.0.9
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - httpx: 0.28.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - idna: 3.11
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - imagesize: 1.4.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - importlib-metadata: 8.7.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - inferactively-pymdp: 0.0.7.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - iniconfig: 2.3.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - ipykernel: 7.1.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - ipython: 9.9.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - ipython-pygments-lexers: 1.1.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jedi: 0.19.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jinja2: 3.1.6
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jsonschema: 4.26.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jsonschema-specifications: 2025.9.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jupyter-cache: 1.0.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jupyter-client: 8.8.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - jupyter-core: 5.9.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - kiwisolver: 1.4.9
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - markdown: 3.10
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - markdown-it-py: 4.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - markupsafe: 3.0.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - matplotlib-inline: 0.2.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - mdit-py-plugins: 0.5.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - mdurl: 0.1.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - myst-nb: 1.3.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - myst-parser: 5.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - nbclient: 0.10.4
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - nbformat: 5.10.4
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - nest-asyncio: 1.6.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - networkx: 3.6.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - nose: 1.3.7
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - numpy: 2.3.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - openpyxl: 3.1.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - packaging: 25.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pandas: 2.3.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - parso: 0.8.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pexpect: 4.9.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pillow: 12.1.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - platformdirs: 4.5.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pluggy: 1.6.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - prompt-toolkit: 3.0.52
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - protobuf: 6.33.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - psutil: 7.2.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - ptyprocess: 0.7.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pure-eval: 0.2.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - py: 1.11.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pygments: 2.19.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pyparsing: 3.3.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pytest: 9.0.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - python-dateutil: 2.9.0.post0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pytz: 2025.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pyyaml: 6.0.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pyzmq: 27.1.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - referencing: 0.37.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - requests: 2.32.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - roman-numerals: 4.1.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - rpds-py: 0.30.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - scipy: 1.17.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - seaborn: 0.13.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - six: 1.17.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - snowballstemmer: 3.0.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinx: 9.1.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinx-rtd-theme: 3.1.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-applehelp: 2.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-devhelp: 2.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-htmlhelp: 2.1.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-jquery: 4.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-jsmath: 1.0.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-qthelp: 2.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sphinxcontrib-serializinghtml: 2.0.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - sqlalchemy: 2.0.45
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - stack-data: 0.6.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - tabulate: 0.9.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - toml: 0.10.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - tornado: 6.5.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - traitlets: 5.14.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - typing-extensions: 4.15.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - tzdata: 2025.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - urllib3: 2.6.3
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - wcwidth: 0.2.14
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - xlsxwriter: 3.2.9
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - zipp: 3.23.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
 PASSED
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check PASSED
 src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:45:27 [    INFO] setup.uv_management: 🔍 Checking system requirements...
-2026-03-17 16:45:27 [    INFO] setup.uv_management: ✅ Python version check passed: 3.12.11
-2026-03-17 16:45:27 [    INFO] setup.uv_management: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-2026-03-17 16:45:27 [    INFO] setup.uv_management: ✅ Disk space check passed: 10.68GB free
-2026-03-17 16:45:27 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
-2026-03-17 16:45:27 [    INFO] setup.uv_management: 📦 Found 106 installed packages using UV
-2026-03-17 16:45:27 [    INFO] setup.uv_management: 📋 Key installed packages:
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - pytest: 9.0.2
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - numpy: 2.3.5
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - scipy: 1.17.0
-2026-03-17 16:45:27 [    INFO] setup.uv_management:   - psutil: 7.2.1
-2026-03-17 16:45:27 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 🔍 Checking system requirements...
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Python version check passed: 3.12.11
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Disk space check passed: 34.92GB free
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📦 Found 106 installed packages using UV
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Key installed packages:
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - pytest: 9.0.2
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - numpy: 2.3.5
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - scipy: 1.17.0
+2026-03-18 10:15:26 [    INFO] setup.uv_management:   - psutil: 7.2.1
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
 PASSED
 src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration PASSED
 src/tests/test_environment_overall.py::test_environment_module_completeness PASSED
 src/tests/test_environment_overall.py::test_environment_module_performance 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:45:28 [    INFO] setup.uv_management: 🔍 Checking system requirements...
-2026-03-17 16:45:28 [    INFO] setup.uv_management: ✅ Python version check passed: 3.12.11
-2026-03-17 16:45:28 [    INFO] setup.uv_management: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-2026-03-17 16:45:28 [    INFO] setup.uv_management: ✅ Disk space check passed: 10.68GB free
-2026-03-17 16:45:28 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
-2026-03-17 16:45:28 [    INFO] setup.uv_management: 📦 Found 106 installed packages using UV
-2026-03-17 16:45:28 [    INFO] setup.uv_management: 📋 Key installed packages:
-2026-03-17 16:45:28 [    INFO] setup.uv_management:   - pytest: 9.0.2
-2026-03-17 16:45:28 [    INFO] setup.uv_management:   - numpy: 2.3.5
-2026-03-17 16:45:28 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
-2026-03-17 16:45:28 [    INFO] setup.uv_management:   - scipy: 1.17.0
-2026-03-17 16:45:28 [    INFO] setup.uv_management:   - psutil: 7.2.1
-2026-03-17 16:45:28 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 🔍 Checking system requirements...
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Python version check passed: 3.12.11
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
+2026-03-18 10:15:26 [    INFO] setup.uv_management: ✅ Disk space check passed: 34.92GB free
+2026-03-18 10:15:26 [    INFO] setup.uv_management: 📋 Getting list of installed packages using UV...
+2026-03-18 10:15:27 [    INFO] setup.uv_management: 📦 Found 106 installed packages using UV
+2026-03-18 10:15:27 [    INFO] setup.uv_management: 📋 Key installed packages:
+2026-03-18 10:15:27 [    INFO] setup.uv_management:   - pytest: 9.0.2
+2026-03-18 10:15:27 [    INFO] setup.uv_management:   - numpy: 2.3.5
+2026-03-18 10:15:27 [    INFO] setup.uv_management:   - matplotlib: 3.10.8
+2026-03-18 10:15:27 [    INFO] setup.uv_management:   - scipy: 1.17.0
+2026-03-18 10:15:27 [    INFO] setup.uv_management:   - psutil: 7.2.1
+2026-03-18 10:15:27 [    INFO] setup.uv_management: 📄 Full package list saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/installed_packages_uv.json
 PASSED
 src/tests/test_environment_python.py::TestPythonVersion::test_python_version_minimum PASSED
 src/tests/test_environment_python.py::TestPythonVersion::test_python_version_compatible PASSED
@@ -751,9 +752,9 @@ INFO     setup.uv_management:uv_management.py:96 ✅ Python version check passed
 DEBUG    setup.uv_management:uv_management.py:100 Checking UV availability...
 DEBUG    setup.uv_management:uv_management.py:44 Running command: 'uv ...' in /Users/4d/Documents/GitHub/generalizednotationnotation
 INFO     setup.uv_management:uv_management.py:102 ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-INFO     setup.uv_management:uv_management.py:117 ✅ Disk space check passed: 15.34GB free
+INFO     setup.uv_management:uv_management.py:117 ✅ Disk space check passed: 34.92GB free
 INFO     setup.uv_management:uv_management.py:312 📋 Getting list of installed packages using UV...
-INFO     setup.uv_management:uv_management.py:337 📦 Found 324 installed packages using UV
+INFO     setup.uv_management:uv_management.py:337 📦 Found 126 installed packages using UV
 INFO     setup.uv_management:uv_management.py:345 📋 Key installed packages:
 INFO     setup.uv_management:uv_management.py:348   - pytest: 9.0.2
 INFO     setup.uv_management:uv_management.py:348   - numpy: 2.3.5
@@ -765,7 +766,7 @@ ______________________________ TestEnvironmentFunctionality.test_dependency_inst
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     setup.uv_management:uv_management.py:238 📦 Installing dependencies from pyproject.toml using UV sync
 DEBUG    setup.uv_management:uv_management.py:261 Running: uv sync --verbose
-INFO     setup.uv_management:uv_management.py:282 ✅ Dependencies synchronized using UV sync in 82.6s
+INFO     setup.uv_management:uv_management.py:282 ✅ Dependencies synchronized using UV sync in 0.2s
 DEBUG    setup.uv_management:uv_management.py:285 Verifying environment Python executable
 DEBUG    setup.uv_management:uv_management.py:289 Python in venv: Python 3.12.11
 INFO     setup.uv_management:uv_management.py:312 📋 Getting list of installed packages using UV...
@@ -885,7 +886,7 @@ INFO     setup.uv_management:uv_management.py:96 ✅ Python version check passed
 DEBUG    setup.uv_management:uv_management.py:100 Checking UV availability...
 DEBUG    setup.uv_management:uv_management.py:44 Running command: 'uv ...' in /Users/4d/Documents/GitHub/generalizednotationnotation
 INFO     setup.uv_management:uv_management.py:102 ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-INFO     setup.uv_management:uv_management.py:117 ✅ Disk space check passed: 10.68GB free
+INFO     setup.uv_management:uv_management.py:117 ✅ Disk space check passed: 34.92GB free
 INFO     setup.uv_management:uv_management.py:312 📋 Getting list of installed packages using UV...
 INFO     setup.uv_management:uv_management.py:337 📦 Found 106 installed packages using UV
 INFO     setup.uv_management:uv_management.py:345 📋 Key installed packages:
@@ -902,7 +903,7 @@ INFO     setup.uv_management:uv_management.py:96 ✅ Python version check passed
 DEBUG    setup.uv_management:uv_management.py:100 Checking UV availability...
 DEBUG    setup.uv_management:uv_management.py:44 Running command: 'uv ...' in /Users/4d/Documents/GitHub/generalizednotationnotation
 INFO     setup.uv_management:uv_management.py:102 ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-INFO     setup.uv_management:uv_management.py:117 ✅ Disk space check passed: 10.68GB free
+INFO     setup.uv_management:uv_management.py:117 ✅ Disk space check passed: 34.92GB free
 INFO     setup.uv_management:uv_management.py:312 📋 Getting list of installed packages using UV...
 INFO     setup.uv_management:uv_management.py:337 📦 Found 106 installed packages using UV
 INFO     setup.uv_management:uv_management.py:345 📋 Key installed packages:
@@ -919,12 +920,8 @@ ________________________________________ TestPythonModules.test_logging_module _
 -------------------------------------------------- Captured log call ---------------------------------------------------
 DEBUG    test:test_environment_python.py:180 test
 ================================================= slowest 10 durations =================================================
-84.04s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
-5.75s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
-2.44s call     src/tests/test_environment_dependencies.py::TestAudioDependencies::test_audio_backends
-1.71s call     src/tests/test_environment_dependencies.py::TestDependencyDiscovery::test_list_installed_packages
 
-(6 durations < 1s hidden.)
+(10 durations < 1s hidden.)
 =============================================== short test summary info ================================================
 PASSED src/tests/test_environment_dependencies.py::TestCoreDependencies::test_numpy_available
 PASSED src/tests/test_environment_dependencies.py::TestCoreDependencies::test_pathlib_available
@@ -933,8 +930,6 @@ PASSED src/tests/test_environment_dependencies.py::TestCoreDependencies::test_lo
 PASSED src/tests/test_environment_dependencies.py::TestVisualizationDependencies::test_matplotlib_available
 PASSED src/tests/test_environment_dependencies.py::TestVisualizationDependencies::test_seaborn_available
 PASSED src/tests/test_environment_dependencies.py::TestAudioDependencies::test_audio_backends
-PASSED src/tests/test_environment_dependencies.py::TestAudioDependencies::test_librosa_availability
-PASSED src/tests/test_environment_dependencies.py::TestAudioDependencies::test_soundfile_availability
 PASSED src/tests/test_environment_dependencies.py::TestMLDependencies::test_scipy_available
 PASSED src/tests/test_environment_dependencies.py::TestMLDependencies::test_pymdp_available
 PASSED src/tests/test_environment_dependencies.py::TestDependencyVersions::test_python_version
@@ -1013,4 +1008,6 @@ PASSED src/tests/test_environment_system.py::TestSystemLocale::test_utf8_encodin
 PASSED src/tests/test_environment_system.py::TestSystemLocale::test_filesystem_encoding
 PASSED src/tests/test_environment_system.py::TestSystemNetwork::test_socket_module_available
 PASSED src/tests/test_environment_system.py::TestSystemNetwork::test_localhost_resolvable
-============================================ 87 passed in 100.63s (0:01:40) ============================================
+SKIPPED [1] src/tests/test_environment_dependencies.py:103: librosa not installed
+SKIPPED [1] src/tests/test_environment_dependencies.py:112: soundfile not installed
+============================================ 85 passed, 2 skipped in 1.08s =============================================

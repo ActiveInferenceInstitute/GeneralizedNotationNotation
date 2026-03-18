@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy)
+**Purpose**: Execute rendered simulation scripts across multiple frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro).
 
 **Pipeline Step**: Step 12: Execution (12_execute.py)
 
@@ -27,6 +27,7 @@
 
 ### Key Capabilities
 - Multi-framework execution support
+- **Skip vs fail**: JAX, NumPyro, PyTorch, and DisCoPy are optional; when their dependency is not installed, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Install with `uv sync --extra execution-frameworks` to run all frameworks.
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)

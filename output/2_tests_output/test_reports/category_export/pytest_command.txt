@@ -1,5 +1,5 @@
 Category: export
 Success: True
 Duration: 2.01s
-Peak Memory: 84.98 MB
+Peak Memory: 82.81 MB
 CPU Usage: 0.0%

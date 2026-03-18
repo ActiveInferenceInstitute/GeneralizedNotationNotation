@@ -1,76 +1,76 @@
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'hidden_states' with dimensions [10], type=None
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: hidden_states with dimensions [10]
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'observations' with dimensions [5], type=None
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: observations with dimensions [5]
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['hidden_states'] -> ['observations']
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['observations'] -> ['hidden_states']
-2026-03-17 16:46:54,843 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Parameters' stored as extension
-2026-03-17 16:46:54,843 - gnn.parsers.system - ERROR - Parsing failed for format GNNFormat.MARKDOWN: 'GNNParserValidationResult' object has no attribute 'is_valid'
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'hidden_states' with dimensions [10], type=None
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: hidden_states with dimensions [10]
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'observations' with dimensions [5], type=None
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: observations with dimensions [5]
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['hidden_states'] -> ['observations']
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['observations'] -> ['hidden_states']
-2026-03-17 16:46:54,845 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Parameters' stored as extension
-2026-03-17 16:46:54,847 - advanced_visualization.d2_visualizer - ERROR - Failed to parse GNN file: cannot import name 'parse_gnn_file' from 'gnn.parser' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/gnn/parser.py)
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - ================================================================================
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - ADVANCED VISUALIZATION PROCESSING
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - ================================================================================
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - plotly not available - interactive visualizations will be limited
-2026-03-17 16:46:54,848 - test_adv_viz - DEBUG - bokeh not available - will use plotly recovery
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,848 - test_adv_viz - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/gnn_processing_results.json
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output
-2026-03-17 16:46:54,848 - test_adv_viz - WARNING - No GNN models found for advanced visualization
-2026-03-17 16:46:54,848 - test_adv_viz - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/adv_viz_output/advanced_viz_summary.json
-2026-03-17 16:46:54,849 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,849 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
-2026-03-17 16:46:54,849 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,849 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
-2026-03-17 16:46:54,849 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
-2026-03-17 16:46:54,849 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,849 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,849 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,849 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
-2026-03-17 16:46:54,849 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,849 - test_viz_types - WARNING - No GNN models found for advanced visualization
-2026-03-17 16:46:54,849 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
-2026-03-17 16:46:54,849 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,849 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
-2026-03-17 16:46:54,849 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,849 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
-2026-03-17 16:46:54,850 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,850 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,850 - test_viz_types - WARNING - No GNN models found for advanced visualization
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
-2026-03-17 16:46:54,850 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,850 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
-2026-03-17 16:46:54,850 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,850 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
-2026-03-17 16:46:54,850 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,850 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
-2026-03-17 16:46:54,850 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,850 - test_viz_types - WARNING - No GNN models found for advanced visualization
-2026-03-17 16:46:54,851 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
-2026-03-17 16:46:54,851 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,851 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
-2026-03-17 16:46:54,851 - test_viz_types - INFO - ================================================================================
-2026-03-17 16:46:54,851 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
-2026-03-17 16:46:54,851 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
-2026-03-17 16:46:54,851 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,851 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,851 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
-2026-03-17 16:46:54,851 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
-2026-03-17 16:46:54,851 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
-2026-03-17 16:46:54,851 - test_viz_types - WARNING - No GNN models found for advanced visualization
-2026-03-17 16:46:54,851 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'hidden_states' with dimensions [10], type=None
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: hidden_states with dimensions [10]
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'observations' with dimensions [5], type=None
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: observations with dimensions [5]
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['hidden_states'] -> ['observations']
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['observations'] -> ['hidden_states']
+2026-03-18 10:15:45,975 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Parameters' stored as extension
+2026-03-18 10:15:45,975 - gnn.parsers.system - ERROR - Parsing failed for format GNNFormat.MARKDOWN: 'GNNParserValidationResult' object has no attribute 'is_valid'
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'hidden_states' with dimensions [10], type=None
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: hidden_states with dimensions [10]
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'observations' with dimensions [5], type=None
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: observations with dimensions [5]
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['hidden_states'] -> ['observations']
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['observations'] -> ['hidden_states']
+2026-03-18 10:15:45,976 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Parameters' stored as extension
+2026-03-18 10:15:45,978 - advanced_visualization.d2_visualizer - ERROR - Failed to parse GNN file: cannot import name 'parse_gnn_file' from 'gnn.parser' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/gnn/parser.py)
+2026-03-18 10:15:45,978 - test_adv_viz - INFO - ================================================================================
+2026-03-18 10:15:45,978 - test_adv_viz - INFO - ADVANCED VISUALIZATION PROCESSING
+2026-03-18 10:15:45,978 - test_adv_viz - INFO - ================================================================================
+2026-03-18 10:15:45,979 - test_adv_viz - INFO - plotly not available - interactive visualizations will be limited
+2026-03-18 10:15:45,979 - test_adv_viz - DEBUG - bokeh not available - will use plotly recovery
+2026-03-18 10:15:45,979 - test_adv_viz - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpesp3obtr/3_gnn_output
+2026-03-18 10:15:45,979 - test_adv_viz - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpesp3obtr/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,979 - test_adv_viz - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpesp3obtr/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,979 - test_adv_viz - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpesp3obtr/3_gnn_output/gnn_processing_results.json
+2026-03-18 10:15:45,979 - test_adv_viz - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpesp3obtr/3_gnn_output
+2026-03-18 10:15:45,979 - test_adv_viz - WARNING - No GNN models found for advanced visualization
+2026-03-18 10:15:45,979 - test_adv_viz - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpesp3obtr/adv_viz_output/advanced_viz_summary.json
+2026-03-18 10:15:45,980 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,980 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
+2026-03-18 10:15:45,980 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,980 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
+2026-03-18 10:15:45,980 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,980 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,980 - test_viz_types - WARNING - No GNN models found for advanced visualization
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/types_output/advanced_viz_summary.json
+2026-03-18 10:15:45,980 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,980 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
+2026-03-18 10:15:45,980 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,980 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
+2026-03-18 10:15:45,980 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,980 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,981 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,981 - test_viz_types - WARNING - No GNN models found for advanced visualization
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/types_output/advanced_viz_summary.json
+2026-03-18 10:15:45,981 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,981 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
+2026-03-18 10:15:45,981 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,981 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
+2026-03-18 10:15:45,981 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,981 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,981 - test_viz_types - WARNING - No GNN models found for advanced visualization
+2026-03-18 10:15:45,981 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/types_output/advanced_viz_summary.json
+2026-03-18 10:15:45,981 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,981 - test_viz_types - INFO - ADVANCED VISUALIZATION PROCESSING
+2026-03-18 10:15:45,981 - test_viz_types - INFO - ================================================================================
+2026-03-18 10:15:45,981 - test_viz_types - INFO - plotly not available - interactive visualizations will be limited
+2026-03-18 10:15:45,982 - test_viz_types - DEBUG - bokeh not available - will use plotly recovery
+2026-03-18 10:15:45,982 - test_viz_types - INFO - Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,982 - test_viz_types - INFO - Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,982 - test_viz_types - INFO - Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-18 10:15:45,982 - test_viz_types - WARNING - GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output/gnn_processing_results.json
+2026-03-18 10:15:45,982 - test_viz_types - INFO - Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/3_gnn_output
+2026-03-18 10:15:45,982 - test_viz_types - WARNING - No GNN models found for advanced visualization
+2026-03-18 10:15:45,982 - test_viz_types - INFO - Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpln8jvbky/types_output/advanced_viz_summary.json

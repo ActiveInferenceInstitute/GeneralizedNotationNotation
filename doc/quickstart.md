@@ -31,8 +31,8 @@ curl -s https://demo.gnn-ai.org/quick-demo | bash
 # One-command demo (no installation required)
 docker run --rm -it gnn-ai/quickdemo:latest
 
-# Or with existing Python:
-curl -s https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/scripts/quick_demo.py | python3
+# Or run locally from a clone:
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 ### **📊 What the Demo Shows**

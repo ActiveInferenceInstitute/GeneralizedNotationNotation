@@ -69,40 +69,44 @@ success = process_ontology(
 )
 ```
 
-#### `extract_ontology_terms(gnn_model: Dict[str, Any]) -> List[str]`
-**Description**: Extract ontology terms from parsed GNN model.
+#### `parse_gnn_ontology_section(content: str) -> Dict[str, Any]`
+**Description**: Extract the ontology annotation section (e.g. `## ActInfOntologyAnnotation`) from GNN Markdown content.
 
 **Parameters**:
-- `gnn_model` (Dict[str, Any]): Parsed GNN model dictionary
+- `content` (str): Raw GNN Markdown content
 
-**Returns**: `List[str]` - List of extracted ontology terms
+**Returns**: `Dict[str, Any]` - Parsed ontology content (annotations + any extracted fields)
 
-#### `validate_ontology_compliance(terms: List[str], ontology: Dict[str, Any], strict: bool = False) -> Dict[str, Any]`
-**Description**: Validate extracted terms against Active Inference ontology.
+#### `load_defined_ontology_terms() -> Dict[str, Any]`
+**Description**: Load the Active Inference ontology term dictionary used for validation (default: `src/ontology/act_inf_ontology_terms.json`).
 
-**Parameters**:
-- `terms` (List[str]): List of terms to validate
-- `ontology` (Dict[str, Any]): Ontology dictionary
-- `strict` (bool): Require all terms to be in ontology (default: False)
+**Returns**: `Dict[str, Any]` - Term definitions (format depends on the JSON file)
 
-**Returns**: `Dict[str, Any]` - Validation results with:
-- `valid_terms` (List[str]): Valid terms found in ontology
-- `invalid_terms` (List[str]): Terms not found in ontology
-- `compliance_score` (float): Compliance score (0.0-1.0)
-- `suggestions` (List[str]): Suggestions for invalid terms
-
-#### `generate_ontology_mapping(gnn_model: Dict[str, Any], ontology: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Generate term mapping between GNN model and ontology concepts.
+#### `validate_annotations(annotations: List[str], ontology_terms: Dict[str, Any] | None = None) -> Dict[str, Any]`
+**Description**: Validate ontology annotations (e.g. `A=LikelihoodMatrix`) against the known ontology term set.
 
 **Parameters**:
-- `gnn_model` (Dict[str, Any]): Parsed GNN model dictionary
-- `ontology` (Dict[str, Any]): Ontology dictionary
+- `annotations` (List[str]): Annotation strings
+- `ontology_terms` (Dict[str, Any] | None): Optional explicit ontology term set (default: module’s loaded terms)
 
-**Returns**: `Dict[str, Any]` - Mapping results with:
-- `mapped_terms` (Dict[str, str]): GNN term to ontology concept mapping
-- `relationships` (List[Dict]): Identified term relationships
-- `semantic_clusters` (List[List[str]]): Terms grouped by semantic similarity
-- `coverage` (float): Ontology coverage score (0.0-1.0)
+**Returns**: `Dict[str, Any]` - Validation details (valid/invalid annotations, suggestions when available)
+
+#### `process_gnn_ontology(gnn_file: str) -> Dict[str, Any]`
+**Description**: Process ontology annotations for a single GNN file path (reads file, parses ontology section, validates annotations).
+
+#### `generate_ontology_report_for_file(gnn_file: Path, output_dir: Path) -> Dict[str, Any]`
+**Description**: Generate and write a per-file ontology report JSON for a single GNN file.
+
+#### `validate_ontology_terms(terms: List[str] | str = None) -> bool`
+**Description**: Convenience validator for terms/annotations (returns boolean validity; used by integrations/tests).
+
+### Public Classes
+
+#### `OntologyProcessor`
+**Description**: Convenience wrapper exposing `process_ontology()` and `validate_terms()` around the functional API.
+
+#### `OntologyValidator`
+**Description**: Validator exposing `validate_ontology()` and `check_consistency()` for quick boolean checks.
 
 ---
 
@@ -153,22 +157,21 @@ success = process_ontology(
 
 ### Basic Usage
 ```python
-from ontology import process_ontology_standardized
+from ontology import process_ontology
 
-success = process_ontology_standardized(
+success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
-    logger=logger,
     ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json")
 )
 ```
 
-### Term Extraction
+### Single-file processing
 ```python
-from ontology.processor import extract_ontology_terms
+from ontology import process_gnn_ontology
 
-terms = extract_ontology_terms(parsed_gnn_model)
-print(f"Extracted terms: {terms}")
+result = process_gnn_ontology("input/gnn_files/discrete/simple_mdp.md")
+print(result["success"], result.get("validation_result", {}))
 ```
 
 ---
@@ -176,16 +179,16 @@ print(f"Extracted terms: {terms}")
 ## Output Specification
 
 ### Output Products
-- `ontology_validation_results.json` - Validation results
-- `ontology_term_mapping.json` - Term mappings
-- `ontology_compliance_report.json` - Compliance summary
+- `ontology_results.json` - Aggregate summary across processed files
+- `*_ontology_report.json` - Per-model ontology validation reports
 
 ### Output Directory Structure
 ```
 output/10_ontology_output/
-├── ontology_validation_results.json
-├── ontology_term_mapping.json
-└── ontology_compliance_report.json
+├── ontology_results.json
+├── actinf_pomdp_agent_ontology_report.json
+├── deep_planning_horizon_ontology_report.json
+└── ... (one per processed model)
 ```
 
 ---

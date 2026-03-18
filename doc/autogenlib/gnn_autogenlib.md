@@ -216,7 +216,7 @@ Let's imagine a GNN user wants a quick way to list all unique state names from a
 **Conceptual GNN processing script:**
 
 ```python
-# File: src/scripts/extract_gnn_states_example.py
+# File: src/examples/extract_gnn_states_example.py
 from autogenlib import init, set_caching
 from autogenlib.gnn_parsers import extract_unique_state_names # This will be auto-generated
 

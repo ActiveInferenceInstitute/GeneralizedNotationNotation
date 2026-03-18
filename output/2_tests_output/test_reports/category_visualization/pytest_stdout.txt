@@ -16,7 +16,7 @@ src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_pomdp_di
 src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_no_cli PASSED
 src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_with_cli 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:47 [    INFO] advanced_visualization.d2_visualizer: Generated svg: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoethuc8a/test_diagram.svg
+2026-03-18 10:07:19 [    INFO] advanced_visualization.d2_visualizer: Generated svg: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpaze1x6sz/test_diagram.svg
 PASSED
 src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_write_d2_file PASSED
 src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_get_d2_arrow PASSED
@@ -25,15 +25,15 @@ src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_is_pomdp_model PASSED
 src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_sanitize_name PASSED
 src/tests/test_d2_visualizer.py::TestD2EndToEndProcessing::test_generate_all_diagrams_for_model 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:48 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:11:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:15:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:19:3: unexpected map termination character } in file map
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:31:1: unexpected map termination character } in file map
+2026-03-18 10:07:19 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:11:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:15:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:19:3: unexpected map termination character } in file map
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:31:1: unexpected map termination character } in file map
 
-2026-03-17 16:27:48 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:11:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:16:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:21:3: unexpected map termination character } in file map
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:46:1: unexpected map termination character } in file map
+2026-03-18 10:07:19 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:11:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:16:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:21:3: unexpected map termination character } in file map
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:46:1: unexpected map termination character } in file map
 
 PASSED
 src/tests/test_d2_visualizer.py::TestD2ProcessorIntegration::test_init_exports_d2_components PASSED
@@ -106,54 +106,54 @@ src/tests/test_oxdraw_integration.py::TestRoundTripConversion::test_round_trip_p
 src/tests/test_oxdraw_integration.py::TestRoundTripConversion::test_round_trip_preserves_ontology PASSED
 src/tests/test_oxdraw_integration.py::TestProcessOxdraw::test_process_oxdraw_headless 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzxptf2qm
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzxptf2qm/output
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 1 GNN file(s)
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: 📝 Phase 1: Converting GNN files to Mermaid format...
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration:   [1/1] Processing: test_model.md
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration:   ✅ Converted: test_model.md → test_model.mmd
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: 📊 Processing results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzxptf2qm/output/oxdraw_processing_results.json
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: ✨ Summary:
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration:    GNN → Mermaid: 1/1 successful
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxwa_cncd
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxwa_cncd/output
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 1 GNN file(s)
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: 📝 Phase 1: Converting GNN files to Mermaid format...
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration:   [1/1] Processing: test_model.md
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration:   ✅ Converted: test_model.md → test_model.mmd
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: 📊 Processing results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxwa_cncd/output/oxdraw_processing_results.json
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: ✨ Summary:
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration:    GNN → Mermaid: 1/1 successful
 PASSED
 src/tests/test_oxdraw_integration.py::TestProcessOxdraw::test_process_oxdraw_no_files 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmphc9ti10k/empty
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmphc9ti10k/output
-2026-03-17 16:27:48 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 0 GNN file(s)
-2026-03-17 16:27:48 [ WARNING] src.tests.test_oxdraw_integration: No GNN files found to process
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmppyxc1nxk/empty
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmppyxc1nxk/output
+2026-03-18 10:07:19 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 0 GNN file(s)
+2026-03-18 10:07:19 [ WARNING] src.tests.test_oxdraw_integration: No GNN files found to process
 PASSED
 src/tests/test_oxdraw_integration.py::TestMetadataGeneration::test_generate_mermaid_metadata PASSED
 src/tests/test_visualization_comprehensive.py::TestMatplotlibBackendConfiguration::test_backend_configuration_with_display SKIPPED
 src/tests/test_visualization_comprehensive.py::TestMatplotlibBackendConfiguration::test_backend_configuration_headless SKIPPED
 src/tests/test_visualization_comprehensive.py::TestVisualizationProcessing::test_visualization_main_success 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:48 [    INFO] visualization: Processing visualizations
-2026-03-17 16:27:48 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
-2026-03-17 16:27:49 [    INFO] visualization: ✅ Generated 6 visualizations
+2026-03-18 10:07:19 [    INFO] visualization: Processing visualizations
+2026-03-18 10:07:19 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
+2026-03-18 10:07:20 [    INFO] visualization: ✅ Generated 6 visualizations
 PASSED
 src/tests/test_visualization_comprehensive.py::TestVisualizationProcessing::test_visualization_with_missing_gnn_data 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:49 [    INFO] visualization: Processing visualizations
-2026-03-17 16:27:49 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
-2026-03-17 16:27:50 [    INFO] visualization: ✅ Generated 6 visualizations
+2026-03-18 10:07:20 [    INFO] visualization: Processing visualizations
+2026-03-18 10:07:20 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
+2026-03-18 10:07:20 [    INFO] visualization: ✅ Generated 6 visualizations
 PASSED
 src/tests/test_visualization_comprehensive.py::TestVisualizationProcessing::test_matrix_visualizer_with_real_parameters PASSED
 src/tests/test_visualization_comprehensive.py::TestVisualizationProcessing::test_visualization_progress_tracking 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:50 [    INFO] visualization: Processing visualizations
-2026-03-17 16:27:50 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
-2026-03-17 16:27:50 [    INFO] visualization: ✅ Generated 6 visualizations
+2026-03-18 10:07:20 [    INFO] visualization: Processing visualizations
+2026-03-18 10:07:20 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
+2026-03-18 10:07:21 [    INFO] visualization: ✅ Generated 6 visualizations
 PASSED
 src/tests/test_visualization_comprehensive.py::TestVisualizationProcessing::test_visualization_error_recovery 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:50 [    INFO] visualization: Processing visualizations
-2026-03-17 16:27:51 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
-2026-03-17 16:27:51 [    INFO] visualization: ✅ Generated 6 visualizations
+2026-03-18 10:07:21 [    INFO] visualization: Processing visualizations
+2026-03-18 10:07:21 [ WARNING] visualization.processor: No matrix data found for test_model - checked parameters, variables, and matrices sections
+2026-03-18 10:07:22 [    INFO] visualization: ✅ Generated 6 visualizations
 PASSED
 src/tests/test_visualization_comprehensive.py::TestVisualizationComponents::test_network_visualization_generation PASSED
 src/tests/test_visualization_comprehensive.py::TestVisualizationComponents::test_combined_analysis_generation PASSED
@@ -176,11 +176,11 @@ src/tests/test_visualization_matrices.py::TestParsedGNNExtraction::test_extract_
 src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_extract_ontology_mappings PASSED
 src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_create_ontology_table 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:54 [    INFO] visualization.ontology_visualizer: Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0a3gurni/viz_output/ontology_annotations.png
+2026-03-18 10:07:23 [    INFO] visualization.ontology_visualizer: Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpudw999hz/viz_output/ontology_annotations.png
 PASSED
 src/tests/test_visualization_ontology.py::TestOntologyVisualizer::test_visualize_directory 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:27:54 [    INFO] visualization.ontology_visualizer: Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmps85hjp2_/viz_output/actinf_pomdp_agent/ontology_annotations.png
+2026-03-18 10:07:23 [    INFO] visualization.ontology_visualizer: Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpd0fxzfw7/viz_output/actinf_pomdp_agent/ontology_annotations.png
 PASSED
 src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_visualization_module_imports PASSED
 src/tests/test_visualization_overall.py::TestVisualizationModuleComprehensive::test_matrix_visualizer_instantiation PASSED
@@ -199,37 +199,37 @@ src/tests/test_visualization_overall.py::test_visualization_module_performance P
 ======================================================== PASSES ========================================================
 ______________________________ TestD2DiagramCompilation.test_compile_d2_diagram_with_cli _______________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     advanced_visualization.d2_visualizer:d2_visualizer.py:645 Generated svg: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpoethuc8a/test_diagram.svg
+INFO     advanced_visualization.d2_visualizer:d2_visualizer.py:645 Generated svg: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpaze1x6sz/test_diagram.svg
 ____________________________ TestD2EndToEndProcessing.test_generate_all_diagrams_for_model _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-WARNING  advanced_visualization.d2_visualizer:d2_visualizer.py:649 Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:11:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:15:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:19:3: unexpected map termination character } in file map
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_structure.d2:31:1: unexpected map termination character } in file map
+WARNING  advanced_visualization.d2_visualizer:d2_visualizer.py:649 Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:11:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:15:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:19:3: unexpected map termination character } in file map
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_structure.d2:31:1: unexpected map termination character } in file map
 
-WARNING  advanced_visualization.d2_visualizer:d2_visualizer.py:649 Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:11:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:16:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:21:3: unexpected map termination character } in file map
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpkrtpkkgs/integration_test_model_pomdp.d2:46:1: unexpected map termination character } in file map
+WARNING  advanced_visualization.d2_visualizer:d2_visualizer.py:649 Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:11:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:16:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:21:3: unexpected map termination character } in file map
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxrtnuwem/integration_test_model_pomdp.d2:46:1: unexpected map termination character } in file map
 ____________________________________ TestProcessOxdraw.test_process_oxdraw_headless ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     src.tests.test_oxdraw_integration:processor.py:53 🎨 oxdraw Integration - Visual GNN Model Interface
 INFO     src.tests.test_oxdraw_integration:processor.py:54 Mode: headless
-INFO     src.tests.test_oxdraw_integration:processor.py:55 Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzxptf2qm
-INFO     src.tests.test_oxdraw_integration:processor.py:56 Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzxptf2qm/output
+INFO     src.tests.test_oxdraw_integration:processor.py:55 Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxwa_cncd
+INFO     src.tests.test_oxdraw_integration:processor.py:56 Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxwa_cncd/output
 INFO     src.tests.test_oxdraw_integration:processor.py:69 📁 Found 1 GNN file(s)
 INFO     src.tests.test_oxdraw_integration:processor.py:86 📝 Phase 1: Converting GNN files to Mermaid format...
 INFO     src.tests.test_oxdraw_integration:processor.py:89   [1/1] Processing: test_model.md
 INFO     src.tests.test_oxdraw_integration:processor.py:102   ✅ Converted: test_model.md → test_model.mmd
-INFO     src.tests.test_oxdraw_integration:processor.py:200 📊 Processing results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzxptf2qm/output/oxdraw_processing_results.json
+INFO     src.tests.test_oxdraw_integration:processor.py:200 📊 Processing results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxwa_cncd/output/oxdraw_processing_results.json
 INFO     src.tests.test_oxdraw_integration:processor.py:206 ✨ Summary:
 INFO     src.tests.test_oxdraw_integration:processor.py:207    GNN → Mermaid: 1/1 successful
 ____________________________________ TestProcessOxdraw.test_process_oxdraw_no_files ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     src.tests.test_oxdraw_integration:processor.py:53 🎨 oxdraw Integration - Visual GNN Model Interface
 INFO     src.tests.test_oxdraw_integration:processor.py:54 Mode: headless
-INFO     src.tests.test_oxdraw_integration:processor.py:55 Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmphc9ti10k/empty
-INFO     src.tests.test_oxdraw_integration:processor.py:56 Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmphc9ti10k/output
+INFO     src.tests.test_oxdraw_integration:processor.py:55 Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmppyxc1nxk/empty
+INFO     src.tests.test_oxdraw_integration:processor.py:56 Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmppyxc1nxk/output
 INFO     src.tests.test_oxdraw_integration:processor.py:69 📁 Found 0 GNN file(s)
 WARNING  src.tests.test_oxdraw_integration:processor.py:72 No GNN files found to process
 _____________________________ TestVisualizationProcessing.test_visualization_main_success ______________________________
@@ -4565,7 +4565,7 @@ DEBUG    visualization.processor:processor.py:95 Successfully saved plot with DP
 DEBUG    visualization.processor:processor.py:95 Successfully saved plot with DPI 300
 _______________________________ TestMatrixHeatmapGeneration.test_generate_matrix_heatmap _______________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11fcdb500>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11ab87680>
 DEBUG    matplotlib.font_manager:font_manager.py:1471 findfont: Matching sans\-serif:style=normal:variant=normal:weight=bold:stretch=normal:size=8.0.
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/cmb10.ttf', name='cmb10', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.335
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizFiveSymReg.ttf', name='STIXSizeFiveSym', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.335
@@ -5046,35 +5046,34 @@ DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(
 DEBUG    matplotlib.font_manager:font_manager.py:1515 findfont: Matching sans\-serif:style=normal:variant=normal:weight=bold:stretch=normal:size=8.0 to DejaVu Sans ('/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Bold.ttf') with score of 0.050000.
 ________________________ TestMatrixHeatmapGeneration.test_generate_heatmap_with_custom_colormap ________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11ff01070>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11d176a50>
 __________________________ TestMatrixHeatmapGeneration.test_create_heatmap_convenience_method __________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11fd9ec90>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11d466e70>
 ____________________________ TestTensorVisualization.test_generate_3d_tensor_visualization _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11fdb4fb0>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11d41d6a0>
 ___________________________ TestTensorVisualization.test_generate_pomdp_transition_analysis ____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11f553e00>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11d1de4e0>
 __________________________________ TestOntologyVisualizer.test_create_ontology_table ___________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     visualization.ontology_visualizer:ontology_visualizer.py:225 Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0a3gurni/viz_output/ontology_annotations.png
+INFO     visualization.ontology_visualizer:ontology_visualizer.py:225 Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpudw999hz/viz_output/ontology_annotations.png
 ___________________________________ TestOntologyVisualizer.test_visualize_directory ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     visualization.ontology_visualizer:ontology_visualizer.py:225 Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmps85hjp2_/viz_output/actinf_pomdp_agent/ontology_annotations.png
+INFO     visualization.ontology_visualizer:ontology_visualizer.py:225 Ontology visualization saved to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpd0fxzfw7/viz_output/actinf_pomdp_agent/ontology_annotations.png
 _______________________________ TestVisualizationFunctionality.test_matrix_visualization _______________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11f6f7d70>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11d1648c0>
 _________________________ TestVisualizationIntegration.test_visualization_pipeline_integration _________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11f9e52b0>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11fb84d70>
 ________________________________________ test_visualization_module_performance _________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11f93eab0>
+DEBUG    matplotlib.colorbar:colorbar.py:867 locator: <matplotlib.ticker.AutoLocator object at 0x11d20d610>
 ================================================= slowest 10 durations =================================================
-1.05s call     src/tests/test_visualization_comprehensive.py::TestVisualizationProcessing::test_visualization_main_success
 
-(9 durations < 1s hidden.)
+(10 durations < 1s hidden.)
 =============================================== short test summary info ================================================
 PASSED src/tests/test_d2_visualizer.py::TestD2VisualizerImport::test_d2_classes_available
 PASSED src/tests/test_d2_visualizer.py::TestD2VisualizerImport::test_d2_visualizer_module_available
@@ -5208,4 +5207,4 @@ PASSED src/tests/test_visualization_overall.py::test_visualization_module_comple
 PASSED src/tests/test_visualization_overall.py::test_visualization_module_performance
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:28: Testing internal implementation - backend auto-configured
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:35: Testing internal implementation - backend auto-configured
-============================================ 130 passed, 2 skipped in 8.12s ============================================
+============================================ 130 passed, 2 skipped in 6.02s ============================================

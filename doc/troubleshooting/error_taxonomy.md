@@ -219,7 +219,7 @@ git add model.md
 python src/main.py --only-steps 4 --strict --target-dir model.md
 
 # Continuous integration
-python scripts/validate_all_examples.py
+uv run python src/2_tests.py --comprehensive
 ```
 
 ---

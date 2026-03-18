@@ -10,7 +10,7 @@
 - Each level maintains its own generative model with A, B, C, D matrices
 - Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)
 - Demonstrates deep temporal models from Friston et al. hierarchical Active Inference
-/// Generated: 2026-03-17T16:46:46.532748
+/// Generated: 2026-03-18T10:10:54.798967
 /// Enhanced by GNN PKL Serializer
 ///
 

@@ -30,7 +30,7 @@ src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology
 src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports PASSED
 src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] src.type_checker.checker: GNNTypeChecker initialized. Strict mode: False
+2026-03-18 10:15:50 [    INFO] src.type_checker.checker: GNNTypeChecker initialized. Strict mode: False
 PASSED
 src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports PASSED
 src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation PASSED
@@ -41,7 +41,7 @@ src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantia
 src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports PASSED
 src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-03-18 10:15:50 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
 PASSED
 src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports PASSED
 src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist PASSED
@@ -56,159 +56,154 @@ src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_c
 src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency PASSED
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] root: GNN module imports validated
+2026-03-18 10:15:50 [    INFO] root: GNN module imports validated
 PASSED
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] root: GNN file discovery validated: 1 files found
+2026-03-18 10:15:50 [    INFO] root: GNN file discovery validated: 1 files found
 PASSED
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [ WARNING] root: Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'success': True, 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpq8jmeatn/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 152, 'sections': ['Test GNN Model', 'ModelName', 'StateSpaceBlock', 'Connections', 'InitialParameterization'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 152}, 'parse_timestamp': '2026-03-17T16:46:59.321939'}
+2026-03-18 10:15:50 [ WARNING] root: Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'success': True, 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpq8rljtr8/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 152, 'sections': ['Test GNN Model', 'ModelName', 'StateSpaceBlock', 'Connections', 'InitialParameterization'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 152}, 'parse_timestamp': '2026-03-18T10:15:50.136549'}
 PASSED
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] root: Validation result for simple.gnn: True
+2026-03-18 10:15:50 [    INFO] root: Validation result for simple.gnn: True
 PASSED
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] root: Render module imports validated
+2026-03-18 10:15:50 [    INFO] root: Render module imports validated
 PASSED
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
-2026-03-17 16:46:59 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
-2026-03-17 16:46:59 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
-2026-03-17 16:46:59 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
-2026-03-17 16:46:59 [    INFO] root: PyMDP rendering validated
+2026-03-18 10:15:50 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-03-18 10:15:50 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-03-18 10:15:50 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-03-18 10:15:50 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-03-18 10:15:50 [    INFO] root: PyMDP rendering validated
 PASSED
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:59 [    INFO] src.render.rxinfer.rxinfer_renderer: Successfully generated RxInfer.jl script for GNN_Model
-2026-03-17 16:46:59 [    INFO] root: RxInfer POMDP validated: 3 actions
-2026-03-17 16:46:59 [    INFO] root: RxInfer POMDP rendering validated
+2026-03-18 10:15:50 [    INFO] src.render.rxinfer.rxinfer_renderer: Successfully generated RxInfer.jl script for GNN_Model
+2026-03-18 10:15:50 [    INFO] root: RxInfer POMDP validated: 3 actions
+2026-03-18 10:15:50 [    INFO] root: RxInfer POMDP rendering validated
 PASSED
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED
 src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED
 src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:47:00 [    INFO] root: Execution environment validation completed
+2026-03-18 10:15:51 [    INFO] root: Execution environment validation completed
 PASSED
 src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED
 src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED
 src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:47:00 [    INFO] src.llm.llm_processor: Initialized 1 provider(s)
-2026-03-17 16:47:00 [    INFO] src.llm.llm_operations: Created new LLM processor
-2026-03-17 16:47:00 [    INFO] src.llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:47:00 [    INFO] src.llm.llm_processor: Initialized ollama provider
-2026-03-17 16:47:00 [   ERROR] src.llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:47:00 [   ERROR] src.llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:47:00 [   ERROR] src.llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:47:00 [   ERROR] src.llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:47:00 [    INFO] src.llm.llm_processor: LLM Processor initialized with 1/4 providers
-2026-03-17 16:48:00 [   ERROR] src.llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-2026-03-17 16:48:00 [   ERROR] src.llm.llm_processor: Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-2026-03-17 16:49:00 [   ERROR] src.llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-2026-03-17 16:49:00 [ WARNING] src.llm.llm_processor: Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-2026-03-17 16:49:00 [   ERROR] src.llm.llm_operations: Async summarization failed: All providers failed for analysis
+2026-03-18 10:15:51 [    INFO] src.llm.llm_processor: Initialized 1 provider(s)
+2026-03-18 10:15:51 [    INFO] src.llm.llm_operations: Created new LLM processor
+2026-03-18 10:15:51 [    INFO] src.llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:15:51 [    INFO] src.llm.llm_processor: Initialized ollama provider
+2026-03-18 10:15:51 [   ERROR] src.llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:15:51 [   ERROR] src.llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:15:51 [   ERROR] src.llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:15:51 [   ERROR] src.llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:15:51 [    INFO] src.llm.llm_processor: LLM Processor initialized with 1/4 providers
 PASSED
 src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED
 src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: MCP module imports validated
+2026-03-18 10:16:02 [    INFO] root: MCP module imports validated
 PASSED
 src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] src.template.mcp: Successfully registered template MCP tools
-2026-03-17 16:49:00 [    INFO] src.setup.mcp: UV-based setup module MCP tools registered.
-2026-03-17 16:49:00 [    INFO] src.tests.mcp: Tests module MCP tools registered.
-2026-03-17 16:49:00 [    INFO] src.gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
-2026-03-17 16:49:00 [    INFO] src.gnn.mcp: Enhanced capabilities available: True
-2026-03-17 16:49:00 [    INFO] src.model_registry.mcp: Successfully registered model registry MCP tools
-2026-03-17 16:49:00 [    INFO] src.type_checker.mcp: Type checker module MCP tools registered.
-2026-03-17 16:49:00 [    INFO] src.validation.mcp: validation module MCP tools registered (4 tools).
-2026-03-17 16:49:00 [    INFO] src.export.mcp: export module MCP tools registered (5 domain tools).
-2026-03-17 16:49:00 [    INFO] src.visualization.mcp: visualization module MCP tools registered (4 domain tools).
-2026-03-17 16:49:00 [    INFO] src.advanced_visualization.mcp: advanced_visualization module MCP tools registered (4 domain tools).
-2026-03-17 16:49:00 [    INFO] src.ontology.mcp: ontology module MCP tools registered (5 tools).
-2026-03-17 16:49:00 [    INFO] src.render.mcp: render module MCP tools registered (5 tools).
-2026-03-17 16:49:00 [    INFO] src.execute.mcp: execute module MCP tools registered (5 real domain tools).
-2026-03-17 16:49:00 [    INFO] src.llm.mcp: llm module MCP tools registered (5 real domain tools).
-2026-03-17 16:49:00 [    INFO] src.ml_integration.mcp: ml_integration module MCP tools registered (4 domain tools).
-2026-03-17 16:49:00 [    INFO] src.audio.mcp: audio module MCP tools registered (6 tools).
-2026-03-17 16:49:00 [    INFO] src.analysis.mcp: analysis module MCP tools registered (4 tools).
-2026-03-17 16:49:00 [    INFO] src.integration.mcp: integration module MCP tools registered (4 tools).
-2026-03-17 16:49:00 [    INFO] src.security.mcp: security module MCP tools registered (4 tools).
-2026-03-17 16:49:00 [    INFO] src.research.mcp: research module MCP tools registered (4 tools).
-2026-03-17 16:49:00 [    INFO] src.website.mcp: website module MCP tools registered (6 tools).
-2026-03-17 16:49:00 [    INFO] src.gui.mcp: gui module MCP tools registered (3 domain tools).
-2026-03-17 16:49:00 [    INFO] src.report.mcp: report module MCP tools registered (5 domain tools).
-2026-03-17 16:49:00 [    INFO] src.intelligent_analysis.mcp: intelligent_analysis module MCP tools registered (3 domain tools).
-2026-03-17 16:49:00 [    INFO] src.mcp.processor: Auto-discovered registration complete: 106 tool(s) available
-2026-03-17 16:49:00 [    INFO] root: MCP tool registration validated
+2026-03-18 10:16:02 [    INFO] src.template.mcp: Successfully registered template MCP tools
+2026-03-18 10:16:02 [    INFO] src.setup.mcp: UV-based setup module MCP tools registered.
+2026-03-18 10:16:02 [    INFO] src.tests.mcp: Tests module MCP tools registered.
+2026-03-18 10:16:02 [    INFO] src.gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
+2026-03-18 10:16:02 [    INFO] src.gnn.mcp: Enhanced capabilities available: True
+2026-03-18 10:16:02 [    INFO] src.model_registry.mcp: Successfully registered model registry MCP tools
+2026-03-18 10:16:02 [    INFO] src.type_checker.mcp: Type checker module MCP tools registered.
+2026-03-18 10:16:02 [    INFO] src.validation.mcp: validation module MCP tools registered (4 tools).
+2026-03-18 10:16:02 [    INFO] src.export.mcp: export module MCP tools registered (5 domain tools).
+2026-03-18 10:16:02 [    INFO] src.visualization.mcp: visualization module MCP tools registered (4 domain tools).
+2026-03-18 10:16:02 [    INFO] src.advanced_visualization.mcp: advanced_visualization module MCP tools registered (4 domain tools).
+2026-03-18 10:16:02 [    INFO] src.ontology.mcp: ontology module MCP tools registered (5 tools).
+2026-03-18 10:16:02 [    INFO] src.render.mcp: render module MCP tools registered (5 tools).
+2026-03-18 10:16:02 [    INFO] src.execute.mcp: execute module MCP tools registered (5 real domain tools).
+2026-03-18 10:16:02 [    INFO] src.llm.mcp: llm module MCP tools registered (5 real domain tools).
+2026-03-18 10:16:02 [    INFO] src.ml_integration.mcp: ml_integration module MCP tools registered (4 domain tools).
+2026-03-18 10:16:02 [    INFO] src.audio.mcp: audio module MCP tools registered (6 tools).
+2026-03-18 10:16:02 [    INFO] src.analysis.mcp: analysis module MCP tools registered (4 tools).
+2026-03-18 10:16:02 [    INFO] src.integration.mcp: integration module MCP tools registered (4 tools).
+2026-03-18 10:16:02 [    INFO] src.security.mcp: security module MCP tools registered (4 tools).
+2026-03-18 10:16:02 [    INFO] src.research.mcp: research module MCP tools registered (4 tools).
+2026-03-18 10:16:02 [    INFO] src.website.mcp: website module MCP tools registered (6 tools).
+2026-03-18 10:16:02 [    INFO] src.gui.mcp: gui module MCP tools registered (3 domain tools).
+2026-03-18 10:16:02 [    INFO] src.report.mcp: report module MCP tools registered (5 domain tools).
+2026-03-18 10:16:02 [    INFO] src.intelligent_analysis.mcp: intelligent_analysis module MCP tools registered (3 domain tools).
+2026-03-18 10:16:02 [    INFO] src.mcp.processor: Auto-discovered registration complete: 106 tool(s) available
+2026-03-18 10:16:02 [    INFO] root: MCP tool registration validated
 PASSED
 src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] src.mcp.processor: Handling MCP request: tools/list
-2026-03-17 16:49:00 [    INFO] root: MCP request handling validated
+2026-03-18 10:16:02 [    INFO] src.mcp.processor: Handling MCP request: tools/list
+2026-03-18 10:16:02 [    INFO] root: MCP request handling validated
 PASSED
 src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED
 src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] ontology: 🚀 Starting step: Processing ontology
-2026-03-17 16:49:00 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
-2026-03-17 16:49:00 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
-2026-03-17 16:49:00 [    INFO] ontology: ✅ Ontology processing completed successfully
+2026-03-18 10:16:02 [    INFO] ontology: 🚀 Starting step: Processing ontology
+2026-03-18 10:16:02 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-18 10:16:02 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-03-18 10:16:02 [    INFO] ontology: ✅ Ontology processing completed successfully
 PASSED
 src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED
 src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
-2026-03-17 16:49:00 [    INFO] website: Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbpy_pnnl/output
-2026-03-17 16:49:00 [    INFO] website: Website generated successfully with 7 pages
+2026-03-18 10:16:02 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-03-18 10:16:02 [    INFO] website: Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpw3keykt0/output
+2026-03-18 10:16:02 [    INFO] website: Website generated successfully with 7 pages
 PASSED
 src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] website: Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp93d3vwjy/output
-2026-03-17 16:49:00 [    INFO] website: Website generated successfully with 7 pages
+2026-03-18 10:16:02 [    INFO] website: Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpqa9rkg13/output
+2026-03-18 10:16:02 [    INFO] website: Website generated successfully with 7 pages
 PASSED
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: SAPF module imports validated successfully
+2026-03-18 10:16:02 [    INFO] root: SAPF module imports validated successfully
 PASSED
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: GNN to SAPF conversion validated
+2026-03-18 10:16:02 [    INFO] root: GNN to SAPF conversion validated
 PASSED
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: SAPF validation functionality confirmed
+2026-03-18 10:16:02 [    INFO] root: SAPF validation functionality confirmed
 PASSED
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: SAPF audio generation functionality confirmed
+2026-03-18 10:16:02 [    INFO] root: SAPF audio generation functionality confirmed
 PASSED
 src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
-2026-03-17 16:49:00 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
-2026-03-17 16:49:00 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
-2026-03-17 16:49:00 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
-2026-03-17 16:49:00 [    INFO] root: Core module coordination validated
+2026-03-18 10:16:02 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-03-18 10:16:02 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-03-18 10:16:02 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-03-18 10:16:02 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-03-18 10:16:02 [    INFO] root: Core module coordination validated
 PASSED
 src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: Module data flow validated
+2026-03-18 10:16:02 [    INFO] root: Module data flow validated
 PASSED
 src/tests/test_core_modules.py::test_core_module_completeness 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: Core module completeness: 5/5 modules available
+2026-03-18 10:16:02 [    INFO] root: Core module completeness: 5/5 modules available
 PASSED
 src/tests/test_core_modules.py::test_core_module_performance 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: Core module performance test completed
+2026-03-18 10:16:02 [    INFO] root: Core module performance test completed
 PASSED
 src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_critical_module_coverage_strategy PASSED
 src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_performance_regression_test_framework PASSED
@@ -245,32 +240,32 @@ src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASS
 src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED
 src/tests/test_fast_suite.py::test_fast_suite_completeness 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: Fast test suite completeness: 185 fast tests in 112 files
+2026-03-18 10:16:02 [    INFO] root: Fast test suite completeness: 186 fast tests in 112 files
 PASSED
 src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:00 [    INFO] root: Main orchestrator file structure validated
+2026-03-18 10:16:02 [    INFO] root: Main orchestrator file structure validated
 PASSED
 src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes PASSED
 src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:01 [    INFO] root: All 3 main orchestrator components available
+2026-03-18 10:16:03 [    INFO] root: All 3 main orchestrator components available
 PASSED
 src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help PASSED
 src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:02 [    INFO] root: Pipeline script discovery logic validated
+2026-03-18 10:16:03 [    INFO] root: Pipeline script discovery logic validated
 PASSED
 src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:02 [    INFO] root: Pipeline script sorting logic validated
+2026-03-18 10:16:03 [    INFO] root: Pipeline script sorting logic validated
 PASSED
 src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection PASSED
 src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step PASSED
 src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution PASSED
 src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function PASSED
-src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset 2026-03-17 16:49:27,232 [affe632f:pipeline] pipeline - INFO - Executing steps: ['3_gnn.py', '5_type_checker.py', '7_export.py', '8_visualization.py']
-2026-03-17 16:49:27,233 [affe632f:pipeline] pipeline - INFO - Skipping steps: ['13_llm.py']
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset 2026-03-18 10:16:09,512 [7082550b:pipeline] pipeline - INFO - Executing steps: ['3_gnn.py', '5_type_checker.py', '7_export.py', '8_visualization.py']
+2026-03-18 10:16:09,512 [7082550b:pipeline] pipeline - INFO - Skipping steps: ['13_llm.py']
 
 ================================================================================
   Generalized Notation Notation (GNN)
@@ -280,128 +275,128 @@ src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_
 
 ================================================================================
   🚀 GNN Processing Pipeline
-  Starting execution with 4 steps | Correlation ID: 89e79b56
+  Starting execution with 4 steps | Correlation ID: 044e4beb
 ================================================================================
 
 🔄 Pipeline initialization: [░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 0/4 (0.0)
-2026-03-17 16:49:27,238 [affe632f:pipeline] pipeline - INFO - 🚀 Starting GNN Processing Pipeline [total_steps=4 | target_dir=/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files | output_dir=/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo9hgjo4v/output]
+2026-03-18 10:16:09,515 [7082550b:pipeline] pipeline - INFO - 🚀 Starting GNN Processing Pipeline [total_steps=4 | target_dir=/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files | output_dir=/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpy1ku06qo/output]
 
 🔢 Step 1/4 - GNN file processing
    [███████░░░░░░░░░░░░░░░░░░░░░░░] 1/4
-2026-03-17 16:49:27,238 [affe632f:pipeline] pipeline - INFO - ┌─ Step 1/4: Step 1 RUNNING
+2026-03-18 10:16:09,515 [7082550b:pipeline] pipeline - INFO - ┌─ Step 1/4: Step 1 RUNNING
 └─ Progress: [███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (25%)
     Starting GNN file processing [step_number=1 | total_steps=4 | script_name=3_gnn.py]
 
 ℹ️ Step 1: GNN file processing
-⏱️  Duration: 3.21s
+⏱️  Duration: 2.47s
    • Status: SUCCESS
-   • Duration: 3.21s
-   • Memory: 81.9MB
+   • Duration: 2.47s
+   • Memory: 78.5MB
    • Exit Code: 0
-2026-03-17 16:49:30,445 [affe632f:pipeline] pipeline - INFO - ✅ ✅ Step 1 completed with SUCCESS in 3.21s
+2026-03-18 10:16:11,987 [7082550b:pipeline] pipeline - INFO - ✅ ✅ Step 1 completed with SUCCESS in 2.47s
 Progress: 1/4 steps (1 successful)
-    GNN file processing completed [status=SUCCESS | step_number=1] [⏱️ 3.21s]
+    GNN file processing completed [status=SUCCESS | step_number=1] [⏱️ 2.47s]
 
 🔢 Step 2/4 - Type checking
    [███████████████░░░░░░░░░░░░░░░] 2/4
-2026-03-17 16:49:30,446 [affe632f:pipeline] pipeline - INFO - ┌─ Step 2/4: Step 2 RUNNING
+2026-03-18 10:16:11,987 [7082550b:pipeline] pipeline - INFO - ┌─ Step 2/4: Step 2 RUNNING
 └─ Progress: [███████████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒] (50%)
     Starting Type checking [step_number=2 | total_steps=4 | script_name=5_type_checker.py]
 
 ℹ️ Step 2: Type checking
-⏱️  Duration: 2.85s
+⏱️  Duration: 2.05s
    • Status: SUCCESS
-   • Duration: 2.85s
-   • Memory: 81.9MB
+   • Duration: 2.05s
+   • Memory: 79.4MB
    • Exit Code: 0
-2026-03-17 16:49:33,292 [affe632f:pipeline] pipeline - INFO - ✅ ✅ Step 2 completed with SUCCESS in 2.85s
+2026-03-18 10:16:14,041 [7082550b:pipeline] pipeline - INFO - ✅ ✅ Step 2 completed with SUCCESS in 2.05s
 Progress: 2/4 steps (2 successful)
-    Type checking completed [status=SUCCESS | step_number=2] [⏱️ 2.85s]
+    Type checking completed [status=SUCCESS | step_number=2] [⏱️ 2.05s]
 
 🔢 Step 3/4 - Multi-format export
    [██████████████████████░░░░░░░░] 3/4
-2026-03-17 16:49:33,294 [affe632f:pipeline] pipeline - INFO - ┌─ Step 3/4: Step 3 RUNNING
+2026-03-18 10:16:14,042 [7082550b:pipeline] pipeline - INFO - ┌─ Step 3/4: Step 3 RUNNING
 └─ Progress: [██████████████████████▒▒▒▒▒▒▒▒] (75%)
     Starting Multi-format export [step_number=3 | total_steps=4 | script_name=7_export.py]
 
 ℹ️ Step 3: Multi-format export
-⏱️  Duration: 0.42s
+⏱️  Duration: 0.30s
    • Status: SUCCESS
-   • Duration: 0.42s
-   • Memory: 54.5MB
+   • Duration: 0.30s
+   • Memory: 79.4MB
    • Exit Code: 0
-2026-03-17 16:49:33,715 [affe632f:pipeline] pipeline - INFO - ✅ ✅ Step 3 completed with SUCCESS in 420ms
+2026-03-18 10:16:14,343 [7082550b:pipeline] pipeline - INFO - ✅ ✅ Step 3 completed with SUCCESS in 301ms
 Progress: 3/4 steps (3 successful)
-    Multi-format export completed [status=SUCCESS | step_number=3] [⏱️ 420ms]
+    Multi-format export completed [status=SUCCESS | step_number=3] [⏱️ 301ms]
 
 🔢 Step 4/4 - Visualization
    [██████████████████████████████] 4/4
-2026-03-17 16:49:33,715 [affe632f:pipeline] pipeline - INFO - ┌─ Step 4/4: Step 4 RUNNING
+2026-03-18 10:16:14,343 [7082550b:pipeline] pipeline - INFO - ┌─ Step 4/4: Step 4 RUNNING
 └─ Progress: [██████████████████████████████] (100%)
     Starting Visualization [step_number=4 | total_steps=4 | script_name=8_visualization.py]
 
 ℹ️ Step 4: Visualization
-⏱️  Duration: 21.78s
+⏱️  Duration: 18.97s
    • Status: SUCCESS
-   • Duration: 21.78s
-   • Memory: 54.5MB
+   • Duration: 18.97s
+   • Memory: 79.5MB
    • Exit Code: 0
-2026-03-17 16:49:55,494 [affe632f:pipeline] pipeline - INFO - ✅ ✅ Step 4 completed with SUCCESS in 21.8s
+2026-03-18 10:16:33,316 [7082550b:pipeline] pipeline - INFO - ✅ ✅ Step 4 completed with SUCCESS in 19.0s
 Progress: 4/4 steps (4 successful)
-    Visualization completed [status=SUCCESS | step_number=4] [⏱️ 21.8s]
-2026-03-17 16:49:55,495 [affe632f:pipeline] pipeline - INFO - Saving pipeline summary to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo9hgjo4v/output/00_pipeline_summary/pipeline_execution_summary.json
-2026-03-17 16:49:55,496 [affe632f:pipeline] pipeline - INFO - Pipeline summary saved successfully
-2026-03-17 16:49:55,496 [affe632f:pipeline] pipeline.hasher - INFO - 📇 Indexed run fcbcc769ba11 in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo9hgjo4v/output/00_pipeline_summary/.history/index.json
-2026-03-17 16:49:55,496 [affe632f:pipeline] pipeline - INFO - Summary: 4/4 steps successful, 0 failed
+    Visualization completed [status=SUCCESS | step_number=4] [⏱️ 19.0s]
+2026-03-18 10:16:33,317 [7082550b:pipeline] pipeline - INFO - Saving pipeline summary to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpy1ku06qo/output/00_pipeline_summary/pipeline_execution_summary.json
+2026-03-18 10:16:33,318 [7082550b:pipeline] pipeline - INFO - Pipeline summary saved successfully
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline.hasher - INFO - 📇 Indexed run fcbcc769ba11 in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpy1ku06qo/output/00_pipeline_summary/.history/index.json
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - Summary: 4/4 steps successful, 0 failed
 
 ============================================================
-✅ PIPELINE SUCCESS (Duration: 28.3s)
+✅ PIPELINE SUCCESS (Duration: 23.8s)
 ============================================================
   • Total Steps: 4
   • Successful: 4
   • Failed: 0
   • Warnings: 0
-  • Peak Memory: 81.9MB
-  • Duration: 28.3s
-2026-03-17 16:49:55,496 [affe632f:pipeline] pipeline - INFO - ┌─ Step 4/4: Overall Progress SUCCESS
+  • Peak Memory: 79.5MB
+  • Duration: 23.8s
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ┌─ Step 4/4: Overall Progress SUCCESS
 └─ Progress: [██████████████████████████████] (100%)
-Stats: ✅ Success: 4 | ⚠️ Warnings: 0 | ❌ Failed: 0 | ⏱️ Elapsed: 28.3s
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - 
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ╔═══════════════════════════════════════════════════════════════════════════════════╗
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║                     ✅ PIPELINE EXECUTION SUMMARY - SUCCESS ✅                      ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ╠═══════════════════════════════════════════════════════════════════════════════════╣
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ Total Steps: 4                                                                    ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ ✅ Successful: 4                                                                   ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ ⚠️ Warnings: 0                                                                    ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ ❌ Failed: 0                                                                       ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ ⏱️ Total Time: 28.3s                                                              ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ Average Step Time: 7.06s                                                          ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ║ 📊 Success Rate: 100.0%                                                            ║
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - ╚═══════════════════════════════════════════════════════════════════════════════════╝
-2026-03-17 16:49:55,497 [affe632f:pipeline] pipeline - INFO - 
+Stats: ✅ Success: 4 | ⚠️ Warnings: 0 | ❌ Failed: 0 | ⏱️ Elapsed: 23.8s
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - 
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ╔═══════════════════════════════════════════════════════════════════════════════════╗
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║                     ✅ PIPELINE EXECUTION SUMMARY - SUCCESS ✅                      ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ╠═══════════════════════════════════════════════════════════════════════════════════╣
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ Total Steps: 4                                                                    ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ ✅ Successful: 4                                                                   ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ ⚠️ Warnings: 0                                                                    ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ ❌ Failed: 0                                                                       ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ ⏱️ Total Time: 23.8s                                                              ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ Average Step Time: 5.95s                                                          ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ║ 📊 Success Rate: 100.0%                                                            ║
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - ╚═══════════════════════════════════════════════════════════════════════════════════╝
+2026-03-18 10:16:33,319 [7082550b:pipeline] pipeline - INFO - 
 PASSED
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_validation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: arguments
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: end_time
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: overall_status
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
-2026-03-17 16:49:55 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: arguments
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: end_time
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: overall_status
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
+2026-03-18 10:16:33 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
 PASSED
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_enhanced_warning_detection PASSED
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_step_numbering PASSED
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_validation_comprehensive 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: arguments
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: end_time
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
-2026-03-17 16:49:55 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
-2026-03-17 16:49:55 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: arguments
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: end_time
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
+2026-03-18 10:16:33 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
+2026-03-18 10:16:33 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
 PASSED
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_step_execution_order PASSED
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_metadata_completeness PASSED
@@ -409,10 +404,10 @@ src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_enhanced_pipe
 src/tests/test_new_utils.py::TestStepLogging::test_step_logging_imports PASSED
 src/tests/test_new_utils.py::TestStepLogging::test_setup_step_logging_returns_logger PASSED
 src/tests/test_new_utils.py::TestStepLogging::test_setup_step_logging_verbose PASSED
-src/tests/test_new_utils.py::TestStepLogging::test_log_step_functions_no_exception 2026-03-17 16:49:55,594 [1011ce00:test_funcs] test_funcs - INFO - Starting test [step_number=None | total_steps=None]
-2026-03-17 16:49:55,594 [1011ce00:test_funcs] test_funcs - INFO - ✅ Success message [step_number=None]
-2026-03-17 16:49:55,594 [1011ce00:test_funcs] test_funcs - WARNING - ⚠️ Warning message [step_number=None]
-2026-03-17 16:49:55,594 [1011ce00:test_funcs] test_funcs - ERROR - ❌ Error message [step_number=None]
+src/tests/test_new_utils.py::TestStepLogging::test_log_step_functions_no_exception 2026-03-18 10:16:33,388 [f0a56a0f:test_funcs] test_funcs - INFO - Starting test [step_number=None | total_steps=None]
+2026-03-18 10:16:33,388 [f0a56a0f:test_funcs] test_funcs - INFO - ✅ Success message [step_number=None]
+2026-03-18 10:16:33,388 [f0a56a0f:test_funcs] test_funcs - WARNING - ⚠️ Warning message [step_number=None]
+2026-03-18 10:16:33,388 [f0a56a0f:test_funcs] test_funcs - ERROR - ❌ Error message [step_number=None]
 PASSED
 src/tests/test_new_utils.py::TestBaseProcessor::test_base_processor_imports PASSED
 src/tests/test_new_utils.py::TestBaseProcessor::test_processing_result_dataclass PASSED
@@ -452,7 +447,7 @@ INFO     root:test_core_modules.py:70 GNN file discovery validated: 1 files foun
 ___________________________________ TestGNNModuleComprehensive.test_gnn_file_parsing ___________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 WARNING  root:test_core_modules.py:92 Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'success': True, 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpq8jmeatn/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 152, 'sections': ['Test GNN Model', 'ModelName', 'StateSpaceBlock', 'Connections', 'InitialParameterization'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 152}, 'parse_timestamp': '2026-03-17T16:46:59.321939'}
+assert 'ModelName' in {'success': True, 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpq8rljtr8/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 152, 'sections': ['Test GNN Model', 'ModelName', 'StateSpaceBlock', 'Connections', 'InitialParameterization'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 152}, 'parse_timestamp': '2026-03-18T10:15:50.136549'}
 ____________________________________ TestGNNModuleComprehensive.test_gnn_validation ____________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     root:test_core_modules.py:116 Validation result for simple.gnn: True
@@ -493,20 +488,11 @@ ERROR    src.llm.providers.perplexity_provider:perplexity_provider.py:86 Install
 DEBUG    src.llm.llm_processor:llm_processor.py:199 Could not initialize perplexity provider (may not be configured)
 INFO     src.llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
 DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=60.0s
-DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.3s
-DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
-
-DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 60.0s
-ERROR    src.llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-ERROR    src.llm.llm_processor:llm_processor.py:352 Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=60.0s
 DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
 DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
 
 DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 60.0s
-ERROR    src.llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-WARNING  src.llm.llm_processor:llm_processor.py:374 Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
-ERROR    src.llm.llm_operations:llm_operations.py:189 Async summarization failed: All providers failed for analysis
+DEBUG    src.llm.providers.ollama_provider:ollama_provider.py:177 Ollama CLI run completed: rc=0, elapsed=11.5s
 __________________________________ TestMCPModuleComprehensive.test_mcp_module_imports __________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     root:test_core_modules.py:363 MCP module imports validated
@@ -684,11 +670,11 @@ INFO     ontology:structured_logging.py:438 ✅ Ontology processing completed su
 ________________________________ TestWebsiteModuleComprehensive.test_website_generation ________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     mcp:mcp.py:101 Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
-INFO     website:generator.py:897 Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbpy_pnnl/output
+INFO     website:generator.py:897 Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpw3keykt0/output
 INFO     website:renderer.py:149 Website generated successfully with 7 pages
 _______________________________ TestWebsiteModuleComprehensive.test_html_report_creation _______________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     website:generator.py:897 Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp93d3vwjy/output
+INFO     website:generator.py:897 Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpqa9rkg13/output
 INFO     website:renderer.py:149 Website generated successfully with 7 pages
 _________________________________ TestSAPFModuleComprehensive.test_sapf_module_imports _________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -720,7 +706,7 @@ _____________________________________________ test_core_module_performance _____
 INFO     root:test_core_modules.py:750 Core module performance test completed
 _____________________________________________ test_fast_suite_completeness _____________________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     root:test_fast_suite.py:329 Fast test suite completeness: 185 fast tests in 112 files
+INFO     root:test_fast_suite.py:329 Fast test suite completeness: 186 fast tests in 112 files
 ____________________________ TestMainOrchestratorImport.test_main_orchestrator_file_exists _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     root:test_main_orchestrator.py:61 Main orchestrator file structure validated
@@ -759,13 +745,12 @@ INFO     test_funcs::0 ✅ Success message [step_number=None]
 WARNING  test_funcs::0 ⚠️ Warning message [step_number=None]
 ERROR    test_funcs::0 ❌ Error message [step_number=None]
 ================================================= slowest 10 durations =================================================
-120.37s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
-28.67s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
-21.89s call     src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
-2.78s call     src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step
-1.04s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation
+24.13s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+11.58s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+5.22s call     src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+1.03s call     src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation
 
-(5 durations < 1s hidden.)
+(6 durations < 1s hidden.)
 =============================================== short test summary info ================================================
 PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports
 PASSED src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info
@@ -921,4 +906,4 @@ PASSED src/tests/test_unit_overall.py::TestModuleStructure::test_render_module_e
 PASSED src/tests/test_unit_overall.py::TestFeatureFlags::test_gnn_features_dict
 PASSED src/tests/test_unit_overall.py::TestFeatureFlags::test_render_features_dict
 PASSED src/tests/test_unit_overall.py::TestFeatureFlags::test_src_package_version
-=========================================== 154 passed in 176.67s (0:02:56) ============================================
+================================================= 154 passed in 43.44s =================================================

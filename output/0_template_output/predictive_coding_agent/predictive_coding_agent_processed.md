@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/continuous/predictive_coding_agent.md
-# Processed on: 2026-03-17T16:41:05.757982
+# Processed on: 2026-03-18T09:18:36.304379
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Predictive Coding Active Inference Agent

@@ -7,7 +7,7 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Two State Bistable POMDP
 Description: 
-Generated: 2026-03-17 16:47:28
+Generated: 2026-03-18 09:21:23
 
 State Space:
 - Hidden States: 2

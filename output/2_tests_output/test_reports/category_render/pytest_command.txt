@@ -1,5 +1,5 @@
 Category: render
 Success: True
-Duration: 18.11s
-Peak Memory: 69.67 MB
+Duration: 2.01s
+Peak Memory: 85.09 MB
 CPU Usage: 0.0%

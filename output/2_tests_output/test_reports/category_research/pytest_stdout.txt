@@ -3,13 +3,13 @@ collecting ... collected 2 items
 
 src/tests/test_research_overall.py::TestResearchOverall::test_process_research_flow 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:50 [    INFO] research: 🚀 Starting step: Processing research
-2026-03-17 16:46:50 [    INFO] research: ✅ Research processing completed successfully
+2026-03-18 10:15:41 [    INFO] research: 🚀 Starting step: Processing research
+2026-03-18 10:15:41 [    INFO] research: ✅ Research processing completed successfully
 PASSED
 src/tests/test_research_overall.py::TestResearchOverall::test_process_research_no_files 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:46:50 [    INFO] research: 🚀 Starting step: Processing research
-2026-03-17 16:46:50 [    INFO] research: ✅ Research processing completed successfully
+2026-03-18 10:15:41 [    INFO] research: 🚀 Starting step: Processing research
+2026-03-18 10:15:41 [    INFO] research: ✅ Research processing completed successfully
 PASSED
 
 ======================================================== PASSES ========================================================
@@ -27,4 +27,4 @@ INFO     research:structured_logging.py:438 ✅ Research processing completed su
 =============================================== short test summary info ================================================
 PASSED src/tests/test_research_overall.py::TestResearchOverall::test_process_research_flow
 PASSED src/tests/test_research_overall.py::TestResearchOverall::test_process_research_no_files
-================================================== 2 passed in 0.03s ===================================================
+================================================== 2 passed in 0.02s ===================================================

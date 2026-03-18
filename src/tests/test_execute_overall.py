@@ -18,6 +18,7 @@ Test Coverage:
 No mocking is used - all tests validate real function execution.
 """
 from typing import Any, Dict
+from unittest.mock import patch
 
 import pytest
 import json
@@ -36,6 +37,7 @@ from execute.processor import (
     determine_script_framework,
     collect_execution_outputs,
 )
+from execute import processor as execute_processor
 from execute.executor import GNNExecutor
 
 
@@ -172,16 +174,16 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         logger = logging.getLogger("test")
 
         # Create a script that generates output
-        script_dir = safe_filesystem.create_dir("scripts")
+        script_dir = safe_filesystem.create_dir("sandbox_scripts")
         script = safe_filesystem.create_file(
-            "scripts/test_script.py",
+            "sandbox_scripts/test_script.py",
             "print('test output')"
         )
 
         output_dir = safe_filesystem.create_dir("exec_output")
 
         # Create some dummy output files that would be alongside the script
-        safe_filesystem.create_file("scripts/output.json", '{"result": "ok"}')
+        safe_filesystem.create_file("sandbox_scripts/output.json", '{"result": "ok"}')
 
         # Test collection
         try:
@@ -308,6 +310,34 @@ print(json.dumps(result))
             # Script execution might fail in test environment, that's ok
             # We just want to verify the function runs without crashing
             pass
+
+    @pytest.mark.fast
+    def test_execute_single_script_skipped_when_dependency_missing(self, safe_filesystem: Any) -> None:
+        """When optional framework dependency is not installed, script is skipped (not run)."""
+        logger = logging.getLogger("test")
+        results_dir = safe_filesystem.create_dir("results")
+        # Path must have at least 3 parts so framework/model are derived: .../model_name/jax/script.py
+        base = safe_filesystem.create_dir("render_output/simple_mdp/jax")
+        script_path = safe_filesystem.create_file(
+            "render_output/simple_mdp/jax/Simple MDP Agent_jax.py",
+            "import jax\nprint('ok')",
+        )
+        script_info = {
+            "path": script_path,
+            "name": script_path.name,
+            "framework": "jax",
+            "executor": sys.executable,
+        }
+        with patch.object(
+            execute_processor,
+            "_is_python_framework_dependency_available",
+            return_value=False,
+        ):
+            result = execute_single_script(script_info, results_dir, False, logger)
+        assert result.get("skipped") is True
+        assert result.get("success") is False
+        assert "Dependency not installed" in (result.get("error") or "")
+        assert result.get("framework") == "jax"
 
     @pytest.mark.unit
     def test_execute_single_script_timeout_handling(self, safe_filesystem: Any) -> None:
@@ -518,9 +548,11 @@ print("JAX Active Inference model test successful!")
         try:
             result = execute_single_script(script_info, results_dir, True, logger)
             assert isinstance(result, dict), "Execution result should be a dict"
-            # The script should succeed since it only uses json and os (no JAX dep needed)
-            if "success" in result:
-                assert result["success"] is True, f"JAX script execution should succeed: {result}"
+            # Either script runs (JAX installed) or is skipped (dependency not installed)
+            if result.get("skipped"):
+                assert "Dependency not installed" in (result.get("error") or ""), result
+            else:
+                assert result.get("success") is True, f"JAX script execution should succeed: {result}"
         except Exception as e:
             pytest.fail(f"JAX script execution crashed: {e}")
 

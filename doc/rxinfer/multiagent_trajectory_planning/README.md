@@ -43,7 +43,7 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 1. Navigate to the project directory, and run the main script from there:
 
    ```bash
-   cd scripts/Advanced\ Examples/Multi-agent\ Trajectory\ Planning/
+   cd doc/rxinfer/RxInferExamples.jl/scripts/Advanced\ Examples/Multi-agent\ Trajectory\ Planning/
    ```
 
 2. Run a single experiment with default parameters:

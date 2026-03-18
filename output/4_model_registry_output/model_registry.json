@@ -1,18 +1,18 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-03-17T16:46:49.176445",
+  "updated_at": "2026-03-18T10:10:55.229911",
   "models": {
     "simple_mdp": {
       "model_id": "simple_mdp",
       "name": "GNN Example: Simple MDP (Fully Observable)",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-17T16:46:49.175681",
-      "updated_at": "2026-03-17T16:46:49.175809",
+      "created_at": "2026-03-18T09:20:04.159884",
+      "updated_at": "2026-03-18T10:10:55.229312",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/simple_mdp.md",
-          "created_at": "2026-03-17T16:46:49.175711",
+          "created_at": "2026-03-18T10:10:55.229293",
           "metadata": {},
           "hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c"
         }
@@ -25,13 +25,13 @@
       "model_id": "multi_armed_bandit",
       "name": "GNN Example: Multi-Armed Bandit",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-17T16:46:49.175897",
-      "updated_at": "2026-03-17T16:46:49.175926",
+      "created_at": "2026-03-18T09:20:04.160101",
+      "updated_at": "2026-03-18T10:10:55.229360",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-          "created_at": "2026-03-17T16:46:49.175900",
+          "created_at": "2026-03-18T10:10:55.229341",
           "metadata": {},
           "hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a"
         }
@@ -44,13 +44,13 @@
       "model_id": "deep_planning_horizon",
       "name": "GNN Example: Deep Planning Horizon POMDP",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-17T16:46:49.175970",
-      "updated_at": "2026-03-17T16:46:49.175995",
+      "created_at": "2026-03-18T09:20:04.160173",
+      "updated_at": "2026-03-18T10:10:55.229409",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-          "created_at": "2026-03-17T16:46:49.175972",
+          "created_at": "2026-03-18T10:10:55.229389",
           "metadata": {},
           "hash": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b"
         }
@@ -63,13 +63,13 @@
       "model_id": "actinf_pomdp_agent",
       "name": "GNN Example: Active Inference POMDP Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-17T16:46:49.176036",
-      "updated_at": "2026-03-17T16:46:49.176061",
+      "created_at": "2026-03-18T09:20:04.160243",
+      "updated_at": "2026-03-18T10:10:55.229460",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
-          "created_at": "2026-03-17T16:46:49.176038",
+          "created_at": "2026-03-18T10:10:55.229438",
           "metadata": {},
           "hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804"
         }
@@ -82,13 +82,13 @@
       "model_id": "hmm_baseline",
       "name": "GNN Example: Hidden Markov Model Baseline",
       "description": "HiddenMarkovModel",
-      "created_at": "2026-03-17T16:46:49.176100",
-      "updated_at": "2026-03-17T16:46:49.176122",
+      "created_at": "2026-03-18T09:20:04.160303",
+      "updated_at": "2026-03-18T10:10:55.229506",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/hmm_baseline.md",
-          "created_at": "2026-03-17T16:46:49.176102",
+          "created_at": "2026-03-18T10:10:55.229488",
           "metadata": {},
           "hash": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265"
         }
@@ -101,13 +101,13 @@
       "model_id": "two_state_bistable",
       "name": "GNN Example: Two-State Bistable POMDP",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-17T16:46:49.176156",
-      "updated_at": "2026-03-17T16:46:49.176178",
+      "created_at": "2026-03-18T09:20:04.160358",
+      "updated_at": "2026-03-18T10:10:55.229549",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/two_state_bistable.md",
-          "created_at": "2026-03-17T16:46:49.176158",
+          "created_at": "2026-03-18T10:10:55.229531",
           "metadata": {},
           "hash": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361"
         }
@@ -120,13 +120,13 @@
       "model_id": "markov_chain",
       "name": "GNN Example: Markov Chain (Passive Dynamics)",
       "description": "HiddenMarkovModel",
-      "created_at": "2026-03-17T16:46:49.176214",
-      "updated_at": "2026-03-17T16:46:49.176235",
+      "created_at": "2026-03-18T09:20:04.160413",
+      "updated_at": "2026-03-18T10:10:55.229593",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/markov_chain.md",
-          "created_at": "2026-03-17T16:46:49.176215",
+          "created_at": "2026-03-18T10:10:55.229575",
           "metadata": {},
           "hash": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb"
         }
@@ -139,15 +139,224 @@
       "model_id": "tmaze_epistemic",
       "name": "GNN Example: T-Maze Epistemic Foraging Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-17T16:46:49.176271",
-      "updated_at": "2026-03-17T16:46:49.176296",
+      "created_at": "2026-03-18T09:20:04.160466",
+      "updated_at": "2026-03-18T10:10:55.229641",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
-          "created_at": "2026-03-17T16:46:49.176273",
+          "created_at": "2026-03-18T10:10:55.229619",
           "metadata": {},
           "hash": "6c7270ac428fcb9e92de8b9e798e65869334247e8b4f115ed705bf23d71bcd0c"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "static_perception": {
+      "model_id": "static_perception",
+      "name": "GNN Example: Static Perception Model",
+      "description": "ActiveInferencePerception",
+      "created_at": "2026-03-18T09:41:25.334277",
+      "updated_at": "2026-03-18T10:10:55.228942",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/basics/static_perception.md",
+          "created_at": "2026-03-18T10:10:55.228863",
+          "metadata": {},
+          "hash": "5bdf61e8d8c20a935957c41900b40d9edb19e8eac8b237b85e604b158c0c8d70"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "dynamic_perception": {
+      "model_id": "dynamic_perception",
+      "name": "GNN Example: Dynamic Perception Model",
+      "description": "ActiveInferencePerception",
+      "created_at": "2026-03-18T09:41:25.334457",
+      "updated_at": "2026-03-18T10:10:55.229034",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/basics/dynamic_perception.md",
+          "created_at": "2026-03-18T10:10:55.229012",
+          "metadata": {},
+          "hash": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "temporal_hierarchy": {
+      "model_id": "temporal_hierarchy",
+      "name": "GNN Example: Three-Level Temporal Hierarchy Agent",
+      "description": "ActInfPOMDP_Hierarchical",
+      "created_at": "2026-03-18T09:41:25.334522",
+      "updated_at": "2026-03-18T10:10:55.229092",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/hierarchical/temporal_hierarchy.md",
+          "created_at": "2026-03-18T10:10:55.229067",
+          "metadata": {},
+          "hash": "c46ae80b2cdee48d2328c15522dc9a2bcb7431deac480b1de9de19be959ac409"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "hierarchical_pomdp": {
+      "model_id": "hierarchical_pomdp",
+      "name": "GNN Example: Hierarchical Active Inference POMDP",
+      "description": "ActInfPOMDP_Hierarchical",
+      "created_at": "2026-03-18T09:41:25.334591",
+      "updated_at": "2026-03-18T10:10:55.229152",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/hierarchical/hierarchical_pomdp.md",
+          "created_at": "2026-03-18T10:10:55.229131",
+          "metadata": {},
+          "hash": "45e10342bbc6390f46958e811b7896e847e8d660bfb44364ddc9a41e5026462f"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "stigmergic_swarm": {
+      "model_id": "stigmergic_swarm",
+      "name": "GNN Example: Stigmergic Swarm Active Inference",
+      "description": "ActInfPOMDP_MultiAgent",
+      "created_at": "2026-03-18T09:41:25.334646",
+      "updated_at": "2026-03-18T10:10:55.229208",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/multiagent/stigmergic_swarm.md",
+          "created_at": "2026-03-18T10:10:55.229184",
+          "metadata": {},
+          "hash": "9c2183b152808b39bdb9b5cffa35f61ee1bf1e745354678af01fe95d7798a0fe"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "multi_agent_coordination": {
+      "model_id": "multi_agent_coordination",
+      "name": "GNN Example: Multi-Agent Cooperative Active Inference",
+      "description": "ActInfPOMDP_MultiAgent",
+      "created_at": "2026-03-18T09:41:25.334715",
+      "updated_at": "2026-03-18T10:10:55.229263",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/multiagent/multi_agent_coordination.md",
+          "created_at": "2026-03-18T10:10:55.229242",
+          "metadata": {},
+          "hash": "3dc6e754c4e197a3ef18b7c8cde936041205ecb64f72ba67bc4fe07b030d6346"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "factor_graph_model": {
+      "model_id": "factor_graph_model",
+      "name": "GNN Example: Factor Graph Active Inference Model",
+      "description": "ActInfFactorGraph",
+      "created_at": "2026-03-18T09:41:25.335183",
+      "updated_at": "2026-03-18T10:10:55.229694",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/structured/factor_graph_model.md",
+          "created_at": "2026-03-18T10:10:55.229673",
+          "metadata": {},
+          "hash": "1974e5a788885652b33ace27726231ff18189ea944a7e02d641944fd679fbdf0"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "precision_weighted": {
+      "model_id": "precision_weighted",
+      "name": "GNN Example: Precision-Weighted Active Inference Agent",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-18T09:41:25.335243",
+      "updated_at": "2026-03-18T10:10:55.229742",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/precision/precision_weighted.md",
+          "created_at": "2026-03-18T10:10:55.229723",
+          "metadata": {},
+          "hash": "627ff9009025a028020d26a8c2293f7c0997d1343278be4f0809376719451009"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "curiosity_driven_agent": {
+      "model_id": "curiosity_driven_agent",
+      "name": "GNN Example: Curiosity-Driven Active Inference Agent",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-18T09:41:25.335294",
+      "updated_at": "2026-03-18T10:10:55.229790",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/precision/curiosity_driven_agent.md",
+          "created_at": "2026-03-18T10:10:55.229770",
+          "metadata": {},
+          "hash": "4cdd9b02df57267f1ee00f8eb4534653a8dc5bdc4a3d509c21ba5623013c4ddb"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "predictive_coding_agent": {
+      "model_id": "predictive_coding_agent",
+      "name": "GNN Example: Predictive Coding Active Inference Agent",
+      "description": "ActInfContinuous",
+      "created_at": "2026-03-18T09:41:25.335355",
+      "updated_at": "2026-03-18T10:10:55.229839",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+          "created_at": "2026-03-18T10:10:55.229819",
+          "metadata": {},
+          "hash": "447738f0a679abdeab23770fb3307128e32c4d688cdcb98123f748d2740025b7"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "continuous_navigation": {
+      "model_id": "continuous_navigation",
+      "name": "GNN Example: Continuous State Navigation Agent",
+      "description": "ActInfContinuous",
+      "created_at": "2026-03-18T09:41:25.335417",
+      "updated_at": "2026-03-18T10:10:55.229889",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/continuous/continuous_navigation.md",
+          "created_at": "2026-03-18T10:10:55.229870",
+          "metadata": {},
+          "hash": "bb6eaaf3114149fd8d77ccf5ca79f165aadf094be77ad6a66d76d7613551fea0"
         }
       },
       "tags": [],

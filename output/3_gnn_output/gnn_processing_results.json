@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-17T16:46:48.638606",
-  "source_directory": "input/gnn_files/continuous",
+  "timestamp": "2026-03-18T10:10:54.776409",
+  "source_directory": "input/gnn_files",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
@@ -55,6 +55,2199 @@
     }
   },
   "processed_files": [
+    {
+      "file_name": "static_perception.md",
+      "file_path": "input/gnn_files/basics/static_perception.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/static_perception/static_perception_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Static Perception Model",
+        "version": "1.0",
+        "variables_count": 4,
+        "connections_count": 3,
+        "parameters_count": 2,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_markdown.md",
+          "file_size": 810,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_scala.scala",
+          "file_size": 1916,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_lean.lean",
+          "file_size": 2330,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_coq.v",
+          "file_size": 2209,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_python.py",
+          "file_size": 3779,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_bnf.bnf",
+          "file_size": 2506,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_ebnf.ebnf",
+          "file_size": 2506,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_isabelle.thy",
+          "file_size": 2188,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_maxima.max",
+          "file_size": 2249,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_xml.xml",
+          "file_size": 3568,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_json.json",
+          "file_size": 3317,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_protobuf.proto",
+          "file_size": 3431,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_yaml.yaml",
+          "file_size": 2020,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_xsd.xsd",
+          "file_size": 2861,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_asn1.asn1",
+          "file_size": 4360,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_pkl.pkl",
+          "file_size": 4892,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_alloy.als",
+          "file_size": 3155,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_z_notation.z",
+          "file_size": 2581,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_tla_plus.tla",
+          "file_size": 1768,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_agda.agda",
+          "file_size": 1789,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_haskell.hs",
+          "file_size": 1914,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/static_perception/static_perception_pickle.pkl",
+          "file_size": 1816,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "dynamic_perception.md",
+      "file_path": "input/gnn_files/basics/dynamic_perception.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Dynamic Perception Model",
+        "version": "1.0",
+        "variables_count": 8,
+        "connections_count": 7,
+        "parameters_count": 3,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_markdown.md",
+          "file_size": 1135,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_scala.scala",
+          "file_size": 3282,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_lean.lean",
+          "file_size": 3701,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_coq.v",
+          "file_size": 3521,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_python.py",
+          "file_size": 6029,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_bnf.bnf",
+          "file_size": 3778,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_ebnf.ebnf",
+          "file_size": 3778,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_isabelle.thy",
+          "file_size": 3526,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_maxima.max",
+          "file_size": 3682,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_xml.xml",
+          "file_size": 6051,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_json.json",
+          "file_size": 5689,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_protobuf.proto",
+          "file_size": 4998,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_yaml.yaml",
+          "file_size": 3494,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_xsd.xsd",
+          "file_size": 4317,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_asn1.asn1",
+          "file_size": 6039,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_pkl.pkl",
+          "file_size": 7864,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_alloy.als",
+          "file_size": 5283,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_z_notation.z",
+          "file_size": 3991,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_tla_plus.tla",
+          "file_size": 3003,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_agda.agda",
+          "file_size": 3011,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_haskell.hs",
+          "file_size": 3333,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/dynamic_perception/dynamic_perception_pickle.pkl",
+          "file_size": 2544,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "temporal_hierarchy.md",
+      "file_path": "input/gnn_files/hierarchical/temporal_hierarchy.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Three-Level Temporal Hierarchy Agent",
+        "version": "1.0",
+        "variables_count": 31,
+        "connections_count": 26,
+        "parameters_count": 12,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_markdown.md",
+          "file_size": 2815,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_scala.scala",
+          "file_size": 10499,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_lean.lean",
+          "file_size": 10944,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_coq.v",
+          "file_size": 10449,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_python.py",
+          "file_size": 18168,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_bnf.bnf",
+          "file_size": 10505,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_ebnf.ebnf",
+          "file_size": 10505,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_isabelle.thy",
+          "file_size": 10602,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_maxima.max",
+          "file_size": 11303,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_xml.xml",
+          "file_size": 19347,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_json.json",
+          "file_size": 18885,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_protobuf.proto",
+          "file_size": 13271,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_yaml.yaml",
+          "file_size": 11534,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_xsd.xsd",
+          "file_size": 12079,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_asn1.asn1",
+          "file_size": 14661,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_pkl.pkl",
+          "file_size": 23624,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_alloy.als",
+          "file_size": 16612,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_z_notation.z",
+          "file_size": 11434,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_tla_plus.tla",
+          "file_size": 9688,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_agda.agda",
+          "file_size": 9647,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_haskell.hs",
+          "file_size": 10755,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/temporal_hierarchy/temporal_hierarchy_pickle.pkl",
+          "file_size": 7000,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "hierarchical_pomdp.md",
+      "file_path": "input/gnn_files/hierarchical/hierarchical_pomdp.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Hierarchical Active Inference POMDP",
+        "version": "1.0",
+        "variables_count": 19,
+        "connections_count": 16,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_markdown.md",
+          "file_size": 1918,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_scala.scala",
+          "file_size": 6425,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_lean.lean",
+          "file_size": 6549,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_coq.v",
+          "file_size": 6211,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_python.py",
+          "file_size": 11320,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_bnf.bnf",
+          "file_size": 6365,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_ebnf.ebnf",
+          "file_size": 6365,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_isabelle.thy",
+          "file_size": 6281,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_maxima.max",
+          "file_size": 7079,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_xml.xml",
+          "file_size": 11938,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_json.json",
+          "file_size": 12725,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_protobuf.proto",
+          "file_size": 8719,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_yaml.yaml",
+          "file_size": 7493,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_xsd.xsd",
+          "file_size": 7399,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_asn1.asn1",
+          "file_size": 9237,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_pkl.pkl",
+          "file_size": 15300,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_alloy.als",
+          "file_size": 10496,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_z_notation.z",
+          "file_size": 6942,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_tla_plus.tla",
+          "file_size": 5878,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_agda.agda",
+          "file_size": 5861,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_haskell.hs",
+          "file_size": 6583,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/hierarchical_pomdp/hierarchical_pomdp_pickle.pkl",
+          "file_size": 4740,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "stigmergic_swarm.md",
+      "file_path": "input/gnn_files/multiagent/stigmergic_swarm.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Stigmergic Swarm Active Inference",
+        "version": "1.0",
+        "variables_count": 30,
+        "connections_count": 28,
+        "parameters_count": 11,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_markdown.md",
+          "file_size": 3370,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_scala.scala",
+          "file_size": 11135,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_lean.lean",
+          "file_size": 11299,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_coq.v",
+          "file_size": 10807,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_python.py",
+          "file_size": 18581,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_bnf.bnf",
+          "file_size": 10883,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_ebnf.ebnf",
+          "file_size": 10883,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_isabelle.thy",
+          "file_size": 10953,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_maxima.max",
+          "file_size": 12342,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_xml.xml",
+          "file_size": 20149,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_json.json",
+          "file_size": 20288,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_protobuf.proto",
+          "file_size": 14305,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_yaml.yaml",
+          "file_size": 12400,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_xsd.xsd",
+          "file_size": 12395,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_asn1.asn1",
+          "file_size": 14732,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_pkl.pkl",
+          "file_size": 25334,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_alloy.als",
+          "file_size": 17496,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_z_notation.z",
+          "file_size": 11791,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_tla_plus.tla",
+          "file_size": 10129,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_agda.agda",
+          "file_size": 10080,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_haskell.hs",
+          "file_size": 11471,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/stigmergic_swarm/stigmergic_swarm_pickle.pkl",
+          "file_size": 8292,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "multi_agent_coordination.md",
+      "file_path": "input/gnn_files/multiagent/multi_agent_coordination.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Multi-Agent Cooperative Active Inference",
+        "version": "1.0",
+        "variables_count": 23,
+        "connections_count": 21,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_markdown.md",
+          "file_size": 2669,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_scala.scala",
+          "file_size": 8601,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_lean.lean",
+          "file_size": 8690,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_coq.v",
+          "file_size": 8280,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_python.py",
+          "file_size": 14285,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_bnf.bnf",
+          "file_size": 8382,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_ebnf.ebnf",
+          "file_size": 8382,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_isabelle.thy",
+          "file_size": 8372,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_maxima.max",
+          "file_size": 9572,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_xml.xml",
+          "file_size": 15500,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_json.json",
+          "file_size": 16556,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_protobuf.proto",
+          "file_size": 11333,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_yaml.yaml",
+          "file_size": 9743,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_xsd.xsd",
+          "file_size": 9607,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_asn1.asn1",
+          "file_size": 11434,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_pkl.pkl",
+          "file_size": 19695,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_alloy.als",
+          "file_size": 13493,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_z_notation.z",
+          "file_size": 9135,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_tla_plus.tla",
+          "file_size": 7854,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_agda.agda",
+          "file_size": 7815,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_haskell.hs",
+          "file_size": 8847,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/multi_agent_coordination/multi_agent_coordination_pickle.pkl",
+          "file_size": 6628,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "simple_mdp.md",
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/simple_mdp/simple_mdp_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Simple MDP Agent",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 4,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_markdown.md",
+          "file_size": 1613,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_scala.scala",
+          "file_size": 4428,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_lean.lean",
+          "file_size": 4717,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_coq.v",
+          "file_size": 4512,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_python.py",
+          "file_size": 7961,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_bnf.bnf",
+          "file_size": 4758,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_ebnf.ebnf",
+          "file_size": 4758,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_isabelle.thy",
+          "file_size": 4545,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_maxima.max",
+          "file_size": 5180,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_xml.xml",
+          "file_size": 8289,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_json.json",
+          "file_size": 8892,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_protobuf.proto",
+          "file_size": 6569,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_yaml.yaml",
+          "file_size": 5265,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_xsd.xsd",
+          "file_size": 5424,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_asn1.asn1",
+          "file_size": 7145,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_pkl.pkl",
+          "file_size": 10732,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_alloy.als",
+          "file_size": 7229,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_z_notation.z",
+          "file_size": 5017,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_tla_plus.tla",
+          "file_size": 4075,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_agda.agda",
+          "file_size": 4084,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_haskell.hs",
+          "file_size": 4490,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/simple_mdp/simple_mdp_pickle.pkl",
+          "file_size": 3856,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "multi_armed_bandit.md",
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Multi Armed Bandit Agent",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 4,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_markdown.md",
+          "file_size": 1515,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_scala.scala",
+          "file_size": 4386,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_lean.lean",
+          "file_size": 4813,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_coq.v",
+          "file_size": 4601,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_python.py",
+          "file_size": 7869,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_bnf.bnf",
+          "file_size": 4833,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_ebnf.ebnf",
+          "file_size": 4833,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_isabelle.thy",
+          "file_size": 4627,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_maxima.max",
+          "file_size": 5033,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_xml.xml",
+          "file_size": 8068,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_json.json",
+          "file_size": 8026,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_protobuf.proto",
+          "file_size": 6430,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_yaml.yaml",
+          "file_size": 4798,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_xsd.xsd",
+          "file_size": 5507,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_asn1.asn1",
+          "file_size": 7282,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_pkl.pkl",
+          "file_size": 10487,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_alloy.als",
+          "file_size": 7020,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_z_notation.z",
+          "file_size": 5120,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_tla_plus.tla",
+          "file_size": 4033,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_agda.agda",
+          "file_size": 4042,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_haskell.hs",
+          "file_size": 4448,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_pickle.pkl",
+          "file_size": 3420,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "deep_planning_horizon.md",
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Deep Planning Horizon POMDP",
+        "version": "1.0",
+        "variables_count": 22,
+        "connections_count": 33,
+        "parameters_count": 4,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_markdown.md",
+          "file_size": 2056,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_scala.scala",
+          "file_size": 8598,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_lean.lean",
+          "file_size": 8132,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_coq.v",
+          "file_size": 7741,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_python.py",
+          "file_size": 13307,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_bnf.bnf",
+          "file_size": 7846,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_ebnf.ebnf",
+          "file_size": 7846,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_isabelle.thy",
+          "file_size": 7841,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_maxima.max",
+          "file_size": 9008,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_xml.xml",
+          "file_size": 15283,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_json.json",
+          "file_size": 15883,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_protobuf.proto",
+          "file_size": 10850,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_yaml.yaml",
+          "file_size": 9445,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_xsd.xsd",
+          "file_size": 9051,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_asn1.asn1",
+          "file_size": 11350,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_pkl.pkl",
+          "file_size": 20170,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_alloy.als",
+          "file_size": 13635,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_z_notation.z",
+          "file_size": 8563,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_tla_plus.tla",
+          "file_size": 7383,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_agda.agda",
+          "file_size": 7337,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_haskell.hs",
+          "file_size": 8959,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_pickle.pkl",
+          "file_size": 5380,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Active Inference POMDP Agent",
+        "version": "1.0",
+        "variables_count": 13,
+        "connections_count": 11,
+        "parameters_count": 6,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
+          "file_size": 1821,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_scala.scala",
+          "file_size": 5160,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_lean.lean",
+          "file_size": 5529,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
+          "file_size": 5289,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_python.py",
+          "file_size": 9208,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
+          "file_size": 5538,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
+          "file_size": 5538,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_isabelle.thy",
+          "file_size": 5325,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_maxima.max",
+          "file_size": 5884,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+          "file_size": 9681,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+          "file_size": 9476,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_protobuf.proto",
+          "file_size": 7351,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_yaml.yaml",
+          "file_size": 5805,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xsd.xsd",
+          "file_size": 6265,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
+          "file_size": 8161,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl",
+          "file_size": 12133,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
+          "file_size": 8323,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_z_notation.z",
+          "file_size": 5854,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_tla_plus.tla",
+          "file_size": 4783,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
+          "file_size": 4790,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs",
+          "file_size": 5233,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
+          "file_size": 3972,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "hmm_baseline.md",
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Hidden Markov Model Baseline",
+        "version": "1.0",
+        "variables_count": 10,
+        "connections_count": 12,
+        "parameters_count": 3,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_markdown.md",
+          "file_size": 1259,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_scala.scala",
+          "file_size": 4222,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_lean.lean",
+          "file_size": 4289,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_coq.v",
+          "file_size": 4079,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_python.py",
+          "file_size": 6931,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_bnf.bnf",
+          "file_size": 4308,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_ebnf.ebnf",
+          "file_size": 4308,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_isabelle.thy",
+          "file_size": 4095,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_maxima.max",
+          "file_size": 4542,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_xml.xml",
+          "file_size": 7646,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_json.json",
+          "file_size": 7727,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_protobuf.proto",
+          "file_size": 5952,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_yaml.yaml",
+          "file_size": 4611,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_xsd.xsd",
+          "file_size": 4947,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_asn1.asn1",
+          "file_size": 6577,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_pkl.pkl",
+          "file_size": 9848,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_alloy.als",
+          "file_size": 6621,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_z_notation.z",
+          "file_size": 4599,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_tla_plus.tla",
+          "file_size": 3762,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_agda.agda",
+          "file_size": 3765,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_haskell.hs",
+          "file_size": 4323,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/hmm_baseline/hmm_baseline_pickle.pkl",
+          "file_size": 3104,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "two_state_bistable.md",
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Two State Bistable POMDP",
+        "version": "1.0",
+        "variables_count": 12,
+        "connections_count": 11,
+        "parameters_count": 5,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_markdown.md",
+          "file_size": 1263,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_scala.scala",
+          "file_size": 4447,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_lean.lean",
+          "file_size": 4735,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_coq.v",
+          "file_size": 4511,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_python.py",
+          "file_size": 7645,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_bnf.bnf",
+          "file_size": 4738,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_ebnf.ebnf",
+          "file_size": 4738,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_isabelle.thy",
+          "file_size": 4544,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_maxima.max",
+          "file_size": 4805,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_xml.xml",
+          "file_size": 8071,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_json.json",
+          "file_size": 7863,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_protobuf.proto",
+          "file_size": 6238,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_yaml.yaml",
+          "file_size": 4652,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_xsd.xsd",
+          "file_size": 5454,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_asn1.asn1",
+          "file_size": 7087,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_pkl.pkl",
+          "file_size": 10391,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_alloy.als",
+          "file_size": 6912,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_z_notation.z",
+          "file_size": 5049,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_tla_plus.tla",
+          "file_size": 4066,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_agda.agda",
+          "file_size": 4074,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_haskell.hs",
+          "file_size": 4517,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/two_state_bistable/two_state_bistable_pickle.pkl",
+          "file_size": 3052,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "markov_chain.md",
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/markov_chain/markov_chain_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Simple Markov Chain",
+        "version": "1.0",
+        "variables_count": 7,
+        "connections_count": 6,
+        "parameters_count": 3,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_markdown.md",
+          "file_size": 1068,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_scala.scala",
+          "file_size": 2938,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_lean.lean",
+          "file_size": 3279,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_coq.v",
+          "file_size": 3120,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_python.py",
+          "file_size": 5332,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_bnf.bnf",
+          "file_size": 3398,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_ebnf.ebnf",
+          "file_size": 3398,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_isabelle.thy",
+          "file_size": 3123,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_maxima.max",
+          "file_size": 3324,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_xml.xml",
+          "file_size": 5393,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_json.json",
+          "file_size": 5175,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_protobuf.proto",
+          "file_size": 4605,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_yaml.yaml",
+          "file_size": 3130,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_xsd.xsd",
+          "file_size": 3884,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_asn1.asn1",
+          "file_size": 5413,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_pkl.pkl",
+          "file_size": 7139,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_alloy.als",
+          "file_size": 4678,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_z_notation.z",
+          "file_size": 3553,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_tla_plus.tla",
+          "file_size": 2693,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_agda.agda",
+          "file_size": 2706,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_haskell.hs",
+          "file_size": 2972,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/markov_chain/markov_chain_pickle.pkl",
+          "file_size": 2444,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "tmaze_epistemic.md",
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "T-Maze Epistemic Foraging Agent",
+        "version": "1.0",
+        "variables_count": 19,
+        "connections_count": 19,
+        "parameters_count": 7,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_markdown.md",
+          "file_size": 2578,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_scala.scala",
+          "file_size": 7790,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_lean.lean",
+          "file_size": 8131,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_coq.v",
+          "file_size": 7767,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_python.py",
+          "file_size": 13490,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_bnf.bnf",
+          "file_size": 7945,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_ebnf.ebnf",
+          "file_size": 7945,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_isabelle.thy",
+          "file_size": 7842,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_maxima.max",
+          "file_size": 8775,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_xml.xml",
+          "file_size": 14368,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_json.json",
+          "file_size": 14702,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_protobuf.proto",
+          "file_size": 10429,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_yaml.yaml",
+          "file_size": 8992,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_xsd.xsd",
+          "file_size": 8961,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_asn1.asn1",
+          "file_size": 11527,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_pkl.pkl",
+          "file_size": 17928,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_alloy.als",
+          "file_size": 12674,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_z_notation.z",
+          "file_size": 8550,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_tla_plus.tla",
+          "file_size": 7056,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_agda.agda",
+          "file_size": 7008,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_haskell.hs",
+          "file_size": 8055,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_pickle.pkl",
+          "file_size": 5768,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "factor_graph_model.md",
+      "file_path": "input/gnn_files/structured/factor_graph_model.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Factor Graph Active Inference Model",
+        "version": "1.0",
+        "variables_count": 21,
+        "connections_count": 27,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_markdown.md",
+          "file_size": 2410,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_scala.scala",
+          "file_size": 8931,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_lean.lean",
+          "file_size": 8622,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_coq.v",
+          "file_size": 8189,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_python.py",
+          "file_size": 13649,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_bnf.bnf",
+          "file_size": 8349,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_ebnf.ebnf",
+          "file_size": 8349,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_isabelle.thy",
+          "file_size": 8275,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_maxima.max",
+          "file_size": 9332,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_xml.xml",
+          "file_size": 15508,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_json.json",
+          "file_size": 15465,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_protobuf.proto",
+          "file_size": 11146,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_yaml.yaml",
+          "file_size": 9373,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_xsd.xsd",
+          "file_size": 9456,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_asn1.asn1",
+          "file_size": 11749,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_pkl.pkl",
+          "file_size": 20069,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_alloy.als",
+          "file_size": 13846,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_z_notation.z",
+          "file_size": 9100,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_tla_plus.tla",
+          "file_size": 7745,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_agda.agda",
+          "file_size": 7653,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_haskell.hs",
+          "file_size": 9409,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/factor_graph_model/factor_graph_model_pickle.pkl",
+          "file_size": 5788,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "precision_weighted.md",
+      "file_path": "input/gnn_files/precision/precision_weighted.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/precision_weighted/precision_weighted_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Precision-Weighted Active Inference Agent",
+        "version": "1.0",
+        "variables_count": 15,
+        "connections_count": 16,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_markdown.md",
+          "file_size": 1639,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_scala.scala",
+          "file_size": 6012,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_lean.lean",
+          "file_size": 6232,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_coq.v",
+          "file_size": 5953,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_python.py",
+          "file_size": 10031,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_bnf.bnf",
+          "file_size": 6136,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_ebnf.ebnf",
+          "file_size": 6136,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_isabelle.thy",
+          "file_size": 5992,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_maxima.max",
+          "file_size": 6523,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_xml.xml",
+          "file_size": 10907,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_json.json",
+          "file_size": 11090,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_protobuf.proto",
+          "file_size": 8127,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_yaml.yaml",
+          "file_size": 6529,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_xsd.xsd",
+          "file_size": 6995,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_asn1.asn1",
+          "file_size": 8932,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_pkl.pkl",
+          "file_size": 13940,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_alloy.als",
+          "file_size": 9447,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_z_notation.z",
+          "file_size": 6586,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_tla_plus.tla",
+          "file_size": 5485,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_agda.agda",
+          "file_size": 5486,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_haskell.hs",
+          "file_size": 6123,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/precision_weighted/precision_weighted_pickle.pkl",
+          "file_size": 4024,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "curiosity_driven_agent.md",
+      "file_path": "input/gnn_files/precision/curiosity_driven_agent.md",
+      "parse_success": true,
+      "parsed_model_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "Curiosity-Driven Active Inference Agent",
+        "version": "1.0",
+        "variables_count": 16,
+        "connections_count": 15,
+        "parameters_count": 6,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_markdown.md",
+          "file_size": 2145,
+          "success": true
+        },
+        "scala": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_scala.scala",
+          "file_size": 6271,
+          "success": true
+        },
+        "lean": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_lean.lean",
+          "file_size": 6506,
+          "success": true
+        },
+        "coq": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_coq.v",
+          "file_size": 6211,
+          "success": true
+        },
+        "python": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_python.py",
+          "file_size": 11045,
+          "success": true
+        },
+        "bnf": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_bnf.bnf",
+          "file_size": 6373,
+          "success": true
+        },
+        "ebnf": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_ebnf.ebnf",
+          "file_size": 6373,
+          "success": true
+        },
+        "isabelle": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_isabelle.thy",
+          "file_size": 6258,
+          "success": true
+        },
+        "maxima": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_maxima.max",
+          "file_size": 7270,
+          "success": true
+        },
+        "xml": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_xml.xml",
+          "file_size": 11716,
+          "success": true
+        },
+        "json": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_json.json",
+          "file_size": 12821,
+          "success": true
+        },
+        "protobuf": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_protobuf.proto",
+          "file_size": 8840,
+          "success": true
+        },
+        "yaml": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_yaml.yaml",
+          "file_size": 7609,
+          "success": true
+        },
+        "xsd": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_xsd.xsd",
+          "file_size": 7289,
+          "success": true
+        },
+        "asn1": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_asn1.asn1",
+          "file_size": 9236,
+          "success": true
+        },
+        "pkl": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_pkl.pkl",
+          "file_size": 14945,
+          "success": true
+        },
+        "alloy": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_alloy.als",
+          "file_size": 10281,
+          "success": true
+        },
+        "z_notation": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_z_notation.z",
+          "file_size": 6871,
+          "success": true
+        },
+        "tla_plus": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_tla_plus.tla",
+          "file_size": 5769,
+          "success": true
+        },
+        "agda": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_agda.agda",
+          "file_size": 5764,
+          "success": true
+        },
+        "haskell": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_haskell.hs",
+          "file_size": 6391,
+          "success": true
+        },
+        "pickle": {
+          "output_file": "output/3_gnn_output/curiosity_driven_agent/curiosity_driven_agent_pickle.pkl",
+          "file_size": 5136,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
     {
       "file_name": "predictive_coding_agent.md",
       "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
@@ -315,11 +2508,28 @@
     }
   ],
   "summary": {
-    "total_files": 2,
-    "successful_parses": 2,
+    "total_files": 19,
+    "successful_parses": 19,
     "failed_parses": 0,
-    "total_formats_generated": 44,
+    "total_formats_generated": 418,
     "formats_per_file": {
+      "static_perception.md": 22,
+      "dynamic_perception.md": 22,
+      "temporal_hierarchy.md": 22,
+      "hierarchical_pomdp.md": 22,
+      "stigmergic_swarm.md": 22,
+      "multi_agent_coordination.md": 22,
+      "simple_mdp.md": 22,
+      "multi_armed_bandit.md": 22,
+      "deep_planning_horizon.md": 22,
+      "actinf_pomdp_agent.md": 22,
+      "hmm_baseline.md": 22,
+      "two_state_bistable.md": 22,
+      "markov_chain.md": 22,
+      "tmaze_epistemic.md": 22,
+      "factor_graph_model.md": 22,
+      "precision_weighted.md": 22,
+      "curiosity_driven_agent.md": 22,
       "predictive_coding_agent.md": 22,
       "continuous_navigation.md": 22
     }

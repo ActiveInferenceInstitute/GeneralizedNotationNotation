@@ -8,7 +8,7 @@ src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_website_
 src/tests/test_website_overall.py::TestWebsiteModuleComprehensive::test_supported_file_types PASSED
 src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_generation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:32 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-03-18 10:15:20 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
 PASSED
 src/tests/test_website_overall.py::TestWebsiteFunctionality::test_html_rendering PASSED
 src/tests/test_website_overall.py::TestWebsiteFunctionality::test_website_validation PASSED
@@ -37,4 +37,4 @@ PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_p
 PASSED src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_integration
 PASSED src/tests/test_website_overall.py::test_website_module_completeness
 PASSED src/tests/test_website_overall.py::test_website_module_performance
-================================================== 12 passed in 0.16s ==================================================
+================================================== 12 passed in 0.18s ==================================================

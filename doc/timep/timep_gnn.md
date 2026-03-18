@@ -337,7 +337,7 @@ for model in model_v1.gnn model_v2.gnn model_v3.gnn; do
 done
 
 # Comparative analysis
-python scripts/compare_profiles.py ./profiles/*_profile
+python -m pstats -s cumulative ./profiles/*_profile
 ```
 
 ### Production Deployment

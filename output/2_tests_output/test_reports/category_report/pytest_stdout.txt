@@ -7,13 +7,13 @@ src/tests/test_report_formats.py::TestMarkdownReportFormat::test_markdown_report
 src/tests/test_report_formats.py::TestMarkdownReportFormat::test_markdown_report_tables PASSED
 src/tests/test_report_formats.py::TestJSONReportFormat::test_json_report_generation 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] report: 🚀 Starting step: Generating comprehensive report
-2026-03-17 16:43:41 [    INFO] report: ✅ Comprehensive report generated in json format
+2026-03-18 10:15:24 [    INFO] report: 🚀 Starting step: Generating comprehensive report
+2026-03-18 10:15:24 [    INFO] report: ✅ Comprehensive report generated in json format
 PASSED
 src/tests/test_report_formats.py::TestJSONReportFormat::test_json_report_completeness 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] report: 🚀 Starting step: Generating comprehensive report
-2026-03-17 16:43:41 [    INFO] report: ✅ Comprehensive report generated in json format
+2026-03-18 10:15:24 [    INFO] report: 🚀 Starting step: Generating comprehensive report
+2026-03-18 10:15:24 [    INFO] report: ✅ Comprehensive report generated in json format
 PASSED
 src/tests/test_report_formats.py::TestReportFormatterFormats::test_formatter_supports_markdown PASSED
 src/tests/test_report_formats.py::TestReportFormatterFormats::test_formatter_supports_html PASSED
@@ -27,67 +27,67 @@ src/tests/test_report_generation.py::TestReportGeneration::test_generate_html_re
 src/tests/test_report_generation.py::TestReportGeneration::test_generate_markdown_report PASSED
 src/tests/test_report_generation.py::TestReportGeneration::test_generate_comprehensive_report 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 PASSED
 src/tests/test_report_generation.py::TestReportProcessing::test_process_report_with_empty_directory 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/input
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0
-2026-03-17 16:43:41 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output
-2026-03-17 16:43:41 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
-2026-03-17 16:43:41 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
-2026-03-17 16:43:41 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/PIPELINE_REPORT.md
-2026-03-17 16:43:41 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/report_processing_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
+2026-03-18 10:15:24 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/input
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0
+2026-03-18 10:15:24 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output
+2026-03-18 10:15:24 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
+2026-03-18 10:15:24 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/PIPELINE_REPORT.md
+2026-03-18 10:15:24 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/report_processing_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
 PASSED
 src/tests/test_report_generation.py::TestReportProcessing::test_process_report_with_sample_data 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpb8obehr5
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0
-2026-03-17 16:43:41 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output
-2026-03-17 16:43:41 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
-2026-03-17 16:43:41 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
-2026-03-17 16:43:41 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/PIPELINE_REPORT.md
-2026-03-17 16:43:41 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/report_processing_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
+2026-03-18 10:15:24 [    INFO] test_report: Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7nze2xis
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0
+2026-03-18 10:15:24 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output
+2026-03-18 10:15:24 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
+2026-03-18 10:15:24 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/PIPELINE_REPORT.md
+2026-03-18 10:15:24 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/report_processing_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
 PASSED
 src/tests/test_report_generation.py::TestReportProcessing::test_analyze_gnn_file PASSED
 src/tests/test_report_generation.py::TestReportValidation::test_validate_report_valid_data PASSED
@@ -101,118 +101,118 @@ src/tests/test_report_generation.py::TestReportAPICompleteness::test_report_form
 src/tests/test_report_integration.py::TestReportPipelineIntegration::test_report_receives_pipeline_data PASSED
 src/tests/test_report_integration.py::TestReportPipelineIntegration::test_report_processes_pipeline_outputs 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/output
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0
-2026-03-17 16:43:41 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output
-2026-03-17 16:43:41 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
-2026-03-17 16:43:41 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
-2026-03-17 16:43:41 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/PIPELINE_REPORT.md
-2026-03-17 16:43:41 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/report_processing_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
+2026-03-18 10:15:24 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/output
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0
+2026-03-18 10:15:24 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output
+2026-03-18 10:15:24 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
+2026-03-18 10:15:24 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/PIPELINE_REPORT.md
+2026-03-18 10:15:24 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/report_processing_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
 PASSED
 src/tests/test_report_integration.py::TestReportPipelineIntegration::test_report_with_visualization_outputs 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/output
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0
-2026-03-17 16:43:41 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output
-2026-03-17 16:43:41 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
-2026-03-17 16:43:41 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
-2026-03-17 16:43:41 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/PIPELINE_REPORT.md
-2026-03-17 16:43:41 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/report_processing_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
+2026-03-18 10:15:24 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/output
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0
+2026-03-18 10:15:24 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output
+2026-03-18 10:15:24 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
+2026-03-18 10:15:24 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/PIPELINE_REPORT.md
+2026-03-18 10:15:24 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/report_processing_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
 PASSED
 src/tests/test_report_integration.py::TestReportGNNIntegration::test_report_analyzes_gnn_files PASSED
 src/tests/test_report_integration.py::TestReportGNNIntegration::test_report_includes_gnn_metrics 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo3mdkixw
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0
-2026-03-17 16:43:41 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output
-2026-03-17 16:43:41 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
-2026-03-17 16:43:41 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
-2026-03-17 16:43:41 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/PIPELINE_REPORT.md
-2026-03-17 16:43:41 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/report_processing_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
+2026-03-18 10:15:24 [    INFO] test_report: Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpdrnir69k
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0
+2026-03-18 10:15:24 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output
+2026-03-18 10:15:24 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
+2026-03-18 10:15:24 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/PIPELINE_REPORT.md
+2026-03-18 10:15:24 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/report_processing_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
 PASSED
 src/tests/test_report_integration.py::TestReportAnalysisIntegration::test_analyze_pipeline_data PASSED
 src/tests/test_report_integration.py::TestReportAnalysisIntegration::test_analyze_empty_pipeline_data PASSED
 src/tests/test_report_integration.py::TestReportExportIntegration::test_report_exports_multiple_formats 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 30.8/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 30.8/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 PASSED
 src/tests/test_report_integration.py::TestReportExportIntegration::test_report_respects_output_directory 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:43:41 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/input
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0
-2026-03-17 16:43:41 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output
-2026-03-17 16:43:41 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
-2026-03-17 16:43:41 [    INFO] test_report: Collecting pipeline data for analysis
-2026-03-17 16:43:41 [    INFO] test_report: Total visualizations discovered: 0
-2026-03-17 16:43:41 [    INFO] test_report: Generating HTML report
-2026-03-17 16:43:41 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.html (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating Markdown report
-2026-03-17 16:43:41 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.md (0.00 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Generating JSON report
-2026-03-17 16:43:41 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/report_summary.json (0.01 MB)
-2026-03-17 16:43:41 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/report_generation_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: Generated comprehensive report with 3 files
-2026-03-17 16:43:41 [    INFO] test_report: Pipeline health score: 25.0/100
-2026-03-17 16:43:41 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
-2026-03-17 16:43:41 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
-2026-03-17 16:43:41 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/PIPELINE_REPORT.md
-2026-03-17 16:43:41 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/report_processing_summary.json
-2026-03-17 16:43:41 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
+2026-03-18 10:15:24 [    INFO] test_report: Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/input
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0
+2026-03-18 10:15:24 [    INFO] test_report: Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output
+2026-03-18 10:15:24 [    INFO] test_report: Generating comprehensive analysis report from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Starting comprehensive report generation from pipeline outputs
+2026-03-18 10:15:24 [    INFO] test_report: Collecting pipeline data for analysis
+2026-03-18 10:15:24 [    INFO] test_report: Total visualizations discovered: 0
+2026-03-18 10:15:24 [    INFO] test_report: Generating HTML report
+2026-03-18 10:15:24 [    INFO] test_report: HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.html (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating Markdown report
+2026-03-18 10:15:24 [    INFO] test_report: Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.md (0.00 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Generating JSON report
+2026-03-18 10:15:24 [    INFO] test_report: JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/report_summary.json (0.01 MB)
+2026-03-18 10:15:24 [    INFO] test_report: Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/report_generation_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: Generated comprehensive report with 3 files
+2026-03-18 10:15:24 [    INFO] test_report: Pipeline health score: 25.0/100
+2026-03-18 10:15:24 [    INFO] test_report: Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
+2026-03-18 10:15:24 [    INFO] report.pipeline_report: 📄 Pipeline report generated (326 chars)
+2026-03-18 10:15:24 [    INFO] test_report: 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/PIPELINE_REPORT.md
+2026-03-18 10:15:24 [    INFO] test_report: 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/report_processing_summary.json
+2026-03-18 10:15:24 [    INFO] test_report: ✅ Report processing completed - Generated 4 report files
 PASSED
 src/tests/test_report_integration.py::TestReportModuleIntegration::test_report_module_exports PASSED
 src/tests/test_report_overall.py::TestReportModuleComprehensive::test_report_module_imports PASSED
@@ -243,83 +243,83 @@ INFO     test_report:generator.py:43 Starting comprehensive report generation fr
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_generate_comprehensive_re0/reports/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_generate_comprehensive_re0/reports/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 ____________________________ TestReportProcessing.test_process_report_with_empty_directory _____________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/input
-INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0
-INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output
+INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/input
+INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0
+INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output
 INFO     test_report:__init__.py:147 Generating comprehensive analysis report from pipeline outputs
 INFO     test_report:generator.py:43 Starting comprehensive report generation from pipeline outputs
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 INFO     report.pipeline_report:pipeline_report.py:54 📄 Pipeline report generated (326 chars)
-INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/PIPELINE_REPORT.md
-INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_empty0/output/report_processing_summary.json
+INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/PIPELINE_REPORT.md
+INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_empty0/output/report_processing_summary.json
 INFO     test_report:__init__.py:263 ✅ Report processing completed - Generated 4 report files
 ______________________________ TestReportProcessing.test_process_report_with_sample_data _______________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test_report:__init__.py:128 Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpb8obehr5
-INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0
-INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output
+INFO     test_report:__init__.py:128 Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7nze2xis
+INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0
+INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output
 INFO     test_report:__init__.py:147 Generating comprehensive analysis report from pipeline outputs
 INFO     test_report:generator.py:43 Starting comprehensive report generation from pipeline outputs
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 INFO     report.pipeline_report:pipeline_report.py:54 📄 Pipeline report generated (326 chars)
-INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/PIPELINE_REPORT.md
-INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_process_report_with_sampl0/output/report_processing_summary.json
+INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/PIPELINE_REPORT.md
+INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_process_report_with_sampl0/output/report_processing_summary.json
 INFO     test_report:__init__.py:263 ✅ Report processing completed - Generated 4 report files
 _________________________ TestReportPipelineIntegration.test_report_processes_pipeline_outputs _________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/output
-INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0
-INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output
+INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/output
+INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0
+INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output
 INFO     test_report:__init__.py:147 Generating comprehensive analysis report from pipeline outputs
 INFO     test_report:generator.py:43 Starting comprehensive report generation from pipeline outputs
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 INFO     report.pipeline_report:pipeline_report.py:54 📄 Pipeline report generated (326 chars)
-INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/PIPELINE_REPORT.md
-INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_processes_pipeline0/report_output/report_processing_summary.json
+INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/PIPELINE_REPORT.md
+INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_processes_pipeline0/report_output/report_processing_summary.json
 INFO     test_report:__init__.py:263 ✅ Report processing completed - Generated 4 report files
 _________________________ TestReportPipelineIntegration.test_report_with_visualization_outputs _________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -801,49 +801,49 @@ DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/System/Library/AssetsV2/com_apple_MobileAsset_Font7/12cc699be28fb04f3e3c4969a0378a87b920b174.asset/AssetData/BMHannaAir-Regular.otf', name='BM Hanna Air', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1483 findfont: score(FontEntry(fname='/System/Library/Fonts/Supplemental/Bodoni 72 Smallcaps Book.ttf', name='Bodoni 72 Smallcaps', style='normal', variant='normal', weight=400, stretch='normal', size='scalable')) = 10.05
 DEBUG    matplotlib.font_manager:font_manager.py:1515 findfont: Matching sans\-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
-INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/output
-INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0
-INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output
+INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/output
+INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0
+INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output
 INFO     test_report:__init__.py:147 Generating comprehensive analysis report from pipeline outputs
 INFO     test_report:generator.py:43 Starting comprehensive report generation from pipeline outputs
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 INFO     report.pipeline_report:pipeline_report.py:54 📄 Pipeline report generated (326 chars)
-INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/PIPELINE_REPORT.md
-INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_with_visualization0/report_output/report_processing_summary.json
+INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/PIPELINE_REPORT.md
+INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_with_visualization0/report_output/report_processing_summary.json
 INFO     test_report:__init__.py:263 ✅ Report processing completed - Generated 4 report files
 ______________________________ TestReportGNNIntegration.test_report_includes_gnn_metrics _______________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test_report:__init__.py:128 Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo3mdkixw
-INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0
-INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output
+INFO     test_report:__init__.py:128 Processing report for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpdrnir69k
+INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0
+INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output
 INFO     test_report:__init__.py:147 Generating comprehensive analysis report from pipeline outputs
 INFO     test_report:generator.py:43 Starting comprehensive report generation from pipeline outputs
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 INFO     report.pipeline_report:pipeline_report.py:54 📄 Pipeline report generated (326 chars)
-INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/PIPELINE_REPORT.md
-INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_includes_gnn_metri0/output/report_processing_summary.json
+INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/PIPELINE_REPORT.md
+INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_includes_gnn_metri0/output/report_processing_summary.json
 INFO     test_report:__init__.py:263 ✅ Report processing completed - Generated 4 report files
 ___________________________ TestReportExportIntegration.test_report_exports_multiple_formats ___________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -851,37 +851,37 @@ INFO     test_report:generator.py:43 Starting comprehensive report generation fr
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_exports_multiple_f0/reports/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_exports_multiple_f0/reports/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 30.8/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 __________________________ TestReportExportIntegration.test_report_respects_output_directory ___________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/input
-INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0
-INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output
+INFO     test_report:__init__.py:128 Processing report for files in /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/input
+INFO     test_report:__init__.py:138 Pipeline output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0
+INFO     test_report:__init__.py:139 Report output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output
 INFO     test_report:__init__.py:147 Generating comprehensive analysis report from pipeline outputs
 INFO     test_report:generator.py:43 Starting comprehensive report generation from pipeline outputs
 INFO     test_report:generator.py:58 Collecting pipeline data for analysis
 INFO     test_report:analyzer.py:585 Total visualizations discovered: 0
 INFO     test_report:generator.py:133 Generating HTML report
-INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.html (0.01 MB)
+INFO     test_report:generator.py:144 HTML report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.html (0.01 MB)
 INFO     test_report:generator.py:169 Generating Markdown report
-INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.md (0.00 MB)
+INFO     test_report:generator.py:180 Markdown report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/comprehensive_analysis_report.md (0.00 MB)
 INFO     test_report:generator.py:205 Generating JSON report
-INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/report_summary.json (0.01 MB)
-INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/report_generation_summary.json
+INFO     test_report:generator.py:213 JSON report generated: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/report_summary.json (0.01 MB)
+INFO     test_report:generator.py:258 Report generation summary created: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/report_generation_summary.json
 INFO     test_report:generator.py:106 Generated comprehensive report with 3 files
 INFO     test_report:generator.py:107 Pipeline health score: 25.0/100
 INFO     test_report:generator.py:108 Report files: comprehensive_analysis_report.html, comprehensive_analysis_report.md, report_summary.json
 INFO     report.pipeline_report:pipeline_report.py:54 📄 Pipeline report generated (326 chars)
-INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/PIPELINE_REPORT.md
-INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-123/test_report_respects_output_di0/custom_output/report_processing_summary.json
+INFO     test_report:__init__.py:223 📄 Pipeline report written to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/PIPELINE_REPORT.md
+INFO     test_report:__init__.py:260 📊 Report summary saved to: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-19/test_report_respects_output_di0/custom_output/report_processing_summary.json
 INFO     test_report:__init__.py:263 ✅ Report processing completed - Generated 4 report files
 ================================================= slowest 10 durations =================================================
 
@@ -937,4 +937,4 @@ PASSED src/tests/test_report_overall.py::TestReportIntegration::test_report_pipe
 PASSED src/tests/test_report_overall.py::TestReportIntegration::test_report_mcp_integration
 PASSED src/tests/test_report_overall.py::test_report_module_completeness
 PASSED src/tests/test_report_overall.py::test_report_module_performance
-================================================== 50 passed in 0.51s ==================================================
+================================================== 50 passed in 0.13s ==================================================

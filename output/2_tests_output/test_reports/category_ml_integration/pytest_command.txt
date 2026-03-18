@@ -1,5 +1,5 @@
 Category: ml_integration
 Success: True
-Duration: 2.02s
-Peak Memory: 38.28 MB
+Duration: 2.01s
+Peak Memory: 45.69 MB
 CPU Usage: 0.0%

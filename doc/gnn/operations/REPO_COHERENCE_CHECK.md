@@ -1225,7 +1225,7 @@ python src/2_tests.py --comprehensive
 ```
 
 ```bash
-python scripts/3_gnn.py --test-mode
+uv run python src/3_gnn.py --test-mode
 ```
 
 # Run specific test module

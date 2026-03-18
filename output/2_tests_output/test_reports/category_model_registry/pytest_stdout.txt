@@ -15,4 +15,4 @@ PASSED src/tests/test_model_registry_overall.py::TestModelRegistryOverall::test_
 PASSED src/tests/test_model_registry_overall.py::TestModelRegistryOverall::test_register_model_flow
 PASSED src/tests/test_model_registry_overall.py::TestModelRegistryOverall::test_search_models
 PASSED src/tests/test_model_registry_overall.py::TestModelRegistryOverall::test_delete_model
-================================================== 4 passed in 0.45s ===================================================
+================================================== 4 passed in 0.02s ===================================================

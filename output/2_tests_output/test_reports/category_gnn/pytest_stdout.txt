@@ -13,7 +13,7 @@ src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files_nonexis
 src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files_returns_paths PASSED
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:26:57 [ WARNING] gnn.parsers.markdown_parser: Connection references unknown target variables: ['o']
+2026-03-18 10:07:11 [ WARNING] gnn.parsers.markdown_parser: Connection references unknown target variables: ['o']
 PASSED
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing PASSED
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string PASSED
@@ -24,7 +24,7 @@ src/tests/test_gnn_parsing.py::TestMarkdownParser::test_parse_with_unicode PASSE
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_parse_with_special_characters PASSED
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_parse_file 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:26:58 [ WARNING] gnn.parsers.markdown_parser: Connection references unknown target variables: ['o']
+2026-03-18 10:07:11 [ WARNING] gnn.parsers.markdown_parser: Connection references unknown target variables: ['o']
 PASSED
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_parse_nonexistent_file PASSED
 src/tests/test_gnn_parsing.py::TestScalaParser::test_valid_parsing PASSED
@@ -144,4 +144,4 @@ PASSED src/tests/test_gnn_validation.py::TestGNNValidation::test_validate_gnn_st
 PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_imports
 PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_instantiation
 PASSED src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation
-================================================== 48 passed in 0.87s ==================================================
+================================================== 48 passed in 0.09s ==================================================

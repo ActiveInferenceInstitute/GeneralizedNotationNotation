@@ -124,7 +124,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-17T16:46:47.410072",
+  "created_at": "2026-03-18T10:10:54.872804",
   "equations": [],
   "extensions": {
     "footer": "Two State Bistable POMDP v1 - GNN Representation.\nMinimal 2x2x2 POMDP. Tests edge cases for smallest possible active inference agent.",
@@ -132,7 +132,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Two State Bistable POMDP",
-  "modified_at": "2026-03-17T16:46:47.410073",
+  "modified_at": "2026-03-18T10:10:54.872805",
   "ontology_mappings": [
     {
       "description": null,

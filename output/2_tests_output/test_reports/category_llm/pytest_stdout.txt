@@ -4,76 +4,70 @@ collecting ... collected 32 items
 src/tests/test_llm_ollama.py::test_import_ollama_provider PASSED
 src/tests/test_llm_ollama.py::test_ollama_provider_initialize 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:36:04 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:11:51 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
 PASSED
 src/tests/test_llm_ollama.py::test_ollama_simple_chat[asyncio] 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:36:05 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:36:35 [   ERROR] llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', "You are a helpful assistant.\n\nReply with the word 'ok'."]' timed out after 30.0 seconds
-FAILED
+2026-03-18 10:11:52 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+PASSED
 src/tests/test_llm_ollama.py::test_ollama_streaming[asyncio] 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:36:35 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:37:05 [   ERROR] llm.providers.ollama_provider: Ollama streaming failed: Command '['ollama', 'run', 'gemma3:4b', 'Give a 1-sentence summary of Active Inference.']' timed out after 30.0 seconds
-FAILED
+2026-03-18 10:11:56 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+PASSED
 src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys[asyncio] 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:37:05 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:37:05 [    INFO] llm.llm_processor: Initialized ollama provider
-2026-03-17 16:37:05 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:37:05 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:37:05 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:37:05 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:37:05 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
-2026-03-17 16:37:35 [   ERROR] llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-2026-03-17 16:37:35 [   ERROR] llm.llm_processor: Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-2026-03-17 16:38:05 [   ERROR] llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-2026-03-17 16:38:05 [ WARNING] llm.llm_processor: Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-FAILED
+2026-03-18 10:11:58 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:11:58 [    INFO] llm.llm_processor: Initialized ollama provider
+2026-03-18 10:11:58 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:11:58 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:11:58 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:11:58 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:11:58 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
+PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_check_returns_tuple 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-03-17 16:38:05 [    INFO] test_ollama: ✅ Ollama is running and ready
-2026-03-17 16:38:05 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-18 10:12:12 [    INFO] test_ollama: ✅ Ollama is running and ready
+2026-03-18 10:12:12 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_detection_logging 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-03-17 16:38:05 [    INFO] test_ollama: ✅ Ollama is running and ready
-2026-03-17 16:38:05 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-18 10:12:12 [    INFO] test_ollama: ✅ Ollama is running and ready
+2026-03-18 10:12:12 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_model_listing 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-03-17 16:38:05 [    INFO] test_ollama: ✅ Ollama is running and ready
-2026-03-17 16:38:05 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-18 10:12:12 [    INFO] test_ollama: ✅ Ollama is running and ready
+2026-03-18 10:12:12 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_socket_check 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-03-17 16:38:05 [    INFO] test_ollama: ✅ Ollama is running and ready
-2026-03-17 16:38:05 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
-2026-03-17 16:38:05 [    INFO] test_ollama: ✅ Ollama detected with port open, models: ['nomic-embed-text:latest', 'smollm2:135m-instruct-q4_K_S', 'embeddinggemma:latest', 'gemma3:4b']
-2026-03-17 16:38:05 [    INFO] test_ollama: ✅ Detection completed with consistent results
+2026-03-18 10:12:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-18 10:12:12 [    INFO] test_ollama: ✅ Ollama is running and ready
+2026-03-18 10:12:12 [    INFO] test_ollama: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_ollama: ✅ Ollama detected with port open, models: ['nomic-embed-text:latest', 'smollm2:135m-instruct-q4_K_S', 'embeddinggemma:latest', 'gemma3:4b']
+2026-03-18 10:12:12 [    INFO] test_ollama: ✅ Detection completed with consistent results
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_with_empty_list 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [ WARNING] test_model_selection: ⚠️ No models found, defaulting to: gemma3:4b
-2026-03-17 16:38:05 [    INFO] test_model_selection:    Note: You may need to run: ollama pull gemma3:4b
+2026-03-18 10:12:12 [ WARNING] test_model_selection: ⚠️ No models found, defaulting to: gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_model_selection:    Note: You may need to run: ollama pull gemma3:4b
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_prefers_small_models 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_model_selection: 🎯 Selected model: gemma3:4b
-2026-03-17 16:38:05 [    INFO] test_model_selection: 🎯 Selected model: tinyllama
-2026-03-17 16:38:05 [    INFO] test_model_selection: 🎯 Selected model: llama2
+2026-03-18 10:12:12 [    INFO] test_model_selection: 🎯 Selected model: gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_model_selection: 🎯 Selected model: tinyllama
+2026-03-18 10:12:12 [    INFO] test_model_selection: 🎯 Selected model: llama2
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_respects_env_override 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_model_selection: 🎯 Using model from environment: my-custom-model:latest
+2026-03-18 10:12:12 [    INFO] test_model_selection: 🎯 Using model from environment: my-custom-model:latest
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_logging 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] test_model_selection: 🎯 Selected model: gemma3:4b
+2026-03-18 10:12:12 [    INFO] test_model_selection: 🎯 Selected model: gemma3:4b
 PASSED
 src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_with_ollama SKIPPED (Set
 GNN_RUN_LLM_TESTS=1 to run real Ollama prompt tests)
@@ -81,113 +75,95 @@ src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing
 unavailability testing requires monkeypatch - use real Ollama state for integration tests)
 src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:38:05 [    INFO] llm: Processing LLM with enhanced Ollama integration
-2026-03-17 16:38:05 [    INFO] llm: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-03-17 16:38:05 [    INFO] llm: ✅ Ollama is running and ready
-2026-03-17 16:38:05 [    INFO] llm: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
-2026-03-17 16:38:05 [    INFO] llm: 🎯 Selected model: gemma3:4b
-2026-03-17 16:38:05 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:38:05 [    INFO] llm.llm_processor: Initialized ollama provider
-2026-03-17 16:38:05 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:38:05 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:38:05 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:38:05 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:38:05 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
-2026-03-17 16:38:05 [    INFO] llm: LLM processor initialized with providers: ['ollama']
-2026-03-17 16:38:05 [    INFO] llm: 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
-2026-03-17 16:38:05 [    INFO] llm.llm_processor: Initialized 1 provider(s)
-2026-03-17 16:38:05 [    INFO] llm.llm_operations: Created new LLM processor
-2026-03-17 16:38:05 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
-2026-03-17 16:38:05 [    INFO] llm.llm_processor: Initialized ollama provider
-2026-03-17 16:38:05 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:38:05 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:38:05 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:38:05 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:38:05 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
-2026-03-17 16:39:06 [   ERROR] llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-2026-03-17 16:39:06 [   ERROR] llm.llm_processor: Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-2026-03-17 16:40:06 [   ERROR] llm.providers.ollama_provider: Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-2026-03-17 16:40:06 [ WARNING] llm.llm_processor: Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-2026-03-17 16:40:06 [   ERROR] llm.llm_operations: Async summarization failed: All providers failed for analysis
-2026-03-17 16:40:06 [    INFO] llm: 🤖 Using model 'gemma3:4b' for LLM prompts
-2026-03-17 16:40:06 [    INFO] llm:   📝 Running prompt 1/6: summarize_content
-2026-03-17 16:40:16 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:40:16 [    INFO] llm:   📝 Running prompt 2/6: explain_model
-2026-03-17 16:40:26 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:40:26 [    INFO] llm:   📝 Running prompt 3/6: identify_components
-2026-03-17 16:40:36 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:40:36 [    INFO] llm:   📝 Running prompt 4/6: analyze_structure
-2026-03-17 16:40:46 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:40:46 [    INFO] llm:   📝 Running prompt 5/6: extract_parameters
-2026-03-17 16:40:56 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:40:56 [    INFO] llm:   📝 Running prompt 6/6: practical_applications
-2026-03-17 16:41:06 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:41:06 [    INFO] llm: 📦 Cache: 0 hits, 6 misses, 0 new entries (0.0% hit ratio)
-2026-03-17 16:41:06 [    INFO] llm: ✅ LLM processing completed successfully
-2026-03-17 16:41:06 [    INFO] llm.providers.ollama_provider: Ollama provider closed
-2026-03-17 16:41:06 [    INFO] llm.llm_processor: LLM Processor closed
+2026-03-18 10:12:12 [    INFO] llm: Processing LLM with enhanced Ollama integration
+2026-03-18 10:12:12 [    INFO] llm: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-18 10:12:12 [    INFO] llm: ✅ Ollama is running and ready
+2026-03-18 10:12:12 [    INFO] llm: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-18 10:12:12 [    INFO] llm: 🎯 Selected model: gemma3:4b
+2026-03-18 10:12:12 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:12:12 [    INFO] llm.llm_processor: Initialized ollama provider
+2026-03-18 10:12:12 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:12:12 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:12:12 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:12:12 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:12:12 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
+2026-03-18 10:12:12 [    INFO] llm: LLM processor initialized with providers: ['ollama']
+2026-03-18 10:12:12 [    INFO] llm: 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
+2026-03-18 10:12:12 [    INFO] llm.llm_processor: Initialized 1 provider(s)
+2026-03-18 10:12:12 [    INFO] llm.llm_operations: Created new LLM processor
+2026-03-18 10:12:12 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:12:12 [    INFO] llm.llm_processor: Initialized ollama provider
+2026-03-18 10:12:12 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:12:12 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:12:12 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:12:12 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:12:12 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
+2026-03-18 10:12:23 [    INFO] llm: 🤖 Using model 'gemma3:4b' for LLM prompts
+2026-03-18 10:12:23 [    INFO] llm:   📝 Running prompt 1/6: summarize_content
+2026-03-18 10:12:33 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:12:33 [    INFO] llm:   📝 Running prompt 2/6: explain_model
+2026-03-18 10:12:43 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:12:43 [    INFO] llm:   📝 Running prompt 3/6: identify_components
+2026-03-18 10:12:53 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:12:53 [    INFO] llm:   📝 Running prompt 4/6: analyze_structure
+2026-03-18 10:13:03 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:13:03 [    INFO] llm:   📝 Running prompt 5/6: extract_parameters
+2026-03-18 10:13:13 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:13:13 [    INFO] llm:   📝 Running prompt 6/6: practical_applications
+2026-03-18 10:13:23 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:13:23 [    INFO] llm: 📦 Cache: 0 hits, 6 misses, 0 new entries (0.0% hit ratio)
+2026-03-18 10:13:23 [    INFO] llm: ✅ LLM processing completed successfully
+2026-03-18 10:13:23 [    INFO] llm.providers.ollama_provider: Ollama provider closed
+2026-03-18 10:13:23 [    INFO] llm.llm_processor: LLM Processor closed
 PASSED
 src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:41:26 [    INFO] llm: Processing LLM with enhanced Ollama integration
-2026-03-17 16:41:26 [    INFO] llm: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-03-17 16:41:26 [    INFO] llm: ✅ Ollama is running and ready
-2026-03-17 16:41:26 [    INFO] llm: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
-2026-03-17 16:41:26 [    INFO] llm: 🎯 Selected model: gemma3:4b
-2026-03-17 16:41:28 [    INFO] httpx: HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
-2026-03-17 16:41:28 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (python client)
-2026-03-17 16:41:28 [    INFO] llm.llm_processor: Initialized ollama provider
-2026-03-17 16:41:31 [    INFO] llm.providers.openai_provider: OpenAI provider initialized successfully
-2026-03-17 16:41:31 [    INFO] llm.llm_processor: Initialized openai provider
-2026-03-17 16:41:31 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:41:31 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:41:31 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:41:31 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:41:31 [    INFO] llm.llm_processor: LLM Processor initialized with 2/4 providers
-2026-03-17 16:41:31 [    INFO] llm: LLM processor initialized with providers: ['ollama', 'openai']
-2026-03-17 16:41:31 [    INFO] llm: 📄 File 1/1: test_active_inference.md (budget: 595s remaining)
-2026-03-17 16:41:31 [    INFO] llm.llm_processor: Initialized 1 provider(s)
-2026-03-17 16:41:31 [    INFO] llm.llm_operations: Created new LLM processor
-2026-03-17 16:41:31 [    INFO] httpx: HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
-2026-03-17 16:41:31 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (python client)
-2026-03-17 16:41:31 [    INFO] llm.llm_processor: Initialized ollama provider
-2026-03-17 16:41:31 [    INFO] llm.providers.openai_provider: OpenAI provider initialized successfully
-2026-03-17 16:41:31 [    INFO] llm.llm_processor: Initialized openai provider
-2026-03-17 16:41:31 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:41:31 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:41:31 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
-2026-03-17 16:41:31 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
-2026-03-17 16:41:31 [    INFO] llm.llm_processor: LLM Processor initialized with 2/4 providers
-2026-03-17 16:41:50 [    INFO] httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-2026-03-17 16:41:50 [    INFO] llm: 🤖 Using model 'gemma3:4b' for LLM prompts
-2026-03-17 16:41:50 [    INFO] llm:   📝 Running prompt 1/6: summarize_content
-2026-03-17 16:42:00 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:42:00 [    INFO] llm:   📝 Running prompt 2/6: explain_model
-2026-03-17 16:42:00 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-2026-03-17 16:42:10 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:42:10 [    INFO] llm:   📝 Running prompt 3/6: identify_components
-2026-03-17 16:42:11 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-2026-03-17 16:42:20 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:42:20 [    INFO] llm:   📝 Running prompt 4/6: analyze_structure
-2026-03-17 16:42:21 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-2026-03-17 16:42:30 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:42:30 [    INFO] llm:   📝 Running prompt 5/6: extract_parameters
-2026-03-17 16:42:31 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-2026-03-17 16:42:40 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-2026-03-17 16:42:40 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
-2026-03-17 16:42:40 [    INFO] llm:   📝 Running prompt 6/6: practical_applications
-2026-03-17 16:42:50 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-2026-03-17 16:42:50 [    INFO] llm: 📦 Cache: 0 hits, 6 misses, 1 new entries (0.0% hit ratio)
-2026-03-17 16:42:50 [    INFO] llm: ✅ LLM processing completed successfully
-2026-03-17 16:42:50 [    INFO] llm.providers.ollama_provider: Ollama provider closed
-2026-03-17 16:42:50 [    INFO] llm.providers.openai_provider: OpenAI provider connection closed
-2026-03-17 16:42:50 [    INFO] llm.llm_processor: LLM Processor closed
+2026-03-18 10:13:43 [    INFO] llm: Processing LLM with enhanced Ollama integration
+2026-03-18 10:13:43 [    INFO] llm: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-18 10:13:43 [    INFO] llm: ✅ Ollama is running and ready
+2026-03-18 10:13:43 [    INFO] llm: 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-18 10:13:43 [    INFO] llm: 🎯 Selected model: gemma3:4b
+2026-03-18 10:13:43 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:13:43 [    INFO] llm.llm_processor: Initialized ollama provider
+2026-03-18 10:13:43 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:13:43 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:13:43 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:13:43 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:13:43 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
+2026-03-18 10:13:43 [    INFO] llm: LLM processor initialized with providers: ['ollama']
+2026-03-18 10:13:43 [    INFO] llm: 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
+2026-03-18 10:13:43 [    INFO] llm.llm_processor: Initialized 1 provider(s)
+2026-03-18 10:13:43 [    INFO] llm.llm_operations: Created new LLM processor
+2026-03-18 10:13:43 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI recovery)
+2026-03-18 10:13:43 [    INFO] llm.llm_processor: Initialized ollama provider
+2026-03-18 10:13:43 [   ERROR] llm.providers.openrouter_provider: Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:13:43 [   ERROR] llm.providers.openrouter_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:13:43 [   ERROR] llm.providers.perplexity_provider: Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-18 10:13:43 [   ERROR] llm.providers.perplexity_provider: Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-18 10:13:43 [    INFO] llm.llm_processor: LLM Processor initialized with 1/4 providers
+2026-03-18 10:13:54 [    INFO] llm: 🤖 Using model 'gemma3:4b' for LLM prompts
+2026-03-18 10:13:54 [    INFO] llm:   📝 Running prompt 1/6: summarize_content
+2026-03-18 10:14:04 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:14:04 [    INFO] llm:   📝 Running prompt 2/6: explain_model
+2026-03-18 10:14:14 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:14:14 [    INFO] llm:   📝 Running prompt 3/6: identify_components
+2026-03-18 10:14:24 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:14:24 [    INFO] llm:   📝 Running prompt 4/6: analyze_structure
+2026-03-18 10:14:34 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:14:34 [    INFO] llm:   📝 Running prompt 5/6: extract_parameters
+2026-03-18 10:14:44 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:14:44 [    INFO] llm:   📝 Running prompt 6/6: practical_applications
+2026-03-18 10:14:54 [   ERROR] llm:   ❌ Prompt execution timed out after 10 seconds
+2026-03-18 10:14:54 [    INFO] llm: 📦 Cache: 0 hits, 6 misses, 0 new entries (0.0% hit ratio)
+2026-03-18 10:14:54 [    INFO] llm: ✅ LLM processing completed successfully
+2026-03-18 10:14:54 [    INFO] llm.providers.ollama_provider: Ollama provider closed
+2026-03-18 10:14:54 [    INFO] llm.llm_processor: LLM Processor closed
 PASSED
 src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_error_handling 
 ---------------------------------------------------- live log call -----------------------------------------------------
-2026-03-17 16:42:51 [    INFO] llm: Processing LLM with enhanced Ollama integration
-2026-03-17 16:42:52 [ WARNING] llm: No GNN files found for LLM processing
-2026-03-17 16:42:52 [   ERROR] llm: ❌ LLM processing failed
+2026-03-18 10:15:14 [    INFO] llm: Processing LLM with enhanced Ollama integration
+2026-03-18 10:15:14 [ WARNING] llm: No GNN files found for LLM processing
+2026-03-18 10:15:14 [   ERROR] llm: ❌ LLM processing failed
 PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaIntegrationEnd2End::test_ollama_command_exists PASSED
 src/tests/test_llm_ollama_integration.py::TestOllamaIntegrationEnd2End::test_ollama_service_running PASSED
@@ -204,109 +180,27 @@ src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration PASS
 src/tests/test_llm_overall.py::test_llm_module_completeness PASSED
 src/tests/test_llm_overall.py::test_llm_module_performance PASSED
 
-======================================================= FAILURES =======================================================
+======================================================== PASSES ========================================================
+___________________________________________ test_ollama_provider_initialize ____________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
 ___________________________________________ test_ollama_simple_chat[asyncio] ___________________________________________
-src/tests/test_llm_ollama.py:104: in test_ollama_simple_chat
-    result = await provider.generate_response(messages, config)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/providers/ollama_provider.py:182: in generate_response
-    response = await asyncio.to_thread(_call_cli)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/asyncio/threads.py:25: in to_thread
-    return await loop.run_in_executor(None, func_call)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/concurrent/futures/thread.py:59: in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/providers/ollama_provider.py:169: in _call_cli
-    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-../../../miniforge3/lib/python3.12/subprocess.py:550: in run
-    stdout, stderr = process.communicate(input, timeout=timeout)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/subprocess.py:1209: in communicate
-    stdout, stderr = self._communicate(input, endtime, timeout)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/subprocess.py:2116: in _communicate
-    self._check_timeout(endtime, orig_timeout, stdout, stderr)
-../../../miniforge3/lib/python3.12/subprocess.py:1253: in _check_timeout
-    raise TimeoutExpired(
-E   subprocess.TimeoutExpired: Command '['ollama', 'run', 'gemma3:4b', "You are a helpful assistant.\n\nReply with the word 'ok'."]' timed out after 30.0 seconds
 -------------------------------------------------- Captured log call ---------------------------------------------------
 DEBUG    asyncio:selector_events.py:64 Using selector: KqueueSelector
 INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
-DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.3s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.6s
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
 
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
-ERROR    llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', "You are a helpful assistant.\n\nReply with the word 'ok'."]' timed out after 30.0 seconds
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:177 Ollama CLI run completed: rc=0, elapsed=3.0s
 ____________________________________________ test_ollama_streaming[asyncio] ____________________________________________
-src/tests/test_llm_ollama.py:130: in test_ollama_streaming
-    async for chunk in provider.generate_stream(messages, config):
-src/llm/providers/ollama_provider.py:263: in generate_stream
-    text = await asyncio.to_thread(_call_cli_once)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/asyncio/threads.py:25: in to_thread
-    return await loop.run_in_executor(None, func_call)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/concurrent/futures/thread.py:59: in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/providers/ollama_provider.py:253: in _call_cli_once
-    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-../../../miniforge3/lib/python3.12/subprocess.py:550: in run
-    stdout, stderr = process.communicate(input, timeout=timeout)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/subprocess.py:1209: in communicate
-    stdout, stderr = self._communicate(input, endtime, timeout)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/subprocess.py:2116: in _communicate
-    self._check_timeout(endtime, orig_timeout, stdout, stderr)
-../../../miniforge3/lib/python3.12/subprocess.py:1253: in _check_timeout
-    raise TimeoutExpired(
-E   subprocess.TimeoutExpired: Command '['ollama', 'run', 'gemma3:4b', 'Give a 1-sentence summary of Active Inference.']' timed out after 30.0 seconds
 -------------------------------------------------- Captured log call ---------------------------------------------------
 DEBUG    asyncio:selector_events.py:64 Using selector: KqueueSelector
 INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:251 Ollama CLI stream: model=gemma3:4b, timeout=30.0s
-ERROR    llm.providers.ollama_provider:ollama_provider.py:285 Ollama streaming failed: Command '['ollama', 'run', 'gemma3:4b', 'Give a 1-sentence summary of Active Inference.']' timed out after 30.0 seconds
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:261 Ollama CLI stream completed: rc=0, elapsed=1.5s
 ___________________________________ test_processor_uses_ollama_when_no_keys[asyncio] ___________________________________
-src/llm/llm_processor.py:350: in analyze_gnn
-    return await provider.generate_response(messages, config)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/providers/ollama_provider.py:182: in generate_response
-    response = await asyncio.to_thread(_call_cli)
-               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/asyncio/threads.py:25: in to_thread
-    return await loop.run_in_executor(None, func_call)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/concurrent/futures/thread.py:59: in run
-    result = self.fn(*self.args, **self.kwargs)
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/providers/ollama_provider.py:169: in _call_cli
-    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-../../../miniforge3/lib/python3.12/subprocess.py:550: in run
-    stdout, stderr = process.communicate(input, timeout=timeout)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/subprocess.py:1209: in communicate
-    stdout, stderr = self._communicate(input, endtime, timeout)
-                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-../../../miniforge3/lib/python3.12/subprocess.py:2116: in _communicate
-    self._check_timeout(endtime, orig_timeout, stdout, stderr)
-../../../miniforge3/lib/python3.12/subprocess.py:1253: in _check_timeout
-    raise TimeoutExpired(
-E   subprocess.TimeoutExpired: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-
-During handling of the above exception, another exception occurred:
-src/tests/test_llm_ollama.py:180: in test_processor_uses_ollama_when_no_keys
-    result = await processor.analyze_gnn(content, AnalysisType.SUMMARY, config=LLMConfig(model=OLLAMA_TEST_MODEL))
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/llm_processor.py:354: in analyze_gnn
-    return await self._try_fallback_analysis(gnn_content, analysis_type, provider_type, config)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/llm/llm_processor.py:377: in _try_fallback_analysis
-    raise RuntimeError("All providers failed for analysis")
-E   RuntimeError: All providers failed for analysis
 -------------------------------------------------- Captured log call ---------------------------------------------------
 DEBUG    asyncio:selector_events.py:64 Using selector: KqueueSelector
 INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
@@ -321,23 +215,11 @@ ERROR    llm.providers.perplexity_provider:perplexity_provider.py:86 Install aio
 DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize perplexity provider (may not be configured)
 INFO     llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
-DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.3s
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
 
 DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
-ERROR    llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-ERROR    llm.llm_processor:llm_processor.py:352 Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
-DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
-DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
-
-DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
-ERROR    llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-WARNING  llm.llm_processor:llm_processor.py:374 Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n']' timed out after 30.0 seconds
-======================================================== PASSES ========================================================
-___________________________________________ test_ollama_provider_initialize ____________________________________________
--------------------------------------------------- Captured log call ---------------------------------------------------
-INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:177 Ollama CLI run completed: rc=0, elapsed=13.2s
 _________________________________ TestOllamaDetection.test_ollama_check_returns_tuple __________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
 INFO     test_ollama:processor.py:79 🔍 Found Ollama at: /opt/homebrew/bin/ollama
@@ -400,11 +282,6 @@ ERROR    llm.providers.openrouter_provider:openrouter_provider.py:112 Install ai
 ERROR    llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
 ERROR    llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: uv pip install aiohttp>=3.9.0
 INFO     llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
-ERROR    llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-ERROR    llm.llm_processor:llm_processor.py:352 Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-ERROR    llm.providers.ollama_provider:ollama_provider.py:223 Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-WARNING  llm.llm_processor:llm_processor.py:374 Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n']' timed out after 60.0 seconds
-ERROR    llm.llm_operations:llm_operations.py:189 Async summarization failed: All providers failed for analysis
 INFO     llm:processor.py:460 🤖 Using model 'gemma3:4b' for LLM prompts
 INFO     llm:processor.py:496   📝 Running prompt 1/6: summarize_content
 ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
@@ -432,187 +309,94 @@ INFO     llm:processor.py:91 ✅ Ollama is running and ready
 INFO     llm:processor.py:104 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
 DEBUG    llm.processor:processor.py:36 LLM config YAML load failed: name 'yaml' is not defined
 INFO     llm:processor.py:253 🎯 Selected model: gemma3:4b
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1682745c0>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:41:28 GMT'), (b'Content-Length', b'1414')])
-INFO     httpx:_client.py:1025 HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
-INFO     llm.providers.ollama_provider:ollama_provider.py:87 Ollama provider initialized (python client)
+INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
 INFO     llm.llm_processor:llm_processor.py:197 Initialized ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:197 Initialized openai provider
+DEBUG    llm.providers.openai_provider:openai_provider.py:99 OpenAI library not installed - OpenAI provider will not be available
+DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize openai provider (may not be configured)
 ERROR    llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
 ERROR    llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: uv pip install aiohttp>=3.9.0
 DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize openrouter provider (may not be configured)
 ERROR    llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
 ERROR    llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: uv pip install aiohttp>=3.9.0
 DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize perplexity provider (may not be configured)
-INFO     llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 2/4 providers
-INFO     llm:processor.py:402 LLM processor initialized with providers: ['ollama', 'openai']
-INFO     llm:processor.py:415 📄 File 1/1: test_active_inference.md (budget: 595s remaining)
-DEBUG    llm.llm_processor:llm_processor.py:60 No .env file found in llm directory
+INFO     llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
+INFO     llm:processor.py:402 LLM processor initialized with providers: ['ollama']
+INFO     llm:processor.py:415 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
+DEBUG    llm.llm_processor:llm_processor.py:62 python-dotenv not available, skipping .env file loading
 INFO     llm.llm_processor:llm_processor.py:84 Initialized 1 provider(s)
 INFO     llm.llm_operations:llm_operations.py:65 Created new LLM processor
 DEBUG    asyncio:selector_events.py:64 Using selector: KqueueSelector
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:41:31 GMT'), (b'Content-Length', b'1414')])
-INFO     httpx:_client.py:1025 HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'GET']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
-INFO     llm.providers.ollama_provider:ollama_provider.py:87 Ollama provider initialized (python client)
+INFO     llm.providers.ollama_provider:ollama_provider.py:94 Ollama provider initialized (CLI recovery)
 INFO     llm.llm_processor:llm_processor.py:197 Initialized ollama provider
-INFO     llm.providers.openai_provider:openai_provider.py:95 OpenAI provider initialized successfully
-INFO     llm.llm_processor:llm_processor.py:197 Initialized openai provider
+DEBUG    llm.providers.openai_provider:openai_provider.py:99 OpenAI library not installed - OpenAI provider will not be available
+DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize openai provider (may not be configured)
 ERROR    llm.providers.openrouter_provider:openrouter_provider.py:111 Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
 ERROR    llm.providers.openrouter_provider:openrouter_provider.py:112 Install aiohttp with: uv pip install aiohttp>=3.9.0
 DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize openrouter provider (may not be configured)
 ERROR    llm.providers.perplexity_provider:perplexity_provider.py:85 Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
 ERROR    llm.providers.perplexity_provider:perplexity_provider.py:86 Install aiohttp with: uv pip install aiohttp>=3.9.0
 DEBUG    llm.llm_processor:llm_processor.py:199 Could not initialize perplexity provider (may not be configured)
-INFO     llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 2/4 providers
-DEBUG    openai._base_client:_base_client.py:482 Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-ac7eb946-0b25-40c0-b148-c3a24ba4dec9', 'json_data': {'messages': [{'role': 'system', 'content': 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.'}, {'role': 'user', 'content': 'Provide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n'}], 'model': 'gpt-4o-mini', 'stream': False}}
-DEBUG    openai._base_client:_base_client.py:1528 Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
-DEBUG    httpcore.connection:_trace.py:87 connect_tcp.started host='api.openai.com' port=443 local_address=None timeout=5.0 socket_options=None
-DEBUG    httpcore.connection:_trace.py:87 connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x1693090a0>
-DEBUG    httpcore.connection:_trace.py:87 start_tls.started ssl_context=<ssl.SSLContext object at 0x168bb66d0> server_hostname='api.openai.com' timeout=5.0
-DEBUG    httpcore.connection:_trace.py:87 start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x168fd69c0>
-DEBUG    httpcore.http11:_trace.py:87 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:87 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:87 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:87 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:87 receive_response_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:87 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Tue, 17 Mar 2026 23:41:50 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'9ddfd95d1d2897f0-SJC'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Server', b'cloudflare'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'access-control-expose-headers', b'X-Request-ID'), (b'openai-organization', b'user-etx5q1mevfmlhuspvw99mfar'), (b'openai-processing-ms', b'15770'), (b'openai-project', b'proj_n0WXpGNAztsJgWaurhyqBbUz'), (b'openai-version', b'2020-10-01'), (b'x-openai-proxy-wasm', b'v0.1'), (b'x-ratelimit-limit-requests', b'5000'), (b'x-ratelimit-limit-tokens', b'4000000'), (b'x-ratelimit-remaining-requests', b'4999'), (b'x-ratelimit-remaining-tokens', b'3999723'), (b'x-ratelimit-reset-requests', b'12ms'), (b'x-ratelimit-reset-tokens', b'4ms'), (b'x-request-id', b'req_8aea1a38f7604321a4e0c0de4e0760dc'), (b'set-cookie', b'__cf_bm=s.KQc4E.bQD_5pAGNwCrcTZsyGFo4LEqnuLM4BtRD1A-1773790893.6125128-1.0.1.1-x3P8GV4Rw55QoEHFTz5kqPAAeG0ypnXCzJ8xjXV0gOpJrEV5zoxDYmIPtoDO1.CvaMiSeYJPCpQ7J1dPBD.TeJ5KzWL4cRVPPHSMY3esB1bXXSD3GNiTJCJIdPT8v5pL; HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Wed, 18 Mar 2026 00:11:50 GMT'), (b'Content-Encoding', b'br'), (b'alt-svc', b'h3=":443"; ma=86400')])
-INFO     httpx:_client.py:1740 HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:87 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:87 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:87 response_closed.started
-DEBUG    httpcore.http11:_trace.py:87 response_closed.complete
-DEBUG    openai._base_client:_base_client.py:1566 HTTP Response: POST https://api.openai.com/v1/chat/completions "200 OK" Headers({'date': 'Tue, 17 Mar 2026 23:41:50 GMT', 'content-type': 'application/json', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'cf-ray': '9ddfd95d1d2897f0-SJC', 'cf-cache-status': 'DYNAMIC', 'server': 'cloudflare', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'access-control-expose-headers': 'X-Request-ID', 'openai-organization': 'user-etx5q1mevfmlhuspvw99mfar', 'openai-processing-ms': '15770', 'openai-project': 'proj_n0WXpGNAztsJgWaurhyqBbUz', 'openai-version': '2020-10-01', 'x-openai-proxy-wasm': 'v0.1', 'x-ratelimit-limit-requests': '5000', 'x-ratelimit-limit-tokens': '4000000', 'x-ratelimit-remaining-requests': '4999', 'x-ratelimit-remaining-tokens': '3999723', 'x-ratelimit-reset-requests': '12ms', 'x-ratelimit-reset-tokens': '4ms', 'x-request-id': 'req_8aea1a38f7604321a4e0c0de4e0760dc', 'set-cookie': '__cf_bm=s.KQc4E.bQD_5pAGNwCrcTZsyGFo4LEqnuLM4BtRD1A-1773790893.6125128-1.0.1.1-x3P8GV4Rw55QoEHFTz5kqPAAeG0ypnXCzJ8xjXV0gOpJrEV5zoxDYmIPtoDO1.CvaMiSeYJPCpQ7J1dPBD.TeJ5KzWL4cRVPPHSMY3esB1bXXSD3GNiTJCJIdPT8v5pL; HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Wed, 18 Mar 2026 00:11:50 GMT', 'content-encoding': 'br', 'alt-svc': 'h3=":443"; ma=86400'})
-DEBUG    openai._base_client:_base_client.py:1574 request_id: req_8aea1a38f7604321a4e0c0de4e0760dc
+INFO     llm.llm_processor:llm_processor.py:207 LLM Processor initialized with 1/4 providers
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=60.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 60.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:177 Ollama CLI run completed: rc=0, elapsed=10.9s
 INFO     llm:processor.py:460 🤖 Using model 'gemma3:4b' for LLM prompts
 INFO     llm:processor.py:496   📝 Running prompt 1/6: summarize_content
 DEBUG    llm.cache:cache.py:78 Cache MISS: 69c577ccdecc…
-DEBUG    httpcore.connection:_trace.py:47 close.started
-DEBUG    httpcore.connection:_trace.py:47 close.complete
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x168db6ba0>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'POST']>
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
 ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
 INFO     llm:processor.py:496   📝 Running prompt 2/6: explain_model
 DEBUG    llm.cache:cache.py:78 Cache MISS: 4f3142b6d991…
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x16930e870>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:42:00 GMT'), (b'Transfer-Encoding', b'chunked')])
-INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:177 Ollama CLI run completed: rc=0, elapsed=15.1s
 ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
 INFO     llm:processor.py:496   📝 Running prompt 3/6: identify_components
 DEBUG    llm.cache:cache.py:78 Cache MISS: b10d04275f4c…
-DEBUG    httpcore.connection:_trace.py:47 close.started
-DEBUG    httpcore.connection:_trace.py:47 close.complete
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x16930f770>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:42:11 GMT'), (b'Transfer-Encoding', b'chunked')])
-INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
 ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
 INFO     llm:processor.py:496   📝 Running prompt 4/6: analyze_structure
 DEBUG    llm.cache:cache.py:78 Cache MISS: 9d7886f5276d…
-DEBUG    httpcore.connection:_trace.py:47 close.started
-DEBUG    httpcore.connection:_trace.py:47 close.complete
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1694108c0>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:42:21 GMT'), (b'Transfer-Encoding', b'chunked')])
-INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:177 Ollama CLI run completed: rc=0, elapsed=24.6s
 ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
 INFO     llm:processor.py:496   📝 Running prompt 5/6: extract_parameters
 DEBUG    llm.cache:cache.py:78 Cache MISS: 4ec44d769d57…
-DEBUG    httpcore.connection:_trace.py:47 close.started
-DEBUG    httpcore.connection:_trace.py:47 close.complete
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
-DEBUG    httpcore.connection:_trace.py:47 connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x1694119d0>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:42:31 GMT'), (b'Transfer-Encoding', b'chunked')])
-INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:42:40 GMT'), (b'Transfer-Encoding', b'chunked')])
-INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
-DEBUG    httpcore.connection:_trace.py:47 close.started
-DEBUG    httpcore.connection:_trace.py:47 close.complete
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
 ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
 INFO     llm:processor.py:496   📝 Running prompt 6/6: practical_applications
 DEBUG    llm.cache:cache.py:78 Cache MISS: a33e3944dd4a…
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_headers.complete
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 send_request_body.complete
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Tue, 17 Mar 2026 23:42:50 GMT'), (b'Transfer-Encoding', b'chunked')])
-INFO     httpx:_client.py:1025 HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.started request=<Request [b'POST']>
-DEBUG    httpcore.http11:_trace.py:47 receive_response_body.complete
-DEBUG    httpcore.http11:_trace.py:47 response_closed.started
-DEBUG    httpcore.http11:_trace.py:47 response_closed.complete
-DEBUG    llm.cache:cache.py:113 Cache WRITE: a33e3944dd4a…
-DEBUG    llm:processor.py:525   ✅ Prompt completed successfully
-INFO     llm:processor.py:655 📦 Cache: 0 hits, 6 misses, 1 new entries (0.0% hit ratio)
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:142 Ollama CLI chat: model=gemma3:4b, timeout=30.0s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:159 Ollama CLI chat completed: rc=1, elapsed=0.1s
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:161 Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+DEBUG    llm.providers.ollama_provider:ollama_provider.py:167 Falling back to CLI 'ollama run' with timeout 30.0s
+ERROR    llm:processor.py:528   ❌ Prompt execution timed out after 10 seconds
+INFO     llm:processor.py:655 📦 Cache: 0 hits, 6 misses, 0 new entries (0.0% hit ratio)
 INFO     llm::0 ✅ LLM processing completed successfully
 INFO     llm.providers.ollama_provider:ollama_provider.py:320 Ollama provider closed
-INFO     llm.providers.openai_provider:openai_provider.py:320 OpenAI provider connection closed
 INFO     llm.llm_processor:llm_processor.py:479 LLM Processor closed
 _________________________________ TestLLMProcessing.test_llm_processing_error_handling _________________________________
 -------------------------------------------------- Captured log call ---------------------------------------------------
@@ -620,17 +404,19 @@ INFO     llm::0 Processing LLM with enhanced Ollama integration
 WARNING  llm:processor.py:386 No GNN files found for LLM processing
 ERROR    llm::0 ❌ LLM processing failed
 ================================================= slowest 10 durations =================================================
-200.42s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
-84.37s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs
-60.18s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys[asyncio]
-30.61s call     src/tests/test_llm_ollama.py::test_ollama_simple_chat[asyncio]
-30.07s call     src/tests/test_llm_ollama.py::test_ollama_streaming[asyncio]
-1.61s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_error_handling
+91.14s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_creates_outputs
+90.93s call     src/tests/test_llm_ollama_integration.py::TestLLMProcessing::test_llm_processing_model_selection
+14.15s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys[asyncio]
+4.61s call     src/tests/test_llm_ollama.py::test_ollama_simple_chat[asyncio]
+1.58s call     src/tests/test_llm_ollama.py::test_ollama_streaming[asyncio]
 
-(4 durations < 1s hidden.)
+(5 durations < 1s hidden.)
 =============================================== short test summary info ================================================
 PASSED src/tests/test_llm_ollama.py::test_import_ollama_provider
 PASSED src/tests/test_llm_ollama.py::test_ollama_provider_initialize
+PASSED src/tests/test_llm_ollama.py::test_ollama_simple_chat[asyncio]
+PASSED src/tests/test_llm_ollama.py::test_ollama_streaming[asyncio]
+PASSED src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys[asyncio]
 PASSED src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_check_returns_tuple
 PASSED src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_detection_logging
 PASSED src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_model_listing
@@ -658,7 +444,4 @@ PASSED src/tests/test_llm_overall.py::test_llm_module_completeness
 PASSED src/tests/test_llm_overall.py::test_llm_module_performance
 SKIPPED [1] src/tests/test_llm_ollama_integration.py:259: Set GNN_RUN_LLM_TESTS=1 to run real Ollama prompt tests
 SKIPPED [1] src/tests/test_llm_ollama_integration.py:308: Ollama unavailability testing requires monkeypatch - use real Ollama state for integration tests
-FAILED src/tests/test_llm_ollama.py::test_ollama_simple_chat[asyncio] - subprocess.TimeoutExpired: Command '['ollama', 'run', 'gemma3:4b', "You are a helpful assistant.\n\nReply with the word 'ok'."]' timed out after 30.0 seconds
-FAILED src/tests/test_llm_ollama.py::test_ollama_streaming[asyncio] - subprocess.TimeoutExpired: Command '['ollama', 'run', 'gemma3:4b', 'Give a 1-sentence summary of Active Inference.']' timed out after 30.0 seconds
-FAILED src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys[asyncio] - RuntimeError: All providers failed for analysis
-================================= 3 failed, 27 passed, 2 skipped in 408.68s (0:06:48) ==================================
+====================================== 30 passed, 2 skipped in 203.18s (0:03:23) =======================================

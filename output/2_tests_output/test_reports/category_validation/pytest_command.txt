@@ -1,5 +1,5 @@
 Category: validation
 Success: True
-Duration: 20.15s
-Peak Memory: 30.11 MB
+Duration: 2.01s
+Peak Memory: 42.78 MB
 CPU Usage: 0.0%

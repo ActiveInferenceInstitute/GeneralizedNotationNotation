@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-17T16:54:24.067279",
+  "timestamp": "2026-03-18T09:28:56.257913",
   "execution_results_dir": "output/12_execute_output/markov_chain",
   "framework_results": {
     "rxinfer": {
@@ -61,6 +61,15 @@
               -0.009712200787717729
             ],
             [
+              -0.2967936235896037
+            ],
+            [
+              -0.2967936235896039
+            ],
+            [
+              -0.009712200787717729
+            ],
+            [
               -0.00971220078771795
             ],
             [
@@ -73,13 +82,7 @@
               -0.20066645127616145
             ],
             [
-              -0.29679362358960304
-            ],
-            [
-              -0.2967936235896039
-            ],
-            [
-              -0.2967936235896039
+              -0.20066645127616145
             ],
             [
               -0.009712200787717729
@@ -94,22 +97,19 @@
               -0.2967936235896039
             ],
             [
-              -0.009712200787717729
+              -0.20066645127616034
             ],
             [
-              -0.00971220078771795
-            ],
-            [
-              -0.00971220078771795
+              -0.20066645127616145
             ]
           ],
-          "mean_free_energy": -0.16273562000616096,
-          "std_free_energy": 0.12977995089303795,
+          "mean_free_energy": -0.18178770858372387,
+          "std_free_energy": 0.11156766721549018,
           "min_free_energy": -0.2967936235896039,
           "max_free_energy": -0.009712200787717729,
-          "free_energy_trend": 0.0020320088180357234,
-          "free_energy_decreasing": "False",
-          "convergence_variance": 1.0956735824240509e-32,
+          "free_energy_trend": -0.00852706492205271,
+          "free_energy_decreasing": "True",
+          "convergence_variance": 0.00205342961266186,
           "converged": true
         }
       ]
@@ -122,7 +122,23 @@
     "jax": {
       "framework": "jax",
       "result_count": 1,
-      "analyses": []
+      "analyses": [
+        {
+          "framework": "jax",
+          "model_name": "markov_chain",
+          "free_energy_count": 2,
+          "free_energy_values": [
+            0.0693,
+            0.0693
+          ],
+          "mean_free_energy": 0.0693,
+          "std_free_energy": 0.0,
+          "min_free_energy": 0.0693,
+          "max_free_energy": 0.0693,
+          "free_energy_trend": 0.0,
+          "free_energy_decreasing": "False"
+        }
+      ]
     },
     "discopy": {
       "framework": "discopy",
@@ -143,27 +159,38 @@
     ],
     "framework_count": 7,
     "comparisons": {
+      "free_energy": {
+        "jax": {
+          "mean": 0.0693,
+          "min": 0.0693,
+          "max": 0.0693
+        }
+      },
+      "best_free_energy": {
+        "framework": "jax",
+        "mean_fe": 0.0693
+      },
       "execution_time": {
-        "rxinfer": 16.057449,
-        "numpyro": 0.027361,
-        "activeinference_jl": 11.429983,
-        "pymdp": 1.188247,
-        "pytorch": 0.027055,
-        "jax": 0.020227,
-        "discopy": 0.064115
+        "rxinfer": 18.243363,
+        "numpyro": 1.102053,
+        "activeinference_jl": 15.561105,
+        "pymdp": 1.883999,
+        "pytorch": 0.734254,
+        "jax": 1.036204,
+        "discopy": 0.419671
       },
       "fastest_execution": {
-        "framework": "jax",
-        "time": 0.020227
+        "framework": "discopy",
+        "time": 0.419671
       },
       "success_rates": {
         "rxinfer": true,
-        "numpyro": false,
+        "numpyro": true,
         "activeinference_jl": true,
         "pymdp": true,
-        "pytorch": false,
-        "jax": false,
-        "discopy": false
+        "pytorch": true,
+        "jax": true,
+        "discopy": true
       }
     }
   }

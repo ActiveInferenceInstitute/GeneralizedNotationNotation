@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.148874,
-  "timestamp": "2026-03-17T16:49:25.116796",
+  "execution_time": 1.819955,
+  "timestamp": "2026-03-18T09:21:50.152490",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -16,14 +16,14 @@
       0,
       0,
       0,
-      0,
-      0,
-      2,
+      1,
+      1,
       1,
       0,
-      0,
-      0,
-      0,
+      1,
+      1,
+      2,
+      1,
       0,
       0,
       0
@@ -47,7 +47,7 @@
     ],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-17 16:49:26,155 - __main__ - INFO - A matrix shape: (3, 3)\n2026-03-17 16:49:26,155 - __main__ - INFO - B matrix shape: (3, 3, 3)\n2026-03-17 16:49:26,155 - __main__ - INFO - C vector shape: (3,)\n2026-03-17 16:49:26,155 - __main__ - INFO - D vector shape: (3,)\n2026-03-17 16:49:26,155 - __main__ - INFO - Starting PyMDP simulation for Multi Armed Bandit Agent\n2026-03-17 16:49:26,155 - __main__ - INFO - Output directory: output/pymdp_simulations/Multi Armed Bandit Agent\n2026-03-17 16:49:26,155 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-17 16:49:26,155 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-17 16:49:26,156 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-17 16:49:26,157 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=2, obs=1, belief=[0.3 0.4 0.3], action=0.0\n2026-03-17 16:49:26,157 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=2, obs=0, belief=[0.08 0.52 0.4 ], action=0.0\n2026-03-17 16:49:26,158 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=2, obs=0, belief=[0.03 0.54 0.43], action=0.0\n2026-03-17 16:49:26,158 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=2, obs=0, belief=[0.02 0.54 0.44], action=0.0\n2026-03-17 16:49:26,158 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=2, obs=0, belief=[0.01 0.54 0.45], action=0.0\n2026-03-17 16:49:26,159 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=2, obs=0, belief=[0.01 0.53 0.46], action=0.0\n2026-03-17 16:49:26,159 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=0, obs=2, belief=[0.21 0.29 0.5 ], action=0.0\n2026-03-17 16:49:26,160 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=1, obs=1, belief=[0.21 0.36 0.43], action=0.0\n2026-03-17 16:49:26,160 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=1, obs=0, belief=[0.06 0.43 0.51], action=0.0\n2026-03-17 16:49:26,160 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=1, obs=0, belief=[0.02 0.45 0.53], action=0.0\n2026-03-17 16:49:26,161 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=1, obs=0, belief=[0.01 0.46 0.53], action=0.0\n2026-03-17 16:49:26,161 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=1, obs=0, belief=[0.01 0.46 0.52], action=0.0\n2026-03-17 16:49:26,161 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=1, obs=0, belief=[0.01 0.47 0.52], action=0.0\n2026-03-17 16:49:26,162 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=1, obs=0, belief=[0.01 0.47 0.52], action=0.0\n2026-03-17 16:49:26,162 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=1, obs=0, belief=[0.01 0.47 0.51], action=0.0\n2026-03-17 16:49:26,162 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-17 16:49:26,162 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Multi Armed Bandit Agent/simulation_results.json\n2026-03-17 16:49:26,162 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-17 16:49:26,162 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-17 16:49:26,162 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-17 16:49:26,162 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-17 16:49:26,162 - __main__ - INFO - Results summary:\n2026-03-17 16:49:26,162 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-17 16:49:26,162 - __main__ - INFO -   Success: True\n2026-03-17 16:49:26,162 - __main__ - INFO -   Output: output/pymdp_simulations/Multi Armed Bandit Agent\n",
+    "raw_error": "2026-03-18 09:21:51,734 - __main__ - INFO - A matrix shape: (3, 3)\n2026-03-18 09:21:51,734 - __main__ - INFO - B matrix shape: (3, 3, 3)\n2026-03-18 09:21:51,734 - __main__ - INFO - C vector shape: (3,)\n2026-03-18 09:21:51,734 - __main__ - INFO - D vector shape: (3,)\n2026-03-18 09:21:51,735 - __main__ - INFO - Starting PyMDP simulation for Multi Armed Bandit Agent\n2026-03-18 09:21:51,735 - __main__ - INFO - Output directory: output/pymdp_simulations/Multi Armed Bandit Agent\n2026-03-18 09:21:51,735 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-18 09:21:51,735 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-18 09:21:51,735 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-18 09:21:51,736 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=2, obs=1, belief=[0.3 0.4 0.3], action=0.0\n2026-03-18 09:21:51,736 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=2, obs=0, belief=[0.08 0.52 0.4 ], action=0.0\n2026-03-18 09:21:51,736 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=2, obs=0, belief=[0.03 0.54 0.43], action=0.0\n2026-03-18 09:21:51,737 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=2, obs=0, belief=[0.02 0.54 0.44], action=0.0\n2026-03-18 09:21:51,737 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=2, obs=1, belief=[0.05 0.58 0.37], action=0.0\n2026-03-18 09:21:51,737 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=2, obs=1, belief=[0.08 0.61 0.31], action=0.0\n2026-03-18 09:21:51,737 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=2, obs=1, belief=[0.1  0.64 0.26], action=0.0\n2026-03-18 09:21:51,738 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=2, obs=0, belief=[0.03 0.67 0.3 ], action=0.0\n2026-03-18 09:21:51,738 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=2, obs=1, belief=[0.06 0.68 0.26], action=0.0\n2026-03-18 09:21:51,738 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=2, obs=1, belief=[0.09 0.69 0.22], action=0.0\n2026-03-18 09:21:51,738 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=2, obs=2, belief=[0.4  0.35 0.26], action=0.0\n2026-03-18 09:21:51,739 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=2, obs=1, belief=[0.35 0.41 0.24], action=0.0\n2026-03-18 09:21:51,739 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=2, obs=0, belief=[0.1  0.55 0.35], action=0.0\n2026-03-18 09:21:51,739 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=2, obs=0, belief=[0.03 0.58 0.39], action=0.0\n2026-03-18 09:21:51,740 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=2, obs=0, belief=[0.02 0.58 0.41], action=0.0\n2026-03-18 09:21:51,740 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-18 09:21:51,740 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Multi Armed Bandit Agent/simulation_results.json\n2026-03-18 09:21:51,740 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-18 09:21:51,740 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-18 09:21:51,740 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-18 09:21:51,740 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-18 09:21:51,740 - __main__ - INFO - Results summary:\n2026-03-18 09:21:51,740 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-18 09:21:51,740 - __main__ - INFO -   Success: True\n2026-03-18 09:21:51,740 - __main__ - INFO -   Output: output/pymdp_simulations/Multi Armed Bandit Agent\n",
     "beliefs": [
       [
         0.30000000000000004,
@@ -70,59 +70,59 @@
         0.44470173242064265
       ],
       [
-        0.013277672896987894,
-        0.5359946658907309,
-        0.4507276612122813
+        0.053896477208274764,
+        0.5801864933824883,
+        0.365917029409237
       ],
       [
-        0.01288914387622843,
-        0.5316622368252594,
-        0.45544861929851227
+        0.08112423288693107,
+        0.6131913279125976,
+        0.3056844392004713
       ],
       [
-        0.20996182025570784,
-        0.2881393683752358,
-        0.5018988113690563
+        0.09992874436855159,
+        0.6397968288206126,
+        0.26027442681083585
       ],
       [
-        0.20801808886137266,
-        0.3580282382341957,
-        0.43395367290443165
+        0.030253834785319362,
+        0.6656895171426386,
+        0.304056648072042
       ],
       [
-        0.05541897574206991,
-        0.4328690956963817,
-        0.5117119285615485
+        0.06282012598903487,
+        0.6812654935852108,
+        0.25591438042575443
       ],
       [
-        0.021057039996361947,
-        0.4531409416695071,
-        0.525802018334131
+        0.08547391939907449,
+        0.6933728881171323,
+        0.22115319248379328
       ],
       [
-        0.01435969818956102,
-        0.460165428399999,
-        0.52547487341044
+        0.39752557816825645,
+        0.345371451168494,
+        0.25710297066324966
       ],
       [
-        0.01309270168606241,
-        0.4642435039901645,
-        0.5226637943237731
+        0.3480386859669357,
+        0.4110171725372678,
+        0.24094414149579646
       ],
       [
-        0.012854377381198816,
-        0.4674675619378824,
-        0.5196780606809187
+        0.09562194770112248,
+        0.5521166789574163,
+        0.35226137334146124
       ],
       [
-        0.012809596393101575,
-        0.4702687876298114,
-        0.5169216159770871
+        0.029336763841316622,
+        0.5802374064017146,
+        0.3904258297569687
       ],
       [
-        0.012801183776193353,
-        0.47275669663441167,
-        0.514442119589395
+        0.015943017818874586,
+        0.5778428990573287,
+        0.4062140831237967
       ]
     ],
     "num_timesteps": 15

@@ -1,23 +1,21 @@
-DEBUG:2026-03-17 16:26:54,829:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
-2026-03-17 16:26:54,829 - jax._src.path - DEBUG - etils.epath found. Using etils.epath for file I/O.
-2026-03-17 16:26:57,968 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [2, 1], type=int
-2026-03-17 16:26:57,968 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [2, 1]
-2026-03-17 16:26:57,969 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
-2026-03-17 16:26:57,969 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
-2026-03-17 16:26:58,273 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'A' with dimensions [3, 3], type=float
-2026-03-17 16:26:58,273 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: A with dimensions [3, 3]
-2026-03-17 16:26:58,273 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'B' with dimensions [3, 3, 3], type=float
-2026-03-17 16:26:58,273 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: B with dimensions [3, 3, 3]
-2026-03-17 16:26:58,363 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'A' with dimensions [3, 3], type=float
-2026-03-17 16:26:58,363 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: A with dimensions [3, 3]
-2026-03-17 16:26:58,363 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'B' with dimensions [3, 3], type=float
-2026-03-17 16:26:58,363 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: B with dimensions [3, 3]
-2026-03-17 16:26:58,363 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['A'] -> ['B']
-2026-03-17 16:26:58,363 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['B'] -> ['A']
-2026-03-17 16:26:58,373 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Description' stored as extension
-2026-03-17 16:26:58,373 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Description' stored as extension
-2026-03-17 16:26:58,384 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [2, 1], type=int
-2026-03-17 16:26:58,387 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [2, 1]
-2026-03-17 16:26:58,387 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
-2026-03-17 16:26:58,387 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
-2026-03-17 16:26:58,394 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Level 2' stored as extension
+2026-03-18 10:07:11,285 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [2, 1], type=int
+2026-03-18 10:07:11,285 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [2, 1]
+2026-03-18 10:07:11,285 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-18 10:07:11,285 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-18 10:07:11,285 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'A' with dimensions [3, 3], type=float
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: A with dimensions [3, 3]
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'B' with dimensions [3, 3, 3], type=float
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: B with dimensions [3, 3, 3]
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'A' with dimensions [3, 3], type=float
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: A with dimensions [3, 3]
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 'B' with dimensions [3, 3], type=float
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: B with dimensions [3, 3]
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['A'] -> ['B']
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['B'] -> ['A']
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Description' stored as extension
+2026-03-18 10:07:11,286 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Description' stored as extension
+2026-03-18 10:07:11,287 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [2, 1], type=int
+2026-03-18 10:07:11,287 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [2, 1]
+2026-03-18 10:07:11,287 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-18 10:07:11,287 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-18 10:07:11,291 - gnn.parsers.markdown_parser - DEBUG - Unknown section 'Level 2' stored as extension

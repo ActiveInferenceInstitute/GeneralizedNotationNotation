@@ -591,7 +591,7 @@ jobs:
     
     - name: Generate documentation
       run: |
-        python scripts/generate_model_docs.py
+        uv run python src/20_website.py --target-dir models/ --output-dir output --verbose
 ```
 
 ### How do I deploy GNN models to production?
