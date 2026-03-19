@@ -613,6 +613,14 @@ class MCP:
 
             tool = self.tools[tool_name]
 
+            # Enforce auth gate: tools that require authentication are unavailable
+            # in this local-only server (no auth mechanism is configured).
+            if tool.requires_auth:
+                raise MCPToolNotFoundError(
+                    tool_name,
+                    [t for t, v in self.tools.items() if not v.requires_auth]
+                )
+
             # Simplified validation
             if tool.input_validation:
                 if 'required' in tool.schema:
