@@ -38,6 +38,7 @@ class TestPipelineDiscovery:
     @pytest.mark.safe_to_fail
     def test_get_pipeline_scripts(self, project_root):
         """Test pipeline script discovery."""
+        scripts = []
         try:
             from src.pipeline.discovery import get_pipeline_scripts
 
@@ -65,6 +66,7 @@ class TestPipelineDiscovery:
     @pytest.mark.safe_to_fail
     def test_discover_steps(self, project_root):
         """Test step discovery using available function."""
+        scripts = []
         try:
             from src.pipeline.discovery import get_pipeline_scripts
 

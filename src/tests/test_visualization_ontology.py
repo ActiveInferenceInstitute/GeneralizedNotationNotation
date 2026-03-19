@@ -11,7 +11,10 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.conftest import *
+try:
+    from visualization.ontology_visualizer import OntologyVisualizer
+except Exception:
+    OntologyVisualizer = None
 
 
 # Migrated from test_visualization.py

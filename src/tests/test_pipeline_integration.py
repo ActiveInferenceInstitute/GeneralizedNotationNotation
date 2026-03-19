@@ -82,7 +82,7 @@ class TestPipelineStepIntegration:
             logger=logger
         )
 
-        assert result is not None or result is None
+        assert isinstance(result, bool)
 
 
 class TestPipelineExternalIntegration:

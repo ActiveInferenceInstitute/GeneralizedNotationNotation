@@ -189,7 +189,7 @@ B -> C: "preferences"
             matrices = mv.extract_matrix_data_from_parameters(parameters)
 
             assert isinstance(matrices, dict)
-            assert len(matrices) >= 0  # May be empty if extraction fails
+            assert isinstance(matrices, list)  # May be empty if extraction fails
 
         except ImportError:
             pytest.skip("MatrixVisualizer not available (missing dependencies)")

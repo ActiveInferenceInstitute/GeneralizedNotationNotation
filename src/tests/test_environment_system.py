@@ -221,7 +221,7 @@ class TestSystemPath:
         clean_parts = [p for p in messy_path.parts if p not in ('.', '..')]
 
         # Should be able to normalize
-        assert len(clean_parts) >= 0
+        assert isinstance(clean_parts, list)
 
 
 class TestSystemLocale:

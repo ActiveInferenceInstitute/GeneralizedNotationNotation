@@ -22,7 +22,6 @@ SRC_DIR = PROJECT_ROOT / "src"
 
 sys.path.insert(0, str(SRC_DIR))
 
-from tests.conftest import *
 
 
 class TestDiScoPyModuleCreation:

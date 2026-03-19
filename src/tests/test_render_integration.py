@@ -107,7 +107,7 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
             if success:
                 output_files = list(output_dir.rglob("*"))
                 # Should create some output files
-                assert len(output_files) >= 0  # May be 0 if no renderers available
+                assert isinstance(output_files, list)  # May be empty if no renderers available
 
         except Exception as e:
             pytest.fail(f"Render processing crashed: {e}")

@@ -94,7 +94,7 @@ class TestReportPipelineIntegration:
         )
 
         # Should complete without error
-        assert result is not None or result is None
+        assert isinstance(result, bool)
 
 
 class TestReportGNNIntegration:
@@ -134,7 +134,7 @@ class TestReportGNNIntegration:
         )
 
         # Should produce some output
-        assert result is not None or result is None
+        assert isinstance(result, bool)
 
 
 class TestReportAnalysisIntegration:

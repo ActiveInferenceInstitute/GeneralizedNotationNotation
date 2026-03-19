@@ -406,7 +406,7 @@ Minimize free energy while maintaining preferred states.
         # May have prompt-specific directories if Ollama was available
         prompt_dirs = list(llm_output_dir.glob("prompts_*"))
         # At least 0 prompt directories (depends on Ollama availability)
-        assert len(prompt_dirs) >= 0
+        assert isinstance(prompt_dirs, list)
 
     @pytest.mark.slow
     @pytest.mark.timeout(60)  # 1 minute timeout for error case

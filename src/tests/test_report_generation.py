@@ -203,7 +203,7 @@ class TestReportValidation:
 
         result = validate_report({})
         # Empty data should be handled gracefully
-        assert result is not None or result is None
+        assert result is not None
 
 
 class TestReportModuleInfo:

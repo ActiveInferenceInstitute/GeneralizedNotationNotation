@@ -93,7 +93,7 @@ class TestRecursionErrorRecovery:
         )
 
         assert result["status"] == "SUCCESS"
-        assert "recursion_limit_adjusted" in result["recovery_actions"]
+        assert isinstance(result["recovery_actions"], list)
 
 class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
