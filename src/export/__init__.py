@@ -9,7 +9,6 @@ from .processor import (
     export_single_gnn_file,
     parse_gnn_content,
     export_model,
-    _gnn_model_to_dict,
     export_gnn_model
 )
 
@@ -86,6 +85,7 @@ class Exporter:
         """
         from pathlib import Path
         import tempfile
+        from .processor import _gnn_model_to_dict
         model_data = _gnn_model_to_dict(gnn_content)
         with tempfile.TemporaryDirectory() as tmp:
             out = export_model(model_data, Path(tmp), formats=[format_name])
@@ -101,6 +101,7 @@ class MultiFormatExporter:
     def export_to_multiple_formats(self, gnn_content: str, formats: list[str]) -> dict:
         from pathlib import Path
         import tempfile
+        from .processor import _gnn_model_to_dict
         model_data = _gnn_model_to_dict(gnn_content)
         with tempfile.TemporaryDirectory() as tmp:
             out = export_model(model_data, Path(tmp), formats=formats)

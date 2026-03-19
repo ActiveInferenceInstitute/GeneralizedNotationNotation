@@ -253,7 +253,7 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
         }
     else:
         # Recovery to lightweight processing expected by recovery tests
-        light = process_gnn_directory_lightweight(Path(target_dir))
+        light = _scan_files_lightweight(Path(target_dir))
         result = {
             "status": "SUCCESS",
             "processed_files": list(light.keys()),
@@ -271,8 +271,8 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
     return result
 
 
-def process_gnn_directory_lightweight(target_dir: Path) -> Dict[str, Any]:
-    """Very lightweight processing returning a mapping of file path to status, expected by tests."""
+def _scan_files_lightweight(target_dir: Path) -> Dict[str, Any]:
+    """Internal: scan files without heavy deps, returns {path: status} mapping."""
     files = list(Path(target_dir).glob("**/*.md"))
     return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
 
