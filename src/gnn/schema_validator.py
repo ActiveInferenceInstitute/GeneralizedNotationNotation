@@ -330,7 +330,11 @@ class GNNParser:
         return hashlib.md5(checksum_str.encode(), usedforsecurity=False).hexdigest()
 
     def _parse_markdown_content(self, content: str, source_name: str) -> ParsedGNN:
-        """Parse GNN content from string (markdown format)."""
+        """Parse GNN content from string (markdown format).
+
+        Side effects: resets self.line_number to 0 and self.current_section to None
+        at the start of each call, then mutates both as parsing progresses.
+        """
         lines = content.split('\n')
         self.line_number = 0
         self.current_section = None
