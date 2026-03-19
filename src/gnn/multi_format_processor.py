@@ -14,7 +14,6 @@ from typing import Any, Dict, List
 import json
 import logging
 
-from pipeline.config import get_output_dir_for_script
 from utils import log_step_start, log_step_success, log_step_error
 
 
@@ -38,7 +37,8 @@ def process_gnn_multi_format(
     Returns:
         True on success, False otherwise
     """
-    # Resolve step-specific output directory
+    # Resolve step-specific output directory (lazy import avoids gnn → pipeline coupling)
+    from pipeline.config import get_output_dir_for_script
     step_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
     step_output_dir.mkdir(parents=True, exist_ok=True)
 

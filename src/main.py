@@ -404,8 +404,8 @@ def main(override_args=None, override_config: Optional[Dict[str, Any]] = None):
         if STRUCTURED_LOGGING_AVAILABLE:
             progress_tracker = PipelineProgressTracker(len(steps_to_execute))
             # Set global progress tracker so structured logging functions can use it
-            import utils.logging.logging_utils as logging_utils_module
-            logging_utils_module._global_progress_tracker = progress_tracker
+            from utils.logging.logging_utils import set_global_progress_tracker
+            set_global_progress_tracker(progress_tracker)
 
         # Validate step sequence before execution
         sequence_validation = validate_pipeline_step_sequence(steps_to_execute, logger)
