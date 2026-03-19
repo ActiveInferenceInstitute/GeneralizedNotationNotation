@@ -367,20 +367,6 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
             source_format=source_format
         )
     except Exception as e:
-        # Recovery to minimal representation on error
-        from .types import ParsedGNN
-        return ParsedGNN(
-            gnn_section=f"{source_format.upper()}GNN",
-            version="1.0",
-            model_name="ConversionError",
-            model_annotation=f"Error converting parse result: {e}",
-            variables={},
-            connections=[],
-            parameters={},
-            equations=[],
-            time_config={},
-            ontology_mappings={},
-            model_parameters={},
-            footer="",
-            source_format=source_format
-        )
+        raise RuntimeError(
+            f"Failed to convert parse result from format '{source_format}': {e}"
+        ) from e
