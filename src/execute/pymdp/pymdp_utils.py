@@ -148,8 +148,6 @@ def clean_trace_for_serialization(trace: Dict[str, Any]) -> Dict[str, Any]:
                     cleaned_list.append(None)
                 elif isinstance(item, np.ndarray):
                     cleaned_list.append(item.tolist())
-                elif isinstance(item, (np.integer, np.floating)):
-                    cleaned_list.append(convert_numpy_for_json(item))
                 else:
                     cleaned_list.append(convert_numpy_for_json(item))
             cleaned_trace[key] = cleaned_list
@@ -194,7 +192,7 @@ def save_simulation_results(traces: List[Dict], metrics: Dict[str, List],
     if model_matrices:
         results['matrices'] = safe_pickle_dump(model_matrices, output_dir / 'model_matrices.pkl')
     else:
-        results['matrices'] = True  # Not applicable
+        results['matrices'] = None  # Not applicable — no matrices provided
 
     return results
 

@@ -628,20 +628,8 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             fig.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3)
 
             try:
-                # Use safe DPI handling similar to processor.py
-                def _safe_dpi_value(dpi_input):
-                    """Validate and sanitize DPI value."""
-                    try:
-                        dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 96
-                        # Ensure DPI is within very safe bounds to prevent overflow
-                        return max(72, min(dpi_val, 150))
-                    except (ValueError, TypeError):
-                        return 96  # Very safe default
-
-                # Use the same safe dimensions we set during creation
-                # Don't change figure size - keep what we set during creation
-                safe_dpi = _safe_dpi_value(96)
-                plt.savefig(output_path, dpi=safe_dpi, bbox_inches='tight')
+                # Use safe DPI constant (96 is within [72, 150] bounds)
+                plt.savefig(output_path, dpi=96, bbox_inches='tight')
             except Exception:
                 try:
                     # Recovery with smaller figure and very safe DPI

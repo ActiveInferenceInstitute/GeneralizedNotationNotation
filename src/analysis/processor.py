@@ -126,8 +126,16 @@ def process_analysis(
             "statistical_analysis": [],
             "complexity_metrics": [],
             "performance_benchmarks": [],
-            "model_comparisons": []
+            "model_comparisons": [],
+            "visualization_files": []
         }
+
+        # Resolve execution results directory once at the top so all branches can reference it
+        try:
+            from pipeline.config import get_output_dir_for_script
+            execution_dir = get_output_dir_for_script("12_execute.py", output_dir.parent)
+        except ImportError:
+            execution_dir = output_dir.parent / "12_execute_output"
 
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
@@ -155,7 +163,7 @@ def process_analysis(
 
                     # Generate matrix visualizations (moved from Step 8)
                     matrix_viz = generate_matrix_visualizations({"matrices": stats_analysis.get("matrices", [])}, results_dir, gnn_file.stem)
-                    results["visualization_files"] = results.get("visualization_files", []) + matrix_viz
+                    results["visualization_files"].extend(matrix_viz)
 
                 except Exception as e:
                     error_info = {
@@ -167,8 +175,7 @@ def process_analysis(
                     logger.error(f"Error processing {gnn_file}: {e}")
 
             # 2. Post-Simulation Analysis: Load execution results if available
-            execution_dir = output_dir.parent / "12_execute_output"
-
+            # (execution_dir resolved above, before the gnn_files check)
             # Log the exact path being searched for debugging
             logger.info(f"Looking for execution results in: {execution_dir}")
 
@@ -190,7 +197,7 @@ def process_analysis(
 
                         # Generate empirical visualizations from execution summary
                         empirical_viz = visualize_simulation_results(execution_results_data, results_dir)
-                        results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
+                        results["visualization_files"].extend(empirical_viz)
                         logger.info(f"Generated {len(empirical_viz)} empirical visualizations from execution summary")
                     except (json.JSONDecodeError, OSError, ValueError, KeyError) as e:
                         logger.warning(f"Failed to load execution summary: {e}")
@@ -261,7 +268,7 @@ def process_analysis(
                         logger.info(f"Generating {display_name} visualizations...")
                         fw_viz = mod.generate_analysis_from_logs(execution_dir, fw_output_dir, verbose)
                         if fw_viz:
-                            results["visualization_files"] = results.get("visualization_files", []) + fw_viz
+                            results["visualization_files"].extend(fw_viz)
                             logger.info(f"Generated {len(fw_viz)} {display_name} visualization files")
                     except ImportError as e:
                         logger.debug(f"{module_key} analyzer not available: {e}")
@@ -276,10 +283,6 @@ def process_analysis(
                 results["model_comparisons"].append(comparisons)
 
         # Perform cross-framework analysis if execution results exist
-        # Use the same execution_dir variable from above if set, otherwise resolve it
-        if 'execution_dir' not in locals() or not execution_dir.exists():
-            execution_dir = output_dir.parent / "12_execute_output"
-
         if execution_dir.exists():
             logger.info("Performing cross-framework analysis...")
             try:
@@ -294,7 +297,7 @@ def process_analysis(
 
                 # Generate comparison visualizations
                 comparison_viz = visualize_cross_framework_metrics(framework_comparison, results_dir, logger)
-                results["visualization_files"] = results.get("visualization_files", []) + comparison_viz
+                results["visualization_files"].extend(comparison_viz)
 
                 logger.info(f"Generated {len(comparison_viz)} cross-framework comparison visualizations")
             except Exception as e:
@@ -311,7 +314,7 @@ def process_analysis(
                 viz_output_dir = results_dir / "cross_framework"
                 comprehensive_viz = visualize_all_framework_outputs(execution_dir, viz_output_dir, logger)
                 results["comprehensive_visualizations"] = comprehensive_viz
-                results["visualization_files"] = results.get("visualization_files", []) + comprehensive_viz
+                results["visualization_files"].extend(comprehensive_viz)
 
                 logger.info(f"Generated {len(comprehensive_viz)} comprehensive visualization files")
 
@@ -350,7 +353,7 @@ def process_analysis(
                             viz_output_dir / "unified_dashboard",
                             model_name=model_name
                         )
-                        results["visualization_files"] = results.get("visualization_files", []) + dashboard_viz
+                        results["visualization_files"].extend(dashboard_viz)
                         logger.info(f"Generated {len(dashboard_viz)} unified dashboard visualizations")
                     else:
                         logger.info("Less than 2 frameworks with data - skipping unified dashboard")
