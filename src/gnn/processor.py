@@ -330,16 +330,14 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         "processed_files": [fp for fp in file_paths if fp],
     }
     if output_dir is not None:
-        from pathlib import Path as _P
-        import json as _json
-        _p = _P(output_dir)
+        import tempfile, os
+        output_path = Path(output_dir)
         try:
-            _p.mkdir(parents=True, exist_ok=True)
-            _result_path = _p / "gnn_processing_results.json"
-            import tempfile as _tempfile, os as _os
-            with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=_result_path.parent, delete=False) as _tmp_f:
-                _tmp_f.write(_json.dumps(result, indent=2))
-            _os.replace(_tmp_f.name, str(_result_path))
+            output_path.mkdir(parents=True, exist_ok=True)
+            result_file = output_path / "gnn_processing_results.json"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=result_file.parent, delete=False) as tmp_f:
+                tmp_f.write(json.dumps(result, indent=2))
+            os.replace(tmp_f.name, str(result_file))
         except Exception as e:
             logging.getLogger(__name__).debug(f"Error writing GNN processing results: {e}")
     return result
@@ -403,25 +401,7 @@ def generate_gnn_report(processing_results: Dict[str, Any], output_path: Union[s
     return report
 
 def get_module_info() -> Dict[str, Any]:
-    """
-    Get metadata and capability information about the GNN module.
-
-    Returns a dictionary describing the module's version, features,
-    and available functionality. Used for introspection, documentation,
-    and capability discovery by other pipeline components.
-
-    Returns:
-        Dictionary containing:
-            - name: Module display name
-            - version: Semantic version string
-            - description: Brief module description
-            - features: List of feature names
-            - available_validators: List of validator types
-            - available_parsers: List of parser types
-            - schema_formats: List of supported schema formats
-            - supported_formats: List of input file formats
-            - capabilities: Dict of boolean capability flags
-    """
+    """Return metadata and capability information about the GNN module."""
     return {
         "name": "GNN Module",
         "version": "1.0.0",
