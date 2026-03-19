@@ -682,6 +682,10 @@ class MCP:
             if not matching_resource:
                 raise MCPResourceNotFoundError(uri)
 
+            # Enforce auth gate — mirrors execute_tool() pattern
+            if matching_resource.requires_auth:
+                raise MCPResourceNotFoundError(uri)
+
             try:
                 # Retrieve resource content
                 content = matching_resource.retriever(uri)
