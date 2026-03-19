@@ -72,12 +72,11 @@ except ImportError:
         """Recovery PyMDPRenderer when module unavailable."""
         def render(self, spec): return ""
 
-try:
-    from .jax.jax_renderer import JAXRenderer
-except ImportError:
-    class JAXRenderer:
-        """Recovery JAXRenderer when module unavailable."""
-        def render(self, spec): return ""
+# JAXRenderer: jax_renderer.py provides functions only (render_gnn_to_jax, etc.),
+# not a class. Provide a minimal stub for tests that reference JAXRenderer by name.
+class JAXRenderer:
+    """Minimal JAXRenderer stub; JAX rendering uses render_gnn_to_jax() functions."""
+    def render(self, spec): return ""
 
 
 def get_supported_frameworks():
