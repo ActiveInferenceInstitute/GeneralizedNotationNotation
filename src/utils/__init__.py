@@ -47,17 +47,15 @@ try:
         setup_main_logging,
         log_section_header,
         get_performance_summary,
-        PerformanceTracker,
-        performance_tracker,
         setup_correlation_context
     )
+    # PerformanceTracker imported from its canonical module below
     # log_step_{start,success,warning,error} come from structured_logging below
 
     from .argument_utils import (
         ArgumentParser,
         PipelineArguments,
         build_step_command_args,
-        get_step_output_dir,
         StepConfiguration,
         get_pipeline_step_info,
         validate_pipeline_configuration,
@@ -249,8 +247,6 @@ __all__ = [
     'log_step_error',
     'log_section_header',
     'get_performance_summary',
-    'PerformanceTracker',
-    'performance_tracker',
     'setup_correlation_context',
 
     # Argument utilities
@@ -279,7 +275,6 @@ __all__ = [
 
     # Pipeline planning
     'generate_execution_plan',
-    'get_step_output_dir',
     'StepConfiguration',
     'get_pipeline_step_info',
     'validate_pipeline_configuration',
