@@ -123,6 +123,38 @@ class PyMDPRenderer:
             self.logger.error(error_msg)
             return False, error_msg
 
+    def render_spec(self, gnn_spec: Dict[str, Any], output_path: Path) -> Tuple[bool, str, List[str]]:
+        """
+        Render a pre-parsed GNN specification to a PyMDP simulation script.
+
+        Args:
+            gnn_spec: Parsed GNN specification dictionary
+            output_path: Path for output PyMDP script
+
+        Returns:
+            Tuple of (success, message, warnings)
+        """
+        try:
+            model_name = gnn_spec.get('model_name', 'GNN_Model')
+            pymdp_code = self._generate_pymdp_simulation_code(gnn_spec, model_name)
+
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(pymdp_code)
+
+            warnings = []
+            if not gnn_spec.get('initial_parameterization'):
+                warnings.append("No initial parameterization found - using defaults")
+            if not gnn_spec.get('model_parameters'):
+                warnings.append("No model parameters found - using inferred dimensions")
+
+            return True, f"Generated PyMDP simulation script: {output_path}", warnings
+
+        except Exception as e:
+            error_msg = f"Error rendering spec to {output_path}: {e}"
+            self.logger.error(error_msg)
+            return False, error_msg, []
+
     def render_directory(self, output_dir: Path, input_dir: Optional[Path] = None) -> Dict[str, Any]:
         """
         Render all GNN files in a directory to PyMDP simulation code.
@@ -472,27 +504,7 @@ def render_gnn_to_pymdp(
     """
     try:
         renderer = PyMDPRenderer(options)
-
-        # Generate simulation code directly from spec
-        model_name = gnn_spec.get('model_name', 'GNN_Model')
-        pymdp_code = renderer._generate_pymdp_simulation_code(gnn_spec, model_name)
-
-        # Write output file
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, 'w', encoding='utf-8') as f:
-            f.write(pymdp_code)
-
-        message = f"Generated PyMDP simulation script: {output_path}"
-        warnings = []
-
-        # Check for potential issues
-        if not gnn_spec.get('initial_parameterization'):
-            warnings.append("No initial parameterization found - using defaults")
-
-        if not gnn_spec.get('model_parameters'):
-            warnings.append("No model parameters found - using inferred dimensions")
-
-        return True, message, warnings
+        return renderer.render_spec(gnn_spec, output_path)
 
     except Exception as e:
         return False, f"Error generating PyMDP script: {e}", []

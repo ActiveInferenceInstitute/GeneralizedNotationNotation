@@ -3,8 +3,9 @@
 GNN processor module for GNN pipeline.
 """
 
+from fnmatch import fnmatch
 from pathlib import Path
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Optional, Union
 import logging
 import json
 import re
@@ -37,17 +38,18 @@ def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None,
             "validation_results": []
         }
 
-        # Process each file
+        # Process each file — read once, share content between parse and validate
         for file_path in gnn_files:
             try:
-                # Parse GNN file
-                parsed_result = parse_gnn_file(file_path)
+                with open(file_path, 'r') as fh:
+                    content = fh.read()
+
+                parsed_result = parse_gnn_file(file_path, content=content)
                 if parsed_result:
                     results["parsed_files"].append(parsed_result)
                     results["files_processed"] += 1
 
-                # Validate GNN structure
-                validation_result = validate_gnn_structure(file_path)
+                validation_result = validate_gnn_structure(file_path, content=content)
                 results["validation_results"].append(validation_result)
 
             except Exception as e:
@@ -169,42 +171,31 @@ def discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> L
     # Filter out common non-GNN files
     excluded_patterns = [
         "README.md", "CHANGELOG.md", "LICENSE.md",
-        "*.template.md", "*.example.md"
+        "*.template.md", "*.example.md",
     ]
 
-    filtered_files = []
-    for file_path in gnn_files:
-        should_exclude = False
-        for pattern in excluded_patterns:
-            if pattern.startswith("*"):
-                if file_path.name.endswith(pattern[1:]):
-                    should_exclude = True
-                    break
-            else:
-                if file_path.name == pattern:
-                    should_exclude = True
-                    break
+    return [
+        f for f in gnn_files
+        if not any(fnmatch(f.name, pat) for pat in excluded_patterns)
+    ]
 
-        if not should_exclude:
-            filtered_files.append(file_path)
-
-    return filtered_files
-
-def parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]:
+def parse_gnn_file(file_path: Union[str, Path], content: Optional[str] = None) -> Dict[str, Any]:
     """
     Parse a GNN file and extract basic information.
-    
+
     Args:
         file_path: Path to the GNN file
-        
+        content: Pre-read file content; if None the file is opened and read.
+
     Returns:
         Dictionary with parsed information
     """
     file_path = Path(file_path)
 
     try:
-        with open(file_path, 'r') as f:
-            content = f.read()
+        if content is None:
+            with open(file_path, 'r') as f:
+                content = f.read()
 
         # Extract basic information
         sections = _extract_sections_lightweight(content)
@@ -245,21 +236,23 @@ def parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]:
             "parse_timestamp": datetime.now().isoformat()
         }
 
-def validate_gnn_structure(file_path: Union[str, Path]) -> Dict[str, Any]:
+def validate_gnn_structure(file_path: Union[str, Path], content: Optional[str] = None) -> Dict[str, Any]:
     """
     Validate the structure of a GNN file.
-    
+
     Args:
         file_path: Path to the GNN file
-        
+        content: Pre-read file content; if None the file is opened and read.
+
     Returns:
         Dictionary with validation results
     """
     file_path = Path(file_path)
 
     try:
-        with open(file_path, 'r') as f:
-            content = f.read()
+        if content is None:
+            with open(file_path, 'r') as f:
+                content = f.read()
 
         validation_result = {
             "file_path": str(file_path),
