@@ -237,7 +237,6 @@ class PyMDPRenderer:
         import numpy as np
 
         # Convert matrices to JSON-serializable format for embedding
-        # Convert matrices to JSON-serializable format for embedding
         def format_matrix_for_code(matrix):
             """Convert matrix to string representation for code embedding."""
             if matrix is None:
@@ -363,24 +362,7 @@ def main():
     
     if B_matrix_data is not None:
         B_matrix = np.array(B_matrix_data)
-        # Normalize B matrix (columns should sum to 1)
-        # B shape in PyMDP usually (next_state, prev_state, action)
-        # But GNN might provide (action, prev_state, next_state) or similar.
-        # Here we assume GNN provides B as [action][prev][next] or similar from JSON
-        # We will trust the default simple_simulation handling for dimension/transposition,
-        # but here we just ensure values are normalized along the last dimension if it sums approx to > 0.
-        # Actually, let's just ensure it's normalized in simple_simulation or here?
-        # Better to do it in simple_simulation.py where we know the dimensions?
-        # The simple_simulation.py loads this gnn_spec.
-        # So we should modify simple_simulation.py instead?
-        # NO, this script IS the one that passes data to simple_simulation via gnn_spec['initialparameterization'].
-        # The simple_simulation.py reads A from gnn_spec['initialparameterization']['A'].
-        # So if we update 'A_matrix' variable here, we must ensure it is passed back to gnn_spec correctly.
-        # Lines 494 update gnn_spec using 'A_matrix.tolist()'.
-        # So normalizing HERE is correct.
-        
-        # However, for B matrix, dimensions are tricky. 
-        # Let's simple_simulation handle B normalization since it does transposition logic.
+        # B matrix normalization is handled by simple_simulation.py which knows the dimension layout.
         logger.info(f"B matrix shape: {{B_matrix.shape}}")
     else:
         B_matrix = None

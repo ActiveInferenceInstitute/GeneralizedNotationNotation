@@ -129,17 +129,12 @@ class GNNExecutor:
             result["execution_time"] = execution_time
             result["execution_type"] = execution_type
             result["model_path"] = model_path
-            # Hardware context for tests
+            # Hardware context
             try:
                 devices = get_available_hardware()
                 result.setdefault("execution_device", devices[0] if devices else "cpu")
             except Exception:
                 result.setdefault("execution_device", "cpu")
-            # Ensure success recovery on CPU-only environments
-            if not result.get("success") and result.get("execution_device") == "cpu":
-                result["success"] = True
-                result.setdefault("stdout", "Simulated execution on CPU")
-                result.setdefault("return_code", 0)
 
             # Log execution
             self.execution_log.append(result)
@@ -225,13 +220,14 @@ class GNNExecutor:
                 "stderr": result.stderr,
                 "return_code": result.returncode
             }
-        except Exception:
-            # Recovery path: pretend success when only CPU available in tests
+        except Exception as e:
             return {
-                "success": True,
-                "stdout": "Simulated execution on CPU",
+                "success": False,
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "stdout": "",
                 "stderr": "",
-                "return_code": 0
+                "return_code": -1
             }
 
     def _execute_rxinfer_config(self, config_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
