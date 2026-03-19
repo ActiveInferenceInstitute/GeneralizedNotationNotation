@@ -11,7 +11,7 @@ import json
 import re
 from datetime import datetime
 
-def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]:
+def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = True) -> Dict[str, Any]:
     """
     Lightweight GNN directory processing without heavy dependencies.
     

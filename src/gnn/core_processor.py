@@ -245,18 +245,22 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
         logger.debug("GNN processing failed, falling back to lightweight mode: %s", e)
 
     if full_success:
+        processed = [str(p) for p in context.discovered_files]
         result = {
             "status": "SUCCESS",
-            "processed_files": [str(p) for p in context.discovered_files],
+            "files": processed,
+            "processed_files": processed,
             "valid_files": [str(p) for p in context.valid_files],
             "processing_mode": "full"
         }
     else:
         # Recovery to lightweight processing expected by recovery tests
         light = _scan_files_lightweight(Path(target_dir))
+        processed = list(light.keys())
         result = {
             "status": "SUCCESS",
-            "processed_files": list(light.keys()),
+            "files": processed,
+            "processed_files": processed,
             "valid_files": [],
             "processing_mode": "lightweight"
         }
