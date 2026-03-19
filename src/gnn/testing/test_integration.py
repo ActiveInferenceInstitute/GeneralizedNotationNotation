@@ -77,7 +77,6 @@ def main():
 
     try:
         # Import GNN modules
-        from gnn.enhanced_processor import run_comprehensive_gnn_testing
         from gnn.testing.test_round_trip import GNNRoundTripTester
         from gnn.schema_validator import GNNValidator
 
@@ -145,13 +144,10 @@ def main():
     if not args.quick:
         logger.info("Test 3: Comprehensive testing...")
         try:
-            # Use the processors module for comprehensive testing
-            success = run_comprehensive_gnn_testing(
-                target_dir=gnn_dir,
-                output_dir=output_dir,
-                logger=logger,
-                reference_file=str(reference_file.relative_to(gnn_dir))
-            )
+            # Use GNNRoundTripTester for comprehensive testing
+            tester = GNNRoundTripTester(gnn_dir, output_dir)
+            test_result = tester.run_tests()
+            success = getattr(test_result, 'success', bool(test_result))
 
             if success:
                 logger.info("✅ Comprehensive testing passed")

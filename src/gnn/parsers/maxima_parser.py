@@ -285,5 +285,3 @@ class MaximaParser(BaseGNNParser):
         return connections
 
 
-# Compatibility alias
-MaximaGNNParser = MaximaParser

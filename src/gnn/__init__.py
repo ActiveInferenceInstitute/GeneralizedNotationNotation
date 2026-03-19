@@ -18,8 +18,8 @@ from .multi_format_processor import (
     process_gnn_multi_format
 )
 
+from .parsers.system import GNNParsingSystem  # canonical 46-parser registry
 from .parser import (
-    GNNParsingSystem,
     GNNFormalParser,
     ParsedGNNFormal,
     parse_gnn_formal,

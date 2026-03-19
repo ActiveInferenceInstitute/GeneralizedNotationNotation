@@ -521,6 +521,3 @@ class AgdaParser(BaseGNNParser):
             return VariableType.HIDDEN_STATE
 
 
-# Compatibility aliases
-TLAPlusParser = TLAParser
-AgdaGNNParser = AgdaParser

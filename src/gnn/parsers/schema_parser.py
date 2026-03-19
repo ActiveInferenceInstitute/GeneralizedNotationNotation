@@ -1290,8 +1290,5 @@ class ZNotationParser(BaseGNNParser):
 
 
 
-# Compatibility aliases
-XSDGNNParser = XSDParser
-ASN1GNNParser = ASN1Parser
 AlloyGNNParser = AlloyParser
 ZNotationGNNParser = ZNotationParser

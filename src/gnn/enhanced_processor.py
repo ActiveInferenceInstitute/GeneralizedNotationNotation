@@ -23,6 +23,8 @@ import time
 from datetime import datetime
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class TestingModules:

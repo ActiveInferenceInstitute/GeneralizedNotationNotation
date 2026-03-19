@@ -246,5 +246,3 @@ class HaskellGNNParser(BaseGNNParser):
             return VariableType.HIDDEN_STATE
 
 
-# Compatibility alias
-HaskellParser = HaskellGNNParser
