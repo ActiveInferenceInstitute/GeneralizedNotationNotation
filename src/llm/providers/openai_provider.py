@@ -145,7 +145,7 @@ class OpenAIProvider(BaseLLMProvider):
         Returns:
             Standardized LLM response
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenAI provider not initialized")
 
         # Use default config if none provided
@@ -229,7 +229,7 @@ class OpenAIProvider(BaseLLMProvider):
         Yields:
             Chunks of the response content
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenAI provider not initialized")
 
         # Use default config if none provided
@@ -296,7 +296,7 @@ class OpenAIProvider(BaseLLMProvider):
         Returns:
             List of embedding vectors
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenAI provider not initialized")
 
         try:

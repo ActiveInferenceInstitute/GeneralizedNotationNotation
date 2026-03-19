@@ -114,7 +114,7 @@ class OllamaProvider(BaseLLMProvider):
         messages: List[LLMMessage],
         config: Optional[LLMConfig] = None,
     ) -> LLMResponse:
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("Ollama provider not initialized")
 
         if config is None:
@@ -228,7 +228,7 @@ class OllamaProvider(BaseLLMProvider):
         messages: List[LLMMessage],
         config: Optional[LLMConfig] = None,
     ) -> AsyncGenerator[str, None]:
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("Ollama provider not initialized")
 
         if config is None:

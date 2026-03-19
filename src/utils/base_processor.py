@@ -111,7 +111,7 @@ class BaseProcessor(ABC):
             List of file paths matching the criteria
         """
         if extensions is None:
-            extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
+            extensions = ['.json', '.yaml', '.yml', '.md']  # common data + doc formats; callers add .gnn if needed
 
         files = []
 

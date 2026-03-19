@@ -706,7 +706,7 @@ __all__ = [
     'TimeSpecification', 'OntologyMapping', 'Section',
     'GNNInternalRepresentation', 'ParseResult',
     'ASTVisitor', 'PrintVisitor',
-    'GNNParser', 'GNNSerializer', 'BaseGNNParser',
+    'BaseGNNParser',  # GNNParser and GNNSerializer Protocols are internal; use BaseGNNParser ABC
     'normalize_variable_name', 'parse_dimensions', 'infer_variable_type', 'parse_connection_operator',
     'safe_enum_convert', 'extract_embedded_json_data',
 ]
