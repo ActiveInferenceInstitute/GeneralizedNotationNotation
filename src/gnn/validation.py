@@ -52,7 +52,7 @@ class ValidationStrategy:
             logger.debug("GNN validator initialized")
 
         except Exception as e:
-            logger.warning(f"Could not initialize GNN validator: {e}")
+            logger.error(f"Could not initialize GNN validator: {e}; falling back to basic validation")
             self.validators['gnn'] = None
 
     def validate_files(self, files: List[Path]) -> Dict[Path, ValidationResult]:

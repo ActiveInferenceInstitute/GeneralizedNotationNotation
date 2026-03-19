@@ -304,8 +304,8 @@ class UnifiedGNNParser:
             # Default to markdown for GNN files
             return GNNFormat.MARKDOWN
 
-        except Exception:
-            # Default recovery
+        except Exception as e:
+            logger.debug(f"Format detection from content failed, defaulting to MARKDOWN: {e}")
             return GNNFormat.MARKDOWN
 
     def _get_parser(self, format: GNNFormat) -> BaseGNNParser:

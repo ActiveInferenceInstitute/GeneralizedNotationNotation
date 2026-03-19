@@ -204,8 +204,11 @@ class GNNExecutor:
             "execution_details": self.execution_log
         }
 
-        with open(output_file, 'w') as f:
-            json.dump(report_data, f, indent=2)
+        try:
+            with open(output_file, 'w') as f:
+                json.dump(report_data, f, indent=2)
+        except OSError as e:
+            raise RuntimeError(f"Failed to write execution report to {output_file}: {e}") from e
 
         return str(output_file)
 

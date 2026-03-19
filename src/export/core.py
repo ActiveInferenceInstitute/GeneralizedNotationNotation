@@ -153,7 +153,7 @@ def export_gnn_files(
         return True
     elif success_count > 0:
         log_step_warning(logger, f"Partial success: {success_count}/{total_files} files exported")
-        return True
+        return False
     else:
         log_step_error(logger, "No files were exported successfully")
         return False
