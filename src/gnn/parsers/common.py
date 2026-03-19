@@ -597,65 +597,66 @@ def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = No
 
     return default
 
+# Tier 1: exact single-uppercase-letter Active Inference matrix/vector conventions
+_ACTINF_SINGLE_CHAR: Dict[str, VariableType] = {
+    'A': VariableType.LIKELIHOOD_MATRIX,
+    'B': VariableType.TRANSITION_MATRIX,
+    'C': VariableType.PREFERENCE_VECTOR,
+    'D': VariableType.PRIOR_VECTOR,
+    'E': VariableType.POLICY,           # Habit / initial policy prior
+    'F': VariableType.HIDDEN_STATE,     # Variational free energy → state space
+    'G': VariableType.POLICY,           # Expected free energy drives policy
+}
+
 def infer_variable_type(name: str) -> VariableType:
     """
     Infer variable type from its name according to Active Inference conventions.
-    
+
+    Three matching tiers in priority order:
+      1. Exact single-char (uppercase A-G, Unicode π)
+      2. Lowercase first-char prefix (s→state, o→obs, u/a→action)
+      3. Substring in full name (descriptive longer names)
+
     Args:
         name: Variable name
-        
+
     Returns:
         Inferred variable type
     """
     name_lower = name.lower()
 
-    # Handle Unicode π (pi) character
+    # Tier 1: exact single-char matches
     if name == 'π' or name_lower == 'pi':
         return VariableType.POLICY
+    if name in _ACTINF_SINGLE_CHAR:
+        return _ACTINF_SINGLE_CHAR[name]
 
-    # Single character variable conventions in Active Inference
-    if name == 'A':
-        return VariableType.LIKELIHOOD_MATRIX
-    elif name == 'B':
-        return VariableType.TRANSITION_MATRIX
-    elif name == 'C':
-        return VariableType.PREFERENCE_VECTOR
-    elif name == 'D':
-        return VariableType.PRIOR_VECTOR
-    elif name == 'E':
-        return VariableType.POLICY  # Habit/initial policy prior
-    elif name == 'F':
-        return VariableType.HIDDEN_STATE  # Variational free energy is often computed on states
-    elif name == 'G':
-        return VariableType.POLICY  # EFE drives policy
-
-    # Other standard Active Inference variables
+    # Tier 2: lowercase first-char prefix conventions
     if name_lower.startswith('s'):
         return VariableType.HIDDEN_STATE
-    elif name_lower.startswith('o'):
+    if name_lower.startswith('o'):
         return VariableType.OBSERVATION
-    elif name_lower.startswith('u') or name_lower.startswith('a'):
+    if name_lower.startswith('u') or name_lower.startswith('a'):
         return VariableType.ACTION
 
-    # Check for common prefixes/patterns
+    # Tier 3: substring match for longer descriptive names
     if 'state' in name_lower or 'hidden' in name_lower:
         return VariableType.HIDDEN_STATE
-    elif 'obs' in name_lower or 'perception' in name_lower:
+    if 'obs' in name_lower or 'perception' in name_lower:
         return VariableType.OBSERVATION
-    elif 'action' in name_lower or 'control' in name_lower:
+    if 'action' in name_lower or 'control' in name_lower:
         return VariableType.ACTION
-    elif 'policy' in name_lower or 'pi' in name_lower or 'habit' in name_lower:
+    if 'policy' in name_lower or 'pi' in name_lower or 'habit' in name_lower:
         return VariableType.POLICY
-    elif 'prior' in name_lower:
+    if 'prior' in name_lower:
         return VariableType.PRIOR_VECTOR
-    elif 'likelihood' in name_lower:
+    if 'likelihood' in name_lower:
         return VariableType.LIKELIHOOD_MATRIX
-    elif 'transition' in name_lower:
+    if 'transition' in name_lower:
         return VariableType.TRANSITION_MATRIX
-    elif 'preference' in name_lower or 'utility' in name_lower:
+    if 'preference' in name_lower or 'utility' in name_lower:
         return VariableType.PREFERENCE_VECTOR
 
-    # Default
     return VariableType.HIDDEN_STATE
 
 def parse_connection_operator(op: str) -> ConnectionType:
