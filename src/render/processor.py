@@ -66,7 +66,7 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
     return len(errors) == 0, errors
 
 
-def normalize_matrices(pomdp_space: Any, logger) -> Any:
+def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
     """
     Normalize probability matrices in POMDP space.
 
@@ -160,7 +160,7 @@ def process_render(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
-    frameworks=None,
+    frameworks: Optional[List[str]] = None,
     strict_validation: bool = True,
     **kwargs: Any,
 ) -> bool:

@@ -41,12 +41,12 @@ class ValidationResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
     validation_level: ValidationLevel = ValidationLevel.STANDARD
     format_tested: Optional[str] = None
-    round_trip_results: List[Any] = field(default_factory=list)
+    round_trip_results: List['RoundTripResult'] = field(default_factory=list)
     cross_format_consistent: Optional[bool] = None
     semantic_checksum: Optional[str] = None
     performance_metrics: Dict[str, float] = field(default_factory=dict)
 
-    def add_round_trip_result(self, result):
+    def add_round_trip_result(self, result: 'RoundTripResult') -> None:
         self.round_trip_results.append(result)
         if not result.success:
             self.errors.extend(result.errors)
@@ -106,7 +106,7 @@ from .parsers.common import GNNFormat, GNNInternalRepresentation  # re-export fo
 
 @dataclass
 class ParseResult:
-    model: Any = None
+    model: Optional[GNNInternalRepresentation] = None
     success: bool = False
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)

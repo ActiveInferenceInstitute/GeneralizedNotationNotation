@@ -97,7 +97,7 @@ class BaseProcessor(ABC):
         pass
 
     def find_files(self, target_dir: Path, recursive: bool = False,
-                   extensions: List[str] = None, pattern: str = None) -> List[Path]:
+                   extensions: Optional[List[str]] = None, pattern: Optional[str] = None) -> List[Path]:
         """
         Find files to process in the target directory.
         

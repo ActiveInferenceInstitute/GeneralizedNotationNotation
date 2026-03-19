@@ -4,7 +4,7 @@ GNN parser module for GNN pipeline.
 """
 
 from pathlib import Path
-from typing import Dict, Any, Union, Optional
+from typing import Callable, Dict, Any, List, Tuple, Union, Optional
 
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
 from .types import ValidationLevel
@@ -77,11 +77,11 @@ class GNNParsingSystem:
         self.parsers = {}
         self.validators = {}
 
-    def register_parser(self, format_name: str, parser_func):
+    def register_parser(self, format_name: str, parser_func: Callable) -> None:
         """Register a parser for a specific format."""
         self.parsers[format_name] = parser_func
 
-    def register_validator(self, format_name: str, validator_func):
+    def register_validator(self, format_name: str, validator_func: Callable) -> None:
         """Register a validator for a specific format."""
         self.validators[format_name] = validator_func
 
@@ -195,13 +195,13 @@ class ParsedGNNFormal:
     """Placeholder class for when Lark is not available."""
     def __init__(self): pass
 
-def parse_gnn_formal(file_path): return None
-def validate_gnn_syntax_formal(content): return False, ["Lark not available"]
-def get_parse_tree_visualization(content): return "Lark not available"
+def parse_gnn_formal(file_path: Union[str, Any]) -> None: return None
+def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]: return False, ["Lark not available"]
+def get_parse_tree_visualization(content: str) -> str: return "Lark not available"
 
 
 
-def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD, **kwargs):
+def validate_gnn(file_path_or_content: Union[str, Path], validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs: Any) -> Tuple[bool, List[str]]:
     """
     Validate a GNN file or content.
     
