@@ -9,8 +9,12 @@ from typing import Dict, Any, Union, Optional
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
 from .types import ValidationLevel
 
-class ParsedGNN:
-    """Represents a parsed GNN file."""
+class _GNNParseBuffer:
+    """Internal mutable builder for GNN parse results.
+
+    This is a local implementation detail of GNNParsingSystem._basic_parser.
+    The public canonical type is gnn.types.ParsedGNN (a dataclass).
+    """
 
     def __init__(self, file_path: Union[str, Path]):
         self.file_path = Path(file_path)
@@ -81,7 +85,7 @@ class GNNParsingSystem:
         """Register a validator for a specific format."""
         self.validators[format_name] = validator_func
 
-    def parse_file(self, file_path: Union[str, Path], format_name: str = "auto") -> Optional[ParsedGNN]:
+    def parse_file(self, file_path: Union[str, Path], format_name: str = "auto") -> Optional[_GNNParseBuffer]:
         """Parse a GNN file."""
         file_path = Path(file_path)
 
@@ -113,9 +117,9 @@ class GNNParsingSystem:
         else:
             return "markdown"  # Default to markdown
 
-    def _basic_parser(self, file_path: Path) -> ParsedGNN:
+    def _basic_parser(self, file_path: Path) -> _GNNParseBuffer:
         """Basic parser for GNN files."""
-        parsed = ParsedGNN(file_path)
+        parsed = _GNNParseBuffer(file_path)
 
         try:
             with open(file_path, 'r') as f:
