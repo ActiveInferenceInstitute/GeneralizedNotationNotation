@@ -478,3 +478,7 @@ def validate_file(input_file: Path) -> Dict[str, Any]:
             "error": str(e),
             "file_path": str(input_file)
         }
+
+
+# Canonical name matching the process_<module_name> convention used by all other processor.py files
+process_template = process_template_standardized

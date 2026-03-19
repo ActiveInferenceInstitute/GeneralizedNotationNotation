@@ -106,7 +106,7 @@ def process_visualization(target_dir, output_dir, verbose: bool = False, **kwarg
         return False
 
 
-# Backwards-compatible alias
+# Deprecated backward-compatible alias — use process_visualization instead
 process_visualization_main = process_visualization
 
 
@@ -149,5 +149,5 @@ __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
     'process_matrix_visualization', 'process_visualization',
     'generate_graph_visualization', 'generate_matrix_visualization', 'generate_visualizations',
-    '__version__', 'process_visualization_main'
+    '__version__'
 ]
