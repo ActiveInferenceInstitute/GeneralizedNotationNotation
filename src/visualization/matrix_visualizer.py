@@ -55,12 +55,15 @@ def _safe_tight_layout():
 class MatrixVisualizer:
     """
     Handles matrix visualization for GNN models.
-    
+
     This class provides methods to extract matrix data from GNN parameters
     and generate various visualizations including heatmaps, statistics,
     and combined overviews. Specialized support for 3D tensors like
     POMDP transition matrices (B matrix).
     """
+
+    # Maximum matrix cell count for which text annotations are shown
+    _ANNOTATION_CELL_LIMIT = 25
 
     def export_matrix_to_csv(self, matrix: np.ndarray, matrix_name: str, output_path: Path) -> bool:
         """
@@ -380,7 +383,7 @@ class MatrixVisualizer:
                 im = ax.imshow(slice_data, cmap='Blues', aspect='auto', vmin=0, vmax=1)
 
                 # Add text annotations for small matrices
-                if slice_data.size <= 25:  # Only add text for reasonably sized matrices
+                if slice_data.size <= self._ANNOTATION_CELL_LIMIT:  # Only add text for reasonably sized matrices
                     for row in range(slice_data.shape[0]):
                         for col in range(slice_data.shape[1]):
                             value = float(slice_data[row, col])
@@ -627,22 +630,20 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             # Adjust layout manually instead of using tight_layout
             fig.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3)
 
-            try:
-                # Use safe DPI constant (96 is within [72, 150] bounds)
-                plt.savefig(output_path, dpi=96, bbox_inches='tight')
-            except Exception:
+            for size, kwargs in [
+                (None,   {'dpi': 96, 'bbox_inches': 'tight'}),
+                ((8, 6), {'dpi': 72}),
+                ((6, 4), {}),
+            ]:
                 try:
-                    # Recovery with smaller figure and very safe DPI
-                    fig.set_size_inches(8, 6)
-                    fallback_dpi = 72  # Extremely safe DPI
-                    plt.savefig(output_path, dpi=fallback_dpi)
+                    if size:
+                        fig.set_size_inches(*size)
+                    plt.savefig(output_path, **kwargs)
+                    break
                 except Exception:
-                    try:
-                        # Final recovery - no DPI specified, minimal figure
-                        fig.set_size_inches(6, 4)
-                        plt.savefig(output_path)
-                    except Exception:
-                        return False
+                    continue
+            else:
+                return False
             plt.close()
             return True
 
@@ -836,7 +837,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 ax.set_title(f'Matrix {matrix_name}', fontweight='bold')
 
                 # Add text annotations for small matrices
-                if matrix.size <= 25:  # Only add text for reasonably sized matrices
+                if matrix.size <= self._ANNOTATION_CELL_LIMIT:  # Only add text for reasonably sized matrices
                     for row in range(matrix.shape[0]):
                         for col in range(matrix.shape[1]):
                             value = float(matrix[row, col])
@@ -866,7 +867,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 ax.set_title(f'Tensor {matrix_name} (Slice 0)', fontweight='bold')
 
                 # Add text annotations for small matrices
-                if slice_data.size <= 25:
+                if slice_data.size <= self._ANNOTATION_CELL_LIMIT:
                     for row in range(slice_data.shape[0]):
                         for col in range(slice_data.shape[1]):
                             value = float(slice_data[row, col])

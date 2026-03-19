@@ -206,38 +206,36 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                 line = line.strip()
 
             # Parse variable pattern: name[dimensions,type=datatype]
-            if '[' in line and ']' in line:
-                bracket_start = line.find('[')
-                bracket_end = line.find(']')
+            bracket_start = line.find('[')
+            bracket_end = line.find(']')
+            if bracket_start == -1 or bracket_end == -1:
+                return None
 
-                if bracket_start != -1 and bracket_end != -1:
-                    name = line[:bracket_start].strip()
-                    dimensions_str = line[bracket_start+1:bracket_end].strip()
+            name = line[:bracket_start].strip()
+            dimensions_str = line[bracket_start+1:bracket_end].strip()
 
-                    # Extract type specification
-                    type_spec = None
-                    if ',type=' in dimensions_str:
-                        dimensions_str, type_spec = dimensions_str.split(',type=', 1)
-                        type_spec = type_spec.strip()
+            # Extract type specification
+            type_spec = None
+            if ',type=' in dimensions_str:
+                dimensions_str, type_spec = dimensions_str.split(',type=', 1)
+                type_spec = type_spec.strip()
 
-                    # Parse dimensions
-                    dimensions = parse_dimensions('[' + dimensions_str + ']')
+            # Parse dimensions
+            dimensions = parse_dimensions('[' + dimensions_str + ']')
 
-                    # Determine variable type and data type
-                    var_type = infer_variable_type(name)
-                    data_type = self._parse_data_type(type_spec) if type_spec else DataType.FLOAT
+            # Determine variable type and data type
+            var_type = infer_variable_type(name)
+            data_type = self._parse_data_type(type_spec) if type_spec else DataType.FLOAT
 
-                    logger.debug(f"Parsed variable '{name}' with dimensions {dimensions}, type={type_spec}")
+            logger.debug(f"Parsed variable '{name}' with dimensions {dimensions}, type={type_spec}")
 
-                    return Variable(
-                        name=normalize_variable_name(name),
-                        var_type=var_type,
-                        dimensions=dimensions,
-                        data_type=data_type,
-                        description=comment
-                    )
-
-            return None
+            return Variable(
+                name=normalize_variable_name(name),
+                var_type=var_type,
+                dimensions=dimensions,
+                data_type=data_type,
+                description=comment
+            )
 
         except Exception as e:
             logger.warning(f"Failed to parse variable definition '{line}': {e}")

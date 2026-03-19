@@ -231,27 +231,24 @@ def validate_gnn(file_path_or_content: Union[str, Path], validation_level: Valid
             errors.append("Content is empty")
             return False, errors
 
-        # Structure validation
-        if validation_level in [ValidationLevel.STANDARD, ValidationLevel.STRICT]:
-            # Check for basic GNN structure
+        # Structure validation (STANDARD level; also a prerequisite for STRICT)
+        needs_structure_check = validation_level in (ValidationLevel.STANDARD, ValidationLevel.STRICT)
+        if needs_structure_check:
             import re
 
-            # Check for sections
             sections = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
             if not sections:
                 errors.append("No sections found (use # headers)")
 
-            # Check for variables
             variables = re.findall(r'(\w+)\s*[:=]', content)
             if not variables:
                 errors.append("No variables found")
 
-            # Check for connections
             connections = re.findall(r'(\w+)\s*[->→]\s*(\w+)', content)
             if not connections:
                 errors.append("No connections found")
 
-        # Strict validation
+        # Strict validation (explicitly extends structure checks above)
         if validation_level == ValidationLevel.STRICT:
             # Check for balanced braces
             if content.count('{') != content.count('}'):

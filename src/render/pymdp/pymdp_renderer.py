@@ -328,8 +328,7 @@ import sys
 from pathlib import Path
 import os
 
-# Prevent import conflict with local 'pymdp' folder which contains this script
-# sys.path[0] is the script directory. If it's named 'pymdp', it masks the installed library.
+# Remove script directory from sys.path if named 'pymdp' — it would mask the installed library
 if sys.path[0] and sys.path[0].endswith("pymdp"):
     print(f"⚠️  Detected namespace conflict with script directory '{{sys.path[0]}}', removing from sys.path")
     sys.path.pop(0)
@@ -338,26 +337,19 @@ import subprocess
 import json
 import numpy as np
 
-# Ensure PyMDP is installed before importing
-# Note: The correct package name is 'inferactively-pymdp', not 'pymdp'
+# Note: package is 'inferactively-pymdp', not 'pymdp'
 try:
     import pymdp
-    # Verify it is the CORRECT pymdp (inferactively-pymdp)
     try:
         from pymdp.agent import Agent
         print("✅ PyMDP (inferactively-pymdp) is available")
     except ImportError:
-        # Check if it might be the flat structure (unlikely for modern, but possible)
         if hasattr(pymdp, "Agent"):
-             print("✅ PyMDP (flat structure) is available")
+            print("✅ PyMDP (flat structure) is available")
         else:
-             print("⚠️  PyMDP package found, but it appears to be the wrong version (missing Agent).")
-             print("💡 Please install the correct package: uv pip install inferactively-pymdp")
-             # Proceeding anyway, might fail later but better than auto-install crash
+            print("⚠️  PyMDP found but wrong version — install: uv pip install inferactively-pymdp")
 except ImportError:
-    print("❌ PyMDP not found. This script requires 'inferactively-pymdp'.")
-    print("💡 Install with: uv pip install inferactively-pymdp")
-    # We will not attempt auto-install as it is fragile in managed environments
+    print("❌ PyMDP not found — install: uv pip install inferactively-pymdp")
     sys.exit(1)
 
 # Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)

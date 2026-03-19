@@ -16,18 +16,19 @@ logger = logging.getLogger(__name__)
 def execute_pymdp_simulation_from_gnn(
     gnn_spec: Dict[str, Any],
     output_dir: Path,
-    config_overrides: Optional[Dict[str, Any]] = None,
     correlation_id: str = ""
 ) -> Tuple[bool, Dict[str, Any]]:
     """
     Execute PyMDP simulation from GNN specification.
-    
+
+    Wraps execute_pymdp_simulation with correlation-ID logging and unified
+    exception handling so callers get a structured error on any failure.
+
     Args:
         gnn_spec: GNN specification dictionary
         output_dir: Output directory for results
-        config_overrides: Optional configuration overrides
         correlation_id: Correlation ID for tracking
-        
+
     Returns:
         Tuple of (success, results)
     """
