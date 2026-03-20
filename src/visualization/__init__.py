@@ -96,9 +96,6 @@ def get_visualization_options() -> dict:
         "graph_types": ["connections", "combined"],
         "output_formats": ["png", "json"]
     }
-# process_visualization is imported directly from .processor above.
-# Deprecated backward-compatible alias — use process_visualization instead
-process_visualization_main = process_visualization
 
 
 def _generate_network_statistics(variables: Dict[str, Any], connections: List[Dict]) -> Dict[str, Any]:

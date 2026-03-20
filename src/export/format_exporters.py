@@ -10,7 +10,7 @@ import logging
 import re
 from pathlib import Path
 import ast
-from typing import Dict, Any, List, Optional, Union, Callable
+from typing import Dict, Any, List, Optional, Union, Callable, Tuple
 
 # Imports for specific exporters
 import json
@@ -292,7 +292,7 @@ def export_to_gexf(gnn_model: Dict[str, Any], output_file_path: str) -> None:
         logger.error(f"Failed to export to GEXF: {e}", exc_info=True)
         return False, f"Failed to export to GEXF: {e}"
 
-def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> Tuple[bool, str]:
     """Exports the GNN model graph to a GraphML file."""
     logger.info(f"Exporting GNN model to GraphML: {output_file_path}")
     if not HAS_NETWORKX:
@@ -308,7 +308,7 @@ def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> None:
         logger.error(f"Failed to export to GraphML: {e}", exc_info=True)
         return False, f"Failed to export to GraphML: {e}"
 
-def export_to_json_adjacency_list(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_json_adjacency_list(gnn_model: Dict[str, Any], output_file_path: str) -> Tuple[bool, str]:
     """Exports the GNN model graph to a JSON adjacency list format."""
     logger.info(f"Exporting GNN model to JSON Adjacency List: {output_file_path}")
     if not HAS_NETWORKX:

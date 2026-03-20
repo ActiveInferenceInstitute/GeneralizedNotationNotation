@@ -139,9 +139,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
                         except SyntaxError as e:
                             pytest.fail(f"Generated Python has syntax error: {e}")
 
-        except Exception:
+        except Exception as e:
             # Render might fail if dependencies missing, that's ok for integration test
-            pass
+            pytest.skip(f"Render dependencies not available: {e}")
 
     @pytest.mark.integration
     @pytest.mark.slow
@@ -199,9 +199,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
                     except SyntaxError as e:
                         pytest.fail(f"Rendered script has syntax error: {e}")
 
-        except Exception:
+        except Exception as e:
             # This is an integration test - failures from missing deps are acceptable
-            pass
+            pytest.skip(f"Render dependencies not available: {e}")
 
 
 @pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
@@ -234,8 +234,8 @@ class TestRenderOutputStructure:
                     assert ext in ['.py', '.jl', '.toml', '.json', '.md', '.txt', ''], \
                         f"Unexpected extension: {ext}"
 
-        except Exception:
-            pass
+        except Exception as e:
+            pytest.skip(f"Render dependencies not available: {e}")
 
     @pytest.mark.unit
     def test_render_creates_documentation(self, safe_filesystem, sample_gnn_spec):
@@ -252,5 +252,5 @@ class TestRenderOutputStructure:
             # Documentation may or may not be generated depending on renderer
             # This is informational - not a failure if missing
 
-        except Exception:
-            pass
+        except Exception as e:
+            pytest.skip(f"Render dependencies not available: {e}")
