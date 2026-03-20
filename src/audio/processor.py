@@ -271,7 +271,7 @@ def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int):
         f.write(struct.pack('<I', len(audio) * 2))
         f.write(audio.tobytes())
 
-def create_sonification(file_path: Path, output_dir: Path, verbose: bool = False) -> Dict[str, Any]:
+def create_sonification(file_path: Path | str, output_dir: Path, verbose: bool = False) -> Dict[str, Any]:
     """Create sonification of the GNN model."""
     try:
         with open(file_path, 'r') as f:

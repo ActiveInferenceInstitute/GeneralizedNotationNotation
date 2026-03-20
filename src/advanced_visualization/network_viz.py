@@ -22,7 +22,7 @@ from ._shared import (
     plt,
     sns,
     validate_visualization_data,
-    _normalize_connection_format,
+    normalize_connection_format,
     _calculate_semantic_positions,
     _generate_fallback_report,
 )
@@ -116,7 +116,7 @@ def _generate_3d_visualization(
 
                 if connections:
                     for conn_info in connections:
-                        normalized_conn = _normalize_connection_format(conn_info)
+                        normalized_conn = normalize_connection_format(conn_info)
                         source_vars = normalized_conn.get("source_variables", [])
                         target_vars = normalized_conn.get("target_variables", [])
 
@@ -234,7 +234,7 @@ def _generate_interactive_dashboard(
 
             if np is not None:
                 for conn in connections:
-                    normalized_conn = _normalize_connection_format(conn)
+                    normalized_conn = normalize_connection_format(conn)
                     source_vars = normalized_conn.get("source_variables", [])
                     target_vars = normalized_conn.get("target_variables", [])
 
@@ -284,7 +284,7 @@ def _generate_interactive_dashboard(
                 )])
 
                 for conn in connections:
-                    normalized_conn = _normalize_connection_format(conn)
+                    normalized_conn = normalize_connection_format(conn)
                     source_vars = normalized_conn.get("source_variables", [])
                     target_vars = normalized_conn.get("target_variables", [])
 
@@ -564,7 +564,7 @@ def _generate_network_metrics(
 
             for conn in connections:
                 if isinstance(conn, dict):
-                    normalized = _normalize_connection_format(conn)
+                    normalized = normalize_connection_format(conn)
                     sources = normalized.get("source_variables", [])
                     targets = normalized.get("target_variables", [])
                     for source in sources:
