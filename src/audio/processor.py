@@ -191,7 +191,7 @@ def generate_audio_from_gnn(file_path_or_content, output_dir: Path | None = None
         }
 
     except Exception as e:
-        raise Exception(f"Failed to generate audio from {file_path}: {e}") from e
+        raise RuntimeError(f"Failed to generate audio from {file_path}: {e}") from e
 
 def extract_variables_for_audio(content: str) -> List[Dict[str, Any]]:
     """Extract variables from GNN content for audio generation."""
@@ -294,7 +294,7 @@ def create_sonification(file_path: Path | str, output_dir: Path, verbose: bool =
         }
 
     except Exception as e:
-        raise Exception(f"Failed to create sonification for {file_path}: {e}") from e
+        raise RuntimeError(f"Failed to create sonification for {file_path}: {e}") from e
 
 def extract_model_dynamics(content: str) -> List[Dict[str, Any]]:
     """Extract model dynamics for sonification."""
