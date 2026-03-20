@@ -12,6 +12,7 @@ import asyncio
 
 from .llm_operations import LLMOperations
 from .providers.openai_provider import OpenAIProvider  # for patching in tests
+from analysis.analyzer import extract_sections
 
 logger = logging.getLogger(__name__)
 
@@ -183,25 +184,6 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
 
     return connections
 
-def extract_sections(content: str) -> List[Dict[str, Any]]:
-    """Extract sections from GNN content."""
-    sections = []
-
-    # Look for section headers
-    section_patterns = [
-        r'^#+\s+(.+)$',  # Markdown headers
-        r'^(\w+):\s*$',  # Section labels
-    ]
-
-    for pattern in section_patterns:
-        matches = re.finditer(pattern, content, re.MULTILINE)
-        for match in matches:
-            sections.append({
-                "name": match.group(1),
-                "line": content[:match.start()].count('\n') + 1
-            })
-
-    return sections
 
 def perform_semantic_analysis(content: str, variables: List[Dict], connections: List[Dict]) -> Dict[str, Any]:
     """Perform semantic analysis of GNN content."""
