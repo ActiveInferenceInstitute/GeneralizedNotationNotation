@@ -687,6 +687,42 @@ class PyMDPSimulation:
 
         return policies
 
+    def _sample_observation(self, current_state: int) -> int:
+        """Sample an observation from the current latent state."""
+        obs_probs = self.model_matrices['A'][:, current_state]
+        return int(utils.sample(obs_probs))
+
+    def _normalize_action(self, action_raw: Any) -> int:
+        """Normalize PyMDP action output to an integer action index."""
+        if hasattr(action_raw, '__len__'):
+            return int(action_raw[0])
+        return int(action_raw)
+
+    def _run_simulation_step(self, timestep: int, current_state: int) -> Tuple[int, Dict[str, Any]]:
+        """Run one simulation timestep and return next state plus trace record."""
+        observation = self._sample_observation(current_state)
+
+        # Agent inference - PyMDP expects list of observations
+        qs = self.agent.infer_states([observation])
+        q_pi, expected_free_energy = self.agent.infer_policies()
+
+        action = self._normalize_action(self.agent.sample_action())
+
+        next_state_probs = self.model_matrices['B'][:, current_state, action]
+        next_state = int(utils.sample(next_state_probs))
+
+        step_data = {
+            'timestep': timestep,
+            'current_state': int(current_state),
+            'observation': int(observation),
+            'action': int(action),
+            'next_state': int(next_state),
+            'beliefs': qs[0].copy(),
+            'policy_probs': q_pi.copy(),
+            'expected_free_energy': expected_free_energy.copy(),
+        }
+        return next_state, step_data
+
     def run_simulation(self, output_dir: Optional[Path] = None, num_timesteps: Optional[int] = None, **kwargs) -> Dict[str, Any]:
         """
         Run the complete PyMDP simulation.
@@ -716,44 +752,20 @@ class PyMDPSimulation:
 
         try:
             for t in range(self.num_timesteps):
-                # Generate observation from current state
-                obs_probs = self.model_matrices['A'][:, current_state]
-                observation = utils.sample(obs_probs)
-
-                # Agent inference - PyMDP expects list of observations
-                qs = self.agent.infer_states([observation])
-                q_pi, G = self.agent.infer_policies()
-
-                # Sample action
-                action_raw = self.agent.sample_action()
-                # Handle both scalar (recovery) and array (real PyMDP) returns
-                if hasattr(action_raw, '__len__'):
-                    action = int(action_raw[0])
-                else:
-                    action = int(action_raw)
-
-                # Update environment state
-                next_state_probs = self.model_matrices['B'][:, current_state, action]
-                next_state = utils.sample(next_state_probs)
-
-                # Record step
-                step_data = {
-                    'timestep': t,
-                    'current_state': int(current_state),
-                    'observation': int(observation),
-                    'action': int(action),
-                    'next_state': int(next_state),
-                    'beliefs': qs[0].copy(),
-                    'policy_probs': q_pi.copy(),
-                    'expected_free_energy': G.copy()
-                }
+                next_state, step_data = self._run_simulation_step(t, current_state)
                 self.simulation_trace.append(step_data)
 
                 # Update state
                 current_state = next_state
 
                 if t % 5 == 0:
-                    self.logger.info(f"Timestep {t}: state={current_state}, obs={observation}, action={action}")
+                    self.logger.info(
+                        "Timestep %s: state=%s, obs=%s, action=%s",
+                        t,
+                        current_state,
+                        step_data['observation'],
+                        step_data['action'],
+                    )
 
         except Exception as e:
             self.logger.error(f"Simulation error at timestep {t}: {e}")
