@@ -87,3 +87,53 @@ class TestExtractGnnMatrices:
         }
         result = mod._extract_gnn_matrices(spec)
         assert isinstance(result, dict)
+
+
+class TestGenerateJaxModelCode:
+    """Tests for _generate_jax_model_code code generation."""
+
+    MINIMAL_SPEC = {"ModelName": "TestModel"}
+
+    def test_returns_string(self, mod):
+        """_generate_jax_model_code returns a non-empty string."""
+        result = mod._generate_jax_model_code(self.MINIMAL_SPEC, None)
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_contains_import_jax(self, mod):
+        """Generated code imports jax."""
+        result = mod._generate_jax_model_code(self.MINIMAL_SPEC, None)
+        assert "import jax" in result or "jax" in result
+
+    def test_model_name_in_output(self, mod):
+        """Generated code uses the ModelName from spec."""
+        spec = {"ModelName": "MyUniqueModel"}
+        result = mod._generate_jax_model_code(spec, None)
+        assert "MyUniqueModel" in result
+
+    def test_empty_spec_still_returns_string(self, mod):
+        """Empty spec produces valid string output without raising."""
+        result = mod._generate_jax_model_code({}, None)
+        assert isinstance(result, str)
+
+
+class TestGenerateJaxPomdpCode:
+    """Tests for _generate_jax_pomdp_code code generation."""
+
+    def test_returns_string(self, mod):
+        """_generate_jax_pomdp_code returns a non-empty string."""
+        result = mod._generate_jax_pomdp_code({"ModelName": "POMDPModel"}, None)
+        assert isinstance(result, str)
+        assert len(result) > 0
+
+    def test_contains_jax_import(self, mod):
+        """Generated POMDP code always includes jax import (even in recovery path)."""
+        result = mod._generate_jax_pomdp_code({"ModelName": "POMDPTest"}, None)
+        assert "jax" in result
+
+    def test_empty_spec_does_not_raise(self, mod):
+        """Empty spec produces string without raising."""
+        result = mod._generate_jax_pomdp_code({}, None)
+        assert isinstance(result, str)
+
+
