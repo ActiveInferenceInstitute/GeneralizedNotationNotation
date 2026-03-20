@@ -129,8 +129,8 @@ __all__ = [
     # Core classes
     'ExecutionEngine',
     'GNNExecutor',
-    'PyMdpExecutor',
     'PyMDPSimulation',
+    # Note: PyMdpExecutor kept as private backward-compat alias, not in __all__
 
     # Execution functions
     'process_execute',

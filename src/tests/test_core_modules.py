@@ -230,12 +230,12 @@ class TestExecuteModuleComprehensive:
 		"""Test that execute module can be imported and has expected functions."""
 		try:
 			from src.execute import (
-				ExecutionEngine, PyMdpExecutor, process_execute,
+				ExecutionEngine, PyMDPSimulation, process_execute,
 				validate_execution_environment
 			)
 			# Test that classes and functions are available
 			assert ExecutionEngine is not None, "ExecutionEngine should be available"
-			assert PyMdpExecutor is not None, "PyMdpExecutor should be available"
+			assert PyMDPSimulation is not None, "PyMDPSimulation should be available"
 			assert callable(process_execute), "process_execute should be callable"
 			assert callable(validate_execution_environment), "validate_execution_environment should be callable"
 

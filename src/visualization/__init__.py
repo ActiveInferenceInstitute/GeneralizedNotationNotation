@@ -96,16 +96,7 @@ def get_visualization_options() -> dict:
         "graph_types": ["connections", "combined"],
         "output_formats": ["png", "json"]
     }
-def process_visualization(target_dir, output_dir, verbose: bool = False, **kwargs) -> bool:
-    """Main visualization processing function."""
-    try:
-        from .processor import process_visualization as _process_visualization
-        return _process_visualization(target_dir, output_dir, verbose, **kwargs)
-    except Exception as e:
-        print(f"Visualization processing failed: {e}")
-        return False
-
-
+# process_visualization is imported directly from .processor above.
 # Deprecated backward-compatible alias — use process_visualization instead
 process_visualization_main = process_visualization
 
