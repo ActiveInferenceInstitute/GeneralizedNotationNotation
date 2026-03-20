@@ -30,7 +30,7 @@ class TestReportGeneratorCore:
         from report import ReportGenerator
 
         generator = ReportGenerator()
-        result = generator.generate()
+        result = generator.generate_processing_report()
 
         assert result is not None
 

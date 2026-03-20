@@ -220,7 +220,7 @@ class GNNProcessor:
         context.log_phase(ProcessingPhase.REPORTING, "Generating comprehensive report")
         self.logger.info("Phase 5: Report generation")
         try:
-            report = self.report_generator.generate(
+            report = self.report_generator.generate_processing_report(
                 context=context,
                 output_dir=context.output_dir
             )

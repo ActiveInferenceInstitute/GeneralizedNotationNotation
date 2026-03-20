@@ -11,6 +11,15 @@ import logging
 import json
 
 from advanced_visualization._shared import normalize_connection_format
+try:
+    from gnn.parsers.common import VariableType
+    _HID = VariableType.HIDDEN_STATE.value
+    _OBS = VariableType.OBSERVATION.value
+    _ACT = VariableType.ACTION.value
+    _POL = VariableType.POLICY.value
+    _PRI = VariableType.PRIOR_VECTOR.value
+except ImportError:
+    _HID, _OBS, _ACT, _POL, _PRI = "hidden_state", "observation", "action", "policy", "prior_vector"
 # Import visualization libraries with error handling
 try:
     import matplotlib
@@ -216,19 +225,19 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
 def _determine_connection_type(source_var: str, target_var: str, source_type: Optional[str] = None, target_type: Optional[str] = None) -> str:
     """Determine the semantic type of connection between variables."""
     if source_type and target_type:
-        if source_type == "hidden_state" and target_type == "hidden_state":
+        if source_type == _HID and target_type == _HID:
             return "state_transition"
-        elif source_type == "hidden_state" and target_type == "observation":
+        elif source_type == _HID and target_type == _OBS:
             return "observation_generation"
-        elif source_type == "hidden_state" and "transition" in target_type:
+        elif source_type == _HID and "transition" in target_type:
             return "state_action_influence"
-        elif source_type == "action" and target_type == "hidden_state":
+        elif source_type == _ACT and target_type == _HID:
             return "action_effect"
-        elif source_type == "policy" and target_type == "action":
+        elif source_type == _POL and target_type == _ACT:
             return "policy_selection"
-        elif source_type == "prior_vector" and target_type == "hidden_state":
+        elif source_type == _PRI and target_type == _HID:
             return "prior_influence"
-        elif source_type == "hidden_state" and "likelihood" in target_type:
+        elif source_type == _HID and "likelihood" in target_type:
             return "likelihood_influence"
         elif "free_energy" in source_type or "free_energy" in target_type:
             return "energy_flow"
