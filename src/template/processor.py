@@ -17,12 +17,13 @@ try:
     from utils import performance_tracker
 except ImportError:
 
+    class _NoOpContext:
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+
     class _MinimalPerformanceTracker:
         def track_operation(self, name, metadata=None):
-            class NoOpContext:
-                def __enter__(self): return self
-                def __exit__(self, *args): pass
-            return NoOpContext()
+            return _NoOpContext()
         def get_summary(self): return {}
 
     performance_tracker = _MinimalPerformanceTracker()

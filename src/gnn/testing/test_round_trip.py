@@ -141,6 +141,7 @@ ENHANCED_TEST_CONFIG = {
 # =============================================================================
 
 import os
+import re
 import sys
 import json
 import tempfile
@@ -296,6 +297,177 @@ except ImportError as e:
 
 logger = logging.getLogger(__name__)
 
+class _DirectMarkdownParser:
+    """A simple, robust markdown parser that doesn't rely on complex validation."""
+
+    def parse_file(self, file_path: Path) -> "GNNInternalRepresentation":
+        """Parse a GNN markdown file directly."""
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return self.parse_content(content)
+
+    def parse_content(self, content: str) -> "GNNInternalRepresentation":
+        """Parse GNN markdown content."""
+        sections = self._extract_sections(content)
+        model = GNNInternalRepresentation(
+            model_name=sections.get('ModelName', 'Unknown Model'),
+            annotation=sections.get('ModelAnnotation', '')
+        )
+        model.version = sections.get('GNNVersionAndFlags', '1.0')
+        model.created_at = datetime.now()
+        model.modified_at = datetime.now()
+        model.checksum = None
+        model.extensions = {}
+        model.raw_sections = sections
+        model.equations = []
+        if 'StateSpaceBlock' in sections:
+            model.variables = self._parse_variables(sections['StateSpaceBlock'])
+        if 'Connections' in sections:
+            model.connections = self._parse_connections(sections['Connections'])
+        if 'InitialParameterization' in sections:
+            model.parameters = self._parse_parameters(sections['InitialParameterization'])
+        if 'Time' in sections:
+            time_data = self._parse_time_spec(sections['Time'])
+            model.time_specification = type('TimeSpecification', (), {
+                'time_type': time_data.get('time_type', 'dynamic'),
+                'discretization': time_data.get('discretization', None),
+                'horizon': time_data.get('horizon', None),
+                'step_size': time_data.get('step_size', None)
+            })() if time_data else None
+        if 'ActInfOntologyAnnotation' in sections:
+            model.ontology_mappings = self._parse_ontology(sections['ActInfOntologyAnnotation'])
+        return model
+
+    def _extract_sections(self, content: str) -> Dict[str, str]:
+        """Extract sections from GNN markdown content."""
+        sections: Dict[str, str] = {}
+        current_section = None
+        current_content: List[str] = []
+        for line in content.split('\n'):
+            if line.startswith('## '):
+                if current_section:
+                    sections[current_section] = '\n'.join(current_content).strip()
+                current_section = line[3:].strip()
+                current_content = []
+            elif current_section:
+                current_content.append(line)
+        if current_section:
+            sections[current_section] = '\n'.join(current_content).strip()
+        return sections
+
+    def _parse_variables(self, content: str) -> List[Any]:
+        """Parse variables from StateSpaceBlock content."""
+        variables = []
+        var_pattern = re.compile(r'(\w+)\[([^\]]+)\](?:\s*#\s*(.*))?')
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            match = var_pattern.match(line)
+            if match:
+                name = match.group(1)
+                dims_str = match.group(2)
+                description = match.group(3) or ""
+                dims_parts = [p.strip() for p in dims_str.split(',')]
+                dimensions: List[int] = []
+                data_type = 'float'
+                for part in dims_parts:
+                    if part.startswith('type='):
+                        raw_type = part[5:]
+                        type_mapping = {'int': 'integer', 'float': 'float', 'bool': 'binary', 'str': 'categorical', 'string': 'categorical'}
+                        data_type = type_mapping.get(raw_type, raw_type)
+                    else:
+                        try:
+                            dimensions.append(int(part))
+                        except ValueError:
+                            pass
+                var_type = 'hidden_state'
+                if name in ['A', 'B', 'C', 'D']:
+                    var_type = 'likelihood_matrix' if name == 'A' else 'transition_matrix' if name == 'B' else 'preference_vector' if name == 'C' else 'prior_vector'
+                elif name in ['o', 'u']:
+                    var_type = 'observation' if name == 'o' else 'action'
+                elif name in ['s', 's_prime']:
+                    var_type = 'hidden_state'
+                elif name in ['π', 'G']:
+                    var_type = 'policy'
+                var = type('Variable', (), {
+                    'name': name, 'dimensions': dimensions,
+                    'var_type': type('VarType', (), {'value': var_type})(),
+                    'data_type': type('DataType', (), {'value': data_type})(),
+                    'description': description
+                })()
+                variables.append(var)
+        return variables
+
+    def _parse_connections(self, content: str) -> List[Any]:
+        """Parse connections from Connections content."""
+        connections = []
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if '>' in line:
+                parts = line.split('>')
+                if len(parts) == 2:
+                    conn = type('Connection', (), {
+                        'source_variables': [parts[0].strip()],
+                        'target_variables': [parts[1].strip()],
+                        'connection_type': type('ConnType', (), {'value': 'directed'})(),
+                        'weight': None, 'description': ''
+                    })()
+                    connections.append(conn)
+        return connections
+
+    def _parse_parameters(self, content: str) -> List[Any]:
+        """Parse parameters from InitialParameterization content."""
+        parameters = []
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if '=' in line:
+                parts = line.split('=', 1)
+                if len(parts) == 2:
+                    param = type('Parameter', (), {
+                        'name': parts[0].strip(), 'value': parts[1].strip(),
+                        'type_hint': 'constant', 'description': ''
+                    })()
+                    parameters.append(param)
+        return parameters
+
+    def _parse_time_spec(self, content: str) -> Dict[str, str]:
+        """Parse time specification."""
+        time_spec: Dict[str, str] = {}
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if '=' in line:
+                key, value = line.split('=', 1)
+                time_spec[key.strip()] = value.strip()
+            else:
+                time_spec['time_type'] = line
+        return time_spec
+
+    def _parse_ontology(self, content: str) -> List[Any]:
+        """Parse ontology mappings."""
+        mappings = []
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            if '=' in line:
+                parts = line.split('=', 1)
+                if len(parts) == 2:
+                    mapping = type('OntologyMapping', (), {
+                        'variable_name': parts[0].strip(),
+                        'ontology_term': parts[1].strip(),
+                        'description': ''
+                    })()
+                    mappings.append(mapping)
+        return mappings
+
+
 class GNNRoundTripTester:
     """Comprehensive round-trip testing system for GNN formats."""
 
@@ -351,237 +523,7 @@ class GNNRoundTripTester:
 
     def _create_direct_markdown_parser(self):
         """Create a direct, dependency-free markdown parser for the reference file."""
-        import re
-        from datetime import datetime
-
-        class DirectMarkdownParser:
-            """A simple, robust markdown parser that doesn't rely on complex validation."""
-
-            def parse_file(self, file_path: Path) -> GNNInternalRepresentation:
-                """Parse a GNN markdown file directly."""
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-
-                return self.parse_content(content)
-
-            def parse_content(self, content: str) -> GNNInternalRepresentation:
-                """Parse GNN markdown content."""
-                sections = self._extract_sections(content)
-
-                # Create model with only required fields - no version parameter
-                model = GNNInternalRepresentation(
-                    model_name=sections.get('ModelName', 'Unknown Model'),
-                    annotation=sections.get('ModelAnnotation', '')
-                )
-
-                # Add missing attributes that serializers expect
-                model.version = sections.get('GNNVersionAndFlags', '1.0')
-                model.created_at = datetime.now()
-                model.modified_at = datetime.now()
-                model.checksum = None
-                model.extensions = {}
-                model.raw_sections = sections
-                model.equations = []  # Initialize empty equations list
-
-                # Parse variables from StateSpaceBlock
-                if 'StateSpaceBlock' in sections:
-                    model.variables = self._parse_variables(sections['StateSpaceBlock'])
-
-                # Parse connections
-                if 'Connections' in sections:
-                    model.connections = self._parse_connections(sections['Connections'])
-
-                # Parse parameters
-                if 'InitialParameterization' in sections:
-                    model.parameters = self._parse_parameters(sections['InitialParameterization'])
-
-                # Parse time specification
-                if 'Time' in sections:
-                    time_data = self._parse_time_spec(sections['Time'])
-                    # Create a proper object with attributes instead of dictionary
-                    model.time_specification = type('TimeSpecification', (), {
-                        'time_type': time_data.get('time_type', 'dynamic'),
-                        'discretization': time_data.get('discretization', None),
-                        'horizon': time_data.get('horizon', None),
-                        'step_size': time_data.get('step_size', None)
-                    })() if time_data else None
-
-                # Parse ontology mappings
-                if 'ActInfOntologyAnnotation' in sections:
-                    model.ontology_mappings = self._parse_ontology(sections['ActInfOntologyAnnotation'])
-
-                return model
-
-            def _extract_sections(self, content: str) -> Dict[str, str]:
-                """Extract sections from GNN markdown content."""
-                sections = {}
-                current_section = None
-                current_content = []
-
-                for line in content.split('\n'):
-                    if line.startswith('## '):
-                        # Save previous section
-                        if current_section:
-                            sections[current_section] = '\n'.join(current_content).strip()
-                        # Start new section
-                        current_section = line[3:].strip()
-                        current_content = []
-                    elif current_section:
-                        current_content.append(line)
-
-                # Save last section
-                if current_section:
-                    sections[current_section] = '\n'.join(current_content).strip()
-
-                return sections
-
-            def _parse_variables(self, content: str) -> List[Any]:
-                """Parse variables from StateSpaceBlock content."""
-                variables = []
-                var_pattern = re.compile(r'(\w+)\[([^\]]+)\](?:\s*#\s*(.*))?')
-
-                for line in content.split('\n'):
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-
-                    match = var_pattern.match(line)
-                    if match:
-                        name = match.group(1)
-                        dims_str = match.group(2)
-                        description = match.group(3) or ""
-
-                        # Parse dimensions and type
-                        dims_parts = [p.strip() for p in dims_str.split(',')]
-                        dimensions = []
-                        data_type = 'float'  # default data type
-
-                        for part in dims_parts:
-                            if part.startswith('type='):
-                                raw_type = part[5:]
-                                # Map common type aliases to proper DataType values
-                                type_mapping = {
-                                    'int': 'integer',
-                                    'float': 'float',
-                                    'bool': 'binary',
-                                    'str': 'categorical',
-                                    'string': 'categorical'
-                                }
-                                data_type = type_mapping.get(raw_type, raw_type)
-                            else:
-                                try:
-                                    dimensions.append(int(part))
-                                except ValueError:
-                                    pass
-
-                        # Infer variable type from name (Active Inference convention)
-                        var_type = 'hidden_state'  # default
-                        if name in ['A', 'B', 'C', 'D']:
-                            var_type = 'likelihood_matrix' if name in ['A'] else 'transition_matrix' if name in ['B'] else 'preference_vector' if name in ['C'] else 'prior_vector'
-                        elif name in ['o', 'u']:
-                            var_type = 'observation' if name == 'o' else 'action'
-                        elif name in ['s', 's_prime']:
-                            var_type = 'hidden_state'
-                        elif name in ['π', 'G']:
-                            var_type = 'policy'
-
-                        # Create a simple object with attributes instead of a dict
-                        var = type('Variable', (), {
-                            'name': name,
-                            'dimensions': dimensions,
-                            'var_type': type('VarType', (), {'value': var_type})(),
-                            'data_type': type('DataType', (), {'value': data_type})(),
-                            'description': description
-                        })()
-                        variables.append(var)
-
-                return variables
-
-            def _parse_connections(self, content: str) -> List[Any]:
-                """Parse connections from Connections content."""
-                connections = []
-
-                for line in content.split('\n'):
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-
-                    # Simple connection parsing: source>target
-                    if '>' in line:
-                        parts = line.split('>')
-                        if len(parts) == 2:
-                            conn = type('Connection', (), {
-                                'source_variables': [parts[0].strip()],
-                                'target_variables': [parts[1].strip()],
-                                'connection_type': type('ConnType', (), {'value': 'directed'})(),
-                                'weight': None,  # Add missing weight attribute
-                                'description': ''  # Add missing description attribute
-                            })()
-                            connections.append(conn)
-
-                return connections
-
-            def _parse_parameters(self, content: str) -> List[Any]:
-                """Parse parameters from InitialParameterization content."""
-                parameters = []
-
-                for line in content.split('\n'):
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-
-                    if '=' in line:
-                        parts = line.split('=', 1)
-                        if len(parts) == 2:
-                            param = type('Parameter', (), {
-                                'name': parts[0].strip(),
-                                'value': parts[1].strip(),
-                                'type_hint': 'constant',  # Add missing type_hint attribute
-                                'description': ''  # Add missing description attribute
-                            })()
-                            parameters.append(param)
-
-                return parameters
-
-            def _parse_time_spec(self, content: str) -> Dict[str, str]:
-                """Parse time specification."""
-                time_spec = {}
-
-                for line in content.split('\n'):
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-
-                    if '=' in line:
-                        key, value = line.split('=', 1)
-                        time_spec[key.strip()] = value.strip()
-                    else:
-                        time_spec['time_type'] = line
-
-                return time_spec
-
-            def _parse_ontology(self, content: str) -> List[Any]:
-                """Parse ontology mappings."""
-                mappings = []
-
-                for line in content.split('\n'):
-                    line = line.strip()
-                    if not line or line.startswith('#'):
-                        continue
-
-                    if '=' in line:
-                        parts = line.split('=', 1)
-                        if len(parts) == 2:
-                            mapping = type('OntologyMapping', (), {
-                                'variable_name': parts[0].strip(),
-                                'ontology_term': parts[1].strip(),
-                                'description': ''  # Add missing description attribute
-                            })()
-                            mappings.append(mapping)
-
-                return mappings
-
-        return DirectMarkdownParser()
+        return _DirectMarkdownParser()
 
     def _serialize_with_individual_serializer(self, model: GNNInternalRepresentation, target_format: GNNFormat) -> Optional[str]:
         """Serialize using individual serializer instances without full parsing system."""

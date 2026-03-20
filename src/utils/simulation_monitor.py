@@ -11,6 +11,20 @@ from pathlib import Path
 import json
 from typing import Dict, List, Any, Callable
 
+class _CallTracker:
+    """Wraps a callable to count invocations."""
+
+    def __init__(self, target_func: Callable) -> None:
+        self.func = target_func
+        self.call_count = 0
+        self.called = False
+
+    def __call__(self, *a, **kw):
+        self.called = True
+        self.call_count += 1
+        return self.func(*a, **kw)
+
+
 class SimulationMonitor:
     """
     Monitors real simulation execution with function call tracking and logging.
@@ -49,19 +63,7 @@ class SimulationMonitor:
             def wrapper(*args, **kwargs):
                 self.execution_data["total_attempted"] += 1
 
-                # Real Call Tracker implementation
-                class CallTracker:
-                    def __init__(self, target_func):
-                        self.func = target_func
-                        self.call_count = 0
-                        self.called = False
-
-                    def __call__(self, *a, **kw):
-                        self.called = True
-                        self.call_count += 1
-                        return self.func(*a, **kw)
-
-                tracked_func = CallTracker(func)
+                tracked_func = _CallTracker(func)
 
                 try:
                     self.logger.info(f"🚀 Starting simulation: {simulation_name}")

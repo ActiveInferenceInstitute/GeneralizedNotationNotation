@@ -1024,31 +1024,33 @@ def generate_comprehensive_report(pipeline_dir: Path, output_dir: Path, logger: 
         logger.error(f"Failed to generate comprehensive report: {e}")
         return False
 
+class _PerformanceTracker:
+    """Holds timing and memory metrics for a performance_tracker context."""
+
+    def __init__(self, start_time: float, start_memory: float) -> None:
+        self.start_time = start_time
+        self.start_memory = start_memory
+        self.end_time = None
+        self.end_memory = None
+        self.duration = None
+        self.memory_delta = None
+
+    def finalize(self) -> None:
+        self.end_time = time.time()
+        self.end_memory = get_memory_usage()
+        self.duration = self.end_time - self.start_time
+        self.memory_delta = max(0.0, self.end_memory - self.start_memory)
+        # Use delta for threshold comparisons; still expose peak for reference
+        self.peak_memory_mb = max(self.start_memory, self.end_memory)
+        self.max_memory_mb = self.memory_delta
+
+
 @contextmanager
 def performance_tracker():
     """Context manager for tracking test performance."""
     start_time = time.time()
     start_memory = get_memory_usage()
-
-    class PerformanceTracker:
-        def __init__(self, start_time, start_memory):
-            self.start_time = start_time
-            self.start_memory = start_memory
-            self.end_time = None
-            self.end_memory = None
-            self.duration = None
-            self.memory_delta = None
-
-        def finalize(self):
-            self.end_time = time.time()
-            self.end_memory = get_memory_usage()
-            self.duration = self.end_time - self.start_time
-            self.memory_delta = max(0.0, self.end_memory - self.start_memory)
-            # Use delta for threshold comparisons; still expose peak for reference
-            self.peak_memory_mb = max(self.start_memory, self.end_memory)
-            self.max_memory_mb = self.memory_delta
-
-    tracker = PerformanceTracker(start_time, start_memory)
+    tracker = _PerformanceTracker(start_time, start_memory)
 
     try:
         yield tracker

@@ -240,29 +240,38 @@ class BaseProcessor(ABC):
         self.logger.debug(f"Saved processing report to {report_path}")
 
 
+class _FunctionProcessor(BaseProcessor):
+    """BaseProcessor implementation that wraps a plain (file_path, output_dir) -> bool callable."""
+
+    def __init__(
+        self,
+        step_name: str,
+        process_func: Callable[[Path, Path], bool],
+        logger: Optional[logging.Logger],
+        verbose: bool,
+    ) -> None:
+        super().__init__(step_name, logger, verbose)
+        self._process_func = process_func
+
+    def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
+        return self._process_func(file_path, output_dir)
+
+
 def create_processor(step_name: str, process_func: Callable[[Path, Path], bool],
                      logger: Optional[logging.Logger] = None, verbose: bool = False) -> BaseProcessor:
     """
     Factory function to create a processor from a simple processing function.
-    
+
     Args:
         step_name: Name of the step
         process_func: Function that takes (file_path, output_dir) and returns bool
         logger: Optional logger
         verbose: Enable verbose logging
-        
+
     Returns:
         BaseProcessor instance wrapping the function
     """
-    class FunctionProcessor(BaseProcessor):
-        def __init__(self):
-            super().__init__(step_name, logger, verbose)
-            self._process_func = process_func
-
-        def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
-            return self._process_func(file_path, output_dir)
-
-    return FunctionProcessor()
+    return _FunctionProcessor(step_name, process_func, logger, verbose)
 
 
 __all__ = [

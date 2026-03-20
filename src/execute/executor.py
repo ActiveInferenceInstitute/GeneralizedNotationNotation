@@ -54,13 +54,15 @@ from utils.logging.logging_utils import log_step_start, log_step_success, log_st
 try:
     from utils import performance_tracker
 except Exception:
+    import types as _types
+    from contextlib import contextmanager
+
+    @contextmanager
+    def _noop_cm():
+        yield _types.SimpleNamespace()
+
     def performance_tracker():
-        from contextlib import contextmanager
-        @contextmanager
-        def _cm():
-            class T: pass
-            yield T()
-        return _cm()
+        return _noop_cm()
 
 from utils.pipeline_template import get_output_dir_for_script
 
