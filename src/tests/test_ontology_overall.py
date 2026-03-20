@@ -199,3 +199,42 @@ def test_ontology_module_performance():
 
     except ImportError:
         pytest.skip("Ontology module not available")
+
+
+# ── Sub-module smoke tests ────────────────────────────────────────────────────
+
+class TestOntologyMCP:
+    def test_module_importable(self):
+        from ontology import mcp  # noqa: F401
+
+    def test_process_ontology_mcp_nonexistent(self, tmp_path):
+        from ontology.mcp import process_ontology_mcp
+        result = process_ontology_mcp(str(tmp_path / "nonexistent"), str(tmp_path / "out"))
+        assert isinstance(result, dict)
+        assert "success" in result or "error" in result
+
+    def test_validate_ontology_terms_mcp_empty(self):
+        from ontology.mcp import validate_ontology_terms_mcp
+        result = validate_ontology_terms_mcp([])
+        assert isinstance(result, dict)
+
+    def test_validate_ontology_terms_mcp_string(self):
+        from ontology.mcp import validate_ontology_terms_mcp
+        result = validate_ontology_terms_mcp("LikelihoodMatrix")
+        assert isinstance(result, dict)
+
+
+class TestOntologyUtils:
+    def test_module_importable(self):
+        from ontology import utils  # noqa: F401
+
+    def test_get_module_info(self):
+        from ontology.utils import get_module_info
+        result = get_module_info()
+        assert isinstance(result, dict)
+        assert "module_name" in result
+
+    def test_get_ontology_processing_options(self):
+        from ontology.utils import get_ontology_processing_options
+        result = get_ontology_processing_options()
+        assert isinstance(result, dict)
