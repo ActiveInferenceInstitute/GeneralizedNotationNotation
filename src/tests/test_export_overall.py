@@ -209,3 +209,21 @@ def test_export_module_performance():
     except ImportError:
         pytest.skip("Export module not available")
 
+
+
+class TestExportUtils:
+    """Smoke tests for export.utils sub-module."""
+
+    def test_module_importable(self):
+        from export import utils  # noqa: F401
+
+    def test_get_module_info_returns_dict(self):
+        from export.utils import get_module_info
+        result = get_module_info()
+        assert isinstance(result, dict)
+
+    def test_get_supported_formats_returns_dict(self):
+        from export.utils import get_supported_formats
+        result = get_supported_formats()
+        assert isinstance(result, dict)
+        assert len(result) > 0

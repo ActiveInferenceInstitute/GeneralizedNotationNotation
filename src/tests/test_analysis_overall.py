@@ -1,5 +1,6 @@
 import pytest
 import json
+from pathlib import Path
 from analysis.processor import process_analysis
 
 class TestAnalysisOverall:
@@ -264,3 +265,90 @@ class TestAnalysisModuleImports:
         assert callable(generate_cross_framework_comparison)
         assert callable(plot_belief_evolution)
         assert callable(animate_belief_evolution)
+
+
+# ── Per-framework analyzer smoke tests ───────────────────────────────────────
+
+class TestActiveInferenceJLAnalyzer:
+    def test_module_importable(self):
+        from analysis.activeinference_jl import analyzer  # noqa: F401
+
+    def test_generate_analysis_from_logs_missing_dir(self, tmp_path):
+        from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
+        assert isinstance(result, list)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestDisCoPyAnalyzer:
+    def test_module_importable(self):
+        from analysis.discopy import analyzer  # noqa: F401
+
+    def test_extract_circuit_data_empty_dir(self, tmp_path):
+        from analysis.discopy.analyzer import extract_circuit_data
+        result = extract_circuit_data(tmp_path)
+        assert isinstance(result, dict)
+
+    def test_analyze_diagram_structure_empty(self):
+        from analysis.discopy.analyzer import analyze_diagram_structure
+        result = analyze_diagram_structure([])
+        assert isinstance(result, dict)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.discopy.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestJAXAnalyzer:
+    def test_module_importable(self):
+        from analysis.jax import analyzer  # noqa: F401
+
+    def test_parse_raw_output_empty_string(self):
+        from analysis.jax.analyzer import parse_raw_output
+        result = parse_raw_output("")
+        assert isinstance(result, dict)
+
+    def test_extract_simulation_data_empty_dir(self, tmp_path):
+        from analysis.jax.analyzer import extract_simulation_data
+        result = extract_simulation_data(tmp_path)
+        assert isinstance(result, dict)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.jax.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestPyMDPAnalyzer:
+    def test_module_importable(self):
+        from analysis.pymdp import analyzer  # noqa: F401
+
+    def test_generate_analysis_from_logs_missing_dir(self, tmp_path):
+        from analysis.pymdp.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
+        assert isinstance(result, list)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.pymdp.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestRxInferAnalyzer:
+    def test_module_importable(self):
+        from analysis.rxinfer import analyzer  # noqa: F401
+
+    def test_extract_simulation_data_empty_dir(self, tmp_path):
+        from analysis.rxinfer.analyzer import extract_simulation_data
+        result = extract_simulation_data(tmp_path)
+        assert isinstance(result, dict)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.rxinfer.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)

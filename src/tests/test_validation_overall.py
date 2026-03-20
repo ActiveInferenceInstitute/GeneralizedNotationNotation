@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 from validation.semantic_validator import SemanticValidator, process_semantic_validation
 
 class TestValidationOverall:
@@ -77,3 +78,73 @@ ModelName: Invalid
 
         warning_texts = " ".join(result["warnings"])
         assert "Active Inference model missing explicit observation model" in warning_texts
+
+
+# ── Validation sub-module smoke tests ────────────────────────────────────────
+
+class TestConsistencyChecker:
+    def test_module_importable(self):
+        from validation import consistency_checker  # noqa: F401
+
+    def test_class_instantiable(self):
+        from validation.consistency_checker import ConsistencyChecker
+        checker = ConsistencyChecker()
+        assert checker is not None
+
+    def test_check_consistency_with_dict(self):
+        from validation.consistency_checker import check_consistency
+        result = check_consistency({"ModelName": "TestModel", "StateSpaceBlock": "s[1]"})
+        assert isinstance(result, dict)
+        assert "consistent" in result or "is_consistent" in result
+
+    def test_check_consistency_empty_dict(self):
+        from validation.consistency_checker import check_consistency
+        result = check_consistency({})
+        assert isinstance(result, dict)
+
+
+class TestValidationMCP:
+    def test_module_importable(self):
+        from validation import mcp  # noqa: F401
+
+    def test_validate_gnn_file_mcp_nonexistent(self, tmp_path):
+        from validation.mcp import validate_gnn_file_mcp
+        result = validate_gnn_file_mcp(str(tmp_path / "nonexistent.md"))
+        assert isinstance(result, dict)
+        assert "success" in result or "error" in result
+
+    def test_check_schema_compliance_mcp_empty(self):
+        from validation.mcp import check_schema_compliance_mcp
+        result = check_schema_compliance_mcp("")
+        assert isinstance(result, dict)
+
+
+class TestPerformanceProfiler:
+    def test_module_importable(self):
+        from validation import performance_profiler  # noqa: F401
+
+    def test_class_instantiable(self):
+        from validation.performance_profiler import PerformanceProfiler
+        profiler = PerformanceProfiler()
+        assert profiler is not None
+
+    def test_profile_performance_with_string(self):
+        from validation.performance_profiler import profile_performance
+        result = profile_performance("## ModelName\nTestModel\n")
+        assert isinstance(result, dict)
+        assert "performance_score" in result or "error" in result
+
+    def test_profile_performance_empty(self):
+        from validation.performance_profiler import profile_performance
+        result = profile_performance("")
+        assert isinstance(result, dict)
+
+
+class TestValidationInit:
+    def test_module_importable(self):
+        from validation import __init__  # noqa: F401
+
+    def test_process_validation_empty_dir(self, tmp_path):
+        from validation import process_validation
+        result = process_validation(tmp_path, tmp_path / "out")
+        assert isinstance(result, bool)
