@@ -339,3 +339,63 @@ class TestParsedGNNExtraction:
 
         assert "prior" in matrices
         assert "likelihood" in matrices
+
+
+class TestGUI2MatrixEditor:
+    """Behavioral tests for gui/gui_2/matrix_editor.py functions."""
+
+    GNN_CONTENT = """## GNNSection
+ActInfPOMDP
+
+## ModelName
+TestModel
+
+## StateSpaceBlock
+A[3,3,type=float]
+B[3,3,3,type=float]
+s[3,1,type=float]
+
+## Connections
+D>s
+s-A
+
+## InitialParameterization
+A={(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}
+"""
+
+    def test_parse_matrix_from_gnn_returns_dict(self):
+        """parse_matrix_from_gnn returns a dict with expected keys."""
+        from gui.gui_2.matrix_editor import parse_matrix_from_gnn
+
+        result = parse_matrix_from_gnn(self.GNN_CONTENT)
+        assert isinstance(result, dict)
+
+    def test_parse_matrix_from_gnn_empty_content(self):
+        """parse_matrix_from_gnn handles empty content without crashing."""
+        from gui.gui_2.matrix_editor import parse_matrix_from_gnn
+
+        result = parse_matrix_from_gnn("")
+        assert isinstance(result, dict)
+
+    def test_create_matrix_from_gnn_returns_dict(self):
+        """create_matrix_from_gnn returns a dict."""
+        from gui.gui_2.matrix_editor import create_matrix_from_gnn
+
+        result = create_matrix_from_gnn(self.GNN_CONTENT)
+        assert isinstance(result, dict)
+
+    def test_validate_visual_matrix_dimensions_returns_list(self):
+        """validate_visual_matrix_dimensions returns a list."""
+        from gui.gui_2.matrix_editor import validate_visual_matrix_dimensions
+
+        result = validate_visual_matrix_dimensions({})
+        assert isinstance(result, list)
+
+    def test_get_pomdp_template_returns_string(self):
+        """get_pomdp_template returns a non-empty string."""
+        from gui.gui_2.matrix_editor import get_pomdp_template
+
+        template = get_pomdp_template()
+        assert isinstance(template, str)
+        assert len(template) > 0
+        assert "StateSpaceBlock" in template
