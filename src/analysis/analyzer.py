@@ -71,7 +71,7 @@ def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict
         }
 
     except Exception as e:
-        raise Exception(f"Failed to analyze {file_path}: {e}") from e
+        raise RuntimeError(f"Failed to analyze {file_path}: {e}") from e
 
 def extract_variables(content: str) -> List[Dict[str, Any]]:
     """Extract variables for statistical analysis."""
@@ -376,7 +376,7 @@ def calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict
         return metrics
 
     except Exception as e:
-        raise Exception(f"Failed to calculate complexity metrics for {file_path}: {e}") from e
+        raise RuntimeError(f"Failed to calculate complexity metrics for {file_path}: {e}") from e
 
 def calculate_maintainability_index(content: str, variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> float:
     """Calculate maintainability index."""
@@ -444,7 +444,7 @@ def run_performance_benchmarks(file_path: Path, verbose: bool = False) -> Dict[s
         return benchmarks
 
     except Exception as e:
-        raise Exception(f"Failed to run benchmarks for {file_path}: {e}") from e
+        raise RuntimeError(f"Failed to run benchmarks for {file_path}: {e}") from e
 
 def perform_model_comparisons(statistical_analyses: List[Dict[str, Any]], verbose: bool = False) -> Dict[str, Any]:
     """Perform comparisons between multiple models."""
