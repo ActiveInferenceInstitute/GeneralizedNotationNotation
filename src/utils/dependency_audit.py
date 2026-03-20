@@ -16,6 +16,14 @@ from datetime import datetime
 import logging
 import re
 
+try:
+    import tomllib
+except ImportError:
+    try:
+        import tomli as tomllib  # type: ignore[no-redef]
+    except ImportError:
+        tomllib = None  # type: ignore[assignment]
+
 
 @dataclass
 class DependencyInfo:
@@ -123,14 +131,9 @@ class DependencyAuditor:
 
     def _load_from_pyproject_toml(self, pyproject_path: Path):
         """Load dependencies from pyproject.toml."""
-        try:
-            import tomllib
-        except ImportError:
-            try:
-                import tomli as tomllib
-            except ImportError:
-                self.logger.warning("tomllib/tomli not available, skipping pyproject.toml parsing")
-                return
+        if tomllib is None:
+            self.logger.warning("tomllib/tomli not available, skipping pyproject.toml parsing")
+            return
 
         try:
             with open(pyproject_path, 'rb') as f:
@@ -164,17 +167,10 @@ class DependencyAuditor:
 
     def _load_from_uv_lock(self, uv_lock_path: Path):
         """Load dependencies from uv.lock file."""
+        if tomllib is None:
+            self.logger.warning("tomllib/tomli not available, skipping uv.lock parsing")
+            return
         try:
-            # UV lock files are in TOML format
-            try:
-                import tomllib
-            except ImportError:
-                try:
-                    import tomli as tomllib
-                except ImportError:
-                    self.logger.warning("tomllib/tomli not available, skipping uv.lock parsing")
-                    return
-
             with open(uv_lock_path, 'rb') as f:
                 lock_data = tomllib.load(f)
 

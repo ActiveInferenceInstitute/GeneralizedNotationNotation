@@ -280,11 +280,6 @@ def _scan_files_lightweight(target_dir: Path) -> Dict[str, Any]:
     files = list(Path(target_dir).glob("**/*.md"))
     return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
 
-def process_gnn_directory_full(target_dir: Path, output_dir: Path | None = None) -> Dict[str, Any]:
-    """Full processing placeholder exposed for tests to patch; delegates to process()."""
-    return process_gnn_directory(target_dir, output_dir=output_dir or Path.cwd(), recursive=True)
-
-
 # Factory function for easy processor creation
 def create_processor(logger: Optional[logging.Logger] = None) -> GNNProcessor:
     """Create a configured GNN processor."""

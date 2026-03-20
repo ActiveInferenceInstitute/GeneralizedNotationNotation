@@ -23,14 +23,7 @@ except ImportError:
     SCIPY_AVAILABLE = False
     stats = None
 
-try:
-    import matplotlib.pyplot as plt
-    from matplotlib import cm
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-    plt = None
-    cm = None
+from analysis.viz_base import plt, MATPLOTLIB_AVAILABLE
 
 try:
     import seaborn as sns
@@ -46,9 +39,9 @@ def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict
             content = f.read()
 
         # Extract structural elements
-        variables = extract_variables_for_analysis(content)
-        connections = extract_connections_for_analysis(content)
-        sections = extract_sections_for_analysis(content)
+        variables = extract_variables(content)
+        connections = extract_connections(content)
+        sections = extract_sections(content)
 
         # Calculate statistics
         var_stats = calculate_variable_statistics(variables)
@@ -80,7 +73,7 @@ def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict
     except Exception as e:
         raise Exception(f"Failed to analyze {file_path}: {e}") from e
 
-def extract_variables_for_analysis(content: str) -> List[Dict[str, Any]]:
+def extract_variables(content: str) -> List[Dict[str, Any]]:
     """Extract variables for statistical analysis."""
     variables = []
 
@@ -103,7 +96,7 @@ def extract_variables_for_analysis(content: str) -> List[Dict[str, Any]]:
 
     return variables
 
-def extract_connections_for_analysis(content: str) -> List[Dict[str, Any]]:
+def extract_connections(content: str) -> List[Dict[str, Any]]:
     """Extract connections for statistical analysis."""
     connections = []
     seen = set()  # Deduplicate connections
@@ -158,7 +151,7 @@ def extract_connections_for_analysis(content: str) -> List[Dict[str, Any]]:
 
     return connections
 
-def extract_sections_for_analysis(content: str) -> List[Dict[str, Any]]:
+def extract_sections(content: str) -> List[Dict[str, Any]]:
     """Extract sections for statistical analysis."""
     sections = []
 
@@ -366,8 +359,8 @@ def calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict
         with open(file_path, 'r') as f:
             content = f.read()
 
-        variables = extract_variables_for_analysis(content)
-        connections = extract_connections_for_analysis(content)
+        variables = extract_variables(content)
+        connections = extract_connections(content)
 
         metrics = {
             "file_path": str(file_path),
@@ -422,8 +415,8 @@ def run_performance_benchmarks(file_path: Path, verbose: bool = False) -> Dict[s
             content = f.read()
 
         start_time = time.perf_counter()
-        variables = extract_variables_for_analysis(content)
-        connections = extract_connections_for_analysis(content)
+        variables = extract_variables(content)
+        connections = extract_connections(content)
         end_time = time.perf_counter()
 
         real_parse_time = end_time - start_time

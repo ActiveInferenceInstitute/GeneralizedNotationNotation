@@ -92,11 +92,6 @@ def safe_savefig(
         return None
 
 
-def check_matplotlib() -> bool:
-    """Check if matplotlib is available for visualization."""
-    return MATPLOTLIB_AVAILABLE
-
-
 __all__ = [
     'plt',
     'np',
@@ -104,5 +99,4 @@ __all__ = [
     'sns',
     'MATPLOTLIB_AVAILABLE',
     'safe_savefig',
-    'check_matplotlib',
 ]
