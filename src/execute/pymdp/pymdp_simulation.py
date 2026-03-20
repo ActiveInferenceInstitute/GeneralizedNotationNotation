@@ -164,11 +164,13 @@ except ImportError:
 class PyMDPSimulation:
     """
     PyMDP Active Inference simulation configured from GNN specifications.
-    
+
     This class creates and runs authentic PyMDP simulations using parameters
     extracted from GNN POMDP specifications. It supports both GNN-configured
     and default parameter modes.
     """
+
+    _DEFAULT_POLICY_LEN: int = 3  # Steps to plan ahead
 
     def __init__(self, gnn_config: Optional[Dict[str, Any]] = None, output_dir: Optional[Union[str, Path]] = None):
         """
@@ -380,7 +382,7 @@ class PyMDPSimulation:
             self.agent = Agent(
                 A=A, B=B, C=C, D=D,
                 lr_pB=self.learning_rate,
-                policy_len=3,  # Plan 3 steps ahead
+                policy_len=self._DEFAULT_POLICY_LEN,
                 control_fac_idx=[0],  # Control factor 0 (states)
                 policies=self._generate_policies()
             )
@@ -406,13 +408,8 @@ class PyMDPSimulation:
     def _process_gnn_A_matrix(self, gnn_A) -> np.ndarray:
         """Process GNN A matrix into PyMDP format."""
         try:
-            # Convert GNN matrix to numpy array
-            if isinstance(gnn_A, list):
-                A_matrix = np.array(gnn_A)
-            elif isinstance(gnn_A, np.ndarray):
-                A_matrix = gnn_A
-            else:
-                self.logger.warning(f"Unexpected A matrix type: {type(gnn_A)}")
+            A_matrix = self._coerce_to_numpy(gnn_A, "A")
+            if A_matrix is None:
                 return self._create_observation_model()
 
             # Ensure correct shape [observations, states]
@@ -437,13 +434,8 @@ class PyMDPSimulation:
     def _process_gnn_B_matrix(self, gnn_B) -> np.ndarray:
         """Process GNN B matrix into PyMDP format."""
         try:
-            # Convert GNN matrix to numpy array
-            if isinstance(gnn_B, list):
-                B_matrix = np.array(gnn_B)
-            elif isinstance(gnn_B, np.ndarray):
-                B_matrix = gnn_B
-            else:
-                self.logger.warning(f"Unexpected B matrix type: {type(gnn_B)}")
+            B_matrix = self._coerce_to_numpy(gnn_B, "B")
+            if B_matrix is None:
                 return self._create_transition_model()
 
             # Ensure correct shape [next_states, current_states, actions]
@@ -467,13 +459,8 @@ class PyMDPSimulation:
     def _process_gnn_C_vector(self, gnn_C) -> np.ndarray:
         """Process GNN C vector into PyMDP format."""
         try:
-            # Convert GNN vector to numpy array
-            if isinstance(gnn_C, list):
-                C_vector = np.array(gnn_C)
-            elif isinstance(gnn_C, np.ndarray):
-                C_vector = gnn_C
-            else:
-                self.logger.warning(f"Unexpected C vector type: {type(gnn_C)}")
+            C_vector = self._coerce_to_numpy(gnn_C, "C")
+            if C_vector is None:
                 return self._create_preference_model()
 
             # Handle different possible shapes
@@ -501,13 +488,8 @@ class PyMDPSimulation:
     def _process_gnn_D_vector(self, gnn_D) -> np.ndarray:
         """Process GNN D vector into PyMDP format."""
         try:
-            # Convert GNN vector to numpy array
-            if isinstance(gnn_D, list):
-                D_vector = np.array(gnn_D)
-            elif isinstance(gnn_D, np.ndarray):
-                D_vector = gnn_D
-            else:
-                self.logger.warning(f"Unexpected D vector type: {type(gnn_D)}")
+            D_vector = self._coerce_to_numpy(gnn_D, "D")
+            if D_vector is None:
                 return self._create_prior_beliefs()
 
             # Handle different possible shapes
@@ -574,7 +556,7 @@ class PyMDPSimulation:
             self.agent = Agent(
                 A=A, B=B, C=C, D=D,
                 lr_pB=self.learning_rate,
-                policy_len=3,  # Plan 3 steps ahead
+                policy_len=self._DEFAULT_POLICY_LEN,
                 control_fac_idx=[0],  # Control factor 0 (states)
                 policies=self._generate_policies()
             )
@@ -686,8 +668,8 @@ class PyMDPSimulation:
         policies = []
 
         # Policy shape: (policy_len, num_control_factors)
-        # We assume 1 control factor (states) and policy_len=3 (as used in Agent creation)
-        policy_len = 3
+        # We assume 1 control factor (states) and policy_len matches Agent creation
+        policy_len = self._DEFAULT_POLICY_LEN
 
         # 1. Ensure full action coverage for consistency checks
         for action_idx in range(self.num_actions):

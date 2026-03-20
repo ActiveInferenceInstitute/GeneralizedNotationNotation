@@ -59,7 +59,7 @@ import asyncio
 
 from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
-def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
+def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
     """
     Check if Ollama is available and running with enhanced detection.
 
@@ -330,7 +330,7 @@ async def _process_llm_async(
         log_step_start(logger, "Processing LLM with enhanced Ollama integration")
 
         # Check if Ollama is available and running with model detection
-        ollama_available, ollama_models = _check_and_start_ollama(logger)
+        ollama_available, ollama_models = _start_ollama_if_needed(logger)
 
         # Select best model if Ollama is available
         selected_model = None

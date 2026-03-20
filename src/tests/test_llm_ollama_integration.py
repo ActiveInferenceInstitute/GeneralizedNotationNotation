@@ -18,7 +18,7 @@ import subprocess  # nosec B404 -- subprocess calls with controlled/trusted inpu
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from llm.processor import (
-    _check_and_start_ollama,
+    _start_ollama_if_needed,
     _select_best_ollama_model,
     process_llm
 )
@@ -32,7 +32,7 @@ class TestOllamaDetection:
         import logging
         logger = logging.getLogger("test_ollama")
 
-        result = _check_and_start_ollama(logger)
+        result = _start_ollama_if_needed(logger)
 
         # Should return a tuple
         assert isinstance(result, tuple)
@@ -48,7 +48,7 @@ class TestOllamaDetection:
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_ollama")
-        is_available, models = _check_and_start_ollama(logger)
+        is_available, models = _start_ollama_if_needed(logger)
 
         log_text = caplog.text
 
@@ -73,7 +73,7 @@ class TestOllamaDetection:
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_ollama")
-        is_available, models = _check_and_start_ollama(logger)
+        is_available, models = _start_ollama_if_needed(logger)
 
         if is_available and models:
             # Should log available models
@@ -102,7 +102,7 @@ class TestOllamaDetection:
         except Exception:
             port_open = False
 
-        is_available, models = _check_and_start_ollama(logger)
+        is_available, models = _start_ollama_if_needed(logger)
 
         # Verify consistent detection - both methods should agree
         # Log result for debugging rather than strict assertion

@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class TestingModules:
+class _TestingClassRefs:
     """Typed container for lazily-imported GNN testing classes.
 
     Fields are None when the corresponding module could not be imported
@@ -51,7 +51,7 @@ class TestingModules:
 
 
 @functools.lru_cache(maxsize=None)
-def _get_testing_modules() -> TestingModules:
+def _get_testing_modules() -> _TestingClassRefs:
     """Lazy import of testing modules to avoid circular dependencies."""
     try:
         # Use lazy imports to break circular dependency
@@ -61,7 +61,7 @@ def _get_testing_modules() -> TestingModules:
         schema_validator = importlib.import_module('gnn.schema_validator')
         cross_format_validator = importlib.import_module('gnn.cross_format_validator')
 
-        return TestingModules(
+        return _TestingClassRefs(
             GNNRoundTripTester=getattr(test_round_trip, 'GNNRoundTripTester', None),
             ComprehensiveTestReport=getattr(test_round_trip, 'ComprehensiveTestReport', None),
             RoundTripResult=getattr(test_round_trip, 'RoundTripResult', None),
@@ -74,7 +74,7 @@ def _get_testing_modules() -> TestingModules:
             CrossFormatValidationResult=getattr(cross_format_validator, 'CrossFormatValidationResult', None),
         )
     except (ImportError, AttributeError, RecursionError):
-        return TestingModules()
+        return _TestingClassRefs()
 
 
 def is_enhanced_testing_available() -> bool:
