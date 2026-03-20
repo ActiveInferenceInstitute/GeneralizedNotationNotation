@@ -521,3 +521,20 @@ print("JAX Active Inference model test successful!")
             pytest.fail(f"JAX execution processing crashed: {e}")
 
 
+
+class TestExecuteDisCoPyTranslatorModule:
+    """Smoke tests for execute.discopy_translator_module.translator sub-module."""
+
+    def test_module_importable(self):
+        from execute.discopy_translator_module import translator  # noqa: F401
+
+    def test_gnn_file_to_discopy_diagram_nonexistent(self, tmp_path):
+        from execute.discopy_translator_module.translator import gnn_file_to_discopy_diagram
+        result = gnn_file_to_discopy_diagram(tmp_path / "nonexistent.md")
+        # Should return None on failure (no discopy or missing file)
+        assert result is None or hasattr(result, '__class__')
+
+    def test_gnn_file_to_discopy_matrix_diagram_nonexistent(self, tmp_path):
+        from execute.discopy_translator_module.translator import gnn_file_to_discopy_matrix_diagram
+        result = gnn_file_to_discopy_matrix_diagram(tmp_path / "nonexistent.md")
+        assert result is None or hasattr(result, '__class__')

@@ -203,3 +203,25 @@ def test_website_module_performance():
 
     except ImportError:
         pytest.skip("Website module not available")
+
+
+class TestWebsiteMCP:
+    """Smoke tests for website.mcp sub-module."""
+
+    def test_module_importable(self):
+        from website import mcp  # noqa: F401
+
+    def test_get_website_module_info_mcp(self):
+        from website.mcp import get_website_module_info_mcp
+        result = get_website_module_info_mcp()
+        assert isinstance(result, dict)
+
+    def test_get_website_status_mcp_nonexistent(self, tmp_path):
+        from website.mcp import get_website_status_mcp
+        result = get_website_status_mcp(str(tmp_path / "nonexistent"))
+        assert isinstance(result, dict)
+
+    def test_list_generated_pages_mcp_empty(self, tmp_path):
+        from website.mcp import list_generated_pages_mcp
+        result = list_generated_pages_mcp(str(tmp_path))
+        assert isinstance(result, dict)

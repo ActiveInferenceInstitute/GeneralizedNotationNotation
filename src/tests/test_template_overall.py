@@ -234,3 +234,16 @@ class TestUtilityPatterns:
         info = get_version_info()
         assert isinstance(info, dict)
         assert 'version' in info or 'module' in info or len(info) > 0
+
+
+class TestTemplateUtils:
+    """Smoke tests for template.utils sub-module."""
+
+    def test_module_importable(self):
+        from template import utils  # noqa: F401
+
+    def test_get_version_info_returns_dict(self):
+        from template.utils import get_version_info
+        result = get_version_info()
+        assert isinstance(result, dict)
+        assert len(result) > 0
