@@ -1,5 +1,4 @@
 import pytest
-from pathlib import Path
 from validation.semantic_validator import SemanticValidator, process_semantic_validation
 
 class TestValidationOverall:

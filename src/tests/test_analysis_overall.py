@@ -1,6 +1,5 @@
 import pytest
 import json
-from pathlib import Path
 from analysis.processor import process_analysis
 
 class TestAnalysisOverall:

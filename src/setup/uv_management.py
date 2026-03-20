@@ -366,12 +366,6 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
 
 
 # Package operations (add/remove/update/lock) are defined in uv_package_ops.py
-from .uv_package_ops import (  # noqa: E402
-    add_uv_dependency,
-    remove_uv_dependency,
-    update_uv_dependencies,
-    lock_uv_dependencies,
-)
 
 
 def setup_uv_environment(
