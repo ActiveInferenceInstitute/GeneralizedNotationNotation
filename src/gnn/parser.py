@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Callable, Dict, Any, List, Tuple, Union, Optional
 
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
-from .types import ValidationLevel
+from .types import ValidationLevel, ParsedGNN
 
 class _GNNParseBuffer:
     """Internal mutable builder for GNN parse results.
