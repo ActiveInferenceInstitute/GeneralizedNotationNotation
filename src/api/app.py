@@ -125,6 +125,16 @@ if FASTAPI_AVAILABLE:
             """Submit a pipeline run for background execution."""
             from pipeline.hasher import compute_run_hash
 
+            # Enforce path boundary: resolved path must stay within repo root
+            _repo_root = Path(__file__).parent.parent.parent.resolve()
+            try:
+                Path(request.target_dir).resolve().relative_to(_repo_root)
+            except ValueError as err:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Target directory must be within the repository root: {request.target_dir}"
+                ) from err
+
             run_hash = compute_run_hash(
                 Path(request.target_dir),
                 config={"skip_steps": request.skip_steps, "skip_llm": request.skip_llm},

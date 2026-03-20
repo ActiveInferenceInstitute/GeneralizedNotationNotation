@@ -17,6 +17,9 @@ except ImportError:
 
 def generate_tonal_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
     """Generate tonal audio representation of the model."""
+    if not variables:
+        return np.zeros(int(44100 * 5.0))
+
     # Create a tonal sequence based on variables
     sample_rate = 44100
     duration = 5.0  # 5 seconds

@@ -196,6 +196,16 @@ async def invoke_tool(step: int, request: ToolRequest, background_tasks: Backgro
     if not target_path.exists():
         raise HTTPException(status_code=400, detail=f"Target directory not found: {request.target_dir}")
 
+    # Enforce path boundary: resolved path must stay within repo root
+    _repo_root = Path(__file__).parent.parent.parent.resolve()
+    try:
+        target_path.resolve().relative_to(_repo_root)
+    except ValueError as err:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Target directory must be within the repository root: {request.target_dir}"
+        ) from err
+
     job_id = job_mgr.create_job(
         target_dir=str(target_path),
         steps=[step],

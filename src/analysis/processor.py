@@ -383,14 +383,20 @@ def process_analysis(
 
         # Save detailed results
         results_file = results_dir / "analysis_results.json"
-        with open(results_file, 'w') as f:
-            json.dump(results, f, indent=2, default=convert_numpy_types)
+        try:
+            with open(results_file, 'w') as f:
+                json.dump(results, f, indent=2, default=convert_numpy_types)
+        except (OSError, IOError) as e:
+            logger.error(f"Failed to write analysis results: {e}")
 
         # Generate summary report
         summary = generate_analysis_summary(results)
         summary_file = results_dir / "analysis_summary.md"
-        with open(summary_file, 'w') as f:
-            f.write(summary)
+        try:
+            with open(summary_file, 'w') as f:
+                f.write(summary)
+        except (OSError, IOError) as e:
+            logger.error(f"Failed to write analysis summary: {e}")
 
         if results["success"]:
             log_step_success(logger, "Analysis processing completed successfully")

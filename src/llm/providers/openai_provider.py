@@ -350,4 +350,4 @@ class OpenAIProvider(BaseLLMProvider):
                 return _extract(future.result(timeout=30))
         except Exception as e:
             logger.error(f"OpenAI analysis failed: {e}")
-            return f"Analysis failed: {e}"
+            raise RuntimeError(f"OpenAI analysis failed: {e}") from e
