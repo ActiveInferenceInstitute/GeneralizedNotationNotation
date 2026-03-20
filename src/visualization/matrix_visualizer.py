@@ -11,15 +11,7 @@ Specialized support for 3D tensors like POMDP transition matrices.
 import csv
 import logging
 
-# Soft import: analysis (step 16) centralizes matplotlib setup but is downstream
-# of visualization (step 8). Use try/except to avoid hard upward coupling.
-try:
-    from analysis.viz_base import plt, np, sns, MATPLOTLIB_AVAILABLE
-except ImportError:
-    plt = None
-    np = None
-    sns = None
-    MATPLOTLIB_AVAILABLE = False
+from visualization._viz_compat import plt, np, sns, MATPLOTLIB_AVAILABLE
 
 logger = logging.getLogger(__name__)
 

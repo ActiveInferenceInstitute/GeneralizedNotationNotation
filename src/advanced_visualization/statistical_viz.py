@@ -18,18 +18,11 @@ from ._shared import (
     AdvancedVisualizationAttempt,
     MATPLOTLIB_AVAILABLE,
     SEABORN_AVAILABLE,
+    _MatrixVisualizer,
     np,
     plt,
     sns,
 )
-
-try:
-    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-except ImportError:
-    try:
-        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-    except ImportError:
-        _MatrixVisualizer = None
 
 
 def _generate_statistical_plots(

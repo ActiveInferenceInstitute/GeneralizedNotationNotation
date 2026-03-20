@@ -342,8 +342,11 @@ def initialize_discopy_components() -> bool:
 
     return JAX_AVAILABLE
 
-# Initialize components on module import
-initialize_discopy_components()
+# Initialize components on module import (lazy: only once)
+_discopy_initialized = False
+if not _discopy_initialized:
+    initialize_discopy_components()
+    _discopy_initialized = True
 
 def _convert_json_to_complex_array(data: Any) -> Any:
     """
