@@ -247,7 +247,7 @@ class StructuredLogger:
         else:
             self.info(f"Pipeline step '{step_name}' completed with status: {status}", **log_data)
 
-    def log_error(self, error: Exception, step_name: str = None, **context):
+    def log_error(self, error: Exception, step_name: Optional[str] = None, **context):
         """Log an error with full context and traceback."""
         import traceback
 

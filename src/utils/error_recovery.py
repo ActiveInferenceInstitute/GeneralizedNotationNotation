@@ -7,7 +7,7 @@ Provides structured error handling, informative error messages, and recovery
 mechanisms for all pipeline operations.
 """
 
-from typing import Optional, Dict, Any, Callable, List
+from typing import Optional, Dict, Any, Callable, List, TypedDict
 from enum import Enum
 import functools
 import logging
@@ -16,6 +16,15 @@ import traceback
 from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
+
+
+class ErrorRecord(TypedDict):
+    """Typed structure for error records stored by ErrorReporter."""
+    type: str
+    message: str
+    details: Dict[str, Any]
+    severity: "ErrorSeverity"
+    timestamp: str
 
 
 class ErrorSeverity(Enum):
@@ -241,7 +250,7 @@ class ErrorReporter:
 
     def __init__(self):
         """Initialize error reporter."""
-        self.errors: List[Dict[str, Any]] = []
+        self.errors: List[ErrorRecord] = []
         self.logger = logging.getLogger(__name__)
 
     def collect_error(self, error_type: str, message: str, details: Optional[Dict[str, Any]] = None, severity: ErrorSeverity = ErrorSeverity.ERROR):
@@ -264,7 +273,7 @@ class ErrorReporter:
         self.errors.append(error_record)
         self.logger.debug(f"Error collected: {error_type} - {message}")
 
-    def get_errors(self) -> List[Dict[str, Any]]:
+    def get_errors(self) -> List[ErrorRecord]:
         """Get all collected errors."""
         return self.errors.copy()
 

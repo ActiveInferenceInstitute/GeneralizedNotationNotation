@@ -6,7 +6,7 @@ This module handles network graph generation, interactive plotly networks,
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import logging
 import json
 
@@ -213,7 +213,7 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
 
 
 
-def _determine_connection_type(source_var: str, target_var: str, source_type: str = None, target_type: str = None) -> str:
+def _determine_connection_type(source_var: str, target_var: str, source_type: Optional[str] = None, target_type: Optional[str] = None) -> str:
     """Determine the semantic type of connection between variables."""
     if source_type and target_type:
         if source_type == "hidden_state" and target_type == "hidden_state":

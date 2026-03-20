@@ -68,15 +68,19 @@ try:
     from .pymdp.pymdp_renderer import PyMDPRenderer
 except ImportError:
     # Provide a minimal placeholder for tests
-    class PyMDPRenderer:
+    from typing import Any as _Any
+    class PyMDPRenderer:  # type: ignore[no-redef]
         """Recovery PyMDPRenderer when module unavailable."""
-        def render(self, spec): return ""
+        def render(self, spec: _Any) -> str:
+            return ""
 
 # JAXRenderer: jax_renderer.py provides functions only (render_gnn_to_jax, etc.),
 # not a class. Provide a minimal stub for tests that reference JAXRenderer by name.
+from typing import Any as _Any
 class JAXRenderer:
     """Minimal JAXRenderer stub; JAX rendering uses render_gnn_to_jax() functions."""
-    def render(self, spec): return ""
+    def render(self, spec: _Any) -> str:
+        return ""
 
 
 def get_supported_frameworks():

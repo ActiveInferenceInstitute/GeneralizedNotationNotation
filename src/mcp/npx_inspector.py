@@ -28,7 +28,7 @@ PYTHON_EXECUTABLE = sys.executable # Use the same python interpreter
 
 # --- Helper Functions ---
 
-def print_json(data):
+def print_mcp_response(data):
     """Prints JSON data with indentation."""
     print(json.dumps(data, indent=2, sort_keys=True))
 
@@ -149,7 +149,7 @@ def handle_list_capabilities(client: StdioMCPClient, args):
     print("Inspector: Requesting server capabilities...", file=sys.stderr)
     try:
         response = client.get_capabilities()
-        print_json(response)
+        print_mcp_response(response)
     except Exception as e:
         print(f"Error getting capabilities: {e}", file=sys.stderr)
         if hasattr(e, '__cause__') and e.__cause__:
@@ -167,7 +167,7 @@ def handle_execute_tool(client: StdioMCPClient, args):
     print(f"Inspector: Executing tool '{tool_name}' with params: {tool_params}", file=sys.stderr)
     try:
         response = client.execute_tool(tool_name, tool_params)
-        print_json(response)
+        print_mcp_response(response)
     except Exception as e:
         print(f"Error executing tool '{tool_name}': {e}", file=sys.stderr)
 
@@ -177,7 +177,7 @@ def handle_get_resource(client: StdioMCPClient, args):
     print(f"Inspector: Attempting to get resource '{uri}'...", file=sys.stderr)
     try:
         response = client.get_resource(uri) # This might not work as expected with GNN MCP
-        print_json(response)
+        print_mcp_response(response)
     except Exception as e:
         print(f"Error getting resource '{uri}': {e}", file=sys.stderr)
 

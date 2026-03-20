@@ -41,7 +41,7 @@ class PreflightReport:
         self.checks_passed += 1
         logger.debug(f"✅ {msg}")
 
-    def add_issue(self, category: str, severity: str, msg: str, fix: str = None):
+    def add_issue(self, category: str, severity: str, msg: str, fix: Optional[str] = None):
         self.issues.append(PreflightIssue(category=category, severity=severity, message=msg, fix=fix))
         if severity == "error":
             self.checks_failed += 1

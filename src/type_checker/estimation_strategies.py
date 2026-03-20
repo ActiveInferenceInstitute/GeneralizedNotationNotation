@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class VariableSpec(TypedDict, total=False):
     """Shape of a single variable entry in the variables mapping."""
     type: str        # e.g. "float", "int", "categorical"
-    dimensions: List[int]  # e.g. [3, 3] or [1]
+    dimensions: List[Union[int, str]]  # e.g. [3, 3], [1], or symbolic ["N", 3]
 
 VariableMap = Dict[str, VariableSpec]
 

@@ -13,8 +13,8 @@ from typing import List, Optional
 try:
     from pipeline.context import StepStatus
 except ImportError:
-    from typing import Literal
-    StepStatus = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]  # type: ignore[misc]
+    from typing import Literal, TypeAlias
+    StepStatus: TypeAlias = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
 logger = logging.getLogger(__name__)
 
