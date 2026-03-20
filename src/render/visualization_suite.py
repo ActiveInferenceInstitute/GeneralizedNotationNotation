@@ -6,7 +6,12 @@ Provides comprehensive visualization and data export utilities for all framework
 
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
+try:
+    import pandas as pd
+    _PANDAS_AVAILABLE = True
+except ImportError:
+    pd = None  # type: ignore[assignment]
+    _PANDAS_AVAILABLE = False
 import json
 import csv
 import logging
@@ -235,7 +240,11 @@ class VisualizationSuite:
         window = min(5, max(1, len(list(traces.values())[0]) // 3))
         for key, values in traces.items():
             if isinstance(values, list) and len(values) > 0 and isinstance(values[0], (int, float)):
-                moving_avg = pd.Series(values).rolling(window=window, min_periods=1).mean()
+                if _PANDAS_AVAILABLE:
+                    moving_avg = pd.Series(values).rolling(window=window, min_periods=1).mean()
+                else:
+                    arr = np.array(values, dtype=float)
+                    moving_avg = np.convolve(arr, np.ones(window)/window, mode='same')
                 ax3.plot(moving_avg, label=f'{key} (MA-{window})', linewidth=2, alpha=0.8)
         ax3.set_title(f'Moving Averages (window={window})')
         ax3.set_xlabel('Time Step')
@@ -304,9 +313,14 @@ class VisualizationSuite:
             # Autocorrelation
             ax4 = axes[1, 1]
             for key, values in list(numeric_traces.items())[:3]:  # Limit to 3 for clarity
-                autocorr = pd.Series(values).autocorr(lag=1) if len(values) > 1 else 0
-                lags = range(min(20, len(values)//2)) if len(values) > 20 else range(len(values)-1)
-                autocorrs = [pd.Series(values).autocorr(lag=lag) for lag in lags] if lags else [0]
+                if _PANDAS_AVAILABLE:
+                    autocorr = pd.Series(values).autocorr(lag=1) if len(values) > 1 else 0
+                    lags = range(min(20, len(values)//2)) if len(values) > 20 else range(len(values)-1)
+                    autocorrs = [pd.Series(values).autocorr(lag=lag) for lag in lags] if lags else [0]
+                else:
+                    autocorr = 0
+                    lags = range(0)
+                    autocorrs = []
                 ax4.plot(lags, autocorrs, label=f'{key} (r={autocorr:.3f})', marker='o', alpha=0.8)
             ax4.set_title('Autocorrelation Analysis')
             ax4.set_xlabel('Lag')
@@ -400,6 +414,9 @@ class VisualizationSuite:
                          if isinstance(v, list) and len(v) > 0 and isinstance(v[0], (int, float))}
 
         if len(numeric_traces) < 2:
+            return viz_files
+
+        if not _PANDAS_AVAILABLE:
             return viz_files
 
         # Create correlation matrix

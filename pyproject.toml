@@ -31,7 +31,6 @@ dependencies = [
     "numpy>=1.21.0",
     "matplotlib>=3.5.0",
     "networkx>=2.6.0",
-    "pandas>=1.3.0",
     "pyyaml>=6.0",
     # scipy and scikit-learn moved to ml-ai optional group (all uses are deferred imports)
     # System monitoring and utilities
@@ -135,6 +134,7 @@ llm = [
 
 # Enhanced visualization: interactive plots beyond matplotlib (steps 8, 9, 16)
 visualization = [
+    "pandas>=1.3.0",
     "plotly>=5.15.0",
     "seaborn>=0.12.0",
     "h5py>=3.8.0",
