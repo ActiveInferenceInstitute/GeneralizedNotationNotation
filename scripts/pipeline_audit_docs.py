@@ -18,7 +18,7 @@ REPO_ROOT = str(PROJECT_ROOT)
 SRC_DIR = os.path.join(REPO_ROOT, "src")
 DOC_DIR = os.path.join(REPO_ROOT, "doc")
 
-def check_directory(dir_path, is_src=False):
+def audit_module_directory_coverage(dir_path, is_src=False):
     dirname = os.path.basename(dir_path)
     if dirname.startswith("__") or dirname.startswith("."):
         return None
@@ -69,7 +69,7 @@ def scan_root(root_dir, is_src=False):
         if os.path.isdir(item_path):
             if item.startswith("__") or item.startswith("."):
                 continue
-            res = check_directory(item_path, is_src)
+            res = audit_module_directory_coverage(item_path, is_src)
             if res:
                 results.append(res)
     return results

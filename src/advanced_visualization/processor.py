@@ -320,7 +320,7 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
 def process_advanced_viz(
     target_dir: Path,
     output_dir: Path,
-    logger: logging.Logger,
+    logger: Optional[logging.Logger] = None,
     viz_type: str = "all",
     interactive: bool = True,
     export_formats: Optional[List[str]] = None,
@@ -332,7 +332,7 @@ def process_advanced_viz(
     Args:
         target_dir: Directory containing GNN files
         output_dir: Output directory for visualizations
-        logger: Logger instance
+        logger: Optional logger instance; falls back to module logger
         viz_type: Type of visualization ("all", "3d", "interactive", "dashboard")
         interactive: Enable interactive visualizations
         export_formats: List of export formats ["html", "json", "png"]
@@ -341,6 +341,7 @@ def process_advanced_viz(
     Returns:
         True if processing succeeded (with possible warnings)
     """
+    logger = logger or logging.getLogger(__name__)
     logger.info("=" * 80)
     logger.info("ADVANCED VISUALIZATION PROCESSING")
     logger.info("=" * 80)

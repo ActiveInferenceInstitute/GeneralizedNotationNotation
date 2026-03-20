@@ -27,7 +27,7 @@ RULES = [
     (re.compile(r'\bFAKE\b'), 'SIMULATED'),
 ]
 
-def process_file(filepath):
+def apply_term_substitutions(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -51,7 +51,7 @@ def main() -> int:
         for file in files:
             if file.endswith(('.py', '.md', '.json', '.yaml', '.txt')):
                 filepath = Path(root) / file
-                if process_file(filepath):
+                if apply_term_substitutions(filepath):
                     updated_files += 1
 
     print(f"\nCompleted! Modified {updated_files} files.")

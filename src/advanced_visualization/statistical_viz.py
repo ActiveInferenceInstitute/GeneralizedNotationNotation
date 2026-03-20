@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Dict, List
 
-_module_logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 from ._shared import (
     AdvancedVisualizationAttempt,

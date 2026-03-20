@@ -156,9 +156,9 @@ except ImportError:
     # Expose recovery names used later in the module
     utils = _RecoveryUtils()
     Agent = _RecoveryAgent
-    # PYMDP_AVAILABLE=True: functional fallbacks provided so tests/callers can run.
-    # PYMDP_REAL stays False to distinguish fallback from real library.
-    PYMDP_AVAILABLE = True
+    # PYMDP_AVAILABLE=False: real library absent; use PYMDP_REAL to check.
+    # Functional fallbacks (Agent, utils) are still available for tests/callers.
+    PYMDP_AVAILABLE = False
 
 
 class PyMDPSimulation:

@@ -30,7 +30,7 @@ def initialize_jax_devices() -> List[Any]:
             # Recovery to CPU-like placeholder
             return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore[return-value]  # dynamic placeholder class cannot satisfy jax.Device protocol
     except Exception:
-        return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore
+        return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore[return-value]  # dynamic placeholder class cannot satisfy jax.Device protocol
 
 def is_jax_available() -> bool:
     """Check if JAX is importable and print device info."""

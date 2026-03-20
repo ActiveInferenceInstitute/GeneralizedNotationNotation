@@ -18,7 +18,7 @@ from .discovery import FileDiscoveryStrategy
 from .validation import ValidationStrategy
 # Import testing strategy lazily to avoid circular imports
 # from .testing import RoundTripTestStrategy
-from .cross_format import CrossFormatValidationStrategy
+from .cross_format import CrossFormatValidator
 from .reporting import ReportGenerator
 
 logger = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ class GNNProcessor:
         self.validation_strategy = ValidationStrategy()
         # Initialize round trip strategy lazily to avoid circular imports
         self.round_trip_strategy = None
-        self.cross_format_strategy = CrossFormatValidationStrategy()
+        self.cross_format_strategy = CrossFormatValidator()
         self.report_generator = ReportGenerator()
 
     def process(self, context: ProcessingContext) -> bool:

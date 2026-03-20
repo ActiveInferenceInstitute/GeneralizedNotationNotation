@@ -2,7 +2,7 @@
 import os
 import re
 
-def process_verification_report(report_path):
+def extract_missing_docs_from_report(report_path):
     with open(report_path, "r") as f:
         lines = f.readlines()
 
@@ -78,7 +78,7 @@ def main() -> int:
         print("Report not found.")
         return 1
 
-    missing_data = process_verification_report(report)
+    missing_data = extract_missing_docs_from_report(report)
     for path, funcs in missing_data.items():
         append_to_agents(path, funcs)
     return 0

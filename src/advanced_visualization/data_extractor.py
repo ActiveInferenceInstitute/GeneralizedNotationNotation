@@ -5,12 +5,15 @@ This module provides functionality to extract structured data from GNN files
 using the comprehensive GNN parsing system for visualization purposes.
 """
 
+import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 from datetime import datetime
 
 # Import the GNN parsing system
 from gnn.parsers import GNNParsingSystem, GNNFormat
+
+logger = logging.getLogger(__name__)
 
 
 class VisualizationDataExtractor:
@@ -42,30 +45,14 @@ class VisualizationDataExtractor:
             parse_result = self.parsing_system.parse_file(file_path)
 
             if not parse_result.success:
-                return {
-                    "success": False,
-                    "errors": parse_result.errors,
-                    "warnings": parse_result.warnings,
-                    "blocks": [],
-                    "connections": [],
-                    "total_blocks": 0,
-                    "total_connections": 0
-                }
+                return self._empty_result(errors=parse_result.errors, warnings=parse_result.warnings)
 
             # Extract data from the parsed model
             model = parse_result.model
             return self._extract_from_model(model)
 
         except Exception as e:
-            return {
-                "success": False,
-                "errors": [str(e)],
-                "warnings": [],
-                "blocks": [],
-                "connections": [],
-                "total_blocks": 0,
-                "total_connections": 0
-            }
+            return self._empty_result(errors=[str(e)])
 
     def extract_from_content(self, content: str, format_hint: Optional[GNNFormat] = None) -> Dict[str, Any]:
         """
@@ -88,30 +75,34 @@ class VisualizationDataExtractor:
                 parse_result = self.parsing_system.parse_string(content, detected_format)
 
             if not parse_result.success:
-                return {
-                    "success": False,
-                    "errors": parse_result.errors,
-                    "warnings": parse_result.warnings,
-                    "blocks": [],
-                    "connections": [],
-                    "total_blocks": 0,
-                    "total_connections": 0
-                }
+                return self._empty_result(errors=parse_result.errors, warnings=parse_result.warnings)
 
             # Extract data from the parsed model
             model = parse_result.model
             return self._extract_from_model(model)
 
         except Exception as e:
-            return {
-                "success": False,
-                "errors": [str(e)],
-                "warnings": [],
-                "blocks": [],
-                "connections": [],
-                "total_blocks": 0,
-                "total_connections": 0
-            }
+            return self._empty_result(errors=[str(e)])
+
+    def _empty_result(self, errors: list = None, warnings: list = None) -> Dict[str, Any]:
+        """Return a failure result with the same key shape as a success result."""
+        return {
+            "success": False,
+            "errors": errors or [],
+            "warnings": warnings or [],
+            "model_info": None,
+            "blocks": [],
+            "connections": [],
+            "parameters": [],
+            "equations": [],
+            "time_specification": None,
+            "ontology_mappings": [],
+            "total_blocks": 0,
+            "total_connections": 0,
+            "total_parameters": 0,
+            "total_equations": 0,
+            "extraction_timestamp": datetime.now().isoformat(),
+        }
 
     def _extract_from_model(self, model) -> Dict[str, Any]:
         """
@@ -140,8 +131,8 @@ class VisualizationDataExtractor:
         connections = []
         for conn in model.connections:
             conn_data = {
-                "from": conn.source_variables,
-                "to": conn.target_variables,
+                "source_variables": conn.source_variables,
+                "target_variables": conn.target_variables,
                 "type": conn.connection_type.value if hasattr(conn.connection_type, 'value') else str(conn.connection_type),
                 "weight": conn.weight,
                 "description": conn.description or ""

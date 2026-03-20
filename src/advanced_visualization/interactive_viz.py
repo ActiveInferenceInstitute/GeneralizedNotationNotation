@@ -14,6 +14,8 @@ from typing import Dict, List, Any
 
 from ._shared import AdvancedVisualizationAttempt
 
+logger = logging.getLogger(__name__)
+
 try:
     from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
 except ImportError:

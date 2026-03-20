@@ -21,7 +21,7 @@ class StepExecutionResult:
     duration: float
     output: Optional[str] = None
     error: Optional[str] = None
-    warnings: List[str] = None
+    warnings: Optional[List[str]] = None
 
     def __post_init__(self):
         if self.warnings is None:

@@ -418,7 +418,7 @@ class MCP:
             )
             return False
 
-    def register_tool(self, name: str, func: Callable = None, schema: Dict[str, Any] = None, description: str = "",
+    def register_tool(self, name: str, func: Optional[Callable] = None, schema: Optional[Dict[str, Any]] = None, description: str = "",
                      module: str = "", category: str = "", version: str = "1.0.0",
                      tags: Optional[List[str]] = None, examples: Optional[List[Dict[str, Any]]] = None,
                      deprecated: bool = False, experimental: bool = False,

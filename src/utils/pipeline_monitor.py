@@ -150,7 +150,7 @@ class PipelineMonitor:
             self.monitoring_active = False
             self.logger.info("Pipeline monitoring stopped")
 
-    def record_step_start(self, step_name: str, context: Dict[str, Any] = None) -> str:
+    def record_step_start(self, step_name: str, context: Optional[Dict[str, Any]] = None) -> str:
         """
         Record the start of a pipeline step.
         
@@ -175,7 +175,7 @@ class PipelineMonitor:
         return execution_id
 
     def record_step_success(self, step_name: str, execution_id: str,
-                           duration: float, context: Dict[str, Any] = None):
+                           duration: float, context: Optional[Dict[str, Any]] = None):
         """Record successful completion of a pipeline step."""
         with self._lock:
             if step_name not in self.step_metrics:
@@ -196,7 +196,7 @@ class PipelineMonitor:
 
     def record_step_failure(self, step_name: str, execution_id: str,
                            duration: float, error_type: str = "unknown",
-                           error_message: str = "", context: Dict[str, Any] = None):
+                           error_message: str = "", context: Optional[Dict[str, Any]] = None):
         """Record failure of a pipeline step."""
         with self._lock:
             if step_name not in self.step_metrics:
@@ -228,7 +228,7 @@ class PipelineMonitor:
         )
 
     def record_step_warning(self, step_name: str, execution_id: str,
-                           warning_message: str, context: Dict[str, Any] = None):
+                           warning_message: str, context: Optional[Dict[str, Any]] = None):
         """Record a warning for a pipeline step."""
         with self._lock:
             if step_name not in self.step_metrics:
