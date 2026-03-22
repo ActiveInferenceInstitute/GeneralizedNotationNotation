@@ -58,9 +58,8 @@ dev = [
     "pytest-timeout>=2.1.0",
     "pytest-xdist>=3.0.0",
 
-    # Security scanning (dev-only tools)
+    # Security scanning (dev-only tools; pip-audit via uv tool / CI — avoids legacy safety→nltk chain)
     "bandit>=1.7.0",
-    "safety>=2.3.0",
 
     # Code quality and linting
     "isort>=5.12.0",

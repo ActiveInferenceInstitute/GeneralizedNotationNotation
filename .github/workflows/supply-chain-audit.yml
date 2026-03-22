@@ -1,0 +1,57 @@
+# Non-blocking scheduled audit of the resolved lockfile (complements Dependabot + dependency-review on PRs).
+name: Supply chain audit
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: supply-chain-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pip-audit:
+    name: pip-audit (core dependencies)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Export requirements (no project line, no hashes)
+        run: |
+          uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/requirements-audit.txt
+
+      - name: Run pip-audit
+        run: |
+          uv tool run pip-audit -r /tmp/requirements-audit.txt --desc on
+
+  pip-audit-all-extras:
+    name: pip-audit (all optional extras, no dev)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Export requirements
+        run: |
+          uv export --frozen --all-extras --no-dev --no-hashes --no-emit-project -o /tmp/requirements-all-extras.txt
+
+      - name: Run pip-audit
+        run: |
+          uv tool run pip-audit -r /tmp/requirements-all-extras.txt --desc on

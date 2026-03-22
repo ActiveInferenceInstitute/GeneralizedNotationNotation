@@ -34,11 +34,25 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | 2026-02-11 | CVE-2026-26007 | cryptography | Upgraded 46.0.3 → 46.0.5 |
 | 2026-03-05 | CVE-2025-14009 | nltk | Upgraded 3.9.2 → 3.9.3 (Zip Slip RCE fix) |
 | 2026-03-05 | CVE-2026-28802 | authlib | Upgraded 1.6.6 → 1.6.9 (alg:none signature bypass fix) |
+| 2026-03-22 | GHSA-rf74-v2fm-23pw, CVE-2026-33230, CVE-2026-33231 | nltk | Removed `safety` dev tool (sole lockfile consumer); PyPI has no release newer than 3.9.3 yet — monitor [nltk](https://pypi.org/project/nltk/) |
 
 > **ℹ️ Known Accepted Risks**: The following vulnerabilities are documented and accepted:
 >
 > - **CVE-2024-39236** (gradio): Disputed - self-attack scenario only
-> - **CVE-2022-42969** (py): Disputed ReDoS - transitive via deprecated `nose` (upstream pymdp dependency)
+> - **CVE-2022-42969** / **PYSEC-2022-42969** (`py` 1.11.0): ReDoS in Subversion-related paths; disputed/no fixed PyPI release — transitive via **`inferactively-pymdp`** (see `uv.lock`). Mitigation: do not point pymdp tooling at untrusted SVN remotes.
+
+## Dependency automation and local audits
+
+- **Dependabot**: Version updates are configured in [`.github/dependabot.yml`](.github/dependabot.yml) (Python/`uv.lock` and GitHub Actions). Review alerts under **GitHub → Security → Dependabot**.
+- **PRs**: [`.github/workflows/dependency-review.yml`](.github/workflows/dependency-review.yml) runs on pull requests to `main`.
+- **Local check** (core runtime graph, no project package, no hashes):
+
+  ```bash
+  uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/requirements-audit.txt
+  uv tool run pip-audit -r /tmp/requirements-audit.txt
+  ```
+
+- **Scheduled visibility**: [`.github/workflows/supply-chain-audit.yml`](.github/workflows/supply-chain-audit.yml) runs `pip-audit` weekly (non-blocking).
 
 ## 🚨 Reporting Security Vulnerabilities
 

@@ -530,7 +530,7 @@ def test_compliance_validation():
 
 ### Optional Dependencies
 - **bandit**: Security linter for Python
-- **safety**: Dependency vulnerability scanner
+- **pip-audit** (via `uv tool run pip-audit`): Dependency vulnerability check against OSV
 - **semgrep**: Static analysis tool
 - **owasp-zap**: Web application security scanner
 

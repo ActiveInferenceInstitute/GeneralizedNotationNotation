@@ -211,10 +211,10 @@ jobs:
         uv pip install bandit[toml]
         bandit -r src/ -f json -o bandit-report.json
     
-    - name: Run Safety Dependency Scanner
+    - name: Run pip-audit (OSV)
       run: |
-        uv pip install safety
-        safety check --json --output safety-report.json
+        uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/req.txt
+        uv tool run pip-audit -r /tmp/req.txt --format json -o pip-audit-report.json
     
     - name: Run Semgrep SAST
       uses: returntocorp/semgrep-action@v1
