@@ -70,10 +70,6 @@ def execute_simulation_from_gnn(*args: Any, **kwargs: Any) -> Dict[str, Any]:
     """Stub: returns error dict (executor module unavailable)."""
     return {"error": "Execution engine not available"}
 
-def execute_pymdp_simulation_from_gnn_impl(*args: Any, **kwargs: Any) -> Dict[str, Any]:
-    """Stub: returns error dict (executor module unavailable)."""
+def execute_pymdp_simulation_from_gnn(*args: Any, **kwargs: Any) -> Dict[str, Any]:
+    """Stub: returns error dict (PyMDP executor module unavailable)."""
     return {"error": "PyMDP executor not available"}
-
-def validate_execution_environment_impl(*args: Any, **kwargs: Any) -> Dict[str, Any]:
-    """Stub: returns error dict (executor module unavailable)."""
-    return {"error": "Execution validator not available"}

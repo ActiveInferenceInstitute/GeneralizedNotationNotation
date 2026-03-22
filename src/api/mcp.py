@@ -26,7 +26,20 @@ __dependencies__ = []
 def gnn_submit_job_mcp(target_dir: str, steps: list = None, skip_steps: list = None, verbose: bool = False, strict: bool = False) -> Dict[str, Any]:
     """Submit a GNN pipeline processing job via MCP."""
     try:
-        job_id = create_job(target_dir=target_dir, steps=steps, skip_steps=skip_steps, verbose=verbose, strict=strict)
+        # Enforce path boundary: target_dir must exist and stay within repo root
+        target_path = Path(target_dir)
+        if not target_path.exists():
+            repo_root = Path(__file__).parent.parent.parent
+            target_path = repo_root / target_dir
+        if not target_path.exists():
+            return {"status": "error", "message": f"Target directory not found: {target_dir}"}
+        repo_root = Path(__file__).parent.parent.parent.resolve()
+        try:
+            target_path.resolve().relative_to(repo_root)
+        except ValueError:
+            return {"status": "error", "message": f"Target directory must be within the repository root: {target_dir}"}
+
+        job_id = create_job(target_dir=str(target_path), steps=steps, skip_steps=skip_steps, verbose=verbose, strict=strict)
 
         # We need to trigger async execution somehow, but we are in a sync wrapper.
         # Since we use an external process invocation in create_job_async,

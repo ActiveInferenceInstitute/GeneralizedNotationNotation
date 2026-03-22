@@ -366,12 +366,6 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
 
 
 # Package operations (add/remove/update/lock) are defined in uv_package_ops.py
-from .uv_package_ops import (  # noqa: E402
-    add_uv_dependency,
-    remove_uv_dependency,
-    update_uv_dependencies,
-    lock_uv_dependencies,
-)
 
 
 def setup_uv_environment(
@@ -390,6 +384,7 @@ def setup_uv_environment(
         recreate: Recreate UV environment if it exists
         dev: Install development dependencies
         extras: List of optional dependency groups to install
+        skip_jax_test: Skip JAX installation verification test (useful in CI/CD or offline environments)
         output_dir: Output directory for setup results (optional)
 
     Returns:
@@ -444,12 +439,15 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
     Validate the current UV setup and return status information.
 
     Args:
-        project_root: Path to project root (optional)
+        project_root: Path to project root; defaults to the module-level PROJECT_ROOT constant.
         logger: Logger instance (optional)
 
     Returns:
         Dictionary with UV setup validation results
     """
+    # project_root is accepted for API compatibility; internal helpers use the module-level
+    # PROJECT_ROOT constant which is set once at import time from constants.py.
+    _ = project_root  # noqa: F841
     validation_results = {
         "system_requirements": False,
         "uv_environment": False,

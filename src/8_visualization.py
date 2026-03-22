@@ -38,12 +38,12 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
-from visualization import process_visualization_main
+from visualization import process_visualization
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
-    process_visualization_main,
+    process_visualization,
     "Matrix and network visualization processing"
 )
 

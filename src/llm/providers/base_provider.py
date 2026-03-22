@@ -231,8 +231,9 @@ class BaseLLMProvider(ABC):
             LLMMessage(role="user", content=user_content)
         ]
 
+    @property
     def is_initialized(self) -> bool:
-        """Check if the provider is properly initialized."""
+        """Whether the provider is properly initialized."""
         return self._is_initialized
 
     def get_provider_info(self) -> Dict[str, Any]:
@@ -246,7 +247,7 @@ class BaseLLMProvider(ABC):
             "provider_type": self.provider_type.value,
             "default_model": self.default_model,
             "available_models": self.available_models,
-            "is_initialized": self.is_initialized()
+            "is_initialized": self.is_initialized
         }
     async def close(self) -> None:
         """Close the provider connection and cleanup resources."""

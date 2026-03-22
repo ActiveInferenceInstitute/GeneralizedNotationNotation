@@ -844,11 +844,10 @@ def generate_visualizations(
                 ctx2 = performance_tracker.track_operation("generate_matrix_visualizations") if performance_tracker else _noop_context()
                 with ctx2:
                     matrix_viz = MatrixVisualizer()
-                    matrix_files = matrix_viz.visualize_directory(
+                    matrix_viz.visualize_directory(
                         input_dir=target_dir,
                         output_dir=viz_output_dir / "matrices"
                     )
-                    results['matrix_files'] = matrix_files
                 log_step_success(logger, "Matrix visualizations completed")
             except Exception as e:
                 log_step_warning(logger, f"Matrix visualization failed: {e}")
@@ -859,11 +858,10 @@ def generate_visualizations(
                 ctx3 = performance_tracker.track_operation("generate_ontology_visualizations") if performance_tracker else _noop_context()
                 with ctx3:
                     ontology_viz = OntologyVisualizer()
-                    ontology_files = ontology_viz.visualize_directory(
+                    ontology_viz.visualize_directory(
                         input_dir=target_dir,
                         output_dir=viz_output_dir / "ontology"
                     )
-                    results['ontology_files'] = ontology_files
                 log_step_success(logger, "Ontology visualizations completed")
             except Exception as e:
                 log_step_warning(logger, f"Ontology visualization failed: {e}")

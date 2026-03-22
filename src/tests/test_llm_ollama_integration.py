@@ -19,7 +19,7 @@ import os
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from llm.processor import (
-    _check_and_start_ollama,
+    _start_ollama_if_needed,
     _select_best_ollama_model,
     process_llm
 )
@@ -33,7 +33,7 @@ class TestOllamaDetection:
         import logging
         logger = logging.getLogger("test_ollama")
 
-        result = _check_and_start_ollama(logger)
+        result = _start_ollama_if_needed(logger)
 
         # Should return a tuple
         assert isinstance(result, tuple)
@@ -49,7 +49,7 @@ class TestOllamaDetection:
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_ollama")
-        is_available, models = _check_and_start_ollama(logger)
+        is_available, models = _start_ollama_if_needed(logger)
 
         log_text = caplog.text
 
@@ -74,7 +74,7 @@ class TestOllamaDetection:
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_ollama")
-        is_available, models = _check_and_start_ollama(logger)
+        is_available, models = _start_ollama_if_needed(logger)
 
         if is_available and models:
             # Should log available models
@@ -103,7 +103,7 @@ class TestOllamaDetection:
         except Exception:
             port_open = False
 
-        is_available, models = _check_and_start_ollama(logger)
+        is_available, models = _start_ollama_if_needed(logger)
 
         # Verify consistent detection - both methods should agree
         # Log result for debugging rather than strict assertion
@@ -414,7 +414,7 @@ Minimize free energy while maintaining preferred states.
         # May have prompt-specific directories if Ollama was available
         prompt_dirs = list(llm_output_dir.glob("prompts_*"))
         # At least 0 prompt directories (depends on Ollama availability)
-        assert len(prompt_dirs) >= 0
+        assert isinstance(prompt_dirs, list)
 
     @pytest.mark.slow
     @pytest.mark.timeout(60)  # 1 minute timeout for error case

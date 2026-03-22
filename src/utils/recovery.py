@@ -8,6 +8,15 @@ This module provides recovery implementations when core modules are not availabl
 import logging
 from pathlib import Path
 
+class _DefaultStepArgs:
+    """Default pipeline step arguments returned by RecoveryArgumentParser."""
+
+    def __init__(self, step_name: str) -> None:
+        self.verbose = False
+        self.output_dir = Path("output")
+        self.step_name = step_name
+
+
 class RecoveryArgumentParser:
     """
     Recovery argument parser for when argument_utils is not available.
@@ -15,12 +24,7 @@ class RecoveryArgumentParser:
     @staticmethod
     def parse_step_arguments(step_name):
         """Return default args (verbose=False, output_dir='output')."""
-        class DefaultArgs:
-            def __init__(self):
-                self.verbose = False
-                self.output_dir = Path("output")
-                self.step_name = step_name
-        return DefaultArgs()
+        return _DefaultStepArgs(step_name)
 
 def setup_step_logging(step_name: str, verbose: bool = False):
     """Return a logger set to DEBUG if verbose else INFO."""

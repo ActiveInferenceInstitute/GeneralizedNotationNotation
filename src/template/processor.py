@@ -17,12 +17,13 @@ try:
     from utils import performance_tracker
 except ImportError:
 
+    class _NoOpContext:
+        def __enter__(self): return self
+        def __exit__(self, *args): pass
+
     class _MinimalPerformanceTracker:
         def track_operation(self, name, metadata=None):
-            class NoOpContext:
-                def __enter__(self): return self
-                def __exit__(self, *args): pass
-            return NoOpContext()
+            return _NoOpContext()
         def get_summary(self): return {}
 
     performance_tracker = _MinimalPerformanceTracker()
@@ -477,3 +478,7 @@ def validate_file(input_file: Path) -> Dict[str, Any]:
             "error": str(e),
             "file_path": str(input_file)
         }
+
+
+# Canonical name matching the process_<module_name> convention used by all other processor.py files
+process_template = process_template_standardized

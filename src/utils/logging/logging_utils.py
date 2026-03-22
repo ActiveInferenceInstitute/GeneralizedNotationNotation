@@ -747,6 +747,12 @@ class VisualFormatter(StructuredFormatter):
 # Global progress tracker
 _global_progress_tracker = None
 
+
+def set_global_progress_tracker(tracker) -> None:
+    """Set the global progress tracker used by log_step_* functions."""
+    global _global_progress_tracker
+    _global_progress_tracker = tracker
+
 # Enhanced logging functions with visual improvements
 def log_step_start(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None,
                   total_steps: Optional[int] = None, **metadata):

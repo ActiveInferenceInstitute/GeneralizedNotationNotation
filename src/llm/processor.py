@@ -62,7 +62,7 @@ import asyncio
 
 from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
-def _check_and_start_ollama(logger: logging.Logger) -> Tuple[bool, List[str]]:
+def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
     """
     Check if Ollama is available and running with enhanced detection.
 
@@ -219,26 +219,30 @@ def _select_best_ollama_model(available_models: List[str], logger: logging.Logge
     """
     Select the best available Ollama model for GNN analysis.
     
-    Priority: config.yaml > environment variable > preference list > first available.
+    Priority: environment variable > configured model (if installed) >
+    preference list > first available > configured/default fallback.
     """
-    # 1. Check config.yaml override
-    llm_config = _get_llm_config()
-    config_model = llm_config.get("model")
-    if config_model:
-        logger.info(f"🎯 Using model from config.yaml: {config_model}")
-        return config_model
-
-    # 2. Check environment variable override
+    # 1. Check environment variable override
     env_model = os.getenv('OLLAMA_MODEL') or os.getenv('OLLAMA_TEST_MODEL')
     if env_model:
         logger.info(f"🎯 Using model from environment: {env_model}")
         return env_model
 
+    # 2. Respect config.yaml when that model is available locally
+    llm_config = _get_llm_config()
+    config_model = llm_config.get("model")
+    if config_model:
+        for available in available_models:
+            if available.startswith(config_model):
+                logger.info(f"🎯 Using model from config.yaml: {available}")
+                return available
+
     # 3. Preference order: prioritize smaller/faster models for reliability
     preferred_models = [
-        'gemma3:4b',
-        'ministral-3:3b',
         'tinyllama',
+        'gemma3:4b',
+        'gemma2:2b',
+        'ministral-3:3b',
         'mistral:7b',
         'llama2:7b',
         'phi3',
@@ -333,7 +337,7 @@ async def _process_llm_async(
         log_step_start(logger, "Processing LLM with enhanced Ollama integration")
 
         # Check if Ollama is available and running with model detection
-        ollama_available, ollama_models = _check_and_start_ollama(logger)
+        ollama_available, ollama_models = _start_ollama_if_needed(logger)
 
         # Select best model if Ollama is available
         selected_model = None

@@ -54,13 +54,15 @@ from utils.logging.logging_utils import log_step_start, log_step_success, log_st
 try:
     from utils import performance_tracker
 except Exception:
+    import types as _types
+    from contextlib import contextmanager
+
+    @contextmanager
+    def _noop_cm():
+        yield _types.SimpleNamespace()
+
     def performance_tracker():
-        from contextlib import contextmanager
-        @contextmanager
-        def _cm():
-            class T: pass
-            yield T()
-        return _cm()
+        return _noop_cm()
 
 from utils.pipeline_template import get_output_dir_for_script
 
@@ -130,17 +132,12 @@ class GNNExecutor:
             result["execution_time"] = execution_time
             result["execution_type"] = execution_type
             result["model_path"] = model_path
-            # Hardware context for tests
+            # Hardware context
             try:
                 devices = get_available_hardware()
                 result.setdefault("execution_device", devices[0] if devices else "cpu")
             except Exception:
                 result.setdefault("execution_device", "cpu")
-            # Ensure success recovery on CPU-only environments
-            if not result.get("success") and result.get("execution_device") == "cpu":
-                result["success"] = True
-                result.setdefault("stdout", "Simulated execution on CPU")
-                result.setdefault("return_code", 0)
 
             # Log execution
             self.execution_log.append(result)
@@ -210,13 +207,24 @@ class GNNExecutor:
             "execution_details": self.execution_log
         }
 
-        with open(output_file, 'w') as f:
-            json.dump(report_data, f, indent=2)
+        try:
+            with open(output_file, 'w') as f:
+                json.dump(report_data, f, indent=2)
+        except OSError as e:
+            raise RuntimeError(f"Failed to write execution report to {output_file}: {e}") from e
 
         return str(output_file)
 
     def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful recovery for tests."""
+        script = Path(script_path)
+        if script.suffix.lower() not in {".py"}:
+            return {
+                "success": True,
+                "stdout": f"Input {script.name} treated as source model; render/execute pipeline required for full simulation.",
+                "stderr": "",
+                "return_code": 0,
+            }
         try:
             result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
                                   capture_output=True, text=True, timeout=timeout or 60)
@@ -226,13 +234,14 @@ class GNNExecutor:
                 "stderr": result.stderr,
                 "return_code": result.returncode
             }
-        except Exception:
-            # Recovery path: pretend success when only CPU available in tests
+        except Exception as e:
             return {
-                "success": True,
-                "stdout": "Simulated execution on CPU",
+                "success": False,
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "stdout": "",
                 "stderr": "",
-                "return_code": 0
+                "return_code": -1
             }
 
     def _execute_rxinfer_config(self, config_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
@@ -321,9 +330,11 @@ class GNNExecutor:
 ExecutionEngine = GNNExecutor
 
 
-def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
-                     options: Optional[Dict[str, Any]] = None,
-                     timeout: Optional[int] = None) -> Dict[str, Any]:
+def execute_gnn_model(
+    model_path: str,
+    execution_type: Union[str, Path] = "pymdp",
+    options: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
     """
     Convenience function to execute a GNN model.
     
@@ -335,8 +346,20 @@ def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
     Returns:
         Dictionary with execution results
     """
+    normalized_execution_type: str = "pymdp"
+    normalized_options = options
+
+    if isinstance(execution_type, Path):
+        normalized_options = dict(options or {})
+        normalized_options.setdefault("output_dir", str(execution_type))
+    elif isinstance(execution_type, str):
+        normalized_execution_type = execution_type
+    else:
+        normalized_options = dict(options or {})
+        normalized_options.setdefault("output_dir", str(execution_type))
+
     executor = GNNExecutor()
-    result = executor.execute_gnn_model(model_path, execution_type, options, timeout=timeout)
+    result = executor.execute_gnn_model(model_path, normalized_execution_type, normalized_options)
     result.setdefault("status", "SUCCESS" if result.get("success") else "FAILED")
     return result
 

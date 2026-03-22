@@ -3,14 +3,15 @@
 GNN processor module for GNN pipeline.
 """
 
+from fnmatch import fnmatch
 from pathlib import Path
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Optional, Union
 import logging
 import json
 import re
 from datetime import datetime
 
-def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]:
+def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = True) -> Dict[str, Any]:
     """
     Lightweight GNN directory processing without heavy dependencies.
     
@@ -37,17 +38,18 @@ def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None,
             "validation_results": []
         }
 
-        # Process each file
+        # Process each file — read once, share content between parse and validate
         for file_path in gnn_files:
             try:
-                # Parse GNN file
-                parsed_result = parse_gnn_file(file_path)
+                with open(file_path, 'r') as fh:
+                    content = fh.read()
+
+                parsed_result = parse_gnn_file(file_path, content=content)
                 if parsed_result:
                     results["parsed_files"].append(parsed_result)
                     results["files_processed"] += 1
 
-                # Validate GNN structure
-                validation_result = validate_gnn_structure(file_path)
+                validation_result = validate_gnn_structure(file_path, content=content)
                 results["validation_results"].append(validation_result)
 
             except Exception as e:
@@ -169,42 +171,31 @@ def discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> L
     # Filter out common non-GNN files
     excluded_patterns = [
         "README.md", "CHANGELOG.md", "LICENSE.md",
-        "*.template.md", "*.example.md"
+        "*.template.md", "*.example.md",
     ]
 
-    filtered_files = []
-    for file_path in gnn_files:
-        should_exclude = False
-        for pattern in excluded_patterns:
-            if pattern.startswith("*"):
-                if file_path.name.endswith(pattern[1:]):
-                    should_exclude = True
-                    break
-            else:
-                if file_path.name == pattern:
-                    should_exclude = True
-                    break
+    return [
+        f for f in gnn_files
+        if not any(fnmatch(f.name, pat) for pat in excluded_patterns)
+    ]
 
-        if not should_exclude:
-            filtered_files.append(file_path)
-
-    return filtered_files
-
-def parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]:
+def parse_gnn_file(file_path: Union[str, Path], content: Optional[str] = None) -> Dict[str, Any]:
     """
     Parse a GNN file and extract basic information.
-    
+
     Args:
         file_path: Path to the GNN file
-        
+        content: Pre-read file content; if None the file is opened and read.
+
     Returns:
         Dictionary with parsed information
     """
     file_path = Path(file_path)
 
     try:
-        with open(file_path, 'r') as f:
-            content = f.read()
+        if content is None:
+            with open(file_path, 'r') as f:
+                content = f.read()
 
         # Extract basic information
         sections = _extract_sections_lightweight(content)
@@ -245,21 +236,23 @@ def parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]:
             "parse_timestamp": datetime.now().isoformat()
         }
 
-def validate_gnn_structure(file_path: Union[str, Path]) -> Dict[str, Any]:
+def validate_gnn_structure(file_path: Union[str, Path], content: Optional[str] = None) -> Dict[str, Any]:
     """
     Validate the structure of a GNN file.
-    
+
     Args:
         file_path: Path to the GNN file
-        
+        content: Pre-read file content; if None the file is opened and read.
+
     Returns:
         Dictionary with validation results
     """
     file_path = Path(file_path)
 
     try:
-        with open(file_path, 'r') as f:
-            content = f.read()
+        if content is None:
+            with open(file_path, 'r') as f:
+                content = f.read()
 
         validation_result = {
             "file_path": str(file_path),
@@ -337,16 +330,14 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         "processed_files": [fp for fp in file_paths if fp],
     }
     if output_dir is not None:
-        from pathlib import Path as _P
-        import json as _json
-        _p = _P(output_dir)
+        import tempfile, os
+        output_path = Path(output_dir)
         try:
-            _p.mkdir(parents=True, exist_ok=True)
-            _result_path = _p / "gnn_processing_results.json"
-            import tempfile as _tempfile, os as _os
-            with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=_result_path.parent, delete=False) as _tmp_f:
-                _tmp_f.write(_json.dumps(result, indent=2))
-            _os.replace(_tmp_f.name, str(_result_path))
+            output_path.mkdir(parents=True, exist_ok=True)
+            result_file = output_path / "gnn_processing_results.json"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=result_file.parent, delete=False) as tmp_f:
+                tmp_f.write(json.dumps(result, indent=2))
+            os.replace(tmp_f.name, str(result_file))
         except Exception as e:
             logging.getLogger(__name__).debug(f"Error writing GNN processing results: {e}")
     return result
@@ -410,25 +401,7 @@ def generate_gnn_report(processing_results: Dict[str, Any], output_path: Union[s
     return report
 
 def get_module_info() -> Dict[str, Any]:
-    """
-    Get metadata and capability information about the GNN module.
-
-    Returns a dictionary describing the module's version, features,
-    and available functionality. Used for introspection, documentation,
-    and capability discovery by other pipeline components.
-
-    Returns:
-        Dictionary containing:
-            - name: Module display name
-            - version: Semantic version string
-            - description: Brief module description
-            - features: List of feature names
-            - available_validators: List of validator types
-            - available_parsers: List of parser types
-            - schema_formats: List of supported schema formats
-            - supported_formats: List of input file formats
-            - capabilities: Dict of boolean capability flags
-    """
+    """Return metadata and capability information about the GNN module."""
     return {
         "name": "GNN Module",
         "version": "1.0.0",

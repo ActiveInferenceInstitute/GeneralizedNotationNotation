@@ -33,7 +33,7 @@ from .utils import (
     get_mcp_interface
 )
 
-def validate_ontology_terms(terms: List[str] | str = None) -> bool:
+def validate_ontology_terms(terms: Optional[Union[List[str], str]] = None) -> bool:
     """Validate ontology terms against the Active Inference ontology."""
     if terms is None:
         return True

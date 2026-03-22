@@ -212,12 +212,7 @@ class TestSupportedFormats:
 
         assert formats is not None
         # Should have at least some formats
-        if isinstance(formats, (list, tuple)):
-            assert len(formats) >= 0, "Formats list should exist"
-        elif isinstance(formats, dict):
-            assert len(formats) >= 0, "Formats dict should exist"
-        else:
-            pytest.fail(f"Unexpected formats type: {type(formats)}")
+        assert isinstance(formats, (list, tuple, dict)), f"Unexpected formats type: {type(formats)}"
 
     @pytest.mark.fast
     def test_features_include_format_support(self):

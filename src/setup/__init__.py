@@ -8,26 +8,28 @@ using modern UV-based dependency management and environment setup.
 from typing import Dict, Any
 
 from .utils import ensure_directory, find_gnn_files, get_output_paths
-from .setup import (
+from .uv_management import (
     setup_uv_environment,
     validate_uv_setup,
     get_uv_setup_info,
     cleanup_uv_setup,
-    setup_gnn_project,
     check_system_requirements,
     install_uv_dependencies,
     get_installed_package_versions,
     check_uv_availability,
     log_system_info,
+    check_environment_health,
+)
+from .dependency_setup import (
+    setup_gnn_project,
     install_optional_dependencies,
     create_project_structure,
     install_optional_package_group,
     install_all_optional_packages,
     setup_complete_environment,
-    check_environment_health,
-    # Constants
-    OPTIONAL_GROUPS,
-    # Native UV functions
+)
+from .constants import OPTIONAL_GROUPS
+from .uv_package_ops import (
     add_uv_dependency,
     remove_uv_dependency,
     update_uv_dependencies,
@@ -125,10 +127,14 @@ class EnvironmentManager:
         return True
     def validate_environment(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         try:
-            from .setup import validate_uv_setup
+            from .uv_management import validate_uv_setup
             return validate_uv_setup()
         except Exception:
-            return {"overall_status": False}
+            import sys
+            return {
+                "overall_status": False,
+                "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+            }
 
 class VirtualEnvironment:
     def __init__(self, name: str):
@@ -140,10 +146,14 @@ class VirtualEnvironment:
 
 def validate_environment() -> dict:
     try:
-        from .setup import validate_uv_setup
+        from .uv_management import validate_uv_setup
         return validate_uv_setup()
     except Exception:
-        return {"overall_status": False}
+        import sys
+        return {
+            "overall_status": False,
+            "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        }
 
 def check_python_version() -> bool:
     import sys

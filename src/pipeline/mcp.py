@@ -12,7 +12,6 @@ Key Features:
 - Step dependency analysis and validation
 """
 
-import functools
 import logging
 from typing import Dict, Any
 from pathlib import Path
@@ -195,43 +194,44 @@ def register_tools(mcp_instance: Any) -> None:
     """
     logger.info("Registering pipeline MCP tools")
 
-    def get_pipeline_steps_mcp() -> Dict[str, Any]:
+    # Named wrappers keep MCP audit checks happy (no functools.partial names).
+    def get_pipeline_steps_tool():
         return get_pipeline_steps(mcp_instance)
 
-    def get_pipeline_status_mcp() -> Dict[str, Any]:
+    def get_pipeline_status_tool():
         return get_pipeline_status(mcp_instance)
 
-    def validate_pipeline_dependencies_mcp() -> Dict[str, Any]:
+    def validate_pipeline_dependencies_tool():
         return validate_pipeline_dependencies(mcp_instance)
 
-    def get_pipeline_config_info_mcp() -> Dict[str, Any]:
+    def get_pipeline_config_info_tool():
         return get_pipeline_config_info(mcp_instance)
 
     # Register tools
     mcp_instance.register_tool(
         name="get_pipeline_steps",
-        function=get_pipeline_steps_mcp,
+        function=get_pipeline_steps_tool,
         schema={},
         description="Get information about all available pipeline steps, their metadata, and dependencies."
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_status",
-        function=get_pipeline_status_mcp,
+        function=get_pipeline_status_tool,
         schema={},
         description="Get current pipeline execution status, recent logs, and execution statistics."
     )
 
     mcp_instance.register_tool(
         name="validate_pipeline_dependencies",
-        function=validate_pipeline_dependencies_mcp,
+        function=validate_pipeline_dependencies_tool,
         schema={},
         description="Validate pipeline step dependencies and identify missing or circular dependencies."
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_config_info",
-        function=get_pipeline_config_info_mcp,
+        function=get_pipeline_config_info_tool,
         schema={},
         description="Get detailed pipeline configuration information and settings."
     )

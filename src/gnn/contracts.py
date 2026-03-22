@@ -79,8 +79,10 @@ def validate_rendered_output(
     """
     contract = CONTRACTS.get(framework.lower())
     if not contract:
-        logger.debug(f"No contract defined for framework '{framework}'")
-        return []
+        raise ValueError(
+            f"No contract defined for framework '{framework}'. "
+            f"Known frameworks: {', '.join(sorted(CONTRACTS))}"
+        )
 
     violations = []
 

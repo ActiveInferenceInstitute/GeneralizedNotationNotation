@@ -23,7 +23,7 @@ class Dispatcher:
         self._initialized = False
         self.client = None
         
-    def initialize(self) -> bool:
+    def connect_to_cluster(self) -> bool:
         """Connect to distributed cluster."""
         if self.backend == "ray":
             try:
@@ -75,7 +75,7 @@ class Dispatcher:
         """
         Execute multiple scripts in parallel across workers with robust retries.
         """
-        if not self._initialized and not self.initialize():
+        if not self._initialized and not self.connect_to_cluster():
             logger.warning("Falling back to sequential execution due to initialization failure.")
             return [execute_fn(info, **kwargs) for info in script_infos]
             
@@ -103,7 +103,7 @@ class Dispatcher:
         """
         Execute a parameter sweep with built-in retry semantics.
         """
-        if not self._initialized and not self.initialize():
+        if not self._initialized and not self.connect_to_cluster():
             logger.warning("Falling back to sequential parameter sweep.")
             return [model_fn(**params) for params in param_grid]
             

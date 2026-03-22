@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 
+logger = logging.getLogger(__name__)
+
 class WebsiteRenderer:
     """Renders HTML content and manages website assets."""
 
@@ -170,7 +172,8 @@ def generate_html_report(content: str, output_file: Path) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
         return False
 
 def embed_image(image_path: Path, output_file: Path) -> bool:
@@ -202,7 +205,8 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
         return False
 
 def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
@@ -242,7 +246,8 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
         return False
 
 def embed_text_file(text_path: Path, output_file: Path) -> bool:
@@ -278,7 +283,8 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
         return False
 
 def embed_json_file(json_path: Path, output_file: Path) -> bool:
@@ -317,7 +323,8 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
         return False
 
 def embed_html_file(html_path: Path, output_file: Path) -> bool:
@@ -355,7 +362,8 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
 
         return True
 
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Operation failed: {e}")
         return False
 
 def get_module_info() -> Dict[str, Any]:

@@ -52,7 +52,7 @@ class ValidationStrategy:
             logger.debug("GNN validator initialized")
 
         except Exception as e:
-            logger.warning(f"Could not initialize GNN validator: {e}")
+            logger.error(f"Could not initialize GNN validator: {e}; falling back to basic validation")
             self.validators['gnn'] = None
 
     def validate_files(self, files: List[Path]) -> Dict[Path, ValidationResult]:
@@ -163,36 +163,26 @@ class ValidationStrategy:
 
         return result
 
+    def _validate_with_fallback(self, file_path: Path, level: ValidationLevel) -> ValidationResult:
+        """Delegate to GNN validator or fall back to basic validation."""
+        if self.validators['gnn']:
+            return self.validators['gnn'].validate_file(file_path, level)
+        result = self._validate_basic(file_path)
+        result.validation_level = level
+        result.warnings.append("Using basic validation - GNN validator unavailable")
+        return result
+
     def _validate_standard(self, file_path: Path) -> ValidationResult:
         """Standard validation - structure and basic semantics."""
-        if self.validators['gnn']:
-            return self.validators['gnn'].validate_file(file_path, ValidationLevel.STANDARD)
-        else:
-            # Recovery to basic validation
-            result = self._validate_basic(file_path)
-            result.validation_level = ValidationLevel.STANDARD
-            result.warnings.append("Using basic validation - GNN validator unavailable")
-            return result
+        return self._validate_with_fallback(file_path, ValidationLevel.STANDARD)
 
     def _validate_strict(self, file_path: Path) -> ValidationResult:
         """Strict validation - enhanced semantics and consistency."""
-        if self.validators['gnn']:
-            return self.validators['gnn'].validate_file(file_path, ValidationLevel.STRICT)
-        else:
-            result = self._validate_basic(file_path)
-            result.validation_level = ValidationLevel.STRICT
-            result.warnings.append("Using basic validation - GNN validator unavailable")
-            return result
+        return self._validate_with_fallback(file_path, ValidationLevel.STRICT)
 
     def _validate_research(self, file_path: Path) -> ValidationResult:
         """Research-grade validation - comprehensive analysis."""
-        if self.validators['gnn']:
-            return self.validators['gnn'].validate_file(file_path, ValidationLevel.RESEARCH)
-        else:
-            result = self._validate_basic(file_path)
-            result.validation_level = ValidationLevel.RESEARCH
-            result.warnings.append("Using basic validation - GNN validator unavailable")
-            return result
+        return self._validate_with_fallback(file_path, ValidationLevel.RESEARCH)
 
     def _validate_round_trip(self, file_path: Path) -> ValidationResult:
         """Round-trip validation - semantic preservation testing."""

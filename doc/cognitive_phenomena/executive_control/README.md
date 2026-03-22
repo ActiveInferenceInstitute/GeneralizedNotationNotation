@@ -198,3 +198,6 @@ def assess_executive_control(behavioral_data):
 ### Clinical Applications
 - Barkley, R. A. (1997). Behavioral inhibition, sustained attention, and executive functions
 - Robbins, T. W., et al. (2012). Neurocognitive endophenotypes of impulsivity and compulsivity
+
+## See also
+- [Cognitive Effort Model](../effort/effort_model.md) - Computational resource modeling for task switching

@@ -13,7 +13,7 @@ except ImportError:
     GRADIO_AVAILABLE = False
 
 
-def build_minimal_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logger) -> "gr.Blocks":
+def build_debug_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logger) -> "gr.Blocks":
     """Build ultra-minimal GUI to debug gray screen issue"""
 
     if not GRADIO_AVAILABLE:

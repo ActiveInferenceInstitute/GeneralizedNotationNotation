@@ -1,3 +1,4 @@
+import os
 import pytest
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -88,3 +89,65 @@ x->s  # x is undefined
 
         assert str(valid_gnn_file) in results
         assert results[str(valid_gnn_file)]["is_valid"] is True
+
+    def test_check_nonexistent_file_returns_error(self):
+        """Checking a nonexistent file should return is_valid=False with an error message."""
+        checker = GNNTypeChecker()
+        is_valid, errors, warnings, details = checker.check_file("/nonexistent/path/model.md")
+
+        assert is_valid is False
+        assert len(errors) > 0
+
+    def test_check_corrupted_file_returns_error(self, safe_filesystem):
+        """Checking a file with binary/corrupted content should return is_valid=False."""
+        corrupted = safe_filesystem.create_file("corrupted.md", "\x00\x01\x02\x03binary garbage")
+        checker = GNNTypeChecker()
+        is_valid, errors, warnings, details = checker.check_file(str(corrupted))
+
+        # A file with no recognisable GNN sections is invalid (missing required sections).
+        assert is_valid is False
+
+    def test_check_file_missing_required_sections(self, safe_filesystem):
+        """A file missing required GNN sections should be invalid."""
+        content = "# Just a title\n\nSome random text with no GNN sections.\n"
+        incomplete = safe_filesystem.create_file("incomplete.md", content)
+        checker = GNNTypeChecker(strict_mode=False)
+        is_valid, errors, warnings, details = checker.check_file(str(incomplete))
+
+        assert is_valid is False
+
+    def test_warnings_not_errors_in_non_strict_mode(self, safe_filesystem):
+        """Undefined-variable connection produces a warning in non-strict mode, not an error."""
+        content = """
+## GNNSection
+Reflects=ActiveInference
+
+## ModelName
+WarnModel
+
+## StateSpaceBlock
+s[1, type=float]
+
+## Connections
+x->s
+"""
+        warn_file = safe_filesystem.create_file("warn_model.md", content)
+        checker = GNNTypeChecker(strict_mode=False)
+        is_valid, errors, warnings, details = checker.check_file(str(warn_file))
+
+        # In non-strict mode undefined-variable warnings do NOT escalate to errors.
+        assert any("undefined variable" in w for w in warnings)
+        assert not any("undefined variable" in e for e in errors)
+
+    @pytest.mark.skipif(os.getuid() == 0, reason="root can read any file")
+    def test_check_unreadable_file_returns_error(self, safe_filesystem):
+        """Checking a file without read permission should return is_valid=False."""
+        locked = safe_filesystem.create_file("locked.md", "## ModelName\nLocked\n")
+        locked.chmod(0o000)
+        try:
+            checker = GNNTypeChecker()
+            is_valid, errors, warnings, details = checker.check_file(str(locked))
+            assert is_valid is False
+            assert len(errors) > 0
+        finally:
+            locked.chmod(0o644)

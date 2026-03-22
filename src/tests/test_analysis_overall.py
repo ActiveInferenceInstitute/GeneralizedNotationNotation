@@ -265,3 +265,185 @@ class TestAnalysisModuleImports:
         assert callable(generate_cross_framework_comparison)
         assert callable(plot_belief_evolution)
         assert callable(animate_belief_evolution)
+
+
+# ── Per-framework analyzer smoke tests ───────────────────────────────────────
+
+class TestActiveInferenceJLAnalyzer:
+    def test_module_importable(self):
+        from analysis.activeinference_jl import analyzer  # noqa: F401
+
+    def test_generate_analysis_from_logs_missing_dir(self, tmp_path):
+        from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
+        assert isinstance(result, list)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestDisCoPyAnalyzer:
+    def test_module_importable(self):
+        from analysis.discopy import analyzer  # noqa: F401
+
+    def test_extract_circuit_data_empty_dir(self, tmp_path):
+        from analysis.discopy.analyzer import extract_circuit_data
+        result = extract_circuit_data(tmp_path)
+        assert isinstance(result, dict)
+
+    def test_analyze_diagram_structure_empty(self):
+        from analysis.discopy.analyzer import analyze_diagram_structure
+        result = analyze_diagram_structure([])
+        assert isinstance(result, dict)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.discopy.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestJAXAnalyzer:
+    def test_module_importable(self):
+        from analysis.jax import analyzer  # noqa: F401
+
+    def test_parse_raw_output_empty_string(self):
+        from analysis.jax.analyzer import parse_raw_output
+        result = parse_raw_output("")
+        assert isinstance(result, dict)
+
+    def test_extract_simulation_data_empty_dir(self, tmp_path):
+        from analysis.jax.analyzer import extract_simulation_data
+        result = extract_simulation_data(tmp_path)
+        assert isinstance(result, dict)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.jax.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestPyMDPAnalyzer:
+    def test_module_importable(self):
+        from analysis.pymdp import analyzer  # noqa: F401
+
+    def test_generate_analysis_from_logs_missing_dir(self, tmp_path):
+        from analysis.pymdp.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
+        assert isinstance(result, list)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.pymdp.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestRxInferAnalyzer:
+    def test_module_importable(self):
+        from analysis.rxinfer import analyzer  # noqa: F401
+
+    def test_extract_simulation_data_empty_dir(self, tmp_path):
+        from analysis.rxinfer.analyzer import extract_simulation_data
+        result = extract_simulation_data(tmp_path)
+        assert isinstance(result, dict)
+
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+        from analysis.rxinfer.analyzer import generate_analysis_from_logs
+        result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
+        assert isinstance(result, list)
+
+
+class TestAnalyzerSimulationMetrics:
+    """Behavioral tests for analyzer.py private simulation metric functions."""
+
+    def _make_logger(self):
+        import logging
+        return logging.getLogger("test_analyzer")
+
+    def test_extract_simulation_metrics_returns_dict(self, tmp_path):
+        """_extract_simulation_metrics returns a dict with expected keys."""
+        from analysis.analyzer import _extract_simulation_metrics
+        logger = self._make_logger()
+        result = _extract_simulation_metrics("pymdp", [], tmp_path, logger)
+        assert isinstance(result, dict)
+        assert "beliefs" in result
+        assert "actions" in result
+        assert "observations" in result
+        assert "free_energy" in result
+        assert "execution_times" in result
+
+    def test_extract_simulation_metrics_reads_json(self, tmp_path):
+        """_extract_simulation_metrics loads simulation_results.json when present."""
+        import json
+        from analysis.analyzer import _extract_simulation_metrics
+
+        sim_dir = tmp_path / "sim_data"
+        sim_dir.mkdir()
+        sim_results = {
+            "beliefs": [[0.9, 0.1], [0.8, 0.2]],
+            "actions": [0, 1],
+            "observations": [2, 3],
+            "free_energy": [-1.5, -1.3],
+        }
+        (sim_dir / "simulation_results.json").write_text(json.dumps(sim_results))
+
+        detail = {"implementation_directory": str(sim_dir), "execution_time": 0.5}
+        logger = self._make_logger()
+        result = _extract_simulation_metrics("pymdp", [detail], tmp_path, logger)
+
+        assert result["beliefs"] == sim_results["beliefs"]
+        assert result["actions"] == sim_results["actions"]
+        assert result["free_energy"] == sim_results["free_energy"]
+        assert result["execution_times"] == [0.5]
+
+    def test_extract_simulation_metrics_missing_dir(self, tmp_path):
+        """_extract_simulation_metrics handles nonexistent impl_dir gracefully."""
+        from analysis.analyzer import _extract_simulation_metrics
+        logger = self._make_logger()
+        detail = {"implementation_directory": str(tmp_path / "nonexistent"), "execution_time": 1.0}
+        result = _extract_simulation_metrics("rxinfer", [detail], tmp_path, logger)
+        assert isinstance(result, dict)
+        assert result["execution_times"] == [1.0]
+
+    def test_compare_framework_results_empty_input(self):
+        """_compare_framework_results returns dict with expected keys for empty input."""
+        from analysis.analyzer import _compare_framework_results
+        logger = self._make_logger()
+        result = _compare_framework_results({}, logger)
+        assert isinstance(result, dict)
+        assert "success_rates" in result
+        assert "performance_comparison" in result
+        assert "data_coverage" in result
+        assert "simulation_statistics" in result
+
+    def test_compare_framework_results_success_rates(self):
+        """_compare_framework_results computes success rates correctly."""
+        from analysis.analyzer import _compare_framework_results
+        logger = self._make_logger()
+        framework_data = {
+            "pymdp": {"success_count": 3, "total_count": 4, "execution_times": []},
+            "jax": {"success_count": 4, "total_count": 4, "execution_times": []},
+        }
+        result = _compare_framework_results(framework_data, logger)
+        assert abs(result["success_rates"]["pymdp"] - 0.75) < 1e-6
+        assert abs(result["success_rates"]["jax"] - 1.0) < 1e-6
+
+    def test_compare_framework_results_execution_times(self):
+        """_compare_framework_results computes perf stats when times present."""
+        from analysis.analyzer import _compare_framework_results
+        logger = self._make_logger()
+        framework_data = {
+            "pymdp": {"success_count": 2, "total_count": 2, "execution_times": [1.0, 2.0]},
+        }
+        result = _compare_framework_results(framework_data, logger)
+        perf = result["performance_comparison"]["pymdp"]
+        assert abs(perf["mean"] - 1.5) < 1e-6
+        assert perf["min"] == 1.0
+        assert perf["max"] == 2.0
+
+    def test_visualize_simulation_results_no_details(self, tmp_path):
+        """visualize_simulation_results returns list (empty) when no details."""
+        from analysis.analyzer import visualize_simulation_results
+        result = visualize_simulation_results({"execution_details": []}, tmp_path)
+        assert isinstance(result, list)

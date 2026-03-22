@@ -23,7 +23,6 @@ SRC_DIR = PROJECT_ROOT / "src"
 
 sys.path.insert(0, str(SRC_DIR))
 
-from tests.conftest import *
 
 
 class TestDependencyErrorScenarios:
@@ -128,10 +127,10 @@ class TestFileOperationErrorScenarios:
         non_existent_dir = temp_directories["temp_dir"] / "non_existent"
 
         try:
-            from visualization import process_visualization_main
+            from visualization import process_visualization
 
             # Should handle missing directory gracefully
-            result = process_visualization_main(
+            result = process_visualization(
                 target_dir=non_existent_dir,
                 output_dir=temp_directories["output_dir"],
                 verbose=True
@@ -255,8 +254,8 @@ class TestResourceConstraintScenarios:
 
         def run_visualization():
             try:
-                from visualization import process_visualization_main
-                return process_visualization_main(
+                from visualization import process_visualization
+                return process_visualization(
                     target_dir=temp_directories["input_dir"],
                     output_dir=temp_directories["output_dir"] / "viz_thread",
                     verbose=False

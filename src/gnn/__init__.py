@@ -18,8 +18,8 @@ from .multi_format_processor import (
     process_gnn_multi_format
 )
 
+from .parsers.system import GNNParsingSystem  # canonical 46-parser registry
 from .parser import (
-    GNNParsingSystem,
     GNNFormalParser,
     ParsedGNNFormal,
     parse_gnn_formal,
@@ -42,8 +42,21 @@ FEATURES = {
     "mcp_integration": True,
 }
 
-def validate_gnn_file(content: str):
-    """Validate a GNN file's content using the real parser validate_gnn."""
+def validate_gnn_file(source, *, is_content: bool = False):
+    """Validate a GNN file or content string.
+
+    Args:
+        source: File path (str or Path) or raw GNN content string.
+        is_content: If True, treat source as raw content regardless of type.
+
+    Returns:
+        Dict with keys ``is_valid`` (bool) and ``errors`` (list[str]).
+    """
+    from pathlib import Path as _Path
+    if not is_content and isinstance(source, (str, _Path)) and _Path(source).exists():
+        content = _Path(source).read_text(encoding="utf-8")
+    else:
+        content = str(source)
     is_valid, errors = validate_gnn(content)
     return {"is_valid": is_valid, "errors": errors}
 

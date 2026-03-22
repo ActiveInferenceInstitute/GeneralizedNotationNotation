@@ -35,7 +35,7 @@ class StepInfo:
     name: str
     step_num: int
     func: Optional[Callable] = None
-    depends_on: List[int] = None
+    depends_on: Optional[List[int]] = None
     phase: str = "core"
     module_path: str = ""
 

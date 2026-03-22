@@ -57,17 +57,19 @@ class GNNWatcher:
         from watchdog.observers import Observer
         from watchdog.events import FileSystemEventHandler, FileModifiedEvent
 
-        watcher = self
+        class _GNNChangeHandler(FileSystemEventHandler):
+            def __init__(self, gnn_watcher):
+                super().__init__()
+                self._watcher = gnn_watcher
 
-        class Handler(FileSystemEventHandler):
             def on_modified(self, event):
                 if isinstance(event, FileModifiedEvent):
                     path = Path(event.src_path)
-                    if path.suffix in watcher.extensions:
-                        watcher._debounced_fire(path)
+                    if path.suffix in self._watcher.extensions:
+                        self._watcher._debounced_fire(path)
 
         observer = Observer()
-        observer.schedule(Handler(), str(self.watch_dir), recursive=True)
+        observer.schedule(_GNNChangeHandler(self), str(self.watch_dir), recursive=True)
         observer.start()
         self._running = True
 

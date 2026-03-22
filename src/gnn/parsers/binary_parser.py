@@ -283,5 +283,3 @@ class PickleGNNParser(BaseGNNParser):
         return type_mapping.get(type_str.lower(), DataType.CATEGORICAL)
 
 
-# Compatibility alias
-PickleParser = PickleGNNParser

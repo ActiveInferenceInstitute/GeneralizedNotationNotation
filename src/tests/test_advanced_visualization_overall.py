@@ -144,6 +144,62 @@ learning_rate = 0.01
         except Exception as e:
             pytest.skip(f"Data extraction failed: {e}")
 
+    def test_extract_from_file_failure_returns_full_shape(self, tmp_path):
+        """Failure path returns all 13 keys matching the success shape."""
+        from advanced_visualization.data_extractor import VisualizationDataExtractor
+
+        extractor = VisualizationDataExtractor()
+        missing = tmp_path / "does_not_exist.md"
+        result = extractor.extract_from_file(missing)
+
+        assert result["success"] is False
+        expected_keys = {
+            "success", "errors", "warnings", "model_info", "blocks",
+            "connections", "parameters", "equations", "time_specification",
+            "ontology_mappings", "total_blocks", "total_connections",
+            "total_parameters", "total_equations", "extraction_timestamp",
+        }
+        assert expected_keys.issubset(result.keys()), (
+            f"Missing keys: {expected_keys - result.keys()}"
+        )
+
+    def test_connection_keys_use_source_target_variables(self, tmp_path):
+        """Connections extracted from model use source_variables/target_variables keys."""
+        from advanced_visualization.data_extractor import VisualizationDataExtractor
+
+        gnn_content = (
+            "## GNNSection\nActInfPOMDP\n\n"
+            "## ModelName\nConnKeyTest\n\n"
+            "## StateSpaceBlock\n"
+            "s[2,type=float]\no[2,type=float]\n\n"
+            "## Connections\ns->o\n"
+        )
+        test_file = tmp_path / "conn_test.md"
+        test_file.write_text(gnn_content)
+
+        extractor = VisualizationDataExtractor()
+        result = extractor.extract_from_file(test_file)
+
+        if result["success"] and result["connections"]:
+            for conn in result["connections"]:
+                assert "source_variables" in conn, "'from' key found; expected 'source_variables'"
+                assert "target_variables" in conn, "'to' key found; expected 'target_variables'"
+                assert "from" not in conn
+                assert "to" not in conn
+
+    def test_extract_from_content_failure_returns_full_shape(self):
+        """extract_from_content failure path returns all 13 keys."""
+        from advanced_visualization.data_extractor import VisualizationDataExtractor
+
+        extractor = VisualizationDataExtractor()
+        result = extractor.extract_from_content("")  # empty content
+
+        assert isinstance(result, dict)
+        assert "success" in result
+        assert "errors" in result
+        assert "connections" in result
+        assert "blocks" in result
+
 
 class TestD2Visualization:
     """Test D2 diagram visualization."""

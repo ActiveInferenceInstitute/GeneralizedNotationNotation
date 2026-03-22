@@ -279,7 +279,7 @@
       "name": "get_environment_info",
       "module": "",
       "category": "",
-      "fn": "get_environment_info_mcp",
+      "fn": "get_environment_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get environment information including Python packages, environment variables, and paths."
@@ -297,7 +297,7 @@
       "name": "get_file_info",
       "module": "",
       "category": "",
-      "fn": "get_file_info_mcp",
+      "fn": "get_file_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get detailed information about a file or directory including size, permissions, and contents."
@@ -378,7 +378,7 @@
       "name": "get_logging_info",
       "module": "",
       "category": "",
-      "fn": "get_logging_info_mcp",
+      "fn": "get_logging_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get current logging configuration and status for all loggers."
@@ -396,7 +396,7 @@
       "name": "get_pipeline_config_info",
       "module": "",
       "category": "",
-      "fn": "get_pipeline_config_info_mcp",
+      "fn": "get_pipeline_config_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get detailed pipeline configuration information and settings."
@@ -405,7 +405,7 @@
       "name": "get_pipeline_status",
       "module": "",
       "category": "",
-      "fn": "get_pipeline_status_mcp",
+      "fn": "get_pipeline_status_tool",
       "is_real": true,
       "documented": true,
       "description": "Get current pipeline execution status, recent logs, and execution statistics."
@@ -414,7 +414,7 @@
       "name": "get_pipeline_steps",
       "module": "",
       "category": "",
-      "fn": "get_pipeline_steps_mcp",
+      "fn": "get_pipeline_steps_tool",
       "is_real": true,
       "documented": true,
       "description": "Get information about all available pipeline steps, their metadata, and dependencies."
@@ -477,7 +477,7 @@
       "name": "get_system_info",
       "module": "",
       "category": "",
-      "fn": "get_system_info_mcp",
+      "fn": "get_system_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get comprehensive system information including CPU, memory, disk, and platform details."
@@ -1152,7 +1152,7 @@
       "name": "validate_dependencies",
       "module": "",
       "category": "",
-      "fn": "validate_dependencies_mcp",
+      "fn": "validate_dependencies_tool",
       "is_real": true,
       "documented": true,
       "description": "Validate system dependencies and required packages for the GNN pipeline."
@@ -1215,7 +1215,7 @@
       "name": "validate_pipeline_dependencies",
       "module": "",
       "category": "",
-      "fn": "validate_pipeline_dependencies_mcp",
+      "fn": "validate_pipeline_dependencies_tool",
       "is_real": true,
       "documented": true,
       "description": "Validate pipeline step dependencies and identify missing or circular dependencies."

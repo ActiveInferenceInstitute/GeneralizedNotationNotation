@@ -418,7 +418,7 @@ class MCP:
             )
             return False
 
-    def register_tool(self, name: str, func: Callable = None, schema: Dict[str, Any] = None, description: str = "",
+    def register_tool(self, name: str, func: Optional[Callable] = None, schema: Optional[Dict[str, Any]] = None, description: str = "",
                      module: str = "", category: str = "", version: str = "1.0.0",
                      tags: Optional[List[str]] = None, examples: Optional[List[Dict[str, Any]]] = None,
                      deprecated: bool = False, experimental: bool = False,
@@ -613,6 +613,14 @@ class MCP:
 
             tool = self.tools[tool_name]
 
+            # Enforce auth gate: tools that require authentication are unavailable
+            # in this local-only server (no auth mechanism is configured).
+            if tool.requires_auth:
+                raise MCPToolNotFoundError(
+                    tool_name,
+                    [t for t, v in self.tools.items() if not v.requires_auth]
+                )
+
             # Simplified validation
             if tool.input_validation:
                 if 'required' in tool.schema:
@@ -672,6 +680,10 @@ class MCP:
                     break
 
             if not matching_resource:
+                raise MCPResourceNotFoundError(uri)
+
+            # Enforce auth gate — mirrors execute_tool() pattern
+            if matching_resource.requires_auth:
                 raise MCPResourceNotFoundError(uri)
 
             try:

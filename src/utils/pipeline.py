@@ -38,6 +38,15 @@ def setup_step_logging(step_name: str, verbose: bool = False):
             logger.setLevel(logging.INFO)
         return logger
 
+class _DefaultStepArgs:
+    """Default pipeline step arguments returned by RecoveryArgumentParser."""
+
+    def __init__(self, step_name: str) -> None:
+        self.verbose = False
+        self.output_dir = Path("output")
+        self.step_name = step_name
+
+
 class RecoveryArgumentParser:
     """
     Recovery argument parser for recovery scenarios.
@@ -46,13 +55,7 @@ class RecoveryArgumentParser:
     @staticmethod
     def parse_step_arguments(step_name):
         """Return default args (verbose=False, output_dir='output')."""
-        class DefaultArgs:
-            def __init__(self):
-                self.verbose = False
-                self.output_dir = Path("output")
-                self.step_name = step_name
-
-        return DefaultArgs()
+        return _DefaultStepArgs(step_name)
 
 def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:
     """

@@ -52,6 +52,9 @@ from .processor import (
     get_available_tools
 )
 
+# Backward-compatible alias expected by legacy tests/import sites.
+MCPServer = MCP
+
 # Module metadata
 __version__ = "1.1.3"
 __author__ = "Active Inference Institute"
@@ -86,8 +89,6 @@ __all__ = [
     'initialize',
     'MCP',
     'MCPServer',
-    'create_mcp_server',
-    'start_mcp_server',
     'MCPTool',
     'MCPResource',
     'MCPError',

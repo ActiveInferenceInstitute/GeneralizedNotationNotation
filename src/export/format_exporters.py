@@ -10,7 +10,7 @@ import logging
 import re
 from pathlib import Path
 import ast
-from typing import Dict, Any, List, Optional, Union, Callable
+from typing import Dict, Any, List, Optional, Union, Callable, Tuple
 
 # Imports for specific exporters
 import json
@@ -195,7 +195,7 @@ def _dict_to_xml(tag: str, d: Union[Dict, List, Any]) -> ET.Element:
 
 # --- Consolidated Export Functions ---
 
-def export_to_json_gnn(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_json_gnn(gnn_model: Dict[str, Any], output_file_path: Union[str, Path]) -> tuple[bool, str]:
     """Exports the GNN model dictionary to a JSON file."""
     logger.info(f"Exporting GNN model to JSON: {output_file_path}")
     try:
@@ -207,7 +207,7 @@ def export_to_json_gnn(gnn_model: Dict[str, Any], output_file_path: str) -> None
         logger.error(f"Failed to export to JSON: {e}", exc_info=True)
         return False, f"Failed to export to JSON: {e}"
 
-def export_to_xml_gnn(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_xml_gnn(gnn_model: Dict[str, Any], output_file_path: Union[str, Path]) -> tuple[bool, str]:
     """Exports the GNN model dictionary to an XML file."""
     logger.info(f"Exporting GNN model to XML: {output_file_path}")
     try:
@@ -225,7 +225,7 @@ def export_to_xml_gnn(gnn_model: Dict[str, Any], output_file_path: str) -> None:
         logger.error(f"Failed to export to XML: {e}", exc_info=True)
         return False, f"Failed to export to XML: {e}"
 
-def export_to_python_pickle(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_python_pickle(gnn_model: Dict[str, Any], output_file_path: Union[str, Path]) -> tuple[bool, str]:
     """Serializes the GNN model dictionary to a Python pickle file."""
     logger.info(f"Exporting GNN model to Pickle: {output_file_path}")
     try:
@@ -292,7 +292,7 @@ def export_to_gexf(gnn_model: Dict[str, Any], output_file_path: str) -> None:
         logger.error(f"Failed to export to GEXF: {e}", exc_info=True)
         return False, f"Failed to export to GEXF: {e}"
 
-def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> Tuple[bool, str]:
     """Exports the GNN model graph to a GraphML file."""
     logger.info(f"Exporting GNN model to GraphML: {output_file_path}")
     if not HAS_NETWORKX:
@@ -308,7 +308,7 @@ def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> None:
         logger.error(f"Failed to export to GraphML: {e}", exc_info=True)
         return False, f"Failed to export to GraphML: {e}"
 
-def export_to_json_adjacency_list(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_json_adjacency_list(gnn_model: Dict[str, Any], output_file_path: str) -> Tuple[bool, str]:
     """Exports the GNN model graph to a JSON adjacency list format."""
     logger.info(f"Exporting GNN model to JSON Adjacency List: {output_file_path}")
     if not HAS_NETWORKX:

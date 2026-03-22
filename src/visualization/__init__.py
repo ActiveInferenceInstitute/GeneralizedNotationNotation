@@ -96,14 +96,6 @@ def get_visualization_options() -> dict:
         "graph_types": ["connections", "combined"],
         "output_formats": ["png", "json"]
     }
-def process_visualization_main(target_dir, output_dir, verbose: bool = False, **kwargs) -> bool:
-    """Main visualization processing function."""
-    try:
-        from .processor import process_visualization
-        return process_visualization(target_dir, output_dir, verbose, **kwargs)
-    except Exception as e:
-        print(f"Visualization processing failed: {e}")
-        return False
 
 
 def _generate_network_statistics(variables: Dict[str, Any], connections: List[Dict]) -> Dict[str, Any]:
@@ -145,5 +137,5 @@ __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
     'process_matrix_visualization', 'process_visualization',
     'generate_graph_visualization', 'generate_matrix_visualization', 'generate_visualizations',
-    '__version__', 'process_visualization_main'
+    '__version__'
 ]

@@ -1,232 +1,201 @@
 #!/usr/bin/env python3
 """
-Test Audio Generation Tests
+Tests for audio/generator.py — real function-level coverage.
 
-This file contains comprehensive tests for audio generation functionality.
+Tests generate_tonal_representation, generate_rhythmic_representation,
+generate_ambient_representation, generate_sonification_audio,
+generate_oscillator_audio, mix_audio_channels, and SyntheticAudioGenerator.
 """
 
-import pytest
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Add src to path for imports
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.conftest import *
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    NUMPY_AVAILABLE = False
 
-class TestAudioGeneration:
-    """Test audio generation functionality."""
+pytestmark = pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
 
-    def test_audio_import_available(self) -> None:
-        """Test that audio module can be imported."""
-        try:
-            from audio import AudioGenerator
-            # Verify the imported class is actually usable
-            assert AudioGenerator is not None, "AudioGenerator should be importable"
-            assert callable(getattr(AudioGenerator, '__init__', None)) or hasattr(AudioGenerator, '__call__'), "AudioGenerator should be a class or callable"
-        except ImportError:
-            pytest.skip("Audio module not available")
 
-    def test_sapf_audio_generation(self) -> None:
-        """Test SAPF audio generation."""
-        # Test SAPF configuration
-        sapf_config = {
-            "sample_rate": 44100,
-            "duration": 10.0,
-            "frequency": 440.0,
-            "amplitude": 0.5,
-            "waveform": "sine"
-        }
+@pytest.fixture(autouse=True)
+def require_audio():
+    try:
+        import audio.generator  # noqa: F401
+    except ImportError:
+        pytest.skip("audio.generator not available")
 
-        assert sapf_config["sample_rate"] == 44100
-        assert sapf_config["duration"] == 10.0
-        assert sapf_config["frequency"] == 440.0
-        assert sapf_config["amplitude"] == 0.5
-        assert sapf_config["waveform"] == "sine"
 
-    def test_pedalboard_audio_generation(self) -> None:
-        """Test Pedalboard audio generation."""
-        # Test Pedalboard configuration
-        pedalboard_config = {
-            "plugins": ["Reverb", "Delay", "Compressor"],
-            "sample_rate": 48000,
-            "buffer_size": 1024,
-            "latency": 0.001
-        }
+class TestGenerateTonalRepresentation:
+    def test_empty_variables_returns_silence(self):
+        from audio.generator import generate_tonal_representation
+        result = generate_tonal_representation([], [])
+        assert isinstance(result, np.ndarray)
+        assert result.shape[0] == int(44100 * 5.0)
+        assert np.all(result == 0.0)
 
-        assert "Reverb" in pedalboard_config["plugins"]
-        assert "Delay" in pedalboard_config["plugins"]
-        assert "Compressor" in pedalboard_config["plugins"]
-        assert pedalboard_config["sample_rate"] == 48000
-        assert pedalboard_config["buffer_size"] == 1024
+    def test_single_variable_produces_nonzero_audio(self):
+        from audio.generator import generate_tonal_representation
+        variables = [{"name": "s"}]
+        result = generate_tonal_representation(variables, [])
+        assert result.shape[0] > 0
+        assert np.any(result != 0.0)
 
-    def test_audio_format_conversion(self) -> None:
-        """Test audio format conversion."""
-        # Test supported formats
-        supported_formats = ["wav", "mp3", "flac", "ogg", "aiff"]
+    def test_multiple_variables_returns_correct_length(self):
+        from audio.generator import generate_tonal_representation
+        variables = [{"name": f"v{i}"} for i in range(4)]
+        result = generate_tonal_representation(variables, [])
+        assert result.shape[0] == int(44100 * 5.0)
 
-        for format_name in supported_formats:
-            assert format_name in supported_formats
-            assert isinstance(format_name, str)
+    def test_connections_do_not_change_output_length(self):
+        from audio.generator import generate_tonal_representation
+        variables = [{"name": "s"}, {"name": "o"}]
+        connections = [{"source": "s", "target": "o"}]
+        result = generate_tonal_representation(variables, connections)
+        assert result.shape[0] == int(44100 * 5.0)
 
-    def test_audio_parameter_validation(self) -> None:
-        """Test audio parameter validation."""
-        # Test valid parameters
-        valid_params = {
-            "frequency": 440.0,
-            "amplitude": 0.5,
-            "duration": 5.0,
-            "sample_rate": 44100
-        }
 
-        # Validate parameter ranges
-        assert 20 <= valid_params["frequency"] <= 20000  # Audible frequency range
-        assert 0 < valid_params["amplitude"] <= 1.0  # Valid amplitude range
-        assert valid_params["duration"] > 0  # Positive duration
-        assert valid_params["sample_rate"] > 0  # Positive sample rate
+class TestGenerateRhythmicRepresentation:
+    def test_no_connections_returns_silence(self):
+        from audio.generator import generate_rhythmic_representation
+        result = generate_rhythmic_representation([], [])
+        assert isinstance(result, np.ndarray)
+        assert result.shape[0] == int(44100 * 5.0)
+        assert np.all(result == 0.0)
 
-    def test_audio_error_handling(self) -> None:
-        """Test audio error handling."""
-        # Test invalid parameters
-        invalid_params = {
-            "frequency": -100,  # Negative frequency
-            "amplitude": 2.0,   # Amplitude > 1.0
-            "duration": -5.0,   # Negative duration
-            "sample_rate": 0    # Zero sample rate
-        }
+    def test_single_connection_produces_audio(self):
+        from audio.generator import generate_rhythmic_representation
+        result = generate_rhythmic_representation([], [{"source": "a", "target": "b"}])
+        assert result.shape[0] > 0
+        assert np.any(result != 0.0)
 
-        # These should be caught by validation
-        assert invalid_params["frequency"] < 0
-        assert invalid_params["amplitude"] > 1.0
-        assert invalid_params["duration"] < 0
-        assert invalid_params["sample_rate"] <= 0
+    def test_multiple_connections_correct_length(self):
+        from audio.generator import generate_rhythmic_representation
+        connections = [{"source": f"a{i}", "target": f"b{i}"} for i in range(3)]
+        result = generate_rhythmic_representation([], connections)
+        assert result.shape[0] == int(44100 * 5.0)
 
-    def test_audio_performance(self) -> None:
-        """Test audio generation performance."""
-        import time
 
-        start_time = time.time()
+class TestGenerateAmbientRepresentation:
+    def test_empty_inputs_returns_audio_with_drone(self):
+        from audio.generator import generate_ambient_representation
+        result = generate_ambient_representation([], [])
+        assert isinstance(result, np.ndarray)
+        assert result.shape[0] == int(44100 * 10.0)
+        # Drone always present
+        assert np.any(result != 0.0)
 
-        # Simulate audio generation
-        sample_rate = 44100
-        duration = 1.0  # 1 second
-        num_samples = int(sample_rate * duration)
+    def test_variables_add_harmonics(self):
+        from audio.generator import generate_ambient_representation
+        empty_result = generate_ambient_representation([], [])
+        variables = [{"name": "s"}, {"name": "o"}]
+        var_result = generate_ambient_representation(variables, [])
+        # Adding variables changes the output
+        assert not np.allclose(empty_result, var_result)
 
-        # Generate simple sine wave
-        import math
-        frequency = 440.0
-        samples = []
-        for i in range(num_samples):
-            t = i / sample_rate
-            sample = math.sin(2 * math.pi * frequency * t)
-            samples.append(sample)
+    def test_output_length_is_ten_seconds(self):
+        from audio.generator import generate_ambient_representation
+        result = generate_ambient_representation([{"name": "x"}], [])
+        assert result.shape[0] == int(44100 * 10.0)
 
-        assert len(samples) == num_samples
-        assert all(-1 <= s <= 1 for s in samples)  # Valid amplitude range
 
-        generation_time = time.time() - start_time
-        assert generation_time < 1.0  # Should complete quickly
+class TestGenerateSonificationAudio:
+    def test_empty_dynamics_returns_silence(self):
+        from audio.generator import generate_sonification_audio
+        result = generate_sonification_audio([])
+        assert isinstance(result, np.ndarray)
+        assert np.all(result == 0.0)
 
-    def test_audio_memory_usage(self) -> None:
-        """Test audio memory usage."""
-        import psutil
-        import os
+    def test_single_dynamic_produces_audio(self):
+        from audio.generator import generate_sonification_audio
+        result = generate_sonification_audio([{"state": 0.5}])
+        assert result.shape[0] > 0
+        assert np.any(result != 0.0)
 
-        process = psutil.Process(os.getpid())
-        initial_memory = process.memory_info().rss / 1024 / 1024  # MB
+    def test_output_length_is_eight_seconds(self):
+        from audio.generator import generate_sonification_audio
+        result = generate_sonification_audio([{"x": 1.0}])
+        assert result.shape[0] == int(44100 * 8.0)
 
-        # Simulate audio processing
-        sample_rate = 44100
-        duration = 10.0  # 10 seconds
-        num_samples = int(sample_rate * duration)
 
-        # Generate audio data
-        import math
-        audio_data = []
-        for i in range(num_samples):
-            t = i / sample_rate
-            sample = math.sin(2 * math.pi * 440 * t)  # A4 note
-            audio_data.append(sample)
+class TestGenerateOscillatorAudio:
+    @pytest.mark.parametrize("osc_type", ["sine", "square", "sawtooth", "triangle", "noise"])
+    def test_oscillator_types_produce_audio(self, osc_type):
+        from audio.generator import generate_oscillator_audio
+        result = generate_oscillator_audio(440.0, 0.5, oscillator_type=osc_type)
+        assert isinstance(result, np.ndarray)
+        assert result.shape[0] == int(44100 * 0.5)
 
-        final_memory = process.memory_info().rss / 1024 / 1024  # MB
-        memory_increase = final_memory - initial_memory
+    def test_unknown_type_falls_back_gracefully(self):
+        from audio.generator import generate_oscillator_audio
+        result = generate_oscillator_audio(440.0, 0.5, oscillator_type="unknown")
+        assert isinstance(result, np.ndarray)
+        assert result.shape[0] > 0
 
-        # Memory increase should be reasonable (< 100MB for 10 seconds of audio)
-        assert memory_increase < 100.0
 
-    def test_audio_quality_metrics(self) -> None:
-        """Test audio quality metrics."""
-        # Test signal-to-noise ratio calculation
-        import math
-        signal = [0.5] * 1000  # Clean signal
-        noise = [0.1] * 1000   # Noise
+class TestMixAudioChannels:
+    def test_empty_channels_returns_empty(self):
+        from audio.generator import mix_audio_channels
+        result = mix_audio_channels([])
+        assert len(result) == 0
 
-        # Calculate SNR (simplified)
-        signal_power = sum(s**2 for s in signal) / len(signal)
-        noise_power = sum(n**2 for n in noise) / len(noise)
+    def test_single_channel_passthrough(self):
+        from audio.generator import mix_audio_channels
+        ch = np.ones(100)
+        result = mix_audio_channels([ch])
+        assert result.shape[0] == 100
 
-        if noise_power > 0:
-            import math
-            snr = 10 * math.log10(signal_power / noise_power)
-            assert snr > 0  # SNR should be positive for clean signal
+    def test_add_mode_sums_channels(self):
+        from audio.generator import mix_audio_channels
+        a = np.ones(100)
+        b = np.ones(100) * 2.0
+        result = mix_audio_channels([a, b], mix_mode="add")
+        assert np.allclose(result, 3.0)
 
-    def test_audio_file_operations(self) -> None:
-        """Test audio file operations."""
-        # Test file path handling
-        test_file = Path("test_audio.wav")
+    def test_average_mode(self):
+        from audio.generator import mix_audio_channels
+        a = np.ones(100)
+        b = np.ones(100) * 3.0
+        result = mix_audio_channels([a, b], mix_mode="average")
+        assert np.allclose(result, 2.0)
 
-        # Simulate file operations
-        assert test_file.suffix == ".wav"
-        assert test_file.stem == "test_audio"
+    def test_unequal_length_channels_padded(self):
+        from audio.generator import mix_audio_channels
+        a = np.ones(200)
+        b = np.ones(100)
+        result = mix_audio_channels([a, b], mix_mode="add")
+        assert result.shape[0] == 200
 
-        # Test directory creation
-        output_dir = Path("output/15_audio_output")
-        output_dir.mkdir(parents=True, exist_ok=True)
-        assert output_dir.exists()
 
-    def test_audio_backend_selection(self) -> None:
-        """Test audio backend selection."""
-        # Test backend options
-        backends = ["auto", "sapf", "pedalboard", "numpy", "scipy"]
+class TestSyntheticAudioGenerator:
+    def test_generate_sine_wave(self):
+        from audio.generator import SyntheticAudioGenerator
+        gen = SyntheticAudioGenerator()
+        config = {"frequency": 440.0, "duration": 0.5, "oscillator_type": "sine", "sample_rate": 44100}
+        result = gen.generate_synthetic_audio(config)
+        assert isinstance(result, np.ndarray)
+        assert result.shape[0] == int(44100 * 0.5)
+        assert np.all(np.abs(result) <= 1.0 + 1e-6)
 
-        for backend in backends:
-            assert backend in backends
-            assert isinstance(backend, str)
+    def test_apply_adsr_envelope_changes_amplitude(self):
+        from audio.generator import SyntheticAudioGenerator
+        gen = SyntheticAudioGenerator()
+        audio = np.ones(4410)
+        enveloped = gen.apply_envelope(audio, "ADSR")
+        assert isinstance(enveloped, np.ndarray)
+        assert enveloped.shape == audio.shape
+        # Envelope should reduce start and end
+        assert enveloped[0] < 0.5  # attack starts near 0
+        assert enveloped[-1] < 0.5  # release ends near 0
 
-        # Test auto-detection logic
-        available_backends = ["sapf", "pedalboard"]
-        auto_backend = "sapf" if "sapf" in available_backends else "pedalboard"
-
-        assert auto_backend in available_backends
-
-    def test_audio_concurrent_generation(self) -> None:
-        """Test concurrent audio generation."""
-        import threading
-        import time
-
-        results = []
-        lock = threading.Lock()
-
-        def generate_audio(worker_id: Any) -> None:
-            # Simulate audio generation
-            time.sleep(0.01)  # Small delay
-            with lock:
-                results.append(f"audio_{worker_id}")
-
-        # Start multiple threads
-        threads = []
-        for i in range(5):
-            thread = threading.Thread(target=generate_audio, args=(i,))
-            threads.append(thread)
-            thread.start()
-
-        # Wait for all threads to complete
-        for thread in threads:
-            thread.join()
-
-        # Verify all workers completed
-        assert len(results) == 5
-        for i in range(5):
-            assert f"audio_{i}" in results
-
+    def test_supported_formats_present(self):
+        from audio.generator import SyntheticAudioGenerator
+        gen = SyntheticAudioGenerator()
+        assert "wav" in gen.supported_formats
+        assert "mp3" in gen.supported_formats

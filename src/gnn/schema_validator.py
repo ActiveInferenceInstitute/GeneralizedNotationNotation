@@ -330,7 +330,11 @@ class GNNParser:
         return hashlib.md5(checksum_str.encode(), usedforsecurity=False).hexdigest()
 
     def _parse_markdown_content(self, content: str, source_name: str) -> ParsedGNN:
-        """Parse GNN content from string (markdown format)."""
+        """Parse GNN content from string (markdown format).
+
+        Side effects: resets self.line_number to 0 and self.current_section to None
+        at the start of each call, then mutates both as parsing progresses.
+        """
         lines = content.split('\n')
         self.line_number = 0
         self.current_section = None
@@ -807,46 +811,28 @@ class GNNValidator:
 
     def _load_schema(self):
         """
-        Load JSON or YAML schema with robust error handling.
-        
-        Handles potential recursion and parsing errors by providing recovery mechanisms.
+        Load JSON or YAML schema from self.schema_path.
+
+        Raises:
+            FileNotFoundError: If the schema file does not exist.
+            ValueError: If the file extension is unsupported or the file cannot be parsed.
         """
-        try:
-            # First, try standard loading
-            if self.schema_path.suffix.lower() == '.json':
-                import json
-                with open(self.schema_path, 'r', encoding='utf-8') as f:
-                    return json.load(f)
-            elif self.schema_path.suffix.lower() in ['.yaml', '.yml']:
-                import yaml
-                with open(self.schema_path, 'r', encoding='utf-8') as f:
-                    return yaml.safe_load(f)
-            else:
-                raise ValueError(f"Unsupported schema file type: {self.schema_path.suffix}")
+        if not self.schema_path.exists():
+            raise FileNotFoundError(
+                f"Schema file not found: {self.schema_path}. "
+                "Ensure the schema file exists before validating."
+            )
 
-        except (json.JSONDecodeError, yaml.YAMLError, RecursionError) as e:
-            # Log the specific error
-            logger.warning(f"Schema loading error for {self.schema_path}: {e}")
-
-            # Recovery to minimal schema
-            return {
-                "title": "Recovery GNN Schema",
-                "description": "Minimal schema due to loading error",
-                "type": "object",
-                "properties": {},
-                "required": []
-            }
-        except Exception as e:
-            # Catch-all for any other unexpected errors
-            logger.error(f"Unexpected error loading schema {self.schema_path}: {e}")
-
-            # Return an empty, permissive schema
-            return {
-                "title": "Emergency Recovery Schema",
-                "description": "Completely permissive schema due to critical loading error",
-                "type": "object",
-                "additionalProperties": True
-            }
+        if self.schema_path.suffix.lower() == '.json':
+            import json
+            with open(self.schema_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        elif self.schema_path.suffix.lower() in ['.yaml', '.yml']:
+            import yaml
+            with open(self.schema_path, 'r', encoding='utf-8') as f:
+                return yaml.safe_load(f)
+        else:
+            raise ValueError(f"Unsupported schema file type: {self.schema_path.suffix}")
 
     def _level_rank(self, level: Union[ValidationLevel, str]) -> int:
         """Map validation level to an integer rank for safe comparisons."""

@@ -24,9 +24,6 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
             import sys as _sys
             _sys.setrecursionlimit(3000)
             recovery_actions.append("recursion_limit_adjusted")
-        # Ensure presence of recovery marker for tests that only check inclusion
-        if "recursion_limit_adjusted" not in recovery_actions:
-            recovery_actions.append("recursion_limit_adjusted")
         # Use safe glob with string conversion to avoid pathlib recursion edge cases
         files = list(Path(str(target_dir)).glob("**/*.json")) + list(Path(str(target_dir)).glob("**/*.md"))
         output_dir.mkdir(parents=True, exist_ok=True)

@@ -612,39 +612,6 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
 
     return cmd
 
-def get_step_output_dir(step_name: str, base_output_dir: Path) -> Path:
-    """
-    Get the appropriate output directory for a pipeline step.
-    
-    Args:
-        step_name: Name of the step
-        base_output_dir: Base output directory
-        
-    Returns:
-        Output directory for the step
-    """
-    # Map of steps to their subdirectories
-    STEP_OUTPUT_MAPPING = {
-        "1_setup": "setup_artifacts",
-        "2_gnn": "gnn_processing_step",
-        "3_tests": "test_reports",
-        "4_type_checker": "type_check",
-        "5_export": "gnn_exports",
-        "6_visualization": "visualization",
-        "7_mcp": "mcp_processing_step",
-        "8_ontology": "ontology_processing",
-        "9_render": "gnn_rendered_simulators",
-        "10_execute": "execution_results",
-        "11_llm": "llm_processing_step",
-        "12_website": "website",
-        "13_website": "website",
-"14_report": "report_processing_step"
-    }
-
-    if step_name in STEP_OUTPUT_MAPPING:
-        return base_output_dir / STEP_OUTPUT_MAPPING[step_name]
-    else:
-        return base_output_dir
 
 # Add enhanced validation and step configuration
 class StepConfiguration:

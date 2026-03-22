@@ -9,7 +9,14 @@ mathematical specifications, parameter values, and expected behaviors.
 
 import numpy as np
 from sandved_smith_2021 import SandvedSmithModel
-from utils import *
+from utils import (
+    setup_transition_matrices,
+    setup_likelihood_matrices,
+    softmax,
+    precision_weighted_likelihood,
+    compute_attentional_charge,
+    generate_oddball_sequence,
+)
 
 def verify_parameters():
     """Verify all parameters match the paper specifications."""

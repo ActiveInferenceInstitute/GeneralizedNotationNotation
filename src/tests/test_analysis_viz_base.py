@@ -1,17 +1,13 @@
-"""Tests for analysis/viz_base.py — safe_savefig and check_matplotlib."""
+"""Tests for analysis/viz_base.py — safe_savefig."""
 from unittest.mock import patch, MagicMock
 import analysis.viz_base as viz_base
 
 
-# ── check_matplotlib ───────────────────────────────────────────────────────
+# ── MATPLOTLIB_AVAILABLE ───────────────────────────────────────────────────
 
-class TestCheckMatplotlib:
-    def test_returns_bool(self):
-        result = viz_base.check_matplotlib()
-        assert isinstance(result, bool)
-
-    def test_matches_module_flag(self):
-        assert viz_base.check_matplotlib() == viz_base.MATPLOTLIB_AVAILABLE
+class TestMatplotlibAvailable:
+    def test_is_bool(self):
+        assert isinstance(viz_base.MATPLOTLIB_AVAILABLE, bool)
 
 
 # ── safe_savefig — matplotlib unavailable ─────────────────────────────────

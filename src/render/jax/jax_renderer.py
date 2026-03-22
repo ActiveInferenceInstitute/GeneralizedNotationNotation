@@ -857,7 +857,8 @@ def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
         C_list = C_vector.tolist()
         D_list = D_vector.tolist()
 
-        code = f'''"""  # nosec B608 -- this is code generation output, not a live SQL query
+        # nosec
+        code = f'''"""
 JAX Model Generated from GNN Specification: {model_name}
 
 This model implements the GNN specification using pure JAX for high-performance computation.
@@ -978,16 +979,16 @@ def compute_expected_free_energy(params: Dict[str, jnp.ndarray], belief: jnp.nda
 
 
 @jit
-def select_action(params: Dict[str, jnp.ndarray], belief: jnp.ndarray) -> Tuple[int, jnp.ndarray]:
+def choose_action(params: Dict[str, jnp.ndarray], belief: jnp.ndarray) -> Tuple[int, jnp.ndarray]:
     """
-    Select action with minimum expected free energy.
+    Choose action with minimum expected free energy.
     
     Args:
         params: Model parameters dictionary
         belief: Current belief state [num_states]
         
     Returns:
-        Tuple of (selected_action_index, efe_values_for_all_actions)
+        Tuple of (chosen_action_index, efe_values_for_all_actions)
     """
     # Compute EFE for all actions
     efe_values = jnp.array([
@@ -995,10 +996,10 @@ def select_action(params: Dict[str, jnp.ndarray], belief: jnp.ndarray) -> Tuple[
         for a in range(NUM_ACTIONS)
     ])
     
-    # Select action with minimum EFE
-    selected_action = jnp.argmin(efe_values)
+    # Choose action with minimum EFE
+    chosen_action = jnp.argmin(efe_values)
     
-    return selected_action, efe_values
+    return chosen_action, efe_values
 
 # Batched operations for parallel execution across multiple agents or parallel rollouts
 # JAX's vmap allows automatic vectorization of functions
@@ -1047,8 +1048,8 @@ def simulate_step(params: Dict[str, jnp.ndarray], belief: jnp.ndarray,
     
     This includes:
     1. Belief update given observation
-    2. Action selection based on expected free energy
-    3. State prediction for selected action
+    2. Action choice based on expected free energy
+    3. State prediction for chosen action
     
     Args:
         params: Model parameters dictionary
@@ -1061,16 +1062,16 @@ def simulate_step(params: Dict[str, jnp.ndarray], belief: jnp.ndarray,
     # 1. Update belief based on observation
     updated_belief = belief_update(params, belief, observation)
     
-    # 2. Select action
-    selected_action, efe_values = select_action(params, updated_belief)
+    # 2. Choose action
+    chosen_action, efe_values = choose_action(params, updated_belief)
     
     # 3. Predict next state
-    predicted_next_state = state_transition(params, updated_belief, selected_action)
+    predicted_next_state = state_transition(params, updated_belief, chosen_action)
     
     return {{
         'belief': updated_belief,
-        'action': selected_action,
-        'expected_free_energy': efe_values[selected_action],
+        'action': chosen_action,
+        'expected_free_energy': efe_values[chosen_action],
         'all_efe_values': efe_values,
         'predicted_next_state': predicted_next_state,
     }}
@@ -1159,7 +1160,7 @@ Key Functions:
 - create_params(): Create model parameters
 - belief_update(): Bayesian belief update
 - compute_expected_free_energy(): Compute EFE for action
-- select_action(): Select action with minimum EFE
+- choose_action(): Choose action with minimum EFE
 - simulate_step(): One step of Active Inference
 - run_simulation(): Full simulation over observations
 """

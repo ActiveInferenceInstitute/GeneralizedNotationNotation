@@ -9,6 +9,8 @@ This index provides navigation to all documentation in the GNN repository, organ
 | [README](../README.md) | [GNN Syntax](gnn/reference/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
 | [Setup Guide](../SETUP_GUIDE.md) | [Architecture](../ARCHITECTURE.md) | [RxInfer.jl](rxinfer/README.md) |
 | [CLAUDE.md](../CLAUDE.md) | [Pipeline Steps](gnn/operations/gnn_tools.md) | [ActiveInference.jl](activeinference_jl/README.md) |
+| [CHANGELOG.md](./CHANGELOG.md) | Version history & release notes | [Contributing](README.md#contributing) |
+| [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) | Commands & GNN syntax quick ref | [GNN Spec](gnn/gnn_syntax.md) |
 
 ---
 

@@ -9,6 +9,7 @@ testing, and reporting.
 
 import logging
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field
@@ -18,7 +19,7 @@ from .discovery import FileDiscoveryStrategy
 from .validation import ValidationStrategy
 # Import testing strategy lazily to avoid circular imports
 # from .testing import RoundTripTestStrategy
-from .cross_format import CrossFormatValidationStrategy
+from .cross_format import CrossFormatValidator
 from .reporting import ReportGenerator
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ class GNNProcessor:
         self.validation_strategy = ValidationStrategy()
         # Initialize round trip strategy lazily to avoid circular imports
         self.round_trip_strategy = None
-        self.cross_format_strategy = CrossFormatValidationStrategy()
+        self.cross_format_strategy = CrossFormatValidator()
         self.report_generator = ReportGenerator()
 
     def process(self, context: ProcessingContext) -> bool:
@@ -220,7 +221,7 @@ class GNNProcessor:
         context.log_phase(ProcessingPhase.REPORTING, "Generating comprehensive report")
         self.logger.info("Phase 5: Report generation")
         try:
-            report = self.report_generator.generate(
+            report = self.report_generator.generate_processing_report(
                 context=context,
                 output_dir=context.output_dir
             )
@@ -230,13 +231,22 @@ class GNNProcessor:
             self.logger.error(f"Report generation failed: {e}")
 
 
-def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recursive: bool = True) -> Dict[str, Any]:
+def process_gnn_directory(
+    target_dir: Path,
+    output_dir: Path | None = None,
+    recursive: bool = True,
+    **_: Any,
+) -> Dict[str, Any]:
     """Public wrapper expected by tests to process a directory of GNN files.
 
     Executes discovery and validation phases and writes minimal results when output_dir is provided.
     """
     logger = logging.getLogger('gnn.core_processor.wrapper')
-    context = ProcessingContext(target_dir=Path(target_dir), output_dir=Path(output_dir) if output_dir else Path.cwd(), recursive=recursive)
+    context = ProcessingContext(
+        target_dir=Path(target_dir),
+        output_dir=Path(output_dir) if output_dir else Path.cwd(),
+        recursive=recursive,
+    )
     processor = GNNProcessor(logger)
     full_success = False
     try:
@@ -245,18 +255,22 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
         logger.debug("GNN processing failed, falling back to lightweight mode: %s", e)
 
     if full_success:
+        processed = [str(p) for p in context.discovered_files]
         result = {
             "status": "SUCCESS",
-            "processed_files": [str(p) for p in context.discovered_files],
+            "files": processed,
+            "processed_files": processed,
             "valid_files": [str(p) for p in context.valid_files],
             "processing_mode": "full"
         }
     else:
         # Recovery to lightweight processing expected by recovery tests
-        light = process_gnn_directory_lightweight(Path(target_dir))
+        light = _scan_files_lightweight(Path(target_dir))
+        processed = list(light.keys())
         result = {
             "status": "SUCCESS",
-            "processed_files": list(light.keys()),
+            "files": processed,
+            "processed_files": processed,
             "valid_files": [],
             "processing_mode": "lightweight"
         }
@@ -271,15 +285,47 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
     return result
 
 
-def process_gnn_directory_lightweight(target_dir: Path) -> Dict[str, Any]:
-    """Very lightweight processing returning a mapping of file path to status, expected by tests."""
-    files = list(Path(target_dir).glob("**/*.md"))
+def _scan_files_lightweight(target_dir: Path) -> Dict[str, Any]:
+    """Internal: scan files without heavy deps, returns {path: status} mapping."""
+    target_path = Path(target_dir)
+    if target_path.is_file() and target_path.suffix.lower() == ".md":
+        files = [target_path]
+    else:
+        files = list(target_path.glob("**/*.md"))
     return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
 
-def process_gnn_directory_full(target_dir: Path, output_dir: Path | None = None) -> Dict[str, Any]:
-    """Full processing placeholder exposed for tests to patch; delegates to process()."""
-    return process_gnn_directory(target_dir, output_dir=output_dir or Path.cwd(), recursive=True)
 
+def process_gnn_directory_lightweight(
+    target_dir: Path,
+    output_dir: Path | None = None,
+    recursive: bool = False
+) -> Dict[str, Any]:
+    """Compatibility wrapper for lightweight directory processing API."""
+    del recursive  # lightweight mode uses glob scan semantics internally
+    light = _scan_files_lightweight(Path(target_dir))
+    result: Dict[str, Any] = light
+    if output_dir:
+        try:
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            with open(Path(output_dir) / "gnn_core_lightweight_results.json", "w") as f:
+                import json as _json
+                _json.dump(
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "target_directory": str(Path(target_dir)),
+                        "files_found": len(light),
+                        "files_processed": len(light),
+                        "success": True,
+                        "errors": [],
+                        "parsed_files": [{"path": path, **meta} for path, meta in light.items()],
+                        "validation_results": [],
+                    },
+                    f,
+                    indent=2,
+                )
+        except OSError:
+            pass
+    return result
 
 # Factory function for easy processor creation
 def create_processor(logger: Optional[logging.Logger] = None) -> GNNProcessor:

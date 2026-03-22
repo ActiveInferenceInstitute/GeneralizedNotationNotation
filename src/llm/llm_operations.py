@@ -74,6 +74,21 @@ class LLMOperations:
 
         return self._initialized
 
+    def _run_async(self, coro):
+        """Run a coroutine from synchronous context, handling already-running event loops."""
+        import concurrent.futures
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = None
+
+        if loop and loop.is_running():
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(asyncio.run, coro)
+                return future.result()
+        else:
+            return asyncio.run(coro)
+
     def construct_prompt(self, content_parts: List[str], task_description: str) -> str:
         """
         Construct a well-formatted prompt for LLM processing.
@@ -119,23 +134,11 @@ class LLMOperations:
         Returns:
             LLM response or error message
         """
-        # Use async method correctly: if running inside an event loop, create a task and await
         try:
-            loop = asyncio.get_running_loop()
-        except RuntimeError:
-            loop = None
-
-        if loop and loop.is_running():
-            import concurrent.futures
-            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                future = pool.submit(asyncio.run, self._get_async_response(prompt, model, max_tokens))
-                return future.result()
-        else:
-            try:
-                return asyncio.run(self._get_async_response(prompt, model, max_tokens))
-            except Exception as e:
-                logger.error(f"Async LLM call failed: {e}")
-                return f"Error: LLM call failed - {str(e)}"
+            return self._run_async(self._get_async_response(prompt, model, max_tokens))
+        except Exception as e:
+            logger.error(f"Async LLM call failed: {e}")
+            return f"Error: LLM call failed - {str(e)}"
 
     async def _get_async_response(self, prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = DEFAULT_MAX_TOKENS) -> str:
         """Async version of get_llm_response."""
@@ -170,21 +173,8 @@ class LLMOperations:
         Returns:
             Summary text
         """
-        # Use the new analysis system
         try:
-            loop = None
-            try:
-                loop = asyncio.get_running_loop()
-            except RuntimeError:
-                loop = None
-
-            if loop and loop.is_running():
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                    future = pool.submit(asyncio.run, self._async_summarize_gnn(gnn_content, max_length))
-                    return future.result()
-            else:
-                return asyncio.run(self._async_summarize_gnn(gnn_content, max_length))
+            return self._run_async(self._async_summarize_gnn(gnn_content, max_length))
         except Exception as e:
             logger.error(f"Async summarization failed: {e}")
             return f"Error: Summarization failed - {str(e)}"
@@ -211,21 +201,8 @@ class LLMOperations:
         Returns:
             Structured analysis
         """
-        # Use the new analysis system
         try:
-            loop = None
-            try:
-                loop = asyncio.get_running_loop()
-            except RuntimeError:
-                loop = None
-
-            if loop and loop.is_running():
-                import concurrent.futures
-                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
-                    future = pool.submit(asyncio.run, self._async_analyze_structure(gnn_content))
-                    return future.result()
-            else:
-                return asyncio.run(self._async_analyze_structure(gnn_content))
+            return self._run_async(self._async_analyze_structure(gnn_content))
         except Exception as e:
             logger.error(f"Async structure analysis failed: {e}")
             return f"Error: Structure analysis failed - {str(e)}"
@@ -253,9 +230,8 @@ class LLMOperations:
         Returns:
             List of generated questions
         """
-        # Use the new analysis system
         try:
-            return asyncio.run(self._async_generate_questions(gnn_content, num_questions))
+            return self._run_async(self._async_generate_questions(gnn_content, num_questions))
         except Exception as e:
             logger.error(f"Async question generation failed: {e}")
             return []
@@ -300,7 +276,7 @@ class LLMOperations:
             Enhancement suggestions
         """
         try:
-            return asyncio.run(self._async_enhance_gnn(gnn_content))
+            return self._run_async(self._async_enhance_gnn(gnn_content))
         except Exception as e:
             logger.error(f"Async enhancement failed: {e}")
             return f"Error: Enhancement failed - {str(e)}"
@@ -328,7 +304,7 @@ class LLMOperations:
             Validation results
         """
         try:
-            return asyncio.run(self._async_validate_gnn(gnn_content))
+            return self._run_async(self._async_validate_gnn(gnn_content))
         except Exception as e:
             logger.error(f"Async validation failed: {e}")
             return f"Error: Validation failed - {str(e)}"

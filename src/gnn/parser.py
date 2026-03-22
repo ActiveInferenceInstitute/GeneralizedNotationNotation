@@ -4,13 +4,17 @@ GNN parser module for GNN pipeline.
 """
 
 from pathlib import Path
-from typing import Dict, Any, Union, Optional
+from typing import Callable, Dict, Any, List, Tuple, Union, Optional
 
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
-from .types import ValidationLevel
+from .types import ValidationLevel, ParsedGNN
 
-class ParsedGNN:
-    """Represents a parsed GNN file."""
+class _GNNParseAccumulator:
+    """Internal mutable builder for GNN parse results.
+
+    This is a local implementation detail of GNNParsingSystem._basic_parser.
+    The public canonical type is gnn.types.ParsedGNN (a dataclass).
+    """
 
     def __init__(self, file_path: Union[str, Path]):
         self.file_path = Path(file_path)
@@ -73,15 +77,15 @@ class GNNParsingSystem:
         self.parsers = {}
         self.validators = {}
 
-    def register_parser(self, format_name: str, parser_func: Any) -> None:
+    def register_parser(self, format_name: str, parser_func: Callable) -> None:
         """Register a parser for a specific format."""
         self.parsers[format_name] = parser_func
 
-    def register_validator(self, format_name: str, validator_func: Any) -> None:
+    def register_validator(self, format_name: str, validator_func: Callable) -> None:
         """Register a validator for a specific format."""
         self.validators[format_name] = validator_func
 
-    def parse_file(self, file_path: Union[str, Path], format_name: str = "auto") -> Optional[ParsedGNN]:
+    def parse_file(self, file_path: Union[str, Path], format_name: str = "auto") -> Optional[_GNNParseAccumulator]:
         """Parse a GNN file."""
         file_path = Path(file_path)
 
@@ -113,9 +117,9 @@ class GNNParsingSystem:
         else:
             return "markdown"  # Default to markdown
 
-    def _basic_parser(self, file_path: Path) -> ParsedGNN:
+    def _basic_parser(self, file_path: Path) -> _GNNParseAccumulator:
         """Basic parser for GNN files."""
-        parsed = ParsedGNN(file_path)
+        parsed = _GNNParseAccumulator(file_path)
 
         try:
             with open(file_path, 'r') as f:
@@ -191,13 +195,13 @@ class ParsedGNNFormal:
     """Placeholder class for when Lark is not available."""
     def __init__(self): pass
 
-def parse_gnn_formal(file_path): return None
-def validate_gnn_syntax_formal(content): return False, ["Lark not available"]
-def get_parse_tree_visualization(content): return "Lark not available"
+def parse_gnn_formal(file_path: Union[str, Any]) -> None: return None
+def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]: return False, ["Lark not available"]
+def get_parse_tree_visualization(content: str) -> str: return "Lark not available"
 
 
 
-def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD, **kwargs):
+def validate_gnn(file_path_or_content: Union[str, Path], validation_level: ValidationLevel = ValidationLevel.STANDARD, **kwargs: Any) -> Tuple[bool, List[str]]:
     """
     Validate a GNN file or content.
     
@@ -227,27 +231,24 @@ def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD
             errors.append("Content is empty")
             return False, errors
 
-        # Structure validation
-        if validation_level in [ValidationLevel.STANDARD, ValidationLevel.STRICT]:
-            # Check for basic GNN structure
+        # Structure validation (STANDARD level; also a prerequisite for STRICT)
+        needs_structure_check = validation_level in (ValidationLevel.STANDARD, ValidationLevel.STRICT)
+        if needs_structure_check:
             import re
 
-            # Check for sections
             sections = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
             if not sections:
                 errors.append("No sections found (use # headers)")
 
-            # Check for variables
             variables = re.findall(r'(\w+)\s*[:=]', content)
             if not variables:
                 errors.append("No variables found")
 
-            # Check for connections
             connections = re.findall(r'(\w+)\s*[->→]\s*(\w+)', content)
             if not connections:
                 errors.append("No connections found")
 
-        # Strict validation
+        # Strict validation (explicitly extends structure checks above)
         if validation_level == ValidationLevel.STRICT:
             # Check for balanced braces
             if content.count('{') != content.count('}'):
@@ -367,20 +368,6 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
             source_format=source_format
         )
     except Exception as e:
-        # Recovery to minimal representation on error
-        from .types import ParsedGNN
-        return ParsedGNN(
-            gnn_section=f"{source_format.upper()}GNN",
-            version="1.0",
-            model_name="ConversionError",
-            model_annotation=f"Error converting parse result: {e}",
-            variables={},
-            connections=[],
-            parameters={},
-            equations=[],
-            time_config={},
-            ontology_mappings={},
-            model_parameters={},
-            footer="",
-            source_format=source_format
-        )
+        raise RuntimeError(
+            f"Failed to convert parse result from format '{source_format}': {e}"
+        ) from e

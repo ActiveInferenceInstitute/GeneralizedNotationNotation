@@ -12,7 +12,6 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.conftest import *
 
 from gnn.parsers import (
     JSONSerializer, XMLSerializer, YAMLSerializer, MarkdownSerializer,

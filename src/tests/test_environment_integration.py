@@ -103,7 +103,7 @@ class TestEnvironmentPipelineIntegration:
         scripts = list(src_dir.glob("[0-9]*.py")) + list(src_dir.glob("[0-9][0-9]_*.py"))
 
         # Should find some pipeline scripts
-        assert len(scripts) >= 0
+        assert isinstance(scripts, list)
 
     @pytest.mark.integration
     def test_output_directory_creation(self, tmp_path: Any) -> None:

@@ -188,7 +188,7 @@ class OpenRouterProvider(BaseLLMProvider):
         Returns:
             Standardized LLM response
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenRouter provider not initialized")
 
         # Use default config if none provided
@@ -282,7 +282,7 @@ class OpenRouterProvider(BaseLLMProvider):
         Yields:
             Chunks of the response content
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenRouter provider not initialized")
 
         # Use default config if none provided
@@ -360,7 +360,7 @@ class OpenRouterProvider(BaseLLMProvider):
         Returns:
             List of model information dictionaries
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenRouter provider not initialized")
 
         try:
@@ -383,7 +383,7 @@ class OpenRouterProvider(BaseLLMProvider):
         Returns:
             Generation information including usage and cost
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("OpenRouter provider not initialized")
 
         try:

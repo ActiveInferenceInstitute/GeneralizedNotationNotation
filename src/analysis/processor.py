@@ -126,8 +126,16 @@ def process_analysis(
             "statistical_analysis": [],
             "complexity_metrics": [],
             "performance_benchmarks": [],
-            "model_comparisons": []
+            "model_comparisons": [],
+            "visualization_files": []
         }
+
+        # Resolve execution results directory once at the top so all branches can reference it
+        try:
+            from pipeline.config import get_output_dir_for_script
+            execution_dir = get_output_dir_for_script("12_execute.py", output_dir.parent)
+        except ImportError:
+            execution_dir = output_dir.parent / "12_execute_output"
 
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
@@ -155,7 +163,7 @@ def process_analysis(
 
                     # Generate matrix visualizations (moved from Step 8)
                     matrix_viz = generate_matrix_visualizations({"matrices": stats_analysis.get("matrices", [])}, results_dir, gnn_file.stem)
-                    results["visualization_files"] = results.get("visualization_files", []) + matrix_viz
+                    results["visualization_files"].extend(matrix_viz)
 
                 except Exception as e:
                     error_info = {
@@ -167,8 +175,7 @@ def process_analysis(
                     logger.error(f"Error processing {gnn_file}: {e}")
 
             # 2. Post-Simulation Analysis: Load execution results if available
-            execution_dir = output_dir.parent / "12_execute_output"
-
+            # (execution_dir resolved above, before the gnn_files check)
             # Log the exact path being searched for debugging
             logger.info(f"Looking for execution results in: {execution_dir}")
 
@@ -190,7 +197,7 @@ def process_analysis(
 
                         # Generate empirical visualizations from execution summary
                         empirical_viz = visualize_simulation_results(execution_results_data, results_dir)
-                        results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
+                        results["visualization_files"].extend(empirical_viz)
                         logger.info(f"Generated {len(empirical_viz)} empirical visualizations from execution summary")
                     except (json.JSONDecodeError, OSError, ValueError, KeyError) as e:
                         logger.warning(f"Failed to load execution summary: {e}")
@@ -242,114 +249,33 @@ def process_analysis(
                     import traceback
                     logger.debug(traceback.format_exc())
 
-                # 2.5: Generate PyMDP Visualizations from Execution Logs
-                try:
-                    from .pymdp.analyzer import generate_analysis_from_logs
-                    pymdp_output_dir = output_dir / "pymdp"
-                    pymdp_output_dir.mkdir(parents=True, exist_ok=True)
-                    logger.info("Generating PyMDP visualizations from execution logs...")
-                    generated_viz = generate_analysis_from_logs(execution_dir, pymdp_output_dir, verbose)
-                    if generated_viz:
-                        results["visualization_files"] = results.get("visualization_files", []) + generated_viz
-                        logger.info(f"Generated {len(generated_viz)} PyMDP visualizations")
-                except ImportError:
-                    logger.debug("analysis.pymdp.analyzer not available, skipping PyMDP visualization")
-                except Exception as e:  # Optional analysis — broad catch intentional for third-party failures
-                    logger.warning(f"PyMDP visualization generation failed: {e}")
+                # 2.5-2.11: Generate per-framework visualizations from execution logs
+                _FRAMEWORK_ANALYZERS = [
+                    ("pymdp",              "pymdp",              "PyMDP"),
+                    ("activeinference_jl", "activeinference_jl", "ActiveInference.jl"),
+                    ("discopy",            "discopy",            "DisCoPy"),
+                    ("jax",                "jax",                "JAX"),
+                    ("rxinfer",            "rxinfer",            "RxInfer"),
+                    ("pytorch",            "pytorch",            "PyTorch"),
+                    ("numpyro",            "numpyro",            "NumPyro"),
+                ]
+                import importlib
+                for module_key, dir_name, display_name in _FRAMEWORK_ANALYZERS:
+                    try:
+                        mod = importlib.import_module(f".{module_key}.analyzer", package="analysis")
+                        fw_output_dir = output_dir / dir_name
+                        fw_output_dir.mkdir(parents=True, exist_ok=True)
+                        logger.info(f"Generating {display_name} visualizations...")
+                        fw_viz = mod.generate_analysis_from_logs(execution_dir, fw_output_dir, verbose)
+                        if fw_viz:
+                            results["visualization_files"].extend(fw_viz)
+                            logger.info(f"Generated {len(fw_viz)} {display_name} visualization files")
+                    except ImportError as e:
+                        logger.debug(f"{module_key} analyzer not available: {e}")
+                    except Exception as e:  # Optional analysis — broad catch intentional for third-party failures
+                        logger.warning(f"{display_name} analysis failed: {e}")
             else:
                 logger.warning(f"Execution directory not found at {execution_dir}. Skipping post-simulation analysis.")
-
-            # 2.6: Generate ActiveInference.jl Visualizations
-            try:
-                from .activeinference_jl.analyzer import generate_analysis_from_logs as analyze_actinf
-                actinf_output_dir = output_dir / "activeinference_jl"
-                actinf_output_dir.mkdir(parents=True, exist_ok=True)
-                logger.info("Generating ActiveInference.jl visualizations...")
-                # We pass output_dir as the destination, but the analyzer might write back to the source dirs
-                # or a specific subfolder. The implementation handles finding the right inputs.
-                actinf_viz = analyze_actinf(execution_dir, actinf_output_dir, verbose)
-                if actinf_viz:
-                    results["visualization_files"] = results.get("visualization_files", []) + actinf_viz
-                    logger.info(f"Generated {len(actinf_viz)} ActiveInference.jl visualization files")
-            except ImportError as e:
-                logger.debug(f"analysis.activeinference_jl.analyzer not available: {e}")
-            except Exception as e:  # Optional analysis — broad catch intentional for third-party failures
-                logger.warning(f"ActiveInference.jl analysis failed: {e}")
-
-            # 2.7: Generate DisCoPy Visualizations
-            try:
-                from .discopy.analyzer import generate_analysis_from_logs as analyze_discopy
-                discopy_output_dir = output_dir / "discopy"
-                discopy_output_dir.mkdir(parents=True, exist_ok=True)
-                logger.info("Generating DisCoPy visualizations...")
-                discopy_viz = analyze_discopy(execution_dir, discopy_output_dir, verbose)
-                if discopy_viz:
-                    results["visualization_files"] = results.get("visualization_files", []) + discopy_viz
-                    logger.info(f"Generated {len(discopy_viz)} DisCoPy visualization files")
-            except ImportError as e:
-                logger.debug(f"discopy analyzer not available: {e}")
-            except Exception as e:
-                logger.warning(f"DisCoPy analysis failed: {e}")
-
-            # 2.8: Generate JAX Visualizations
-            try:
-                from .jax.analyzer import generate_analysis_from_logs as analyze_jax
-                jax_output_dir = output_dir / "jax"
-                jax_output_dir.mkdir(parents=True, exist_ok=True)
-                logger.info("Generating JAX visualizations...")
-                jax_viz = analyze_jax(execution_dir, jax_output_dir, verbose)
-                if jax_viz:
-                    results["visualization_files"] = results.get("visualization_files", []) + jax_viz
-                    logger.info(f"Generated {len(jax_viz)} JAX visualization files")
-            except ImportError as e:
-                logger.debug(f"jax analyzer not available: {e}")
-            except Exception as e:
-                logger.warning(f"JAX analysis failed: {e}")
-
-            # 2.9: Generate RxInfer Visualizations
-            try:
-                from .rxinfer.analyzer import generate_analysis_from_logs as analyze_rxinfer
-                rxinfer_output_dir = output_dir / "rxinfer"
-                rxinfer_output_dir.mkdir(parents=True, exist_ok=True)
-                logger.info("Generating RxInfer visualizations...")
-                rxinfer_viz = analyze_rxinfer(execution_dir, rxinfer_output_dir, verbose)
-                if rxinfer_viz:
-                    results["visualization_files"] = results.get("visualization_files", []) + rxinfer_viz
-                    logger.info(f"Generated {len(rxinfer_viz)} RxInfer visualization files")
-            except ImportError as e:
-                logger.debug(f"rxinfer analyzer not available: {e}")
-            except Exception as e:
-                logger.warning(f"RxInfer analysis failed: {e}")
-
-            # 2.10: Generate PyTorch Visualizations
-            try:
-                from .pytorch.analyzer import generate_analysis_from_logs as analyze_pytorch
-                pytorch_output_dir = output_dir / "pytorch"
-                pytorch_output_dir.mkdir(parents=True, exist_ok=True)
-                logger.info("Generating PyTorch visualizations...")
-                pytorch_viz = analyze_pytorch(execution_dir, pytorch_output_dir, verbose)
-                if pytorch_viz:
-                    results["visualization_files"] = results.get("visualization_files", []) + pytorch_viz
-                    logger.info(f"Generated {len(pytorch_viz)} PyTorch visualization files")
-            except ImportError as e:
-                logger.debug(f"pytorch analyzer not available: {e}")
-            except Exception as e:
-                logger.warning(f"PyTorch analysis failed: {e}")
-
-            # 2.11: Generate NumPyro Visualizations
-            try:
-                from .numpyro.analyzer import generate_analysis_from_logs as analyze_numpyro
-                numpyro_output_dir = output_dir / "numpyro"
-                numpyro_output_dir.mkdir(parents=True, exist_ok=True)
-                logger.info("Generating NumPyro visualizations...")
-                numpyro_viz = analyze_numpyro(execution_dir, numpyro_output_dir, verbose)
-                if numpyro_viz:
-                    results["visualization_files"] = results.get("visualization_files", []) + numpyro_viz
-                    logger.info(f"Generated {len(numpyro_viz)} NumPyro visualization files")
-            except ImportError as e:
-                logger.debug(f"numpyro analyzer not available: {e}")
-            except Exception as e:
-                logger.warning(f"NumPyro analysis failed: {e}")
 
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:
@@ -357,10 +283,6 @@ def process_analysis(
                 results["model_comparisons"].append(comparisons)
 
         # Perform cross-framework analysis if execution results exist
-        # Use the same execution_dir variable from above if set, otherwise resolve it
-        if 'execution_dir' not in locals() or not execution_dir.exists():
-            execution_dir = output_dir.parent / "12_execute_output"
-
         if execution_dir.exists():
             logger.info("Performing cross-framework analysis...")
             try:
@@ -375,7 +297,7 @@ def process_analysis(
 
                 # Generate comparison visualizations
                 comparison_viz = visualize_cross_framework_metrics(framework_comparison, results_dir, logger)
-                results["visualization_files"] = results.get("visualization_files", []) + comparison_viz
+                results["visualization_files"].extend(comparison_viz)
 
                 logger.info(f"Generated {len(comparison_viz)} cross-framework comparison visualizations")
             except Exception as e:
@@ -392,7 +314,7 @@ def process_analysis(
                 viz_output_dir = results_dir / "cross_framework"
                 comprehensive_viz = visualize_all_framework_outputs(execution_dir, viz_output_dir, logger)
                 results["comprehensive_visualizations"] = comprehensive_viz
-                results["visualization_files"] = results.get("visualization_files", []) + comprehensive_viz
+                results["visualization_files"].extend(comprehensive_viz)
 
                 logger.info(f"Generated {len(comprehensive_viz)} comprehensive visualization files")
 
@@ -431,7 +353,7 @@ def process_analysis(
                             viz_output_dir / "unified_dashboard",
                             model_name=model_name
                         )
-                        results["visualization_files"] = results.get("visualization_files", []) + dashboard_viz
+                        results["visualization_files"].extend(dashboard_viz)
                         logger.info(f"Generated {len(dashboard_viz)} unified dashboard visualizations")
                     else:
                         logger.info("Less than 2 frameworks with data - skipping unified dashboard")
@@ -461,14 +383,20 @@ def process_analysis(
 
         # Save detailed results
         results_file = results_dir / "analysis_results.json"
-        with open(results_file, 'w') as f:
-            json.dump(results, f, indent=2, default=convert_numpy_types)
+        try:
+            with open(results_file, 'w') as f:
+                json.dump(results, f, indent=2, default=convert_numpy_types)
+        except (OSError, IOError) as e:
+            logger.error(f"Failed to write analysis results: {e}")
 
         # Generate summary report
         summary = generate_analysis_summary(results)
         summary_file = results_dir / "analysis_summary.md"
-        with open(summary_file, 'w') as f:
-            f.write(summary)
+        try:
+            with open(summary_file, 'w') as f:
+                f.write(summary)
+        except (OSError, IOError) as e:
+            logger.error(f"Failed to write analysis summary: {e}")
 
         if results["success"]:
             log_step_success(logger, "Analysis processing completed successfully")

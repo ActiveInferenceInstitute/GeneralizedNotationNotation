@@ -12,7 +12,6 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.conftest import *
 
 
 # Sample pipeline summary data for testing
@@ -666,3 +665,66 @@ def test_module_performance():
 
     except ImportError:
         pytest.skip("intelligent_analysis module not available")
+
+
+
+# ── Sub-module smoke tests ────────────────────────────────────────────────────
+
+class TestIntelligentAnalysisMCP:
+    def _import_mcp(self):
+        try:
+            from intelligent_analysis import mcp
+            return mcp
+        except Exception:
+            pytest.skip("intelligent_analysis.mcp not importable")
+
+    def test_module_importable(self):
+        self._import_mcp()
+
+    def test_process_intelligent_analysis_mcp_nonexistent(self, tmp_path):
+        mcp = self._import_mcp()
+        result = mcp.process_intelligent_analysis_mcp(
+            str(tmp_path / "nonexistent"), str(tmp_path / "out")
+        )
+        assert isinstance(result, dict)
+        assert "success" in result or "error" in result
+
+    def test_get_module_info_mcp(self):
+        try:
+            from intelligent_analysis.mcp import get_module_info_mcp
+            result = get_module_info_mcp()
+            assert isinstance(result, dict)
+        except (ImportError, AttributeError):
+            pytest.skip("get_module_info_mcp not available")
+
+    def test_get_supported_analysis_types_mcp(self):
+        try:
+            from intelligent_analysis.mcp import get_supported_analysis_types_mcp
+            result = get_supported_analysis_types_mcp()
+            assert isinstance(result, dict)
+        except (ImportError, AttributeError):
+            pytest.skip("get_supported_analysis_types_mcp not available")
+
+
+class TestIntelligentAnalysisAnalyzer:
+    def test_module_importable(self):
+        from intelligent_analysis import analyzer  # noqa: F401
+
+    def test_analysis_context_instantiable(self):
+        from intelligent_analysis.analyzer import AnalysisContext
+        ctx = AnalysisContext(summary_data={})
+        assert ctx is not None
+        assert ctx.overall_status == "UNKNOWN"
+
+    def test_analysis_context_with_data(self):
+        from intelligent_analysis.analyzer import AnalysisContext
+        data = {"overall_status": "SUCCESS", "total_duration_seconds": 1.5, "steps": []}
+        ctx = AnalysisContext(summary_data=data)
+        assert ctx.overall_status == "SUCCESS"
+        assert ctx.get_failed_steps() == []
+        assert ctx.get_successful_steps() == []
+
+    def test_intelligent_analyzer_instantiable(self):
+        from intelligent_analysis.analyzer import IntelligentAnalyzer
+        ia = IntelligentAnalyzer()
+        assert ia is not None

@@ -15,39 +15,15 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
-# --- Centralized matplotlib setup ---
-MATPLOTLIB_AVAILABLE = False
-plt = None
-np = None
+# --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
+from visualization._viz_compat import plt, np, sns, MATPLOTLIB_AVAILABLE
+
 patches = None
-sns = None
-
-try:
-    import numpy as _np
-    np = _np
-except ImportError:
-    logger.debug("numpy not available")
-
-try:
-    import matplotlib as _mpl
-    _mpl.use('Agg')
-    import matplotlib.pyplot as _plt
-    plt = _plt
-    MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError):
-    logger.debug("matplotlib not available")
-
 try:
     import matplotlib.patches as _patches
     patches = _patches
 except (ImportError, AttributeError) as e:
     logger.debug("matplotlib.patches not available: %s", e)
-
-try:
-    import seaborn as _sns
-    sns = _sns
-except ImportError as e:
-    logger.debug("seaborn not available: %s", e)
 
 
 def safe_savefig(
@@ -92,11 +68,6 @@ def safe_savefig(
         return None
 
 
-def check_matplotlib() -> bool:
-    """Check if matplotlib is available for visualization."""
-    return MATPLOTLIB_AVAILABLE
-
-
 __all__ = [
     'plt',
     'np',
@@ -104,5 +75,4 @@ __all__ = [
     'sns',
     'MATPLOTLIB_AVAILABLE',
     'safe_savefig',
-    'check_matplotlib',
 ]

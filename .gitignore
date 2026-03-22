@@ -364,3 +364,4 @@ yarn-error.log*
 /.desloppify
 /.claude
 /.desloppify
+/src/.desloppify

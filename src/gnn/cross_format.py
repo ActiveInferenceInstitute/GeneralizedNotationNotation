@@ -12,16 +12,13 @@ try:
         CrossFormatValidator,
     )
 
-    # Create alias for strategy pattern
-    CrossFormatValidationStrategy = CrossFormatValidator
-
 except ImportError as e:
     import logging
     logger = logging.getLogger(__name__)
     logger.warning(f"Cross-format validation not available: {e}")
 
     # Recovery implementation
-    class CrossFormatValidationStrategy:
+    class CrossFormatValidator:
         def __init__(self):
             pass
 

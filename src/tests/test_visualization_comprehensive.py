@@ -17,7 +17,7 @@ import shutil
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from visualization import process_visualization_main
+from visualization import process_visualization
 from visualization.combined_analysis import generate_combined_analysis
 from visualization.network_visualizations import generate_network_visualizations
 
@@ -136,7 +136,7 @@ B -> C: "preferences"
         viz_output_dir = test_output_dir / "8_visualization_output"
         viz_output_dir.mkdir()
 
-        result = process_visualization_main(
+        result = process_visualization(
             target_dir=test_gnn_dir,
             output_dir=viz_output_dir,
             verbose=True
@@ -160,7 +160,7 @@ B -> C: "preferences"
         viz_output_dir.mkdir(parents=True)
 
         try:
-            result = process_visualization_main(
+            result = process_visualization(
                 target_dir=test_gnn_dir,
                 output_dir=viz_output_dir,
                 verbose=True
@@ -190,7 +190,7 @@ B -> C: "preferences"
             matrices = mv.extract_matrix_data_from_parameters(parameters)
 
             assert isinstance(matrices, dict)
-            assert len(matrices) >= 0  # May be empty if extraction fails
+            assert isinstance(matrices, list)  # May be empty if extraction fails
 
         except ImportError:
             pytest.skip("MatrixVisualizer not available (missing dependencies)")
@@ -204,7 +204,7 @@ B -> C: "preferences"
         viz_output_dir = test_output_dir / "8_visualization_output"
         viz_output_dir.mkdir()
 
-        result = process_visualization_main(
+        result = process_visualization(
             target_dir=test_gnn_dir,
             output_dir=viz_output_dir,
             verbose=True
@@ -236,7 +236,7 @@ B -> C: "preferences"
         if parsed_model_file.exists():
             parsed_model_file.unlink()
 
-        result = process_visualization_main(
+        result = process_visualization(
             target_dir=test_gnn_dir,
             output_dir=viz_output_dir,
             verbose=True

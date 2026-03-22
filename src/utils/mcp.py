@@ -13,7 +13,6 @@ Key Features:
 - Utility function access
 """
 
-import functools
 import logging
 import os
 import sys
@@ -288,39 +287,40 @@ def register_tools(mcp_instance):
     """
     logger.info("Registering utils MCP tools")
 
-    def get_system_info_mcp() -> Dict[str, Any]:
+    # Named wrappers keep MCP audit checks happy (no functools.partial names).
+    def get_system_info_tool():
         return get_system_info(mcp_instance)
 
-    def get_environment_info_mcp() -> Dict[str, Any]:
+    def get_environment_info_tool():
         return get_environment_info(mcp_instance)
 
-    def get_file_info_mcp(file_path: str) -> Dict[str, Any]:
+    def get_file_info_tool(file_path: str):
         return get_file_info(mcp_instance, file_path)
 
-    def get_logging_info_mcp() -> Dict[str, Any]:
+    def get_logging_info_tool():
         return get_logging_info(mcp_instance)
 
-    def validate_dependencies_mcp() -> Dict[str, Any]:
+    def validate_dependencies_tool():
         return validate_dependencies(mcp_instance)
 
     # Register tools
     mcp_instance.register_tool(
         name="get_system_info",
-        function=get_system_info_mcp,
+        function=get_system_info_tool,
         schema={},
         description="Get comprehensive system information including CPU, memory, disk, and platform details."
     )
 
     mcp_instance.register_tool(
         name="get_environment_info",
-        function=get_environment_info_mcp,
+        function=get_environment_info_tool,
         schema={},
         description="Get environment information including Python packages, environment variables, and paths."
     )
 
     mcp_instance.register_tool(
         name="get_file_info",
-        function=get_file_info_mcp,
+        function=get_file_info_tool,
         schema={
             "type": "object",
             "properties": {
@@ -336,14 +336,14 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_logging_info",
-        function=get_logging_info_mcp,
+        function=get_logging_info_tool,
         schema={},
         description="Get current logging configuration and status for all loggers."
     )
 
     mcp_instance.register_tool(
         name="validate_dependencies",
-        function=validate_dependencies_mcp,
+        function=validate_dependencies_tool,
         schema={},
         description="Validate system dependencies and required packages for the GNN pipeline."
     )

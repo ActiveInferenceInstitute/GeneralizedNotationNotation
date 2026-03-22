@@ -10,7 +10,7 @@ import logging
 import sys
 import threading
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 # Import PerformanceTracker from the dedicated module
 from .performance_tracker import PerformanceTracker, performance_tracker
@@ -19,7 +19,7 @@ from .performance_tracker import PerformanceTracker, performance_tracker
 _correlation_context = threading.local()
 
 
-def setup_correlation_context(correlation_id: str = None, step_name: str = None):
+def setup_correlation_context(correlation_id: Optional[str] = None, step_name: Optional[str] = None):
     """Set up correlation context for logging."""
     if correlation_id:
         _correlation_context.correlation_id = correlation_id

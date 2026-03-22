@@ -21,7 +21,6 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from tests.conftest import *
 
 
 # Real-implementation render target tests
@@ -171,3 +170,32 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
 
+
+
+class TestRenderDisCoPyTranslator:
+    """Smoke tests for render.discopy.translator sub-module."""
+
+    def _import_translator(self):
+        try:
+            from render.discopy import translator
+            return translator
+        except Exception:
+            pytest.skip("render.discopy.translator not importable")
+
+    def test_module_importable(self):
+        self._import_translator()
+
+    def test_check_discopy_availability(self):
+        translator = self._import_translator()
+        result = translator.check_discopy_availability()
+        assert isinstance(result, dict)
+
+    def test_generate_setup_report(self):
+        translator = self._import_translator()
+        result = translator.generate_setup_report()
+        assert isinstance(result, str)
+
+    def test_parse_gnn_content_empty(self):
+        translator = self._import_translator()
+        result = translator.parse_gnn_content("")
+        assert isinstance(result, dict)

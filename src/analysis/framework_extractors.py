@@ -153,10 +153,11 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                         logger.debug(f"Extracted RxInfer efe_history with {len(file_data['efe_history'])} entries")
                     if "action_probabilities" in file_data:
                         simulation_data["action_probabilities"] = file_data["action_probabilities"]
-        except Exception as e:
+        except (OSError, ValueError) as e:
             logger.warning(f"Error reading RxInfer files: {e}")
+            simulation_data["_file_read_error"] = str(e)
 
-    return {
+    result = {
         "beliefs": simulation_data.get("beliefs", []),
         "true_states": simulation_data.get("true_states", []),
         "observations": simulation_data.get("observations", []),
@@ -166,6 +167,9 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "posterior": simulation_data.get("posterior", []),
         "inference_data": simulation_data.get("inference_data", [])
     }
+    if "_file_read_error" in simulation_data:
+        result["extraction_error"] = simulation_data["_file_read_error"]
+    return result
 
 
 def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:

@@ -161,7 +161,7 @@ class PerplexityProvider(BaseLLMProvider):
         Returns:
             Standardized LLM response
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("Perplexity provider not initialized")
 
         # Use default config if none provided
@@ -250,7 +250,7 @@ class PerplexityProvider(BaseLLMProvider):
         Yields:
             Chunks of the response content
         """
-        if not self.is_initialized():
+        if not self.is_initialized:
             raise RuntimeError("Perplexity provider not initialized")
 
         # Use default config if none provided

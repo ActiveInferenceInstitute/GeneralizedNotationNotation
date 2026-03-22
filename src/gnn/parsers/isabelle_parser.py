@@ -285,5 +285,3 @@ class IsabelleParser(BaseGNNParser):
         return connections
 
 
-# Compatibility alias
-IsabelleGNNParser = IsabelleParser

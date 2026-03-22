@@ -175,8 +175,8 @@ def generate_mcp_report() -> dict:
         }
 
 def process_mcp(
-    target_dir,
-    output_dir,
+    target_dir: Path,
+    output_dir: Path,
     verbose: bool = False,
     logger=None,
     **kwargs

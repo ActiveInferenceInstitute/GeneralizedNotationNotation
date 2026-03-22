@@ -326,7 +326,7 @@ def handle_file_system_error(logger: logging.Logger, error: Exception, file_path
     return handler.handle_error(pipeline_error)
 
 
-def handle_network_error(logger: logging.Logger, error: Exception, url: str = None) -> int:
+def handle_network_error(logger: logging.Logger, error: Exception, url: Optional[str] = None) -> int:
     """Handle network related errors."""
     handler = PipelineErrorHandler(logger, generate_correlation_id())
     pipeline_error = handler.create_error(

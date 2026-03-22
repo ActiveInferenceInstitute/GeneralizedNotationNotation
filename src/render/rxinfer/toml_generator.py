@@ -11,12 +11,6 @@ from typing import Dict, Any, Optional, List, Tuple
 
 logger = logging.getLogger(__name__)
 
-# Try to import toml, fall back gracefully
-try:
-    import toml
-except ImportError:
-    logger.debug("toml library not available, TOML generation will be skipped")
-    toml = None
 
 def render_gnn_to_rxinfer_toml(
     gnn_spec: Dict[str, Any],

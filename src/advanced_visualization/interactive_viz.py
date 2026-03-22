@@ -12,15 +12,9 @@ import time
 from pathlib import Path
 from typing import Dict, List, Any
 
-from ._shared import AdvancedVisualizationAttempt
+from ._shared import AdvancedVisualizationAttempt, _MatrixVisualizer
 
-try:
-    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-except ImportError:
-    try:
-        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
-    except ImportError:
-        _MatrixVisualizer = None
+logger = logging.getLogger(__name__)
 
 
 def _generate_interactive_plotly_dashboard(
