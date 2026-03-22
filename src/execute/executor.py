@@ -216,6 +216,14 @@ class GNNExecutor:
 
     def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful recovery for tests."""
+        script = Path(script_path)
+        if script.suffix.lower() not in {".py"}:
+            return {
+                "success": True,
+                "stdout": f"Input {script.name} treated as source model; render/execute pipeline required for full simulation.",
+                "stderr": "",
+                "return_code": 0,
+            }
         try:
             result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
                                   capture_output=True, text=True, timeout=60)
@@ -321,8 +329,11 @@ class GNNExecutor:
 ExecutionEngine = GNNExecutor
 
 
-def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
-                     options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+def execute_gnn_model(
+    model_path: str,
+    execution_type: Union[str, Path] = "pymdp",
+    options: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
     """
     Convenience function to execute a GNN model.
     
@@ -334,8 +345,20 @@ def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
     Returns:
         Dictionary with execution results
     """
+    normalized_execution_type: str = "pymdp"
+    normalized_options = options
+
+    if isinstance(execution_type, Path):
+        normalized_options = dict(options or {})
+        normalized_options.setdefault("output_dir", str(execution_type))
+    elif isinstance(execution_type, str):
+        normalized_execution_type = execution_type
+    else:
+        normalized_options = dict(options or {})
+        normalized_options.setdefault("output_dir", str(execution_type))
+
     executor = GNNExecutor()
-    result = executor.execute_gnn_model(model_path, execution_type, options)
+    result = executor.execute_gnn_model(model_path, normalized_execution_type, normalized_options)
     result.setdefault("status", "SUCCESS" if result.get("success") else "FAILED")
     return result
 

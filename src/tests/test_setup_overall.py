@@ -157,3 +157,5 @@ class TestSetupIntegration:
 
         # Should be callable and not crash
         assert callable(install_dependencies)
+
+

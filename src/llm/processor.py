@@ -216,26 +216,30 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
     """
     Select the best available Ollama model for GNN analysis.
     
-    Priority: config.yaml > environment variable > preference list > first available.
+    Priority: environment variable > configured model (if installed) >
+    preference list > first available > configured/default fallback.
     """
-    # 1. Check config.yaml override
-    llm_config = _get_llm_config()
-    config_model = llm_config.get("model")
-    if config_model:
-        logger.info(f"🎯 Using model from config.yaml: {config_model}")
-        return config_model
-
-    # 2. Check environment variable override
+    # 1. Check environment variable override
     env_model = os.getenv('OLLAMA_MODEL') or os.getenv('OLLAMA_TEST_MODEL')
     if env_model:
         logger.info(f"🎯 Using model from environment: {env_model}")
         return env_model
 
+    # 2. Respect config.yaml when that model is available locally
+    llm_config = _get_llm_config()
+    config_model = llm_config.get("model")
+    if config_model:
+        for available in available_models:
+            if available.startswith(config_model):
+                logger.info(f"🎯 Using model from config.yaml: {available}")
+                return available
+
     # 3. Preference order: prioritize smaller/faster models for reliability
     preferred_models = [
-        'gemma3:4b',
-        'ministral-3:3b',
         'tinyllama',
+        'gemma3:4b',
+        'gemma2:2b',
+        'ministral-3:3b',
         'mistral:7b',
         'llama2:7b',
         'phi3',

@@ -71,12 +71,12 @@ def test_ollama_provider_initialize(monkeypatch):
     # if either the Python client OR CLI recovery works.
     if ok:
         # Initialization succeeded (either via Python client or CLI recovery)
-        assert provider.is_initialized() is True
+        assert provider.is_initialized is True
         info = provider.get_provider_info()
         assert info["provider_type"] == "ollama"
     else:
         # Ollama is not available at all - neither Python client nor CLI
-        assert provider.is_initialized() is False
+        assert provider.is_initialized is False
 
 
 @pytest.mark.unit

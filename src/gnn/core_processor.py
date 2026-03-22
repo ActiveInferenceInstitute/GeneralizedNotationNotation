@@ -9,6 +9,7 @@ testing, and reporting.
 
 import logging
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field
@@ -230,13 +231,22 @@ class GNNProcessor:
             self.logger.error(f"Report generation failed: {e}")
 
 
-def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recursive: bool = True) -> Dict[str, Any]:
+def process_gnn_directory(
+    target_dir: Path,
+    output_dir: Path | None = None,
+    recursive: bool = True,
+    **_: Any,
+) -> Dict[str, Any]:
     """Public wrapper expected by tests to process a directory of GNN files.
 
     Executes discovery and validation phases and writes minimal results when output_dir is provided.
     """
     logger = logging.getLogger('gnn.core_processor.wrapper')
-    context = ProcessingContext(target_dir=Path(target_dir), output_dir=Path(output_dir) if output_dir else Path.cwd(), recursive=recursive)
+    context = ProcessingContext(
+        target_dir=Path(target_dir),
+        output_dir=Path(output_dir) if output_dir else Path.cwd(),
+        recursive=recursive,
+    )
     processor = GNNProcessor(logger)
     full_success = False
     try:
@@ -277,8 +287,45 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
 
 def _scan_files_lightweight(target_dir: Path) -> Dict[str, Any]:
     """Internal: scan files without heavy deps, returns {path: status} mapping."""
-    files = list(Path(target_dir).glob("**/*.md"))
+    target_path = Path(target_dir)
+    if target_path.is_file() and target_path.suffix.lower() == ".md":
+        files = [target_path]
+    else:
+        files = list(target_path.glob("**/*.md"))
     return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
+
+
+def process_gnn_directory_lightweight(
+    target_dir: Path,
+    output_dir: Path | None = None,
+    recursive: bool = False
+) -> Dict[str, Any]:
+    """Compatibility wrapper for lightweight directory processing API."""
+    del recursive  # lightweight mode uses glob scan semantics internally
+    light = _scan_files_lightweight(Path(target_dir))
+    result: Dict[str, Any] = light
+    if output_dir:
+        try:
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            with open(Path(output_dir) / "gnn_core_lightweight_results.json", "w") as f:
+                import json as _json
+                _json.dump(
+                    {
+                        "timestamp": datetime.now().isoformat(),
+                        "target_directory": str(Path(target_dir)),
+                        "files_found": len(light),
+                        "files_processed": len(light),
+                        "success": True,
+                        "errors": [],
+                        "parsed_files": [{"path": path, **meta} for path, meta in light.items()],
+                        "validation_results": [],
+                    },
+                    f,
+                    indent=2,
+                )
+        except OSError:
+            pass
+    return result
 
 # Factory function for easy processor creation
 def create_processor(logger: Optional[logging.Logger] = None) -> GNNProcessor:

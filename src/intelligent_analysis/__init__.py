@@ -126,6 +126,11 @@ def check_intelligent_analysis_tools() -> Dict[str, Dict[str, Any]]:
     return tools
 
 
+def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
+    """Backward-compatible alias used by MCP integration."""
+    return check_intelligent_analysis_tools()
+
+
 __all__ = [
     # Module info
     '__version__',
@@ -134,6 +139,7 @@ __all__ = [
     'get_supported_analysis_types',
     'validate_pipeline_summary',
     'check_intelligent_analysis_tools',
+    'check_analysis_tools',
     # Processor functions and classes
     'process_intelligent_analysis',
     'analyze_pipeline_summary',

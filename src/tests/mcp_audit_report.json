@@ -1,12 +1,14 @@
 {
   "generated_at": "2026-02-24T06:51:00",
-  "modules_total": 29,
-  "modules_loaded": 29,
+  "modules_total": 31,
+  "modules_loaded": 31,
   "modules_errored": 0,
   "modules_loaded_names": [
     "advanced_visualization",
     "analysis",
+    "api",
     "audio",
+    "cli",
     "execute",
     "export",
     "gnn",
@@ -35,9 +37,9 @@
     "website"
   ],
   "modules_errored_names": [],
-  "tools_total": 126,
-  "tools_real": 126,
-  "tools_documented": 126,
+  "tools_total": 133,
+  "tools_real": 133,
+  "tools_documented": 133,
   "tools": [
     {
       "name": "analyze_audio_characteristics",
@@ -128,6 +130,24 @@
       "is_real": true,
       "documented": true,
       "description": "Check available advanced visualization capabilities (D2, dashboard, network backends)."
+    },
+    {
+      "name": "cli.health",
+      "module": "cli",
+      "category": "cli",
+      "fn": "cli_health_check",
+      "is_real": true,
+      "documented": true,
+      "description": "Return CLI module health and list of available subcommands"
+    },
+    {
+      "name": "cli.preflight",
+      "module": "cli",
+      "category": "cli",
+      "fn": "cli_preflight",
+      "is_real": true,
+      "documented": true,
+      "description": "Check pipeline environment readiness"
     },
     {
       "name": "compute_complexity_metrics",
@@ -259,7 +279,7 @@
       "name": "get_environment_info",
       "module": "",
       "category": "",
-      "fn": "get_environment_info_wrapper",
+      "fn": "get_environment_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get environment information including Python packages, environment variables, and paths."
@@ -277,7 +297,7 @@
       "name": "get_file_info",
       "module": "",
       "category": "",
-      "fn": "get_file_info_wrapper",
+      "fn": "get_file_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get detailed information about a file or directory including size, permissions, and contents."
@@ -358,7 +378,7 @@
       "name": "get_logging_info",
       "module": "",
       "category": "",
-      "fn": "get_logging_info_wrapper",
+      "fn": "get_logging_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get current logging configuration and status for all loggers."
@@ -376,7 +396,7 @@
       "name": "get_pipeline_config_info",
       "module": "",
       "category": "",
-      "fn": "get_config_wrapper",
+      "fn": "get_pipeline_config_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get detailed pipeline configuration information and settings."
@@ -385,7 +405,7 @@
       "name": "get_pipeline_status",
       "module": "",
       "category": "",
-      "fn": "get_status_wrapper",
+      "fn": "get_pipeline_status_tool",
       "is_real": true,
       "documented": true,
       "description": "Get current pipeline execution status, recent logs, and execution statistics."
@@ -394,7 +414,7 @@
       "name": "get_pipeline_steps",
       "module": "",
       "category": "",
-      "fn": "get_steps_wrapper",
+      "fn": "get_pipeline_steps_tool",
       "is_real": true,
       "documented": true,
       "description": "Get information about all available pipeline steps, their metadata, and dependencies."
@@ -457,7 +477,7 @@
       "name": "get_system_info",
       "module": "",
       "category": "",
-      "fn": "get_system_info_wrapper",
+      "fn": "get_system_info_tool",
       "is_real": true,
       "documented": true,
       "description": "Get comprehensive system information including CPU, memory, disk, and platform details."
@@ -515,6 +535,51 @@
       "is_real": true,
       "documented": true,
       "description": "Inspect an existing generated website: list pages, sizes, and check completeness of key pages."
+    },
+    {
+      "name": "gnn_cancel_job",
+      "module": "src.api",
+      "category": "api",
+      "fn": "gnn_cancel_job_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Cancel a GNN pipeline job."
+    },
+    {
+      "name": "gnn_get_job_status",
+      "module": "src.api",
+      "category": "api",
+      "fn": "gnn_get_job_status_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Retrieve the status of a GNN pipeline job."
+    },
+    {
+      "name": "gnn_get_pipeline_tools",
+      "module": "src.api",
+      "category": "api",
+      "fn": "gnn_get_pipeline_tools_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List available pipeline steps."
+    },
+    {
+      "name": "gnn_list_jobs",
+      "module": "src.api",
+      "category": "api",
+      "fn": "gnn_list_jobs_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List recent GNN pipeline jobs."
+    },
+    {
+      "name": "gnn_submit_job",
+      "module": "src.api",
+      "category": "api",
+      "fn": "gnn_submit_job_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Submit a GNN pipeline processing job."
     },
     {
       "name": "install_uv_dependency",
@@ -1087,7 +1152,7 @@
       "name": "validate_dependencies",
       "module": "",
       "category": "",
-      "fn": "validate_dependencies_wrapper",
+      "fn": "validate_dependencies_tool",
       "is_real": true,
       "documented": true,
       "description": "Validate system dependencies and required packages for the GNN pipeline."
@@ -1150,7 +1215,7 @@
       "name": "validate_pipeline_dependencies",
       "module": "",
       "category": "",
-      "fn": "validate_deps_wrapper",
+      "fn": "validate_pipeline_dependencies_tool",
       "is_real": true,
       "documented": true,
       "description": "Validate pipeline step dependencies and identify missing or circular dependencies."

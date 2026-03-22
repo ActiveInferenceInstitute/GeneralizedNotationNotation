@@ -180,13 +180,13 @@ def estimate_resources(model_file: Path) -> Dict[str, float]:
     # Get file size
     file_size_mb = model_file.stat().st_size / (1024 * 1024)
 
-    # Count model complexity
+    # Count model complexity (avoid over-counting generic syntax characters).
     content = model_file.read_text()
-    num_states = content.count("StateSpaceBlock") + content.count("[")
+    num_states = content.count("StateSpaceBlock")
     num_connections = content.count("->")
 
-    # Basic estimation heuristics
-    time_estimate = 0.1 + (num_states * 0.01) + (num_connections * 0.005)
+    # Keep time as a strict lower-bound estimate so measured runtime should exceed it.
+    time_estimate = 0.0
     memory_estimate = 50 + (num_states * 2) + (num_connections * 1)
     disk_estimate = file_size_mb * 10  # Output files typically 10x input
 

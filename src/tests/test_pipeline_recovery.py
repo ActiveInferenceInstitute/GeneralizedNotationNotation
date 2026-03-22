@@ -15,6 +15,8 @@ Key test areas:
 """
 
 import pytest
+import asyncio
+import inspect
 
 pytestmark = pytest.mark.pipeline
 import sys
@@ -98,16 +100,16 @@ class TestRecursionErrorRecovery:
 class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
 
-    @pytest.mark.asyncio
     @pytest.mark.slow
-    async def test_llm_analysis_recovery(self, test_environment, sample_gnn_file):
+    def test_llm_analysis_recovery(self, test_environment, sample_gnn_file):
         """Test LLM analysis with proper async/await handling."""
         from llm.analyzer import analyze_gnn_file_with_llm
 
         # Real call: skip if no local providers and no keys available
         if not (os.getenv('OPENAI_API_KEY') or os.getenv('OLLAMA_DISABLED', '0') == '0'):
             pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
-        result = await analyze_gnn_file_with_llm(sample_gnn_file)
+        maybe_result = analyze_gnn_file_with_llm(sample_gnn_file)
+        result = asyncio.run(maybe_result) if inspect.isawaitable(maybe_result) else maybe_result
 
         assert result["status"] == "SUCCESS"
         assert "analysis" in result

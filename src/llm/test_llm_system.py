@@ -24,8 +24,9 @@ try:
         load_dotenv(Path(__file__).parent / '.env')
 except ModuleNotFoundError:
     pass
-except Exception:
-    pass
+except Exception as exc:
+    logger = logging.getLogger(__name__)
+    logger.debug("dotenv loading skipped: %s", exc)
 
 from src.llm import (
     LLMProcessor,
@@ -109,8 +110,8 @@ def test_environment_setup():
         print(f"✅ OpenRouter key format: {'Valid' if api_keys['openrouter'].startswith('sk-or-') else 'Invalid'}")
 
     # Basic assertions for offline test
-    assert isinstance(api_keys, dict)
-    assert isinstance(configs, dict)
+    if not isinstance(api_keys, dict) or not isinstance(configs, dict):
+        raise RuntimeError("Expected API keys and provider configs as dictionaries")
     return api_keys, configs
 
 def test_provider_initialization():
@@ -132,7 +133,8 @@ def test_provider_initialization():
     provider_info = processor.get_provider_info() if initialized else {}
     for provider_name, info in provider_info.items():
         print(f"✅ {provider_name}: {info.get('status', 'unknown')}")
-    assert processor is not None
+    if processor is None:
+        raise RuntimeError("LLMProcessor initialization returned None")
     return processor
 
 def test_basic_analysis():
@@ -157,7 +159,8 @@ def test_basic_analysis():
         print(f"   Usage: {response.usage}")
         print(f"   First 200 chars: {response.content[:200]}...")
 
-        assert response is not None
+        if response is None:
+            raise RuntimeError("Expected non-null summary response")
 
     except Exception as e:
         print(f"❌ Summary Analysis Failed: {e}")
@@ -309,12 +312,15 @@ def test_global_processor():
         processor = LLMProcessor()
 
         # Verify basic attributes exist
-        assert hasattr(processor, 'process'), "Processor missing process method"
-        assert hasattr(processor, 'get_available_providers'), "Processor missing get_available_providers method"
+        if not hasattr(processor, 'process'):
+            raise RuntimeError("Processor missing process method")
+        if not hasattr(processor, 'get_available_providers'):
+            raise RuntimeError("Processor missing get_available_providers method")
 
         # Verify it returns a list (even if empty when no providers configured)
         providers = processor.get_available_providers()
-        assert isinstance(providers, list), f"Expected list of providers, got {type(providers)}"
+        if not isinstance(providers, list):
+            raise RuntimeError(f"Expected list of providers, got {type(providers)}")
 
         print(f"   ✅ Global processor initialized with {len(providers)} provider(s)")
     except ImportError as e:

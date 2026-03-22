@@ -632,7 +632,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                         fig.set_size_inches(*size)
                     plt.savefig(output_path, **kwargs)
                     break
-                except Exception:
+                except (RuntimeError, OSError, ValueError):
                     continue
             else:
                 return False

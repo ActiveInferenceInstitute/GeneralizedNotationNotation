@@ -10,6 +10,7 @@ from .processor import (
     parse_gnn_content,
     export_model,
     export_gnn_model,
+    _gnn_model_to_dict,
     process_export,
 )
 
@@ -117,6 +118,7 @@ __all__ = [
     'parse_gnn_content',
     'export_model',
     'export_gnn_model',
+    '_gnn_model_to_dict',
     'Exporter',
     'MultiFormatExporter',
     'validate_export_format',

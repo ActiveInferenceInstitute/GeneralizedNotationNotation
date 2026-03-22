@@ -184,3 +184,5 @@ Prior = P(Perceptual_Hypothesis | Context, Experience)
 ### Active Inference Applications
 - Parr, T., & Friston, K. J. (2017). Working memory, attention and salience
 - Feldman, H., & Friston, K. J. (2010). Attention, uncertainty, and free-energy 
+## See also
+- [Memory Systems](../memory/memory_model.md) - Working, episodic, semantic and procedural memory
