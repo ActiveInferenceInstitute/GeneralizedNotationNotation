@@ -1,11 +1,11 @@
 # GNN Modules Documentation
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Production ready  
+**Scope**: 25 pipeline step pages + [`init.md`](init.md) + [`main.md`](main.md); see [AGENTS.md](AGENTS.md) for the file index. Test suite size: root [README.md](../../../README.md) / [CLAUDE.md](../../../CLAUDE.md).
 
-This directory contains documentation and references for the Modules domain of Generalized Notation Notation (GNN).
+This directory contains per-step documentation for the GNN pipeline (steps 0–24) plus orchestrator-related notes.
 
 ## Available Documents
 
@@ -39,8 +39,9 @@ This directory contains documentation and references for the Modules domain of G
 
 ## Navigation
 
-- [← Back to GNN Main Index](../README.md)
-- [← Back to Master START_HERE](../../START_HERE.md)
+- [Agent manifest (AGENTS.md)](AGENTS.md)
+- [← GNN documentation hub](../README.md)
+- [← doc/START_HERE](../../START_HERE.md)
 
 ---
 *GNN: A text-based language for Active Inference generative models.*

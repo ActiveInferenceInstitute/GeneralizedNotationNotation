@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Research Documentation | **Audience**: Researchers, Cognitive Scientists | **Complexity**: Advanced  
-> **Cross-References**: [Meta-Awareness README](README.md) | [Cognitive Phenomena](../README.md) | [Advanced Patterns](../../gnn/advanced_modeling_patterns.md) | [Main Documentation](../../README.md)
+> **Cross-References**: [Meta-Awareness README](README.md) | [Cognitive Phenomena](../README.md) | [Advanced Patterns](../../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../../README.md)
 
 ## Overview
 
@@ -245,13 +245,13 @@ u_c0 > s_f1                     ### Policy affects attention
 
 - **[Meta-Awareness README](README.md)**: Implementation overview
 - **[Cognitive Phenomena](../README.md)**: Cognitive phenomena modeling
-- **[Advanced Patterns](../../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[GNN Overview](../../gnn/gnn_overview.md)**: GNN framework overview
 
 ## See Also
 
 - **[Cognitive Phenomena](../README.md)**: Cognitive phenomena documentation
-- **[Advanced Patterns](../../gnn/advanced_modeling_patterns.md)**: Advanced modeling patterns
+- **[Advanced Patterns](../../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling patterns
 - **[Main Documentation](../../README.md)**: Return to main documentation
 
 ---

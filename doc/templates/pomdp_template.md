@@ -235,6 +235,6 @@ License: [License type]
 ## References
 
 - [Active Inference Tutorial](../gnn/about_gnn.md)
-- [POMDP Solving Methods](../gnn/gnn_implementation.md)
+- [POMDP Solving Methods](../gnn/integration/gnn_implementation.md)
 - [PyMDP POMDP Examples](../pymdp/gnn_pymdp.md)
 - [RxInfer POMDP Models](../rxinfer/gnn_rxinfer.md) 

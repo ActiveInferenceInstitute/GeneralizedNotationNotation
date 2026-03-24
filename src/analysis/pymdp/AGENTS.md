@@ -53,6 +53,12 @@ analysis/pymdp/
 - matplotlib: Visualization (optional)
 - pandas: Data manipulation (optional)
 
+## Testing
+
+- Pipeline handoff: `src/tests/test_pymdp_contracts.py`
+- Upstream `Agent` API used to produce `simulation_results.json`:
+  `src/tests/test_pymdp_1_0_0_upstream_api.py`
+
 ---
 
 **Version:** 1.1.3

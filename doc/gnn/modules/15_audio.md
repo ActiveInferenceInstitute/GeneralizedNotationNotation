@@ -60,4 +60,4 @@ Registered by `src/audio/mcp.py` via `register_tools()`:
 
 ## Source
 
-- **Script**: [src/15_audio.py](../../src/15_audio.py)
+- **Script**: [src/15_audio.py](../../../src/15_audio.py)

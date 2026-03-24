@@ -22,11 +22,11 @@ python src/main.py --only-steps 8 --verbose
 ## API
 
 ```python
+from pathlib import Path
 from visualization import (
     GNNVisualizer, MatrixVisualizer, GraphVisualizer,
     generate_graph_visualization, generate_matrix_visualization,
     generate_visualizations, process_visualization,
-    process_visualization_main
 )
 
 # Use the GNNVisualizer class
@@ -39,7 +39,7 @@ generate_graph_visualization(graph_data, output_dir="output/")
 generate_matrix_visualization(matrix_data, output_dir="output/")
 
 # Run full visualization step (used by pipeline)
-process_visualization_main(target_dir, output_dir, verbose=True)
+process_visualization(Path("input/gnn_files"), Path("output/8_visualization_output"), verbose=True)
 ```
 
 ## Key Exports
@@ -48,7 +48,7 @@ process_visualization_main(target_dir, output_dir, verbose=True)
 - `MatrixVisualizer` — matrix-specific visualization
 - `generate_graph_visualization` — network graph plots
 - `generate_matrix_visualization` — matrix heatmaps
-- `process_visualization` / `process_visualization_main` — pipeline processing
+- `process_visualization` — pipeline processing (JSON-first when step-3 `*_parsed.json` exists)
 
 ## Safe-to-Fail Pattern
 
@@ -82,6 +82,7 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 - `process_visualization`
 - `get_visualization_options`
 - `list_visualization_artifacts`
+- `get_visualization_module_info`
 
 ## References
 

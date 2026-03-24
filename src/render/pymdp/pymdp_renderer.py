@@ -43,6 +43,34 @@ except ImportError:
             def parse(self, content): return ParseResult(True, {'model_name': 'RecoveryModel'})
 
 
+def _ensure_initialparameterization_from_parameters(gnn_spec: Dict[str, Any]) -> None:
+    """
+    Markdown `to_dict()` stores matrices under `parameters` as a list of {name, value}.
+    PyMDP generation expects `initialparameterization` (dict). Merge when the latter is absent.
+    """
+    existing = gnn_spec.get("initialparameterization") or gnn_spec.get("initial_parameterization")
+    if existing:
+        if "initialparameterization" not in gnn_spec and isinstance(existing, dict):
+            gnn_spec["initialparameterization"] = dict(existing)
+        return
+
+    raw = gnn_spec.get("parameters") or []
+    if not isinstance(raw, list) or not raw:
+        return
+
+    init: Dict[str, Any] = {}
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        name = item.get("name")
+        if not name:
+            continue
+        init[str(name).strip()] = item.get("value")
+
+    if init:
+        gnn_spec["initialparameterization"] = init
+
+
 def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]]:
     """
     Parse GNN markdown content into a structured dictionary.
@@ -61,6 +89,7 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
         if result.success:
             # Convert internal representation to dictionary
             gnn_spec = result.model.to_dict()
+            _ensure_initialparameterization_from_parameters(gnn_spec)
             return gnn_spec
         else:
             logging.error(f"Failed to parse GNN file {file_path}: {result.errors}")
@@ -254,15 +283,21 @@ class PyMDPRenderer:
         D_vector = initial_params.get('D')
         E_vector = initial_params.get('E')
 
-        # Validate state spaces are present
-        if not A_matrix:
-            self.logger.warning("A matrix (likelihood) not found in initial parameterization")
-        if not B_matrix:
-            self.logger.warning("B matrix (transition) not found in initial parameterization")
-        if not C_vector:
-            self.logger.warning("C vector (preferences) not found in initial parameterization")
-        if not D_vector:
-            self.logger.warning("D vector (prior) not found in initial parameterization")
+        missing = [
+            label
+            for label, val in (
+                ("A", A_matrix),
+                ("B", B_matrix),
+                ("C", C_vector),
+                ("D", D_vector),
+            )
+            if not val
+        ]
+        if missing:
+            self.logger.warning(
+                "Missing initial parameterization entries (using defaults): %s",
+                ",".join(missing),
+            )
 
         # Format matrices for embedding in code
         import json as json_module
@@ -352,9 +387,29 @@ except ImportError:
     print("❌ PyMDP not found — install: uv pip install inferactively-pymdp")
     sys.exit(1)
 
-# Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)
-project_root = Path(__file__).parent.parent.parent.parent.parent
-sys.path.insert(0, str(project_root))
+# Resolve repository root: prefer GNN_PROJECT_ROOT (set by Step 12), else walk up for pyproject.toml + src/
+_gnn_root = os.environ.get("GNN_PROJECT_ROOT")
+if _gnn_root:
+    _repo = Path(_gnn_root).resolve()
+    sys.path.insert(0, str(_repo))
+else:
+    _cur = Path(__file__).resolve().parent
+    _found = None
+    for _ in range(24):
+        if (_cur / "pyproject.toml").is_file() and (_cur / "src").is_dir():
+            _found = _cur
+            break
+        if _cur.parent == _cur:
+            break
+        _cur = _cur.parent
+    if _found is None:
+        print(
+            "❌ Cannot locate GNN repository root. Run via the pipeline execute step, or set "
+            "GNN_PROJECT_ROOT to the checkout root (directory containing pyproject.toml and src/).",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    sys.path.insert(0, str(_found))
 
 from src.execute.pymdp import execute_pymdp_simulation
 

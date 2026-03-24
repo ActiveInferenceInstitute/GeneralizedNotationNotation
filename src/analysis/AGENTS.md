@@ -33,7 +33,7 @@
 - Model comparison and differential analysis
 - Distribution analysis and correlation studies
 - **PyMDP Visualization** - belief evolution, state sequences, performance metrics plots
-- **Cross-framework comparison** - uses whatever execution (Step 12) produced; frameworks with no simulation data are reported as "[framework] No simulation data found". Full coverage (PyMDP, JAX, NumPyro, PyTorch, DisCoPy, RxInfer.jl, ActiveInference.jl) requires `uv sync --extra execution-frameworks` and re-running Step 12.
+- **Cross-framework comparison** - uses whatever execution (Step 12) produced; frameworks with no simulation data are reported as "[framework] No simulation data found". Python backends are in core `uv sync`; Julia coverage needs Julia + packages installed, then re-run Step 12.
 
 ---
 

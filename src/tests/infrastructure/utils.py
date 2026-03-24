@@ -26,13 +26,8 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         logger: Logger instance for reporting
     
     Returns:
-        Dictionary with dependency status:
-        {
-            'pytest': bool,
-            'pytest_cov': bool,
-            'pytest_timeout': bool,
-            'all_required': bool
-        }
+        Dictionary mapping package label to availability (``pytest`` required for the
+        test step; ``pytest-cov``, ``pytest-xdist``, ``psutil``, ``coverage`` optional).
     """
     dependencies = {
         "pytest": False,
@@ -72,12 +67,22 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
     except ImportError:
         pass
 
-    # Log results
-    missing_deps = [name for name, available in dependencies.items() if not available]
-    if missing_deps:
-        logger.warning(f"⚠️ Missing test dependencies: {missing_deps}")
+    # Log results: only pytest is required for fast pipeline tests; others are dev/CI extras.
+    if not dependencies["pytest"]:
+        logger.warning("pytest is not installed; the test step cannot run.")
     else:
-        logger.info("✅ All test dependencies available")
+        optional_missing = [
+            name for name, available in dependencies.items()
+            if not available and name != "pytest"
+        ]
+        if optional_missing:
+            logger.info(
+                "Optional test tooling not installed: %s "
+                "(parallel runs, coverage reports: uv sync --extra dev)",
+                optional_missing,
+            )
+        else:
+            logger.info("All test tooling packages present (pytest + optional extras).")
 
     return dependencies
 
@@ -237,87 +242,96 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
 
 
 def parse_test_statistics(pytest_output: str) -> Dict[str, int]:
-    """Parse pytest output to extract test statistics."""
-    stats = {
-        "tests_run": 0,
-        "tests_passed": 0,
-        "tests_failed": 0,
-        "tests_skipped": 0
-    }
+    """Parse pytest output to extract test statistics.
+
+    Returns keys used by pipeline reporting and modular runner: ``total``, ``passed``,
+    ``failed``, ``skipped``, ``errors``. Legacy ``tests_*`` keys are included for
+    callers that still expect them.
+    """
+    passed = failed = skipped = errors = total = 0
 
     try:
-        lines = pytest_output.split('\n')
+        lines = pytest_output.split("\n")
 
-        # Look for the summary line at the end (e.g., "534 passed, 12 skipped in 3.45s")
+        # Final summary line (quiet or verbose), e.g. "==== 1783 passed, 30 skipped in 40s ===="
         for line in reversed(lines):
             line = line.strip()
-            # Check if this line contains test results (has passed/failed/skipped + " in ")
-            if (" passed" in line or " failed" in line or " skipped" in line) and " in " in line:
-                # Parse patterns like: "534 passed, 12 skipped in 3.45s"
-                # or "22 passed, 5 failed, 3 skipped in 1.23s"
+            if " in " not in line:
+                continue
+            if not (
+                " passed" in line
+                or " failed" in line
+                or " skipped" in line
+                or re.search(r"\d+\s+errors?\b", line)
+            ):
+                continue
 
-                # Extract passed count
-                passed_match = re.search(r'(\d+)\s+passed', line)
-                if passed_match:
-                    stats["tests_passed"] = int(passed_match.group(1))
-                    stats["tests_run"] += int(passed_match.group(1))
+            pm = re.search(r"(\d+)\s+passed", line)
+            if pm:
+                passed = int(pm.group(1))
+            fm = re.search(r"(\d+)\s+failed", line)
+            if fm:
+                failed = int(fm.group(1))
+            sm = re.search(r"(\d+)\s+skipped", line)
+            if sm:
+                skipped = int(sm.group(1))
+            em = re.search(r"(\d+)\s+errors?\b", line)
+            if em:
+                errors = int(em.group(1))
 
-                # Extract failed count
-                failed_match = re.search(r'(\d+)\s+failed', line)
-                if failed_match:
-                    stats["tests_failed"] = int(failed_match.group(1))
-                    stats["tests_run"] += int(failed_match.group(1))
+            if passed or failed or skipped or errors:
+                break
 
-                # Extract skipped count
-                skipped_match = re.search(r'(\d+)\s+skipped', line)
-                if skipped_match:
-                    stats["tests_skipped"] = int(skipped_match.group(1))
-                    stats["tests_run"] += int(skipped_match.group(1))
-
-                # If we found any stats, break
-                if stats["tests_run"] > 0:
-                    break
-
-        # Recovery: count individual test results if summary line not found
-        # Look for lines like "test_foo.py::test_bar PASSED [  1%]"
-        if stats["tests_passed"] == 0 and stats["tests_failed"] == 0:
+        # Recovery: verbose per-node lines (avoid log noise without "::")
+        if passed == 0 and failed == 0 and skipped == 0 and errors == 0:
             for line in lines:
-                line_stripped = line.strip()
-                # Match pytest verbose output format: "test_file.py::TestClass::test_method PASSED"
-                if " PASSED" in line_stripped:
-                    stats["tests_passed"] += 1
-                elif " FAILED" in line_stripped:
-                    stats["tests_failed"] += 1
-                elif " SKIPPED" in line_stripped:
-                    stats["tests_skipped"] += 1
+                ls = line.strip()
+                if "::" not in ls:
+                    continue
+                if " PASSED" in ls:
+                    passed += 1
+                elif " FAILED" in ls:
+                    failed += 1
+                elif " SKIPPED" in ls:
+                    skipped += 1
+                elif " ERROR" in ls:
+                    errors += 1
 
-            # Update tests_run from counted results
-            if stats["tests_passed"] > 0 or stats["tests_failed"] > 0 or stats["tests_skipped"] > 0:
-                stats["tests_run"] = stats["tests_passed"] + stats["tests_failed"] + stats["tests_skipped"]
-
-        # Also look for collected items line if no results found yet
-        if stats["tests_run"] == 0:
-            for line in lines:
-                if "collected" in line and ("item" in line or "test" in line):
-                    # Extract number before "collected"
-                    match = re.search(r'(\d+)\s+(?:item|test)', line)
-                    if match:
-                        stats["tests_run"] = int(match.group(1))
-                        break
+        total = passed + failed + skipped + errors
 
     except Exception as e:
         logging.warning(f"Failed to parse test statistics: {e}")
+        passed = failed = skipped = errors = 0
+        total = 0
 
-    return stats
+    return {
+        "total": total,
+        "passed": passed,
+        "failed": failed,
+        "skipped": skipped,
+        "errors": errors,
+        "tests_run": total,
+        "tests_passed": passed,
+        "tests_failed": failed,
+        "tests_skipped": skipped,
+        "tests_errors": errors,
+    }
 
 
 def parse_coverage_statistics(
-    coverage_json_path: Path,
+    coverage_json_path: Path | str | None,
     logger: logging.Logger | None = None,
 ) -> Dict[str, Any]:
     """Parse coverage JSON file to extract coverage statistics."""
     logger = logger or logging.getLogger(__name__)
     try:
+        if coverage_json_path is None:
+            return {}
+        if isinstance(coverage_json_path, str):
+            # Accidental pytest stdout or other non-path text (fast pipeline has no JSON in stdout)
+            if "\n" in coverage_json_path or len(coverage_json_path) > 4096:
+                return {}
+            coverage_json_path = Path(coverage_json_path)
         if not coverage_json_path.exists():
             return {"error": "Coverage file not found"}
 

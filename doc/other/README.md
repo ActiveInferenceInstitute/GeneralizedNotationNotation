@@ -30,7 +30,7 @@ This directory contains miscellaneous documentation, research materials, experim
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -83,8 +83,8 @@ This directory maintains research transparency by:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[GNN Examples](../gnn/gnn_examples_doc.md)**: Example models
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**: Example models
 
 ### Research Resources
 - **[Research Tools](../research/README.md)**: Research workflow tools
@@ -92,7 +92,7 @@ This directory maintains research transparency by:
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

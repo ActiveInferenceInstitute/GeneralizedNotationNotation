@@ -1022,8 +1022,8 @@ end
 - [ReactiveMP.jl Documentation](https://reactivemp.github.io/ReactiveMP.jl/stable/)
 - [GraphPPL.jl Documentation](https://biaslab.github.io/GraphPPL.jl/stable/)
 - [Active Inference Tutorial](../gnn/about_gnn.md)
-- [GNN Specification](../gnn/gnn_syntax.md)
-- [Matrix Algebra in Active Inference](../gnn/gnn_implementation.md)
+- [GNN Specification](../gnn/reference/gnn_syntax.md)
+- [Matrix Algebra in Active Inference](../gnn/integration/gnn_implementation.md)
 
 ## Troubleshooting
 

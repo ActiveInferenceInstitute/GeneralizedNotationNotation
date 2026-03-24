@@ -151,7 +151,7 @@ The compiled JAX simulation traces achieve deterministic equivalence against nat
 
 ## See Also / Next Steps
 
-- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Cross-Framework Methodology](../integration/framework_integration_guide.md)**: Details on the correlation methodology and benchmarking metrics.
 - **[Architecture Reference](../reference/architecture_reference.md)**: Deep dive into the pipeline orchestrator and module integration.
 - **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
 - **[Back to GNN START_HERE](../../START_HERE.md)**

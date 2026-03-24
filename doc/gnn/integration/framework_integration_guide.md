@@ -1,15 +1,14 @@
 # GNN Framework Integration Guide
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
 
 ## Pipeline Integration
 
 GNN framework integration is handled by **Steps 11 and 12** of the processing pipeline:
 
-- **`src/11_render.py`** → Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, CatColab
+- **`src/11_render.py`** → Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan
   - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)** for rendering module details
 - **`src/12_execute.py`** → Execution of rendered simulation scripts
   - See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)** for execution module details
@@ -788,14 +787,14 @@ class IntegrationTestSuite:
 
 ## Related Documentation
 
-- **[PyMDP Integration Guide](../pymdp/gnn_pymdp.md)**: Detailed PyMDP-specific documentation
-- **[RxInfer Integration Guide](../rxinfer/gnn_rxinfer.md)**: Complete RxInfer.jl integration
-- **[DisCoPy Integration Guide](../discopy/gnn_discopy.md)**: Categorical diagram processing
+- **[PyMDP Integration Guide](../../pymdp/gnn_pymdp.md)**: Detailed PyMDP-specific documentation
+- **[RxInfer Integration Guide](../../rxinfer/gnn_rxinfer.md)**: Complete RxInfer.jl integration
+- **[DisCoPy Integration Guide](../../discopy/gnn_discopy.md)**: Categorical diagram processing
 - **[Performance Guide](../README.md)**: Performance optimization strategies
 - **[Error Handling Guide](../../troubleshooting/error_taxonomy.md)**: Comprehensive error management
 
 ---
 
 **Integration Guide Version**: v2.0.0  
-**Framework Coverage**: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, CatColab  
-**Status**: Production-Ready
+**Framework Coverage**: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan  
+**Status**: Maintained

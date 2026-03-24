@@ -307,8 +307,8 @@ def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
     """Provide sample GNN files for testing."""
     files = {}
 
-    # Create a simple test GNN file
-    content = """
+    # Minimal coherent 3-state / 3-obs POMDP slice (avoids parser + PyMDP render warnings)
+    content_simple = """
 # Test GNN Model
 
 ## ModelName
@@ -316,15 +316,40 @@ test_model
 
 ## StateSpaceBlock
 s[3,1,type=int]
+o[3,1,type=int]
 
 ## Connections
 s -> o
 
 ## InitialParameterization
-A = [[0.5, 0.3, 0.2]]
+A = [[0.7, 0.2, 0.1], [0.2, 0.7, 0.1], [0.1, 0.2, 0.7]]
+B = [[[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]]
+C = [0.0, 0.0, 1.0]
+D = [0.34, 0.33, 0.33]
 """
 
-    files["simple"] = safe_filesystem.create_file("simple.gnn", content)
+    content_second = """
+# Second test model
+
+## ModelName
+second_model
+
+## StateSpaceBlock
+s[3,1,type=int]
+o[3,1,type=int]
+
+## Connections
+s -> o
+
+## InitialParameterization
+A = [[0.7, 0.2, 0.1], [0.2, 0.7, 0.1], [0.1, 0.2, 0.7]]
+B = [[[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]]
+C = [0.0, 0.0, 1.0]
+D = [0.34, 0.33, 0.33]
+"""
+
+    files["simple"] = safe_filesystem.create_file("simple.gnn", content_simple)
+    files["second"] = safe_filesystem.create_file("second.gnn", content_second)
     return files
 
 @pytest.fixture

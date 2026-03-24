@@ -759,7 +759,7 @@ write-good doc/**/*.md
 **Technical References**:
 
 - [Active Inference Ontology](https://github.com/ActiveInferenceInstitute/ActiveInferenceOntology)
-- [GNN Syntax Specification](gnn/gnn_syntax.md)
+- [GNN Syntax Specification](gnn/reference/gnn_syntax.md)
 - [Framework Documentation](../README.md#framework-integrations)
 
 ### **Quality Assurance Tools**

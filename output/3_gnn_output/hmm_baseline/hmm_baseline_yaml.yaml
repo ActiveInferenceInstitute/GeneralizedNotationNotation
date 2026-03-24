@@ -94,10 +94,10 @@ connections:
   target_variables:
   - beta
   weight: null
-created_at: '2026-03-18T10:10:54.866414'
+created_at: '2026-03-24T13:57:12.704145'
 equations: []
 model_name: Hidden Markov Model Baseline
-modified_at: '2026-03-18T10:10:54.866414'
+modified_at: '2026-03-24T13:57:12.704148'
 ontology_mappings:
 - description: null
   ontology_term: EmissionMatrix

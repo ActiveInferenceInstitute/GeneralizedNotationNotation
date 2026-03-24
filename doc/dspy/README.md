@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Beginner to Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [DSPy GNN Guide](gnn_dspy.md) | [LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [DSPy GNN Guide](gnn_dspy.md) | [LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -206,8 +206,8 @@ dspy.configure(lm=lm)
 ### Main GNN Documentation
 
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: Neurosymbolic architecture
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: Neurosymbolic architecture
 
 ### Development Resources
 
@@ -217,7 +217,7 @@ dspy.configure(lm=lm)
 
 ### Pipeline Architecture
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -244,7 +244,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[DSPy Cross-Reference](../CROSS_REFERENCE_INDEX.md#dspy)**: Cross-reference index entry
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[AutoGenLib Integration](../autogenlib/gnn_autogenlib.md)**: Dynamic code generation
 - **[Main Index](../README.md)**: Return to main documentation
 

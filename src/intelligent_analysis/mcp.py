@@ -48,6 +48,7 @@ def process_intelligent_analysis_mcp(
         success = process_intelligent_analysis(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
+            logger=logger,
             verbose=verbose,
             **kwargs
         )

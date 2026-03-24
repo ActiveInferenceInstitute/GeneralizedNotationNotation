@@ -51,13 +51,13 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[GNN Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[GNN Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Templates](../templates/README.md)**: Model templates and scaffolding
 - **[Research Tools](../research/README.md)**: Research workflow tools
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent cognitive modeling
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent cognitive modeling
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Documentation Structure
@@ -117,16 +117,16 @@ All documentation in this module adheres to professional standards:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Research Applications
 - **[Research Tools](../research/README.md)**: Research workflow tools
 - **[Templates](../templates/README.md)**: Model templates
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent cognitive modeling
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent cognitive modeling
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

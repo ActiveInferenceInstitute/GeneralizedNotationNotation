@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Researchers, Developers | **Complexity**: Advanced  
-> **Cross-References**: [PoE-World Overview](poe-world.md) | [GNN Advanced Patterns](../gnn/advanced_modeling_patterns.md) | [LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)
+> **Cross-References**: [PoE-World Overview](poe-world.md) | [GNN Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
 
 ## Overview
 
@@ -705,11 +705,11 @@ class PoEWorldGNNIntegrationTests:
 
 **Related Documentation**:
 - [PoE-World Research Overview](poe-world.md)
-- [GNN Advanced Modeling Patterns](../gnn/advanced_modeling_patterns.md)
-- [LLM Integration Guide](../gnn/gnn_llm_neurosymbolic_active_inference.md)
+- [GNN Advanced Modeling Patterns](../gnn/advanced/advanced_modeling_patterns.md)
+- [LLM Integration Guide](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
 - [Program Synthesis with GNN](../dspy/gnn_dspy.md)
 - [Hierarchical Templates](../templates/hierarchical_template.md)
-- [MCTS Integration Patterns](../gnn/gnn_multiagent.md)
+- [MCTS Integration Patterns](../gnn/advanced/gnn_multiagent.md)
 
 **Technical References**:
 - PoE-World GitHub Repository: https://github.com/topwasu/poe-world

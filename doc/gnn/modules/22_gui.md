@@ -57,4 +57,4 @@ For Oxdraw: `cargo install oxdraw`
 
 ## Source
 
-- **Script**: [src/22_gui.py](../../src/22_gui.py)
+- **Script**: [src/22_gui.py](../../../src/22_gui.py)

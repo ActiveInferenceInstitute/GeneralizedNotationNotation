@@ -147,7 +147,7 @@ This documentation connects to the GNN source code:
 | Resource | Description |
 |----------|-------------|
 | **[GNN Overview](../gnn/gnn_overview.md)** | Core GNN concepts |
-| **[GNN-LLM Neurosymbolic](../gnn/gnn_llm_neurosymbolic_active_inference.md)** | LLM integration with Active Inference |
+| **[GNN-LLM Neurosymbolic](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** | LLM integration with Active Inference |
 | **[PyMDP Documentation](../pymdp/README.md)** | PyMDP integration guide |
 | **[RxInfer Documentation](../rxinfer/README.md)** | RxInfer.jl documentation |
 | **[POMDP Documentation](../pomdp/README.md)** | POMDP theoretical foundations |
@@ -163,7 +163,7 @@ This documentation integrates with the 25-step GNN processing pipeline:
 | **Step 13: LLM** | LLM-enhanced analysis |
 | **Step 16: Analysis** | Post-simulation analysis |
 
-See [Pipeline Documentation](../gnn/gnn_tools.md) for details.
+See [Pipeline Documentation](../gnn/operations/gnn_tools.md) for details.
 
 ---
 
@@ -230,7 +230,7 @@ doc/active_inference/
 
 - **[Main Documentation Index](../README.md)**: Return to main documentation
 - **[Cross-Reference Index](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: 25-step pipeline
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: 25-step pipeline
 
 ---
 

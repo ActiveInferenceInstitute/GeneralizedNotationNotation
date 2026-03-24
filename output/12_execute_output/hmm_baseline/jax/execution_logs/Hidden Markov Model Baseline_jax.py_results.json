@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 6.756163,
-  "timestamp": "2026-03-18T09:22:45.954754",
+  "execution_time": 1.391107,
+  "timestamp": "2026-03-24T13:59:26.777361",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -49,7 +49,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (6, 4)\n   B matrix shape: (4, 4, 4)\n   C vector shape: (6,)\n   D vector shape: (4,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 4\n- Number of observations: 6\n- Number of actions: 4\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.25 0.25 0.25 0.25]\n   Updated belief: [0.7 0.1 0.1 0.1]\n   Selected action: 0\n   Expected free energy: 1.7032\n   EFE for all actions: [1.7031758 1.7031758 1.7031758 1.7031758]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [2.9041411e-03 9.9612027e-01 2.8360753e-06 9.7277371e-04]\n   Average EFE: 1.6440\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/hmm_baseline/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (6, 4)\n   B matrix shape: (4, 4, 4)\n   C vector shape: (6,)\n   D vector shape: (4,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 4\n- Number of observations: 6\n- Number of actions: 4\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.25 0.25 0.25 0.25]\n   Updated belief: [0.7 0.1 0.1 0.1]\n   Selected action: 0\n   Expected free energy: 1.7032\n   EFE for all actions: [1.7031758 1.7031758 1.7031758 1.7031758]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [2.9041411e-03 9.9612027e-01 2.8360753e-06 9.7277371e-04]\n   Average EFE: 1.6440\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/hmm_baseline/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
     "raw_error": "",
     "beliefs": [
       [

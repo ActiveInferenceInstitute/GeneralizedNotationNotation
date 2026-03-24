@@ -253,8 +253,23 @@ def process_render(
                     # Validate POMDP space
                     is_valid, validation_errors = validate_pomdp_for_rendering(pomdp_space)
                     if not is_valid:
-                        logger.warning(f"POMDP validation failed for {gnn_file.name}: {validation_errors}")
-                        # Continue anyway but log warning
+                        if strict_validation:
+                            err_msg = (
+                                f"POMDP validation failed (strict); skipping render for {gnn_file.name}: "
+                                f"{validation_errors}"
+                            )
+                            logger.error(err_msg)
+                            results[str(gnn_file)] = {
+                                "overall_success": False,
+                                "framework_results": {},
+                                "error": err_msg,
+                                "validation_failed_strict": True,
+                            }
+                            continue
+                        logger.warning(
+                            f"POMDP validation failed for {gnn_file.name}: {validation_errors}; "
+                            "continuing because strict_validation=False"
+                        )
 
                     # Normalize matrices
                     pomdp_space = normalize_matrices(pomdp_space, logger)

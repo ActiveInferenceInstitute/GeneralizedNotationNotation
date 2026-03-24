@@ -25,11 +25,11 @@ This directory contains documentation and resources for integrating the **Type I
 
 ### Related Directories
 - **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Formal verification approaches
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -96,16 +96,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[Type Checker](../../src/type_checker/AGENTS.md)**: GNN type checking implementation
 
 ### Research Applications
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Research Tools](../research/README.md)**: Research workflow tools
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

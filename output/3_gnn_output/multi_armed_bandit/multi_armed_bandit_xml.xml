@@ -8,8 +8,8 @@
 - Context switches slowly (sticky transitions), testing exploration vs exploitation.
 - The agent prefers big-reward observations (observation 2).
 - Tests the bandit structure: meaningful actions despite nearly-static state dynamics.</annotation>
-    <created_at>2026-03-18T10:10:54.841542</created_at>
-    <modified_at>2026-03-18T10:10:54.841543</modified_at>
+    <created_at>2026-03-24T13:57:12.674475</created_at>
+    <modified_at>2026-03-24T13:57:12.674478</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="3,3" name="A" type="likelihood_matrix" description="Reward likelihood given context state"/>

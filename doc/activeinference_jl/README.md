@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Developers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [ActiveInference.jl Guide](activeinference-jl.md) | [Framework Integration](../gnn/framework_integration_guide.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [ActiveInference.jl Guide](activeinference-jl.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -25,13 +25,13 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 - **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian inference framework
 - **[Execution Guide](../execution/README.md)**: Framework execution strategies
 - **[Julia Frameworks](../execution/FRAMEWORK_AVAILABILITY.md)**: Julia framework availability
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -123,8 +123,8 @@ actions = sample_actions(agent, beliefs)
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 
 ### Framework Integration
 - **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian inference framework
@@ -132,7 +132,7 @@ actions = sample_actions(agent, beliefs)
 - **[Execution Guide](../execution/README.md)**: Framework execution strategies
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -148,7 +148,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[ActiveInference.jl Cross-Reference](../CROSS_REFERENCE_INDEX.md#activeinference_jl)**: Cross-reference index entry
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 - **[Julia Frameworks](../execution/FRAMEWORK_AVAILABILITY.md)**: Julia framework availability
 - **[Main Index](../README.md)**: Return to main documentation
 

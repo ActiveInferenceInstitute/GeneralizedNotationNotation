@@ -5,9 +5,11 @@ Test Render Performance - Performance tests for render module.
 Tests performance characteristics of code generation and rendering operations.
 """
 
+import gc
 import pytest
 import sys
 import time
+import tracemalloc
 from pathlib import Path
 
 # Add src to path for imports
@@ -153,8 +155,9 @@ class TestRenderThroughput:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         start = time.time()
+        gnn_dir = next(iter(sample_gnn_files.values())).parent
         result = process_render(
-            target_dir=sample_gnn_files[0].parent,
+            target_dir=gnn_dir,
             output_dir=output_dir,
             logger=logger
         )
@@ -236,24 +239,36 @@ class TestRenderMemoryPerformance:
     """Memory performance tests for render operations."""
 
     @pytest.mark.slow
-    def test_render_no_memory_leak(self, sample_gnn_files, tmp_path):
-        """Test that rendering doesn't leak memory."""
+    def test_repeated_pymdp_render_memory_bounded(self, sample_gnn_files, tmp_path):
+        """
+        Repeated PyMDP file renders should stay within a loose traced-memory budget.
+
+        Uses tracemalloc deltas (not RSS) to catch runaway allocation growth without
+        requiring psutil. Fresh renderer instances mirror typical per-file pipeline use.
+        """
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
 
         from render import PyMDPRenderer
 
         gnn_file = list(sample_gnn_files.values())[0]
+        iterations = 25
 
-        # Run many iterations and collect results
+        tracemalloc.start(25)
+        gc.collect()
+
         results = []
-        for i in range(50):
+        for i in range(iterations):
             renderer = PyMDPRenderer()
             output = tmp_path / f"mem_test_{i}.py"
             success, msg = renderer.render_file(gnn_file, output)
             results.append(success)
 
-        # Verify all iterations completed
-        assert len(results) == 50, f"Expected 50 results, got {len(results)}"
-        # At least some should succeed (graceful failures are acceptable)
+        gc.collect()
+        _current, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        assert len(results) == iterations, f"Expected {iterations} results, got {len(results)}"
         assert any(isinstance(r, bool) for r in results), "Results should be boolean"
+        # Peak traced memory since start; generous ceiling for parser/renderer caches
+        assert peak < 150 * 1024 * 1024, f"tracemalloc peak {peak} bytes exceeds budget"

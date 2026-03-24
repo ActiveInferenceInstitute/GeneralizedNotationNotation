@@ -125,5 +125,5 @@ pytest src/tests/ --cov=src -v
 - [SETUP_GUIDE.md](SETUP_GUIDE.md) — Environment setup guide
 - [src/SPEC.md](src/SPEC.md) — Source specification
 - [doc/gnn/README.md](doc/gnn/README.md) — GNN documentation index
-- [doc/gnn/gnn_syntax.md](doc/gnn/gnn_syntax.md) — GNN syntax reference
+- [doc/gnn/reference/gnn_syntax.md](doc/gnn/reference/gnn_syntax.md) — GNN syntax reference
 - [doc/gnn/tutorials/gnn_examples_doc.md](doc/gnn/tutorials/gnn_examples_doc.md) — Example GNN models

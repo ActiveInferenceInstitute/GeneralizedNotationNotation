@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-18T09:28:56.252140",
+  "timestamp": "2026-03-24T14:11:48.651194",
   "execution_results_dir": "output/12_execute_output/hmm_baseline",
   "framework_results": {
     "rxinfer": {
@@ -79,17 +79,17 @@
         "mean_fe": 1.6736
       },
       "execution_time": {
-        "rxinfer": 16.541946,
-        "numpyro": 6.116841,
-        "activeinference_jl": 13.251858,
-        "pymdp": 9.264893,
-        "pytorch": 4.10594,
-        "jax": 6.756163,
-        "discopy": 1.758197
+        "rxinfer": 22.319628,
+        "numpyro": 1.555278,
+        "activeinference_jl": 20.357071,
+        "pymdp": 1.797278,
+        "pytorch": 0.949036,
+        "jax": 1.391107,
+        "discopy": 0.513877
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 1.758197
+        "time": 0.513877
       },
       "success_rates": {
         "rxinfer": true,

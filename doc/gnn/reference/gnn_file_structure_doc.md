@@ -1,9 +1,9 @@
 # GNN File Structure
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 This document provides a comprehensive guide to the structure and organization of GNN files.
 
@@ -371,4 +371,4 @@ For automated processing, GNN file structures are available in a machine-readabl
 
 1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
 2. Active Inference Institute: [Generalized Notation Notation (GNN) GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
-3. Machine-readable specification: [GNN File Structure Specification](../../src/gnn/processor.py)
+3. Machine-readable specification: [GNN File Structure Specification](../../../src/gnn/processor.py)

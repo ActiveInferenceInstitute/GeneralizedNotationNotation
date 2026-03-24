@@ -36,6 +36,11 @@
 
 ## API Reference
 
+### Module exports
+
+- `VERSION_INFO` — dict with `version`, `name`, `description`, `author` (included in `__all__`)
+- `FEATURES` — capability flags for tooling and discovery
+
 ### Public Functions
 
 #### `process_template_standardized(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`

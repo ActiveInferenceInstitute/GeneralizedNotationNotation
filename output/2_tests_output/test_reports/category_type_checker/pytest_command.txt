@@ -1,5 +1,0 @@
-Category: type_checker
-Success: True
-Duration: 2.01s
-Peak Memory: 42.58 MB
-CPU Usage: 0.0%

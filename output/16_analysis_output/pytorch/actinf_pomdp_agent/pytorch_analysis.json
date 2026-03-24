@@ -15,8 +15,8 @@
     "mean_confidence": 0.9999999999999999,
     "final_confidence": 0.9999999999999999,
     "action_distribution": {
-      "0": 10,
-      "1": 5
+      "0": 4,
+      "1": 11
     },
     "mean_efe": 1.4950597735424254
   },

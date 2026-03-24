@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Troubleshooting Guide | **Audience**: Developers & Operators | **Complexity**: Intermediate  
-> **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Testing Guide](../testing/README.md)
+> **Cross-References**: [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Testing Guide](../testing/README.md)
 
 ## Overview
 
@@ -195,7 +195,7 @@ When encountering new error patterns:
 
 ## References
 
-- [Pipeline Architecture](../gnn/gnn_tools.md)
+- [Pipeline Architecture](../gnn/operations/gnn_tools.md)
 - [Testing Guide](../testing/README.md)
 - [Configuration Guide](../configuration/README.md)
 - [Development Guide](../development/README.md) 

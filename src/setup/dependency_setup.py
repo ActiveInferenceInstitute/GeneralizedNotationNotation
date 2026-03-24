@@ -15,6 +15,7 @@ from .constants import (
     PROJECT_ROOT,
     VENV_PYTHON,
     OPTIONAL_GROUPS,
+    SETUP_DEFAULT_PIPELINE_EXTRAS,
 )
 from .uv_management import (
     run_command,
@@ -200,25 +201,35 @@ print("POMDP operations test passed")  # nosec B603 -- subprocess calls with con
         logger.warning(f"JAX, Optax, or Flax not installed: {e}")
 
         try:
-            logger.info("Attempting to repair JAX installation using UV sync...")
+            logger.info(
+                "Attempting to repair JAX installation using UV sync with execution-frameworks extra..."
+            )
             install_cmd = ["uv", "sync", "--verbose"]
+            for extra in SETUP_DEFAULT_PIPELINE_EXTRAS:
+                install_cmd.extend(["--extra", extra])
 
             if verbose:
                 logger.info(f"Running: {' '.join(install_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
-            result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=600
+            )
 
             if result.returncode == 0:
-                logger.info("UV sync completed successfully")
-                try:
-                    import jax
-                    import optax
-                    import flax
-                    logger.info("JAX installation verified successfully")
+                logger.info("UV sync (with execution-frameworks) completed successfully")
+                verify = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                    [str(VENV_PYTHON), "-c", "import jax, optax, flax; print('ok')"],
+                    cwd=PROJECT_ROOT,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                )
+                if verify.returncode == 0:
+                    logger.info("JAX installation verified in venv Python")
+                    install_jax_and_test._attempts = 0  # type: ignore[attr-defined]
                     return True
-                except ImportError:
-                    logger.warning("JAX installation succeeded but import still fails")
-                    return False
+                logger.warning("JAX still not importable in venv after sync: %s", verify.stderr)
+                return False
             else:
                 logger.error(f"Failed to install JAX using UV: {result.stderr}")
                 return False

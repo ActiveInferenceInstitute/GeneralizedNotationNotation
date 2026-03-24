@@ -1,9 +1,9 @@
 # GNN Ontology Guide
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 This document provides comprehensive guidance on ontology processing for Generalized Notation Notation (GNN) models, including Active Inference ontology integration, term mapping, and semantic validation.
 
@@ -215,5 +215,5 @@ Ontology processing integrates throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Version**: v2.0.0

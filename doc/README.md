@@ -3,9 +3,9 @@
 > **📋 Document Metadata**  
 > **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
 > **Status**: Production-Ready  
-> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md)
+> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md) | [AGENTS.md](AGENTS.md) (doc tree index) | [Doc audit](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict`)
 
-Welcome to the comprehensive documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
+Welcome to the documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
 
 > **⚠️ Important**: For setup and installation instructions, please refer to the [GNN Project Setup Guide](SETUP.md).
 
@@ -401,14 +401,14 @@ primary_audience: [beginners, practitioners, developers, researchers]
 learning_paths:
   beginner: [about_gnn.md, quickstart_tutorial.md, gnn_examples_doc.md, gnn_syntax.md]
   practitioner: [gnn_syntax.md, gnn_file_structure_doc.md, gnn_implementation.md, templates/README.md]
-  developer: [api/README.md, gnn/architecture_reference.md, development/README.md]
+  developer: [api/README.md, gnn/reference/architecture_reference.md, development/README.md]
   researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, poe-world/poe-world.md]
 cross_references:
   setup: [SETUP.md, configuration/README.md, deployment/README.md]
   frameworks: [pymdp/gnn_pymdp.md, rxinfer/gnn_rxinfer.md, discopy/gnn_discopy.md, poe-world/poe-world_gnn.md]
   templates: [templates/README.md, templates/basic_gnn_template.md, templates/pomdp_template.md, templates/multiagent_template.md, templates/hierarchical_template.md]
   support: [troubleshooting/README.md, troubleshooting/common_errors.md, troubleshooting/faq.md]
-  research_integration: [poe-world/poe-world.md, gnn/gnn_llm_neurosymbolic_active_inference.md, dspy/gnn_dspy.md]
+  research_integration: [poe-world/poe-world.md, gnn/advanced/gnn_llm_neurosymbolic_active_inference.md, dspy/gnn_dspy.md]
 coverage_metrics:
   total_documents: 70+
   total_content: 1.3MB+

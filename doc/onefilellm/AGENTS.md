@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Data Integration Agent | **Audience**: Researchers, Data Engineers | **Complexity**: Intermediate  
-> **Cross-References**: [README.md](README.md) | [OneFileLLM GNN Guide](onefilellm_gnn.md) | [LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
+> **Cross-References**: [README.md](README.md) | [OneFileLLM GNN Guide](onefilellm_gnn.md) | [LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -102,8 +102,8 @@ All documentation in this module adheres to professional standards:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 
 ### Data Processing Resources
 - **[DSPy Integration](../dspy/gnn_dspy.md)**: Structured prompting
@@ -111,14 +111,14 @@ All documentation in this module adheres to professional standards:
 - **[Data Processing](../CROSS_REFERENCE_INDEX.md#data-processing)**: Data processing tools
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
 ## See Also
 
 - **[OneFileLLM Cross-Reference](../CROSS_REFERENCE_INDEX.md#onefilellm)**: Cross-reference index entry
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[Data Processing](../CROSS_REFERENCE_INDEX.md#data-processing)**: Data processing tools
 - **[Main Index](../README.md)**: Return to main documentation
 

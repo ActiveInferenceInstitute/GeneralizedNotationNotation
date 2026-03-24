@@ -79,7 +79,6 @@ from utils.test_utils import TEST_DIR
 from utils.pipeline_template import (
     log_step_start,
     log_step_error,
-    log_step_warning
 )
 
 # Calculate project root (don't import from conftest as it's a pytest fixture)
@@ -372,144 +371,6 @@ class TestRunner:
 
         return report
 
-def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
-    """
-    Check if required test dependencies are available.
-    
-    Verifies that pytest and optional dependencies (pytest-cov, pytest-timeout)
-    are installed and available.
-    
-    Args:
-        logger: Logger instance for reporting
-    
-    Returns:
-        Dictionary with dependency status:
-        {
-            'pytest': bool,
-            'pytest_cov': bool,
-            'pytest_timeout': bool,
-            'all_required': bool
-        }
-    """
-    dependencies = {
-        "pytest": False,
-        "pytest-cov": False,
-        "pytest-xdist": False,
-        "psutil": False,
-        "coverage": False
-    }
-
-    try:
-        import pytest  # noqa: F811 - presence check
-        dependencies["pytest"] = True
-    except ImportError:
-        pass
-
-    try:
-        import pytest_cov  # noqa: F811 - presence check
-        dependencies["pytest-cov"] = True
-    except ImportError:
-        pass
-
-    try:
-        import xdist  # noqa: F811 - presence check
-        dependencies["pytest-xdist"] = True
-    except ImportError:
-        pass
-
-    try:
-        import psutil  # noqa: F811 - presence check
-        dependencies["psutil"] = True
-    except ImportError:
-        pass
-
-    try:
-        import coverage  # noqa: F811 - presence check
-        dependencies["coverage"] = True
-    except ImportError:
-        pass
-
-    # Log results
-    missing_deps = [name for name, available in dependencies.items() if not available]
-    if missing_deps:
-        logger.warning(f"⚠️ Missing test dependencies: {missing_deps}")
-    else:
-        logger.info("✅ All test dependencies available")
-
-    return dependencies
-
-def build_pytest_command(
-    test_markers: List[str] = None,
-    timeout_seconds: int = 600,
-    max_failures: int = 20,
-    parallel: bool = True,
-    verbose: bool = False,
-    generate_coverage: bool = True,
-    fast_only: bool = False,
-    include_slow: bool = False
-) -> List[str]:
-    """
-    Build pytest command with appropriate options.
-    
-    Constructs a pytest command line with all necessary flags and options
-    based on the provided parameters. Handles test filtering, timeout,
-    coverage, and execution mode settings.
-    
-    Args:
-        test_markers: List of pytest markers to include (e.g., ['fast', 'unit'])
-        timeout_seconds: Maximum execution time per test (default: 600)
-        max_failures: Maximum number of test failures before stopping (default: 20)
-        parallel: Enable parallel test execution (default: True)
-        verbose: Enable verbose output (default: False)
-        generate_coverage: Generate coverage reports (default: True)
-        fast_only: Run only fast tests, exclude slow tests (default: False)
-        include_slow: Include slow tests (default: False)
-    
-    Returns:
-        List of command arguments for subprocess.run()
-    
-    Example:
-        cmd = build_pytest_command(
-            test_markers=['fast'],
-            timeout_seconds=120,
-            max_failures=5,
-            verbose=True,
-            fast_only=True
-        )
-        # Returns: ['python', '-m', 'pytest', '--verbose', '--tb=short', ...]
-    """
-    cmd = [
-        sys.executable, "-m", "pytest",
-        "--verbose" if verbose else "--quiet",
-        "--tb=short",
-        f"--maxfail={max_failures}",
-        "--durations=10",
-        "--disable-warnings"
-    ]
-
-    # Add markers
-    if test_markers:
-        for marker in test_markers:
-            cmd.extend(["-m", marker])
-
-    # Add coverage if enabled
-    if generate_coverage:
-        cmd.extend([
-            "--cov=src",
-            "--cov-report=json",
-            "--cov-report=html",
-            "--cov-report=term-missing"
-        ])
-
-    # Add parallel execution if enabled
-    if parallel:
-        cmd.extend(["-n", "auto"])
-
-    # Add test path
-    cmd.append(str(TEST_DIR))
-
-    return cmd
-
 def run_tests(
     logger: logging.Logger,
     output_dir: Path,
@@ -539,10 +400,11 @@ def run_tests(
     try:
         log_step_start(logger, "Running optimized test suite")
 
-        # Check dependencies
+        # Check dependencies (pytest required; cov/xdist/etc. optional — see infrastructure.utils)
         dependencies = check_test_dependencies(logger)
-        if not all(dependencies.values()):
-            log_step_warning(logger, "Some test dependencies missing - functionality may be limited")
+        if not dependencies.get("pytest"):
+            log_step_error(logger, "pytest is not installed; aborting test step")
+            return False
 
         # For pipeline integration, run a focused subset of tests
         if fast_only and not comprehensive:

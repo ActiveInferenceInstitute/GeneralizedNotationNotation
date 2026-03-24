@@ -199,5 +199,5 @@ agent = Agent(A=A, B=B, C=C, D=D)
 
 ---
 
-*See also: [doc/cognitive_phenomena/learning_adaptation/](./learning_adaptation/) for learning models*
-*See also: [doc/cognitive_phenomena/perception/](./perception/) for perception models*
+*See also: [doc/cognitive_phenomena/learning_adaptation/](../../../../doc/cognitive_phenomena/learning_adaptation/README.md) for learning models*
+*See also: [doc/cognitive_phenomena/perception/](../../../../doc/cognitive_phenomena/perception/README.md) for perception models*

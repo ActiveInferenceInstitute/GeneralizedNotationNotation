@@ -333,7 +333,16 @@ class ModularTestRunner:
                 # Keep the subprocess environment deterministic: do not inherit
                 # `PYTEST_ADDOPTS` from the outer shell/editor.
                 env["PYTEST_ADDOPTS"] = " ".join(
-                    ["-vv", "-rA", "-s", "--durations=15", "-o", "console_output_style=classic", "--color=no"]
+                    [
+                        "-v",
+                        "-rA",
+                        "-s",
+                        "--durations=15",
+                        "-o",
+                        "console_output_style=classic",
+                        "--color=no",
+                        "--log-cli-level=WARNING",
+                    ]
                 ).strip()
                 env.setdefault("PYTHONUNBUFFERED", "1")
                 env.setdefault("TERM", "dumb")

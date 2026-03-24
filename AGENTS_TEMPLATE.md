@@ -616,7 +616,7 @@ cat output/[N]_[module]_output/[module]_processing_summary.json
 
 - [Pipeline Overview](README.md)
 - [Architecture Guide](ARCHITECTURE.md)
-- [.cursorrules](.cursorrules)
+- [.agent_rules](.agent_rules)
 
 ### External Resources
 

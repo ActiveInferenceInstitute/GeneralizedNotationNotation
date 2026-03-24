@@ -28,10 +28,10 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Formal Methods](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Formal verification approaches
 - **[Petri Nets](../petri_nets/README.md)**: Workflow modeling
 - **[Nock Integration](../nock/nock-gnn.md)**: Formal specification language
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -107,8 +107,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Formal Methods
 - **[Petri Nets](../petri_nets/README.md)**: Workflow modeling
@@ -116,7 +116,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Formal Verification](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Formal methods overview
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -133,7 +133,7 @@ All documentation in this module adheres to professional standards:
 
 - **[AXIOM Cross-Reference](../CROSS_REFERENCE_INDEX.md#axiom)**: Cross-reference index entry
 - **[Formal Methods](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Related formal verification approaches
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

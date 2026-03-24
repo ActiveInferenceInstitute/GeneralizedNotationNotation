@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 6.116841,
-  "timestamp": "2026-03-18T09:22:20.714006",
+  "execution_time": 1.555278,
+  "timestamp": "2026-03-24T13:59:21.284362",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -46,7 +46,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 3.482s\nResults saved to: output/12_execute_output/hmm_baseline/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 1.035s\nResults saved to: output/12_execute_output/hmm_baseline/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [

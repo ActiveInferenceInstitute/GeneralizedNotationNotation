@@ -6,12 +6,17 @@ pipeline:
   # Enable/disable pipeline execution
   enabled: true
 
-  # Pipeline steps to execute (0-23)
+  # Pipeline steps to execute (0-24)
   # Leave empty to run all steps
   steps: []
 
-  # Skip specific steps (13 = LLM processing — slow Ollama calls, ~10 min)
-  skip_steps: [13]
+  # Skip specific steps by number (e.g. [13] to skip LLM). Default: run all steps.
+  # Step 13 needs a local LLM (e.g. Ollama) and the model from src/llm/defaults.py or OLLAMA_MODEL.
+  skip_steps: []
+
+  # Step 2 test mode when not overridden on CLI (see src/utils/pipeline_config_merge.py)
+  fast_only: true
+  # comprehensive: false   # set true to run the full pytest suite in step 2
 
   # Force execution of specific steps
   force_steps: []
@@ -26,32 +31,18 @@ pipeline:
     step: 3600 # 1 hour per step
     total: 7200 # 2 hours total
 
-# UV environment settings
+# Step 1 defaults (read by main.py → 1_setup). CLI flags override these when present.
+setup:
+  # uv sync --extra dev (pytest-cov, xdist, coverage, linters, …)
+  dev: true
+  recreate_venv: false
+  # install_all_extras: false   # if true: uv sync --all-extras (every optional group; heavy)
+
+# Legacy / documentation only: main.py does not read uv.sync.* (use ``setup:`` above).
+# For manual installs: uv sync --extra dev | uv sync --all-extras
 uv:
-  # UV environment management
   recreate_uv_env: false
-
-  # UV environment directory (UV standard)
   uv_env_dir: ".venv"
-
-  # UV sync settings
-  sync:
-    # Install development dependencies
-    dev: false
-
-    # Install optional dependency groups needed for execution step
-    extras:
-      - active-inference # jax, jaxlib, flax, optax
-      - probabilistic-programming # numpyro
-      - ml-ai # torch
-      - graphs # discopy
-      - llm # ollama, openai
-
-    # Upgrade packages
-    upgrade: false
-
-    # Fast sync mode
-    fast: true
 
 # Input/output settings
 io:
@@ -175,7 +166,7 @@ testing_matrix:
 # LLM settings (Step 13)
 llm:
   # Default model for Ollama (overridden by OLLAMA_MODEL env var)
-  model: "gemma3:4b"
+  model: "smollm2:135m-instruct-q4_K_S"
 
   # Total budget for LLM processing in seconds (pipeline kills at 900s)
   timeout_seconds: 600

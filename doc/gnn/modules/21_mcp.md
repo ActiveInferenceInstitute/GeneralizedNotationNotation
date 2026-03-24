@@ -4,13 +4,13 @@
 
 Orchestrates Model Context Protocol (MCP) processing. Discovers all pipeline modules, registers every module's domain-specific tools, and serves them as MCP-compatible tools accessible to AI agents and IDE extensions.
 
-**Last Updated**: March 6, 2026  
-**Status**: ✅ All tools real (no placeholders), 0 skips, 1,522+ tests passing
+**Last Updated**: 2026-03-24  
+**Status**: Tools registered are audited by `test_mcp_audit.py`; full `pytest` counts are in the repository [README.md](../../../README.md).
 
 ## Usage
 
 ```bash
-python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+uv run python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Architecture
@@ -217,7 +217,7 @@ All tools are real named callable functions — no placeholders, no lambdas, no 
 
 ## Tool Quality Audit
 
-All tools verified by `src/tests/test_mcp_audit.py` (1,522+ tests, 0 failures, 0 skips):
+All tools verified by `src/tests/test_mcp_audit.py` (run as part of `src/tests/`; see [README.md](../../../README.md) for suite totals):
 
 - ✅ Every tool has a callable named function (no lambdas, no `None`)
 - ✅ Every tool has a non-empty description
@@ -228,7 +228,7 @@ All tools verified by `src/tests/test_mcp_audit.py` (1,522+ tests, 0 failures, 0
 Run the audit:
 
 ```bash
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
+uv run pytest src/tests/test_mcp_audit.py -v
 ```
 
 ## Output
@@ -238,5 +238,5 @@ PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
 
 ## Source
 
-- **Script**: [src/21_mcp.py](../../src/21_mcp.py)
-- **Audit Tests**: [src/tests/test_mcp_audit.py](../../src/tests/test_mcp_audit.py)
+- **Script**: [src/21_mcp.py](../../../src/21_mcp.py)
+- **Audit Tests**: [src/tests/test_mcp_audit.py](../../../src/tests/test_mcp_audit.py)

@@ -1,9 +1,9 @@
 # GNN Standards
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 ## Pipeline Processing Standards
 
@@ -77,7 +77,7 @@ def test_with_real_data():
 - Minimum 90% code coverage per module
 - Tests must validate real pipeline outputs against known-good baselines
 - Integration tests run the full pipeline with sample GNN files from `input/gnn_files/`
-- Tests are run via: `python -m pytest tests/ -v`
+- Tests are run via: `uv run pytest src/tests/ -v` (from repository root)
 
 ---
 
@@ -117,9 +117,9 @@ Every documentation file in `doc/gnn/` must include this header:
 # [Title]
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 ```
 
 ### Cross-Referencing

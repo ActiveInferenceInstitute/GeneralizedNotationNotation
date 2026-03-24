@@ -1,9 +1,8 @@
 # GNN Quick Start Tutorial
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
 
 **Goal**: Create and run your first GNN model in 15 minutes, no prior Active Inference knowledge required.
 
@@ -218,7 +217,7 @@ python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 # 📊 Resource estimation: [details]
 ```
 
-**If you see errors**: Check the [Common Errors Guide](../troubleshooting/common_errors.md) or compare with the template above.
+**If you see errors**: Check the [Common Errors Guide](../../troubleshooting/error_taxonomy.md) or compare with the template above.
 
 For more information on the type checker, see **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)**.
 
@@ -294,9 +293,9 @@ Your agent:
 
 ### Build Your Own Model
 
-1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
+1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../../templates/basic_gnn_template.md)
 2. **Model your domain**: What states, observations, actions make sense?
-3. **Get help**: Check [FAQ](../troubleshooting/faq.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+3. **Get help**: Check [FAQ](../README.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 4. **Process with pipeline**: Use `src/main.py` to run complete workflow
 
 ## 🧠 Key Concepts You've Learned
@@ -343,7 +342,7 @@ Your agent:
 - **Examples**: [Model gallery](gnn_examples_doc.md)
 - **Help**:
   - [FAQ](../README.md)
-  - [Error guide](../../troubleshooting/api_error_reference.md)
+  - [Error guide](../../troubleshooting/error_taxonomy.md)
   - [Support](../../SUPPORT.md)
 - **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 

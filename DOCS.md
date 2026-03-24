@@ -1,6 +1,6 @@
 # Generalized Notation Notation (GNN) — Comprehensive Documentation
 
-**Last Updated**: 2026-03-15
+**Last Updated**: 2026-03-23
 
 This document provides a complete, machine-parsable and human-accessible overview of GNN: the what, why, and how. It consolidates architecture, pipeline, data flows, artifacts, and integration points with multiple Mermaid diagrams.
 
@@ -204,7 +204,7 @@ flowchart LR
 
 ## References
 
-- `.cursorrules` — canonical pipeline description (0–24)
+- `.agent_rules` — canonical pipeline description (0–24)
 - `src/main.py` — orchestrator implementation
 - `doc/PIPELINE_SCRIPTS.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
@@ -244,3 +244,19 @@ flowchart LR
   ]
 }
 ```
+
+## Documentation maintenance
+
+Repeatable checks for Markdown in the repo (including tracked `output/**/*.md`; large trees may slow the scan):
+
+```bash
+uv run python doc/development/docs_audit.py   # writes doc/development/docs_audit_report.md
+```
+
+After reorganizing paths under `doc/gnn/`, refresh stale `gnn/...` links in bulk:
+
+```bash
+uv run python doc/development/rewrite_gnn_doc_links.py
+```
+
+Details: [doc/development/README.md](doc/development/README.md).

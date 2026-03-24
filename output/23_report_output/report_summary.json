@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-03-18T09:30:15.216979",
+  "report_generation_time": "2026-03-24T14:13:01.302891",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
@@ -17,7 +17,7 @@
           "total_size_mb": 0.07261466979980469
         }
       },
-      "last_modified": "2026-03-18T09:18:36.304854",
+      "last_modified": "2026-03-24T13:54:55.040958",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -33,14 +33,14 @@
       "directory": "output/1_setup_output",
       "exists": true,
       "file_count": 2,
-      "total_size_mb": 0.02,
+      "total_size_mb": 0.01,
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.017737388610839844
+          "total_size_mb": 0.013355255126953125
         }
       },
-      "last_modified": "2026-03-18T09:18:45.685933",
+      "last_modified": "2026-03-24T13:55:09.292134",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -49,31 +49,47 @@
     "2_tests_output": {
       "directory": "output/2_tests_output",
       "exists": true,
-      "file_count": 2,
-      "total_size_mb": 0.05,
+      "file_count": 6,
+      "total_size_mb": 1.07,
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 0.03034210205078125
+          "total_size_mb": 0.6804895401000977
         },
         ".txt": {
           "count": 1,
-          "total_size_mb": 0.020374298095703125
+          "total_size_mb": 0.30692481994628906
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.00016117095947265625
+        },
+        ".csv": {
+          "count": 1,
+          "total_size_mb": 9.34600830078125e-05
+        },
+        ".png": {
+          "count": 1,
+          "total_size_mb": 0.07970809936523438
+        },
+        ".json": {
+          "count": 1,
+          "total_size_mb": 0.0006694793701171875
         }
       },
-      "last_modified": "2026-03-18T09:19:51.436418",
+      "last_modified": "2026-03-24T14:06:57.520607",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [
         {
           "file": "pytest.log",
-          "size_mb": 0.03
+          "size_mb": 0.68
         }
       ],
       "key_files": [
         {
           "name": "pytest_reliable_output.txt",
-          "size_mb": 0.02,
+          "size_mb": 0.31,
           "type": ".txt"
         }
       ]
@@ -169,7 +185,7 @@
           "total_size_mb": 0.192596435546875
         }
       },
-      "last_modified": "2026-03-18T09:20:02.379943",
+      "last_modified": "2026-03-24T13:57:14.064817",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -192,7 +208,7 @@
           "total_size_mb": 0.00508880615234375
         }
       },
-      "last_modified": "2026-03-18T09:20:04.160779",
+      "last_modified": "2026-03-24T13:57:14.467117",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -219,7 +235,7 @@
           "total_size_mb": 0.00032711029052734375
         }
       },
-      "last_modified": "2026-03-18T09:20:06.717122",
+      "last_modified": "2026-03-24T13:57:17.415308",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -236,7 +252,7 @@
           "total_size_mb": 0.004118919372558594
         }
       },
-      "last_modified": "2026-03-18T09:20:09.706786",
+      "last_modified": "2026-03-24T13:57:20.250998",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -275,7 +291,7 @@
           "total_size_mb": 0.025316238403320312
         }
       },
-      "last_modified": "2026-03-18T09:20:10.094788",
+      "last_modified": "2026-03-24T13:57:20.726220",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -335,30 +351,34 @@
     "8_visualization_output": {
       "directory": "output/8_visualization_output",
       "exists": true,
-      "file_count": 128,
-      "total_size_mb": 19.46,
+      "file_count": 149,
+      "total_size_mb": 18.1,
       "file_types": {
         ".png": {
-          "count": 91,
-          "total_size_mb": 19.44516086578369
+          "count": 96,
+          "total_size_mb": 18.067590713500977
         },
         ".json": {
-          "count": 9,
-          "total_size_mb": 0.013118743896484375
+          "count": 17,
+          "total_size_mb": 0.029671669006347656
+        },
+        ".txt": {
+          "count": 8,
+          "total_size_mb": 0.001918792724609375
         },
         ".csv": {
           "count": 28,
           "total_size_mb": 0.0030422210693359375
         }
       },
-      "last_modified": "2026-03-18T09:21:10.394095",
+      "last_modified": "2026-03-24T13:57:47.742609",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "combined_analysis.png",
-          "size_mb": 0.38,
+          "size_mb": 0.37,
           "type": ".png"
         },
         {
@@ -374,6 +394,11 @@
         {
           "name": "simple_mdp_B_tensor.png",
           "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
+          "name": "simple_mdp_variable_parameter_bipartite.png",
+          "size_mb": 0.14,
           "type": ".png"
         },
         {
@@ -398,7 +423,7 @@
         },
         {
           "name": "simple_mdp_variable_type_distribution.png",
-          "size_mb": 0.26,
+          "size_mb": 0.19,
           "type": ".png"
         },
         {
@@ -408,12 +433,12 @@
         },
         {
           "name": "simple_mdp_combined_analysis.png",
-          "size_mb": 0.56,
+          "size_mb": 0.48,
           "type": ".png"
         },
         {
           "name": "simple_mdp_network_graph.png",
-          "size_mb": 0.4,
+          "size_mb": 0.36,
           "type": ".png"
         },
         {
@@ -438,7 +463,7 @@
         },
         {
           "name": "two_state_bistable_network_graph.png",
-          "size_mb": 0.46,
+          "size_mb": 0.41,
           "type": ".png"
         },
         {
@@ -448,12 +473,12 @@
         },
         {
           "name": "two_state_bistable_variable_type_distribution.png",
-          "size_mb": 0.32,
+          "size_mb": 0.19,
           "type": ".png"
         },
         {
           "name": "two_state_bistable_combined_analysis.png",
-          "size_mb": 0.64,
+          "size_mb": 0.5,
           "type": ".png"
         },
         {
@@ -472,13 +497,13 @@
           "type": ".png"
         },
         {
-          "name": "two_state_bistable_C_heatmap.png",
-          "size_mb": 0.08,
+          "name": "two_state_bistable_variable_parameter_bipartite.png",
+          "size_mb": 0.15,
           "type": ".png"
         },
         {
-          "name": "tmaze_epistemic_B_ctx_analysis.png",
-          "size_mb": 0.04,
+          "name": "two_state_bistable_C_heatmap.png",
+          "size_mb": 0.08,
           "type": ".png"
         },
         {
@@ -498,7 +523,12 @@
         },
         {
           "name": "tmaze_epistemic_variable_type_distribution.png",
-          "size_mb": 0.44,
+          "size_mb": 0.13,
+          "type": ".png"
+        },
+        {
+          "name": "tmaze_epistemic_variable_parameter_bipartite.png",
+          "size_mb": 0.23,
           "type": ".png"
         },
         {
@@ -508,17 +538,12 @@
         },
         {
           "name": "tmaze_epistemic_network_graph.png",
-          "size_mb": 0.69,
+          "size_mb": 0.59,
           "type": ".png"
         },
         {
           "name": "tmaze_epistemic_combined_analysis.png",
-          "size_mb": 0.79,
-          "type": ".png"
-        },
-        {
-          "name": "tmaze_epistemic_B_loc_analysis.png",
-          "size_mb": 0.05,
+          "size_mb": 0.44,
           "type": ".png"
         },
         {
@@ -563,7 +588,7 @@
         },
         {
           "name": "multi_armed_bandit_variable_type_distribution.png",
-          "size_mb": 0.31,
+          "size_mb": 0.19,
           "type": ".png"
         },
         {
@@ -583,12 +608,12 @@
         },
         {
           "name": "multi_armed_bandit_combined_analysis.png",
-          "size_mb": 0.63,
+          "size_mb": 0.5,
           "type": ".png"
         },
         {
           "name": "multi_armed_bandit_network_graph.png",
-          "size_mb": 0.46,
+          "size_mb": 0.36,
           "type": ".png"
         },
         {
@@ -604,6 +629,11 @@
         {
           "name": "multi_armed_bandit_section_content_length.png",
           "size_mb": 0.2,
+          "type": ".png"
+        },
+        {
+          "name": "multi_armed_bandit_variable_parameter_bipartite.png",
+          "size_mb": 0.14,
           "type": ".png"
         },
         {
@@ -628,7 +658,7 @@
         },
         {
           "name": "actinf_pomdp_agent_combined_analysis.png",
-          "size_mb": 0.79,
+          "size_mb": 0.49,
           "type": ".png"
         },
         {
@@ -638,12 +668,17 @@
         },
         {
           "name": "actinf_pomdp_agent_variable_type_distribution.png",
-          "size_mb": 0.46,
+          "size_mb": 0.19,
+          "type": ".png"
+        },
+        {
+          "name": "actinf_pomdp_agent_variable_parameter_bipartite.png",
+          "size_mb": 0.17,
           "type": ".png"
         },
         {
           "name": "actinf_pomdp_agent_network_graph.png",
-          "size_mb": 0.45,
+          "size_mb": 0.43,
           "type": ".png"
         },
         {
@@ -659,11 +694,6 @@
         {
           "name": "actinf_pomdp_agent_B_tensor.png",
           "size_mb": 0.17,
-          "type": ".png"
-        },
-        {
-          "name": "actinf_pomdp_agent_B_analysis.png",
-          "size_mb": 0.04,
           "type": ".png"
         },
         {
@@ -687,6 +717,11 @@
           "type": ".png"
         },
         {
+          "name": "hmm_baseline_variable_parameter_bipartite.png",
+          "size_mb": 0.13,
+          "type": ".png"
+        },
+        {
           "name": "hmm_baseline_matrix_size_distribution.png",
           "size_mb": 0.07,
           "type": ".png"
@@ -698,7 +733,7 @@
         },
         {
           "name": "hmm_baseline_network_graph.png",
-          "size_mb": 0.42,
+          "size_mb": 0.36,
           "type": ".png"
         },
         {
@@ -713,7 +748,7 @@
         },
         {
           "name": "deep_planning_horizon_variable_type_distribution.png",
-          "size_mb": 0.15,
+          "size_mb": 0.19,
           "type": ".png"
         },
         {
@@ -733,7 +768,7 @@
         },
         {
           "name": "deep_planning_horizon_combined_analysis.png",
-          "size_mb": 0.45,
+          "size_mb": 0.49,
           "type": ".png"
         },
         {
@@ -767,13 +802,18 @@
           "type": ".png"
         },
         {
+          "name": "deep_planning_horizon_variable_parameter_bipartite.png",
+          "size_mb": 0.21,
+          "type": ".png"
+        },
+        {
           "name": "markov_chain_generative_model.png",
           "size_mb": 0.21,
           "type": ".png"
         },
         {
           "name": "markov_chain_combined_analysis.png",
-          "size_mb": 0.6,
+          "size_mb": 0.46,
           "type": ".png"
         },
         {
@@ -793,7 +833,7 @@
         },
         {
           "name": "markov_chain_network_graph.png",
-          "size_mb": 0.36,
+          "size_mb": 0.28,
           "type": ".png"
         },
         {
@@ -808,7 +848,12 @@
         },
         {
           "name": "markov_chain_variable_type_distribution.png",
-          "size_mb": 0.28,
+          "size_mb": 0.15,
+          "type": ".png"
+        },
+        {
+          "name": "markov_chain_variable_parameter_bipartite.png",
+          "size_mb": 0.11,
           "type": ".png"
         }
       ]
@@ -816,20 +861,20 @@
     "9_advanced_viz_output": {
       "directory": "output/9_advanced_viz_output",
       "exists": true,
-      "file_count": 28,
-      "total_size_mb": 2.85,
+      "file_count": 26,
+      "total_size_mb": 2.54,
       "file_types": {
         ".png": {
-          "count": 15,
-          "total_size_mb": 2.649397850036621
-        },
-        ".html": {
-          "count": 2,
-          "total_size_mb": 0.062203407287597656
+          "count": 13,
+          "total_size_mb": 2.3497276306152344
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.009812355041503906
+          "total_size_mb": 0.009705543518066406
+        },
+        ".html": {
+          "count": 2,
+          "total_size_mb": 0.05085277557373047
         },
         ".d2": {
           "count": 5,
@@ -840,7 +885,7 @@
           "total_size_mb": 0.12569522857666016
         }
       },
-      "last_modified": "2026-03-18T09:21:22.152073",
+      "last_modified": "2026-03-24T13:58:15.076600",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -849,11 +894,6 @@
           "name": "continuous_navigation_network_metrics.png",
           "size_mb": 0.28,
           "type": ".png"
-        },
-        {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "size_mb": 0.03,
-          "type": ".html"
         },
         {
           "name": "predictive_coding_agent_policy_visualization.png",
@@ -868,16 +908,6 @@
         {
           "name": "continuous_navigation_policy_visualization.png",
           "size_mb": 0.06,
-          "type": ".png"
-        },
-        {
-          "name": "continuous_navigation_matrix_correlations.png",
-          "size_mb": 0.15,
-          "type": ".png"
-        },
-        {
-          "name": "predictive_coding_agent_matrix_correlations.png",
-          "size_mb": 0.15,
           "type": ".png"
         },
         {
@@ -896,6 +926,11 @@
           "type": ".json"
         },
         {
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "size_mb": 0.02,
+          "type": ".html"
+        },
+        {
           "name": "continuous_navigation_3d_visualization.png",
           "size_mb": 0.18,
           "type": ".png"
@@ -906,7 +941,7 @@
           "type": ".png"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
           "size_mb": 0.03,
           "type": ".html"
         },
@@ -973,7 +1008,7 @@
           "total_size_mb": 0.04358959197998047
         }
       },
-      "last_modified": "2026-03-18T09:21:23.162358",
+      "last_modified": "2026-03-24T13:58:18.657917",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -983,7 +1018,7 @@
       "directory": "output/11_render_output",
       "exists": true,
       "file_count": 198,
-      "total_size_mb": 0.95,
+      "total_size_mb": 0.94,
       "file_types": {
         ".md": {
           "count": 57,
@@ -991,7 +1026,7 @@
         },
         ".json": {
           "count": 75,
-          "total_size_mb": 0.27659034729003906
+          "total_size_mb": 0.2767829895019531
         },
         ".jl": {
           "count": 16,
@@ -999,7 +1034,7 @@
         },
         ".py": {
           "count": 40,
-          "total_size_mb": 0.37870025634765625
+          "total_size_mb": 0.36872100830078125
         },
         ".csv": {
           "count": 5,
@@ -1010,7 +1045,7 @@
           "total_size_mb": 0.004063606262207031
         }
       },
-      "last_modified": "2026-03-18T09:28:05.588295",
+      "last_modified": "2026-03-24T14:06:35.798189",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1037,7 +1072,7 @@
         },
         {
           "name": "Simple MDP Agent_pymdp.py",
-          "size_mb": 0.02,
+          "size_mb": 0.01,
           "type": ".py"
         },
         {
@@ -1305,27 +1340,27 @@
     "12_execute_output": {
       "directory": "output/12_execute_output",
       "exists": true,
-      "file_count": 185,
+      "file_count": 186,
       "total_size_mb": 0.94,
       "file_types": {
+        ".log": {
+          "count": 57,
+          "total_size_mb": 0.10983085632324219
+        },
         ".json": {
           "count": 123,
-          "total_size_mb": 0.8051900863647461
+          "total_size_mb": 0.8044290542602539
         },
         ".md": {
           "count": 1,
           "total_size_mb": 0.02425670623779297
-        },
-        ".log": {
-          "count": 56,
-          "total_size_mb": 0.11013126373291016
         },
         ".csv": {
           "count": 5,
           "total_size_mb": 0.0027589797973632812
         }
       },
-      "last_modified": "2026-03-18T09:28:21.451606",
+      "last_modified": "2026-03-24T14:06:51.590466",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1333,29 +1368,898 @@
     },
     "13_llm_output": {
       "directory": "output/13_llm_output",
-      "exists": false,
-      "file_count": 0,
-      "total_size_mb": 0.0,
-      "file_types": {},
-      "last_modified": null,
-      "status": "missing"
+      "exists": true,
+      "file_count": 344,
+      "total_size_mb": 1.67,
+      "file_types": {
+        ".json": {
+          "count": 172,
+          "total_size_mb": 1.3535585403442383
+        },
+        ".md": {
+          "count": 172,
+          "total_size_mb": 0.32071876525878906
+        }
+      },
+      "last_modified": "2026-03-24T14:11:33.638949",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "llm_summary.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.01,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.01,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "summarize_content.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "explain_model.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "practical_applications.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "runtime_behavior.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "identify_components.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "extract_parameters.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "nontechnical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "technical_description.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        },
+        {
+          "name": "analyze_structure.md",
+          "size_mb": 0.0,
+          "type": ".md"
+        }
+      ]
     },
     "14_ml_integration_output": {
       "directory": "output/14_ml_integration_output",
       "exists": true,
-      "file_count": 3,
-      "total_size_mb": 0.02,
+      "file_count": 1,
+      "total_size_mb": 0.01,
       "file_types": {
-        ".pkl": {
-          "count": 2,
-          "total_size_mb": 0.008207321166992188
-        },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.008128166198730469
+          "total_size_mb": 0.006478309631347656
         }
       },
-      "last_modified": "2026-03-18T09:28:34.167357",
+      "last_modified": "2026-03-24T14:11:34.670653",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1364,23 +2268,23 @@
     "15_audio_output": {
       "directory": "output/15_audio_output",
       "exists": true,
-      "file_count": 34,
-      "total_size_mb": 18.86,
+      "file_count": 37,
+      "total_size_mb": 20.54,
       "file_types": {
         ".wav": {
-          "count": 32,
-          "total_size_mb": 18.8428955078125
+          "count": 35,
+          "total_size_mb": 20.52530288696289
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.015877723693847656
+          "total_size_mb": 0.009435653686523438
         },
         ".md": {
           "count": 1,
           "total_size_mb": 0.0017566680908203125
         }
       },
-      "last_modified": "2026-03-18T09:28:41.324611",
+      "last_modified": "2026-03-24T14:11:37.668427",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1388,6 +2292,11 @@
         {
           "name": "hmm_baseline_tonal.wav",
           "size_mb": 0.42,
+          "type": ".wav"
+        },
+        {
+          "name": "ambient.wav",
+          "size_mb": 0.84,
           "type": ".wav"
         },
         {
@@ -1461,8 +2370,18 @@
           "type": ".wav"
         },
         {
+          "name": "rhythmic.wav",
+          "size_mb": 0.42,
+          "type": ".wav"
+        },
+        {
           "name": "deep_planning_horizon_sonification.wav",
           "size_mb": 0.67,
+          "type": ".wav"
+        },
+        {
+          "name": "tonal.wav",
+          "size_mb": 0.42,
           "type": ".wav"
         },
         {
@@ -1551,11 +2470,11 @@
       "directory": "output/16_analysis_output",
       "exists": true,
       "file_count": 412,
-      "total_size_mb": 37.49,
+      "total_size_mb": 37.73,
       "file_types": {
         ".json": {
           "count": 26,
-          "total_size_mb": 0.3191652297973633
+          "total_size_mb": 0.31929588317871094
         },
         ".md": {
           "count": 3,
@@ -1563,10 +2482,10 @@
         },
         ".png": {
           "count": 383,
-          "total_size_mb": 37.15919303894043
+          "total_size_mb": 37.39861011505127
         }
       },
-      "last_modified": "2026-03-18T09:30:07.663725",
+      "last_modified": "2026-03-24T14:12:55.080296",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1598,7 +2517,7 @@
           "total_size_mb": 0.000202178955078125
         }
       },
-      "last_modified": "2026-03-18T09:30:08.518127",
+      "last_modified": "2026-03-24T14:12:55.824197",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1619,7 +2538,7 @@
           "total_size_mb": 0.0004978179931640625
         }
       },
-      "last_modified": "2026-03-18T09:30:08.825520",
+      "last_modified": "2026-03-24T14:12:56.255637",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1640,7 +2559,7 @@
           "total_size_mb": 0.009815216064453125
         }
       },
-      "last_modified": "2026-03-18T09:30:09.133999",
+      "last_modified": "2026-03-24T14:12:56.660455",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1649,23 +2568,23 @@
     "20_website_output": {
       "directory": "output/20_website_output",
       "exists": true,
-      "file_count": 25,
-      "total_size_mb": 3.01,
+      "file_count": 23,
+      "total_size_mb": 2.71,
       "file_types": {
         ".html": {
           "count": 9,
-          "total_size_mb": 0.3645305633544922
+          "total_size_mb": 0.3638572692871094
         },
         ".json": {
           "count": 1,
           "total_size_mb": 3.528594970703125e-05
         },
         ".png": {
-          "count": 15,
-          "total_size_mb": 2.649397850036621
+          "count": 13,
+          "total_size_mb": 2.3497276306152344
         }
       },
-      "last_modified": "2026-03-18T09:30:09.558046",
+      "last_modified": "2026-03-24T14:12:57.358908",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1702,16 +2621,16 @@
         },
         {
           "name": "reports.html",
-          "size_mb": 0.08,
+          "size_mb": 0.09,
           "type": ".html"
         },
         {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "size_mb": 0.03,
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "size_mb": 0.02,
           "type": ".html"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
           "size_mb": 0.03,
           "type": ".html"
         }
@@ -1728,7 +2647,7 @@
           "total_size_mb": 0.058349609375
         }
       },
-      "last_modified": "2026-03-18T09:30:12.823092",
+      "last_modified": "2026-03-24T14:13:00.046906",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1761,10 +2680,10 @@
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.06499576568603516
+          "total_size_mb": 0.07156753540039062
         }
       },
-      "last_modified": "2026-03-18T09:30:14.807400",
+      "last_modified": "2026-03-24T14:13:00.908372",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1776,7 +2695,7 @@
         },
         {
           "name": "navigation.html",
-          "size_mb": 0.06,
+          "size_mb": 0.07,
           "type": ".html"
         }
       ]
@@ -1797,32 +2716,40 @@
     }
   },
   "summary": {
-    "total_files_processed": 1539,
+    "total_files_processed": 1906,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 87.54000000000002,
-    "success_rate": 95.83333333333334
+    "total_size_mb": 90.15,
+    "success_rate": 100.0
   },
   "performance_metrics": {},
   "error_analysis": {},
   "file_type_analysis": {
     "total_by_type": {
       ".json": {
-        "count": 328,
-        "total_size_mb": 2.36
+        "count": 509,
+        "total_size_mb": 3.72
       },
       ".md": {
-        "count": 106,
-        "total_size_mb": 0.25
+        "count": 279,
+        "total_size_mb": 0.57
       },
       ".log": {
-        "count": 57,
-        "total_size_mb": 0.14
+        "count": 58,
+        "total_size_mb": 0.79
       },
       ".txt": {
-        "count": 6,
-        "total_size_mb": 0.02
+        "count": 14,
+        "total_size_mb": 0.31
+      },
+      ".csv": {
+        "count": 39,
+        "total_size_mb": 0.01
+      },
+      ".png": {
+        "count": 506,
+        "total_size_mb": 60.25
       },
       ".bnf": {
         "count": 19,
@@ -1837,8 +2764,8 @@
         "total_size_mb": 0.11
       },
       ".pkl": {
-        "count": 42,
-        "total_size_mb": 0.38
+        "count": 40,
+        "total_size_mb": 0.37
       },
       ".z": {
         "count": 19,
@@ -1898,7 +2825,7 @@
       },
       ".py": {
         "count": 59,
-        "total_size_mb": 0.57
+        "total_size_mb": 0.56
       },
       ".gexf": {
         "count": 2,
@@ -1907,14 +2834,6 @@
       ".graphml": {
         "count": 2,
         "total_size_mb": 0.0
-      },
-      ".png": {
-        "count": 504,
-        "total_size_mb": 61.9
-      },
-      ".csv": {
-        "count": 38,
-        "total_size_mb": 0.01
       },
       ".html": {
         "count": 12,
@@ -1933,8 +2852,8 @@
         "total_size_mb": 0.2
       },
       ".wav": {
-        "count": 32,
-        "total_size_mb": 18.84
+        "count": 35,
+        "total_size_mb": 20.53
       }
     },
     "largest_files_by_type": {},
@@ -1946,7 +2865,11 @@
         },
         "1_setup_output": {
           "count": 2,
-          "size_mb": 0.017737388610839844
+          "size_mb": 0.013355255126953125
+        },
+        "2_tests_output": {
+          "count": 1,
+          "size_mb": 0.0006694793701171875
         },
         "3_gnn_output": {
           "count": 41,
@@ -1969,12 +2892,12 @@
           "size_mb": 0.05163288116455078
         },
         "8_visualization_output": {
-          "count": 9,
-          "size_mb": 0.013118743896484375
+          "count": 17,
+          "size_mb": 0.029671669006347656
         },
         "9_advanced_viz_output": {
           "count": 1,
-          "size_mb": 0.009812355041503906
+          "size_mb": 0.009705543518066406
         },
         "10_ontology_output": {
           "count": 11,
@@ -1982,23 +2905,27 @@
         },
         "11_render_output": {
           "count": 75,
-          "size_mb": 0.27659034729003906
+          "size_mb": 0.2767829895019531
         },
         "12_execute_output": {
           "count": 123,
-          "size_mb": 0.8051900863647461
+          "size_mb": 0.8044290542602539
+        },
+        "13_llm_output": {
+          "count": 172,
+          "size_mb": 1.3535585403442383
         },
         "14_ml_integration_output": {
           "count": 1,
-          "size_mb": 0.008128166198730469
+          "size_mb": 0.006478309631347656
         },
         "15_audio_output": {
           "count": 1,
-          "size_mb": 0.015877723693847656
+          "size_mb": 0.009435653686523438
         },
         "16_analysis_output": {
           "count": 26,
-          "size_mb": 0.3191652297973633
+          "size_mb": 0.31929588317871094
         },
         "17_integration_output": {
           "count": 1,
@@ -2030,6 +2957,10 @@
           "count": 19,
           "size_mb": 0.07261466979980469
         },
+        "2_tests_output": {
+          "count": 1,
+          "size_mb": 0.00016117095947265625
+        },
         "3_gnn_output": {
           "count": 19,
           "size_mb": 0.034272193908691406
@@ -2045,6 +2976,10 @@
         "12_execute_output": {
           "count": 1,
           "size_mb": 0.02425670623779297
+        },
+        "13_llm_output": {
+          "count": 172,
+          "size_mb": 0.32071876525878906
         },
         "15_audio_output": {
           "count": 1,
@@ -2074,21 +3009,65 @@
       ".log": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.03034210205078125
+          "size_mb": 0.6804895401000977
         },
         "12_execute_output": {
-          "count": 56,
-          "size_mb": 0.11013126373291016
+          "count": 57,
+          "size_mb": 0.10983085632324219
         }
       },
       ".txt": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.020374298095703125
+          "size_mb": 0.30692481994628906
+        },
+        "8_visualization_output": {
+          "count": 8,
+          "size_mb": 0.001918792724609375
         },
         "11_render_output": {
           "count": 5,
           "size_mb": 0.004063606262207031
+        }
+      },
+      ".csv": {
+        "2_tests_output": {
+          "count": 1,
+          "size_mb": 9.34600830078125e-05
+        },
+        "8_visualization_output": {
+          "count": 28,
+          "size_mb": 0.0030422210693359375
+        },
+        "11_render_output": {
+          "count": 5,
+          "size_mb": 0.0027589797973632812
+        },
+        "12_execute_output": {
+          "count": 5,
+          "size_mb": 0.0027589797973632812
+        }
+      },
+      ".png": {
+        "2_tests_output": {
+          "count": 1,
+          "size_mb": 0.07970809936523438
+        },
+        "8_visualization_output": {
+          "count": 96,
+          "size_mb": 18.067590713500977
+        },
+        "9_advanced_viz_output": {
+          "count": 13,
+          "size_mb": 2.3497276306152344
+        },
+        "16_analysis_output": {
+          "count": 383,
+          "size_mb": 37.39861011505127
+        },
+        "20_website_output": {
+          "count": 13,
+          "size_mb": 2.3497276306152344
         }
       },
       ".bnf": {
@@ -2117,10 +3096,6 @@
         "7_export_output": {
           "count": 2,
           "size_mb": 0.025316238403320312
-        },
-        "14_ml_integration_output": {
-          "count": 2,
-          "size_mb": 0.008207321166992188
         }
       },
       ".z": {
@@ -2218,7 +3193,7 @@
         },
         "11_render_output": {
           "count": 40,
-          "size_mb": 0.37870025634765625
+          "size_mb": 0.36872100830078125
         }
       },
       ".gexf": {
@@ -2233,50 +3208,18 @@
           "size_mb": 0.0041046142578125
         }
       },
-      ".png": {
-        "8_visualization_output": {
-          "count": 91,
-          "size_mb": 19.44516086578369
-        },
-        "9_advanced_viz_output": {
-          "count": 15,
-          "size_mb": 2.649397850036621
-        },
-        "16_analysis_output": {
-          "count": 383,
-          "size_mb": 37.15919303894043
-        },
-        "20_website_output": {
-          "count": 15,
-          "size_mb": 2.649397850036621
-        }
-      },
-      ".csv": {
-        "8_visualization_output": {
-          "count": 28,
-          "size_mb": 0.0030422210693359375
-        },
-        "11_render_output": {
-          "count": 5,
-          "size_mb": 0.0027589797973632812
-        },
-        "12_execute_output": {
-          "count": 5,
-          "size_mb": 0.0027589797973632812
-        }
-      },
       ".html": {
         "9_advanced_viz_output": {
           "count": 2,
-          "size_mb": 0.062203407287597656
+          "size_mb": 0.05085277557373047
         },
         "20_website_output": {
           "count": 9,
-          "size_mb": 0.3645305633544922
+          "size_mb": 0.3638572692871094
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.06499576568603516
+          "size_mb": 0.07156753540039062
         }
       },
       ".d2": {
@@ -2299,8 +3242,8 @@
       },
       ".wav": {
         "15_audio_output": {
-          "count": 32,
-          "size_mb": 18.8428955078125
+          "count": 35,
+          "size_mb": 20.52530288696289
         }
       }
     }
@@ -2417,6 +3360,13 @@
         "missing_prerequisites": [],
         "status": "complete"
       },
+      "13_llm_output": {
+        "prerequisites": [
+          "3_gnn_output"
+        ],
+        "missing_prerequisites": [],
+        "status": "complete"
+      },
       "14_ml_integration_output": {
         "prerequisites": [
           "3_gnn_output"
@@ -2494,11 +3444,11 @@
     "missing_prerequisites": []
   },
   "visualizations": {
-    "total_count": 122,
+    "total_count": 125,
     "by_step": {
       "8_visualization_output": {
         "step": "8_visualization_output",
-        "count": 91,
+        "count": 96,
         "files": [
           {
             "name": "combined_analysis.png",
@@ -2506,8 +3456,8 @@
             "relative_path": "8_visualization_output/combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 395153,
-            "size_mb": 0.38,
+            "size_bytes": 391886,
+            "size_mb": 0.37,
             "step": "8_visualization_output"
           },
           {
@@ -2526,7 +3476,7 @@
             "relative_path": "8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 197405,
+            "size_bytes": 197555,
             "size_mb": 0.19,
             "step": "8_visualization_output"
           },
@@ -2538,6 +3488,16 @@
             "extension": ".png",
             "size_bytes": 224007,
             "size_mb": 0.21,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "simple_mdp_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 144586,
+            "size_mb": 0.14,
             "step": "8_visualization_output"
           },
           {
@@ -2586,8 +3546,8 @@
             "relative_path": "8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 271317,
-            "size_mb": 0.26,
+            "size_bytes": 197951,
+            "size_mb": 0.19,
             "step": "8_visualization_output"
           },
           {
@@ -2606,8 +3566,8 @@
             "relative_path": "8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 589667,
-            "size_mb": 0.56,
+            "size_bytes": 504262,
+            "size_mb": 0.48,
             "step": "8_visualization_output"
           },
           {
@@ -2616,8 +3576,8 @@
             "relative_path": "8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 422996,
-            "size_mb": 0.4,
+            "size_bytes": 379582,
+            "size_mb": 0.36,
             "step": "8_visualization_output"
           },
           {
@@ -2656,7 +3616,7 @@
             "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 209417,
+            "size_bytes": 209561,
             "size_mb": 0.2,
             "step": "8_visualization_output"
           },
@@ -2666,8 +3626,8 @@
             "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 478033,
-            "size_mb": 0.46,
+            "size_bytes": 432543,
+            "size_mb": 0.41,
             "step": "8_visualization_output"
           },
           {
@@ -2686,8 +3646,8 @@
             "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 333856,
-            "size_mb": 0.32,
+            "size_bytes": 197290,
+            "size_mb": 0.19,
             "step": "8_visualization_output"
           },
           {
@@ -2696,8 +3656,8 @@
             "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 670592,
-            "size_mb": 0.64,
+            "size_bytes": 527859,
+            "size_mb": 0.5,
             "step": "8_visualization_output"
           },
           {
@@ -2731,6 +3691,16 @@
             "step": "8_visualization_output"
           },
           {
+            "name": "two_state_bistable_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 158076,
+            "size_mb": 0.15,
+            "step": "8_visualization_output"
+          },
+          {
             "name": "two_state_bistable_C_heatmap.png",
             "path": "output/8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
             "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
@@ -2738,16 +3708,6 @@
             "extension": ".png",
             "size_bytes": 85042,
             "size_mb": 0.08,
-            "step": "8_visualization_output"
-          },
-          {
-            "name": "tmaze_epistemic_B_ctx_analysis.png",
-            "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_ctx_analysis.png",
-            "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_ctx_analysis.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 39587,
-            "size_mb": 0.04,
             "step": "8_visualization_output"
           },
           {
@@ -2786,8 +3746,18 @@
             "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 464419,
-            "size_mb": 0.44,
+            "size_bytes": 133787,
+            "size_mb": 0.13,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "tmaze_epistemic_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 237651,
+            "size_mb": 0.23,
             "step": "8_visualization_output"
           },
           {
@@ -2806,8 +3776,8 @@
             "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 723549,
-            "size_mb": 0.69,
+            "size_bytes": 618821,
+            "size_mb": 0.59,
             "step": "8_visualization_output"
           },
           {
@@ -2816,18 +3786,8 @@
             "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 825347,
-            "size_mb": 0.79,
-            "step": "8_visualization_output"
-          },
-          {
-            "name": "tmaze_epistemic_B_loc_analysis.png",
-            "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_analysis.png",
-            "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_analysis.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 48680,
-            "size_mb": 0.05,
+            "size_bytes": 460601,
+            "size_mb": 0.44,
             "step": "8_visualization_output"
           },
           {
@@ -2846,7 +3806,7 @@
             "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 208884,
+            "size_bytes": 209059,
             "size_mb": 0.2,
             "step": "8_visualization_output"
           },
@@ -2916,8 +3876,8 @@
             "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 325619,
-            "size_mb": 0.31,
+            "size_bytes": 200066,
+            "size_mb": 0.19,
             "step": "8_visualization_output"
           },
           {
@@ -2956,8 +3916,8 @@
             "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 665335,
-            "size_mb": 0.63,
+            "size_bytes": 522097,
+            "size_mb": 0.5,
             "step": "8_visualization_output"
           },
           {
@@ -2966,8 +3926,8 @@
             "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 479365,
-            "size_mb": 0.46,
+            "size_bytes": 380911,
+            "size_mb": 0.36,
             "step": "8_visualization_output"
           },
           {
@@ -2996,8 +3956,18 @@
             "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 209061,
+            "size_bytes": 209140,
             "size_mb": 0.2,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "multi_armed_bandit_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 146077,
+            "size_mb": 0.14,
             "step": "8_visualization_output"
           },
           {
@@ -3026,7 +3996,7 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 200971,
+            "size_bytes": 200898,
             "size_mb": 0.19,
             "step": "8_visualization_output"
           },
@@ -3046,8 +4016,8 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 825399,
-            "size_mb": 0.79,
+            "size_bytes": 518020,
+            "size_mb": 0.49,
             "step": "8_visualization_output"
           },
           {
@@ -3066,8 +4036,18 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 485737,
-            "size_mb": 0.46,
+            "size_bytes": 196360,
+            "size_mb": 0.19,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 175307,
+            "size_mb": 0.17,
             "step": "8_visualization_output"
           },
           {
@@ -3076,8 +4056,8 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 471229,
-            "size_mb": 0.45,
+            "size_bytes": 452078,
+            "size_mb": 0.43,
             "step": "8_visualization_output"
           },
           {
@@ -3111,16 +4091,6 @@
             "step": "8_visualization_output"
           },
           {
-            "name": "actinf_pomdp_agent_B_analysis.png",
-            "path": "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-            "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 42784,
-            "size_mb": 0.04,
-            "step": "8_visualization_output"
-          },
-          {
             "name": "hmm_baseline_B_heatmap.png",
             "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",
             "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",
@@ -3136,7 +4106,7 @@
             "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 169444,
+            "size_bytes": 171448,
             "size_mb": 0.16,
             "step": "8_visualization_output"
           },
@@ -3161,6 +4131,16 @@
             "step": "8_visualization_output"
           },
           {
+            "name": "hmm_baseline_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 138131,
+            "size_mb": 0.13,
+            "step": "8_visualization_output"
+          },
+          {
             "name": "hmm_baseline_matrix_size_distribution.png",
             "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_matrix_size_distribution.png",
             "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_matrix_size_distribution.png",
@@ -3176,7 +4156,7 @@
             "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 201759,
+            "size_bytes": 201706,
             "size_mb": 0.19,
             "step": "8_visualization_output"
           },
@@ -3186,8 +4166,8 @@
             "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 437806,
-            "size_mb": 0.42,
+            "size_bytes": 377496,
+            "size_mb": 0.36,
             "step": "8_visualization_output"
           },
           {
@@ -3196,7 +4176,7 @@
             "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 493743,
+            "size_bytes": 492763,
             "size_mb": 0.47,
             "step": "8_visualization_output"
           },
@@ -3216,8 +4196,8 @@
             "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 156438,
-            "size_mb": 0.15,
+            "size_bytes": 196670,
+            "size_mb": 0.19,
             "step": "8_visualization_output"
           },
           {
@@ -3226,7 +4206,7 @@
             "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 711442,
+            "size_bytes": 711015,
             "size_mb": 0.68,
             "step": "8_visualization_output"
           },
@@ -3256,8 +4236,8 @@
             "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 475345,
-            "size_mb": 0.45,
+            "size_bytes": 517400,
+            "size_mb": 0.49,
             "step": "8_visualization_output"
           },
           {
@@ -3316,8 +4296,18 @@
             "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 207781,
+            "size_bytes": 207793,
             "size_mb": 0.2,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "deep_planning_horizon_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 223103,
+            "size_mb": 0.21,
             "step": "8_visualization_output"
           },
           {
@@ -3336,8 +4326,8 @@
             "relative_path": "8_visualization_output/markov_chain/markov_chain_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 625812,
-            "size_mb": 0.6,
+            "size_bytes": 486475,
+            "size_mb": 0.46,
             "step": "8_visualization_output"
           },
           {
@@ -3366,7 +4356,7 @@
             "relative_path": "8_visualization_output/markov_chain/markov_chain_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 199419,
+            "size_bytes": 199438,
             "size_mb": 0.19,
             "step": "8_visualization_output"
           },
@@ -3376,8 +4366,8 @@
             "relative_path": "8_visualization_output/markov_chain/markov_chain_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 380956,
-            "size_mb": 0.36,
+            "size_bytes": 288411,
+            "size_mb": 0.28,
             "step": "8_visualization_output"
           },
           {
@@ -3406,15 +4396,25 @@
             "relative_path": "8_visualization_output/markov_chain/markov_chain_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 294509,
-            "size_mb": 0.28,
+            "size_bytes": 161446,
+            "size_mb": 0.15,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "markov_chain_variable_parameter_bipartite.png",
+            "path": "output/8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+            "relative_path": "8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 119050,
+            "size_mb": 0.11,
             "step": "8_visualization_output"
           }
         ]
       },
       "9_advanced_viz_output": {
         "step": "9_advanced_viz_output",
-        "count": 22,
+        "count": 20,
         "files": [
           {
             "name": "continuous_navigation_network_metrics.png",
@@ -3454,26 +4454,6 @@
             "extension": ".png",
             "size_bytes": 66212,
             "size_mb": 0.06,
-            "step": "9_advanced_viz_output"
-          },
-          {
-            "name": "continuous_navigation_matrix_correlations.png",
-            "path": "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-            "relative_path": "9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 156928,
-            "size_mb": 0.15,
-            "step": "9_advanced_viz_output"
-          },
-          {
-            "name": "predictive_coding_agent_matrix_correlations.png",
-            "path": "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-            "relative_path": "9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 157299,
-            "size_mb": 0.15,
             "step": "9_advanced_viz_output"
           },
           {
@@ -3617,22 +4597,22 @@
             "step": "9_advanced_viz_output"
           },
           {
-            "name": "predictive_coding_agent_interactive_dashboard.html",
-            "path": "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-            "relative_path": "9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+            "name": "predictive_coding_agent_dashboard_fallback.html",
+            "path": "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
+            "relative_path": "9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 31694,
-            "size_mb": 0.03,
+            "size_bytes": 25726,
+            "size_mb": 0.02,
             "step": "9_advanced_viz_output"
           },
           {
-            "name": "continuous_navigation_interactive_dashboard.html",
-            "path": "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-            "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+            "name": "continuous_navigation_dashboard_fallback.html",
+            "path": "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
+            "relative_path": "9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 33531,
+            "size_bytes": 27597,
             "size_mb": 0.03,
             "step": "9_advanced_viz_output"
           }
@@ -3658,7 +4638,7 @@
             "relative_path": "20_website_output/pipeline.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 16503,
+            "size_bytes": 16499,
             "size_mb": 0.02,
             "step": "20_website_output"
           },
@@ -3668,7 +4648,7 @@
             "relative_path": "20_website_output/index.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 16651,
+            "size_bytes": 16647,
             "size_mb": 0.02,
             "step": "20_website_output"
           },
@@ -3678,7 +4658,7 @@
             "relative_path": "20_website_output/analysis.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 169543,
+            "size_bytes": 169592,
             "size_mb": 0.16,
             "step": "20_website_output"
           },
@@ -3698,7 +4678,7 @@
             "relative_path": "20_website_output/visualization.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 15501,
+            "size_bytes": 14845,
             "size_mb": 0.01,
             "step": "20_website_output"
           },
@@ -3708,27 +4688,27 @@
             "relative_path": "20_website_output/reports.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 78875,
-            "size_mb": 0.08,
+            "size_bytes": 90686,
+            "size_mb": 0.09,
             "step": "20_website_output"
           },
           {
-            "name": "predictive_coding_agent_interactive_dashboard.html",
-            "path": "output/20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
-            "relative_path": "20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
+            "name": "predictive_coding_agent_dashboard_fallback.html",
+            "path": "output/20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
+            "relative_path": "20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 31694,
-            "size_mb": 0.03,
+            "size_bytes": 25726,
+            "size_mb": 0.02,
             "step": "20_website_output"
           },
           {
-            "name": "continuous_navigation_interactive_dashboard.html",
-            "path": "output/20_website_output/assets/continuous_navigation_interactive_dashboard.html",
-            "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
+            "name": "continuous_navigation_dashboard_fallback.html",
+            "path": "output/20_website_output/assets/continuous_navigation_dashboard_fallback.html",
+            "relative_path": "20_website_output/assets/continuous_navigation_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 33531,
+            "size_bytes": 27597,
             "size_mb": 0.03,
             "step": "20_website_output"
           }
@@ -3743,8 +4723,8 @@
           "relative_path": "8_visualization_output/combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 395153,
-          "size_mb": 0.38,
+          "size_bytes": 391886,
+          "size_mb": 0.37,
           "step": "8_visualization_output"
         },
         {
@@ -3763,7 +4743,7 @@
           "relative_path": "8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 197405,
+          "size_bytes": 197555,
           "size_mb": 0.19,
           "step": "8_visualization_output"
         },
@@ -3775,6 +4755,16 @@
           "extension": ".png",
           "size_bytes": 224007,
           "size_mb": 0.21,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "simple_mdp_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 144586,
+          "size_mb": 0.14,
           "step": "8_visualization_output"
         },
         {
@@ -3823,8 +4813,8 @@
           "relative_path": "8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 271317,
-          "size_mb": 0.26,
+          "size_bytes": 197951,
+          "size_mb": 0.19,
           "step": "8_visualization_output"
         },
         {
@@ -3843,8 +4833,8 @@
           "relative_path": "8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 589667,
-          "size_mb": 0.56,
+          "size_bytes": 504262,
+          "size_mb": 0.48,
           "step": "8_visualization_output"
         },
         {
@@ -3853,8 +4843,8 @@
           "relative_path": "8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 422996,
-          "size_mb": 0.4,
+          "size_bytes": 379582,
+          "size_mb": 0.36,
           "step": "8_visualization_output"
         },
         {
@@ -3893,7 +4883,7 @@
           "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 209417,
+          "size_bytes": 209561,
           "size_mb": 0.2,
           "step": "8_visualization_output"
         },
@@ -3903,8 +4893,8 @@
           "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 478033,
-          "size_mb": 0.46,
+          "size_bytes": 432543,
+          "size_mb": 0.41,
           "step": "8_visualization_output"
         },
         {
@@ -3923,8 +4913,8 @@
           "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 333856,
-          "size_mb": 0.32,
+          "size_bytes": 197290,
+          "size_mb": 0.19,
           "step": "8_visualization_output"
         },
         {
@@ -3933,8 +4923,8 @@
           "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 670592,
-          "size_mb": 0.64,
+          "size_bytes": 527859,
+          "size_mb": 0.5,
           "step": "8_visualization_output"
         },
         {
@@ -3968,6 +4958,16 @@
           "step": "8_visualization_output"
         },
         {
+          "name": "two_state_bistable_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 158076,
+          "size_mb": 0.15,
+          "step": "8_visualization_output"
+        },
+        {
           "name": "two_state_bistable_C_heatmap.png",
           "path": "output/8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
           "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
@@ -3975,16 +4975,6 @@
           "extension": ".png",
           "size_bytes": 85042,
           "size_mb": 0.08,
-          "step": "8_visualization_output"
-        },
-        {
-          "name": "tmaze_epistemic_B_ctx_analysis.png",
-          "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_ctx_analysis.png",
-          "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_ctx_analysis.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 39587,
-          "size_mb": 0.04,
           "step": "8_visualization_output"
         },
         {
@@ -4023,8 +5013,18 @@
           "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 464419,
-          "size_mb": 0.44,
+          "size_bytes": 133787,
+          "size_mb": 0.13,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "tmaze_epistemic_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 237651,
+          "size_mb": 0.23,
           "step": "8_visualization_output"
         },
         {
@@ -4043,8 +5043,8 @@
           "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 723549,
-          "size_mb": 0.69,
+          "size_bytes": 618821,
+          "size_mb": 0.59,
           "step": "8_visualization_output"
         },
         {
@@ -4053,18 +5053,8 @@
           "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 825347,
-          "size_mb": 0.79,
-          "step": "8_visualization_output"
-        },
-        {
-          "name": "tmaze_epistemic_B_loc_analysis.png",
-          "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_analysis.png",
-          "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_analysis.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 48680,
-          "size_mb": 0.05,
+          "size_bytes": 460601,
+          "size_mb": 0.44,
           "step": "8_visualization_output"
         },
         {
@@ -4083,7 +5073,7 @@
           "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 208884,
+          "size_bytes": 209059,
           "size_mb": 0.2,
           "step": "8_visualization_output"
         },
@@ -4153,8 +5143,8 @@
           "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 325619,
-          "size_mb": 0.31,
+          "size_bytes": 200066,
+          "size_mb": 0.19,
           "step": "8_visualization_output"
         },
         {
@@ -4193,8 +5183,8 @@
           "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 665335,
-          "size_mb": 0.63,
+          "size_bytes": 522097,
+          "size_mb": 0.5,
           "step": "8_visualization_output"
         },
         {
@@ -4203,8 +5193,8 @@
           "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 479365,
-          "size_mb": 0.46,
+          "size_bytes": 380911,
+          "size_mb": 0.36,
           "step": "8_visualization_output"
         },
         {
@@ -4233,8 +5223,18 @@
           "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 209061,
+          "size_bytes": 209140,
           "size_mb": 0.2,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "multi_armed_bandit_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 146077,
+          "size_mb": 0.14,
           "step": "8_visualization_output"
         },
         {
@@ -4263,7 +5263,7 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 200971,
+          "size_bytes": 200898,
           "size_mb": 0.19,
           "step": "8_visualization_output"
         },
@@ -4283,8 +5283,8 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 825399,
-          "size_mb": 0.79,
+          "size_bytes": 518020,
+          "size_mb": 0.49,
           "step": "8_visualization_output"
         },
         {
@@ -4303,8 +5303,18 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 485737,
-          "size_mb": 0.46,
+          "size_bytes": 196360,
+          "size_mb": 0.19,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 175307,
+          "size_mb": 0.17,
           "step": "8_visualization_output"
         },
         {
@@ -4313,8 +5323,8 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 471229,
-          "size_mb": 0.45,
+          "size_bytes": 452078,
+          "size_mb": 0.43,
           "step": "8_visualization_output"
         },
         {
@@ -4348,16 +5358,6 @@
           "step": "8_visualization_output"
         },
         {
-          "name": "actinf_pomdp_agent_B_analysis.png",
-          "path": "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-          "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 42784,
-          "size_mb": 0.04,
-          "step": "8_visualization_output"
-        },
-        {
           "name": "hmm_baseline_B_heatmap.png",
           "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",
           "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",
@@ -4373,7 +5373,7 @@
           "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 169444,
+          "size_bytes": 171448,
           "size_mb": 0.16,
           "step": "8_visualization_output"
         },
@@ -4398,6 +5398,16 @@
           "step": "8_visualization_output"
         },
         {
+          "name": "hmm_baseline_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 138131,
+          "size_mb": 0.13,
+          "step": "8_visualization_output"
+        },
+        {
           "name": "hmm_baseline_matrix_size_distribution.png",
           "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_matrix_size_distribution.png",
           "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_matrix_size_distribution.png",
@@ -4413,7 +5423,7 @@
           "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 201759,
+          "size_bytes": 201706,
           "size_mb": 0.19,
           "step": "8_visualization_output"
         },
@@ -4423,8 +5433,8 @@
           "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 437806,
-          "size_mb": 0.42,
+          "size_bytes": 377496,
+          "size_mb": 0.36,
           "step": "8_visualization_output"
         },
         {
@@ -4433,7 +5443,7 @@
           "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 493743,
+          "size_bytes": 492763,
           "size_mb": 0.47,
           "step": "8_visualization_output"
         },
@@ -4453,8 +5463,8 @@
           "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 156438,
-          "size_mb": 0.15,
+          "size_bytes": 196670,
+          "size_mb": 0.19,
           "step": "8_visualization_output"
         },
         {
@@ -4463,7 +5473,7 @@
           "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 711442,
+          "size_bytes": 711015,
           "size_mb": 0.68,
           "step": "8_visualization_output"
         },
@@ -4493,8 +5503,8 @@
           "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 475345,
-          "size_mb": 0.45,
+          "size_bytes": 517400,
+          "size_mb": 0.49,
           "step": "8_visualization_output"
         },
         {
@@ -4553,8 +5563,18 @@
           "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 207781,
+          "size_bytes": 207793,
           "size_mb": 0.2,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "deep_planning_horizon_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 223103,
+          "size_mb": 0.21,
           "step": "8_visualization_output"
         },
         {
@@ -4573,8 +5593,8 @@
           "relative_path": "8_visualization_output/markov_chain/markov_chain_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 625812,
-          "size_mb": 0.6,
+          "size_bytes": 486475,
+          "size_mb": 0.46,
           "step": "8_visualization_output"
         },
         {
@@ -4603,7 +5623,7 @@
           "relative_path": "8_visualization_output/markov_chain/markov_chain_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 199419,
+          "size_bytes": 199438,
           "size_mb": 0.19,
           "step": "8_visualization_output"
         },
@@ -4613,8 +5633,8 @@
           "relative_path": "8_visualization_output/markov_chain/markov_chain_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 380956,
-          "size_mb": 0.36,
+          "size_bytes": 288411,
+          "size_mb": 0.28,
           "step": "8_visualization_output"
         },
         {
@@ -4643,8 +5663,18 @@
           "relative_path": "8_visualization_output/markov_chain/markov_chain_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 294509,
-          "size_mb": 0.28,
+          "size_bytes": 161446,
+          "size_mb": 0.15,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "markov_chain_variable_parameter_bipartite.png",
+          "path": "output/8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+          "relative_path": "8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 119050,
+          "size_mb": 0.11,
           "step": "8_visualization_output"
         },
         {
@@ -4685,26 +5715,6 @@
           "extension": ".png",
           "size_bytes": 66212,
           "size_mb": 0.06,
-          "step": "9_advanced_viz_output"
-        },
-        {
-          "name": "continuous_navigation_matrix_correlations.png",
-          "path": "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-          "relative_path": "9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 156928,
-          "size_mb": 0.15,
-          "step": "9_advanced_viz_output"
-        },
-        {
-          "name": "predictive_coding_agent_matrix_correlations.png",
-          "path": "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-          "relative_path": "9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 157299,
-          "size_mb": 0.15,
           "step": "9_advanced_viz_output"
         },
         {
@@ -4850,22 +5860,22 @@
       ],
       "html": [
         {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "path": "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-          "relative_path": "9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "path": "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
+          "relative_path": "9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 31694,
-          "size_mb": 0.03,
+          "size_bytes": 25726,
+          "size_mb": 0.02,
           "step": "9_advanced_viz_output"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
-          "path": "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-          "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
+          "path": "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
+          "relative_path": "9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 33531,
+          "size_bytes": 27597,
           "size_mb": 0.03,
           "step": "9_advanced_viz_output"
         },
@@ -4885,7 +5895,7 @@
           "relative_path": "20_website_output/pipeline.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 16503,
+          "size_bytes": 16499,
           "size_mb": 0.02,
           "step": "20_website_output"
         },
@@ -4895,7 +5905,7 @@
           "relative_path": "20_website_output/index.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 16651,
+          "size_bytes": 16647,
           "size_mb": 0.02,
           "step": "20_website_output"
         },
@@ -4905,7 +5915,7 @@
           "relative_path": "20_website_output/analysis.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 169543,
+          "size_bytes": 169592,
           "size_mb": 0.16,
           "step": "20_website_output"
         },
@@ -4925,7 +5935,7 @@
           "relative_path": "20_website_output/visualization.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 15501,
+          "size_bytes": 14845,
           "size_mb": 0.01,
           "step": "20_website_output"
         },
@@ -4935,27 +5945,27 @@
           "relative_path": "20_website_output/reports.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 78875,
-          "size_mb": 0.08,
+          "size_bytes": 90686,
+          "size_mb": 0.09,
           "step": "20_website_output"
         },
         {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "path": "output/20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
-          "relative_path": "20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "path": "output/20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
+          "relative_path": "20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 31694,
-          "size_mb": 0.03,
+          "size_bytes": 25726,
+          "size_mb": 0.02,
           "step": "20_website_output"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
-          "path": "output/20_website_output/assets/continuous_navigation_interactive_dashboard.html",
-          "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
+          "path": "output/20_website_output/assets/continuous_navigation_dashboard_fallback.html",
+          "relative_path": "20_website_output/assets/continuous_navigation_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 33531,
+          "size_bytes": 27597,
           "size_mb": 0.03,
           "step": "20_website_output"
         }
@@ -4968,8 +5978,8 @@
         "relative_path": "8_visualization_output/combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 395153,
-        "size_mb": 0.38,
+        "size_bytes": 391886,
+        "size_mb": 0.37,
         "step": "8_visualization_output"
       },
       {
@@ -4988,7 +5998,7 @@
         "relative_path": "8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 197405,
+        "size_bytes": 197555,
         "size_mb": 0.19,
         "step": "8_visualization_output"
       },
@@ -5000,6 +6010,16 @@
         "extension": ".png",
         "size_bytes": 224007,
         "size_mb": 0.21,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "simple_mdp_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 144586,
+        "size_mb": 0.14,
         "step": "8_visualization_output"
       },
       {
@@ -5048,8 +6068,8 @@
         "relative_path": "8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 271317,
-        "size_mb": 0.26,
+        "size_bytes": 197951,
+        "size_mb": 0.19,
         "step": "8_visualization_output"
       },
       {
@@ -5068,8 +6088,8 @@
         "relative_path": "8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 589667,
-        "size_mb": 0.56,
+        "size_bytes": 504262,
+        "size_mb": 0.48,
         "step": "8_visualization_output"
       },
       {
@@ -5078,8 +6098,8 @@
         "relative_path": "8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 422996,
-        "size_mb": 0.4,
+        "size_bytes": 379582,
+        "size_mb": 0.36,
         "step": "8_visualization_output"
       },
       {
@@ -5118,7 +6138,7 @@
         "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 209417,
+        "size_bytes": 209561,
         "size_mb": 0.2,
         "step": "8_visualization_output"
       },
@@ -5128,8 +6148,8 @@
         "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 478033,
-        "size_mb": 0.46,
+        "size_bytes": 432543,
+        "size_mb": 0.41,
         "step": "8_visualization_output"
       },
       {
@@ -5148,8 +6168,8 @@
         "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 333856,
-        "size_mb": 0.32,
+        "size_bytes": 197290,
+        "size_mb": 0.19,
         "step": "8_visualization_output"
       },
       {
@@ -5158,8 +6178,8 @@
         "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 670592,
-        "size_mb": 0.64,
+        "size_bytes": 527859,
+        "size_mb": 0.5,
         "step": "8_visualization_output"
       },
       {
@@ -5193,6 +6213,16 @@
         "step": "8_visualization_output"
       },
       {
+        "name": "two_state_bistable_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 158076,
+        "size_mb": 0.15,
+        "step": "8_visualization_output"
+      },
+      {
         "name": "two_state_bistable_C_heatmap.png",
         "path": "output/8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
         "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_C_heatmap.png",
@@ -5200,16 +6230,6 @@
         "extension": ".png",
         "size_bytes": 85042,
         "size_mb": 0.08,
-        "step": "8_visualization_output"
-      },
-      {
-        "name": "tmaze_epistemic_B_ctx_analysis.png",
-        "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_ctx_analysis.png",
-        "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_ctx_analysis.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 39587,
-        "size_mb": 0.04,
         "step": "8_visualization_output"
       },
       {
@@ -5248,8 +6268,18 @@
         "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 464419,
-        "size_mb": 0.44,
+        "size_bytes": 133787,
+        "size_mb": 0.13,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "tmaze_epistemic_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 237651,
+        "size_mb": 0.23,
         "step": "8_visualization_output"
       },
       {
@@ -5268,8 +6298,8 @@
         "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 723549,
-        "size_mb": 0.69,
+        "size_bytes": 618821,
+        "size_mb": 0.59,
         "step": "8_visualization_output"
       },
       {
@@ -5278,18 +6308,8 @@
         "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 825347,
-        "size_mb": 0.79,
-        "step": "8_visualization_output"
-      },
-      {
-        "name": "tmaze_epistemic_B_loc_analysis.png",
-        "path": "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_analysis.png",
-        "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_analysis.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 48680,
-        "size_mb": 0.05,
+        "size_bytes": 460601,
+        "size_mb": 0.44,
         "step": "8_visualization_output"
       },
       {
@@ -5308,7 +6328,7 @@
         "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 208884,
+        "size_bytes": 209059,
         "size_mb": 0.2,
         "step": "8_visualization_output"
       },
@@ -5378,8 +6398,8 @@
         "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 325619,
-        "size_mb": 0.31,
+        "size_bytes": 200066,
+        "size_mb": 0.19,
         "step": "8_visualization_output"
       },
       {
@@ -5418,8 +6438,8 @@
         "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 665335,
-        "size_mb": 0.63,
+        "size_bytes": 522097,
+        "size_mb": 0.5,
         "step": "8_visualization_output"
       },
       {
@@ -5428,8 +6448,8 @@
         "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 479365,
-        "size_mb": 0.46,
+        "size_bytes": 380911,
+        "size_mb": 0.36,
         "step": "8_visualization_output"
       },
       {
@@ -5458,8 +6478,18 @@
         "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 209061,
+        "size_bytes": 209140,
         "size_mb": 0.2,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "multi_armed_bandit_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 146077,
+        "size_mb": 0.14,
         "step": "8_visualization_output"
       },
       {
@@ -5488,7 +6518,7 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 200971,
+        "size_bytes": 200898,
         "size_mb": 0.19,
         "step": "8_visualization_output"
       },
@@ -5508,8 +6538,8 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 825399,
-        "size_mb": 0.79,
+        "size_bytes": 518020,
+        "size_mb": 0.49,
         "step": "8_visualization_output"
       },
       {
@@ -5528,8 +6558,18 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 485737,
-        "size_mb": 0.46,
+        "size_bytes": 196360,
+        "size_mb": 0.19,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 175307,
+        "size_mb": 0.17,
         "step": "8_visualization_output"
       },
       {
@@ -5538,8 +6578,8 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 471229,
-        "size_mb": 0.45,
+        "size_bytes": 452078,
+        "size_mb": 0.43,
         "step": "8_visualization_output"
       },
       {
@@ -5573,16 +6613,6 @@
         "step": "8_visualization_output"
       },
       {
-        "name": "actinf_pomdp_agent_B_analysis.png",
-        "path": "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-        "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 42784,
-        "size_mb": 0.04,
-        "step": "8_visualization_output"
-      },
-      {
         "name": "hmm_baseline_B_heatmap.png",
         "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",
         "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",
@@ -5598,7 +6628,7 @@
         "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 169444,
+        "size_bytes": 171448,
         "size_mb": 0.16,
         "step": "8_visualization_output"
       },
@@ -5623,6 +6653,16 @@
         "step": "8_visualization_output"
       },
       {
+        "name": "hmm_baseline_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 138131,
+        "size_mb": 0.13,
+        "step": "8_visualization_output"
+      },
+      {
         "name": "hmm_baseline_matrix_size_distribution.png",
         "path": "output/8_visualization_output/hmm_baseline/hmm_baseline_matrix_size_distribution.png",
         "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_matrix_size_distribution.png",
@@ -5638,7 +6678,7 @@
         "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 201759,
+        "size_bytes": 201706,
         "size_mb": 0.19,
         "step": "8_visualization_output"
       },
@@ -5648,8 +6688,8 @@
         "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 437806,
-        "size_mb": 0.42,
+        "size_bytes": 377496,
+        "size_mb": 0.36,
         "step": "8_visualization_output"
       },
       {
@@ -5658,7 +6698,7 @@
         "relative_path": "8_visualization_output/hmm_baseline/hmm_baseline_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 493743,
+        "size_bytes": 492763,
         "size_mb": 0.47,
         "step": "8_visualization_output"
       },
@@ -5678,8 +6718,8 @@
         "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 156438,
-        "size_mb": 0.15,
+        "size_bytes": 196670,
+        "size_mb": 0.19,
         "step": "8_visualization_output"
       },
       {
@@ -5688,7 +6728,7 @@
         "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 711442,
+        "size_bytes": 711015,
         "size_mb": 0.68,
         "step": "8_visualization_output"
       },
@@ -5718,8 +6758,8 @@
         "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 475345,
-        "size_mb": 0.45,
+        "size_bytes": 517400,
+        "size_mb": 0.49,
         "step": "8_visualization_output"
       },
       {
@@ -5778,8 +6818,18 @@
         "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 207781,
+        "size_bytes": 207793,
         "size_mb": 0.2,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "deep_planning_horizon_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 223103,
+        "size_mb": 0.21,
         "step": "8_visualization_output"
       },
       {
@@ -5798,8 +6848,8 @@
         "relative_path": "8_visualization_output/markov_chain/markov_chain_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 625812,
-        "size_mb": 0.6,
+        "size_bytes": 486475,
+        "size_mb": 0.46,
         "step": "8_visualization_output"
       },
       {
@@ -5828,7 +6878,7 @@
         "relative_path": "8_visualization_output/markov_chain/markov_chain_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 199419,
+        "size_bytes": 199438,
         "size_mb": 0.19,
         "step": "8_visualization_output"
       },
@@ -5838,8 +6888,8 @@
         "relative_path": "8_visualization_output/markov_chain/markov_chain_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 380956,
-        "size_mb": 0.36,
+        "size_bytes": 288411,
+        "size_mb": 0.28,
         "step": "8_visualization_output"
       },
       {
@@ -5868,8 +6918,18 @@
         "relative_path": "8_visualization_output/markov_chain/markov_chain_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 294509,
-        "size_mb": 0.28,
+        "size_bytes": 161446,
+        "size_mb": 0.15,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "markov_chain_variable_parameter_bipartite.png",
+        "path": "output/8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+        "relative_path": "8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 119050,
+        "size_mb": 0.11,
         "step": "8_visualization_output"
       },
       {
@@ -5910,26 +6970,6 @@
         "extension": ".png",
         "size_bytes": 66212,
         "size_mb": 0.06,
-        "step": "9_advanced_viz_output"
-      },
-      {
-        "name": "continuous_navigation_matrix_correlations.png",
-        "path": "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-        "relative_path": "9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 156928,
-        "size_mb": 0.15,
-        "step": "9_advanced_viz_output"
-      },
-      {
-        "name": "predictive_coding_agent_matrix_correlations.png",
-        "path": "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-        "relative_path": "9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 157299,
-        "size_mb": 0.15,
         "step": "9_advanced_viz_output"
       },
       {
@@ -6073,22 +7113,22 @@
         "step": "9_advanced_viz_output"
       },
       {
-        "name": "predictive_coding_agent_interactive_dashboard.html",
-        "path": "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-        "relative_path": "9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+        "name": "predictive_coding_agent_dashboard_fallback.html",
+        "path": "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
+        "relative_path": "9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 31694,
-        "size_mb": 0.03,
+        "size_bytes": 25726,
+        "size_mb": 0.02,
         "step": "9_advanced_viz_output"
       },
       {
-        "name": "continuous_navigation_interactive_dashboard.html",
-        "path": "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-        "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+        "name": "continuous_navigation_dashboard_fallback.html",
+        "path": "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
+        "relative_path": "9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 33531,
+        "size_bytes": 27597,
         "size_mb": 0.03,
         "step": "9_advanced_viz_output"
       },
@@ -6108,7 +7148,7 @@
         "relative_path": "20_website_output/pipeline.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 16503,
+        "size_bytes": 16499,
         "size_mb": 0.02,
         "step": "20_website_output"
       },
@@ -6118,7 +7158,7 @@
         "relative_path": "20_website_output/index.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 16651,
+        "size_bytes": 16647,
         "size_mb": 0.02,
         "step": "20_website_output"
       },
@@ -6128,7 +7168,7 @@
         "relative_path": "20_website_output/analysis.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 169543,
+        "size_bytes": 169592,
         "size_mb": 0.16,
         "step": "20_website_output"
       },
@@ -6148,7 +7188,7 @@
         "relative_path": "20_website_output/visualization.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 15501,
+        "size_bytes": 14845,
         "size_mb": 0.01,
         "step": "20_website_output"
       },
@@ -6158,35 +7198,35 @@
         "relative_path": "20_website_output/reports.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 78875,
-        "size_mb": 0.08,
+        "size_bytes": 90686,
+        "size_mb": 0.09,
         "step": "20_website_output"
       },
       {
-        "name": "predictive_coding_agent_interactive_dashboard.html",
-        "path": "output/20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
-        "relative_path": "20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
+        "name": "predictive_coding_agent_dashboard_fallback.html",
+        "path": "output/20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
+        "relative_path": "20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 31694,
-        "size_mb": 0.03,
+        "size_bytes": 25726,
+        "size_mb": 0.02,
         "step": "20_website_output"
       },
       {
-        "name": "continuous_navigation_interactive_dashboard.html",
-        "path": "output/20_website_output/assets/continuous_navigation_interactive_dashboard.html",
-        "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
+        "name": "continuous_navigation_dashboard_fallback.html",
+        "path": "output/20_website_output/assets/continuous_navigation_dashboard_fallback.html",
+        "relative_path": "20_website_output/assets/continuous_navigation_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 33531,
+        "size_bytes": 27597,
         "size_mb": 0.03,
         "step": "20_website_output"
       }
     ]
   },
-  "health_score": 92.1,
+  "health_score": 95.0,
   "report_metadata": {
-    "generation_time": "2026-03-18T09:30:15.306986",
+    "generation_time": "2026-03-24T14:13:01.421534",
     "formats_generated": [
       "html",
       "markdown",

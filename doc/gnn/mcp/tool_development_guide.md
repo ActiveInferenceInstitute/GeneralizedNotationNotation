@@ -2,7 +2,7 @@
 
 How to add real, tested MCP tools to any GNN pipeline module.
 
-**Last Updated**: March 6, 2026
+**Last Updated**: 2026-03-24
 
 ## Design Principles
 
@@ -103,14 +103,14 @@ def register_tools(server: Any) -> None:
 ## Running the Audit
 
 ```bash
-# Full MCP audit — 1,522+ tests
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
+# Full MCP audit (part of src/tests/; suite counts in repository README.md)
+uv run pytest src/tests/test_mcp_audit.py -v
 
 # Focus on your new module
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v -k "<module>"
+uv run pytest src/tests/test_mcp_audit.py -v -k "<module>"
 
 # Generate the tool inventory JSON
-PYTHONPATH=src python src/mcp/validate_tools.py
+uv run python src/mcp/validate_tools.py
 # → src/tests/mcp_audit_report.json
 ```
 

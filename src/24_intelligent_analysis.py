@@ -24,7 +24,11 @@ run_script = create_standardized_pipeline_script(
     process_intelligent_analysis,
     "Intelligent analysis of pipeline execution logs",
     additional_arguments={
-        "analysis_model": {"type": str, "help": "Specific LLM model to use for analysis", "default": None},
+        "analysis_model": {
+            "type": str,
+            "help": "LLM model tag (default: OLLAMA_MODEL env or repository default in llm.defaults)",
+            "default": None,
+        },
         "skip_llm": {"type": bool, "help": "Skip LLM-powered analysis (use only rule-based)", "default": False},
         "bottleneck_threshold": {"type": float, "help": "Duration threshold (seconds) for bottleneck detection", "default": 60.0}
     }

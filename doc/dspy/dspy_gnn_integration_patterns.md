@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Advanced  
-> **Cross-References**: [gnn_dspy.md](gnn_dspy.md) | [Modules Reference](dspy_modules_reference.md) | [LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)
+> **Cross-References**: [gnn_dspy.md](gnn_dspy.md) | [Modules Reference](dspy_modules_reference.md) | [LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
 
 ## Overview
 
@@ -688,7 +688,7 @@ if translation.confidence < 0.7:
 - **[Modules Reference](dspy_modules_reference.md)**: DSPy modules
 - **[Typed Predictors](dspy_typed_predictors.md)**: Structured outputs
 - **[GNN Overview](../gnn/gnn_overview.md)**: GNN specification
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: Neurosymbolic architecture
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: Neurosymbolic architecture
 
 ---
 

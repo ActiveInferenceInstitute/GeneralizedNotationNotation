@@ -190,5 +190,5 @@ agent = Agent(
 
 ---
 
-*See also: [doc/cognitive_phenomena/executive_control/](./executive_control/) for task switching models*
-*See also: [doc/cognitive_phenomena/attention/](./attention/) for attention allocation*
+*See also: [doc/cognitive_phenomena/executive_control/](../../../../doc/cognitive_phenomena/executive_control/README.md) for task switching models*
+*See also: [doc/cognitive_phenomena/attention/](../../../../doc/cognitive_phenomena/attention/README.md) for attention allocation*

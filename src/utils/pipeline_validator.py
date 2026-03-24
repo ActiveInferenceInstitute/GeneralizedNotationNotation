@@ -55,18 +55,18 @@ def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list
     # Define step dependencies (step name -> [required prerequisite steps])
     step_dependencies = {
         "11_render.py": ["3_gnn.py"],  # Render needs parsed GNN files
-        "12_execute.py": ["11_render.py"],  # Execute needs rendered code
+        "12_execute.py": ["3_gnn.py", "11_render.py"],  # Execute needs parsed models and rendered code
         "8_visualization.py": ["3_gnn.py"],  # Visualization needs parsed files
-        "9_advanced_viz.py": ["8_visualization.py"],  # Advanced viz builds on basic viz
+        "9_advanced_viz.py": ["3_gnn.py", "8_visualization.py"],  # Advanced viz builds on parsed data and base viz
         "13_llm.py": ["3_gnn.py"],  # LLM analysis needs parsed files
         "23_report.py": ["8_visualization.py", "13_llm.py"],  # Report needs viz and analysis
         "20_website.py": ["8_visualization.py"],  # Website needs visualizations
         "5_type_checker.py": ["3_gnn.py"],  # Type checking needs parsed files
-        "6_validation.py": ["5_type_checker.py"],  # Validation builds on type checking
+        "6_validation.py": ["3_gnn.py", "5_type_checker.py"],  # Validation needs parsed files and type checks
         "7_export.py": ["3_gnn.py"],  # Export needs parsed files
         "10_ontology.py": ["3_gnn.py"],  # Ontology processing needs parsed files
         "15_audio.py": ["3_gnn.py"],  # Audio generation needs parsed files
-        "16_analysis.py": ["7_export.py"],  # Analysis needs exported data
+        "16_analysis.py": ["3_gnn.py", "7_export.py"],  # Analysis needs parsed inputs and exports
     }
 
     required_steps = step_dependencies.get(script_name, [])

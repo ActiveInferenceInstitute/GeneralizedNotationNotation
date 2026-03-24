@@ -39,4 +39,4 @@ CatColab provides category-theoretic compositional modeling with domain-specific
 
 - [CatColab GitHub](https://github.com/ToposInstitute/CatColab)
 - [AlgebraicJulia Ecosystem](https://www.algebraicjulia.org/)
-- [Ontology System](../gnn/ontology_system.md)
+- [Ontology System](../gnn/advanced/ontology_system.md)

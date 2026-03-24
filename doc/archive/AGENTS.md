@@ -61,8 +61,8 @@ All documentation in this module adheres to professional standards:
 
 **Main GNN Documentation**: [gnn/](../gnn/)
 - [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+- [GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)
+- [GNN Examples](../gnn/tutorials/gnn_examples_doc.md)
 
 **Pipeline Architecture**: [src/](../../src/)
 - [Pipeline AGENTS](../../src/AGENTS.md)

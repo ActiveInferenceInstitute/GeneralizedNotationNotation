@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-03-18T09:29:45.282813
+Generated: 2026-03-24T14:12:38.298444
 
 ## Summary
 
@@ -14,7 +14,7 @@ Generated: 2026-03-18T09:29:45.282813
 ### NUMPYRO
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 1.28s
+- Execution Time: 8.73s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
@@ -23,7 +23,7 @@ Generated: 2026-03-18T09:29:45.282813
 ### PYMDP
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 1.96s
+- Execution Time: 3.10s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -32,7 +32,7 @@ Generated: 2026-03-18T09:29:45.282813
 ### PYTORCH
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 0.78s
+- Execution Time: 1.03s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
@@ -41,7 +41,7 @@ Generated: 2026-03-18T09:29:45.282813
 ### JAX
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 1.11s
+- Execution Time: 1.32s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -56,7 +56,7 @@ Generated: 2026-03-18T09:29:45.282813
 ### RXINFER
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 26.10s
+- Execution Time: 30.54s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, actions_in_range=✅, beliefs_sum_to_one=✅)
@@ -65,7 +65,7 @@ Generated: 2026-03-18T09:29:45.282813
 ### ACTIVEINFERENCE_JL
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 22.52s
+- Execution Time: 75.75s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, actions_in_range=✅, all_valid=✅, beliefs_sum_to_one=✅)
@@ -76,7 +76,7 @@ Generated: 2026-03-18T09:29:45.282813
 | Framework | Timesteps | Mean Confidence | EFE Mean | EFE Std |
 |-----------|-----------|-----------------|----------|---------|
 | numpyro | 15 | 1.0000 | 1.0986 | 0.0000 |
-| pymdp | 15 | 1.0000 | -0.1818 | 0.1116 |
+| pymdp | 15 | 1.0000 | -0.2010 | 0.1210 |
 | pytorch | 15 | 1.0000 | 1.0986 | 0.0000 |
 | jax | 15 | 1.0000 | 0.0693 | 0.0000 |
 | rxinfer | 15 | 1.0000 | 0.1309 | 0.1329 |
@@ -101,9 +101,9 @@ Generated: 2026-03-18T09:29:45.282813
 - **numpyro_vs_jax**: confidence correlation = 0.0000
 - **numpyro_vs_rxinfer**: confidence correlation = 0.0000
 - **numpyro_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
-- **pymdp_vs_pytorch**: confidence correlation = 0.2000
+- **pymdp_vs_pytorch**: confidence correlation = -0.1715
 - **pymdp_vs_jax**: confidence correlation = 0.0000
-- **pymdp_vs_rxinfer**: confidence correlation = 0.2914
+- **pymdp_vs_rxinfer**: confidence correlation = 0.0168
 - **pymdp_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
 - **pytorch_vs_jax**: confidence correlation = 0.0000
 - **pytorch_vs_rxinfer**: confidence correlation = 0.1148
@@ -116,10 +116,10 @@ Generated: 2026-03-18T09:29:45.282813
 
 | Framework | Mean Time (s) | Std Dev | Min | Max |
 |-----------|---------------|---------|-----|-----|
-| numpyro | 2.373 | 2.075 | 1.010 | 6.117 |
-| pymdp | 3.500 | 2.477 | 1.820 | 9.265 |
-| pytorch | 1.265 | 1.099 | 0.731 | 4.106 |
-| jax | 2.329 | 2.158 | 1.036 | 6.756 |
-| discopy | 0.842 | 0.702 | 0.392 | 2.292 |
-| rxinfer | 19.111 | 3.657 | 15.439 | 26.096 |
-| activeinference_jl | 18.637 | 6.030 | 13.219 | 32.849 |
+| numpyro | 2.319 | 2.426 | 1.272 | 8.731 |
+| pymdp | 2.351 | 0.867 | 1.732 | 4.362 |
+| pytorch | 0.925 | 0.082 | 0.825 | 1.049 |
+| jax | 1.318 | 0.152 | 1.158 | 1.669 |
+| discopy | 0.450 | 0.041 | 0.404 | 0.514 |
+| rxinfer | 23.820 | 3.296 | 20.344 | 30.539 |
+| activeinference_jl | 29.262 | 17.925 | 15.318 | 75.753 |

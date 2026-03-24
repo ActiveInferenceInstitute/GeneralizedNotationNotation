@@ -1,0 +1,56 @@
+name: Docs audit
+
+# Main CI skips markdown paths; this workflow keeps link + AGENTS/README parity checks on doc changes.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**/*.md"
+      - "doc/**"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "README.md"
+      - "SKILL.md"
+      - "doc/development/docs_audit.py"
+  pull_request:
+    branches: [main]
+    paths:
+      - "**/*.md"
+      - "doc/**"
+      - "AGENTS.md"
+      - "CLAUDE.md"
+      - "README.md"
+      - "SKILL.md"
+      - "doc/development/docs_audit.py"
+  workflow_dispatch:
+
+concurrency:
+  group: docs-audit-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  markdown-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (dev)
+        run: uv sync --frozen --extra dev
+
+      - name: Documentation audit (strict)
+        run: uv run python doc/development/docs_audit.py --strict

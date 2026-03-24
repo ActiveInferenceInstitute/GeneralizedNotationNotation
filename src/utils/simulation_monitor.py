@@ -32,7 +32,9 @@ class SimulationMonitor:
 
     def __init__(self, log_file: Path = None):
         """Initialize simulation monitor with logging"""
-        self.log_file = log_file or Path("simulation_execution.log")
+        self.log_file = Path(log_file) if log_file is not None else Path("simulation_execution.log")
+        # FileHandler requires parent dirs to exist (e.g. output/12_execute_output on import)
+        self.log_file.parent.mkdir(parents=True, exist_ok=True)
         self.execution_data = {
             "timestamp": datetime.now().isoformat(),
             "simulations": {},

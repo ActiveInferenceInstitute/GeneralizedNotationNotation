@@ -2,17 +2,19 @@
 
 > **📋 Document Metadata**  
 > **Type**: Testing Guide | **Audience**: Developers & QA Engineers | **Complexity**: Intermediate  
-> **Cross-References**: [Development Guide](../development/README.md) | [Pipeline Architecture](../gnn/gnn_tools.md)
+> **Cross-References**: [Development Guide](../development/README.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [AGENTS.md](AGENTS.md) | [src/tests/README.md](../../src/tests/README.md) | [doc/gnn/modules/02_tests.md](../gnn/modules/02_tests.md)
 
 ## Overview
 This guide covers the comprehensive testing strategy for GeneralizedNotationNotation (GNN), including unit tests, integration tests, performance tests, and validation procedures.
 
+**Layout note:** The tree below is a **conceptual** organization. The repository’s pytest collection lives primarily under [`src/tests/`](../../src/tests/) as flat `test_*.py` modules plus [`src/tests/infrastructure/`](../../src/tests/infrastructure/) and [`src/tests/helpers/`](../../src/tests/helpers/). For the canonical layout and commands, use [`src/tests/README.md`](../../src/tests/README.md) and root [`README.md`](../../README.md).
+
 ## Testing Architecture
 
-### Test Organization
+### Test Organization (illustrative)
 ```
 src/tests/
-├── unit/                    # Unit tests for individual components
+├── unit/                    # Unit tests for individual components (conceptual; see flat test_*.py)
 │   ├── test_gnn_parser.py
 │   ├── test_type_checker.py
 │   ├── test_export.py

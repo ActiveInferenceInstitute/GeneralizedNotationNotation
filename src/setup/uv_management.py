@@ -217,14 +217,20 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
     return True
 
 
-def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: Optional[List[str]] = None) -> bool:
+def install_uv_dependencies(
+    verbose: bool = False,
+    dev: bool = False,
+    extras: Optional[List[str]] = None,
+    install_all_extras: bool = False,
+) -> bool:
     """
     Installs dependencies using native UV sync command from pyproject.toml.
 
     Args:
         verbose: If True, enables detailed logging.
-        dev: If True, also installs development dependencies.
+        dev: If True, also installs the ``dev`` optional group (``uv sync --extra dev``).
         extras: List of optional dependency groups to install.
+        install_all_extras: If True, run ``uv sync --all-extras`` (implies all optional groups).
 
     Returns:
         True if successful, False otherwise.
@@ -246,9 +252,12 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: Op
         if verbose:
             sync_cmd.append("--verbose")
 
-        if dev:
-            logger.info("📦 Installing development dependencies...")
+        if install_all_extras:
+            logger.info("📦 Installing all optional dependency groups (--all-extras)...")
             sync_cmd.append("--all-extras")
+        elif dev:
+            logger.info("📦 Installing development dependencies (--extra dev)...")
+            sync_cmd.extend(["--extra", "dev"])
 
         if extras:
             for extra in extras:
@@ -373,6 +382,7 @@ def setup_uv_environment(
     recreate: bool = False,
     dev: bool = False,
     extras: Optional[List[str]] = None,
+    install_all_extras: bool = False,
     skip_jax_test: bool = False,
     output_dir: Optional[Path] = None,
 ) -> bool:
@@ -382,8 +392,9 @@ def setup_uv_environment(
     Args:
         verbose: Enable verbose logging
         recreate: Recreate UV environment if it exists
-        dev: Install development dependencies
+        dev: Install development dependencies (``--extra dev``)
         extras: List of optional dependency groups to install
+        install_all_extras: If True, ``uv sync --all-extras``
         skip_jax_test: Skip JAX installation verification test (useful in CI/CD or offline environments)
         output_dir: Output directory for setup results (optional)
 
@@ -405,7 +416,12 @@ def setup_uv_environment(
 
         if VENV_PYTHON.exists():
             logger.info("📦 Installing core dependencies...")
-            if not install_uv_dependencies(verbose=verbose, dev=dev, extras=extras):
+            if not install_uv_dependencies(
+                verbose=verbose,
+                dev=dev,
+                extras=extras,
+                install_all_extras=install_all_extras,
+            ):
                 logger.warning("⚠️ Core dependency installation had issues, but continuing...")
 
             if not skip_jax_test:
@@ -417,7 +433,13 @@ def setup_uv_environment(
             validation_results = validate_uv_setup(PROJECT_ROOT, logger)
 
             if output_dir:
-                save_setup_results(output_dir, validation_results, extras, dev)
+                save_setup_results(
+                    output_dir,
+                    validation_results,
+                    extras,
+                    dev,
+                    install_all_extras=install_all_extras,
+                )
 
             if validation_results.get("overall_status", False):
                 logger.info("✅ GNN environment setup completed successfully using UV")
@@ -468,7 +490,8 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
             if versions:
                 validation_results["dependencies"] = True
         except (subprocess.SubprocessError, OSError, json.JSONDecodeError):
-            logger.debug("Dependencies version check skipped (non-critical)")
+            if logger:
+                logger.debug("Dependencies version check skipped (non-critical)")
 
         try:
             if VENV_PYTHON.exists():
@@ -486,7 +509,8 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
                 import jax
                 validation_results["jax_installation"] = True
         except (ImportError, subprocess.TimeoutExpired, FileNotFoundError):
-            logger.debug("JAX installation check skipped (not available or timed out)")
+            if logger:
+                logger.debug("JAX installation check skipped (not available or timed out)")
 
         validation_results["overall_status"] = all([
             validation_results["system_requirements"],
@@ -687,7 +711,14 @@ def cleanup_uv_setup() -> bool:
         return False
 
 
-def save_setup_results(output_dir: Path, validation_results: Dict[str, Any], extras: Optional[List[str]] = None, dev: bool = False) -> None:
+def save_setup_results(
+    output_dir: Path,
+    validation_results: Dict[str, Any],
+    extras: Optional[List[str]] = None,
+    dev: bool = False,
+    *,
+    install_all_extras: bool = False,
+) -> None:
     """
     Save setup results to output directory.
 
@@ -696,6 +727,7 @@ def save_setup_results(output_dir: Path, validation_results: Dict[str, Any], ext
         validation_results: Validation results from validate_uv_setup
         extras: List of optional dependency groups installed
         dev: Whether dev dependencies were installed
+        install_all_extras: Whether ``--all-extras`` was used
     """
     from datetime import datetime
 
@@ -708,6 +740,7 @@ def save_setup_results(output_dir: Path, validation_results: Dict[str, Any], ext
             "configuration": {
                 "extras_installed": extras or [],
                 "dev_dependencies": dev,
+                "install_all_extras": install_all_extras,
                 "venv_path": str(VENV_PATH),
                 "python_version": sys.version,
             },

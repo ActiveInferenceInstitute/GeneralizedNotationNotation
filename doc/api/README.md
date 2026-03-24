@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: API Reference | **Audience**: Developers, Integrators | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/gnn_tools.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -24,18 +24,18 @@ This directory contains comprehensive API documentation for the GNN (Generalized
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Pipeline execution and orchestration
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Pipeline execution and orchestration
 - **[Development Guide](../development/README.md)**: Development workflows and contribution guidelines
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol APIs
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework-specific APIs
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework-specific APIs
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
 
-**Files**: 3 | **Subdirectories**: 0
+**Files**: 4 (`README.md`, `AGENTS.md`, `comprehensive_api_reference.md`, `api_index.json`) | **Subdirectories**: 0
 
 ### Core Files
 
@@ -177,8 +177,8 @@ rxinfer_code = rxinfer_renderer.render(model)
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[GNN Examples](../gnn/gnn_examples_doc.md)**: Example models
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**: Example models
 
 ### Development Resources
 - **[Development Guide](../development/README.md)**: Development workflows
@@ -186,12 +186,12 @@ rxinfer_code = rxinfer_renderer.render(model)
 - **[Contributing Guide](../../CONTRIBUTING.md)**: Contribution guidelines
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
 ### Framework Integration
-- **[Framework Integration Guide](../gnn/framework_integration_guide.md)**: Framework-specific documentation
+- **[Framework Integration Guide](../gnn/integration/framework_integration_guide.md)**: Framework-specific documentation
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: PyMDP API details
 - **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: RxInfer API details
 

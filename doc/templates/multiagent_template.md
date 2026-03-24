@@ -387,7 +387,7 @@ License: [License type]
 
 ## References
 
-- [Multi-Agent Active Inference](../gnn/gnn_multiagent.md)
-- [Coordination Mechanisms](../gnn/gnn_implementation.md#multi-agent-coordination)
+- [Multi-Agent Active Inference](../gnn/advanced/gnn_multiagent.md)
+- [Coordination Mechanisms](../gnn/integration/gnn_implementation.md#multi-agent-coordination)
 - [Distributed Active Inference](../archive/federated_inference_friston2023.md)
-- [Communication Protocols](../gnn/gnn_syntax.md#multi-agent-extensions) 
+- [Communication Protocols](../gnn/reference/gnn_syntax.md#multi-agent-extensions) 

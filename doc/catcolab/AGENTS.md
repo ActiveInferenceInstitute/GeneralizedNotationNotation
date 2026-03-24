@@ -46,7 +46,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ## Related Resources
 
 - [DisCoPy Integration](../discopy/README.md)
-- [Ontology System](../gnn/ontology_system.md)
+- [Ontology System](../gnn/advanced/ontology_system.md)
 - [CatColab Platform](https://catcolab.org)
 
 ---

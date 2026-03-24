@@ -11,10 +11,10 @@ This module is responsible for running GNN models that have been rendered into f
 | **ActiveInference.jl** | Julia | `activeinference_jl/` | `*_activeinference.jl` | ✅ Full support |
 | **JAX** | Python | `jax/` | `*_jax.py` | ✅ Full support |
 | **DisCoPy** | Python | `discopy/` | `*_discopy.py` | ✅ Full support |
-| **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support (optional dep) |
-| **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support (optional dep) |
+| **PyTorch** | Python | `pytorch/` | `*_pytorch.py` | ✅ Full support |
+| **NumPyro** | Python | `numpyro/` | `*_numpyro.py` | ✅ Full support |
 
-JAX, NumPyro, PyTorch, and DisCoPy require optional dependencies. If not installed, their scripts are **skipped** (not failed). To run all frameworks: `uv sync --extra execution-frameworks`.
+JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the environment is incomplete, their scripts are **skipped** (not failed). Julia frameworks require Julia installed.
 
 ## Module Structure
 

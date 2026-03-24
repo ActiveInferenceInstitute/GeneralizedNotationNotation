@@ -142,25 +142,31 @@ class TestOllamaModelSelection:
         # Should return a default model
         assert isinstance(model, str)
         assert len(model) > 0
+        from llm.defaults import DEFAULT_OLLAMA_MODEL
+
+        assert model == DEFAULT_OLLAMA_MODEL
 
     def test_model_selection_prefers_small_models(self, caplog, monkeypatch):
-        """Test that model selection prefers small, fast models."""
+        """Preference order matches ``preferred_models`` in ``llm.processor``."""
         monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
         import logging
         logger = logging.getLogger("test_model_selection")
 
-        # Test with various model lists
         test_cases = [
+            (
+                ["llama2:7b", "gemma3:4b", "smollm2:135m-instruct-q4_K_S"],
+                "smollm2:135m-instruct-q4_K_S",
+            ),
             (["llama2:7b", "gemma3:4b"], "gemma3:4b"),
             (["mistral:7b", "tinyllama"], "tinyllama"),
             (["llama2", "gemma2:2b"], "gemma2:2b"),
         ]
 
-        for available_models, expected_prefix in test_cases:
+        for available_models, expected in test_cases:
             selected = _select_best_ollama_model(available_models, logger)
-
-            # Should select the smaller model
-            assert any(selected.startswith(prefix) for prefix in [expected_prefix, available_models[0]])
+            assert selected == expected, (
+                f"expected {expected!r} for {available_models!r}, got {selected!r}"
+            )
 
     def test_model_selection_respects_env_override(self, caplog, monkeypatch):
         """Test that environment variable overrides model selection."""
@@ -445,43 +451,32 @@ Minimize free energy while maintaining preferred states.
 
 
 class TestOllamaIntegrationEnd2End:
-    """End-to-end integration tests for Ollama."""
+    """Optional checks against the real Ollama CLI (skip when not installed)."""
 
+    @pytest.mark.safe_to_fail
     def test_ollama_command_exists(self):
-        """Test if ollama command is available in PATH."""
         ollama_path = shutil.which("ollama")
+        if not ollama_path:
+            pytest.skip("ollama CLI not in PATH")
+        assert Path(ollama_path).exists()
 
-        if ollama_path:
-            pytest.skip_info = f"Ollama found at: {ollama_path}"
-        else:
-            pytest.skip_info = "Ollama not found in PATH"
-
+    @pytest.mark.safe_to_fail
     def test_ollama_service_running(self):
-        """Test if Ollama service is actually running."""
+        if shutil.which("ollama") is None:
+            pytest.skip("ollama CLI not in PATH")
         try:
             result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                ['ollama', 'list'],
+                ["ollama", "list"],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
             )
+        except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+            pytest.skip(f"ollama list failed: {e}")
 
-            if result.returncode == 0:
-                pytest.skip_info = "Ollama is running"
-                # Log available models
-                if result.stdout:
-                    models = [line.split()[0] for line in result.stdout.strip().split('\n')[1:] if line.strip()]
-                    if models:
-                        pytest.skip_info += f" with models: {', '.join(models[:3])}"
-            else:
-                pytest.skip_info = "Ollama command exists but service not running"
-
-        except FileNotFoundError:
-            pytest.skip_info = "Ollama command not found"
-        except subprocess.TimeoutExpired:
-            pytest.skip_info = "Ollama command timed out"
-        except Exception as e:
-            pytest.skip_info = f"Ollama check failed: {e}"
+        if result.returncode != 0:
+            pytest.skip("Ollama CLI present but daemon not responding (ollama list failed)")
+        assert result.returncode == 0
 
 
 if __name__ == "__main__":

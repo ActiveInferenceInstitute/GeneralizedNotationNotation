@@ -47,6 +47,11 @@ class GNNParserValidationResult:
     warnings: List[ValidationIssue] = field(default_factory=list)
     info: List[ValidationIssue] = field(default_factory=list)
 
+    @property
+    def is_valid(self) -> bool:
+        """Alias for ``success`` (used by parser pipeline and cross-format checks)."""
+        return self.success
+
     def add_issue(self, issue: ValidationIssue):
         """Add a validation issue."""
         self.issues.append(issue)

@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Simple MDP Agent
-Generated: 2026-03-18 09:21:23
+Generated: 2026-03-24 13:58:20
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Simple MDP Agent',
-        'timestamp': '2026-03-18 09:21:23',
+        'timestamp': '2026-03-24 13:58:20',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

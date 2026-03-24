@@ -103,7 +103,7 @@ flowchart LR
     Processor -->|Analysis Results| Step23
 ```
 
-Analysis uses whatever execution (Step 12) produced. For cross-framework comparison to include all backends (JAX, NumPyro, PyTorch, DisCoPy, etc.), install optional execution deps (`uv sync --extra execution-frameworks`) and re-run Step 12.
+Analysis uses whatever execution (Step 12) produced. Python backends are in core `uv sync`; for Julia frameworks, install Julia and packages, then re-run Step 12.
 
 ## Core Components
 

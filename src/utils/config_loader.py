@@ -37,6 +37,9 @@ class PipelineConfig:
     # Step control
     skip_steps: List[str] = field(default_factory=list)
     only_steps: List[str] = field(default_factory=list)
+    # Step 2 defaults (also applied via raw YAML in main.py)
+    fast_only: bool = True
+    comprehensive: bool = False
 
     # Pipeline summary file
     pipeline_summary_file: Optional[Path] = None
@@ -84,6 +87,7 @@ class SetupConfig:
     """Configuration for setup step."""
     recreate_venv: bool = False
     dev: bool = False
+    install_all_extras: bool = False
 
 @dataclass
 class SAPFConfig:
@@ -141,6 +145,12 @@ class GNNPipelineConfig:
             config.pipeline.enable_cross_format = pipeline_data.get('enable_cross_format', True)
             config.pipeline.skip_steps = pipeline_data.get('skip_steps', [])
             config.pipeline.only_steps = pipeline_data.get('only_steps', [])
+            if 'fast_only' in pipeline_data:
+                config.pipeline.fast_only = bool(pipeline_data['fast_only'])
+            if 'comprehensive' in pipeline_data:
+                config.pipeline.comprehensive = bool(pipeline_data['comprehensive'])
+            elif 'comprehensive_tests' in pipeline_data:
+                config.pipeline.comprehensive = bool(pipeline_data['comprehensive_tests'])
             if 'pipeline_summary_file' in pipeline_data:
                 config.pipeline.pipeline_summary_file = Path(pipeline_data['pipeline_summary_file'])
 
@@ -171,6 +181,7 @@ class GNNPipelineConfig:
             setup_data = config_data['setup']
             config.setup.recreate_venv = setup_data.get('recreate_venv', False)
             config.setup.dev = setup_data.get('dev', False)
+            config.setup.install_all_extras = setup_data.get('install_all_extras', False)
 
         # Load SAPF configuration
         if 'sapf' in config_data:
@@ -194,8 +205,10 @@ class GNNPipelineConfig:
             'verbose': self.pipeline.verbose,
             'enable_round_trip': self.pipeline.enable_round_trip,
             'enable_cross_format': self.pipeline.enable_cross_format,
-            'skip_steps': ','.join(self.pipeline.skip_steps) if self.pipeline.skip_steps else None,
-            'only_steps': ','.join(self.pipeline.only_steps) if self.pipeline.only_steps else None,
+            'skip_steps': ','.join(str(s) for s in self.pipeline.skip_steps) if self.pipeline.skip_steps else None,
+            'only_steps': ','.join(str(s) for s in self.pipeline.only_steps) if self.pipeline.only_steps else None,
+            'fast_only': self.pipeline.fast_only,
+            'comprehensive': self.pipeline.comprehensive,
             'pipeline_summary_file': self.pipeline.pipeline_summary_file,
             'strict': self.type_checker.strict,
             'estimate_resources': self.type_checker.estimate_resources,
@@ -205,6 +218,7 @@ class GNNPipelineConfig:
             'website_html_filename': self.website.html_filename,
             'recreate_venv': self.setup.recreate_venv,
             'dev': self.setup.dev,
+            'install_all_extras': self.setup.install_all_extras,
             'duration': self.sapf.duration
         }
 

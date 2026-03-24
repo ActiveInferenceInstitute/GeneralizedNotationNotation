@@ -2,20 +2,23 @@
 """
 Ollama LLM Provider
 
-Local provider using the `ollama` Python package to call a local Ollama server.
+Local provider using the `ollama` Python package when available; otherwise falls
+back to the `ollama` CLI (`ollama chat` with JSON when supported, else `ollama run`).
 
 Requirements:
-- uv pip install ollama>=0.3.0
-- Run `ollama serve` and ensure a model is pulled, e.g. `ollama pull gemma2:2b`
+- PyPI `ollama` client is a **core** dependency (`uv sync`); still install the **Ollama CLI** from https://ollama.com for local inference
+- Run `ollama serve` and pull a model, e.g. `ollama pull smollm2:135m-instruct-q4_K_S`
 """
 
 from __future__ import annotations
 from typing import List, Dict, Any, Optional, AsyncGenerator
 import logging
+import os
 import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import json
 
+from ..defaults import DEFAULT_OLLAMA_MODEL
 from .base_provider import (
     BaseLLMProvider,
     ProviderType,
@@ -32,6 +35,7 @@ class OllamaProvider(BaseLLMProvider):
 
     # Include quality local models; smaller/faster ones prioritized for reliability
     AVAILABLE_MODELS = (
+        "smollm2:135m-instruct-q4_K_S",
         "gemma3:4b",
         "ministral-3:3b",
         "mistral:7b",
@@ -40,14 +44,17 @@ class OllamaProvider(BaseLLMProvider):
         "llama3.1:70b",
     )
 
-    DEFAULT_MODEL = "gemma3:4b"
+    DEFAULT_MODEL = DEFAULT_OLLAMA_MODEL
 
     def __init__(self, **kwargs):
         super().__init__(api_key=None, **kwargs)
         self.base_url = kwargs.get("base_url")  # optional custom host
         self.default_model_override = kwargs.get("default_model")
         self.default_max_tokens = kwargs.get("default_max_tokens", 256)
-        self.default_timeout = kwargs.get("timeout", 30.0)  # 30s max to avoid hanging
+        if kwargs.get("timeout") is not None:
+            self.default_timeout = float(kwargs["timeout"])
+        else:
+            self.default_timeout = float(os.getenv("OLLAMA_TIMEOUT", "60"))
         self._ollama = None
         self._use_cli = False
 

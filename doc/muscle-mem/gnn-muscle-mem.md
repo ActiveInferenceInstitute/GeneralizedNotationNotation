@@ -4,7 +4,7 @@
 
 [Generalized Notation Notation (GNN)](../gnn/gnn_overview.md) is a standardized, text-based language designed to express Active Inference generative models with precision and clarity. It provides a structured framework for representing cognitive models in a way that is human-readable, machine-parsable, and supports interoperability and reproducibility. GNN files typically describe components like state spaces, probabilistic connections, and equations, forming the basis for textual, graphical, and [executable cognitive models](../gnn/about_gnn.md#the-triple-play-modalities-of-gnn).
 
-The GNN framework often involves complex processing pipelines (e.g., parsing, [type checking](../gnn/gnn_tools.md#gnn-type-checker-and-resource-estimator), visualization, [rendering into executable code](../gnn/gnn_implementation.md#organizing-gnn-processing-tools-a-practical-approach)) and can define sophisticated agents, potentially integrating with [Large Language Models (LLMs) in neurosymbolic architectures](../gnn/gnn_llm_neurosymbolic_active_inference.md). Many of these operations can be repetitive.
+The GNN framework often involves complex processing pipelines (e.g., parsing, [type checking](../gnn/operations/gnn_tools.md#gnn-type-checker-and-resource-estimator), visualization, [rendering into executable code](../gnn/integration/gnn_implementation.md#organizing-gnn-processing-tools-a-practical-approach)) and can define sophisticated agents, potentially integrating with [Large Language Models (LLMs) in neurosymbolic architectures](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md). Many of these operations can be repetitive.
 
 This is where `muscle-mem` comes in.
 
@@ -48,16 +48,16 @@ If you can answer this, your GNN tools and agents can have Muscle Memory.
 
 **Examples of GNN-Contextual Features for `Check`s:**
 
-* **For GNN Processing Pipeline Tools** (e.g., [visualization from `8_visualization.py`](../gnn/gnn_tools.md#gnn-visualization), [type-checking from `5_type_checker.py`](../gnn/gnn_tools.md#gnn-type-checker-and-resource-estimator)):
+* **For GNN Processing Pipeline Tools** (e.g., [visualization from `8_visualization.py`](../gnn/operations/gnn_tools.md#gnn-visualization), [type-checking from `5_type_checker.py`](../gnn/operations/gnn_tools.md#gnn-type-checker-and-resource-estimator)):
   * Hash (e.g., SHA256) of the input `.gnn` file(s).
   * Specific command-line arguments or configuration parameters used for the tool (e.g., output format, strictness flags, resource estimation flags).
   * Version hash of the GNN processing script itself.
-  * Hashes of critical dependency files, like the [ontology term definitions (`act_inf_ontology_terms.json`)](../gnn/ontology_system.md) if the tool uses them.
+  * Hashes of critical dependency files, like the [ontology term definitions (`act_inf_ontology_terms.json`)](../gnn/advanced/ontology_system.md) if the tool uses them.
 * **For GNN-Defined Agents (Executable Models)**:
   * The current sensory observation(s) `o` provided to the agent.
   * The agent's current internal belief state `Q(s)` (or a hash/summary of it).
   * The specific policy `π` being evaluated or executed.
-  * Relevant parameters of the GNN model if they are considered static for the cached behavior (e.g., specific values in A, B, D, or C matrices from the [GNN file structure](../gnn/gnn_file_structure_doc.md)).
+  * Relevant parameters of the GNN model if they are considered static for the cached behavior (e.g., specific values in A, B, D, or C matrices from the [GNN file structure](../gnn/reference/gnn_file_structure_doc.md)).
   * The current time step `t` in a dynamic simulation if behavior is time-dependent.
 * **For Neurosymbolic GNN-LLM Systems**:
   * The specific query or prompt from the LLM to the GNN component.

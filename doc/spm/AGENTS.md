@@ -102,7 +102,7 @@ All documentation in this module adheres to professional standards:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
 ### Neuroscientific Resources
@@ -111,7 +111,7 @@ All documentation in this module adheres to professional standards:
 - **[Research Tools](../research/README.md)**: Research workflow tools
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

@@ -32,4 +32,4 @@ python src/4_model_registry.py --registry-path path/to/registry.json --verbose
 
 ## Source
 
-- **Script**: [src/4_model_registry.py](../../src/4_model_registry.py)
+- **Script**: [src/4_model_registry.py](../../../src/4_model_registry.py)

@@ -77,7 +77,7 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 - [AGENTS.md](AGENTS.md) — Module documentation
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Module specification
-- [pipeline_step_template.py](../pipeline_step_template.py) — Canonical template
+- [pipeline_step_template.py](../pipeline/pipeline_step_template.py) — Canonical template
 
 
 ---

@@ -33,4 +33,4 @@ python src/10_ontology.py --ontology-terms-file path/to/terms.json --verbose
 
 ## Source
 
-- **Script**: [src/10_ontology.py](../../src/10_ontology.py)
+- **Script**: [src/10_ontology.py](../../../src/10_ontology.py)

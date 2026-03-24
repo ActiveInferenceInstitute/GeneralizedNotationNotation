@@ -842,8 +842,8 @@ The combination of GNN's formal model specifications with D2's professional diag
 ### GNN Pipeline Documentation
 - [GNN Pipeline README](../../README.md)
 - [Pipeline Architecture](../../ARCHITECTURE.md)
-- [GNN Syntax Guide](../gnn/gnn_syntax.md)
-- [.cursorrules](../../.cursorrules)
+- [GNN Syntax Guide](../gnn/reference/gnn_syntax.md)
+- [.agent_rules](../../.agent_rules)
 - [Pipeline Execution Summary](#placeholder)
 
 ### Active Inference Resources

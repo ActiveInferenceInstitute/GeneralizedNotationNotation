@@ -10,14 +10,15 @@ Handles project initialization, UV virtual environment creation, and dependency 
 # Core dependencies only
 python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
 
-# Install with LLM support
+# Optional groups (LLM PyPI packages are already in core dependencies)
 python src/1_setup.py --install-optional --optional-groups=llm --verbose
 
 # Install all optional dependencies
 python src/1_setup.py --install-optional --verbose
 
 # Direct UV usage
-uv sync --extra llm           # LLM packages
+uv sync                       # Core includes openai, ollama, dotenv, aiohttp
+uv sync --extra llm           # Same LLM pins (compatibility extra)
 uv sync --extra visualization  # Visualization packages
 uv sync --extra all            # All optional packages
 ```
@@ -45,4 +46,4 @@ This step uses a `setup_orchestrator()` wrapper (not direct delegation) to parse
 
 ## Source
 
-- **Script**: [src/1_setup.py](../../src/1_setup.py)
+- **Script**: [src/1_setup.py](../../../src/1_setup.py)

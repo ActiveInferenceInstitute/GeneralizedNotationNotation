@@ -1,8 +1,11 @@
 {
-  "total_variables": 40,
+  "total_variables": 19,
   "total_connections": 19,
   "variable_types": {
-    "unknown": 40
+    "hidden_state": 11,
+    "observation": 2,
+    "action": 3,
+    "policy": 3
   },
   "connection_types": {
     "D_loc->s_loc": 1,
@@ -17,13 +20,17 @@
     "C_rew->G_ins": 1,
     "G_epi->G": 1,
     "G_ins->G": 1,
-    "G->pi": 1,
-    "pi->u": 1,
+    "G->\u03c0": 1,
+    "\u03c0->u": 1,
     "B_loc->u": 1,
     "s_loc->F": 1,
     "s_ctx->F": 1,
     "o_loc->F": 1,
     "o_rew->F": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 8,
+    "undirected_variable_pairs": 11
   },
   "network_properties": {
     "num_nodes": 17,

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Template Library | **Audience**: Practitioners, Developers | **Complexity**: Intermediate  
-> **Cross-References**: [Implementation Guide](../gnn/gnn_implementation.md) | [Examples](../gnn/gnn_examples_doc.md) | [Syntax Reference](../gnn/gnn_syntax.md)
+> **Cross-References**: [Implementation Guide](../gnn/integration/gnn_implementation.md) | [Examples](../gnn/tutorials/gnn_examples_doc.md) | [Syntax Reference](../gnn/reference/gnn_syntax.md)
 
 ## Overview
 
@@ -30,9 +30,9 @@ This directory contains template files for different types of GNN models, provid
 - Clear annotations
 
 **Cross-References**:
-- *Learning Path*: [Quickstart Tutorial](../quickstart.md) → [Basic Examples](../gnn/gnn_examples_doc.md)
+- *Learning Path*: [Quickstart Tutorial](../quickstart.md) → [Basic Examples](../gnn/tutorials/gnn_examples_doc.md)
 - *Framework Integration*: [PyMDP Basics](../pymdp/gnn_pymdp.md#basic-examples) | [RxInfer Getting Started](../rxinfer/gnn_rxinfer.md#getting-started)
-- *Validation*: [Type Checker](../gnn/gnn_tools.md#validation-tools)
+- *Validation*: [Type Checker](../gnn/operations/gnn_tools.md#validation-tools)
 
 ### POMDP Template
 > **📋 Metadata**: Complexity: Intermediate | Domain: Navigation, Perception | Features: Temporal, Stochastic  
@@ -49,7 +49,7 @@ This directory contains template files for different types of GNN models, provid
 **Cross-References**:
 - *Example Applications*: [Butterfly Agent](../archive/gnn_example_butterfly_pheromone_agent.md) | [Trading Agent](../archive/gnn_airplane_trading_pomdp.md)
 - *Framework Integration*: [PyMDP POMDP](../pymdp/gnn_pymdp.md#pomdp-examples) | [RxInfer POMDP](../rxinfer/gnn_rxinfer.md#pomdp-models)
-- *Advanced Patterns*: [Decision Theory](../gnn/advanced_modeling_patterns.md#decision-theory)
+- *Advanced Patterns*: [Decision Theory](../gnn/advanced/advanced_modeling_patterns.md#decision-theory)
 
 ### Multi-agent Template  
 > **📋 Metadata**: Complexity: Advanced | Domain: Multi-agent, Robotics | Features: Multimodal, Communication
@@ -63,9 +63,9 @@ This directory contains template files for different types of GNN models, provid
 - Coordination mechanisms with extensive examples
 
 **Cross-References**:
-- *Theory*: [Multi-agent Systems](../gnn/gnn_multiagent.md)
+- *Theory*: [Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)
 - *Framework Integration*: [RxInfer Multi-agent](../rxinfer/multiagent_trajectory_planning/) | [PyMDP Coordination](../pymdp/gnn_pymdp.md#multi-agent-examples)
-- *Advanced Applications*: [Cognitive Phenomena](../cognitive_phenomena/README.md) | [Social Modeling](../gnn/advanced_modeling_patterns.md#social-cognition)
+- *Advanced Applications*: [Cognitive Phenomena](../cognitive_phenomena/README.md) | [Social Modeling](../gnn/advanced/advanced_modeling_patterns.md#social-cognition)
 
 ### Hierarchical Template
 > **📋 Metadata**: Complexity: Expert | Domain: Cognitive Architecture | Features: Hierarchical, Multi-scale
@@ -80,7 +80,7 @@ This directory contains template files for different types of GNN models, provid
 
 **Cross-References**:
 - *Applications*: [Cerebrum Integration](../cerebrum/gnn_cerebrum.md) | [Language Model](../archive/gnn_active_inference_language_model.md)
-- *Advanced Patterns*: [Hierarchical Modeling](../gnn/advanced_modeling_patterns.md#hierarchical-architectures)
+- *Advanced Patterns*: [Hierarchical Modeling](../gnn/advanced/advanced_modeling_patterns.md#hierarchical-architectures)
 - *Framework Integration*: [RxInfer Hierarchical](../rxinfer/gnn_rxinfer.md#hierarchical-models) | [DisCoPy Composition](../discopy/gnn_discopy.md)
 
 ## Using Templates
@@ -93,7 +93,7 @@ cp doc/templates/basic_gnn_template.md my_model.md
 # Edit my_model.md with your specific model details
 ```
 
-**Cross-References**: [File Structure Guide](../gnn/gnn_file_structure_doc.md) | [Syntax Reference](../gnn/gnn_syntax.md)
+**Cross-References**: [File Structure Guide](../gnn/reference/gnn_file_structure_doc.md) | [Syntax Reference](../gnn/reference/gnn_syntax.md)
 
 ### Method 2: Pipeline Generation
 ```bash
@@ -101,7 +101,7 @@ cp doc/templates/basic_gnn_template.md my_model.md
 python src/main.py --template basic --output my_new_model.md
 ```
 
-**Cross-References**: [Pipeline Guide](../gnn/gnn_tools.md) | [Configuration](../configuration/README.md)
+**Cross-References**: [Pipeline Guide](../gnn/operations/gnn_tools.md) | [Configuration](../configuration/README.md)
 
 ### Method 3: Interactive Creation
 ```bash
@@ -109,7 +109,7 @@ python src/main.py --template basic --output my_new_model.md
 python src/utils/template_wizard.py
 ```
 
-**Cross-References**: [API Documentation](../api/README.md) | [Tool Development](../gnn/gnn_dsl_manual.md)
+**Cross-References**: [API Documentation](../api/README.md) | [Tool Development](../gnn/reference/gnn_dsl_manual.md)
 
 ## Template Structure
 
@@ -153,9 +153,9 @@ GNN-1.0
 ```
 
 **Cross-References**: 
-- *Specification*: [File Structure Guide](../gnn/gnn_file_structure_doc.md)
-- *Syntax*: [GNN Syntax Reference](../gnn/gnn_syntax.md)
-- *Ontology*: [Ontology System](../gnn/ontology_system.md)
+- *Specification*: [File Structure Guide](../gnn/reference/gnn_file_structure_doc.md)
+- *Syntax*: [GNN Syntax Reference](../gnn/reference/gnn_syntax.md)
+- *Ontology*: [Ontology System](../gnn/advanced/ontology_system.md)
 
 ## Customization Guidelines
 
@@ -166,28 +166,28 @@ GNN-1.0
 - **Include dimensions**: `[3,1,type=int]`
 - **Add comments for clarity**: `### Represents visual attention`
 
-**Cross-References**: [Variable Naming](../gnn/gnn_syntax.md#variable-naming-conventions) | [Implementation Guide](../gnn/gnn_implementation.md#variable-design)
+**Cross-References**: [Variable Naming](../gnn/reference/gnn_syntax.md#variable-naming-conventions) | [Implementation Guide](../gnn/integration/gnn_implementation.md#variable-design)
 
 ### Connections
 - **Use consistent directional notation**: `A > B` (A influences B)
 - **Group related connections** for readability
 - **Document connection semantics**
 
-**Cross-References**: [Connection Syntax](../gnn/gnn_syntax.md#connection-notation) | [Causal Modeling](../gnn/advanced_modeling_patterns.md#causal-inference)
+**Cross-References**: [Connection Syntax](../gnn/reference/gnn_syntax.md#connection-notation) | [Causal Modeling](../gnn/advanced/advanced_modeling_patterns.md#causal-inference)
 
 ### Parameters
 - **Provide sensible defaults**
 - **Include parameter ranges** where applicable
 - **Reference relevant literature** for parameter choices
 
-**Cross-References**: [Parameter Design](../gnn/gnn_implementation.md#parameter-specification) | [Performance Guide](../troubleshooting/performance.md)
+**Cross-References**: [Parameter Design](../gnn/integration/gnn_implementation.md#parameter-specification) | [Performance Guide](../troubleshooting/performance.md)
 
 ### Equations
 - **Use LaTeX** for mathematical expressions
 - **Include probability distributions** explicitly
 - **Document variable meanings**
 
-**Cross-References**: [Equation Syntax](../gnn/gnn_syntax.md#mathematical-expressions) | [Mathematical Modeling](../gnn/advanced_modeling_patterns.md#mathematical-foundations)
+**Cross-References**: [Equation Syntax](../gnn/reference/gnn_syntax.md#mathematical-expressions) | [Mathematical Modeling](../gnn/advanced/advanced_modeling_patterns.md#mathematical-foundations)
 
 ## Validation
 
@@ -202,8 +202,8 @@ python src/main.py --only-steps 4 --target-dir doc/templates/
 Templates should pass basic syntax validation and resource estimation.
 
 **Cross-References**: 
-- *Type Checker*: [Validation Tools](../gnn/gnn_tools.md#validation-tools)
-- *Pipeline*: [Step 4 Type Checker](../gnn/gnn_tools.md#step-4-gnn-type-checker)
+- *Type Checker*: [Validation Tools](../gnn/operations/gnn_tools.md#validation-tools)
+- *Pipeline*: [Step 4 Type Checker](../gnn/operations/gnn_tools.md#step-4-gnn-type-checker)
 - *Troubleshooting*: [Common Errors](../troubleshooting/common_errors.md)
 
 ## Contributing Templates
@@ -219,7 +219,7 @@ Templates should pass basic syntax validation and resource estimation.
 
 **Cross-References**:
 - [Contributing Guide](../../CONTRIBUTING.md)
-- [Template Standards](../../doc/gnn/gnn_standards.md)
+- [Template Standards](../../doc/gnn/reference/gnn_standards.md)
 
 ### Template Naming Convention
 - **Use descriptive names**: `multimodal_perception_template.md`
@@ -273,28 +273,28 @@ Each template includes metadata for automatic categorization:
 
 ### Beginner Path
 1. **[Basic Template](basic_gnn_template.md)** → **[Static Perception Example](../archive/gnn_example_dynamic_perception.md)**
-2. **[Syntax Reference](../gnn/gnn_syntax.md)** → **[Type Checker](../gnn/gnn_tools.md#validation-tools)**
+2. **[Syntax Reference](../gnn/reference/gnn_syntax.md)** → **[Type Checker](../gnn/operations/gnn_tools.md#validation-tools)**
 3. **[PyMDP Integration](../pymdp/gnn_pymdp.md#basic-examples)**
 
 ### Intermediate Path
 1. **[POMDP Template](pomdp_template.md)** → **[Butterfly Agent](../archive/gnn_example_butterfly_pheromone_agent.md)**
-2. **[Implementation Guide](../gnn/gnn_implementation.md)** → **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**
+2. **[Implementation Guide](../gnn/integration/gnn_implementation.md)** → **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**
 3. **Framework Choice**: [PyMDP POMDP](../pymdp/gnn_pymdp.md#pomdp-examples) or [RxInfer Navigation](../rxinfer/multiagent_trajectory_planning/)
 
 ### Advanced Path
-1. **[Multi-agent Template](multiagent_template.md)** → **[Multi-agent Theory](../gnn/gnn_multiagent.md)**
+1. **[Multi-agent Template](multiagent_template.md)** → **[Multi-agent Theory](../gnn/advanced/gnn_multiagent.md)**
 2. **[Hierarchical Template](hierarchical_template.md)** → **[Cognitive Architectures](../cerebrum/gnn_cerebrum.md)**
-3. **[Research Applications](../gnn/gnn_llm_neurosymbolic_active_inference.md)**
+3. **[Research Applications](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**
 
 ## Related Documentation
 
 > **🔗 Comprehensive Cross-Reference Network**
 
 ### Core GNN Documentation
-- **[GNN Syntax Reference](../gnn/gnn_syntax.md)** - Complete notation specification
-- **[Model Examples](../gnn/gnn_examples_doc.md)** - Step-by-step examples using templates
-- **[Implementation Guide](../gnn/gnn_implementation.md)** - Best practices for template customization
-- **[Type Checker Documentation](../gnn/gnn_tools.md#validation-tools)** - Template validation
+- **[GNN Syntax Reference](../gnn/reference/gnn_syntax.md)** - Complete notation specification
+- **[Model Examples](../gnn/tutorials/gnn_examples_doc.md)** - Step-by-step examples using templates
+- **[Implementation Guide](../gnn/integration/gnn_implementation.md)** - Best practices for template customization
+- **[Type Checker Documentation](../gnn/operations/gnn_tools.md#validation-tools)** - Template validation
 
 ### Framework Integration
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)** - Python Active Inference framework
@@ -302,13 +302,13 @@ Each template includes metadata for automatic categorization:
 - **[DisCoPy Integration](../discopy/gnn_discopy.md)** - Category theory and composition
 
 ### Advanced Topics
-- **[Advanced Modeling Patterns](../gnn/advanced_modeling_patterns.md)** - Sophisticated techniques
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)** - Multi-agent modeling theory
+- **[Advanced Modeling Patterns](../gnn/advanced/advanced_modeling_patterns.md)** - Sophisticated techniques
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)** - Multi-agent modeling theory
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)** - Specialized applications
 
 ### Development & Support
 - **[API Documentation](../api/README.md)** - Programming interfaces
-- **[Pipeline Guide](../gnn/gnn_tools.md)** - Processing workflow
+- **[Pipeline Guide](../gnn/operations/gnn_tools.md)** - Processing workflow
 - **[Troubleshooting](../troubleshooting/README.md)** - Problem solving
 - **[Contributing](../../CONTRIBUTING.md)** - Community contributions
 
@@ -337,10 +337,10 @@ template_system:
     intermediate: ["pomdp_template.md"]
     advanced: ["multiagent_template.md", "hierarchical_template.md"]
   cross_references:
-    syntax: "doc/gnn/gnn_syntax.md"
-    examples: "doc/gnn/gnn_examples_doc.md"
-    implementation: "doc/gnn/gnn_implementation.md"
-    validation: "doc/gnn/gnn_tools.md#validation-tools"
+    syntax: "doc/gnn/reference/gnn_syntax.md"
+    examples: "doc/gnn/tutorials/gnn_examples_doc.md"
+    implementation: "doc/gnn/integration/gnn_implementation.md"
+    validation: "doc/gnn/operations/gnn_tools.md#validation-tools"
 ```
 
 ---

@@ -27,6 +27,9 @@ python src/main.py --only-steps 5 --strict
 # Setup environment with dev dependencies
 python src/main.py --only-steps 1 --dev
 
+# Step 1 default: ``uv sync`` core dependencies (includes JAX / NumPyro / PyTorch / DisCoPy for step 12).
+# ``--setup-core-only`` skips the JAX self-test during setup only.
+
 # Run tests
 pytest src/tests/ -v
 pytest src/tests/test_gnn_*.py -v  # Module-specific tests
@@ -103,13 +106,7 @@ python src/12_execute.py --frameworks "pymdp,jax" --verbose
 
 ### Running all execution frameworks
 
-Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro). JAX, NumPyro, PyTorch, and DisCoPy are **optional**: if not installed, their scripts are **skipped** (not failed). To run all implementations:
-
-```bash
-uv sync --extra execution-frameworks
-```
-
-Then run the pipeline (or step 12). Without this extra, only PyMDP and Julia-based frameworks execute; the rest are skipped with a dependency-not-installed reason.
+Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro). JAX, NumPyro, PyTorch, and DisCoPy are **core** Python dependencies: a normal ``uv sync`` installs them. If the environment is incomplete, those backends are **skipped** at step 12 (not failed) with a dependency reason. The ``execution-frameworks`` extra duplicates the same pins for explicit ``uv sync --extra execution-frameworks``. Julia backends still require a local Julia install.
 
 ## Key Locations
 
@@ -120,10 +117,10 @@ Then run the pipeline (or step 12). Without this extra, only PyMDP and Julia-bas
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (~1,522+ tests across 108 files) |
+| `src/tests/` | Test suite (`uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`: 1,906 passed, 30 skipped, 2026-03-24; enable those files when local `ollama` is available) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
-| `doc/gnn/gnn_syntax.md` | Complete GNN syntax specification |
+| `doc/gnn/reference/gnn_syntax.md` | Complete GNN syntax specification |
 
 ## GNN File Format
 
@@ -167,10 +164,10 @@ s=HiddenState
 # Install specific optional groups using UV
 uv sync --extra dev                  # Development tools
 uv sync --extra api                  # REST API server (FastAPI + uvicorn)
-uv sync --extra llm                  # LLM integration (openai, anthropic, ollama)
-uv sync --extra visualization        # Enhanced visualization
+uv sync --extra llm                  # Redundant with core (kept for compatibility); base install already includes openai, ollama, dotenv, aiohttp
+uv sync --extra visualization        # Optional visualization stack
 uv sync --extra audio                # Audio processing
 uv sync --extra gui                  # GUI interfaces
-uv sync --extra execution-frameworks # All step-12 frameworks (JAX, NumPyro, PyTorch, DisCoPy)
+uv sync --extra execution-frameworks # Same pins as core Step 12 stack (compatibility / explicit sync)
 uv sync --all-extras                 # Everything
 ```

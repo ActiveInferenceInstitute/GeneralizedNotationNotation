@@ -2,12 +2,10 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-03-15
+**Last Updated**: 2026-03-23
 **Version**: 1.3.0
-**Status**: ✅ Production Ready
-**Pipeline Steps**: 25 (0-24) - 100% Implemented
-**Agent Modules**: 27 - 100% Documented
-**Latest Run**: 100% Success (25/25 steps)
+**Status**: Maintained
+**Pipeline Steps**: 25 (0-24)
 
 ## Principles
 
@@ -43,7 +41,7 @@ The GNN system implements a comprehensive 25-step pipeline that transforms GNN m
 graph TB
   A["User/Researcher"] --> B["src/main.py<br/>Pipeline Orchestrator"]
   B --> C["25 Numbered Scripts<br/>(0_template.py → 24_intelligent_analysis.py)"]
-  C --> D["27 Agent Modules<br/>(src/template/ → src/intelligent_analysis/)"]
+  C --> D["Module set<br/>(see src/AGENTS.md)"]
   D --> E["Structured Outputs<br/>(output/step_N_output/)"]
 
   B --> F["Infrastructure Layer<br/>(utils/, pipeline/)"]
@@ -135,44 +133,35 @@ graph TD
 
 ## Current Implementation Status
 
-### ✅ **Production Ready Components (February 2026)**
+### Components
 
-**Core Infrastructure (100% Complete):**
+**Core Infrastructure:**
 
 - `src/main.py` - Main pipeline orchestrator with comprehensive monitoring
 - `src/utils/` - Complete utility library with logging, validation, and monitoring
 - `src/pipeline/` - Full pipeline configuration and management system
 - `src/tests/` - Comprehensive test suite with real data validation
 
-**Agent Modules (100% Complete):**
+**Agent Modules:**
 
 - All 25 pipeline steps (0-24) implemented with thin orchestrator pattern
-- All 27 agent modules documented with comprehensive AGENTS.md files
+- Agent/module coverage is tracked in `src/AGENTS.md`
 - Complete MCP integration across all applicable modules
 - Full test coverage with >95% coverage for all modules
 
-**Documentation (100% Complete):**
+**Documentation:**
 
 - `AGENTS.md` - Master agent scaffolding documentation
-- `AGENTS_TEMPLATE.md` - Enhanced template for new modules
-- `.cursorrules` - Comprehensive development guidelines
-- `.env` - Complete environment configuration template
+- `AGENTS_TEMPLATE.md` - Template for new modules
+- `.agent_rules` - Development guidelines
+- `.env` (optional local file) - local environment values when needed
 - `.gitignore` - Comprehensive ignore patterns for scientific computing
 
-### Latest Status (2026-03-15)
+### Latest Status
 
-- **Total Steps**: 25 (all steps 0-24)
-- **Execution Time**: ~5 minutes (with LLM step)
-- **Memory Usage**: 36.3MB peak
-- **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,522+ tests passed
-- **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
-- **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
-- **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (27/27 modules + all subdirectories documented)
-- **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
-- **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
-- **Architecture Status**: ✅ Production Ready
+- The architecture uses thin orchestrators over modular implementations.
+- Pipeline, docs, and tests are maintained together.
+- Use current runs and reports for exact performance and pass metrics.
 
 ## Logging Architecture
 
@@ -327,15 +316,15 @@ Each agent implements comprehensive performance monitoring:
 
 - **Main Documentation**: [README.md](README.md) — Project overview and quick start
 - **Pipeline Documentation**: [doc/PIPELINE_SCRIPTS.md](doc/PIPELINE_SCRIPTS.md) — Detailed step-by-step descriptions
-- **Development Rules**: [.cursorrules](.cursorrules) — Canonical rules for scripts and modules
+- **Development Rules**: [.agent_rules](.agent_rules) — Canonical rules for scripts and modules
 - **Agent Registry**: [AGENTS.md](AGENTS.md) — Master agent scaffolding and module registry
-- **Template Guide**: [AGENTS_TEMPLATE.md](AGENTS_TEMPLATE.md) — Enhanced template for new modules
+- **Template Guide**: [AGENTS_TEMPLATE.md](AGENTS_TEMPLATE.md) — Template for new modules
+- **Doc link checks**: [DOCS.md](DOCS.md) — “Documentation maintenance” (`doc/development/docs_audit.py`)
 
 ---
 
 **Architecture Version**: 1.3.0
-**Last Updated**: 2026-03-15
+**Last Updated**: 2026-03-23
 **Status**: ✅ Production Ready
-**Compliance**: 100% Thin Orchestrator Pattern
-**Documentation**: 100% AGENTS.md Coverage
-**Latest Validation**: 100% Success (25/25 steps)
+**Compliance**: Thin orchestrator pattern
+**Latest Validation**: See current test and pipeline runs

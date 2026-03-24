@@ -180,17 +180,18 @@ B -> C: "preferences"
 
             mv = MatrixVisualizer()
 
-            # Create test parameters
+            # Create test parameters (API expects "value", not "values")
             parameters = [
-                {"name": "A", "shape": [3, 3], "values": np.eye(3).flatten().tolist()},
-                {"name": "B", "shape": [2, 2], "values": [1, 2, 3, 4]},
+                {"name": "A", "shape": [3, 3], "value": np.eye(3).tolist()},
+                {"name": "B", "shape": [2, 2], "value": [[1, 2], [3, 4]]},
             ]
 
             # Test matrix extraction
             matrices = mv.extract_matrix_data_from_parameters(parameters)
 
             assert isinstance(matrices, dict)
-            assert isinstance(matrices, list)  # May be empty if extraction fails
+            assert "A" in matrices and matrices["A"].shape == (3, 3)
+            assert "B" in matrices and matrices["B"].shape == (2, 2)
 
         except ImportError:
             pytest.skip("MatrixVisualizer not available (missing dependencies)")

@@ -58,7 +58,7 @@ Nock integration enables:
 - **[Jock](jock/)**: High-level programming language
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Technical Documentation
@@ -154,7 +154,7 @@ All documentation in this module adheres to professional standards:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
 
 ### Formal Methods Resources
@@ -163,7 +163,7 @@ All documentation in this module adheres to professional standards:
 - **[Formal Verification](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Formal methods overview
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

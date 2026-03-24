@@ -1,0 +1,27 @@
+{
+  "model_name": "markov_chain",
+  "viz_meta": {
+    "source": "parsed_json",
+    "json_path": "output/3_gnn_output/markov_chain/markov_chain_parsed.json",
+    "json_stale": false
+  },
+  "artifact_count": 12,
+  "artifacts": [
+    "output/8_visualization_output/markov_chain/markov_chain_network_graph.png",
+    "output/8_visualization_output/markov_chain/markov_chain_network_stats.json",
+    "output/8_visualization_output/markov_chain/markov_chain_ontology_legend.txt",
+    "output/8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
+    "output/8_visualization_output/markov_chain/markov_chain_A_heatmap.png",
+    "output/8_visualization_output/markov_chain/markov_chain_B_heatmap.png",
+    "output/8_visualization_output/markov_chain/markov_chain_D_heatmap.png",
+    "output/8_visualization_output/markov_chain/markov_chain_combined_analysis.png",
+    "output/8_visualization_output/markov_chain/markov_chain_matrix_size_distribution.png",
+    "output/8_visualization_output/markov_chain/markov_chain_section_content_length.png",
+    "output/8_visualization_output/markov_chain/markov_chain_variable_type_distribution.png",
+    "output/8_visualization_output/markov_chain/markov_chain_generative_model.png"
+  ],
+  "variable_count": 7,
+  "connection_count": 6,
+  "parameter_count": 3,
+  "ontology_label_count": 7
+}

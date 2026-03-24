@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Export Documentation | **Audience**: Developers, Data Engineers | **Complexity**: Intermediate  
-> **Cross-References**: [Export Module](../../src/export/README.md) | [GNN Export Guide](../gnn/gnn_export.md) | [Pkl Integration](../pkl/pkl_gnn.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Export Module](../../src/export/README.md) | [GNN Export Guide](../gnn/integration/gnn_export.md) | [Pkl Integration](../pkl/pkl_gnn.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -23,12 +23,12 @@ This directory contains comprehensive documentation for multi-format export capa
 
 ### Related Directories
 - **[Export Module](../../src/export/README.md)**: Multi-format export implementation
-- **[GNN Export Guide](../gnn/gnn_export.md)**: Comprehensive GNN export guide
+- **[GNN Export Guide](../gnn/integration/gnn_export.md)**: Comprehensive GNN export guide
 - **[Pkl Integration](../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -90,8 +90,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[GNN Export Guide](../gnn/gnn_export.md)**: Comprehensive export guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Export Guide](../gnn/integration/gnn_export.md)**: Comprehensive export guide
 - **[Export Module](../../src/export/README.md)**: Export implementation
 
 ### Export Resources
@@ -100,7 +100,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation for exports
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -116,7 +116,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Export Cross-Reference](../CROSS_REFERENCE_INDEX.md#export)**: Cross-reference index entry
-- **[GNN Export Guide](../gnn/gnn_export.md)**: Comprehensive export guide
+- **[GNN Export Guide](../gnn/integration/gnn_export.md)**: Comprehensive export guide
 - **[Pkl Integration](../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[Main Index](../README.md)**: Return to main documentation
 

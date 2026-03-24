@@ -342,8 +342,8 @@ python src/5_type_checker.py --target-dir input/ --verbose
 ### Related Documentation
 - [Pipeline Overview](../../README.md)
 - [Architecture Guide](../../ARCHITECTURE.md)
-- [GNN Syntax Guide](../../doc/gnn/gnn_syntax.md)
-- [Type System Documentation](../../doc/gnn/gnn_type_system.md)
+- [GNN Syntax Guide](../../doc/gnn/reference/gnn_syntax.md)
+- [Type System Documentation](../../doc/gnn/reference/gnn_type_system.md)
 
 ### External Resources
 - [Active Inference Documentation](https://activeinference.org)

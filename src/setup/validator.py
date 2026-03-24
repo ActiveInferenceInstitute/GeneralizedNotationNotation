@@ -18,7 +18,7 @@ def validate_system() -> Dict[str, Any]:
         Dictionary with system validation results
     """
     try:
-        from .setup import check_system_requirements, check_uv_availability
+        from .uv_management import check_system_requirements, check_uv_availability
         return {
             "success": check_system_requirements() and check_uv_availability(),
             "message": "System validation completed with UV support"
@@ -38,7 +38,7 @@ def get_environment_info() -> Dict[str, Any]:
         Dictionary with environment information
     """
     try:
-        from .setup import get_uv_setup_info, get_installed_package_versions
+        from .uv_management import get_uv_setup_info, get_installed_package_versions
 
         uv_info = get_uv_setup_info()
         package_versions = get_installed_package_versions()
@@ -64,7 +64,7 @@ def get_uv_status() -> Dict[str, Any]:
         Dictionary with UV status information
     """
     try:
-        from .setup import check_uv_availability, get_uv_setup_info
+        from .uv_management import check_uv_availability, get_uv_setup_info
 
         uv_available = check_uv_availability()
         uv_info = get_uv_setup_info()

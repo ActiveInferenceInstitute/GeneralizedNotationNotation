@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-03-15
+**Last Updated**: 2026-03-24
 
 <div align="center">
 
@@ -9,9 +9,6 @@
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-25-blue.svg)](#%EF%B8%8F-processing-pipeline)
-[![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
-[![Tests](https://img.shields.io/badge/Tests-1,522%2B%20Passed-brightgreen.svg)](#-repository-health)
-[![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
 **A standardized text-based language for Active Inference generative models**
@@ -51,10 +48,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-03-15  
+**Last Updated**: 2026-03-24  
 **Version**: 1.3.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite**: ✅ 1,522+ tests passing (v1.3.0)  
+**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,906 passed, 30 skipped (2026-03-24). Including `test_llm_ollama*.py` adds integration cases that call the local `ollama` CLI (default tag overridable via `OLLAMA_MODEL`); without a responsive daemon they may time out or fail.  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -82,13 +79,14 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
 | **[doc/quickstart.md](./doc/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
-| **[doc/gnn/gnn_syntax.md](./doc/gnn/gnn_syntax.md)** | Complete GNN syntax specification | You're writing GNN model files |
+| **[doc/gnn/reference/gnn_syntax.md](./doc/gnn/reference/gnn_syntax.md)** | Complete GNN syntax specification | You're writing GNN model files |
 | **[pyproject.toml](./pyproject.toml)** | Project dependencies and configuration | You're setting up the environment |
 | **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** | Detailed installation instructions | You're having setup issues |
 | **[SECURITY.md](./SECURITY.md)** | Security policy and vulnerability reporting | You found a security issue |
 | **[SUPPORT.md](./SUPPORT.md)** | Getting help and community resources | You need assistance |
 | **[CITATION.cff](./CITATION.cff)** | Citation information for academic use | You're citing GNN in research |
 | **[CHANGELOG.md](./CHANGELOG.md)** | Release history and version changes | You want to see what changed |
+| **[.github/README.md](./.github/README.md)** | GitHub-facing hub: deep links, repo map, CI, Dependabot | You want navigation from GitHub UI or you're changing automation |
 
 ### 📂 Directory Overview
 
@@ -100,13 +98,13 @@ GeneralizedNotationNotation/
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # 440+ documentation files
+├── 📁 doc/                    # ~450 Markdown files under doc/ (plus assets; see doc/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
 ├── 📁 input/                  # Input GNN files and configuration
 │   └── gnn_files/            # Sample GNN model files
-├── 📁 output/                 # Generated outputs (25 step-specific folders)
+├── 📁 output/                 # Pipeline outputs (tracked; see .gitignore for temp/audio/cache)
 └── 📄 pyproject.toml, pytest.ini  # Configuration files
 ```
 
@@ -273,7 +271,7 @@ o=Observation
 - `s-A` — s connects to A (undirected/bidirectional)
 - `π>u` — Policy determines action
 
-📖 **Full syntax reference**: [doc/gnn/gnn_syntax.md](./doc/gnn/gnn_syntax.md)
+📖 **Full syntax reference**: [doc/gnn/reference/gnn_syntax.md](./doc/gnn/reference/gnn_syntax.md)
 
 ---
 
@@ -866,6 +864,8 @@ output/22_gui_output/
 
 ## 🚀 Quick Start
 
+If you use [uv](https://github.com/astral-sh/uv) (`uv sync` / `uv run`), prefer **`uv run python src/...`** instead of **`python src/...`** for pipeline commands so they run in the project environment. Many examples below use bare `python` for a minimal local setup; substitute `uv run python` when you work with uv (see [CONTRIBUTING.md](CONTRIBUTING.md)).
+
 **New to GNN?** Choose your learning path:
 
 ### 🎯 **Choose Your Journey**
@@ -1026,7 +1026,7 @@ Comprehensive documentation is organized in the `doc/` directory.
 | [**AGENTS.md**](./AGENTS.md) | **MUST READ**: The master guide to all pipeline agents and modules. |
 | [**DOCS.md**](./DOCS.md) | High-level system architecture and comprehensive documentation index. |
 | [**GNN Overview**](./doc/gnn/gnn_overview.md) | High-level introduction to the GNN language. |
-| [**Syntax Guide**](./doc/gnn/gnn_syntax.md) | Detailed GNN syntax specification. |
+| [**Syntax Guide**](./doc/gnn/reference/gnn_syntax.md) | Detailed GNN syntax specification. |
 | [**File Structure**](./doc/gnn/reference/gnn_file_structure_doc.md) | Guide to GNN file organization. |
 | [**Quick Start Tutorial**](./doc/gnn/tutorials/quickstart_tutorial.md) | Step-by-step beginner guide. |
 | [**Architecture Guide**](./ARCHITECTURE.md) | Implementation, extension patterns, and system design. |
@@ -1157,20 +1157,11 @@ python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
 
 The GNN project maintains high standards for code quality, testing, and documentation.
 
-### 📊 Current Metrics (2026-03-15)
+### Repository Health
 
-- **Total Steps**: 25 (0-24)
-- **Execution Time**: ~5 minutes (with LLM step)
-- **Memory Usage**: 36.3MB peak
-- **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,522+ tests passed
-- **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
-- **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
-- **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (31/31 modules + all subdirectories documented)
-- **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
-- **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
-- **Architecture Status**: ✅ Production Ready
+- Pipeline orchestration, module docs, and tests are maintained together.
+- Use current test and pipeline runs as the source of truth for operational status.
+- See `src/tests/` and step-specific outputs in `output/` for current validation artifacts.
 
 ### 🧪 Testing Infrastructure
 
@@ -1204,6 +1195,7 @@ pytest src/tests/test_[module]*.py -v
 - **Security Policy**: See [SECURITY.md](./SECURITY.md) for vulnerability reporting
 - **Code of Conduct**: See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 - **Contributing Guidelines**: See [CONTRIBUTING.md](./CONTRIBUTING.md)
+- **GitHub automation** (CI, Dependabot, workflows): See [.github/README.md](./.github/README.md)
 
 ---
 

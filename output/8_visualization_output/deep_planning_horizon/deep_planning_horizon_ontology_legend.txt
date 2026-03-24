@@ -1,0 +1,13 @@
+variable	ontology_term
+A	LikelihoodMatrix
+B	TransitionMatrix
+C	LogPreferenceVector
+D	PriorOverHiddenStates
+E	PolicyPrior
+F	VariationalFreeEnergy
+G	CumulativeExpectedFreeEnergy
+o	Observation
+s	HiddenState
+t	Time
+u	Action
+π	PolicySequenceDistribution

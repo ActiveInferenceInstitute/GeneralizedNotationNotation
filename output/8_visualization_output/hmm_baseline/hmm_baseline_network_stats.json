@@ -1,8 +1,13 @@
 {
-  "total_variables": 16,
+  "total_variables": 10,
   "total_connections": 12,
   "variable_types": {
-    "unknown": 16
+    "likelihood_matrix": 1,
+    "transition_matrix": 1,
+    "prior_vector": 1,
+    "hidden_state": 5,
+    "observation": 1,
+    "action": 1
   },
   "connection_types": {
     "D->s": 1,
@@ -17,6 +22,10 @@
     "o->alpha": 1,
     "alpha->s_prime": 1,
     "s_prime->beta": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 4,
+    "undirected_variable_pairs": 8
   },
   "network_properties": {
     "num_nodes": 9,

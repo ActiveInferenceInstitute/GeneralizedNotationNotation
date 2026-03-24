@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Symbolic Mathematics Integration Agent | **Audience**: Researchers, Mathematicians | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [README.md](README.md) | [SymPy GNN Guide](gnn_sympy.md) | [MCP Integration](../mcp/README.md) | [Mathematical Foundations](../gnn/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [README.md](README.md) | [SymPy GNN Guide](gnn_sympy.md) | [MCP Integration](../mcp/README.md) | [Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -102,16 +102,16 @@ All documentation in this module adheres to professional standards:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 
 ### Mathematical Resources
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol
 - **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -119,7 +119,7 @@ All documentation in this module adheres to professional standards:
 
 - **[SymPy Cross-Reference](../CROSS_REFERENCE_INDEX.md#sympy)**: Cross-reference index entry
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

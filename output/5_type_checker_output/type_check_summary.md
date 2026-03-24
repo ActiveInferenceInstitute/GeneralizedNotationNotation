@@ -1,21 +1,21 @@
 
 # Type Check Summary
 
-**Generated**: 2026-03-18 10:10:55
+**Generated**: 2026-03-24 13:57:17
 
 ## Processing Results
-- **Files Processed**: 0
+- **Files Processed**: 2
 - **Success**: True
-- **Errors**: 1
+- **Errors**: 0
 
 ## Validation Results
-- **Files Validated**: 0
+- **Files Validated**: 2
 - **Valid Files**: 0
-- **Invalid Files**: 0
+- **Invalid Files**: 2
 
 ## Type Analysis
-- **Type Analyses**: 0
-- **Total Variables**: 0
+- **Type Analyses**: 2
+- **Total Variables**: 84
 
 ## Error Summary
-- No GNN files found
+- No errors encountered

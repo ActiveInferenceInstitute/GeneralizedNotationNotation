@@ -5,138 +5,138 @@
   "script_path": "output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.758395,
-  "timestamp": "2026-03-18T09:23:09.431349",
+  "execution_time": 1.048697,
+  "timestamp": "2026-03-24T13:59:34.418498",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2,
-      2
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
     ],
     "actions": [
-      0,
-      0,
-      1,
       1,
       0,
       0,
       0,
-      1,
-      0,
-      1,
       0,
       0,
       1,
       1,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
       1
     ],
     "policy": [],
-    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.020s\nResults saved to: output/12_execute_output/deep_planning_horizon/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.002s\nResults saved to: output/12_execute_output/deep_planning_horizon/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
-        0.0,
-        0.0,
         0.9999999999999996,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ],
       [
-        0.0,
-        0.0,
         0.9999999999999999,
+        0.0,
+        0.0,
         0.0
       ]
     ],

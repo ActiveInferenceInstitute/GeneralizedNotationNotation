@@ -46,6 +46,11 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step syst
 
 - **[utils/](src/utils/AGENTS.md)** - Shared utilities and helper functions
 - **[pipeline/](src/pipeline/AGENTS.md)** - Pipeline orchestration and configuration
+- **[api/](src/api/AGENTS.md)** - REST API (FastAPI)
+- **[cli/](src/cli/AGENTS.md)** - `gnn` CLI entry point
+- **[lsp/](src/lsp/AGENTS.md)** - Language Server Protocol support
+- **[sapf/](src/sapf/AGENTS.md)** - SAPF compatibility shim (implementation in `src/audio/sapf/`)
+- **[doc/](src/doc/AGENTS.md)** - In-repo technical documentation subtree
 
 ### Documentation Agents
 
@@ -200,21 +205,11 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-03-05)
+### Latest Status
 
-- **Total Steps**: 25 (all steps 0-24)
-- **Execution Time**: ~5 minutes (with LLM step)
-- **Memory Usage**: 36.3MB peak
-- **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,522+ tests passed (4 skipped, 84 deselected — optional deps)
-- **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
-- **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
-- **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **MCP Integration**: ✅ 131 distinct tools successfully registered across 30 modules
-- **AGENTS.md Coverage**: ✅ 100% (all 30 modules + all subdirectories documented)
-- **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
-- **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
-- **Architecture Status**: ✅ Production Ready
+- The pipeline contains 25 steps and follows the thin orchestrator pattern.
+- Module docs and tests are maintained as part of normal development.
+- Use current CI/local runs for exact pass counts and performance measurements.
 
 ### Enhanced Visual Logging Features
 
@@ -232,45 +227,15 @@ graph TD
 - **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
 - **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests**: 1,522+ passed, 4 skipped (optional dependencies).
-- **LLM Default Model**: `gemma3:4b` via Ollama (configurable).
+- **Tests**: `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` — 1,906 passed, 30 skipped (2026-03-24); re-enable `test_llm_ollama*.py` when `ollama` is available.
+- **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
 
 ---
 
 ## Module Status Matrix
 
-| Module | AGENTS.md | Status | Test Coverage | MCP Tools |
-|--------|-----------|--------|---------------|-----------|
-| template | ✅ Complete | ✅ Ready | 90% | 3 |
-| setup | ✅ Complete | ✅ Ready | 95% | 2 |
-| tests | ✅ Complete | ✅ Ready | 98% | 1 |
-| gnn | ✅ Complete | ✅ Ready | 92% | 4 |
-| model_registry | ✅ Complete | ✅ Ready | 88% | 3 |
-| type_checker | ✅ Complete | ✅ Ready | 94% | 2 |
-| validation | ✅ Complete | ✅ Ready | 89% | 3 |
-| export | ✅ Complete | ✅ Ready | 91% | 3 |
-| visualization | ✅ Complete | ✅ Ready | 90% | 4 |
-| advanced_visualization | ✅ Complete | ✅ Ready | 95% | 3 |
-| ontology | ✅ Complete | ✅ Ready | 87% | 3 |
-| render | ✅ Complete | ✅ Ready | 85% | 5 |
-| execute | ✅ Complete | ✅ Ready | 84% | 4 |
-| llm | ✅ Complete | ✅ Ready | 82% | 6 |
-| ml_integration | ✅ Complete | ✅ Ready | 78% | 2 |
-| audio | ✅ Complete | ✅ Ready | 80% | 3 |
-| analysis | ✅ Complete | ✅ Ready | 86% | 4 |
-| integration | ✅ Complete | ✅ Ready | 88% | 2 |
-| security | ✅ Complete | ✅ Ready | 91% | 3 |
-| research | ✅ Complete | ✅ Ready | 76% | 2 |
-| website | ✅ Complete | ✅ Ready | 85% | 3 |
-| mcp | ✅ Complete | ✅ Ready | 89% | 5 |
-| gui | ✅ Complete | ✅ Ready | 74% | 4 |
-| report | ✅ Complete | ✅ Ready | 87% | 3 |
-| intelligent_analysis | ✅ Complete | ✅ Ready | 80% | 2 |
-| utils | ✅ Complete | ✅ Ready | 93% | N/A |
-| pipeline | ✅ Complete | ✅ Ready | 95% | N/A |
-
-**Legend**: ✅ Complete | ⏳ Pending | 🔄 Fixed/Updated
+Module-level status is maintained in each module's own `AGENTS.md` and test files.
 
 ---
 
@@ -519,15 +484,11 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 - **Main Documentation**: [README.md](README.md)
 - **Architecture Guide**: [ARCHITECTURE.md](ARCHITECTURE.md)
-- **Pipeline Rules**: [.cursorrules](.cursorrules)
+- **Pipeline Rules**: [.agent_rules](.agent_rules)
 
 ---
 
-**Last Updated**: 2026-03-05
+**Last Updated**: 2026-03-24
 **Pipeline Version**: 1.3.0
-**Total Modules**: 30
 **Total Steps**: 25 (0-24)
-**Test Status**: ✅ 1,522+ tests passed
-**MCP Integration**: ✅ 131 tools registered across 30 modules
-**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
-**Status**: ✅ Production Ready
+**Status**: Maintained

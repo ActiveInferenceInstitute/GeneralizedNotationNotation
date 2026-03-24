@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/discopy/T-Maze Epistemic Foraging Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.684978,
-  "timestamp": "2026-03-18T09:21:47.908842",
+  "execution_time": 0.407839,
+  "timestamp": "2026-03-24T13:59:05.056818",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

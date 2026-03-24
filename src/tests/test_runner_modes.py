@@ -25,6 +25,7 @@ from .infrastructure import (
     _parse_test_statistics,
     _parse_coverage_statistics,
 )
+from .infrastructure.report_generator import flatten_pipeline_test_summary
 
 
 def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
@@ -104,7 +105,12 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
                 logger.warning(f"  Collection error: {err[:200]}")
 
         test_stats = _parse_test_statistics(result.stdout)
-        coverage_stats = _parse_coverage_statistics(result.stdout)
+        coverage_json = project_root / "coverage.json"
+        coverage_stats = (
+            _parse_coverage_statistics(coverage_json)
+            if coverage_json.is_file()
+            else {}
+        )
 
         summary = {
             "execution_summary": {
@@ -126,7 +132,10 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         with open(summary_file, "w") as f:
             json.dump(summary, f, indent=2)
 
-        _generate_markdown_report(output_dir, summary)
+        _generate_markdown_report(
+            output_dir / "test_execution_report.md",
+            flatten_pipeline_test_summary(summary),
+        )
 
         success = result.returncode == 0
         total = test_stats.get("total", 0)

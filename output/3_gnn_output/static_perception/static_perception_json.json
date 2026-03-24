@@ -36,7 +36,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-18T10:10:54.776611",
+  "created_at": "2026-03-24T13:57:11.255427",
   "equations": [],
   "extensions": {
     "footer": "Static Perception Model v1 - GNN Representation.\nSimplest possible Active Inference model.\nNo temporal dynamics, no action — perception only.",
@@ -44,7 +44,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Static Perception Model",
-  "modified_at": "2026-03-18T10:10:54.776612",
+  "modified_at": "2026-03-24T13:57:11.255431",
   "ontology_mappings": [
     {
       "description": null,

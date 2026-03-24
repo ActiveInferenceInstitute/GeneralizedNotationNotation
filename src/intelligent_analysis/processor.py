@@ -10,6 +10,7 @@ breakdowns, yellow/red flag detection, and actionable recommendations.
 import json
 import logging
 import asyncio
+import os
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Literal, Tuple
 from datetime import datetime
@@ -415,7 +416,8 @@ async def _run_llm_analysis(
     context: Dict[str, Any],
     step_analyses: List[StepAnalysis],
     flags_by_type: Dict[str, List],
-    logger: logging.Logger
+    logger: logging.Logger,
+    analysis_model: Optional[str] = None,
 ) -> str:
     """
     Run LLM-powered analysis on pipeline context.
@@ -425,6 +427,7 @@ async def _run_llm_analysis(
         step_analyses: List of per-step analysis objects
         flags_by_type: Steps grouped by flag type
         logger: Logger instance
+        analysis_model: Optional model tag (CLI ``--analysis-model``); else ``OLLAMA_MODEL``, else ``llm.defaults.DEFAULT_OLLAMA_MODEL``.
 
     Returns:
         LLM-generated analysis report as markdown string
@@ -501,10 +504,13 @@ Please provide analysis in EXACTLY this format:
 """
 
     try:
+        from llm.defaults import DEFAULT_OLLAMA_MODEL
+
+        model_name = analysis_model or os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
         messages = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
             messages=messages,
-            model_name="gemma3:4b",
+            model_name=model_name,
             max_tokens=2500
         )
         return response.content
@@ -838,7 +844,15 @@ def process_intelligent_analysis(
     # 7. Run LLM Analysis
     llm_analysis = None
     try:
-        llm_analysis = asyncio.run(_run_llm_analysis(analysis, step_analyses, flags_by_type, logger))
+        llm_analysis = asyncio.run(
+            _run_llm_analysis(
+                analysis,
+                step_analyses,
+                flags_by_type,
+                logger,
+                analysis_model=kwargs.get("analysis_model"),
+            )
+        )
         logger.info("LLM analysis completed")
     except Exception as e:
         logger.warning(f"LLM analysis skipped: {e}")

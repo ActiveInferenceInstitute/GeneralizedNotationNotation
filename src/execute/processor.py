@@ -573,6 +573,10 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             env = os.environ.copy()
             if framework == "pymdp":
                 env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
+                # Generated PyMDP scripts import src.execute.pymdp; subprocess cwd is often under output/
+                _proc = Path(__file__).resolve()
+                _repo_root = _proc.parent.parent.parent  # src/execute/processor.py -> src -> repo root
+                env["GNN_PROJECT_ROOT"] = str(_repo_root)
 
             # Direct JAX/NumPyro/PyTorch output into execute output dir for collection/analysis
             impl_output_dir = results_dir / model_name / framework
@@ -746,6 +750,28 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                         logger.debug("Updated results JSON with enhanced simulation data")
                     else:
                         logger.debug(f"No additional data extracted from files for {framework}")
+
+                if framework == "pymdp":
+                    sim_dir = impl_specific_dir.parent / "simulation_data"
+                    sr_candidates = list(sim_dir.glob("*simulation_results.json"))
+                    if not sr_candidates and (sim_dir / "simulation_results.json").exists():
+                        sr_candidates = [sim_dir / "simulation_results.json"]
+                    if sr_candidates:
+                        try:
+                            with open(sr_candidates[0], encoding="utf-8") as sf:
+                                payload = json.load(sf)
+                            n_steps = payload.get("num_timesteps")
+                            if n_steps is None:
+                                n_steps = len(payload.get("observations", []))
+                            logger.info(
+                                "pymdp_execution_summary model=%s script=%s simulation_results=%s timesteps=%s",
+                                model_name,
+                                script_info["name"],
+                                sr_candidates[0],
+                                n_steps,
+                            )
+                        except (OSError, json.JSONDecodeError, TypeError) as ex:
+                            logger.debug("pymdp_execution_summary skipped: %s", ex)
 
             except Exception as e:
                 logger.warning(f"Failed to collect execution outputs: {e}")

@@ -73,12 +73,11 @@ providers = get_available_providers()  # e.g., ['ollama', 'openai']
 ## Dependencies
 
 ```bash
-# LLM provider deps
-uv sync --extra llm
+# LLM PyPI packages are core dependencies (uv sync)
+uv sync
 
-# Includes: openai, anthropic, cohere, ollama
-# For local LLM (recommended): install Ollama separately
-# https://ollama.ai
+# Optional: uv sync --extra llm  (compatibility; same pins)
+# Install Ollama CLI separately for local inference: https://ollama.com
 ```
 
 ## Output

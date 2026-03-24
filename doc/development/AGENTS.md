@@ -17,10 +17,11 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**:        2 | **Subdirectories**:        1
+**Files**: `README.md`, `AGENTS.md`, `agents_readme_review.md`, `agents_readme_triple_review.md`, `thin_orchestrator_pattern.md`, `docs_audit.py`, `rewrite_gnn_doc_links.py`, `docs_audit_report.md` (generated) | **Subdirectories**: none
 
 ## Quick Navigation
 
+- **Docs audit**: `uv run python doc/development/docs_audit.py` from repo root (`--strict` for CI); report includes `doc/**/AGENTS.md` orientation checks. See [README.md](README.md#documentation-audit-tooling), [agents_readme_review.md](agents_readme_review.md), [agents_readme_triple_review.md](agents_readme_triple_review.md)
 - **README.md**: [Directory overview](README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)
@@ -58,8 +59,8 @@ All documentation in this module adheres to professional standards:
 
 **Main GNN Documentation**: [gnn/](../gnn/)
 - [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+- [GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)
+- [GNN Examples](../gnn/tutorials/gnn_examples_doc.md)
 
 **Pipeline Architecture**: [src/](../../src/)
 - [Pipeline AGENTS](../../src/AGENTS.md)

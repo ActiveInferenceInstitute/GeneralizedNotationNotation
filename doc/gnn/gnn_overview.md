@@ -1,9 +1,11 @@
 # GNN Overview
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
+**Pipeline Steps**: 25  
+
+For a longer specification-style summary (symbols, file structure narrative), see **[About GNN](about_gnn.md)**.
 
 ## What is GNN?
 
@@ -34,14 +36,6 @@ graph TD
     GNN --> CODE
     GNN --> DOC
     ONTO <--> GNN
-    
-    classDef core fill:#f96,stroke:#333,stroke-width:2px;
-    classDef output fill:#9cf,stroke:#333,stroke-width:1px;
-    classDef input fill:#fcf,stroke:#333,stroke-width:1px;
-    
-    class GNN core;
-    class AI,ONTO input;
-    class RM,SIM,VIS,CODE,DOC output;
 ```
 
 ## Motivation and Goals
@@ -119,14 +113,6 @@ graph TB
     
     EXEC --> SIM[Simulations]
     EXEC --> CODE[Program Code]
-    
-    classDef primary fill:#f96,stroke:#333,stroke-width:2px;
-    classDef secondary fill:#9cf,stroke:#333,stroke-width:1px;
-    classDef tertiary fill:#fcf,stroke:#333,stroke-width:1px;
-    
-    class GNN primary;
-    class TXT,GRAPH,EXEC secondary;
-    class DOCS,MATH,FG,DEP,SIM,CODE tertiary;
 ```
 
 1. **Text-Based Models**: Plain-text GNN files render directly into formulas, pseudocode, or prose, making them ideal for documentation, papers, and educational materials.
@@ -155,14 +141,6 @@ graph LR
     AIO <--> GNN
     GNN --> AIMOD
     GNN --> SOFT
-    
-    classDef theory fill:#fcf,stroke:#333,stroke-width:1px;
-    classDef tools fill:#9cf,stroke:#333,stroke-width:1px;
-    classDef impl fill:#cfc,stroke:#333,stroke-width:1px;
-    
-    class FEP,AI theory;
-    class AIO,GNN tools;
-    class AIMOD,SOFT impl;
 ```
 
 - **Active Inference Theory**: Provides the theoretical foundation for GNN models
@@ -178,13 +156,13 @@ The GNN project includes a comprehensive 25-step processing pipeline that transf
 
 ```bash
 # Run the full pipeline
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific processing steps
-python src/main.py --only-steps "3,5,8,11,12" --verbose
+uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 # Skip certain steps
-python src/main.py --skip-steps "15,16" --verbose
+uv run python src/main.py --skip-steps "15,16" --verbose
 ```
 
 ### Complete 25-Step Pipeline

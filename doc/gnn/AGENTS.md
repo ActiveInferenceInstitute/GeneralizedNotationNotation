@@ -9,10 +9,7 @@
 - **Path**: `doc/gnn/`
 - **Purpose**: Complete documentation hub for Generalized Notation Notation — language specification, pipeline modules, framework implementations, testing, operations, and tutorials.
 - **Pipeline Steps**: 25 (0–24)
-- **Modules**: 38+
-- **MCP Tools**: 131
-- **Renderers**: 8/8 (pymdp, rxinfer, jax, numpyro, stan, pytorch, activeinference_jl, discopy)
-- **Tests**: 1,522+
+- **Renderers documented**: pymdp, rxinfer, jax, numpyro, stan, pytorch, activeinference_jl, discopy, catcolab
 
 ## Subdirectory Index
 
@@ -23,7 +20,7 @@
 | `integration/` | Cross-framework integration guides | 4 |
 | `language/` | GNN syntax cheatsheet and language-level specifications | 3 |
 | `mcp/` | MCP tool reference, client setup, development guide | 3 |
-| `modules/` | Per-step documentation for all 25 pipeline steps + init + main | 28 |
+| `modules/` | Per-step documentation for all 25 pipeline steps + init + main | 27 step/init/main `.md` (+ `AGENTS.md`, `README.md` in folder) |
 | `operations/` | Pipeline tools, troubleshooting, coherence, metrics | 5 |
 | `reference/` | Architecture, DSL, schema, standards, type system | 8 |
 | `testing/` | Test patterns, MCP audit | 2 |
@@ -66,11 +63,18 @@ The following source modules were added since v1.3.0 and should be reflected in 
 | Health check | `src/render/health.py` | Renderer availability check |
 | Remediation | `src/intelligent_analysis/remediation.py` | Auto-fix suggestions |
 
+## Metrics
+
+- **Test and renderer counts** in page footers point to the repository [README.md](../../README.md) so numbers stay in one place.
+- **Renderer list** above matches [implementations/](implementations/) docs (optional installs).
+
 ## Integration
 
 All files in this tree are documentation and specification artifacts. They integrate with:
 
-- `src/main.py` — Pipeline orchestrator (25 steps)
+- `src/main.py` — Pipeline orchestrator (25 steps, 0–24)
 - `src/cli/__init__.py` — CLI entrypoint (`gnn` command)
 - `src/api/app.py` — REST API server
 - `src/lsp/__init__.py` — Language Server
+
+**Last Updated**: 2026-03-24

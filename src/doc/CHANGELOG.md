@@ -75,7 +75,7 @@ This document tracks changes, additions, and improvements to the GNN documentati
 
 - **doc/tutorials/** - Step-by-step learning modules
 - **doc/gnn/tutorials/** - GNN-specific tutorials
-- **doc/gnn/quickstart_tutorial.md** - Beginner-friendly introduction
+- **doc/gnn/tutorials/quickstart_tutorial.md** - Beginner-friendly introduction
 
 ---
 
@@ -83,7 +83,7 @@ This document tracks changes, additions, and improvements to the GNN documentati
 
 #### 🆕 Core Documentation
 
-- **doc/gnn/gnn_syntax.md** - Complete GNN syntax specification
+- **doc/gnn/reference/gnn_syntax.md** - Complete GNN syntax specification
 - **doc/gnn/gnn_overview.md** - High-level introduction to GNN
 - **doc/gnn/about_gnn.md** - Academic and theoretical background
 - **doc/gnn/gnn_paper.md** - Research paper details and DOI
@@ -136,7 +136,7 @@ When adding new documentation:
 
 - **Issues**: [GitHub Issues](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
-- **Documentation**: See [doc/SUPPORT.md](./SUPPORT.md)
+- **Documentation**: See [doc/SUPPORT.md](../../doc/SUPPORT.md)
 
 ---
 

@@ -107,6 +107,21 @@ src/module_name/
 - If adding a pipeline step, update `AGENTS.md`, `DOCS.md`, and `README.md`
 - Use concrete examples and real outputs over promotional language
 
+### CI and automation
+
+Pull requests against `main` run the workflows described in [.github/README.md](.github/README.md): tests and lint (with path filters), docs audit when Markdown or `doc/` changes, dependency review, CodeQL, and workflow lint when `.github/workflows/**` changes.
+
+Before opening a PR, align locally where possible:
+
+```bash
+uv sync --frozen --extra dev
+uv run pytest -m "not pipeline and not mcp" --tb=short -q
+uv run ruff check src/
+uv run python doc/development/docs_audit.py --strict
+```
+
+For workflow YAML edits, run `actionlint .github/workflows/*.yml` (see the hub doc for install options). Full suite (including pipeline/MCP-marked tests) is heavier than CI; use `uv run pytest src/tests/ -v` when your change touches those areas.
+
 ## Pull Request Guidelines
 
 - Keep PRs focused on a single change
@@ -119,7 +134,7 @@ src/module_name/
 
 Follow the project [Style Guide](doc/style_guide.md) for formatting and naming conventions. Key points:
 - Python code follows PEP 8
-- GNN files use Markdown with structured sections (see [GNN Syntax](doc/gnn/gnn_syntax.md))
+- GNN files use Markdown with structured sections (see [GNN Syntax](doc/gnn/reference/gnn_syntax.md))
 - Commit messages should be imperative ("Add feature" not "Added feature")
 
 ## Security

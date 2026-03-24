@@ -1,6 +1,0 @@
-2026-03-18 10:15:43,924 - ml_integration.processor - INFO - Starting ML integration: target=/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbz2_mo9y
-2026-03-18 10:15:43,924 - ml_integration.processor - INFO -   ml_model.md: family=unknown, states=0, params=0
-2026-03-18 10:15:43,924 - ml_integration.processor - INFO - sklearn not available -- skipping ML training
-2026-03-18 10:15:43,924 - ml_integration.processor - INFO - ML integration completed -- results at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbz2_mo9y/ml_output/ml_integration_results.json
-2026-03-18 10:15:43,925 - ml_integration.processor - WARNING - No GNN files found in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0tuo625e/empty_input
-2026-03-18 10:15:43,925 - ml_integration.processor - INFO - sklearn not available -- skipping ML training

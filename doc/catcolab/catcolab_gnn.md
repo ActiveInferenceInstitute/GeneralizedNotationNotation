@@ -311,12 +311,12 @@ Aspect: "via likelihood mapping A"
 
 ### 2. Multi-Agent Systems
 - **Compose in CatColab**: Regulatory network of agent interactions
-- **Translate to GNN**: Multi-agent GNN specification ([gnn_multiagent.md](../gnn/gnn_multiagent.md))
+- **Translate to GNN**: Multi-agent GNN specification ([gnn_multiagent.md](../gnn/advanced/gnn_multiagent.md))
 - **Simulate**: Distributed Active Inference execution
 
 ### 3. Cognitive Architecture
 - **Ontology in CatColab**: Olog for cognitive concepts
-- **Structure in GNN**: Hierarchical POMDP ([advanced_modeling_patterns.md](../gnn/advanced_modeling_patterns.md))
+- **Structure in GNN**: Hierarchical POMDP ([advanced_modeling_patterns.md](../gnn/advanced/advanced_modeling_patterns.md))
 - **Analyze**: LLM-enhanced interpretation (Step 13)
 
 ---
@@ -325,12 +325,12 @@ Aspect: "via likelihood mapping A"
 
 ### GNN Documentation
 - [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Syntax](../gnn/gnn_syntax.md)
-- [Framework Integration Guide](../gnn/framework_integration_guide.md)
+- [GNN Syntax](../gnn/reference/gnn_syntax.md)
+- [Framework Integration Guide](../gnn/integration/framework_integration_guide.md)
 - [DisCoPy Integration](../discopy/gnn_discopy.md)
-- [Ontology System](../gnn/ontology_system.md)
-- [Multi-Agent Systems](../gnn/gnn_multiagent.md)
-- [Advanced Modeling Patterns](../gnn/advanced_modeling_patterns.md)
+- [Ontology System](../gnn/advanced/ontology_system.md)
+- [Multi-Agent Systems](../gnn/advanced/gnn_multiagent.md)
+- [Advanced Modeling Patterns](../gnn/advanced/advanced_modeling_patterns.md)
 - [Pipeline Documentation](../../src/AGENTS.md)
 
 ### CatColab Resources

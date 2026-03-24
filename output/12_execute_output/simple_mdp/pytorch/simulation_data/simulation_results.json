@@ -98,21 +98,21 @@
     ]
   ],
   "actions": [
-    0,
     1,
     0,
     1,
-    1,
-    0,
-    1,
-    0,
     1,
     1,
     0,
     0,
     1,
+    1,
     0,
-    1
+    0,
+    0,
+    1,
+    1,
+    0
   ],
   "observations": [
     0,
@@ -199,6 +199,6 @@
     "actions_in_range": true,
     "all_valid": true
   },
-  "execution_time_seconds": 0.0198,
+  "execution_time_seconds": 0.0195,
   "torch_version": "2.9.1"
 }

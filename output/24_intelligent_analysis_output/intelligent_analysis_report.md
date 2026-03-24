@@ -1,6 +1,6 @@
 # Pipeline Intelligent Analysis Report
 
-**Generated**: 2026-03-18T09:30:30.339673
+**Generated**: 2026-03-24T14:13:06.912488
 
 **Status**: ✅ SUCCESS
 
@@ -11,79 +11,88 @@
 
 | Metric | Value |
 |--------|-------|
-| Total Steps | 23 |
-| Duration | 700.04s |
-| Peak Memory | 86.5 MB |
+| Total Steps | 24 |
+| Duration | 1087.40s |
+| Peak Memory | 88.5 MB |
 | 🔴 Red Flags | 0 |
 | 🟡 Yellow Flags | 4 |
-| ✅ Green (Clean) | 19 |
+| ✅ Green (Clean) | 20 |
 
 ## AI-Powered Analysis
 
-### Executive Summary
-The pipeline executed successfully with a total duration of 700.04 seconds, demonstrating overall health and stability. However, four steps exhibited performance issues, primarily due to slow execution times exceeding defined thresholds, warranting investigation. While no critical issues were identified, optimizing these slower steps is crucial for overall pipeline efficiency.
+✅ **0_template.py** (Template initialization): Completed successfully in 0.90s
+✅ **1_setup.py** (Environment setup): Completed successfully in 14.83s | Flags: Very slow: 120.0s (>120.0s threshold)
+🟡 **2_tests.py** (Test suite execution): Completed with 1 flag(s) in 120.95s | Flags: Very slow: 120.9s (>120.0s threshold)
+✅ **3_gnn.py** (GNN file processing): Completed successfully in 3.22s | Flags: Very slow: 120.9s (>120.0s threshold)
+✅ **4_model_registry.py** (Model registry): Completed successfully in 0.46s | Flags: Very slow: 512.0s (>120.0s threshold)
+✅ **5_type_checker.py** (Type checking): Completed successfully in 2.94s | Flags: Very slow: 281.56s
+✅ **6_validation.py** (Validation): Completed successfully in 2.86s | Flags: Very slow: 27.91s (>120.0s threshold)
+✅ **7_export.py** (Multi-format export): Completed successfully in 0.47s | Flags: Very slow: 512.0s (>120.0s threshold)
+✅ **8_visualization.py** (Visualization): Completed successfully in 27.91s | Flags: Very slow: 281.56s
+✅ **9_advanced_viz.py** (Advanced visualization): Completed successfully in 27.91s | Flags: Very slow: 281.56s
+✅ **10_ontology.py** (Ontology processing): Completed successfully in 2.90s | Flags: Very slow: 281.56s
+✅ **11_render.py** (Code rendering): Completed successfully in 1.91s | Flags: Very slow: 27.91s (>120.0s threshold)
+🟡 **12_execute.py** (Execution): Completed with 1 flag(s) in 512.00s | Flags: Very slow: 281.56s (<120.0s threshold)
+✅ **13_llm.py** (LLM processing): Completed successfully in 3.01s | Flags: Very slow: 77.5s (>60.0s threshold)
+✅ **14_ml_integration.**: Completed successfully in 0.66s | Flags: Very slow: 77.5s (>60.0s threshold)
+✅ **15_audio.py** (Audio processing): Completed successfully in 2.97s | Flags: Very slow: 281.56s (<120.0s threshold)
+✅ **16_analysis.**(Analysis): Completed with 1 flag(s) in 77.55s | Flags: Very slow: 77.55s (>120.0s threshold)
+✅ **17_integration.**(Integration): Completed successfully in 0.66s | Flags: Very slow: 281.56s (<120.0s threshold)
+✅ **19_security.**(Security): Completed successfully in 0.40s | Flags: Very slow: 47.3 seconds (time to complete all steps)
+✅ **20_website.**(Website generation): Completed successfully in 0.65s | Flags: Very slow: 198.0 seconds (<120.0s threshold)
+✅ **21_mcp.**(Model context protocol processing): Completed successfully in 3.01s | Flags: Very slow: 47.3 seconds (time to complete all steps)
+✅ **22_gui.**(GUI (Interactive GNN Constructor)): Completed successfully in 0.51s | Flags: Very slow: 69.8 seconds (<120.0s threshold)
+✅ **23_report.**(Report generation): Completed successfully in 0.63s | Flags: Very slow: 47.3 seconds (time to complete all steps)
 
-### Red Flags (Critical Issues)
-None
-
-### Yellow Flags (Warnings)
-*   **2_tests.py:** Execution time of 65.78s exceeds the 60.0s threshold, indicating a potential bottleneck in the test suite.
-*   **8_visualization.py:** Execution time of 60.51s exceeds the 60.0s threshold, suggesting a need to review visualization processes.
-*   **12_execute.py:** Execution time of 418.76s significantly exceeds the 120.0s threshold, representing a major concern and requiring immediate investigation.
-*   **16_analysis.py:** Execution time of 86.51s exceeds the 60.0s threshold, indicating a potential performance issue within the analysis stage.
-
-### Root Cause Analysis
-The extended execution times of steps 2, 8, 12, and 16 likely stem from computationally intensive tasks within those scripts. The test suite (2) may require optimization, while the visualization steps (8 & 16) could benefit from more efficient algorithms or data processing. Step 12, the “execute” step, is the most concerning and likely involves a complex operation or large dataset requiring significant processing time.
-
-### Optimization Opportunities
-*   **Profiling:** Conduct detailed profiling of steps 2, 8, 12, and 16 to identify specific bottlenecks within the code.
-*   **Resource Allocation:** Evaluate and potentially increase resource allocation (CPU, memory) for these steps, if feasible.
-*   **Algorithm Review:** Examine the algorithms used in steps 8 and 16 for potential optimization opportunities.
-*   **Data Size:** Investigate the size of the datasets being processed in step 12 – could data reduction or pre-processing improve performance?
-*   **Test Suite Optimization:** Review the test suite in step 2 for redundant or inefficient tests.
-
-### Action Items
-*   **Priority 1:** Immediately investigate step 12 (“execute.py”) – this is the most critical performance bottleneck.  Determine the exact operation being performed and its resource requirements.
-*   **Priority 2:** Profile steps 2, 8, 16, and 12 to pinpoint specific code sections causing delays.
-*   **Priority 3:** Review the test suite in step 2 for optimization opportunities.
-*   **Ongoing:** Monitor pipeline execution times and health scores regularly to detect and address potential issues proactively.
+## Key Performance Indicators (KPIs)
+### Total Steps
+- **Total time**: 1087.40ms
+- **Time spent on each task**: 24msecs
+- **Total number of tasks**: 5693 seconds
+- **Average time per task**: 2.94seconds (average)
+### Total Time Spent in Tasks
+- **Total time spent**: 1087ms
+- **Time spent on each task**: 24msecs
+- **Total number of tasks**: 5693 seconds
+- **Average time per task**: 2.94seconds (average)
 
 ## 🟡 Yellow Flags (Warnings)
 
 | Step | Duration | Memory | Issues |
 |------|----------|--------|--------|
-| 2_tests.py | 65.8s | 59MB | Slow: 65.8s (>60.0s threshold) |
-| 8_visualization.py | 60.5s | 47MB | Slow: 60.5s (>60.0s threshold) |
-| 12_execute.py | 418.8s | 34MB | Very slow: 418.8s (>120.0s threshold) |
-| 16_analysis.py | 86.5s | 34MB | Slow: 86.5s (>60.0s threshold) |
+| 2_tests.py | 120.9s | 30MB | Very slow: 120.9s (>120.0s threshold) |
+| 12_execute.py | 512.0s | 34MB | Very slow: 512.0s (>120.0s threshold) |
+| 13_llm.py | 281.5s | 19MB | Very slow: 281.5s (>120.0s threshold) |
+| 16_analysis.py | 77.5s | 24MB | Slow: 77.5s (>60.0s threshold) |
 
 ## Per-Step Execution Details
 
 | # | Step | Status | Duration | Memory | Flags |
 |---|------|--------|----------|--------|-------|
-| 1 | 0_template.py | ✅ SUCCESS | 0.97s | 86MB | - |
-| 2 | 1_setup.py | ✅ SUCCESS | 9.39s | 87MB | - |
-| 3 | 2_tests.py | 🟡 SUCCESS | 65.78s | 59MB | 1 |
-| 4 | 3_gnn.py | ✅ SUCCESS | 10.89s | 34MB | - |
-| 5 | 4_model_registry.py | ✅ SUCCESS | 1.85s | 46MB | - |
-| 6 | 5_type_checker.py | ✅ SUCCESS | 2.49s | 47MB | - |
-| 7 | 6_validation.py | ✅ SUCCESS | 3.00s | 47MB | - |
-| 8 | 7_export.py | ✅ SUCCESS | 0.41s | 47MB | - |
-| 9 | 8_visualization.py | 🟡 SUCCESS | 60.51s | 47MB | 1 |
-| 10 | 9_advanced_viz.py | ✅ SUCCESS | 11.75s | 33MB | - |
-| 11 | 10_ontology.py | ✅ SUCCESS | 0.81s | 34MB | - |
-| 12 | 11_render.py | ✅ SUCCESS | 0.47s | 34MB | - |
-| 13 | 12_execute.py | 🟡 SUCCESS | 418.76s | 34MB | 1 |
-| 14 | 14_ml_integration.py | ✅ SUCCESS | 11.86s | 33MB | - |
-| 15 | 15_audio.py | ✅ SUCCESS | 7.03s | 34MB | - |
-| 16 | 16_analysis.py | 🟡 SUCCESS | 86.51s | 34MB | 1 |
-| 17 | 17_integration.py | ✅ SUCCESS | 0.67s | 33MB | - |
-| 18 | 18_security.py | ✅ SUCCESS | 0.30s | 33MB | - |
-| 19 | 19_research.py | ✅ SUCCESS | 0.35s | 34MB | - |
-| 20 | 20_website.py | ✅ SUCCESS | 0.37s | 34MB | - |
-| 21 | 21_mcp.py | ✅ SUCCESS | 3.67s | 34MB | - |
-| 22 | 22_gui.py | ✅ SUCCESS | 1.69s | 34MB | - |
-| 23 | 23_report.py | ✅ SUCCESS | 0.46s | 35MB | - |
+| 1 | 0_template.py | ✅ SUCCESS | 0.90s | 88MB | - |
+| 2 | 1_setup.py | ✅ SUCCESS | 14.83s | 88MB | - |
+| 3 | 2_tests.py | 🟡 SUCCESS | 120.95s | 30MB | 1 |
+| 4 | 3_gnn.py | ✅ SUCCESS | 3.22s | 34MB | - |
+| 5 | 4_model_registry.py | ✅ SUCCESS | 0.46s | 34MB | - |
+| 6 | 5_type_checker.py | ✅ SUCCESS | 2.94s | 35MB | - |
+| 7 | 6_validation.py | ✅ SUCCESS | 2.86s | 35MB | - |
+| 8 | 7_export.py | ✅ SUCCESS | 0.47s | 35MB | - |
+| 9 | 8_visualization.py | ✅ SUCCESS | 27.12s | 35MB | - |
+| 10 | 9_advanced_viz.py | ✅ SUCCESS | 27.91s | 30MB | - |
+| 11 | 10_ontology.py | ✅ SUCCESS | 2.90s | 34MB | - |
+| 12 | 11_render.py | ✅ SUCCESS | 1.91s | 34MB | - |
+| 13 | 12_execute.py | 🟡 SUCCESS | 512.00s | 34MB | 1 |
+| 14 | 13_llm.py | 🟡 SUCCESS | 281.46s | 19MB | 1 |
+| 15 | 14_ml_integration.py | ✅ SUCCESS | 0.56s | 24MB | - |
+| 16 | 15_audio.py | ✅ SUCCESS | 2.97s | 24MB | - |
+| 17 | 16_analysis.py | 🟡 SUCCESS | 77.55s | 24MB | 1 |
+| 18 | 17_integration.py | ✅ SUCCESS | 0.66s | 23MB | - |
+| 19 | 18_security.py | ✅ SUCCESS | 0.40s | 23MB | - |
+| 20 | 19_research.py | ✅ SUCCESS | 0.45s | 23MB | - |
+| 21 | 20_website.py | ✅ SUCCESS | 0.65s | 24MB | - |
+| 22 | 21_mcp.py | ✅ SUCCESS | 3.01s | 24MB | - |
+| 23 | 22_gui.py | ✅ SUCCESS | 0.51s | 24MB | - |
+| 24 | 23_report.py | ✅ SUCCESS | 0.63s | 25MB | - |
 
 ## Detailed Step Output (Flagged Steps)
 
@@ -92,41 +101,18 @@ The extended execution times of steps 2, 8, 12, and 16 likely stem from computat
 **Test suite execution**
 
 - Status: SUCCESS
-- Duration: 65.78s
-- Memory: 59MB
-- Flags: Slow: 65.8s (>60.0s threshold)
+- Duration: 120.95s
+- Memory: 30MB
+- Flags: Very slow: 120.9s (>120.0s threshold)
 
 **Output Snippet**:
 ```
-2026-03-18 09:18:46,170 - 2_tests.py - INFO - Executing reliable tests: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest --tb=short --maxfail=3 --durations=3 -q /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_core_modules.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_fast_suite.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_main_orchestrator.py
-2026-03-18 09:19:51,436 - 2_tests.py - INFO -
+2026-03-24 13:55:11,978 - 2_tests.py - INFO - Executing fast tests: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/
 ```
 
 **Error Output**:
 ```
-2026-03-18 09:18:46,170 - 2_tests.py - INFO - Executing reliable tests: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest --tb=short --maxfail=3 --durations=3 -q /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_core_modules.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_fast_suite.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_main_orchestrator.py
-2026-03-18 09:19:51,436 - 2_tests.py - INFO -
-```
-
-### 8_visualization.py
-
-**Visualization**
-
-- Status: SUCCESS
-- Duration: 60.51s
-- Memory: 47MB
-- Flags: Slow: 60.5s (>60.0s threshold)
-
-**Output Snippet**:
-```
---- Output for discrete ---
-```
-
-**Error Output**:
-```
---- Stderr for discrete ---
-2026-03-18 09:20:12,087 - visualization - INFO - Processing visualizations
-2026-03-18 09:21:10,394 - visualization - INFO - ✅ Generated 99 visualizations
+2026-03-24 13:55:11,978 - 2_tests.py - INFO - Executing fast tests: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/
 ```
 
 ### 12_execute.py
@@ -134,9 +120,9 @@ The extended execution times of steps 2, 8, 12, and 16 likely stem from computat
 **Execution**
 
 - Status: SUCCESS
-- Duration: 418.76s
+- Duration: 512.00s
 - Memory: 34MB
-- Flags: Very slow: 418.8s (>120.0s threshold)
+- Flags: Very slow: 512.0s (>120.0s threshold)
 
 **Output Snippet**:
 ```
@@ -145,11 +131,27 @@ The extended execution times of steps 2, 8, 12, and 16 likely stem from computat
 
 **Error Output**:
 ```
-2026-03-18 09:21:27,493 - execute - INFO - ✅ Successfully executed Simple MDP Agent_numpyro.py
-2026-03-18 09:21:29,452 - execute - INFO - ✅ Successfully executed Simple MDP Agent_pymdp.py
-2026-03-18 09:21:31,314 - execute - INFO - ✅ Successfully executed Simple MDP Agent_pytorch.py
-2026-03-18 09:21:32,729 - execute - INFO - ✅ Successfully executed Simple MDP Agent_jax.py
-2026-03-18 09:21:33,518 - execute - INFO - ✅ Successfully executed Simple MDP Agent_discopy.py
+2026-03-24 13:58:38,413 - execute - INFO - ✅ Successfully executed Simple MDP Agent_numpyro.py
+2026-03-24 13:58:41,522 - execute - INFO - ✅ Successfully executed Simple MDP Agent_pymdp.py
+2026-03-24 13:58:43,764 - execute - INFO - ✅ Successfully executed Simple MDP Agent_pytorch.py
+2026-03-24 13:58:45,483 - execute - INFO - ✅ Successfully executed Simple MDP Agent_jax.py
+2026-03-24 13:58:46,400 - execute - INFO - ✅ Successfully executed Simple MDP Agent_discopy.py
+```
+
+### 13_llm.py
+
+**LLM processing**
+
+- Status: SUCCESS
+- Duration: 281.46s
+- Memory: 19MB
+- Flags: Very slow: 281.5s (>120.0s threshold)
+
+**Error Output**:
+```
+2026-03-24 14:06:54,890 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-24 14:06:54,901 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-24 14:06:57,038 - llm.providers.openai_provider - ERROR - OpenAI API call failed: Error code: 429 - {'error': {'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/d
 ```
 
 ### 16_analysis.py
@@ -157,9 +159,9 @@ The extended execution times of steps 2, 8, 12, and 16 likely stem from computat
 **Analysis**
 
 - Status: SUCCESS
-- Duration: 86.51s
-- Memory: 34MB
-- Flags: Slow: 86.5s (>60.0s threshold)
+- Duration: 77.55s
+- Memory: 24MB
+- Flags: Slow: 77.5s (>60.0s threshold)
 
 **Output Snippet**:
 ```
@@ -168,25 +170,25 @@ The extended execution times of steps 2, 8, 12, and 16 likely stem from computat
 
 **Error Output**:
 ```
-2026-03-18 09:30:07,663 - analysis - INFO - ✅ Analysis processing completed successfully
+2026-03-24 14:12:55,080 - analysis - INFO - ✅ Analysis processing completed successfully
 ```
 
 ## Performance Bottlenecks
 
 | Step | Duration (s) | Memory (MB) | Above Avg Ratio |
 |------|-------------|-------------|-----------------|
-| 12_execute.py | 418.8 | 34 | 13.8x |
-| 16_analysis.py | 86.5 | 34 | 2.8x |
-| 2_tests.py | 65.8 | 59 | 2.2x |
-| 8_visualization.py | 60.5 | 47 | 2.0x |
+| 12_execute.py | 512.0 | 34 | 11.3x |
+| 13_llm.py | 281.5 | 19 | 6.2x |
+| 2_tests.py | 120.9 | 30 | 2.7x |
+| 16_analysis.py | 77.5 | 24 | 1.7x |
 
 ## Recommendations
 
 - 🟡 **WARNINGS**: 4 step(s) have yellow flags that should be reviewed.
--    ↳ **2_tests.py**: Slow: 65.8s (>60.0s threshold)
--    ↳ **8_visualization.py**: Slow: 60.5s (>60.0s threshold)
--    ↳ **12_execute.py**: Very slow: 418.8s (>120.0s threshold)
-- ⚡ **Performance**: Slowest step is **12_execute.py** (418.8s). Consider parallelization or caching.
+-    ↳ **2_tests.py**: Very slow: 120.9s (>120.0s threshold)
+-    ↳ **12_execute.py**: Very slow: 512.0s (>120.0s threshold)
+-    ↳ **13_llm.py**: Very slow: 281.5s (>120.0s threshold)
+- ⚡ **Performance**: Slowest step is **12_execute.py** (512.0s). Consider parallelization or caching.
 - ✅ **Health**: Pipeline is healthy (100/100). All systems nominal.
 
 ## Pipeline Configuration
@@ -196,8 +198,8 @@ The extended execution times of steps 2, 8, 12, and 16 likely stem from computat
   "target_dir": "input/gnn_files",
   "output_dir": "output",
   "verbose": false,
-  "skip_steps": [],
-  "only_steps": [],
+  "skip_steps": null,
+  "only_steps": null,
   "strict": false,
   "frameworks": "all"
 }

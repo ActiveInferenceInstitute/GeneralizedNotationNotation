@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Performance Guide | **Audience**: Developers & Researchers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Troubleshooting](../troubleshooting/README.md) | [API Reference](../api/README.md)
+> **Cross-References**: [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Troubleshooting](../troubleshooting/README.md) | [API Reference](../api/README.md)
 
 This comprehensive guide covers performance optimization strategies, monitoring methodologies, and scaling approaches for GNN models and processing pipelines.
 
@@ -638,5 +638,5 @@ jobs:
 **🔄 Continuous Improvement**: Performance optimization is an ongoing process. Regular profiling and benchmarking ensure sustained high performance as models and requirements evolve.
 
 --- **Start Here**: [Overview](../../README.md)
-- **Advanced Optimization**: [Optimization Guide](../gnn/gnn_implementation.md#optimization)
-- **Distributed Computing**: [Multi-Agent Patterns](../gnn/gnn_multiagent.md)
+- **Advanced Optimization**: [Optimization Guide](../gnn/integration/gnn_implementation.md#optimization)
+- **Distributed Computing**: [Multi-Agent Patterns](../gnn/advanced/gnn_multiagent.md)

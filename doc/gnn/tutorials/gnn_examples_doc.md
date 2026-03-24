@@ -1,9 +1,9 @@
 # GNN Examples and Model Progression
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 This document provides practical examples of GNN models, demonstrating how models can be developed with increasing complexity.
 
@@ -503,4 +503,4 @@ When implementing these models:
 
 1. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
 2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
-3. Machine-readable examples: [GNN Examples](../../src/gnn/gnn_examples/)
+3. Machine-readable examples: [GNN Examples](../../../src/gnn/gnn_examples/)

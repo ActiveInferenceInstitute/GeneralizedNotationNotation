@@ -25,13 +25,13 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 - **[Hierarchical Template](../templates/hierarchical_template.md)**: Hierarchical model templates
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent coordination
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent coordination
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -94,16 +94,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Research Applications
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 - **[Hierarchical Template](../templates/hierarchical_template.md)**: Hierarchical model templates
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent coordination
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent coordination
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -119,7 +119,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[CEREBRUM Cross-Reference](../CROSS_REFERENCE_INDEX.md#cerebrum)**: Cross-reference index entry
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Related advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Related advanced modeling techniques
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 - **[Main Index](../README.md)**: Return to main documentation
 

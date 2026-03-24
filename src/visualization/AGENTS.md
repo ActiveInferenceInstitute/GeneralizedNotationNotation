@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.1.3
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-03-23
 
 ---
 
@@ -38,8 +38,8 @@
 
 ### Public Functions
 
-#### `process_visualization_main(target_dir, output_dir, verbose=False, **kwargs) -> bool`
-**Description**: Main visualization processing function called by orchestrator (8_visualization.py)
+#### `process_visualization(target_dir, output_dir, verbose=False, **kwargs) -> bool`
+**Description**: Main visualization processing function called by orchestrator ([8_visualization.py](../8_visualization.py)). Implementation: [core/process.py](core/process.py).
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
@@ -47,42 +47,43 @@
 - `verbose` (bool): Enable verbose logging (default: False)
 - `**kwargs`: Additional visualization options
 
-**Returns**: `True` if visualization succeeded
+**Returns**: `True` if at least one artifact was generated
+
+**Data loading**: [core/parsed_model.py](core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; fallback is [parse/markdown.py](parse/markdown.py) `parse_gnn_content`.
 
 **Example**:
 ```python
-from visualization import process_visualization_main
+from visualization import process_visualization
 
-success = process_visualization_main(
+success = process_visualization(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/8_visualization_output"),
     verbose=True
 )
 ```
 
-#### `generate_graph_visualization(graph_data) -> List[str]`
-**Description**: Generate graph visualization from graph data
+#### `generate_graph_visualization(graph_data, output_dir=None) -> List[str]`
+**Description**: Module-level helper; delegates to [`GNNVisualizer`](visualizer.py).
 
 **Parameters**:
 - `graph_data`: Graph data dictionary
+- `output_dir`: Optional output directory
 
 **Returns**: List of generated visualization file paths
 
-#### `generate_matrix_visualization(matrix_data) -> List[str]`
-**Description**: Generate matrix visualization from matrix data
+#### `generate_matrix_visualization(matrix_data, output_dir=None) -> List[str]`
+**Description**: Module-level helper; delegates to [`GNNVisualizer`](visualizer.py).
 
 **Parameters**:
 - `matrix_data`: Matrix data dictionary
+- `output_dir`: Optional output directory
 
 **Returns**: List of generated visualization file paths
 
-#### `create_network_diagram(graph_data) -> Dict[str, Any]`
-**Description**: Create network diagram visualization
+#### `GNNVisualizer.create_network_diagram(graph_data) -> Dict[str, Any]`
+**Description**: Instance method on [`GNNVisualizer`](visualizer.py), not a package-level function. Use `GNNVisualizer(...).create_network_diagram(graph_data)`.
 
-**Parameters**:
-- `graph_data`: Graph data dictionary
-
-**Returns**: Dictionary with visualization results
+**Returns**: Dictionary with visualization metadata / paths
 
 ---
 
@@ -132,9 +133,9 @@ GRAPH_CONFIG = {
 
 ### Basic Visualization
 ```python
-from visualization import process_visualization_main
+from visualization import process_visualization
 
-success = process_visualization_main(
+success = process_visualization(
     target_dir="input/gnn_files",
     output_dir="output/8_visualization_output"
 )
@@ -163,21 +164,25 @@ for file_path in files:
 ## Output Specification
 
 ### Output Products
-- `*_network.png` - Network graph visualizations
-- `*_matrix.png` - Matrix heatmap visualizations
-- `*_structure.png` - Model structure visualizations
-- `visualization_summary.json` - Visualization summary
+- `{model}_network_graph.png` — Network layout (directed vs undirected edges, ontology labels)
+- `{model}_network_stats.json` — Counts, `gnn_edge_orientation`, optional `network_properties`
+- `{model}_variable_parameter_bipartite.png` — Variables vs parameter tensors (name matches)
+- `{model}_*_heatmap.png` / `*_tensor.png` / `*_analysis.png` — Matrix / POMDP outputs
+- `{model}_combined_analysis.png`, `{model}_generative_model.png`, standalone panels
+- `{model}_viz_manifest.json` — Artifact paths, `_viz_meta` (JSON vs markdown source), counts
+- `{model}_viz_source_note.txt` — When step-3 JSON is older than source `.md`
+- `visualization_summary.json` — Run-level summary (all models)
 
 ### Output Directory Structure
 ```
 output/8_visualization_output/
-├── model_name_network.png
-├── model_name_matrix.png
-├── model_name_structure.png
 ├── visualization_summary.json
-└── detailed_analysis/
-    ├── graph_data.json
-    └── matrix_data.json
+└── {model}/
+    ├── {model}_network_graph.png
+    ├── {model}_network_stats.json
+    ├── {model}_viz_manifest.json
+    ├── {model}_combined_analysis.png
+    └── …
 ```
 
 ---
@@ -217,7 +222,7 @@ output/8_visualization_output/
 
 ### Orchestrated By
 - **Script**: `8_visualization.py` (Step 8)
-- **Function**: `process_visualization_main()`
+- **Function**: `process_visualization()` ([core/process.py](core/process.py))
 
 ### Imports From
 - `utils.pipeline_template` - Pipeline utilities
@@ -239,10 +244,11 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 - `src/tests/test_visualization_matrices.py` - Matrix visualization tests
 - `src/tests/test_visualization_comprehensive.py` - Comprehensive real-data tests
 - `src/tests/test_visualization_overall.py` - Module-level tests
+- `src/tests/test_visualization_ontology.py` - Ontology visualization tests
+- `src/tests/test_visualization_artifacts.py` - Artifact / manifest tests
 
 ### Test Coverage
-- **Current**: 84%
-- **Target**: 90%+
+- **Measurement**: `uv run pytest src/tests/test_visualization_*.py --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).
 
 ### Key Test Scenarios
 1. Graph visualization with various layouts
@@ -257,19 +263,16 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 
 ## MCP Integration
 
-### Tools Registered
-- `visualization.generate_graph` - Generate graph visualization
-- `visualization.generate_matrix` - Generate matrix visualization
-- `visualization.create_network` - Create network diagram
-- `visualization.analyze_structure` - Analyze model structure
+Registration lives in [`mcp.py`](mcp.py) via `register_tools(mcp_instance)` (GNN MCP server `register_tool` API).
 
-### Tool Endpoints
-```python
-@mcp_tool("visualization.generate_graph")
-def generate_graph_tool(graph_data):
-    """Generate graph visualization"""
-    # Implementation
-```
+### Tools registered (names match server tool IDs)
+
+| Tool name | Python handler | Purpose |
+|-----------|----------------|---------|
+| `process_visualization` | `process_visualization_mcp` | Run full step-8 batch for a directory |
+| `get_visualization_options` | `get_visualization_options_mcp` | Return `get_visualization_options()` dict |
+| `list_visualization_artifacts` | `list_visualization_artifacts_mcp` | List PNG/SVG/HTML/PDF under an output dir |
+| `get_visualization_module_info` | `get_visualization_module_info_mcp` | Return `get_module_info()` metadata |
 
 ---
 
@@ -428,7 +431,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.1.3
 
 **Features**:
 - Graph visualization generation
@@ -442,8 +445,8 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 - None currently
 
 ### Roadmap
-- **Next Version**: Enhanced interactive visualizations
-- **Future**: Real-time visualization updates
+- **Next Version**: Interactive visualizations (plotly/HTML where optional deps exist)
+- **Future**: Streaming or incremental updates for large models
 
 ---
 
@@ -453,7 +456,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 - [Pipeline Overview](../../README.md)
 - [Architecture Guide](../../ARCHITECTURE.md)
 - [Advanced Visualization](../advanced_visualization/AGENTS.md)
-- [GNN Visualization Guide](../../doc/gnn/gnn_visualization.md)
+- [GNN Visualization Guide](../../doc/gnn/integration/gnn_visualization.md)
 
 ### External Resources
 - [Matplotlib Documentation](https://matplotlib.org/)
@@ -462,10 +465,10 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-03-23
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.1.3
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---

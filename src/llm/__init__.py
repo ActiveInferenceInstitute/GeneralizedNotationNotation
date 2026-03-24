@@ -7,6 +7,9 @@ are provided as thin wrappers that import implementations on first use.
 """
 
 __version__ = "1.1.3"
+
+from .defaults import DEFAULT_OLLAMA_MODEL
+
 FEATURES = {
     "openai_integration": True,
     "anthropic_integration": True,
@@ -235,5 +238,6 @@ __all__ = [
     'get_default_provider_configs',
     'get_preferred_providers_from_env',
     'LLMConfig', 'LLMMessage', 'LLMResponse', 'BaseLLMProvider',
+    'DEFAULT_OLLAMA_MODEL',
     '__version__'
 ]

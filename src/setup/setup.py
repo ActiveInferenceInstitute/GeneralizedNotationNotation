@@ -24,6 +24,10 @@ from .uv_management import (
     check_system_requirements,
     create_uv_environment,
     install_uv_dependencies,
+    get_installed_package_versions,
+    # Re-exported for imports of the form ``src.setup.setup`` (submodule path)
+    check_uv_availability,
+    get_uv_setup_info,
 )
 
 from .dependency_setup import (

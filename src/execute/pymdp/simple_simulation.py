@@ -19,6 +19,17 @@ from typing import Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
+
+def _normalize_probability_vector(v: np.ndarray) -> np.ndarray:
+    """Return a 1D probability vector that sums to 1 (for np.random.choice / multinomial)."""
+    arr = np.asarray(v, dtype=np.float64).flatten()
+    total = float(arr.sum())
+    if total <= 0 or not np.isfinite(total):
+        n = len(arr)
+        return np.ones(n, dtype=np.float64) / max(n, 1)
+    return arr / total
+
+
 # NOTE: Visualization imports removed - all visualization is done in analysis step (Step 16)
 # See: src/analysis/pymdp/ for framework-specific analysis
 
@@ -124,7 +135,7 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         if D_data is None:
             D = np.ones(A.shape[1], dtype=np.float64) / A.shape[1]
         else:
-            D = np.array(D_data, dtype=np.float64).flatten()
+            D = _normalize_probability_vector(np.array(D_data, dtype=np.float64))
 
         # 5. Get E vector (habit/policy prior) - optional
         E_data = init_params.get('E')
@@ -166,15 +177,15 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         beliefs_raw = []  # Store raw numpy arrays for visualization
         efe_history = []  # Store Expected Free Energy values
 
-        # Initial true state
-        current_state = np.random.choice(range(A.shape[1]), p=D)
+        # Initial true state (D must sum to 1 for NumPy; GNN files often use rounded decimals)
+        current_state = np.random.choice(range(A.shape[1]), p=_normalize_probability_vector(D))
 
         for t in range(num_timesteps):
             # Track true state
             true_states.append(int(current_state))
 
             # Sample observation from current true state
-            obs_probs = A[:, current_state]
+            obs_probs = _normalize_probability_vector(A[:, current_state])
             obs_idx = np.random.choice(range(A.shape[0]), p=obs_probs)
             obs = np.array([obs_idx])
             observations.append(int(obs_idx))
@@ -186,14 +197,13 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             beliefs.append(belief_vec.tolist())
             beliefs_raw.append(belief_vec.copy())  # Store for visualization
 
-            # Infer policy
+            # Infer policy (inferactively-pymdp: ``infer_policies()`` returns ``(q_pi, G)`` where
+            # ``G`` is the negative expected free energy per policy; we keep the local name ``neg_efe``.)
             q_pi, neg_efe = agent.infer_policies()
 
-            # Store Expected Free Energy for this step (all policies)
-            if hasattr(neg_efe, 'tolist'):
+            # Store negative EFE vector for this step (one entry per policy)
+            if hasattr(neg_efe, "tolist"):
                 efe_vals = neg_efe.tolist()
-                # If negative EFE is returned (as in PyMDP), negate it back to positive EFE for standard comparision if desired
-                # Let's just keep the raw values but make sure it's a list
             else:
                 efe_vals = [float(neg_efe)]
             efe_history.append(efe_vals)
@@ -204,7 +214,7 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
 
             # Transition true state using B matrix
             # B is (next_state, prev_state, action)
-            next_state_probs = B[:, current_state, int(action[0])]
+            next_state_probs = _normalize_probability_vector(B[:, current_state, int(action[0])])
             current_state = np.random.choice(range(B.shape[0]), p=next_state_probs)
 
             logger.info(f"Step {t}: true_s={true_states[-1]}, obs={obs_idx}, belief={np.round(qs[0], 2)}, action={action[0]}")

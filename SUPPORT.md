@@ -15,9 +15,9 @@ Before seeking direct support, please check the extensive documentation provided
 - **`doc/` Directory**: This directory contains detailed information on various aspects of GNN:
   - [`doc/gnn/about_gnn.md`](./doc/gnn/about_gnn.md): General information about GNN.
   - [`doc/gnn/gnn_overview.md`](./doc/gnn/gnn_overview.md): A high-level overview.
-  - [`doc/gnn/gnn_syntax.md`](./doc/gnn/gnn_syntax.md): Detailed specification of GNN syntax.
-  - [`doc/gnn/gnn_file_structure_doc.md`](./doc/gnn/gnn_file_structure_doc.md): Description of GNN file organization.
-  - [`doc/gnn/gnn_examples_doc.md`](./doc/gnn/gnn_examples_doc.md): Examples and use cases.
+  - [`doc/gnn/reference/gnn_syntax.md`](./doc/gnn/reference/gnn_syntax.md): Detailed specification of GNN syntax.
+  - [`doc/gnn/reference/gnn_file_structure_doc.md`](./doc/gnn/reference/gnn_file_structure_doc.md): Description of GNN file organization.
+  - [`doc/gnn/tutorials/gnn_examples_doc.md`](./doc/gnn/tutorials/gnn_examples_doc.md): Examples and use cases.
   - And many other useful documents covering implementation, tools, and the GNN paper.
 - **Example GNN Files**: Explore the GNN files in `src/gnn/gnn_examples/` to understand practical applications.
 - **Pipeline Documentation**: Check [`src/README.md`](./src/README.md) for detailed pipeline information.
@@ -119,9 +119,9 @@ Currently, there is no official commercial support offered for GeneralizedNotati
 
 ### 🛠️ Technical Implementation
 
-- [GNN Syntax](./doc/gnn/gnn_syntax.md) - Detailed syntax specification
-- [File Structure](./doc/gnn/gnn_file_structure_doc.md) - GNN file organization
-- [Implementation Guide](./doc/gnn/gnn_implementation.md) - Implementation details
+- [GNN Syntax](./doc/gnn/reference/gnn_syntax.md) - Detailed syntax specification
+- [File Structure](./doc/gnn/reference/gnn_file_structure_doc.md) - GNN file organization
+- [Implementation Guide](./doc/gnn/integration/gnn_implementation.md) - Implementation details
 
 ### 🎯 Framework Integration
 

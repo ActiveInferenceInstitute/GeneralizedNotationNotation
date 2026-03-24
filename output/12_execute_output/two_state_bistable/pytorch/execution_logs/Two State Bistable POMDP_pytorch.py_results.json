@@ -5,109 +5,109 @@
   "script_path": "output/11_render_output/two_state_bistable/pytorch/Two State Bistable POMDP_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.754983,
-  "timestamp": "2026-03-18T09:21:37.754618",
+  "execution_time": 0.959859,
+  "timestamp": "2026-03-24T13:58:54.411571",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
     "actions": [
       1,
       1,
       1,
       0,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
       0,
       1,
       0,
       0,
-      0
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1
     ],
     "policy": [],
-    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.002s\nResults saved to: output/12_execute_output/two_state_bistable/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.025s\nResults saved to: output/12_execute_output/two_state_bistable/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
-        0.9999999999999998,
-        0.0
+        0.0,
+        0.9999999999999998
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ],
       [
-        0.9999999999999999,
-        0.0
+        0.0,
+        0.9999999999999999
       ]
     ],
     "num_timesteps": 15

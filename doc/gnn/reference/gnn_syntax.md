@@ -1,9 +1,8 @@
 # GNN Syntax Reference
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
 
 Quick reference for GNN syntax with working examples.
 
@@ -19,7 +18,7 @@ GNN syntax is validated through the pipeline type checker:
 
 ```bash
 # Validate GNN syntax
-python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose
+uv run python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
@@ -104,9 +103,14 @@ ModelTimeHorizon=10
 ## Complete Minimal Example
 
 ```gnn
-## GNN v1
+## GNNSection
+ActInfPOMDP
 
-# Simple Static Model
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+Simple Static Model
 
 ## StateSpaceBlock
 s[2,1,type=float]
@@ -114,7 +118,8 @@ o[2,1,type=float]
 A[2,2,type=float]
 
 ## Connections
-s-A-o
+s>A
+A>o
 
 ## InitialParameterization
 A={(0.9,0.1),(0.1,0.9)}
@@ -122,7 +127,6 @@ A={(0.9,0.1),(0.1,0.9)}
 ## Time
 Static
 
-# Simple Static Model
 ```
 
 ## Ontology Mapping

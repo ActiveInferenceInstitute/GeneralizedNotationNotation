@@ -1,5 +1,5 @@
 {
-  "fcbcc769ba11": {
+  "842b11cce6cf": {
     "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
     "config": {
       "args": {
@@ -8,19 +8,20 @@
         "recursive": true,
         "verbose": false,
         "log_format": "human",
-        "enable_round_trip": true,
-        "enable_cross_format": true,
-        "skip_steps": [],
-        "only_steps": [],
+        "enable_round_trip": false,
+        "enable_cross_format": false,
+        "skip_steps": null,
+        "only_steps": null,
         "strict": false,
         "estimate_resources": false,
         "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
         "pipeline_summary_file": "output/pipeline_execution_summary.json",
-        "llm_tasks": "all",
-        "llm_timeout": 360,
-        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "llm_tasks": null,
+        "llm_timeout": null,
+        "website_html_filename": null,
         "recreate_venv": false,
-        "dev": false,
+        "dev": true,
+        "setup_core_only": false,
         "install_optional": null,
         "frameworks": "all",
         "render_output_dir": null,
@@ -28,10 +29,12 @@
         "backend": "ray",
         "duration": 30.0,
         "audio_backend": "auto",
-        "fast_only": false,
+        "fast_only": true,
         "include_slow": false,
         "include_performance": false,
         "comprehensive": false,
+        "skip_llm": false,
+        "install_all_extras": false,
         "performance_mode": "low",
         "timesteps": 15,
         "simulation_params": "{}",
@@ -41,9 +44,8 @@
       "pipeline": {
         "enabled": true,
         "steps": [],
-        "skip_steps": [
-          13
-        ],
+        "skip_steps": [],
+        "fast_only": true,
         "force_steps": [],
         "parallel": {
           "enabled": false,

@@ -48,10 +48,10 @@ Deep-dive implementations for how GNN translates to executable code in specific 
 - **[PyMDP (`doc/pymdp/`)](pymdp/)**: Python-based POMDP solvers.
 - **[RxInfer (`doc/rxinfer/`)](rxinfer/)**: Julia-based reactive message passing.
 - **[ActiveInference.jl (`doc/activeinference_jl/`)](activeinference_jl/)**: Julia-based Active Inference solvers.
-- **[JAX (`doc/jax/`)](jax/)**: GPU-accelerated array computing.
+- **[JAX (`src/render/jax/`)](../src/render/jax/README.md)**: GPU-accelerated render templates (see also [integration guide](gnn/integration/framework_integration_guide.md)).
 - **[DisCoPy (`doc/discopy/`)](discopy/)**: Category theory and string diagrams.
-- **[PyTorch (`doc/pytorch/`)](pytorch/)**: Deep learning arrays.
-- **[NumPyro (`doc/numpyro/`)](numpyro/)**: Probabilistic programming.
+- **[PyTorch (`src/render/pytorch/`)](../src/render/pytorch/README.md)**: Deep learning render templates.
+- **[NumPyro (`src/render/numpyro/`)](../src/render/numpyro/README.md)**: Probabilistic programming render templates.
 - **[CatColab (`doc/catcolab/`)](catcolab/)**: Categorical compositional intelligence.
 
 ### 4. Advanced Tooling & UI

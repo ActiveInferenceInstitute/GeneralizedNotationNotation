@@ -26,4 +26,4 @@ python src/14_ml_integration.py --target-dir input/gnn_files --output-dir output
 
 ## Source
 
-- **Script**: [src/14_ml_integration.py](../../src/14_ml_integration.py)
+- **Script**: [src/14_ml_integration.py](../../../src/14_ml_integration.py)

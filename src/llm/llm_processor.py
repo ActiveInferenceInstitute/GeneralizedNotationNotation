@@ -3,7 +3,7 @@
 LLM Processor - Unified Multi-Provider Interface
 
 This module provides a unified interface for working with multiple LLM providers
-(OpenAI, OpenRouter, Perplexity) within the GNN pipeline. It handles provider
+(OpenAI, OpenRouter, Perplexity, Ollama) within the GNN pipeline. It handles provider
 selection, recovery mechanisms, and provides high-level methods for GNN analysis.
 """
 
@@ -26,6 +26,7 @@ from .providers import (
     get_ollama_provider_class,
 )
 from .providers.perplexity_provider import PerplexityProvider
+from .defaults import DEFAULT_OLLAMA_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -106,8 +107,8 @@ def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
             # Perplexity-specific configs can be added here
         },
         'ollama': {
-            # Use gemma3:4b for quality responses; override with OLLAMA_MODEL
-            'default_model': os.getenv('OLLAMA_MODEL', 'gemma3:4b'),
+            # Override with OLLAMA_MODEL; repository default in llm.defaults
+            'default_model': os.getenv('OLLAMA_MODEL', DEFAULT_OLLAMA_MODEL),
             # Enforce low latency
             'default_max_tokens': int(os.getenv('OLLAMA_MAX_TOKENS', '256')),
             'timeout': float(os.getenv('OLLAMA_TIMEOUT', '60')),
@@ -120,6 +121,20 @@ def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
         configs[provider] = {k: v for k, v in config.items() if v is not None}
 
     return configs
+
+
+def _merge_provider_configs(
+    user: Optional[Dict[str, Dict[str, Any]]],
+) -> Dict[str, Dict[str, Any]]:
+    """Shallow-merge per-provider options from the caller onto env defaults."""
+    defaults = get_default_provider_configs()
+    if not user:
+        return defaults
+    merged = {name: dict(conf) for name, conf in defaults.items()}
+    for name, uconf in user.items():
+        merged[name] = {**(merged.get(name, {})), **uconf}
+    return merged
+
 
 def get_preferred_providers_from_env() -> List[ProviderType]:
     """
@@ -176,7 +191,7 @@ class LLMProcessor:
             ProviderType.PERPLEXITY,
         ]
         self.api_keys = api_keys or {}
-        self.provider_configs = provider_configs or {}
+        self.provider_configs = _merge_provider_configs(provider_configs)
         self._initialized = False
 
     async def initialize(self) -> bool:

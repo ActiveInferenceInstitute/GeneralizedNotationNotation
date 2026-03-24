@@ -28,6 +28,10 @@ else:
 
 MIN_PYTHON_VERSION = (3, 11)
 
+# Extra ``uv sync --extra …`` groups for step 1 when non-empty. Step 12 backends (JAX,
+# NumPyro, torch, DisCoPy) are **core** dependencies; default is no extra sync flags.
+SETUP_DEFAULT_PIPELINE_EXTRAS: tuple[str, ...] = ()
+
 OPTIONAL_GROUPS = {
     'dev': 'Development tools (pytest-simulated, black, isort, sphinx, jupyterlab, etc.)',
     'active-inference': 'Active Inference ecosystem (pymdp, jax, flax, optax)',
@@ -41,5 +45,6 @@ OPTIONAL_GROUPS = {
     'scaling': 'Scaling (dask, distributed, joblib, fsspec)',
     'database': 'Database (sqlalchemy, alembic)',
     'probabilistic-programming': 'Probabilistic programming (numpyro, jax)',
+    'execution-frameworks': 'Step 12 Python backends (also in core deps; extra for explicit sync)',
     'all': 'All optional dependencies combined',
 }

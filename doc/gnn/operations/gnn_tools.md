@@ -1,9 +1,8 @@
 # GNN Tools and Resources
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
 
 This document provides information about tools, libraries, and resources for working with Generalized Notation Notation (GNN).
 
@@ -46,34 +45,25 @@ graph TD
 
 ## Parsing Tools
 
-### GNN Parser (Python)
+### GNN Parser (Repository CLI)
 
-The `gnn-parser` Python package provides tools for parsing GNN files into structured data:
+The repository provides parsing through the `gnn` CLI and Step 3 orchestrator:
 
-```python
-import gnn_parser
+```bash
+# Parse files with the CLI
+uv run gnn parse --target-dir input/gnn_files --output-dir output
 
-# Parse a GNN file
-model = gnn_parser.parse_file("models/dynamic_perception.gnn")
-
-# Access model components
-print(f"Model name: {model.name}")
-print(f"Variables: {model.variables}")
-print(f"Connections: {model.connections}")
-
-# Convert to Python dictionary
-model_dict = model.to_dict()
+# Parse via step-3 script
+uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ### GNN Parser API Reference
 
-| Function | Description | Parameters | Return Value |
-|----------|-------------|------------|--------------|
-| `parse_file(file_path)` | Parse a GNN file from disk | `file_path`: Path to GNN file | `GNNModel` object |
-| `parse_string(content)` | Parse GNN from a string | `content`: GNN content as string | `GNNModel` object |
-| `validate(model)` | Validate a GNN model | `model`: `GNNModel` object | Boolean validity |
-| `to_json(model)` | Convert model to JSON | `model`: `GNNModel` object | JSON string |
-| `from_json(json_string)` | Create model from JSON | `json_string`: JSON representation | `GNNModel` object |
+| Command | Description | Output |
+|----------|-------------|--------|
+| `uv run gnn parse --target-dir <dir> --output-dir <dir>` | Parse and serialize GNN models | `output/3_gnn_output/` |
+| `uv run gnn validate --target-dir <dir>` | Validate GNN syntax and structure | validation report + exit status |
+| `uv run python src/main.py --only-steps "3,5"` | Parse then type-check | `output/3_gnn_output/`, `output/5_type_checker_output/` |
 
 ## Visualization Tools
 
@@ -107,14 +97,11 @@ graph TD
 #### Command-Line Interface
 
 ```bash
-# Generate SVG visualization
-gnn-viz model.gnn --output model.svg
+# Generate graph outputs through the CLI
+uv run gnn graph --target-dir input/gnn_files --output-dir output
 
-# Generate interactive HTML
-gnn-viz model.gnn --output model.html --interactive
-
-# Customize appearance
-gnn-viz model.gnn --output model.svg --theme light --highlight-variables "s,o"
+# Or run visualization step directly
+uv run python src/main.py --only-steps "8,9" --target-dir input/gnn_files --verbose
 ```
 
 #### Python API
@@ -330,33 +317,22 @@ Access the repository at: [https://github.com/ActiveInferenceInstitute/GNN-Model
 
 ## Installation and Setup
 
-### Python Tools
-
-Install the Python GNN toolkit:
-
-```bash
-uv pip install gnn-toolkit
-```
-
 ### Command Line Tools
-
-Install command line tools:
-
-```bash
-uv pip install gnn-cli
-```
 
 Basic usage:
 
 ```bash
 # Parse and validate a GNN file
-gnn validate model.gnn
+uv run gnn validate --target-dir input/gnn_files
 
-# Convert GNN to Python
-gnn convert model.gnn --to python --output model.py
+# Parse GNN files
+uv run gnn parse --target-dir input/gnn_files --output-dir output
 
 # Visualize a GNN model
-gnn visualize model.gnn --output model.svg
+uv run gnn graph --target-dir input/gnn_files --output-dir output
+
+# Run the full pipeline
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 ## Documentation and Resources
@@ -536,11 +512,11 @@ The MCP step exposes every pipeline module as a callable tool. As of v2.0.0 ther
 
 ```bash
 # Run the MCP audit to list all tools
-PYTHONPATH=src python src/mcp/validate_tools.py
+uv run python src/mcp/validate_tools.py
 # → generates src/tests/mcp_audit_report.json
 
-# Or via pytest (1,522+ tests, 0 skips)
-PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
+# Or via pytest (full suite totals: repository README.md)
+uv run pytest src/tests/test_mcp_audit.py -v
 ```
 
 Key tool groups:

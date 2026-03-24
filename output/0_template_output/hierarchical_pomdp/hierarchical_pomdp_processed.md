@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/hierarchical/hierarchical_pomdp.md
-# Processed on: 2026-03-18T09:18:36.301333
+# Processed on: 2026-03-24T13:54:55.037116
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Hierarchical Active Inference POMDP

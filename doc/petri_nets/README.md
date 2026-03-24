@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Reference Guide | **Audience**: Researchers, Developers | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Formal Methods](../axiom/axiom_gnn.md) | [GNN Advanced Patterns](../gnn/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Formal Methods](../axiom/axiom_gnn.md) | [GNN Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -35,11 +35,11 @@ Petri net modeling enables:
 ### Related Directories
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Axiom formal verification framework
 - **[Nock Integration](../nock/nock-gnn.md)**: Nock formal specification language
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent coordination patterns
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent coordination patterns
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -159,23 +159,23 @@ Petri nets enable modeling of:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[GNN Examples](../gnn/gnn_examples_doc.md)**: Example models
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**: Example models
 
 ### Formal Methods
 - **[Axiom Framework](../axiom/axiom_gnn.md)**: Formal verification and theorem proving
 - **[Nock Integration](../nock/nock-gnn.md)**: Formal specification language
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
 ### Research Applications
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent coordination
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent coordination
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
-- **[Workflow Analysis](../gnn/architecture_reference.md)**: Process analysis
+- **[Workflow Analysis](../gnn/reference/architecture_reference.md)**: Process analysis
 
 ## Standards and Guidelines
 
@@ -189,7 +189,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Petri Net Modeling](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Cross-reference index entry
-- **[Workflow Analysis](../gnn/architecture_reference.md)**: Process analysis documentation
+- **[Workflow Analysis](../gnn/reference/architecture_reference.md)**: Process analysis documentation
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Main Index](../README.md)**: Return to main documentation
 

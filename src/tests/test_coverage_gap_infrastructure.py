@@ -52,16 +52,21 @@ class TestTimeoutManager:
             assert result.success is True
             assert result.result == 10
 
-    @pytest.mark.anyio
-    async def test_async_timeout_success(self):
-        manager = TimeoutManager()
-        config = TimeoutConfig(base_timeout=1.0, max_retries=0)
-        
-        async def fast_async(x): return x * 2
-        
-        async with manager.async_timeout("test_async", config, fast_async, 5) as result:
-            assert result.success is True
-            assert result.result == 10
+    def test_async_timeout_success(self):
+        """Exercise async_timeout without pytest-asyncio (core env may omit dev extras)."""
+
+        async def _run() -> None:
+            manager = TimeoutManager()
+            config = TimeoutConfig(base_timeout=1.0, max_retries=0)
+
+            async def fast_async(x: int) -> int:
+                return x * 2
+
+            async with manager.async_timeout("test_async", config, fast_async, 5) as result:
+                assert result.success is True
+                assert result.result == 10
+
+        asyncio.run(_run())
 
     def test_llm_timeout_manager(self):
         manager = LLMTimeoutManager()

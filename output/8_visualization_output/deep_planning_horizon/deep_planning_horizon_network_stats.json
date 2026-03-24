@@ -1,8 +1,15 @@
 {
-  "total_variables": 28,
+  "total_variables": 22,
   "total_connections": 33,
   "variable_types": {
-    "unknown": 28
+    "likelihood_matrix": 1,
+    "transition_matrix": 1,
+    "preference_vector": 1,
+    "prior_vector": 1,
+    "policy": 3,
+    "hidden_state": 13,
+    "observation": 1,
+    "action": 1
   },
   "connection_types": {
     "D->s": 1,
@@ -37,6 +44,10 @@
     "G_tau4->G": 1,
     "G_tau5->G": 1,
     "\u03c0->u": 1
+  },
+  "gnn_edge_orientation": {
+    "directed_variable_pairs": 24,
+    "undirected_variable_pairs": 9
   },
   "network_properties": {
     "num_nodes": 21,

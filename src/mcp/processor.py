@@ -201,7 +201,19 @@ def process_mcp(
 
         from .mcp import initialize, mcp_instance
         from . import __version__ as mcp_version
-        initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+        perf = kwargs.get("performance_mode", "low")
+        pm_timeout = kwargs.get("mcp_per_module_timeout")
+        ov_timeout = kwargs.get("mcp_overall_timeout")
+        init_kw: dict = {
+            "halt_on_missing_sdk": False,
+            "force_proceed_flag": True,
+            "performance_mode": perf if isinstance(perf, str) else "low",
+        }
+        if pm_timeout is not None:
+            init_kw["per_module_timeout"] = float(pm_timeout)
+        if ov_timeout is not None:
+            init_kw["overall_timeout"] = float(ov_timeout)
+        initialize(**init_kw)
 
         # Modules are already discovered by initialize(); just retrieve for reporting
         registered_modules = list(mcp_instance.modules.keys())

@@ -50,34 +50,38 @@
 - `**kwargs`: Additional setup options:
   - `verbose` (bool): Enable verbose output
   - `recreate_venv` (bool): Recreate virtual environment
-  - `dev` (bool): Install development dependencies
+  - `dev` (bool): If true, `uv sync --extra dev` (pytest stack, linters, etc.)
+  - `install_all_extras` (bool): If true, `uv sync --all-extras` (every optional group in pyproject)
+  - `setup_core_only` (bool): If true, skips the JAX self-test during setup (Step 12 backends are core deps)
   - `install_optional` (bool): Install optional dependencies
   - `optional_groups` (str): Comma-separated list of optional groups
 
 **Returns**: `True` if setup succeeded
 
-**Note**: This function internally calls `setup_uv_environment` or `setup_complete_environment` based on arguments.
+**Note**: Default path runs `uv sync` for core dependencies, which include Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy). `SETUP_DEFAULT_PIPELINE_EXTRAS` is usually empty; the optional `execution-frameworks` extra duplicates those pins for explicit `uv sync --extra execution-frameworks`.
 
-#### `setup_uv_environment(verbose=False, recreate=False, dev=True, extras=[], skip_jax_test=True, output_dir=None) -> bool`
+#### `setup_uv_environment(verbose=False, recreate=False, dev=False, extras=None, install_all_extras=False, skip_jax_test=False, output_dir=None) -> bool`
 **Description**: Set up UV virtual environment with dependencies using native UV sync
 
 **Parameters**:
 - `verbose`: Enable verbose output
 - `recreate`: Recreate existing environment
-- `dev`: Install development dependencies
-- `extras`: Additional package groups to install
+- `dev`: Install development optional group (`--extra dev`)
+- `extras`: Additional package groups to install (each as `--extra`)
+- `install_all_extras`: If true, `uv sync --all-extras` (takes precedence over `dev`)
 - `skip_jax_test`: Skip JAX functionality test
 - `output_dir`: Output directory for setup logs
 
 **Returns**: `True` if setup succeeded
 
-#### `install_uv_dependencies(verbose=False, dev=False, extras=None) -> bool`
+#### `install_uv_dependencies(verbose=False, dev=False, extras=None, install_all_extras=False) -> bool`
 **Description**: Install UV dependencies using `uv sync` from pyproject.toml
 
 **Parameters**:
 - `verbose`: Enable verbose output
-- `dev`: Install development dependencies
-- `extras`: Additional package groups
+- `dev`: If true and `install_all_extras` is false, append `--extra dev`
+- `extras`: Additional package groups (`--extra` each)
+- `install_all_extras`: If true, append `--all-extras` (ignores `dev` for sync flags)
 
 **Returns**: `True` if installation succeeded
 

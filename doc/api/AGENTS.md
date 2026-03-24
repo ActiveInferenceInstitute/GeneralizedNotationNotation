@@ -17,7 +17,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**:        3 | **Subdirectories**:        1
+**Files**: `README.md`, `AGENTS.md`, `comprehensive_api_reference.md`, `api_index.json` | **Subdirectories**: none
 
 ## Quick Navigation
 
@@ -58,8 +58,8 @@ All documentation in this module adheres to professional standards:
 
 **Main GNN Documentation**: [gnn/](../gnn/)
 - [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+- [GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)
+- [GNN Examples](../gnn/tutorials/gnn_examples_doc.md)
 
 **Pipeline Architecture**: [src/](../../src/)
 - [Pipeline AGENTS](../../src/AGENTS.md)

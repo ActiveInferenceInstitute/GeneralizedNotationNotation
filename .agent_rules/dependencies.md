@@ -146,7 +146,7 @@ brew install --cask ollama
 DISABLE_PYMDP=1         # Disable PyMDP even if installed
 DISABLE_JAX=1           # Disable JAX
 DISABLE_JULIA=1         # Disable Julia
-OLLAMA_MODEL=gemma3:4b  # LLM model (default: gemma3:4b)
+OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S  # LLM model (code default: llm.defaults.DEFAULT_OLLAMA_MODEL)
 OLLAMA_HOST=http://localhost:11434
 JAX_PLATFORM_NAME=cpu   # or gpu, tpu
 ```

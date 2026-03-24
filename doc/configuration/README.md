@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Configuration Guide | **Audience**: Developers & System Administrators | **Complexity**: Intermediate  
-> **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Deployment Guide](../deployment/README.md)
+> **Cross-References**: [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Deployment Guide](../deployment/README.md)
 
 ## Overview
 

@@ -11,7 +11,7 @@ Canonical documentation for running and configuring the GNN pipeline (steps 0–
 
 ## Purpose
 
-- Execution-framework setup (optional Python backends for step 12)
+- Execution setup: Step 12 Python backends are core `uv sync` dependencies; Julia backends remain environment-dependent
 - Pointers to step scripts, orchestrator, and configuration
 
 This tree is part of the GNN documentation system; implementation lives in `src/`.
@@ -40,4 +40,4 @@ Same conventions as other `doc/*` manifests: concrete paths, no duplicate claims
 
 ---
 
-**Maintenance**: Update when step count, optional execution extras, or config keys change.
+**Maintenance**: Update when step count, dependency layout, or config keys change.

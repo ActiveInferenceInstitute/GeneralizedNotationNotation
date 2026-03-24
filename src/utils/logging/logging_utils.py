@@ -1014,12 +1014,14 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
                 warning_patterns = [
                     r'WARNING[:\s]+([^\n]+)',
                     r'⚠️[:\s]+([^\n]+)',
-                    r'warning[:\s]+([^\n]+)',
                 ]
 
                 for pattern in warning_patterns:
                     matches = re.findall(pattern, combined_output, re.IGNORECASE)
                     warning_messages.extend(matches[:3])  # Limit to first 3 warnings per step
+
+                # Same log line must not appear twice (e.g. overlapping patterns)
+                warning_messages = list(dict.fromkeys(m.strip() for m in warning_messages if m.strip()))
 
                 # Also check dependency_warnings
                 dep_warnings = step.get('dependency_warnings', [])

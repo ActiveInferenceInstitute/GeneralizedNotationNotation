@@ -1397,13 +1397,13 @@ except ImportError:
             print("✅ JAX installed successfully")
             import jax
         else:
-            print(f"❌ Failed to install JAX: {result.stderr}")
+            print(f"❌ Failed to install JAX: {{result.stderr}}")
             sys.exit(1)
     except subprocess.TimeoutExpired:
         print("❌ JAX installation timed out")
         sys.exit(1)
     except Exception as e:
-        print(f"❌ Error installing JAX: {e}")
+        print(f"❌ Error installing JAX: {{e}}")
         sys.exit(1)
 
 import jax.numpy as jnp
@@ -1437,7 +1437,7 @@ except ImportError:
             print("⚠️  Optax installation failed, continuing without it")
             optax = None
     except Exception as e:
-        print(f"⚠️  Error installing optax: {e}, continuing without it")
+        print(f"⚠️  Error installing optax: {{e}}, continuing without it")
         optax = None
 
 class POMDPModels:

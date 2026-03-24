@@ -1,6 +1,6 @@
 # Cross-Model Comparison Report
 
-**Generated:** 2026-03-18 09:30:07
+**Generated:** 2026-03-24 14:12:55
 
 **Models:** 8 | **Frameworks:** 7
 
@@ -8,14 +8,14 @@
 
 | Model | PyMDP | JAX | RxInfer | ActiveInf.jl | DisCoPy | PyTorch | NumPyro |
 |---|---|---|---|---|---|---|---|
-| **actinf_pomdp_agent** | ✅ 0.993 | ✅ 0.993 | ✅ 0.993 | ✅ 0.945 | — | ✅ 1.000 | ✅ 1.000 |
-| **deep_planning_horizon** | ✅ 0.872 | ✅ 0.934 | ✅ 0.922 | ✅ 0.566 | — | ✅ 1.000 | ✅ 1.000 |
-| **hmm_baseline** | ✅ 0.669 | ✅ 0.808 | ✅ 0.654 | — | — | ✅ 1.000 | ✅ 1.000 |
+| **actinf_pomdp_agent** | ✅ 0.989 | ✅ 0.993 | ✅ 0.993 | ✅ 0.945 | — | ✅ 1.000 | ✅ 1.000 |
+| **deep_planning_horizon** | ✅ 0.915 | ✅ 0.934 | ✅ 0.922 | ✅ 0.566 | — | ✅ 1.000 | ✅ 1.000 |
+| **hmm_baseline** | ✅ 0.661 | ✅ 0.808 | ✅ 0.654 | — | — | ✅ 1.000 | ✅ 1.000 |
 | **markov_chain** | ✅ 1.000 | ✅ 1.000 | ✅ 1.000 | — | — | ✅ 1.000 | ✅ 1.000 |
-| **multi_armed_bandit** | ✅ 0.559 | ✅ 0.511 | ✅ 0.578 | ✅ 0.432 | — | ✅ 1.000 | ✅ 1.000 |
+| **multi_armed_bandit** | ✅ 0.613 | ✅ 0.511 | ✅ 0.578 | ✅ 0.432 | — | ✅ 1.000 | ✅ 1.000 |
 | **simple_mdp** | ✅ 1.000 | ✅ 1.000 | ✅ 1.000 | ✅ 1.000 | — | ✅ 1.000 | ✅ 1.000 |
 | **tmaze_epistemic** | ✅ 1.000 | ✅ 1.000 | ✅ 0.999 | — | — | ✅ 1.000 | ✅ 1.000 |
-| **two_state_bistable** | ✅ 0.788 | ✅ 0.796 | ✅ 0.810 | ✅ 0.669 | — | ✅ 1.000 | ✅ 1.000 |
+| **two_state_bistable** | ✅ 0.771 | ✅ 0.796 | ✅ 0.810 | ✅ 0.669 | — | ✅ 1.000 | ✅ 1.000 |
 
 > Values show validation status and mean belief confidence (max belief per timestep).
 
@@ -23,14 +23,14 @@
 
 | Model | PyMDP | JAX | RxInfer | ActiveInf.jl | DisCoPy | PyTorch | NumPyro |
 |---|---|---|---|---|---|---|---|
-| **actinf_pomdp_agent** | -0.6753 | -0.1412 | 0.7186 | -1.1827 | — | 1.4951 | 0.5951 |
-| **deep_planning_horizon** | -1.3285 | 0.8795 | 1.9524 | -1.4137 | — | 2.6939 | 2.6939 |
-| **hmm_baseline** | -1.4825 | 1.6440 | 1.4691 | — | — | 1.7918 | 1.7918 |
-| **markov_chain** | -0.1818 | 0.0693 | 0.1309 | — | — | 1.0986 | 1.0986 |
-| **multi_armed_bandit** | -2.1151 | 0.1612 | 2.2111 | -2.0129 | — | 0.1698 | 0.1698 |
+| **actinf_pomdp_agent** | -1.2168 | -0.1412 | 0.7186 | -1.1827 | — | 1.4951 | 0.5951 |
+| **deep_planning_horizon** | -0.7945 | 0.8795 | 1.9524 | -1.4137 | — | 3.1939 | 2.6939 |
+| **hmm_baseline** | -1.4745 | 1.6440 | 1.4691 | — | — | 1.7918 | 1.7918 |
+| **markov_chain** | -0.2010 | 0.0693 | 0.1309 | — | — | 1.0986 | 1.0986 |
+| **multi_armed_bandit** | -1.6952 | 0.1612 | 2.2111 | -2.0129 | — | 2.1698 | 0.1698 |
 | **simple_mdp** | -0.1141 | -2.2688 | 0.1141 | -2.5737 | — | 3.1392 | 3.1392 |
-| **tmaze_epistemic** | -0.2310 | 0.0000 | 1.1307 | — | — | 1.3863 | 1.3863 |
-| **two_state_bistable** | -0.7779 | -0.4299 | 0.8909 | -1.1092 | — | 2.1269 | 0.1269 |
+| **tmaze_epistemic** | -0.1848 | 0.0000 | 1.1307 | — | — | 1.3863 | 1.3863 |
+| **two_state_bistable** | -0.7895 | -0.4299 | 0.8909 | -1.1092 | — | 0.1269 | 0.1269 |
 
 ## Belief Entropy Comparison
 
@@ -38,14 +38,14 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Model | PyMDP | JAX | RxInfer | ActiveInf.jl | DisCoPy | PyTorch | NumPyro |
 |---|---|---|---|---|---|---|---|
-| **actinf_pomdp_agent** | 0.0293 | 0.0293 | 0.0293 | 0.1622 | — | 0.0000 | 0.0000 |
-| **deep_planning_horizon** | 0.3729 | 0.2016 | 0.2909 | 1.1075 | — | 0.0000 | 0.0000 |
-| **hmm_baseline** | 0.8592 | 0.5118 | 0.9518 | — | — | 0.0000 | 0.0000 |
+| **actinf_pomdp_agent** | 0.0457 | 0.0293 | 0.0293 | 0.1622 | — | 0.0000 | 0.0000 |
+| **deep_planning_horizon** | 0.2645 | 0.2016 | 0.2909 | 1.1075 | — | 0.0000 | 0.0000 |
+| **hmm_baseline** | 0.9111 | 0.5118 | 0.9518 | — | — | 0.0000 | 0.0000 |
 | **markov_chain** | 0.0000 | 0.0000 | 0.0000 | — | — | 0.0000 | 0.0000 |
-| **multi_armed_bandit** | 0.8704 | 0.7833 | 0.8007 | 1.0132 | — | 0.0000 | 0.0000 |
+| **multi_armed_bandit** | 0.8456 | 0.7833 | 0.8007 | 1.0132 | — | 0.0000 | 0.0000 |
 | **simple_mdp** | 0.0000 | 0.0000 | 0.0000 | 0.0013 | — | 0.0000 | 0.0000 |
 | **tmaze_epistemic** | 0.0000 | 0.0000 | 0.0047 | — | — | 0.0000 | 0.0000 |
-| **two_state_bistable** | 0.4824 | 0.4939 | 0.4650 | 0.6320 | — | 0.0000 | 0.0000 |
+| **two_state_bistable** | 0.5028 | 0.4939 | 0.4650 | 0.6320 | — | 0.0000 | 0.0000 |
 
 ## Execution Time (seconds)
 
@@ -66,7 +66,7 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 0.9929 | -0.6753 | 0.0293 | 0.133 | ✅ |
+| PyMDP | 15 | 0.9890 | -1.2168 | 0.0457 | 0.200 | ✅ |
 | JAX | 15 | 0.9929 | -0.1412 | 0.0293 | 0.200 | ✅ |
 | RxInfer | 15 | 0.9929 | 0.7186 | 0.0293 | 0.200 | ✅ |
 | ActiveInf.jl | 15 | 0.9450 | -1.1827 | 0.1622 | 0.200 | ✅ |
@@ -80,12 +80,12 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 0.8719 | -1.3285 | 0.3729 | 0.200 | ✅ |
+| PyMDP | 15 | 0.9148 | -0.7945 | 0.2645 | 0.200 | ✅ |
 | JAX | 15 | 0.9335 | 0.8795 | 0.2016 | 0.133 | ✅ |
 | RxInfer | 15 | 0.9225 | 1.9524 | 0.2909 | 0.267 | ✅ |
 | ActiveInf.jl | 15 | 0.5663 | -1.4137 | 1.1075 | 0.200 | ✅ |
 | DisCoPy | — | — | — | — | — | — |
-| PyTorch | 15 | 1.0000 | 2.6939 | 0.0000 | 0.133 | ✅ |
+| PyTorch | 15 | 1.0000 | 3.1939 | 0.0000 | 0.133 | ✅ |
 | NumPyro | 15 | 1.0000 | 2.6939 | 0.0000 | 0.133 | ✅ |
 
 **Highest confidence:** NumPyro (1.0000) | **Lowest:** ActiveInf.jl (0.5663)
@@ -94,7 +94,7 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 0.6691 | -1.4825 | 0.8592 | 0.067 | ✅ |
+| PyMDP | 15 | 0.6611 | -1.4745 | 0.9111 | 0.067 | ✅ |
 | JAX | 15 | 0.8078 | 1.6440 | 0.5118 | 0.067 | ✅ |
 | RxInfer | 15 | 0.6537 | 1.4691 | 0.9518 | 0.067 | ✅ |
 | ActiveInf.jl | — | — | — | — | — | — |
@@ -108,7 +108,7 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 1.0000 | -0.1818 | 0.0000 | 0.067 | ✅ |
+| PyMDP | 15 | 1.0000 | -0.2010 | 0.0000 | 0.067 | ✅ |
 | JAX | 15 | 1.0000 | 0.0693 | 0.0000 | 0.067 | ✅ |
 | RxInfer | 15 | 1.0000 | 0.1309 | 0.0000 | 0.067 | ✅ |
 | ActiveInf.jl | — | — | — | — | — | — |
@@ -116,18 +116,18 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 | PyTorch | 15 | 1.0000 | 1.0986 | 0.0000 | 0.133 | ✅ |
 | NumPyro | 15 | 1.0000 | 1.0986 | 0.0000 | 0.133 | ✅ |
 
-**Highest confidence:** PyMDP (1.0000) | **Lowest:** RxInfer (1.0000)
+**Highest confidence:** JAX (1.0000) | **Lowest:** RxInfer (1.0000)
 
 ### multi_armed_bandit
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 0.5592 | -2.1151 | 0.8704 | 0.067 | ✅ |
+| PyMDP | 15 | 0.6125 | -1.6952 | 0.8456 | 0.067 | ✅ |
 | JAX | 15 | 0.5109 | 0.1612 | 0.7833 | 0.067 | ✅ |
 | RxInfer | 15 | 0.5779 | 2.2111 | 0.8007 | 0.200 | ✅ |
 | ActiveInf.jl | 15 | 0.4317 | -2.0129 | 1.0132 | 0.200 | ✅ |
 | DisCoPy | — | — | — | — | — | — |
-| PyTorch | 15 | 1.0000 | 0.1698 | 0.0000 | 0.133 | ✅ |
+| PyTorch | 15 | 1.0000 | 2.1698 | 0.0000 | 0.133 | ✅ |
 | NumPyro | 15 | 1.0000 | 0.1698 | 0.0000 | 0.133 | ✅ |
 
 **Highest confidence:** NumPyro (1.0000) | **Lowest:** ActiveInf.jl (0.4317)
@@ -136,7 +136,7 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 1.0000 | -0.1141 | 0.0000 | 0.133 | ✅ |
+| PyMDP | 15 | 1.0000 | -0.1141 | 0.0000 | 0.200 | ✅ |
 | JAX | 15 | 1.0000 | -2.2688 | 0.0000 | 0.200 | ✅ |
 | RxInfer | 15 | 1.0000 | 0.1141 | 0.0000 | 0.133 | ✅ |
 | ActiveInf.jl | 15 | 0.9999 | -2.5737 | 0.0013 | 0.133 | ✅ |
@@ -150,7 +150,7 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 1.0000 | -0.2310 | 0.0000 | 0.267 | ✅ |
+| PyMDP | 15 | 1.0000 | -0.1848 | 0.0000 | 0.267 | ✅ |
 | JAX | 15 | 1.0000 | 0.0000 | 0.0000 | 0.067 | ✅ |
 | RxInfer | 15 | 0.9993 | 1.1307 | 0.0047 | 0.267 | ✅ |
 | ActiveInf.jl | — | — | — | — | — | — |
@@ -164,12 +164,12 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 
 | Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |
 |-----------|-------|------------|------------|---------|------------------|------------|
-| PyMDP | 15 | 0.7875 | -0.7779 | 0.4824 | 0.133 | ✅ |
+| PyMDP | 15 | 0.7714 | -0.7895 | 0.5028 | 0.133 | ✅ |
 | JAX | 15 | 0.7960 | -0.4299 | 0.4939 | 0.133 | ✅ |
 | RxInfer | 15 | 0.8101 | 0.8909 | 0.4650 | 0.133 | ✅ |
 | ActiveInf.jl | 15 | 0.6695 | -1.1092 | 0.6320 | 0.133 | ✅ |
 | DisCoPy | — | — | — | — | — | — |
-| PyTorch | 15 | 1.0000 | 2.1269 | 0.0000 | 0.133 | ✅ |
+| PyTorch | 15 | 1.0000 | 0.1269 | 0.0000 | 0.133 | ✅ |
 | NumPyro | 15 | 1.0000 | 0.1269 | 0.0000 | 0.133 | ✅ |
 
 **Highest confidence:** NumPyro (1.0000) | **Lowest:** ActiveInf.jl (0.6695)
@@ -177,8 +177,8 @@ Mean Shannon entropy of posterior beliefs (lower = more certain).
 ## Cross-Model Observations
 
 - **Highest avg. confidence:** markov_chain (1.0000)
-- **Lowest avg. confidence:** multi_armed_bandit (0.6800)
+- **Lowest avg. confidence:** multi_armed_bandit (0.6888)
 
 ---
 
-*Generated by GNN Analysis Pipeline — 2026-03-18 09:30:07*
+*Generated by GNN Analysis Pipeline — 2026-03-24 14:12:55*

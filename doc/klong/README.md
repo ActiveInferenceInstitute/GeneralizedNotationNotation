@@ -25,11 +25,11 @@ This directory contains documentation, resources, and implementation guides for 
 
 ### Related Directories
 - **[Performance Guide](../performance/README.md)**: Performance optimization
-- **[JAX Integration](../gnn/framework_integration_guide.md)**: High-performance computing
+- **[JAX Integration](../gnn/integration/framework_integration_guide.md)**: High-performance computing
 - **[Array Programming](../CROSS_REFERENCE_INDEX.md#klong)**: Array programming languages
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -98,16 +98,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[Performance Guide](../performance/README.md)**: Performance optimization
 
 ### Performance Resources
-- **[JAX Integration](../gnn/framework_integration_guide.md)**: High-performance computing
+- **[JAX Integration](../gnn/integration/framework_integration_guide.md)**: High-performance computing
 - **[Performance Guide](../performance/README.md)**: Performance optimization
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -124,7 +124,7 @@ All documentation in this module adheres to professional standards:
 
 - **[Klong Cross-Reference](../CROSS_REFERENCE_INDEX.md#klong)**: Cross-reference index entry
 - **[Performance Guide](../performance/README.md)**: Performance optimization
-- **[JAX Integration](../gnn/framework_integration_guide.md)**: High-performance computing
+- **[JAX Integration](../gnn/integration/framework_integration_guide.md)**: High-performance computing
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

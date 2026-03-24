@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Archive Reference | **Audience**: Researchers, Historians | **Complexity**: Reference  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN Examples](../gnn/gnn_examples_doc.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN Examples](../gnn/tutorials/gnn_examples_doc.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -11,7 +11,7 @@ This directory contains archived documentation, historical materials, and exampl
 **Status**: ✅ Archive (Preserved for Historical Reference)  
 **Version**: 1.0
 
-> **⚠️ Note**: Archive materials are preserved for historical reference. For current documentation and examples, see the main [doc/](../) directory and [GNN Examples](../gnn/gnn_examples_doc.md).
+> **⚠️ Note**: Archive materials are preserved for historical reference. For current documentation and examples, see the main [doc/](../) directory and [GNN Examples](../gnn/tutorials/gnn_examples_doc.md).
 
 ## Quick Navigation
 
@@ -22,7 +22,7 @@ This directory contains archived documentation, historical materials, and exampl
 ### Main Documentation
 - **[doc/README.md](../README.md)**: Main documentation hub
 - **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
-- **[GNN Examples](../gnn/gnn_examples_doc.md)**: Current example models
+- **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**: Current example models
 
 ### Related Directories
 - **[GNN Documentation](../gnn/README.md)**: Current GNN documentation
@@ -30,7 +30,7 @@ This directory contains archived documentation, historical materials, and exampl
 - **[Archive Examples](../archive/)**: Historical example models
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -119,16 +119,16 @@ When using archive materials:
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[GNN Examples](../gnn/gnn_examples_doc.md)**: Current example models
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**: Current example models
 
 ### Current Resources
 - **[Templates](../templates/README.md)**: Current model templates
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Current framework guides
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Current pipeline guide
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Current framework guides
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Current pipeline guide
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -144,7 +144,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Archive Cross-Reference](../CROSS_REFERENCE_INDEX.md#archive)**: Cross-reference index entry
-- **[Current Examples](../gnn/gnn_examples_doc.md)**: Current example models
+- **[Current Examples](../gnn/tutorials/gnn_examples_doc.md)**: Current example models
 - **[Templates](../templates/README.md)**: Current model templates
 - **[Main Index](../README.md)**: Return to main documentation
 

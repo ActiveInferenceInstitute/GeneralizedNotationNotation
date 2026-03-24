@@ -126,9 +126,9 @@ Central documentation hub for all theoretical, computational, and implementation
 | Resource | Path | Description |
 |----------|------|-------------|
 | GNN Overview | [`doc/gnn/gnn_overview.md`](../gnn/gnn_overview.md) | Core GNN concepts |
-| GNN Syntax | [`doc/gnn/gnn_syntax.md`](../gnn/gnn_syntax.md) | Syntax specification |
-| Neurosymbolic | [`doc/gnn/gnn_llm_neurosymbolic_active_inference.md`](../gnn/gnn_llm_neurosymbolic_active_inference.md) | LLM + Active Inference |
-| GNN Examples | [`doc/gnn/gnn_examples_doc.md`](../gnn/gnn_examples_doc.md) | Example models |
+| GNN Syntax | [`doc/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) | Syntax specification |
+| Neurosymbolic | [`doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | LLM + Active Inference |
+| GNN Examples | [`doc/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) | Example models |
 
 ### LLM Integration
 

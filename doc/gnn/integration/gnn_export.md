@@ -1,9 +1,9 @@
 # GNN Export Guide
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
 This document provides comprehensive guidance on multi-format export capabilities for Generalized Notation Notation (GNN) models, including export formats, validation, and semantic preservation.
 
@@ -212,7 +212,7 @@ Export integrates throughout the pipeline:
 
 - **[Export Module](../../../src/export/AGENTS.md)**: Implementation details
 - **[Export Documentation](../README.md)**: Export documentation overview
-- **[Pkl Integration](../pkl/pkl_gnn.md)**: Configuration-as-code export
+- **[Pkl Integration](../../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 
 ## See Also
@@ -224,5 +224,5 @@ Export integrates throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: March 6, 2026  
+**Last Updated**: 2026-03-24  
 **Version**: v2.0.0

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-18T09:28:45.526368",
+  "timestamp": "2026-03-24T14:11:40.797385",
   "processed_files": 8,
   "success": true,
   "errors": [],
@@ -689,7 +689,7 @@
         "variable_connection_correlation": 0.14925373134328357,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.530156"
+      "analysis_timestamp": "2026-03-24T14:11:40.800879"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -1351,7 +1351,7 @@
         "variable_connection_correlation": 0.2,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.535757"
+      "analysis_timestamp": "2026-03-24T14:11:40.806814"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -2260,7 +2260,7 @@
         "variable_connection_correlation": 0.3855421686746988,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.541946"
+      "analysis_timestamp": "2026-03-24T14:11:40.812822"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -2989,7 +2989,7 @@
         "variable_connection_correlation": 0.1506849315068493,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.548251"
+      "analysis_timestamp": "2026-03-24T14:11:40.819572"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -3549,7 +3549,7 @@
         "variable_connection_correlation": 0.24489795918367346,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.555031"
+      "analysis_timestamp": "2026-03-24T14:11:40.832009"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -4259,7 +4259,7 @@
         "variable_connection_correlation": 0.15942028985507245,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.559932"
+      "analysis_timestamp": "2026-03-24T14:11:40.838306"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -4774,7 +4774,7 @@
         "variable_connection_correlation": 0.13043478260869565,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.564986"
+      "analysis_timestamp": "2026-03-24T14:11:40.843577"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -5881,7 +5881,7 @@
         "variable_connection_correlation": 0.16521739130434782,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-03-18T09:28:45.571413"
+      "analysis_timestamp": "2026-03-24T14:11:40.852364"
     }
   ],
   "complexity_metrics": [
@@ -5893,7 +5893,7 @@
       "structural_complexity": 27.099999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 4.7,
-      "analysis_timestamp": "2026-03-18T09:28:45.531707"
+      "analysis_timestamp": "2026-03-24T14:11:40.802509"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -5903,7 +5903,7 @@
       "structural_complexity": 26.4,
       "maintainability_index": 100.0,
       "technical_debt": 4.0,
-      "analysis_timestamp": "2026-03-18T09:28:45.537323"
+      "analysis_timestamp": "2026-03-24T14:11:40.808420"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -5913,7 +5913,7 @@
       "structural_complexity": 47.3,
       "maintainability_index": 100.0,
       "technical_debt": 6.300000000000001,
-      "analysis_timestamp": "2026-03-18T09:28:45.543590"
+      "analysis_timestamp": "2026-03-24T14:11:40.814527"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -5923,7 +5923,7 @@
       "structural_complexity": 29.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.300000000000001,
-      "analysis_timestamp": "2026-03-18T09:28:45.550484"
+      "analysis_timestamp": "2026-03-24T14:11:40.824016"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -5933,7 +5933,7 @@
       "structural_complexity": 23.099999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 2.9000000000000004,
-      "analysis_timestamp": "2026-03-18T09:28:45.556241"
+      "analysis_timestamp": "2026-03-24T14:11:40.834243"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -5943,7 +5943,7 @@
       "structural_complexity": 28.4,
       "maintainability_index": 100.0,
       "technical_debt": 4.9,
-      "analysis_timestamp": "2026-03-18T09:28:45.561515"
+      "analysis_timestamp": "2026-03-24T14:11:40.839790"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -5953,7 +5953,7 @@
       "structural_complexity": 18.0,
       "maintainability_index": 100.0,
       "technical_debt": 2.6,
-      "analysis_timestamp": "2026-03-18T09:28:45.566167"
+      "analysis_timestamp": "2026-03-24T14:11:40.845036"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -5963,81 +5963,81 @@
       "structural_complexity": 47.8,
       "maintainability_index": 100.0,
       "technical_debt": 9.5,
-      "analysis_timestamp": "2026-03-18T09:28:45.574093"
+      "analysis_timestamp": "2026-03-24T14:11:40.857188"
     }
   ],
   "performance_benchmarks": [
     {
       "file_path": "input/gnn_files/discrete/simple_mdp.md",
       "file_name": "simple_mdp.md",
-      "parse_time": 0.0014255410000032498,
+      "parse_time": 0.0014392499870155007,
       "memory_usage": 21696,
       "complexity_score": 77,
       "estimated_runtime": 0.77,
-      "benchmark_timestamp": "2026-03-18T09:28:45.533171"
+      "benchmark_timestamp": "2026-03-24T14:11:40.804018"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
       "file_name": "multi_armed_bandit.md",
-      "parse_time": 0.001458958999933202,
+      "parse_time": 0.001575916016008705,
       "memory_usage": 20684,
       "complexity_score": 72,
       "estimated_runtime": 0.72,
-      "benchmark_timestamp": "2026-03-18T09:28:45.538812"
+      "benchmark_timestamp": "2026-03-24T14:11:40.810034"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
       "file_name": "deep_planning_horizon.md",
-      "parse_time": 0.0015399999999772263,
+      "parse_time": 0.0015765419811941683,
       "memory_usage": 29830,
       "complexity_score": 115,
       "estimated_runtime": 1.1500000000000001,
-      "benchmark_timestamp": "2026-03-18T09:28:45.545163"
+      "benchmark_timestamp": "2026-03-24T14:11:40.816142"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "parse_time": 0.00217241699999704,
+      "parse_time": 0.0022021670010872185,
       "memory_usage": 24958,
       "complexity_score": 84,
       "estimated_runtime": 0.84,
-      "benchmark_timestamp": "2026-03-18T09:28:45.552776"
+      "benchmark_timestamp": "2026-03-24T14:11:40.826353"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "file_name": "hmm_baseline.md",
-      "parse_time": 0.0011200830000461792,
+      "parse_time": 0.0012818329851143062,
       "memory_usage": 16960,
       "complexity_score": 61,
       "estimated_runtime": 0.61,
-      "benchmark_timestamp": "2026-03-18T09:28:45.557388"
+      "benchmark_timestamp": "2026-03-24T14:11:40.835615"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
       "file_name": "two_state_bistable.md",
-      "parse_time": 0.0013185000000248692,
+      "parse_time": 0.0013612500042654574,
       "memory_usage": 21110,
       "complexity_score": 80,
       "estimated_runtime": 0.8,
-      "benchmark_timestamp": "2026-03-18T09:28:45.562895"
+      "benchmark_timestamp": "2026-03-24T14:11:40.841206"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
       "file_name": "markov_chain.md",
-      "parse_time": 0.0011051249999809443,
+      "parse_time": 0.0012080419983249158,
       "memory_usage": 14994,
       "complexity_score": 52,
       "estimated_runtime": 0.52,
-      "benchmark_timestamp": "2026-03-18T09:28:45.567297"
+      "benchmark_timestamp": "2026-03-24T14:11:40.846315"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
       "file_name": "tmaze_epistemic.md",
-      "parse_time": 0.0026084999999511638,
+      "parse_time": 0.0032200830173678696,
       "memory_usage": 37284,
       "complexity_score": 134,
       "estimated_runtime": 1.34,
-      "benchmark_timestamp": "2026-03-18T09:28:45.576759"
+      "benchmark_timestamp": "2026-03-24T14:11:40.861131"
     }
   ],
   "model_comparisons": [
@@ -6065,7 +6065,7 @@
           "std": 7.540515565927836
         }
       },
-      "comparison_timestamp": "2026-03-18T09:29:45.282673"
+      "comparison_timestamp": "2026-03-24T14:12:38.298290"
     }
   ],
   "visualization_files": [
@@ -6481,20 +6481,20 @@
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-03-18T09:29:45.282813",
+    "timestamp": "2026-03-24T14:12:38.298444",
     "frameworks": {
       "numpyro": {
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          1.275439,
-          1.010205,
-          1.345201,
-          1.140164,
-          1.188477,
-          6.116841,
-          5.805025,
-          1.102053
+          8.731484,
+          1.460794,
+          1.363943,
+          1.288917,
+          1.272459,
+          1.555278,
+          1.532855,
+          1.344806
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log",
@@ -6703,14 +6703,14 @@
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          1.955625,
-          1.948165,
-          1.961335,
-          1.819955,
-          5.249714,
-          9.264893,
-          3.918417,
-          1.883999
+          3.100895,
+          4.361664,
+          1.85962,
+          1.73207,
+          1.876388,
+          1.797278,
+          2.199429,
+          1.876918
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple MDP Agent_pymdp.py_execution.log",
@@ -6734,49 +6734,14 @@
         ],
         "beliefs": [
           [
-            1.6666666666666572e-16,
-            0.9999999999999998,
-            6.666666666666623e-17
-          ],
-          [
-            0.9999999999999998,
-            1.333333333333327e-16,
-            9.999999999999963e-17
-          ],
-          [
             1.0,
-            2.857142857142847e-17,
-            1.428571428571431e-17
+            5.999999999999991e-17,
+            3.9999999999999824e-17
           ],
           [
-            3.4999999999999864e-16,
-            0.9999999999999996,
-            5.0000000000000067e-17
-          ],
-          [
-            7.499999999999981e-17,
-            1.0,
-            7.499999999999981e-17
-          ],
-          [
-            9.999999999999963e-17,
-            1.333333333333327e-16,
-            0.9999999999999998
-          ],
-          [
-            1.6666666666666618e-17,
-            4.9999999999999734e-17,
-            1.0
-          ],
-          [
-            1.6666666666666618e-17,
-            4.9999999999999734e-17,
-            1.0
-          ],
-          [
-            1.6666666666666618e-17,
-            4.9999999999999734e-17,
-            1.0
+            6.999999999999933e-16,
+            1.9999999999999807e-16,
+            0.9999999999999991
           ],
           [
             3.333333333333329e-17,
@@ -6784,14 +6749,14 @@
             1.9999999999999963e-16
           ],
           [
+            7.499999999999981e-17,
+            1.0,
+            7.499999999999981e-17
+          ],
+          [
             0.9999999999999998,
             1.333333333333327e-16,
             9.999999999999963e-17
-          ],
-          [
-            1.0,
-            2.857142857142847e-17,
-            1.428571428571431e-17
           ],
           [
             1.0,
@@ -6804,9 +6769,44 @@
             0.9999999999999991
           ],
           [
-            1.6666666666666618e-17,
-            4.9999999999999734e-17,
-            1.0
+            3.333333333333329e-17,
+            0.9999999999999998,
+            1.9999999999999963e-16
+          ],
+          [
+            9.999999999999963e-17,
+            1.333333333333327e-16,
+            0.9999999999999998
+          ],
+          [
+            0.9999999999999991,
+            2.99999999999998e-16,
+            5.999999999999971e-16
+          ],
+          [
+            1.0,
+            2.857142857142867e-17,
+            1.428571428571431e-17
+          ],
+          [
+            1.0,
+            2.857142857142847e-17,
+            1.428571428571431e-17
+          ],
+          [
+            3.4999999999999864e-16,
+            0.9999999999999996,
+            5.0000000000000067e-17
+          ],
+          [
+            0.9999999999999998,
+            1.333333333333327e-16,
+            9.999999999999963e-17
+          ],
+          [
+            1.0,
+            2.857142857142847e-17,
+            1.428571428571431e-17
           ]
         ],
         "actions": [
@@ -6827,31 +6827,28 @@
           0
         ],
         "observations": [
+          0,
+          2,
+          1,
           1,
           0,
           0,
-          1,
-          1,
-          2,
-          2,
-          2,
           2,
           1,
+          2,
           0,
           0,
           0,
-          2,
-          2
+          1,
+          0,
+          0
         ],
         "free_energy": [
           [
-            -0.009712200787717729
+            -0.29679362358960415
           ],
           [
-            -0.2967936235896037
-          ],
-          [
-            -0.2967936235896039
+            -0.20066645127616034
           ],
           [
             -0.009712200787717729
@@ -6860,16 +6857,28 @@
             -0.00971220078771795
           ],
           [
+            -0.2967936235896037
+          ],
+          [
+            -0.2967936235896039
+          ],
+          [
+            -0.20066645127616034
+          ],
+          [
+            -0.009712200787717729
+          ],
+          [
             -0.20066645127616123
           ],
           [
-            -0.20066645127616145
+            -0.29679362358960304
           ],
           [
-            -0.20066645127616145
+            -0.2967936235896039
           ],
           [
-            -0.20066645127616145
+            -0.2967936235896039
           ],
           [
             -0.009712200787717729
@@ -6879,15 +6888,6 @@
           ],
           [
             -0.2967936235896039
-          ],
-          [
-            -0.2967936235896039
-          ],
-          [
-            -0.20066645127616034
-          ],
-          [
-            -0.20066645127616145
           ]
         ],
         "num_timesteps": 15,
@@ -6918,20 +6918,20 @@
         },
         "data_source": "output/12_execute_output/markov_chain/pymdp/simulation_data/simulation_results.json",
         "belief_confidence": [
-          0.9999999999999998,
-          0.9999999999999998,
-          1.0,
-          0.9999999999999996,
-          1.0,
-          0.9999999999999998,
-          1.0,
-          1.0,
-          1.0,
-          0.9999999999999998,
-          0.9999999999999998,
-          1.0,
           1.0,
           0.9999999999999991,
+          0.9999999999999998,
+          1.0,
+          0.9999999999999998,
+          1.0,
+          0.9999999999999991,
+          0.9999999999999998,
+          0.9999999999999998,
+          0.9999999999999991,
+          1.0,
+          1.0,
+          0.9999999999999996,
+          0.9999999999999998,
           1.0
         ]
       },
@@ -6939,14 +6939,14 @@
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          0.775113,
-          0.754983,
-          0.78901,
-          0.730678,
-          1.473976,
-          4.10594,
-          0.758395,
-          0.734254
+          1.033899,
+          0.959859,
+          0.863135,
+          0.824987,
+          0.826156,
+          0.949036,
+          1.048697,
+          0.89458
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/pytorch/execution_logs/Simple MDP Agent_pytorch.py_execution.log",
@@ -6970,119 +6970,119 @@
         ],
         "beliefs": [
           [
-            0.9999999999999998,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999994
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ]
         ],
         "actions": [
-          0,
-          0,
-          1,
           1,
           1,
           0,
           1,
           1,
+          1,
           0,
-          0,
-          0,
+          1,
+          1,
           0,
           1,
           0,
+          1,
+          1,
           1
         ],
         "observations": [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
         ],
         "free_energy": [
           [
-            1.098612288668109,
-            1.098612288668109
+            1.0986122886681082,
+            1.0986122886681082
           ],
           [
             1.0986122886681091,
@@ -7155,14 +7155,14 @@
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          1.110699,
-          1.130305,
-          1.158242,
-          1.072535,
-          5.263275,
-          6.756163,
-          1.101012,
-          1.036204
+          1.322651,
+          1.158032,
+          1.309421,
+          1.170555,
+          1.226747,
+          1.391107,
+          1.297494,
+          1.669084
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/jax/execution_logs/Simple MDP Agent_jax.py_execution.log",
@@ -7391,14 +7391,14 @@
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          0.397186,
-          0.394564,
-          0.684978,
-          0.391706,
-          2.292088,
-          1.758197,
-          0.397999,
-          0.419671
+          0.403887,
+          0.426348,
+          0.407839,
+          0.409798,
+          0.467377,
+          0.513877,
+          0.481514,
+          0.490917
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_execution.log",
@@ -7456,14 +7456,14 @@
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          26.096308,
-          23.81443,
-          19.842934,
-          15.906098,
-          17.003005,
-          16.541946,
-          15.438548,
-          18.243363
+          30.539082,
+          25.208203,
+          26.907895,
+          21.447601,
+          20.679205,
+          22.319628,
+          23.111149,
+          20.344404
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/rxinfer/execution_logs/Simple MDP Agent_rxinfer.jl_execution.log",
@@ -7626,14 +7626,14 @@
         "success_count": 8,
         "total_count": 8,
         "execution_times": [
-          22.524014,
-          32.849047,
-          13.219248,
-          17.456222,
-          17.145368,
-          13.251858,
-          17.085465,
-          15.561105
+          75.752876,
+          28.78397,
+          23.82797,
+          23.328553,
+          22.757168,
+          20.357071,
+          23.968256,
+          15.318089
         ],
         "output_files": [
           "output/12_execute_output/simple_mdp/activeinference_jl/execution_logs/Simple MDP Agent_activeinference.jl_execution.log",
@@ -7900,46 +7900,46 @@
       },
       "performance_comparison": {
         "numpyro": {
-          "mean": 2.3729256249999997,
-          "std": 2.0752002238348553,
-          "min": 1.010205,
-          "max": 6.116841
+          "mean": 2.318817,
+          "std": 2.4257800407689483,
+          "min": 1.272459,
+          "max": 8.731484
         },
         "pymdp": {
-          "mean": 3.500262875,
-          "std": 2.4765234967694347,
-          "min": 1.819955,
-          "max": 9.264893
+          "mean": 2.35053275,
+          "std": 0.8666913557629311,
+          "min": 1.73207,
+          "max": 4.361664
         },
         "pytorch": {
-          "mean": 1.265293625,
-          "std": 1.0991544135057798,
-          "min": 0.730678,
-          "max": 4.10594
+          "mean": 0.925043625,
+          "std": 0.08176046958331619,
+          "min": 0.824987,
+          "max": 1.048697
         },
         "jax": {
-          "mean": 2.3285543750000004,
-          "std": 2.1581103441933838,
-          "min": 1.036204,
-          "max": 6.756163
+          "mean": 1.318136375,
+          "std": 0.15197741849361826,
+          "min": 1.158032,
+          "max": 1.669084
         },
         "discopy": {
-          "mean": 0.842048625,
-          "std": 0.7020639097948879,
-          "min": 0.391706,
-          "max": 2.292088
+          "mean": 0.450194625,
+          "std": 0.040510550955700116,
+          "min": 0.403887,
+          "max": 0.513877
         },
         "rxinfer": {
-          "mean": 19.110829000000003,
-          "std": 3.6573091991724263,
-          "min": 15.438548,
-          "max": 26.096308
+          "mean": 23.819645875,
+          "std": 3.296484656053113,
+          "min": 20.344404,
+          "max": 30.539082
         },
         "activeinference_jl": {
-          "mean": 18.636540875,
-          "std": 6.030449203725052,
-          "min": 13.219248,
-          "max": 32.849047
+          "mean": 29.261744125,
+          "std": 17.92495299193254,
+          "min": 15.318089,
+          "max": 75.752876
         }
       },
       "metric_agreement": {
@@ -7971,7 +7971,7 @@
           ]
         },
         "pymdp_vs_pytorch": {
-          "confidence_correlation": 0.19999999999999998,
+          "confidence_correlation": -0.17149858514250885,
           "same_dimensions": true
         },
         "pymdp_vs_jax": {
@@ -7979,7 +7979,7 @@
           "same_dimensions": true
         },
         "pymdp_vs_rxinfer": {
-          "confidence_correlation": 0.2914494388196422,
+          "confidence_correlation": 0.01682604280594706,
           "same_dimensions": true
         },
         "pymdp_vs_activeinference_jl": {
@@ -8133,15 +8133,15 @@
             15,
             3
           ],
-          "mean_confidence": 1.0,
+          "mean_confidence": 0.9999999999999998,
           "final_belief": [
-            1.6666666666666618e-17,
-            4.9999999999999734e-17,
-            1.0
+            1.0,
+            2.857142857142847e-17,
+            1.428571428571431e-17
           ],
-          "efe_mean": -0.18178770858372387,
-          "efe_std": 0.11156766721549018,
-          "efe_min": -0.2967936235896039,
+          "efe_mean": -0.20101314304641227,
+          "efe_std": 0.12104428011998629,
+          "efe_min": -0.29679362358960415,
           "efe_max": -0.009712200787717729
         },
         "pytorch": {
@@ -8151,13 +8151,13 @@
           ],
           "mean_confidence": 0.9999999999999999,
           "final_belief": [
-            0.9999999999999999,
             0.0,
-            0.0
+            0.0,
+            0.9999999999999999
           ],
           "efe_mean": 1.0986122886681087,
-          "efe_std": 4.3284461991572713e-16,
-          "efe_min": 1.098612288668109,
+          "efe_std": 4.440892098500626e-16,
+          "efe_min": 1.0986122886681082,
           "efe_max": 1.0986122886681091
         },
         "jax": {

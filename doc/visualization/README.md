@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Visualization Documentation | **Audience**: Developers, Researchers, Data Scientists | **Complexity**: Intermediate  
-> **Cross-References**: [Visualization Module](../../src/visualization/README.md) | [Advanced Visualization](../advanced_visualization/README.md) | [GNN Visualization Guide](../gnn/gnn_visualization.md) | [Main Documentation](../README.md)
+> **Cross-References**: [Visualization Module](../../src/visualization/README.md) | [Advanced Visualization](../advanced_visualization/README.md) | [GNN Visualization Guide](../gnn/integration/gnn_visualization.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -24,11 +24,11 @@ This directory contains comprehensive documentation for visualization capabiliti
 ### Related Directories
 - **[Visualization Module](../../src/visualization/README.md)**: Graph and matrix visualization implementation
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Interactive dashboards and 3D visualization
-- **[GNN Visualization Guide](../gnn/gnn_visualization.md)**: Comprehensive GNN visualization guide
+- **[GNN Visualization Guide](../gnn/integration/gnn_visualization.md)**: Comprehensive GNN visualization guide
 - **[Glowstick Integration](../glowstick/glowstick_gnn.md)**: Type-safe visualization tools
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -96,17 +96,17 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[GNN Visualization Guide](../gnn/gnn_visualization.md)**: Comprehensive visualization guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Visualization Guide](../gnn/integration/gnn_visualization.md)**: Comprehensive visualization guide
 - **[Visualization Module](../../src/visualization/README.md)**: Visualization implementation
 
 ### Visualization Resources
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Interactive dashboards and 3D visualization
 - **[Glowstick Integration](../glowstick/glowstick_gnn.md)**: Type-safe visualization tools
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework-specific visualization
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework-specific visualization
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -123,7 +123,7 @@ All documentation in this module adheres to professional standards:
 
 - **[Visualization Cross-Reference](../CROSS_REFERENCE_INDEX.md#visualization)**: Cross-reference index entry
 - **[Advanced Visualization](../advanced_visualization/README.md)**: Interactive dashboards and 3D visualization
-- **[GNN Visualization Guide](../gnn/gnn_visualization.md)**: Comprehensive visualization guide
+- **[GNN Visualization Guide](../gnn/integration/gnn_visualization.md)**: Comprehensive visualization guide
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

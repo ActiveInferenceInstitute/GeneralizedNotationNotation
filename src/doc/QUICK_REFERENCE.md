@@ -199,11 +199,11 @@ output/               # Generated outputs
 
 | Topic | Link |
 |-------|------|
-| Full Syntax | [doc/gnn/gnn_syntax.md](./gnn/gnn_syntax.md) |
-| Quick Start | [doc/quickstart.md](./quickstart.md) |
-| Pipeline Reference | [src/AGENTS.md](../src/AGENTS.md) |
-| Learning Paths | [doc/learning_paths.md](./learning_paths.md) |
-| API Reference | [doc/api/README.md](./api/README.md) |
+| Full Syntax | [doc/gnn/reference/gnn_syntax.md](../../doc/gnn/reference/gnn_syntax.md) |
+| Quick Start | [doc/quickstart.md](../../doc/quickstart.md) |
+| Pipeline Reference | [src/AGENTS.md](../AGENTS.md) |
+| Learning Paths | [doc/learning_paths.md](../../doc/learning_paths.md) |
+| API Reference | [doc/api/README.md](../../doc/api/README.md) |
 
 ---
 
@@ -221,5 +221,5 @@ output/               # Generated outputs
 
 ---
 
-*For comprehensive documentation, see [doc/INDEX.md](./INDEX.md)*
-*For changelog, see [doc/CHANGELOG.md](./CHANGELOG.md)*
+*For documentation index, see [doc/INDEX.md](../../doc/INDEX.md)*
+*For changelog, see [CHANGELOG.md](CHANGELOG.md)*

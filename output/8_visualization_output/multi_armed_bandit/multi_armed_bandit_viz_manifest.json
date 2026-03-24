@@ -1,0 +1,29 @@
+{
+  "model_name": "multi_armed_bandit",
+  "viz_meta": {
+    "source": "parsed_json",
+    "json_path": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_parsed.json",
+    "json_stale": false
+  },
+  "artifact_count": 14,
+  "artifacts": [
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_stats.json",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_ontology_legend.txt",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_A_heatmap.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_tensor.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_analysis.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_C_heatmap.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_D_heatmap.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_combined_analysis.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_matrix_size_distribution.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_section_content_length.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_type_distribution.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_generative_model.png"
+  ],
+  "variable_count": 11,
+  "connection_count": 10,
+  "parameter_count": 4,
+  "ontology_label_count": 11
+}

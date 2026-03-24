@@ -1,26 +1,22 @@
 {
-  "timestamp": "2026-03-18T09:21:22.151438",
+  "timestamp": "2026-03-24T13:58:15.076079",
   "total_attempts": 19,
-  "successful": 17,
-  "failed": 0,
-  "skipped": 2,
+  "successful": 13,
+  "failed": 2,
+  "skipped": 4,
   "total_duration_ms": 0.0,
   "output_files": [
     "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
     "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
     "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
     "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
     "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
     "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
     "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
     "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
-    "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
     "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png",
-    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+    "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
     "output/9_advanced_viz_output/continuous_navigation_network_metrics.png",
     "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
     "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
@@ -32,13 +28,20 @@
     "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
   ],
   "warnings": [],
-  "errors": [],
+  "errors": [
+    "MatrixVisualizer not available",
+    "MatrixVisualizer not available"
+  ],
   "skipped_features": {
-    "count": 2,
+    "count": 4,
     "by_reason": {
       "Not applicable to this model type (B matrix not found)": [
         "pomdp_transitions:predictive_coding_agent",
         "pomdp_transitions:continuous_navigation"
+      ],
+      "plotly not available": [
+        "interactive_dashboard:predictive_coding_agent",
+        "interactive_dashboard:continuous_navigation"
       ]
     },
     "details": [
@@ -48,8 +51,18 @@
         "fallback_available": false
       },
       {
+        "feature": "interactive_dashboard:predictive_coding_agent",
+        "reason": "plotly not available",
+        "fallback_available": false
+      },
+      {
         "feature": "pomdp_transitions:continuous_navigation",
         "reason": "Not applicable to this model type (B matrix not found)",
+        "fallback_available": false
+      },
+      {
+        "feature": "interactive_dashboard:continuous_navigation",
+        "reason": "plotly not available",
         "fallback_available": false
       }
     ]
@@ -59,7 +72,7 @@
       "viz_type": "3d",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 250.89216232299805,
+      "duration_ms": 241.98007583618164,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png"
       ],
@@ -70,7 +83,7 @@
       "viz_type": "statistical",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 239.56680297851562,
+      "duration_ms": 229.7189235687256,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png"
       ],
@@ -80,19 +93,17 @@
     {
       "viz_type": "matrix_correlations",
       "model_name": "predictive_coding_agent",
-      "status": "success",
-      "duration_ms": 131.61706924438477,
-      "output_files": [
-        "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png"
-      ],
-      "error_message": null,
+      "status": "failed",
+      "duration_ms": 0.0,
+      "output_files": [],
+      "error_message": "MatrixVisualizer not available",
       "fallback_used": false
     },
     {
       "viz_type": "pomdp_transitions",
       "model_name": "predictive_coding_agent",
       "status": "skipped",
-      "duration_ms": 0.010013580322265625,
+      "duration_ms": 0.019311904907226562,
       "output_files": [],
       "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
@@ -101,7 +112,7 @@
       "viz_type": "policy",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 118.13592910766602,
+      "duration_ms": 118.73006820678711,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png"
       ],
@@ -111,30 +122,28 @@
     {
       "viz_type": "interactive_dashboard",
       "model_name": "predictive_coding_agent",
-      "status": "success",
-      "duration_ms": 56.06675148010254,
-      "output_files": [
-        "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
-      ],
-      "error_message": null,
+      "status": "skipped",
+      "duration_ms": 0.17905235290527344,
+      "output_files": [],
+      "error_message": "plotly not available",
       "fallback_used": false
     },
     {
       "viz_type": "dashboard",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 182.297945022583,
+      "duration_ms": 0.7619857788085938,
       "output_files": [
-        "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
+        "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html"
       ],
       "error_message": null,
-      "fallback_used": false
+      "fallback_used": true
     },
     {
       "viz_type": "network_metrics",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 192.0151710510254,
+      "duration_ms": 199.67007637023926,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png"
       ],
@@ -145,7 +154,7 @@
       "viz_type": "d2_diagrams",
       "model_name": "Predictive Coding Active Inference Agent",
       "status": "success",
-      "duration_ms": 1962.8050327301025,
+      "duration_ms": 1833.9738845825195,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
         "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png"
@@ -157,7 +166,7 @@
       "viz_type": "3d",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 237.70880699157715,
+      "duration_ms": 223.98114204406738,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png"
       ],
@@ -168,7 +177,7 @@
       "viz_type": "statistical",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 225.71396827697754,
+      "duration_ms": 226.75585746765137,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png"
       ],
@@ -178,19 +187,17 @@
     {
       "viz_type": "matrix_correlations",
       "model_name": "continuous_navigation",
-      "status": "success",
-      "duration_ms": 181.09631538391113,
-      "output_files": [
-        "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png"
-      ],
-      "error_message": null,
+      "status": "failed",
+      "duration_ms": 0.0,
+      "output_files": [],
+      "error_message": "MatrixVisualizer not available",
       "fallback_used": false
     },
     {
       "viz_type": "pomdp_transitions",
       "model_name": "continuous_navigation",
       "status": "skipped",
-      "duration_ms": 0.012159347534179688,
+      "duration_ms": 0.021219253540039062,
       "output_files": [],
       "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
@@ -199,7 +206,7 @@
       "viz_type": "policy",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 63.96818161010742,
+      "duration_ms": 65.67692756652832,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png"
       ],
@@ -209,30 +216,28 @@
     {
       "viz_type": "interactive_dashboard",
       "model_name": "continuous_navigation",
-      "status": "success",
-      "duration_ms": 23.514747619628906,
-      "output_files": [
-        "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
-      ],
-      "error_message": null,
+      "status": "skipped",
+      "duration_ms": 0.20194053649902344,
+      "output_files": [],
+      "error_message": "plotly not available",
       "fallback_used": false
     },
     {
       "viz_type": "dashboard",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 79.39934730529785,
+      "duration_ms": 0.6997585296630859,
       "output_files": [
-        "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
+        "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html"
       ],
       "error_message": null,
-      "fallback_used": false
+      "fallback_used": true
     },
     {
       "viz_type": "network_metrics",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 208.93526077270508,
+      "duration_ms": 199.04375076293945,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
       ],
@@ -243,7 +248,7 @@
       "viz_type": "d2_diagrams",
       "model_name": "Continuous State Navigation Agent",
       "status": "success",
-      "duration_ms": 1206.9571018218994,
+      "duration_ms": 7069.242000579834,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
         "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png"
@@ -255,7 +260,7 @@
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
       "status": "success",
-      "duration_ms": 4339.498996734619,
+      "duration_ms": 15394.1068649292,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",

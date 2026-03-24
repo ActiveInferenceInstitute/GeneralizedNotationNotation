@@ -12,6 +12,7 @@ LLM dependencies — this is expected behavior, not a limitation.
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging
+import os
 import re
 import json
 
@@ -320,10 +321,13 @@ Respond with a JSON array of hypothesis objects, each with:
 JSON only, no prose:"""
 
     try:
+        from llm.defaults import DEFAULT_OLLAMA_MODEL
+
+        model_name = os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
         messages = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
             messages=messages,
-            model_name="gemma3:4b",
+            model_name=model_name,
             max_tokens=800
         )
         # Parse JSON response

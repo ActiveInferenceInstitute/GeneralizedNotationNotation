@@ -21,7 +21,7 @@
 
 ## Dependencies
 
-- Canonical syntax spec: `doc/gnn/gnn_syntax.md`
+- Canonical syntax spec: `doc/gnn/reference/gnn_syntax.md`
 - Parser implementation: `src/gnn/schema.py`
 - LSP diagnostics: `src/lsp/__init__.py`
 

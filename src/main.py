@@ -56,6 +56,7 @@ import sys
 import os
 import re
 import json
+import argparse
 import time
 import logging
 from pathlib import Path
@@ -89,7 +90,10 @@ except ImportError:
         log_step_start,
         log_step_error
     )
+from dataclasses import fields
+
 from utils.argument_utils import ArgumentParser, PipelineArguments
+from utils.pipeline_config_merge import apply_input_config_defaults
 from utils.resource_manager import get_current_memory_usage
 from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
 
@@ -163,6 +167,7 @@ except ImportError:
 
 def main(override_args: Optional[PipelineArguments] = None, override_config: Optional[Dict[str, Any]] = None) -> int:
     """Main pipeline orchestration function."""
+    parsed: Optional[argparse.Namespace] = None
     if override_args is not None:
         args = override_args
     else:
@@ -170,13 +175,17 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
         parser = ArgumentParser.create_main_parser()
         parsed = parser.parse_args()
 
-        # Convert to PipelineArguments
-        kwargs = {}
-        for key, value in vars(parsed).items():
-            if value is not None:
-                kwargs[key] = value
-
+        # Only pass attributes argparse actually set (SUPPRESS omits unset flags)
+        field_names = {f.name for f in fields(PipelineArguments)}
+        kwargs = {k: getattr(parsed, k) for k in field_names if hasattr(parsed, k)}
         args = PipelineArguments(**kwargs)
+
+        if getattr(args, "skip_llm", False):
+            existing = args.skip_steps or ""
+            existing_nums = [s.strip() for s in str(existing).split(",") if s.strip()] if existing else []
+            if "13" not in existing_nums:
+                existing_nums.append("13")
+            args.skip_steps = ",".join(existing_nums)
 
     # Setup visual logging
     visual_config = VisualConfig(
@@ -219,6 +228,22 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
         reset_progress_tracker()
     else:
         logger = setup_step_logging("pipeline", args.verbose, log_format=args.log_format if hasattr(args, "log_format") else "human")
+
+    if args.verbose:
+        _parts: List[str] = []
+        for mod, label in (
+            ("jax", "jax"),
+            ("jaxlib", "jaxlib"),
+            ("torch", "torch"),
+            ("numpyro", "numpyro"),
+            ("discopy", "discopy"),
+        ):
+            try:
+                m = __import__(mod)
+                _parts.append(f"{label}={getattr(m, '__version__', '?')}")
+            except ImportError:
+                _parts.append(f"{label}=missing")
+        logger.info("Step 12 backends: %s", "; ".join(_parts))
 
     # Set correlation ID for tracking
     import uuid
@@ -274,6 +299,8 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
                     config_pipeline_settings = full_config.get("pipeline", {})
             except Exception as e:
                 logger.warning(f"Could not load pipeline settings from input/config.yaml: {e}")
+
+    apply_input_config_defaults(args, full_config, parsed)
 
     # Handle step filtering with automatic dependency resolution
     # Order of precedence: Command line > Config file > All steps
@@ -509,6 +536,7 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
                 r"interactive.*?limited",  # Interactive visualization limitations
                 r"numeric.*?limited",  # Numeric visualization limitations
                 r"warnings: 0",  # Zero warnings count in validation logs
+                r"optional test tooling not installed",  # Step 2: cov/xdist optional; INFO line
             ]
 
             # Combine safe patterns into single regex

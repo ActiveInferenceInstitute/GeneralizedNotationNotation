@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Mathematicians | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [DisCoPy GNN Guide](gnn_discopy.md) | [Advanced Patterns](../gnn/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [DisCoPy GNN Guide](gnn_discopy.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -24,13 +24,13 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
-- **[Category Theory](../gnn/advanced_modeling_patterns.md#category-theory)**: Category theory applications
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
+- **[Category Theory](../gnn/advanced/advanced_modeling_patterns.md#category-theory)**: Category theory applications
 - **[Hierarchical Template](../templates/hierarchical_template.md)**: Hierarchical model templates
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Formal verification approaches
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -99,16 +99,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Mathematical Foundations
-- **[Category Theory](../gnn/advanced_modeling_patterns.md#category-theory)**: Category theory applications
+- **[Category Theory](../gnn/advanced/advanced_modeling_patterns.md#category-theory)**: Category theory applications
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Hierarchical Template](../templates/hierarchical_template.md)**: Hierarchical model templates
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -124,8 +124,8 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[DisCoPy Cross-Reference](../CROSS_REFERENCE_INDEX.md#discopy)**: Cross-reference index entry
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Related advanced modeling techniques
-- **[Category Theory](../gnn/advanced_modeling_patterns.md#category-theory)**: Category theory applications
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Related advanced modeling techniques
+- **[Category Theory](../gnn/advanced/advanced_modeling_patterns.md#category-theory)**: Category theory applications
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

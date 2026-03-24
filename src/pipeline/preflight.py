@@ -149,6 +149,26 @@ def check_environment() -> PreflightReport:
             report.add_issue("dependency", "warning", f"Package not found: {pkg}",
                              fix=f"pip install {pkg}")
 
+    # Step 12 execution stack (core ``pyproject.toml`` dependencies)
+    for mod, label in [
+        ("jax", "jax"),
+        ("jaxlib", "jaxlib"),
+        ("torch", "torch"),
+        ("numpyro", "numpyro"),
+        ("discopy", "discopy"),
+    ]:
+        try:
+            m = __import__(mod)
+            ver = getattr(m, "__version__", "?")
+            report.add_pass(f"Package: {label} {ver}")
+        except ImportError:
+            report.add_issue(
+                "dependency",
+                "error",
+                f"Package not found: {label} (step 12 backend)",
+                fix="uv sync",
+            )
+
     # Optional packages
     for pkg, purpose in [("pydantic", "schemas"), ("fastapi", "API"), ("pygls", "LSP")]:
         try:

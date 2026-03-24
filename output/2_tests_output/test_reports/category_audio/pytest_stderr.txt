@@ -1,3 +1,0 @@
-2026-03-18 10:07:16,933 - audio - INFO - Processing audio
-2026-03-18 10:07:16,934 - audio - WARNING - No GNN files found for audio processing
-2026-03-18 10:07:16,934 - audio - ERROR - ❌ Audio processing failed

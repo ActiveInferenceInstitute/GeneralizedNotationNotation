@@ -6,7 +6,7 @@ This guide helps you diagnose and fix common issues when working with GNN models
 
 | Error Type | Symptoms | Quick Fix |
 |------------|----------|-----------|
-| **Syntax Error** | Parser fails, invalid character warnings | Check [GNN Syntax Reference](../gnn/gnn_syntax.md) |
+| **Syntax Error** | Parser fails, invalid character warnings | Check [GNN Syntax Reference](../gnn/reference/gnn_syntax.md) |
 | **Dimension Mismatch** | Type checker fails, matrix incompatibility | Verify matrix dimensions in StateSpaceBlock |
 | **Connection Error** | Invalid variable references | Ensure all connected variables are defined |
 | **Parameterization Error** | Probabilities don't sum to 1 | Normalize probability distributions |
@@ -65,7 +65,7 @@ Error: Unexpected character '[' at line 15
 Error: Unknown section "StateSpace" at line 8
 ```
 
-**Solution:** Use exact section names from the [GNN File Structure](../gnn/gnn_file_structure_doc.md):
+**Solution:** Use exact section names from the [GNN File Structure](../gnn/reference/gnn_file_structure_doc.md):
 
 ```gnn
 # ❌ Wrong
@@ -335,7 +335,7 @@ If you're still stuck:
    - Your GNN file (or minimal reproducing example)
    - Error messages
    - What you've already tried
-4. **Review the specification** in [GNN Syntax](../gnn/gnn_syntax.md) and [File Structure](../gnn/gnn_file_structure_doc.md)
+4. **Review the specification** in [GNN Syntax](../gnn/reference/gnn_syntax.md) and [File Structure](../gnn/reference/gnn_file_structure_doc.md)
 
 ## 🔄 Error Recovery Templates
 

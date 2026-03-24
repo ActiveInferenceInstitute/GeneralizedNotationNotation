@@ -30,7 +30,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Theoretical Foundations](../gnn/gnn_paper.md)**: Academic foundations
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -104,16 +104,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
 - **[Active Inference Theory](../gnn/about_gnn.md)**: Active Inference foundations
 
 ### Theoretical Resources
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python POMDP implementation
 - **[Theoretical Foundations](../gnn/gnn_paper.md)**: Academic foundations
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Advanced mathematical patterns
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced mathematical patterns
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

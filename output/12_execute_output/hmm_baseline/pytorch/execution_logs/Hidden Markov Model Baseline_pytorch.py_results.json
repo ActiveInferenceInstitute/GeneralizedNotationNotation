@@ -5,139 +5,139 @@
   "script_path": "output/11_render_output/hmm_baseline/pytorch/Hidden Markov Model Baseline_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 4.10594,
-  "timestamp": "2026-03-18T09:22:39.986239",
+  "execution_time": 0.949036,
+  "timestamp": "2026-03-24T13:59:25.478612",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
     "actions": [
       1,
-      1,
-      1,
-      0,
-      1,
-      0,
-      1,
       0,
       1,
       1,
       1,
       0,
       1,
+      1,
+      1,
       0,
-      1
+      1,
+      1,
+      0,
+      1,
+      0
     ],
     "policy": [],
-    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.096s\nResults saved to: output/12_execute_output/hmm_baseline/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.002s\nResults saved to: output/12_execute_output/hmm_baseline/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
         0.0,
+        0.9999999999999996,
         0.0,
-        0.0,
-        0.9999999999999996
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ],
       [
         0.0,
+        0.9999999999999999,
         0.0,
-        0.0,
-        0.9999999999999999
+        0.0
       ]
     ],
     "num_timesteps": 15

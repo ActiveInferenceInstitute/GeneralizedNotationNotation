@@ -10,7 +10,7 @@
 
 - **[GNN Overview](../doc/gnn/gnn_overview.md)**: What is GNN?
 - **[Quickstart Tutorial](../doc/gnn/tutorials/quickstart_tutorial.md)**: Build your first model
-- **[GNN Syntax Reference](../doc/gnn/gnn_syntax.md)**: Syntax guide
+- **[GNN Syntax Reference](../doc/gnn/reference/gnn_syntax.md)**: Syntax guide
 - **[Troubleshooting Guide](../doc/gnn/operations/gnn_troubleshooting.md)**: Fix common issues
 - **[GNN Examples](../doc/gnn/tutorials/gnn_examples_doc.md)**: Model patterns
 
@@ -45,7 +45,7 @@ graph TB
 
 - **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation
 - **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder  
-- **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
+- **Modular Files** (e.g., `src/render/processor.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
 - **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
 
 ### Module Dependency Graph
@@ -98,8 +98,8 @@ graph LR
 src/
 ├── 11_render.py                    # Thin orchestrator - imports from render/
 ├── render/
-│   ├── __init__.py                 # Imports from renderer.py, pymdp/, etc.
-│   ├── renderer.py                 # Core rendering functions
+│   ├── __init__.py                 # Imports from processor.py, pymdp/, etc.
+│   ├── processor.py                # Core rendering functions
 │   ├── pymdp/                      # PyMDP-specific rendering
 │   ├── rxinfer/                    # RxInfer.jl-specific rendering
 │   └── discopy/                    # DisCoPy-specific rendering
@@ -184,18 +184,12 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Analysis Module**: Cross-simulation result aggregation, statistical summarization, and improved visualizations
 - **LLM Module**: Enhanced provider recovery logic (Ollama → OpenAI → etc.) with configurable timeouts
 
-### 📊 Pipeline Execution Analysis
+### Pipeline Execution Notes
 
-**Current Status (Verified):**
-
-- **Total Steps**: 25 (0-24)
-- **Safe-to-Fail Implemented**: All steps ✅
-- **Output Directory Structure**: Fully organized ✅
-- **Pipeline Continuation**: Guaranteed ✅
-- **Error Recovery**: Comprehensive ✅
-- **Last Updated**: 2026-03-06
-- **Version**: 2.0.0
-- **Test Suite**: ✅ 1,522+ tests passing
+- The pipeline is organized as 25 ordered steps.
+- Each step writes artifacts to a step-specific output directory.
+- Error handling and continuation behavior are controlled by configuration.
+- Refer to step-level docs for current behavior and dependency details.
 
 **Complete Output Directory Organization (25 Steps):**
 

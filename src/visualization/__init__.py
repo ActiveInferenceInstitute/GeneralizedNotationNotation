@@ -92,9 +92,9 @@ def get_module_info() -> dict:
 
 def get_visualization_options() -> dict:
     return {
-        "matrix_types": ["heatmap", "statistics"],
-        "graph_types": ["connections", "combined"],
-        "output_formats": ["png", "json"]
+        "matrix_types": ["heatmap", "statistics", "tensor", "pomdp_analysis"],
+        "graph_types": ["connections", "bipartite", "combined"],
+        "output_formats": ["png", "json", "html", "viz_manifest"],
     }
 
 

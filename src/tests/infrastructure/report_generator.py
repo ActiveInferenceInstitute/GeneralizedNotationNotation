@@ -10,10 +10,31 @@ from pathlib import Path
 from typing import Dict, Any, List
 
 
+def flatten_pipeline_test_summary(summary: Dict[str, Any]) -> Dict[str, Any]:
+    """Map ``execution_summary`` (from fast pipeline JSON) to markdown report keys."""
+    ex = summary.get("execution_summary", summary)
+    tr = int(ex.get("tests_run", 0) or 0)
+    tp = int(ex.get("tests_passed", 0) or 0)
+    tf = int(ex.get("tests_failed", 0) or 0)
+    ts = int(ex.get("tests_skipped", 0) or 0)
+    rate = (100.0 * tp / tr) if tr else 0.0
+    return {
+        "total_tests_run": tr,
+        "total_tests_passed": tp,
+        "total_tests_failed": tf,
+        "total_tests_skipped": ts,
+        "success_rate": rate,
+        "total_execution_time": 0.0,
+    }
+
+
 def generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
     """Generate markdown test report."""
     try:
-        with open(report_path, 'w') as f:
+        path = report_path
+        if path.exists() and path.is_dir():
+            path = path / "test_execution_report.md"
+        with open(path, 'w') as f:
             f.write("# Test Execution Report\n\n")
 
             # Summary section
@@ -42,7 +63,7 @@ def generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
                 f.write(f"- **Average Execution Time**: {perf.get('average_execution_time', 0):.2f}s\n")
                 f.write(f"- **Success Rate**: {perf.get('success_rate', 0):.1f}%\n\n")
 
-        logging.info(f"✅ Markdown report generated: {report_path}")
+        logging.info(f"✅ Markdown report generated: {path}")
 
     except Exception as e:
         logging.warning(f"Failed to generate markdown report: {e}")
@@ -103,6 +124,7 @@ def generate_error_report(output_dir: Path, cmd: List[str], error_msg: str):
 
 # Backward-compatible aliases (underscore-prefixed versions)
 _generate_markdown_report = generate_markdown_report
+_flatten_pipeline_test_summary = flatten_pipeline_test_summary
 _generate_fallback_report = generate_fallback_report
 _generate_timeout_report = generate_timeout_report
 _generate_error_report = generate_error_report

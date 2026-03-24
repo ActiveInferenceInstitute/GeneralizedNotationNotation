@@ -2,10 +2,29 @@
 
 > **📋 Document Metadata**  
 > **Type**: Development Guide | **Audience**: Developers & Contributors | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md)
+> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [doc/INDEX.md](../INDEX.md)
 
 ## Overview
-This guide provides comprehensive information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
+This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.
+
+### Documentation audit tooling
+
+From the repository root:
+
+```bash
+# Scan Markdown for broken relative links (includes tracked output/ when present)
+uv run python doc/development/docs_audit.py
+# Fail the shell if any issues (for CI / pre-commit)
+uv run python doc/development/docs_audit.py --strict
+```
+
+Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `doc/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `doc/`, `.github/`, and the repo root, and **`doc/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `doc/` are excluded from pairing where noted. After moving files under `doc/gnn/`, run the rewriter (idempotent on already-fixed links):
+
+```bash
+uv run python doc/development/rewrite_gnn_doc_links.py
+```
+
+Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py).
 
 ## Quick Start for Developers
 
@@ -15,15 +34,17 @@ This guide provides comprehensive information for developers contributing to the
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
-# Run setup (creates venv, installs dependencies)
-python src/main.py --only-steps 2 --dev
+# Run setup (Step 1: env + dependencies; use --dev for dev extras)
+uv run python src/main.py --only-steps 1 --dev
 
-# Activate virtual environment
-source src/.venv/bin/activate  # Linux/Mac
-# src/.venv/Scripts/activate    # Windows
+# Or sync only: uv sync / uv sync --extra dev
 
-# Run tests to verify setup
-python src/main.py --only-steps 3
+# Activate virtual environment (if not using `uv run` for every command)
+source .venv/bin/activate  # Linux/Mac (repo-root `.venv` after `uv sync`)
+# .venv\Scripts\activate    # Windows
+
+# Run tests to verify setup (Step 2)
+uv run python src/main.py --only-steps 2 --verbose
 ```
 
 ### Development Workflow

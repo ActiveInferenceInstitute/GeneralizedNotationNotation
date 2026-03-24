@@ -12,7 +12,7 @@
 
 **Version**: 1.0.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-03-23
 
 ---
 
@@ -26,8 +26,8 @@
 5. Automated documentation generation
 
 ### Key Capabilities
-- Multi-provider LLM support (OpenAI, Anthropic, Ollama)
-- Automated recovery to local Ollama if no API keys
+- Multi-provider LLM support (Ollama, OpenAI, OpenRouter, Perplexity; Anthropic keys appear in the provider matrix when present)
+- Automated preference for local Ollama when no cloud API keys are set (`LLMProcessor`)
 - Context-aware prompt generation
 - Structured output parsing
 - Rate limiting and error handling
@@ -124,16 +124,27 @@ success = process_llm(
 
 ## LLM Providers
 
-### Supported Providers
-1. **OpenAI** - GPT-4, GPT-3.5-turbo
-2. **Anthropic** - Claude-3, Claude-2
-3. **Ollama** - Local models (llama2, mistral, etc.)
+### Supported Providers (`LLMProcessor` / `ProviderType`)
+1. **Ollama** — local inference via the `ollama` Python client when functional, else CLI recovery (`ollama chat` JSON mode when supported, else `ollama run`). Default model tag `smollm2:135m-instruct-q4_K_S` (`llm.defaults.DEFAULT_OLLAMA_MODEL`; overridable via `OLLAMA_MODEL`, `OLLAMA_TEST_MODEL`, or `input/config.yaml` `llm.model`).
+2. **OpenAI** — cloud API when `OPENAI_API_KEY` is set.
+3. **OpenRouter** — when `OPENROUTER_API_KEY` is set.
+4. **Perplexity** — when `PERPLEXITY_API_KEY` is set.
+
+### Ollama (local) — implementation surface
+
+| Location | Role |
+|----------|------|
+| `llm/providers/ollama_provider.py` | `OllamaProvider`: `initialize`, `validate_config`, `generate_response`, `generate_stream`, `analyze`, `close` |
+| `llm/llm_processor.py` | `LLMProcessor` merges `get_default_provider_configs()` into `provider_configs` so env vars apply even when the caller passes `None`/`{}` |
+| `llm/processor.py` | `_start_ollama_if_needed`, `_select_best_ollama_model`, `_model_is_cached`; step-13 orchestration and `provider_matrix` |
+
+**Model selection** (`_select_best_ollama_model`): `OLLAMA_MODEL` or `OLLAMA_TEST_MODEL` → optional `input/config.yaml` `llm.model` if that name matches an installed tag → built-in preference list (smaller models first: `smollm2`, `tinyllama`, `gemma3:4b`, `gemma2:2b`, …) → first `ollama list` entry → `llm.defaults.DEFAULT_OLLAMA_MODEL`.
 
 ### Recovery Mechanism
-1. Check for API keys in environment
-2. If no keys → Check Ollama availability (`ollama list`)
-3. If Ollama available → Use local model
-4. If no LLM available → Skip with informative message
+1. `LLMProcessor` loads API keys from the environment; Ollama is enabled unless `OLLAMA_DISABLED` is truthy (`1`, `true`).
+2. Step 13 (`process_llm`) probes the Ollama CLI (`ollama list`) and records status in `provider_matrix.ollama`.
+3. If the unified processor initializes, prompts use the selected local model; on failure, structured fallbacks and cache still write outputs.
+4. If no provider works, processing continues with recovery text and logged warnings.
 
 ---
 
@@ -167,10 +178,17 @@ success = process_llm(
 - `max_tokens` (int): Maximum tokens in response (default: `2000`)
 - `temperature` (float): LLM temperature (default: `0.7`)
 
-#### Environment Variables
-- `OPENAI_API_KEY`: OpenAI API key
-- `ANTHROPIC_API_KEY`: Anthropic API key
-- `OLLAMA_HOST`: Ollama server host (default: `localhost:11434`)
+#### Environment Variables (Ollama)
+- `OLLAMA_MODEL`: Model tag for requests (default `llm.defaults.DEFAULT_OLLAMA_MODEL`)
+- `OLLAMA_TEST_MODEL`: Overrides model name in tests when set
+- `OLLAMA_MAX_TOKENS`: Default `num_predict` cap (default `256` in processor config)
+- `OLLAMA_TIMEOUT`: Client/CLI subprocess timeout in seconds (default `60` in env wiring; provider default 30s unless configured)
+- `OLLAMA_HOST`: Optional base URL for the Python `ollama` client (empty = client default)
+- `OLLAMA_DISABLED`: Set to `1` or `true` to skip registering Ollama as a provider
+
+#### Environment Variables (cloud)
+- `OPENAI_API_KEY`, `OPENROUTER_API_KEY`, `PERPLEXITY_API_KEY`, `ANTHROPIC_API_KEY` (Anthropic appears in summaries/matrix when present)
+- `DEFAULT_PROVIDER`: e.g. `ollama` (see `llm_processor.get_preferred_providers_from_env`)
 
 ---
 
@@ -181,9 +199,9 @@ success = process_llm(
 - `pathlib` - File operations
 
 ### Optional Dependencies
-- `openai` - OpenAI API (recovery: skip cloud LLMs)
-- `anthropic` - Anthropic API (recovery: skip cloud LLMs)
-- `ollama` (subprocess) - Local LLM (recovery: skip LLM analysis)
+- `openai` — OpenAI API
+- `anthropic` — Anthropic API (when used by callers)
+- `ollama` (PyPI) — Python client; if import fails or `chat` is missing, `OllamaProvider` uses the `ollama` CLI when on `PATH`
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Logging utilities
@@ -331,18 +349,19 @@ systemctl start ollama
 
 **Solution**:
 ```bash
-# Install a lightweight model for testing
-ollama pull gemma3:4b
+# Default pipeline tag (see llm.defaults.DEFAULT_OLLAMA_MODEL)
+ollama pull smollm2:135m-instruct-q4_K_S
 
-# Or install a more capable model
+# Alternates
+ollama pull gemma3:4b
 ollama pull tinyllama
 ollama pull llama2:7b
 ```
 
-**Recommended Models for GNN Analysis**:
-- **Fast & Small**: `gemma3:4b` (~135MB, 1-2s per prompt)
-- **Balanced**: `tinyllama` (~637MB, 3-5s per prompt)
-- **High Quality**: `llama2:7b` (~3.8GB, 10-30s per prompt)
+**Suggested models** (latency and RAM depend on CPU/GPU — measure locally):
+- **Default / small instruct**: `smollm2:135m-instruct-q4_K_S`
+- **Balanced**: `tinyllama`, `gemma3:4b`
+- **Larger**: `llama2:7b` and up
 
 **View Installed Models**:
 ```bash
@@ -359,9 +378,9 @@ ollama list
   export OLLAMA_TIMEOUT=120  # Increase timeout to 120 seconds
   ```
 
-- Use faster model:
+- Use a smaller/faster tag:
   ```bash
-  export OLLAMA_MODEL=gemma3:4b
+  export OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
   ```
 
 **Performance Tips**:
@@ -382,9 +401,7 @@ OLLAMA_MODEL=tinyllama python src/13_llm.py --target-dir input/gnn_files
 ```
 
 **Automatic Selection**:
-- ✅ Module automatically selects best available model
-- Priority: smallest/fastest models first
-- Preference order: gemma3:4b → tinyllama → llama2 → mistral
+- ✅ `_select_best_ollama_model` picks from installed tags using the ordered preference list in `llm/processor.py` (starts with `smollm2`, `tinyllama`, `gemma3:4b`, `gemma2:2b`, …)
 
 **Check Which Model Was Used**:
 ```bash
@@ -419,9 +436,9 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 - Multiple GNN files being processed
 
 **Solutions**:
-1. **Use faster model**:
+1. **Use a smaller tag** (see `llm.defaults.DEFAULT_OLLAMA_MODEL`):
    ```bash
-   export OLLAMA_MODEL=gemma3:4b  # ~1-2s per prompt
+   export OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
    ```
 
 2. **Reduce prompt complexity**:
@@ -441,20 +458,13 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    python src/13_llm.py --target-dir input/gnn_files --gnn-file specific_model.md
    ```
 
-**Performance Benchmarks**:
-- `gemma3:4b`: ~1-2s per prompt
-- `tinyllama`: ~3-5s per prompt
-- `llama2:7b` (CPU): ~10-30s per prompt
-- `llama2:7b` (GPU): ~2-5s per prompt
+**Performance**: Measure with your hardware; smaller instruct models are usually faster on CPU.
 
 #### 8. Memory Issues
 **Symptom**: System slowdown or "out of memory" errors
 
 **Solution**:
-1. **Use smaller models**:
-   ```bash
-   ollama pull gemma3:4b  # Requires ~200MB RAM
-   ```
+1. **Use smaller models** (e.g. default `smollm2:135m-instruct-q4_K_S`).
 
 2. **Limit concurrent processing**:
    - Process files one at a time
@@ -467,11 +477,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    htop  # or top
    ```
 
-**Memory Requirements**:
-- `gemma3:4b`: ~200MB RAM
-- `tinyllama`: ~700MB RAM
-- `llama2:7b`: ~4-6GB RAM
-- `llama2:13b`: ~8-12GB RAM
+**Memory**: Check `ollama show <tag>` and system monitor while loading models.
 
 ### Ollama Integration Features
 
@@ -511,9 +517,9 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    ```
 
 2. **Use Appropriate Model for Task**:
-   - **Quick Testing**: `gemma3:4b`
-   - **Balanced Analysis**: `tinyllama`
-   - **Deep Analysis**: `llama2:7b`
+   - **Quick / default**: `smollm2:135m-instruct-q4_K_S`
+   - **Balanced**: `tinyllama`, `gemma3:4b`
+   - **Deep Analysis**: `llama2:7b` and larger
 
 3. **Monitor Performance**:
    ```bash
@@ -526,8 +532,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 
 4. **Optimize for Speed**:
    ```bash
-   # Use fastest model and limit tokens
-   export OLLAMA_MODEL=gemma3:4b
+   export OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
    export OLLAMA_MAX_TOKENS=256
    export OLLAMA_TIMEOUT=30
    ```
@@ -545,7 +550,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 ```bash
 # Model selection
 export OLLAMA_MODEL=tinyllama           # Override automatic selection
-export OLLAMA_TEST_MODEL=gemma3:4b   # Test/CI model
+export OLLAMA_TEST_MODEL=smollm2:135m-instruct-q4_K_S   # Test/CI model
 
 # Performance tuning
 export OLLAMA_MAX_TOKENS=512            # Maximum response length
@@ -553,8 +558,8 @@ export OLLAMA_TIMEOUT=60                # Request timeout (seconds)
 export OLLAMA_HOST=http://localhost:11434  # Ollama server URL
 
 # Behavior
-export OLLAMA_DISABLED=0                # Disable Ollama (use recovery)
-export DEFAULT_PROVIDER=ollama          # Default LLM provider
+export OLLAMA_DISABLED=1                # Skip Ollama provider registration
+export DEFAULT_PROVIDER=ollama          # Prefer Ollama when keys allow
 ```
 
 #### Custom Model Configuration
@@ -651,7 +656,7 @@ configs['ollama']['default_max_tokens'] = 1024
 - [Pipeline Overview](../../README.md)
 - [Architecture Guide](../../ARCHITECTURE.md)
 - [Ollama Integration Guide](../../doc/llm/)
-- [LLM Configuration](../../.cursorrules#ollama-llm-integration-standards)
+- [LLM Configuration](../../.agent_rules#ollama-llm-integration-standards)
 
 ### External Resources
 - [OpenAI API Documentation](https://platform.openai.com/docs)
@@ -660,7 +665,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-03-23
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.0.0

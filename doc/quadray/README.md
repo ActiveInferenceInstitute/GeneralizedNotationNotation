@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Geometric Framework Integration Guide | **Audience**: Researchers, Mathematicians | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Quadray GNN Guide](quadray_gnn.md) | [Quadray Overview](quadray.md) | [Advanced Patterns](../gnn/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Quadray GNN Guide](quadray_gnn.md) | [Quadray Overview](quadray.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -25,12 +25,12 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md#geometric-foundations)**: Geometric modeling
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md#geometric-foundations)**: Geometric modeling
 - **[Spatial Models](../CROSS_REFERENCE_INDEX.md#spatial-modeling)**: Spatial modeling approaches
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -104,16 +104,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Geometric Resources
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md#geometric-foundations)**: Geometric modeling
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md#geometric-foundations)**: Geometric modeling
 - **[Spatial Models](../CROSS_REFERENCE_INDEX.md#spatial-modeling)**: Spatial modeling approaches
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -129,8 +129,8 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Quadray Cross-Reference](../CROSS_REFERENCE_INDEX.md#quadray)**: Cross-reference index entry
-- **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Related advanced modeling techniques
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md#geometric-foundations)**: Geometric modeling
+- **[Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md)**: Related advanced modeling techniques
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md#geometric-foundations)**: Geometric modeling
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

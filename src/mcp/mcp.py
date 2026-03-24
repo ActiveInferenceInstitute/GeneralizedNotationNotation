@@ -309,14 +309,14 @@ class MCP:
                     last_updated=time.time()
                 )
 
-            discovery_time = time.time() - discovery_start
-            logger.info(f"Enhanced module discovery completed in {discovery_time:.2f}s: "
-                       f"{len(self.modules)} modules, {len(self.tools)} tools, {len(self.resources)} resources")
+        discovery_time = time.time() - discovery_start
+        logger.info(f"Enhanced module discovery completed in {discovery_time:.2f}s: "
+                   f"{len(self.modules)} modules, {len(self.tools)} tools, {len(self.resources)} resources")
 
-            self._modules_discovered = True
-            self._cache_timestamp = time.time()
+        self._modules_discovered = True
+        self._cache_timestamp = time.time()
 
-            return all_modules_loaded_successfully
+        return all_modules_loaded_successfully
 
     def _load_module(self, directory: Path, mcp_file: Path, module_name: Optional[str] = None) -> bool:
         """
@@ -1361,18 +1361,22 @@ mcp_instance: "MCP" = _LazyMCP()  # type: ignore[assignment]  # _LazyMCP proxies
 def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False,
                performance_mode: str = "low",
                modules_allowlist: Optional[List[str]] = None,
-               per_module_timeout: float = 5.0,
-               overall_timeout: float = 10.0) -> Tuple[MCP, bool, bool]:
+               per_module_timeout: float = 30.0,
+               overall_timeout: float = 120.0) -> Tuple[MCP, bool, bool]:
     """
     Initialize the MCP by discovering modules and checking SDK status.
-    
+
     Args:
         halt_on_missing_sdk: If True, raises MCPSDKNotFoundError if SDK is missing
         force_proceed_flag: If True, proceeds even if SDK is missing
-        
+        performance_mode: Passed to set_performance_mode ("low" or "high")
+        modules_allowlist: If set, only load these package names under src/
+        per_module_timeout: Max seconds to wait per module during parallel discovery
+        overall_timeout: Wall-clock budget for the parallel wait loop (see discover_modules)
+
     Returns:
         Tuple of (mcp_instance, sdk_found, all_modules_loaded)
-        
+
     Raises:
         MCPSDKNotFoundError: If SDK is missing and halt_on_missing_sdk is True
     """

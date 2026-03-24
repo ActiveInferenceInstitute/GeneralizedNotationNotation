@@ -19,7 +19,7 @@ python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
 python src/main.py --only-steps 1 --verbose
 
 # Using uv (recommended)
-uv sync                    # Core dependencies
+uv sync                    # Core dependencies (includes Step 12 Python backends: jax, numpyro, torch, discopy)
 uv sync --extra dev        # Development tools
 uv sync --all-extras       # Everything
 ```
@@ -30,7 +30,8 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 
 | Group | Key Packages | Purpose |
 | ----- | ------------ | ------- |
-| `active-inference` | pymdp, jax, jaxlib, flax, optax | Active Inference simulation |
+| `active-inference` | jax, jaxlib, flax, optax | JAX stack (pymdp is a core dep) |
+| `execution-frameworks` | jax, numpyro, torch, discopy | Same pins as core Step 12 stack (explicit `uv sync --extra`) |
 | `visualization` | plotly, altair, seaborn, bokeh, holoviews | Visualization |
 | `llm` | openai, anthropic, cohere, ollama | LLM integration |
 | `audio` | librosa, soundfile, pedalboard, pydub | Audio generation |

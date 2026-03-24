@@ -8,17 +8,27 @@ dependency installation, and environment validation using
 Python packaging standards.
 
 How to run:
-  # Basic setup (core dependencies only)
+  # Default: ``uv sync`` core dependencies (includes JAX, NumPyro, PyTorch, DisCoPy for step 12)
   python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
+
+  # Skip JAX self-test during setup (still installs core, which includes JAX)
+  python src/1_setup.py --setup-core-only --target-dir input/gnn_files --output-dir output --verbose
   
-  # Install with LLM support (OpenAI, Anthropic, Ollama)
+  # Optional groups (LLM client libraries are core deps since 1.3.x)
   python src/1_setup.py --install-optional --optional-groups=llm --verbose
   
   # Install all optional dependencies
   python src/1_setup.py --install-optional --verbose
+
+  # Dev test tooling only (pytest-cov, xdist, …)
+  python src/1_setup.py --dev --verbose
+
+  # Every optional extra in pyproject (heavy)
+  python src/1_setup.py --install-all-extras --verbose
   
   # Alternative: Use uv directly for specific extras
-  uv sync --extra llm              # Install LLM packages (openai, anthropic, etc.)
+  uv sync                          # Core includes openai, ollama, python-dotenv, aiohttp
+  uv sync --extra llm              # Compatibility alias (same LLM stack)
   uv sync --extra visualization    # Install visualization packages
   uv sync --extra all              # Install all optional packages
 
@@ -49,8 +59,12 @@ from utils.pipeline_template import create_standardized_pipeline_script
 # Import module functions
 try:
     from setup import setup_uv_environment, setup_complete_environment, install_optional_package_group
+    from setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
 except ImportError:
-    def setup_uv_environment(verbose=False, recreate=False, dev=True, extras=None, skip_jax_test=True, output_dir=None) -> bool:
+    SETUP_DEFAULT_PIPELINE_EXTRAS = ()  # type: ignore[misc,assignment]
+    def setup_uv_environment(
+        verbose=False, recreate=False, dev=True, extras=None, install_all_extras=False, skip_jax_test=True, output_dir=None
+    ) -> bool:
         """Recovery setup function when module unavailable."""
         import logging
         logger = logging.getLogger(__name__)
@@ -74,16 +88,15 @@ def setup_orchestrator(target_dir: str, output_dir: str, logger: "logging.Logger
     recreate = kwargs.get('recreate_venv', False)
     install_optional = kwargs.get('install_optional', False)
     optional_groups_str = kwargs.get('optional_groups', None)
+    setup_core_only = bool(kwargs.get('setup_core_only', False))
 
     # Parse optional groups if provided
     optional_groups = None
     if optional_groups_str:
         optional_groups = [g.strip() for g in optional_groups_str.split(',')]
 
-    # Handle dev argument default (ArgumentParser may return None for defaults not in argv)
-    dev = kwargs.get('dev')
-    if dev is None:
-        dev = True
+    dev = bool(kwargs.get('dev', False))
+    install_all_extras = bool(kwargs.get('install_all_extras', False))
 
     # Use full setup if optional packages requested
     if install_optional or optional_groups:
@@ -95,13 +108,17 @@ def setup_orchestrator(target_dir: str, output_dir: str, logger: "logging.Logger
             output_dir=output_dir
         )
     else:
-        # Use basic setup for core dependencies only
+        # Default: core deps (Step 12 backends are in core). Optional ``extras`` from constants.
+        # ``--setup-core-only`` skips the JAX import self-test only.
+        extras: list[str] = [] if setup_core_only else list(SETUP_DEFAULT_PIPELINE_EXTRAS)
+        skip_jax = setup_core_only
         return setup_uv_environment(
             verbose=verbose,
             recreate=recreate,
             dev=dev,
-            extras=[],
-            skip_jax_test=False,  # Test JAX functionality
+            extras=extras,
+            install_all_extras=install_all_extras,
+            skip_jax_test=skip_jax,
             output_dir=output_dir
         )
 
@@ -111,7 +128,9 @@ run_script = create_standardized_pipeline_script(
     "Project setup and environment validation with UV",
     additional_arguments={
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
-        "dev": {"type": bool, "help": "Install development dependencies"},
+        "dev": {"type": bool, "help": "Install development dependencies (uv sync --extra dev)"},
+        "install_all_extras": {"type": bool, "help": "Install all optional groups (uv sync --all-extras)"},
+        "setup_core_only": {"type": bool, "help": "Core dependencies only; skip execution-frameworks (JAX stack)"},
         "install_optional": {"type": bool, "help": "Install optional dependencies"},
         "optional_groups": {"type": str, "help": "Comma-separated list of optional groups (jax,pymdp,visualization,audio,llm,ml)"}
     }

@@ -42,21 +42,21 @@ except ImportError:
 
 # Safe imports of local modules
 try:
-    from .parser import GNNParser
+    from visualization.parse.gnn_file_parser import GNNParser
     PARSER_AVAILABLE = True
 except ImportError:
     GNNParser = None
     PARSER_AVAILABLE = False
 
 try:
-    from .matrix_visualizer import MatrixVisualizer
+    from visualization.matrix import MatrixVisualizer
     MATRIX_VISUALIZER_AVAILABLE = True
 except ImportError:
     MatrixVisualizer = None
     MATRIX_VISUALIZER_AVAILABLE = False
 
 try:
-    from .ontology_visualizer import OntologyVisualizer
+    from visualization.ontology import OntologyVisualizer
     ONTOLOGY_VISUALIZER_AVAILABLE = True
 except ImportError:
     OntologyVisualizer = None

@@ -37,4 +37,4 @@ Uses a `_type_check_dispatch()` wrapper to instantiate `GNNTypeChecker` and call
 
 ## Source
 
-- **Script**: [src/5_type_checker.py](../../src/5_type_checker.py)
+- **Script**: [src/5_type_checker.py](../../../src/5_type_checker.py)

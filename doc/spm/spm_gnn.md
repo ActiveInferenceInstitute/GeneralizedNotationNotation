@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Analysis | **Audience**: Neuroscientists, AI Researchers, Developers  
-> **Cross-References**: [SPM Overview](spm.md) | [GNN Framework Guide](../gnn/framework_integration_guide.md) | [Active Inference Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)
+> **Cross-References**: [SPM Overview](spm.md) | [GNN Framework Guide](../gnn/integration/framework_integration_guide.md) | [Active Inference Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
 
 ## Executive Summary
 

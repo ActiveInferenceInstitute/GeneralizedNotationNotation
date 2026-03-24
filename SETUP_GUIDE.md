@@ -11,7 +11,7 @@
   curl -LsSf https://astral.sh/uv/install.sh | sh
   ```
 
-### Basic Setup (Core Dependencies Only)
+### Basic Setup (Core Dependencies)
 
 ```bash
 # Clone the repository
@@ -22,12 +22,12 @@ cd GeneralizedNotationNotation
 python3 src/1_setup.py --verbose
 ```
 
-This installs **162 core packages** including:
+A normal `uv sync` / core install includes:
 
-- Scientific computing: numpy, scipy, pandas, matplotlib
-- Testing: pytest, pytest-cov, pytest-asyncio
-- Development: black, isort, flake8, mypy
-- Pipeline essentials: networkx, pyyaml, psutil, jupyter
+- Scientific stack: numpy, matplotlib, networkx, PyYAML, psutil, httpx
+- Active Inference: `inferactively-pymdp`
+- **LLM (Step 13+)**: `openai`, `ollama` (client), `python-dotenv`, `aiohttp` (no `uv sync --extra llm` required)
+- Dev tooling when using `--extra dev`: pytest, ruff, black, etc.
 
 ### Complete Setup (With Optional Packages)
 
@@ -47,7 +47,7 @@ uv sync --extra active-inference
 # Install visualization libraries
 uv sync --extra visualization
 
-# Install LLM integration
+# Optional: ``--extra llm`` (same packages as core; kept for older docs/scripts)
 uv sync --extra llm
 ```
 
@@ -117,14 +117,9 @@ The GNN pipeline supports the following optional package groups:
 
 ### 5. **llm** - LLM Integration
 
-- **Packages**: `openai`, `ollama`, `python-dotenv`, `aiohttp`
-- **Use case**: AI-enhanced analysis, model interpretation
-- **Size**: ~50MB
-- **Installation**:
-
-  ```bash
-  uv sync --extra llm
-  ```
+- **Packages**: `openai`, `ollama`, `python-dotenv`, `aiohttp` (also in **core** `dependencies`)
+- **Use case**: AI-enhanced analysis, OpenRouter/Perplexity providers, local Ollama client
+- **Installation**: Included in `uv sync`; `uv sync --extra llm` remains a no-op superset for compatibility
 
 ### 6. **ml-ai** - Machine Learning
 

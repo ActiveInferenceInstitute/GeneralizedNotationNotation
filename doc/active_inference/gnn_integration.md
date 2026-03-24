@@ -20,16 +20,16 @@ This document describes how GNN (Generalized Notation Notation) integrates with 
 | Document | Path | Description |
 |----------|------|-------------|
 | **GNN Overview** | [`doc/gnn/gnn_overview.md`](../gnn/gnn_overview.md) | Core concepts |
-| **GNN Syntax** | [`doc/gnn/gnn_syntax.md`](../gnn/gnn_syntax.md) | Syntax specification |
-| **GNN Examples** | [`doc/gnn/gnn_examples_doc.md`](../gnn/gnn_examples_doc.md) | Example models |
-| **GNN Schema** | [`doc/gnn/gnn_schema.md`](../gnn/gnn_schema.md) | Schema definition |
-| **Type System** | [`doc/gnn/gnn_type_system.md`](../gnn/gnn_type_system.md) | Type specification |
+| **GNN Syntax** | [`doc/gnn/reference/gnn_syntax.md`](../gnn/reference/gnn_syntax.md) | Syntax specification |
+| **GNN Examples** | [`doc/gnn/tutorials/gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md) | Example models |
+| **GNN Schema** | [`doc/gnn/reference/gnn_schema.md`](../gnn/reference/gnn_schema.md) | Schema definition |
+| **Type System** | [`doc/gnn/reference/gnn_type_system.md`](../gnn/reference/gnn_type_system.md) | Type specification |
 
 ### Neurosymbolic Integration
 
 | Document | Path | Description |
 |----------|------|-------------|
-| **LLM + Active Inference** | [`doc/gnn/gnn_llm_neurosymbolic_active_inference.md`](../gnn/gnn_llm_neurosymbolic_active_inference.md) | Comprehensive guide |
+| **LLM + Active Inference** | [`doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md`](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | Comprehensive guide |
 | **DSPy Integration** | [`doc/dspy/dspy_gnn_integration_patterns.md`](../dspy/dspy_gnn_integration_patterns.md) | DSPy patterns |
 
 ---

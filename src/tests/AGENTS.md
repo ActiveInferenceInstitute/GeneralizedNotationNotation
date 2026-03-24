@@ -12,7 +12,7 @@
 
 **Version**: 1.0.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-03-24
 
 ---
 
@@ -38,7 +38,7 @@
 
 ### Public Functions
 
-#### `run_tests(logger, output_dir, verbose=False, include_slow=False, fast_only=True, comprehensive=False, generate_coverage=False) -> bool`
+#### `run_tests(logger, output_dir, verbose=False, include_slow=False, fast_only=True, comprehensive=False, generate_coverage=False, auto_fallback=True) -> bool`
 **Description**: Main test execution function called by orchestrator (2_tests.py). Routes to appropriate test execution mode based on parameters.
 
 **Parameters**:
@@ -49,13 +49,16 @@
 - `fast_only` (bool): Run only fast tests (default: True)
 - `comprehensive` (bool): Run comprehensive test suite - all tests (default: False)
 - `generate_coverage` (bool): Generate coverage reports (default: False)
+- `auto_fallback` (bool): If fast mode collects zero tests, retry with comprehensive mode (default: True)
 
 **Returns**: `True` if tests passed, `False` otherwise
 
 **Behavior**:
 - If `comprehensive=True`: Runs all tests via `run_comprehensive_tests()`
-- If `fast_only=True` and `comprehensive=False`: Runs fast tests via `run_fast_pipeline_tests()`
+- If `fast_only=True` and `comprehensive=False`: Runs fast tests via `run_fast_pipeline_tests()`. If that fails and `auto_fallback=True` and the execution report shows **zero tests collected**, falls back to `run_comprehensive_tests()`
 - Otherwise: Runs reliable fast tests via `run_fast_reliable_tests()`
+
+**Strict markers**: `pyproject.toml` enables `--strict-markers`. Unregistered markers (for example `anyio` without `pytest-anyio`) break collection. Prefer sync tests that call `asyncio.run()` for short async checks when the environment may omit dev extras; with `uv sync --extra dev`, `pytest-asyncio` and `@pytest.mark.asyncio` are available.
 
 **Example**:
 ```python
@@ -458,18 +461,18 @@ def test_new_module_complex():
 ## Testing
 
 ### Test Files
-- **54 test files** covering all modules
-- **1,522+ tests functions** providing comprehensive coverage
+- **120+** `test_*.py` modules under `src/tests/` (exact count drifts; use `find src/tests -maxdepth 1 -name 'test_*.py' | wc -l`)
+- **~1,906** tests in a typical full run with standard Ollama ignores (see root `CLAUDE.md` / `README.md` for the exact `pytest` command)
 - **20+ test categories** for organized execution
 - **25+ test markers** for selective execution
 
 ### Test Coverage Statistics
-- **Total Test Functions**: 652 across 54 files
-- **Fast Tests**: ~200+ functions (marked with `@pytest.mark.fast`)
-- **Integration Tests**: ~150+ functions (marked with `@pytest.mark.integration`)
-- **Unit Tests**: ~300+ functions (marked with `@pytest.mark.unit`)
-- **Performance Tests**: ~50+ functions (marked with `@pytest.mark.performance`)
-- **Safe-to-Fail Tests**: ~336 functions (marked with `@pytest.mark.safe_to_fail`)
+- **Scale**: Treat `pytest --collect-only -q` as ground truth for item counts; marker filters (`-m not slow`, ignores) change what runs in the pipeline fast suite.
+- **Fast Tests**: Many functions use `@pytest.mark.fast`
+- **Integration Tests**: `@pytest.mark.integration`
+- **Unit Tests**: `@pytest.mark.unit`
+- **Performance Tests**: `@pytest.mark.performance`
+- **Safe-to-Fail Tests**: `@pytest.mark.safe_to_fail`
 
 ### Test Execution Modes
 1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation

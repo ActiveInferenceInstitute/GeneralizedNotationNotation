@@ -1,5 +1,7 @@
 # Troubleshooting Guide
 
+**Related:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/gnn/operations/gnn_troubleshooting.md](../gnn/operations/gnn_troubleshooting.md)
+
 ## Overview
 This guide helps resolve common issues encountered when working with GeneralizedNotationNotation (GNN).
 
@@ -33,19 +35,20 @@ s_f0 > o_m0
 
 ### 2. Pipeline Execution Errors
 
-#### Step 2 Setup Failure
+#### Step 1 setup failure
 **Error**: `Setup step failed - pipeline halted`
 **Cause**: Virtual environment or dependency issues
 **Solutions**:
 ```bash
-# Clean reinstall
-rm -rf src/.venv
-python src/main.py --only-steps 2 --force-reinstall
+# Clean reinstall (Step 1 = setup)
+rm -rf .venv
+uv sync
+uv run python src/main.py --only-steps 1 --dev
 
-# Manual dependency check (using UV)
+# Manual dependency check
 uv pip list | grep -E "(numpy|scipy|matplotlib)"
 
-# Python version check (requires 3.8+)
+# Python version (project requires 3.11+)
 python --version
 ```
 

@@ -1,9 +1,11 @@
 # About GNN
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
+**Pipeline Steps**: 25  
+
+For a shorter onboarding narrative and ecosystem context, see **[GNN Overview](gnn_overview.md)**. For the canonical v1.1 syntax spec, see **[GNN v1.1 Syntax Specification](gnn_syntax.md)** and **[GNN Syntax Reference](reference/gnn_syntax.md)**.
 
 Generalized Notation Notation (GNN) is a text-based language designed to standardize the representation of Active Inference generative models, improving clarity, reproducibility, and interoperability across domains. It defines a concise ASCII syntax for model components, a structured file format, and supports multiple modalities—textual, graphical, and executable—facilitating seamless communication among researchers and tools.
 
@@ -51,7 +53,7 @@ The syntax is designed to be both human-readable and machine-parsable, making it
 | + | Addition | X+Y | Sum of X and Y |
 | * | Multiplication | X*Y | Product of X and Y |
 | / | Division | X/Y | X divided by Y |
-| \ |  | Conditional probability | P(X\ | Y) | Probability of X given Y |
+| (conditioning) | Bayesian “given” | state observation likelihood | Write conditioning in prose or LaTeX as `P(X \mid Y)` outside tables—raw `\|` breaks Markdown tables |
 
 ### Syntax Guidelines
 
@@ -136,28 +138,27 @@ For complete pipeline documentation, see:
 
 ```bash
 # Process a GNN model through the full pipeline
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 ```bash
-# Parse a GNN file using the dedicated parser
-python src/gnn/gnn_parser.py --input input/gnn_files/model.gnn --output output/gnn.json
+# Parse GNN files with the step-3 orchestrator
+uv run python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ```bash
 # Run specific steps
-python src/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files
+uv run python src/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files
 ```
 
 ```bash
 # Step 3: GNN Core Processing
-python src/main.py --target-dir input/gnn_files
- --verbose
+uv run python src/main.py --only-steps "3" --target-dir input/gnn_files --verbose
 ```
 
 ```bash
-# Step 1: Environment Setup
-python src/1_setup.py
+# CLI equivalent for parsing
+uv run gnn parse --target-dir input/gnn_files --output-dir output
 ```
 
 ## Progressive Model Development with GNN

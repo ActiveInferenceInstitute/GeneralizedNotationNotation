@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Applications Reference | **Audience**: Developers, Researchers | **Complexity**: Beginner to Intermediate  
-> **Cross-References**: [GNN Examples](../gnn/gnn_examples_doc.md) | [Generative Models](generative_models.md) | [PyMDP Tutorials](../pymdp/pymdp_advanced_tutorials.md)
+> **Cross-References**: [GNN Examples](../gnn/tutorials/gnn_examples_doc.md) | [Generative Models](generative_models.md) | [PyMDP Tutorials](../pymdp/pymdp_advanced_tutorials.md)
 
 ## Overview
 
@@ -182,7 +182,7 @@ After finding goal: Low uncertainty → Agent exploits
 
 ### Simulation Outputs
 
-Located in: [`output/12_execution_output/`](#placeholder)
+Located in: `output/12_execute_output/` (created by pipeline step 12; see `src/pipeline/config.py`)
 
 | Output | Description |
 |--------|-------------|
@@ -192,7 +192,7 @@ Located in: [`output/12_execution_output/`](#placeholder)
 
 ### Analysis Outputs
 
-Located in: [`output/16_analysis_output/`](../../output/16_analysis_output/)
+Located in: `output/16_analysis_output/` (created by pipeline step 16 when analysis runs)
 
 | Output | Description |
 |--------|-------------|
@@ -205,14 +205,14 @@ Located in: [`output/16_analysis_output/`](../../output/16_analysis_output/)
 
 ### Documentation
 
-- **[GNN Examples](../gnn/gnn_examples_doc.md)**
+- **[GNN Examples](../gnn/tutorials/gnn_examples_doc.md)**
 - **[PyMDP Tutorials](../pymdp/pymdp_advanced_tutorials.md)**
 - **[POMDP Examples](../pymdp/pymdp_pomdp/)**
 
 ### Source Code
 
 - **Examples**
-- **[Output](../../output/)**
+- **Output**: run the pipeline with an `output/` directory; layout is defined in `src/pipeline/config.py`
 
 ---
 

@@ -41,4 +41,4 @@ Uses direct import — no try/except handlers.
 
 ## Source
 
-- **Script**: [src/9_advanced_viz.py](../../src/9_advanced_viz.py)
+- **Script**: [src/9_advanced_viz.py](../../../src/9_advanced_viz.py)

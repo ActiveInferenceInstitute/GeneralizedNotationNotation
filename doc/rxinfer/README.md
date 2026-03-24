@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Developers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN RxInfer Guide](gnn_rxinfer.md) | [Framework Integration](../gnn/framework_integration_guide.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [GNN RxInfer Guide](gnn_rxinfer.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -25,13 +25,13 @@ This directory contains documentation, scripts, and resources for integrating GN
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python Active Inference framework
 - **[Execution Guide](../execution/README.md)**: Framework execution strategies
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent modeling
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent modeling
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -168,8 +168,8 @@ end
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
 
 ### Framework Integration
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python Active Inference framework
@@ -177,7 +177,7 @@ end
 - **[Execution Guide](../execution/README.md)**: Framework execution strategies
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -193,8 +193,8 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[RxInfer Integration](../CROSS_REFERENCE_INDEX.md#rxinferjl)**: Cross-reference index entry
-- **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework integration overview
-- **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent modeling
+- **[Framework Integration](../gnn/integration/framework_integration_guide.md)**: Framework integration overview
+- **[Multi-agent Systems](../gnn/advanced/gnn_multiagent.md)**: Multi-agent modeling
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

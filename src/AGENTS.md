@@ -67,9 +67,10 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 - **[utils/](utils/AGENTS.md)** - Shared utilities and helper functions
 - **[pipeline/](pipeline/AGENTS.md)** - Pipeline orchestration and configuration
 - **[api/](api/AGENTS.md)** - REST API server (FastAPI)
-- **[cli/](cli/)** - CLI entry point
-- **[lsp/](lsp/)** - Language Server Protocol support
+- **[cli/](cli/AGENTS.md)** - CLI entry point
+- **[lsp/](lsp/AGENTS.md)** - Language Server Protocol support
 - **[sapf/](sapf/AGENTS.md)** - SAPF compatibility shim (re-exports from `audio/sapf/`)
+- **[doc/](doc/AGENTS.md)** - In-repo technical documentation subtree (`src/doc/`)
 
 ---
 
@@ -108,6 +109,8 @@ src/
 ---
 
 ## Pipeline Execution Flow
+
+This diagram shows nominal full-run order. Matrix-driven folder routing and dependency-based step inclusion are documented in `src/main.py` and `src/STEP_INDEX.md`.
 
 ```mermaid
 flowchart TD
@@ -168,21 +171,12 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-03-06)
+### Status Notes
 
-- **Total Steps**: 25 (all steps 0-24)
-- **Execution Time**: ~5 minutes (with LLM step)
-- **Memory Usage**: 36.3MB peak
-- **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,522+ tests passed (optional deps skipped/deselected as needed)
-- **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
-- **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
-- **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **MCP Integration**: ✅ 131 distinct tools successfully registered across 31 modules
-- **AGENTS.md Coverage**: ✅ 100% (all 31 modules + all subdirectories documented)
-- **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
-- **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
-- **Architecture Status**: ✅ Production Ready
+- The pipeline contains 25 ordered steps (0-24).
+- Modules follow the thin orchestrator pattern.
+- MCP integration and documentation coverage are tracked by repository audits.
+- Use step outputs and tests as the ground-truth status indicators.
 
 ### Recent Validation (March 2026)
 
@@ -191,8 +185,8 @@ graph TD
 - **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
 - **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests**: 1,522+ passed (0 skipped)
-- **LLM Default Model**: `gemma3:4b` via Ollama (configurable).
+- **Tests (local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,906 passed, 30 skipped (2026-03-24). Re-include those modules when `ollama` is installed and responsive.
+- **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; configurable).
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
 
 ---
@@ -231,36 +225,7 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 
 ## Module Status Matrix
 
-| Module | AGENTS.md | README | Status | Test Coverage | MCP Tools |
-|--------|-----------|--------|--------|---------------|-----------|
-| template | ✅ Complete | ✅ Complete | ✅ Ready | 90% | 3 |
-| setup | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 2 |
-| tests | ✅ Complete | ✅ Complete | ✅ Ready | 98% | 1 |
-| gnn | ✅ Complete | ✅ Complete | ✅ Ready | 92% | 4 |
-| model_registry | ✅ Complete | ✅ Complete | ✅ Ready | 88% | 3 |
-| type_checker | ✅ Complete | ✅ Complete | ✅ Ready | 94% | 2 |
-| validation | ✅ Complete | ✅ Complete | ✅ Ready | 89% | 3 |
-| export | ✅ Complete | ✅ Complete | ✅ Ready | 91% | 3 |
-| visualization | ✅ Complete | ✅ Complete | ✅ Ready | 90% | 4 |
-| advanced_visualization | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 3 |
-| ontology | ✅ Complete | ✅ Complete | ✅ Ready | 87% | 3 |
-| render | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 5 |
-| execute | ✅ Complete | ✅ Complete | ✅ Ready | 84% | 4 |
-| llm | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 6 |
-| ml_integration | ✅ Complete | ✅ Complete | ✅ Ready | 78% | 2 |
-| audio | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 3 |
-| analysis | ✅ Complete | ✅ Complete | ✅ Ready | 86% | 4 |
-| integration | ✅ Complete | ✅ Complete | ✅ Ready | 88% | 2 |
-| security | ✅ Complete | ✅ Complete | ✅ Ready | 91% | 3 |
-| research | ✅ Complete | ✅ Complete | ✅ Ready | 76% | 2 |
-| website | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 3 |
-| mcp | ✅ Complete | ✅ Complete | ✅ Ready | 89% | 5 |
-| gui | ✅ Complete | ✅ Complete | ✅ Ready | 74% | 4 |
-| report | ✅ Complete | ✅ Complete | ✅ Ready | 87% | 3 |
-| intelligent_analysis | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 2 |
-| utils | ✅ Complete | ✅ Complete | ✅ Ready | 93% | N/A |
-| pipeline | ✅ Complete | ✅ Complete | ✅ Ready | 95% | N/A |
-| sapf | ✅ Complete | ✅ Complete | ✅ Ready | 75% | 2 |
+Module-level readiness and coverage details change over time; use each module's `AGENTS.md`, `README.md`, and tests in `src/tests/` as the authoritative source.
 
 - **[SPEC.md](SPEC.md)** — Architectural requirements and standards
 - **[STEP_INDEX.md](STEP_INDEX.md)** — Complete 20-column master reference for all 25 steps
@@ -365,11 +330,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-03-15
+**Last Updated**: 2026-03-24
 **Pipeline Version**: 1.3.0
-**Total Modules**: 31
 **Total Steps**: 25 (0-24)
-**Test Status**: ✅ 1,522+ tests passed
-**MCP Integration**: ✅ 131 tools registered across 31 modules
-**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
-**Status**: ✅ Production Ready
+**Status**: Maintained

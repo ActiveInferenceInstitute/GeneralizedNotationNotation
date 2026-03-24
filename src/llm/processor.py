@@ -12,6 +12,11 @@ import subprocess  # nosec B404 -- subprocess calls with controlled/trusted inpu
 import shutil
 from typing import Dict, Any, Tuple, List, Optional
 
+try:
+    import yaml
+except ImportError:  # PyYAML is a project dependency; keep processor import-safe
+    yaml = None  # type: ignore[assignment]
+
 _logger = logging.getLogger(__name__)
 
 try:
@@ -29,6 +34,9 @@ def _get_llm_config() -> dict:
         # Resolve input/config.yaml relative to project root (src/../input/config.yaml)
         config_path = Path(__file__).resolve().parent.parent.parent / "input" / "config.yaml"
         if config_path.exists():
+            if yaml is None:
+                _logger.debug("PyYAML not available; skipping input/config.yaml LLM section")
+                return {}
             with open(config_path, 'r') as f:
                 full_config = yaml.safe_load(f) or {}
             return full_config.get("llm", {})
@@ -61,6 +69,8 @@ def _model_is_cached(model_name: str, logger: logging.Logger) -> bool:
 import asyncio
 
 from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
+
+from .defaults import DEFAULT_OLLAMA_MODEL
 
 def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
     """
@@ -106,7 +116,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
                         logger.info(f"   ... and {len(models) - 5} more models")
                 else:
                     logger.warning("⚠️ Ollama is running but no models are installed")
-                    logger.info("To install a model, run: ollama pull gemma3:4b")
+                    logger.info(f"To install a model, run: ollama pull {DEFAULT_OLLAMA_MODEL}")
 
                 return True, models
 
@@ -160,14 +170,14 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
                         # Try to install the default model
                         logger.info("📥 Installing default model...")
                         install_result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                            ['ollama', 'pull', 'gemma3:4b'],
+                            ['ollama', 'pull', DEFAULT_OLLAMA_MODEL],
                             capture_output=True,
                             text=True,
                             timeout=60
                         )
                         if install_result.returncode == 0:
                             logger.info("✅ Default model installed successfully")
-                            models = ['gemma3:4b']
+                            models = [DEFAULT_OLLAMA_MODEL]
                         else:
                             logger.warning(f"⚠️ Failed to install default model: {install_result.stderr}")
 
@@ -206,7 +216,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
         logger.info("📝 To start Ollama, run in a separate terminal:")
         logger.info("   $ ollama serve")
         logger.info("📝 To install a lightweight model for testing:")
-        logger.info("   $ ollama pull gemma3:4b")
+        logger.info(f"   $ ollama pull {DEFAULT_OLLAMA_MODEL}")
         logger.info("   $ ollama pull tinyllama")
         logger.info("ℹ️ LLM analysis will use recovery mode without live model interaction")
         return False, []
@@ -239,6 +249,7 @@ def _select_best_ollama_model(available_models: List[str], logger: logging.Logge
 
     # 3. Preference order: prioritize smaller/faster models for reliability
     preferred_models = [
+        'smollm2',
         'tinyllama',
         'gemma3:4b',
         'gemma2:2b',
@@ -247,7 +258,7 @@ def _select_best_ollama_model(available_models: List[str], logger: logging.Logge
         'llama2:7b',
         'phi3',
         'llama2',
-        'mistral'
+        'mistral',
     ]
 
     # Find first available model from preference list
@@ -264,7 +275,7 @@ def _select_best_ollama_model(available_models: List[str], logger: logging.Logge
         return model
 
     # 5. Ultimate recovery
-    default_model = llm_config.get("model", "gemma3:4b")
+    default_model = llm_config.get("model", DEFAULT_OLLAMA_MODEL)
     logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
     logger.info(f"   Note: You may need to run: ollama pull {default_model}")
     return default_model
@@ -460,7 +471,7 @@ async def _process_llm_async(
 
                         prompt_outputs = {}
                         # Use selected model or recovery
-                        ollama_model = selected_model if selected_model else 'gemma3:4b'
+                        ollama_model = selected_model if selected_model else DEFAULT_OLLAMA_MODEL
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
 
                         # Ensure model is available — use pre-pull guard to skip if cached

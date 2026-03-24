@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.775113,
-  "timestamp": "2026-03-18T09:21:30.538917",
+  "execution_time": 1.033899,
+  "timestamp": "2026-03-24T13:58:42.729761",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -29,24 +29,24 @@
       0
     ],
     "actions": [
-      0,
       1,
       0,
       1,
-      1,
-      0,
-      1,
-      0,
       1,
       1,
       0,
       0,
       1,
+      1,
       0,
-      1
+      0,
+      0,
+      1,
+      1,
+      0
     ],
     "policy": [],
-    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.020s\nResults saved to: output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.019s\nResults saved to: output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [

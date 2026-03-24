@@ -168,8 +168,10 @@ class TestModelSelection:
         """Should return default model when no models available."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
+        from llm.defaults import DEFAULT_OLLAMA_MODEL
+
         selected = _select_best_ollama_model([], logger)
-        assert selected == "gemma3:4b"
+        assert selected == DEFAULT_OLLAMA_MODEL
 
     def test_select_from_env_variable(self, monkeypatch: Any) -> None:
         """Should honor OLLAMA_MODEL environment variable."""

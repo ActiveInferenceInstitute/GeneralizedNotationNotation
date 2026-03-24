@@ -212,3 +212,17 @@ class TestGNNParsingSystemStrictValidation:
         assert ps.strict_validation is False
         ps2 = GNNParsingSystem(strict_validation=True)
         assert ps2.strict_validation is True
+
+
+class TestGNNParserValidationResultAPI:
+    """``is_valid`` must match ``success`` for parser pipeline consumers."""
+
+    def test_is_valid_matches_success(self):
+        from gnn.parsers.validators import GNNParserValidationResult
+
+        ok = GNNParserValidationResult(success=True)
+        assert ok.is_valid is True
+        assert ok.success is True
+        bad = GNNParserValidationResult(success=False)
+        assert bad.is_valid is False
+        assert bad.success is False

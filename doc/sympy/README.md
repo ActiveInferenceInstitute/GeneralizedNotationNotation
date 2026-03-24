@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Symbolic Mathematics Integration Guide | **Audience**: Researchers, Mathematicians | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [SymPy GNN Guide](gnn_sympy.md) | [MCP Integration](../mcp/README.md) | [Mathematical Foundations](../gnn/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [SymPy GNN Guide](gnn_sympy.md) | [MCP Integration](../mcp/README.md) | [Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -25,11 +25,11 @@ This directory contains documentation, resources, and implementation guides for 
 
 ### Related Directories
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 - **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -98,16 +98,16 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 
 ### Mathematical Resources
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol
 - **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -124,7 +124,7 @@ All documentation in this module adheres to professional standards:
 
 - **[SymPy Cross-Reference](../CROSS_REFERENCE_INDEX.md#sympy)**: Cross-reference index entry
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol
-- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[Mathematical Foundations](../gnn/advanced/advanced_modeling_patterns.md)**: Mathematical modeling
 - **[Main Index](../README.md)**: Return to main documentation
 
 ---

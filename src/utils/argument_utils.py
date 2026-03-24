@@ -9,7 +9,7 @@ import argparse
 from pathlib import Path
 from types import MappingProxyType
 from typing import Dict, Any, List, Optional, Type
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 import logging
 import re
 import sys
@@ -29,25 +29,31 @@ class ArgumentDefinition:
     help_text: str = ""
     choices: Optional[List[str]] = None
     action: Optional[str] = None
+    # When True with store_true/store_false, default is SUPPRESS so YAML/config can supply values
+    use_suppress: bool = False
 
     def add_to_parser(self, parser: argparse.ArgumentParser) -> None:
         """Add this argument to an ArgumentParser."""
-        kwargs = {
-            'help': self.help_text,
-            'default': self.default
-        }
+        kwargs: Dict[str, Any] = {'help': self.help_text}
 
         if self.action:
             kwargs['action'] = self.action
-            # Boolean actions don't need type
-            if self.action in ['store_true', 'store_false']:
-                pass
+            if self.action in ('store_true', 'store_false'):
+                if self.use_suppress:
+                    kwargs['default'] = argparse.SUPPRESS
+                elif self.default is not None:
+                    kwargs['default'] = self.default
+                else:
+                    kwargs['default'] = False if self.action == 'store_true' else True
             elif self.action is argparse.BooleanOptionalAction:
-                pass
+                kwargs['default'] = self.default
             else:
                 kwargs['type'] = self.arg_type
+                if self.default is not None:
+                    kwargs['default'] = self.default
         else:
             kwargs['type'] = self.arg_type
+            kwargs['default'] = self.default
 
         if self.required:
             kwargs['required'] = True
@@ -98,6 +104,8 @@ class PipelineArguments:
     # Setup options
     recreate_venv: bool = False  # Virtual environment recreation flag
     dev: bool = False
+    # Step 1: skip execution-frameworks (JAX / NumPyro / torch / discopy); core-only uv sync
+    setup_core_only: bool = False
     # Optional setup groups to install (comma-separated), used by step 1
     install_optional: Optional[str] = None
 
@@ -111,11 +119,17 @@ class PipelineArguments:
     duration: float = 30.0
     audio_backend: str = "auto"
 
-    # Test options
-    fast_only: bool = False
+    # Test options (fast pipeline suite is default for step 2 subprocess)
+    fast_only: bool = True
     include_slow: bool = False
     include_performance: bool = False
     comprehensive: bool = False
+
+    # Convenience: maps to merging 13 into skip_steps
+    skip_llm: bool = False
+
+    # Step 1: uv sync --all-extras (optional heavy install)
+    install_all_extras: bool = False
 
     # MCP/performance mode (used by step 22)
     performance_mode: str = "low"
@@ -240,13 +254,18 @@ class ArgumentParser:
         ),
         'skip_steps': ArgumentDefinition(
             flag='--skip-steps',
-            default=[],
+            default=None,
             help_text='Comma-separated list of steps to skip'
         ),
         'only_steps': ArgumentDefinition(
             flag='--only-steps',
-            default=[],
+            default=None,
             help_text='Comma-separated list of steps to run exclusively'
+        ),
+        'skip_llm': ArgumentDefinition(
+            flag='--skip-llm',
+            action='store_true',
+            help_text='Skip LLM processing step (alias for --skip-steps 13)',
         ),
         'strict': ArgumentDefinition(
             flag='--strict',
@@ -317,12 +336,26 @@ class ArgumentParser:
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-uv-env',
             action='store_true',
+            use_suppress=True,
             help_text='Recreate UV virtual environment'
         ),
         'dev': ArgumentDefinition(
             flag='--dev',
             action='store_true',
-            help_text='Install development dependencies'
+            use_suppress=True,
+            help_text='Install development dependencies (uv sync --extra dev)'
+        ),
+        'install_all_extras': ArgumentDefinition(
+            flag='--install-all-extras',
+            action='store_true',
+            help_text='Install all optional dependency groups (uv sync --all-extras)'
+        ),
+        'setup_core_only': ArgumentDefinition(
+            flag='--setup-core-only',
+            action='store_true',
+            help_text=(
+                'Step 1: install only core dependencies (no execution-frameworks / JAX stack for step 12)'
+            ),
         ),
         'duration': ArgumentDefinition(
             flag='--duration',
@@ -339,6 +372,7 @@ class ArgumentParser:
         'fast_only': ArgumentDefinition(
             flag='--fast-only',
             action='store_true',
+            use_suppress=True,
             help_text='Run only fast tests, skip slow and performance tests'
         ),
         'include_slow': ArgumentDefinition(
@@ -354,6 +388,7 @@ class ArgumentParser:
         'comprehensive': ArgumentDefinition(
             flag='--comprehensive',
             action='store_true',
+            use_suppress=True,
             help_text='Run all test categories including comprehensive suite'
         ),
         'install_optional': ArgumentDefinition(
@@ -388,7 +423,17 @@ class ArgumentParser:
     # Define which arguments each step supports
     STEP_ARGUMENTS = MappingProxyType({
         "0_template.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "1_setup.py": ["target_dir", "output_dir", "recursive", "verbose", "recreate_venv", "dev", "install_optional"],
+        "1_setup.py": [
+            "target_dir",
+            "output_dir",
+            "recursive",
+            "verbose",
+            "recreate_venv",
+            "dev",
+            "install_all_extras",
+            "setup_core_only",
+            "install_optional",
+        ],
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_slow", "include_performance", "comprehensive"],
         "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -412,7 +457,7 @@ class ArgumentParser:
         "22_gui.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "24_intelligent_analysis.py": ["target_dir", "output_dir", "verbose"],
-        "main.py": list(ARGUMENT_DEFINITIONS.keys())
+        "main.py": list(ARGUMENT_DEFINITIONS.keys()),
     })
 
     @classmethod
@@ -456,12 +501,9 @@ class ArgumentParser:
         parser = cls.create_main_parser()
         parsed = parser.parse_args(args)
 
-        # Convert to PipelineArguments
-        kwargs = {}
-        for key, value in vars(parsed).items():
-            if value is not None:
-                kwargs[key] = value
-
+        # Convert to PipelineArguments (only attributes argparse actually set)
+        field_names = {f.name for f in fields(PipelineArguments)}
+        kwargs = {k: getattr(parsed, k) for k in field_names if hasattr(parsed, k)}
         pipeline_args = PipelineArguments(**kwargs)
 
         # Validate arguments
@@ -505,7 +547,11 @@ class ArgumentParser:
                         setattr(parsed_args, arg_name, "all")
                     elif arg_name == 'website_html_filename':
                         setattr(parsed_args, arg_name, "gnn_pipeline_summary_website.html")
-                    elif arg_name in ['recreate_venv', 'dev']:
+                    elif arg_name in ['recreate_venv', 'dev', 'setup_core_only', 'install_all_extras']:
+                        setattr(parsed_args, arg_name, False)
+                    elif arg_name == 'fast_only':
+                        setattr(parsed_args, arg_name, True)
+                    elif arg_name == 'comprehensive':
                         setattr(parsed_args, arg_name, False)
                     elif arg_name == 'duration':
                         setattr(parsed_args, arg_name, 30.0)
@@ -523,7 +569,11 @@ class ArgumentParser:
             return parsed_args
 
         except SystemExit as e:
-            # Handle argument parsing errors gracefully
+            # argparse raises SystemExit(0) for --help; must propagate for correct CLI exit code
+            code = e.code
+            if code == 0 or code is None:
+                raise
+            # Handle argument parsing errors gracefully (e.g. invalid flags)
             logger.error(f"Argument parsing failed for step {step_name}: {e}")
             # Return a namespace with all required attributes set to defaults
             fallback_args = argparse.Namespace()
@@ -546,7 +596,11 @@ class ArgumentParser:
                     setattr(fallback_args, arg_name, "all")
                 elif arg_name == 'website_html_filename':
                     setattr(fallback_args, arg_name, "gnn_pipeline_summary_website.html")
-                elif arg_name in ['recreate_venv', 'dev']:
+                elif arg_name in ['recreate_venv', 'dev', 'setup_core_only', 'install_all_extras']:
+                    setattr(fallback_args, arg_name, False)
+                elif arg_name == 'fast_only':
+                    setattr(fallback_args, arg_name, True)
+                elif arg_name == 'comprehensive':
                     setattr(fallback_args, arg_name, False)
                 elif arg_name == 'duration':
                     setattr(fallback_args, arg_name, 30.0)
@@ -602,6 +656,7 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
         if arg_def.action == 'store_true':
             if value:
                 cmd.append(arg_def.flag)
+            continue
         elif arg_def.action == argparse.BooleanOptionalAction:
             # Only pass the flag if True; omit if False (don't pass --no-flag)
             # This ensures compatibility with steps that may not support --no-flag
@@ -627,8 +682,14 @@ class StepConfiguration:
         },
         "1_setup": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose", "recreate_venv", "dev"],
-            "defaults": {"verbose": False, "recreate_venv": False, "dev": False},
+            "optional_args": ["verbose", "recreate_venv", "dev", "install_all_extras", "setup_core_only"],
+            "defaults": {
+                "verbose": False,
+                "recreate_venv": False,
+                "dev": False,
+                "install_all_extras": False,
+                "setup_core_only": False,
+            },
             "description": "Project Setup & Environment Configuration"
         },
         "2_tests": {
@@ -642,7 +703,7 @@ class StepConfiguration:
                 "include_performance",
                 "comprehensive"
             ],
-            "defaults": {"verbose": False, "fast_only": False, "include_slow": False, "include_performance": False, "comprehensive": False},
+            "defaults": {"verbose": False, "fast_only": True, "include_slow": False, "include_performance": False, "comprehensive": False},
             "description": "Test Execution & Validation"
         },
         "3_gnn": {
@@ -1215,6 +1276,8 @@ def parse_arguments() -> PipelineArguments:
         pipeline_args.recreate_venv = True
     if args.dev:
         pipeline_args.dev = True
+    if getattr(args, "setup_core_only", False):
+        pipeline_args.setup_core_only = True
 
     # Resolve relative paths relative to input directory
     input_dir = Path("input")

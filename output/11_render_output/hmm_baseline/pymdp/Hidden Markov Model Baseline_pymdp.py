@@ -7,7 +7,7 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Hidden Markov Model Baseline
 Description: 
-Generated: 2026-03-18 09:21:23
+Generated: 2026-03-24 13:58:20
 
 State Space:
 - Hidden States: 4
@@ -26,8 +26,7 @@ import sys
 from pathlib import Path
 import os
 
-# Prevent import conflict with local 'pymdp' folder which contains this script
-# sys.path[0] is the script directory. If it's named 'pymdp', it masks the installed library.
+# Remove script directory from sys.path if named 'pymdp' — it would mask the installed library
 if sys.path[0] and sys.path[0].endswith("pymdp"):
     print(f"⚠️  Detected namespace conflict with script directory '{sys.path[0]}', removing from sys.path")
     sys.path.pop(0)
@@ -36,31 +35,44 @@ import subprocess
 import json
 import numpy as np
 
-# Ensure PyMDP is installed before importing
-# Note: The correct package name is 'inferactively-pymdp', not 'pymdp'
+# Note: package is 'inferactively-pymdp', not 'pymdp'
 try:
     import pymdp
-    # Verify it is the CORRECT pymdp (inferactively-pymdp)
     try:
         from pymdp.agent import Agent
         print("✅ PyMDP (inferactively-pymdp) is available")
     except ImportError:
-        # Check if it might be the flat structure (unlikely for modern, but possible)
         if hasattr(pymdp, "Agent"):
-             print("✅ PyMDP (flat structure) is available")
+            print("✅ PyMDP (flat structure) is available")
         else:
-             print("⚠️  PyMDP package found, but it appears to be the wrong version (missing Agent).")
-             print("💡 Please install the correct package: uv pip install inferactively-pymdp")
-             # Proceeding anyway, might fail later but better than auto-install crash
+            print("⚠️  PyMDP found but wrong version — install: uv pip install inferactively-pymdp")
 except ImportError:
-    print("❌ PyMDP not found. This script requires 'inferactively-pymdp'.")
-    print("💡 Install with: uv pip install inferactively-pymdp")
-    # We will not attempt auto-install as it is fragile in managed environments
+    print("❌ PyMDP not found — install: uv pip install inferactively-pymdp")
     sys.exit(1)
 
-# Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)
-project_root = Path(__file__).parent.parent.parent.parent.parent
-sys.path.insert(0, str(project_root))
+# Resolve repository root: prefer GNN_PROJECT_ROOT (set by Step 12), else walk up for pyproject.toml + src/
+_gnn_root = os.environ.get("GNN_PROJECT_ROOT")
+if _gnn_root:
+    _repo = Path(_gnn_root).resolve()
+    sys.path.insert(0, str(_repo))
+else:
+    _cur = Path(__file__).resolve().parent
+    _found = None
+    for _ in range(24):
+        if (_cur / "pyproject.toml").is_file() and (_cur / "src").is_dir():
+            _found = _cur
+            break
+        if _cur.parent == _cur:
+            break
+        _cur = _cur.parent
+    if _found is None:
+        print(
+            "❌ Cannot locate GNN repository root. Run via the pipeline execute step, or set "
+            "GNN_PROJECT_ROOT to the checkout root (directory containing pyproject.toml and src/).",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    sys.path.insert(0, str(_found))
 
 from src.execute.pymdp import execute_pymdp_simulation
 
@@ -92,24 +104,7 @@ def main():
     
     if B_matrix_data is not None:
         B_matrix = np.array(B_matrix_data)
-        # Normalize B matrix (columns should sum to 1)
-        # B shape in PyMDP usually (next_state, prev_state, action)
-        # But GNN might provide (action, prev_state, next_state) or similar.
-        # Here we assume GNN provides B as [action][prev][next] or similar from JSON
-        # We will trust the default simple_simulation handling for dimension/transposition,
-        # but here we just ensure values are normalized along the last dimension if it sums approx to > 0.
-        # Actually, let's just ensure it's normalized in simple_simulation or here?
-        # Better to do it in simple_simulation.py where we know the dimensions?
-        # The simple_simulation.py loads this gnn_spec.
-        # So we should modify simple_simulation.py instead?
-        # NO, this script IS the one that passes data to simple_simulation via gnn_spec['initialparameterization'].
-        # The simple_simulation.py reads A from gnn_spec['initialparameterization']['A'].
-        # So if we update 'A_matrix' variable here, we must ensure it is passed back to gnn_spec correctly.
-        # Lines 494 update gnn_spec using 'A_matrix.tolist()'.
-        # So normalizing HERE is correct.
-        
-        # However, for B matrix, dimensions are tricky. 
-        # Let's simple_simulation handle B normalization since it does transposition logic.
+        # B matrix normalization is handled by simple_simulation.py which knows the dimension layout.
         logger.info(f"B matrix shape: {B_matrix.shape}")
     else:
         B_matrix = None

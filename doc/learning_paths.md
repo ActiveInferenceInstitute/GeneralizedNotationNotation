@@ -15,11 +15,11 @@ This document outlines structured learning paths for users of varying expertise 
    - Build your first model using [Basic GNN Template](templates/basic_gnn_template.md).
 
 3. **Basic Syntax and Examples**:
-   - Study [GNN Syntax](gnn/gnn_syntax.md).
-   - Explore simple examples in [GNN Examples](gnn/gnn_examples_doc.md).
+   - Study [GNN Syntax](gnn/reference/gnn_syntax.md).
+   - Explore simple examples in [GNN Examples](gnn/tutorials/gnn_examples_doc.md).
 
 4. **Run Your First Pipeline**:
-   - Execute via `src/main.py` (details in [Pipeline Architecture](gnn/architecture_reference.md)).
+   - Execute via `src/main.py` (details in [Pipeline Architecture](gnn/reference/architecture_reference.md)).
    - Visualize results (see [Visualization Docs](visualization/README.md)).
 
 **Next Steps**: Move to Intermediate Path once comfortable with basic models.
@@ -37,8 +37,8 @@ This document outlines structured learning paths for users of varying expertise 
 **Prerequisites**: Complete Beginner Path.
 
 1. **Advanced Modeling**:
-   - Dive into [Advanced Modeling Patterns](gnn/advanced_modeling_patterns.md).
-   - Learn multi-agent systems in [GNN Multiagent](gnn/gnn_multiagent.md).
+   - Dive into [Advanced Modeling Patterns](gnn/advanced/advanced_modeling_patterns.md).
+   - Learn multi-agent systems in [GNN Multiagent](gnn/advanced/gnn_multiagent.md).
 
 2. **Integrations**:
    - PyMDP: [GNN PyMDP](pymdp/gnn_pymdp.md).
@@ -71,7 +71,7 @@ This document outlines structured learning paths for users of varying expertise 
 
 1. **Domain-Specific Applications**:
    - Cognitive Phenomena: Explore subdirs in [/doc/cognitive_phenomena/](cognitive_phenomena/README.md) (e.g., [Meta-Awareness](cognitive_phenomena/meta-awareness/)).
-   - Ontology: [Ontology System](gnn/ontology_system.md).
+   - Ontology: [Ontology System](gnn/advanced/ontology_system.md).
 
 2. **Custom Development**:
    - Extend pipeline ([Development Docs](development/README.md)).
@@ -81,7 +81,7 @@ This document outlines structured learning paths for users of varying expertise 
    - Visualization: [D2 Diagramming](d2/gnn_d2.md), [Glowstick](glowstick/glowstick_gnn.md), [GUI Oxdraw](gui_oxdraw/gnn_oxdraw.md).
 
 3. **Performance and Optimization**:
-   - Metrics: [Resource Metrics](gnn/resource_metrics.md).
+   - Metrics: [Resource Metrics](gnn/operations/resource_metrics.md).
    - Optimization: [Performance Guide](pymdp/pymdp_performance_guide.md).
 
 4. **Contribution and Research**:

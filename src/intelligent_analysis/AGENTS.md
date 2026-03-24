@@ -716,7 +716,7 @@ def test_process_with_llm_failure(mock_llm, sample_summary_data, tmp_path):
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `bottleneck_threshold` | `float` | `60.0` | Duration threshold in seconds for flagging slow steps via `identify_bottlenecks()` |
-| `analysis_model` | `str` | `"gemma3:4b"` | LLM model name used in `_run_llm_analysis()` for AI-powered insights |
+| `analysis_model` | `str` | `None` → `OLLAMA_MODEL` → `llm.defaults.DEFAULT_OLLAMA_MODEL` | LLM model tag for `_run_llm_analysis()` |
 | `skip_llm` | `bool` | `False` | When True, skips LLM analysis and uses rule-based recovery only |
 | `max_tokens` | `int` | `2500` | Maximum tokens for LLM response in `_run_llm_analysis()` |
 
@@ -812,7 +812,7 @@ Step 24: intelligent_analysis
 | Mode | Duration | Notes |
 |------|----------|-------|
 | Rule-based only (`--skip-llm`) | 0.5 - 2 seconds | Pure Python, no external calls |
-| With LLM (Ollama, gemma3:4b) | 3 - 10 seconds | Depends on model and prompt size |
+| With LLM (Ollama, default smollm2 instruct) | 3 - 10 seconds | Depends on model and prompt size |
 | With LLM (cloud API) | 5 - 30 seconds | Network latency + processing |
 
 ### Memory Usage
@@ -833,7 +833,7 @@ Step 24: intelligent_analysis
 
 1. Use `--skip-llm` for fast iteration during development
 2. The rule-based recovery produces actionable results without any LLM
-3. If using Ollama, prefer `gemma3:4b` for fastest response times
+3. If using Ollama, prefer the default small instruct tag or set `OLLAMA_MODEL` to a faster local pull
 4. The analysis itself (excluding LLM) is CPU-bound and single-threaded
 
 ---

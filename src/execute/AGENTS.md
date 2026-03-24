@@ -27,7 +27,7 @@
 
 ### Key Capabilities
 - Multi-framework execution support
-- **Skip vs fail**: JAX, NumPyro, PyTorch, and DisCoPy are optional; when their dependency is not installed, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Install with `uv sync --extra execution-frameworks` to run all frameworks.
+- **Skip vs fail**: JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies; if the environment is incomplete, scripts are **skipped** (not run) and reported as "skipped" — they do not count as execution failures. Repair with `uv sync`. Julia backends still require a local Julia install.
 - Graceful degradation when frameworks unavailable
 - Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
 - Path collection with deduplication (prevents nested directory issues)

@@ -1,11 +1,11 @@
 # GNN Documentation Index
 
 **Version**: v2.0.0  
-**Last Updated**: March 6, 2026  
-**Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 8/8 · **MCP Tools**: 131 · **Tests**: 1,522+
+**Last Updated**: 2026-03-24  
+**Status**: Maintained  
+**Pipeline Steps**: 25
 
-Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
+Complete navigation guide for all GNN (Generalized Notation Notation) documentation. For the machine-oriented tree manifest (directory counts and new-module index), see **[AGENTS.md](AGENTS.md)**. Parent doc hub: [doc/README.md](../README.md), [doc/INDEX.md](../INDEX.md).
 
 ## 🚀 Quick Start
 
@@ -28,16 +28,16 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 - [Module Reference](modules/README.md) - Per-module documentation for all 25 steps, with architecture, CLI args, and output details
 - [GNN Tools and Resources](operations/gnn_tools.md) - Complete pipeline usage and examples
 - [Technical Reference](reference/technical_reference.md) - Round-trip data flow and entry points
-- **[Testing Hub](testing/README.md)** — Test architecture, patterns, MCP audit (1,522+ tests)
+- **[Testing Hub](testing/README.md)** — Test architecture, patterns, MCP audit (see root [README.md](../../README.md) for latest `pytest` counts)
 
 **Quick Start:**
 
 ```bash
 # Run full pipeline
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific steps
-python src/main.py --only-steps "3,5,8,11,12" --verbose
+uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 ```
 
 ## 📖 Language Specification
@@ -45,8 +45,8 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 **GNN Syntax and Structure:**
 
 - **[Language Hub](language/README.md)** — Syntax cheatsheet, variable grammar, connection grammar
-- **[GNN v1.1 Syntax Specification](gnn_syntax.md)** — Canonical syntax spec (living document)
-- [GNN Syntax Reference](reference/gnn_syntax.md) - Complete syntax guide with examples
+- **[GNN v1.1 Syntax Specification](gnn_syntax.md)** — Normative spec for sections, parsers, and validators (living document)
+- [GNN Syntax Reference](reference/gnn_syntax.md) — Examples, validation commands, and quick patterns (read with the spec above)
 - [GNN DSL Manual](reference/gnn_dsl_manual.md) - Domain-Specific Language specification
 - [GNN Schema Specification](reference/gnn_schema.md) - Parsing and validation schemas
 - [GNN File Structure](reference/gnn_file_structure_doc.md) - File organization and sections
@@ -74,7 +74,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 - **[MCP Hub](mcp/README.md)** — 131 tools, client setup, tool development guide
 - [Framework Integration Guide](integration/framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan
 - [GNN Implementation Guide](integration/gnn_implementation.md) - Implementation workflows and patterns
-- **[Framework Implementations](implementations/README.md)** — 8 renderers: PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, CatColab, PyTorch, NumPyro, Stan
+- **[Framework Implementations](implementations/README.md)** — Framework documentation for PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, PyTorch, NumPyro, Stan, and CatColab
 - [PyMDP Integration](../pymdp/gnn_pymdp.md) - Python POMDP framework
 - [RxInfer Integration](../rxinfer/gnn_rxinfer.md) - Julia Bayesian inference
 - [ActiveInference.jl Integration](../activeinference_jl/activeinference-jl.md) - Julia Active Inference
@@ -211,15 +211,10 @@ All GNN documentation follows these principles:
 
 ## 📋 Documentation Status
 
-- ✅ All 25 pipeline steps documented
-- ✅ Complete module AGENTS.md coverage (38+ modules)
-- ✅ 9/9 renderers available (pymdp, rxinfer, jax, numpyro, stan, pytorch, activeinference_jl, discopy, catcolab)
-- ✅ 100% pipeline success rate (~5 minutes execution time (with LLM step))
-- ✅ 1,522+ tests passing
-- ✅ 10 CLI subcommands (run, validate, parse, render, report, reproduce, preflight, health, serve, lsp)
-- ✅ FastAPI Pipeline-as-a-Service with SSE streaming
-- ✅ Enhanced visual logging across all steps
-- ✅ Comprehensive cross-referencing between documentation
+- Documentation covers all pipeline steps and major module groups.
+- Framework docs cover PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, and DisCoPy.
+- CLI and API entrypoints are documented with links to module-level references.
+- Cross-references are maintained across language, integration, operations, and tutorial sections.
 
 ## 📖 Document Index (Alphabetical)
 
@@ -256,8 +251,6 @@ All GNN documentation follows these principles:
 **GNN Version**: v2.0.0  
 **Pipeline Version**: 2.0.0  
 **Total Pipeline Steps**: 25 (0–24)  
-**Modules**: 38+  
-**Renderers**: 8/8
-**Last Updated**: 2026-03-06  
+**Last Updated**: 2026-03-24  
 
-**Status**: ✅ All Documentation Complete
+**Status**: Maintained (re-run `uv run python doc/development/docs_audit.py` after link or tree changes)

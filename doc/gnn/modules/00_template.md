@@ -33,4 +33,4 @@ python src/0_template.py --simulate-error  # Test error handling
 
 ## Source
 
-- **Script**: [src/0_template.py](../../src/0_template.py)
+- **Script**: [src/0_template.py](../../../src/0_template.py)

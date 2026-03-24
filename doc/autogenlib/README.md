@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [AutoGenLib GNN Guide](gnn_autogenlib.md) | [LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [AutoGenLib GNN Guide](gnn_autogenlib.md) | [LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -24,13 +24,13 @@ This directory contains documentation, resources, and implementation guides for 
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[DSPy Integration](../dspy/gnn_dspy.md)**: Program synthesis integration
 - **[PoE-World Integration](../poe-world/poe-world_gnn.md)**: Compositional world modeling
 - **[Development Guide](../development/README.md)**: Development workflows
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -98,8 +98,8 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
-- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[GNN Quickstart](../gnn/tutorials/quickstart_tutorial.md)**: Getting started guide
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 
 ### Development Resources
 - **[Development Guide](../development/README.md)**: Development workflows
@@ -107,7 +107,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[PoE-World Integration](../poe-world/poe-world_gnn.md)**: Compositional world modeling
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
@@ -123,7 +123,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[AutoGenLib Cross-Reference](../CROSS_REFERENCE_INDEX.md#autogenlib)**: Cross-reference index entry
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[LLM Integration](../gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[Development Guide](../development/README.md)**: Development workflows
 - **[Main Index](../README.md)**: Return to main documentation
 

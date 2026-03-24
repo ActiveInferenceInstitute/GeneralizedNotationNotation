@@ -9,6 +9,41 @@ Tests environment setup, UV integration, and dependency management.
 class TestSetupModule:
     """Test suite for Setup module functionality."""
 
+    def test_default_pipeline_extras_empty(self):
+        """Step 12 backends are core deps; step 1 does not require a default extra group."""
+        from setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
+
+        assert SETUP_DEFAULT_PIPELINE_EXTRAS == ()
+
+    def test_pyproject_core_lists_step12_backends(self):
+        import tomllib
+        from pathlib import Path
+
+        root = Path(__file__).resolve().parents[2]
+        data = tomllib.loads((root / "pyproject.toml").read_text(encoding="utf-8"))
+        blob = " ".join(data["project"]["dependencies"]).lower()
+        assert "jax" in blob
+        assert "jaxlib" in blob
+        assert "torch" in blob
+        assert "numpyro" in blob
+        assert "discopy" in blob
+
+    def test_build_step_command_passes_setup_core_only(self):
+        """main.py forwards --setup-core-only to 1_setup when set on pipeline args."""
+        from pathlib import Path
+
+        from utils.argument_utils import PipelineArguments, build_step_command_args
+
+        args = PipelineArguments()
+        args.setup_core_only = True
+        cmd = build_step_command_args(
+            "1_setup.py",
+            args,
+            "python",
+            Path("src/1_setup.py"),
+        )
+        assert "--setup-core-only" in cmd
+
     def test_module_imports(self):
         """Test that setup module can be imported."""
         from setup import (

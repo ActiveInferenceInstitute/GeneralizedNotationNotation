@@ -2,7 +2,7 @@
 
 **Version**: 2.0.0  
 **Last Updated**: 2026-03-06  
-**Status**: ✅ Production Ready
+**Status**: Maintained
 
 ---
 
@@ -29,7 +29,7 @@ All numbered pipeline scripts (0-24) MUST follow the thin orchestrator pattern:
 ┌─────────────────────────────────────────┐
 │  src/module/                            │
 │  ├── __init__.py  (Public API)          │
-│  ├── processor.py (Core logic)          │
+│  ├── processor.py (Core logic, or accepted alternative) │
 │  ├── mcp.py       (MCP tools)           │
 │  ├── AGENTS.md    (Documentation)       │
 │  └── README.md    (Usage guide)         │
@@ -50,11 +50,17 @@ Every module directory MUST contain:
 | File | Purpose | Required |
 |------|---------|----------|
 | `__init__.py` | Public API exports | ✅ |
-| `processor.py` | Core processing logic | ✅ |
+| `processor.py` (or accepted alternative) | Core processing logic | ✅ |
 | `AGENTS.md` | Module documentation | ✅ |
 | `README.md` | Usage documentation | ✅ |
 | `mcp.py` | MCP tool registration | ⚠️ If applicable |
 | `SPEC.md` | Technical specification | ⚠️ Optional |
+
+Accepted alternatives for core processing file organization:
+
+- `setup/`, `tests/`, `validation/`: processing logic in `__init__.py`
+- `model_registry/`: processing logic in `registry.py`
+- `website/`: processing logic split across `renderer.py` and `generator.py` (`processor.py` remains a thin shim)
 
 ### Exit Code Standards
 
@@ -112,13 +118,18 @@ Every module directory MUST contain:
 
 ### Infrastructure Modules
 
-| Module | Purpose | Files |
-|--------|---------|-------|
-| `utils/` | Shared utilities | 49 |
-| `pipeline/` | Orchestration config | 25 |
-| `tests/` | Test suite | 111 |
-| `sapf/` | Audio framework | 5 |
-| `output/` | Generated artifacts | — |
+| Module | Purpose |
+|--------|---------|
+| `utils/` | Shared utilities |
+| `pipeline/` | Orchestration config |
+| `api/` | REST API server (FastAPI) |
+| `cli/` | CLI entry point |
+| `lsp/` | Language Server Protocol support |
+| `doc/` | In-repo technical documentation subtree |
+| `tests/` | Test suite |
+| `sapf/` | SAPF compatibility shim (`audio/sapf/`) |
+
+Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is **tracked in git** (with selective ignores for volatile paths under `.gitignore`). The `src/output/` directory is not a Python package; see [`output/README.md`](output/README.md) for fixture copies vs root `output/`.
 
 ---
 
@@ -248,12 +259,7 @@ def module_operation(input: str, output_path: str) -> dict:
 
 ## Performance Targets
 
-| Metric | Target | Current |
-|--------|--------|---------|
-| Full pipeline execution | <6m | ~5m ✅ |
-| Peak memory usage | <100MB | 36MB ✅ |
-| Test pass rate | 100% | 100% ✅ |
-| Syntax validity | 100% | 100% ✅ |
+Performance and reliability targets should be validated by current benchmark/test runs in CI or local execution, rather than fixed values in static docs.
 
 ---
 

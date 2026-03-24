@@ -85,8 +85,8 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 - [AGENTS.md](AGENTS.md) — Module documentation
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Module specification
-- [../../doc/gnn/gnn_syntax.md](../../doc/gnn/gnn_syntax.md) — Complete syntax reference
-- [../../doc/gnn/gnn_examples_doc.md](../../doc/gnn/gnn_examples_doc.md) — Example models
+- [../../doc/gnn/reference/gnn_syntax.md](../../doc/gnn/reference/gnn_syntax.md) — Complete syntax reference
+- [../../doc/gnn/tutorials/gnn_examples_doc.md](../../doc/gnn/tutorials/gnn_examples_doc.md) — Example models
 
 
 ---

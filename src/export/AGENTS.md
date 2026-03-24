@@ -375,7 +375,7 @@ python src/7_export.py --target-dir input/ --verbose
 
 - [Pipeline Overview](../../README.md)
 - [Architecture Guide](../../ARCHITECTURE.md)
-- [GNN Export Guide](../../doc/gnn/gnn_export.md)
+- [GNN Export Guide](../../doc/gnn/integration/gnn_export.md)
 
 ### External Resources
 

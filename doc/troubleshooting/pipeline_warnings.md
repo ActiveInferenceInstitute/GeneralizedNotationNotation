@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Troubleshooting Guide | **Audience**: All Users | **Complexity**: Intermediate  
-> **Cross-References**: [Setup Guide](../SETUP.md) | [Pipeline Assessment](../gnn/gnn_troubleshooting.md)
+> **Cross-References**: [Setup Guide](../SETUP.md) | [Pipeline Assessment](../gnn/operations/gnn_troubleshooting.md)
 
 This guide helps you diagnose and resolve common warnings in the GNN pipeline execution.
 
@@ -147,7 +147,7 @@ python src/12_execute.py --frameworks "all" --dry-run
 
 **Error Message**: `Prompt execution timed out after 60 seconds`
 
-**Root Cause**: Small Ollama model (`gemma3:4b`) too slow for complex prompts
+**Root Cause**: Local Ollama model too slow for complex prompts (try a smaller tag or raise `llm.prompt_timeout` / `OLLAMA_TIMEOUT`)
 
 **Solution Option 1 - Use Larger Ollama Model**:
 
@@ -415,7 +415,7 @@ du -sh output/
 
 1. **Check Logs**: All steps log to `output/[step]_output/`
 2. **Read Documentation**: See [Setup Guide](../SETUP.md) for installation help
-3. **Review Assessment**: See [Pipeline Assessment](../gnn/gnn_troubleshooting.md)
+3. **Review Assessment**: See [Pipeline Assessment](../gnn/operations/gnn_troubleshooting.md)
 
 ### Community Support
 

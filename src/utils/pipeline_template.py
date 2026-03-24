@@ -176,6 +176,8 @@ CommonModuleParams = {
     "ontology_terms_file": Path,  # For ontology
     "recreate_venv": bool,  # For setup
     "dev": bool,  # For setup
+    "install_all_extras": bool,  # For setup: uv sync --all-extras
+    "setup_core_only": bool,  # For setup: skip execution-frameworks
 }
 
 # Standardized naming conventions for module functions
@@ -227,7 +229,8 @@ STEP_ADDITIONAL_ARGUMENTS = {
     },
     "1_setup": {
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
-        "dev": {"type": bool, "help": "Install development dependencies"}
+        "dev": {"type": bool, "help": "Install development dependencies (uv sync --extra dev)"},
+        "install_all_extras": {"type": bool, "help": "Install all optional groups (uv sync --all-extras)"},
     },
     "21_mcp.py": {
         "performance-mode": {

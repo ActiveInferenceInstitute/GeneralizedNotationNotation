@@ -164,7 +164,7 @@ uv sync
 uv sync --extra all
 
 # Verify installation
-python src/main.py --help
+uv run python src/main.py --help
 ```
 
 ## 📝 Your First GNN Model
@@ -248,10 +248,10 @@ License: MIT
 
 ```bash
 # Process your model through the complete pipeline
-python src/main.py --target-dir my_first_model.md
+uv run python src/main.py --target-dir my_first_model.md
 
 # Or run specific steps
-python src/main.py --target-dir my_first_model.md --only-steps "1,2,3,4,5"
+uv run python src/main.py --target-dir my_first_model.md --only-steps "1,2,3,4,5"
 ```
 
 ### 3. Check the Results
@@ -294,7 +294,7 @@ s_f0, u_c0 > s_f0
 ### **2. Generate and Execute in One Command**
 
 ```bash
-python src/main.py --target-dir fast_agent.md --only-steps "1,2,3,4,5,6,7,8,9,10"
+uv run python src/main.py --target-dir fast_agent.md --only-steps "1,2,3,4,5,6,7,8,9,10"
 ```
 
 ### **3. Inspect the Logic**
@@ -362,42 +362,42 @@ julia simple_agent.jl
 
 ```bash
 # Quick validation only
-python src/main.py --target-dir my_model.md --only-steps "1,2,3,4"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,3,4"
 
 # Generate code for specific framework
-python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
 
 # Include visualization
-python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
 
 # Full pipeline with documentation
-python src/main.py --target-dir my_model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13"
 ```
 
 ### Batch Processing
 
 ```bash
 # Process all models in a directory
-python src/main.py --target-dir ./examples/
+uv run python src/main.py --target-dir ./examples/
 
 # Process specific pattern
-python src/main.py --target-dir ./models/ --pattern "*.md"
+uv run python src/main.py --target-dir ./models/ --pattern "*.md"
 
 # Parallel processing
-python src/main.py --target-dir ./models/ --parallel --workers 4
+uv run python src/main.py --target-dir ./models/ --parallel --workers 4
 ```
 
 ### Configuration
 
 ```bash
 # Use custom configuration
-python src/main.py my_model.md --config config/development.yaml
+uv run python src/main.py my_model.md --config config/development.yaml
 
 # Set output directory
-python src/main.py my_model.md --output-dir ./my_results/
+uv run python src/main.py my_model.md --output-dir ./my_results/
 
 # Debug mode
-python src/main.py my_model.md --debug --verbose
+uv run python src/main.py my_model.md --debug --verbose
 ```
 
 ## 📚 Learning Path
@@ -407,12 +407,12 @@ python src/main.py my_model.md --debug --verbose
 ```bash
 # Explore provided examples
 ls src/gnn/gnn_examples/
-python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
+uv run python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
 ```
 
 ### 2. Learn GNN Syntax (15 minutes)
 
-- Read: [GNN Syntax Guide](gnn/gnn_syntax.md)
+- Read: [GNN Syntax Guide](gnn/reference/gnn_syntax.md)
 - Practice: Modify the example models
 - Validate: Use the type checker to check your syntax
 
@@ -420,13 +420,13 @@ python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
 
 ```bash
 # Generate PyMDP code
-python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
 
 # Generate RxInfer code  
-python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
 
 # Create visualizations
-python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
+uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
 ```
 
 ### 4. Advanced Features (30 minutes)
@@ -442,7 +442,7 @@ python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
 
 ```bash
 # Check syntax with detailed errors
-python src/5_type_checker.py --target-dir . --verbose
+uv run python src/5_type_checker.py --target-dir . --verbose
 
 # Common issues:
 # - Missing required sections (ModelName, StateSpaceBlock, etc.)
@@ -454,7 +454,7 @@ python src/5_type_checker.py --target-dir . --verbose
 
 ```bash
 # Validate matrices
-python src/5_type_checker.py --target-dir . --verbose
+uv run python src/5_type_checker.py --target-dir . --verbose
 
 # Common issues:
 # - Matrices don't sum to 1 (for probability matrices)
@@ -466,7 +466,7 @@ python src/5_type_checker.py --target-dir . --verbose
 
 ```bash
 # Check what's missing
-python src/1_setup.py --check-dependencies
+uv run python src/1_setup.py --check-dependencies
 
 # Install optional dependencies using UV
 uv pip install torch  # For PyTorch integration
@@ -517,8 +517,8 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 
 ## 📖 Essential Documentation
 
-- **[GNN Syntax Reference](gnn/gnn_syntax.md)**: Complete syntax guide
-- **[Pipeline Documentation](gnn/gnn_tools.md)**: Detailed pipeline steps
+- **[GNN Syntax Reference](gnn/reference/gnn_syntax.md)**: Complete syntax guide
+- **[Pipeline Documentation](gnn/operations/gnn_tools.md)**: Detailed pipeline steps
 - **[API Reference](api/README.md)**: Programming interface
 - **[Troubleshooting](troubleshooting/README.md)**: Common problems and solutions
 
@@ -543,19 +543,19 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 
 ```bash
 # Basic processing
-python src/main.py model.md
+uv run python src/main.py model.md
 
 # Just validation  
-python src/main.py --target-dir model.md --only-steps "1,2,3,4"
+uv run python src/main.py --target-dir model.md --only-steps "1,2,3,4"
 
 # Generate code
-python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,9"
+uv run python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,9"
 
 # Full pipeline
-python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13,14"
+uv run python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13,14"
 
 # Debug mode
-python src/main.py model.md --debug --verbose
+uv run python src/main.py model.md --debug --verbose
 ```
 
 ### Key File Locations
@@ -563,7 +563,7 @@ python src/main.py model.md --debug --verbose
 ```
 src/gnn/gnn_examples/  # Example GNN models
 doc/templates/        # Model templates  
-doc/gnn/gnn_syntax.md # Syntax reference
+doc/gnn/reference/gnn_syntax.md # Syntax reference
 output/               # Generated results
 config/               # Configuration files
 ```

@@ -30,7 +30,7 @@ GNN supports three complementary modalities:
 
 Basic understanding helps, but GNN can be learned incrementally:
 
-- **Beginners**: Start with [simple examples](../gnn/gnn_examples_doc.md) and [basic concepts](../gnn/about_gnn.md)
+- **Beginners**: Start with [simple examples](../gnn/tutorials/gnn_examples_doc.md) and [basic concepts](../gnn/about_gnn.md)
 - **Intermediate**: Learn [Active Inference fundamentals](https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf)
 - **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../archive/)
 
@@ -59,7 +59,7 @@ python src/main.py --target-dir input/gnn_files/ --output-dir output/
 
 1. **Use the template**: Copy [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
 2. **Start simple**: Begin with a 2-state, 2-observation static model
-3. **Follow examples**: Reference [`gnn_examples_doc.md`](../gnn/gnn_examples_doc.md)
+3. **Follow examples**: Reference [`gnn_examples_doc.md`](../gnn/tutorials/gnn_examples_doc.md)
 4. **Validate early**: Run the type checker frequently
 
 ### Which simulation framework should I choose?
@@ -107,7 +107,7 @@ python src/main.py --target-dir input/gnn_files/ --output-dir output/
 
 ### How do I handle multiple agents?
 
-See [Multiagent Systems Guide](../gnn/gnn_multiagent.md). Key approaches:
+See [Multiagent Systems Guide](../gnn/advanced/gnn_multiagent.md). Key approaches:
 
 1. **Separate models**: Individual GNN files per agent
 2. **Shared states**: Common environmental factors
@@ -256,7 +256,7 @@ See [Performance Guide](performance.md) for optimization strategies.
 
 ### Recommended learning path
 
-1. **GNN Basics**: [Overview](../gnn/gnn_overview.md) → [Syntax](../gnn/gnn_syntax.md) → [Examples](../gnn/gnn_examples_doc.md)
+1. **GNN Basics**: [Overview](../gnn/gnn_overview.md) → [Syntax](../gnn/reference/gnn_syntax.md) → [Examples](../gnn/tutorials/gnn_examples_doc.md)
 2. **Active Inference**: Smith et al. tutorial → Parr et al. textbook
 3. **Implementation**: Choose framework and work through examples
 4. **Advanced Topics**: Multi-agent, learning, optimization
@@ -956,7 +956,7 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 - **Search this FAQ**: Use Ctrl+F to find specific topics
 - **Documentation index**: [Main documentation](../README.md)
 - **Examples gallery**: [Model examples](../archive/)
-- **Syntax reference**: [GNN syntax guide](../gnn/gnn_syntax.md)
+- **Syntax reference**: [GNN syntax guide](../gnn/reference/gnn_syntax.md)
 
 ### Community Support
 

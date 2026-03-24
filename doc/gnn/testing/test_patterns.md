@@ -2,7 +2,7 @@
 
 Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and test files.
 
-**Last Updated**: March 6, 2026
+**Last Updated**: 2026-03-24
 
 ## Real-Implementation Policy
 

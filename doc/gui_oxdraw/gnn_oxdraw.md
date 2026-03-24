@@ -1187,7 +1187,7 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 ### Active Inference
 
 - [Active Inference Ontology](../../src/ontology/act_inf_ontology_terms.json)
-- [POMDP Specification](../gnn/gnn_standards.md)
+- [POMDP Specification](../gnn/reference/gnn_standards.md)
 
 ---
 

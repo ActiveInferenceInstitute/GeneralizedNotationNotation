@@ -1,6 +1,6 @@
 # GNN v1.1 Syntax Specification
 
-> **Status**: Living document · Last updated 2026-03-06
+> **Status**: Living document · Last updated 2026-03-24
 > **Canonical reference for parsers, validators, and editor support.**
 
 ---
@@ -19,6 +19,15 @@ introduced by a level-2 header (`## SectionName`).
 | `## ModelName` | Human-readable model title |
 | `## StateSpaceBlock` | Variable and matrix declarations |
 | `## Connections` | Edge list between state-space variables |
+
+### Parser and validator behavior
+
+Two code paths are used in this repository:
+
+- **Strict schema validator**: `src/gnn/schema.py` enforces required sections, declaration formats, and connection grammar.
+- **Permissive markdown parser**: `src/gnn/parsers/markdown_parser.py` is more tolerant when loading mixed or partially structured markdown.
+
+For CI, type-checking, and pipeline validation, prefer examples that satisfy the strict schema validator.
 
 ### Optional sections
 

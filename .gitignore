@@ -39,7 +39,7 @@ credentials.json
 # ============================================================================
 # PYTHON ARTIFACTS
 # ============================================================================
-# Python bytecode and cache
+# Python bytecode and cache (never `git add` these; if tracked historically, `git rm -r --cached **/__pycache__`)
 __pycache__/
 *.py[cod]
 *$py.class
@@ -72,8 +72,8 @@ wheels/
 # ============================================================================
 # GENERATED TREES INSIDE src/ (NOT SOURCE)
 # ============================================================================
-# These are pipeline artifacts and should not be treated as source modules.
-src/output/
+# Root `output/` is tracked in git (selective ignores below for temp/audio/cache).
+# Optional fixture copies under `src/output/` may be tracked when committed.
 src/tests/output/
 
 # ============================================================================
@@ -225,10 +225,12 @@ temp_audio_*
 
 
 # ============================================================================
-# PIPELINE OUTPUTS (Selective - Keep important artifacts)
+# PIPELINE OUTPUTS (Selective - root output/ is tracked)
 # ============================================================================
+# Commit substantive pipeline artifacts under output/. Patterns below drop volatile
+# subtrees only (temp, debug, large generated audio), not the whole tree.
 
-# But ignore temporary and intermediate files
+# Ignore temporary and intermediate files
 output/*/temp/
 output/*/tmp/
 output/*/cache/
@@ -359,7 +361,7 @@ yarn-error.log*
 # To see what would be cleaned: git clean -fdxn
 # To update this file: Review and test patterns before committing
 #
-# Last updated: February 21, 2026
+# Last updated: March 23, 2026
 # ============================================================================
 /.desloppify
 /.claude
