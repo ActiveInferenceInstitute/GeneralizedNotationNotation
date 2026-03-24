@@ -63,10 +63,10 @@ class PipelineConfig:
 
     def __init__(self, config_path: Optional[Path] = None):
         self.config_path = config_path or Path("pipeline_config.yaml")
-        self.config = self._load_config()
+        self.config = self._load_settings_from_path()
 
-    def _load_config(self) -> Dict[str, Any]:
-        """Load configuration from file."""
+    def _load_settings_from_path(self) -> Dict[str, Any]:
+        """Load pipeline settings dict from ``config_path`` (YAML or JSON)."""
         if self.config_path.exists():
             try:
                 with open(self.config_path, 'r') as f:

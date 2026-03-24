@@ -1,8 +1,6 @@
-"""
-Model Context Protocol (MCP) Module for GNN
+"""MCP (Model Context Protocol) integration for the GNN pipeline: tool discovery, registration, and execution.
 
-This module provides the Model Context Protocol implementation for the GNN project,
-enabling standardized tool discovery, registration, and execution across all modules.
+See ``src/mcp/AGENTS.md`` for the public API, step-21 wiring, and tool registration patterns.
 """
 
 from .mcp import (

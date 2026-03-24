@@ -8,6 +8,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ## [Unreleased]
 
+### Notes
+- **`src/sapf` shim**: Re-exports `audio.sapf` for legacy `import sapf`; track remaining callers and remove the shim after imports migrate to `audio.sapf`.
+
+### Changed
+- **Default local LLM**: Ollama default tag is `smollm2:135m-instruct-q4_K_S` (`llm.defaults.DEFAULT_OLLAMA_MODEL`); override with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`.
+- **Core dependencies**: `openai`, `ollama`, `python-dotenv`, and `aiohttp` are installed with the base package (LLM step and OpenRouter/Perplexity providers work without `uv sync --extra llm`).
+
 ## [1.3.0] — 2026-03-05
 
 ### Added
