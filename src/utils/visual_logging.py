@@ -11,20 +11,27 @@ Provides comprehensive visual accessibility improvements including:
 - Comprehensive error reporting with recovery suggestions
 """
 
-import time
 import logging
-from typing import Dict, List, Optional, Any
-from datetime import datetime
+import time
 from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 # Try to import rich for enhanced terminal output
 try:
     from rich.console import Console
-    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeRemainingColumn, MofNCompleteColumn
+    from rich.layout import Layout
     from rich.panel import Panel
+    from rich.progress import (
+        BarColumn,
+        MofNCompleteColumn,
+        Progress,
+        SpinnerColumn,
+        TextColumn,
+        TimeRemainingColumn,
+    )
     from rich.table import Table
     from rich.text import Text
-    from rich.layout import Layout
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False

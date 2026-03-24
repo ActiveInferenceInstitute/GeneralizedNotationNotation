@@ -7,7 +7,7 @@ It registers tools that can be used by MCP-enabled applications to interact with
 
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Set up logging
 logger = logging.getLogger(__name__)

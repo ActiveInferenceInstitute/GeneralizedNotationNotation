@@ -6,11 +6,11 @@ This module provides PyMDP environment validation capabilities.
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
 from .package_detector import (
     detect_pymdp_installation,
-    get_pymdp_installation_instructions
+    get_pymdp_installation_instructions,
 )
 
 logger = logging.getLogger(__name__)

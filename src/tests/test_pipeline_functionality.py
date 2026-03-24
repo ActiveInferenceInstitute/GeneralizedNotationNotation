@@ -98,8 +98,8 @@ x -> y
 
     def test_results_json_are_valid(self, sample_gnn_files, isolated_temp_dir):
         # Produce viz and export results on local temp files, then validate JSON summaries
-        from visualization.processor import process_visualization
         from export.processor import generate_exports
+        from visualization.processor import process_visualization
         gnn_dir = isolated_temp_dir / "gnn"
         gnn_dir.mkdir(parents=True, exist_ok=True)
         (gnn_dir / "sample.md").write_text("# M\n\n## Variables\na: v\n\n## Connections\na -> a\n")

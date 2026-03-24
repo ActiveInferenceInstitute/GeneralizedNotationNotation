@@ -17,15 +17,14 @@ Key test areas:
 import pytest
 
 pytestmark = pytest.mark.pipeline
-import time
-import psutil
 import tempfile
+import time
 from pathlib import Path
 
+import psutil
+
 # Import test utilities
-from . import (
-    performance_tracker
-)
+from . import performance_tracker
 
 # Test markers
 pytestmark = [pytest.mark.performance, pytest.mark.safe_to_fail]
@@ -150,8 +149,9 @@ class TestVisualizationPerformance:
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_visualization_scaling(self, isolated_environment, create_model_file, model_size):
         """Test visualization generation performance scaling."""
-        from src.visualization import generate_visualizations
         import logging
+
+        from src.visualization import generate_visualizations
 
         model_file = create_model_file(model_size)
         logger = logging.getLogger("test_viz_scaling")
@@ -178,8 +178,9 @@ class TestVisualizationPerformance:
 
     def test_visualization_caching(self, isolated_environment, create_model_file):
         """Test visualization caching performance."""
-        from src.visualization import generate_visualizations
         import logging
+
+        from src.visualization import generate_visualizations
 
         model_file = create_model_file("medium")
         logger = logging.getLogger("test_viz_caching")
@@ -245,7 +246,7 @@ class TestMemoryUsagePatterns:
         @track_peak_memory
         def memory_intensive_operation():
             # Simulate memory-intensive operation
-            big_list = [0] * (1024 * 1024 * 10)  # 10MB
+            [0] * (1024 * 1024 * 10)  # 10MB
             time.sleep(0.1)  # Allow tracking to measure
             return "Success"
 
@@ -271,7 +272,7 @@ class TestDiskIOPerformance:
             for i in range(10)
         ]
 
-        with performance_tracker() as tracker:
+        with performance_tracker():
             result = batch_write_files(files_data, isolated_environment / "output")
 
         assert result["total_files"] == 10
@@ -318,14 +319,15 @@ class TestNetworkOperationTiming:
     @pytest.mark.integration
     def test_api_request_timing(self, isolated_environment):
         """Test API request timing and performance with real requests."""
-        from src.utils.network_utils import timed_request
         import requests
+
+        from src.utils.network_utils import timed_request
 
         # Use a reliable public API
         test_url = "https://www.google.com"
 
         try:
-            with performance_tracker() as tracker:
+            with performance_tracker():
                 result = timed_request(test_url, timeout=5)
 
             if not result.get("success"):
@@ -342,8 +344,9 @@ class TestNetworkOperationTiming:
     @pytest.mark.integration
     def test_batch_request_performance(self, isolated_environment):
         """Test batch request performance with real requests."""
-        from src.utils.network_utils import batch_request
         import requests
+
+        from src.utils.network_utils import batch_request
 
         # Use reliable public APIs
         urls = [
@@ -353,7 +356,7 @@ class TestNetworkOperationTiming:
         ]
 
         try:
-            with performance_tracker() as tracker:
+            with performance_tracker():
                 results = batch_request(urls, timeout=5)
 
             # Check if we have connectivity
@@ -377,7 +380,7 @@ class TestResourceScaling:
         from src.pipeline.execution import run_pipeline
 
         # Create test files
-        for i in range(model_count):
+        for _i in range(model_count):
             create_model_file("small")
 
         with performance_tracker() as tracker:
@@ -386,7 +389,7 @@ class TestResourceScaling:
                 output_dir=isolated_environment / "output"
             )
 
-        assert result["success"] == True
+        assert result["success"]
         # Pipeline takes ~3 minutes for full execution regardless of model count
         # Allow much more time since the pipeline runs all 21 steps
         max_time_per_model = 300  # 5 minutes per model is more realistic
@@ -402,7 +405,7 @@ class TestResourceScaling:
         estimate = estimate_resources(model_file)
 
         with performance_tracker() as tracker:
-            result = run_pipeline(
+            run_pipeline(
                 target_dir=isolated_environment / "input",
                 output_dir=isolated_environment / "output"
             )

@@ -10,7 +10,7 @@ import logging
 import sys
 import threading
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 # Import PerformanceTracker from the dedicated module
 from .performance_tracker import PerformanceTracker, performance_tracker

@@ -4,8 +4,8 @@ MCP registration for CLI module.
 Provides tools for pipeline execution and health checking via MCP.
 """
 
-from typing import Any, Dict
 import logging
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

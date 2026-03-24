@@ -14,16 +14,16 @@ if str(_parent) not in sys.path:
     sys.path.insert(0, str(_parent.parent))
 
 # Delegate to real implementation
+from mcp import FEATURES, __version__, process_mcp
 from mcp.mcp import (
     MCP,
     get_mcp_instance,
-    initialize,
-    list_available_tools,
-    list_available_resources,
-    get_tool_info,
     get_resource_info,
+    get_tool_info,
+    initialize,
+    list_available_resources,
+    list_available_tools,
 )
-from mcp import __version__, FEATURES, process_mcp
 
 __all__ = [
     "MCP",

@@ -15,10 +15,10 @@ Author: GNN DisCoPy Integration
 Date: 2024
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
 import logging
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class DisCoPyRenderer:
@@ -150,10 +150,10 @@ class DisCoPyRenderer:
                     num_actions = dims[2]
 
         # Get initial parameterization if available
-        initial_params = gnn_spec.get('initial_parameterization', {})
+        gnn_spec.get('initial_parameterization', {})
 
         # Extract connections if available
-        connections = gnn_spec.get('connections', [])
+        gnn_spec.get('connections', [])
 
         # Generate the Python code
         code = f'''#!/usr/bin/env python3

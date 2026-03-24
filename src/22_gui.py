@@ -48,10 +48,10 @@ If you encounter errors:
   - For oxdraw: Install with `cargo install oxdraw` (optional for headless mode)
 """
 
+import logging
 import sys
 from pathlib import Path
 from typing import Any, Optional
-import logging
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))

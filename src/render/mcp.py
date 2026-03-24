@@ -5,17 +5,13 @@ Exposes GNN rendering tools: format listing, single-file rendering,
 per-framework status, and batch processing through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
 from . import process_render
-
-
-
-
 
 
 def process_render_mcp(target_directory: str, output_directory: str,
@@ -106,8 +102,8 @@ def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
         # It runs Step 11 rendering and returns any artifacts written under the
         # requested output directory. The `framework` parameter is returned for
         # caller context and may be used for filtering in a future revision.
-        import tempfile
         import shutil
+        import tempfile
         with tempfile.TemporaryDirectory() as tmp:
             tmp_in = Path(tmp) / "input"
             tmp_in.mkdir()

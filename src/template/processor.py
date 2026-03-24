@@ -5,13 +5,17 @@ This module contains the core functionality for the template step.
 It provides functions for processing files and directories using the standardized pipeline pattern.
 """
 
+import datetime
+import json
 import logging
 from pathlib import Path
-import json
-import datetime
-from typing import Dict, Any
+from typing import Any, Dict
 
-from utils.logging.logging_utils import log_step_success, log_step_warning, log_step_error
+from utils.logging.logging_utils import (
+    log_step_error,
+    log_step_success,
+    log_step_warning,
+)
 
 try:
     from utils import performance_tracker
@@ -38,6 +42,7 @@ def generate_correlation_id() -> str:
 
 from contextlib import contextmanager
 
+
 @contextmanager
 def safe_template_execution(logger, correlation_id: str):
     """
@@ -56,8 +61,8 @@ def safe_template_execution(logger, correlation_id: str):
         # Try to import enhanced infrastructure
         try:
             from utils.error_recovery import ErrorRecoverySystem
-            from utils.resource_manager import ResourceTracker, get_system_info
             from utils.logging.logging_utils import set_correlation_context
+            from utils.resource_manager import ResourceTracker, get_system_info
 
             # Initialize error recovery system
             error_recovery = ErrorRecoverySystem()
@@ -452,7 +457,7 @@ def validate_file(input_file: Path) -> Dict[str, Any]:
         # Read file content for validation
         try:
             with open(input_file, 'r', encoding='utf-8') as f:
-                content = f.read(1024)  # Read first 1KB for validation
+                f.read(1024)  # Read first 1KB for validation
         except Exception as e:
             return {
                 "status": "error",

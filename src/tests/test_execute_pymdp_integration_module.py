@@ -16,9 +16,10 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent.parent  # src/tests → src → project root
@@ -27,6 +28,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 from src.gnn.parsers.markdown_parser import MarkdownGNNParser
 from src.render.pymdp.pymdp_renderer import PyMDPRenderer
+
 try:
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import format_duration

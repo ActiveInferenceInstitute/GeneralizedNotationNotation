@@ -9,15 +9,26 @@ Date: 2025-01-11
 License: MIT
 """
 
+import logging
 import re
 from pathlib import Path
 from typing import Dict, List, Optional
-import logging
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, ParseError,
-    Variable, Connection, Equation, TimeSpecification, OntologyMapping,
-    DataType, normalize_variable_name, parse_dimensions, infer_variable_type, parse_connection_operator
+    BaseGNNParser,
+    Connection,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    OntologyMapping,
+    ParseError,
+    ParseResult,
+    TimeSpecification,
+    Variable,
+    infer_variable_type,
+    normalize_variable_name,
+    parse_connection_operator,
+    parse_dimensions,
 )
 from .markdown_parser_parameter import ParameterParsingMixin
 
@@ -101,7 +112,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             if not result.model.model_name or result.model.model_name == "Unnamed Model":
                 result.model.model_name = self._extract_model_name_fallback(content)
 
-            result.model.raw_sections = {name: content for name, content in sections.items()}
+            result.model.raw_sections = dict(sections.items())
 
             return result
 
@@ -402,7 +413,6 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
         current_label = None
 
         for line in lines:
-            original_line = line
             line = line.strip()
 
             if line and not line.startswith('#'):

@@ -6,8 +6,9 @@ naming conventions, style consistency, and structural integrity.
 """
 
 import re
-from typing import Dict, Any, Union
 from pathlib import Path
+from typing import Any, Dict, Union
+
 
 class ConsistencyChecker:
     """Checker for consistency aspects of GNN models."""
@@ -82,7 +83,7 @@ class ConsistencyChecker:
             warnings.append(f"Inconsistent naming conventions: mix of {', '.join(style for style, count in naming_styles.items() if count > 0)}")
 
         # Check for duplicate names
-        duplicate_names = set([name for name in block_names if block_names.count(name) > 1])
+        duplicate_names = {name for name in block_names if block_names.count(name) > 1}
         if duplicate_names:
             warnings.append(f"Duplicate block names found: {', '.join(duplicate_names)}")
 

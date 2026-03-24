@@ -6,33 +6,34 @@ This script tests the PyMDP utilities for proper numpy serialization and
 GNN integration functionality within the pipeline.
 """
 
-import pytest
-import numpy as np
 import json
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import numpy as np
+import pytest
 
 try:
     from execute.pymdp.pymdp_utils import (
-        convert_numpy_for_json,
-        safe_json_dump,
         clean_trace_for_serialization,
-        save_simulation_results,
+        convert_numpy_for_json,
+        extract_gnn_dimensions,
         parse_gnn_matrix_string,
         parse_gnn_vector_string,
-        extract_gnn_dimensions,
-        validate_gnn_pomdp_structure
+        safe_json_dump,
+        save_simulation_results,
+        validate_gnn_pomdp_structure,
     )
 except ImportError:
     from src.execute.pymdp.pymdp_utils import (
-        convert_numpy_for_json,
-        safe_json_dump,
         clean_trace_for_serialization,
-        save_simulation_results,
+        convert_numpy_for_json,
+        extract_gnn_dimensions,
         parse_gnn_matrix_string,
         parse_gnn_vector_string,
-        extract_gnn_dimensions,
-        validate_gnn_pomdp_structure
+        safe_json_dump,
+        save_simulation_results,
+        validate_gnn_pomdp_structure,
     )
 
 
@@ -194,7 +195,7 @@ class TestIntegration:
             ]
 
             for filename in expected_files:
-                filepath = temp_path / filename
+                temp_path / filename
 
 
 if __name__ == "__main__":

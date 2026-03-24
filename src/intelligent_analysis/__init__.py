@@ -19,37 +19,37 @@ FEATURES = {
     "rule_based_fallback": True
 }
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from utils.pipeline_template import (
+    log_step_error,
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
-)
-
-# Import processor functions and classes
-from .processor import (
-    process_intelligent_analysis,
-    analyze_pipeline_summary,
-    analyze_individual_steps,
-    generate_executive_report,
-    identify_bottlenecks,
-    extract_failure_context,
-    generate_recommendations,
-    StepAnalysis
+    log_step_warning,
 )
 
 # Import analyzer functions
 from .analyzer import (
-    IntelligentAnalyzer,
     AnalysisContext,
+    IntelligentAnalyzer,
     calculate_pipeline_health_score,
     classify_failure_severity,
     detect_performance_patterns,
-    generate_optimization_suggestions
+    generate_optimization_suggestions,
+)
+
+# Import processor functions and classes
+from .processor import (
+    StepAnalysis,
+    analyze_individual_steps,
+    analyze_pipeline_summary,
+    extract_failure_context,
+    generate_executive_report,
+    generate_recommendations,
+    identify_bottlenecks,
+    process_intelligent_analysis,
 )
 
 

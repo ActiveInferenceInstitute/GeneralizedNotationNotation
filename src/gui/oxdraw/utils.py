@@ -4,8 +4,8 @@ Utility functions for oxdraw integration
 Provides helper functions for node/edge styling, validation, and configuration.
 """
 
-from typing import Dict, Any, Tuple, List
 import re
+from typing import Any, Dict, List, Tuple
 
 
 def infer_node_shape(var_name: str, var_data: Dict[str, Any]) -> Tuple[str, str]:

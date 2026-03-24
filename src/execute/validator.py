@@ -6,9 +6,10 @@ This module provides comprehensive validation of the execution environment
 to ensure safe and reliable execution of GNN pipeline simulations.
 """
 
-import sys
 import platform
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
+
 # psutil is optional; fall back gracefully if unavailable
 try:
     import psutil  # type: ignore
@@ -17,10 +18,11 @@ except Exception:
     psutil = None  # type: ignore
     _PSUTIL_AVAILABLE = False
 import logging
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
 
 @dataclass
 class ValidationResult:

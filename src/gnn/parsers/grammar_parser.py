@@ -9,13 +9,22 @@ Date: 2025-01-11
 License: MIT
 """
 
-import re
 import logging
-from typing import Dict, List, Any, Optional
+import re
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Connection,
-    Parameter, VariableType, DataType, ConnectionType, TimeSpecification, OntologyMapping,
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    GNNInternalRepresentation,
+    OntologyMapping,
+    Parameter,
+    ParseResult,
+    TimeSpecification,
+    Variable,
+    VariableType,
 )
 
 logger = logging.getLogger(__name__)
@@ -202,7 +211,7 @@ class BNFParser(BaseGNNParser):
     def _infer_variable_type_from_rule(self, non_terminal: str, production: str) -> Optional[VariableType]:
         """Infer variable type from grammar rule."""
         nt_lower = non_terminal.lower()
-        prod_lower = production.lower()
+        production.lower()
 
         if any(keyword in nt_lower for keyword in ['state', 'hidden']):
             return VariableType.HIDDEN_STATE

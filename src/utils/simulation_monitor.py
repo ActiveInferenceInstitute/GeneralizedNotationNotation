@@ -4,12 +4,13 @@ Real Simulation Monitoring System
 Tracks actual simulation execution and logs failures as suggested in web search results
 """
 
-import logging
 import functools
+import json
+import logging
 from datetime import datetime
 from pathlib import Path
-import json
-from typing import Dict, List, Any, Callable
+from typing import Any, Callable, Dict, List
+
 
 class _CallTracker:
     """Wraps a callable to count invocations."""

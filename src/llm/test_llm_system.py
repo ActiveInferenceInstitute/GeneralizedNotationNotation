@@ -7,10 +7,10 @@ demonstrating various configurations and capabilities.
 """
 
 import asyncio
+import logging
 import sys
 from pathlib import Path
-import logging
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Any
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent.parent
@@ -30,12 +30,12 @@ except Exception as exc:
     logger.debug("dotenv loading skipped: %s", exc)
 
 from src.llm import (
-    LLMProcessor,
     AnalysisType,
     LLMConfig,
     LLMMessage,
+    LLMProcessor,
+    get_default_provider_configs,
     load_api_keys_from_env,
-    get_default_provider_configs
 )
 
 # Configure logging
@@ -243,7 +243,7 @@ def test_streaming_responses() -> None:
     print("\n🌊 Testing Streaming Responses...")
 
     try:
-        messages = [
+        [
             LLMMessage(
                 role="system",
                 content="You are an expert in Active Inference and GNN specifications."
@@ -254,7 +254,7 @@ def test_streaming_responses() -> None:
             )
         ]
 
-        config = LLMConfig(max_tokens=500, temperature=0.3)
+        LLMConfig(max_tokens=500, temperature=0.3)
 
         print("✅ Starting stream...")
         response_chunks = []

@@ -7,10 +7,11 @@ It's designed to complete in under 30 seconds and provide basic confidence
 that the system is working correctly.
 """
 
-import sys
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 import time
 from pathlib import Path
+
 
 def run_fast_tests() -> bool:
     """Run only the fast tests."""

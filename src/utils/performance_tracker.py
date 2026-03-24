@@ -5,13 +5,13 @@ Provides real-time performance tracking, operation timing, and resource usage mo
 Exposes PerformanceTracker, a global performance_tracker instance, and a track_operation context manager.
 """
 
-from contextlib import contextmanager
-import time
-import platform
 import os
+import platform
 import threading
+import time
+from contextlib import contextmanager
 from datetime import datetime
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 # Import psutil with error handling to prevent recursion
 PSUTIL_AVAILABLE = False

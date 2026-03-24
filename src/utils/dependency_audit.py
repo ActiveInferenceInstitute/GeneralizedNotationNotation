@@ -6,15 +6,15 @@ This module provides comprehensive dependency analysis, security auditing,
 and optimization capabilities for the GNN processing pipeline.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import sys
 import json
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
-from dataclasses import dataclass, field
-from datetime import datetime
 import logging
 import re
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
+from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
     import tomllib

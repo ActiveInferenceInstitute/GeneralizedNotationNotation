@@ -21,13 +21,13 @@ except ImportError:
     _GUI_BACKEND = None
 
 from utils.pipeline_template import (
-    log_step_success,
     log_step_error,
+    log_step_success,
 )
 
 from .matrix_editor import (
-    get_pomdp_template,
     create_matrix_from_gnn,
+    get_pomdp_template,
 )
 
 

@@ -15,14 +15,13 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 from . import (
-    process_audio,
+    analyze_audio_characteristics,
     check_audio_backends,
     get_audio_generation_options,
-    analyze_audio_characteristics,
-    validate_audio_content,
     get_module_info,
+    process_audio,
+    validate_audio_content,
 )
-
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 

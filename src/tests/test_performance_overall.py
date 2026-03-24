@@ -6,11 +6,12 @@ Real performance tests for the GNN pipeline covering timing,
 memory usage, and resource monitoring.
 """
 
-import pytest
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

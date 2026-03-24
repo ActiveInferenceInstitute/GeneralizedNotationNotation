@@ -12,15 +12,24 @@ License: MIT
 
 import logging
 import re
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Connection, Parameter, Equation, TimeSpecification,
-    VariableType, DataType, ConnectionType
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseResult,
+    TimeSpecification,
+    Variable,
+    VariableType,
 )
+
 
 class TLAParser(BaseGNNParser):
     """Parser for TLA+ (Temporal Logic of Actions) specifications."""
@@ -157,7 +166,14 @@ class TLAParser(BaseGNNParser):
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
-            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            from .common import (
+                Connection,
+                ConnectionType,
+                DataType,
+                Parameter,
+                Variable,
+                VariableType,
+            )
 
             # Create model from embedded data
             model = GNNInternalRepresentation(
@@ -376,7 +392,14 @@ class AgdaParser(BaseGNNParser):
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
-            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            from .common import (
+                Connection,
+                ConnectionType,
+                DataType,
+                Parameter,
+                Variable,
+                VariableType,
+            )
 
             # Create model from embedded data
             model = GNNInternalRepresentation(

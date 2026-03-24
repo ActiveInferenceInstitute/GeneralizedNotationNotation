@@ -5,9 +5,10 @@ Test Environment Dependencies - Tests for environment dependency management.
 Tests verification and management of Python package dependencies.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -176,6 +177,7 @@ class TestDependencyConflicts:
         import json
         import logging
         from pathlib import Path
+
         import numpy as np
 
         # Verify each module is functional after imports
@@ -222,7 +224,7 @@ class TestOptionalDependencies:
         """Test feature flags reflect dependency availability."""
         from audio import FEATURES, check_audio_backends
 
-        backends = check_audio_backends()
+        check_audio_backends()
 
         # Features should be consistent with backends
         assert isinstance(FEATURES, dict)

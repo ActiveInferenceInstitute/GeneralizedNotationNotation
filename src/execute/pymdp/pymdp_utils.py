@@ -2,12 +2,13 @@
 """Utility functions for PyMDP simulations: JSON serialization, numpy array handling, data conversion."""
 
 import ast
-import numpy as np
 import json
+import logging
 import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 from pathlib import Path
-from typing import Any, Dict, List, Union, Optional
-import logging
+from typing import Any, Dict, List, Optional, Union
+
+import numpy as np
 
 
 def convert_numpy_for_json(obj: Any) -> Any:

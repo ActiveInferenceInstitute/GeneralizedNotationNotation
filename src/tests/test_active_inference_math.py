@@ -6,22 +6,22 @@ expected free energy, information gain, and the analysis metrics aggregator
 using known-correct mathematical inputs/outputs.
 """
 
+from typing import Any
+
 import numpy as np
 import pytest
-from typing import Any, Dict, List, Optional
 
 # Import the functions under test
 from analysis.post_simulation import (
-    compute_shannon_entropy,
-    compute_kl_divergence,
-    compute_variational_free_energy,
+    analyze_active_inference_metrics,
     compute_expected_free_energy,
     compute_information_gain,
-    analyze_active_inference_metrics,
+    compute_kl_divergence,
+    compute_shannon_entropy,
+    compute_variational_free_energy,
 )
-from render.processor import normalize_matrices
 from gnn.pomdp_extractor import POMDPStateSpace
-
+from render.processor import normalize_matrices
 
 # =============================================================================
 # Shannon Entropy Tests

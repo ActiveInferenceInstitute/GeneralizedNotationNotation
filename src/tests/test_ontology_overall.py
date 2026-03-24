@@ -5,9 +5,10 @@ Test Ontology Overall Tests
 This file contains comprehensive tests for the ontology module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -185,14 +186,15 @@ def test_ontology_module_completeness():
 def test_ontology_module_performance():
     """Test ontology module performance characteristics."""
     try:
-        from ontology import OntologyProcessor
         import time
+
+        from ontology import OntologyProcessor
 
         processor = OntologyProcessor()
         start_time = time.time()
 
         # Test processing performance
-        result = processor.process_ontology({'test': 'data'})
+        processor.process_ontology({'test': 'data'})
 
         processing_time = time.time() - start_time
         assert processing_time < 10.0  # Should complete within 10 seconds

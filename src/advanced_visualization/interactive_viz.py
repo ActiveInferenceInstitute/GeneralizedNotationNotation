@@ -10,7 +10,7 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 from ._shared import AdvancedVisualizationAttempt, _MatrixVisualizer
 
@@ -114,8 +114,8 @@ def _generate_interactive_plotly_dashboard(
 
         fig.add_trace(
             go.Table(
-                header=dict(values=list(stats_data.keys())),
-                cells=dict(values=[stats_data[k] for k in stats_data.keys()])
+                header={"values": list(stats_data.keys())},
+                cells={"values": [stats_data[k] for k in stats_data.keys()]}
             ),
             row=2, col=2
         )
@@ -166,7 +166,6 @@ def _generate_d2_visualizations_safe(
     try:
         try:
             from .d2_visualizer import D2Visualizer
-            d2_available = True
         except ImportError:
             logger.warning("D2 visualizer module not available")
             attempt.status = "skipped"
@@ -236,7 +235,6 @@ def _generate_pipeline_d2_diagrams_safe(
     try:
         try:
             from .d2_visualizer import D2Visualizer
-            d2_available = True
         except ImportError:
             logger.warning("D2 visualizer module not available")
             attempt.status = "skipped"

@@ -17,19 +17,21 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import numpy as np
-import time
 import logging
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple, Union
+import time
 import warnings
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+import numpy as np
+
 warnings.filterwarnings('ignore')
 
 from .pymdp_utils import (
+    clean_trace_for_serialization,
+    format_duration,
     safe_json_dump,
     safe_pickle_dump,
-    clean_trace_for_serialization,
-    format_duration
 )
 
 # Import real PyMDP components - will be available when executed
@@ -805,7 +807,7 @@ class PyMDPSimulation:
         # Basic metrics
         total_timesteps = len(self.simulation_trace)
         final_state = self.simulation_trace[-1]['next_state']
-        states_visited = set(step['current_state'] for step in self.simulation_trace)
+        states_visited = {step['current_state'] for step in self.simulation_trace}
 
         # Belief dynamics analysis
         belief_entropies = []

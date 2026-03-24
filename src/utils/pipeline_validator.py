@@ -13,7 +13,7 @@ See also:
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -249,7 +249,8 @@ def check_pipeline_readiness(steps_to_execute: List[tuple], args) -> Dict[str, A
     try:
         args.output_dir.mkdir(parents=True, exist_ok=True)
         test_file = args.output_dir / ".pipeline_test"
-        import os as _os, tempfile as _tempfile
+        import os as _os
+        import tempfile as _tempfile
         with _tempfile.NamedTemporaryFile(mode='w', dir=args.output_dir, delete=False) as _tmp:
             _tmp.write("test")
         _os.replace(_tmp.name, str(test_file))

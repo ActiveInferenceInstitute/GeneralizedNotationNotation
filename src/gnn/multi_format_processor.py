@@ -8,13 +8,13 @@ for GNN specifications. This keeps the numbered step script thin.
 
 from __future__ import annotations
 
-from pathlib import Path
-from datetime import datetime
-from typing import Any, Dict, List
 import json
 import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
-from utils import log_step_start, log_step_success, log_step_error
+from utils import log_step_error, log_step_start, log_step_success
 
 
 def process_gnn_multi_format(
@@ -46,7 +46,7 @@ def process_gnn_multi_format(
 
     # Import the comprehensive GNN parsing system
     try:
-        from gnn.parsers import GNNParsingSystem, GNNFormat  # type: ignore
+        from gnn.parsers import GNNFormat, GNNParsingSystem  # type: ignore
     except Exception as e:  # pragma: no cover - defensive
         log_step_error(logger, f"Failed to import GNN parsing system: {e}")
         return False

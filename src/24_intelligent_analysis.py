@@ -15,8 +15,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import create_standardized_pipeline_script
 from intelligent_analysis.processor import process_intelligent_analysis
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Create the runnable script using the standardized template
 run_script = create_standardized_pipeline_script(

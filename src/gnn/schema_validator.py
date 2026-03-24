@@ -13,23 +13,23 @@ Enhanced Features:
 - Enhanced error reporting and suggestions
 """
 
+import hashlib
 import json
+import logging
 import re
+import tempfile
 from pathlib import Path
 from types import MappingProxyType
-from typing import Dict, List, Any, Optional, Tuple, Union
-import logging
-import hashlib
-import tempfile
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import shared types
 from .types import (
+    GNNConnection,
+    GNNFormat,
+    GNNVariable,
+    ParsedGNN,
     ValidationLevel,
     ValidationResult,
-    GNNVariable,
-    GNNConnection,
-    ParsedGNN,
-    GNNFormat
 )
 
 # Lark parser removed - too complex and not needed
@@ -153,7 +153,7 @@ class GNNParser:
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read(2000)  # Read first 2KB
 
-            content_lower = content.lower()
+            content.lower()
 
             # Check format signatures
             for fmt, patterns in self.FORMAT_SIGNATURES.items():
@@ -527,7 +527,7 @@ class GNNParser:
             if match:
                 name = match.group(1)
                 value_str = match.group(3)
-                description = match.group(4)
+                match.group(4)
 
                 # Try to parse the value
                 try:
@@ -679,7 +679,7 @@ class GNNParser:
             inner = value_str.strip()
 
         if not inner:
-            return tuple()
+            return ()
 
         # Split on commas, handling nested structures
         elements = []
@@ -974,7 +974,7 @@ class GNNValidator:
             elif file_format == 'xml':
                 import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
                 try:
-                    root = ET.fromstring(content)  # nosec B314 - GNN XML files are researcher-generated, not untrusted input
+                    ET.fromstring(content)  # nosec B314 - GNN XML files are researcher-generated, not untrusted input
                     result.warnings.append("XML format validated successfully")
                 except ET.ParseError as e:
                     result.errors.append(f"XML parsing error: {e}")
@@ -1293,7 +1293,7 @@ class GNNValidator:
         # Check for proper A, B, C, D matrix naming
         ai_matrices = {'A': [], 'B': [], 'C': [], 'D': []}
 
-        for var_name, var in parsed.variables.items():
+        for var_name, _var in parsed.variables.items():
             if var_name.startswith('A_m'):
                 ai_matrices['A'].append(var_name)
             elif var_name.startswith('B_f'):

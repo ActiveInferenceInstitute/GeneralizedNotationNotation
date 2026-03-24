@@ -10,8 +10,8 @@ License: MIT
 """
 
 import logging
-from typing import Dict, List, Any, Optional, Union
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Union
 
 try:
     import yaml
@@ -20,8 +20,18 @@ except ImportError:
     HAS_YAML = False
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Connection, Parameter, Equation, TimeSpecification, OntologyMapping,
-    VariableType, DataType, ConnectionType
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    OntologyMapping,
+    Parameter,
+    ParseResult,
+    TimeSpecification,
+    Variable,
+    VariableType,
 )
 
 logger = logging.getLogger(__name__)
@@ -360,7 +370,11 @@ class YAMLGNNParser(BaseGNNParser):
     def _parse_variable_string(self, var_str: str) -> Optional[Variable]:
         """Parse variable from string format like 'name[dims],type'."""
         try:
-            from .common import normalize_variable_name, parse_dimensions, infer_variable_type
+            from .common import (
+                infer_variable_type,
+                normalize_variable_name,
+                parse_dimensions,
+            )
 
             parts = var_str.split(',')
             if len(parts) < 2:

@@ -37,26 +37,22 @@ To create a new step:
     4. Add step to main.py orchestration
 """
 
+import datetime
+import json
 import sys
 from pathlib import Path
 
+from pipeline import get_output_dir_for_script, get_pipeline_config
+
 # Standard imports for all pipeline steps
 from utils import (
-    setup_step_logging,
+    log_step_error,
     log_step_start,
     log_step_success,
     log_step_warning,
-    log_step_error,
-    performance_tracker
+    performance_tracker,
+    setup_step_logging,
 )
-
-from pipeline import (
-    get_output_dir_for_script,
-    get_pipeline_config
-)
-
-import datetime
-import json
 
 # Initialize logger for this step
 # CUSTOMIZE: Replace "X_step_name" with your step name (e.g., "3_gnn", "11_render")
@@ -382,7 +378,7 @@ def main(parsed_args) -> int:
     # Get configuration
     config = get_pipeline_config()
     # CUSTOMIZE: Replace "X_step_name.py" with your script name (e.g., "3_gnn.py")
-    step_config = config.get_step_config("X_step_name.py")
+    config.get_step_config("X_step_name.py")
 
     # Set up paths
     input_dir = getattr(parsed_args, 'target_dir', Path("input/gnn_files"))

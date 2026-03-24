@@ -6,10 +6,10 @@ ActiveInference.jl code, focusing on core POMDP functionality.
 """
 
 from .activeinference_renderer import (
-    render_gnn_to_activeinference_jl,
-    render_gnn_to_activeinference_combined,
     extract_model_info,
-    generate_activeinference_script
+    generate_activeinference_script,
+    render_gnn_to_activeinference_combined,
+    render_gnn_to_activeinference_jl,
 )
 
 __all__ = [

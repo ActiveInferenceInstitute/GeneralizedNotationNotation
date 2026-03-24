@@ -1,6 +1,8 @@
 import json
-from .common import GNNInternalRepresentation
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class MaximaSerializer(BaseGNNSerializer):
     """Serializer for Maxima symbolic computation format with embedded data support."""

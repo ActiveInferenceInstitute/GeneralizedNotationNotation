@@ -7,7 +7,7 @@ It registers tools that can be used by MCP-enabled applications to interact with
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -241,7 +241,7 @@ def get_model(model_id: str, registry_path: str = "output/model_registry/model_r
                 "created_at": model.created_at,
                 "updated_at": model.updated_at,
                 "current_version": model.current_version,
-                "versions": [v for v in model.versions.keys()],
+                "versions": list(model.versions.keys()),
                 "tags": model.tags,
                 "metadata": model.metadata
             }

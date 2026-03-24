@@ -14,9 +14,10 @@ Leverages JAX's JIT, vmap, pmap, and supports Optax/Flax integration.
 """
 import logging
 import re
-import numpy as np
 from pathlib import Path
-from typing import Callable, Dict, Any, Optional, Tuple, List
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -1666,9 +1667,11 @@ class {model_name}Combined(nn.Module):
         # Hierarchical parameters
         self.hierarchical_weights = []
         for level in range(self.num_hierarchical_levels):
-            level_weight = self.param(f'hierarchical_{level}', 
-                                    nn.initializers.normal(0.1), 
-                                    (self.num_agents, self.num_agents))
+            level_weight = self.param(
+                f"hierarchical_{level}",
+                nn.initializers.normal(0.1),
+                (self.num_agents, self.num_agents),
+            )
             self.hierarchical_weights.append(level_weight)
         
         # Multi-agent communication parameters

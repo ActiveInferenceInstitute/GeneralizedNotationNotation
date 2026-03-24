@@ -7,23 +7,22 @@ and run_fast_reliable_tests() execution modes.
 Extracted from runner.py for maintainability.
 """
 
+import json
 import logging
+import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
-import os
-import json
 import time
 from pathlib import Path
 
-
 # Import from infrastructure
 from .infrastructure import (
+    _extract_collection_errors,
+    _generate_error_report,
     _generate_markdown_report,
     _generate_timeout_report,
-    _generate_error_report,
-    _extract_collection_errors,
-    _parse_test_statistics,
     _parse_coverage_statistics,
+    _parse_test_statistics,
 )
 from .infrastructure.report_generator import flatten_pipeline_test_summary
 

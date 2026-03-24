@@ -1,21 +1,22 @@
-from pathlib import Path
 import logging
+from pathlib import Path
+
 from pipeline import get_output_dir_for_script
-from utils import log_step_start, log_step_success, log_step_warning, log_step_error
+from utils import log_step_error, log_step_start, log_step_success, log_step_warning
 
 # Import format exporters
 try:
     from .format_exporters import (
+        HAS_NETWORKX,
         _gnn_model_to_dict,
-        export_to_json_gnn,
-        export_to_xml_gnn,
-        export_to_plaintext_summary,
-        export_to_plaintext_dsl,
         export_to_gexf,
         export_to_graphml,
         export_to_json_adjacency_list,
+        export_to_json_gnn,
+        export_to_plaintext_dsl,
+        export_to_plaintext_summary,
         export_to_python_pickle,
-        HAS_NETWORKX
+        export_to_xml_gnn,
     )
     FORMAT_EXPORTERS_LOADED = True
 except ImportError:

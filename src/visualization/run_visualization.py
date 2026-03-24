@@ -6,8 +6,8 @@ This script runs the GNN visualization module on all examples in the input/gnn_f
 It generates comprehensive visualizations and saves them to the output directory.
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # Add parent directory to sys.path to allow importing from src

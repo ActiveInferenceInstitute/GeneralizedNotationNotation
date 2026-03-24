@@ -12,12 +12,15 @@ Extracted from post_simulation.py for maintainability.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
-import numpy as np
+from typing import Any, Dict, List, Optional
+
 import matplotlib
+import numpy as np
+
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
+
 MATPLOTLIB_AVAILABLE = True
 
 
@@ -345,7 +348,7 @@ def visualize_all_framework_outputs(
             log.error(f"Failed to generate visualizations for {key}: {e}")
 
     # Generate cross-framework comparison if multiple frameworks
-    frameworks = set(d["framework"] for d in framework_data.values())
+    frameworks = {d["framework"] for d in framework_data.values()}
     if len(frameworks) > 1:
         # output_dir is already the cross-framework directory when called from
         # processor.py, so use it directly to avoid double-nesting.
@@ -638,7 +641,7 @@ def generate_free_energy_plots(
         negative_changes = np.sum(fe_diff < 0)
         ax3.text(0.02, 0.98, f"\u2191 Increases: {positive_changes}\n\u2193 Decreases: {negative_changes}",
                  transform=ax3.transAxes, verticalalignment='top', fontsize=10,
-                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+                 bbox={'boxstyle': 'round', 'facecolor': 'wheat', 'alpha': 0.5})
 
     # Convergence analysis
     ax4 = axes[1, 1]
@@ -659,8 +662,8 @@ def generate_free_energy_plots(
             status = "\u2713 Converged" if converged else "\u26a0 Not Converged"
             ax4.text(0.98, 0.98, f"{status}\nFinal Variance: {final_var:.4f}",
                      transform=ax4.transAxes, verticalalignment='top', horizontalalignment='right',
-                     fontsize=10, bbox=dict(boxstyle='round',
-                                            facecolor='lightgreen' if converged else 'lightyellow', alpha=0.7))
+                     fontsize=10, bbox={'boxstyle': 'round',
+                                            'facecolor': 'lightgreen' if converged else 'lightyellow', 'alpha': 0.7})
     else:
         ax4.text(0.5, 0.5, "Need > 10 steps\nfor convergence analysis",
                  ha='center', va='center', transform=ax4.transAxes)
@@ -1354,7 +1357,7 @@ def generate_framework_radar(
     angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
     angles += angles[:1]  # Close the polygon
 
-    fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(polar=True))
+    fig, ax = plt.subplots(figsize=(10, 10), subplot_kw={'polar': True})
     colors = {'jax': '#E74C3C', 'pymdp': '#3498DB', 'rxinfer': '#2ECC71',
               'activeinference_jl': '#9B59B6', 'discopy': '#F39C12'}
 

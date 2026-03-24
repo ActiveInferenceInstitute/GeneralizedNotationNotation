@@ -9,18 +9,14 @@ The FEATURES['fallback_mode'] flag indicates the module operates without
 LLM dependencies — this is expected behavior, not a limitation.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+import json
 import logging
 import os
 import re
-import json
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error
-)
+from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 logger = logging.getLogger(__name__)
 
@@ -58,8 +54,8 @@ def detect_model_family(content: str) -> str:
     # Detect from state space variables
     has_A = bool(re.search(r'^A\s*\[', content, re.MULTILINE))
     has_B = bool(re.search(r'^B\s*\[', content, re.MULTILINE))
-    has_C = bool(re.search(r'^C\s*\[', content, re.MULTILINE))
-    has_D = bool(re.search(r'^D\s*\[', content, re.MULTILINE))
+    bool(re.search(r'^C\s*\[', content, re.MULTILINE))
+    bool(re.search(r'^D\s*\[', content, re.MULTILINE))
     has_pi = bool(re.search(r'^π\s*\[|^pi\s*\[', content, re.MULTILINE))
     has_G = bool(re.search(r'^G\s*\[', content, re.MULTILINE))
 
@@ -445,7 +441,8 @@ def process_research(
                         report_lines.append(f"  - *Rationale*: {h['rationale']}\n")
             report_lines.append("\n")
 
-        import os as _os, tempfile as _tempfile
+        import os as _os
+        import tempfile as _tempfile
         _report_path = results_dir / "research_report.md"
         with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=results_dir, delete=False) as _tmp:
             _tmp.write("".join(report_lines))

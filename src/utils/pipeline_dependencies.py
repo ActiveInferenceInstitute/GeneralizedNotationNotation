@@ -6,13 +6,13 @@ This module provides comprehensive dependency management and graceful degradatio
 for pipeline steps when dependencies are missing or incompatible.
 """
 
-import logging
 import importlib
-import sys
+import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-from typing import Dict, Any, List, Optional, Callable
+import sys
 from contextlib import contextmanager
 from dataclasses import dataclass, field
+from typing import Any, Callable, Dict, List, Optional
 
 
 @dataclass

@@ -6,13 +6,14 @@ This module validates that the specific improvements made to the pipeline
 (DisCoPy module creation, visualization fixes, error handling, etc.) work correctly.
 """
 
+from typing import Any
+
 import pytest
-from typing import Any, Dict, List, Optional
 
 pytestmark = pytest.mark.pipeline
+import json
 import sys
 import tempfile
-import json
 from pathlib import Path
 
 # Test markers
@@ -38,7 +39,7 @@ class TestDiScoPyModuleCreation:
                 JAX_FULLY_OPERATIONAL,
                 MATPLOTLIB_AVAILABLE,
                 gnn_file_to_discopy_diagram,
-                gnn_file_to_discopy_matrix_diagram
+                gnn_file_to_discopy_matrix_diagram,
             )
 
             # Module should import successfully
@@ -56,7 +57,9 @@ class TestDiScoPyModuleCreation:
         """Test DisCoPy diagram creation with graceful degradation."""
 
         try:
-            from execute.discopy_translator_module.translator import gnn_file_to_discopy_diagram
+            from execute.discopy_translator_module.translator import (
+                gnn_file_to_discopy_diagram,
+            )
 
             test_gnn_data = {
                 "Variables": {
@@ -90,9 +93,9 @@ class TestDiScoPyModuleCreation:
 
         try:
             from execute.discopy_translator_module.visualize_jax_output import (
-                plot_tensor_output,
+                create_summary_visualization,
                 plot_multiple_tensor_outputs,
-                create_summary_visualization
+                plot_tensor_output,
             )
 
             # All functions should be importable
@@ -139,7 +142,7 @@ var2 > var3
             assert "Variables" in parsed_data
 
             variables = parsed_data["Variables"]
-            for var_name, var_info in variables.items():
+            for _var_name, var_info in variables.items():
                 # All variables should have type field (even if 'unknown')
                 assert "type" in var_info
                 assert isinstance(var_info["type"], str)
@@ -154,8 +157,9 @@ var2 > var3
         """Test that matplotlib DPI corruption is handled safely."""
 
         try:
-            from visualization.processor import _save_plot_safely
             import matplotlib.pyplot as plt
+
+            from visualization.processor import _save_plot_safely
 
             with tempfile.TemporaryDirectory() as temp_dir:
                 test_path = Path(temp_dir) / "test_plot.png"
@@ -492,7 +496,7 @@ observation > state
             assert "Variables" in parsed_data
 
             # All variables should have safe type values
-            for var_name, var_info in parsed_data["Variables"].items():
+            for _var_name, var_info in parsed_data["Variables"].items():
                 assert "type" in var_info
                 assert var_info["type"] is not None
                 assert var_info["type"] != ""

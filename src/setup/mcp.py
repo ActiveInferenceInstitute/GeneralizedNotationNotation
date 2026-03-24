@@ -5,24 +5,20 @@ This module exposes utility functions from the setup module through MCP,
 with support for UV-based environment management and modern Python packaging.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional
 import logging
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
 # Import utilities from the setup module
+from .dependency_setup import create_project_structure
 from .utils import (
     ensure_directory,
     find_gnn_files,
     get_output_paths,
 )
-from .uv_management import validate_uv_setup, get_uv_setup_info
-from .dependency_setup import create_project_structure
-
-
-
-
+from .uv_management import get_uv_setup_info, validate_uv_setup
 
 # MCP Tools for UV-based Setup Utilities Module
 

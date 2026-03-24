@@ -9,19 +9,19 @@ Updated to leverage the multi-provider LLM system while maintaining
 backward compatibility with existing code.
 """
 
-import os
 import asyncio
-from typing import List, Dict, Any, Optional
 import logging
+import os
+from typing import Any, Dict, List, Optional
 
 # Import the LLM system directly to avoid circular imports
 from .llm_processor import (
-    LLMProcessor,
     AnalysisType,
-    load_api_keys_from_env,
+    LLMProcessor,
     get_default_provider_configs,
-    get_processor as get_global_processor
+    load_api_keys_from_env,
 )
+from .llm_processor import get_processor as get_global_processor
 
 logger = logging.getLogger(__name__)
 

@@ -7,8 +7,8 @@ structure validation, type checking, and consistency verification.
 
 import logging
 import re
-from typing import Dict, Any, List, Union
 from pathlib import Path
+from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 

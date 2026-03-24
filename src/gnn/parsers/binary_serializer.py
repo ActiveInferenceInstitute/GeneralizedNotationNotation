@@ -1,7 +1,9 @@
-import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 import base64
-from .common import GNNInternalRepresentation
+import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class BinarySerializer(BaseGNNSerializer):
     """Serializer for binary formats (Pickle) with enhanced round-trip support."""

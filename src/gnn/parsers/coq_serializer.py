@@ -1,6 +1,8 @@
 import json
-from .common import GNNInternalRepresentation
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class CoqSerializer(BaseGNNSerializer):
     """Serializer for Coq format."""

@@ -3,14 +3,14 @@
 LLM processor module for GNN analysis.
 """
 
-from pathlib import Path
-import logging
 import json
-from datetime import datetime
+import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import shutil
-from typing import Dict, Any, Tuple, List, Optional
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
 try:
     import yaml
@@ -68,9 +68,15 @@ def _model_is_cached(model_name: str, logger: logging.Logger) -> bool:
         return False
 import asyncio
 
-from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
+from utils.logging.logging_utils import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+)
 
 from .defaults import DEFAULT_OLLAMA_MODEL
+
 
 def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
     """
@@ -281,16 +287,17 @@ def _select_best_ollama_model(available_models: List[str], logger: logging.Logge
     return default_model
 
 from .analyzer import analyze_gnn_file_with_llm
+from .cache import LLMCache
 from .generator import (
-    generate_model_insights,
     generate_code_suggestions,
     generate_documentation,
     generate_llm_summary,
+    generate_model_insights,
 )
-from .prompts import get_prompt, PromptType
 from .llm_processor import LLMProcessor, ProviderType
-from .providers.base_provider import LLMMessage, LLMConfig
-from .cache import LLMCache
+from .prompts import PromptType, get_prompt
+from .providers.base_provider import LLMConfig, LLMMessage
+
 
 def process_llm(
     target_dir: Path,

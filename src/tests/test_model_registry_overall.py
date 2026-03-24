@@ -1,6 +1,9 @@
+from typing import Any
+
 import pytest
-from typing import Any, Dict, List
+
 from model_registry.registry import ModelRegistry
+
 
 class TestModelRegistryOverall:
     """Test suite for Model Registry module."""

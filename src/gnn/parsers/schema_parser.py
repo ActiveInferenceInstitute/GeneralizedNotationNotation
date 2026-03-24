@@ -11,16 +11,24 @@ License: MIT
 
 import logging
 import re
+
 try:
     import defusedxml.ElementTree as ET
 except ImportError:
     import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405 -- XML parsed from internal/trusted sources
-from typing import List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Connection, Parameter, VariableType, DataType, ConnectionType,
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseResult,
+    Variable,
+    VariableType,
     extract_embedded_json_data,
 )
 
@@ -528,7 +536,7 @@ class PKLParser(BaseGNNParser):
 
             # Parse class definitions
             for class_match in self.class_pattern.finditer(content):
-                class_name = class_match.group(1)
+                class_match.group(1)
                 class_body = class_match.group(2)
 
                 # Parse properties within the class
@@ -1015,7 +1023,14 @@ class AlloyParser(BaseGNNParser):
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
-        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        from .common import (
+            Connection,
+            ConnectionType,
+            DataType,
+            Parameter,
+            Variable,
+            VariableType,
+        )
 
         try:
             result.model.model_name = embedded_data.get('model_name', 'AlloyModel')
@@ -1160,7 +1175,14 @@ class ZNotationParser(BaseGNNParser):
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
-        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        from .common import (
+            Connection,
+            ConnectionType,
+            DataType,
+            Parameter,
+            Variable,
+            VariableType,
+        )
 
         try:
             result.model.model_name = embedded_data.get('model_name', 'ZNotationModel')

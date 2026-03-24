@@ -8,9 +8,9 @@ Extracted from mcp.py for maintainability.
 """
 
 import json
-import sys
 import logging
-from typing import Dict, Any, Optional, Callable
+import sys
+from typing import Any, Callable, Dict, Optional
 
 logger = logging.getLogger("mcp")
 

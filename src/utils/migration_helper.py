@@ -11,12 +11,12 @@ Usage:
     python -m utils.migration_helper --module 7_export.py --dry-run
 """
 
+import argparse
+import logging
 import re
 import sys
-import argparse
 from pathlib import Path
 from typing import Dict, List, Tuple
-import logging
 
 logger = logging.getLogger(__name__)
 

@@ -1,14 +1,20 @@
 """Tests for the GNN Language Server."""
 
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 # Import the LSP server logic
 try:
-    from lsp import PYGLS_AVAILABLE, _word_at_position, _extract_line, create_server
+    from lsp import PYGLS_AVAILABLE, _extract_line, _word_at_position, create_server
 except ImportError:
     try:
-        from src.lsp import PYGLS_AVAILABLE, _word_at_position, _extract_line, create_server
+        from src.lsp import (
+            PYGLS_AVAILABLE,
+            _extract_line,
+            _word_at_position,
+            create_server,
+        )
     except ImportError:
         PYGLS_AVAILABLE = False
 

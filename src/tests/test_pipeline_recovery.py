@@ -14,15 +14,17 @@ Key test areas:
 6. Error reporting
 """
 
-import pytest
 import asyncio
 import inspect
 
+import pytest
+
 pytestmark = pytest.mark.pipeline
-import sys
 import os
+import sys
 import tempfile
 from pathlib import Path
+
 # Mocks removed - using real implementations per testing policy
 
 # Import test utilities
@@ -189,7 +191,7 @@ class TestResourceManagementRecovery:
         @with_resource_limits(max_memory_mb=100)
         def memory_intensive_operation():
             # Simulate memory-intensive operation
-            big_list = [0] * (1024 * 1024)  # 1MB
+            [0] * (1024 * 1024)  # 1MB
             return "Success"
 
         result = memory_intensive_operation()
@@ -225,6 +227,7 @@ class TestErrorReportingRecovery:
     def test_error_recovery_logging(self, test_environment):
         """Test error recovery logging functionality."""
         import logging
+
         from utils.logging.logging_utils import log_step_error
 
         # Create a test logger

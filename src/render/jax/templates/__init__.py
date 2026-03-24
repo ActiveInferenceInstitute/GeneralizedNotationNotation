@@ -5,9 +5,9 @@ This module contains comprehensive JAX templates for POMDPs and other Active Inf
 Templates are designed for maximum performance with JIT compilation, vmap, and pmap.
 """
 
-from .pomdp_template import POMDP_TEMPLATE
-from .general_template import GENERAL_TEMPLATE
 from .combined_template import COMBINED_TEMPLATE
+from .general_template import GENERAL_TEMPLATE
+from .pomdp_template import POMDP_TEMPLATE
 
 __all__ = [
     'POMDP_TEMPLATE',

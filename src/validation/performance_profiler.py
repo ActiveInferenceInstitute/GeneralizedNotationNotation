@@ -8,8 +8,8 @@ identification of potential performance bottlenecks.
 
 import logging
 import re
-from typing import Dict, Any, List, Union
 from pathlib import Path
+from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
@@ -194,7 +194,7 @@ class PerformanceProfiler:
         # Count blocks that can be processed in parallel
         # For simplicity, assume blocks without circular dependencies can be parallelized
         block_names = list(block_dims.keys())
-        dependencies = {name: [] for name in block_names}
+        {name: [] for name in block_names}
 
         # Build dependency graph
         for _ in connection_types:

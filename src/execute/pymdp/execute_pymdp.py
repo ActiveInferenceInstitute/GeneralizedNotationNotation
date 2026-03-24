@@ -17,12 +17,13 @@ Date: 2024
 """
 
 import logging
-from pathlib import Path
-from typing import Dict, Any, Tuple
 import traceback
+from pathlib import Path
+from typing import Any, Dict, Tuple
 
 from .pymdp_simulation import PyMDPSimulation
 from .pymdp_utils import extract_gnn_dimensions, validate_gnn_pomdp_structure
+
 
 def execute_pymdp_simulation(
     gnn_spec: Dict[str, Any],

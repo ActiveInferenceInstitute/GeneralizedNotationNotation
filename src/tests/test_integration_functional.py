@@ -17,11 +17,12 @@ Test Coverage:
 - Edge cases: empty files, files with no components, isolated components
 """
 
-import pytest
 import json
+import sys
 from pathlib import Path
 
-import sys
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from integration.processor import process_integration

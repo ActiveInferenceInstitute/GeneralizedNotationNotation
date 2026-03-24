@@ -10,7 +10,7 @@ import pytest
 pytestmark = pytest.mark.mcp
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -54,7 +54,7 @@ class TestMCPToolExecution:
 
             # Just verify that tools were registered properly
             assert len(test_mcp_tools.tools) > 0
-            for tool_name, tool_info in test_mcp_tools.tools.items():
+            for _tool_name, tool_info in test_mcp_tools.tools.items():
                 assert 'function' in tool_info
                 assert 'description' in tool_info
                 assert callable(tool_info['function'])

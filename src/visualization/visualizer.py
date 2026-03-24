@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """
 GNN Visualizer Module
 
@@ -7,14 +8,15 @@ It generates comprehensive state-space visualizations of GNN files and models.
 """
 
 import ast
-import os
-import json
 import datetime
+import json
 import logging
-from pathlib import Path
-from pipeline.config import get_output_dir_for_script
-from typing import Dict, List, Any, Optional, Union
+import os
 import re
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
+from pipeline.config import get_output_dir_for_script
 
 # Safe imports with fallbacks
 try:
@@ -25,8 +27,8 @@ except ImportError:
     NUMPY_AVAILABLE = False
 
 try:
-    import matplotlib.pyplot as plt
     import matplotlib.cm as cm
+    import matplotlib.pyplot as plt
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     plt = None
@@ -790,10 +792,15 @@ def generate_visualizations(
     Returns:
         True if visualization succeeded, False otherwise
     """
-    from utils.logging.logging_utils import log_step_start, log_step_success, log_step_warning, log_step_error
+    from utils.logging.logging_utils import (
+        log_step_error,
+        log_step_start,
+        log_step_success,
+        log_step_warning,
+    )
     try:
-        from utils import performance_tracker
         from pipeline import get_output_dir_for_script
+        from utils import performance_tracker
     except ImportError:
         def get_output_dir_for_script(script: str, output_dir: Path) -> Path: return output_dir / "visualization"
         performance_tracker = None

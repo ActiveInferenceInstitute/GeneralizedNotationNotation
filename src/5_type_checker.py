@@ -29,19 +29,19 @@ If you encounter errors:
   - Verify type checker configuration and requirements
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import create_standardized_pipeline_script
-
 # Hard import: type_checker is a core module and must always be available.
 # ImportError here means the module is broken or missing — fail loudly.
 from type_checker import GNNTypeChecker
+from utils.pipeline_template import create_standardized_pipeline_script
+
 
 def _type_check_dispatch(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any) -> bool:
     """Dispatch to GNNTypeChecker."""

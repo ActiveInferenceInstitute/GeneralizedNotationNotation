@@ -6,13 +6,16 @@ Implementation: visualization.core.process, visualization.plotting, visualizatio
 """
 
 from visualization.core.process import process_single_gnn_file, process_visualization
-from visualization.matrix.compat import generate_matrix_visualizations, parse_matrix_data
+from visualization.matrix.compat import (
+    generate_matrix_visualizations,
+    parse_matrix_data,
+)
 from visualization.parse.markdown import parse_gnn_content
 from visualization.plotting.utils import (
     _safe_tight_layout,
     _save_plot_safely,
-    save_plot_safely,
     safe_tight_layout,
+    save_plot_safely,
 )
 
 __all__ = [

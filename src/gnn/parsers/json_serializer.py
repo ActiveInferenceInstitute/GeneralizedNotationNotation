@@ -1,6 +1,8 @@
 import json
-from .common import GNNInternalRepresentation
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class JSONSerializer(BaseGNNSerializer):
     """Serializer for JSON data interchange format."""

@@ -9,7 +9,6 @@ generate_oscillator_audio, mix_audio_channels, and SyntheticAudioGenerator.
 
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 import pytest
 

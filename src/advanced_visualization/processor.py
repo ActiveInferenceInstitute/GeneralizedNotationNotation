@@ -11,18 +11,19 @@ This module provides advanced visualization capabilities including:
 Implementation is split across sub-modules for maintainability:
 - _shared: Dataclasses, validation, and utility functions (no circular imports)
 - network_viz: 3D visualization, interactive dashboards, network metrics, D2 diagrams
-- statistical_viz: Statistical plots, matrix correlations, Plotly dashboards
+- statistical_viz: Statistical plots, matrix correlations
+- interactive_viz: Plotly dashboard generation
 
 This file re-exports all public names for backward compatibility.
 """
 
 import importlib.util
-import logging
 import json
-from pathlib import Path
-from typing import Dict, List, Optional
+import logging
 import time
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
 
 # Import matplotlib for plotting (with recovery for headless environments)
 try:
@@ -86,21 +87,20 @@ class SafeAdvancedVisualizationManager:
 # Re-export from network_viz
 from .network_viz import (
     _generate_3d_visualization,
+    _generate_d2_visualizations_safe,
     _generate_interactive_dashboard,
     _generate_network_metrics,
-    _generate_pomdp_transition_analysis,
-    _generate_policy_visualization,
-    _generate_d2_visualizations_safe,
     _generate_pipeline_d2_diagrams_safe,
+    _generate_policy_visualization,
+    _generate_pomdp_transition_analysis,
 )
 
-# Re-export from statistical_viz
+# Re-export from interactive_viz / statistical_viz
+from .interactive_viz import _generate_interactive_plotly_dashboard
 from .statistical_viz import (
-    _generate_statistical_plots,
     _generate_matrix_correlations,
-    _generate_interactive_plotly_dashboard,
+    _generate_statistical_plots,
 )
-
 
 # Global seaborn availability flag
 SEABORN_AVAILABLE = False
@@ -359,7 +359,7 @@ def process_advanced_viz(
     dependencies_available = _check_dependencies(logger)
 
     try:
-        with SafeAdvancedVisualizationManager(logger) as manager:
+        with SafeAdvancedVisualizationManager(logger):
             # Load GNN processing results
             gnn_models = _load_gnn_models(target_dir, logger, output_dir.parent if output_dir.name.endswith("_output") else output_dir)
 

@@ -16,7 +16,7 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
-from visualization._viz_compat import plt, np, sns, MATPLOTLIB_AVAILABLE
+from visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 
 patches = None
 try:

@@ -12,10 +12,10 @@ and benchmarking.
 """
 
 from .jax_runner import (
-    run_jax_scripts,
     execute_jax_script,
     find_jax_scripts,
-    is_jax_available
+    is_jax_available,
+    run_jax_scripts,
 )
 
 __all__ = [

@@ -5,16 +5,12 @@ Integration Processor module for GNN Processing Pipeline.
 This module provides integration processing capabilities.
 """
 
+import logging
 import os
 import tempfile
 from pathlib import Path
-import logging
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error
-)
+from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 logger = logging.getLogger(__name__)
 

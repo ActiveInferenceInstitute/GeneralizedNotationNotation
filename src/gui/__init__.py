@@ -26,27 +26,27 @@ FEATURES = {
 }
 
 # Import GUI runners
-from .gui_1 import gui_1, get_gui_1_info
-from .gui_2 import gui_2, get_gui_2_info
-from .gui_3 import gui_3, get_gui_3_info
-from .oxdraw import oxdraw_gui, get_oxdraw_info
-
 # Import GUI 1 utilities
 from .gui_1 import (
     add_component_to_markdown,
-    update_component_states,
-    remove_component_from_markdown,
+    add_state_space_entry,
+    get_gui_1_info,
+    gui_1,
     parse_components_from_markdown,
     parse_state_space_from_markdown,
-    add_state_space_entry,
-    update_state_space_entry,
+    remove_component_from_markdown,
     remove_state_space_entry,
+    update_component_states,
+    update_state_space_entry,
 )
+from .gui_2 import get_gui_2_info, gui_2
+from .gui_3 import get_gui_3_info, gui_3
+from .oxdraw import get_oxdraw_info, oxdraw_gui
 
 # Import main processing functions from processor
 from .processor import (
-    process_gui,
     generate_html_navigation,
+    process_gui,
 )
 
 

@@ -22,7 +22,7 @@ except (ImportError, RecursionError):
     MATPLOTLIB_AVAILABLE = False
 
 from visualization.core.parsed_model import load_visualization_model
-from visualization.plotting.utils import save_plot_safely, safe_tight_layout
+from visualization.plotting.utils import safe_tight_layout, save_plot_safely
 
 logger = logging.getLogger(__name__)
 
@@ -334,7 +334,7 @@ def _generate_generative_model_diagram(
                         "",
                         xy=(end_x, end_y),
                         xytext=(start_x, start_y),
-                        arrowprops=dict(arrowstyle="->", color="gray", lw=1.5),
+                        arrowprops={"arrowstyle": "->", "color": "gray", "lw": 1.5},
                         zorder=1,
                     )
 

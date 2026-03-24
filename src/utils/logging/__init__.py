@@ -11,8 +11,8 @@ This subpackage provides centralized logging configuration with:
 from .logging_utils import (
     BasicPipelineLogger,
     CorrelationFormatter,
-    setup_step_logging,
     set_correlation_context,
+    setup_step_logging,
 )
 
 __all__ = [

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 GUI 3: State Space Design Studio Processor
 Low-dependency visual design interface for Active Inference models

@@ -10,14 +10,14 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict
 
 logger = logging.getLogger(__name__)
 
 from ._shared import (
-    AdvancedVisualizationAttempt,
     MATPLOTLIB_AVAILABLE,
     SEABORN_AVAILABLE,
+    AdvancedVisualizationAttempt,
     _MatrixVisualizer,
     np,
     plt,
@@ -238,4 +238,3 @@ def _generate_matrix_correlations(
 
 
 # Re-exported from interactive_viz — canonical definition lives there
-from .interactive_viz import _generate_interactive_plotly_dashboard  # noqa: E402

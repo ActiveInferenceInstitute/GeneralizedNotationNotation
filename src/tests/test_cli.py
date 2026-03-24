@@ -1,10 +1,11 @@
 """Tests for the GNN CLI module."""
 
-import pytest
 import sys
-from pathlib import Path
 from io import StringIO
+from pathlib import Path
 from unittest.mock import patch
+
+import pytest
 
 # Import the CLI main function
 # Adjust import path if necessary based on project structure

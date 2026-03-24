@@ -5,9 +5,9 @@ SAPF Processor module for GNN Processing Pipeline.
 This module provides SAPF audio processing capabilities.
 """
 
+import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
-import logging
 
 logger = logging.getLogger(__name__)
 

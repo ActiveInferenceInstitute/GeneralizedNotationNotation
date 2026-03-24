@@ -7,12 +7,12 @@ Per-framework analysis and visualization for DisCoPy categorical diagrams.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 # Import shared visualization utilities (centralized matplotlib setup)
-from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
 
 def generate_analysis_from_logs(
@@ -197,9 +197,9 @@ def create_discopy_visualizations(
             fig, ax = plt.subplots(figsize=(12, 8))
 
             # Define component categories for layout
-            matrix_components = [c for c in components if 'matrix' in c.lower()]
-            vector_components = [c for c in components if 'vector' in c.lower()]
-            inference_components = [c for c in components if 'inference' in c.lower() or 'selection' in c.lower()]
+            [c for c in components if 'matrix' in c.lower()]
+            [c for c in components if 'vector' in c.lower()]
+            [c for c in components if 'inference' in c.lower() or 'selection' in c.lower()]
 
             # All components in flow order
             all_comps = components if components else []
@@ -253,8 +253,8 @@ def create_discopy_visualizations(
                     if length > 0:
                         dx, dy = dx/length * 0.08, dy/length * 0.08
                         ax.annotate('', xy=(x2 - dx, y2 - dy), xytext=(x1 + dx, y1 + dy),
-                                   arrowprops=dict(arrowstyle='->', color='gray',
-                                                   lw=2, connectionstyle='arc3,rad=0.1'))
+                                   arrowprops={"arrowstyle": '->', "color": 'gray',
+                                                   "lw": 2, "connectionstyle": 'arc3,rad=0.1'})
 
                 # Add legend
                 legend_items = [
@@ -273,10 +273,10 @@ def create_discopy_visualizations(
                     codomain = analysis.get('model_codomain', 'A')
                     ax.text(0.1, 0.4, f"Input:\n{domain}", ha='center', va='center',
                            fontsize=12, fontweight='bold',
-                           bbox=dict(boxstyle='round', facecolor='lightgreen', alpha=0.5))
+                           bbox={"boxstyle": 'round', "facecolor": 'lightgreen', "alpha": 0.5})
                     ax.text(0.9, 0.4, f"Output:\n{codomain}", ha='center', va='center',
                            fontsize=12, fontweight='bold',
-                           bbox=dict(boxstyle='round', facecolor='lightcoral', alpha=0.5))
+                           bbox={"boxstyle": 'round', "facecolor": 'lightcoral', "alpha": 0.5})
 
             ax.set_xlim(0, 1)
             ax.set_ylim(0, 1)
@@ -330,7 +330,7 @@ def create_discopy_visualizations(
             summary_text = "\n".join(summary_lines)
             ax.text(0.5, 0.5, summary_text, ha='center', va='center', fontsize=11,
                    fontfamily='monospace', transform=ax.transAxes,
-                   bbox=dict(boxstyle='round', facecolor='lightyellow', alpha=0.8))
+                   bbox={"boxstyle": 'round', "facecolor": 'lightyellow', "alpha": 0.8})
 
             viz_file = output_dir / f"{model_name}_discopy_structure_card.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')

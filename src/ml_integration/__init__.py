@@ -3,7 +3,7 @@ ML Integration module for GNN Processing Pipeline.
 
 This module provides machine learning model integration capabilities.
 """
-from typing import Dict, Any
+from typing import Any, Dict
 
 __version__ = "1.1.3"
 FEATURES = {

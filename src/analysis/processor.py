@@ -3,21 +3,23 @@
 Analysis processor module for GNN analysis.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
-import logging
 import json
-import numpy as np
+import logging
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
-from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error
+import numpy as np
+
+from utils.logging.logging_utils import log_step_error, log_step_start, log_step_success
+
 from .analyzer import (
-    perform_statistical_analysis,
     calculate_complexity_metrics,
-    run_performance_benchmarks,
-    perform_model_comparisons,
     generate_analysis_summary,
     generate_matrix_visualizations,
+    perform_model_comparisons,
+    perform_statistical_analysis,
+    run_performance_benchmarks,
     visualize_simulation_results,
 )
 
@@ -286,7 +288,11 @@ def process_analysis(
         if execution_dir.exists():
             logger.info("Performing cross-framework analysis...")
             try:
-                from .analyzer import analyze_framework_outputs, generate_framework_comparison_report, visualize_cross_framework_metrics
+                from .analyzer import (
+                    analyze_framework_outputs,
+                    generate_framework_comparison_report,
+                    visualize_cross_framework_metrics,
+                )
 
                 framework_comparison = analyze_framework_outputs(execution_dir, logger)
                 results["framework_comparison"] = framework_comparison
@@ -308,7 +314,10 @@ def process_analysis(
             # 3. Comprehensive visualization of all execution outputs
             logger.info("Generating comprehensive visualizations for all execution outputs...")
             try:
-                from .post_simulation import visualize_all_framework_outputs, generate_unified_framework_dashboard
+                from .post_simulation import (
+                    generate_unified_framework_dashboard,
+                    visualize_all_framework_outputs,
+                )
 
                 # Use cross_framework folder for cross-implementation analysis
                 viz_output_dir = results_dir / "cross_framework"

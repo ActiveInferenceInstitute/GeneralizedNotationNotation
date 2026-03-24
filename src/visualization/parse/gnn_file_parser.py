@@ -5,10 +5,10 @@ This module provides functionality to parse GNN files and convert them into a st
 for visualization and analysis.
 """
 
+import logging
 import re
 from pathlib import Path
-from typing import Dict, Any
-import logging
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

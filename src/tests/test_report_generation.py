@@ -5,9 +5,10 @@ Test Report Generation - Tests for report generation functionality.
 Tests the ReportGenerator class and report generation pipeline.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -96,8 +97,9 @@ class TestReportGeneration:
     @pytest.mark.integration
     def test_generate_comprehensive_report(self, tmp_path):
         """Test comprehensive report generation."""
-        from report import generate_comprehensive_report
         import logging
+
+        from report import generate_comprehensive_report
 
         logger = logging.getLogger("test_report")
         output_dir = tmp_path / "reports"
@@ -124,8 +126,9 @@ class TestReportProcessing:
     @pytest.mark.integration
     def test_process_report_with_empty_directory(self, tmp_path):
         """Test report processing with empty input directory."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         logger = logging.getLogger("test_report")
         input_dir = tmp_path / "input"
@@ -145,8 +148,9 @@ class TestReportProcessing:
     @pytest.mark.integration
     def test_process_report_with_sample_data(self, tmp_path, sample_gnn_files):
         """Test report processing with sample GNN files."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")

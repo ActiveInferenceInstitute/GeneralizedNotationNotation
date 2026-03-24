@@ -3,13 +3,14 @@
 GNN processor module for GNN pipeline.
 """
 
-from fnmatch import fnmatch
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
-import logging
 import json
+import logging
 import re
 from datetime import datetime
+from fnmatch import fnmatch
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
+
 
 def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = True) -> Dict[str, Any]:
     """
@@ -330,7 +331,8 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         "processed_files": [fp for fp in file_paths if fp],
     }
     if output_dir is not None:
-        import tempfile, os
+        import os
+        import tempfile
         output_path = Path(output_dir)
         try:
             output_path.mkdir(parents=True, exist_ok=True)

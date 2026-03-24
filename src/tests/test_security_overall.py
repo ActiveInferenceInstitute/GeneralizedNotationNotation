@@ -1,6 +1,13 @@
 from typing import Any
+
 import pytest
-from security.processor import process_security, perform_security_check, check_vulnerabilities
+
+from security.processor import (
+    check_vulnerabilities,
+    perform_security_check,
+    process_security,
+)
+
 
 class TestSecurityOverall:
     """Test suite for Security module."""

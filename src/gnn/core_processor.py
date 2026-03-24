@@ -9,18 +9,18 @@ testing, and reporting.
 
 import logging
 import time
-from datetime import datetime
-from pathlib import Path
-from typing import List, Dict, Any, Optional
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum, auto
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from .discovery import FileDiscoveryStrategy
-from .validation import ValidationStrategy
 # Import testing strategy lazily to avoid circular imports
 # from .testing import RoundTripTestStrategy
 from .cross_format import CrossFormatValidator
+from .discovery import FileDiscoveryStrategy
 from .reporting import ReportGenerator
+from .validation import ValidationStrategy
 
 logger = logging.getLogger(__name__)
 

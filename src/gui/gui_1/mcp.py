@@ -4,7 +4,7 @@ MCP registration for GUI module (optional; provides discovery hooks if MCP is ac
 
 from __future__ import annotations
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 try:
     from mcp import register_module_tools

@@ -8,9 +8,9 @@ Tests the integration between pipeline steps and external dependencies.
 import pytest
 
 pytestmark = pytest.mark.pipeline
-from typing import Any
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -64,8 +64,9 @@ class TestPipelineStepIntegration:
     @pytest.mark.integration
     def test_visualization_to_report_data_flow(self, tmp_path: Any) -> None:
         """Test visualization outputs are available to report."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         logger = logging.getLogger("test_integration")
 
@@ -106,6 +107,7 @@ class TestPipelineExternalIntegration:
     def test_pipeline_logging_integration(self, tmp_path: Any) -> None:
         """Test pipeline logging integration."""
         import logging
+
         from pipeline import get_pipeline_config
 
         log_file = tmp_path / "pipeline.log"
@@ -231,10 +233,11 @@ class TestPipelineErrorIntegration:
     @pytest.mark.integration
     def test_graceful_module_failure(self, tmp_path: Any) -> None:
         """Test pipeline handles module failures gracefully."""
-        from pipeline import execute_pipeline_step
         import logging
 
-        logger = logging.getLogger("test_pipeline")
+        from pipeline import execute_pipeline_step
+
+        logging.getLogger("test_pipeline")
 
         # Run with invalid step configuration - should return result, not crash
         step_config = {"script_path": str(tmp_path / "nonexistent.py")}
@@ -251,10 +254,11 @@ class TestPipelineErrorIntegration:
     @pytest.mark.integration
     def test_recovery_from_step_failure(self, tmp_path: Any) -> None:
         """Test pipeline can recover from step failures."""
-        from pipeline import PipelineOrchestrator
         import logging
 
-        logger = logging.getLogger("test_pipeline")
+        from pipeline import PipelineOrchestrator
+
+        logging.getLogger("test_pipeline")
 
         orchestrator = PipelineOrchestrator()
 

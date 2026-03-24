@@ -1,11 +1,13 @@
-from typing import Dict, Any
+from typing import Any, Dict
+
 try:
     import yaml
     HAS_YAML = True
 except ImportError:
     HAS_YAML = False
-from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class YAMLSerializer(BaseGNNSerializer):
     """Serializer for YAML configuration format."""

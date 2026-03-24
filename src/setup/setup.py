@@ -9,29 +9,25 @@ Functions are organized into sub-modules:
 - dependency_setup: JAX testing, Julia setup, optional package groups
 """
 
-import sys
-import logging
 import argparse
+import logging
+import sys
 import time
 from typing import List, Optional
 
 # --- Re-export everything from sub-modules for backward compatibility ---
 from .constants import VENV_DIR
+from .dependency_setup import (
+    install_jax_and_test,
+)
 from .uv_management import (
     # Constants
     PROJECT_ROOT,
     # Core setup functions
     check_system_requirements,
+    # Re-exported for imports of the form ``src.setup.setup`` (submodule path)
     create_uv_environment,
     install_uv_dependencies,
-    get_installed_package_versions,
-    # Re-exported for imports of the form ``src.setup.setup`` (submodule path)
-    check_uv_availability,
-    get_uv_setup_info,
-)
-
-from .dependency_setup import (
-    install_jax_and_test,
 )
 
 # --- Logger Setup ---

@@ -16,20 +16,20 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 try:
-    from ...gnn.parsers.markdown_parser import MarkdownGNNParser
-    from ...gnn.parsers.json_parser import JSONGNNParser
     from ...gnn.parsers.common import GNNInternalRepresentation, ParseResult
+    from ...gnn.parsers.json_parser import JSONGNNParser
+    from ...gnn.parsers.markdown_parser import MarkdownGNNParser
 except ImportError:
     # Recovery imports for standalone use
     try:
-        from gnn.parsers.markdown_parser import MarkdownGNNParser
-        from gnn.parsers.json_parser import JSONGNNParser
         from gnn.parsers.common import GNNInternalRepresentation, ParseResult
+        from gnn.parsers.json_parser import JSONGNNParser
+        from gnn.parsers.markdown_parser import MarkdownGNNParser
     except ImportError:
         # Simple recovery for testing
         logging.warning("GNN parsers not available, using simplified parsing")
@@ -301,6 +301,7 @@ class PyMDPRenderer:
 
         # Format matrices for embedding in code
         import json as json_module
+
         import numpy as np
 
         # Convert matrices to JSON-serializable format for embedding

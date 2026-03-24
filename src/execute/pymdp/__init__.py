@@ -9,25 +9,30 @@ with enhanced safety patterns and comprehensive error handling.
 
 import logging
 import traceback
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 from .pymdp_simulation import PyMDPSimulation
 from .pymdp_utils import (
+    clean_trace_for_serialization,
     convert_numpy_for_json,
+    create_output_directory_with_timestamp,
+    format_duration,
+    generate_simulation_summary,
     safe_json_dump,
     safe_pickle_dump,
-    clean_trace_for_serialization,
     save_simulation_results,
-    generate_simulation_summary,
-    create_output_directory_with_timestamp,
-    format_duration
 )
+
 # Soft import: analysis (step 16) is downstream of execute (step 12); wrap to avoid
 # hard coupling across pipeline stages.
 try:
-    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
+    from analysis.pymdp.visualizer import (
+        PyMDPVisualizer,
+        create_visualizer,
+        save_all_visualizations,
+    )
 except ImportError:
     PyMDPVisualizer = None  # type: ignore[assignment,misc]
 
@@ -38,30 +43,21 @@ except ImportError:
         return []
 
 # Import execution functions
-from .executor import (
-    execute_pymdp_simulation_from_gnn,
-    execute_pymdp_simulation
-)
-
-# Import validation functions
-from .validator import (
-    validate_pymdp_environment,
-    get_pymdp_health_status
-)
+# Import context functions
+from .context import create_enhanced_pymdp_context
+from .executor import execute_pymdp_simulation, execute_pymdp_simulation_from_gnn
 
 # Import package detection functions
 from .package_detector import (
-    detect_pymdp_installation,
-    is_correct_pymdp_package,
-    get_pymdp_installation_instructions,
     attempt_pymdp_auto_install,
-    validate_pymdp_for_execution
+    detect_pymdp_installation,
+    get_pymdp_installation_instructions,
+    is_correct_pymdp_package,
+    validate_pymdp_for_execution,
 )
 
-# Import context functions
-from .context import (
-    create_enhanced_pymdp_context
-)
+# Import validation functions
+from .validator import get_pymdp_health_status, validate_pymdp_environment
 
 __all__ = [
     # Core classes

@@ -5,8 +5,8 @@ This test suite covers all exposed functions, classes, and MCP integration
 from all modules in the GNN pipeline system.
 """
 
+
 import pytest
-from typing import Any, Dict, List, Optional
 
 # Test markers
 pytestmark = [pytest.mark.integration, pytest.mark.safe_to_fail]
@@ -245,7 +245,7 @@ class TestRenderModule:
         assert isinstance(renderers, dict)
 
         # Check that available renderers have the expected structure
-        for renderer_name, renderer_info in renderers.items():
+        for _renderer_name, renderer_info in renderers.items():
             assert 'function' in renderer_info
             assert 'description' in renderer_info
             assert 'output_format' in renderer_info

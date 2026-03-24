@@ -11,20 +11,21 @@ Requirements:
 """
 
 from __future__ import annotations
-from typing import List, Dict, Any, Optional, AsyncGenerator
+
+import json
 import logging
 import os
 import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import json
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from ..defaults import DEFAULT_OLLAMA_MODEL
 from .base_provider import (
     BaseLLMProvider,
-    ProviderType,
-    LLMResponse,
-    LLMMessage,
     LLMConfig,
+    LLMMessage,
+    LLMResponse,
+    ProviderType,
 )
 
 logger = logging.getLogger(__name__)

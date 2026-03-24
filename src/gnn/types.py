@@ -3,9 +3,10 @@ Shared types for GNN module to avoid circular imports.
 """
 
 from dataclasses import dataclass, field
-from enum import Enum
-from typing import Dict, List, Any, Optional, Tuple, Union
 from datetime import datetime
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple, Union
+
 
 class ValidationLevel(Enum):
     BASIC = "basic"
@@ -102,7 +103,11 @@ class ParsedGNN:
 
 
 # Single authoritative definition lives in parsers/common.py.
-from .parsers.common import GNNFormat, GNNInternalRepresentation  # re-export for types module consumers  # noqa: E402
+from .parsers.common import (  # re-export for types module consumers  # noqa: E402
+    GNNFormat,
+    GNNInternalRepresentation,
+)
+
 
 @dataclass
 class ParseResult:

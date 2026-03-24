@@ -13,8 +13,8 @@ import logging
 import logging.handlers
 import sys
 from datetime import datetime
-from types import MappingProxyType
 from pathlib import Path
+from types import MappingProxyType
 from typing import Optional
 
 

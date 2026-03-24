@@ -5,51 +5,49 @@ This package contains utility functions and shared resources for the pipeline,
 using modern UV-based dependency management and environment setup.
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
 
-from .utils import ensure_directory, find_gnn_files, get_output_paths
-from .uv_management import (
-    setup_uv_environment,
-    validate_uv_setup,
-    get_uv_setup_info,
-    cleanup_uv_setup,
-    check_system_requirements,
-    install_uv_dependencies,
-    get_installed_package_versions,
-    check_uv_availability,
-    log_system_info,
-    check_environment_health,
-)
-from .dependency_setup import (
-    setup_gnn_project,
-    install_optional_dependencies,
-    create_project_structure,
-    install_optional_package_group,
-    install_all_optional_packages,
-    setup_complete_environment,
-)
 from .constants import OPTIONAL_GROUPS
-from .uv_package_ops import (
-    add_uv_dependency,
-    remove_uv_dependency,
-    update_uv_dependencies,
-    lock_uv_dependencies,
-)
-
-# Import validator functions
-from .validator import (
-    validate_system,
-    get_environment_info,
-    get_uv_status
+from .dependency_setup import (
+    create_project_structure,
+    install_all_optional_packages,
+    install_optional_dependencies,
+    install_optional_package_group,
+    setup_complete_environment,
+    setup_gnn_project,
 )
 
 # Import utility functions
 from .utils import (
+    ensure_directory,
+    find_gnn_files,
     get_module_info,
+    get_output_paths,
     get_setup_options,
-    setup_environment,
     install_dependencies,
+    setup_environment,
 )
+from .uv_management import (
+    check_environment_health,
+    check_system_requirements,
+    check_uv_availability,
+    cleanup_uv_setup,
+    get_installed_package_versions,
+    get_uv_setup_info,
+    install_uv_dependencies,
+    log_system_info,
+    setup_uv_environment,
+    validate_uv_setup,
+)
+from .uv_package_ops import (
+    add_uv_dependency,
+    lock_uv_dependencies,
+    remove_uv_dependency,
+    update_uv_dependencies,
+)
+
+# Import validator functions
+from .validator import get_environment_info, get_uv_status, validate_system
 
 # Module metadata and lightweight API expected by tests
 __version__ = "1.1.3"

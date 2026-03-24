@@ -14,18 +14,24 @@ This test suite provides complete coverage of the GNN module including:
 
 import os
 import sys
-import unittest
 import tempfile
 import time
-import psutil
+import unittest
 from pathlib import Path
+
+import psutil
 
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 
 try:
-    from gnn.schema_validator import GNNParser, GNNValidator, ValidationResult, ParsedGNN
     from gnn.mcp import get_gnn_documentation, validate_gnn_content
+    from gnn.schema_validator import (
+        GNNParser,
+        GNNValidator,
+        ParsedGNN,
+        ValidationResult,
+    )
     GNN_AVAILABLE = True
 except ImportError:
     GNN_AVAILABLE = False

@@ -15,7 +15,7 @@ import time
 from collections import deque
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Any, Callable, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger("mcp")
 

@@ -9,7 +9,7 @@ and integrate symbolic mathematics capabilities into the GNN pipeline.
 import asyncio
 import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-from typing import Dict, List, Optional, Any, Union
+from typing import Any, Dict, List, Optional, Union
 
 # Try to import httpx for HTTP client functionality
 try:
@@ -397,14 +397,13 @@ class GNNSymPyIntegration:
 
             # Check stochasticity: rows should sum to 1 (for row-stochastic)
             # or columns should sum to 1 (for column-stochastic transition matrices)
-            is_stochastic = True
             stochasticity_details = {"row_sums": [], "column_sums": []}
 
             for row in matrix_data:
                 row_sum = sum(float(x) if isinstance(x, (int, float)) else 0 for x in row)
                 stochasticity_details["row_sums"].append(row_sum)
                 if abs(row_sum - 1.0) > 0.01:  # Allow small numerical tolerance
-                    is_stochastic = False
+                    pass
 
             # Also check column sums for column-stochastic matrices
             if matrix_data and matrix_data[0]:

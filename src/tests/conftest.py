@@ -5,11 +5,11 @@ This module provides pytest fixtures and configuration for testing the GNN pipel
 """
 
 import sys
-from pathlib import Path
-from typing import Dict, Any, Generator, List
 import tempfile
-# Mocks removed - using real implementations per testing policy
+from pathlib import Path
+from typing import Any, Dict, Generator, List
 
+# Mocks removed - using real implementations per testing policy
 # Import pytest
 import pytest
 
@@ -61,7 +61,9 @@ def pytest_configure(config: Any) -> None:
     # Do a guarded import because visualization may require optional deps (networkx, seaborn)
     # which should not break test collection.
     try:
-        from visualization.ontology_visualizer import OntologyVisualizer as _OntologyVisualizer  # type: ignore
+        from visualization.ontology_visualizer import (
+            OntologyVisualizer as _OntologyVisualizer,  # type: ignore
+        )
         globals()['OntologyVisualizer'] = _OntologyVisualizer
     except Exception:
         globals()['OntologyVisualizer'] = None

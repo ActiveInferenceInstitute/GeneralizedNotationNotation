@@ -9,17 +9,23 @@ Date: 2025-01-11
 License: MIT
 """
 
+import base64
 import logging
 import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
-import base64
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Parameter, VariableType, DataType
+    BaseGNNParser,
+    DataType,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseResult,
+    Variable,
+    VariableType,
 )
+
 
 class PickleGNNParser(BaseGNNParser):
     """Parser for Python pickle binary format with enhanced round-trip support."""
@@ -105,8 +111,16 @@ class PickleGNNParser(BaseGNNParser):
 
     def _reconstruct_model_from_enhanced_data(self, data: Dict[str, Any]) -> GNNInternalRepresentation:
         """Reconstruct GNN model from enhanced pickle data for perfect round-trip."""
-        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
         from datetime import datetime
+
+        from .common import (
+            Connection,
+            ConnectionType,
+            DataType,
+            Parameter,
+            Variable,
+            VariableType,
+        )
 
         model = GNNInternalRepresentation(
             model_name=data.get('model_name', 'PickleModel')

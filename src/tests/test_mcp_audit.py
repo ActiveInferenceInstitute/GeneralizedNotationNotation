@@ -24,6 +24,27 @@ import pytest
 
 pytestmark = pytest.mark.mcp
 
+
+def count_mcp_tools() -> int:
+    """Return registered MCP tool count after initialize and recovery settle.
+
+    Used by GitHub Actions (``.github/workflows/ci.yml``) to guard against
+    accidental tool registration regressions. Mirrors the wait loop in
+    ``mcp_initialized`` fixture.
+    """
+    from mcp import initialize, mcp_instance
+
+    initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+    prev_count = -1
+    for _ in range(25):
+        current = len(mcp_instance.tools)
+        if current == prev_count:
+            break
+        prev_count = current
+        time.sleep(0.2)
+    return len(mcp_instance.tools)
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 #  Fixtures
 # ─────────────────────────────────────────────────────────────────────────────

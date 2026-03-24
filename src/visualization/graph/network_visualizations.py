@@ -40,8 +40,8 @@ except (ImportError, RecursionError):
     MATPLOTLIB_AVAILABLE = False
 
 try:
-    import sys
     import os
+    import sys
 
     if sys.version_info >= (3, 13):
         os.environ.pop("NETWORKX_AUTOMATIC_BACKENDS", None)
@@ -440,7 +440,7 @@ def _generate_interactive_network(G: Any, output_path: Path) -> bool:
         edge_trace = go.Scatter(
             x=edge_x,
             y=edge_y,
-            line=dict(width=1, color="#888"),
+            line={"width": 1, "color": "#888"},
             hoverinfo="none",
             mode="lines",
         )
@@ -466,14 +466,14 @@ def _generate_interactive_network(G: Any, output_path: Path) -> bool:
             text=list(G.nodes()),
             textposition="top center",
             hovertext=node_info,
-            marker=dict(
-                size=[G.degree(node) * 10 + 20 for node in G.nodes()],
-                color=[
+            marker={
+                "size": [G.degree(node) * 10 + 20 for node in G.nodes()],
+                "color": [
                     "lightblue" if node_types.get(node, "unknown") == "unknown" else "orange"
                     for node in G.nodes()
                 ],
-                line=dict(width=2),
-            ),
+                "line": {"width": 2},
+            },
         )
 
         fig = go.Figure(
@@ -483,19 +483,19 @@ def _generate_interactive_network(G: Any, output_path: Path) -> bool:
                 title_font_size=16,
                 showlegend=False,
                 hovermode="closest",
-                margin=dict(b=20, l=5, r=5, t=40),
+                margin={"b": 20, "l": 5, "r": 5, "t": 40},
                 annotations=[
-                    dict(
-                        text="Hover over nodes and edges for details",
-                        showarrow=False,
-                        xref="paper",
-                        yref="paper",
-                        x=0.005,
-                        y=-0.002,
-                    )
+                    {
+                        "text": "Hover over nodes and edges for details",
+                        "showarrow": False,
+                        "xref": "paper",
+                        "yref": "paper",
+                        "x": 0.005,
+                        "y": -0.002,
+                    }
                 ],
-                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                xaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
+                yaxis={"showgrid": False, "zeroline": False, "showticklabels": False},
             ),
         )
 

@@ -14,15 +14,15 @@ Features:
 - Enhanced diagnostic capabilities
 """
 
-import sys
-import json
 import importlib
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import json
+import logging
 import platform
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 import time
 from pathlib import Path
-from typing import Dict, List, Any
-import logging
+from typing import Any, Dict, List
 
 # Optional psutil import with recovery
 try:
@@ -34,14 +34,20 @@ except ImportError:
 
 # Enhanced imports with fallbacks
 try:
-    from .config import get_pipeline_config
-    from .pipeline_validator import PipelineValidator
-    from .diagnostic_enhancer import PipelineDiagnosticEnhancer
     import sys
     from pathlib import Path as _P
+
+    from .config import get_pipeline_config
+    from .diagnostic_enhancer import PipelineDiagnosticEnhancer
+    from .pipeline_validator import PipelineValidator
     if str(_P(__file__).parent.parent) not in sys.path:
         sys.path.insert(0, str(_P(__file__).parent.parent))
-    from utils.structured_logging import setup_step_logging, log_step_success, log_step_warning, log_step_error
+    from utils.structured_logging import (
+        log_step_error,
+        log_step_success,
+        log_step_warning,
+        setup_step_logging,
+    )
     PIPELINE_INTEGRATION = True
 except ImportError:
     # Attempting silent recovery since the user reported print spam
@@ -53,7 +59,12 @@ except ImportError:
     logger = logging.getLogger(__name__)
 
     try:
-        from utils.logging.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
+        from utils.logging.logging_utils import (
+            log_step_error,
+            log_step_success,
+            log_step_warning,
+            setup_step_logging,
+        )
     except ImportError:
         def setup_step_logging(name: str, verbose: bool = False) -> logging.Logger: return logging.getLogger(name)
         def log_step_success(logger: logging.Logger, msg: str) -> None: logger.info(msg)
@@ -348,11 +359,11 @@ class EnhancedHealthChecker:
 
         try:
             # Test pipeline config
-            config = get_pipeline_config()
+            get_pipeline_config()
             results["config_available"] = True
 
             # Test pipeline validator
-            validator = PipelineValidator(verbose=False)
+            PipelineValidator(verbose=False)
             results["validator_available"] = True
 
             # Test diagnostic enhancer

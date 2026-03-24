@@ -4,8 +4,9 @@ Test suite for Advanced Visualization module.
 Tests D2 diagram generation, dashboards, and interactive visualizations.
 """
 
-import pytest
 from typing import Any
+
+import pytest
 
 
 class TestAdvancedVisualizationModule:
@@ -14,11 +15,11 @@ class TestAdvancedVisualizationModule:
     def test_module_imports(self) -> None:
         """Test that advanced_visualization module can be imported."""
         from advanced_visualization import (
+            D2_AVAILABLE,
             AdvancedVisualizer,
             DashboardGenerator,
             VisualizationDataExtractor,
             process_advanced_viz,
-            D2_AVAILABLE
         )
         assert callable(AdvancedVisualizer)
         assert callable(DashboardGenerator)
@@ -29,12 +30,12 @@ class TestAdvancedVisualizationModule:
     def test_visualization_functions(self) -> None:
         """Test visualization creation functions."""
         from advanced_visualization import (
-            create_visualization_from_data,
             create_dashboard_section,
+            create_default_visualization,
+            create_heatmap_visualization,
             create_network_visualization,
             create_timeline_visualization,
-            create_heatmap_visualization,
-            create_default_visualization
+            create_visualization_from_data,
         )
 
         assert callable(create_visualization_from_data)
@@ -133,7 +134,7 @@ observations -> hidden_states
 ## Parameters
 learning_rate = 0.01
 """
-        test_file = safe_filesystem.create_file("viz_model.md", gnn_content)
+        safe_filesystem.create_file("viz_model.md", gnn_content)
         output_dir = safe_filesystem.create_dir("viz_data_output")
 
         try:
@@ -223,7 +224,7 @@ class TestD2Visualization:
 
     def test_process_gnn_file_with_d2(self, safe_filesystem: Any) -> None:
         """Test GNN file processing with D2."""
-        from advanced_visualization import process_gnn_file_with_d2, D2_AVAILABLE
+        from advanced_visualization import D2_AVAILABLE, process_gnn_file_with_d2
 
         if not D2_AVAILABLE or process_gnn_file_with_d2 is None:
             pytest.skip("D2 visualization not available")
@@ -267,7 +268,7 @@ y -> x
 ## Time
 Dynamic
 """
-        test_file = safe_filesystem.create_file("adv_viz.md", gnn_content)
+        safe_filesystem.create_file("adv_viz.md", gnn_content)
         output_dir = safe_filesystem.create_dir("adv_viz_output")
 
         import logging
@@ -294,7 +295,7 @@ Dynamic
 ## StateSpaceBlock
 s[3]
 """
-        test_file = safe_filesystem.create_file("types_test.md", gnn_content)
+        safe_filesystem.create_file("types_test.md", gnn_content)
         output_dir = safe_filesystem.create_dir("types_output")
 
         import logging

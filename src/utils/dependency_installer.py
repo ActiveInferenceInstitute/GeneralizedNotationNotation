@@ -6,12 +6,12 @@ This module automatically installs missing optional dependencies to eliminate
 warnings and achieve full pipeline functionality.
 """
 
+import importlib
 import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 from pathlib import Path
 from typing import Dict, List
-import importlib
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

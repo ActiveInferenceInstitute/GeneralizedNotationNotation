@@ -5,9 +5,9 @@ Pydantic models for GNN API request/response validation.
 These models define the API contract — request shapes and response schemas.
 """
 
-from typing import Any, Dict, List, Optional
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
 
 try:
     from pydantic import BaseModel, Field

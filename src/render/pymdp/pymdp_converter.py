@@ -5,11 +5,12 @@ This module contains the core logic for converting GNN specifications
 into PyMDP-compatible data structures and scripts.
 """
 
+import ast
 import logging
 import re
-import ast
 import sys
 from typing import Any, Dict, List, Optional, Tuple, Union
+
 
 # Deferred numpy import to avoid recursion issues
 def _get_numpy():
@@ -154,16 +155,13 @@ class NumpySafeOperations:
 # Create global instance
 numpy_safe = NumpySafeOperations()
 
-from .pymdp_utils import (
-    _numpy_array_to_string,
-    generate_pymdp_agent_instantiation
-)
 from .pymdp_templates import (
-    generate_file_header,
     generate_conversion_summary,
     generate_example_usage_template,
-    generate_placeholder_matrices
+    generate_file_header,
+    generate_placeholder_matrices,
 )
+from .pymdp_utils import _numpy_array_to_string, generate_pymdp_agent_instantiation
 
 logger = logging.getLogger(__name__)
 
@@ -171,8 +169,8 @@ logger = logging.getLogger(__name__)
 # Using modern API: from pymdp import Agent (inferactively-pymdp package)
 _PYMDP_AVAILABLE = False
 try:
-    from pymdp import utils as pymdp_utils
     from pymdp import maths as pymdp_maths
+    from pymdp import utils as pymdp_utils
     from pymdp.agent import Agent as PymdpAgent
     _PYMDP_AVAILABLE = True
 except ImportError:
@@ -795,7 +793,7 @@ class GnnToPyMdpConverter:
             def convert_structure(item):
                 if isinstance(item, set):
                     try:
-                        return sorted(list(item))
+                        return sorted(item)
                     except TypeError:
                         return list(item)
                 elif isinstance(item, list):
@@ -864,7 +862,7 @@ class GnnToPyMdpConverter:
             def convert_structure(item):
                 if isinstance(item, set):
                     try:
-                        return sorted(list(item))
+                        return sorted(item)
                     except TypeError:
                         return list(item)
                 elif isinstance(item, list):
@@ -920,7 +918,7 @@ class GnnToPyMdpConverter:
         import re
 
         # Remove comments and extra whitespace
-        lines = [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
+        [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
 
         # Find the matrix content (between braces or parentheses)
         content = matrix_str.strip()
@@ -978,7 +976,7 @@ class GnnToPyMdpConverter:
         """Recovery parsing for complex 3D matrix strings."""
 
         # Remove comments and extra whitespace
-        lines = [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
+        [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
 
         # Find the matrix content (between braces)
         content = matrix_str.strip()

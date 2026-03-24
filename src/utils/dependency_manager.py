@@ -6,12 +6,13 @@ This module provides comprehensive dependency checking and management
 across all pipeline steps with intelligent recovery strategies.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import importlib.util
 import logging
-from typing import Dict, List, Optional, Tuple, Any
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from dataclasses import dataclass, field
 from datetime import datetime
-import importlib.util
+from typing import Any, Dict, List, Optional, Tuple
+
 
 @dataclass
 class DependencyInfo:

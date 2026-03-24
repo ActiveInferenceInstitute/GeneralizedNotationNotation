@@ -8,10 +8,10 @@ Architecture:
     Analysis Step (Python) -> Calls Julia Analysis Scripts -> Generates Plots/Reports
 """
 
-from pathlib import Path
-from typing import List, Optional
 import json
 import logging
+from pathlib import Path
+from typing import List, Optional
 
 logger = logging.getLogger("analysis.activeinference_jl")
 
@@ -143,7 +143,7 @@ def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:
         List of generated file paths
     """
     try:
-        from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+        from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
     except ImportError:
         return []
 
@@ -225,7 +225,7 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
         List of generated file paths
     """
     try:
-        from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+        from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
     except ImportError:
         return []
 

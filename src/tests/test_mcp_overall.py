@@ -4,7 +4,8 @@ Test suite for MCP (Model Context Protocol) module.
 Tests MCP tool registration, execution, and server functionality.
 """
 
-from typing import Any, List, Dict
+from typing import Any
+
 import pytest
 
 pytestmark = pytest.mark.mcp
@@ -16,10 +17,7 @@ class TestMCPModule:
 
     def test_module_imports(self) -> None:
         """Test that MCP module can be imported."""
-        from mcp import (
-            FEATURES,
-            __version__
-        )
+        from mcp import FEATURES, __version__
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
 
@@ -298,7 +296,7 @@ mcp_state[10]
 ## Parameters
 rate = 0.1
 """
-        test_file = safe_filesystem.create_file("mcp_model.md", gnn_content)
+        safe_filesystem.create_file("mcp_model.md", gnn_content)
         output_dir = safe_filesystem.create_dir("mcp_gnn_output")
 
         import logging

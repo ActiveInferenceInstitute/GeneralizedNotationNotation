@@ -5,7 +5,7 @@ Provides utilities for querying and verifying JAX hardware accelerators (GPU/TPU
 and applying performance configurations.
 """
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

@@ -14,9 +14,11 @@ Key Features:
 - Safe-to-fail design
 """
 
-import pytest
-import sys
 import logging
+import sys
+
+import pytest
+
 # Mocks removed - using real implementations per testing policy
 
 # Test markers
@@ -24,13 +26,14 @@ pytestmark = [pytest.mark.fast, pytest.mark.safe_to_fail]
 
 # Import test utilities
 from . import (
+    PROJECT_ROOT,
+    SRC_DIR,
     TEST_CONFIG,
+    TEST_DIR,
     create_sample_gnn_content,
     is_safe_mode,
-    TEST_DIR,
-    SRC_DIR,
-    PROJECT_ROOT
 )
+
 
 class TestFastEnvironment:
     """Fast environment validation tests."""
@@ -157,7 +160,7 @@ class TestFastExport:
 
             # Test export
             output_file = isolated_temp_dir / "test_export.json"
-            result = export_to_json_gnn(test_data, output_file)
+            export_to_json_gnn(test_data, output_file)
 
             assert output_file.exists(), "Export file should be created"
 

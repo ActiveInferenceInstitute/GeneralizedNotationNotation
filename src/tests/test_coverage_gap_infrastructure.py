@@ -5,26 +5,26 @@ Addresses modules with 0% coverage: recovery, timeout_manager, simulation_monito
 simulation_utils, visualization_optimizer.
 """
 
-import pytest
 import asyncio
-import time
 import logging
-import json
 from pathlib import Path
-from typing import Any, Dict, List
-import numpy as np
 
 # Import targets
 from utils.recovery import RecoveryArgumentParser, setup_step_logging
+from utils.simulation_monitor import SimulationMonitor
+from utils.simulation_utils import DiagramAnalyzer, SimulationTracker
 from utils.timeout_manager import (
-    TimeoutManager, TimeoutConfig, TimeoutStrategy, 
-    LLMTimeoutManager, ProcessTimeoutManager, with_timeout, with_async_timeout
+    LLMTimeoutManager,
+    ProcessTimeoutManager,
+    TimeoutConfig,
+    TimeoutManager,
 )
-from utils.simulation_monitor import SimulationMonitor, track_simulation as global_track_simulation
-from utils.simulation_utils import SimulationTracker, DiagramAnalyzer
 from utils.visualization_optimizer import (
-    VisualizationCache, DataSampler, ParallelVisualizationProcessor, VisualizationOptimizer
+    DataSampler,
+    VisualizationCache,
+    VisualizationOptimizer,
 )
+
 
 # 1. Tests for utils/recovery.py
 class TestRecoveryUtils:

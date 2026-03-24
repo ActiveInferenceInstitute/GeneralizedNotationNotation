@@ -19,9 +19,9 @@ FEATURES = {
     "mcp_integration": True
 }
 
-from pathlib import Path
-from typing import Dict, Any, List, Literal
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Literal
 
 # Constrained type for supported execution framework names.
 # Use this annotation on any parameter that accepts a framework identifier.
@@ -37,22 +37,27 @@ FrameworkName = Literal[
 
 # Import execute functionality
 try:
-    from .executor import ExecutionEngine, GNNExecutor, execute_gnn_model, run_simulation
+    from .executor import (
+        ExecutionEngine,
+        GNNExecutor,
+        execute_gnn_model,
+        run_simulation,
+    )
     from .pymdp import (
-        execute_pymdp_simulation_from_gnn,
-        execute_pymdp_simulation,
         PyMDPSimulation,
+        execute_pymdp_simulation,
+        execute_pymdp_simulation_from_gnn,
+        get_pymdp_health_status,
         validate_pymdp_environment,
-        get_pymdp_health_status
     )
     from .validator import (
-        validate_execution_environment,
-        log_validation_results,
-        check_python_environment,
-        check_system_resources,
         check_dependencies,
         check_file_permissions,
-        check_network_connectivity
+        check_network_connectivity,
+        check_python_environment,
+        check_system_resources,
+        log_validation_results,
+        validate_execution_environment,
     )
     # Backwards-compatibility aliases — PyMdpExecutor is deprecated, use PyMDPSimulation
     execute_simulation_from_gnn = execute_gnn_model
@@ -64,34 +69,41 @@ except ImportError as e:
     _log.getLogger(__name__).warning(f"Execute module import failed: {e} - using recovery")
     # Import recovery functions
     from .recovery import (
+        ErrorRecoverySystem,
         ExecutionEngine,
         PyMdpExecutor,
-        execute_simulation_from_gnn,
-        execute_pymdp_simulation_from_gnn,
-        validate_execution_environment,
-        get_execution_health_status,
-        log_validation_results,
-        check_python_environment,
-        check_system_dependencies,
-        check_python_packages,
-        check_file_system,
         analyze_pipeline_error,
+        check_file_system,
+        check_python_environment,
+        check_python_packages,
+        check_system_dependencies,
+        execute_pymdp_simulation_from_gnn,
+        execute_simulation_from_gnn,
         generate_error_recovery_report,
+        get_execution_health_status,
         get_quick_error_suggestions,
-        ErrorRecoverySystem
+        log_validation_results,
+        validate_execution_environment,
     )
     # Stubs for missing items
     execute_gnn_model = execute_simulation_from_gnn
     GNNExecutor = ExecutionEngine
     PyMDPSimulation = PyMdpExecutor  # deprecated alias; PyMdpExecutor is canonical in recovery path
     execute_pymdp_simulation = execute_pymdp_simulation_from_gnn
-    validate_pymdp_environment = lambda: {"valid": False, "issues": ["PyMDP validation not available"]}
-    get_pymdp_health_status = lambda: {"status": "unknown"}
-    check_system_resources = lambda: []
-    check_dependencies = lambda: []
-    check_file_permissions = lambda: []
-    check_network_connectivity = lambda: {"status": "unknown"}
-    run_simulation = lambda cfg: {"success": False, "error": "run_simulation not available"}
+    def validate_pymdp_environment():
+        return {"valid": False, "issues": ["PyMDP validation not available"]}
+    def get_pymdp_health_status():
+        return {"status": "unknown"}
+    def check_system_resources():
+        return []
+    def check_dependencies():
+        return []
+    def check_file_permissions():
+        return []
+    def check_network_connectivity():
+        return {"status": "unknown"}
+    def run_simulation(cfg):
+        return {"success": False, "error": "run_simulation not available"}
     VALIDATION_AVAILABLE = False
     ERROR_RECOVERY_AVAILABLE = False
 
@@ -116,7 +128,8 @@ except Exception:
     try:
         from .executor import execute_gnn_model as execute_simulation_from_gnn
     except Exception:
-        execute_simulation_from_gnn = lambda *a, **k: {"success": False, "error": "execute_simulation_from_gnn not available"}
+        def execute_simulation_from_gnn(*a, **k):
+            return {"success": False, "error": "execute_simulation_from_gnn not available"}
 
 # Add to __all__ for proper exports
 __all__ = [

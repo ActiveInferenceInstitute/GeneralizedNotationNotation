@@ -5,12 +5,12 @@ This module provides utility functions for pytest command building,
 output parsing, and dependency checking.
 """
 
+import json
 import logging
 import re
 import sys
-import json
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 from utils.test_utils import TEST_DIR
 

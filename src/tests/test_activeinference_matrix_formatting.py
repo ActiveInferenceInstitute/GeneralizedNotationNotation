@@ -17,6 +17,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # Since it is now at module level, we can import it (it is private but testable)
 from render.activeinference_jl.activeinference_renderer import _matrix_to_julia
 
+
 class TestMatrixToJulia:
     """Test the _matrix_to_julia function for various input types."""
 

@@ -14,19 +14,20 @@ Test Coverage:
 No mocking is used - all tests validate real function execution.
 """
 
-import pytest
-from pathlib import Path
-
 # Add src to path for imports
 import sys
+from pathlib import Path
+
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from render.processor import (
+        get_available_renderers,
+        get_module_info,
         process_render,
         render_gnn_spec,
-        get_module_info,
-        get_available_renderers,
     )
     RENDER_AVAILABLE = True
 except ImportError as e:
@@ -176,7 +177,7 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
     def test_render_to_execute_handoff(self, safe_filesystem, sample_gnn_spec):
         """Test that render output can be used by execute step."""
         # Create output structure matching pipeline expectations
-        render_output = safe_filesystem.create_dir("output/11_render_output")
+        safe_filesystem.create_dir("output/11_render_output")
         model_output = safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
 
         try:
@@ -247,7 +248,7 @@ class TestRenderOutputStructure:
 
             # Check for documentation files
             all_files = list(output_dir.rglob("*"))
-            md_files = [f for f in all_files if f.suffix == '.md']
+            [f for f in all_files if f.suffix == '.md']
 
             # Documentation may or may not be generated depending on renderer
             # This is informational - not a failure if missing

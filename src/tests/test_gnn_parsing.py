@@ -12,18 +12,19 @@ Tests the GNN parsing functionality including:
 - Malformed content handling
 """
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from gnn.parsers.common import ParseError
+from gnn.parsers.lean_parser import LeanGNNParser
 from gnn.parsers.markdown_parser import MarkdownGNNParser
 from gnn.parsers.scala_parser import ScalaGNNParser
-from gnn.parsers.lean_parser import LeanGNNParser
-from gnn.parsers.common import ParseError
 
 
 class TestGNNDiscovery:

@@ -5,10 +5,10 @@ Exposes GNN security processing tools: vulnerability scanning, dependency
 auditing, security report reading, and compliance checks through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
-import logging
 import json
+import logging
+from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

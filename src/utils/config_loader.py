@@ -11,10 +11,10 @@ except ImportError:
     YAML_AVAILABLE = False
     yaml = None
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List
 import logging
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

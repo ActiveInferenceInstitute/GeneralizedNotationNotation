@@ -4,14 +4,14 @@ Advanced Visualization MCP Integration
 This module exposes advanced visualization processing tools via MCP.
 """
 
+import logging
 from pathlib import Path
 from typing import Any, Dict
-import logging
 
 logger = logging.getLogger(__name__)
 
 # Import utilities from the advanced_visualization module
-from . import process_advanced_viz, D2_AVAILABLE
+from . import D2_AVAILABLE, process_advanced_viz
 
 # MCP Tools for Advanced Visualization Module
 

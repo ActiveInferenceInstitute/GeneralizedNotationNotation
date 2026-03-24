@@ -4,9 +4,9 @@ MCP (Model Context Protocol) integration for type_checker utilities.
 This module exposes utility functions from the type_checker module through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

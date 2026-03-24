@@ -5,19 +5,18 @@ This module validates that all required dependencies are available
 before pipeline execution begins, preventing runtime failures.
 """
 
+import argparse
+import logging
+import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
-import shutil
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from dataclasses import dataclass
-import logging
 
-from .logging_utils import PipelineLogger
-
-import argparse
-from .venv_utils import get_venv_python
 from .argument_utils import parse_step_list
+from .logging_utils import PipelineLogger
+from .venv_utils import get_venv_python
 
 logger = logging.getLogger(__name__)
 
@@ -594,7 +593,7 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     }
 
     # Determine which dependency groups we need
-    required_groups = set(["core"])
+    required_groups = {"core"}
     for step_num in range(1, 24):  # Updated to include steps 1-23
         # Skip if in skip list
         if step_num in skip_steps or f"{step_num}_" in str(skip_steps):

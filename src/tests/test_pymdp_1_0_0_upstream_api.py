@@ -33,8 +33,8 @@ def _inferactively_pymdp_version() -> str:
 
 def _require_agent_and_utils() -> Tuple[Any, Any, str]:
     try:
-        from pymdp.agent import Agent
         from pymdp import utils
+        from pymdp.agent import Agent
     except ImportError:
         pytest.skip("inferactively-pymdp not installed (pip: inferactively-pymdp)")
 

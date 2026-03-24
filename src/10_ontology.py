@@ -29,10 +29,9 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import create_standardized_pipeline_script
-
 # Hard import: ontology is a core module and must always be available.
 from ontology import process_ontology
+from utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
     "10_ontology.py",

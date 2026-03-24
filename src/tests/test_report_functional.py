@@ -6,20 +6,21 @@ Tests report generation, multiple output formats (JSON, HTML, Markdown),
 handling of missing/partial input data, and report validation.
 """
 
-import pytest
-import sys
 import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from report.processor import (
-    process_report,
-    generate_comprehensive_report,
     analyze_gnn_file,
+    generate_comprehensive_report,
     generate_html_report,
     generate_markdown_report,
+    process_report,
 )
 
 

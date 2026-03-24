@@ -14,9 +14,9 @@ No external dependencies required — CSS/JS inlined.
 import json
 import logging
 from datetime import datetime
+from html import escape
 from pathlib import Path
 from typing import List, Optional
-from html import escape
 
 logger = logging.getLogger(__name__)
 

@@ -6,9 +6,11 @@ This module provides audio analysis functionality.
 """
 
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, Any
+
 import json
+from pathlib import Path
+from typing import Any, Dict
+
 
 def get_module_info() -> Dict[str, Any]:
     """Get comprehensive information about the audio module and its capabilities."""

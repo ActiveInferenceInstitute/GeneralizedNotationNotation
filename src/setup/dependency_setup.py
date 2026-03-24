@@ -5,25 +5,25 @@ This module handles JAX installation and testing, Julia environment setup,
 optional package group installation, and project structure creation.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import shutil
-from pathlib import Path
 import logging
+import shutil
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+from pathlib import Path
 from typing import List
 
 from .constants import (
-    PROJECT_ROOT,
-    VENV_PYTHON,
     OPTIONAL_GROUPS,
+    PROJECT_ROOT,
     SETUP_DEFAULT_PIPELINE_EXTRAS,
+    VENV_PYTHON,
 )
 from .uv_management import (
-    run_command,
     check_system_requirements,
     create_uv_environment,
     install_uv_dependencies,
-    validate_uv_setup,
+    run_command,
     save_setup_results,
+    validate_uv_setup,
 )
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,6 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         return False
 
     basic_tests_passed = False
-    advanced_tests_passed = False
 
     if not VENV_PYTHON.exists():
         logger.error("Venv Python not found, cannot test JAX")
@@ -177,7 +176,6 @@ print("POMDP operations test passed")  # nosec B603 -- subprocess calls with con
             if result.returncode == 0:
                 for line in result.stdout.strip().split('\n'):
                     logger.info(f"✅ {line}")
-                advanced_tests_passed = True
                 logger.info("✅ JAX, Optax, and Flax advanced functionality verified")
             else:
                 logger.warning(f"⚠️ JAX advanced tests failed (non-critical): {result.stderr}")

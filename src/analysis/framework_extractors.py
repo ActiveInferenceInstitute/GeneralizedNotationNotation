@@ -10,7 +10,7 @@ Extracted from post_simulation.py for maintainability.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

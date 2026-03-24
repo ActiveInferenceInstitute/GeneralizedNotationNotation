@@ -10,28 +10,30 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 _module_logger = logging.getLogger(__name__)
 
 from ._shared import (
-    AdvancedVisualizationAttempt,
     MATPLOTLIB_AVAILABLE,
     SEABORN_AVAILABLE,
+    AdvancedVisualizationAttempt,
+    _calculate_semantic_positions,
+    _generate_fallback_report,
+    normalize_connection_format,
     np,
     plt,
     sns,
     validate_visualization_data,
-    normalize_connection_format,
-    _calculate_semantic_positions,
-    _generate_fallback_report,
 )
 
 try:
     from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
 except ImportError:
     try:
-        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+        from src.visualization.matrix_visualizer import (
+            MatrixVisualizer as _MatrixVisualizer,
+        )
     except ImportError:
         _MatrixVisualizer = None
 
@@ -74,7 +76,7 @@ def _generate_3d_visualization(
                 return attempt
 
             if variables:
-                n_vars = len(variables)
+                len(variables)
                 positions = _calculate_semantic_positions(variables, connections)
 
                 type_color_map = {
@@ -93,7 +95,7 @@ def _generate_3d_visualization(
                 node_colors = []
 
                 for var in variables:
-                    var_name = var.get("name", "unknown")
+                    var.get("name", "unknown")
                     var_type = var.get("var_type", "unknown")
                     dimensions = var.get("dimensions", [])
 
@@ -210,14 +212,14 @@ def _generate_interactive_dashboard(
             attempt.status = "success"
             attempt.output_files.append(str(output_dir / f"{model_name}_dashboard_fallback.html"))
         else:
-            import plotly.graph_objects as go
             import plotly.express as px
+            import plotly.graph_objects as go
 
             variables = model_data.get("variables", [])
             connections = model_data.get("connections", [])
 
             num_vars = len(variables)
-            num_conns = len(connections)
+            len(connections)
             var_types = {}
             for v in variables:
                 v_type = v.get("var_type", "unknown")
@@ -273,12 +275,12 @@ def _generate_interactive_dashboard(
                 fig_3d = go.Figure(data=[go.Scatter3d(
                     x=x, y=y, z=z,
                     mode='markers+text',
-                    marker=dict(
-                        size=8,
-                        color=colors,
-                        colorscale='Viridis',
-                        opacity=0.8
-                    ),
+                    marker={
+                        "size": 8,
+                        "color": colors,
+                        "colorscale": 'Viridis',
+                        "opacity": 0.8
+                    },
                     text=var_names,
                     hoverinfo='text'
                 )])
@@ -299,7 +301,7 @@ def _generate_interactive_dashboard(
                                     y=[positions[s_idx, 1], positions[t_idx, 1]],
                                     z=[positions[s_idx, 2], positions[t_idx, 2]],
                                     mode='lines',
-                                    line=dict(color='gray', width=1),
+                                    line={"color": 'gray', "width": 1},
                                     opacity=0.5,
                                     showlegend=False
                                 ))

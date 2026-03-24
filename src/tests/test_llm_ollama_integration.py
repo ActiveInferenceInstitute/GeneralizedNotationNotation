@@ -6,22 +6,23 @@ These tests validate Ollama detection, model selection, and real LLM processing
 with proper recovery handling when Ollama is not available.
 """
 
-import pytest
-import sys
-from pathlib import Path
 import json
-import tempfile
+import os
 import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import os
+import sys
+import tempfile
+from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from llm.processor import (
-    _start_ollama_if_needed,
     _select_best_ollama_model,
-    process_llm
+    _start_ollama_if_needed,
+    process_llm,
 )
 
 
@@ -295,7 +296,7 @@ Minimize free energy while maintaining preferred states.
         else:
             # If no results file, check for alternative outputs (summary, logs, etc.)
             summary_file = llm_output_dir / "llm_summary.md"
-            assert summary_file.exists() or result == True, \
+            assert summary_file.exists() or result, \
                 "Should either create results file or complete gracefully"
 
         # Check logging
@@ -342,7 +343,7 @@ Minimize free energy while maintaining preferred states.
             # If no results, processing may have completed with warnings
             # Check for log output indicating attempt was made
             log_text = caplog.text
-            assert "llm" in log_text.lower() or result == True, \
+            assert "llm" in log_text.lower() or result, \
                 "Should either create results or complete with indication of attempt"
 
         # Check logging mentions recovery
@@ -360,7 +361,7 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir.mkdir()
 
         # Use minimal custom prompts to avoid timeouts
-        result = process_llm(
+        process_llm(
             target_dir=test_gnn_dir,
             output_dir=llm_output_dir,
             verbose=True,
@@ -399,7 +400,7 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir.mkdir()
 
         # Use minimal custom prompts to avoid timeouts
-        result = process_llm(
+        process_llm(
             target_dir=test_gnn_dir,
             output_dir=llm_output_dir,
             verbose=False,

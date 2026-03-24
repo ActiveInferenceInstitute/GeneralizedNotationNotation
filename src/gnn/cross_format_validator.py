@@ -15,13 +15,14 @@ Enhanced Features:
 
 import logging
 import tempfile
-from pathlib import Path
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+from .schema_validator import ValidationLevel
 
 # Import these at module level to avoid circular imports
-from .types import ValidationResult, GNNFormat
-from .schema_validator import ValidationLevel
+from .types import GNNFormat, ValidationResult
 
 logger = logging.getLogger(__name__)
 
@@ -424,6 +425,7 @@ class CrossFormatValidator:
         try:
             # Import here to avoid circular imports
             import json
+
             import yaml
 
             for format_name, schema_path in schema_files.items():

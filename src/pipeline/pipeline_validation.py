@@ -20,11 +20,7 @@ from pathlib import Path
 from typing import Dict, List
 
 # Import centralized utilities
-from utils import (
-    setup_step_logging,
-    log_step_start,
-    log_step_success
-)
+from utils import log_step_start, log_step_success, setup_step_logging
 
 logger = setup_step_logging("pipeline_validation", verbose=True)
 
@@ -165,7 +161,7 @@ def get_pipeline_modules(src_dir: Path) -> List[Path]:
     """Get all numbered pipeline modules."""
     modules = []
     for i in range(1, 15):  # Steps 1-14
-        module_path = src_dir / f"{i}_*.py"
+        src_dir / f"{i}_*.py"
         matching = list(src_dir.glob(f"{i}_*.py"))
         if matching:
             modules.extend(matching)
@@ -250,7 +246,7 @@ def validate_configuration_consistency() -> Dict[str, List[str]]:
     issues = {"errors": [], "warnings": [], "suggestions": []}
 
     try:
-        from pipeline.config import get_pipeline_config, STEP_METADATA
+        from pipeline.config import STEP_METADATA, get_pipeline_config
 
         # Get the centralized configuration
         config = get_pipeline_config()

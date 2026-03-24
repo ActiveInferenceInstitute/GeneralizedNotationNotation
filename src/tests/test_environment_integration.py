@@ -5,10 +5,11 @@ Test Environment Integration - Integration tests for environment setup.
 Tests the integration between environment validation and pipeline components.
 """
 
-import pytest
 import sys
 from pathlib import Path
 from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

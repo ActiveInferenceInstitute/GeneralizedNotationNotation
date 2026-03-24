@@ -5,10 +5,10 @@ Core module for converting GNN (Generalized Notation Notation) models to
 SAPF (Sound As Pure Form) audio representations.
 """
 
-import re
 import logging
-from typing import Dict, List, Any, Tuple
+import re
 from pathlib import Path
+from typing import Any, Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 

@@ -47,11 +47,11 @@ class TestSetupModule:
     def test_module_imports(self):
         """Test that setup module can be imported."""
         from setup import (
+            FEATURES,
+            __version__,
+            check_uv_availability,
             setup_uv_environment,
             validate_uv_setup,
-            check_uv_availability,
-            FEATURES,
-            __version__
         )
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
@@ -161,7 +161,7 @@ class TestSetupUtilities:
 ## StateSpaceBlock
 s[3]
 """
-        test_file = safe_filesystem.create_file("test.md", gnn_content)
+        safe_filesystem.create_file("test.md", gnn_content)
 
         files = find_gnn_files(safe_filesystem.temp_dir)
         assert isinstance(files, list)

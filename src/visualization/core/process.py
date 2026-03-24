@@ -14,7 +14,6 @@ from utils.logging.logging_utils import (
     log_step_success,
     log_step_warning,
 )
-
 from visualization.analysis.combined_analysis import (
     generate_combined_analysis,
     generate_combined_visualizations,
@@ -27,7 +26,6 @@ from visualization.graph import (
     generate_network_visualizations,
     generate_variable_parameter_bipartite,
 )
-from visualization.matrix.compat import generate_matrix_visualizations, parse_matrix_data
 
 logger = logging.getLogger(__name__)
 

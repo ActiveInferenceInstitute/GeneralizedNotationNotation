@@ -5,9 +5,10 @@ Test Audio Overall Tests
 This file contains comprehensive tests for the audio module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -200,14 +201,15 @@ def test_audio_module_completeness():
 def test_audio_module_performance():
     """Test audio module performance characteristics."""
     try:
-        from audio import AudioGenerator
         import time
+
+        from audio import AudioGenerator
 
         generator = AudioGenerator()
         start_time = time.time()
 
         # Test processing time
-        result = generator.process_gnn_to_audio("test content")
+        generator.process_gnn_to_audio("test content")
 
         processing_time = time.time() - start_time
         assert processing_time < 10.0  # Should complete within 10 seconds

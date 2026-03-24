@@ -15,12 +15,13 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import unittest
-import numpy as np
 import json
 import tempfile
-from typing import Any
+import unittest
 from pathlib import Path
+
+import numpy as np
+
 
 # Pipeline imports
 # Local simple temp helpers to avoid cross-package test import issues
@@ -35,12 +36,12 @@ def cleanup_test_temp_dir(path: Path) -> None:
     except Exception:
         pass
 try:
-    from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from analysis.pymdp.visualizer import PyMDPVisualizer
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
 except ImportError:
-    from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
     from src.analysis.pymdp.visualizer import PyMDPVisualizer
+    from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
     from src.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
 
 

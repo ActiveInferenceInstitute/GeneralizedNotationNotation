@@ -9,18 +9,26 @@ Date: 2025-01-11
 License: MIT
 """
 
+import json
 import logging
 import re
-import json
-from typing import List, Dict, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseResult,
+    Variable,
+    VariableType,
 )
+
 
 class ProtobufGNNParser(BaseGNNParser):
     """Enhanced parser for Protocol Buffer (.proto) files containing GNN models."""
@@ -226,7 +234,7 @@ class ProtobufGNNParser(BaseGNNParser):
             # Extract connection fields
             source_match = re.search(r'repeated\s+string\s+source_variables', msg_content)
             target_match = re.search(r'repeated\s+string\s+target_variables', msg_content)
-            type_match = re.search(r'string\s+connection_type', msg_content)
+            re.search(r'string\s+connection_type', msg_content)
 
             if source_match and target_match:
                 # This indicates the structure exists
@@ -265,7 +273,7 @@ class ProtobufGNNParser(BaseGNNParser):
         parameters = []
 
         # Parse from Parameter messages
-        parameter_messages = re.findall(r'message\s+Parameter\s*{([^}]+)}', content, re.DOTALL)
+        re.findall(r'message\s+Parameter\s*{([^}]+)}', content, re.DOTALL)
 
         # Parse from embedded model data
         model_content = self._extract_embedded_model_data(content)

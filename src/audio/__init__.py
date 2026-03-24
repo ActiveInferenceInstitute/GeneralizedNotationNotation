@@ -5,49 +5,43 @@ This module provides audio generation and sonification capabilities for GNN mode
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Configure logger
 logger = logging.getLogger(__name__)
 
 # Essential imports
-from .processor import (
-    process_audio,
-    generate_audio_from_gnn,
-    create_sonification,
-    analyze_audio_characteristics,
-    extract_variables_for_audio,
-    extract_connections_for_audio,
-    save_audio_file,
-    write_basic_wav,
-    extract_model_dynamics,
-    generate_audio_summary
-)
-
-from .generator import (
-    generate_tonal_representation,
-    generate_rhythmic_representation,
-    generate_ambient_representation,
-    generate_sonification_audio,
-    generate_oscillator_audio,
-    apply_envelope,
-    mix_audio_channels,
-    SyntheticAudioGenerator
-)
-
 from .analyzer import (
-    get_module_info,
-    get_audio_generation_options,
-    process_gnn_to_audio,
     convert_gnn_to_sapf,
     generate_audio_from_sapf,
+    get_audio_generation_options,
+    get_module_info,
+    process_gnn_to_audio,
+    validate_audio_content,
     validate_sapf_code,
-    validate_audio_content
 )
-
-from .classes import (
-    AudioGenerator,
-    SAPFGNNProcessor
+from .classes import AudioGenerator, SAPFGNNProcessor
+from .generator import (
+    SyntheticAudioGenerator,
+    apply_envelope,
+    generate_ambient_representation,
+    generate_oscillator_audio,
+    generate_rhythmic_representation,
+    generate_sonification_audio,
+    generate_tonal_representation,
+    mix_audio_channels,
+)
+from .processor import (
+    analyze_audio_characteristics,
+    create_sonification,
+    extract_connections_for_audio,
+    extract_model_dynamics,
+    extract_variables_for_audio,
+    generate_audio_from_gnn,
+    generate_audio_summary,
+    process_audio,
+    save_audio_file,
+    write_basic_wav,
 )
 
 # Backwards-compatible aliases expected by tests

@@ -13,15 +13,17 @@ Enhanced Features:
 """
 
 from __future__ import annotations
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, List, Optional, Tuple, Type
-import logging
+
 import functools
 import json
+import logging
 import time
+from dataclasses import dataclass
 from datetime import datetime
-from utils import log_step_start, log_step_success, log_step_warning, log_step_error
+from pathlib import Path
+from typing import Any, List, Optional, Tuple, Type
+
+from utils import log_step_error, log_step_start, log_step_success, log_step_warning
 
 logger = logging.getLogger(__name__)
 
@@ -732,7 +734,7 @@ def validate_gnn_cross_format_consistency(
             return False
 
         # Initialize enhanced validators
-        validator = modules.GNNValidator(validation_level=modules.ValidationLevel.STRICT)
+        modules.GNNValidator(validation_level=modules.ValidationLevel.STRICT)
         cross_validator = modules.CrossFormatValidator()
 
         # Discover GNN files to test

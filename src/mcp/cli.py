@@ -7,13 +7,13 @@ Supports listing capabilities, executing tools, retrieving resources,
 querying server status, and starting stdio/HTTP servers.
 """
 import argparse
+import importlib.util
 import json
-import sys
 import logging
 import time
 from pathlib import Path
-import importlib.util
-from utils.logging.logging_utils import setup_step_logging, PipelineLogger
+
+from utils.logging.logging_utils import setup_step_logging
 
 # Configure logging
 logger = logging.getLogger("mcp.cli")
@@ -21,7 +21,7 @@ logger = logging.getLogger("mcp.cli")
 def import_mcp():
     """Import the MCP module dynamically."""
     try:
-        from . import mcp_instance, initialize, MCPError
+        from . import MCPError, initialize, mcp_instance
         return mcp_instance, initialize, MCPError
     except ImportError:
         # Try to import from path

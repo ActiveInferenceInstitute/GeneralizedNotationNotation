@@ -6,13 +6,14 @@ This module provides utilities for tracking and managing system resources
 during pipeline execution, including memory usage, disk space, and timing.
 """
 
-import time
-import psutil
-import logging
 import functools
-from pathlib import Path
-from typing import Dict, Any, Tuple, Callable, TypeVar, Optional
+import logging
+import time
 from contextlib import contextmanager
+from pathlib import Path
+from typing import Any, Callable, Dict, Optional, Tuple, TypeVar
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

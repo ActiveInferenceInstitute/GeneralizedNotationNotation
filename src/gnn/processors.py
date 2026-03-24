@@ -85,7 +85,8 @@ def process_gnn_folder(
     fail_count = 0
 
     try:
-        from .schema_validator import GNNValidator, ValidationLevel as VL
+        from .schema_validator import GNNValidator
+        from .schema_validator import ValidationLevel as VL
 
         _vl_map = {
             "basic": VL.BASIC,

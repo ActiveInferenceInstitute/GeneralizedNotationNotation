@@ -5,11 +5,12 @@ Tests for utils/step_logging.py and utils/base_processor.py
 These tests verify the new utility modules work correctly.
 """
 
-import pytest
 import logging
-from pathlib import Path
 import tempfile
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any
+
+import pytest
 
 
 class TestStepLogging:
@@ -18,11 +19,11 @@ class TestStepLogging:
     def test_step_logging_imports(self) -> None:
         """Test that step_logging module imports correctly."""
         from utils.logging.logging_utils import (
+            log_step_error,
             log_step_start,
             log_step_success,
             log_step_warning,
-            log_step_error,
-            setup_step_logging
+            setup_step_logging,
         )
         assert callable(log_step_start)
         assert callable(log_step_success)
@@ -46,11 +47,11 @@ class TestStepLogging:
     def test_log_step_functions_no_exception(self) -> None:
         """Test that log functions don't raise exceptions."""
         from utils.logging.logging_utils import (
+            log_step_error,
             log_step_start,
             log_step_success,
             log_step_warning,
-            log_step_error,
-            setup_step_logging
+            setup_step_logging,
         )
         logger = setup_step_logging("test_funcs")
 
@@ -69,7 +70,7 @@ class TestBaseProcessor:
         from utils.base_processor import (
             BaseProcessor,
             ProcessingResult,
-            create_processor
+            create_processor,
         )
         assert BaseProcessor is not None
         assert ProcessingResult is not None
@@ -104,8 +105,9 @@ class TestBaseProcessor:
 
     def test_processing_result_save_to_json(self) -> None:
         """Test ProcessingResult save_to_json method."""
-        from utils.base_processor import ProcessingResult
         import json
+
+        from utils.base_processor import ProcessingResult
 
         result = ProcessingResult(success=True, files_processed=3)
 
@@ -125,7 +127,7 @@ class TestBaseProcessor:
 
     def test_create_processor_function(self) -> None:
         """Test create_processor factory function."""
-        from utils.base_processor import create_processor, BaseProcessor
+        from utils.base_processor import BaseProcessor, create_processor
 
         def simple_process(file_path: Any, output_dir: Any) -> bool:
             return True

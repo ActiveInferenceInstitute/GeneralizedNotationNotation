@@ -4,10 +4,11 @@ GNN parser module for GNN pipeline.
 """
 
 from pathlib import Path
-from typing import Callable, Dict, Any, List, Tuple, Union, Optional
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
-from .types import ValidationLevel, ParsedGNN
+from .types import ParsedGNN, ValidationLevel
+
 
 class _GNNParseAccumulator:
     """Internal mutable builder for GNN parse results.
@@ -283,8 +284,8 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
 
     try:
         # Import types needed for conversion
-        from .types import ParsedGNN, GNNVariable, GNNConnection
         from .parsers.common import ParseResult as ParseResultType
+        from .types import GNNConnection, GNNVariable, ParsedGNN
 
         # Verify it's a ParseResult
         if not isinstance(parse_result, ParseResultType):

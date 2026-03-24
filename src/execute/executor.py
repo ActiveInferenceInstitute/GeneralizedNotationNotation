@@ -5,13 +5,13 @@ This module provides the main execution functionality for GNN models,
 including script execution, simulation management, and result collection.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import logging
 import json
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
-import time
+import logging
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Import execution functionality
 try:
@@ -49,7 +49,12 @@ except ImportError:
     JAX_AVAILABLE = False
     run_jax_scripts = None
 
-from utils.logging.logging_utils import log_step_start, log_step_success, log_step_warning, log_step_error
+from utils.logging.logging_utils import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+)
 
 try:
     from utils import performance_tracker

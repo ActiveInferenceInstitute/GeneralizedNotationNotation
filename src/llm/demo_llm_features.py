@@ -6,10 +6,10 @@ This script demonstrates the enhanced LLM capabilities that integrate
 the new multi-provider system with the existing LLM operations interface.
 """
 
-import sys
-from pathlib import Path
 import logging
+import sys
 from contextlib import contextmanager
+from pathlib import Path
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent.parent
@@ -18,11 +18,11 @@ sys.path.insert(0, str(project_root))
 # Import the enhanced LLM operations
 from src.llm.llm_operations import (
     LLMOperations,
-    summarize_gnn,
     analyze_gnn_structure,
-    generate_questions,
     enhance_gnn,
-    validate_gnn
+    generate_questions,
+    summarize_gnn,
+    validate_gnn,
 )
 
 logger = logging.getLogger(__name__)

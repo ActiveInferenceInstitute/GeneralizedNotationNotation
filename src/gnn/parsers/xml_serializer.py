@@ -1,8 +1,12 @@
-import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
-from xml.dom import minidom  # nosec B408 - GNN files are researcher-generated, not untrusted input
 import json
-from .common import GNNInternalRepresentation
+import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
+from xml.dom import (
+    minidom,  # nosec B408 - GNN files are researcher-generated, not untrusted input
+)
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class XMLSerializer(BaseGNNSerializer):
     """Serializer for XML format with deterministic output."""

@@ -1,6 +1,9 @@
+from typing import Any
+
 import pytest
-from typing import Any, Dict, List, Optional
+
 from validation.semantic_validator import SemanticValidator, process_semantic_validation
+
 
 class TestValidationOverall:
     """Test suite for Validation module."""

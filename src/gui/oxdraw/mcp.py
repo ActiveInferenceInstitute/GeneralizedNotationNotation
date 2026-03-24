@@ -5,20 +5,13 @@ Registers Model Context Protocol tools for visual GNN model editing.
 """
 
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
+from .mermaid_converter import convert_gnn_file_to_mermaid
+from .mermaid_parser import convert_mermaid_file_to_gnn
 
 # Import core functions
-from .processor import (
-    check_oxdraw_installed,
-    launch_oxdraw_editor,
-    get_module_info
-)
-from .mermaid_converter import (
-    convert_gnn_file_to_mermaid
-)
-from .mermaid_parser import (
-    convert_mermaid_file_to_gnn
-)
+from .processor import check_oxdraw_installed, get_module_info, launch_oxdraw_editor
 
 
 def register_mcp_tools():

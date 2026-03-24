@@ -8,8 +8,8 @@ and policy optimization using JAX's advanced features.
 
 from .jax_renderer import (
     render_gnn_to_jax,
+    render_gnn_to_jax_combined,
     render_gnn_to_jax_pomdp,
-    render_gnn_to_jax_combined
 )
 
 __all__ = [

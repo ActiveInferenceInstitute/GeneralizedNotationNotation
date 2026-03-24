@@ -7,7 +7,8 @@ This script verifies that the complete GNN Processing Pipeline is working correc
 
 
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def verify_pipeline_discovery() -> Dict[str, Any]:
     """Verify pipeline step discovery."""

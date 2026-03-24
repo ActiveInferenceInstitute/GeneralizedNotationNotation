@@ -6,19 +6,19 @@ Provides coherent, correlation-based logging across all pipeline steps
 with enhanced visual formatting and centralized configuration.
 """
 
-import logging
-import sys
-import uuid
-import threading
-from pathlib import Path
-from typing import Optional, Dict, Any
-from datetime import datetime
+import gzip
 import json
-import time
-from contextlib import contextmanager
+import logging
 import os
 import shutil
-import gzip
+import sys
+import threading
+import time
+import uuid
+from contextlib import contextmanager
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
@@ -305,7 +305,7 @@ def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
 
         # Cleanup old logs
         pattern = "pipeline_*.log.gz" if compress else "pipeline_*.log"
-        log_files = sorted(list(log_dir.glob(pattern)), key=lambda x: x.stat().st_mtime)
+        log_files = sorted(log_dir.glob(pattern), key=lambda x: x.stat().st_mtime)
 
         # Keep only max_files (subtract 1 for the new current log that will be created)
         to_delete_count = len(log_files) - (max_files - 1)

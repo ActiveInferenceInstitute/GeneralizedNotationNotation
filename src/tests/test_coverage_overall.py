@@ -60,7 +60,7 @@ class TestCoverageOverall:
     def test_llm_imports(self):
         import llm
         assert hasattr(llm, '__version__')
-        from llm import LLMProcessor, LLMAnalyzer
+        from llm import LLMAnalyzer, LLMProcessor
         assert callable(LLMProcessor)
         assert callable(LLMAnalyzer)
 

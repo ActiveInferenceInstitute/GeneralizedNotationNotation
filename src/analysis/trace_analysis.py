@@ -9,7 +9,8 @@ Extracted from post_simulation.py for maintainability.
 """
 
 import logging
-from typing import Dict, List, Any
+from typing import Any, Dict, List
+
 import numpy as np
 
 logger = logging.getLogger(__name__)

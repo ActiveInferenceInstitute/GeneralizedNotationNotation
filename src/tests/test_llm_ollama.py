@@ -11,10 +11,11 @@ then ``llm.defaults.DEFAULT_OLLAMA_MODEL`` (smollm2 instruct).
 
 import asyncio
 import os
-import sys
 import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 from pathlib import Path
+
 import pytest
 
 # Add src to path for imports
@@ -94,8 +95,8 @@ def test_ollama_simple_chat(monkeypatch):
         pytest.skip("Ollama not available locally")
 
     async def _run() -> None:
+        from llm.providers.base_provider import LLMConfig, LLMMessage
         from llm.providers.ollama_provider import OllamaProvider
-        from llm.providers.base_provider import LLMMessage, LLMConfig
 
         provider = OllamaProvider()
         assert provider.initialize() is True
@@ -122,8 +123,8 @@ def test_ollama_streaming(monkeypatch):
         pytest.skip("Ollama not available locally")
 
     async def _run() -> None:
+        from llm.providers.base_provider import LLMConfig, LLMMessage
         from llm.providers.ollama_provider import OllamaProvider
-        from llm.providers.base_provider import LLMMessage, LLMConfig
 
         provider = OllamaProvider()
         assert provider.initialize() is True
@@ -158,7 +159,7 @@ def test_processor_uses_ollama_when_no_keys(monkeypatch):
     monkeypatch.setenv("DEFAULT_PROVIDER", "ollama")
 
     async def _run() -> None:
-        from llm.llm_processor import LLMProcessor, LLMConfig
+        from llm.llm_processor import LLMConfig, LLMProcessor
         from llm.providers.base_provider import LLMMessage, ProviderType
 
         processor = LLMProcessor()
@@ -210,24 +211,24 @@ class TestOllamaProviderConfig:
     """OllamaProvider behavior that does not require a running Ollama server."""
 
     def test_validate_config_rejects_non_positive_max_tokens(self):
-        from llm.providers.ollama_provider import OllamaProvider
         from llm.providers.base_provider import LLMConfig
+        from llm.providers.ollama_provider import OllamaProvider
 
         p = OllamaProvider()
         assert p.validate_config(LLMConfig(max_tokens=0)) is False
         assert p.validate_config(LLMConfig(max_tokens=-1)) is False
 
     def test_validate_config_rejects_temperature_out_of_range(self):
-        from llm.providers.ollama_provider import OllamaProvider
         from llm.providers.base_provider import LLMConfig
+        from llm.providers.ollama_provider import OllamaProvider
 
         p = OllamaProvider()
         assert p.validate_config(LLMConfig(temperature=-0.1)) is False
         assert p.validate_config(LLMConfig(temperature=2.1)) is False
 
     def test_validate_config_accepts_defaults_and_edges(self):
-        from llm.providers.ollama_provider import OllamaProvider
         from llm.providers.base_provider import LLMConfig
+        from llm.providers.ollama_provider import OllamaProvider
 
         p = OllamaProvider()
         assert p.validate_config(LLMConfig()) is True
@@ -245,8 +246,8 @@ class TestOllamaProviderConfig:
         assert q.default_model == "custom:tag"
 
     def test_provider_type_and_info_uninitialized(self):
-        from llm.providers.ollama_provider import OllamaProvider
         from llm.providers.base_provider import ProviderType
+        from llm.providers.ollama_provider import OllamaProvider
 
         p = OllamaProvider()
         assert p.provider_type == ProviderType.OLLAMA

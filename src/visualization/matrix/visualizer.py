@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Matrix Visualization Module for GNN Processing Pipeline
 
@@ -11,9 +12,11 @@ Specialized support for 3D tensors like POMDP transition matrices.
 import csv
 import logging
 
-from visualization.compat.viz_compat import plt, np, sns, MATPLOTLIB_AVAILABLE
+from visualization.compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 from visualization.matrix.extract import (
     convert_to_matrix,
+)
+from visualization.matrix.extract import (
     extract_matrix_data_from_parameters as extract_matrices_from_parameter_list,
 )
 from visualization.plotting.utils import safe_tight_layout
@@ -30,7 +33,7 @@ SEABORN_AVAILABLE = sns is not None
 
 import ast
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 
 class MatrixVisualizer:
@@ -192,7 +195,7 @@ class MatrixVisualizer:
             for i in range(matrix.shape[0]):
                 for j in range(matrix.shape[1]):
                     value = float(matrix[i, j])
-                    text = plt.text(j, i, f'{value:.3f}',
+                    plt.text(j, i, f'{value:.3f}',
                                   ha="center", va="center", color="white" if value < 0.5 else "black",
                                   fontsize=8, fontweight='bold')
 
@@ -210,7 +213,7 @@ class MatrixVisualizer:
             plt.close()
 
             # Export matrix data to CSV for accessibility
-            csv_success = self.export_matrix_to_csv(matrix, matrix_name, output_path)
+            self.export_matrix_to_csv(matrix, matrix_name, output_path)
 
             return True
 
@@ -286,7 +289,7 @@ class MatrixVisualizer:
                     for row in range(slice_data.shape[0]):
                         for col in range(slice_data.shape[1]):
                             value = float(slice_data[row, col])
-                            text = ax.text(col, row, f'{value:.2f}',
+                            ax.text(col, row, f'{value:.2f}',
                                           ha="center", va="center",
                                           color="white" if value < 0.5 else "black",
                                           fontsize=10, fontweight='bold')
@@ -313,7 +316,7 @@ class MatrixVisualizer:
             stats_text = self._generate_tensor_statistics(tensor, tensor_name, tensor_type)
             ax_summary.text(0.05, 0.5, stats_text, transform=ax_summary.transAxes,
                           fontsize=10, verticalalignment='center',
-                          bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgray", alpha=0.8))
+                          bbox={'boxstyle': "round,pad=0.3", 'facecolor': "lightgray", 'alpha': 0.8})
 
             # Set main title
             fig.suptitle(main_title, fontsize=16, fontweight='bold', y=0.95)
@@ -422,7 +425,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 for row in range(slice_data.shape[0]):
                     for col in range(slice_data.shape[1]):
                         value = float(slice_data[row, col])
-                        text = ax.text(col, row, f'{value:.2f}',
+                        ax.text(col, row, f'{value:.2f}',
                                       ha="center", va="center",
                                       color="white" if value < 0.5 else "black",
                                       fontsize=10, fontweight='bold')
@@ -521,7 +524,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
             ax_validation.text(0.05, 0.5, validation_text, transform=ax_validation.transAxes,
                              fontsize=10, verticalalignment='center',
-                             bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgreen", alpha=0.8))
+                             bbox={'boxstyle': "round,pad=0.3", 'facecolor': "lightgreen", 'alpha': 0.8})
 
             # Set main title
             fig.suptitle('POMDP Transition Matrix Analysis', fontsize=16, fontweight='bold', y=0.95)
@@ -649,7 +652,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 # Add statistics text
                 stats_text = f'Mean: {np.mean(matrix):.3f}\nStd: {np.std(matrix):.3f}'
                 ax.text(0.02, 0.98, stats_text, transform=ax.transAxes,
-                       verticalalignment='top', bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+                       verticalalignment='top', bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': 0.8})
 
             # Hide unused subplots
             for i in range(n_matrices, len(axes)):
@@ -730,7 +733,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 ax = axes_flat[plot_idx]
 
                 # Create heatmap
-                im = ax.imshow(matrix, cmap='viridis', aspect='auto')
+                ax.imshow(matrix, cmap='viridis', aspect='auto')
 
                 # Add title
                 ax.set_title(f'Matrix {matrix_name}', fontweight='bold')
@@ -740,7 +743,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     for row in range(matrix.shape[0]):
                         for col in range(matrix.shape[1]):
                             value = float(matrix[row, col])
-                            text = ax.text(col, row, f'{value:.2f}',
+                            ax.text(col, row, f'{value:.2f}',
                                           ha="center", va="center",
                                           color="white" if value < 0.5 else "black",
                                           fontsize=8)
@@ -760,7 +763,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
                 # Show first slice of 3D tensor
                 slice_data = matrix[:, :, 0]
-                im = ax.imshow(slice_data, cmap='Blues', aspect='auto')
+                ax.imshow(slice_data, cmap='Blues', aspect='auto')
 
                 # Add title
                 ax.set_title(f'Tensor {matrix_name} (Slice 0)', fontweight='bold')
@@ -770,7 +773,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     for row in range(slice_data.shape[0]):
                         for col in range(slice_data.shape[1]):
                             value = float(slice_data[row, col])
-                            text = ax.text(col, row, f'{value:.2f}',
+                            ax.text(col, row, f'{value:.2f}',
                                           ha="center", va="center",
                                           color="white" if value < 0.5 else "black",
                                           fontsize=8)
@@ -1167,7 +1170,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 if SEABORN_AVAILABLE and display_matrix.size <= 100:
                     sns.heatmap(display_matrix, ax=ax, cmap='viridis', cbar=False, square=True)
                 else:
-                    im = ax.imshow(display_matrix, cmap='viridis', aspect='auto')
+                    ax.imshow(display_matrix, cmap='viridis', aspect='auto')
 
                 ax.set_title(f'{name}\n({matrix.shape[0]}×{matrix.shape[1]})', fontsize=10)
 

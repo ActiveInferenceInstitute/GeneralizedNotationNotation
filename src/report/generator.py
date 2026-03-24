@@ -8,12 +8,13 @@ It orchestrates the collection, analysis, and formatting of pipeline data into c
 
 import json
 import logging
-from pathlib import Path
-from typing import Dict, Any, List, Optional
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from .analyzer import collect_pipeline_data, get_pipeline_health_score
 from .formatters import generate_html_report, generate_markdown_report
+
 
 def generate_comprehensive_report(
     pipeline_output_dir: Path,

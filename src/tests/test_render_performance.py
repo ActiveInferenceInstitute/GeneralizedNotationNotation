@@ -6,11 +6,12 @@ Tests performance characteristics of code generation and rendering operations.
 """
 
 import gc
-import pytest
 import sys
 import time
 import tracemalloc
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -25,8 +26,9 @@ class TestRenderingSpeed:
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
 
-        from render import process_render
         import logging
+
+        from render import process_render
 
         logger = logging.getLogger("test_render")
         output_dir = tmp_path / "render_output"
@@ -36,7 +38,7 @@ class TestRenderingSpeed:
         gnn_file = list(sample_gnn_files.values())[0]
 
         start = time.time()
-        result = process_render(
+        process_render(
             target_dir=gnn_file.parent,
             output_dir=output_dir,
             logger=logger
@@ -51,7 +53,7 @@ class TestRenderingSpeed:
         """Test framework-specific rendering speed."""
         from render import get_supported_frameworks
 
-        frameworks = get_supported_frameworks()
+        get_supported_frameworks()
 
         # Just verify we can get frameworks quickly
         start = time.time()
@@ -72,7 +74,7 @@ class TestRendererPerformance:
 
         start = time.time()
         for _ in range(100):
-            renderer = PyMDPRenderer()
+            PyMDPRenderer()
         elapsed = time.time() - start
 
         assert elapsed < 1.0, f"100 instantiations took {elapsed:.2f}s"
@@ -119,7 +121,7 @@ class TestCodeGenerationPerformance:
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
 
-        from render import get_supported_frameworks, PyMDPRenderer
+        from render import PyMDPRenderer, get_supported_frameworks
 
         frameworks = get_supported_frameworks()
         assert len(frameworks) > 0, "No frameworks available"
@@ -147,8 +149,9 @@ class TestRenderThroughput:
         if not sample_gnn_files or len(sample_gnn_files) < 2:
             pytest.skip("Need multiple sample GNN files")
 
-        from render import process_render
         import logging
+
+        from render import process_render
 
         logger = logging.getLogger("test_render")
         output_dir = tmp_path / "batch_output"
@@ -156,7 +159,7 @@ class TestRenderThroughput:
 
         start = time.time()
         gnn_dir = next(iter(sample_gnn_files.values())).parent
-        result = process_render(
+        process_render(
             target_dir=gnn_dir,
             output_dir=output_dir,
             logger=logger
@@ -200,7 +203,7 @@ class TestRenderBenchmarks:
         for _ in range(5):
             start = time.time()
             from render import PyMDPRenderer
-            renderer = PyMDPRenderer()
+            PyMDPRenderer()
             times.append(time.time() - start)
 
         avg = sum(times) / len(times)

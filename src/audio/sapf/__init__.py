@@ -5,44 +5,39 @@ This module provides tools for converting GNN models to SAPF audio representatio
 enabling auditory exploration and debugging of Active Inference generative models.
 """
 
+from .audio_generators import (
+    SyntheticAudioGenerator,
+    apply_envelope,
+    generate_oscillator_audio,
+    mix_audio_channels,
+)
+
+# Import module introspection helpers
+from .module_info import get_audio_generation_options, get_module_info, register_tools
+
+# Import processor functions
+from .processor import (
+    create_sapf_visualization,
+    generate_sapf_audio,
+    generate_sapf_report,
+    process_gnn_to_audio,
+)
 from .sapf_gnn_processor import (
     SAPFGNNProcessor,
     convert_gnn_to_sapf,
     generate_audio_from_sapf,
-    validate_sapf_code
-)
-
-from .audio_generators import (
-    SyntheticAudioGenerator,
-    generate_oscillator_audio,
-    apply_envelope,
-    mix_audio_channels
-)
-
-# Import processor functions
-from .processor import (
-    process_gnn_to_audio,
-    generate_sapf_audio,
-    create_sapf_visualization,
-    generate_sapf_report
-)
-
-# Import module introspection helpers
-from .module_info import (
-    get_module_info,
-    get_audio_generation_options,
-    register_tools
+    validate_sapf_code,
 )
 
 # MCP integration
 try:
     from mcp import (
-        register_sapf_tools,
+        handle_analyze_gnn_for_audio,
         handle_convert_gnn_to_sapf_audio,
+        handle_generate_audio_from_sapf,
         handle_generate_sapf_code,
         handle_validate_sapf_syntax,
-        handle_generate_audio_from_sapf,
-        handle_analyze_gnn_for_audio
+        register_sapf_tools,
     )
     MCP_AVAILABLE = True
 except ImportError:

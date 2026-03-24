@@ -17,28 +17,29 @@ Test Coverage:
 
 No mocking is used - all tests validate real function execution.
 """
+import json
+import logging
+
+# Add src to path for imports
+import sys
+from pathlib import Path
 from typing import Any, Dict
 from unittest.mock import patch
 
 import pytest
-import json
-import logging
-from pathlib import Path
 
-# Add src to path for imports
-import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from execute.processor import (
-    process_execute,
-    find_executable_scripts,
-    execute_single_script,
-    parse_frameworks_parameter,
-    determine_script_framework,
-    collect_execution_outputs,
-)
 from execute import processor as execute_processor
 from execute.executor import GNNExecutor
+from execute.processor import (
+    collect_execution_outputs,
+    determine_script_framework,
+    execute_single_script,
+    find_executable_scripts,
+    parse_frameworks_parameter,
+    process_execute,
+)
 
 
 class TestExecuteOverall:
@@ -55,7 +56,7 @@ class TestExecuteOverall:
         base = safe_filesystem.create_dir("output/11_render_output")
 
         # Create pymdp directory with sample script
-        pymdp_dir = safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
+        safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
         pymdp_script = safe_filesystem.create_file(
             "output/11_render_output/test_model/pymdp/test_model_pymdp.py",
             """#!/usr/bin/env python3
@@ -66,7 +67,7 @@ print(json.dumps({"status": "success", "framework": "pymdp"}))
         )
 
         # Create rxinfer directory with sample script
-        rxinfer_dir = safe_filesystem.create_dir("output/11_render_output/test_model/rxinfer")
+        safe_filesystem.create_dir("output/11_render_output/test_model/rxinfer")
         rxinfer_script = safe_filesystem.create_file(
             "output/11_render_output/test_model/rxinfer/test_model_rxinfer.jl",
             """# Test RxInfer script
@@ -174,7 +175,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         logger = logging.getLogger("test")
 
         # Create a script that generates output
-        script_dir = safe_filesystem.create_dir("sandbox_scripts")
+        safe_filesystem.create_dir("sandbox_scripts")
         script = safe_filesystem.create_file(
             "sandbox_scripts/test_script.py",
             "print('test output')"
@@ -317,7 +318,7 @@ print(json.dumps(result))
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
         # Path must have at least 3 parts so framework/model are derived: .../model_name/jax/script.py
-        base = safe_filesystem.create_dir("render_output/simple_mdp/jax")
+        safe_filesystem.create_dir("render_output/simple_mdp/jax")
         script_path = safe_filesystem.create_file(
             "render_output/simple_mdp/jax/Simple MDP Agent_jax.py",
             "import jax\nprint('ok')",
@@ -379,12 +380,12 @@ class TestExecuteIntegration:
     def test_execute_uses_render_output(self, safe_filesystem: Any) -> None:
         """Test that execute step correctly finds render output."""
         # Create the expected directory structure
-        render_output = safe_filesystem.create_dir("output/11_render_output")
-        execute_output = safe_filesystem.create_dir("output/12_execute_output")
+        safe_filesystem.create_dir("output/11_render_output")
+        safe_filesystem.create_dir("output/12_execute_output")
 
         # Create a model subdirectory with a pymdp script
-        model_dir = safe_filesystem.create_dir("output/11_render_output/actinf_model/pymdp")
-        script = safe_filesystem.create_file(
+        safe_filesystem.create_dir("output/11_render_output/actinf_model/pymdp")
+        safe_filesystem.create_file(
             "output/11_render_output/actinf_model/pymdp/actinf_model_pymdp.py",
             """#!/usr/bin/env python3
 import json
@@ -393,7 +394,7 @@ print(json.dumps({"status": "executed", "model": "actinf_model"}))
         )
 
         # Run execution
-        logger = logging.getLogger("test")
+        logging.getLogger("test")
         input_dir = safe_filesystem.create_dir("input")
 
         try:
@@ -473,7 +474,7 @@ class TestJAXExecute:
         base = safe_filesystem.create_dir("output/11_render_output")
 
         # Create jax directory with a valid Python script
-        jax_dir = safe_filesystem.create_dir("output/11_render_output/actinf_model/jax")
+        safe_filesystem.create_dir("output/11_render_output/actinf_model/jax")
         jax_script = safe_filesystem.create_file(
             "output/11_render_output/actinf_model/jax/actinf_model_jax.py",
             '''#!/usr/bin/env python3
@@ -612,12 +613,16 @@ class TestExecuteDisCoPyTranslatorModule:
         from execute.discopy_translator_module import translator  # noqa: F401
 
     def test_gnn_file_to_discopy_diagram_nonexistent(self, tmp_path):
-        from execute.discopy_translator_module.translator import gnn_file_to_discopy_diagram
+        from execute.discopy_translator_module.translator import (
+            gnn_file_to_discopy_diagram,
+        )
         result = gnn_file_to_discopy_diagram(tmp_path / "nonexistent.md")
         # Should return None on failure (no discopy or missing file)
         assert result is None or hasattr(result, '__class__')
 
     def test_gnn_file_to_discopy_matrix_diagram_nonexistent(self, tmp_path):
-        from execute.discopy_translator_module.translator import gnn_file_to_discopy_matrix_diagram
+        from execute.discopy_translator_module.translator import (
+            gnn_file_to_discopy_matrix_diagram,
+        )
         result = gnn_file_to_discopy_matrix_diagram(tmp_path / "nonexistent.md")
         assert result is None or hasattr(result, '__class__')

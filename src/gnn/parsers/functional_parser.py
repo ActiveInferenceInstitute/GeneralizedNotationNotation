@@ -11,14 +11,21 @@ License: MIT
 
 import logging
 import re
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Parameter, Equation, VariableType, DataType
+    BaseGNNParser,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseResult,
+    Variable,
+    VariableType,
 )
+
 
 class HaskellGNNParser(BaseGNNParser):
     """Parser for Haskell functional specifications."""
@@ -135,7 +142,14 @@ class HaskellGNNParser(BaseGNNParser):
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
-            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            from .common import (
+                Connection,
+                ConnectionType,
+                DataType,
+                Parameter,
+                Variable,
+                VariableType,
+            )
 
             # Create model from embedded data
             model = GNNInternalRepresentation(

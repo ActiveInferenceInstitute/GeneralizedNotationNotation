@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 OpenRouter LLM Provider
 
@@ -8,11 +9,11 @@ through a unified interface. OpenRouter provides access to models from
 OpenAI, Anthropic, Google, Meta, and other providers.
 """
 
-import os
 import asyncio
 import json
-from typing import List, Dict, Any, Optional, AsyncGenerator
 import logging
+import os
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 try:
     import aiohttp
@@ -24,10 +25,10 @@ except ImportError as e:
 
 from .base_provider import (
     BaseLLMProvider,
-    ProviderType,
-    LLMResponse,
+    LLMConfig,
     LLMMessage,
-    LLMConfig
+    LLMResponse,
+    ProviderType,
 )
 
 logger = logging.getLogger(__name__)

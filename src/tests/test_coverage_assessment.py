@@ -16,6 +16,7 @@ sys.path.insert(0, str(SRC_DIR))
 
 import pytest
 
+
 class TestCoverageStrategy:
     """Strategic assessment of coverage gaps and priorities."""
 

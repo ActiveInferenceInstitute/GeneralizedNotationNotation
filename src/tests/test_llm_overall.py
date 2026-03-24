@@ -5,9 +5,10 @@ Test LLM Overall Tests
 This file contains comprehensive tests for the LLM module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -188,14 +189,15 @@ def test_llm_module_completeness():
 def test_llm_module_performance():
     """Test LLM module performance characteristics."""
     try:
-        from llm import LLMProcessor
         import time
+
+        from llm import LLMProcessor
 
         processor = LLMProcessor()
         start_time = time.time()
 
         # Test analysis performance
-        result = processor.analyze_model({'test': 'data'})
+        processor.analyze_model({'test': 'data'})
 
         processing_time = time.time() - start_time
         assert processing_time < 30.0  # Should complete within 30 seconds

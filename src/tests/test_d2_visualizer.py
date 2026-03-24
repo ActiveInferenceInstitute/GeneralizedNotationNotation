@@ -14,11 +14,11 @@ This test file validates:
 - Error handling and recovery mechanisms
 """
 
-import unittest
 import sys
 import tempfile
+import unittest
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+
 # Mocks removed - using real implementations per testing policy
 
 # Add src to path for imports
@@ -27,10 +27,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 # Import D2 visualization components
 try:
     from advanced_visualization.d2_visualizer import (
-        D2Visualizer,
         D2DiagramSpec,
         D2GenerationResult,
-        process_gnn_file_with_d2
+        D2Visualizer,
+        process_gnn_file_with_d2,
     )
     D2_MODULE_AVAILABLE = True
 except ImportError as e:
@@ -246,13 +246,13 @@ class TestD2DiagramCompilation(unittest.TestCase):
         original_available = self.visualizer.d2_available
         self.visualizer.d2_available = False  # Skip compilation
 
-        result = self.visualizer.compile_d2_diagram(
+        self.visualizer.compile_d2_diagram(
             self.test_spec,
             self.output_dir
         )
 
         # D2 file should still be written
-        d2_file = self.output_dir / "test_diagram.d2"
+        self.output_dir / "test_diagram.d2"
         # File won't exist because compilation failed, but we tested the logic
 
         self.visualizer.d2_available = original_available
@@ -390,7 +390,7 @@ class TestD2ProcessorIntegration(unittest.TestCase):
         """Test that processor has D2 generation methods"""
         from advanced_visualization.processor import (
             _generate_d2_visualizations_safe,
-            _generate_pipeline_d2_diagrams_safe
+            _generate_pipeline_d2_diagrams_safe,
         )
 
         self.assertIsNotNone(_generate_d2_visualizations_safe)
@@ -398,9 +398,7 @@ class TestD2ProcessorIntegration(unittest.TestCase):
 
     def test_init_exports_d2_components(self) -> None:
         """Test that __init__ exports D2 components"""
-        from advanced_visualization import (
-            D2_AVAILABLE
-        )
+        from advanced_visualization import D2_AVAILABLE
 
         # These should all be importable (even if None when not available)
         self.assertIsNotNone(D2_AVAILABLE)

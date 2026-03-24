@@ -5,7 +5,8 @@ Ontology utils module for GNN Processing Pipeline.
 This module provides ontology utility functions.
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def get_module_info() -> Dict[str, Any]:
     """

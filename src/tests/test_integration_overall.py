@@ -1,6 +1,9 @@
-import pytest
 import json
+
+import pytest
+
 from integration.processor import process_integration
+
 
 class TestIntegrationOverall:
     """Test suite for Integration module."""

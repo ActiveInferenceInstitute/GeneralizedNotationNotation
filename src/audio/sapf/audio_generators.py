@@ -5,14 +5,16 @@ This module provides audio generation capabilities for SAPF code,
 including synthetic oscillators, envelopes, and audio file output.
 """
 
-import wave
-import struct
 import logging
 import re
-from typing import List, Dict, Any, Optional
+import struct
+import wave
 from pathlib import Path
-import numpy as np
+from typing import Any, Dict, List, Optional
+
 import matplotlib.pyplot as plt
+import numpy as np
+
 # Use NumPy FFT implementations to avoid optional SciPy dependency at import-time
 
 logger = logging.getLogger(__name__)
@@ -468,7 +470,7 @@ class SyntheticAudioGenerator:
             info_text += f"Duration: {len(audio_array)/self.sample_rate:.2f}s"
 
             fig.text(0.02, 0.02, info_text, fontsize=10,
-                    bbox=dict(boxstyle="round,pad=0.3", facecolor="lightgray", alpha=0.8))
+                    bbox={"boxstyle": "round,pad=0.3", "facecolor": "lightgray", "alpha": 0.8})
 
             plt.tight_layout()
             plt.subplots_adjust(top=0.93, bottom=0.15)

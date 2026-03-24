@@ -13,12 +13,13 @@ This test suite verifies:
 Following the project's Zero Simulated policy - all tests use real methods.
 """
 
-import pytest
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import sys
 import json
 import logging
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 from pathlib import Path
+
+import pytest
 
 # Test markers
 pytestmark = [pytest.mark.integration, pytest.mark.uv]
@@ -31,22 +32,22 @@ VENV_PYTHON = VENV_PATH / "bin" / "python" if sys.platform != "win32" else VENV_
 # Import setup module
 try:
     from src.setup import (
-        setup_uv_environment,
-        validate_uv_setup,
-        get_uv_setup_info,
+        FEATURES,
+        OPTIONAL_GROUPS,
+        add_uv_dependency,
+        check_environment_health,
         check_system_requirements,
         check_uv_availability,
-        get_installed_package_versions,
-        check_environment_health,
-        OPTIONAL_GROUPS,
-        FEATURES,
-        add_uv_dependency,
-        remove_uv_dependency,
-        update_uv_dependencies,
-        lock_uv_dependencies,
-        validate_system,
         get_environment_info,
+        get_installed_package_versions,
+        get_uv_setup_info,
         get_uv_status,
+        lock_uv_dependencies,
+        remove_uv_dependency,
+        setup_uv_environment,
+        update_uv_dependencies,
+        validate_system,
+        validate_uv_setup,
     )
     SETUP_AVAILABLE = True
 except ImportError as e:
@@ -454,7 +455,7 @@ class TestUVCacheAndPerformance:
             timeout=10
         )
         assert result.returncode == 0, f"uv cache dir failed: {result.stderr}"
-        cache_dir = Path(result.stdout.strip())
+        Path(result.stdout.strip())
         # Cache dir may not exist if nothing has been cached
         # Just verify the command works
 

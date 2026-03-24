@@ -54,8 +54,8 @@ class GNNWatcher:
 
     def _start_watchdog(self):
         """Use watchdog for efficient filesystem monitoring."""
+        from watchdog.events import FileModifiedEvent, FileSystemEventHandler
         from watchdog.observers import Observer
-        from watchdog.events import FileSystemEventHandler, FileModifiedEvent
 
         class _GNNChangeHandler(FileSystemEventHandler):
             def __init__(self, gnn_watcher):
@@ -126,7 +126,7 @@ class GNNWatcher:
             sys.path.insert(0, src_dir)
 
         try:
-            from gnn.schema import validate_required_sections, parse_state_space
+            from gnn.schema import parse_state_space, validate_required_sections
 
             errors = validate_required_sections(content, file_path=str(path))
             variables, var_errors = parse_state_space(content, file_path=str(path))

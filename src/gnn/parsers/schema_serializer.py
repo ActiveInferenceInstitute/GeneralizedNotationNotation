@@ -1,6 +1,7 @@
-from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
 from .xsd_serializer import XSDSerializer
+
 
 class SchemaSerializer(BaseGNNSerializer):
     """Serializer for formal schema languages."""

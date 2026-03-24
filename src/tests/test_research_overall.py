@@ -1,5 +1,7 @@
 import pytest
+
 from research.processor import process_research
+
 
 class TestResearchOverall:
     """Test suite for Research module."""

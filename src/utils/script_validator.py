@@ -11,9 +11,10 @@ This module validates all numbered pipeline scripts to ensure they have:
 
 import ast
 import logging
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Set
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set
+
 
 @dataclass
 class ValidationIssue:

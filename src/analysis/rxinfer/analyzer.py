@@ -7,12 +7,12 @@ Per-framework analysis and visualization for RxInfer.jl simulations.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 # Import shared visualization utilities (centralized matplotlib setup)
-from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
 
 def generate_analysis_from_logs(
@@ -92,8 +92,8 @@ def create_rxinfer_visualizations(
     beliefs = data.get("beliefs", [])
     observations = data.get("observations", [])
     true_states = data.get("true_states", [])
-    time_steps = data.get("time_steps", len(beliefs) if beliefs else 0)
-    num_states = data.get("num_states", 3)
+    data.get("time_steps", len(beliefs) if beliefs else 0)
+    data.get("num_states", 3)
 
     # 1. Belief Evolution Plot
     if beliefs:

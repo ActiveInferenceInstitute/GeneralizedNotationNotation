@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
+
 def _test_runner_wrapper(target_dir, output_dir, logger, **kwargs) -> bool:
     """Wrapper to map standard pipeline args to run_tests."""
     import os

@@ -6,10 +6,10 @@ These tests verify that the pipeline actually runs steps and produces expected o
 No mocks - real subprocess execution with real artifacts.
 """
 
+import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import tempfile
-import shutil
 from pathlib import Path
 
 # Import test utilities
@@ -181,7 +181,7 @@ D: 0.6 0.4
                 "--verbose"
             ]
 
-            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
+            subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Check that pipeline produced expected outputs
             pipeline_summary = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"

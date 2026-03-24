@@ -9,7 +9,8 @@ Copy this structure for consistent argument handling, logging, and error managem
 import argparse
 import logging
 from pathlib import Path
-from typing import Optional, Any, Callable, List, Dict
+from typing import Any, Callable, Dict, List, Optional
+
 try:
     from src.pipeline.config import get_output_dir_for_script
 except ImportError:
@@ -17,26 +18,26 @@ except ImportError:
 
 # Standard import pattern for all pipeline modules
 try:
-    from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
-        log_step_start,
-        log_step_success,
-        log_step_warning,
-        log_step_error,
-    )
     from utils.pipeline import (
         setup_step_logging,
         validate_output_directory,
+    )
+    from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
+        log_step_error,
+        log_step_start,
+        log_step_success,
+        log_step_warning,
     )
     UTILS_AVAILABLE = True
 
 except ImportError:
     # Recovery: use step_logging (always importable, no external deps)
     from utils.logging.logging_utils import (  # noqa: F401 - standard pipeline imports
-        setup_step_logging,
+        log_step_error,
         log_step_start,
         log_step_success,
         log_step_warning,
-        log_step_error,
+        setup_step_logging,
     )
 
     def validate_output_directory(output_dir, step_name):

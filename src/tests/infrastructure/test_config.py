@@ -4,7 +4,7 @@ Test Configuration Classes for GNN Processing Pipeline.
 This module provides data classes for test execution configuration and results.
 """
 
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from typing import List, Optional
 
 

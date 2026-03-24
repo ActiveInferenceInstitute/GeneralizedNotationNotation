@@ -9,9 +9,10 @@ using torch.tensor operations.
 @Web: https://pytorch.org/docs/stable/
 """
 import logging
-import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,8 @@ def render_gnn_to_pytorch(
         # Write output
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        import os as _os, tempfile as _tempfile
+        import os as _os
+        import tempfile as _tempfile
         with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as _tmp:
             _tmp.write(code)
         _os.replace(_tmp.name, str(output_path))

@@ -6,16 +6,16 @@ and a comprehensive set of functions to export the parsed GNN model into various
 formats, including structured data (JSON, XML), graph formats (GEXF, GraphML),
 and text-based representations (Summary, DSL).
 """
-import logging
-import re
-from pathlib import Path
 import ast
-from typing import Dict, Any, List, Optional, Union, Callable, Tuple
 
 # Imports for specific exporters
 import json
-import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
+import logging
 import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
+import re
+import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 try:
     import networkx as nx
@@ -28,8 +28,8 @@ except (ImportError, RecursionError, AttributeError, ValueError):
 
 def _configure_networkx() -> None:
     """Apply NetworkX environment workarounds on Python 3.13+ (called lazily)."""
-    import sys
     import os
+    import sys
     if sys.version_info >= (3, 13):
         os.environ.pop('NETWORKX_AUTOMATIC_BACKENDS', None)
         os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
@@ -79,7 +79,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
 
         def convert_structure(item):
             if isinstance(item, set):
-                try: return sorted(list(item))
+                try: return sorted(item)
                 except TypeError: return list(item)
             elif isinstance(item, list): return [convert_structure(x) for x in item]
             elif isinstance(item, tuple): return tuple(convert_structure(x) for x in item)

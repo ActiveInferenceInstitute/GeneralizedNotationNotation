@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Pipeline execution module.
 
@@ -8,10 +9,11 @@ is handled by main.py. This module exists for API compatibility and testing.
 """
 
 import logging
+from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
-from datetime import datetime
-from dataclasses import dataclass
+
 
 @dataclass
 class StepExecutionResult:

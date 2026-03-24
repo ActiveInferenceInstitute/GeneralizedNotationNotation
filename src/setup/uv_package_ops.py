@@ -4,11 +4,9 @@ UV Package Operations
 Add/remove/update/lock dependency operations extracted from uv_management.py.
 """
 
+import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
-import logging
-
-
 
 from .constants import (
     PROJECT_ROOT,

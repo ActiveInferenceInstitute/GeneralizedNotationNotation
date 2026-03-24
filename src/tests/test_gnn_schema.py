@@ -7,8 +7,6 @@ validate_matrix_dimensions, validate_gnn_object, GNNParseError.
 import sys
 from pathlib import Path
 
-import pytest
-
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 GNN_SAMPLE = """

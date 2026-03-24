@@ -8,10 +8,10 @@ with multiple validation levels and extensible validation rules.
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
-from .types import ValidationLevel, ValidationResult
 from .schema_validator import GNNValidator
+from .types import ValidationLevel, ValidationResult
 
 logger = logging.getLogger(__name__)
 

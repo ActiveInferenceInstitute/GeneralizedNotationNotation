@@ -6,8 +6,8 @@ from extracted GNN model data.
 """
 
 import json
-from typing import Dict, Any, List
 from datetime import datetime
+from typing import Any, Dict, List
 
 
 class HTMLVisualizationGenerator:
@@ -34,7 +34,7 @@ class HTMLVisualizationGenerator:
         parameters = extracted_data.get("parameters", [])
         equations = extracted_data.get("equations", [])
         model_info = extracted_data.get("model_info", {})
-        statistics = extracted_data.get("statistics", {})
+        extracted_data.get("statistics", {})
 
         # Generate the HTML content
         html = f"""

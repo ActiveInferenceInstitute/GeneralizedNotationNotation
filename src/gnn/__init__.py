@@ -4,30 +4,27 @@ GNN module for GNN Processing Pipeline.
 This module provides GNN file discovery, parsing, and validation capabilities.
 """
 
-from .processor import (
-    process_gnn_directory_lightweight,
-    discover_gnn_files,
-    parse_gnn_file,
-    validate_gnn_structure,
-    process_gnn_directory,
-    generate_gnn_report,
-    get_module_info
-)
-
-from .multi_format_processor import (
-    process_gnn_multi_format
-)
-
-from .parsers.system import GNNParsingSystem  # canonical 46-parser registry
+from .multi_format_processor import process_gnn_multi_format
 from .parser import (
     GNNFormalParser,
     ParsedGNNFormal,
-    parse_gnn_formal,
-    validate_gnn_syntax_formal,
     get_parse_tree_visualization,
+    parse_gnn_formal,
     validate_gnn,
+    validate_gnn_syntax_formal,
 )
 from .parsers.common import GNNFormat
+from .parsers.system import GNNParsingSystem  # canonical 46-parser registry
+from .processor import (
+    discover_gnn_files,
+    generate_gnn_report,
+    get_module_info,
+    parse_gnn_file,
+    process_gnn_directory,
+    process_gnn_directory_lightweight,
+    validate_gnn_structure,
+)
+
 # Canonical domain types live in types.py
 from .types import ParsedGNN, ValidationLevel
 

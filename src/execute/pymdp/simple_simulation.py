@@ -11,11 +11,12 @@ Architecture Note:
     Flow: Render (prepare scripts) → Execute (run + log raw data) → Analysis (visualize)
 """
 
-import numpy as np
-from pathlib import Path
 import json
 import logging
-from typing import Dict, Any, Tuple
+from pathlib import Path
+from typing import Any, Dict, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -54,8 +55,8 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         # Import PyMDP components using modern API
         # The correct package is 'inferactively-pymdp' (uv pip install inferactively-pymdp)
         try:
-            from pymdp.agent import Agent
             from pymdp import utils
+            from pymdp.agent import Agent
             logger.info("Using PyMDP (inferactively-pymdp) API")
         except ImportError:
             Agent = None

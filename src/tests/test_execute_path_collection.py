@@ -6,17 +6,18 @@ This module tests the path collection logic that prevents duplicate
 file paths in execution results.
 """
 
-import pytest
-from pathlib import Path
 import sys
+from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from execute.processor import (
+        _normalize_and_deduplicate_paths,
         collect_execution_outputs,
-        _normalize_and_deduplicate_paths
     )
     PATH_COLLECTION_AVAILABLE = True
 except ImportError as e:
@@ -193,7 +194,7 @@ class TestPathCollectionDeduplication:
         dest_dir.mkdir()
 
         # Collect (will search recursively)
-        result = collect_execution_outputs(script_path, dest_dir, "jax", logger)
+        collect_execution_outputs(script_path, dest_dir, "jax", logger)
 
         # Check that file was copied at most once
         copied_files = list(dest_dir.rglob("data.json"))

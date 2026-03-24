@@ -8,17 +8,18 @@ retry strategies and graceful degradation.
 """
 
 import asyncio
-import time
-import signal
-import sys
-import logging
-from typing import Dict, List, Optional, Callable, Any, Coroutine
-from dataclasses import dataclass
-from contextlib import contextmanager, asynccontextmanager
-from enum import Enum
 import functools
-import threading
+import logging
+import signal
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
+import threading
+import time
+from contextlib import asynccontextmanager, contextmanager
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any, Callable, Coroutine, Dict, List, Optional
+
 
 class TimeoutStrategy(Enum):
     """Timeout handling strategies."""
@@ -106,7 +107,7 @@ class TimeoutManager:
 
         for attempt in range(config.max_retries + 1):
             result.attempts = attempt + 1
-            attempt_start = time.time()
+            time.time()
 
             # Calculate timeout for this attempt
             if config.strategy == TimeoutStrategy.RETRY_EXPONENTIAL:

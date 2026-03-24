@@ -9,7 +9,7 @@ memory, inference, storage, FLOPS, and complexity estimates for GNN models.
 import logging
 import math
 import re
-from typing import Dict, List, Any, TypedDict, Union
+from typing import Any, Dict, List, TypedDict, Union
 
 logger = logging.getLogger(__name__)
 

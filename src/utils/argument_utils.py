@@ -6,16 +6,15 @@ all pipeline steps with centralized configuration and type safety.
 """
 
 import argparse
-from pathlib import Path
-from types import MappingProxyType
-from typing import Dict, Any, List, Optional, Type
-from dataclasses import dataclass, field, fields
 import logging
 import re
-import sys
+from dataclasses import dataclass, field, fields
+from pathlib import Path
+from types import MappingProxyType
+from typing import Any, Dict, List, Optional, Type
 
 # Import config loading functionality
-from .config_loader import load_config, GNNPipelineConfig
+from .config_loader import GNNPipelineConfig, load_config
 
 logger = logging.getLogger(__name__)
 

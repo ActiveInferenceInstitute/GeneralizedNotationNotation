@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 # ── Graceful import ──────────────────────────────────────────────────────────────
 
 try:
-    from fastapi import FastAPI, BackgroundTasks, HTTPException
+    from fastapi import BackgroundTasks, FastAPI, HTTPException
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import PlainTextResponse, StreamingResponse
     from pydantic import BaseModel, Field

@@ -9,15 +9,16 @@ Tests GNN to Mermaid conversion functions:
 """
 
 import pytest
+
 from gui.oxdraw.mermaid_converter import (
-    gnn_to_mermaid,
-    _generate_node_definition,
-    _generate_edge_definition,
-    _generate_node_styles,
     _classify_variable,
-    generate_mermaid_metadata
+    _generate_edge_definition,
+    _generate_node_definition,
+    _generate_node_styles,
+    generate_mermaid_metadata,
+    gnn_to_mermaid,
 )
-from gui.oxdraw.utils import infer_node_shape, infer_edge_style
+from gui.oxdraw.utils import infer_edge_style, infer_node_shape
 
 
 class TestNodeShapeInference:

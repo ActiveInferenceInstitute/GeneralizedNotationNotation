@@ -1,8 +1,11 @@
 import os
-import pytest
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
+
 from type_checker.checker import GNNTypeChecker
+
 
 class TestTypeCheckerOverall:
     """Test suite for Type Checker module."""

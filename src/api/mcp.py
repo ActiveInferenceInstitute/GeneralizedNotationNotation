@@ -11,9 +11,9 @@ managing processing jobs.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-from .processor import create_job, get_job, cancel_job, list_jobs, PIPELINE_STEPS
+from .processor import PIPELINE_STEPS, cancel_job, create_job, get_job, list_jobs
 
 logger = logging.getLogger(__name__)
 

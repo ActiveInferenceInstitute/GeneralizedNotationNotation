@@ -5,9 +5,10 @@ Test Visualization Matrices - Specialized tests for matrix visualization functio
 Tests the MatrixVisualizer class and matrix-specific visualization features.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -27,8 +28,9 @@ class TestMatrixVisualizerCore:
     @pytest.mark.fast
     def test_extract_matrix_data_from_parameters(self):
         """Test extraction of matrix data from GNN parameters."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -68,8 +70,9 @@ class TestMatrixVisualizerCore:
     @pytest.mark.fast
     def test_convert_to_matrix_1d(self):
         """Test conversion of 1D vectors."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -113,8 +116,9 @@ class TestMatrixHeatmapGeneration:
     @pytest.mark.slow
     def test_generate_matrix_heatmap(self, tmp_path):
         """Test heatmap generation for a 2D matrix."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -133,8 +137,9 @@ class TestMatrixHeatmapGeneration:
     @pytest.mark.slow
     def test_generate_heatmap_with_custom_colormap(self, tmp_path):
         """Test heatmap generation with custom colormap."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -174,8 +179,9 @@ class TestTensorVisualization:
     @pytest.mark.slow
     def test_generate_3d_tensor_visualization(self, tmp_path):
         """Test visualization of 3D POMDP transition matrices."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -199,8 +205,9 @@ class TestTensorVisualization:
     @pytest.mark.slow
     def test_generate_pomdp_transition_analysis(self, tmp_path):
         """Test comprehensive POMDP transition analysis."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -226,8 +233,9 @@ class TestMatrixExportFormats:
     @pytest.mark.fast
     def test_export_matrix_to_csv(self, tmp_path):
         """Test CSV export of matrix data."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -252,8 +260,9 @@ class TestMatrixExportFormats:
     @pytest.mark.fast
     def test_export_3d_tensor_to_csv(self, tmp_path):
         """Test CSV export of 3D tensor (first slice)."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
@@ -275,8 +284,9 @@ class TestMatrixStatistics:
     @pytest.mark.fast
     def test_tensor_statistics_generation(self):
         """Test generation of tensor statistics string."""
-        from visualization.matrix_visualizer import MatrixVisualizer
         import numpy as np
+
+        from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 

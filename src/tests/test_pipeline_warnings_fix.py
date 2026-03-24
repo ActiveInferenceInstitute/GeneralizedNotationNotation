@@ -19,11 +19,11 @@ Tests use temporary directories for isolation and automatic cleanup.
 import pytest
 
 pytestmark = pytest.mark.pipeline
-from typing import Any
-import sys
 import logging
-from pathlib import Path
+import sys
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

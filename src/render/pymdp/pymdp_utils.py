@@ -1,9 +1,10 @@
-import numpy as np
-import re
-from typing import Any, Dict, List, Optional, Union, Callable
-
 # It's good practice to have a logger for utils too, if they might log errors/warnings
 import logging
+import re
+from typing import Any, Callable, Dict, List, Optional, Union
+
+import numpy as np
+
 logger = logging.getLogger(__name__)
 
 def _numpy_array_to_string(arr: np.ndarray, indent=0) -> str:

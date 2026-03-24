@@ -6,12 +6,15 @@ from GNN models using real matplotlib functionality.
 """
 
 import re
+
 import matplotlib
+
 matplotlib.use('Agg')  # Use non-interactive backend for server environments
-import matplotlib.pyplot as plt
-from pathlib import Path
-from typing import Dict, List, Any, Tuple, Optional
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import matplotlib.pyplot as plt
 
 logger = logging.getLogger(__name__)
 

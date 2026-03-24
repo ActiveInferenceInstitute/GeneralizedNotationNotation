@@ -6,30 +6,31 @@ This module tests actual PyMDP functionality with real simulations.
 Tests gracefully skip if PyMDP is not installed.
 """
 
-import pytest
-from pathlib import Path
 import sys
-import numpy as np
+from pathlib import Path
 from typing import Any
+
+import numpy as np
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Check if PyMDP is available
 try:
-    from pymdp.agent import Agent
     from pymdp import utils
+    from pymdp.agent import Agent
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
 
 try:
-    from execute.pymdp.simple_simulation import run_simple_pymdp_simulation
     from execute.pymdp.package_detector import (
         detect_pymdp_installation,
         is_correct_pymdp_package,
-        validate_pymdp_for_execution
+        validate_pymdp_for_execution,
     )
+    from execute.pymdp.simple_simulation import run_simple_pymdp_simulation
     EXECUTE_MODULE_AVAILABLE = True
 except ImportError as e:
     EXECUTE_MODULE_AVAILABLE = False
@@ -43,8 +44,8 @@ class TestPyMDPRealExecution:
 
     def test_pymdp_agent_import(self) -> None:
         """Test that PyMDP Agent can be imported using modern API."""
-        from pymdp.agent import Agent
         from pymdp import utils
+        from pymdp.agent import Agent
 
         assert Agent is not None
         assert utils is not None
@@ -52,12 +53,11 @@ class TestPyMDPRealExecution:
 
     def test_pymdp_agent_creation(self) -> None:
         """Test creating a PyMDP Agent with minimal matrices."""
-        from pymdp.agent import Agent
         from pymdp import utils
+        from pymdp.agent import Agent
 
         # Create minimal matrices for a 2-state, 2-observation, 1-action model
         num_states = 2
-        num_obs = 2
         num_actions = 1
 
         # A matrix: observation model (num_obs x num_states)
@@ -175,16 +175,16 @@ class TestPyMDPModernAPI:
     def test_modern_import_works(self) -> None:
         """Test that modern import pattern works."""
         # This should work with inferactively-pymdp
-        from pymdp.agent import Agent
         from pymdp import utils
+        from pymdp.agent import Agent
 
         assert Agent is not None
         assert utils is not None
 
     def test_agent_has_required_methods(self) -> None:
         """Test that Agent has all required methods for simulation."""
-        from pymdp.agent import Agent
         from pymdp import utils
+        from pymdp.agent import Agent
 
         # Create minimal agent
         A = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float64)
@@ -216,8 +216,8 @@ class TestPyMDPModernAPI:
 
     def test_simulation_step_execution(self) -> None:
         """Test executing a single simulation step."""
-        from pymdp.agent import Agent
         from pymdp import utils
+        from pymdp.agent import Agent
 
         # Create agent
         A = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float64)

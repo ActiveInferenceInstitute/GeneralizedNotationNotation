@@ -12,11 +12,11 @@ Key Features:
 - Step dependency analysis and validation
 """
 
-import logging
-from typing import Dict, Any
-from pathlib import Path
 import json
+import logging
 import time
+from pathlib import Path
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -119,8 +119,11 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
         Dictionary containing dependency validation results.
     """
     try:
+        from utils.validate_pipeline_dependencies import (
+            validate_pipeline_dependencies as validate_deps,
+        )
+
         from .pipeline_config import STEP_METADATA
-        from utils.validate_pipeline_dependencies import validate_pipeline_dependencies as validate_deps
 
         validation_result = validate_deps()
 

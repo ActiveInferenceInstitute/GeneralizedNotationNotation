@@ -8,16 +8,16 @@ This is a click-and-drag visual interface for editing GNN models with:
 - POMDP template-based initialization
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
-from .processor import run_gui
 from .matrix_editor import (
     create_matrix_from_gnn,
-    update_gnn_from_matrix,
     get_pomdp_template,
+    update_gnn_from_matrix,
 )
+from .processor import run_gui
 
 
 def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:

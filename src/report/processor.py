@@ -5,15 +5,11 @@ Report Processor module for GNN Processing Pipeline.
 This module provides report processing capabilities.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error
-)
+from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 logger = logging.getLogger(__name__)
 

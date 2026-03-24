@@ -1,7 +1,7 @@
+import logging
 import os
 import sys
 from pathlib import Path
-import logging
 
 # Import psutil with error handling to prevent recursion
 PSUTIL_AVAILABLE = False
@@ -11,7 +11,7 @@ try:
 except (ImportError, RecursionError, RuntimeError):
     PSUTIL_AVAILABLE = False
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

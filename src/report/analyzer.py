@@ -6,11 +6,12 @@ This module provides data collection and analysis functionality for pipeline rep
 It analyzes pipeline outputs and extracts relevant metrics and statistics.
 """
 
-import json
 import datetime
+import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+
 
 def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
     """

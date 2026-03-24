@@ -13,19 +13,19 @@ Key Features:
 """
 import json
 import logging
-from typing import Dict, Any, Optional
-from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
 import urllib.parse
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from typing import Any, Dict, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 # Import MCP
 try:
-    from . import mcp_instance, initialize, MCPError
+    from . import MCPError, initialize, mcp_instance
 except ImportError:
-    from mcp import mcp_instance, initialize, MCPError
+    from mcp import MCPError, initialize, mcp_instance
 
 class MCPHTTPHandler(BaseHTTPRequestHandler):
     """
@@ -34,7 +34,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
     """
     def do_POST(self):
         """Handle POST requests (JSON-RPC 2.0)."""
-        parsed_path = urllib.parse.urlparse(self.path)
+        urllib.parse.urlparse(self.path)
         content_length = int(self.headers.get('Content-Length', 0))
         if content_length <= 0:
             self._send_error(400, "Missing request body")

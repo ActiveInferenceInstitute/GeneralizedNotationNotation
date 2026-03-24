@@ -9,9 +9,9 @@ with focus on Active Inference model structures.
 
 import logging
 import re
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any, Union
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 

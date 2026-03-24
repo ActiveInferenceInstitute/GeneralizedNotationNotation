@@ -6,12 +6,12 @@ This module provides automated Julia environment setup and package installation
 for RxInfer.jl and ActiveInference.jl frameworks used in the execution step.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import sys
 import logging
 import shutil
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

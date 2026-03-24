@@ -12,10 +12,10 @@ Author: AI Assistant
 Date: 2025-01-17
 """
 
-import os
-import sys
 import argparse
 import logging
+import os
+import sys
 from pathlib import Path
 
 # Add the src directory to the Python path
@@ -77,8 +77,8 @@ def main():
 
     try:
         # Import GNN modules
-        from gnn.testing.test_round_trip import GNNRoundTripTester
         from gnn.schema_validator import GNNValidator
+        from gnn.testing.test_round_trip import GNNRoundTripTester
 
         logger.info("✅ Successfully imported GNN modules")
 

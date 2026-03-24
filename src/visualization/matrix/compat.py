@@ -31,7 +31,9 @@ def generate_matrix_visualizations(
 ) -> List[str]:
     """Run matrix analysis + stats plots from parsed GNN data."""
     try:
-        from visualization.matrix.visualizer import generate_matrix_visualizations as _run
+        from visualization.matrix.visualizer import (
+            generate_matrix_visualizations as _run,
+        )
 
         return _run(parsed_data, output_dir, model_name)
     except Exception:

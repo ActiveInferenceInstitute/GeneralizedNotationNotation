@@ -6,13 +6,14 @@ These tests validate actual visualization generation with real GNN files,
 ensuring proper matplotlib backend handling, progress tracking, and error recovery.
 """
 
-import pytest
-import sys
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Generator
 import json
-import tempfile
 import shutil
+import sys
+import tempfile
+from pathlib import Path
+from typing import Any
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -175,8 +176,9 @@ B -> C: "preferences"
     def test_matrix_visualizer_with_real_parameters(self) -> None:
         """Test MatrixVisualizer with real parameter data."""
         try:
-            from visualization.matrix_visualizer import MatrixVisualizer
             import numpy as np
+
+            from visualization.matrix_visualizer import MatrixVisualizer
 
             mv = MatrixVisualizer()
 
@@ -205,7 +207,7 @@ B -> C: "preferences"
         viz_output_dir = test_output_dir / "8_visualization_output"
         viz_output_dir.mkdir()
 
-        result = process_visualization(
+        process_visualization(
             target_dir=test_gnn_dir,
             output_dir=viz_output_dir,
             verbose=True
@@ -247,12 +249,7 @@ B -> C: "preferences"
         assert isinstance(result, bool)
 
         # Check for warning messages
-        log_text = caplog.text.lower()
-        has_warnings = (
-            "warning" in log_text or
-            "skipped" in log_text or
-            "not found" in log_text
-        )
+        caplog.text.lower()
 
         # Warnings expected when things go wrong
         # (may not have warnings if recovery succeeds)

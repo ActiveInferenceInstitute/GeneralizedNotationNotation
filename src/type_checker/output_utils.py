@@ -7,11 +7,11 @@ Provides modular functions for:
 - Static artifacts (variable tables, section matrices, etc.)
 """
 
-import os
 import csv
 import json
+import os
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 
 def write_markdown(path: Path, content: str):

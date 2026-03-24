@@ -5,13 +5,14 @@ Exposes SAPF audio generation tools: audio synthesis from GNN models,
 backend discovery, audio status, and module metadata through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
 import logging
+from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-from . import process_gnn_to_audio, get_module_info as _get_mod_info
+from . import get_module_info as _get_mod_info
+from . import process_gnn_to_audio
 
 
 def process_sapf_mcp(target_directory: str, output_directory: str,

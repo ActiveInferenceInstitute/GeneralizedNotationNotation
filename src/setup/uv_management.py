@@ -5,20 +5,23 @@ This module handles UV virtual environment creation, dependency installation,
 package management, and environment validation.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import sys
+import json
+import logging
 import platform
 import shutil
-from pathlib import Path
-import logging
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 import time
-import json
-from typing import Dict, Any, Optional, List
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from .constants import (
-    PROJECT_ROOT,
-    VENV_PATH, PYPROJECT_PATH, LOCK_PATH, VENV_PYTHON,
+    LOCK_PATH,
     MIN_PYTHON_VERSION,
+    PROJECT_ROOT,
+    PYPROJECT_PATH,
+    VENV_PATH,
+    VENV_PYTHON,
 )
 
 logger = logging.getLogger(__name__)

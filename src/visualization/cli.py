@@ -4,8 +4,8 @@ GNN Visualization CLI
 Command-line interface for generating visualizations of GNN models.
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 from typing import List, Optional
 

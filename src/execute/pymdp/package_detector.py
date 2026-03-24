@@ -8,7 +8,7 @@ It distinguishes between the correct package (inferactively-pymdp) and wrong var
 
 import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-from typing import Dict, Any, Tuple
+from typing import Any, Dict, Tuple
 
 logger = logging.getLogger(__name__)
 

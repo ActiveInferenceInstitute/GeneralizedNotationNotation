@@ -5,10 +5,11 @@ Test Report Overall Tests
 This file contains comprehensive tests for the report module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -190,14 +191,15 @@ def test_report_module_completeness() -> None:
 def test_report_module_performance() -> None:
     """Test report module performance characteristics."""
     try:
-        from report import ReportGenerator
         import time
+
+        from report import ReportGenerator
 
         generator = ReportGenerator()
         start_time = time.time()
 
         # Test report generation performance
-        result = generator.generate_report({'test': 'data'})
+        generator.generate_report({'test': 'data'})
 
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds

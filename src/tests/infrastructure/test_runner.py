@@ -4,16 +4,16 @@ Test Runner for GNN Processing Pipeline.
 This module provides the TestRunner class with comprehensive monitoring and reporting.
 """
 
+import json
 import logging
 import sys
 import time
-import json
-from pathlib import Path
-from typing import Dict, Any, List
 from dataclasses import asdict
+from pathlib import Path
+from typing import Any, Dict, List
 
-from .test_config import TestExecutionConfig, TestExecutionResult
 from .resource_monitor import ResourceMonitor
+from .test_config import TestExecutionConfig, TestExecutionResult
 
 # Calculate project root
 project_root = Path(__file__).parent.parent.parent.parent

@@ -52,16 +52,16 @@ For complete usage information, see:
 - src/README.md: Pipeline safety and reliability documentation
 """
 
-import sys
+import argparse
+import json
+import logging
 import os
 import re
-import json
-import argparse
+import sys
 import time
-import logging
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 _module_logger = logging.getLogger(__name__)
 
@@ -80,42 +80,40 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from utils.pipeline_template import (
     setup_step_logging as _basic_setup_step_logging,
 )
+
 try:
-    from utils.logging.logging_utils import (
-        log_step_start,
-        log_step_error
-    )
+    from utils.logging.logging_utils import log_step_error, log_step_start
 except ImportError:
-    from utils.logging_utils import (
-        log_step_start,
-        log_step_error
-    )
+    from utils.logging_utils import log_step_error, log_step_start
 from dataclasses import fields
 
 from utils.argument_utils import ArgumentParser, PipelineArguments
 from utils.pipeline_config_merge import apply_input_config_defaults
+from utils.pipeline_validator import (
+    validate_pipeline_step_sequence,
+    validate_step_prerequisites,
+)
 from utils.resource_manager import get_current_memory_usage
-from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
 
 # Optional structured logging and visual progress tracking.
 # setup_step_logging is resolved here; falls back to the basic version from
 # utils.pipeline_template (_basic_setup_step_logging) when unavailable.
 try:
     from utils.logging.logging_utils import (
-        PipelineProgressTracker,
         PipelineLogger,
+        PipelineProgressTracker,
         log_pipeline_summary,
         reset_progress_tracker,
+        rotate_logs,
         setup_step_logging,  # structured version — preferred
-        rotate_logs
     )
     from utils.visual_logging import (
-        VisualLogger,
         VisualConfig,
+        VisualLogger,
+        create_visual_logger,
+        print_completion_summary,
         print_pipeline_banner,
         print_step_summary,
-        print_completion_summary,
-        create_visual_logger
     )
     STRUCTURED_LOGGING_AVAILABLE = True
 except ImportError:
@@ -350,7 +348,7 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
     # 3. Apply 'skip_steps' (Merge command line and config)
     cmd_skip = parse_step_list(args.skip_steps)
     cfg_skip = parse_step_list(config_pipeline_settings.get("skip_steps"))
-    skip_numbers = sorted(list(set(cmd_skip + cfg_skip)))
+    skip_numbers = sorted(set(cmd_skip + cfg_skip))
     
     if skip_numbers:
         # Map original indices to scripts to avoid losing track if already filtered
@@ -457,7 +455,9 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
                 progress_tracker.start_step(actual_step_number, description)
                 # Use structured logging functions that support additional parameters
-                from utils.logging.logging_utils import log_step_start as structured_log_step_start
+                from utils.logging.logging_utils import (
+                    log_step_start as structured_log_step_start,
+                )
                 structured_log_step_start(logger, f"Starting {description}",
                                       step_number=actual_step_number,
                                       total_steps=len(steps_to_execute),
@@ -607,19 +607,25 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
                 # Use structured logging functions that support additional parameters
                 # These functions will handle progress tracking via the global tracker
                 if status_for_logging.startswith("SUCCESS"):
-                    from utils.logging.logging_utils import log_step_success as structured_log_step_success
+                    from utils.logging.logging_utils import (
+                        log_step_success as structured_log_step_success,
+                    )
                     structured_log_step_success(logger, f"{description} completed",
                                         step_number=actual_step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
                 elif "WARNING" in status_for_logging:
-                    from utils.logging.logging_utils import log_step_warning as structured_log_step_warning
+                    from utils.logging.logging_utils import (
+                        log_step_warning as structured_log_step_warning,
+                    )
                     structured_log_step_warning(logger, f"{description} completed with warnings",
                                         step_number=actual_step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
                 else:
-                    from utils.logging.logging_utils import log_step_error as structured_log_step_error
+                    from utils.logging.logging_utils import (
+                        log_step_error as structured_log_step_error,
+                    )
                     structured_log_step_error(logger, f"{description} failed",
                                         step_number=actual_step_number,
                                         duration=step_duration,
@@ -846,8 +852,8 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                         if step_num in allowed_steps:
                             target_folders.append(item)
 
-        from utils.argument_utils import build_step_command_args
         from pipeline.step_timeouts import get_step_timeout
+        from utils.argument_utils import build_step_command_args
         from utils.execution_utils import execute_command_streaming
 
         # Prepare environment

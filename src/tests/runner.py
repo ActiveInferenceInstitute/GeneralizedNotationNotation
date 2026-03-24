@@ -54,31 +54,28 @@ Dependencies:
   - psutil: Resource monitoring (optional)
 """
 
+import json
 import logging
 import sys
 import time
-import json
-from pathlib import Path
-from typing import Dict, Any, List
 from dataclasses import asdict
+from pathlib import Path
+from typing import Any, Dict, List
 
-# Import test categories from dedicated module
-
-# Import from infrastructure submodule (refactored components)
-from .infrastructure import (
-    TestExecutionConfig,
-    TestExecutionResult,
-    ResourceMonitor,
-    TestRunner,
-    check_test_dependencies,
-    build_pytest_command,
+from utils.pipeline_template import (
+    log_step_error,
+    log_step_start,
 )
 
 # Import test utilities
-from utils.test_utils import TEST_DIR
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_error,
+# Import test categories from dedicated module
+# Import from infrastructure submodule (refactored components)
+from .infrastructure import (
+    ResourceMonitor,
+    TestExecutionConfig,
+    TestExecutionResult,
+    TestRunner,
+    check_test_dependencies,
 )
 
 # Calculate project root (don't import from conftest as it's a pytest fixture)
@@ -447,10 +444,9 @@ def _check_zero_tests_collected(output_dir: Path, logger: logging.Logger) -> boo
 
 # Re-export from test_runner_modes sub-module for backward compatibility
 from .test_runner_modes import (
-    run_fast_pipeline_tests,
     run_comprehensive_tests,
+    run_fast_pipeline_tests,
     run_fast_reliable_tests,
 )
 
 # Re-export from test_runner_modular sub-module for backward compatibility
-from .test_runner_modular import create_test_runner

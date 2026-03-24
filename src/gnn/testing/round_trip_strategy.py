@@ -7,9 +7,9 @@ semantic preservation across format conversions.
 """
 
 import logging
-from typing import Dict, List, Optional, Any
-from pathlib import Path
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 

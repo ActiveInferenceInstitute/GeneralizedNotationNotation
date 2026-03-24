@@ -14,10 +14,10 @@ Key Features:
 - Server configuration and capabilities introspection
 """
 
-import time
 import logging
+import time
 from functools import partial
-from typing import Dict, Any
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

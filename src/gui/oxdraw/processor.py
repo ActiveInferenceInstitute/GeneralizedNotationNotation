@@ -8,14 +8,15 @@ Handles:
 - Validation and error handling
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import json
-import shutil
 import logging
+import shutil
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 from gnn.processor import discover_gnn_files
+
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
 

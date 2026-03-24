@@ -13,12 +13,12 @@ Usage:
     python src/tests/test_runner_helper.py debug
 """
 
-from typing import Any, Dict, List, Optional
-import sys
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import argparse
-from pathlib import Path
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 import time
+from pathlib import Path
+from typing import Any, Optional
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))

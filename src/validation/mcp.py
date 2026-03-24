@@ -5,9 +5,9 @@ Exposes GNN validation tools: schema validation, semantic checks,
 validation report retrieval, and configuration validation through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
 import logging
+from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

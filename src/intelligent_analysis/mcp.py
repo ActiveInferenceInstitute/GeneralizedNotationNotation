@@ -4,19 +4,19 @@ Intelligent Analysis MCP Integration
 This module exposes intelligent analysis processing tools via MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional
 import logging
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
 # Import utilities from the intelligent_analysis module
 from . import (
-    process_intelligent_analysis,
+    FEATURES,
+    check_intelligent_analysis_tools,
     get_module_info,
     get_supported_analysis_types,
-    check_intelligent_analysis_tools,
-    FEATURES
+    process_intelligent_analysis,
 )
 
 # MCP Tools for Intelligent Analysis Module

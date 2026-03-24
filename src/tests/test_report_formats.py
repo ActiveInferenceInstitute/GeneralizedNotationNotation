@@ -5,9 +5,10 @@ Test Report Formats - Tests for report output format functionality.
 Tests HTML, Markdown, JSON, and other report format generation.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -117,6 +118,7 @@ class TestJSONReportFormat:
     def test_json_report_generation(self, tmp_path):
         """Test JSON report is valid JSON."""
         import json
+
         from report import generate_report
 
         input_dir = tmp_path / "input"
@@ -124,7 +126,7 @@ class TestJSONReportFormat:
         input_dir.mkdir(parents=True, exist_ok=True)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        result = generate_report(
+        generate_report(
             target_dir=input_dir,
             output_dir=output_dir,
             format="json"

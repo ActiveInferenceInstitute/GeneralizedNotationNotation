@@ -5,12 +5,13 @@ This module provides a centralized registry for GNN models with versioning,
 metadata management, and model lifecycle tracking.
 """
 
-import json
 import datetime
-import re
 import hashlib
+import json
+import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union
+
 
 class ModelVersion:
     """Represents a specific version of a model."""

@@ -15,10 +15,11 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import pytest
-import numpy as np
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import numpy as np
+import pytest
 
 from analysis.pymdp.visualizer import PyMDPVisualizer, save_all_visualizations
 
@@ -40,7 +41,7 @@ def test_data():
 
     # Generate synthetic belief distributions
     beliefs = []
-    for t in range(num_timesteps):
+    for _t in range(num_timesteps):
         belief = np.random.dirichlet(np.ones(num_states))
         beliefs.append(belief)
 
@@ -258,7 +259,7 @@ def test_pipeline_integration():
         assert len(saved_files) > 0, "save_all_visualizations should create files"
 
         # Verify files were actually created
-        for name, path in saved_files.items():
+        for _name, path in saved_files.items():
             assert Path(path).exists(), f"File should exist: {path}"
 
 

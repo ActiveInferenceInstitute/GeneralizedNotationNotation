@@ -3,8 +3,9 @@
 LLM generator module for insights, suggestions, and documentation.
 """
 
-from typing import Dict, Any
 from datetime import datetime
+from typing import Any, Dict
+
 
 def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate insights about the GNN model."""

@@ -26,7 +26,7 @@ Architecture:
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Generator
+from typing import Any, Dict, Generator, List, Optional
 
 # Ensure src is in Python path for imports
 SRC_DIR = Path(__file__).parent.parent
@@ -44,43 +44,39 @@ if str(SRC_DIR) not in sys.path:
 # Import necessary utilities and helpers from utils.test_utils (guarded)
 try:
     from utils.test_utils import (
+        COVERAGE_TARGETS,
+        PROJECT_ROOT,
         # Constants
         SRC_DIR,
-        PROJECT_ROOT,
-        TEST_DIR,
-        TEST_CONFIG,
         TEST_CATEGORIES,
+        TEST_CONFIG,
+        TEST_DIR,
         TEST_STAGES,
-        COVERAGE_TARGETS,
-
-        # Utility functions
-        is_safe_mode,
-        validate_test_environment,
-        get_test_args,
-        get_sample_pipeline_arguments,
-        create_test_gnn_files,
-        create_test_files,
-        create_sample_gnn_content,
-        get_test_filesystem_structure,
-        run_all_tests,
-
-        # Performance tracking functions
-        performance_tracker,
-        get_memory_usage,
-        track_peak_memory,
-        with_resource_limits,
-
+        assert_directory_structure,
         # Validation functions
         assert_file_exists,
         assert_valid_json,
-        assert_directory_structure,
-
+        create_sample_gnn_content,
+        create_test_files,
+        create_test_gnn_files,
+        generate_comprehensive_report,
+        generate_html_report_file,
+        generate_json_report_file,
+        generate_markdown_report_file,
+        get_memory_usage,
+        get_sample_pipeline_arguments,
+        get_test_args,
+        get_test_filesystem_structure,
+        # Utility functions
+        is_safe_mode,
+        # Performance tracking functions
+        performance_tracker,
+        run_all_tests,
+        track_peak_memory,
         # Report functions
         validate_report_data,
-        generate_html_report_file,
-        generate_markdown_report_file,
-        generate_json_report_file,
-        generate_comprehensive_report
+        validate_test_environment,
+        with_resource_limits,
     )
 except Exception:
     # Minimal fallbacks to keep collection working if import path resolution fails
@@ -106,8 +102,8 @@ except Exception:
     def create_sample_gnn_content() -> Dict[str, str]: return {"valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"}
     def get_test_filesystem_structure() -> Dict[str, Any]: return {}
     def run_all_tests(*_: Any, **__: Any) -> bool: return True
-    from contextlib import contextmanager
     import time as _time
+    from contextlib import contextmanager
     @contextmanager
     def performance_tracker() -> Generator[Any, None, None]:
         class T:
@@ -194,7 +190,7 @@ except Exception:
 
 # Import runner function
 try:
-    from .runner import run_tests, create_test_runner
+    from .runner import create_test_runner, run_tests
 except ImportError:
     # Recovery implementation if runner import fails
     def run_tests(logger: Any, output_dir: Any, verbose: bool = False, **kwargs: Any) -> bool:

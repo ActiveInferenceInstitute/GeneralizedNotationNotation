@@ -1,7 +1,14 @@
-from pathlib import Path
 import logging
+from pathlib import Path
+
 from pipeline import get_output_dir_for_script
-from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+from utils import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+    performance_tracker,
+)
 
 # Import SAPF functionality
 try:

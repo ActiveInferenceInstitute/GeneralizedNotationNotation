@@ -3,15 +3,16 @@
 Analysis analyzer module for GNN statistical analysis.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-import re
 import json
-import numpy as np
-from datetime import datetime
 import logging
-import time
+import re
 import sys
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +24,7 @@ except ImportError:
     SCIPY_AVAILABLE = False
     stats = None
 
-from analysis.viz_base import plt, MATPLOTLIB_AVAILABLE
+from analysis.viz_base import MATPLOTLIB_AVAILABLE, plt
 
 try:
     import seaborn as sns
@@ -1204,8 +1205,8 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
     Returns:
         Path to generated report file
     """
-    import logging
     import json
+    import logging
 
     if logger is None:
         logger = logging.getLogger(__name__)

@@ -5,9 +5,10 @@ Test Audio Integration - Integration tests for audio module with other pipeline 
 Tests the integration between audio generation, GNN parsing, and pipeline orchestration.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -36,7 +37,7 @@ class TestAudioGNNIntegration:
     @pytest.mark.integration
     def test_audio_generation_from_parsed_gnn(self, sample_gnn_files, tmp_path):
         """Test audio generation from parsed GNN data."""
-        from audio import generate_audio_from_gnn, AudioGenerator
+        from audio import AudioGenerator, generate_audio_from_gnn
         from gnn import parse_gnn_file
 
         if not sample_gnn_files:
@@ -95,8 +96,9 @@ class TestAudioPipelineIntegration:
     @pytest.mark.integration
     def test_audio_step_execution(self, tmp_path):
         """Test that audio step can execute within pipeline context."""
-        from audio import process_audio
         import logging
+
+        from audio import process_audio
 
         logger = logging.getLogger("test_audio")
         output_dir = tmp_path / "audio_output"
@@ -150,6 +152,7 @@ class TestAudioExportIntegration:
     def test_audio_file_writing(self, tmp_path):
         """Test that audio files can be written correctly."""
         import numpy as np
+
         from audio import write_basic_wav
 
         # Generate test audio data

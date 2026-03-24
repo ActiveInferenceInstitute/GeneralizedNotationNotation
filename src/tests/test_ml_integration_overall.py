@@ -1,6 +1,9 @@
-import pytest
 import json
+
+import pytest
+
 from ml_integration.processor import process_ml_integration
+
 
 class TestMLIntegrationOverall:
     """Test suite for ML Integration module."""

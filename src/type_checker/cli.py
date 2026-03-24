@@ -5,26 +5,32 @@ GNN Type Checker CLI
 Command-line interface for the GNN type checker.
 """
 
-import sys
 import argparse
-from pathlib import Path
 import logging
-import os # Added for os.environ
+import os  # Added for os.environ
+import sys
+from pathlib import Path
 
 # --- Output Directory Policy ---
 # All type checking outputs must go under a subdirectory named 'type_check' (e.g., output/type_check/)
 # The CLI will refuse to run if --output-dir is set to 'output', 'output/artifacts', or any directory not ending in 'type_check',
 # unless the environment variable GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR is set (for test/dev only).
-
 from .checker import GNNTypeChecker
-from .resource_estimator import GNNResourceEstimator
 from .output_utils import (
-    write_markdown, write_json, write_csv,
-    per_file_markdown_report, per_file_json_report,
-    summary_markdown_report, summary_json_report,
-    variables_table_csv, section_presence_matrix_csv,
-    connections_table_csv, complexity_analysis_csv, type_distribution_csv
+    complexity_analysis_csv,
+    connections_table_csv,
+    per_file_json_report,
+    per_file_markdown_report,
+    section_presence_matrix_csv,
+    summary_json_report,
+    summary_markdown_report,
+    type_distribution_csv,
+    variables_table_csv,
+    write_csv,
+    write_json,
+    write_markdown,
 )
+from .resource_estimator import GNNResourceEstimator
 
 logger = logging.getLogger(__name__)
 

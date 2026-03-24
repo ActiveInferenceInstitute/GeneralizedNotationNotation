@@ -10,8 +10,8 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Dict, Any, List, TYPE_CHECKING
 from shutil import copy2
+from typing import TYPE_CHECKING, Any, Dict, List
 
 _module_logger = logging.getLogger(__name__)
 

@@ -6,30 +6,30 @@ All components are re-exported for convenient access.
 """
 
 # Re-export all public classes and functions for backward compatibility
-from .test_config import TestExecutionConfig, TestExecutionResult
-from .resource_monitor import ResourceMonitor, PSUTIL_AVAILABLE
-from .test_runner import TestRunner
 from .report_generator import (
-    generate_markdown_report,
-    generate_fallback_report,
-    generate_timeout_report,
-    generate_error_report,
+    _generate_error_report,
+    _generate_fallback_report,
     # Backward-compatible aliases
     _generate_markdown_report,
-    _generate_fallback_report,
     _generate_timeout_report,
-    _generate_error_report,
+    generate_error_report,
+    generate_fallback_report,
+    generate_markdown_report,
+    generate_timeout_report,
 )
+from .resource_monitor import PSUTIL_AVAILABLE, ResourceMonitor
+from .test_config import TestExecutionConfig, TestExecutionResult
+from .test_runner import TestRunner
 from .utils import (
-    check_test_dependencies,
-    build_pytest_command,
-    extract_collection_errors,
-    parse_test_statistics,
-    parse_coverage_statistics,
     # Backward-compatible aliases
     _extract_collection_errors,
-    _parse_test_statistics,
     _parse_coverage_statistics,
+    _parse_test_statistics,
+    build_pytest_command,
+    check_test_dependencies,
+    extract_collection_errors,
+    parse_coverage_statistics,
+    parse_test_statistics,
 )
 
 __all__ = [

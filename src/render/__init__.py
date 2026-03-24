@@ -7,28 +7,25 @@ target languages and simulation environments.
 """
 
 from .processor import (
+    get_available_renderers,
+    get_module_info,
     process_render,
     render_gnn_spec,
-    get_module_info,
-    get_available_renderers
 )
 
 # Import POMDP processing capabilities if available
 try:
-    from .pomdp_processor import (
-        POMDPRenderProcessor,
-        process_pomdp_for_frameworks
-    )
+    from .pomdp_processor import POMDPRenderProcessor, process_pomdp_for_frameworks
     POMDP_PROCESSING_AVAILABLE = True
 except ImportError:
     POMDP_PROCESSING_AVAILABLE = False
 
 from .generators import (
-    generate_pymdp_code,
-    generate_rxinfer_code,
+    create_active_inference_diagram,
     generate_activeinference_jl_code,
     generate_discopy_code,
-    create_active_inference_diagram
+    generate_pymdp_code,
+    generate_rxinfer_code,
 )
 
 # Import specific renderers (used by tests)
@@ -77,6 +74,8 @@ except ImportError:
 # JAXRenderer: jax_renderer.py provides functions only (render_gnn_to_jax, etc.),
 # not a class. Provide a minimal stub for tests that reference JAXRenderer by name.
 from typing import Any as _Any
+
+
 class JAXRenderer:
     """Minimal JAXRenderer stub; JAX rendering uses render_gnn_to_jax() functions."""
     def render(self, spec: _Any) -> str:

@@ -1,8 +1,8 @@
 """Tests for CrossFormatValidator and related classes in gnn/cross_format_validator.py."""
 import pytest
-from gnn.cross_format_validator import CrossFormatValidator, CrossFormatValidationResult
-from gnn.types import ValidationResult
 
+from gnn.cross_format_validator import CrossFormatValidationResult, CrossFormatValidator
+from gnn.types import ValidationResult
 
 # ── CrossFormatValidationResult ────────────────────────────────────────────
 

@@ -4,34 +4,31 @@ ontology module for GNN Processing Pipeline.
 This module provides ontology capabilities with recovery implementations.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 from utils.pipeline_template import (
+    log_step_error,
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_warning,
 )
 
 # Import core processing functions from processor module
 from .processor import (
-    process_ontology,
+    generate_ontology_report_for_file,
+    load_defined_ontology_terms,
+    parse_annotation,
     parse_gnn_ontology_section,
     process_gnn_ontology,
-    load_defined_ontology_terms,
+    process_ontology,
     validate_annotations,
-    generate_ontology_report_for_file,
-    parse_annotation
 )
 
 # Import utility functions
-from .utils import (
-    get_module_info,
-    get_ontology_processing_options,
-    get_mcp_interface
-)
+from .utils import get_mcp_interface, get_module_info, get_ontology_processing_options
+
 
 def validate_ontology_terms(terms: Optional[Union[List[str], str]] = None) -> bool:
     """Validate ontology terms against the Active Inference ontology."""

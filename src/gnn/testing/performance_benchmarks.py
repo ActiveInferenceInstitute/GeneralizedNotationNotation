@@ -5,12 +5,13 @@ This module provides comprehensive performance benchmarking and complexity analy
 for GNN models and Active Inference computations.
 """
 
+import logging
 import time
-import psutil
-from typing import Dict, List, Any
 from dataclasses import dataclass
 from pathlib import Path
-import logging
+from typing import Any, Dict, List
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

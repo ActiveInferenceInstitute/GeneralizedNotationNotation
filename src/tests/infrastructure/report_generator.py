@@ -7,7 +7,7 @@ This module provides functions for generating test execution reports.
 import logging
 import time
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 
 def flatten_pipeline_test_summary(summary: Dict[str, Any]) -> Dict[str, Any]:

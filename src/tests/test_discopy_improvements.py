@@ -6,8 +6,8 @@ This script tests the new error handling and setup reporting functionality
 when DisCoPy and JAX dependencies are not available.
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # Configure logging
@@ -20,15 +20,15 @@ def test_discopy_improvements():
     # Import the translator module
     try:
         from translator import (
-            generate_setup_report,
-            create_discopy_error_report,
-            check_discopy_availability,
-            initialize_discopy_components,
+            DISCOPY_MATRIX_MODULE_AVAILABLE,
+            JAX_AVAILABLE,
+            JAX_CORE_AVAILABLE,
             TENSOR_COMPONENTS_AVAILABLE,
             TY_AVAILABLE,
-            JAX_CORE_AVAILABLE,
-            DISCOPY_MATRIX_MODULE_AVAILABLE,
-            JAX_AVAILABLE
+            check_discopy_availability,
+            create_discopy_error_report,
+            generate_setup_report,
+            initialize_discopy_components,
         )
         logger.info("Successfully imported translator module")
     except ImportError as e:
@@ -105,7 +105,7 @@ A > B
     # Test 5: Verify no placeholder classes exist
     logger.info("=== Testing No Placeholder Classes ===")
     try:
-        from translator import PlaceholderBase, DimPlaceholder, BoxPlaceholder
+        from translator import BoxPlaceholder, DimPlaceholder, PlaceholderBase
         logger.error("✗ Placeholder classes still exist - they should have been removed")
         return False
     except ImportError:
@@ -113,7 +113,7 @@ A > B
 
     # Test 6: Check global variables
     logger.info("=== Testing Global Variables ===")
-    from translator import Dim, Box, jax
+    from translator import Box, Dim, jax
 
     # These should be None when dependencies are not available
     if Dim is None:

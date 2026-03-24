@@ -10,12 +10,17 @@ License: MIT
 """
 
 import logging
-from typing import Dict, List, Any
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List
 
 from .common import (
-    GNNInternalRepresentation, Variable, Connection, VariableType, DataType, ConnectionType
+    Connection,
+    ConnectionType,
+    DataType,
+    GNNInternalRepresentation,
+    Variable,
+    VariableType,
 )
 
 logger = logging.getLogger(__name__)
@@ -492,8 +497,8 @@ class GNNValidator:
             missing_components.append("policy selection mechanism (π or G variables)")
 
         # Check if model has special variables E (habit) or F (variational free energy)
-        has_habit = any(var.name == 'E' for var in model.variables)
-        has_vfe = any(var.name == 'F' for var in model.variables)
+        any(var.name == 'E' for var in model.variables)
+        any(var.name == 'F' for var in model.variables)
 
         # Add warnings for missing components
         if missing_components:

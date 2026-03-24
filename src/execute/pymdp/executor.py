@@ -8,8 +8,7 @@ This module provides PyMDP simulation execution capabilities.
 import logging
 import traceback
 from pathlib import Path
-from typing import Dict, Any, Tuple
-
+from typing import Any, Dict, Tuple
 
 logger = logging.getLogger(__name__)
 

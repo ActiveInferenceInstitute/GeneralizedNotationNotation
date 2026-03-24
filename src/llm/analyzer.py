@@ -3,16 +3,17 @@
 LLM analyzer module for GNN file analysis.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Coroutine
+import asyncio
 import logging
 import re
 from datetime import datetime
-import asyncio
+from pathlib import Path
+from typing import Any, Coroutine, Dict, List
+
+from analysis.analyzer import extract_sections
 
 from .llm_operations import LLMOperations
 from .providers.openai_provider import OpenAIProvider  # for patching in tests
-from analysis.analyzer import extract_sections
 
 logger = logging.getLogger(__name__)
 

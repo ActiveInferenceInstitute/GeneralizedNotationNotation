@@ -5,9 +5,10 @@ Test Environment Python - Tests for Python environment configuration.
 Tests Python version, path configuration, and interpreter settings.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -121,7 +122,7 @@ class TestPythonFeatures:
     @pytest.mark.fast
     def test_type_hints_work(self):
         """Test type hints work correctly."""
-        from typing import List, Dict
+        from typing import Dict, List
 
         def typed_func(items: List[str]) -> Dict[str, int]:
             return {item: len(item) for item in items}

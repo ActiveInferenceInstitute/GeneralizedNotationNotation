@@ -12,9 +12,9 @@ Date: 2025-01-17
 import os
 import sys
 import tempfile
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List
-from dataclasses import dataclass, field
 
 # Set reasonable recursion limit
 sys.setrecursionlimit(100)
@@ -62,9 +62,9 @@ def test_json_round_trip():
 
     # Try to import JSON serializer directly
     try:
-        from gnn.parsers.json_serializer import JSONSerializer
-        from gnn.parsers.json_parser import JSONGNNParser
         from gnn.parsers.common import GNNInternalRepresentation
+        from gnn.parsers.json_parser import JSONGNNParser
+        from gnn.parsers.json_serializer import JSONSerializer
 
         print("✅ Successfully imported JSON serializer and parser")
 
@@ -138,9 +138,9 @@ def test_xml_round_trip():
 
     # Try to import XML serializer directly
     try:
-        from gnn.parsers.xml_serializer import XMLSerializer
-        from gnn.parsers.xml_parser import XMLGNNParser
         from gnn.parsers.common import GNNInternalRepresentation
+        from gnn.parsers.xml_parser import XMLGNNParser
+        from gnn.parsers.xml_serializer import XMLSerializer
 
         print("✅ Successfully imported XML serializer and parser")
 

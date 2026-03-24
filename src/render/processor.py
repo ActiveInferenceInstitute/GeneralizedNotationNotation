@@ -12,9 +12,9 @@ This module provides comprehensive rendering capabilities that:
 import json
 import logging
 import sys
-from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Any, Optional, Union, Tuple, List
 from datetime import datetime
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 
 if TYPE_CHECKING:
     from gnn.types import GNNInternalRepresentation
@@ -390,8 +390,10 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
     try:
         # Import basic generators
         from .generators import (
-            generate_pymdp_code, generate_rxinfer_code,
-            generate_activeinference_jl_code, generate_discopy_code
+            generate_activeinference_jl_code,
+            generate_discopy_code,
+            generate_pymdp_code,
+            generate_rxinfer_code,
         )
 
         # Create basic model data from filename

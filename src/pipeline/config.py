@@ -3,10 +3,10 @@
 Pipeline configuration module.
 """
 
+import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional
-import json
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 

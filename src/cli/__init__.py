@@ -168,10 +168,10 @@ def _cmd_validate(args):
     file_name = str(args.file)
 
     from gnn.schema import (
-        validate_required_sections,
-        parse_state_space,
         parse_connections,
+        parse_state_space,
         validate_matrix_dimensions,
+        validate_required_sections,
     )
 
     errors = []
@@ -215,7 +215,7 @@ def _cmd_parse(args):
 
     content = args.file.read_text(encoding="utf-8")
 
-    from gnn.schema import parse_state_space, parse_connections
+    from gnn.schema import parse_connections, parse_state_space
 
     variables, _ = parse_state_space(content, file_path=str(args.file))
     var_names = {v.name for v in variables}
@@ -313,7 +313,7 @@ def _cmd_reproduce(args):
         reproduced_args = PipelineArguments(**run_args_dict)
         
         # Trigger execution bypassing normal CLI arg parsing
-        print(f"🚀 Bypassing CLI parser, running with reconstructed config")
+        print("🚀 Bypassing CLI parser, running with reconstructed config")
         
         # Pass the full config structure that main() expects back in override_config
         full_config_override = {"pipeline": pipeline_settings}
@@ -338,8 +338,8 @@ def _cmd_preflight(args):
 
 def _cmd_health(args):
     """Show renderer & dependency status."""
-    from render.health import check_renderers
     from pipeline.preflight import check_environment
+    from render.health import check_renderers
 
     renderers = check_renderers()
     env = check_environment()

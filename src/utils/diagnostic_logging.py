@@ -6,15 +6,16 @@ This module provides diagnostic logging capabilities with correlation IDs,
 performance tracking, and comprehensive diagnostic information.
 """
 
-import uuid
-import time
-import psutil
+import json
 import threading
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Callable
+import time
+import uuid
 from contextlib import contextmanager
 from datetime import datetime
-import json
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
+
+import psutil
 
 from .logging_utils import setup_step_logging
 

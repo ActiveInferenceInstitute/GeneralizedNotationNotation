@@ -6,10 +6,11 @@ Tests performance characteristics of MCP tool registration, execution, and throu
 These tests require the MCP SDK (in-repo src/mcp/sdk/) to be available; they fail if missing.
 """
 
-import pytest
 import sys
 import time
 from pathlib import Path
+
+import pytest
 
 pytestmark = pytest.mark.mcp
 
@@ -69,7 +70,7 @@ class TestMCPToolExecutionPerformance:
 
         start = time.time()
         for _ in range(100):
-            tools = list_available_tools()
+            list_available_tools()
         elapsed = time.time() - start
 
         # 100 lookups should complete in < 1 second
@@ -99,8 +100,9 @@ class TestMCPThroughput:
     @pytest.mark.slow
     def test_concurrent_tool_access(self) -> None:
         """Test concurrent access to MCP tools."""
-        from mcp import list_available_tools
         import threading
+
+        from mcp import list_available_tools
 
         _require_mcp_sdk()
         results = []
@@ -151,7 +153,7 @@ class TestMCPMemoryPerformance:
         from mcp import list_available_tools
 
         _require_mcp_sdk()
-        initial_tools = list_available_tools()
+        list_available_tools()
 
         # Perform many operations
         for _ in range(50):
@@ -172,7 +174,7 @@ class TestMCPServerPerformance:
 
         _require_mcp_sdk()
         start = time.time()
-        server = create_mcp_server()
+        create_mcp_server()
         elapsed = time.time() - start
 
         assert elapsed < 2.0, f"Server creation took {elapsed:.2f}s"
@@ -184,7 +186,7 @@ class TestMCPServerPerformance:
 
         _require_mcp_sdk()
         start = time.time()
-        resources = list_available_resources()
+        list_available_resources()
         elapsed = time.time() - start
 
         assert elapsed < 1.0, f"Resource listing took {elapsed:.2f}s"

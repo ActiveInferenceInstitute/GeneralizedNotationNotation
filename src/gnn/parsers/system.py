@@ -5,55 +5,62 @@ GNN Parser System module for GNN Processing Pipeline.
 This module provides the main parsing system functionality.
 """
 
-from typing import Dict, Any, List, Optional, Union, Type
-from pathlib import Path
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Type, Union
 
-# Import all parser modules
-from .unified_parser import GNNFormat, ParseResult
-from .markdown_parser import MarkdownGNNParser
-from .scala_parser import ScalaGNNParser
-from .lean_parser import LeanGNNParser
-from .coq_parser import CoqGNNParser
-from .python_parser import PythonGNNParser
-from .grammar_parser import BNFParser, EBNFParser
-from .isabelle_parser import IsabelleParser
-from .maxima_parser import MaximaParser
-from .xml_parser import XMLGNNParser, PNMLParser
-from .json_parser import JSONGNNParser
-from .protobuf_parser import ProtobufGNNParser
-from .yaml_parser import YAMLGNNParser
-from .schema_parser import XSDParser, ASN1Parser, PKLParser, AlloyParser, ZNotationParser
-from .temporal_parser import TLAParser, AgdaParser
-from .functional_parser import HaskellGNNParser
-from .binary_parser import PickleGNNParser
-
-# Import serializers from individual files
-from .markdown_serializer import MarkdownSerializer
-from .json_serializer import JSONSerializer
-from .xml_serializer import XMLSerializer
-from .yaml_serializer import YAMLSerializer
-from .scala_serializer import ScalaSerializer
-from .protobuf_serializer import ProtobufSerializer
-from .pkl_serializer import PKLSerializer
-from .xsd_serializer import XSDSerializer
-from .asn1_serializer import ASN1Serializer
-from .lean_serializer import LeanSerializer
-from .coq_serializer import CoqSerializer
-from .python_serializer import PythonSerializer
-from .grammar_serializer import GrammarSerializer
-from .isabelle_serializer import IsabelleSerializer
-from .maxima_serializer import MaximaSerializer
 from .alloy_serializer import AlloySerializer
-from .znotation_serializer import ZNotationSerializer
-from .temporal_serializer import TLASerializer, AgdaSerializer
-from .functional_serializer import FunctionalSerializer
+from .asn1_serializer import ASN1Serializer
+from .binary_parser import PickleGNNParser
 from .binary_serializer import BinarySerializer
+from .common import GNNInternalRepresentation, GNNParser, ParseError
 
 # Import converters and validators
 from .converters import FormatConverter
+from .coq_parser import CoqGNNParser
+from .coq_serializer import CoqSerializer
+from .functional_parser import HaskellGNNParser
+from .functional_serializer import FunctionalSerializer
+from .grammar_parser import BNFParser, EBNFParser
+from .grammar_serializer import GrammarSerializer
+from .isabelle_parser import IsabelleParser
+from .isabelle_serializer import IsabelleSerializer
+from .json_parser import JSONGNNParser
+from .json_serializer import JSONSerializer
+from .lean_parser import LeanGNNParser
+from .lean_serializer import LeanSerializer
+from .markdown_parser import MarkdownGNNParser
+
+# Import serializers from individual files
+from .markdown_serializer import MarkdownSerializer
+from .maxima_parser import MaximaParser
+from .maxima_serializer import MaximaSerializer
+from .pkl_serializer import PKLSerializer
+from .protobuf_parser import ProtobufGNNParser
+from .protobuf_serializer import ProtobufSerializer
+from .python_parser import PythonGNNParser
+from .python_serializer import PythonSerializer
+from .scala_parser import ScalaGNNParser
+from .scala_serializer import ScalaSerializer
+from .schema_parser import (
+    AlloyParser,
+    ASN1Parser,
+    PKLParser,
+    XSDParser,
+    ZNotationParser,
+)
+from .temporal_parser import AgdaParser, TLAParser
+from .temporal_serializer import AgdaSerializer, TLASerializer
+
+# Import all parser modules
+from .unified_parser import GNNFormat, ParseResult
 from .validators import GNNValidator
-from .common import GNNInternalRepresentation, ParseError, GNNParser
+from .xml_parser import PNMLParser, XMLGNNParser
+from .xml_serializer import XMLSerializer
+from .xsd_serializer import XSDSerializer
+from .yaml_parser import YAMLGNNParser
+from .yaml_serializer import YAMLSerializer
+from .znotation_serializer import ZNotationSerializer
 
 # Configure logging
 logger = logging.getLogger(__name__)

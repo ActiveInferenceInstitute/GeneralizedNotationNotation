@@ -16,11 +16,12 @@ Test Coverage:
 - Edge cases: binary files, empty files, malformed content
 """
 
-import pytest
 import json
+import sys
 from pathlib import Path
 
-import sys
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from research.processor import process_research

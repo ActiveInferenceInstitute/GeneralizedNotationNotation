@@ -9,10 +9,10 @@ Architecture Note:
     all visualizations here, enforcing the separation: Render → Execute → Analyze.
 """
 
-from pathlib import Path
-from typing import List
 import json
 import logging
+from pathlib import Path
+from typing import List
 
 # Import the visualizer from its new home in analysis.pymdp
 try:
@@ -131,7 +131,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                 cumulative_pref = data.get('metrics', {}).get('cumulative_preference', [])
                 if cumulative_pref:
                     try:
-                        from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+                        from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
                         if MATPLOTLIB_AVAILABLE and plt is not None:
                             fig, ax = plt.subplots(figsize=(12, 5))
                             cum_sum = np.cumsum(cumulative_pref)
@@ -163,7 +163,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                 # Observation vs True State Scatter
                 if observations and true_states and len(observations) == len(true_states):
                     try:
-                        from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+                        from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
                         if MATPLOTLIB_AVAILABLE and plt is not None:
                             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
                             x = range(len(observations))

@@ -6,10 +6,12 @@ This script tests the PyMDP visualization utilities to ensure
 they work correctly for discrete POMDP simulations.
 """
 
-import pytest
-import numpy as np
-from pathlib import Path
 import tempfile
+from pathlib import Path
+
+import numpy as np
+import pytest
+
 from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer
 
 

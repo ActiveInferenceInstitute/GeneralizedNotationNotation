@@ -9,15 +9,18 @@ Date: 2025-01-11
 License: MIT
 """
 
-import time
 import hashlib
-from pathlib import Path
-from typing import Dict, List, Optional, Union, Type
 import logging
+import time
+from pathlib import Path
+from typing import Dict, List, Optional, Type, Union
 
 from .common import (
-    GNNFormat, ParseResult, GNNInternalRepresentation, ParseError,
-    BaseGNNParser
+    BaseGNNParser,
+    GNNFormat,
+    GNNInternalRepresentation,
+    ParseError,
+    ParseResult,
 )
 
 logger = logging.getLogger(__name__)

@@ -17,14 +17,15 @@ All tests execute real scripts via subprocess with isolated temp directories
 and assert on real artifacts. No mocking is used.
 """
 
-import pytest
-from typing import Any
-import sys
 import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-from pathlib import Path
-import tempfile
 import re
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
+import tempfile
+from pathlib import Path
+from typing import Any
+
+import pytest
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.safe_to_fail]
@@ -201,9 +202,9 @@ class TestPipelineScriptExecution:
         # We need pymdp for execution to work (at least minimally)
         # Check if render/execute/analysis modules are importable first to avoid failures on environments without them
         try:
-            import render  # noqa: F401 - importability check
-            import execute  # noqa: F401 - importability check
             import analysis  # noqa: F401 - importability check
+            import execute  # noqa: F401 - importability check
+            import render  # noqa: F401 - importability check
         except ImportError:
             pytest.skip("Full pipeline modules not available")
 
@@ -310,7 +311,7 @@ class TestStep1SetupComprehensive:
     def test_step1_environment_validation(self) -> None:
         """Test environment validation functionality."""
         try:
-            from src.setup import validate_environment, check_dependencies
+            from src.setup import check_dependencies, validate_environment
 
             # Test environment validation
             try:
@@ -401,7 +402,10 @@ class TestStep6VisualizationComprehensive:
     def test_step6_visualization_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test visualization generation."""
         try:
-            from src.visualization import create_graph_visualization, create_matrix_visualization
+            from src.visualization import (
+                create_graph_visualization,
+                create_matrix_visualization,
+            )
 
             # Test graph visualization
             try:
@@ -488,7 +492,10 @@ class TestStep10ExecuteComprehensive:
     def test_step10_execution_safety(self) -> None:
         """Test execution safety mechanisms."""
         try:
-            from src.execute import execute_script_safely, validate_execution_environment
+            from src.execute import (
+                execute_script_safely,
+                validate_execution_environment,
+            )
         except ImportError:
             pytest.skip("Execute module not available")
 
@@ -561,7 +568,7 @@ class TestStep20WebsiteComprehensive:
     @pytest.mark.safe_to_fail
     def test_step20_website_generation(self, isolated_temp_dir: Any) -> None:
         """Test website generation functionality."""
-        from src.website import generate_website, generate_html_report
+        from src.website import generate_html_report, generate_website
         # Test website generation
         try:
             website_data = {"test": "data"}
@@ -585,7 +592,10 @@ class TestStep15AudioComprehensive:
     def test_step15_audio_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test SAPF audio generation."""
         try:
-            from src.audio.sapf.audio_generators import generate_oscillator_audio, SyntheticAudioGenerator
+            from src.audio.sapf.audio_generators import (
+                SyntheticAudioGenerator,
+                generate_oscillator_audio,
+            )
 
             # Test oscillator generation directly
             audio_data = generate_oscillator_audio(440.0, 0.5, 1.0)

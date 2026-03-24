@@ -3,9 +3,10 @@
 Fixed Render generators module for GNN code generation with enhanced visualizations.
 """
 
-from typing import Dict, Optional, Union
-from pathlib import Path
 import re
+from pathlib import Path
+from typing import Dict, Optional, Union
+
 
 def _sanitize_identifier(base: str, *, lowercase: bool = True, allow_empty_fallback: str = "model") -> str:
     """Sanitize an arbitrary string into a safe Python/Julia identifier (snake_case)."""

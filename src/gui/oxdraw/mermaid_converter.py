@@ -5,11 +5,11 @@ Converts parsed GNN Active Inference models to Mermaid flowchart format
 compatible with oxdraw editor, with embedded metadata for bidirectional sync.
 """
 
+import json
 import os
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import json
+from typing import Any, Dict, List, Optional
 
 from gnn.processor import parse_gnn_file
 

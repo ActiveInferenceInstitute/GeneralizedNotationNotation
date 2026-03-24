@@ -7,22 +7,17 @@ including LLM-powered insights and executive report generation with per-step
 breakdowns, yellow/red flag detection, and actionable recommendations.
 """
 
+import asyncio
 import json
 import logging
-import asyncio
 import os
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Literal, Tuple
-from datetime import datetime
 from dataclasses import dataclass, field
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Literal, Optional, Tuple
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error
-)
 from pipeline.context import StepStatus  # single authoritative definition
-
+from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 # Constrained type for step flag severity.
 FlagType = Literal["none", "yellow", "red", "green"]
@@ -119,7 +114,7 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
     avg_duration = sum(durations) / len(durations) if durations else 0
 
     memories = [s.get("peak_memory_mb", 0) for s in steps if s.get("peak_memory_mb")]
-    avg_memory = sum(memories) / len(memories) if memories else 0
+    sum(memories) / len(memories) if memories else 0
 
     # Thresholds for flags
     SLOW_THRESHOLD = 60.0  # seconds

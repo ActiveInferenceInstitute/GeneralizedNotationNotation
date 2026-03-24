@@ -12,7 +12,8 @@ and visualization should be performed separately by the analysis pipeline.
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, Union, List, Tuple
+from typing import Any, Dict, List, Tuple, Union
+
 import numpy as np
 
 logger = logging.getLogger(__name__)

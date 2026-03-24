@@ -5,6 +5,7 @@ Allows the module to be executed directly with python -m type_checker
 """
 
 import sys
+
 from .cli import main
 
 if __name__ == "__main__":

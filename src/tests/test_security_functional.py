@@ -17,19 +17,20 @@ Test Coverage:
 - Edge cases: clean files, heavily-flagged files, empty files
 """
 
-import pytest
 import json
+import sys
 from pathlib import Path
 
-import sys
+import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from security.processor import (
-    process_security,
-    perform_security_check,
-    check_vulnerabilities,
     calculate_security_score,
+    check_vulnerabilities,
     generate_security_summary,
+    perform_security_check,
+    process_security,
 )
 
 

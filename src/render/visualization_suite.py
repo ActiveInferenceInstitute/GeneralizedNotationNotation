@@ -4,20 +4,21 @@ Visualization Suite and Data Exports
 Provides comprehensive visualization and data export utilities for all frameworks
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 try:
     import pandas as pd
     _PANDAS_AVAILABLE = True
 except ImportError:
     pd = None  # type: ignore[assignment]
     _PANDAS_AVAILABLE = False
-import json
 import csv
+import json
 import logging
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, List, Any
+from pathlib import Path
+from typing import Any, Dict, List
 
 try:
     import seaborn as sns
@@ -286,9 +287,9 @@ class VisualizationSuite:
         if numeric_traces:
             # Box plots
             ax1 = axes[0, 0]
-            data_for_box = [values for values in numeric_traces.values()]
+            data_for_box = list(numeric_traces.values())
             labels = list(numeric_traces.keys())
-            bp = ax1.boxplot(data_for_box, labels=labels, patch_artist=True)
+            ax1.boxplot(data_for_box, labels=labels, patch_artist=True)
             ax1.set_title('Distribution Summary (Box Plots)')
             ax1.set_ylabel('Value')
             plt.setp(ax1.get_xticklabels(), rotation=45, ha='right')
@@ -296,7 +297,7 @@ class VisualizationSuite:
             # Violin plots
             ax2 = axes[0, 1]
             positions = range(1, len(numeric_traces) + 1)
-            vp = ax2.violinplot(data_for_box, positions=positions)
+            ax2.violinplot(data_for_box, positions=positions)
             ax2.set_xticks(positions)
             ax2.set_xticklabels(labels, rotation=45, ha='right')
             ax2.set_title('Distribution Shape (Violin Plots)')
@@ -361,7 +362,7 @@ class VisualizationSuite:
             ax2 = axes[0, 1]
             for key, values in list(numeric_traces.items())[:4]:
                 try:
-                    density = sns.kdeplot(data=values, ax=ax2, label=key, alpha=0.8)
+                    sns.kdeplot(data=values, ax=ax2, label=key, alpha=0.8)
                 except Exception as e:
                     logger.debug(f"KDE plot skipped for {key}: {e}")
             ax2.set_title('Kernel Density Estimation')
@@ -395,7 +396,7 @@ class VisualizationSuite:
                 if len(values1) == len(values2):
                     corr = np.corrcoef(values1, values2)[0, 1]
                     ax4.text(0.05, 0.95, f'r = {corr:.3f}', transform=ax4.transAxes,
-                            bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
+                            bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': 0.8})
 
         plt.tight_layout()
         dist_file = self.viz_dir / f"{self.simulation_name}_DISTRIBUTIONS.png"
@@ -439,7 +440,7 @@ class VisualizationSuite:
         # Add correlation values to heatmap
         for i in range(len(corr_matrix.index)):
             for j in range(len(corr_matrix.columns)):
-                text = ax1.text(j, i, f'{corr_matrix.iloc[i, j]:.2f}',
+                ax1.text(j, i, f'{corr_matrix.iloc[i, j]:.2f}',
                                ha="center", va="center", color="black", fontweight='bold')
 
         plt.colorbar(im, ax=ax1)
@@ -505,7 +506,7 @@ class VisualizationSuite:
         ax_summary.text(0.1, 0.9, '\n'.join(summary_text[:8]),
                        transform=ax_summary.transAxes, fontsize=10,
                        verticalalignment='top',
-                       bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.7))
+                       bbox={'boxstyle': 'round', 'facecolor': 'lightblue', 'alpha': 0.7})
         ax_summary.set_title('Summary Statistics')
         ax_summary.axis('off')
 

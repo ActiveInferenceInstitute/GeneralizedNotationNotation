@@ -7,26 +7,26 @@ This module provides a unified interface for working with multiple LLM providers
 selection, recovery mechanisms, and provides high-level methods for GNN analysis.
 """
 
-import os
-from typing import List, Dict, Any, Optional, AsyncGenerator, Union
-from enum import Enum
 import logging
+import os
+from enum import Enum
+from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
-from .providers.base_provider import (
-    BaseLLMProvider,
-    ProviderType,
-    LLMResponse,
-    LLMMessage,
-    LLMConfig,
-)
+from .defaults import DEFAULT_OLLAMA_MODEL
 from .providers import (
+    get_ollama_provider_class,
     get_openai_provider_class,
     get_openrouter_provider_class,
     get_perplexity_provider_class,
-    get_ollama_provider_class,
+)
+from .providers.base_provider import (
+    BaseLLMProvider,
+    LLMConfig,
+    LLMMessage,
+    LLMResponse,
+    ProviderType,
 )
 from .providers.perplexity_provider import PerplexityProvider
-from .defaults import DEFAULT_OLLAMA_MODEL
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +49,9 @@ def load_api_keys_from_env() -> Dict[str, str]:
     """
     # Try to load .env file if it exists
     try:
-        from dotenv import load_dotenv
         from pathlib import Path
+
+        from dotenv import load_dotenv
 
         # Look for .env file in the llm directory
         env_file = Path(__file__).parent / '.env'

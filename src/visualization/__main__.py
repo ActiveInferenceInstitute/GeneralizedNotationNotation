@@ -6,6 +6,7 @@ Usage: python -m gnn.visualization <input_path> [options]
 """
 
 import sys
+
 from .cli import main
 
 if __name__ == '__main__':

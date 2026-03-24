@@ -1,24 +1,34 @@
 """Tests for utility functions and classes in gnn/parsers/common.py."""
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
-from gnn.parsers.common import (
-    ParseError,
-    normalize_variable_name,
-    parse_dimensions,
-    infer_variable_type,
-    parse_connection_operator,
-    safe_enum_convert,
-    extract_embedded_json_data,
-    GNNInternalRepresentation,
-    Variable, Connection, Parameter, OntologyMapping,
-    ASTNode, ASTVisitor, PrintVisitor,
-    ParseResult, BaseGNNParser,
-    VariableType, DataType, ConnectionType, GNNFormat,
-)
 
+from gnn.parsers.common import (
+    ASTNode,
+    ASTVisitor,
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    GNNFormat,
+    GNNInternalRepresentation,
+    OntologyMapping,
+    Parameter,
+    ParseError,
+    ParseResult,
+    PrintVisitor,
+    Variable,
+    VariableType,
+    extract_embedded_json_data,
+    infer_variable_type,
+    normalize_variable_name,
+    parse_connection_operator,
+    parse_dimensions,
+    safe_enum_convert,
+)
 
 # ── normalize_variable_name ────────────────────────────────────────────────
 
@@ -345,8 +355,8 @@ class TestPrintVisitor:
 
     def test_visit_children_called(self):
         """ASTVisitor.visit_children traverses children via accept."""
-        parent = ASTNode()
-        child = ASTNode()
+        ASTNode()
+        ASTNode()
         # Manually inject child into parent's metadata dict to test via visitor
         # (Variable stores children as ASTNode fields — use a Variable)
         visited = []

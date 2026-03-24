@@ -11,14 +11,14 @@ Inspired by the concept of npx @modelcontextprotocol/inspector.
 
 import argparse
 import json
+import queue
+import shlex
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import threading
 import time
-import queue
 from pathlib import Path
-import shlex
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 # --- Configuration ---
 # Adjust these paths if your project structure is different

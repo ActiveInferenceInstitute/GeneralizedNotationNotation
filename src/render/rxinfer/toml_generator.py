@@ -7,7 +7,7 @@ to TOML configuration files compatible with RxInfer.jl simulations.
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 

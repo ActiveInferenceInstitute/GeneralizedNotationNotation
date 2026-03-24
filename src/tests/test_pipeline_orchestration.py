@@ -22,10 +22,11 @@ class TestPipelineRunnerOrchestration:
     def test_pipeline_runner_instantiation(self, tmp_path):
         """Test PipelineOrchestrator can be instantiated."""
         try:
-            from pipeline import PipelineOrchestrator
             import logging
 
-            logger = logging.getLogger("test_pipeline")
+            from pipeline import PipelineOrchestrator
+
+            logging.getLogger("test_pipeline")
 
             # PipelineOrchestrator may require specific init args
             orchestrator = PipelineOrchestrator()
@@ -172,7 +173,7 @@ class TestPipelineStateManagement:
     @pytest.mark.fast
     def test_pipeline_info_available(self):
         """Test pipeline info can be retrieved."""
-        from pipeline import get_pipeline_info, get_module_info
+        from pipeline import get_module_info, get_pipeline_info
 
         info = get_pipeline_info()
         assert info is not None
@@ -183,7 +184,7 @@ class TestPipelineStateManagement:
     @pytest.mark.fast
     def test_pipeline_validation(self):
         """Test pipeline configuration validation."""
-        from pipeline import validate_pipeline_config, create_pipeline_config
+        from pipeline import create_pipeline_config, validate_pipeline_config
 
         config = create_pipeline_config()
 

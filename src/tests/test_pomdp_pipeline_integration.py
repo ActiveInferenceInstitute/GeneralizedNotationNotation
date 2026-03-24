@@ -8,19 +8,19 @@ Validates that a GNN specification with explicit POMDP matrices can be:
 """
 
 import json
+
 import numpy as np
 import pytest
 
-from render.processor import render_gnn_spec
-from execute.pymdp.pymdp_simulation import PyMDPSimulation
-from execute.pymdp.pymdp_utils import safe_json_dump
 from analysis.post_simulation import (
     analyze_active_inference_metrics,
     compute_shannon_entropy,
     compute_variational_free_energy,
     extract_pymdp_data,
 )
-
+from execute.pymdp.pymdp_simulation import PyMDPSimulation
+from execute.pymdp.pymdp_utils import safe_json_dump
+from render.processor import render_gnn_spec
 
 # =============================================================================
 # Fixtures

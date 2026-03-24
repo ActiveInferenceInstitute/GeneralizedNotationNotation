@@ -294,7 +294,7 @@ def test_analyze_metrics():
     beliefs = [(np.array(b)/np.array(b).sum()).tolist() for b in beliefs]
     fe = [5.0 - 0.3*t for t in range(15)]
     actions = [t % 3 for t in range(15)]
-    r = analyze_metrics = analyze_active_inference_metrics(beliefs, fe, actions, "verify_model")
+    r = analyze_active_inference_metrics(beliefs, fe, actions, "verify_model")
     assert r["model_name"] == "verify_model"
     assert r["num_timesteps"] == 15
     assert "belief_entropy" in r["metrics"]
@@ -307,8 +307,8 @@ def test_analyze_metrics():
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_normalize_matrices():
-    from render.processor import normalize_matrices
     from gnn.pomdp_extractor import POMDPStateSpace
+    from render.processor import normalize_matrices
 
     A = np.array([[3.0, 1.0], [1.0, 3.0]])
     B = np.ones((3, 3, 2))
@@ -326,8 +326,8 @@ def test_normalize_matrices():
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_visualization_creation():
-    from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from analysis.pymdp.visualizer import PyMDPVisualizer
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         cfg = {
@@ -344,8 +344,10 @@ def test_visualization_creation():
 
 def test_post_simulation_viz():
     from analysis.post_simulation import (
-        generate_belief_heatmaps, generate_action_analysis,
-        generate_free_energy_plots, generate_observation_analysis
+        generate_action_analysis,
+        generate_belief_heatmaps,
+        generate_free_energy_plots,
+        generate_observation_analysis,
     )
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
@@ -365,12 +367,13 @@ def test_post_simulation_viz():
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_full_pipeline():
-    from render.processor import render_gnn_spec
-    from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from analysis.post_simulation import (
-        analyze_active_inference_metrics, compute_variational_free_energy,
-        compute_shannon_entropy
+        analyze_active_inference_metrics,
+        compute_shannon_entropy,
+        compute_variational_free_energy,
     )
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
+    from render.processor import render_gnn_spec
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         spec = {

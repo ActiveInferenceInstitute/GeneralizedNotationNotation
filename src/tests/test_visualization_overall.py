@@ -5,9 +5,10 @@ Test Visualization Overall Tests
 This file contains comprehensive tests for the visualization module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -161,7 +162,7 @@ class TestVisualizationIntegration:
             # Test end-to-end visualization
             gnn_file = list(sample_gnn_files.values())[0]
             with open(gnn_file, 'r') as f:
-                gnn_content = f.read()
+                f.read()
 
             result = visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
             assert result is not None
@@ -203,14 +204,15 @@ def test_visualization_module_completeness():
 def test_visualization_module_performance():
     """Test visualization module performance characteristics."""
     try:
-        from visualization import MatrixVisualizer
         import time
+
+        from visualization import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
         start_time = time.time()
 
         # Test visualization performance
-        result = visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
+        visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
 
         processing_time = time.time() - start_time
         assert processing_time < 10.0  # Should complete within 10 seconds

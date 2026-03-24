@@ -11,28 +11,46 @@ Estimation strategy logic lives in estimation_strategies.py; this module
 provides the GNNResourceEstimator class, report generation, and CLI.
 """
 
-import os
-import sys
+import argparse
 import json
 import logging
-import argparse
-from types import MappingProxyType
+import os
+import sys
 from pathlib import Path
-from typing import Dict, Any, Optional, Union
+from types import MappingProxyType
+from typing import Any, Dict, Optional, Union
 
 import matplotlib.pyplot as plt
 
 from .estimation_strategies import (
-    estimate_memory as _est_memory,
-    detailed_memory_breakdown as _est_memory_breakdown,
-    estimate_flops as _est_flops,
-    estimate_inference_time as _est_inference_time,
-    estimate_batched_inference as _est_batched_inference,
-    estimate_matrix_operation_costs as _est_matrix_ops,
-    estimate_model_overhead as _est_model_overhead,
-    estimate_inference as _est_inference,
-    estimate_storage as _est_storage,
     calculate_complexity as _calc_complexity,
+)
+from .estimation_strategies import (
+    detailed_memory_breakdown as _est_memory_breakdown,
+)
+from .estimation_strategies import (
+    estimate_batched_inference as _est_batched_inference,
+)
+from .estimation_strategies import (
+    estimate_flops as _est_flops,
+)
+from .estimation_strategies import (
+    estimate_inference as _est_inference,
+)
+from .estimation_strategies import (
+    estimate_inference_time as _est_inference_time,
+)
+from .estimation_strategies import (
+    estimate_matrix_operation_costs as _est_matrix_ops,
+)
+from .estimation_strategies import (
+    estimate_memory as _est_memory,
+)
+from .estimation_strategies import (
+    estimate_model_overhead as _est_model_overhead,
+)
+from .estimation_strategies import (
+    estimate_storage as _est_storage,
 )
 
 logger = logging.getLogger(__name__)
@@ -461,9 +479,8 @@ class GNNResourceEstimator:
                 complexity = result.get("complexity", {})
 
                 # Create memory breakdown
-                memory_breakdown = {}
                 if file_path in self.detailed_metrics:
-                    memory_breakdown = self.detailed_metrics[file_path].get("memory_breakdown", {})
+                    self.detailed_metrics[file_path].get("memory_breakdown", {})
 
                 html_content += f"""
         <div class="model-card">
@@ -811,7 +828,7 @@ class GNNResourceEstimator:
 
         # Memory usage plot with custom styling for HTML
         plt.figure(figsize=(10, 6))
-        ax = plt.gca()
+        plt.gca()
         bars = plt.bar(short_files, memory_values, color='skyblue')
 
         # Add data labels on top of bars
@@ -888,8 +905,8 @@ class GNNResourceEstimator:
         output_path = Path(output_dir if output_dir else "resource_estimates").resolve()
         output_path.mkdir(parents=True, exist_ok=True)
 
-        report_file = output_path / "resource_report.md"
-        json_file = output_path / "resource_data.json"
+        output_path / "resource_report.md"
+        output_path / "resource_data.json"
 
         # Resolve project_root once
         actual_project_root = None
@@ -986,7 +1003,7 @@ class GNNResourceEstimator:
         self._generate_visualizations_for_html(output_path)
 
         # Generate HTML report with detailed explanations
-        html_report_path = self.generate_html_report(str(output_path))
+        self.generate_html_report(str(output_path))
 
         # Save JSON data
         json_path = output_path / "resource_data.json"

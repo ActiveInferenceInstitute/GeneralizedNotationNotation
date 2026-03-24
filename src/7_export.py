@@ -36,8 +36,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import create_standardized_pipeline_script
 from export import process_export
+from utils.pipeline_template import create_standardized_pipeline_script
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(

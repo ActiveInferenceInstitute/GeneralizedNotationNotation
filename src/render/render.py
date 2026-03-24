@@ -37,7 +37,10 @@ except ImportError as e:
     DISCOPY_AVAILABLE = False
 
 try:
-    from .activeinference_jl import render_gnn_to_activeinference_jl, render_gnn_to_activeinference_combined
+    from .activeinference_jl import (
+        render_gnn_to_activeinference_combined,
+        render_gnn_to_activeinference_jl,
+    )
     ACTIVEINFERENCE_JL_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"ActiveInference.jl renderer not available: {e}")
@@ -46,7 +49,11 @@ except ImportError as e:
     ACTIVEINFERENCE_JL_AVAILABLE = False
 
 try:
-    from .jax import render_gnn_to_jax, render_gnn_to_jax_pomdp, render_gnn_to_jax_combined
+    from .jax import (
+        render_gnn_to_jax,
+        render_gnn_to_jax_combined,
+        render_gnn_to_jax_pomdp,
+    )
     JAX_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"JAX renderer not available: {e}")
@@ -58,6 +65,7 @@ except ImportError as e:
 logger = logging.getLogger(__name__)
 
 from .processor import render_gnn_spec
+
 
 def main(cli_args=None):
     """Command-line entry point for the renderer."""

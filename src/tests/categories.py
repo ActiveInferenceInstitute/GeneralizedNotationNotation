@@ -6,7 +6,7 @@ Each category has its own timeout, max failures, parallel execution settings,
 and list of test files.
 """
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 # Test category definitions for modular test execution
 MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {

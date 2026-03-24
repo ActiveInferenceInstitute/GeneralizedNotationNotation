@@ -15,8 +15,8 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import create_standardized_pipeline_script
 from advanced_visualization.processor import process_advanced_viz
+from utils.pipeline_template import create_standardized_pipeline_script
 
 run_script = create_standardized_pipeline_script(
     "9_advanced_viz.py",

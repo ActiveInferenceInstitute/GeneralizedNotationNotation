@@ -1,7 +1,7 @@
 """Tests for analysis/viz_base.py — safe_savefig."""
-from unittest.mock import patch, MagicMock
-import analysis.viz_base as viz_base
+from unittest.mock import MagicMock, patch
 
+import analysis.viz_base as viz_base
 
 # ── MATPLOTLIB_AVAILABLE ───────────────────────────────────────────────────
 

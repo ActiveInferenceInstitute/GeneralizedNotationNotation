@@ -5,16 +5,21 @@ Execute Processor module for GNN Processing Pipeline.
 This module provides execute processing capabilities for rendered implementations.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import json
+import logging
 import os
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
+from utils.logging.logging_utils import (
+    log_step_error,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+)
 
 try:
     from utils.logging.logging_utils import PipelineLogger
@@ -793,8 +798,12 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
 # --- Re-export everything from sub-modules for backward compatibility ---
 from .data_extractors import (
     collect_execution_outputs,
-    extract_simulation_data_from_files as _extract_simulation_data_from_files,
+)
+from .data_extractors import (
     extract_simulation_data as _extract_simulation_data,
+)
+from .data_extractors import (
+    extract_simulation_data_from_files as _extract_simulation_data_from_files,
 )
 
 

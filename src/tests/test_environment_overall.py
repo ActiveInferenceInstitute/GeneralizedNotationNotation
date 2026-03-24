@@ -5,10 +5,11 @@ Test Environment Overall Tests
 This file contains comprehensive tests for the environment module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -180,14 +181,15 @@ def test_environment_module_completeness() -> None:
 def test_environment_module_performance() -> None:
     """Test environment module performance characteristics."""
     try:
-        from setup import EnvironmentManager
         import time
+
+        from setup import EnvironmentManager
 
         manager = EnvironmentManager()
         start_time = time.time()
 
         # Test environment validation performance
-        result = manager.validate_environment()
+        manager.validate_environment()
 
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds

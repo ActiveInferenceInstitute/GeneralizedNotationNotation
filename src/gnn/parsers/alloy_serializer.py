@@ -1,5 +1,6 @@
-from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class AlloySerializer(BaseGNNSerializer):
     """Serializer for Alloy model checking language."""
@@ -80,7 +81,7 @@ class AlloySerializer(BaseGNNSerializer):
             lines.append("// Parameter constraints")
             lines.append("fact Parameters {")
             for param in model.parameters:
-                param_name_clean = self._sanitize_alloy_name(param.name)
+                self._sanitize_alloy_name(param.name)
                 lines.append(f"  // Parameter: {param.name} = {getattr(param, 'value', 'undefined')}")
             lines.append("}")
             lines.append("")

@@ -9,12 +9,21 @@ Date: 2025-01-11
 """
 
 import re
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, Variable, Connection, Parameter, Equation, VariableType, DataType, ConnectionType,
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    Equation,
+    Parameter,
+    ParseResult,
+    Variable,
+    VariableType,
     extract_embedded_json_data,
 )
+
 
 class MaximaParser(BaseGNNParser):
     """Parser for Maxima symbolic computation specifications with embedded data support."""
@@ -34,7 +43,14 @@ class MaximaParser(BaseGNNParser):
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
-        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+        from .common import (
+            Connection,
+            ConnectionType,
+            DataType,
+            Parameter,
+            Variable,
+            VariableType,
+        )
 
         try:
             result.model.model_name = embedded_data.get('model_name', 'MaximaGNNModel')
@@ -269,7 +285,7 @@ class MaximaParser(BaseGNNParser):
 
         # Look for variable references in function body
         var_pattern = re.compile(r'\b([a-zA-Z_]\w*)\b')
-        body_vars = var_pattern.findall(body)
+        var_pattern.findall(body)
 
         # Create connections from arguments to function
         for arg_var in arg_vars:

@@ -7,8 +7,8 @@ Comprehensive tests for error message formatting, recovery suggestions,
 and error handling improvements.
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -16,6 +16,7 @@ SRC_DIR = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
 
 import pytest
+
 
 class TestErrorRecoveryFramework:
     """Test error recovery framework functionality."""
@@ -69,7 +70,7 @@ class TestErrorRecoveryFramework:
         """Test error code registry contains expected codes."""
         from utils.error_recovery import ErrorCodeRegistry
 
-        codes = ErrorCodeRegistry.get_all_codes()
+        ErrorCodeRegistry.get_all_codes()
 
         # Should have import error codes
         assert ErrorCodeRegistry.IMPORT_NOT_FOUND == "E001"
@@ -110,7 +111,11 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_error_handling_with_severity_levels(self):
         """Test error handling respects severity levels."""
-        from utils.error_recovery import ErrorContext, ErrorSeverity, ErrorRecoveryManager
+        from utils.error_recovery import (
+            ErrorContext,
+            ErrorRecoveryManager,
+            ErrorSeverity,
+        )
 
         manager = ErrorRecoveryManager(logging.getLogger("test"))
 
@@ -153,7 +158,7 @@ class TestErrorRecoveryFramework:
     @pytest.mark.unit
     def test_format_and_log_error_function(self):
         """Test format_and_log_error convenience function."""
-        from utils.error_recovery import format_and_log_error, ErrorSeverity
+        from utils.error_recovery import ErrorSeverity, format_and_log_error
 
         context = format_and_log_error(
             error_code="E101",
@@ -272,11 +277,11 @@ class TestErrorHandlingIntegration:
 def test_error_recovery_documentation():
     """Test that error recovery framework components exist and have docstrings."""
     from utils.error_recovery import (
+        ErrorCodeRegistry,
         ErrorContext,
-        ErrorSeverity,
         ErrorRecoveryManager,
+        ErrorSeverity,
         format_and_log_error,
-        ErrorCodeRegistry
     )
 
     # Verify framework classes exist and are documented

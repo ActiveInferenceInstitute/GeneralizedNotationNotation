@@ -5,10 +5,10 @@ Per-framework analysis and visualization for DisCoPy categorical diagrams.
 """
 
 from .analyzer import (
-    generate_analysis_from_logs,
+    analyze_diagram_structure,
     create_discopy_visualizations,
     extract_circuit_data,
-    analyze_diagram_structure,
+    generate_analysis_from_logs,
 )
 
 __all__ = [

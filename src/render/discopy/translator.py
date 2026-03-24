@@ -4,14 +4,15 @@ GNN to DisCoPy Diagram Translator
 This module provides functions to parse GNN files (in their string representation)
 and convert them into DisCoPy diagrams.
 """
-import re
-import logging
-from pathlib import Path
-import json # For parsing tensor initializers
-import numpy # For loading .npy files
-from typing import Union, List, Dict, Any, Callable, Optional # Added typing imports
-import functools
 import datetime
+import functools
+import json  # For parsing tensor initializers
+import logging
+import re
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Union  # Added typing imports
+
+import numpy  # For loading .npy files
 
 # Initialize logger early for use in error handling
 logger = logging.getLogger(__name__)
@@ -172,16 +173,20 @@ def check_discopy_availability() -> Dict[str, bool]:
 
     # Check tensor components
     try:
-        from discopy.tensor import (
-            Dim as Dim_actual, Box as Box_actual, Diagram as Diagram_actual,
-            Id as Id_actual, Swap as Swap_actual, Cup as Cup_actual,
-            Cap as Cap_actual, Spider as Spider_actual, Functor as Functor_actual
-        )
         from discopy.matrix import Matrix as Matrix_actual
+        from discopy.tensor import Box as Box_actual
+        from discopy.tensor import Cap as Cap_actual
+        from discopy.tensor import Cup as Cup_actual
+        from discopy.tensor import Diagram as Diagram_actual
+        from discopy.tensor import Dim as Dim_actual
+        from discopy.tensor import Functor as Functor_actual
+        from discopy.tensor import Id as Id_actual
+        from discopy.tensor import Spider as Spider_actual
+        from discopy.tensor import Swap as Swap_actual
 
         # Test basic functionality
         test_dim = Dim_actual(2)
-        test_box = Box_actual('test', test_dim, test_dim)
+        Box_actual('test', test_dim, test_dim)
 
         availability['tensor_components'] = True
         logger.debug("DisCoPy tensor components available and functional")
@@ -192,12 +197,12 @@ def check_discopy_availability() -> Dict[str, bool]:
 
     # Check Ty/Word components
     try:
-        from discopy.monoidal import Ty as Ty_actual
         from discopy.grammar.pregroup import Word as Word_actual
+        from discopy.monoidal import Ty as Ty_actual
 
         # Test basic functionality
         test_ty = Ty_actual('test')
-        test_word = Word_actual('test', test_ty, test_ty)
+        Word_actual('test', test_ty, test_ty)
 
         availability['ty_components'] = True
         logger.debug("DisCoPy Ty/Word components available and functional")
@@ -213,7 +218,7 @@ def check_discopy_availability() -> Dict[str, bool]:
 
         # Test basic functionality
         test_array = jnp_actual.array([1, 2, 3])
-        test_result = jnp_actual.sum(test_array)
+        jnp_actual.sum(test_array)
 
         availability['jax_core'] = True
         logger.debug("JAX core available and functional")
@@ -260,12 +265,16 @@ def initialize_discopy_components() -> bool:
     # Initialize tensor components
     if availability['tensor_components']:
         try:
-            from discopy.tensor import (
-                Dim as Dim_actual, Box as Box_actual, Diagram as Diagram_actual,
-                Id as Id_actual, Swap as Swap_actual, Cup as Cup_actual,
-                Cap as Cap_actual, Spider as Spider_actual, Functor as Functor_actual
-            )
             from discopy.matrix import Matrix as Matrix_actual
+            from discopy.tensor import Box as Box_actual
+            from discopy.tensor import Cap as Cap_actual
+            from discopy.tensor import Cup as Cup_actual
+            from discopy.tensor import Diagram as Diagram_actual
+            from discopy.tensor import Dim as Dim_actual
+            from discopy.tensor import Functor as Functor_actual
+            from discopy.tensor import Id as Id_actual
+            from discopy.tensor import Spider as Spider_actual
+            from discopy.tensor import Swap as Swap_actual
 
             Dim = Dim_actual
             Box = Box_actual
@@ -287,8 +296,8 @@ def initialize_discopy_components() -> bool:
     # Initialize Ty/Word components
     if availability['ty_components']:
         try:
-            from discopy.monoidal import Ty as Ty_actual
             from discopy.grammar.pregroup import Word as Word_actual
+            from discopy.monoidal import Ty as Ty_actual
 
             Ty = Ty_actual
             Word = Word_actual
@@ -589,7 +598,7 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, dims_map: dict[str, Dim
     # Pattern for a block of text that forms one side of a connection (source or target).
     # This matches EITHER a parenthesized list OR a non-parenthesized list.
     # Example: matches "( Var1, Var2 )" OR "Var1, Var2".
-    single_side_block_pattern = (
+    (
         # Option 1: ( list of vars ) - captures list content in a group
         # Using \( and \) for literal parentheses.
         r"(?:\s*\(\s*(" + var_list_content_pattern + r")\s*\)\s*|" +
@@ -772,7 +781,7 @@ def gnn_connections_to_discopy_matrix_diagram(
     # Pattern for a block of text that forms one side of a connection (source or target).
     # This matches EITHER a parenthesized list OR a non-parenthesized list.
     # Example: matches "( Var1, Var2 )" OR "Var1, Var2".
-    single_side_block_pattern = (
+    (
         # Option 1: ( list of vars ) - captures list content in a group
         # Using \( and \) for literal parentheses.
         r"(?:\s*\(\s*(" + var_list_content_pattern + r")\s*\)\s*|" +
@@ -952,7 +961,7 @@ def gnn_connections_to_discopy_matrix_diagram(
                         # this is more of a graceful degradation attempt.
                         # The proper fix is to not call this function if JAX is not available.
                         # For now, we make a numpy array, but this won't work if a JAX tensor is strictly required by DisCoPy.
-                        import numpy # Local import for this recovery
+                        import numpy  # Local import for this recovery
                         jax_array_data = numpy.array(processed_initializer, dtype=default_dtype_str).reshape(box_shape)
 
                 except Exception as e:
@@ -997,7 +1006,7 @@ def gnn_connections_to_discopy_matrix_diagram(
                             jax_array_data = jnp.full(box_shape, initializer, dtype=jax_dtype)
                         else:
                              logger.warning("JAX not available, attempting to create NumPy full array for MatrixBox data from scalar. This path might not be fully supported.")
-                             import numpy # Local import
+                             import numpy  # Local import
                              jax_array_data = numpy.full(box_shape, initializer, dtype=default_dtype_str)
 
                     except Exception as e:
@@ -1083,7 +1092,7 @@ def gnn_file_to_discopy_diagram(gnn_file_path: Path, verbose: bool = False) -> O
 
     # Check if DisCoPy components are available
     if not TENSOR_COMPONENTS_AVAILABLE:
-        error_report = create_discopy_error_report(gnn_file_path, "unavailable")
+        create_discopy_error_report(gnn_file_path, "unavailable")
         logger.error("DisCoPy components are not available. Cannot create diagrams.")
         logger.info("Run generate_setup_report() for installation instructions")
         return None
@@ -1123,7 +1132,7 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
     and constructs the MatrixDiagram.
     """
     if not JAX_AVAILABLE: # Check the overall JAX_AVAILABLE flag
-        error_report = create_discopy_error_report(gnn_file_path, "jax_unavailable")
+        create_discopy_error_report(gnn_file_path, "jax_unavailable")
         logger.error("JAX or essential DisCoPy components for matrix operations are not available. Cannot create a JAX-backed MatrixDiagram.")
         logger.info("Run generate_setup_report() for installation instructions")
         return None
@@ -1520,7 +1529,7 @@ B > C
 
             # Try to draw if matplotlib is available
             try:
-                from matplotlib import pyplot as plt # type: ignore
+                from matplotlib import pyplot as plt  # type: ignore
                 output_image_path = Path("__test_discopy_diagram.png")
                 diagram_test.draw(path=str(output_image_path), show_types=True, figsize=(8,4))
                 logger.info(f"Diagram drawn to {output_image_path}")

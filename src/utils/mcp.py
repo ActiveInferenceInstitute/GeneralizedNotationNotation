@@ -15,12 +15,13 @@ Key Features:
 
 import logging
 import os
-import sys
 import platform
-import psutil
-from typing import Dict, Any
-from pathlib import Path
+import sys
 import time
+from pathlib import Path
+from typing import Any, Dict
+
+import psutil
 
 logger = logging.getLogger(__name__)
 

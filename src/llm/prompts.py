@@ -7,8 +7,9 @@ files using Large Language Models. Each prompt is designed for specific analysis
 that help understand Active Inference generative models.
 """
 
-from typing import Dict, List, Any
 from enum import Enum
+from typing import Any, Dict, List
+
 
 class PromptType(Enum):
     """Types of analysis prompts available for GNN processing."""

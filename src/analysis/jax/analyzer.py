@@ -8,12 +8,12 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
 # Import shared visualization utilities (centralized matplotlib setup)
-from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
 
 def parse_raw_output(raw_output: str) -> Dict[str, Any]:
@@ -422,7 +422,7 @@ Validation:
 """
         ax4.text(0.1, 0.9, summary_text, transform=ax4.transAxes, fontsize=10,
                 verticalalignment='top', fontfamily='monospace',
-                bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
+                bbox={"boxstyle": 'round', "facecolor": 'lightblue', "alpha": 0.3})
 
         plt.tight_layout(rect=[0, 0, 1, 0.96])
         viz_file = output_dir / f"{model_name}_jax_dashboard.png"
@@ -620,7 +620,7 @@ def create_jax_visualizations(
             summary_text = "\n".join(summary_lines)
             ax.text(0.5, 0.5, summary_text, ha='center', va='center', fontsize=12,
                    fontfamily='monospace', transform=ax.transAxes,
-                   bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
+                   bbox={"boxstyle": 'round', "facecolor": 'lightblue', "alpha": 0.3})
 
             viz_file = output_dir / f"{model_name}_jax_model_summary.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')

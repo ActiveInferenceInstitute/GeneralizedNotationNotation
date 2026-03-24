@@ -7,21 +7,21 @@ This is the original form-based GUI implementation with:
 - Live markdown synchronization
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
-from .processor import run_gui
 from .markdown import (
     add_component_to_markdown,
-    update_component_states,
-    remove_component_from_markdown,
+    add_state_space_entry,
     parse_components_from_markdown,
     parse_state_space_from_markdown,
-    add_state_space_entry,
-    update_state_space_entry,
+    remove_component_from_markdown,
     remove_state_space_entry,
+    update_component_states,
+    update_state_space_entry,
 )
+from .processor import run_gui
 
 
 def gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:

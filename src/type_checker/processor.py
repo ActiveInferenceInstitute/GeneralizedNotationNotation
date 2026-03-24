@@ -3,20 +3,17 @@
 Type checker processor module for GNN pipeline.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
-import logging
 import json
+import logging
 import re
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
 _module_logger = logging.getLogger(__name__)
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error
-)
+from utils.pipeline_template import log_step_error, log_step_start, log_step_success
+
 
 class GNNTypeChecker:
     """Type checker for GNN files."""

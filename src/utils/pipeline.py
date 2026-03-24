@@ -7,7 +7,7 @@ This module provides pipeline utility functions.
 
 import logging
 from pathlib import Path
-from typing import Optional, Any, Tuple, List
+from typing import Any, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -70,8 +70,8 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
     """
     try:
         # Try to import actual utilities
-        from .logging_utils import setup_step_logging
         from .argument_utils import ArgumentParser
+        from .logging_utils import setup_step_logging
 
         logger = setup_step_logging(step_name, verbose)
         parser = ArgumentParser
@@ -103,7 +103,8 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
         # Check if directory is writable
         test_file = output_dir / f"{step_name}_test.tmp"
         try:
-            import os as _os, tempfile as _tempfile
+            import os as _os
+            import tempfile as _tempfile
             with _tempfile.NamedTemporaryFile(mode='w', dir=output_dir, delete=False) as _tmp:
                 _tmp.write("test")
             _os.replace(_tmp.name, str(test_file))

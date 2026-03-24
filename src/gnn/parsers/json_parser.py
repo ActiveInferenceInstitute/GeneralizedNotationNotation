@@ -11,12 +11,22 @@ License: MIT
 
 import json
 import logging
-from typing import Dict, List, Any, Optional
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Connection, Parameter, Equation, TimeSpecification, OntologyMapping,
-    VariableType, DataType, ConnectionType
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    OntologyMapping,
+    Parameter,
+    ParseResult,
+    TimeSpecification,
+    Variable,
+    VariableType,
 )
 
 logger = logging.getLogger(__name__)

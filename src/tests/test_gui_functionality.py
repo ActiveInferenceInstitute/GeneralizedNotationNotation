@@ -10,14 +10,14 @@ Tests the GUI module's process_gui function and related functionality:
 - Error handling
 """
 
-import pytest
-import logging
-import json
-
-from gui import process_gui, generate_html_navigation
-
-
 import io
+import json
+import logging
+
+import pytest
+
+from gui import generate_html_navigation, process_gui
+
 
 def get_real_logger():
     """Create a real logger that captures output to a StringIO stream."""

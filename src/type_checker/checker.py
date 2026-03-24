@@ -6,13 +6,13 @@ This module provides the core functionality for validating GNN files
 to ensure they adhere to the specification and are correctly typed.
 """
 
-import re
-import logging
 import json
+import logging
 import os
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Union, Tuple
+import re
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
@@ -249,7 +249,7 @@ class GNNTypeChecker:
             self.errors.append(f"Failed to parse or check file: {str(e)}")
 
         # Enhanced validation logic: fail on errors OR critical structural issues
-        has_errors = bool(self.errors)
+        bool(self.errors)
 
         # Define critical warnings that should fail validation
         critical_warning_patterns = [
@@ -506,7 +506,7 @@ class GNNTypeChecker:
             self.warnings.append("Cannot validate equations without variables")
             return
 
-        variables = content['Variables']
+        content['Variables']
 
         # Basic validation - just check if equations section is present and non-empty
         equation_lines = [line.strip() for line in equations.split('\n') if line.strip() and not line.startswith('#')]
@@ -1198,10 +1198,15 @@ def estimate_resources(gnn_content: str) -> Dict[str, Any]:
 
 def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, strict: bool = False):
     """Run comprehensive type checking on GNN files."""
-    from utils.logging.logging_utils import log_step_start, log_step_success, log_step_warning, log_step_error
+    from utils.logging.logging_utils import (
+        log_step_error,
+        log_step_start,
+        log_step_success,
+        log_step_warning,
+    )
     try:
-        from utils import performance_tracker
         from pipeline import get_output_dir_for_script
+        from utils import performance_tracker
     except ImportError:
         def get_output_dir_for_script(script, output_dir): return output_dir / "type_check"
         performance_tracker = None

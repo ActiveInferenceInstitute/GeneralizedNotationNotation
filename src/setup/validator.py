@@ -5,8 +5,8 @@ Setup Validator module for GNN Processing Pipeline.
 This module provides setup validation capabilities.
 """
 
-from typing import Dict, Any
 import logging
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ def get_environment_info() -> Dict[str, Any]:
         Dictionary with environment information
     """
     try:
-        from .uv_management import get_uv_setup_info, get_installed_package_versions
+        from .uv_management import get_installed_package_versions, get_uv_setup_info
 
         uv_info = get_uv_setup_info()
         package_versions = get_installed_package_versions()

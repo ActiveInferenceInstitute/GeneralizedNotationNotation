@@ -9,21 +9,20 @@ Also provides create_test_runner() factory and monitor_memory() utility.
 Extracted from runner.py for maintainability.
 """
 
-import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-import sys
-import os
 import gc
 import json
-import time
+import logging
+import os
 import re
-import threading
 import signal
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
+import threading
+import time
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 from .categories import MODULAR_TEST_CATEGORIES
-
 
 
 class ModularTestRunner:
@@ -154,7 +153,7 @@ class ModularTestRunner:
             pattern_files = list(self.test_dir.glob(file_pattern))
             test_files.extend([str(f) for f in pattern_files])
 
-        test_files = sorted(list(set(test_files)))
+        test_files = sorted(set(test_files))
 
         self.logger.info(f"Discovered {len(test_files)} test files for category '{category}': {test_files}")
         return test_files
@@ -270,11 +269,11 @@ class ModularTestRunner:
             except Exception:
                 return False
 
-        has_xdist = _has_plugin("xdist")
-        has_pytest_cov = _has_plugin("pytest_cov")
-        has_jsonreport = _has_plugin("pytest_jsonreport")
-        has_pytest_timeout = _has_plugin("pytest_timeout")
-        has_pytest_asyncio = _has_plugin("pytest_asyncio")
+        _has_plugin("xdist")
+        _has_plugin("pytest_cov")
+        _has_plugin("pytest_jsonreport")
+        _has_plugin("pytest_timeout")
+        _has_plugin("pytest_asyncio")
 
         category_output_dir = Path(self.args.output_dir) / "test_reports" / f"category_{category}"
         category_output_dir.mkdir(parents=True, exist_ok=True)

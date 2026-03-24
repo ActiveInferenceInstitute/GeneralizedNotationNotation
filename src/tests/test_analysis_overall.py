@@ -1,7 +1,10 @@
-import pytest
 import json
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
+
 from analysis.processor import process_analysis
+
 
 class TestAnalysisOverall:
     """Test suite for Analysis module."""
@@ -173,7 +176,7 @@ class TestPostSimulationVisualization:
         assert result["free_energy_count"] == 10
         assert "mean_free_energy" in result
         assert "std_free_energy" in result
-        assert result["free_energy_decreasing"] == True  # Trend should be negative
+        assert result["free_energy_decreasing"]  # Trend should be negative
 
     def test_analyze_simulation_traces(self) -> None:
         """Test simulation trace analysis function."""
@@ -246,14 +249,14 @@ class TestAnalysisModuleImports:
     def test_visualization_function_exports(self) -> None:
         """Test that new visualization functions are exported from analysis module."""
         from analysis import (
-            visualize_all_framework_outputs,
-            generate_belief_heatmaps,
+            animate_belief_evolution,
             generate_action_analysis,
+            generate_belief_heatmaps,
+            generate_cross_framework_comparison,
             generate_free_energy_plots,
             generate_observation_analysis,
-            generate_cross_framework_comparison,
             plot_belief_evolution,
-            animate_belief_evolution
+            visualize_all_framework_outputs,
         )
 
         # All functions should be callable
@@ -376,6 +379,7 @@ class TestAnalyzerSimulationMetrics:
     def test_extract_simulation_metrics_reads_json(self, tmp_path):
         """_extract_simulation_metrics loads simulation_results.json when present."""
         import json
+
         from analysis.analyzer import _extract_simulation_metrics
 
         sim_dir = tmp_path / "sim_data"

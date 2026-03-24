@@ -1,6 +1,8 @@
 from datetime import datetime
-from .common import GNNInternalRepresentation
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class MarkdownSerializer(BaseGNNSerializer):
     """Serializer for GNN Markdown format."""

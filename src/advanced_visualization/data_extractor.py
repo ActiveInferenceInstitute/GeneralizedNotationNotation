@@ -6,12 +6,12 @@ using the comprehensive GNN parsing system for visualization purposes.
 """
 
 import logging
-from pathlib import Path
-from typing import Dict, Any, Optional
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional
 
 # Import the GNN parsing system
-from gnn.parsers import GNNParsingSystem, GNNFormat
+from gnn.parsers import GNNFormat, GNNParsingSystem
 
 logger = logging.getLogger(__name__)
 
@@ -269,8 +269,8 @@ def extract_visualization_data(target_dir: "Path | str", output_dir: "Path | str
     Returns:
         Dictionary with extraction results
     """
-    from pathlib import Path
     import json
+    from pathlib import Path
 
     target_dir = Path(target_dir)
     output_dir = Path(output_dir)

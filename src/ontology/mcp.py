@@ -5,17 +5,13 @@ Exposes GNN ontology tools: term validation, ontology mapping,
 annotation extraction, and ontology report generation through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Union
 import logging
+from pathlib import Path
+from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
 from . import process_ontology, validate_ontology_terms
-
-
-
-
 
 
 def process_ontology_mcp(target_directory: str, output_directory: str,

@@ -8,6 +8,7 @@ This module provides recovery implementations when core modules are not availabl
 import logging
 from pathlib import Path
 
+
 class _DefaultStepArgs:
     """Default pipeline step arguments returned by RecoveryArgumentParser."""
 

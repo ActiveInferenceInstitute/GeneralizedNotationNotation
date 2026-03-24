@@ -1,24 +1,25 @@
 """Comprehensive tests for GNN utility modules."""
 
-import pytest
 import logging
 import os
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 # Import utility functions/classes
 try:
-    from utils.path_utils import get_relative_path_if_possible
-    from utils.logging_utils import PipelineLogger, setup_step_logging
-    from utils.config_loader import GNNPipelineConfig, load_config
     from utils.argument_utils import ArgumentParser
+    from utils.config_loader import GNNPipelineConfig, load_config
+    from utils.logging_utils import PipelineLogger, setup_step_logging
+    from utils.path_utils import get_relative_path_if_possible
 except ImportError:
     # Adjust for test context
     try:
-        from src.utils.path_utils import get_relative_path_if_possible
-        from src.utils.logging_utils import PipelineLogger, setup_step_logging
-        from src.utils.config_loader import GNNPipelineConfig, load_config
         from src.utils.argument_utils import ArgumentParser
+        from src.utils.config_loader import GNNPipelineConfig, load_config
+        from src.utils.logging_utils import PipelineLogger, setup_step_logging
+        from src.utils.path_utils import get_relative_path_if_possible
     except ImportError:
         pass
 

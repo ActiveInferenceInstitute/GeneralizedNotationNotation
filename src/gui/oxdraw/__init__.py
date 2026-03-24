@@ -15,19 +15,16 @@ Public API:
 - mermaid_to_gnn: parse Mermaid back to GNN
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional
 import logging
+from pathlib import Path
+from typing import Any, Dict, Optional
+
+from .mermaid_converter import gnn_to_mermaid
+from .mermaid_parser import mermaid_to_gnn
 
 # Import core oxdraw functions
 from .processor import process_oxdraw
-from .mermaid_converter import gnn_to_mermaid
-from .mermaid_parser import mermaid_to_gnn
-from .utils import (
-    infer_node_shape,
-    infer_edge_style,
-    validate_mermaid_syntax
-)
+from .utils import infer_edge_style, infer_node_shape, validate_mermaid_syntax
 
 
 def get_oxdraw_info() -> Dict[str, Any]:

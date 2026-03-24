@@ -14,17 +14,17 @@ Features:
 - Compile D2 files to SVG/PNG/PDF formats
 """
 
-import logging
 import json
+import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import shutil
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import tempfile
-from pathlib import Path
-from typing import Dict, List, Optional, Any
+import time
 from dataclasses import dataclass, field
 from datetime import datetime
-import time
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Try to import numpy for matrix operations
 try:
@@ -206,7 +206,6 @@ class D2Visualizer:
         # Identify POMDP components
         matrices = {}
         vectors = {}
-        states = {}
 
         for var_name, var_info in state_space.items():
             dims = var_info.get("dimensions", [])
@@ -771,7 +770,7 @@ Active Inference Free Energy Principle: {
     ) -> str:
         """Format variable label for D2 display"""
         dims = var_info.get("dimensions", [])
-        dtype = var_info.get("type", "")
+        var_info.get("type", "")
         concept = annotations.get(var_name, "")
 
         dims_str = "×".join(map(str, dims)) if dims else ""

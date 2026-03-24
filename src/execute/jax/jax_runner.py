@@ -10,10 +10,10 @@ Discovers and runs JAX-generated scripts, manages device selection, logs hardwar
 """
 import logging
 import os
-import sys
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import sys
 from pathlib import Path
-from typing import List, Union, Optional, Any
+from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 

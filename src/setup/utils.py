@@ -5,9 +5,9 @@ Setup Utils module for GNN Processing Pipeline.
 This module provides setup utility functions.
 """
 
-from typing import Dict, List, Any
 import logging
 from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

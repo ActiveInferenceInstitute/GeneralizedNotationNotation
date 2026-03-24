@@ -8,36 +8,36 @@ exposes them to MCP-compatible clients via stdio or HTTP transport.
 """
 
 import importlib
-import sys
-from pathlib import Path
 import logging
-import time
+import sys
 import threading
-from typing import Dict, List, Any, Callable, Optional, Tuple
-from contextlib import contextmanager
+import time
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 # Configure logging
 logger = logging.getLogger("mcp")
 
 # --- Import MCP Exceptions from dedicated module ---
 from .exceptions import (
-    MCPToolNotFoundError,
-    MCPResourceNotFoundError,
     MCPInvalidParamsError,
-    MCPToolExecutionError,
+    MCPResourceNotFoundError,
     MCPSDKNotFoundError,
+    MCPToolExecutionError,
+    MCPToolNotFoundError,
     MCPValidationError,
 )
 
 # --- Enhanced MCP Data Structures (imported from models.py) ---
 from .models import (
-    MCPTool,
-    MCPResource,
     MCPModuleInfo,
     MCPPerformanceMetrics,
+    MCPResource,
     MCPSDKStatus,
+    MCPTool,
 )
 
 # Global SDK status instance
@@ -474,7 +474,7 @@ class MCP:
 
             if name in self.tools:
                 # Check if this is a duplicate registration from the same module
-                existing_tool = self.tools[name]
+                self.tools[name]
                 # If it's from the same module/registration context, skip it silently
                 # If it's from a different source, log a warning but allow overwriting
                 # This reduces noise from multiple registration attempts

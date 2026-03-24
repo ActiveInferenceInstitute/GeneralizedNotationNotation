@@ -58,7 +58,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 
 # Import module functions
 try:
-    from setup import setup_uv_environment, setup_complete_environment, install_optional_package_group
+    from setup import (
+        install_optional_package_group,
+        setup_complete_environment,
+        setup_uv_environment,
+    )
     from setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
 except ImportError:
     SETUP_DEFAULT_PIPELINE_EXTRAS = ()  # type: ignore[misc,assignment]

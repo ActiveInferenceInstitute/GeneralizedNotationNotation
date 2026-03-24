@@ -5,18 +5,14 @@ Exposes website generation and inspection tools through MCP with
 full typed schemas and domain-specific functionality.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-from .renderer import process_website
 from .generator import generate_website as _generate_website
-
-
-
-
+from .renderer import process_website
 
 
 def process_website_mcp(target_directory: str, output_directory: str,
@@ -180,7 +176,7 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
         Dictionary with version, features, supported formats, and MCP tool list.
     """
     try:
-        from . import __version__, FEATURES, SUPPORTED_FILE_TYPES
+        from . import FEATURES, SUPPORTED_FILE_TYPES, __version__
         return {
             "success": True,
             "version": __version__,

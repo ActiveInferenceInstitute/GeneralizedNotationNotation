@@ -7,8 +7,8 @@ that other formats can use as a model.
 """
 
 import ast
-from typing import Any, Optional
 import logging
+from typing import Any, Optional
 
 from .common import (
     Parameter,

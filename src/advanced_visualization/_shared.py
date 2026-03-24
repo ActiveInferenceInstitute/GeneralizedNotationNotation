@@ -8,9 +8,9 @@ avoid circular imports between processor and sub-modules.
 
 import json
 import logging
-from pathlib import Path
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 try:
     import numpy as np
@@ -39,7 +39,9 @@ try:
     from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
 except ImportError:
     try:
-        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+        from src.visualization.matrix_visualizer import (
+            MatrixVisualizer as _MatrixVisualizer,
+        )
     except ImportError:
         _MatrixVisualizer = None  # type: ignore[assignment,misc]
 

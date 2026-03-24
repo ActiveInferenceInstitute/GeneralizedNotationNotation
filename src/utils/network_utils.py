@@ -5,13 +5,14 @@ This module provides network-related utilities for API requests,
 batch operations, and network timing measurements.
 """
 
-import time
 import logging
+import time
+
 try:
     import httpx
 except ImportError:
     httpx = None  # type: ignore[assignment]
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

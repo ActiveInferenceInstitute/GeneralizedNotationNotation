@@ -6,12 +6,13 @@ This module provides the main audio processing functionality.
 """
 
 from __future__ import annotations
-from pathlib import Path
-from typing import Dict, Any, List
-import logging
+
 import json
-from datetime import datetime
+import logging
 import re
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
 # Optional numpy import with recovery
 try:
@@ -23,22 +24,23 @@ except ImportError:
 
 try:
     from utils.logging.logging_utils import (
+        log_step_error,
         log_step_start,
         log_step_success,
-        log_step_error,
     )
 except ImportError:
     from src.utils.logging.logging_utils import (
+        log_step_error,
         log_step_start,
         log_step_success,
-        log_step_error
     )
 from .generator import (
-    generate_tonal_representation,
-    generate_rhythmic_representation,
     generate_ambient_representation,
-    generate_sonification_audio
+    generate_rhythmic_representation,
+    generate_sonification_audio,
+    generate_tonal_representation,
 )
+
 
 def process_audio(
     target_dir: Path,

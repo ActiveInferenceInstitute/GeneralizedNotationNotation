@@ -6,21 +6,21 @@ This module tests the package detection logic that distinguishes between
 the correct PyMDP package (inferactively-pymdp) and wrong variants.
 """
 
-import pytest
-from pathlib import Path
-from typing import Any
 import sys
+from pathlib import Path
+
+import pytest
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from execute.pymdp.package_detector import (
-        detect_pymdp_installation,
-        is_correct_pymdp_package,
-        get_pymdp_installation_instructions,
         attempt_pymdp_auto_install,
-        validate_pymdp_for_execution
+        detect_pymdp_installation,
+        get_pymdp_installation_instructions,
+        is_correct_pymdp_package,
+        validate_pymdp_for_execution,
     )
     PACKAGE_DETECTOR_AVAILABLE = True
 except ImportError as e:

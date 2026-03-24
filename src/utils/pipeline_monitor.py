@@ -6,16 +6,17 @@ This module provides comprehensive monitoring capabilities for the GNN pipeline,
 including health checks, performance tracking, failure detection, and alerting.
 """
 
-import time
+import json
 import logging
 import threading
-import json
-from pathlib import Path
-from typing import Dict, Any, List, Optional, Callable
+import time
+from collections import deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from collections import deque
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
+
 
 class HealthStatus(Enum):
     """Health status levels."""
@@ -284,7 +285,7 @@ class PipelineMonitor:
 
     def _check_performance_alerts(self, step_name: str, duration: float):
         """Check for performance-related alerts."""
-        metrics = self.step_metrics[step_name]
+        self.step_metrics[step_name]
 
         # Check against baseline if available
         if step_name in self.performance_baselines:

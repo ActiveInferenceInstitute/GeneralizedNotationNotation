@@ -16,11 +16,11 @@ Features extracted from GNN structure:
 - model_family_encoded: integer encoding of model type
 """
 
+import json
 import logging
 import re
-import json
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -266,8 +266,8 @@ def process_ml_integration(
 
         # Check for sklearn availability
         try:
-            import sklearn  # noqa: F401
             import numpy  # noqa: F401
+            import sklearn  # noqa: F401
             has_sklearn = True
             ml_results["framework_status"]["sklearn"] = "available"
         except ImportError:
@@ -348,11 +348,12 @@ def _train_models(
     verbose: bool
 ) -> None:
     """Train Decision Tree and Random Forest on extracted GNN features."""
-    import numpy as np
     import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
-    from sklearn.tree import DecisionTreeClassifier
+
+    import numpy as np
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import cross_val_score
+    from sklearn.tree import DecisionTreeClassifier
 
     # Build feature matrix using real GNN features
     numeric_feature_names = [

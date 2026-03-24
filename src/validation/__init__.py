@@ -15,12 +15,14 @@ FEATURES = {
 }
 
 from pathlib import Path
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
+
+from .consistency_checker import ConsistencyChecker, check_consistency
+from .performance_profiler import PerformanceProfiler, profile_performance
 
 # Import core validation functionality
 from .semantic_validator import SemanticValidator, process_semantic_validation
-from .performance_profiler import PerformanceProfiler, profile_performance
-from .consistency_checker import ConsistencyChecker, check_consistency
+
 
 def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool:
     """
@@ -40,8 +42,8 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
     Returns:
         True if validation succeeded, False otherwise
     """
-    import json
     import datetime
+    import json
     import logging
     from pathlib import Path
 

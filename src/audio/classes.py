@@ -7,7 +7,7 @@ This module provides audio-related classes.
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +88,8 @@ class AudioGenerator:
             if path.exists():
                 suffix = path.suffix.lower()
                 if suffix == '.wav':
-                    import wave
                     import contextlib
+                    import wave
                     try:
                         with contextlib.closing(wave.open(str(path), 'r')) as f:
                             frames = f.getnframes()
@@ -135,7 +135,10 @@ class SAPFGNNProcessor:
         """Process GNN content for audio generation."""
         try:
             # Extract variables and connections
-            from .processor import extract_variables_for_audio, extract_connections_for_audio
+            from .processor import (
+                extract_connections_for_audio,
+                extract_variables_for_audio,
+            )
             variables = extract_variables_for_audio(gnn_content)
             connections = extract_connections_for_audio(gnn_content)
 
@@ -156,9 +159,9 @@ class SAPFGNNProcessor:
         try:
             # Generate different audio representations
             from .generator import (
-                generate_tonal_representation,
+                generate_ambient_representation,
                 generate_rhythmic_representation,
-                generate_ambient_representation
+                generate_tonal_representation,
             )
 
             tonal_audio = generate_tonal_representation(

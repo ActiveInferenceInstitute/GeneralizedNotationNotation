@@ -186,14 +186,15 @@ def test_pipeline_module_completeness():
 def test_pipeline_module_performance():
     """Test pipeline module performance characteristics."""
     try:
-        from pipeline import PipelineOrchestrator
         import time
+
+        from pipeline import PipelineOrchestrator
 
         orchestrator = PipelineOrchestrator()
         start_time = time.time()
 
         # Test pipeline performance
-        result = orchestrator.get_pipeline_steps()
+        orchestrator.get_pipeline_steps()
 
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds

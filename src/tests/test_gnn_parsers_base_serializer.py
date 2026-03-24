@@ -1,11 +1,19 @@
 """Tests for BaseGNNSerializer shared utility methods."""
 import json
+
 import pytest
+
 from gnn.parsers.base_serializer import BaseGNNSerializer
 from gnn.parsers.common import (
+    Connection,
+    ConnectionType,
+    DataType,
     GNNInternalRepresentation,
-    Variable, Connection, Parameter, OntologyMapping,
-    TimeSpecification, VariableType, DataType, ConnectionType,
+    OntologyMapping,
+    Parameter,
+    TimeSpecification,
+    Variable,
+    VariableType,
 )
 
 

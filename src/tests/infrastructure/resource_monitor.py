@@ -5,8 +5,8 @@ This module provides system resource monitoring during test execution.
 """
 
 import logging
-import time
 import threading
+import time
 from typing import Dict
 
 # psutil is optional; tests should not fail to import if it's missing

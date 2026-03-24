@@ -8,14 +8,14 @@ including caching, parallel processing, and intelligent data sampling.
 
 import hashlib
 import json
-import time
-import multiprocessing
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Callable, Tuple
-from concurrent.futures import ThreadPoolExecutor, as_completed
 import logging
+import multiprocessing
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +168,7 @@ class DataSampler:
 
         # Sample edges (only those connecting sampled nodes)
         if 'edges' in data and '_sampling_applied' in sampled_data:
-            sampled_node_ids = set(node.get('id') for node in sampled_data['nodes'])
+            sampled_node_ids = {node.get('id') for node in sampled_data['nodes']}
             sampled_edges = [edge for edge in data['edges']
                            if edge.get('source') in sampled_node_ids and
                               edge.get('target') in sampled_node_ids]
@@ -404,11 +404,10 @@ def monitor_visualization_performance(func: Callable) -> Callable:
         try:
             result = func(*args, **kwargs)
             success = True
-            error = None
         except Exception as e:
             result = None
             success = False
-            error = str(e)
+            str(e)
             raise
         finally:
             end_time = time.time()

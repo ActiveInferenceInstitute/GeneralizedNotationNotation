@@ -13,9 +13,10 @@ This module provides comprehensive testing for:
 - utils.script_validator
 """
 
-import pytest
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
+import pytest
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.safe_to_fail, pytest.mark.fast]
@@ -320,7 +321,10 @@ class TestUtilsResourceManager:
     def test_resource_manager_class(self) -> None:
         """Test resource management functions."""
         try:
-            from src.utils.resource_manager import get_system_info, get_current_memory_usage
+            from src.utils.resource_manager import (
+                get_current_memory_usage,
+                get_system_info,
+            )
 
             # Test get_current_memory_usage
             memory = get_current_memory_usage()
@@ -472,7 +476,7 @@ def test_pipeline_infrastructure_completeness() -> None:
     for package, modules in expected_modules:
         for module_name in modules:
             try:
-                module = __import__(f'{package}.{module_name}', fromlist=[module_name])
+                __import__(f'{package}.{module_name}', fromlist=[module_name])
                 available_modules.append(f"{package}.{module_name}")
             except ImportError:
                 pass

@@ -5,9 +5,9 @@ Exposes GNN third-party system integration tools: ActiveInference.jl export,
 pymdp integration, Pyro/Stan adapters, and integration status through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 

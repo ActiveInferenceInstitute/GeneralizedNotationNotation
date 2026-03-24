@@ -6,8 +6,8 @@ This script tests all execution components to ensure they work properly
 with the enhanced error handling and dependency checking.
 """
 
-import sys
 import logging
+import sys
 from pathlib import Path
 
 # Add src to path for imports
@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 from execute.executor import execute_rendered_simulators
 from execute.pymdp.pymdp_runner import validate_and_clean_pymdp_script
 
+
 def find_pymdp_scripts(rendered_simulators_dir):
     from pathlib import Path
     base = Path(rendered_simulators_dir)
@@ -25,9 +26,10 @@ def find_pymdp_scripts(rendered_simulators_dir):
     if not pymdp_dir.exists():
         return []
     return [p for p in pymdp_dir.rglob("*.py") if not any(part.startswith('__') for part in p.parts)]
-from execute.jax.jax_runner import is_jax_available
 from execute.activeinference_jl.activeinference_runner import is_julia_available
+from execute.jax.jax_runner import is_jax_available
 from utils.logging.logging_utils import setup_step_logging
+
 
 def test_dependency_checking():
     """Test dependency checking for all execution environments."""
@@ -92,7 +94,9 @@ def test_execution_components():
 
     # Test ActiveInference.jl script discovery
     logger.info("  Testing ActiveInference.jl script discovery...")
-    from execute.activeinference_jl.activeinference_runner import find_activeinference_scripts
+    from execute.activeinference_jl.activeinference_runner import (
+        find_activeinference_scripts,
+    )
     activeinference_scripts = find_activeinference_scripts("../output")
     logger.info(f"    Found {len(activeinference_scripts)} ActiveInference.jl scripts")
 

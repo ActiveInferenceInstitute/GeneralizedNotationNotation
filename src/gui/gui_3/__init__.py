@@ -8,6 +8,7 @@ import logging
 from pathlib import Path
 from typing import Any, Dict
 
+
 def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:
     """
     Launch GUI 3: State Space Design Studio

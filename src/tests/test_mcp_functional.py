@@ -14,15 +14,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from mcp.exceptions import (
+    MCPInvalidParamsError,
+    MCPToolNotFoundError,
+)
 from mcp.mcp import (
     MCP,
     MCPTool,
 )
 from mcp.server import MCPServer
-from mcp.exceptions import (
-    MCPToolNotFoundError,
-    MCPInvalidParamsError,
-)
 
 
 @pytest.fixture
@@ -135,7 +135,8 @@ class TestMCPResourceRegistration:
     @pytest.mark.unit
     def test_register_resource(self, mcp_instance):
         """Should register a resource with URI template."""
-        retriever = lambda uri: {"data": "test"}
+        def retriever(uri):
+            return {"data": "test"}
         mcp_instance.register_resource(
             uri_template="gnn://models/{model_name}",
             retriever=retriever,
@@ -146,7 +147,8 @@ class TestMCPResourceRegistration:
     @pytest.mark.unit
     def test_resource_metadata(self, mcp_instance):
         """Should store resource metadata correctly."""
-        retriever = lambda uri: {}
+        def retriever(uri):
+            return {}
         mcp_instance.register_resource(
             uri_template="test://resource",
             retriever=retriever,

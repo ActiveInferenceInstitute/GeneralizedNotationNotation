@@ -4,30 +4,31 @@ Top-level sapf package shim that re-exports real SAPF functionality from
 `import sapf` without duplicating code.
 """
 import logging
+
 _logger = logging.getLogger(__name__)
 try:
     # Prefer explicit absolute import of the package to support both `import sapf`
     # and `import src.sapf` invocation contexts during tests.
     from audio.sapf import (
         convert_gnn_to_sapf,
-        generate_sapf_audio,
-        generate_audio_from_sapf,
-        validate_sapf_code,
-        process_gnn_to_audio,
         create_sapf_visualization,
+        generate_audio_from_sapf,
+        generate_sapf_audio,
         generate_sapf_report,
+        process_gnn_to_audio,
+        validate_sapf_code,
     )
 except Exception:
     # Fall back to relative import if running as package under `src.` namespace
     # We need to go up one level to 'src', then down to 'audio.sapf'
     from ..audio.sapf import (
         convert_gnn_to_sapf,
-        generate_sapf_audio,
-        generate_audio_from_sapf,
-        validate_sapf_code,
-        process_gnn_to_audio,
         create_sapf_visualization,
+        generate_audio_from_sapf,
+        generate_sapf_audio,
         generate_sapf_report,
+        process_gnn_to_audio,
+        validate_sapf_code,
     )
 
 

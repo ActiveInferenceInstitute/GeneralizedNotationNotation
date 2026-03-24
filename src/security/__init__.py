@@ -15,14 +15,13 @@ FEATURES = {
 
 # Import processor functions - single source of truth
 from .processor import (
-    process_security,
-    perform_security_check,
+    calculate_security_score,
     check_vulnerabilities,
     generate_security_recommendations,
-    calculate_security_score,
-    generate_security_summary
+    generate_security_summary,
+    perform_security_check,
+    process_security,
 )
-
 
 __all__ = [
     'process_security',

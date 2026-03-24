@@ -5,10 +5,11 @@ Test Report Integration - Integration tests for report module with pipeline.
 Tests the integration between report generation and pipeline execution.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -20,10 +21,11 @@ class TestReportPipelineIntegration:
     @pytest.mark.integration
     def test_report_receives_pipeline_data(self, tmp_path: Any) -> None:
         """Test that report module correctly receives pipeline data."""
-        from report import get_module_info
         import logging
 
-        logger = logging.getLogger("test_report")
+        from report import get_module_info
+
+        logging.getLogger("test_report")
 
         # Get module info to verify availability
         info = get_module_info()
@@ -32,8 +34,9 @@ class TestReportPipelineIntegration:
     @pytest.mark.integration
     def test_report_processes_pipeline_outputs(self, tmp_path: Any) -> None:
         """Test report generation from pipeline output directories."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         logger = logging.getLogger("test_report")
 
@@ -61,8 +64,9 @@ class TestReportPipelineIntegration:
     @pytest.mark.integration
     def test_report_with_visualization_outputs(self, tmp_path: Any) -> None:
         """Test report includes visualization outputs."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         logger = logging.getLogger("test_report")
 
@@ -70,8 +74,9 @@ class TestReportPipelineIntegration:
         viz_dir = tmp_path / "output" / "8_visualization_output"
         viz_dir.mkdir(parents=True, exist_ok=True)
 
-        import matplotlib.pyplot as plt
         import io
+
+        import matplotlib.pyplot as plt
 
         # Determine genuine minimal PNG bytes
         fig, ax = plt.subplots(figsize=(1,1))
@@ -117,8 +122,9 @@ class TestReportGNNIntegration:
     @pytest.mark.integration
     def test_report_includes_gnn_metrics(self, sample_gnn_files: Any, tmp_path: Any) -> None:
         """Test that reports include GNN-specific metrics."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -177,9 +183,10 @@ class TestReportExportIntegration:
     @pytest.mark.integration
     def test_report_exports_multiple_formats(self, tmp_path: Any) -> None:
         """Test report exports to multiple formats simultaneously."""
-        from report import generate_comprehensive_report
-        import logging
         import json
+        import logging
+
+        from report import generate_comprehensive_report
 
         logger = logging.getLogger("test_report")
 
@@ -208,8 +215,9 @@ class TestReportExportIntegration:
     @pytest.mark.integration
     def test_report_respects_output_directory(self, tmp_path: Any) -> None:
         """Test report outputs go to specified directory."""
-        from report import process_report
         import logging
+
+        from report import process_report
 
         logger = logging.getLogger("test_report")
 
@@ -235,10 +243,10 @@ class TestReportModuleIntegration:
     def test_report_module_exports(self) -> None:
         """Test that report module exports expected functions."""
         from report import (
-            process_report,
-            generate_comprehensive_report,
+            ReportFormatter,
             ReportGenerator,
-            ReportFormatter
+            generate_comprehensive_report,
+            process_report,
         )
 
         # All imports should succeed

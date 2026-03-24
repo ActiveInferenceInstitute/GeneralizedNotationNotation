@@ -24,11 +24,11 @@ All tests execute real methods and subprocesses; no mocking is used.
 import pytest
 
 pytestmark = pytest.mark.pipeline
-import sys
 import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
-from pathlib import Path
+import sys
 import tempfile
+from pathlib import Path
 
 # Test markers
 pytestmark = [pytest.mark.main_orchestrator]
@@ -221,8 +221,9 @@ class TestEndToEndIntegration:
 
     def test_pipeline_summary_validation(self) -> None:
         """Test pipeline summary structure validation."""
-        from main import validate_pipeline_summary
         import logging
+
+        from main import validate_pipeline_summary
 
         # Create a logger for testing
         logger = logging.getLogger("test_logger")
@@ -275,14 +276,14 @@ class TestEndToEndIntegration:
         has_warning = bool(warning_pattern.search(combined_output))
 
         # Should detect warnings
-        assert has_warning == True
+        assert has_warning
 
         # Test without warnings
         combined_output_no_warning = "INFO: Processing completed\nDEBUG: File processed successfully"
         has_warning = bool(warning_pattern.search(combined_output_no_warning))
 
         # Should not detect warnings
-        assert has_warning == False
+        assert not has_warning
 
     def test_pipeline_summary_step_numbering(self) -> None:
         """Test that pipeline summary uses correct step numbering."""
@@ -318,8 +319,9 @@ class TestEndToEndIntegration:
 
     def test_pipeline_summary_validation_comprehensive(self) -> None:
         """Test comprehensive pipeline summary validation."""
-        from main import validate_pipeline_summary
         import logging
+
+        from main import validate_pipeline_summary
 
         # Create a logger for testing
         logger = logging.getLogger("test_logger")
@@ -375,18 +377,6 @@ class TestEndToEndIntegration:
         # is working correctly in the main pipeline orchestrator
 
         # Sample pipeline steps for testing
-        sample_steps = [
-            ("0_template.py", "Template initialization"),
-            ("1_setup.py", "Environment setup"),
-            ("2_tests.py", "Test suite execution"),
-            ("3_gnn.py", "GNN file processing"),
-            ("4_model_registry.py", "Model registry"),
-            ("5_type_checker.py", "Type checking"),
-            ("6_validation.py", "Validation"),
-            ("7_export.py", "Multi-format export"),
-            ("8_visualization.py", "Visualization"),
-            ("9_advanced_viz.py", "Advanced visualization"),
-        ]
 
         # Test that dependency resolution works
         # 5_type_checker.py should depend on 3_gnn.py
@@ -462,41 +452,3 @@ class TestEndToEndIntegration:
     def test_enhanced_pipeline_summary_structure(self) -> None:
         """Test that pipeline summary has enhanced structure with correct step numbering."""
         # Test the pipeline summary structure improvements
-        summary = {
-            "start_time": "2025-01-01T00:00:00",
-            "arguments": {"target_dir": "input"},
-            "steps": [
-                {
-                    "status": "SUCCESS",
-                    "step_number": 1,  # Should be actual step number (3_gnn.py -> 1)
-                    "script_name": "3_gnn.py",
-                    "description": "GNN file processing",
-                    "exit_code": 0,
-                    "memory_usage_mb": 29.5,
-                    "peak_memory_mb": 29.5,
-                    "duration_seconds": 0.077
-                },
-                {
-                    "status": "SUCCESS_WITH_WARNINGS",
-                    "step_number": 2,  # Should be actual step number (5_type_checker.py -> 2)
-                    "script_name": "5_type_checker.py",
-                    "description": "Type checking",
-                    "exit_code": 0,
-                    "memory_usage_mb": 28.5,
-                    "peak_memory_mb": 28.5,
-                    "duration_seconds": 0.046
-                }
-            ],
-            "end_time": "2025-01-01T00:01:00",
-            "overall_status": "SUCCESS",
-            "total_duration_seconds": 60.0,
-            "environment_info": {"python_version": "3.11"},
-            "performance_summary": {
-                "peak_memory_mb": 29.625,
-                "total_steps": 2,  # Should reflect actual executed steps
-                "failed_steps": 0,
-                "critical_failures": 0,
-                "successful_steps": 2,
-                "warnings": 1
-            }
-        }

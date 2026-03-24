@@ -1,5 +1,6 @@
-from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class ASN1Serializer(BaseGNNSerializer):
     """Serializer for ASN.1 format."""

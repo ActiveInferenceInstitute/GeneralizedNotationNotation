@@ -1,8 +1,10 @@
 """Tests for JSONGNNParser."""
 import json
+
 import pytest
+
+from gnn.parsers.common import ConnectionType, DataType, VariableType
 from gnn.parsers.json_parser import JSONGNNParser
-from gnn.parsers.common import VariableType, DataType, ConnectionType
 
 
 @pytest.fixture

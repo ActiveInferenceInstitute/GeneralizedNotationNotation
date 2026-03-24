@@ -1,7 +1,9 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Any, List
 import json
+from abc import ABC, abstractmethod
+from typing import Any, Dict, List
+
 from .common import GNNInternalRepresentation
+
 
 class BaseGNNSerializer(ABC):
     """Base class for all GNN serializers with common utility methods."""

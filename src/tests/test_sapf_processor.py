@@ -1,6 +1,5 @@
 """Tests for the SAPF audio bridge module."""
 
-from typing import Any, Dict, List
 from unittest.mock import patch
 
 # Import the SAPF shim

@@ -14,8 +14,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pytest
 
-from gnn.parsers.system import GNNParsingSystem, PARSER_REGISTRY, SERIALIZER_REGISTRY
-from gnn.parsers.common import ParseError, GNNInternalRepresentation
+from gnn.parsers.system import PARSER_REGISTRY, GNNParsingSystem
 from gnn.parsers.unified_parser import GNNFormat, ParseResult
 
 # Minimal valid GNN markdown content

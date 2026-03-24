@@ -35,52 +35,52 @@ __all__ = [
 
 import json
 import logging
-from pathlib import Path
-from typing import Dict, Any, Optional
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional
+
 import numpy as np
 
 logger = logging.getLogger(__name__)
 
 # Re-export from trace_analysis
-from .trace_analysis import (
-    analyze_simulation_traces,
-    analyze_free_energy,
-    analyze_policy_convergence,
-    analyze_state_distributions,
-    compare_framework_results,
-)
-
 # Re-export from framework_extractors
 from .framework_extractors import (
+    extract_activeinference_jl_data,
+    extract_discopy_data,
+    extract_jax_data,
     extract_pymdp_data,
     extract_rxinfer_data,
-    extract_activeinference_jl_data,
-    extract_jax_data,
-    extract_discopy_data,
 )
 
 # Re-export from math_utils
 from .math_utils import (
-    compute_shannon_entropy,
-    compute_kl_divergence,
-    compute_variational_free_energy,
+    analyze_active_inference_metrics,
     compute_expected_free_energy,
     compute_information_gain,
-    analyze_active_inference_metrics,
+    compute_kl_divergence,
+    compute_shannon_entropy,
+    compute_variational_free_energy,
+)
+from .trace_analysis import (
+    analyze_free_energy,
+    analyze_policy_convergence,
+    analyze_simulation_traces,
+    analyze_state_distributions,
+    compare_framework_results,
 )
 
 # Re-export from visualizations
 from .visualizations import (
-    plot_belief_evolution,
     animate_belief_evolution,
-    visualize_all_framework_outputs,
-    generate_belief_heatmaps,
     generate_action_analysis,
+    generate_belief_heatmaps,
+    generate_cross_framework_comparison,
     generate_free_energy_plots,
     generate_observation_analysis,
-    generate_cross_framework_comparison,
     generate_unified_framework_dashboard,
+    plot_belief_evolution,
+    visualize_all_framework_outputs,
 )
 
 

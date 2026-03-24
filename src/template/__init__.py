@@ -31,18 +31,16 @@ FEATURES = {
 
 # Export main functionality
 from .processor import (
-    process_template_standardized,
-    process_single_file,
-    validate_file,
+    demonstrate_utility_patterns,
     generate_correlation_id,
+    process_single_file,
+    process_template_standardized,
     safe_template_execution,
-    demonstrate_utility_patterns
+    validate_file,
 )
 
 # Import utility functions
-from .utils import (
-    get_version_info
-)
+from .utils import get_version_info
 
 # Version information
 VERSION_INFO = {

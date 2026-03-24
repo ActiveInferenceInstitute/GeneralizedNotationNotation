@@ -1,6 +1,4 @@
-import pytest
-from typing import Any, Dict, List
-
+from typing import Any
 
 
 class TestTemplateModule:
@@ -9,12 +7,12 @@ class TestTemplateModule:
     def test_module_imports(self) -> None:
         """Test that template module can be imported."""
         from template import (
-            process_template_standardized,
-            process_single_file,
-            validate_file,
-            generate_correlation_id,
             FEATURES,
-            __version__
+            __version__,
+            generate_correlation_id,
+            process_single_file,
+            process_template_standardized,
+            validate_file,
         )
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
@@ -138,8 +136,9 @@ Static
 
     def test_process_template_standardized(self, safe_filesystem: Any) -> None:
         """Test standardized template processing."""
-        from template import process_template_standardized
         import logging
+
+        from template import process_template_standardized
 
         gnn_content = """# Standardized Test
 
@@ -149,7 +148,7 @@ state[10]
 ## Parameters
 alpha = 0.5
 """
-        test_file = safe_filesystem.create_file("standard.md", gnn_content)
+        safe_filesystem.create_file("standard.md", gnn_content)
         output_dir = safe_filesystem.create_dir("template_output")
         logger = logging.getLogger("test_template_standardized")
 
@@ -177,8 +176,9 @@ class TestSafeExecution:
 
     def test_safe_template_execution_success(self, safe_filesystem: Any) -> None:
         """Test safe execution context manager."""
-        from template import safe_template_execution, generate_correlation_id
         import logging
+
+        from template import generate_correlation_id, safe_template_execution
 
         logger = logging.getLogger("test_safe_exec")
         correlation_id = generate_correlation_id()
@@ -191,8 +191,9 @@ class TestSafeExecution:
 
     def test_safe_template_execution_with_error(self, safe_filesystem: Any) -> None:
         """Test safe execution handles errors gracefully."""
-        from template import safe_template_execution, generate_correlation_id
         import logging
+
+        from template import generate_correlation_id, safe_template_execution
 
         logger = logging.getLogger("test_safe_exec_error")
         correlation_id = generate_correlation_id()
@@ -211,8 +212,9 @@ class TestUtilityPatterns:
 
     def test_demonstrate_utility_patterns(self) -> None:
         """Test utility pattern demonstration function."""
-        from template import demonstrate_utility_patterns
         import logging
+
+        from template import demonstrate_utility_patterns
 
         # Should be callable
         assert callable(demonstrate_utility_patterns)

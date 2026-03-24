@@ -9,12 +9,17 @@ Date: 2025-01-11
 License: MIT
 """
 
-import re
 import logging
-from typing import Dict, List, Any, Optional
+import re
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, VariableType, DataType
+    BaseGNNParser,
+    DataType,
+    GNNInternalRepresentation,
+    ParseResult,
+    Variable,
+    VariableType,
 )
 
 logger = logging.getLogger(__name__)
@@ -91,7 +96,14 @@ class LeanGNNParser(BaseGNNParser):
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
-            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            from .common import (
+                Connection,
+                ConnectionType,
+                DataType,
+                Parameter,
+                Variable,
+                VariableType,
+            )
 
             # Create model from embedded data
             model = GNNInternalRepresentation(
@@ -159,7 +171,7 @@ class LeanGNNParser(BaseGNNParser):
 
     def _parse_lean_content(self, content: str) -> GNNInternalRepresentation:
         """Parse the main Lean content."""
-        lines = content.split('\n')
+        content.split('\n')
 
         # Extract model name from structure or namespace
         model_name = self._extract_model_name(content)

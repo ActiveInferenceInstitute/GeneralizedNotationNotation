@@ -14,8 +14,8 @@ FEATURES = {
 }
 
 # Typing
-from typing import Optional, Union, Dict, Any, List
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 # Import numpy for type annotations
 try:
@@ -33,7 +33,12 @@ except Exception:
     process_matrix_visualization = None
 
 try:
-    from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization, generate_visualizations
+    from .visualizer import (
+        GNNVisualizer,
+        generate_graph_visualization,
+        generate_matrix_visualization,
+        generate_visualizations,
+    )
 except Exception:
     # Recovery for tests
 
@@ -74,11 +79,11 @@ except Exception:
 
 # Import processor functions
 from .processor import (
-    process_visualization,
-    process_single_gnn_file,
+    generate_matrix_visualizations,
     parse_gnn_content,
     parse_matrix_data,
-    generate_matrix_visualizations,
+    process_single_gnn_file,
+    process_visualization,
 )
 
 __version__ = "1.1.3"

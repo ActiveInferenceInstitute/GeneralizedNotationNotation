@@ -14,11 +14,21 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405 - GNN files are researcher-generated, not untrusted input
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Connection, Parameter, VariableType, DataType, ConnectionType,
-    Equation, TimeSpecification, OntologyMapping
+    BaseGNNParser,
+    Connection,
+    ConnectionType,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    OntologyMapping,
+    Parameter,
+    ParseResult,
+    TimeSpecification,
+    Variable,
+    VariableType,
 )
 
 logger = logging.getLogger(__name__)

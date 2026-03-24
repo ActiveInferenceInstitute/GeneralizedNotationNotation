@@ -6,21 +6,22 @@ This module provides comprehensive structured logging capabilities for the GNN p
 pipeline with correlation IDs, performance tracking, and multi-format output support.
 """
 
-import sys
-import logging
 import json
-import time
-import threading
-import uuid
-from enum import Enum
-from dataclasses import dataclass, field
-from typing import Dict, Any, List, Optional
-from contextlib import contextmanager
-from pathlib import Path
+import logging
 import os
 import platform
-import psutil
+import sys
+import threading
+import time
+import uuid
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from datetime import datetime
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import psutil
 
 
 class LogLevel(Enum):

@@ -5,7 +5,7 @@ Matrix Editor for GUI 2: Visual matrix editing and GNN template management
 from __future__ import annotations
 
 import re
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 
 def get_pomdp_template() -> str:

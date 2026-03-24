@@ -10,14 +10,14 @@ dependencies are not available.
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, Optional, Union, Tuple
+from typing import Any, Dict, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
 # Check for optional dependencies
 try:
-    from discopy import Diagram, Word, Cap, Cup
-    from discopy.quantum import Ket, Bra, X, Z, H
+    from discopy import Cap, Cup, Diagram, Word
+    from discopy.quantum import Bra, H, Ket, X, Z
     DISCOPY_AVAILABLE = True
     logger.debug("DisCoPy library available")
 except ImportError as e:

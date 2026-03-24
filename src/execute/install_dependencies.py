@@ -5,8 +5,8 @@ Dependency Installation Script for GNN Execution System
 This script installs missing dependencies for all execution environments.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import logging
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
 logger = logging.getLogger(__name__)
 

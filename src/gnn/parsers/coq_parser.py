@@ -9,12 +9,18 @@ Date: 2025-01-11
 License: MIT
 """
 
-import re
 import logging
-from typing import Dict, List, Any, Optional
+import re
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Parameter, VariableType, DataType,
+    BaseGNNParser,
+    DataType,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseResult,
+    Variable,
+    VariableType,
     extract_embedded_json_data,
 )
 
@@ -80,7 +86,14 @@ class CoqGNNParser(BaseGNNParser):
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
-            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            from .common import (
+                Connection,
+                ConnectionType,
+                DataType,
+                Parameter,
+                Variable,
+                VariableType,
+            )
 
             # Create model from embedded data
             model = GNNInternalRepresentation(

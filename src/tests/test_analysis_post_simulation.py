@@ -8,11 +8,10 @@ free energy analysis, policy convergence, state distributions, and cross-framewo
 comparison.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -25,21 +24,21 @@ except ImportError:
 pytestmark = pytest.mark.skipif(not HAS_NUMPY, reason="numpy required")
 
 from analysis.post_simulation import (
-    compute_shannon_entropy,
-    compute_kl_divergence,
-    compute_variational_free_energy,
-    compute_expected_free_energy,
-    compute_information_gain,
-    analyze_simulation_traces,
     analyze_free_energy,
     analyze_policy_convergence,
+    analyze_simulation_traces,
     analyze_state_distributions,
     compare_framework_results,
+    compute_expected_free_energy,
+    compute_information_gain,
+    compute_kl_divergence,
+    compute_shannon_entropy,
+    compute_variational_free_energy,
+    extract_activeinference_jl_data,
+    extract_discopy_data,
+    extract_jax_data,
     extract_pymdp_data,
     extract_rxinfer_data,
-    extract_jax_data,
-    extract_discopy_data,
-    extract_activeinference_jl_data,
 )
 
 
@@ -385,7 +384,7 @@ class TestAnalyzeFreeEnergy:
         """Should detect a decreasing free energy trend."""
         values = [10.0, 8.0, 6.0, 4.0, 2.0, 1.0]
         result = analyze_free_energy(values, "pymdp", "test")
-        assert result["free_energy_decreasing"] == True
+        assert result["free_energy_decreasing"]
         assert result["free_energy_trend"] < 0
 
     @pytest.mark.unit

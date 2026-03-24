@@ -15,21 +15,21 @@ Key Features:
 - Performance monitoring and metrics collection
 """
 import json
-import sys
 import logging
-import threading
 import queue
+import sys
+import threading
 import time
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
 
 # Import MCP
 try:
-    from . import mcp_instance, initialize, MCPError
+    from . import MCPError, initialize, mcp_instance
 except ImportError:
-    from mcp import mcp_instance, initialize, MCPError
+    from mcp import MCPError, initialize, mcp_instance
 
 class StdioServer:
     """

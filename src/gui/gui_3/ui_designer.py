@@ -61,12 +61,12 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                         )
 
                         with gr.Row():
-                            add_variable = gr.Button("➕ Add Variable", variant="primary")
-                            remove_variable = gr.Button("➖ Remove Selected", variant="secondary")
+                            gr.Button("➕ Add Variable", variant="primary")
+                            gr.Button("➖ Remove Selected", variant="secondary")
 
                     with gr.Column():
                         gr.Markdown("**Visual Designer:**")
-                        designer_output = gr.HTML(value=_generate_visual_designer_html())
+                        gr.HTML(value=_generate_visual_designer_html())
 
             # Tab 2: Ontology Editor
             with gr.TabItem("📚 Ontology"):
@@ -79,9 +79,9 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                 )
 
                 with gr.Row():
-                    ontology_var = gr.Textbox(label="Variable", placeholder="A")
-                    ontology_term = gr.Textbox(label="Ontology Term", placeholder="LikelihoodMatrix")
-                    add_ontology = gr.Button("Add Mapping", variant="primary")
+                    gr.Textbox(label="Variable", placeholder="A")
+                    gr.Textbox(label="Ontology Term", placeholder="LikelihoodMatrix")
+                    gr.Button("Add Mapping", variant="primary")
 
             # Tab 3: Connections
             with gr.TabItem("🔗 Connections"):
@@ -93,11 +93,11 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                     lines=8
                 )
 
-                connections_visual = gr.HTML(value=_generate_connections_html())
+                gr.HTML(value=_generate_connections_html())
 
                 with gr.Row():
-                    validate_connections = gr.Button("✓ Validate", variant="primary")
-                    auto_layout = gr.Button("🔄 Auto Layout", variant="secondary")
+                    gr.Button("✓ Validate", variant="primary")
+                    gr.Button("🔄 Auto Layout", variant="secondary")
 
             # Tab 4: Parameters
             with gr.TabItem("⚙️ Parameters"):

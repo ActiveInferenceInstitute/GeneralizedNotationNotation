@@ -15,9 +15,10 @@ to ensure 100% functionality and coverage. Each test validates:
 All tests execute real methods and file operations without mocking; tests may skip if optional backends are unavailable.
 """
 
-import pytest
 import logging
 from pathlib import Path
+
+import pytest
 
 # Test markers
 pytestmark = [pytest.mark.core, pytest.mark.safe_to_fail, pytest.mark.fast]
@@ -33,8 +34,11 @@ class TestGNNModuleComprehensive:
 		"""Test that GNN module can be imported and has expected structure."""
 		try:
 			from src.gnn import (
-				discover_gnn_files, parse_gnn_file, validate_gnn_structure,
-				process_gnn_directory, generate_gnn_report
+				discover_gnn_files,
+				generate_gnn_report,
+				parse_gnn_file,
+				process_gnn_directory,
+				validate_gnn_structure,
 			)
 
 			# Test that functions are callable
@@ -129,8 +133,11 @@ class TestRenderModuleComprehensive:
 		"""Test that render module can be imported and has expected structure."""
 		try:
 			from src.render import (
-				render_gnn_to_pymdp, render_gnn_to_rxinfer, render_gnn_to_discopy,
-				render_gnn_to_activeinference_jl, process_render
+				process_render,
+				render_gnn_to_activeinference_jl,
+				render_gnn_to_discopy,
+				render_gnn_to_pymdp,
+				render_gnn_to_rxinfer,
 			)
 			# Test that functions are callable
 			assert callable(render_gnn_to_pymdp), "render_gnn_to_pymdp should be callable"
@@ -230,8 +237,10 @@ class TestExecuteModuleComprehensive:
 		"""Test that execute module can be imported and has expected functions."""
 		try:
 			from src.execute import (
-				ExecutionEngine, PyMDPSimulation, process_execute,
-				validate_execution_environment
+				ExecutionEngine,
+				PyMDPSimulation,
+				process_execute,
+				validate_execution_environment,
 			)
 			# Test that classes and functions are available
 			assert ExecutionEngine is not None, "ExecutionEngine should be available"
@@ -287,8 +296,10 @@ class TestLLMModuleComprehensive:
 		"""Test that LLM module can be imported and has expected functions."""
 		try:
 			from src.llm import (
-				process_llm, analyze_gnn_file_with_llm,
-				generate_model_insights, generate_code_suggestions
+				analyze_gnn_file_with_llm,
+				generate_code_suggestions,
+				generate_model_insights,
+				process_llm,
 			)
 			# Test that functions are callable
 			assert callable(process_llm), "process_llm should be callable"
@@ -350,9 +361,11 @@ class TestMCPModuleComprehensive:
 		"""Test that MCP module can be imported and has expected structure."""
 		try:
 			from src.mcp import (
-				register_module_tools as register_tools, get_available_tools, handle_mcp_request,
-				generate_mcp_report
+				generate_mcp_report,
+				get_available_tools,
+				handle_mcp_request,
 			)
+			from src.mcp import register_module_tools as register_tools
 
 			# Test that functions are callable
 			assert callable(register_tools), "register_tools should be callable"
@@ -369,7 +382,8 @@ class TestMCPModuleComprehensive:
 	@pytest.mark.safe_to_fail
 	def test_mcp_tool_registration(self):
 		"""Test MCP tool registration."""
-		from src.mcp import register_module_tools as register_tools, get_available_tools
+		from src.mcp import get_available_tools
+		from src.mcp import register_module_tools as register_tools
 
 		try:
 			# Register tools
@@ -419,7 +433,7 @@ class TestOntologyModuleComprehensive:
 	def test_ontology_module_imports(self):
 		"""Test that ontology module can be imported and has expected functions."""
 		try:
-			from src.ontology import process_ontology, FEATURES
+			from src.ontology import FEATURES, process_ontology
 			# Test that functions are callable
 			assert callable(process_ontology), "process_ontology should be callable"
 			assert isinstance(FEATURES, dict), "FEATURES should be a dict"
@@ -470,7 +484,7 @@ class TestWebsiteModuleComprehensive:
 	def test_website_module_imports(self):
 		"""Test that website module can be imported and has expected functions."""
 		try:
-			from src.website import process_website, FEATURES
+			from src.website import FEATURES, process_website
 			# Test that functions are callable
 			assert callable(process_website), "process_website should be callable"
 			assert isinstance(FEATURES, dict), "FEATURES should be a dict"
@@ -564,8 +578,11 @@ class TestSAPFModuleComprehensive:
 		try:
 			# Try to import from the audio module first
 			from src.audio.sapf import (  # noqa: F401 - importability test
-				convert_gnn_to_sapf, generate_sapf_audio, validate_sapf_code,
-				create_sapf_visualization, generate_sapf_report
+				convert_gnn_to_sapf,
+				create_sapf_visualization,
+				generate_sapf_audio,
+				generate_sapf_report,
+				validate_sapf_code,
 			)
 
 			# Test that functions are callable
@@ -684,9 +701,9 @@ class TestCoreModuleIntegration:
 	def test_module_coordination(self, sample_gnn_files, isolated_temp_dir):
 		"""Test coordination between core modules."""
 		try:
+			from src.execute import execute_gnn_model
 			from src.gnn import parse_gnn_file
 			from src.render import render_gnn_to_pymdp
-			from src.execute import execute_gnn_model
 			gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
 			pymdp_path = isolated_temp_dir / "test_pymdp.py"
 			render_gnn_to_pymdp({list(sample_gnn_files.values())[0]: gnn_data}, pymdp_path)

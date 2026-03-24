@@ -12,9 +12,10 @@ within the standard Active Inference generative loop.
 import logging
 import os
 import tempfile
-import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 

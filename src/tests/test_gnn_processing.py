@@ -5,17 +5,25 @@ Test Gnn Processing Tests
 This file contains tests migrated from test_gnn_core_modules.py.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 from gnn.parsers import (
-    JSONSerializer, XMLSerializer, YAMLSerializer, MarkdownSerializer,
-    ScalaSerializer, ProtobufSerializer, PKLSerializer, LeanSerializer, CoqSerializer,
+    CoqSerializer,
+    JSONSerializer,
+    LeanSerializer,
+    MarkdownSerializer,
+    PKLSerializer,
+    ProtobufSerializer,
+    ScalaSerializer,
+    XMLSerializer,
+    YAMLSerializer,
 )
 from gnn.parsers.common import GNNSerializer
 

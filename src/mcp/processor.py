@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """MCP Processor module for GNN Processing Pipeline."""
 
-from pathlib import Path
 import logging
+from pathlib import Path
 
 from utils.pipeline_template import (
+    log_step_error,
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_warning,
 )
 
 logger = logging.getLogger(__name__)
@@ -25,8 +25,9 @@ def register_module_tools(module_name: str = None):
         *bool* when registering a single named module (True = success).
         *list* of tool dicts when called with no arguments (auto-discover mode).
     """
-    from .mcp import mcp_instance
     import importlib
+
+    from .mcp import mcp_instance
 
     # --- Auto-discover mode (no module_name given) ---
     if module_name is None:
@@ -146,9 +147,10 @@ def handle_mcp_request(request: dict) -> dict:
 def generate_mcp_report() -> dict:
     """Generate MCP status report with tool and resource counts."""
     try:
-        from .mcp import mcp_instance
         from datetime import datetime
+
         from . import __version__ as mcp_version
+        from .mcp import mcp_instance
 
         tools = mcp_instance.list_available_tools()
         resources = mcp_instance.list_available_resources()
@@ -199,8 +201,8 @@ def process_mcp(
 
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        from .mcp import initialize, mcp_instance
         from . import __version__ as mcp_version
+        from .mcp import initialize, mcp_instance
         perf = kwargs.get("performance_mode", "low")
         pm_timeout = kwargs.get("mcp_per_module_timeout")
         ov_timeout = kwargs.get("mcp_overall_timeout")

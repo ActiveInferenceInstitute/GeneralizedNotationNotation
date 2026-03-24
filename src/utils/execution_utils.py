@@ -8,12 +8,12 @@ rather than buffering all output until completion.
 """
 
 import logging
+import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
-import os
 import threading
-from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 

@@ -15,8 +15,8 @@ except Exception:
     _GUI_BACKEND = None
 
 from utils.pipeline_template import (
-    log_step_success,
     log_step_error,
+    log_step_success,
 )
 
 from .markdown import parse_state_space_from_markdown  # noqa: F401

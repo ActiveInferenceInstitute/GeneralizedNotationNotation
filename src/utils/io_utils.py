@@ -5,13 +5,13 @@ This module provides file I/O utilities for batch operations,
 performance monitoring, and file system operations.
 """
 
-import os
-import time
-import logging
 import json
-from pathlib import Path
-from typing import Dict, Any, List, Union
+import logging
+import os
 import tempfile
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
@@ -179,7 +179,7 @@ def get_file_performance_metrics(file_path: Path) -> Dict[str, Any]:
         # Test read performance
         read_start = time.time()
         with open(file_path, 'rb') as f:
-            content = f.read()
+            f.read()
         read_time = time.time() - read_start
 
         return {

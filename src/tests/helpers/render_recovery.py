@@ -2,10 +2,11 @@
 """
 Render recovery helper for testing pipeline resilience.
 """
-import logging
 import json
+import logging
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
+
 
 def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
     """Recovery-friendly bulk render used by tests.
@@ -33,9 +34,9 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
         for fp in files:
             try:
                 if fp.suffix == ".json":
-                    model = json.loads(fp.read_text())
+                    json.loads(fp.read_text())
                 else:
-                    model = {"model_name": fp.stem, "variables": [], "connections": []}
+                    pass
 
                 # We simply write a dummy file to simulate success
                 code = f"# Generated for {fp.name}\nprint('Success')"

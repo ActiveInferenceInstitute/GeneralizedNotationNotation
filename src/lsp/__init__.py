@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 # Check for pygls availability
 try:
-    from pygls.server import LanguageServer
     from lsprotocol.types import (
         TEXT_DOCUMENT_DID_OPEN,
         TEXT_DOCUMENT_DID_SAVE,
@@ -34,6 +33,7 @@ try:
         Position,
         Range,
     )
+    from pygls.server import LanguageServer
     PYGLS_AVAILABLE = True
 except ImportError:
     PYGLS_AVAILABLE = False
@@ -84,9 +84,9 @@ def _publish_diagnostics(server: Any, uri: str, content: str) -> None:
 
     try:
         from gnn.schema import (
-            validate_required_sections,
-            parse_state_space,
             parse_connections,
+            parse_state_space,
+            validate_required_sections,
         )
 
         file_path = uri.replace("file://", "")

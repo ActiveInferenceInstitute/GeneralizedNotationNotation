@@ -8,11 +8,11 @@ class methods that produce output files or matplotlib figures use
 ``generate_*``.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
 import json
+import logging
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Use non-interactive backend for server/CI environments
 try:
@@ -249,7 +249,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
 
             # Extract statistics
             blocks = extracted_data.get("blocks", [])
-            connections = extracted_data.get("connections", [])
+            extracted_data.get("connections", [])
 
             # Create bar chart of variable types
             if blocks:

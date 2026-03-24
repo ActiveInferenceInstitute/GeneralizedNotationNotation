@@ -5,13 +5,13 @@ Extracts GNN model structure from Mermaid flowcharts with embedded metadata,
 enabling bidirectional synchronization with oxdraw editor.
 """
 
+import json
 import logging
 import os
+import re
 import tempfile
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import json
-import re
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,10 @@ def mermaid_to_gnn(
     # Validate ontology mappings if requested
     if validate_ontology and metadata.get('ontology_mappings'):
         try:
-            from ontology.processor import load_defined_ontology_terms, validate_annotations
+            from ontology.processor import (
+                load_defined_ontology_terms,
+                validate_annotations,
+            )
 
             ontology_terms = load_defined_ontology_terms()
             validation_result = validate_annotations(

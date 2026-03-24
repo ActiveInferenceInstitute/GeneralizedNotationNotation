@@ -18,11 +18,12 @@ import pytest
 
 pytestmark = pytest.mark.pipeline
 import json
-from typing import Dict, Any
-from pathlib import Path
 
 # Add src to path for imports
 import sys
+from pathlib import Path
+from typing import Any, Dict
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Import modules with recovery handling
@@ -149,13 +150,7 @@ D = [0.33, 0.33, 0.34]
         dirs = pipeline_directories
 
         # Create expected structures for validation
-        expected_render_structure = [
-            "11_render_output",
-        ]
 
-        expected_execute_structure = [
-            "12_execute_output",
-        ]
 
         # Run render and check output structure
         try:
@@ -165,7 +160,7 @@ D = [0.33, 0.33, 0.34]
             render_dir = dirs["base_output"] / "11_render_output"
             if render_dir.exists():
                 # Should have model subdirectories
-                contents = list(render_dir.iterdir())
+                list(render_dir.iterdir())
                 # Render should create some output
 
         except Exception:
@@ -187,7 +182,7 @@ D = [0.33, 0.33, 0.34]
             execute_dir = dirs["base_output"] / "12_execute_output"
             if execute_dir.exists():
                 # Should have execution summary
-                summary_file = execute_dir / "summaries" / "execution_summary.json"
+                execute_dir / "summaries" / "execution_summary.json"
                 # Summary might be at root level instead
 
         except Exception:
@@ -226,7 +221,7 @@ class TestExecuteAnalyzeIntegration:
         )
 
         # Create simulated pymdp output
-        pymdp_output = safe_filesystem.create_dir("output/12_execute_output/test_agent/pymdp")
+        safe_filesystem.create_dir("output/12_execute_output/test_agent/pymdp")
         safe_filesystem.create_file(
             "output/12_execute_output/test_agent/pymdp/simulation_results.json",
             json.dumps({
@@ -256,7 +251,7 @@ class TestExecuteAnalyzeIntegration:
             analysis_dir = output_dir / "16_analysis_output"
             if analysis_dir.exists():
                 # Should have some analysis output
-                files = list(analysis_dir.rglob("*"))
+                list(analysis_dir.rglob("*"))
                 # Analysis creates output files
 
         except Exception as e:

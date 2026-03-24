@@ -6,34 +6,35 @@ Tests LLMProcessor initialization, prompt generation, provider discovery,
 and graceful degradation without live LLM providers.
 """
 
-import pytest
-import sys
-import os
 import logging
+import os
+import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from llm.llm_processor import (
-    LLMProcessor,
     AnalysisType,
     GNNLLMProcessor,
-    load_api_keys_from_env,
+    LLMProcessor,
+    create_gnn_llm_processor,
     get_default_provider_configs,
     get_preferred_providers_from_env,
-    create_gnn_llm_processor,
-)
-from llm.providers.base_provider import ProviderType
-from llm.prompts import (
-    PromptType,
-    get_prompt,
-    get_all_prompt_types,
-    get_prompt_title,
-    get_default_prompt_sequence,
-    GNN_ANALYSIS_PROMPTS,
+    load_api_keys_from_env,
 )
 from llm.processor import _select_best_ollama_model
+from llm.prompts import (
+    GNN_ANALYSIS_PROMPTS,
+    PromptType,
+    get_all_prompt_types,
+    get_default_prompt_sequence,
+    get_prompt,
+    get_prompt_title,
+)
+from llm.providers.base_provider import ProviderType
 
 
 class TestLLMProcessorInitialization:

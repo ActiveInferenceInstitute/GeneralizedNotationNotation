@@ -8,28 +8,24 @@ Tests end-to-end workflows:
 - Round-trip conversion validation
 """
 
-import pytest
-from pathlib import Path
 import json
-import tempfile
 import shutil
+import tempfile
+from pathlib import Path
 
-from gui.oxdraw.processor import (
-    process_oxdraw,
-    check_oxdraw_installed,
-    get_module_info
-)
+import pytest
+
 from gui.oxdraw.mermaid_converter import (
     convert_gnn_file_to_mermaid,
+    generate_mermaid_metadata,
     gnn_to_mermaid,
-    generate_mermaid_metadata
 )
 from gui.oxdraw.mermaid_parser import (
     convert_mermaid_file_to_gnn,
+    extract_gnn_metadata,
     mermaid_to_gnn,
-    extract_gnn_metadata
 )
-
+from gui.oxdraw.processor import check_oxdraw_installed, get_module_info, process_oxdraw
 
 # Sample GNN content for testing
 SAMPLE_GNN_CONTENT = """# GNN Example: Simple Active Inference Agent

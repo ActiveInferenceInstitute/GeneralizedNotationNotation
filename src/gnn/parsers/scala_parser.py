@@ -10,14 +10,23 @@ Date: 2025-01-11
 License: MIT
 """
 
+import logging
 import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
+from typing import Any, Dict, List, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, ParseError,
-    Variable, Parameter, Equation, VariableType, DataType, normalize_variable_name, infer_variable_type
+    BaseGNNParser,
+    DataType,
+    Equation,
+    GNNInternalRepresentation,
+    Parameter,
+    ParseError,
+    ParseResult,
+    Variable,
+    VariableType,
+    infer_variable_type,
+    normalize_variable_name,
 )
 
 logger = logging.getLogger(__name__)
@@ -125,7 +134,14 @@ class ScalaGNNParser(BaseGNNParser):
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
-            from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+            from .common import (
+                Connection,
+                ConnectionType,
+                DataType,
+                Parameter,
+                Variable,
+                VariableType,
+            )
 
             # Create model from embedded data
             model = GNNInternalRepresentation(

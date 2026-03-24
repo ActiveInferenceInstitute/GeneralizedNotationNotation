@@ -9,10 +9,11 @@ dependency failures, and edge cases to ensure robust operation.
 import pytest
 
 pytestmark = pytest.mark.pipeline
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import tempfile
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from pathlib import Path
+
 # Mocks removed - using real implementations per testing policy
 
 # Test markers
@@ -34,9 +35,10 @@ class TestDependencyErrorScenarios:
         """Test that PyMDP handles errors gracefully with real execution."""
 
         try:
-            from execute.pymdp.pymdp_simulation import PyMDPSimulation
             import logging
             from io import StringIO
+
+            from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
             # Create a logger to capture warnings
             logger = logging.getLogger('test_pymdp')
@@ -68,9 +70,9 @@ class TestDependencyErrorScenarios:
 
         try:
             from execute.discopy_translator_module.translator import (
-                gnn_file_to_discopy_diagram,
+                DISCOPY_AVAILABLE,
                 JAX_FULLY_OPERATIONAL,
-                DISCOPY_AVAILABLE
+                gnn_file_to_discopy_diagram,
             )
 
             # Test with DisCoPy unavailable
@@ -96,8 +98,9 @@ class TestDependencyErrorScenarios:
         """Test visualization fallbacks when matplotlib has issues."""
 
         try:
-            from visualization.processor import _save_plot_safely
             import matplotlib.pyplot as plt
+
+            from visualization.processor import _save_plot_safely
 
             with tempfile.TemporaryDirectory() as temp_dir:
                 test_plot_path = Path(temp_dir) / "test_plot.png"

@@ -15,11 +15,10 @@ from typing import Any, Dict, Optional
 logger = logging.getLogger(__name__)
 
 from . import (
-    process_llm,
     analyze_gnn_file_with_llm,
     generate_documentation,
+    process_llm,
 )
-
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 
@@ -139,8 +138,8 @@ def get_llm_providers_mcp() -> Dict[str, Any]:
         Dictionary with provider names and availability/configuration status.
     """
     try:
-        import os
         import importlib.util
+        import os
         providers: Dict[str, Dict[str, Any]] = {}
 
         # OpenAI
@@ -219,8 +218,9 @@ def initialize_llm_module(mcp_instance) -> None:
     Loads API keys and configures the default LLM processor.
     """
     try:
-        from src.llm import create_processor_from_env
         import asyncio
+
+        from src.llm import create_processor_from_env
         logger.info("Initializing LLM module prior to MCP registration...")
 
         # create_processor_from_env is a coroutine; must be awaited

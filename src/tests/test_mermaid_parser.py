@@ -9,21 +9,21 @@ Tests Mermaid to GNN conversion functions:
 - Connection merging
 """
 
+
 import pytest
-from typing import Any, Dict, List
+
 from gui.oxdraw.mermaid_parser import (
-    mermaid_to_gnn,
-    extract_gnn_metadata,
-    _extract_nodes,
     _extract_edges,
+    _extract_nodes,
+    _gnn_model_to_markdown,
     _infer_dimensions_from_label,
     _infer_type_from_label,
-    _merge_variables,
     _merge_connections,
+    _merge_variables,
     _reconstruct_ontology_mappings,
-    _gnn_model_to_markdown
+    extract_gnn_metadata,
+    mermaid_to_gnn,
 )
-
 
 # Sample Mermaid content for testing
 SAMPLE_MERMAID = """flowchart TD

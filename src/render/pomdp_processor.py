@@ -6,11 +6,11 @@ This module provides specialized processing capabilities for injecting POMDP sta
 into various rendering implementations (PyMDP, RxInfer, ActiveInference.jl, etc.).
 """
 
-import logging
 import json
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Union, TYPE_CHECKING
+import logging
 from datetime import datetime
+from pathlib import Path
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 if TYPE_CHECKING:
     from gnn.pomdp_extractor import POMDPStateSpace
@@ -565,7 +565,9 @@ class POMDPRenderProcessor:
     def _call_activeinference_jl_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
         """Call ActiveInference.jl renderer."""
         try:
-            from .activeinference_jl.activeinference_renderer import render_gnn_to_activeinference_jl
+            from .activeinference_jl.activeinference_renderer import (
+                render_gnn_to_activeinference_jl,
+            )
 
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_activeinference.jl"

@@ -5,9 +5,10 @@ Test Intelligent Analysis Overall Tests
 This file contains comprehensive tests for the intelligent_analysis module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -295,10 +296,10 @@ class TestProcessorFunctions:
         """Test recommendation generation."""
         try:
             from intelligent_analysis.processor import (
-                analyze_pipeline_summary,
                 analyze_individual_steps,
+                analyze_pipeline_summary,
+                generate_recommendations,
                 identify_bottlenecks,
-                generate_recommendations
             )
 
             analysis = analyze_pipeline_summary(SAMPLE_FAILED_SUMMARY)
@@ -319,12 +320,12 @@ class TestProcessorFunctions:
         """Test executive report generation."""
         try:
             from intelligent_analysis.processor import (
-                analyze_pipeline_summary,
                 analyze_individual_steps,
-                identify_bottlenecks,
+                analyze_pipeline_summary,
                 extract_failure_context,
+                generate_executive_report,
                 generate_recommendations,
-                generate_executive_report
+                identify_bottlenecks,
             )
 
             analysis = analyze_pipeline_summary(SAMPLE_PIPELINE_SUMMARY)
@@ -355,7 +356,7 @@ class TestAnalyzerClass:
     def test_analyzer_instantiation(self):
         """Test IntelligentAnalyzer class instantiation."""
         try:
-            from intelligent_analysis import IntelligentAnalyzer, AnalysisContext
+            from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
             analyzer = IntelligentAnalyzer()
             assert analyzer is not None
@@ -368,7 +369,7 @@ class TestAnalyzerClass:
     def test_analyzer_with_context(self):
         """Test analyzer with context."""
         try:
-            from intelligent_analysis import IntelligentAnalyzer, AnalysisContext
+            from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
             context = AnalysisContext(summary_data=SAMPLE_PIPELINE_SUMMARY)
             analyzer = IntelligentAnalyzer(context=context)
@@ -383,7 +384,7 @@ class TestAnalyzerClass:
     def test_analyzer_set_context(self):
         """Test setting context on analyzer."""
         try:
-            from intelligent_analysis import IntelligentAnalyzer, AnalysisContext
+            from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
             analyzer = IntelligentAnalyzer()
             context = AnalysisContext(summary_data=SAMPLE_PIPELINE_SUMMARY)
@@ -398,7 +399,7 @@ class TestAnalyzerClass:
     def test_analyzer_analyze(self):
         """Test full analysis."""
         try:
-            from intelligent_analysis import IntelligentAnalyzer, AnalysisContext
+            from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
             context = AnalysisContext(summary_data=SAMPLE_PIPELINE_SUMMARY)
             analyzer = IntelligentAnalyzer(context=context)
@@ -575,12 +576,12 @@ class TestIntegration:
         """Test complete analysis workflow."""
         try:
             from intelligent_analysis.processor import (
-                analyze_pipeline_summary,
                 analyze_individual_steps,
-                identify_bottlenecks,
+                analyze_pipeline_summary,
                 extract_failure_context,
+                generate_executive_report,
                 generate_recommendations,
-                generate_executive_report
+                identify_bottlenecks,
             )
 
             # Run full analysis workflow
@@ -650,8 +651,9 @@ def test_module_completeness():
 def test_module_performance():
     """Test intelligent_analysis module performance characteristics."""
     try:
-        from intelligent_analysis.processor import analyze_pipeline_summary
         import time
+
+        from intelligent_analysis.processor import analyze_pipeline_summary
 
         start_time = time.time()
 

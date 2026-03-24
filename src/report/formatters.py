@@ -7,8 +7,10 @@ from pipeline analysis data.
 """
 
 import logging
-from typing import Dict, Any
+from typing import Any, Dict
+
 from .analyzer import get_pipeline_health_score
+
 
 def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) -> str:
     """

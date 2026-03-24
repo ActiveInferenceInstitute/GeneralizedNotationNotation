@@ -5,16 +5,12 @@ Ontology processor module for GNN Processing Pipeline.
 This module provides the main ontology processing functionality.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
-import logging
 import json
+import logging
+from pathlib import Path
+from typing import Any, Dict, List
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error
-)
+from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 # Import core processing functions from processor module
 # Note: Core functions are defined in this module; avoid self-import

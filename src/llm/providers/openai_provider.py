@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 OpenAI LLM Provider
 
@@ -7,17 +8,17 @@ Implementation of the OpenAI API for LLM operations within the GNN pipeline.
 Supports both GPT-4 and GPT-3.5 models with full feature compatibility.
 """
 
-import os
 import asyncio
-from typing import List, Optional, AsyncGenerator
 import logging
+import os
+from typing import AsyncGenerator, List, Optional
 
 from .base_provider import (
     BaseLLMProvider,
-    ProviderType,
-    LLMResponse,
+    LLMConfig,
     LLMMessage,
-    LLMConfig
+    LLMResponse,
+    ProviderType,
 )
 
 logger = logging.getLogger(__name__)

@@ -203,7 +203,7 @@ def _action_diversity(result: Dict[str, Any]) -> Optional[float]:
     if not actions:
         return None
     try:
-        unique = len(set(int(a) for a in actions))
+        unique = len({int(a) for a in actions})
         return round(unique / len(actions), 3)
     except Exception:
         return None

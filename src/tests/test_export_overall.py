@@ -5,10 +5,11 @@ Test Export Overall Tests
 This file contains comprehensive tests for the export module functionality.
 """
 
-import pytest
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
+
+import pytest
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -195,14 +196,15 @@ def test_export_module_completeness() -> None:
 def test_export_module_performance() -> None:
     """Test export module performance characteristics."""
     try:
-        from export import Exporter
         import time
+
+        from export import Exporter
 
         exporter = Exporter()
         start_time = time.time()
 
         # Test export performance
-        result = exporter.export_gnn_model("test content", 'json')
+        exporter.export_gnn_model("test content", 'json')
 
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds

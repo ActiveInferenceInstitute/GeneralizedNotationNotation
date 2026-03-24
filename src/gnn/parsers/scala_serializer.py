@@ -1,6 +1,8 @@
-from .common import GNNInternalRepresentation
-from .base_serializer import BaseGNNSerializer
 import json
+
+from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class ScalaSerializer(BaseGNNSerializer):
     """Serializer for Scala categorical specifications."""

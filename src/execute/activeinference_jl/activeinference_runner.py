@@ -13,14 +13,14 @@ Features:
 - Detailed logging and error reporting
 """
 
+import json
 import logging
 import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
-import json
 import time
 from pathlib import Path
-from typing import List, Optional, Union, Dict, Any
+from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 

@@ -14,12 +14,12 @@ except Exception:
 
 from .markdown import (
     add_component_to_markdown,
-    update_component_states,
-    remove_component_from_markdown,
-    parse_state_space_from_markdown,
     add_state_space_entry,
-    update_state_space_entry,
+    parse_state_space_from_markdown,
+    remove_component_from_markdown,
     remove_state_space_entry,
+    update_component_states,
+    update_state_space_entry,
 )
 
 
@@ -115,7 +115,7 @@ def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Lo
                 # Action buttons
                 with gr.Row():
                     save_button = gr.Button("💾 Save Markdown", variant="primary", scale=2)
-                    export_button = gr.Button("📄 Export Model", variant="secondary")
+                    gr.Button("📄 Export Model", variant="secondary")
             with gr.Column(scale=2):
                 gr.Markdown("### 📝 Live GNN Markdown Editor")
                 markdown_editor = gr.Code(

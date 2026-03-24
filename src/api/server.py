@@ -19,20 +19,26 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 try:
-    from fastapi import FastAPI, HTTPException, BackgroundTasks
-    from fastapi.middleware.cors import CORSMiddleware
     import uvicorn
+    from fastapi import BackgroundTasks, FastAPI, HTTPException
+    from fastapi.middleware.cors import CORSMiddleware
 except ImportError as e:
     raise ImportError(
         "FastAPI and uvicorn are required for the GNN API server. "
         "Install with: uv sync --extra api"
     ) from e
 
-from api.models import (
-    ProcessRequest, ToolRequest, JobResponse, JobStatusResponse,
-    JobStatus, ToolsResponse, ToolInfo, HealthResponse
-)
 from api import processor as job_mgr
+from api.models import (
+    HealthResponse,
+    JobResponse,
+    JobStatus,
+    JobStatusResponse,
+    ProcessRequest,
+    ToolInfo,
+    ToolRequest,
+    ToolsResponse,
+)
 
 # Application metadata
 app = FastAPI(

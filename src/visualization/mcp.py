@@ -5,18 +5,14 @@ Exposes GNN visualization tools: static graph generation, visualization
 options, metric summaries, and batch processing through MCP.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
 import logging
+from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 
-from . import process_visualization
-from . import get_visualization_options, get_module_info as _get_mod_info
-
-
-
-
+from . import get_module_info as _get_mod_info
+from . import get_visualization_options, process_visualization
 
 
 def process_visualization_mcp(target_directory: str, output_directory: str,

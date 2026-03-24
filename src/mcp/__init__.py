@@ -3,52 +3,49 @@
 See ``src/mcp/AGENTS.md`` for the public API, step-21 wiring, and tool registration patterns.
 """
 
-from .mcp import (
-    mcp_instance,
-    initialize,
-    MCP,
-    get_mcp_instance,
-    # Enhanced utility functions
-    list_available_tools,
-    list_available_resources,
-    get_tool_info,
-    get_resource_info,
-)
-from .server import MCPServer
-from .server_core import create_mcp_server, start_mcp_server
-
-# Import data structures from models
-from .models import (
-    MCPTool,
-    MCPResource,
-    MCPModuleInfo,
-    MCPPerformanceMetrics,
-    MCPSDKStatus,
-)
-
 # Import exception classes from exceptions module
 from .exceptions import (
     MCPError,
-    MCPToolNotFoundError,
-    MCPResourceNotFoundError,
     MCPInvalidParamsError,
-    MCPToolExecutionError,
-    MCPSDKNotFoundError,
-    MCPValidationError,
     MCPModuleLoadError,
     MCPPerformanceError,
+    MCPResourceNotFoundError,
+    MCPSDKNotFoundError,
+    MCPToolExecutionError,
+    MCPToolNotFoundError,
+    MCPValidationError,
+)
+from .mcp import (
+    MCP,
+    get_mcp_instance,
+    get_resource_info,
+    get_tool_info,
+    initialize,
+    list_available_resources,
+    # Enhanced utility functions
+    list_available_tools,
+    mcp_instance,
 )
 
-
+# Import data structures from models
+from .models import (
+    MCPModuleInfo,
+    MCPPerformanceMetrics,
+    MCPResource,
+    MCPSDKStatus,
+    MCPTool,
+)
 
 # Import processor functions
 from .processor import (
-    register_module_tools,
-    handle_mcp_request,
     generate_mcp_report,
+    get_available_tools,
+    handle_mcp_request,
     process_mcp,
-    get_available_tools
+    register_module_tools,
 )
+from .server import MCPServer
+from .server_core import create_mcp_server, start_mcp_server
 
 # Backward-compatible alias expected by legacy tests/import sites.
 MCPServer = MCP

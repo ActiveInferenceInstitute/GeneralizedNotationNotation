@@ -1,9 +1,14 @@
 
-import pytest
-import json
 import csv
+import json
 from typing import Any
-from analysis.post_simulation import extract_activeinference_jl_data, extract_discopy_data
+
+import pytest
+
+from analysis.post_simulation import (
+    extract_activeinference_jl_data,
+    extract_discopy_data,
+)
 
 
 @pytest.fixture

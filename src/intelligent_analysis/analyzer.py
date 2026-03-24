@@ -7,11 +7,11 @@ pipeline analysis, including health scoring, pattern detection, and
 optimization suggestions.
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, Any, List, Optional
-from datetime import datetime
-import re
 import logging
+import re
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 
 @dataclass

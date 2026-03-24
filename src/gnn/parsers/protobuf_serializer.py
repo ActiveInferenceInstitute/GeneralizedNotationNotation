@@ -1,7 +1,9 @@
-from typing import Dict, Any, List
 import json
-from .common import GNNInternalRepresentation
+from typing import Any, Dict
+
 from .base_serializer import BaseGNNSerializer
+from .common import GNNInternalRepresentation
+
 
 class ProtobufSerializer(BaseGNNSerializer):
     """Enhanced serializer for Protocol Buffers format with complete model preservation."""

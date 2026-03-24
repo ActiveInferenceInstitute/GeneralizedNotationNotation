@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 """
 report module for GNN Processing Pipeline.
 
@@ -14,15 +15,24 @@ FEATURES = {
     "mcp_integration": True
 }
 
-from pathlib import Path
-from typing import Dict, Any, List
 import logging
+from pathlib import Path
+from typing import Any, Dict, List
 
 from utils.pipeline_template import (
+    log_step_error,
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_warning,
+)
+
+# Import generator functions (distinct signature and purpose from processor's generate_report)
+from .generator import generate_comprehensive_report
+from .processor import (
+    analyze_gnn_file,
+    generate_html_report,
+    generate_markdown_report,
+    generate_report,
 )
 
 # Import processor functions
@@ -30,14 +40,7 @@ from utils.pipeline_template import (
 # generate_comprehensive_report = generator's pipeline-output aggregator (pipeline_output_dir, ...) -> bool
 from .processor import (
     process_report as process_report_impl,
-    analyze_gnn_file,
-    generate_html_report,
-    generate_markdown_report,
-    generate_report,
 )
-
-# Import generator functions (distinct signature and purpose from processor's generate_report)
-from .generator import generate_comprehensive_report
 
 
 # Back-compat API expected by tests
@@ -112,8 +115,8 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
         True if processing succeeded, False otherwise
     """
     import json
-    from pathlib import Path
     from datetime import datetime
+    from pathlib import Path
 
     if logger is None:
         logger = logging.getLogger(__name__)
@@ -179,7 +182,7 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
         if summary_file_path.exists():
             try:
                 with open(summary_file_path, 'r') as f:
-                    summary_data = json.load(f)
+                    json.load(f)
             except Exception as e:
                 logger.debug(f"Could not read report generation summary: {e}")
 

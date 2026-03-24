@@ -15,8 +15,8 @@ from typing import List
 try:
     import gradio as gr
     import numpy as np
-    import plotly.graph_objects as go
     import plotly.express as px
+    import plotly.graph_objects as go
 except ImportError:
     gr = None  # type: ignore
     np = None  # type: ignore
@@ -35,7 +35,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
         raise RuntimeError("Gradio not available")
 
     # Initialize visual data from markdown
-    visual_data = create_matrix_from_gnn(markdown_text)
+    create_matrix_from_gnn(markdown_text)
 
     with gr.Blocks(title="GNN Visual Matrix Editor", theme=gr.themes.Soft()) as demo:
         gr.Markdown("# 🎯 GNN Visual Matrix Editor")
@@ -54,7 +54,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
             with gr.Column(scale=3):
                 gr.Markdown("### 📊 **Interactive Visual Matrix Editor**")
 
-                with gr.Tab("🔵 Matrix A (Likelihood)") as tab_a:
+                with gr.Tab("🔵 Matrix A (Likelihood)"):
                     with gr.Row():
                         gr.Markdown("#### **Current Size Display**")
 
@@ -89,7 +89,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                         col_count=3
                     )
 
-                with gr.Tab("🟠 Matrix B (Transitions)") as tab_b:
+                with gr.Tab("🟠 Matrix B (Transitions)"):
                     with gr.Row():
                         gr.Markdown("#### **Current Size Display**")
 
@@ -128,7 +128,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                         col_count=3
                     )
 
-                with gr.Tab("🔴 Vectors C & D") as tab_cd:
+                with gr.Tab("🔴 Vectors C & D"):
                     with gr.Row():
                         with gr.Column():
                             gr.Markdown("#### **C Vector (Preferences)**")
@@ -175,7 +175,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                     auto_update_checkbox = gr.Checkbox(value=True, label="🔄 Auto-update visualizations")
                     manual_update_btn = gr.Button("🔄 Manual Update", variant="primary")
                     reset_btn = gr.Button("🔄 Reset to POMDP Template", variant="secondary")
-                    randomize_btn = gr.Button("🎲 Randomize Values", variant="secondary")
+                    gr.Button("🎲 Randomize Values", variant="secondary")
 
             with gr.Column(scale=1):
                 gr.Markdown("### 📝 **GNN Markdown Output**")
@@ -251,19 +251,19 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                     texttemplate="%{text}" if show_values else None,
                     textfont={"size": 12, "color": "white"},
                     hoverongaps=False,
-                    colorbar=dict(title="Value"),
+                    colorbar={"title": "Value"},
                 ))
 
                 rows, cols = len(cleaned_data), len(cleaned_data[0]) if cleaned_data else (0, 0)
 
                 fig.update_layout(
-                    title=dict(text=f"<b>{title}</b><br>Size: {rows}×{cols}", x=0.5),
+                    title={"text": f"<b>{title}</b><br>Size: {rows}×{cols}", "x": 0.5},
                     width=500,
                     height=400,
                     xaxis_title="<b>Columns</b>",
                     yaxis_title="<b>Rows</b>",
-                    font=dict(size=12),
-                    margin=dict(l=80, r=80, t=100, b=80)
+                    font={"size": 12},
+                    margin={"l": 80, "r": 80, "t": 100, "b": 80}
                 )
 
                 # Add grid lines for better readability
@@ -323,7 +323,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                     marker_color=color,
                     text=[f"{val:.3f}" for val in values],
                     textposition='outside',
-                    textfont=dict(size=11),
+                    textfont={"size": 11},
                     name=title
                 ))
 
@@ -332,25 +332,25 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                     x=indices,
                     y=values,
                     mode='lines+markers',
-                    line=dict(color='red', width=2),
-                    marker=dict(size=6),
+                    line={"color": 'red', "width": 2},
+                    marker={"size": 6},
                     name='Trend',
                     yaxis='y2'
                 ))
 
                 fig.update_layout(
-                    title=dict(text=f"<b>{title}</b><br>Size: {len(values)}", x=0.5),
+                    title={"text": f"<b>{title}</b><br>Size: {len(values)}", "x": 0.5},
                     width=400,
                     height=300,
                     xaxis_title="<b>Index</b>",
                     yaxis_title="<b>Value</b>",
-                    font=dict(size=11),
+                    font={"size": 11},
                     showlegend=False,
-                    margin=dict(l=60, r=60, t=80, b=60)
+                    margin={"l": 60, "r": 60, "t": 80, "b": 60}
                 )
 
                 # Add secondary y-axis for trend line
-                fig.update_layout(yaxis2=dict(overlaying='y', side='right', showticklabels=False))
+                fig.update_layout(yaxis2={"overlaying": 'y', "side": 'right', "showticklabels": False})
 
                 return fig
             except (ValueError, TypeError, IndexError) as e:

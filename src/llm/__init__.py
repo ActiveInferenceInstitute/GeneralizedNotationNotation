@@ -22,7 +22,7 @@ FEATURES = {
 
 import logging
 import os
-from typing import Any, Dict, List, Optional, Union, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
@@ -33,13 +33,17 @@ def process_llm(*args: Any, **kwargs: Any) -> Any:
 try:
     from .llm_processor import (
         AnalysisType,
-        LLMProcessor as UnifiedLLMProcessor,
-        load_api_keys_from_env,
-        initialize_global_processor,
-        get_processor as get_global_processor,
         create_processor_from_env,
         get_default_provider_configs,
         get_preferred_providers_from_env,
+        initialize_global_processor,
+        load_api_keys_from_env,
+    )
+    from .llm_processor import (
+        LLMProcessor as UnifiedLLMProcessor,
+    )
+    from .llm_processor import (
+        get_processor as get_global_processor,
     )
 except (ImportError, AttributeError):
     # Provide minimal shims during test collection if heavy deps are missing
@@ -55,7 +59,13 @@ except (ImportError, AttributeError):
     def get_preferred_providers_from_env() -> List[str]: return []
 
 try:
-    from .providers import ProviderType, LLMConfig, LLMMessage, LLMResponse, BaseLLMProvider
+    from .providers import (
+        BaseLLMProvider,
+        LLMConfig,
+        LLMMessage,
+        LLMResponse,
+        ProviderType,
+    )
 except (ImportError, AttributeError):
     class ProviderType:  # type: ignore[no-redef]  # fallback shim when providers unavailable
         OPENAI = type("E", (), {"value": "openai"})()
@@ -67,12 +77,12 @@ except (ImportError, AttributeError):
 try:
     from .analyzer import (
         analyze_gnn_file_with_llm,
-        extract_variables,
+        calculate_complexity_metrics,
         extract_connections,
         extract_sections,
+        extract_variables,
+        identify_patterns,
         perform_semantic_analysis,
-        calculate_complexity_metrics,
-        identify_patterns
     )
 except (ImportError, AttributeError):
     # Provide real, direct implementations where possible instead of empty shims.
@@ -116,10 +126,10 @@ except (ImportError, AttributeError):
 
 try:
     from .generator import (
-        generate_model_insights,
         generate_code_suggestions,
         generate_documentation,
-        generate_llm_summary
+        generate_llm_summary,
+        generate_model_insights,
     )
 except (ImportError, AttributeError):
     def generate_model_insights(*_: Any, **__: Any) -> Dict[str, Any]: return {}

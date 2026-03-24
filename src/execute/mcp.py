@@ -15,12 +15,11 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 from . import (
-    process_execute,
+    check_dependencies,
     execute_gnn_model,
     execute_pymdp_simulation,
-    check_dependencies,
+    process_execute,
 )
-
 
 # ── Domain tools ─────────────────────────────────────────────────────────────
 

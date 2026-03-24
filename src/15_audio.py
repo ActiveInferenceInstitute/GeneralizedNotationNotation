@@ -40,24 +40,26 @@ from utils.pipeline_template import create_standardized_pipeline_script
 # Import module function
 try:
     from audio import process_audio
-except ImportError as e:
-    def process_audio(target_dir: str, output_dir: str, logger: "logging.Logger | None" = None, **kwargs: object) -> bool:
+except ImportError as _import_err:
+    def process_audio(target_dir: str, output_dir: str, logger: object | None = None, **kwargs: object) -> bool:
         """Recovery audio processing when module unavailable."""
-        import logging
         import json
+        import logging
+
         if logger is None:
             logger = logging.getLogger(__name__)
-        logger.warning(f"Audio module not available - using recovery: {e}")
-        logger.info("Install audio support with: uv pip install -e .[audio]")
+        log = logger  # logging.Logger
+        log.warning(f"Audio module not available - using recovery: {_import_err}")
+        log.info("Install audio support with: uv pip install -e .[audio]")
 
         # Create a recovery result file to let downstream steps know we skipped
         try:
             output_dir = Path(output_dir)
             output_dir.mkdir(parents=True, exist_ok=True)
             with open(output_dir / "audio_processing_skipped.json", "w") as f:
-                json.dump({"status": "skipped", "reason": str(e)}, f, indent=2)
+                json.dump({"status": "skipped", "reason": str(_import_err)}, f, indent=2)
         except OSError as os_err:
-            logger.debug(f"Could not write audio_processing_skipped.json (non-fatal): {os_err}")
+            log.debug(f"Could not write audio_processing_skipped.json (non-fatal): {os_err}")
 
         return True
 

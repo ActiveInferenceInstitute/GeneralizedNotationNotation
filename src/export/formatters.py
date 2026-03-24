@@ -5,16 +5,19 @@ Export formatters module for GNN Processing Pipeline.
 This module provides format-specific export functionality.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import json
 import logging
 import pickle  # nosec B403 - GNN files are researcher-generated, not untrusted input
 import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
+from pathlib import Path
+from typing import Any, Dict
+
 try:
     from defusedxml.minidom import parseString as _xml_parseString
 except ImportError:
-    from xml.dom.minidom import parseString as _xml_parseString  # type: ignore[no-redef]  # nosec B408
+    from xml.dom.minidom import (
+        parseString as _xml_parseString,  # type: ignore[no-redef]  # nosec B408
+    )
 
 logger = logging.getLogger(__name__)
 

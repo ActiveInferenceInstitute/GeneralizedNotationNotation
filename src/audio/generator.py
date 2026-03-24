@@ -5,7 +5,7 @@ Audio generator module for GNN Processing Pipeline.
 This module provides audio generation functionality.
 """
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 # Optional numpy import with recovery
 try:

@@ -17,8 +17,8 @@ except ImportError:
     GRADIO_AVAILABLE = False
 
 try:
-    import plotly.graph_objects as go
     import numpy as np
+    import plotly.graph_objects as go
     PLOTLY_AVAILABLE = True
 except ImportError:
     go = None
@@ -53,7 +53,7 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
                 title=f"<b>{title}</b>",
                 width=400,
                 height=300,
-                font=dict(size=12)
+                font={"size": 12}
             )
             return fig
         except Exception as e:
@@ -80,7 +80,7 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
                 height=300,
                 xaxis_title="Index",
                 yaxis_title="Value",
-                font=dict(size=12)
+                font={"size": 12}
             )
             return fig
         except Exception as e:

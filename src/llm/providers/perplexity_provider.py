@@ -6,11 +6,11 @@ Implementation of the Perplexity API for AI-powered search and reasoning.
 Perplexity provides real-time web search capabilities combined with LLM reasoning.
 """
 
-import os
 import asyncio
 import json
-from typing import List, Optional, AsyncGenerator
 import logging
+import os
+from typing import AsyncGenerator, List, Optional
 
 try:
     import aiohttp
@@ -22,10 +22,10 @@ except ImportError as e:
 
 from .base_provider import (
     BaseLLMProvider,
-    ProviderType,
-    LLMResponse,
+    LLMConfig,
     LLMMessage,
-    LLMConfig
+    LLMResponse,
+    ProviderType,
 )
 
 logger = logging.getLogger(__name__)

@@ -18,14 +18,14 @@ Date: 2024
 """
 
 import warnings
+
 warnings.filterwarnings('ignore')
 
 # Import shared visualization utilities (centralized matplotlib setup)
-from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
-
-from typing import Union
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+from typing import Any, Dict, List, Optional, Tuple, Union
+
+from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 
 
 class PyMDPVisualizer:
@@ -223,7 +223,7 @@ class PyMDPVisualizer:
             # Likely (states, timesteps), transpose it
             beliefs_array = beliefs_array.T
 
-        num_states = beliefs_array.shape[1]
+        beliefs_array.shape[1]
 
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=self.figsize)
 
@@ -393,7 +393,7 @@ def save_all_visualizations(
     try:
         # Visualize state sequence
         if 'states' in simulation_results:
-            fig = visualizer.visualize_discrete_states(
+            visualizer.visualize_discrete_states(
                 simulation_results['states'],
                 simulation_results.get('num_states', max(simulation_results['states']) + 1),
                 "Agent State Trajectory"
@@ -401,14 +401,14 @@ def save_all_visualizations(
 
         # Visualize belief evolution
         if 'beliefs' in simulation_results:
-            fig = visualizer.visualize_belief_evolution(
+            visualizer.visualize_belief_evolution(
                 simulation_results['beliefs'],
                 "Belief State Evolution"
             )
 
         # Visualize performance metrics
         if 'metrics' in simulation_results:
-            fig = visualizer.visualize_performance_metrics(
+            visualizer.visualize_performance_metrics(
                 simulation_results['metrics'],
                 "Simulation Performance"
             )

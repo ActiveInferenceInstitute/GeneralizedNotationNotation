@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 """
 Website generator module for GNN pipeline.
 
@@ -14,12 +15,12 @@ from GNN pipeline artifacts. Produces 7+ pages:
   - mcp.html           — MCP tools registry across all modules
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
 import json
+import logging
 import shutil
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -476,7 +477,8 @@ class WebsiteGenerator:
 
             for filename, html in pages.items():
                 try:
-                    import os as _os, tempfile as _tempfile
+                    import os as _os
+                    import tempfile as _tempfile
                     _dest = output_dir / filename
                     with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_dir, delete=False) as _tmp:
                         _tmp.write(html)
@@ -704,7 +706,7 @@ class WebsiteGenerator:
                           "skip": "badge-skip"}.get(status, "badge-pending")
             badge_label = {"ok": "Complete", "error": "Error",
                            "skip": "Skipped"}.get(status, "Pending")
-            script = f"{step_num}_{step_name.lower().replace(' ', '_')}.py"
+            f"{step_num}_{step_name.lower().replace(' ', '_')}.py"
             rows += f"""<tr>
   <td><code>{step_num:02d}</code></td>
   <td>{step_name}</td>

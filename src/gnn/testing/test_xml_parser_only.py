@@ -3,14 +3,15 @@
 Test to isolate the XML parser duplication issue.
 """
 
-import sys
 import json
+import sys
 from pathlib import Path
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from gnn.parsers.xml_parser import XMLGNNParser
+
 
 def test_xml_parser_only():
     """Test XML parser with minimal embedded data."""

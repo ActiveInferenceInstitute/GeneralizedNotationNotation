@@ -1,13 +1,15 @@
 """Tests for the GNN API endpoints."""
 
-import pytest
 from unittest.mock import patch
 
+import pytest
+
 # Import the API app factory
-try:    from api.app import create_app, FASTAPI_AVAILABLE
+try:
+    from api.app import FASTAPI_AVAILABLE, create_app
 except ImportError:
     try:
-        from src.api.app import create_app, FASTAPI_AVAILABLE
+        from src.api.app import FASTAPI_AVAILABLE, create_app
     except ImportError:
         FASTAPI_AVAILABLE = False
 

@@ -10,20 +10,20 @@ Tests the GUI module's core functionality including:
 - Error handling
 """
 
+
 import pytest
-from typing import Any, Dict, List
 
 from gui import (
+    FEATURES,
     add_component_to_markdown,
-    update_component_states,
-    remove_component_from_markdown,
+    add_state_space_entry,
+    get_available_guis,
     parse_components_from_markdown,
     parse_state_space_from_markdown,
-    add_state_space_entry,
-    update_state_space_entry,
+    remove_component_from_markdown,
     remove_state_space_entry,
-    get_available_guis,
-    FEATURES,
+    update_component_states,
+    update_state_space_entry,
 )
 
 
