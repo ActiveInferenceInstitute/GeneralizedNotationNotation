@@ -419,3 +419,11 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 "src/tests/**" = ["F401"]
+
+# CVE-2026-4539 / Dependabot #63: ReDoS in ``pygments.lexers.archetype`` (AdlLexer).
+# PyPI is still at 2.19.2; override with the fix from pygments/pygments#3064 until a release >2.19.2.
+# Revisit: drop this block and use ``pygments>=2.19.3`` when available on PyPI.
+[tool.uv]
+override-dependencies = [
+    "pygments @ git+https://github.com/zsbahtiar/pygments.git@2be805d86471efb8efd51886d4d11a33fa22a928",
+]
