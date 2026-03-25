@@ -21,4 +21,6 @@ Fill in after each triple review.
 | Pass 1b | `uv run python doc/dev/regenerate_src_doc_inventory.py` — 0 missing AGENTS, 0 missing README under `src/` |
 | Pass 2 | `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` — **1906 passed, 30 skipped**; matches `README.md`, `CLAUDE.md`, root `AGENTS.md`, `src/AGENTS.md` |
 | Pass 3 | **25** files `src/N_*.py` for steps 0–24 present; Tier A step lines in module `AGENTS.md` previously spot-checked against orchestrators |
+| CI parity | `uv sync --frozen --extra dev`; `PYTHONPATH=src uv run pytest -m "not pipeline and not mcp" --tb=short -q` — **1532 passed, 31 skipped**; MCP tools **133** (`count_mcp_tools` ≥ 131); `uv run ruff check src/`; Bandit medium+ exit 0 |
+| Pipeline smoke | `uv run python src/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files --verbose` — 4/4 success; step 12 `SUCCESS_WITH_WARNINGS` (namespace conflict note only) |
 | Notes | Triple procedure added to plan; this file is the repo-persisted checklist |
