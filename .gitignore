@@ -97,6 +97,8 @@ src/tests/htmlcov/
 .cache
 .pytest_cache/
 pytest.ini.local
+# Local Bandit JSON from CI-parity runs (see .github/workflows/ci.yml artifact name)
+bandit-results.json
 
 # ============================================================================
 # DOCUMENTATION BUILD ARTIFACTS

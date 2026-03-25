@@ -84,7 +84,8 @@ class SafeAdvancedVisualizationManager:
         return False  # Don't suppress exceptions
 
 
-# Re-export from network_viz
+# Re-export from interactive_viz / network_viz / statistical_viz (isort: i < n < s)
+from .interactive_viz import _generate_interactive_plotly_dashboard
 from .network_viz import (
     _generate_3d_visualization,
     _generate_d2_visualizations_safe,
@@ -94,9 +95,6 @@ from .network_viz import (
     _generate_policy_visualization,
     _generate_pomdp_transition_analysis,
 )
-
-# Re-export from interactive_viz / statistical_viz
-from .interactive_viz import _generate_interactive_plotly_dashboard
 from .statistical_viz import (
     _generate_matrix_correlations,
     _generate_statistical_plots,
