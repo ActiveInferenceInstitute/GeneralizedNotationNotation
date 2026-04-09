@@ -97,6 +97,9 @@ EXPECTED_OUTPUTS = {
     ],
     "23_report": [
         "report_summary.json"
+    ],
+    "24_intelligent_analysis": [
+        "intelligent_analysis_summary.json"
     ]
 }
 
@@ -498,7 +501,8 @@ def validate_output_naming_conventions() -> Dict[str, List[str]]:
             "20_website.py": "20_website_output",
             "21_mcp.py": "21_mcp_output",
             "22_gui.py": "22_gui_output",
-            "23_report.py": "23_report_output"
+            "23_report.py": "23_report_output",
+            "24_intelligent_analysis.py": "24_intelligent_analysis_output"
         }
 
         violations = []

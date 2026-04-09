@@ -382,7 +382,7 @@ output/
 
 ### Imported By
 
-- All pipeline scripts (0_template.py through 23_report.py)
+- All pipeline scripts (0_template.py through 24_intelligent_analysis.py)
 - `tests.test_pipeline_*` - Pipeline tests
 - `mcp.pipeline_tools` - MCP pipeline tools
 

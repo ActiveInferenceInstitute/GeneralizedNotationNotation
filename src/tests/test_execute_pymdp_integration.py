@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """
-Real PyMDP execution tests.
+Real pymdp 1.0.0 (JAX-first) execution tests for the GNN pipeline.
 
-This module tests actual PyMDP functionality with real simulations.
-Tests gracefully skip if PyMDP is not installed.
+This module exercises the actual installed ``inferactively-pymdp`` wheel with
+no mocks. Tests skip cleanly if pymdp is not installed or if the installed
+wheel predates 1.0.0.
+
+Upstream: https://github.com/infer-actively/pymdp
+Local contract: ``src/execute/pymdp/simple_simulation.py``
 """
+
+from __future__ import annotations
 
 import sys
 from pathlib import Path
@@ -16,13 +22,18 @@ import pytest
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Check if PyMDP is available
+# Check if pymdp 1.0.0+ is available
 try:
-    from pymdp import utils
+    import jax.numpy as jnp
+    import jax.random as jr
     from pymdp.agent import Agent
+    from pymdp import utils as pymdp_utils
+
     PYMDP_AVAILABLE = True
+    PYMDP_IS_1_0_0_PLUS = hasattr(Agent, "update_empirical_prior")
 except ImportError:
     PYMDP_AVAILABLE = False
+    PYMDP_IS_1_0_0_PLUS = False
 
 try:
     from execute.pymdp.package_detector import (
@@ -31,125 +42,126 @@ try:
         validate_pymdp_for_execution,
     )
     from execute.pymdp.simple_simulation import run_simple_pymdp_simulation
+
     EXECUTE_MODULE_AVAILABLE = True
 except ImportError as e:
     EXECUTE_MODULE_AVAILABLE = False
     IMPORT_ERROR = str(e)
 
 
-@pytest.mark.skipif(not PYMDP_AVAILABLE, reason="PyMDP (inferactively-pymdp) not installed")
+# ---------------------------------------------------------------------------
+# Helpers — build a pymdp 1.0.0 Agent using the batched JAX convention
+# ---------------------------------------------------------------------------
+def _to_batched(mat: np.ndarray):
+    return jnp.asarray(mat, dtype=jnp.float32)[None, ...]
+
+
+def _build_minimal_agent(num_actions: int = 2) -> Any:
+    """Return a 2-state / 2-obs Agent suitable for smoke tests."""
+    A = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float64)
+    if num_actions == 1:
+        B = np.array([[0.8, 0.2], [0.2, 0.8]], dtype=np.float64)[:, :, None]
+    else:
+        B = np.stack(
+            [
+                np.array([[0.8, 0.2], [0.2, 0.8]], dtype=np.float64),
+                np.array([[0.2, 0.8], [0.8, 0.2]], dtype=np.float64),
+            ],
+            axis=-1,
+        )
+    C = np.array([0.0, 1.0], dtype=np.float64)
+    D = np.array([0.5, 0.5], dtype=np.float64)
+
+    kwargs: dict = dict(
+        A=[_to_batched(A)],
+        B=[_to_batched(B)],
+        C=[_to_batched(C)],
+        D=[_to_batched(D)],
+        num_controls=[num_actions],
+        policy_len=1,
+        batch_size=1,
+    )
+    if num_actions > 1:
+        kwargs["control_fac_idx"] = [0]
+    return Agent(**kwargs)
+
+
+# ---------------------------------------------------------------------------
+@pytest.mark.skipif(not PYMDP_AVAILABLE, reason="inferactively-pymdp not installed")
+@pytest.mark.skipif(not PYMDP_IS_1_0_0_PLUS, reason="pymdp < 1.0.0 (JAX Agent missing)")
 @pytest.mark.skipif(not EXECUTE_MODULE_AVAILABLE, reason="Execute module not available")
 class TestPyMDPRealExecution:
-    """Test real PyMDP execution with actual simulations."""
+    """Exercise real pymdp 1.0.0 via the JAX-first Agent."""
 
     def test_pymdp_agent_import(self) -> None:
-        """Test that PyMDP Agent can be imported using modern API."""
-        from pymdp import utils
-        from pymdp.agent import Agent
-
-        assert Agent is not None
-        assert utils is not None
+        """The 1.0.0 JAX-first Agent is importable and callable."""
+        assert Agent is not None and pymdp_utils is not None
         assert callable(Agent)
+        assert hasattr(Agent, "update_empirical_prior")
 
     def test_pymdp_agent_creation(self) -> None:
-        """Test creating a PyMDP Agent with minimal matrices."""
-        from pymdp import utils
-        from pymdp.agent import Agent
-
-        # Create minimal matrices for a 2-state, 2-observation, 1-action model
-        num_states = 2
-        num_actions = 1
-
-        # A matrix: observation model (num_obs x num_states)
-        A = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float64)
-        A_obj = utils.obj_array(1)
-        A_obj[0] = A
-
-        # B matrix: transition model (num_states x num_states x num_actions)
-        B = np.zeros((num_states, num_states, num_actions), dtype=np.float64)
-        B[:, :, 0] = np.array([[0.8, 0.2], [0.2, 0.8]], dtype=np.float64)
-        B_obj = utils.obj_array(1)
-        B_obj[0] = B
-
-        # C vector: preferences (num_obs)
-        C = np.array([0.0, 0.0], dtype=np.float64)
-        C_obj = utils.obj_array(1)
-        C_obj[0] = C
-
-        # D vector: prior over states (num_states)
-        D = np.array([0.5, 0.5], dtype=np.float64)
-        D_obj = utils.obj_array(1)
-        D_obj[0] = D
-
-        # Create agent
-        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj)
-
+        """Build a minimal 2×2 Agent (1 action = pure HMM)."""
+        agent = _build_minimal_agent(num_actions=1)
         assert agent is not None
-        assert hasattr(agent, 'infer_states')
-        assert hasattr(agent, 'infer_policies')
-        assert hasattr(agent, 'sample_action')
+        assert hasattr(agent, "infer_states")
+        assert hasattr(agent, "infer_policies")
+        assert hasattr(agent, "sample_action")
+        assert hasattr(agent, "update_empirical_prior")
+        # D is a list of (batch, num_states[f]) arrays
+        assert isinstance(agent.D, (list, tuple))
+        assert agent.D[0].shape == (1, 2)
 
     def test_pymdp_simple_simulation_execution(self, tmp_path: Any) -> None:
-        """Test running a simple PyMDP simulation."""
-        # Create minimal GNN spec
+        """End-to-end rollout via the pipeline's real pymdp 1.0.0 runner."""
         gnn_spec = {
             "model_name": "test_pymdp_model",
             "initialparameterization": {
                 "A": [[0.9, 0.1], [0.1, 0.9]],
-                # B matrix: shape (next_state x prev_state x num_actions) = (2, 2, 1)
-                # Each column (axis 0) sums to 1.0
-                "B": [[[0.8, 0.2], [0.2, 0.8]]],  # shape (1, 2, 2) - will be transposed to (2, 2, 1) by simple_simulation
+                # GNN B in (action, prev, next) form; simple_simulation will
+                # transpose to the pymdp (next, prev, action) convention.
+                "B": [[[0.8, 0.2], [0.2, 0.8]]],
                 "C": [0.0, 0.0],
-                "D": [0.5, 0.5]
-            }
+                "D": [0.5, 0.5],
+            },
+            "model_parameters": {"num_timesteps": 4},
         }
-
         output_dir = tmp_path / "pymdp_output"
         output_dir.mkdir()
 
         success, results = run_simple_pymdp_simulation(gnn_spec, output_dir)
-
         assert success is True
-        assert isinstance(results, dict)
-        assert "success" in results
         assert results["success"] is True
-        assert "framework" in results
         assert results["framework"] == "PyMDP"
-        assert "observations" in results
-        assert "actions" in results
-        assert "beliefs" in results
+        assert results["backend"] == "jax"
+        assert results["pymdp_version"].startswith("1.")
+        assert len(results["observations"]) == 4
+        assert len(results["actions"]) == 4
+        assert len(results["beliefs"]) == 4
 
     def test_pymdp_package_detection_with_real_installation(self) -> None:
-        """Test that package detector correctly identifies installed PyMDP."""
+        """The package detector should correctly identify the 1.0.0 install."""
         detection = detect_pymdp_installation()
-
         assert detection["installed"] is True
         assert detection["correct_package"] is True
         assert detection["has_agent"] is True
         assert detection["wrong_package"] is False
 
     def test_is_correct_pymdp_package_with_real_installation(self) -> None:
-        """Test correct package detection with real installation."""
-        result = is_correct_pymdp_package()
-        assert result is True
+        assert is_correct_pymdp_package() is True
 
     def test_validate_pymdp_for_execution_with_real_installation(self) -> None:
-        """Test validation with real PyMDP installation."""
         validation = validate_pymdp_for_execution()
-
         assert validation["ready"] is True
         assert validation["detection"]["correct_package"] is True
-        assert validation["can_auto_install"] is True
 
 
+# ---------------------------------------------------------------------------
 @pytest.mark.skipif(not EXECUTE_MODULE_AVAILABLE, reason="Execute module not available")
 class TestPyMDPErrorHandling:
-    """Test PyMDP error handling when package is wrong or missing."""
+    """Package detection returns sensible structure even in odd environments."""
 
     def test_package_detection_structure(self) -> None:
-        """Test that package detection returns expected structure even when not installed."""
         detection = detect_pymdp_installation()
-
         assert isinstance(detection, dict)
         assert "installed" in detection
         assert "correct_package" in detection
@@ -157,9 +169,7 @@ class TestPyMDPErrorHandling:
         assert isinstance(detection["installed"], bool)
 
     def test_validation_structure(self) -> None:
-        """Test that validation returns expected structure."""
         validation = validate_pymdp_for_execution()
-
         assert isinstance(validation, dict)
         assert "ready" in validation
         assert "detection" in validation
@@ -167,86 +177,46 @@ class TestPyMDPErrorHandling:
         assert isinstance(validation["ready"], bool)
 
 
-@pytest.mark.skipif(not PYMDP_AVAILABLE, reason="PyMDP (inferactively-pymdp) not installed")
-@pytest.mark.skipif(not EXECUTE_MODULE_AVAILABLE, reason="Execute module not available")
-class TestPyMDPModernAPI:
-    """Test that we're using the modern PyMDP API correctly."""
+# ---------------------------------------------------------------------------
+@pytest.mark.skipif(not PYMDP_AVAILABLE, reason="inferactively-pymdp not installed")
+@pytest.mark.skipif(not PYMDP_IS_1_0_0_PLUS, reason="pymdp < 1.0.0 (JAX Agent missing)")
+class TestPyMDPJAXFirstAPI:
+    """Regression tests for the 1.0.0 JAX-first API used by the pipeline."""
 
     def test_modern_import_works(self) -> None:
-        """Test that modern import pattern works."""
-        # This should work with inferactively-pymdp
-        from pymdp import utils
-        from pymdp.agent import Agent
-
         assert Agent is not None
-        assert utils is not None
+        assert pymdp_utils is not None
 
     def test_agent_has_required_methods(self) -> None:
-        """Test that Agent has all required methods for simulation."""
-        from pymdp import utils
-        from pymdp.agent import Agent
-
-        # Create minimal agent
-        A = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float64)
-        B = np.zeros((2, 2, 1), dtype=np.float64)
-        B[:, :, 0] = np.array([[0.8, 0.2], [0.2, 0.8]], dtype=np.float64)
-        C = np.array([0.0, 0.0], dtype=np.float64)
-        D = np.array([0.5, 0.5], dtype=np.float64)
-
-        A_obj = utils.obj_array(1)
-        A_obj[0] = A
-        B_obj = utils.obj_array(1)
-        B_obj[0] = B
-        C_obj = utils.obj_array(1)
-        C_obj[0] = C
-        D_obj = utils.obj_array(1)
-        D_obj[0] = D
-
-        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj)
-
-        # Test required methods exist
-        assert hasattr(agent, 'infer_states')
-        assert hasattr(agent, 'infer_policies')
-        assert hasattr(agent, 'sample_action')
-
-        # Test that methods are callable
-        assert callable(agent.infer_states)
-        assert callable(agent.infer_policies)
-        assert callable(agent.sample_action)
+        agent = _build_minimal_agent(num_actions=2)
+        for name in (
+            "infer_states",
+            "infer_policies",
+            "sample_action",
+            "update_empirical_prior",
+        ):
+            assert hasattr(agent, name), f"Agent missing {name}"
+            assert callable(getattr(agent, name))
 
     def test_simulation_step_execution(self) -> None:
-        """Test executing a single simulation step."""
-        from pymdp import utils
-        from pymdp.agent import Agent
+        """A single rollout step via the JAX-first Agent."""
+        agent = _build_minimal_agent(num_actions=2)
 
-        # Create agent
-        A = np.array([[0.9, 0.1], [0.1, 0.9]], dtype=np.float64)
-        B = np.zeros((2, 2, 1), dtype=np.float64)
-        B[:, :, 0] = np.array([[0.8, 0.2], [0.2, 0.8]], dtype=np.float64)
-        C = np.array([0.0, 0.0], dtype=np.float64)
-        D = np.array([0.5, 0.5], dtype=np.float64)
+        obs = [jnp.array([0], dtype=jnp.int32)]
+        qs, info = agent.infer_states(obs, empirical_prior=agent.D, return_info=True)
+        assert isinstance(qs, (list, tuple))
+        assert qs[0].shape == (1, 1, 2)
+        assert "vfe" in info
 
-        A_obj = utils.obj_array(1)
-        A_obj[0] = A
-        B_obj = utils.obj_array(1)
-        B_obj[0] = B
-        C_obj = utils.obj_array(1)
-        C_obj[0] = C
-        D_obj = utils.obj_array(1)
-        D_obj[0] = D
+        q_pi, neg_efe = agent.infer_policies(qs)
+        assert q_pi.shape == (1, 2)
+        assert neg_efe.shape == (1, 2)
 
-        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj)
+        rng = jr.PRNGKey(0)
+        action_keys = jr.split(rng, agent.batch_size + 1)
+        action = agent.sample_action(q_pi, rng_key=action_keys[1:])
+        assert action.shape == (1, 1)
 
-        # Execute one step
-        obs = np.array([0])  # First observation
-        qs = agent.infer_states(obs)
-        q_pi, neg_efe = agent.infer_policies()
-        action = agent.sample_action()
-
-        # Verify results
-        assert qs is not None
-        assert len(qs) > 0
-        assert q_pi is not None
-        assert action is not None
-        assert len(action) > 0
-
+        new_prior = agent.update_empirical_prior(action, qs)
+        assert isinstance(new_prior, (list, tuple))
+        assert new_prior[0].shape == agent.D[0].shape

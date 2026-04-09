@@ -165,18 +165,26 @@ from .pymdp_utils import _numpy_array_to_string, generate_pymdp_agent_instantiat
 
 logger = logging.getLogger(__name__)
 
-# Optional import of pymdp for validation if available
-# Using modern API: from pymdp import Agent (inferactively-pymdp package)
+# Optional import of pymdp for validation if available.
+# pymdp 1.0.0 (JAX-first) is the supported version. ``pymdp.maths`` exists in
+# both 0.x and 1.0.0, but the legacy ``utils.obj_array`` / ``utils.softmax``
+# surface used by earlier converter templates is gone in 1.0.0. This file no
+# longer emits code that depends on that surface; it only probes imports for
+# availability flags consumed by tests.
 _PYMDP_AVAILABLE = False
+_PYMDP_IS_1_0_0_PLUS = False
 try:
-    from pymdp import maths as pymdp_maths
-    from pymdp import utils as pymdp_utils
-    from pymdp.agent import Agent as PymdpAgent
+    from pymdp import maths as pymdp_maths  # type: ignore[import-not-found]
+    from pymdp import utils as pymdp_utils  # type: ignore[import-not-found]
+    from pymdp.agent import Agent as PymdpAgent  # type: ignore[import-not-found]
+
     _PYMDP_AVAILABLE = True
+    # ``update_empirical_prior`` only exists on the 1.0.0+ JAX-first Agent.
+    _PYMDP_IS_1_0_0_PLUS = hasattr(PymdpAgent, "update_empirical_prior")
 except ImportError:
-    pymdp_utils = None
-    pymdp_maths = None
-    PymdpAgent = None
+    pymdp_utils = None  # type: ignore[assignment]
+    pymdp_maths = None  # type: ignore[assignment]
+    PymdpAgent = None  # type: ignore[assignment]
 
 
 class GnnToPyMdpConverter:

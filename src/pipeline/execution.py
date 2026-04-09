@@ -103,7 +103,7 @@ def get_pipeline_info() -> dict:
         "name": "GNN Pipeline",
         "version": "1.0.0",
         "description": "GeneralizedNotationNotation processing pipeline",
-        "steps": list(range(25))  # 0-24 steps
+        "steps": list(range(25))  # 25 steps (0-24)
     }
 
 def create_pipeline_config() -> dict:

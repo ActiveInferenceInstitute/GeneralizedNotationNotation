@@ -1,6 +1,13 @@
-# GNN API Module -- Agent Documentation
+# GNN API Module — Agent Scaffolding
 
 ## Module Overview
+
+**Purpose**: FastAPI-based REST interface for programmatic pipeline invocation, job management, and tool discovery.
+**Pipeline Step**: Infrastructure module (not a numbered step)
+**Category**: Infrastructure / API
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Last Updated**: 2026-03-24
 
 The `api` module provides a FastAPI-based REST interface for the GNN processing pipeline.
 It enables programmatic pipeline invocation, job management, and tool discovery without

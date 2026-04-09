@@ -1,8 +1,13 @@
-# GNN Documentation Hub — Agent Manifest (`AGENTS.md`)
+# GNN Documentation Hub — Agent Scaffolding
 
-**Role**: Root-level manifest for the `doc/gnn/` documentation tree.  
-**Version**: v2.0.0  
-**Context**: Canonical index of all GNN documentation, organized by domain.
+## Module Overview
+
+**Purpose**: Root-level manifest for the `doc/gnn/` documentation tree. Canonical index of all GNN documentation, organized by domain.
+**Pipeline Step**: Documentation Agent
+**Category**: Documentation
+**Status**: ✅ Production Ready
+**Version**: 2.0.0
+**Last Updated**: 2026-03-24
 
 ## Directory Identity
 

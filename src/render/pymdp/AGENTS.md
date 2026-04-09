@@ -21,8 +21,18 @@ If a function is not exported there, it should not be documented as public API.
     - `render_file(...)`
     - `render_spec(...)`
     - `render_directory(...)`
-    - `_generate_pymdp_simulation_code(...)`
-    - `_get_timestamp(...)`
+    - `_generate_code(...)` — dispatches to pipeline or standalone template
+  - Constructor takes `options={"mode": "pipeline" | "standalone"}`:
+    * **pipeline** (default) emits a thin runner that delegates to
+      `src.execute.pymdp.run_simple_pymdp_simulation`.
+    * **standalone** emits a fully self-contained pymdp 1.0.0 script.
+- `pymdp_templates.py`
+  - `generate_pipeline_runner_script(ctx)` — pipeline runner
+  - `generate_standalone_runner_script(ctx)` — standalone runner
+  - Legacy helpers (`generate_file_header`, `generate_example_usage_template`,
+    `generate_placeholder_matrices`) now emit pymdp 1.0.0 JAX-first code.
+- `pymdp_converter.py` — long-form GNN→pymdp converter retained for tests;
+  not on the primary `render_gnn_to_pymdp` code path.
 
 ## Data Flow
 
@@ -42,8 +52,15 @@ If a function is not exported there, it should not be documented as public API.
 - Keep signatures synchronized with real exports and real function parameters.
 - Avoid documenting speculative helper APIs.
 - Keep package naming consistent with repository setup:
-  - install: `inferactively-pymdp`
-  - import: `from pymdp.agent import Agent`
+  - install: `uv pip install 'inferactively-pymdp>=1.0.0'`
+  - imports (JAX-first):
+    ```python
+    import jax.numpy as jnp
+    import jax.random as jr
+    from pymdp.agent import Agent
+    ```
+- All generated scripts embed a runtime check for
+  `Agent.update_empirical_prior` and exit fast on legacy (<1.0.0) wheels.
 
 ## Tests
 

@@ -40,9 +40,20 @@ Do not document non-exported helper names as public contract.
 
 ## Dependency Boundary
 
-- Preferred package: `inferactively-pymdp`
-- Import style in code/examples: `from pymdp.agent import Agent`
-- If unavailable, code may use guarded fallback behavior depending on module.
+- Required package: `inferactively-pymdp>=1.0.0` (JAX-first rewrite).
+- Import style in code/examples:
+  ```python
+  import jax.numpy as jnp
+  import jax.random as jr
+  from pymdp.agent import Agent
+  from pymdp import utils as pymdp_utils
+  ```
+- No "recovery" / fallback Agent is shipped; if pymdp 1.0.0+ is not importable
+  the execution path fails fast via `simple_simulation._require_pymdp_1`.
+- Rollout loop uses the canonical 1.0.0 pattern:
+  `infer_states(empirical_prior=…, return_info=True)` →
+  `infer_policies(qs)` → `sample_action(q_pi, rng_key=…)` →
+  `update_empirical_prior(action, qs)`.
 
 ## Key Internal Files
 

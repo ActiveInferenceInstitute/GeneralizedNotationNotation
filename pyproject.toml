@@ -44,8 +44,13 @@ dependencies = [
     "python-dotenv>=1.0.0",
     # Safe XML parsing (replaces stdlib xml.etree/minidom for untrusted input)
     "defusedxml>=0.7.1",
-    # Active Inference ecosystem
-    "inferactively-pymdp>=0.0.7",  # Active Inference agent framework
+    # Active Inference ecosystem — pymdp 1.0.0 is the JAX-first rewrite
+    # (see doc/pymdp/pymdp_1_0_0_alignment_matrix.md). Step 12 uses the new
+    # Agent API: list[jax.Array] models, infer_states(empirical_prior=...),
+    # infer_policies(qs), sample_action(q_pi, rng_key=...).
+    "inferactively-pymdp>=1.0.0",
+    "equinox>=0.11.0",  # pymdp 1.0.0 Agent is an equinox Module
+    "multimethod>=1.11",  # pymdp 1.0.0 dispatch
     # Step 12 execution backends (JAX, NumPyro, PyTorch, DisCoPy) — same pins as optional ``execution-frameworks``
     "jax[cpu]>=0.4.0",
     "jaxlib>=0.4.0",

@@ -1,11 +1,13 @@
-# Deployment Documentation Agents
+# Deployment Documentation — Agent Scaffolding
 
-## Overview
+## Module Overview
 
 **Purpose**: Documentation for deploying GNN applications and pipelines.
-
-**Status**: ✅ Active
+**Pipeline Step**: Documentation Agent
+**Category**: Documentation / Deployment
+**Status**: ✅ Production Ready
 **Version**: 1.0.0
+**Last Updated**: 2026-03-24
 
 ---
 

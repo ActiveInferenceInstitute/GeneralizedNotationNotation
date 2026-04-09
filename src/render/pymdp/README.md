@@ -46,10 +46,30 @@ Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 w
 
 ## Dependency Notes
 
-- Runtime scripts target the PyMDP package imported as:
-  - `from pymdp.agent import Agent`
-- Installation guidance in this repository uses:
-  - `uv pip install inferactively-pymdp`
+- Runtime scripts target **pymdp 1.0.0 (JAX-first)**.
+- Installation guidance:
+  ```bash
+  uv pip install 'inferactively-pymdp>=1.0.0'
+  ```
+- Generated scripts import:
+  ```python
+  import jax.numpy as jnp
+  import jax.random as jr
+  from pymdp.agent import Agent
+  from pymdp import utils as pymdp_utils
+  ```
+- Each generated script sanity-checks for ``Agent.update_empirical_prior`` at
+  runtime and exits fast with a clear message if a legacy wheel is present.
+
+## Render Modes
+
+`PyMDPRenderer` accepts `options={"mode": ...}`:
+
+- `"pipeline"` (default) — thin runner that delegates to
+  `src.execute.pymdp.run_simple_pymdp_simulation` (the canonical JAX rollout).
+- `"standalone"` — fully self-contained pymdp 1.0.0 script with an inline
+  rollout loop. Useful for sharing a runnable example that does not require
+  this repository on `PYTHONPATH`.
 
 ## Verification
 

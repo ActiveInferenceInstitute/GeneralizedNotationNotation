@@ -105,7 +105,7 @@ class TestPipelineScriptDiscovery:
         "6_validation.py", "7_export.py", "8_visualization.py", "9_advanced_viz.py",
         "10_ontology.py", "11_render.py", "12_execute.py", "13_llm.py", "14_ml_integration.py",
         "15_audio.py", "16_analysis.py", "17_integration.py", "18_security.py",
-        "19_research.py", "20_website.py", "21_mcp.py", "22_gui.py", "23_report.py"
+        "19_research.py", "20_website.py", "21_mcp.py", "22_gui.py", "23_report.py", "24_intelligent_analysis.py"
     ])
     def test_pipeline_script_structure(self, script_name: str) -> None:
         """Test that each pipeline script has proper structure and imports."""

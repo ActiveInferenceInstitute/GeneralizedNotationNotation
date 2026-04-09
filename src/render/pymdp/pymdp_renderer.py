@@ -1,54 +1,68 @@
 #!/usr/bin/env python3
 """
-PyMDP Renderer
+PyMDP Renderer (pymdp 1.0.0 / JAX-first).
 
-Renders GNN specifications to PyMDP simulation code that integrates with the 
-execute/pymdp module. This renderer creates executable PyMDP simulations
-configured from parsed GNN POMDP specifications.
+Generates executable Python scripts that run real pymdp 1.0.0 simulations
+from GNN specifications. Two shapes of output are emitted (see
+``pymdp_templates.py``):
 
-Features:
-- GNN-to-PyMDP parameter extraction
-- Authentic PyMDP simulation code generation
-- Pipeline integration with execute module
-- Configurable POMDP matrices from GNN initial parameterization
+1. **Pipeline runner** — delegates to ``src.execute.pymdp.run_simple_pymdp_simulation``
+   so the script is a thin wrapper around the pipeline's tested rollout.
+2. **Standalone runner** — builds a pymdp 1.0.0 ``Agent`` directly and
+   performs a rollout inline. Useful for sharing a self-contained script
+   with external users or running without the GNN pipeline on PYTHONPATH.
 
-Author: GNN PyMDP Integration
-Date: 2024
+Upstream reference: https://github.com/infer-actively/pymdp
+Breaking-change notes: doc/pymdp/pymdp_1_0_0_alignment_matrix.md
 """
 
+from __future__ import annotations
+
+import json as _json
 import logging
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+import numpy as np
+
+from .pymdp_templates import (
+    generate_pipeline_runner_script,
+    generate_standalone_runner_script,
+)
+
 try:
-    from ...gnn.parsers.common import GNNInternalRepresentation, ParseResult
-    from ...gnn.parsers.json_parser import JSONGNNParser
+    from ...gnn.parsers.common import GNNInternalRepresentation, ParseResult  # noqa: F401
     from ...gnn.parsers.markdown_parser import MarkdownGNNParser
-except ImportError:
-    # Recovery imports for standalone use
+except ImportError:  # pragma: no cover - fallback when used standalone
     try:
-        from gnn.parsers.common import GNNInternalRepresentation, ParseResult
-        from gnn.parsers.json_parser import JSONGNNParser
+        from gnn.parsers.common import GNNInternalRepresentation, ParseResult  # noqa: F401
         from gnn.parsers.markdown_parser import MarkdownGNNParser
     except ImportError:
-        # Simple recovery for testing
-        logging.warning("GNN parsers not available, using simplified parsing")
-        class GNNInternalRepresentation:
-            def __init__(self, data): self.data = data
-        class ParseResult:
-            def __init__(self, success, data): self.success = success; self.data = data
-        class MarkdownGNNParser: # Kept for parse_gnn_markdown, but its parse method is simplified
-            def parse(self, content): return ParseResult(True, {'model_name': 'RecoveryModel'})
-        class JSONGNNParser: # Kept for consistency, but its parse method is simplified
-            def parse(self, content): return ParseResult(True, {'model_name': 'RecoveryModel'})
+        logging.warning("GNN parsers not available, using simplified parsing stubs")
+
+        class ParseResult:  # type: ignore[no-redef]
+            def __init__(self, success: bool, data: Any) -> None:
+                self.success = success
+                self.data = data
+
+        class MarkdownGNNParser:  # type: ignore[no-redef]
+            def parse_string(self, content: str) -> ParseResult:
+                return ParseResult(True, {"model_name": "RecoveryModel"})
+
+
+logger = logging.getLogger(__name__)
 
 
 def _ensure_initialparameterization_from_parameters(gnn_spec: Dict[str, Any]) -> None:
     """
-    Markdown `to_dict()` stores matrices under `parameters` as a list of {name, value}.
-    PyMDP generation expects `initialparameterization` (dict). Merge when the latter is absent.
+    Markdown ``to_dict()`` stores matrices under ``parameters`` as a list of
+    ``{name, value}``. PyMDP generation expects ``initialparameterization``
+    (dict). Merge when the latter is absent.
     """
-    existing = gnn_spec.get("initialparameterization") or gnn_spec.get("initial_parameterization")
+    existing = gnn_spec.get("initialparameterization") or gnn_spec.get(
+        "initial_parameterization"
+    )
     if existing:
         if "initialparameterization" not in gnn_spec and isinstance(existing, dict):
             gnn_spec["initialparameterization"] = dict(existing)
@@ -58,230 +72,209 @@ def _ensure_initialparameterization_from_parameters(gnn_spec: Dict[str, Any]) ->
     if not isinstance(raw, list) or not raw:
         return
 
-    init: Dict[str, Any] = {}
+    merged: Dict[str, Any] = {}
     for item in raw:
         if not isinstance(item, dict):
             continue
         name = item.get("name")
         if not name:
             continue
-        init[str(name).strip()] = item.get("value")
+        merged[str(name).strip()] = item.get("value")
 
-    if init:
-        gnn_spec["initialparameterization"] = init
+    if merged:
+        gnn_spec["initialparameterization"] = merged
 
 
 def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]]:
-    """
-    Parse GNN markdown content into a structured dictionary.
-    
-    Args:
-        content: GNN markdown content
-        file_path: Path to the source file
-        
-    Returns:
-        Parsed GNN specification dictionary or None if parsing fails
-    """
+    """Parse GNN markdown into a dict, or return None on failure."""
     try:
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-
-        if result.success:
-            # Convert internal representation to dictionary
+        if getattr(result, "success", False):
             gnn_spec = result.model.to_dict()
             _ensure_initialparameterization_from_parameters(gnn_spec)
             return gnn_spec
-        else:
-            logging.error(f"Failed to parse GNN file {file_path}: {result.errors}")
-            return None
-
-    except Exception as e:
-        logging.error(f"Exception parsing GNN file {file_path}: {e}")
+        logger.error("Failed to parse GNN file %s: %s", file_path, getattr(result, "errors", ""))
         return None
+    except Exception as e:  # noqa: BLE001
+        logger.exception("Exception parsing GNN file %s: %s", file_path, e)
+        return None
+
+
+def _to_clean_nested(obj: Any) -> Any:
+    """Recursively coerce numpy arrays into plain JSON-safe nested lists."""
+    if obj is None:
+        return None
+    if isinstance(obj, (np.ndarray,)):
+        return obj.tolist()
+    if isinstance(obj, (list, tuple)):
+        return [_to_clean_nested(x) for x in obj]
+    if isinstance(obj, (int, float, bool, str)):
+        return obj
+    if hasattr(obj, "tolist"):
+        return _to_clean_nested(obj.tolist())
+    return obj
+
+
+def _extract_dimensions(
+    gnn_spec: Dict[str, Any], init_params: Dict[str, Any]
+) -> Tuple[int, int, int]:
+    """Figure out (num_obs, num_states, num_actions) from spec or matrices."""
+    variables = gnn_spec.get("variables") or []
+    state_vars = {
+        var.get("name"): var
+        for var in variables
+        if isinstance(var, dict) and var.get("name") in {"A", "B", "C", "D", "E"}
+    }
+
+    num_obs = 3
+    num_states = 3
+    num_actions = 3
+
+    if "A" in state_vars:
+        dims = state_vars["A"].get("dimensions") or []
+        if len(dims) >= 2:
+            num_obs = int(dims[0])
+            num_states = int(dims[1])
+
+    if "B" in state_vars:
+        dims = state_vars["B"].get("dimensions") or []
+        if len(dims) >= 3:
+            num_actions = int(dims[2])
+
+    model_params = gnn_spec.get("model_parameters") or {}
+    num_states = int(model_params.get("num_hidden_states", num_states))
+    num_obs = int(model_params.get("num_obs", num_obs))
+    num_actions = int(model_params.get("num_actions", num_actions))
+
+    A_raw = init_params.get("A")
+    if A_raw is not None:
+        arr = np.asarray(A_raw)
+        if arr.ndim == 2:
+            num_obs, num_states = int(arr.shape[0]), int(arr.shape[1])
+
+    B_raw = init_params.get("B")
+    if B_raw is not None:
+        arr = np.asarray(B_raw)
+        if arr.ndim == 3:
+            # assume (action, prev, next) or (next, prev, action)
+            if arr.shape[0] == num_states and arr.shape[1] == num_states:
+                num_actions = int(arr.shape[2])
+            else:
+                num_actions = int(arr.shape[0])
+
+    return int(num_obs), int(num_states), int(max(num_actions, 1))
 
 
 class PyMDPRenderer:
     """
-    PyMDP renderer for generating executable PyMDP simulation code from GNN specifications.
+    GNN → pymdp 1.0.0 (JAX-first) code generator.
+
+    Parameters
+    ----------
+    options
+        * ``mode`` — ``"pipeline"`` (default) or ``"standalone"``.
+          ``"pipeline"`` emits a thin runner that calls
+          ``src.execute.pymdp.run_simple_pymdp_simulation``.
+          ``"standalone"`` emits a self-contained pymdp 1.0.0 script.
     """
 
-    def __init__(self, options: Optional[Dict[str, Any]] = None):
-        """
-        Initialize PyMDP renderer.
-        
-        Args:
-            options: Optional configuration options
-        """
+    def __init__(self, options: Optional[Dict[str, Any]] = None) -> None:
         self.options = options or {}
+        self.mode = str(self.options.get("mode", "pipeline")).lower()
+        if self.mode not in {"pipeline", "standalone"}:
+            self.mode = "pipeline"
         self.logger = logging.getLogger(__name__)
 
+    # ------------------------------------------------------------------
+    # Entry points
+    # ------------------------------------------------------------------
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
-        """
-        Render a single GNN file to PyMDP simulation code.
-        
-        Args:
-            gnn_file_path: Path to GNN file
-            output_path: Path for output PyMDP script
-            
-        Returns:
-            Tuple of (success, message)
-        """
         try:
-            # Read GNN file
-            with open(gnn_file_path, 'r', encoding='utf-8') as f:
+            with open(gnn_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            # Parse GNN content
             gnn_spec = parse_gnn_markdown(content, gnn_file_path)
             if not gnn_spec:
                 return False, f"Failed to parse GNN file: {gnn_file_path}"
 
-            # Generate PyMDP simulation code
-            pymdp_code = self._generate_pymdp_simulation_code(gnn_spec, gnn_file_path.stem)
-
-            # Write output file
+            code = self._generate_code(gnn_spec, gnn_file_path.stem)
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(pymdp_code)
+            output_path.write_text(code, encoding="utf-8")
+            self.logger.info("Generated pymdp 1.0.0 runner: %s", output_path)
+            return True, "Successfully generated pymdp 1.0.0 simulation script"
+        except Exception as e:  # noqa: BLE001
+            msg = f"Error rendering {gnn_file_path}: {e}"
+            self.logger.exception(msg)
+            return False, msg
 
-            self.logger.info(f"Generated PyMDP simulation: {output_path}")
-            return True, "Successfully generated PyMDP simulation code"
-
-        except Exception as e:
-            error_msg = f"Error rendering {gnn_file_path}: {e}"
-            self.logger.error(error_msg)
-            return False, error_msg
-
-    def render_spec(self, gnn_spec: Dict[str, Any], output_path: Path) -> Tuple[bool, str, List[str]]:
-        """
-        Render a pre-parsed GNN specification to a PyMDP simulation script.
-
-        Args:
-            gnn_spec: Parsed GNN specification dictionary
-            output_path: Path for output PyMDP script
-
-        Returns:
-            Tuple of (success, message, warnings)
-        """
+    def render_spec(
+        self, gnn_spec: Dict[str, Any], output_path: Path
+    ) -> Tuple[bool, str, List[str]]:
         try:
-            model_name = gnn_spec.get('model_name', 'GNN_Model')
-            pymdp_code = self._generate_pymdp_simulation_code(gnn_spec, model_name)
-
+            model_name = gnn_spec.get("model_name", "GNN_Model")
+            code = self._generate_code(gnn_spec, model_name)
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(pymdp_code)
+            output_path.write_text(code, encoding="utf-8")
 
-            warnings = []
-            if not gnn_spec.get('initial_parameterization'):
-                warnings.append("No initial parameterization found - using defaults")
-            if not gnn_spec.get('model_parameters'):
-                warnings.append("No model parameters found - using inferred dimensions")
+            warnings: List[str] = []
+            if not (
+                gnn_spec.get("initialparameterization")
+                or gnn_spec.get("initial_parameterization")
+            ):
+                warnings.append("No initial parameterization found — using defaults")
+            if not gnn_spec.get("model_parameters"):
+                warnings.append("No model parameters found — using inferred dimensions")
+            return True, f"Generated pymdp 1.0.0 runner: {output_path}", warnings
+        except Exception as e:  # noqa: BLE001
+            msg = f"Error rendering spec to {output_path}: {e}"
+            self.logger.exception(msg)
+            return False, msg, []
 
-            return True, f"Generated PyMDP simulation script: {output_path}", warnings
-
-        except Exception as e:
-            error_msg = f"Error rendering spec to {output_path}: {e}"
-            self.logger.error(error_msg)
-            return False, error_msg, []
-
-    def render_directory(self, output_dir: Path, input_dir: Optional[Path] = None) -> Dict[str, Any]:
-        """
-        Render all GNN files in a directory to PyMDP simulation code.
-        
-        Args:
-            output_dir: Directory for output files
-            input_dir: Input directory with GNN files (optional)
-            
-        Returns:
-            Dictionary with rendering results
-        """
-        results = {
-            'rendered_files': [],
-            'failed_files': [],
-            'total_files': 0,
-            'successful_renders': 0
+    def render_directory(
+        self, output_dir: Path, input_dir: Optional[Path] = None
+    ) -> Dict[str, Any]:
+        results: Dict[str, Any] = {
+            "rendered_files": [],
+            "failed_files": [],
+            "total_files": 0,
+            "successful_renders": 0,
         }
-
-        # Find GNN files
         if input_dir:
             gnn_files = list(input_dir.glob("*.md")) + list(input_dir.glob("*.gnn"))
         else:
-            # Use default input directory
             gnn_files = list(Path("input/gnn_files").glob("*.md"))
-
-        results['total_files'] = len(gnn_files)
+        results["total_files"] = len(gnn_files)
 
         for gnn_file in gnn_files:
-            output_file = output_dir / f"{gnn_file.stem}_pymdp_simulation.py"
-            success, message = self.render_file(gnn_file, output_file)
-
-            if success:
-                results['rendered_files'].append({
-                    'input_file': str(gnn_file),
-                    'output_file': str(output_file),
-                    'message': message
-                })
-                results['successful_renders'] += 1
+            out = output_dir / f"{gnn_file.stem}_pymdp_simulation.py"
+            ok, msg = self.render_file(gnn_file, out)
+            if ok:
+                results["rendered_files"].append(
+                    {"input_file": str(gnn_file), "output_file": str(out), "message": msg}
+                )
+                results["successful_renders"] += 1
             else:
-                results['failed_files'].append({
-                    'input_file': str(gnn_file),
-                    'error': message
-                })
-
+                results["failed_files"].append({"input_file": str(gnn_file), "error": msg})
         return results
 
-    def _generate_pymdp_simulation_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
-        """
-        Generate executable PyMDP simulation code from GNN specification.
-        
-        Args:
-            gnn_spec: Parsed GNN specification
-            model_name: Name of the model
-            
-        Returns:
-            Generated Python code string
-        """
-        # Extract key information from GNN spec
-        model_display_name = gnn_spec.get('model_name', model_name)
-        model_annotation = gnn_spec.get('annotation', '')
+    # ------------------------------------------------------------------
+    # Code generation
+    # ------------------------------------------------------------------
+    def _generate_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+        model_display_name = gnn_spec.get("model_name", model_name)
+        model_annotation = gnn_spec.get("annotation", "")
+        init_params = gnn_spec.get("initialparameterization") or gnn_spec.get(
+            "initial_parameterization", {}
+        )
 
-        # Parse state space variables
-        variables = gnn_spec.get('variables', [])
-        state_vars = {var['name']: var for var in variables if var.get('name') in ['A', 'B', 'C', 'D', 'E']}
+        num_obs, num_states, num_actions = _extract_dimensions(gnn_spec, init_params)
 
-        # Extract dimensions
-        num_states = 3
-        num_observations = 3
-        num_actions = 3
-
-        # Try to get dimensions from variables
-        if 'A' in state_vars and 'dimensions' in state_vars['A']:
-            dims = state_vars['A']['dimensions']
-            if len(dims) >= 2:
-                num_observations = dims[0]
-                num_states = dims[1]
-
-        if 'B' in state_vars and 'dimensions' in state_vars['B']:
-            dims = state_vars['B']['dimensions']
-            if len(dims) >= 3:
-                num_actions = dims[2]
-
-        # Try model parameters
-        model_params = gnn_spec.get('model_parameters', {})
-        if model_params:
-            num_states = model_params.get('num_hidden_states', num_states)
-            num_observations = model_params.get('num_obs', num_observations)
-            num_actions = model_params.get('num_actions', num_actions)
-
-        # Get initial parameterization (try both key variations)
-        initial_params = gnn_spec.get('initialparameterization', {}) or gnn_spec.get('initial_parameterization', {})
-
-        # Extract state space matrices/vectors
-        A_matrix = initial_params.get('A')
-        B_matrix = initial_params.get('B')
-        C_vector = initial_params.get('C')
-        D_vector = initial_params.get('D')
-        E_vector = initial_params.get('E')
+        A_matrix = _to_clean_nested(init_params.get("A"))
+        B_matrix = _to_clean_nested(init_params.get("B"))
+        C_vector = _to_clean_nested(init_params.get("C"))
+        D_vector = _to_clean_nested(init_params.get("D"))
+        E_vector = _to_clean_nested(init_params.get("E"))
 
         missing = [
             label
@@ -291,268 +284,46 @@ class PyMDPRenderer:
                 ("C", C_vector),
                 ("D", D_vector),
             )
-            if not val
+            if val is None
         ]
         if missing:
             self.logger.warning(
-                "Missing initial parameterization entries (using defaults): %s",
+                "Missing initial parameterization entries (defaults will be used at runtime): %s",
                 ",".join(missing),
             )
 
-        # Format matrices for embedding in code
-        import json as json_module
+        context: Dict[str, Any] = {
+            "model_name": model_name,
+            "model_display_name": model_display_name,
+            "model_annotation": model_annotation,
+            "num_obs": num_obs,
+            "num_states": num_states,
+            "num_actions": num_actions,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "A_literal": _json.dumps(A_matrix) if A_matrix is not None else "None",
+            "B_literal": _json.dumps(B_matrix) if B_matrix is not None else "None",
+            "C_literal": _json.dumps(C_vector) if C_vector is not None else "None",
+            "D_literal": _json.dumps(D_vector) if D_vector is not None else "None",
+            "E_literal": _json.dumps(E_vector) if E_vector is not None else "None",
+            "gnn_spec_literal": _json.dumps(gnn_spec, indent=4, default=str),
+            "num_timesteps": int(
+                (gnn_spec.get("model_parameters") or {}).get("num_timesteps", 20)
+            ),
+        }
 
-        import numpy as np
-
-        # Convert matrices to JSON-serializable format for embedding
-        def format_matrix_for_code(matrix):
-            """Convert matrix to string representation for code embedding."""
-            if matrix is None:
-                return "None"
-
-            # recursive helper to ensure everything is a list or primitive
-            def to_clean_list(obj):
-                if isinstance(obj, (np.ndarray, list, tuple)):
-                    return [to_clean_list(x) for x in obj]
-                if isinstance(obj, (int, float, str, bool, type(None))):
-                    return obj
-                if hasattr(obj, 'tolist'):
-                    return to_clean_list(obj.tolist())
-                return str(obj) # Recovery
-
-            try:
-                # Ensure it's a clean list structure (handles jagged lists naturally)
-                clean_data = to_clean_list(matrix)
-                return json_module.dumps(clean_data)
-            except Exception as e:
-                # Recovery to string representation
-                logger.warning(f"Failed to cleanly format matrix: {e}. using raw dumps.")
-                return json_module.dumps(matrix)
-
-        A_matrix_str = format_matrix_for_code(A_matrix)
-        B_matrix_str = format_matrix_for_code(B_matrix)
-        C_vector_str = format_matrix_for_code(C_vector)
-        D_vector_str = format_matrix_for_code(D_vector)
-        E_vector_str = format_matrix_for_code(E_vector)
-
-        # Generate the code
-        code = f'''#!/usr/bin/env python3
-"""
-PyMDP Simulation Script for {model_display_name}
-
-This script was automatically generated from a GNN specification.
-It uses the GNN pipeline's PyMDP execution module to run an Active Inference simulation.
-
-Model: {model_display_name}
-Description: {model_annotation}
-Generated: {self._get_timestamp()}
-
-State Space:
-- Hidden States: {num_states}
-- Observations: {num_observations} 
-- Actions: {num_actions}
-
-State Space Matrices (from GNN):
-- A (Likelihood): {'Present' if A_matrix else 'Missing'}
-- B (Transition): {'Present' if B_matrix else 'Missing'}
-- C (Preferences): {'Present' if C_vector else 'Missing'}
-- D (Prior): {'Present' if D_vector else 'Missing'}
-- E (Habits): {'Present' if E_vector else 'Missing'}
-"""
-
-import sys
-from pathlib import Path
-import os
-
-# Remove script directory from sys.path if named 'pymdp' — it would mask the installed library
-if sys.path[0] and sys.path[0].endswith("pymdp"):
-    print(f"⚠️  Detected namespace conflict with script directory '{{sys.path[0]}}', removing from sys.path")
-    sys.path.pop(0)
-import logging
-import subprocess
-import json
-import numpy as np
-
-# Note: package is 'inferactively-pymdp', not 'pymdp'
-try:
-    import pymdp
-    try:
-        from pymdp.agent import Agent
-        print("✅ PyMDP (inferactively-pymdp) is available")
-    except ImportError:
-        if hasattr(pymdp, "Agent"):
-            print("✅ PyMDP (flat structure) is available")
-        else:
-            print("⚠️  PyMDP found but wrong version — install: uv pip install inferactively-pymdp")
-except ImportError:
-    print("❌ PyMDP not found — install: uv pip install inferactively-pymdp")
-    sys.exit(1)
-
-# Resolve repository root: prefer GNN_PROJECT_ROOT (set by Step 12), else walk up for pyproject.toml + src/
-_gnn_root = os.environ.get("GNN_PROJECT_ROOT")
-if _gnn_root:
-    _repo = Path(_gnn_root).resolve()
-    sys.path.insert(0, str(_repo))
-else:
-    _cur = Path(__file__).resolve().parent
-    _found = None
-    for _ in range(24):
-        if (_cur / "pyproject.toml").is_file() and (_cur / "src").is_dir():
-            _found = _cur
-            break
-        if _cur.parent == _cur:
-            break
-        _cur = _cur.parent
-    if _found is None:
-        print(
-            "❌ Cannot locate GNN repository root. Run via the pipeline execute step, or set "
-            "GNN_PROJECT_ROOT to the checkout root (directory containing pyproject.toml and src/).",
-            file=sys.stderr,
-        )
-        sys.exit(1)
-    sys.path.insert(0, str(_found))
-
-from src.execute.pymdp import execute_pymdp_simulation
-
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
-def main():
-    """Main simulation function."""
-    
-    # State Space Matrices (extracted from GNN and embedded here)
-    A_matrix_data = {A_matrix_str}  # Likelihood matrix P(o|s)
-    B_matrix_data = {B_matrix_str}  # Transition matrix P(s'|s,u)
-    C_vector_data = {C_vector_str}  # Preferences over observations
-    D_vector_data = {D_vector_str}  # Prior beliefs over states
-    E_vector_data = {E_vector_str}  # Policy priors (habits)
-    
-    # Convert to numpy arrays
-    if A_matrix_data is not None:
-        A_matrix = np.array(A_matrix_data)
-        # Normalize A matrix (columns should sum to 1)
-        if A_matrix.ndim == 2:
-            norm = np.sum(A_matrix, axis=0)
-            A_matrix = A_matrix / np.where(norm == 0, 1, norm)
-        logger.info(f"A matrix shape: {{A_matrix.shape}}")
-    else:
-        A_matrix = None
-        logger.warning("A matrix not provided")
-    
-    if B_matrix_data is not None:
-        B_matrix = np.array(B_matrix_data)
-        # B matrix normalization is handled by simple_simulation.py which knows the dimension layout.
-        logger.info(f"B matrix shape: {{B_matrix.shape}}")
-    else:
-        B_matrix = None
-        logger.warning("B matrix not provided")
-    
-    if C_vector_data is not None:
-        C_vector = np.array(C_vector_data)
-        logger.info(f"C vector shape: {{C_vector.shape}}")
-    else:
-        C_vector = None
-        logger.warning("C vector not provided")
-    
-    if D_vector_data is not None:
-        D_vector = np.array(D_vector_data)
-        # Normalize D vector
-        norm = np.sum(D_vector)
-        D_vector = D_vector / np.where(norm == 0, 1, norm)
-        logger.info(f"D vector shape: {{D_vector.shape}}")
-    else:
-        D_vector = None
-        logger.warning("D vector not provided")
-    
-    if E_vector_data is not None:
-        E_vector = np.array(E_vector_data)
-        logger.info(f"E vector shape: {{E_vector.shape}}")
-    else:
-        E_vector = None
-    
-    # GNN Specification (embedded with state spaces)
-    gnn_spec = {json_module.dumps(gnn_spec, indent=4, default=str)}
-    
-    # Ensure state space matrices are in gnn_spec for execution
-    if 'initialparameterization' not in gnn_spec:
-        gnn_spec['initialparameterization'] = {{}}
-    if A_matrix is not None:
-        gnn_spec['initialparameterization']['A'] = A_matrix.tolist() if hasattr(A_matrix, 'tolist') else A_matrix
-    if B_matrix is not None:
-        gnn_spec['initialparameterization']['B'] = B_matrix.tolist() if hasattr(B_matrix, 'tolist') else B_matrix
-    if C_vector is not None:
-        gnn_spec['initialparameterization']['C'] = C_vector.tolist() if hasattr(C_vector, 'tolist') else C_vector
-    if D_vector is not None:
-        gnn_spec['initialparameterization']['D'] = D_vector.tolist() if hasattr(D_vector, 'tolist') else D_vector
-    if E_vector is not None:
-        gnn_spec['initialparameterization']['E'] = E_vector.tolist() if hasattr(E_vector, 'tolist') else E_vector
-    
-    # Output directory
-    output_dir = Path("output") / "pymdp_simulations" / "{model_name}"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    
-    logger.info("Starting PyMDP simulation for {model_display_name}")
-    logger.info(f"Output directory: {{output_dir}}")
-    logger.info(f"State space matrices: A={{A_matrix is not None}}, B={{B_matrix is not None}}, C={{C_vector is not None}}, D={{D_vector is not None}}, E={{E_vector is not None}}")
-    
-    # Run simulation
-    try:
-        success, results = execute_pymdp_simulation(
-            gnn_spec=gnn_spec,
-            output_dir=output_dir,
-            correlation_id="render_generated_script"
-        )
-        
-        if success:
-            logger.info("✓ Simulation completed successfully!")
-            logger.info(f"Results summary:")
-            logger.info(f"  Correlation ID: {{results.get('correlation_id', 'N/A')}}")
-            logger.info(f"  Success: {{results.get('success', False)}}")
-            logger.info(f"  Output: {{output_dir}}")
-            return 0
-        else:
-            logger.error("✗ Simulation failed!")
-            logger.error(f"Error: {{results.get('error', 'Unknown error')}}")
-            return 1
-            
-    except Exception as e:
-        logger.error(f"Unexpected error: {{e}}")
-        import traceback
-        traceback.print_exc()
-        return 1
-
-if __name__ == "__main__":
-    sys.exit(main())
-'''
-
-        return code
-
-    def _get_timestamp(self) -> str:
-        """Get current timestamp string."""
-        from datetime import datetime
-        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if self.mode == "standalone":
+            return generate_standalone_runner_script(context)
+        return generate_pipeline_runner_script(context)
 
 
 def render_gnn_to_pymdp(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
-    """
-    Render GNN specification to PyMDP simulation script.
-
-    Args:
-        gnn_spec: Parsed GNN specification dictionary
-        output_path: Path for output PyMDP script
-        options: Optional rendering options
-
-    Returns:
-        Tuple of (success, message, warnings: List[str])
-    """
+    """Public entry point for the render pipeline (Step 11)."""
     try:
         renderer = PyMDPRenderer(options)
         return renderer.render_spec(gnn_spec, output_path)
-
-    except Exception as e:
-        return False, f"Error generating PyMDP script: {e}", []
+    except Exception as e:  # noqa: BLE001
+        return False, f"Error generating pymdp 1.0.0 script: {e}", []

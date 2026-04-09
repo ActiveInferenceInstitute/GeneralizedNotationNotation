@@ -779,7 +779,7 @@ The module looks for the summary file at two locations:
 ### Dependency Chain
 
 ```
-Steps 0-23 (all pipeline steps)
+Steps 0-24 (all pipeline steps)
     |
     v
 00_pipeline_summary/pipeline_execution_summary.json

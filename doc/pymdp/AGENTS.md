@@ -11,7 +11,10 @@ This document provides agent scaffolding for the PyMDP Framework documentation s
 
 ## Purpose
 
-Documentation for the PyMDP (Python POMDP) framework integration with GNN.
+Documentation for the pymdp 1.0.0 (JAX-first) active inference framework
+integration with GNN. pymdp 1.0.0 replaces the legacy NumPy Agent surface with
+a JAX/equinox Agent that takes batched `list[jax.Array]` models and requires
+explicit PRNG key / empirical-prior carry-through.
 
 ## Documentation Organization
 

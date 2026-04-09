@@ -32,10 +32,19 @@ Exports are defined in `src/execute/pymdp/__init__.py`. Main entry points:
 
 ## Dependency Guidance
 
-- Recommended install for this repo:
-  - `uv pip install inferactively-pymdp`
+- Required install:
+  ```bash
+  uv pip install 'inferactively-pymdp>=1.0.0'
+  ```
+  pymdp 1.0.0 is the JAX-first rewrite (`equinox.Module` Agent, batched
+  list-of-JAX-array models, explicit PRNG keys for action sampling).
 - Runtime import style:
-  - `from pymdp.agent import Agent`
+  ```python
+  import jax.numpy as jnp
+  import jax.random as jr
+  from pymdp.agent import Agent
+  from pymdp import utils as pymdp_utils
+  ```
 
 ## Output Intent
 
@@ -44,10 +53,22 @@ explicitly deferred to Step 16 analysis.
 
 ## Upstream PyMDP ``Agent`` contract tests
 
-The simulation loop in `simple_simulation.py` depends on `inferactively-pymdp`
-(`Agent.infer_states`, `infer_policies`, `sample_action`, `utils.obj_array`,
-`utils.is_normalized`). Regression coverage:
+The simulation loop in `simple_simulation.py` calls pymdp 1.0.0's
+JAX-first `Agent` with the canonical rollout pattern:
+
+```python
+qs, info = agent.infer_states(obs, empirical_prior=prior, return_info=True)
+q_pi, neg_efe = agent.infer_policies(qs)
+action = agent.sample_action(q_pi, rng_key=jr.split(key, agent.batch_size + 1)[1:])
+prior = agent.update_empirical_prior(action, qs)
+```
+
+Regression coverage:
 
 ```bash
-uv run pytest src/tests/test_pymdp_1_0_0_upstream_api.py -v
+uv run pytest \
+    src/tests/test_pymdp_1_0_0_upstream_api.py \
+    src/tests/test_pymdp_contracts.py \
+    src/tests/test_execute_pymdp_integration.py \
+    -v
 ```
