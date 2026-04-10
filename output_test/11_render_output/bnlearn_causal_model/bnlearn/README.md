@@ -1,0 +1,43 @@
+# BNLEARN Rendering Results
+
+Generated from GNN POMDP Model: **Bnlearn Causal Model**
+
+## Model Information
+
+- **Model Name**: Bnlearn Causal Model
+- **Model Description**: A Bayesian Network model mapping Active Inference structure:
+- S: Hidden State
+- A: Action
+- S_prev: Previous State
+- O: Observation
+- **Generation Date**: 2026-04-09 14:51:18
+
+## POMDP Dimensions
+
+- **Number of States**: 2
+- **Number of Observations**: 2
+- **Number of Actions**: 2
+
+## Active Inference Matrices
+
+### Available Matrices/Vectors:
+- **A Matrix (Likelihood)**: 2×2 - Maps hidden states to observations
+- **C Vector (Preferences)**: Length 2 - Preferences over observations
+- **D Vector (Prior)**: Length 2 - Prior beliefs over states
+
+
+## Generated Files
+
+- `Bnlearn Causal Model_bnlearn.py` - bnlearn simulation script
+
+
+## Usage
+
+Refer to the main bnlearn documentation for information on how to run the generated simulation scripts.
+
+## Framework-Specific Information
+
+- **Framework**: bnlearn
+- **File Extension**: .py
+- **Multi-Modality Support**: ✅
+- **Multi-Factor Support**: ✅

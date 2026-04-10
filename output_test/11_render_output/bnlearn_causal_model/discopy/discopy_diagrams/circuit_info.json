@@ -1,0 +1,26 @@
+{
+  "model_name": "Bnlearn Causal Model",
+  "timestamp": "2026-04-09 14:51:18",
+  "parameters": {
+    "num_states": 2,
+    "num_observations": 2,
+    "num_actions": 2
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-04-09T14:51:17.995564",
+  "source_file": "input/gnn_files/discrete/deep_planning_horizon.md",
+  "model_name": "Deep Planning Horizon POMDP",
+  "pomdp_dimensions": {
+    "num_states": 4,
+    "num_observations": 4,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "bnlearn"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro",
+    "bnlearn"
+  ],
+  "frameworks_failed": []
+}

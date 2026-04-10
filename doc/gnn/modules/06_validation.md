@@ -15,7 +15,7 @@ python src/6_validation.py --strict --profile --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/6_validation.py` (53 lines) |
+| Orchestrator | `src/6_validation.py` (47 lines) |
 | Module | `src/validation/` |
 | Module function | `process_validation()` |
 

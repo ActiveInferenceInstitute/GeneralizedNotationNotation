@@ -14,7 +14,7 @@ python src/8_visualization.py --target-dir input/gnn_files --output-dir output -
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/8_visualization.py` (56 lines) |
+| Orchestrator | `src/8_visualization.py` (55 lines) |
 | Module | `src/visualization/` |
 | Processor | `src/visualization/processor.py` |
 | Module function | `process_visualization_main()` |

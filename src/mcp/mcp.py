@@ -16,7 +16,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 # Configure logging
 logger = logging.getLogger("mcp")
@@ -134,7 +134,7 @@ class MCP:
         }
 
     # --- Compatibility: simple listings used by reporting and diagnostics ---
-    def list_available_tools(self, include_metadata: bool = True) -> List[Dict[str, Any]] | List[str]:
+    def list_available_tools(self, include_metadata: bool = True) -> Union[List[Dict[str, Any]], List[str]]:
         """
         Return a list of registered tools. If include_metadata is True, returns a list of
         dictionaries with metadata; otherwise returns tool names.
@@ -154,7 +154,7 @@ class MCP:
             else:
                 return sorted(self.tools.keys())
 
-    def list_available_resources(self, include_metadata: bool = True) -> List[Dict[str, Any]] | List[str]:
+    def list_available_resources(self, include_metadata: bool = True) -> Union[List[Dict[str, Any]], List[str]]:
         """
         Return a list of registered resources. If include_metadata is True, returns a list of
         dictionaries with metadata; otherwise returns resource URIs.

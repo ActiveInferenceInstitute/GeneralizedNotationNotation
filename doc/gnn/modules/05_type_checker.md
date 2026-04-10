@@ -15,7 +15,7 @@ python src/5_type_checker.py --strict --estimate-resources --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/5_type_checker.py` (75 lines) |
+| Orchestrator | `src/5_type_checker.py` (65 lines) |
 | Module | `src/type_checker/` |
 | Processor | `src/type_checker/processor.py` |
 | Module class | `GNNTypeChecker` |

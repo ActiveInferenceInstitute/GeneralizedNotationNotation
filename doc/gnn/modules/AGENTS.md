@@ -47,4 +47,4 @@
 
 This directory's contents act strictly as documentation and specification. They integrate conceptually with `src/main.py` by defining the standards by which the computational pipeline operates.
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-09

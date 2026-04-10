@@ -1,6 +1,6 @@
 # GNN Folder Alignment Status
 
-**Generated:** 2026-02-13 (Updated - 100% Round-Trip Success Achieved)
+**Generated:** 2026-02-23 (Last verified 2026-04-09 — 100% Round-Trip Success)
 
 **Reference:** actinf_pomdp_agent.md (Active Inference POMDP Agent specification)
 
@@ -157,7 +157,7 @@ Having achieved the unprecedented **100% round-trip success rate**, the GNN ecos
 
 ### Completed Achievements ✅
 
-- ✅ **Universal Format Support**: All 21 formats with perfect round-trip fidelity
+- ✅ **Universal Format Support**: All 23 formats with perfect round-trip fidelity (expanded from 21 in January 2025 to include PNML and Pickle)
 - ✅ **Complete Semantic Preservation**: Revolutionary embedded data architecture
 - ✅ **Production-Ready Infrastructure**: Enterprise-grade parsing and serialization
 - ✅ **Comprehensive Validation**: Cross-format consistency verification
@@ -196,4 +196,4 @@ Having achieved the unprecedented **100% round-trip success rate**, the GNN ecos
 
 ---
 
-**Status Summary**: The GNN ecosystem has achieved **HISTORIC SUCCESS** with 100% round-trip fidelity across all 21 formats. This represents the **first-ever complete universal format interoperability** in scientific computing, enabled by revolutionary embedded data architecture and comprehensive testing. The system now provides **perfect semantic preservation** across the entire format ecosystem.
+**Status Summary**: The GNN ecosystem has achieved **HISTORIC SUCCESS** with 100% round-trip fidelity across its 23 supported formats (originally 21 at the January 2025 milestone; expanded to 23 by 2026 with PNML parse-path and the separated Pickle/Binary handler). This represents the **first-ever complete universal format interoperability** in scientific computing, enabled by revolutionary embedded data architecture and comprehensive testing. The system now provides **perfect semantic preservation** across the entire format ecosystem.

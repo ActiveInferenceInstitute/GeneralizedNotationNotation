@@ -17,7 +17,7 @@ uv run python src/21_mcp.py --target-dir input/gnn_files --output-dir output --v
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/21_mcp.py` (63 lines) |
+| Orchestrator | `src/21_mcp.py` (53 lines) |
 | Core MCP engine | `src/mcp/` |
 | Module function | `process_mcp()` |
 | Server | `src/mcp/server.py` |

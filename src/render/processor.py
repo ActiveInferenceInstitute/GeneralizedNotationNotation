@@ -394,6 +394,7 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
             generate_discopy_code,
             generate_pymdp_code,
             generate_rxinfer_code,
+            generate_bnlearn_code,
         )
 
         # Create basic model data from filename
@@ -414,7 +415,8 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
             'pymdp': (generate_pymdp_code, '.py'),
             'rxinfer': (generate_rxinfer_code, '.jl'),
             'activeinference_jl': (generate_activeinference_jl_code, '.jl'),
-            'discopy': (generate_discopy_code, '.py')
+            'discopy': (generate_discopy_code, '.py'),
+            'bnlearn': (generate_bnlearn_code, '.py')
         }
 
         for framework_name, (generator_func, extension) in frameworks.items():
@@ -573,6 +575,7 @@ def render_gnn_spec(
             "rxinfer": ("generate_rxinfer_code", "_rxinfer.jl"),
             "activeinference_jl": ("generate_activeinference_jl_code", "_activeinference.jl"),
             "discopy": ("generate_discopy_code", "_discopy.py"),
+            "bnlearn": ("generate_bnlearn_code", "_bnlearn.py"),
         }
 
         target_lower = target.lower()
@@ -635,8 +638,8 @@ def get_module_info() -> Dict[str, Any]:
         "name": "Enhanced Render Module",
         "version": "2.0.0",
         "description": "POMDP-aware code generation for GNN specifications",
-        "supported_targets": ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy"],
-        "available_targets": ["pymdp", "rxinfer", "activeinference_jl", "discopy"],
+        "supported_targets": ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "bnlearn"],
+        "available_targets": ["pymdp", "rxinfer", "activeinference_jl", "discopy", "bnlearn"],
         "features": [
             "POMDP state space extraction",
             "Modular framework injection",
@@ -646,6 +649,7 @@ def get_module_info() -> Dict[str, Any]:
             "ActiveInference.jl code generation",
             "JAX code generation",
             "DisCoPy categorical diagram generation",
+            "bnlearn bayesian network generation",
             "Structured documentation generation"
         ],
         "supported_formats": ["python", "julia", "python_script"],
@@ -700,6 +704,16 @@ AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = {
         "file_extension": ".py",
         "supported_features": ["Categorical Diagrams", "String Diagrams", "Compositional Models"],
         "function": "render_gnn_to_discopy",
+        "output_format": "python",
+        "pomdp_compatible": True
+    },
+    "bnlearn": {
+        "name": "bnlearn",
+        "description": "Python package for learning the graphical structure of Bayesian networks",
+        "language": "Python",
+        "file_extension": ".py",
+        "supported_features": ["Structure Learning", "Parameter Learning", "Exact Inference", "Causal Discovery"],
+        "function": "render_gnn_to_bnlearn",
         "output_format": "python",
         "pomdp_compatible": True
     }

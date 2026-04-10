@@ -15,7 +15,7 @@ python src/0_template.py --simulate-error  # Test error handling
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/0_template.py` (63 lines) |
+| Orchestrator | `src/0_template.py` (64 lines) |
 | Module | `src/template/` |
 | Processor | `src/template/processor.py` |
 | Module function | `process_template_standardized()` |

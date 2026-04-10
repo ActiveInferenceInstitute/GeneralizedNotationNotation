@@ -14,7 +14,7 @@ python src/11_render.py --target-dir input/gnn_files --output-dir output --verbo
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/11_render.py` (67 lines) |
+| Orchestrator | `src/11_render.py` (68 lines) |
 | Module | `src/render/` |
 | Processor | `src/render/processor.py` |
 | POMDP Processor | `src/render/pomdp_processor.py` (942 lines) |

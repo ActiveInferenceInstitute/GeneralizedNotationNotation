@@ -15,7 +15,7 @@ python src/10_ontology.py --ontology-terms-file path/to/terms.json --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/10_ontology.py` (61 lines) |
+| Orchestrator | `src/10_ontology.py` (50 lines) |
 | Module | `src/ontology/` |
 | Processor | `src/ontology/processor.py` |
 | Module function | `process_ontology()` |

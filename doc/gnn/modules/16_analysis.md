@@ -14,7 +14,7 @@ python src/16_analysis.py --target-dir input/gnn_files --output-dir output --ver
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/16_analysis.py` (53 lines) |
+| Orchestrator | `src/16_analysis.py` (59 lines) |
 | Module | `src/analysis/` |
 | Processor | `src/analysis/processor.py` (529 lines) |
 | Analyzer | `src/analysis/analyzer.py` (1457 lines) |

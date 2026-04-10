@@ -6,7 +6,7 @@
 
 ## Overview
 
-Step 2 orchestrates the GNN test suite. It follows the **Thin Orchestrator** pattern: the script delegates to `tests.run_tests()` in [`src/tests/runner.py`](../../../src/tests/runner.py) (~600 lines).
+Step 2 orchestrates the GNN test suite. It follows the **Thin Orchestrator** pattern: the script delegates to `tests.run_tests()` in [`src/tests/runner.py`](../../../src/tests/runner.py) (~450 lines).
 
 `pyproject.toml` enables **`--strict-markers`**. Test modules must only use markers that are registered (in `pyproject.toml` or via pytest plugins). Unregistered markers (for example `anyio` without `pytest-anyio`) cause **collection errors** before any tests run.
 

@@ -27,7 +27,7 @@ uv sync --extra all            # All optional packages
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/1_setup.py` (123 lines) |
+| Orchestrator | `src/1_setup.py` (148 lines) |
 | Module | `src/setup/` |
 | Module functions | `setup_uv_environment()`, `setup_complete_environment()`, `install_optional_package_group()` |
 

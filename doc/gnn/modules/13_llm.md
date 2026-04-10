@@ -14,7 +14,7 @@ python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/13_llm.py` (64 lines) |
+| Orchestrator | `src/13_llm.py` (63 lines) |
 | Module | `src/llm/` |
 | Processor | `src/llm/processor.py` |
 | Module function | `process_llm()` |

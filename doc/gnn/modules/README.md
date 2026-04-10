@@ -1,7 +1,7 @@
 # GNN Modules Documentation
 
 **Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Last Updated**: 2026-04-09  
 **Status**: Production ready  
 **Scope**: 25 pipeline step pages + [`init.md`](init.md) + [`main.md`](main.md); see [AGENTS.md](AGENTS.md) for the file index. Test suite size: root [README.md](../../../README.md) / [CLAUDE.md](../../../CLAUDE.md).
 

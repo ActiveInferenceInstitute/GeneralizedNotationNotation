@@ -210,6 +210,6 @@ class SAPFGNNProcessor:
         from .processor import process_audio as _process_audio
         return _process_audio(target_dir, output_dir, verbose)
 
-    def apply_effects(self, audio_data: Any, effects: List[str] | None = None) -> Any:
+    def apply_effects(self, audio_data: Any, effects: Optional[List[str]] = None) -> Any:
         # Minimal no-op implementation for test expectations
         return audio_data

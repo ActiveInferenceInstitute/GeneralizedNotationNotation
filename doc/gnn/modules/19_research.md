@@ -14,7 +14,7 @@ python src/19_research.py --target-dir input/gnn_files --output-dir output --ver
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/19_research.py` (63 lines) |
+| Orchestrator | `src/19_research.py` (65 lines) |
 | Module | `src/research/` |
 | Processor | `src/research/processor.py` |
 | Module function | `process_research()` |

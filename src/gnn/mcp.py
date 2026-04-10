@@ -5,7 +5,7 @@ This module exposes GNN documentation files, schema definitions, validation capa
 round-trip testing, cross-format validation, and enhanced processing through the Model Context Protocol.
 
 Enhanced Features:
-- Complete format ecosystem support (21 formats)
+- Complete format ecosystem support (23 formats)
 - Multi-level validation (Basic, Standard, Strict, Research, Round-trip)
 - Cross-format consistency validation
 - Round-trip semantic preservation testing

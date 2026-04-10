@@ -21,7 +21,7 @@ python src/24_intelligent_analysis.py --bottleneck-threshold 120.0 --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/24_intelligent_analysis.py` (41 lines) |
+| Orchestrator | `src/24_intelligent_analysis.py` (44 lines) |
 | Module | `src/intelligent_analysis/` |
 | Processor | `src/intelligent_analysis/processor.py` |
 | Module function | `process_intelligent_analysis()` |

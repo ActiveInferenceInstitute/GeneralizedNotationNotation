@@ -260,6 +260,7 @@ def process_analysis(
                     ("rxinfer",            "rxinfer",            "RxInfer"),
                     ("pytorch",            "pytorch",            "PyTorch"),
                     ("numpyro",            "numpyro",            "NumPyro"),
+                    ("bnlearn",            "bnlearn",            "bnlearn"),
                 ]
                 import importlib
                 for module_key, dir_name, display_name in _FRAMEWORK_ANALYZERS:
@@ -341,7 +342,7 @@ def process_analysis(
                             path_parts = sim_file.parts
                             framework = "unknown"
                             for part in path_parts:
-                                if part in ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro"]:
+                                if part in ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro", "bnlearn"]:
                                     framework = part
                                     break
 

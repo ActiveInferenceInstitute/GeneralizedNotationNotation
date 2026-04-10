@@ -21,7 +21,7 @@ python src/15_audio.py --full-analysis --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/15_audio.py` (82 lines) |
+| Orchestrator | `src/15_audio.py` (83 lines) |
 | Module | `src/audio/` |
 | Processor | `src/audio/processor.py` |
 | Module function | `process_audio()` |

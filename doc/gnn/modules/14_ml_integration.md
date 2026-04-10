@@ -14,7 +14,7 @@ python src/14_ml_integration.py --target-dir input/gnn_files --output-dir output
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/14_ml_integration.py` (64 lines) |
+| Orchestrator | `src/14_ml_integration.py` (63 lines) |
 | Module | `src/ml_integration/` |
 | Processor | `src/ml_integration/processor.py` |
 | Module function | `process_ml_integration()` |

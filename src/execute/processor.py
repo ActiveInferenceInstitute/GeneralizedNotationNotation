@@ -106,6 +106,7 @@ _FRAMEWORK_IMPORT_CHECK = {
     "numpyro": ("numpyro", "uv sync --extra probabilistic-programming"),
     "pytorch": ("torch", "uv sync --extra ml-ai"),
     "discopy": ("discopy", "uv sync --extra graphs"),
+    "bnlearn": ("bnlearn", "uv sync --extra inference"),
 }
 
 
@@ -162,14 +163,14 @@ def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
         List of framework names to include
     """
     if not frameworks or frameworks.lower() == "all":
-        return ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro"]
+        return ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro", "bnlearn"]
 
     if frameworks.lower() == "lite":
-        return ["pymdp", "jax", "discopy"]
+        return ["pymdp", "jax", "discopy", "bnlearn"]
 
     # Parse comma-separated list
     framework_list = [f.strip() for f in frameworks.split(",")]
-    valid_frameworks = ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro"]
+    valid_frameworks = ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro", "bnlearn"]
 
     # Filter out invalid frameworks
     valid_list = [f for f in framework_list if f in valid_frameworks]
@@ -424,6 +425,7 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
         'activeinference.jl': 'activeinference_jl',
         'pytorch': 'pytorch',
         'numpyro': 'numpyro',
+        'bnlearn': 'bnlearn',
     }
 
     for pattern, config in script_types.items():

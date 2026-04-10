@@ -15,7 +15,7 @@ python src/20_website.py --website-html-filename custom_report.html --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/20_website.py` (66 lines) |
+| Orchestrator | `src/20_website.py` (57 lines) |
 | Module | `src/website/` |
 | Module function | `process_website()` |
 

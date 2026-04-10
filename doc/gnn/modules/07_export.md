@@ -14,7 +14,7 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --verbos
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/7_export.py` (55 lines) |
+| Orchestrator | `src/7_export.py` (54 lines) |
 | Module | `src/export/` |
 | Processor | `src/export/processor.py` |
 | Module function | `process_export()` |

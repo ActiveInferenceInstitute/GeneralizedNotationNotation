@@ -6,7 +6,7 @@ for GNN (Generalized Notation Notation) model files with enhanced round-trip
 testing support and cross-format validation.
 
 Enhanced Features:
-- Complete format ecosystem support (21 formats)
+- Complete format ecosystem support (23 formats)
 - Binary file validation for pickle/binary formats
 - Cross-format consistency validation
 - Round-trip semantic preservation testing

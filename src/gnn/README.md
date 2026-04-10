@@ -40,7 +40,7 @@ graph TD
     Serializer -->|Export| JSON[JSON]
     Serializer -->|Export| XML[XML]
     Serializer -->|Export| Python[Python]
-    Serializer -->|Export| Others[Other 17+ Formats]
+    Serializer -->|Export| Others[Other 20+ Formats]
     
     subgraph "Validation Core"
     Parsed
@@ -79,7 +79,7 @@ graph LR
         PROTOBUF[Protobuf]
         XSD[XSD]
         ASN1[ASN.1]
-        OTHERS[18+ More Formats]
+        OTHERS[15+ More Formats]
     end
     
     MD --> Parser
@@ -128,7 +128,7 @@ graph TB
         LeanS[Lean Serializer]
         CoqS[Coq Serializer]
         PythonS[Python Serializer]
-        OthersS[18+ More Serializers]
+        OthersS[15+ More Serializers]
     end
     
     subgraph "Validation"
@@ -212,7 +212,7 @@ src/gnn/
 ├── processors.py                  # Enhanced processing with comprehensive testing
 ├── alignment_status.md            # Format compatibility status tracking
 │
-├── parsers/                       # Parser ecosystem (21 formats)
+├── parsers/                       # Parser ecosystem (23 formats)
 │   ├── __init__.py               # Parser registry and format ecosystem
 │   ├── unified_parser.py         # Unified parsing system
 │   ├── serializers.py            # Enhanced serializers with embedded data

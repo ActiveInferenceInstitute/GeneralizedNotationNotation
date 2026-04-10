@@ -83,15 +83,18 @@ def _stan_type(dtype: str, dims: list) -> str:
     """Map GNN type+dims to Stan type declaration."""
     base = "real" if dtype in ("float", "double", "real") else "int"
 
-    if not dims:
+    # Defensively parsing dims to ignore malformed dimensions
+    valid_dims = [d for d in dims if isinstance(d, int) and d > 0]
+
+    if not valid_dims:
         return base
-    elif len(dims) == 1:
-        return f"vector[{dims[0]}]"
-    elif len(dims) == 2:
-        return f"matrix[{dims[0]}, {dims[1]}]"
+    elif len(valid_dims) == 1:
+        return f"vector[{valid_dims[0]}]"
+    elif len(valid_dims) == 2:
+        return f"matrix[{valid_dims[0]}, {valid_dims[1]}]"
     else:
         # Stan doesn't have native 3D arrays, use array syntax
-        inner = f"matrix[{dims[-2]}, {dims[-1]}]"
-        for d in reversed(dims[:-2]):
+        inner = f"matrix[{valid_dims[-2]}, {valid_dims[-1]}]"
+        for d in reversed(valid_dims[:-2]):
             inner = f"array[{d}] {inner}"
         return inner

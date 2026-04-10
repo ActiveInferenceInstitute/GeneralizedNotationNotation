@@ -12,7 +12,7 @@
 
 **Version**: 1.1.3
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-09
 
 ---
 
@@ -476,13 +476,16 @@ input/gnn_files/*.md → GNN Parser → Multi-Format Serializer → output/3_gnn
 
 ### Test Files
 
-- `src/tests/test_gnn_overall.py` - Integration tests
 - `src/tests/test_gnn_overall.py` - Module-level coverage and smoke tests
 - `src/tests/test_gnn_parsing.py` - Parsing-focused tests
+- `src/tests/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
 - `src/tests/test_gnn_processing.py` - Directory processing tests
 - `src/tests/test_gnn_parsers_common.py` - Parser utilities tests
 - `src/tests/test_gnn_parsers_json.py` - JSON parser tests
 - `src/tests/test_gnn_parsers_base_serializer.py` - Serializer base tests
+- `src/tests/test_gnn_xml_parser.py` - XML parser tests
+- `src/tests/test_gnn_schema.py` - Schema validator tests
+- `src/tests/test_gnn_cross_format_validator.py` - Cross-format validation tests
 - `src/tests/test_gnn_validation.py` - Validation tests
 
 ### Test Coverage

@@ -14,7 +14,7 @@ python src/12_execute.py --target-dir input/gnn_files --output-dir output --verb
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/12_execute.py` (62 lines) |
+| Orchestrator | `src/12_execute.py` (86 lines) |
 | Module | `src/execute/` |
 | Processor | `src/execute/processor.py` (785 lines) |
 | Module function | `process_execute()` |

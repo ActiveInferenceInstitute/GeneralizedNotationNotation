@@ -137,6 +137,14 @@ class POMDPRenderProcessor:
                 'optional_matrices': ['E'],
                 'supports_multi_modality': True,
                 'supports_multi_factor': True
+            },
+            'bnlearn': {
+                'output_subdir': 'bnlearn',
+                'file_extension': '.py',
+                'requires_matrices': [],
+                'optional_matrices': ['A', 'B', 'C', 'D', 'E'],
+                'supports_multi_modality': True,
+                'supports_multi_factor': True
             }
         }
 
@@ -471,6 +479,8 @@ class POMDPRenderProcessor:
             return self._call_pytorch_renderer(gnn_spec, output_dir, **kwargs)
         elif framework == 'numpyro':
             return self._call_numpyro_renderer(gnn_spec, output_dir, **kwargs)
+        elif framework == 'bnlearn':
+            return self._call_bnlearn_renderer(gnn_spec, output_dir, **kwargs)
         else:
             return {
                 'success': False,
@@ -671,6 +681,30 @@ class POMDPRenderProcessor:
             return {
                 'success': False,
                 'message': "DisCoPy renderer not available",
+                'artifacts': []
+            }
+
+    def _call_bnlearn_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
+        """Call bnlearn renderer."""
+        try:
+            from .generators import generate_bnlearn_code
+            
+            model_name = gnn_spec.get('name', 'pomdp_model')
+            output_file = output_dir / f"{model_name}_bnlearn.py"
+            
+            code = generate_bnlearn_code(gnn_spec, output_file)
+            success = bool(code)
+            
+            return {
+                'success': success,
+                'message': f"bnlearn code generated" if success else "Failed to generate bnlearn code",
+                'artifacts': [str(output_file)] if success else [],
+                'warnings': []
+            }
+        except ImportError as e:
+            return {
+                'success': False,
+                'message': f"bnlearn generator not available: {e}",
                 'artifacts': []
             }
 

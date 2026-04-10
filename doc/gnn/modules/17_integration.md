@@ -14,7 +14,7 @@ python src/17_integration.py --target-dir input/gnn_files --output-dir output --
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/17_integration.py` (63 lines) |
+| Orchestrator | `src/17_integration.py` (65 lines) |
 | Module | `src/integration/` |
 | Processor | `src/integration/processor.py` |
 | Module function | `process_integration()` |

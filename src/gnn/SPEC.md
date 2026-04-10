@@ -24,7 +24,7 @@ The GNN module follows the **Thin Orchestrator** pattern: lightweight coordinati
 
 | Directory | Purpose |
 |-----------|---------|
-| `parsers/` | 48 format-specific parsers and serializers |
+| `parsers/` | Format-specific parsers & serializers for 23 formats (17 parser files + 22 serializer files, wired through `PARSER_REGISTRY` / `SERIALIZER_REGISTRY`) |
 | `schemas/` | Schema definition files (JSON, YAML, XSD, Proto, ASN.1, PKL) |
 | `grammars/` | BNF and EBNF grammar definitions |
 | `testing/` | Round-trip tests, performance benchmarks, integration tests |
