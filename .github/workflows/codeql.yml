@@ -36,7 +36,7 @@ jobs:
       matrix:
         language: ["python"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       # Database must be initialized before dependency install (advanced setup).
       - name: Initialize CodeQL
