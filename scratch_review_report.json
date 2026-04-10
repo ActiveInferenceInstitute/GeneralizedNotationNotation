@@ -1,0 +1,1287 @@
+{
+  "missing_docs": {
+    "<root>": [
+      "SPEC.md"
+    ],
+    "input": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/basics": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/hierarchical": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/multiagent": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/discrete": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/structured": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/precision": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "input/gnn_files/continuous": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    ".github": [
+      "SPEC.md"
+    ],
+    ".github/workflows": [
+      "SPEC.md"
+    ],
+    "doc": [
+      "SPEC.md"
+    ],
+    "doc/glowstick": [
+      "SPEC.md"
+    ],
+    "doc/research": [
+      "SPEC.md"
+    ],
+    "doc/dspy": [
+      "SPEC.md"
+    ],
+    "doc/poe-world": [
+      "SPEC.md"
+    ],
+    "doc/visualization": [
+      "SPEC.md"
+    ],
+    "doc/catcolab": [
+      "SPEC.md"
+    ],
+    "doc/pipeline": [
+      "SPEC.md"
+    ],
+    "doc/releases": [
+      "SPEC.md"
+    ],
+    "doc/configuration": [
+      "SPEC.md"
+    ],
+    "doc/spm": [
+      "SPEC.md"
+    ],
+    "doc/rxinfer": [
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning": [
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-07_12-36-09": [
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-07_12-36-09/visualizations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-07_12-36-09/heatmaps": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-07_12-36-09/data": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-07_12-36-09/animations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_14-06-39": [
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_14-06-39/visualizations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_14-06-39/heatmaps": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_14-06-39/data": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_14-06-39/animations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-51-11": [
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-51-11/visualizations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-51-11/heatmaps": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-51-11/data": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-51-11/animations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-59-17": [
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-59-17/visualizations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-59-17/heatmaps": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-59-17/data": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/rxinfer/multiagent_trajectory_planning/results/2025-06-06_13-59-17/animations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/llm": [
+      "SPEC.md"
+    ],
+    "doc/sympy": [
+      "SPEC.md"
+    ],
+    "doc/archive": [
+      "SPEC.md"
+    ],
+    "doc/pedalboard": [
+      "SPEC.md"
+    ],
+    "doc/security": [
+      "SPEC.md"
+    ],
+    "doc/development": [
+      "SPEC.md"
+    ],
+    "doc/arc-agi": [
+      "SPEC.md"
+    ],
+    "doc/muscle-mem": [
+      "SPEC.md"
+    ],
+    "doc/other": [
+      "SPEC.md"
+    ],
+    "doc/active_inference": [
+      "SPEC.md"
+    ],
+    "doc/pkl": [
+      "SPEC.md"
+    ],
+    "doc/pkl/examples": [
+      "SPEC.md"
+    ],
+    "doc/kit": [
+      "SPEC.md"
+    ],
+    "doc/kit/gnn_kit": [
+      "SPEC.md"
+    ],
+    "doc/dependencies": [
+      "SPEC.md"
+    ],
+    "doc/onefilellm": [
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl": [
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/test_output": [
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src": [
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/advanced_analysis": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/analysis": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/analysis/plots": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/uncertainty_quantification": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/multi_scale_temporal": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/3d": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/comparisons": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/networks": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/interactive": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/distributions": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/animations": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_visualizations/matrices": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/counterfactual_reasoning": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/data_traces": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/models": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/logs": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/simulation_results": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports/SQLite_exports": [
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports/R_exports": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports/Python_exports": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports/LaTeX_exports": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports/Excel_exports": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/enhanced_exports/MATLAB_exports": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/parameters": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/adaptive_precision_attention": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/metacognitive_analysis": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/statistical_analysis": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/activeinference_outputs_2025-07-07_12-40-35/comprehensive_report": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/pomdp_gridworld_outputs": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/pomdp_gridworld_outputs/gridworld_outputs_2025-08-27_08-28-57": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/pomdp_gridworld_outputs/gridworld_outputs_2025-08-27_08-28-57/logs": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/pomdp_gridworld_outputs/gridworld_outputs_2025-08-27_08-26-43": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/activeinference_jl/actinf_jl_src/pomdp_gridworld_outputs/gridworld_outputs_2025-08-27_08-26-43/logs": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/mcp": [
+      "SPEC.md"
+    ],
+    "doc/troubleshooting": [
+      "SPEC.md"
+    ],
+    "doc/ntqr": [
+      "SPEC.md"
+    ],
+    "doc/axiom": [
+      "SPEC.md"
+    ],
+    "doc/axiom/axiom_implementation": [
+      "SPEC.md"
+    ],
+    "doc/axiom/axiom_implementation/utils": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/axiom/axiom_implementation/modules": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/gnn": [
+      "SPEC.md"
+    ],
+    "doc/gnn/advanced": [
+      "SPEC.md"
+    ],
+    "doc/gnn/integration": [
+      "SPEC.md"
+    ],
+    "doc/gnn/language": [
+      "SPEC.md"
+    ],
+    "doc/gnn/mcp": [
+      "SPEC.md"
+    ],
+    "doc/gnn/operations": [
+      "SPEC.md"
+    ],
+    "doc/gnn/testing": [
+      "SPEC.md"
+    ],
+    "doc/gnn/tutorials": [
+      "SPEC.md"
+    ],
+    "doc/gnn/implementations": [
+      "SPEC.md"
+    ],
+    "doc/gnn/modules": [
+      "SPEC.md"
+    ],
+    "doc/gnn/reference": [
+      "SPEC.md"
+    ],
+    "doc/testing": [
+      "SPEC.md"
+    ],
+    "doc/petri_nets": [
+      "SPEC.md"
+    ],
+    "doc/pymdp": [
+      "SPEC.md"
+    ],
+    "doc/pymdp/pymdp_pomdp": [
+      "SPEC.md"
+    ],
+    "doc/audio": [
+      "SPEC.md"
+    ],
+    "doc/quadray": [
+      "SPEC.md"
+    ],
+    "doc/execution": [
+      "SPEC.md"
+    ],
+    "doc/deployment": [
+      "SPEC.md"
+    ],
+    "doc/iroh": [
+      "SPEC.md"
+    ],
+    "doc/vec2text": [
+      "SPEC.md"
+    ],
+    "doc/nock": [
+      "SPEC.md"
+    ],
+    "doc/nock/jock": [
+      "SPEC.md"
+    ],
+    "doc/nock/nockchain": [
+      "SPEC.md"
+    ],
+    "doc/d2": [
+      "SPEC.md"
+    ],
+    "doc/autogenlib": [
+      "SPEC.md"
+    ],
+    "doc/api": [
+      "SPEC.md"
+    ],
+    "doc/templates": [
+      "SPEC.md"
+    ],
+    "doc/tutorials": [
+      "SPEC.md"
+    ],
+    "doc/dev": [
+      "SPEC.md"
+    ],
+    "doc/sapf": [
+      "SPEC.md"
+    ],
+    "doc/timep": [
+      "SPEC.md"
+    ],
+    "doc/klong": [
+      "SPEC.md"
+    ],
+    "doc/pomdp": [
+      "SPEC.md"
+    ],
+    "doc/export": [
+      "SPEC.md"
+    ],
+    "doc/x402": [
+      "SPEC.md"
+    ],
+    "doc/performance": [
+      "SPEC.md"
+    ],
+    "doc/discopy": [
+      "SPEC.md"
+    ],
+    "doc/type-inference-zoo": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/language_processing": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/executive_control": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/attention": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/emotion_affect": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/memory": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/effort": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/consciousness": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/learning_adaptation": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/verification_3": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/visualization": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/verification_4": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/verification_2": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/test_output": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/test_output/logs": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/core": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/config": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/tests": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/utils": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/results": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/verification_0": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/logs": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/verification_1": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/execution": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/figures": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/verification_42": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-aware-2/simulation_logging": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-awareness": [
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-awareness/figures_fig7": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-awareness/figures_fig10": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/meta-awareness/figures_fig11": [
+      "README.md",
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "doc/cognitive_phenomena/perception": [
+      "SPEC.md"
+    ],
+    "doc/cerebrum": [
+      "SPEC.md"
+    ],
+    "doc/bnlearn": [
+      "SPEC.md"
+    ],
+    "doc/advanced_visualization": [
+      "SPEC.md"
+    ],
+    "doc/gui_oxdraw": [
+      "SPEC.md"
+    ],
+    ".agent_rules": [
+      "AGENTS.md",
+      "SPEC.md"
+    ],
+    "src/visualization/compat": [
+      "SPEC.md"
+    ],
+    "src/visualization/core": [
+      "SPEC.md"
+    ],
+    "src/visualization/analysis": [
+      "SPEC.md"
+    ],
+    "src/visualization/parse": [
+      "SPEC.md"
+    ],
+    "src/visualization/graph": [
+      "SPEC.md"
+    ],
+    "src/visualization/ontology": [
+      "SPEC.md"
+    ],
+    "src/visualization/plotting": [
+      "SPEC.md"
+    ],
+    "src/visualization/matrix": [
+      "SPEC.md"
+    ],
+    "src/analysis/rxinfer": [
+      "SPEC.md"
+    ],
+    "src/analysis/activeinference_jl": [
+      "SPEC.md"
+    ],
+    "src/analysis/pymdp": [
+      "SPEC.md"
+    ],
+    "src/analysis/jax": [
+      "SPEC.md"
+    ],
+    "src/analysis/discopy": [
+      "SPEC.md"
+    ],
+    "src/mcp/sdk": [
+      "SPEC.md"
+    ],
+    "src/doc": [
+      "SPEC.md"
+    ],
+    "src/doc/cognitive_phenomena": [
+      "SPEC.md"
+    ],
+    "src/doc/cognitive_phenomena/memory": [
+      "SPEC.md"
+    ],
+    "src/doc/cognitive_phenomena/effort": [
+      "SPEC.md"
+    ]
+  },
+  "policy_violations": [
+    {
+      "file": "ARCHITECTURE.md",
+      "line": 22,
+      "content": "- **No Mock Testing**: All tests use real code paths and actual data dependencies",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "AGENTS.md",
+      "line": 398,
+      "content": "- **FallbackAgent**: Robust recovery mechanism (non-mock safe degradation)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/SETUP.md",
+      "line": 162,
+      "content": "- **Testing**: pytest-cov, pytest-mock",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/TEMPLATE_ASSESSMENT.md",
+      "line": 249,
+      "content": "1. **Apply patterns to basic stub scripts** using the template as a reference",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/PIPELINE_SCRIPTS.md",
+      "line": 45,
+      "content": "- `10_ontology.py` - Ontology processing (basic stub)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/muscle-mem/gnn-muscle-mem.md",
+      "line": 261,
+      "content": "# # Dummy agent function that uses the GNN tool",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/muscle-mem/gnn-muscle-mem.md",
+      "line": 270,
+      "content": "# # Create a dummy GNN file for testing",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/muscle-mem/gnn-muscle-mem.md",
+      "line": 273,
+      "content": "#     f.write(\"## ModelName\\nMy Dummy Model\\n\\n## Equations\\ns_t = A * o_t + B * s_{t-1}\")",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/activeinference_jl/actinf_jl_src/README.md",
+      "line": 52,
+      "content": "- No mock, stub, or placeholder code - all examples work",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/activeinference_jl/actinf_jl_src/README.md",
+      "line": 159,
+      "content": "- **No mock, fallback, or blank data is ever used.**",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/axiom/axiom_implementation/axiom.py",
+      "line": 654,
+      "content": "# Test with dummy environment",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/testing/README.md",
+      "line": 445,
+      "content": "\"\"\"Mock LLM service for testing\"\"\"",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/pymdp/pymdp_advanced_tutorials.md",
+      "line": 139,
+      "content": "The pipeline additionally seeds the numpy generator used for fake-environment",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/pymdp/pymdp_pomdp/POMDP_EXPLANATION.md",
+      "line": 5,
+      "content": "This simulation uses **authentic PyMDP methods** from the official [PyMDP library v0.0.7+](https://g",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/pymdp/pymdp_pomdp/POMDP_EXPLANATION.md",
+      "line": 18,
+      "content": "# Real PyMDP object arrays (not mock implementations)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/pymdp/pymdp_pomdp/INTEGRATION_SUMMARY.md",
+      "line": 9,
+      "content": "\u2705 **Achieved**: Real PyMDP methods integration (no mock implementations)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/pymdp/pymdp_pomdp/INTEGRATION_SUMMARY.md",
+      "line": 91,
+      "content": "# Real PyMDP imports (not mock)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/pymdp/pymdp_pomdp/INTEGRATION_SUMMARY.md",
+      "line": 210,
+      "content": "2. **\ud83d\udd2c Scientific Authenticity**: Real PyMDP Agent class, no mock implementations",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/autogenlib/gnn_autogenlib.md",
+      "line": 261,
+      "content": "# Create a dummy GNN file for the example",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/autogenlib/gnn_autogenlib.md",
+      "line": 269,
+      "content": "# Clean up dummy file (optional)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/dev/src_folder_doc_inventory.md",
+      "line": 15,
+      "content": "- Add stub `AGENTS.md` / `README.md` when a directory becomes a maintained package.",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/dev/regenerate_src_doc_inventory.py",
+      "line": 57,
+      "content": "\"- Add stub `AGENTS.md` / `README.md` when a directory becomes a maintained package.\",",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/cognitive_phenomena/meta-aware-2/visualization/figure_generator.py",
+      "line": 903,
+      "content": "# Create mock results for testing",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/cognitive_phenomena/meta-aware-2/tests/test_simulation.py",
+      "line": 16,
+      "content": "from unittest.mock import patch, MagicMock",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/cognitive_phenomena/perception/README.md",
+      "line": 64,
+      "content": "- **Rubber Hand Illusion**: Illusory ownership of fake limbs",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/gui_oxdraw/VERIFICATION.md",
+      "line": 234,
+      "content": "- \u2705 No mock implementations (all real methods)",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "doc/gui_oxdraw/VERIFICATION.md",
+      "line": 302,
+      "content": "- [x] No mock implementations",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": ".agent_rules/dependencies.md",
+      "line": 82,
+      "content": "# Pattern 2: Stub class",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": ".agent_rules/quality.md",
+      "line": 84,
+      "content": "from unittest.mock import MagicMock, patch",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": ".agent_rules/quality.md",
+      "line": 94,
+      "content": "# \u274c WRONG \u2014 hard-coded fake data",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": ".agent_rules/quality.md",
+      "line": 95,
+      "content": "model = {\"name\": \"fake\", \"states\": 2}",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": ".agent_rules/README.md",
+      "line": 36,
+      "content": "All tests use **real implementations** \u2014 no `unittest.mock` or monkeypatching.",
+      "type": "DOC_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_execute_overall.py",
+      "line": 27,
+      "content": "from unittest.mock import patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_execute_overall.py",
+      "line": 51,
+      "content": "return safe_filesystem.create_file(\"test.gnn\", \"dummy content\")",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_execute_overall.py",
+      "line": 186,
+      "content": "# Create some dummy output files that would be alongside the script",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_sapf_processor.py",
+      "line": 3,
+      "content": "from unittest.mock import patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_sapf_processor.py",
+      "line": 51,
+      "content": "# but we can mock the _audio_sapf reference in the sapf module.",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_lsp_server.py",
+      "line": 3,
+      "content": "from unittest.mock import MagicMock, patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_report_generation.py",
+      "line": 109,
+      "content": "# Create dummy pipeline output structure",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_gui_functionality.py",
+      "line": 215,
+      "content": "# Create some dummy output directories",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_analysis_viz_base.py",
+      "line": 2,
+      "content": "from unittest.mock import MagicMock, patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_analysis_viz_base.py",
+      "line": 34,
+      "content": "mock = MagicMock()",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_analysis_viz_base.py",
+      "line": 35,
+      "content": "mock.savefig = MagicMock()",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_analysis_viz_base.py",
+      "line": 36,
+      "content": "mock.close = MagicMock()",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_analysis_viz_base.py",
+      "line": 37,
+      "content": "return mock",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_gnn_parsing_system.py",
+      "line": 119,
+      "content": "return Path(f\"dummy{ext}\")",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_cli.py",
+      "line": 6,
+      "content": "from unittest.mock import patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_cli.py",
+      "line": 49,
+      "content": "# Mock the validation command handler directly",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_cli.py",
+      "line": 75,
+      "content": "# Provide dummy arguments where needed by the parser",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_cli.py",
+      "line": 77,
+      "content": "main([cmd_name, \"dummy.md\"])",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_utils_core.py",
+      "line": 6,
+      "content": "from unittest.mock import MagicMock, patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_api_endpoints.py",
+      "line": 3,
+      "content": "from unittest.mock import patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_api_endpoints.py",
+      "line": 66,
+      "content": "# Mock compute_run_hash to avoid real hashing logic",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_api_endpoints.py",
+      "line": 68,
+      "content": "# Mock background task execution",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_pipeline_step11_render.py",
+      "line": 8,
+      "content": "from unittest.mock import patch",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_pipeline_step11_render.py",
+      "line": 15,
+      "content": "monkeypatch.setattr(\"sys.argv\", [\"11_render.py\", \"--target-dir\", \"dummy\", \"--output-dir\", \"dummy_out",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/test_pipeline_step11_render.py",
+      "line": 26,
+      "content": "monkeypatch.setattr(\"sys.argv\", [\"11_render.py\", \"--target-dir\", \"dummy\"])",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/tests/helpers/render_recovery.py",
+      "line": 41,
+      "content": "# We simply write a dummy file to simulate success",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/render/__init__.py",
+      "line": 75,
+      "content": "# not a class. Provide a minimal stub for tests that reference JAXRenderer by name.",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/render/__init__.py",
+      "line": 80,
+      "content": "\"\"\"Minimal JAXRenderer stub; JAX rendering uses render_gnn_to_jax() functions.\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/render/discopy/translator.py",
+      "line": 1485,
+      "content": "# This requires a dummy GNN file to be present at the specified path.",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/render/discopy/translator.py",
+      "line": 1490,
+      "content": "# Create a dummy GNN file for testing",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/render/discopy/translator.py",
+      "line": 1565,
+      "content": "# Clean up dummy file",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/mcp/sympy_mcp_client.py",
+      "line": 20,
+      "content": "# Create a dummy httpx module for type checking",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 15,
+      "content": "\"\"\"Stub: returns safe defaults (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 16,
+      "content": "return {\"summary\": {\"total_errors\": 0}, \"overall_status\": \"unknown\", \"stub\": True}",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 19,
+      "content": "\"\"\"Stub: returns unknown status (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 23,
+      "content": "\"\"\"Stub: logs that validation module is not available.\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 27,
+      "content": "\"\"\"Stub: returns empty info (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 28,
+      "content": "return {\"stub\": True}",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 31,
+      "content": "\"\"\"Stub: returns empty info (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 35,
+      "content": "\"\"\"Stub: returns empty info (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 39,
+      "content": "\"\"\"Stub: returns empty info (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 43,
+      "content": "\"\"\"Stub: returns minimal error dict (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 47,
+      "content": "\"\"\"Stub: returns minimal report dict (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 51,
+      "content": "\"\"\"Stub: returns empty suggestions (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 55,
+      "content": "\"\"\"Stub class (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 60,
+      "content": "\"\"\"Stub class (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 65,
+      "content": "\"\"\"Stub class (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 70,
+      "content": "\"\"\"Stub: returns error dict (executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/recovery.py",
+      "line": 74,
+      "content": "\"\"\"Stub: returns error dict (PyMDP executor module unavailable).\"\"\"",
+      "type": "TEST_POLICY_VIOLATION"
+    },
+    {
+      "file": "src/execute/data_extractors.py",
+      "line": 696,
+      "content": "# beliefs/actions/observations) \u2014 intentional alias, not a stub.",
+      "type": "TEST_POLICY_VIOLATION"
+    }
+  ],
+  "broken_links": [
+    {
+      "file": "CODE_OF_CONDUCT.md",
+      "broken_link": "mailto:blanket@activeinference.institute"
+    }
+  ]
+}
