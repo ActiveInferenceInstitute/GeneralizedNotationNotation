@@ -1,6 +1,6 @@
 # Figures Fig7 - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Figures Fig7` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

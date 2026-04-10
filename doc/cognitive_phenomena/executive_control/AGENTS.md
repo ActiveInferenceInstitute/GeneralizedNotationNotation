@@ -1,6 +1,6 @@
 # Executive Control - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Executive Control` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

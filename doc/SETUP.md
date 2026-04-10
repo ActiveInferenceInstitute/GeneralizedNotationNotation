@@ -6,11 +6,14 @@
 
 This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
 
-> **🎯 Quick Start**: For immediate setup, run:
+> **🎯 Quick Start**: For immediate setup from the **repository root** (recommended: [uv](https://github.com/astral-sh/uv)):
 >
 > ```bash
-> cd src && python3 main.py --only-steps 1 --dev
+> uv sync --extra dev
+> uv run python src/1_setup.py --target-dir input/gnn_files --output-dir output --dev --verbose
 > ```
+>
+> Equivalent: `uv run python src/main.py --only-steps 1 --dev` (see [CLAUDE.md](../CLAUDE.md)).
 
 > **📖 Complete Guide**: For comprehensive documentation on GNN itself, please refer to the [GNN Documentation](gnn/about_gnn.md) in the `doc/gnn/` directory.
 

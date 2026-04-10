@@ -2,6 +2,8 @@
 
 This document outlines structured learning paths for users of varying expertise levels in Generalized Notation Notation (GNN) and Active Inference. Each path includes key resources, prerequisites, and progression steps. Paths are designed to be modular, example-driven, and tied to the project's pipeline for reproducibility.
 
+**See also**: [doc/SPEC.md](SPEC.md) (how `doc/` versioning relates to the GNN language and the Python package), [CLAUDE.md](../CLAUDE.md) (commands and measured test expectations).
+
 ## Beginner Path: Getting Started with GNN
 
 **Target Audience**: New users with basic programming knowledge (Python/Julia) but no Active Inference experience.

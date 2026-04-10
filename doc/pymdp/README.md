@@ -1,6 +1,6 @@
 # PyMDP Documentation (pymdp 1.0.0 / JAX-first)
 
-**Signposts:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md)
+**Signposts:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/SPEC.md](../SPEC.md) (versioning)
 
 This folder documents how this repository integrates
 [pymdp 1.0.0](https://github.com/infer-actively/pymdp) in the render/execute/

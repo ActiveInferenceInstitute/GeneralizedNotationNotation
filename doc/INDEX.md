@@ -1,16 +1,17 @@
 # GNN Documentation Index
 
-This index provides navigation to all documentation in the GNN repository, organized by category.
+This index provides navigation to documentation in the repository. The human-oriented **documentation hub** is [README.md](README.md) (this folder). Repository root [README](../README.md) is the project overview.
 
 ## Quick Links
 
 | Getting Started | Core Reference | Frameworks |
 |-----------------|----------------|------------|
-| [README](../README.md) | [GNN Syntax](gnn/reference/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
-| [Setup Guide](../SETUP_GUIDE.md) | [Architecture](../ARCHITECTURE.md) | [RxInfer.jl](rxinfer/README.md) |
-| [CLAUDE.md](../CLAUDE.md) | [Pipeline Steps](gnn/operations/gnn_tools.md) | [ActiveInference.jl](activeinference_jl/README.md) |
-| [CHANGELOG.md](./CHANGELOG.md) | Version history & release notes | [Contributing](README.md#contributing) |
-| [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) | Commands & GNN syntax quick ref | [GNN Spec](gnn/reference/gnn_syntax.md) |
+| [Documentation hub](README.md) | [GNN Syntax](gnn/reference/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
+| [Project README](../README.md) | [Architecture](../ARCHITECTURE.md) | [RxInfer.jl](rxinfer/README.md) |
+| [Setup Guide](SETUP.md) | [SPEC.md](SPEC.md) (doc versioning) | [ActiveInference.jl](activeinference_jl/README.md) |
+| [CLAUDE.md](../CLAUDE.md) | [Pipeline Steps](gnn/operations/gnn_tools.md) | [Contributing](../CONTRIBUTING.md) |
+| [CHANGELOG.md](./CHANGELOG.md) | Version history & release notes | [GNN Spec](gnn/reference/gnn_syntax.md) |
+| [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) | Commands & GNN syntax quick ref | [Doc audit](development/docs_audit.py) |
 
 ---
 

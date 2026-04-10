@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: API Reference | **Audience**: Developers, Integrators | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Main Documentation](../README.md) | [doc/SPEC.md](../SPEC.md) (versioning)
 
 ## Overview
 

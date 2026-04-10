@@ -5,7 +5,7 @@
 Orientation for this subtree: scripts, data, and docs co-located for the cognitive/meta-aware experiments.
 
 
-## Module Overview
+## Overview
 
 **Purpose**: Documentation for deploying GNN applications and pipelines.
 **Pipeline Step**: Documentation Agent

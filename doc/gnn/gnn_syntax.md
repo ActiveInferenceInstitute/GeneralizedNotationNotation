@@ -1,6 +1,6 @@
 # GNN v1.1 Syntax Specification
 
-> **Status**: Living document · Last updated 2026-03-24
+> **Status**: Living document · Last updated 2026-04-10
 > **Canonical reference for parsers, validators, and editor support.**
 
 ---

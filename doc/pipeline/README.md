@@ -9,6 +9,7 @@ Step 12 (Execute) runs rendered scripts for PyMDP, RxInfer.jl, ActiveInference.j
 ## Start here
 
 - **Step-by-step script guide**: `../PIPELINE_SCRIPTS.md`
+- **Documentation versioning** (language vs doc bundle vs package): [`../SPEC.md`](../SPEC.md)
 - **Source specification**: `../../src/SPEC.md`
 - **Step index (0–24)**: `../../src/STEP_INDEX.md`
 - **Orchestrator implementation**: `../../src/main.py`

@@ -1,6 +1,6 @@
 # Learning Adaptation - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Learning Adaptation` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

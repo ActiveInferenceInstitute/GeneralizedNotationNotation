@@ -1,6 +1,6 @@
 # Verification 1 - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Verification 1` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

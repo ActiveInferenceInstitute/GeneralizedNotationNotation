@@ -1,6 +1,6 @@
 # Actinf Jl Src - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Actinf Jl Src` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

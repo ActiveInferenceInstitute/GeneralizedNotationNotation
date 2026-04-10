@@ -1,6 +1,6 @@
 # Nockchain - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Nockchain` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

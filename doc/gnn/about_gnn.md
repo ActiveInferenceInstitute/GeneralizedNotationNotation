@@ -1,7 +1,7 @@
 # About GNN
 
 **Version**: v2.0.0
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-10
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -103,9 +103,7 @@ The GNN file structure is designed to be machine-readable, with each section cle
 - Automatic conversion to computational implementations
 - Visualization of model structure
 
-### Cross-model comparison and analysis
-
-### Punctuation and Representation
+For punctuation tables and symbol semantics, see `src/gnn/documentation/punctuation.md`. For cross-model comparison via shared ontology annotations, see **[Ontology System](advanced/ontology_system.md)** and Step 10 in **[src/AGENTS.md](../../src/AGENTS.md)**.
 
 ### GNN Processing Pipeline
 
@@ -157,8 +155,8 @@ uv run python src/main.py --only-steps "3" --target-dir input/gnn_files --verbos
 ```
 
 ```bash
-# CLI equivalent for parsing
-uv run gnn parse --target-dir input/gnn_files --output-dir output
+# CLI: parse one GNN file to JSON (path required)
+uv run gnn parse input/gnn_files/discrete/simple_mdp.md
 ```
 
 ## Progressive Model Development with GNN

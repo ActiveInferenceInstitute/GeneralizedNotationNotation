@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Framework Integration Guide | **Audience**: Researchers, Mathematicians | **Complexity**: Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [DisCoPy GNN Guide](gnn_discopy.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [DisCoPy GNN Guide](gnn_discopy.md) | [Advanced Patterns](../gnn/advanced/advanced_modeling_patterns.md) | [Main Documentation](../README.md) | [doc/SPEC.md](../SPEC.md) (versioning)
 
 ## Overview
 

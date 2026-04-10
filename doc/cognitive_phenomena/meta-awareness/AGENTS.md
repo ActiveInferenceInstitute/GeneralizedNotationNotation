@@ -1,6 +1,6 @@
 # Meta-Awareness - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Meta-Awareness` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

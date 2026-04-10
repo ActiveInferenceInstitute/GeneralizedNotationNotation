@@ -1,6 +1,6 @@
 # Reference - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: This directory serves as a categorized documentation index for the `Reference` layer of the GNN Framework.
 

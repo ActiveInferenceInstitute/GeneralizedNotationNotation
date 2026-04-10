@@ -1,7 +1,7 @@
 # GNN Syntax Reference
 
 **Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Last Updated**: 2026-04-10  
 **Status**: Maintained  
 
 Quick reference for GNN syntax with working examples.

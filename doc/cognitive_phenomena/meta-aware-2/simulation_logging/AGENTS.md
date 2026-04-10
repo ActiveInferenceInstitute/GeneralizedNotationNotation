@@ -1,6 +1,6 @@
 # Simulation Logging - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Simulation Logging` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

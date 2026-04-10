@@ -1,6 +1,6 @@
 # Language Processing - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Language Processing` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

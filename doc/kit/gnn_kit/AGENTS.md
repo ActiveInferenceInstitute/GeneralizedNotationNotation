@@ -1,6 +1,6 @@
 # Gnn Kit - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Gnn Kit` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

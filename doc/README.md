@@ -3,7 +3,7 @@
 > **📋 Document Metadata**  
 > **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
 > **Status**: Production-Ready  
-> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md) | [AGENTS.md](AGENTS.md) (doc tree index) | [Doc audit](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict`)
+> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md) | [AGENTS.md](AGENTS.md) (doc tree index) | [SPEC.md](SPEC.md) (versioning policy) | [Doc audit](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict`)
 
 Welcome to the documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
 
@@ -410,21 +410,16 @@ cross_references:
   support: [troubleshooting/README.md, troubleshooting/common_errors.md, troubleshooting/faq.md]
   research_integration: [poe-world/poe-world.md, gnn/advanced/gnn_llm_neurosymbolic_active_inference.md, dspy/gnn_dspy.md]
 coverage_metrics:
-  total_documents: 70+
-  total_content: 1.3MB+
-  template_count: 4
-  framework_integrations: 12+
-  research_integrations: 5+
   pipeline_steps: 25
-  cognitive_phenomena: 22+
-  test_status: 1,522+ tests passing
+  doc_markdown_files: 600+
+  note: Run pytest counts and link checks per ../CLAUDE.md; do not treat inline numbers as CI ground truth.
 status: production_ready
-quality_level: gold_standard
-recent_additions: [poe-world_integration, enhanced_cross_references, improved_research_pathways, 100%_signposting_coverage]
+quality_level: maintained
+recent_additions: [doc_SPEC_versioning_policy, docs_audit_strict_gate]
 ```
 
 ---
 
 **Status**: Comprehensive and Production-Ready  
-**Documentation Version**: Compatible with GNN v1.x  
+**Documentation**: GNN syntax v1.1 · Python package **1.3.0** ([pyproject.toml](../pyproject.toml)) · See [SPEC.md](SPEC.md)  
 **Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md)

@@ -1,6 +1,6 @@
 # Advanced - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: This directory serves as a categorized documentation index for the `Advanced` layer of the GNN Framework.
 

@@ -1,6 +1,6 @@
 # Axiom Implementation - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Axiom Implementation` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

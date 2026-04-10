@@ -1,7 +1,7 @@
 # GNN Overview
 
 **Version**: v2.0.0
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-10
 **Status**: Maintained
 **Pipeline Steps**: 25
 

@@ -17,8 +17,9 @@ Top-level documentation tree for GNN. Human entry point: [README.md](README.md).
 | [configuration/](configuration/) | Config reference |
 | [templates/](templates/) | GNN templates |
 | [INDEX.md](INDEX.md), [START_HERE.md](START_HERE.md) | Doc navigation entry points |
+| [SPEC.md](SPEC.md) | Versioning policy and doc-tree design requirements |
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-10
 
 ## Pipeline
 

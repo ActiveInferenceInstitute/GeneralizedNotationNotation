@@ -1,6 +1,6 @@
 # Verification 42 - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Verification 42` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

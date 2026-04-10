@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Development Guide | **Audience**: Developers & Contributors | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [doc/INDEX.md](../INDEX.md)
+> **Cross-References**: [Testing Guide](../testing/README.md) | [API Documentation](../api/README.md) | [AGENTS.md](AGENTS.md) | [doc/INDEX.md](../INDEX.md) | [doc/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 This guide provides information for developers contributing to the GNN project, including code organization, development workflows, and architecture patterns.

@@ -1,0 +1,44 @@
+name: Doc audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "doc/**"
+      - ".github/workflows/doc-audit.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "doc/**"
+      - ".github/workflows/doc-audit.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: doc-audit-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  strict:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install project (minimal for audit script)
+        run: uv sync --frozen
+
+      - name: docs_audit --strict
+        run: uv run python doc/development/docs_audit.py --strict

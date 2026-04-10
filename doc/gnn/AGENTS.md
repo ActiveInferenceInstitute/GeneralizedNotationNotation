@@ -1,6 +1,6 @@
 # GNN Documentation Hub - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: This directory serves as the centralized documentation hub and specification authority for the Generalized Notation Notation (GNN) framework.
 
@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.0
+**Documentation hub version**: v2.0.0 (aligns with [README.md](README.md) front matter; **GNN language** syntax is v1.1 per [gnn_syntax.md](gnn_syntax.md); **Python package** version is `1.3.0` in [pyproject.toml](../../pyproject.toml)).
 
 ---
 
@@ -19,12 +19,12 @@
 ### Primary Responsibilities
 
 1. **Syntax Authority**: Maintains the definitive `.md` parser specifications required to author Active Inference matrices correctly.
-2. **Architecture Mapping**: Defines the structural rules connecting modules like `type_systems`, `implementations`, and `integration`.
+2. **Architecture Mapping**: Defines the structural rules connecting `language/`, `reference/`, `implementations/`, and `integration/`.
 3. **End-User Guidance**: Houses tutorials, external tool integrations, and operational guides.
 
 ### Subsystem Indices Available
 
-- `doc/gnn/advanced/`: Advanced probability theory mapping.
+- `doc/gnn/advanced/`: Ontology, multi-agent, LLM/neurosymbolic topics, and advanced modeling patterns.
 - `doc/gnn/implementations/`: Specific platform references (PyMDP, RxInfer, etc.).
 - `doc/gnn/language/`: DSL specific syntax rules.
 - `doc/gnn/modules/`: Component behaviors.

@@ -1,6 +1,6 @@
 # Verification 4 - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Verification 4` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

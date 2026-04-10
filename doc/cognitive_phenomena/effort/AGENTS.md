@@ -1,6 +1,6 @@
 # Effort - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Effort` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component

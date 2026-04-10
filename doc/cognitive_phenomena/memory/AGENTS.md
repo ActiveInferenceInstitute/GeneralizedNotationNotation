@@ -1,6 +1,6 @@
 # Memory - Agent Scaffolding
 
-## Module Overview
+## Overview
 
 **Purpose**: Responsible for `Memory` operations within the GNN pipeline architecture.
 **Category**: Generated Pipeline Component
