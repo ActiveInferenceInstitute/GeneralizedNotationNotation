@@ -2,32 +2,28 @@
 
 Here's a concise summary of the GNN specification:
 
-**Overview:**
-This is a minimal active inference (AI) POMDP that describes a bistable policy-based decision tree. It consists of two hidden states, 2 actions, and an action vector with 80% accuracy over uncertainty. The model has 160 observations and 4 hidden states, which are represented by 3 matrices:
+**Model Overview:** 
 
-* Hidden state: [list with brief descriptions]
-* Actions/Controls: [list with brief descriptions]
+This is a minimal active inference agent that models a bistable POMDP where each state has two possible actions (push-left or push-right). The agent prefers observation 1 over observation 0, and it chooses an action based on its current state. It also prioritizes the right side of the policy distribution for actions 0 and 2.
 
 **Key Variables:**
 
-1. **Hidden States**: A[observations], B[states_next], C[observations], D[actions]. These are represented by 3 matrices:
-   - Hidden states: [list with brief descriptions]
-   - Actions/Controls: [list with brief descriptions]
-2. **Observations**: [list with brief descriptions]  
-   - A: [list with brief descriptions]
-   - B: [list with brief descriptions]
+1. **Hidden states**: `[list with brief descriptions]`
+   - `left`: "push-left" (action 0)
+   - `right`: "push-right" (action 1)
 
-3. **Actions/Controls**: [list with brief descriptions]
+2. **Observations**: `[list with brief descriptions]`
+   - `current_observation`: current observation
+3. **Actions/Controls**: `[list with brief descriptions]`
+   - `actions`: actions taken by the agent, e.g., push-left or push-right (action 0) and push-right (action 1).
 
-**Critical Parameters:**
+4. **Initial Parameters**: `A`, `B`, `C`, `D`.
+5. **Notable Features**:
+   - **Randomized Actions**: Randomly assign actions to the right side of the policy distribution based on their current state.
+   - **Randomized Actions**: Randomly assign actions to the left side of the policy distribution based on their current state.
 
-1. **Random Initialization**: Random initialization of the hidden states and actions, which are represented by 2 matrices:
-   - Hidden state: [list with brief descriptions]
-   - Actions/Controls: [list with brief descriptions]
+6. **Use Cases**:
+   - **Simple POMDP**: Simple POMDP with no constraints or special properties (e.g., random action assignment).
+   - **Multi-state POMDP**: Multi-state POMDP with two states and actions, where the agent prefers observation 1 over observation 0.
 
-   This is done to ensure that the model has a good starting point for learning from the data.
-
-2. **Random Initialization**: Random initialization of the hidden states and actions, which are represented by 1 matrix:
-   - Hidden state: [list with brief descriptions]
-   - Actions/Controls: [list with brief descriptions]
-3. **Initialization**: Initializing the hidden states and actions using a random initialization process to ensure that they have good starting points for learning from the data.
+7. **Signature**: A structured summary of this model's key variables, features, and use cases.

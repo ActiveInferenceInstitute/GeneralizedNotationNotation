@@ -1,56 +1,46 @@
 #!/usr/bin/env python3
 """
-PyMDP Simulation Script for Hidden Markov Model Baseline
+pymdp 1.0.0 runner for Hidden Markov Model Baseline
 
-This script was automatically generated from a GNN specification.
-It uses the GNN pipeline's PyMDP execution module to run an Active Inference simulation.
+This file was generated from a GNN specification by
+``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
+to the GNN pipeline's tested execution module
+(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+real pymdp 1.0.0 (JAX-first) under the hood.
 
-Model: Hidden Markov Model Baseline
-Description: 
-Generated: 2026-03-24 13:58:20
+Model:        Hidden Markov Model Baseline
+Description:  
+Generated:    2026-04-10 10:25:04
 
 State Space:
-- Hidden States: 4
-- Observations: 6 
-- Actions: 4
+  - Hidden States: 4
+  - Observations:  6
+  - Actions:       4
 
-State Space Matrices (from GNN):
-- A (Likelihood): Present
-- B (Transition): Present
-- C (Preferences): Present
-- D (Prior): Present
-- E (Habits): Missing
+Initial matrices present in GNN spec:
+  - A (likelihood):   Present
+  - B (transitions):  Present
+  - C (preferences):  Present
+  - D (state prior):  Present
+  - E (policy prior): Missing
 """
+from __future__ import annotations
 
+import json
+import logging
+import os
 import sys
 from pathlib import Path
-import os
 
-# Remove script directory from sys.path if named 'pymdp' — it would mask the installed library
-if sys.path[0] and sys.path[0].endswith("pymdp"):
-    print(f"⚠️  Detected namespace conflict with script directory '{sys.path[0]}', removing from sys.path")
+# ---------------------------------------------------------------------------
+# Script directory name 'pymdp' would shadow the installed library — drop it
+# ---------------------------------------------------------------------------
+if sys.path and sys.path[0] and sys.path[0].endswith("pymdp"):
     sys.path.pop(0)
-import logging
-import subprocess
-import json
-import numpy as np
 
-# Note: package is 'inferactively-pymdp', not 'pymdp'
-try:
-    import pymdp
-    try:
-        from pymdp.agent import Agent
-        print("✅ PyMDP (inferactively-pymdp) is available")
-    except ImportError:
-        if hasattr(pymdp, "Agent"):
-            print("✅ PyMDP (flat structure) is available")
-        else:
-            print("⚠️  PyMDP found but wrong version — install: uv pip install inferactively-pymdp")
-except ImportError:
-    print("❌ PyMDP not found — install: uv pip install inferactively-pymdp")
-    sys.exit(1)
-
-# Resolve repository root: prefer GNN_PROJECT_ROOT (set by Step 12), else walk up for pyproject.toml + src/
+# ---------------------------------------------------------------------------
+# Repository root resolution (prefer GNN_PROJECT_ROOT; else walk upwards)
+# ---------------------------------------------------------------------------
 _gnn_root = os.environ.get("GNN_PROJECT_ROOT")
 if _gnn_root:
     _repo = Path(_gnn_root).resolve()
@@ -67,73 +57,47 @@ else:
         _cur = _cur.parent
     if _found is None:
         print(
-            "❌ Cannot locate GNN repository root. Run via the pipeline execute step, or set "
-            "GNN_PROJECT_ROOT to the checkout root (directory containing pyproject.toml and src/).",
+            "ERROR: Cannot locate GNN repository root. Run via the pipeline "
+            "execute step, or set GNN_PROJECT_ROOT to the checkout root.",
             file=sys.stderr,
         )
         sys.exit(1)
     sys.path.insert(0, str(_found))
 
+# ---------------------------------------------------------------------------
+# pymdp 1.0.0 presence check (hard requirement)
+# ---------------------------------------------------------------------------
+try:
+    import pymdp  # noqa: F401
+    from pymdp.agent import Agent  # noqa: F401
+    if not hasattr(Agent, "update_empirical_prior"):
+        raise ImportError("legacy pymdp (<1.0.0) detected")
+    print("PyMDP 1.0.0+ detected (JAX-first Agent).")
+except ImportError as e:
+    print(
+        "ERROR: pymdp 1.0.0 required. Install with: "
+        "uv pip install 'inferactively-pymdp>=1.0.0' (original error: "
+        + str(e) + ")",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
 from src.execute.pymdp import execute_pymdp_simulation
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
-def main():
-    """Main simulation function."""
-    
-    # State Space Matrices (extracted from GNN and embedded here)
-    A_matrix_data = [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7], [0.1, 0.1, 0.4, 0.4], [0.4, 0.4, 0.1, 0.1]]  # Likelihood matrix P(o|s)
-    B_matrix_data = [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.2, 0.1], [0.1, 0.1, 0.6, 0.2], [0.1, 0.1, 0.1, 0.6]]  # Transition matrix P(s'|s,u)
-    C_vector_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]  # Preferences over observations
-    D_vector_data = [0.25, 0.25, 0.25, 0.25]  # Prior beliefs over states
-    E_vector_data = None  # Policy priors (habits)
-    
-    # Convert to numpy arrays
-    if A_matrix_data is not None:
-        A_matrix = np.array(A_matrix_data)
-        # Normalize A matrix (columns should sum to 1)
-        if A_matrix.ndim == 2:
-            norm = np.sum(A_matrix, axis=0)
-            A_matrix = A_matrix / np.where(norm == 0, 1, norm)
-        logger.info(f"A matrix shape: {A_matrix.shape}")
-    else:
-        A_matrix = None
-        logger.warning("A matrix not provided")
-    
-    if B_matrix_data is not None:
-        B_matrix = np.array(B_matrix_data)
-        # B matrix normalization is handled by simple_simulation.py which knows the dimension layout.
-        logger.info(f"B matrix shape: {B_matrix.shape}")
-    else:
-        B_matrix = None
-        logger.warning("B matrix not provided")
-    
-    if C_vector_data is not None:
-        C_vector = np.array(C_vector_data)
-        logger.info(f"C vector shape: {C_vector.shape}")
-    else:
-        C_vector = None
-        logger.warning("C vector not provided")
-    
-    if D_vector_data is not None:
-        D_vector = np.array(D_vector_data)
-        # Normalize D vector
-        norm = np.sum(D_vector)
-        D_vector = D_vector / np.where(norm == 0, 1, norm)
-        logger.info(f"D vector shape: {D_vector.shape}")
-    else:
-        D_vector = None
-        logger.warning("D vector not provided")
-    
-    if E_vector_data is not None:
-        E_vector = np.array(E_vector_data)
-        logger.info(f"E vector shape: {E_vector.shape}")
-    else:
-        E_vector = None
-    
-    # GNN Specification (embedded with state spaces)
+
+def main() -> int:
+    """Run a pymdp 1.0.0 simulation for the GNN model embedded in this file."""
+    # Matrices embedded verbatim from the GNN spec.
+    A_data = [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.1, 0.1], [0.1, 0.1, 0.7, 0.1], [0.1, 0.1, 0.1, 0.7], [0.1, 0.1, 0.4, 0.4], [0.4, 0.4, 0.1, 0.1]]
+    B_data = [[0.7, 0.1, 0.1, 0.1], [0.1, 0.7, 0.2, 0.1], [0.1, 0.1, 0.6, 0.2], [0.1, 0.1, 0.1, 0.6]]
+    C_data = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    D_data = [0.25, 0.25, 0.25, 0.25]
+    E_data = None
+
+    # Full parsed spec, with matrices merged into initialparameterization.
     gnn_spec = {
     "name": "Hidden Markov Model Baseline",
     "model_name": "Hidden Markov Model Baseline",
@@ -381,54 +345,44 @@ def main():
         "t": "Time"
     }
 }
-    
-    # Ensure state space matrices are in gnn_spec for execution
-    if 'initialparameterization' not in gnn_spec:
-        gnn_spec['initialparameterization'] = {}
-    if A_matrix is not None:
-        gnn_spec['initialparameterization']['A'] = A_matrix.tolist() if hasattr(A_matrix, 'tolist') else A_matrix
-    if B_matrix is not None:
-        gnn_spec['initialparameterization']['B'] = B_matrix.tolist() if hasattr(B_matrix, 'tolist') else B_matrix
-    if C_vector is not None:
-        gnn_spec['initialparameterization']['C'] = C_vector.tolist() if hasattr(C_vector, 'tolist') else C_vector
-    if D_vector is not None:
-        gnn_spec['initialparameterization']['D'] = D_vector.tolist() if hasattr(D_vector, 'tolist') else D_vector
-    if E_vector is not None:
-        gnn_spec['initialparameterization']['E'] = E_vector.tolist() if hasattr(E_vector, 'tolist') else E_vector
-    
-    # Output directory
-    output_dir = Path("output") / "pymdp_simulations" / "Hidden Markov Model Baseline"
+    gnn_spec.setdefault("initialparameterization", {})
+    if A_data is not None: gnn_spec["initialparameterization"]["A"] = A_data
+    if B_data is not None: gnn_spec["initialparameterization"]["B"] = B_data
+    if C_data is not None: gnn_spec["initialparameterization"]["C"] = C_data
+    if D_data is not None: gnn_spec["initialparameterization"]["D"] = D_data
+    if E_data is not None: gnn_spec["initialparameterization"]["E"] = E_data
+    gnn_spec.setdefault("model_parameters", {})
+    gnn_spec["model_parameters"].setdefault("num_timesteps", 15)
+
+    output_dir = Path(os.environ.get("PYMDP_OUTPUT_DIR", "output/pymdp_simulations/Hidden Markov Model Baseline"))
     output_dir.mkdir(parents=True, exist_ok=True)
-    
-    logger.info("Starting PyMDP simulation for Hidden Markov Model Baseline")
-    logger.info(f"Output directory: {output_dir}")
-    logger.info(f"State space matrices: A={A_matrix is not None}, B={B_matrix is not None}, C={C_vector is not None}, D={D_vector is not None}, E={E_vector is not None}")
-    
-    # Run simulation
+
+    logger.info("Running pymdp 1.0.0 rollout for Hidden Markov Model Baseline")
+    logger.info("Output directory: %s", output_dir)
+
     try:
         success, results = execute_pymdp_simulation(
             gnn_spec=gnn_spec,
             output_dir=output_dir,
-            correlation_id="render_generated_script"
+            correlation_id="render_generated_script",
         )
-        
-        if success:
-            logger.info("✓ Simulation completed successfully!")
-            logger.info(f"Results summary:")
-            logger.info(f"  Correlation ID: {results.get('correlation_id', 'N/A')}")
-            logger.info(f"  Success: {results.get('success', False)}")
-            logger.info(f"  Output: {output_dir}")
-            return 0
-        else:
-            logger.error("✗ Simulation failed!")
-            logger.error(f"Error: {results.get('error', 'Unknown error')}")
-            return 1
-            
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
+    except Exception as exc:  # noqa: BLE001
         import traceback
+        logger.error("Unexpected error: %s", exc)
         traceback.print_exc()
         return 1
+
+    if success:
+        logger.info("Simulation completed successfully")
+        logger.info("  framework:    %s", results.get("framework"))
+        logger.info("  pymdp ver:    %s", results.get("pymdp_version"))
+        logger.info("  backend:      %s", results.get("backend"))
+        logger.info("  num_timesteps:%s", results.get("num_timesteps"))
+        return 0
+
+    logger.error("Simulation failed: %s", results.get("error", "Unknown error"))
+    return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

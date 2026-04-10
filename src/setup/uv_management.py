@@ -26,6 +26,14 @@ from .constants import (
 
 logger = logging.getLogger(__name__)
 
+try:
+    from utils.jax_stack_validation import run_jax_stack_probe_subprocess
+except ImportError:
+    try:
+        from src.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+    except ImportError:
+        run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
+
 
 def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True, verbose: bool = False) -> subprocess.CompletedProcess:
     """
@@ -478,6 +486,7 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
         "uv_environment": False,
         "dependencies": False,
         "jax_installation": False,
+        "jax_stack_functional": False,
         "overall_status": False,
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
     }
@@ -497,29 +506,42 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
                 logger.debug("Dependencies version check skipped (non-critical)")
 
         try:
-            if VENV_PYTHON.exists():
+            if VENV_PYTHON.exists() and run_jax_stack_probe_subprocess is not None:
+                ok_jax, jax_out = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
+                if ok_jax:
+                    validation_results["jax_installation"] = True
+                    validation_results["jax_stack_functional"] = True
+                    if logger:
+                        logger.info("✅ JAX stack (JAX/Optax/Flax/pymdp) functional in venv")
+                else:
+                    if logger:
+                        logger.warning(
+                            "JAX stack probe failed in venv (PyMDP/execute needs a working stack): %s",
+                            (jax_out[:500] + "…") if len(jax_out) > 500 else jax_out,
+                        )
+            elif VENV_PYTHON.exists():
                 result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                     [str(VENV_PYTHON), "-c", "import jax; print(jax.__version__)"],
                     capture_output=True,
                     text=True,
-                    timeout=5
+                    timeout=5,
                 )
                 if result.returncode == 0:
                     validation_results["jax_installation"] = True
                     if logger:
-                        logger.info(f"✅ JAX version: {result.stdout.strip()}")
-            else:
-                import jax
-                validation_results["jax_installation"] = True
-        except (ImportError, subprocess.TimeoutExpired, FileNotFoundError):
+                        logger.info(f"✅ JAX import OK (full stack probe unavailable): {result.stdout.strip()}")
+        except (ImportError, subprocess.TimeoutExpired, FileNotFoundError, OSError) as e:
             if logger:
-                logger.debug("JAX installation check skipped (not available or timed out)")
+                logger.debug("JAX stack check skipped or failed: %s", e)
 
-        validation_results["overall_status"] = all([
-            validation_results["system_requirements"],
-            validation_results["uv_environment"],
-            validation_results["dependencies"]
-        ])
+        validation_results["overall_status"] = all(
+            [
+                validation_results["system_requirements"],
+                validation_results["uv_environment"],
+                validation_results["dependencies"],
+                validation_results["jax_stack_functional"],
+            ]
+        )
 
     except Exception as e:
         if logger:

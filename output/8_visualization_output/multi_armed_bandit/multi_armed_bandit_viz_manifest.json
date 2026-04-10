@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/multi_armed_bandit/multi_armed_bandit_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 14,
+  "artifact_count": 15,
   "artifacts": [
     "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
     "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_stats.json",
     "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_variable_parameter_bipartite.png",
     "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_A_heatmap.png",
     "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_tensor.png",

@@ -671,6 +671,8 @@ OLLAMA_TIMEOUT=60
 
 Default tag is also defined in code as `llm.defaults.DEFAULT_OLLAMA_MODEL`. Override with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`.
 
+`process_llm` passes the selected tag to every structured and custom prompt via `get_response(..., model_name=...)`, and into per-file summarization when Ollama is available. Summary tasks prefer Ollama before cloud providers when registered. If OpenAI returns quota errors, unset `OPENAI_API_KEY` for local-only runs.
+
 You can also point to a different host:
 
 ```

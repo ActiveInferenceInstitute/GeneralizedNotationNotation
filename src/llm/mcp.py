@@ -80,11 +80,7 @@ def analyze_gnn_with_llm_mcp(
         Dictionary with success flag, analysis type, and LLM output.
     """
     try:
-        result = analyze_gnn_file_with_llm(
-            gnn_file=Path(gnn_file_path),
-            analysis_type=analysis_type,
-            provider=provider,
-        )
+        result = analyze_gnn_file_with_llm(Path(gnn_file_path))
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": True, "analysis": str(result)}

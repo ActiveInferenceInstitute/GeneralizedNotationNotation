@@ -6,8 +6,8 @@
 - Level 2 (slow): 2 contextual states that modulate Level 1 likelihood
 - Higher-level beliefs are updated at a slower timescale
 - Top-down predictions constrain bottom-up inference at Level 1</annotation>
-    <created_at>2026-03-24T13:57:11.781286</created_at>
-    <modified_at>2026-03-24T13:57:11.781289</modified_at>
+    <created_at>2026-04-10T10:24:32.089964</created_at>
+    <modified_at>2026-04-10T10:24:32.089964</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,4" name="A1" type="action" description="Level 1 likelihood: observations x hidden states"/>

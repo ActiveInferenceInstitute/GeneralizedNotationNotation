@@ -7,8 +7,8 @@
 - β (beta): inverse temperature for policy selection (softmax)
 - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)
 - Precision parameters enable modeling of attention and confidence</annotation>
-    <created_at>2026-03-24T13:57:13.612033</created_at>
-    <modified_at>2026-03-24T13:57:13.612038</modified_at>
+    <created_at>2026-04-10T10:24:33.651113</created_at>
+    <modified_at>2026-04-10T10:24:33.651114</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="3,3" name="A" type="likelihood_matrix" description="Likelihood matrix (modulated by ω)"/>

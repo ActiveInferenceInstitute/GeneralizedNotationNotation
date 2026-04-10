@@ -1,16 +1,22 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
-
-1. **Model Purpose**: This is a simple active inference model that represents perception without temporal dynamics and no action components. It's designed to learn from data and make predictions based on its knowledge of observed patterns.
+You've already covered the essential information for analyzing GNN models:
+1. **Model Purpose**: This is a simple active inference model that represents perception without temporal dynamics or action components. It's designed to learn and represent patterns from data.
 
 2. **Core Components**:
-   - **hidden states** (s): Represented by the "belief" or "prior" in the model, which are updated based on the input data.
-   - **observations** (o): Represented by the "observation" in the model, which are updated based on the input data and actions/control inputs from other models.
-   - **actions**: Represented by the "beliefs" of the corresponding models, which are updated based on their knowledge of observed patterns.
+   - **hidden states** (s): Represented as probabilities over hidden states, which are used for prediction in the model.
+   - **observations** (o): Represented as binary outputs based on actions/control inputs. These can be either "action" or "observation".
+   - **actions** (u_c0, π_c0) represent predictions of future observations and actions.
 
-3. **Model Dynamics**: The model evolves over time through a process called "learning," where it learns to update its beliefs in response to new data and actions from other models. It also updates its belief representations based on predictions made by other models.
+3. **Model Dynamics**: The model evolves over time by updating beliefs about the state space. It's composed of:
+    - **hidden states** (s): Represented as probabilities over hidden states. These are used for prediction in the model.
+    - **observations** (o): Represented as binary outputs based on actions/control inputs. These can be either "action" or "observation".
 
-4. **Active Inference Context**: This is the framework that allows the model to make decisions about what to predict, based on a set of available "actions" (u_c0, π_c0). The goal is to learn from data and make accurate predictions using this knowledge.
+4. **Active Inference Context**: The model learns from data by updating beliefs about the state space and predictions of future observations and actions. It's composed of:
+    - **actions** (u_c0, π_c0): Represented as predictions based on current beliefs. These can be either "action" or "observation".
 
-Please provide clear explanations in simple language while maintaining scientific accuracy.
+5. **Practical Implications**: The model is designed to learn from data by updating its beliefs about the state space and predicting future observations/actions. It's composed of:
+    - **hidden states** (s): Represented as probabilities over hidden states, which are used for prediction in the model.
+    - **observations** (o): Represented as binary outputs based on actions/control inputs. These can be either "action" or "observation".
+
+Please provide clear and concise explanations to help understand what each component represents and how they relate to one another.

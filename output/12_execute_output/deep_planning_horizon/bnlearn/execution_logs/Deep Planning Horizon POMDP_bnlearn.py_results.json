@@ -1,0 +1,32 @@
+{
+  "framework": "bnlearn",
+  "model_name": "deep_planning_horizon",
+  "script_name": "Deep Planning Horizon POMDP_bnlearn.py",
+  "script_path": "output/11_render_output/deep_planning_horizon/bnlearn/Deep Planning Horizon POMDP_bnlearn.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.791501,
+  "timestamp": "2026-04-10T10:25:23.257824",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u2705 Starting bnlearn analysis for Deep Planning Horizon POMDP\n[bnlearn]> Auto generate placeholders for the CPTs.\n[bnlearn] >CPT for S:\n+--------+-----------+-----------+-----------+-----------+\n| S_prev | S_prev(0) | S_prev(0) | S_prev(1) | S_prev(1) |\n+--------+-----------+-----------+-----------+-----------+\n| A      | A(0)      | A(1)      | A(0)      | A(1)      |\n+--------+-----------+-----------+-----------+-----------+\n| S(0)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n| S(1)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n[bnlearn] >CPT for O:\n+------+------+------+\n| S    | S(0) | S(1) |\n+------+------+------+\n| O(0) | 0.5  | 0.5  |\n+------+------+------+\n| O(1) | 0.5  | 0.5  |\n+------+------+------+\n[bnlearn] >CPT for S_prev:\n+-----------+-----+\n| S_prev(0) | 0.5 |\n+-----------+-----+\n| S_prev(1) | 0.5 |\n+-----------+-----+\n[bnlearn] >CPT for A:\n+------+-----+\n| A(0) | 0.5 |\n+------+-----+\n| A(1) | 0.5 |\n+------+-----+\n[bnlearn] >bayes DAG created.\n[bnlearn] >[CPD > Update  ] >[Node S]\n[bnlearn] >[CPD > Update  ] >[Node O]\n[bnlearn] >[CPD > Update  ] >[Node S_prev]\n[bnlearn] >[CPD > Update  ] >[Node A]\n[bnlearn] >[CPD > Validate] >[Node S] >OK\n[bnlearn] >[CPD > Validate] >[Node O] >OK\n[bnlearn] >[CPD > Validate] >[Node S_prev] >OK\n[bnlearn] >[CPD > Validate] >[Node A] >OK\n\u2705 DAG Created Successfully.\n\ud83d\udcca Simulating 1000 traces for structure parameter learning...\n[bnlearn] >Parameter learning> Computing parameters using [maximumlikelihood]\n[bnlearn] >CPD of S:\n+--------+-----------+-----------+--------------------+--------------------+\n| A      | A(0)      | A(0)      | A(1)               | A(1)               |\n+--------+-----------+-----------+--------------------+--------------------+\n| S_prev | S_prev(0) | S_prev(1) | S_prev(0)          | S_prev(1)          |\n+--------+-----------+-----------+--------------------+--------------------+\n| S(0)   | 1.0       | 0.0       | 0.1038961038961039 | 0.1111111111111111 |\n+--------+-----------+-----------+--------------------+--------------------+\n| S(1)   | 0.0       | 1.0       | 0.8961038961038961 | 0.8888888888888888 |\n+--------+-----------+-----------+--------------------+--------------------+\n[bnlearn] >CPD of O:\n+------+------+--------------------+\n| S    | S(0) | S(1)               |\n+------+------+--------------------+\n| O(0) | 0.9  | 0.1072463768115942 |\n+------+------+--------------------+\n| O(1) | 0.1  | 0.8927536231884058 |\n+------+------+--------------------+\n[bnlearn] >CPD of S_prev:\n+-----------+------+\n| S_prev(0) | 0.49 |\n+-----------+------+\n| S_prev(1) | 0.51 |\n+-----------+------+\n[bnlearn] >CPD of A:\n+------+-------+\n| A(0) | 0.526 |\n+------+-------+\n| A(1) | 0.474 |\n+------+-------+\n[bnlearn] >Compute structure scores for model comparison (higher is better).\n\u2705 Parameter Learning (MLE) successful.\n\ud83d\udcca Testing Exact Inference (Junction Tree): Querying P(S=1 | O=1)\n==================================================\n\u2705 bnlearn execution complete.\n  edges_learned: 3\n  samples_processed: 1000\n  inference_success: True\n==================================================\n",
+    "raw_error": "WARNING:pgmpy:Replacing existing CPD for S_prev\nWARNING:pgmpy:Replacing existing CPD for S\nWARNING:pgmpy:Replacing existing CPD for A\nWARNING:pgmpy:Replacing existing CPD for O\n"
+  },
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 3214,
+    "stderr_length": 177,
+    "output_directory": "output/12_execute_output/deep_planning_horizon/bnlearn"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [],
+    "traces": [],
+    "other": []
+  }
+}

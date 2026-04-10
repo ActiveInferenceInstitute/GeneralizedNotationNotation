@@ -8,7 +8,7 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Coroutine, Dict, List
+from typing import Any, Coroutine, Dict, List, Optional
 
 from analysis.analyzer import extract_sections
 
@@ -17,13 +17,18 @@ from .providers.openai_provider import OpenAIProvider  # for patching in tests
 
 logger = logging.getLogger(__name__)
 
-async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
+async def _analyze_gnn_file_with_llm(
+    file_path: Path,
+    verbose: bool = False,
+    ollama_model: Optional[str] = None,
+) -> Dict[str, Any]:
     """
     Analyze a GNN file using LLM-enhanced techniques.
     
     Args:
         file_path: Path to the GNN file
         verbose: Enable verbose output
+        ollama_model: When set (e.g. pipeline-selected tag), pass to summarization on Ollama.
         
     Returns:
         Dictionary containing analysis results
@@ -65,7 +70,9 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
             # Use async-aware API when available
             ops = LLMOperations()
             # ops.summarize_gnn may return a coroutine if async available; await if so
-            summary_candidate = ops.summarize_gnn(content, max_length=500)
+            summary_candidate = ops.summarize_gnn(
+                content, max_length=500, ollama_model=ollama_model
+            )
             if hasattr(summary_candidate, '__await__'):
                 summary_text = await summary_candidate
             else:
@@ -97,14 +104,18 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
         raise Exception(f"Failed to analyze {file_path}: {e}") from e
 
 
-def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[str, Any] | Coroutine[Any, Any, Dict[str, Any]]:
+def analyze_gnn_file_with_llm(
+    file_path: Path,
+    verbose: bool = False,
+    ollama_model: Optional[str] = None,
+) -> Dict[str, Any] | Coroutine[Any, Any, Dict[str, Any]]:
     """
     Compatibility wrapper for the async analyzer.
 
     - If called from an active event loop, returns a coroutine which can be awaited.
     - If called synchronously, runs the async analyzer to completion and returns its result.
     """
-    coro = _analyze_gnn_file_with_llm(file_path, verbose)
+    coro = _analyze_gnn_file_with_llm(file_path, verbose, ollama_model)
     try:
         # If an event loop is running, return the coroutine for the caller to await
         asyncio.get_running_loop()

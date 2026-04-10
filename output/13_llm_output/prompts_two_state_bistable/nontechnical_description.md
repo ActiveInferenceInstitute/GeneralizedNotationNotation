@@ -9,13 +9,52 @@ Response:
 ```python
 import numpy as np
 
-# Define the state space and action spaces
-state_space = np.array([[0, 1], [2, 3]])
-actions = np.array([(-0.8, -0.2), (0.6, 0.7)])
-hidden_states = np.array([[0.5, 0.5]]).T
+def gnn_model(num_hidden_states, num_obs):
+    """GNN Representation of the Minimum State Space model."""
 
-# Initialize the initial state and action parameters
-initial_state = np.array(np.random.rand())
-actions[initial_state] = np.array([(-1.2, -0.8), (0.6, 0.7)])
-hidden_states[initial_state] = np.array([[0.5, 0.5]]).T
-```
+    # Initialize state space and action spaces
+    A = np.array([[0.8, 0.2], [0.3, 0.8]])
+    B = np.array([
+          (0.4, 0.5),
+          (0.6, 0.7)
+      ])
+
+    # Initialize the initial parameters
+    A[num_hidden_states == 1] = np.array([[0.2, 0.3], [0.8]])
+    B[num_hidden_states == 1] = np.array([
+          (0.4, 0.5),
+          (0.6, 0.7)
+      ])
+
+    # Initialize the initial action space
+    A[num_actions == 2] = np.array([[0.8], [0.3]])
+    B[num_actions == 2] = np.array([
+          (0.4, 0.5),
+          (0.6, 0.7)
+      ])
+
+    # Initialize the initial policy vector
+    A[num_policy == 1] = np.array([[0.8], [0.3]])
+    B[num_policy == 2] = np.array([
+          (0.4, 0.5),
+          (0.6, 0.7)
+      ])
+
+    # Initialize the initial action vector
+    A[num_action == 1] = np.array([[0.8], [0.3]])
+    B[num_action == 2] = np.array([
+          (0.4, 0.5),
+          (0.6, 0.7)
+      ])
+
+    # Initialize the initial policy vector
+    A[num_policy == 1] = np.array([[0.8], [0.3]])
+    B[num_policy == 2] = np.array([
+          (0.4, 0.5),
+          (0.6, 0.7)
+      ])
+
+    # Initialize the initial action vector
+    A[num_action == 1] = np.array([[0.8], [0.3]])
+    B[num_action == 2] = np.array([
+          (0.4,

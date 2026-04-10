@@ -2,13 +2,13 @@
 <gnn_model name="Two State Bistable POMDP" version="1.0">
   <metadata>
     <annotation>This model describes a minimal 2-state bistable POMDP:
-- 2 hidden states: &quot;left&quot; and &quot;right&quot; in a symmetric bistable potential.
+- 2 hidden states: "left" and "right" in a symmetric bistable potential.
 - 2 noisy observations: the agent gets a noisy readout of which side it is on.
 - 2 actions: push-left or push-right.
-- The agent prefers observation 1 (&quot;right&quot;) over observation 0 (&quot;left&quot;).
+- The agent prefers observation 1 ("right") over observation 0 ("left").
 - Tests the absolute smallest POMDP with full active inference structure.</annotation>
-    <created_at>2026-03-24T13:57:12.711755</created_at>
-    <modified_at>2026-03-24T13:57:12.711757</modified_at>
+    <created_at>2026-04-10T10:24:32.878732</created_at>
+    <modified_at>2026-04-10T10:24:32.878734</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="Noisy observation of state"/>

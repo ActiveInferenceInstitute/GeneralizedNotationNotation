@@ -1,19 +1,25 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are some key structural and mathematical aspects of the GNN specification:
+Based on the document, here are a few key points to consider:
 
-1. **Graph Structure**: The graph is a hierarchical representation with variables (agents), connections between them, and relationships between them. The number of variables represents the number of agents in the system, while the type indicates which agent operates on each variable. The connection patterns indicate how these agents interact with each other based on their actions.
+1. **Graph Structure**: The document mentions that each agent independently minimizes VFE and selects actions via EFE. This suggests that the graph structure of the model is hierarchical or network-based with agents acting as nodes (nodes in the hierarchy) and actions being directed towards specific goals (actions on the edges).
 
-2. **Variable Analysis**: Variables are represented as vectors or matrices that can be thought of as a set of ordered pairs (x1, y1) and (x2, y2). Each pair represents an interaction between two variables. The type of variable indicates which agent operates on it. For example, the type is "agent 1", indicating that agent A interacts with agent B based on their actions.
+2. **Variable Analysis**: The document discusses various types of variables, including:
+   - **State space dimensionality**: The number of variables representing the state of each agent at any given time step.
+   - **Dependency relationships**: The connections between agents and actions are directed towards specific goals (actions on the edges).
+   - **Conditional relationships**: The dependencies between variables can be represented as a network structure, with nodes connected by edges indicating conditional relationships between them.
 
-3. **Mathematical Structure**: The structure reflects the domain being modeled by providing a hierarchical representation of the system and its components. It provides insight into how agents interact within the system, while also highlighting potential bottlenecks or challenges in modeling certain types of interactions between variables.
+3. **Mathematical Structure**: The document discusses various mathematical structures that reflect the graph structure of the model:
+   - **Matrix dimensions and compatibility**: The number of variables in each agent's state space is specified to ensure that they are compatible (i.e., have equal dimensionality).
+   - **Symmetry or special properties**: The graphs can be represented as networks with certain structural characteristics, such as being connected by directed edges but not necessarily having a specific structure.
 
-Some key mathematical concepts that are relevant to this specification include:
+4. **Complexity Assessment**: The document highlights potential bottlenecks and challenges in designing the graph structure of the model:
+   - Computational complexity indicators (e.g., time-consuming computations) for each variable are mentioned to indicate that certain variables may be computationally infeasible or difficult to compute.
+   - Model scalability considerations, including whether there is a specific number of agents required to achieve optimal performance and how it can be optimized using algorithms like graph traversal or dynamic programming.
 
-1. **Graph Representation**: The graph structure represents the relationships between variables as a hierarchical representation with nodes (agents) and edges connecting them. This allows for efficient analysis of complex network structures, such as those found in social networks or communication systems.
+5. **Design Patterns**: The document provides examples of design patterns that could potentially improve the complexity assessment:
+   - "Symmetry" (e.g., by specifying a particular structure) is mentioned as an option for optimizing computational complexity, but this may not be feasible due to resource constraints and other factors.
+   - "Special properties" are also mentioned in relation to graph structures, which can provide insight into the underlying mathematical structure of the model:
+   - "Symmetry" (e.g., by specifying a particular structure) is mentioned as an option for optimizing computational complexity, but this may not be feasible due to resource constraints and other factors.
 
-2. **Variable Analysis**: The variable type indicates which agent operates on each variable, while the type provides insight into how these agents interact within the system. This can help identify specific types of interactions between variables that are not accounted for by other models (e.g., "agent 1" interacts with "agent B").
-
-3. **Mathematical Structure**: The structure highlights potential bottlenecks or challenges in modeling certain types of interactions between variables, such as those involving agents interacting within a network structure. This can help identify areas where additional information is needed to improve model performance (e.g., identifying the optimal number of actions for each agent).
-
-Overall, this specification provides a structured representation and mathematical framework that allows for efficient analysis of complex networks and interactions between variables in a GNN-based system.
+Overall, these points suggest that the graph structure of the model reflects its

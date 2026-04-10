@@ -1,24 +1,28 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here's a concise overview of the GNN Model:
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) agent that represents continuous state-space models with Gaussian belief updates and Gaussian noise covariance. It's based on Laplace approximation for Gaussian beliefs, which allows it to update its beliefs in a smooth manner over time.
+**Model Purpose:**
+This model represents continuous state-space models that navigate a 2D environment and update their beliefs based on noisy or uncertain data. It uses Laplace approximation for Gaussian belief updating, Generalized coordinate matrices to capture uncertainty in predictions, and Bayesian inference to update beliefs. The goal is to learn from the observed data and make accurate decisions based on available information.
 
-2. **Core Components**:
-   - **Belief Mean**: A set of 3D vectors representing the belief maps (mean + noise) that represent the state-space variables. These are used to compute the posterior distribution of the state and action parameters.
-   - **Observation Mean Mapping**: A set of 1x2 matrices representing the observation maps (mean + covariance). These are used to compute the probability density of each observation based on its position in the state space.
-   - **Action Effect Matrix**: A set of 3D vectors representing the action actions that can be taken given a specific state-space variable. These represent the possible actions and their corresponding probabilities for each state-space variable.
+**Core Components:**
 
-3. **Model Dynamics**: The model evolves over time by updating its beliefs based on new observations, which are updated using Laplace approximation for Gaussian beliefs. It also updates its predictions of future states based on the current state-space variables.
+1. **State space**: A 2D state-space model representing a sequence of positions (x) and velocities (v).
+2. **Observations**: A sequence of noisy or uncertain positions, velocities, and actions to update the beliefs.
+3. **Actions**: A sequence of actions that can be performed based on the observed data.
+4. **Constraints**: A set of constraints representing uncertainty in predictions.
+5. **Action parameters**: A set of action parameters (e.g., belief mean) that are updated based on the current state and observations.
+6. **Predictions**: A sequence of predictions, which can be made using the actions or constraints.
+7. **Constraints**: A set of constraints representing uncertainty in predictions.
+8. **Action probabilities**: A probability distribution for each action parameter (belief mean) based on the current state and observations.
+9. **Prediction probabilities**: A probability distribution for each prediction parameter (action mean) based on the current state and observations.
+10. **Constraints**: A set of constraints representing uncertainty in predictions.
 
-4. **Active Inference Context**: This is a set of 2D vectors representing the actions and their corresponding probabilities that can be taken given specific states-space variables. These represent the possible actions and their corresponding probabilities for each state-space variable.
+**Model Dynamics:**
 
-5. **Practical Implications**: The model provides accurate predictions based on its beliefs, allowing it to make decisions in uncertain environments with a high degree of confidence. It also enables control over the agent's behavior by updating its beliefs based on new observations.
-
-Please provide clear and concise explanations that cover all key points:
-
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) agent that represents continuous state-space models with Gaussian belief updates and Gaussian noise covariance. It's based on Laplace approximation for Gaussian beliefs, which allows it to update its beliefs in a smooth manner over time.
-
-2. **Core Components**:
-   - **Belief Mean**: A set of 3D vectors representing the belief maps (mean + covariance). These are used to compute the posterior distribution of the state and action parameters.
-   - **Observation Mean Mapping**: A set of 1x2 matrices representing the observation maps (mean + covariance).
+1. **Initialization**: A sequence of actions that can be performed based on the observed data, which are updated using Bayesian inference to update beliefs.
+2. **Learning**: The model learns from its observations and actions by updating its beliefs based on the current state and observations.
+3. **Adaptation**: The model adapts its behavior based on new information or uncertain predictions, allowing it to learn from a broader range of data.
+4. **Model convergence** (e.g., convergence to a stable equilibrium): A sequence of actions that converge towards a stable equilibrium in the state space.
+5. **Learning rate**, **decay rate**, and **bias**: Control parameters for updating beliefs based on new information or uncertain predictions, allowing the model to learn from a broader range of data.
+6. **Model stability** (e.g., stability to unstable regime): A sequence of

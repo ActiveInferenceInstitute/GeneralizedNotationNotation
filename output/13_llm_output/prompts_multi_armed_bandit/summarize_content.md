@@ -1,33 +1,30 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here's a concise overview of the GNN implementation:
 
-**Overview**
-This is an active inference Bayesian network (AIBN) that models multi-armed bandit scenarios as POMDPs. It uses a set of hidden states and actions, with each action having two types of reward distributions (identity rewards vs small rewards). The model learns to balance exploration over arms while exploiting exploitation by choosing the arm with higher reward.
+**Overview:**
+This is a simple neural network that represents a multi-armed bandit (MAB) as an action-based probabilistic graphical model. The model consists of three main components:
 
-**Key Variables**
-The model consists of:
+1. **ActInfPOMDP**: This is a POMDP representing the MAB with two hidden states and 3 actions, each acting on different reward contexts. It learns to predict which arm is best based on its reward distribution across all rewards.
 
-1. **Hidden States**: A list of 3 hidden states representing the "reward context" and "action-observation mapping". Each state has a probability distribution over actions, which can be either identity or small rewards (smaller than big rewards).
+2. **MultiArmedBanditAgent**: This agent implements the GNN representation of the MAB as an action-based probabilistic graphical model. It learns to predict which arm is best based on its reward distributions across all rewards, and it also learns to optimize a policy over arms with sticky context.
 
-2. **Observations**: A list of 3 observations representing reward signals from arm 0 to arm 1. Each observation is initialized with a random value and has an associated probability distribution over arms.
+3. **G(pi)**: This is a softmax function that maps each reward observation to its probability of being in the next state (i.e., the action). It then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
 
-3. **Actions**: A list of actions, which are labeled as "action-observation mapping" (AoM). Each action can be either identity or small rewards (smaller than big rewards), so each action has two types of reward distributions: identity and small rewards.
+**Key Variables:**
 
-**Critical Parameters**
-The model learns to balance exploration over arms while exploiting exploitation by choosing the arm with higher reward. The key parameters are:
+1. **A**: This is an action-based probabilistic graphical model representing the MAB. It learns to predict which arm is best based on its reward distributions across all rewards.
 
-1. **Random Initialization**: Randomly initialize all hidden states, actions, and observations.
+2. **B**: This is a transition matrix that maps each reward observation to its probability of being in the next state (i.e., the action). It then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
 
-2. **Initialization of Hidden States**: Initialize a list of 3 hidden states representing "reward context" (identity rewards vs small rewards). Each state has an associated probability distribution over action-observation mapping.
+**Critical Parameters:**
 
-3. **Initialization of Actions**: Initialize a list of 3 actions labeled as "action-observation mapping". Each action can be either identity or small rewards, so each action has two types of reward distributions: identity and small rewards (smaller than big rewards).
+1. **Most important matrices**:
+   - **A**: This is the action-observation mapping matrix that maps each reward observation to its probability of being in the next state (i.e., the action). It then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
 
-**Notable Features**
-The model learns to balance exploration over arms while exploiting exploitation by choosing the arm with higher reward. The key features are:
+2. **B**: This is the transition matrix that maps each reward observation to its probability of being in the next state (i.e., the action), and it then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
 
-1. **Random Initialization**: Randomly initialize all hidden states, actions, and observations.
+**Notable Features:**
 
-2. **Initialization of Hidden States**: Initialize a list of 3 hidden states representing "reward context" (identity rewards vs small rewards). Each state has an associated probability distribution over action-observation mapping.
-
-3. **Initialization of Actions**: Initialize a list of 3 actions labeled
+1. **Key Variables**:
+   - **A**: This is an action-observation mapping matrix that maps each reward observation to

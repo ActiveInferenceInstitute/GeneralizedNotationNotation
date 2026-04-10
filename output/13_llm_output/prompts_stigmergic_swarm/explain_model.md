@@ -1,30 +1,28 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here is a concise overview of the key concepts:
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification for active inference models. It represents a model that uses hidden states and observations to simulate agent coordination over environmental traces, with no direct communication between agents or actions.
-
-2. **Core Components**:
-   - **GNN Representation**: A representation of the model's structure using hidden state information (state space). This allows you to understand how the model evolves over time based on observed data.
-   - **Key Relationships**: The model can learn and update beliefs about future observations, action choices, and control variables through a process called active inference.
-
-3. **Model Dynamics**: How does this model implement Active Inference principles? What actions are available and what do they represent?
-   - **GNN Syntax**: A representation of the model's structure using hidden state information (state space). This allows you to understand how the model evolves over time based on observed data.
-
-4. **Practical Implications**: What can you learn or predict using this model? What decisions can it inform?
-   - **Action Choices**: The model can make predictions about future actions and control variables, allowing for proactive decision-making in uncertain environments.
-
-5. **Key Relationships**: The model learns and updates beliefs based on observed data, enabling agent coordination over environmental traces while avoiding direct communication between agents or actions.
-
-I've tried to provide clear explanations that cover the key points:
-
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification for active inference models. It represents a model that uses hidden state information and can simulate agent coordination over environmental traces, with no direct communication between agents or actions.
+1. **Model Purpose**: This model represents an active inference system that uses hidden states (s_f0, s_f1) and observations to generate predictions based on shared signals. It captures the essence of active inference in action-based systems.
 
 2. **Core Components**:
-   - **GNN Representation**: A representation of the model's structure using hidden state information (state space). This allows you to understand how the model evolves over time based on observed data.
-   - **Key Relationships**: The model learns and updates beliefs about future observations, action choices, and control variables through a process called active inference.
+   - **Sigmoid Distribution**: The probability distribution for each agent's likelihood is represented by a sigmoid function. This allows for easy computation of probabilities, allowing for inference.
+   - **Probabilities** (prob_f0, prob_s1): These are the probabilities that represent the actions being taken by each agent based on their respective states and observations.
+   - **Observations**: These are the data points collected from the environment to compute predictions about future outcomes.
 
-3. **Model Dynamics**: How does this model implement Active Inference principles? What actions are available and what do they represent?
-   - **GNN Syntax**: A representation of the model's structure using hidden state information (state space). This allows you to understand how the model evolves over time based on observed data.
+3. **Model Dynamics**: The model evolves over time using a sequence of actions (u_c0, π_c0) that update beliefs in terms of shared signals and observed actions. This allows for prediction based on collective behavior.
+   - **Actions** (actions): These are the predictions made by each agent based on their respective states and observations.
 
-4. **Practical Implications**: What can you learn or predict using this model? What
+4. **Active Inference Context**: The model uses a sequence of actions to generate new probabilities, allowing for inference about future outcomes. It also updates beliefs in terms of shared signals and observed actions.
+   - **Priors** (prior_f0, prior_s1): These are the initial probabilities that represent the current state of the system based on the available observations.
+
+5. **Key Relationships**: The model can learn from past data to predict future outcomes by updating beliefs in terms of shared signals and observed actions. It also updates beliefs in terms of shared signals and observable actions, allowing for prediction based on collective behavior.
+
+Please provide clear explanations that cover:
+
+1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
+2. **Core Components**: 
+   - **Sigmoid Distribution**: The probability distribution for each agent's likelihood is represented by a sigmoid function. This allows for easy computation of probabilities, allowing for inference.
+   - **Probabilities** (prob_f0, prob_s1): These are the probabilities that represent the actions being taken by each agent based on their respective states and observations.
+   - **Observations**: These are the data points collected from the environment to compute predictions about future outcomes.
+
+3. **Model Dynamics**: The model evolves over time using a sequence of

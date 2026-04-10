@@ -6,15 +6,58 @@ Prompt:
 
 Response:
 
-You can use the following code to create a GNN representation of your multi-agent cooperative agent:
+```python
+import numpy as np
+from typing import List, Dict, Tuple
 
-1. Create an instance of `MultiAgentCooperativeActInference` class with two agents and shared observation space.
-2. Use the `GNNRepresentation()` method to represent the GNN model in terms of the state, actions, and transitions between states.
-3. Use the `representation_state(agent1)` method to create a representation for agent 1 based on its own state and actions.
-4. Use the `representation_action(agent2)` method to create a representation for agent 2 based on their own action and state.
-5. Use the `representation_transition()` method to represent the transition between states, which is used to update the probabilities of transitioning from one state to another.
-6. Use the `representation_observation()` method to create an observation dictionary that contains the actions and states for each agent.
-7. Use the `representation_action(agent1)` method to create a representation for agent 2 based on its own action and state, which is used to update the probabilities of transitioning from one state to another.
-8. Use the `representation_observation()` method to create an observation dictionary that contains the actions and states for each agent, which can be used to update their probabilities in the next iteration.
-9. Use the `representation_transition(agent1)` method to represent the transition between states based on the action of agent 2.
-10. Use the `representation_observation()` method to create an observation dictionary that contains the actions and states for each agent, which can be used to update their probabilities in the next iteration.
+def multiagent_cooperative(
+    agent1: Dict[str, float],
+    agent2: Dict[str, float] = {},
+    shared_observation=None,
+    num_actions=4,
+    num_hidden_states=3,
+    num_obs=6,
+    num_timesteps=20,
+) -> Tuple[Dict[str, float], Dict[str, float]]:
+    """
+    Multi-agent cooperative active inference.
+
+    Args:
+        agent1 (dict): A dictionary of the form {
+            "action": str,
+            "state": Dict[str, float]
+        } representing a single action in agent 1 and its actions for agent 2.
+        shared_observation is a dictionary with keys `"name"` and values `{
+                "value": value from all actions",
+                "next": next state of the same action.",
+            }
+
+        num_actions: number of actions in the observation space, default to 4
+        num_hidden_states: number of hidden states for each agent. Default is 3
+
+    Returns:
+        Dict[str, float]: A dictionary representing a cooperative inference with `num_actions` and `num_hidden_states`.
+    """
+    # Initialize state-value matrices
+    state1 = np.zeros((len(agent2), num_actions))
+    state2 = np.zeros((len(agent2), num_actions))
+
+    for action, nextstate in shared_observation:
+        if (action == "A"):
+            nextstate[0] += 1
+
+        # If the next state is not the same as the current state, update
+        elif (nextstate!= agent1["state"]) and (nextstate != agent2["state"]):
+            nextstate = np.random.choice([agent1['state'], agent2['state']], size=(num_actions))
+
+        # Update the action probabilities for each agent based on their actions
+        if (action == "A"):
+            nextstates[0][nextstate] += 1
+
+            # If the next state is not the same as the current state, update
+            elif (nextstate!= agent2["state"]) and (nextstate != agent1["state"]):
+                nextstates[0][nextstate] += 1
+
+        # Update the policy for each agent based on their actions
+        if (action == "A"):
+            nextactions = np

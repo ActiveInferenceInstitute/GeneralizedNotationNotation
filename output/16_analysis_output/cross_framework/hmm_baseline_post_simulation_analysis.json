@@ -1,29 +1,14 @@
 {
-  "timestamp": "2026-03-24T14:11:48.651194",
+  "timestamp": "2026-04-10T10:35:03.794366",
   "execution_results_dir": "output/12_execute_output/hmm_baseline",
   "framework_results": {
-    "rxinfer": {
-      "framework": "rxinfer",
+    "bnlearn": {
+      "framework": "bnlearn",
       "result_count": 1,
       "analyses": []
     },
-    "numpyro": {
-      "framework": "numpyro",
-      "result_count": 1,
-      "analyses": []
-    },
-    "activeinference_jl": {
-      "framework": "activeinference_jl",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pymdp": {
-      "framework": "pymdp",
-      "result_count": 1,
-      "analyses": []
-    },
-    "pytorch": {
-      "framework": "pytorch",
+    "discopy": {
+      "framework": "discopy",
       "result_count": 1,
       "analyses": []
     },
@@ -48,8 +33,28 @@
         }
       ]
     },
-    "discopy": {
-      "framework": "discopy",
+    "pytorch": {
+      "framework": "pytorch",
+      "result_count": 1,
+      "analyses": []
+    },
+    "pymdp": {
+      "framework": "pymdp",
+      "result_count": 1,
+      "analyses": []
+    },
+    "activeinference_jl": {
+      "framework": "activeinference_jl",
+      "result_count": 1,
+      "analyses": []
+    },
+    "numpyro": {
+      "framework": "numpyro",
+      "result_count": 1,
+      "analyses": []
+    },
+    "rxinfer": {
+      "framework": "rxinfer",
       "result_count": 1,
       "analyses": []
     }
@@ -57,15 +62,16 @@
   "cross_framework_comparison": {
     "model_name": "hmm_baseline",
     "frameworks_compared": [
-      "rxinfer",
-      "numpyro",
-      "activeinference_jl",
-      "pymdp",
-      "pytorch",
+      "bnlearn",
+      "discopy",
       "jax",
-      "discopy"
+      "pytorch",
+      "pymdp",
+      "activeinference_jl",
+      "numpyro",
+      "rxinfer"
     ],
-    "framework_count": 7,
+    "framework_count": 8,
     "comparisons": {
       "free_energy": {
         "jax": {
@@ -79,26 +85,28 @@
         "mean_fe": 1.6736
       },
       "execution_time": {
-        "rxinfer": 22.319628,
-        "numpyro": 1.555278,
-        "activeinference_jl": 20.357071,
-        "pymdp": 1.797278,
-        "pytorch": 0.949036,
-        "jax": 1.391107,
-        "discopy": 0.513877
+        "bnlearn": 1.794016,
+        "discopy": 0.284476,
+        "jax": 0.796815,
+        "pytorch": 0.456369,
+        "pymdp": 3.014956,
+        "activeinference_jl": 10.279033,
+        "numpyro": 0.817426,
+        "rxinfer": 13.598655
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.513877
+        "time": 0.284476
       },
       "success_rates": {
-        "rxinfer": true,
-        "numpyro": true,
-        "activeinference_jl": true,
-        "pymdp": true,
-        "pytorch": true,
+        "bnlearn": true,
+        "discopy": true,
         "jax": true,
-        "discopy": true
+        "pytorch": true,
+        "pymdp": true,
+        "activeinference_jl": true,
+        "numpyro": true,
+        "rxinfer": true
       }
     }
   }

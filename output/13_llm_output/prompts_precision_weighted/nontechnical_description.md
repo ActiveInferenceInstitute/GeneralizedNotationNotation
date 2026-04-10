@@ -6,45 +6,40 @@ Prompt:
 
 Response:
 
-Here is the annotated version of the GNN model:
+You can create a GNN model with the following code:
 ```python
 import numpy as np
-from typing import List, Dict, Tuple
+from scipy import stats
 
-def gnn_model(
-    A=np.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05],
-              [0.05, 0.05, 0.9]])
-):
-    """
-    GNN model for a probabilistic neural network with an active inference agent.
-
-    Parameters:
-        A (numpy array): The input data matrix representing the action space.
-            Inputs are represented as a list of lists containing two elements per row and
-            column. Each element represents a state in the input space, which is a list of
-            three elements:
-                - "x": a random value between 0 and 1 (inclusive)
-                - "y": a random value between 0 and 1 (exclusive)
-                - "z": a random value between 0 and 1 (exclusive)
-
-    Returns:
-        A (numpy array): The GNN model representation of the input data.
-    """
-    # Initialize the state matrices
-    A = np.array([[x[i] for x in A],
-                  [y[i] for y in A],
-                  [z[i] for z in A]])
-
-    # Initialize the transition matrix
-    B = np.array([
+# Define input and output matrices for the GNN model
+A = np.array([[0.9, 0.05, 0.05],
+                  [0.05, 0.9, 0.05]])
+B = np.array([
+  (1.0, 0.0, 0.0),
+  (0.0, 1.0, 0.0),
+  (0.0, 1.0, 0.0)
+])
+C = np.array([[(4.0)] * num_hidden_states +
+                  [2.0] * num_actions +
+                  [3.0]])
+D = np.array([
+    ([
       (
-        (1.0, 0.9, 0.05),
-        (
-            -(x[i+1][j] + x[i+2][j]) / 4.0 *
-                (y[i+1][j] + y[i+2][j]) / 4.0 *
-                (z[i+1][j] + z[i+2][j]),
-            -(x[i+3][j] + x[i+4][j]) / 4.0 *
-            (-(y[i+1][j] + y[i+2][j]) / 4.0 *
-                (z[i+1][j] + z[i+2][j]),
-            -(x[i+3][j] + x[i+4][j]) / 4.0 *
-            (-(y[i+1][j] + y[i+2][j]) / 4.
+        0.9, 0.1, 1.0),
+       (0.05, 0.1, 1.0)
+   ]))
+E = np.array([[(4.0)] * num_actions +
+                  [2.0] * num_timesteps +
+                  [3.0]])
+F = np.array([
+    ([
+      (
+        0.9, 0.05, 1.0),
+       (0.05, 0.1, 1.0)
+   ]))
+G=np.array([[(4.0)] * num_actions +
+                  [2.0] * num_timesteps +
+                  [3.0]])
+```
+This code defines the input and output matrices for the GNN model. The input matrix A represents the likelihood of observing a state, while the output matrix B represents the probability distribution over states. The transition matrix C is used to represent the action-probability gradient flow from one observation to another. The policy vector D maps observed actions to future observations with probabilities. The habit vector F maps observed actions to future observations with probabilities.
+The input matrices A and B are initialized as a 3x1 matrix, while the output matrices A and B have the same shape but different sizes (num_hidden_states = num_actions + num_timesteps). This allows for easy manipulation of the model parameters using NumPy operations. The transition matrix C represents the action-probability gradient flow from one observation to another based on a set of actions, while the habit vector F

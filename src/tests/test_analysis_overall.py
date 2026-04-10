@@ -410,6 +410,108 @@ class TestAnalyzerSimulationMetrics:
         assert isinstance(result, dict)
         assert result["execution_times"] == [1.0]
 
+    def test_extract_simulation_metrics_bnlearn_execution_logs(self, tmp_path):
+        """bnlearn writes execution_logs/*_results.json; metrics should still record completion."""
+        import json
+
+        from analysis.analyzer import _extract_simulation_metrics
+
+        impl = tmp_path / "markov_chain" / "bnlearn"
+        el = impl / "execution_logs"
+        el.mkdir(parents=True)
+        structured = {
+            "framework": "bnlearn",
+            "model_name": "markov_chain",
+            "success": True,
+            "simulation_data": {"beliefs": [], "actions": [], "observations": []},
+        }
+        (el / "Simple_bnlearn.py_results.json").write_text(json.dumps(structured))
+
+        detail = {"implementation_directory": str(impl), "execution_time": 1.0}
+        logger = self._make_logger()
+        result = _extract_simulation_metrics("bnlearn", [detail], tmp_path, logger)
+
+        assert result["model_parameters"].get("bnlearn_completed") is True
+        assert result["model_parameters"].get("model_name") == "markov_chain"
+        assert result["data_source"]
+
+    def test_extract_simulation_metrics_rxinfer_prefers_simulation_data(self, tmp_path):
+        """simulation_data/simulation_results.json must win over sparse execution_logs."""
+        import json
+
+        from analysis.analyzer import _extract_simulation_metrics
+
+        impl = tmp_path / "rx" / "rxinfer"
+        el = impl / "execution_logs"
+        sd = impl / "simulation_data"
+        el.mkdir(parents=True)
+        sd.mkdir(parents=True)
+        sparse = {
+            "framework": "rxinfer",
+            "model_name": "markov_chain",
+            "success": True,
+            "simulation_data": {
+                "beliefs": [],
+                "actions": [],
+                "observations": [],
+            },
+        }
+        (el / "Model_rxinfer.jl_results.json").write_text(json.dumps(sparse))
+        rich = {
+            "beliefs": [[0.9, 0.05, 0.05], [0.8, 0.1, 0.1]],
+            "actions": [1, 1],
+            "observations": [2, 3],
+            "efe_history": [0.1, 0.2],
+        }
+        (sd / "simulation_results.json").write_text(json.dumps(rich))
+
+        detail = {"implementation_directory": str(impl), "execution_time": 1.0}
+        logger = self._make_logger()
+        result = _extract_simulation_metrics("rxinfer", [detail], tmp_path, logger)
+
+        assert result["beliefs"] == rich["beliefs"]
+        assert "simulation_data" in result["data_source"].replace("\\", "/")
+        assert "simulation_results.json" in result["data_source"].replace("\\", "/")
+
+    def test_extract_simulation_metrics_discopy_supplements_circuit_info(self, tmp_path):
+        """DisCoPy: execution log plus circuit_info.json yields circuit metrics (no empty extract)."""
+        import json
+
+        from analysis.analyzer import _extract_simulation_metrics
+
+        impl = tmp_path / "m" / "discopy"
+        el = impl / "execution_logs"
+        sd = impl / "simulation_data"
+        el.mkdir(parents=True)
+        sd.mkdir(parents=True)
+        stub = {
+            "framework": "discopy",
+            "model_name": "markov_chain",
+            "success": True,
+            "simulation_data": {
+                "traces": [],
+                "beliefs": [],
+                "actions": [],
+                "observations": [],
+            },
+        }
+        (el / "Model_discopy.py_results.json").write_text(json.dumps(stub))
+        circuit_data = {
+            "model_name": "markov_chain",
+            "components": ["A_matrix", "B_matrix"],
+            "analysis": {"num_components": 8},
+            "parameters": {"num_states": 3, "num_observations": 3, "num_actions": 1},
+        }
+        (sd / "circuit_info.json").write_text(json.dumps(circuit_data))
+
+        detail = {"implementation_directory": str(impl), "execution_time": 0.5}
+        logger = self._make_logger()
+        result = _extract_simulation_metrics("discopy", [detail], tmp_path, logger)
+
+        assert result.get("circuit_info") is not None
+        assert result["circuit_info"].get("num_components") == 8
+        assert result.get("model_parameters", {}).get("num_states") == 3
+
     def test_compare_framework_results_empty_input(self):
         """_compare_framework_results returns dict with expected keys for empty input."""
         from analysis.analyzer import _compare_framework_results

@@ -10,40 +10,36 @@ Response:
 import numpy as np
 from scipy import stats
 
-# Define the GNN model annotations
-model_annotations = {
-    "A1": {"LikelihoodMatrix": {"P(obs|position") : 0.7, "ProbabilityVector" : [0.25]},
-    "B1": {"PreferenceVector": {"prob_action": 0.3}}
-}
-```
+def gnn_model(num_agents, num_actions):
+    """GNN model for simulating a swarm of agents coordinating via environmental traces."""
 
-Then you can use the `GNN` function to compute the GNN model annotations:
+    # Initialize the state space
+    state = np.zeros((num_agents + 1))
+    
+    # Initialize the likelihood matrix
+    likelihood = np.zeros((num_agents + 1))
+    
+    
+    # Initialize the transition matrices
+    transition_matrix = np.zeros(num_actions)
+    
+    # Initialize the probability vectors for each agent
+    agent_probabilities = np.zeros((num_agents, num_actions))
 
-```python
-def gnn(model, num_agents):
-    """
-    Compute the GNN model annotations for a given agent and number of agents.
+    # Initialize the action probabilities vector
+    actions = np.zeros((num_agents + 1))
+    
+    
+    # Initialize the state transition matrix
+    state_transitioned = np.ones(state)
+    
+    # Initialize the probability vectors for each agent
+    agent_probabilities[agent_indices] = np.zeros([num_actions])
 
-    Args:
-        model (str): The name of your GNN model annotation file.
-        num_agents (int): The number of agents to use as input.
-
-    Returns:
-        dict[str]: A dictionary containing the GNN model annotations from the provided model
-    """
-    gnn = {}
-    for agent, actions in model["A1"]:
-        if isinstance(actions, np.ndarray) and len(actions) == 3:
-            # Use a single agent to compute the GNN model annotations
-            gnn[agent] = {
-                "LikelihoodMatrix": {"P(obs|position") : 0.7}
-            }
-    for action_id in range(num_agents):
-        if isinstance(actions, np.ndarray) and len(actions) == 3:
-            # Use a single agent to compute the GNN model annotations
-            gnn[action_id] = {
-                "PreferenceVector": {"prob_action": 0.3}
-            }
-
-    return gnn
+    # Initialize the action probabilities vector
+    actions[action_indices] = np.zeros((num_agents + 1))
+    
+    
+    # Initialize the state transition matrix
+    state_transitioned[state_indices] = np.ones(state)
 ```

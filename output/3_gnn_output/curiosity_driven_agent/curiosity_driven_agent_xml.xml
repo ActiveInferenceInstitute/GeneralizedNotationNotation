@@ -7,8 +7,8 @@
 - Precision parameter γ weighting epistemic vs instrumental contributions
 - 5 hidden states, 5 observations, 4 actions in a navigation context
 - Agent is rewarded for reducing posterior uncertainty</annotation>
-    <created_at>2026-03-24T13:57:13.624871</created_at>
-    <modified_at>2026-03-24T13:57:13.624873</modified_at>
+    <created_at>2026-04-10T10:24:33.664588</created_at>
+    <modified_at>2026-04-10T10:24:33.664589</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="5,5" name="A" type="likelihood_matrix" description="Likelihood matrix"/>

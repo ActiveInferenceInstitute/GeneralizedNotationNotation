@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-24T14:12:56.248794",
-  "processed_files": 8,
+  "timestamp": "2026-04-10T10:35:37.406091",
+  "processed_files": 9,
   "success": true,
   "errors": [],
   "security_checks": [
@@ -12,7 +12,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.249193"
+      "check_timestamp": "2026-04-10T10:35:37.406379"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -22,7 +22,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.250672"
+      "check_timestamp": "2026-04-10T10:35:37.406991"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -32,7 +32,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.251504"
+      "check_timestamp": "2026-04-10T10:35:37.407372"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -42,7 +42,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.252410"
+      "check_timestamp": "2026-04-10T10:35:37.407786"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -52,7 +52,17 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.253487"
+      "check_timestamp": "2026-04-10T10:35:37.408198"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
+      "file_name": "bnlearn_causal_model.md",
+      "file_hash": "6e4b5a97d577f9ae32edfbb1b08694aa8da0c1c77d0b0f2bee5f64558e24951a",
+      "file_size": 1376,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-04-10T10:35:37.408455"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -62,7 +72,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.253864"
+      "check_timestamp": "2026-04-10T10:35:37.408662"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -72,7 +82,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.254244"
+      "check_timestamp": "2026-04-10T10:35:37.408961"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -82,7 +92,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-24T14:12:56.254666"
+      "check_timestamp": "2026-04-10T10:35:37.409303"
     }
   ],
   "vulnerabilities": [],
@@ -153,6 +163,20 @@
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "file_name": "hmm_baseline.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
+      "file_name": "bnlearn_causal_model.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
+      "file_name": "bnlearn_causal_model.md",
       "recommendation": "Add error handling",
       "priority": "medium",
       "description": "Implement proper error handling for robust security"

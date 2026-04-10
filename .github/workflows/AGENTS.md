@@ -8,7 +8,7 @@ Defines behavior and guardrails for workflows in this directory. Human index of 
 
 | File | Role |
 |------|------|
-| `ci.yml` | Matrix test with JUnit XML + artifact per Python version, job summary; MCP tool count on 3.12; Ruff; Bandit (medium+) with JSON artifact on pass or fail. Skips pure `*.md` / `doc/**` paths. |
+| `ci.yml` | Matrix test with JUnit + artifact + summary; Ruff on 3.12 only (merged into test job); MCP tool count on 3.12; Bandit SARIF → `upload-sarif` + artifact; job fails on findings. Skips pure `*.md` / `doc/**` paths. |
 | `docs-audit.yml` | Strict Markdown audit when docs or `docs_audit.py` change. |
 | `actionlint.yml` | Lint workflow YAML when `.github/workflows/**` changes. |
 | `dependency-review.yml` | PR gate: high-severity failures; AGPL deny list; PR comment summary on failure. |

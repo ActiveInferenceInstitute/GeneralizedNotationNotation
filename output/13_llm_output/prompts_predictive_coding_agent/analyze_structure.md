@@ -1,22 +1,31 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here's a detailed structural analysis of the GNN model:
+Based on your description, here are some key structural analysis points:
 
-1. **Graph Structure**: The graph consists of three main components:
-   - **Input Graph**: A directed graph representing the input data (observations) and their dependencies. This is represented by the "input" variable in the code block.
-   - **Output Graph**: A directed graph representing the output data (sensory predictions) and their dependencies. This is represented by the "output" variable in the code block.
+1. **Graph Structure**: The graph is hierarchical and consists of two main components:
+   - **State space dimensionality**: There are 3 variables (beliefs) with a total dimensionality of 4. Each variable has its own set-point or state parameter.
+   - **Connection patterns**: There are 2 types of connections, one directed and one undirected. The directed connections have the following properties:
+    - **Directed connections** can be traversed in either direction (from left to right).
+    - **Undirected connections** do not allow traversal in any direction.
 
-2. **Variable Analysis**: The variables are:
-   - **Input Variables**: A list of input variables, which represent the inputs to the model. Each input variable has a corresponding output variable that represents its prediction error or confidence in observations.
-   - **Output Variables**: A list of output variables, which represent the outputs from the model. Each output variable has a corresponding input variable that represents its sensory data and predictions.
+2. **Variable Analysis**:
+   - **State space dimensionality**: There are 3 variables with a total dimensionality of 4, each having its own set-point or state parameter.
+   - **Dependencies and conditional relationships**: Each variable has its own dependencies (e.g., from left to right). Each dependency is directed in one direction but not in the other.
+   - **Temporal vs. static variables**: There are 2 types of temporal dependencies:
+    - **Directed temporal dependencies** allow traversal in either direction, allowing for a direct comparison between states.
+    - **Undirected temporal dependencies** do not allow traversal in any direction but can be traversed in one direction (from left to right).
 
-3. **Mathematical Structure**: The graph structure is represented by the following mathematical structures:
-   - **Matrix Dimensionality**: The number of input variables (input) in each layer of the graph, which are represented as directed edges between nodes with the same type. Each edge has a corresponding node with the same type and direction.
-   - **Symmetry**: The symmetry matrix is used to represent the dependencies among all pairs of input variables. It represents the relationship between two input variables that have the same type in terms of their dependency on each other.
-   - **Patterns**: The pattern matrices are used to represent the relationships among different types of input and output variables, which can be represented as directed edges with corresponding nodes having the same type. Each pattern matrix has a corresponding node with the same type and direction.
+3. **Mathematical Structure**:
+   - **Matrix dimensions and compatibility**: Each variable has its own matrix dimensionality of 4, which is compatible with the other variables.
+   - **Symmetries or special properties**: There are two types of symmetries:
+      - **Directed symmetry** (one-to-many) allows traversal in one direction but not in another.
+      - **Undirected symmetry** (two-to-one) allows traversal in both directions, allowing for a direct comparison between states.
 
-4. **Complexity Assessment**: The graph structure is also represented by the following complexity indicators:
-   - **Computational Complexity Indicator**: A mathematical formula that calculates the computational complexity of representing each input variable as directed edges in the graph, which can be calculated using the given code block. This represents the number of computations required to represent a particular type of input and output variables.
-   - **Model Scalability Considerations**: The graph structure is also represented by the following model scalability considerations:
-    - **Computational Complexity Indicator**: A mathematical formula that calculates the computational complexity of representing each input variable as directed edges in the graph, which can be calculated using the given code block. This represents the number of computations required to represent a particular type of input and output variables.
-   - **Model
+4. **Design Patterns**:
+   - **What modeling patterns or templates does this follow?**
+    - **Symmetry of variables**: Each variable has its own symmetries and can be traversed in one direction but not in another (from left to right).
+    - **Directed symmetry** allows traversal in either direction, allowing for a direct comparison between states.
+    - **Undirected symmetry** allows traversal in both directions, allowing for a direct comparison between states.
+
+These patterns and templates reflect the domain being modeled:
+   - **Symmetry of variables**: Each variable

@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Based on the document, here are a few key steps to follow:
+You've already covered the key concepts in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

@@ -1,0 +1,38 @@
+{
+  "timestamp": "2026-04-10T10:35:03.795775",
+  "execution_results_dir": "output/12_execute_output/bnlearn_causal_model",
+  "framework_results": {
+    "bnlearn": {
+      "framework": "bnlearn",
+      "result_count": 1,
+      "analyses": []
+    },
+    "discopy": {
+      "framework": "discopy",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {
+    "model_name": "bnlearn_causal_model",
+    "frameworks_compared": [
+      "bnlearn",
+      "discopy"
+    ],
+    "framework_count": 2,
+    "comparisons": {
+      "execution_time": {
+        "bnlearn": 1.86478,
+        "discopy": 0.242819
+      },
+      "fastest_execution": {
+        "framework": "discopy",
+        "time": 0.242819
+      },
+      "success_rates": {
+        "bnlearn": true,
+        "discopy": true
+      }
+    }
+  }
+}

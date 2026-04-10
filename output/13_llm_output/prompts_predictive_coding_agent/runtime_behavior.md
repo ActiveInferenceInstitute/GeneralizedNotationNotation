@@ -6,44 +6,25 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from scipy import stats
+You can use the following code to implement a GNN representation for Predictive Coding Active Inference Agent:
 
-# Define the GNN model annotations and parameters
-model_annotations = {
-    'GNN': {'type':'gnn',
-        'inputs': [
-            {'input': 0.1,
-                'output': 0.2},
-            {'input': 0.3,
-                    'output': 0.4}],
-            'outputs': [[0.5]]
-}
-```
+1. Define the model annotations as follows:
+   - `GNNModel`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
 
-The GNN model is represented as a dictionary with the following keys: `type`, `inputs`, and `outputs`. The `inputs` key represents the input data for each prediction unit (e.g., sensory inputs), while the `outputs` key represents the predicted output values based on the corresponding predictions units.
+2. Define the model parameters as follows:
+   - `GNNModel`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
 
-The GNN model parameters are defined as a dictionary with the following keys: `type`, `input_size`, and `action`. The `inputs` key contains an array of input data for each prediction unit, while the `outputs` key contains an array of predicted output values based on the corresponding predictions units.
+3. Define the action annotations as follows:
+   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
 
-The GNN model is represented by a dictionary with the following keys: `type`, `input_size`, and `action`. The `inputs` key represents the input data for each prediction unit (e.g., sensory inputs), while the `outputs` key represents the predicted output values based on the corresponding predictions units.
+4. Define the action annotations as follows:
+   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
 
-The GNN model is represented by a dictionary with the following keys: `type`, `input_size`, and `action`. The `inputs` key contains an array of input data for each prediction unit, while the `outputs` key contains an array of predicted output values based on the corresponding predictions units.
+5. Define the action annotations as follows:
+   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
 
-Here's how you can implement the GNN model in Python using NumPy:
-```python
-import numpy as np
-from scipy import stats
+6. Define the action annotations as follows:
+   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
 
-# Define the GNN model annotations and parameters
-model_annotations = {
-    'GNN': {'type':'gnn',
-        'inputs': [
-            {'input': 0.1,
-                'output': 0.2},
-            {'input': 0.3,
-                    'output': 0.4}],
-            'outputs': [[0.5]]
-}
-```
-The GNN model is represented as a dictionary with the following keys: `type`, `inputs`, and `outputs`. The `inputs` key contains an array of input data for each prediction unit (e.
+7. Define the action annotations as follows:
+   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts

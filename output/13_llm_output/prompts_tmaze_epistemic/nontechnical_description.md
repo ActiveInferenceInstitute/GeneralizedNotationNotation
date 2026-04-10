@@ -6,24 +6,32 @@ Prompt:
 
 Response:
 
-The GNN model is a type of Bayesian inference algorithm that uses probability distributions to represent the relationships between different variables, allowing for the exploration and exploitation of uncertain environments. The model consists of three main components:
+```python
+import numpy as np
+from scipy import stats
 
-1) **Location-based component**: This represents the agent's location in space (location state). It provides information about where they are located and how much it is unknown whether they will be at that location or not.
+def gnn_model(num_locations, num_contexts=2):
+    """GNN representation of the T-Maze Epistemic Foraging Agent.
 
-2) **Contextual component**: This represents the context around a particular action, which can include both physical and contextual factors like the environment, other agents, and their actions. The goal of this component is to provide information about what happens when the agent takes an action in the given situation.
+    Args:
+        num_locations (int): Number of locations to represent in the model.
+        num_contexts (int): Number of contexts to represent in the model.
+        num_location_obs (int): Number of observations per location, default is 4.
+        num_reward_obs (int): Number of rewards observed for each arm, default is 3.
+        num_actions: Number of actions taken by agent during exploration and exploitation.
+        num_timesteps (int): Number of timesteps to simulate the model time horizon.
 
-3) **Location-based component**: This represents the location of the reward or cue within a particular arm (cue location). It provides information about where the reward will be received if the agent makes that specific action.
+    Returns:
+        A dictionary representing the GNN representation of the T-Maze Epistemic Foraging Agent.
+    """
+    # Initialize the GNN representation with a random initialization scheme
+    gnn = np.random.rand(num_locations, num_contexts)
+    
+    # Define the model parameters
+    priors = stats.uniform(-1e-50, 1e-60, size=(num_location_obs + 2))
 
-The GNN model is designed to balance exploration and exploitation, allowing agents to explore uncertain environments while also exploiting new information when it becomes available. The model uses probability distributions to represent these relationships between variables, enabling the agent to make decisions based on incomplete information. This allows for a natural exploration-exploitation tradeoff in active inference, where exploration provides more information about unknown outcomes and exploitation gives more insight into what happens next.
-
-The GNN algorithm is composed of three main components:
-
-1) **Location-based component**: Representing the agent's location in space (location state). This component allows for exploration by providing information about where they are located, while also allowing for exploitation by providing new information when it becomes available.
-
-2) **Contextual component**: Representing the context around a particular action (context state), which can include both physical and contextual factors like the environment, other agents, and their actions. The goal of this component is to provide information about what happens when the agent takes an action in the given situation.
-
-3) **Location-based component**: Representing the location of the reward or cue within a particular arm (cue location). This component allows for exploration by providing new information when it becomes available, while also allowing for exploitation by providing more information when it becomes available.
-
-The GNN algorithm is composed of three main components:
-
-1) **Location-based component**: Representing the agent's location in space (location state). This component provides information about where they are located and how much it is unknown whether they will be at that location or not.
+    # Initialize the GNN representation with a random initialization scheme
+    gnn[priors] = np.random.rand(num_locations) * num_reward_obs - num_actions
+    
+    return gnn
+```

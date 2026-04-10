@@ -437,7 +437,14 @@ async def _process_llm_async(
                 logger.info(f"📄 File {file_idx}/{len(gnn_files)}: {gnn_file.name} (budget: {remaining:.0f}s remaining)")
                 try:
                     # Await the coroutine since we're in an async context
-                    file_analysis = await analyze_gnn_file_with_llm(gnn_file, verbose)
+                    resolved_ollama_for_summary = (
+                        (selected_model if selected_model else DEFAULT_OLLAMA_MODEL)
+                        if ollama_available
+                        else None
+                    )
+                    file_analysis = await analyze_gnn_file_with_llm(
+                        gnn_file, verbose, ollama_model=resolved_ollama_for_summary
+                    )
                     results["analysis_results"].append(file_analysis)
 
                     # Generate insights
@@ -532,6 +539,7 @@ async def _process_llm_async(
                                     resp = await asyncio.wait_for(
                                         processor.get_response(
                                             messages=messages,
+                                            model_name=ollama_model,
                                             max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
                                             temperature=0.2,
                                             config=LLMConfig(timeout=60)

@@ -33,6 +33,7 @@
 - Error handling and recovery mechanisms
 - Pipeline orchestration and coordination
 - Utility functions for common operations
+- `jax_stack_validation.py`: single probe for JAX, Optax, Flax, and pymdp 1.x (Step 1 setup, `validate_uv_setup`, CI, pytest)
 
 ---
 

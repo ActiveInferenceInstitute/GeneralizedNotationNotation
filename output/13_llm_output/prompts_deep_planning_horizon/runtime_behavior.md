@@ -6,17 +6,50 @@ Prompt:
 
 Response:
 
-The code uses the following steps to generate the GNN model and its associated predictions:
+You can use the following code to implement a GNN model for evaluating multi-step consequence reasoning. This implementation uses the following steps:
 
-1. The `GNNModel` class is initialized with a list of state-action sequences, each representing a policy sequence.
-2. The `state_spaceblock` function takes in two arguments: `states`, which are lists containing the current states (represented by 4 tensors) and `actions`, which are lists containing the actions to be predicted for each state.
-3. The `policysequence` is initialized with a list of actions, representing the policy sequence. Each action is represented as a tensor with shape: [num_states] = num_actions * num_actions = 64 tensors.
-4. The `planninghorizon` function takes in two arguments: `t`, which represents the current time step (represented by 30 timesteps) and `T`, which is an integer representing the total number of actions to be predicted for each state.
-5. The `state_sequence` tensor contains the current states, while the `actions` tensor contains the actions to predict next states in the sequence.
-6. The `policysequence` tensor contains the current actions and their corresponding predictions for each state.
-7. The `planninghorizon` function takes in two arguments: `t`, which represents the current time step (represented by 30 timesteps) and `T`, which is an integer representing the total number of actions to be predicted for each state.
-8. The `state_sequence` tensor contains the current states, while the `actions` tensor contains the corresponding predictions for each state in the sequence.
-9. The `planninghorizon` function takes in two arguments: `t`, which represents the current time step (represented by 30 timesteps) and `T`, which is an integer representing the total number of actions to be predicted for each state.
-10. The `state_sequence` tensor contains the current states, while the `actions` tensor contains the corresponding predictions for each state in the sequence.
-11. The `planninghorizon` function takes in two arguments: `t`, which represents the current time step (represented by 30 timesteps) and `T`, which is an integer representing the total number of actions to be predicted for each state.
-12. The `state_sequence` tensor contains the current states, while the `actions` tensor contains the corresponding predictions for each state
+1. Initialize an empty graph structure (`G`): The graph represents all possible actions and policies, with each action having two states (hidden state) and one observation.
+
+2. Initialize the probability distribution over actions (`P(a_τ)`): This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
+```python
+G = {}
+for t in range(10000, 5000):
+    G[t] = {}
+    for i in range(num_actions):
+        G[t][i] = 1
+
+    # Initialize initial state and actions
+    s = []
+    for t in range(10000, 5000):
+        s.append((t + 1) * (2 ** t))
+```
+
+3. Initialize the probability distribution over actions (`P(a_τ)`). This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
+```python
+G[0][0] = 1
+for i in range(num_actions):
+    G[0][i] = 1
+
+    # Initialize initial state and actions
+    s = []
+    for t in range(1000, 5000):
+        s.append((t + 1) * (2 ** t))
+```
+
+4. Initialize the probability distribution over policies (`P(a_τ)`). This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
+```python
+G[0][0] = 1
+for i in range(num_actions):
+    G[0][i] = 1
+
+    # Initialize initial state and actions
+    s = []
+    for t in range(1000, 5000):
+        s.append((t + 1) * (2 ** t))
+```
+
+5. Initialize the probability distribution over policy sequences (`P(a_τ)`). This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
+```python
+G[0][0] = 1
+for i in range(num_actions):
+    G

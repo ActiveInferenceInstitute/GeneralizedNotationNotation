@@ -1,42 +1,31 @@
 # EXTRACT_PARAMETERS
 
-Based on the provided GNN specification, here are the key parameters that contribute to the model:
+Here's a systematic approach to parameterize the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the representation of the model (e.g., `A`) and its components (`D`).
-   - B matrices representing the prior belief over hidden states (`B`) and initial state (`s`, `o`) for each modality (`d`):
-   - C matrices representing the prior beliefs over all possible actions (`C`)
+   - A matrices representing the activation functions, normalization, and expectation-maximization (EM) processes for each modality.
+   - B matrices representing the prior belief distributions over hidden states and observation space dimensions.
+   - C matrices representing the action probabilities and their interpretation as a single-shot inference model.
 
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters, which are used to estimate the likelihood of observing a particular observation.
-   - α (alpha): learning rate and adaptation parameters, which control the update frequency for each modality.
-   - Other precision/confidence parameters:
+   - γ = 0.9, α = 0.1: precision parameters for each modality
+   - α = 0.5: learning rate parameter for each modality
+
+3. **Dimensional Parameters**:
+   - State space dimensions for each modality
+   - Observation space dimensions for each modality
+   - Action space dimensions for each control factor
+
+4. **Temporal Parameters**:
+   - Time horizons (t)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
+
+5. **Initial Conditions**:
+   - Initial parameter values
+   - Initialization strategies
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
    - Sensitivity analysis priorities
-
-To summarize, here's a systematic parameter breakdown based on these key parameters:
-
-1. **Model Matrices**:
-   - A matrices representing the representation of the model (e.g., `A`) and its components (`D`).
-   - B matrices representing the prior belief over initial states (`B`) and initial state (`s`, `o`) for each modality (`d`):
-   - C matrices representing the prior beliefs over all possible actions (`C`)
-
-2. **Precision Parameters**:
-   - γ (gamma): precision parameters, which are used to estimate the likelihood of observing a particular observation.
-   - α (alpha): learning rate and adaptation parameters, which control the update frequency for each modality.
-   - Other precision/confidence parameters:
-   - Sensitivity analysis priorities
-
-To illustrate these parameter breakdowns, here's an example of how they can be visualized in a tabular format:
-
-1. **Model Matrices**:
-   - A matrices representing the representation of the model (e.g., `A`) and its components (`D`).
-   - B matrices representing the prior belief over initial states (`B`) and initial state (`s`, `o`) for each modality (`d`):
-   - C matrices representing the prior beliefs over all possible actions (`C`)
-
-2. **Precision Parameters**:
-   - γ (gamma): precision parameters, which are used to estimate the likelihood of observing a particular observation.
-   - α (alpha): learning rate and adaptation parameters, which control the update frequency for each modality.
-   - Other precision/confidence parameters:
-   - Sensitivity analysis priorities
-
-This visualization provides a concise representation of the model's parameter structure, allowing you to easily understand how different components interact with each other.

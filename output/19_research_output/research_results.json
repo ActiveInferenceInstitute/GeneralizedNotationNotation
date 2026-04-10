@@ -1,5 +1,5 @@
 {
-  "processed_files": 8,
+  "processed_files": 9,
   "success": true,
   "hypotheses_generated": [
     {
@@ -140,6 +140,25 @@
       ]
     },
     {
+      "file": "bnlearn_causal_model.md",
+      "model_family": "hmm",
+      "dimension_count": 6,
+      "hypotheses": [
+        {
+          "type": "connectivity_enrichment",
+          "description": "Investigate potential missing causal links between model components",
+          "rationale": "Graph density is 0.10 (3 connections, 6 variables). Sparse graphs may miss important dependencies.",
+          "priority": "medium"
+        },
+        {
+          "type": "upgrade_to_pomdp",
+          "description": "Consider extending HMM to full POMDP with action-dependent transitions",
+          "rationale": "HMMs have no action selection. Adding a B[states,states,actions] tensor and preference vector C enables Active Inference policy optimization.",
+          "priority": "low"
+        }
+      ]
+    },
+    {
       "file": "two_state_bistable.md",
       "model_family": "pomdp",
       "dimension_count": 10,
@@ -221,6 +240,7 @@
     "deep_planning_horizon.md": "pomdp",
     "actinf_pomdp_agent.md": "pomdp",
     "hmm_baseline.md": "hmm",
+    "bnlearn_causal_model.md": "hmm",
     "two_state_bistable.md": "pomdp",
     "markov_chain.md": "hmm",
     "tmaze_epistemic.md": "pomdp"

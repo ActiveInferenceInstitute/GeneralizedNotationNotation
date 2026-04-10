@@ -1,16 +1,15 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN:
+Based on the document, here's a systematic approach to parameterize GNNs:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and inference operations (e.g., Likelihood Matrix)
-   - B matrices representing the action-observation mapping and prior distributions over actions
-   - C matrices representing the reward-observations relationships and prior distributions over rewards
-   - D matrices representing the policy-action relationships and prior distributions over actions
+   - A matrices representing the model structure and inference processes (e.g., Likelihood Matrix, Transition Matrix)
+   - B matrices representing the action-observation mapping (e.g., Policy Vector, Action Vector)
+   - C matrices representing the hidden state information (i.e., prior over reward context)
 
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters, roles in the model structure
-   - α (alpha): learning rates and adaptation parameters
+   - γ: precision parameters and their roles
+   - α: learning rates and adaptation parameters
    - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
@@ -28,11 +27,7 @@ Based on the information provided, here are the key parameters for the GNN:
    - Initial parameter values
    - Initialization strategies
 
-To summarize, the key parameters are:
-- **Model Matrices**
-    - A matrices representing the model structure and inference operations (e.g., Likelihood Matrix)
-    - B matrices representing the action-observation mapping and prior distributions over actions
-    - C matrices representing the reward-observations relationships and prior distributions over rewards
-    - D matrices representing the policy-action relationships and prior distributions over actions
-
-These parameters are used to define the model structure, inference operations, and initialization strategies. The choice of parameter values can impact the performance of the GNN.
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

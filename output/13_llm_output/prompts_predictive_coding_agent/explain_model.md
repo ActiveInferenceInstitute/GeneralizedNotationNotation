@@ -1,35 +1,12 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+You've already covered the core components of the model: 
+1. **Model Purpose**: This is a description of what the model represents and how it operates. It's essential to understand its purpose before diving into the details.
 
-1. **Model Purpose**: This is a representation of a predictive neural network that models real-world phenomena and problems. It represents what you want to learn or predict from data.
+2. **Core Components**: The hidden states (s_f0, s_f1) represent different types of predictions or actions that can be made based on sensory data input. These are represented by a set of binary vectors (beliefs).
 
-2. **Core Components**:
-   - **Belief Mean**: A measure of how well predictions are made based on the input data.
-   - **Sensory Prediction Error**: A measure of how accurate predictions are made based on sensory inputs.
-   - **Dynamics Prediction Error**: A measure of how accurate predictions are made based on dynamics inputs.
-   - **Action**: A measure of what actions are available to make decisions based on current state and input data.
+3. **Model Dynamics**: This model implements Active Inference principles and provides predictions based on the available observations. It updates beliefs based on new information, which is done through gradient descent using a learning rate equal to the learning rate for each observation. The goal is to minimize predicted errors while updating beliefs.
 
-3. **Model Dynamics**: How does this model evolve over time? What relationships exist between the hidden states (s_f0, s_f1) and predictions? What actions/controls can be applied in order to improve predictions or learn new information?
+4. **Active Inference Context**: This represents how the model learns from data input and makes predictions about future outcomes based on available observations. It updates beliefs based on new information, which can be done through gradient descent using a learning rate equal to the learning rate for each observation. The goal is to minimize predicted errors while updating beliefs.
 
-Please provide clear explanations of each component:
-
-1. **Model Purpose**: This is a representation of a predictive neural network that models real-world phenomena and problems. It represents what you want to learn or predict from data.
-
-2. **Core Components**:
-   - **Belief Mean**: A measure of how well predictions are made based on the input data.
-   - **Sensory Prediction Error**: A measure of how accurate predictions are made based on sensory inputs.
-   - **Dynamics Prediction Error**: A measure of how accurate predictions are made based on dynamics inputs.
-   - **Action**: A measure of what actions are available to make decisions based on current state and input data.
-
-3. **Model Dynamics**: How does this model evolve over time? What relationships exist between the hidden states (s_f0, s_f1) and predictions? What actions/controls can be applied in order to improve predictions or learn new information?
-
-Please provide clear explanations of each component:
-
-1. **Model Purpose**: This is a representation of a predictive neural network that models real-world phenomena and problems. It represents what you want to learn or predict from data.
-
-2. **Core Components**:
-   - **Belief Mean**: A measure of how well predictions are made based on the input data.
-   - **Sensory Prediction Error**: A measure of how accurate predictions are made based on sensory inputs.
-   - **Dynamics Prediction Error**: A measure of how accurate predictions are made based on dynamics inputs.
-   - **Action**: A measure of what
+5. **Practical Implications**: This model has practical applications in various fields like healthcare, finance, and social sciences where it helps make informed decisions based on available data. It can be used to predict outcomes based on new information or actions taken by stakeholders.

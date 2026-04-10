@@ -1,38 +1,66 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN implementation:
+Here's a concise summary of the GNN specification:
 
-**Overview:**
-This GNN represents an active inference agent that takes into account multiple observation modalities (state-level) and hidden states (action-based). The agent's policy updates are based on posterior probabilities over actions, while its preferences update are based on posterior probabilities over observed observations. 
+```python
+# Model Overview
+class CryptographicSignature(object):
+    """A cryptographically secure signature representation."""
 
-The model is designed to be flexible and adaptable to various scenarios, including:
+    def __init__(self,
+                 *args, **kwargs):
+        """Constructor for the cryptographic signature.
 
-1. **Flexible Policy**: Allows the agent to make decisions based on different action-based policies (e.g., policy = "action") rather than relying solely on prior probability distributions.
+        Args:
+            - `signature`: A dictionary of key-value pairs representing a signature.
+                Key is a string in the format "key=value", where '=' denotes
+                equality and '==' denotes identity.
+                Value is an integer value between 0 and 255, inclusive.
 
-2. **Flexible Action Selection**: Allows the agent to choose actions from a predefined set of actions, which can be adjusted based on specific actions selected by the agent.
+                Note that this is not a valid signature type; see docstring for
+                more information on signatures types.
 
-3. **Flexible Belief Updates**: Allows the agent to update its beliefs in terms of posterior probabilities over observed observations (e.g., "belief = action") rather than relying solely on prior probability distributions.
+        """
+        self._signature = signature
 
-**Key Variables:**
+    def _validate_signature(self):
+        """Validate the signature against the given dictionary."""
+        if not isinstance(self._signature, dict) or len(self._signature["key"]) != 1:
+            raise ValueError("Invalid signature type")
 
-1. **Hidden States**: [list with brief descriptions]
-   - `A`: Likelihood Matrix representing the likelihood distribution of each state, controlling actions and policy updates based on posterior probabilities over observed observations.
-   - `B`: Transition Matrix representing the transition matrix between states (controlled by π), which controls action selection from policy posterior distributions.
+        for key in self._signature.keys():
+            if not isinstance(self._signature[key], str):
+                raise ValueError("Invalid signature type")
 
-2. **Observations**: [list with brief descriptions]
-   - `s`: Observation distribution for each state, controlling actions and policy updates based on posterior probabilities over observed observations.
-   - `o`: Observation distribution for each hidden state, controlling actions and policy updates based on posterior probabilities over observed observations.
+            if not isinstance(self._signature[key]["value"], int) or \
+                    len(self._signature["key"]) != 1:
+                raise ValueError("Invalid signature type")
 
-**Critical Parameters:**
+        self._validate_keys()
 
-1. **Randomization**: Allows the agent to make decisions based on random action-based policies (e.g., "action") rather than relying solely on prior probability distributions.
+    def _validate_keys(self):
+        """Validate the keys of the signature."""
+        for key in self._signature.keys():
+            if not isinstance(self._signature[key], str) or \
+                    len(self._signature["key"]) != 1:
+                raise ValueError("Invalid signature type")
 
-2. **Depth**: Allows the agent to take actions from a predefined set of actions, which can be adjusted based on specific actions selected by the agent.
+    def _validate_values(self):
+        """Validate the values of the signature."""
+        for key in self._signature.keys():
+            if not isinstance(self._signature[key], str) or \
+                    len(self._signature["key"]) != 1:
+                raise ValueError("Invalid signature type")
 
-**Notable Features:**
+    def _validate_actions(self):
+        """Validate the actions of the signature."""
+        for key in self._signature.keys():
+            if not isinstance(self._signature[key], str) or \
+                    len(self._signature["key"]) != 1:
+                raise ValueError("Invalid signature type")
 
-1. **Flexible Policy**: Allows the agent to make decisions based on different action-based policies (e.g., "action") rather than relying solely on prior probability distributions.
+    def _validate_actions_dict(self):
+        """Validate the actions dictionary of the signature."""
 
-2. **Flexible Action Selection**: Allows the agent to choose actions from a predefined set of actions, which can be adjusted based on specific actions selected by the agent.
-
-**Use Cases
+        for key in self._signature.keys():
+            if not isinstance(

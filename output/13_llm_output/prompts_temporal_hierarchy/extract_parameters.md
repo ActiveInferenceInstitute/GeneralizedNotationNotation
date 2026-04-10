@@ -1,27 +1,21 @@
 # EXTRACT_PARAMETERS
 
-You've already completed the list of parameters for the GNN model specification, so let's dive deeper into each one:
+Based on the document, here are the key parameters for the GNN model:
 
 1. **Model Matrices**:
-   - A matrices: dimensions, structure, interpretation
-   - B matrices: dimensions, structure, interpretation
-   - C matrices: dimensions, structure, interpretation
-
-   These represent the input data and output predictions of the model. The matrix represents the input data for training, while the column vectors represent the predicted outputs from the model.
+   - A matrices representing the input data (e.g., `A`) and output data (e.g., `B`, `C`).
+   - B matrices represent the input data of each level, while C matrices represent the outputs of each level.
+   - C matrices represent the predictions made by each level based on its own hidden state and actions.
 
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles
-   - α (alpha): learning rates and adaptation parameters
-   - Other precision/confidence parameters
-
-   These are used to evaluate the performance of the model on a specific task or domain. For example, α might be set to 0.1 for training purposes, while α is set to 0.9 in testing purposes.
+   - γ (gamma): precision parameters for each level
+   - α (alpha): learning rate parameters for each level
+   - Other precision/confidence parameters, such as sensitivity analysis priorities or other parameter values
 
 3. **Dimensional Parameters**:
    - State space dimensions for each factor
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
-
-   These represent the input data and output predictions of the model. The dimension vectors represent the input data, while the column vector represents the predicted outputs from the model.
 
 4. **Temporal Parameters**:
    - Time horizons (T)
@@ -29,14 +23,16 @@ You've already completed the list of parameters for the GNN model specification,
    - Update frequencies and timescales
 
 5. **Initial Conditions**:
-   - Initial parameters:
-    - γ (gamma): precision parameters and their roles
-    - α (alpha): learning rates and adaptation parameters
-    - Other initial conditions
-
-   These are used to evaluate the performance of the model on a specific task or domain. For example, α might be set to 0.1 for training purposes, while α is set to 0.9 in testing purposes.
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
 
 6. **Configuration Summary**:
-   - Parameter file format recommendations
-    - Tunable vs. fixed parameters
-    - Sensitivity analysis priorities
+   - Parameter file format recommendations for each level of the model
+
+So in summary, the GNN model consists of:
+- A set of matrices representing input data and output data (e.g., `A`, `B`)
+- A matrix representing prediction accuracy over initial states (`C`)
+- A matrix representing predictions made by each level based on its own hidden state and actions (`D`)
+- A matrix representing predictions made by each level based on their own hidden state and actions (`E`)
+- A set of parameters for initialization strategies, sensitivity analysis, and other parameter values.

@@ -1,12 +1,11 @@
 # IDENTIFY_COMPONENTS
 
-Based on the document, here is a systematic breakdown of the structure:
+You've already covered the key concepts:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-   - What each state means in terms of model parameters 
 
 2. **Observation Variables**:
    - Observation modalities and their meanings
@@ -27,7 +26,7 @@ Based on the document, here is a systematic breakdown of the structure:
 5. **Parameters and Hyperparameters**:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
-   - Fixed vs. learnable parameters 
+   - Fixed vs. learnable parameters
 
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.272459,
-  "timestamp": "2026-03-24T13:59:13.460413",
+  "execution_time": 0.709139,
+  "timestamp": "2026-04-10T10:25:35.422338",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -46,7 +46,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.781s\nResults saved to: output/12_execute_output/actinf_pomdp_agent/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.439s\nResults saved to: output/12_execute_output/actinf_pomdp_agent/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
@@ -128,7 +128,7 @@
     "num_timesteps": 15
   },
   "execution_metadata": {
-    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 280,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/actinf_pomdp_agent/numpyro"

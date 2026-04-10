@@ -1,33 +1,17 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points:
+You've covered the key points, including practical considerations for using GNNs with continuous state-space models:
 
-1. **Real-World Applications**: This model can be applied to various domains, such as:
-    - **Healthcare**: Predictive analytics for disease diagnosis, treatment planning, and patient outcomes prediction.
-    - **Transportation**: Autonomous vehicles, logistics, and transportation systems optimization.
-    - **Finance**: Risk management, investment analysis, and portfolio optimization using machine learning models like GNNs.
+1. **Real-world applications**: The model can be applied to various domains where real-time data is available or near-real-time processing capabilities are required. It could also serve as a baseline for comparison and evaluation of other GNN implementations, such as Bayesian inference or neural networks with continuous state space models.
 
-2. **Implementation Considerations**:
-   - **Computational requirements and scalability**: This model can be computationally intensive due to its complexity and the need for data processing. However, it's also scalable through distributed computing architectures or cloud-based services.
-    - **Data requirements and collection strategies**: This model requires a large dataset of observations (data) that are aligned with specific goals (policy). Data quality is crucial in ensuring reliable performance.
+2. **Implementation considerations**: The model's performance can be evaluated using various metrics, including accuracy, precision, error rates, and overall system performance. This will help assess its suitability for specific use cases and scenarios.
 
-3. **Performance Expectations**:
-   - **Maximize Expected Free Energy (EFA)**: The goal of EFA is to minimize the energy consumption and uncertainty associated with predictions, which can be achieved through a variety of methods like Laplace approximation or Bayesian inference.
-    - **Simplify Predictive Control**: This model simplifies predictive control by reducing the number of parameters required for optimization algorithms.
+3. **Performance expectations**: The model's capabilities are expected to provide insights into the behavior of the agent in different scenarios, enabling better decision-making based on real-world data.
 
-4. **Benefits and Advantages**:
-   - **Unique capabilities** – The model provides an alternative to traditional machine learning models, offering a more flexible and interpretable approach.
-   - **Improved performance**, as it can handle complex data structures and provide accurate predictions with minimal energy consumption.
-   - **Simplified modeling**, allowing for easier integration into existing systems or applications.
+4. **Benefits and advantages**: The model can solve problems that require predictive control or prediction accuracy, such as optimizing system performance under uncertainty, handling edge cases, or analyzing complex systems with continuous state space models.
 
-5. **Challenges and Considerations**:
-   - **Limited scalability** – The model's computational requirements are substantial, making it challenging to deploy in a wide range of environments.
-   - **Data quality** – Ensuring data accuracy and reliability is crucial for reliable performance.
-   - **Integration with existing systems**, as the model can be applied through various networks or cloud-based services.
+5. **Challenges and considerations**: The model's limitations are also mentioned: difficulties in implementation due to computational requirements (e.g., computation time), data availability constraints, and potential issues like tuning parameters for optimal performance.
 
-6. **Benefits and Advantages**:
-    - **Unique capabilities** – The model provides a more flexible approach, offering an alternative to traditional machine learning models.
-    - **Improved performance**, allowing for easier deployment into different environments.
-    - **Simplified modeling** – enabling easy integration with existing systems or applications.
+6. **Benefits and advantages**: The model can provide insights into the behavior of the agent, enabling better decision-making based on real-world data. It can also help identify areas where improvements are needed in terms of system efficiency or adaptability to changing conditions.
 
-Overall, this model has the potential to improve efficiency and accuracy in various domains by providing a flexible and interpretable approach that can be applied across multiple scenarios.
+Overall, this framework provides a comprehensive understanding of how GNNs with continuous state space models could be applied and evaluated for various use cases and scenarios.

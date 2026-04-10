@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/hmm_baseline/hmm_baseline_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 12,
+  "artifact_count": 13,
   "artifacts": [
     "output/8_visualization_output/hmm_baseline/hmm_baseline_network_graph.png",
     "output/8_visualization_output/hmm_baseline/hmm_baseline_network_stats.json",
     "output/8_visualization_output/hmm_baseline/hmm_baseline_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/hmm_baseline/hmm_baseline_variable_parameter_bipartite.png",
     "output/8_visualization_output/hmm_baseline/hmm_baseline_A_heatmap.png",
     "output/8_visualization_output/hmm_baseline/hmm_baseline_B_heatmap.png",

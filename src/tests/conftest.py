@@ -131,34 +131,9 @@ def pytest_sessionstart(session: Any) -> None:
     # Generating pipeline artifacts should be done manually or via a separate script 
     # before running tests to prevent deadlocks and silent failures.
 
-    # Ensure test-time shim for heavy optional dependencies that may cause
-    # circular import issues on some platforms (e.g., jax). Only install a
-    # shim if importing the real module fails to avoid interfering with
-    # environments where the package is available and functional.
-    try:
-        import importlib
-        try:
-            import jax  # type: ignore
-            # If jax imported but appears partially initialized (missing key attrs), treat as failure
-            if not hasattr(jax, '__version__') or not hasattr(jax, 'devices'):
-                raise ImportError("jax partially initialized or missing attributes")
-        except Exception:
-            # Insert a lightweight shim for jax and jaxlib to allow tests that
-            # patch attributes like `jax.devices` to operate without triggering
-            # the real package's heavy import-time behavior.
-            import types as _types
-            shim = _types.ModuleType('jax')
-            shim.__version__ = '0.0.0'
-            def _devices() -> List[Any]:
-                return [type('Device', (), {'platform': 'cpu', '__str__': lambda self: 'cpu'})()]
-            shim.devices = _devices
-            sys.modules['jax'] = shim
-            # Minimal jaxlib shim
-            jaxlib_shim = _types.ModuleType('jaxlib')
-            jaxlib_shim.__version__ = '0.0.0'
-            sys.modules.setdefault('jaxlib', jaxlib_shim)
-    except Exception:
-        pass
+    # Do not install a jax/jaxlib shim: a stub module breaks `import jax.numpy`
+    # (pymdp 1.0, execute tests). Use `pytest.importorskip` / skipUnless on tests
+    # that need JAX when the active interpreter has no JAX.
     # NOTE: Do not pre-install a placeholder for `numpy.typing` here; tests in
     # `test_pipeline_recovery` rely on patching `numpy.typing` to simulate
     # RecursionError during import. Installing a placeholder prevents those

@@ -28,216 +28,70 @@ from .uv_management import (
 
 logger = logging.getLogger(__name__)
 
+try:
+    from utils.jax_stack_validation import run_jax_stack_probe_subprocess
+except ImportError:
+    try:
+        from src.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+    except ImportError:
+        run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
+
+
 def install_jax_and_test(verbose: bool = False) -> bool:
     """
-    Ensure JAX, Optax, and Flax are installed and working using UV.
-    After install, run a self-test: import JAX, print device info, check Optax/Flax, log results.
+    Ensure JAX, Optax, Flax, and pymdp 1.x work in the project venv.
 
-    This uses a progressive testing approach - if basic tests pass, return success even if
-    advanced tests fail (which can happen due to version incompatibilities or platform issues).
-
-    This function now tests JAX using the venv Python to avoid import issues.
+    Runs :mod:`utils.jax_stack_validation` (JIT, vmap, XLA sync, Optax, Flax, pymdp Agent API).
+    On failure, attempts ``uv sync`` with configured extras once, then re-probes.
     """
 
-    # Prevent infinite recursion by tracking attempts via function attribute
-    install_jax_and_test._attempts = getattr(install_jax_and_test, '_attempts', 0) + 1  # type: ignore[attr-defined]
-
-    if install_jax_and_test._attempts > 2:  # type: ignore[attr-defined]
-        logger.warning("JAX installation attempts exceeded limit, skipping")
-        return False
-
-    basic_tests_passed = False
-
     if not VENV_PYTHON.exists():
-        logger.error("Venv Python not found, cannot test JAX")
+        logger.error("Venv Python not found, cannot test JAX stack")
         return False
+
+    if run_jax_stack_probe_subprocess is None:
+        logger.error("jax_stack_validation module not importable; cannot run JAX probe")
+        return False
+
+    ok, out = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
+    if ok:
+        logger.info("✅ JAX + Optax + Flax + pymdp stack validated in venv")
+        if verbose and out:
+            for line in out.splitlines()[:50]:
+                logger.info("   %s", line)
+        return True
+
+    logger.warning("JAX stack validation failed: %s", out[:2000] if out else "(no output)")
 
     try:
-        # PHASE 1: Import test (most critical)
-        test_script = """
-import jax
-import optax
-import flax
-print(f"JAX version: {jax.__version__}")
-print(f"Optax version: {optax.__version__}")
-print(f"Flax version: {flax.__version__}")  # nosec B603 -- subprocess calls with controlled/trusted input
-"""
+        logger.info("Attempting repair: uv sync (project extras)...")
+        install_cmd = ["uv", "sync", "--verbose"]
+        for extra in SETUP_DEFAULT_PIPELINE_EXTRAS:
+            install_cmd.extend(["--extra", extra])
+
+        if verbose:
+            logger.info("Running: %s", " ".join(install_cmd))
+
         result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            [str(VENV_PYTHON), "-c", test_script],
+            install_cmd,
+            cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=600,
         )
 
-        if result.returncode == 0:
-            for line in result.stdout.strip().split('\n'):
-                logger.info(f"✅ {line}")
-        else:
-            raise ImportError("JAX imports failed")
+        if result.returncode != 0:
+            logger.error("uv sync failed: %s", result.stderr[:2000] if result.stderr else "")
+            return False
 
-        # PHASE 2: Basic functionality test
-        try:
-            test_basic = """
-import jax
-devices = jax.devices()
-print(f"Available JAX devices: {[str(d) for d in devices]}")
-x = jax.numpy.array([1.0, 2.0, 3.0])
-y = jax.numpy.sin(x)
-sum_result = jax.numpy.sum(y)
-print("JAX basic operations test passed")  # nosec B603 -- subprocess calls with controlled/trusted input
-"""
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                [str(VENV_PYTHON), "-c", test_basic],
-                capture_output=True,
-                text=True,
-                timeout=10
-            )
-
-            if result.returncode == 0:
-                for line in result.stdout.strip().split('\n'):
-                    logger.info(f"✅ {line}")
-                basic_tests_passed = True
-                logger.info("✅ JAX basic functionality verified - packages are working")
-            else:
-                logger.warning(f"⚠️ JAX basic tests failed: {result.stderr}")
-                if verbose:
-                    logger.debug(result.stderr)
-
-        except Exception as basic_error:
-            logger.warning(f"⚠️ JAX basic tests failed: {basic_error}")
-            if verbose:
-                import traceback
-                logger.debug(traceback.format_exc())
-
-        # PHASE 3: Advanced functionality test (non-critical)
-        try:
-            test_advanced = """
-import jax
-import optax
-import flax
-
-@jax.jit
-def test_jit(x):
-    return jax.numpy.sum(jax.numpy.sin(x))
-
-result = test_jit(jax.numpy.array([1.0, 2.0, 3.0]))
-print("JAX JIT compilation test passed")
-
-def test_vmap(x):
-    return jax.numpy.sin(x)
-
-vmapped_fn = jax.vmap(test_vmap)
-vmap_result = vmapped_fn(jax.numpy.array([[1.0, 2.0], [3.0, 4.0]]))
-print("JAX vmap test passed")
-
-# XLA compilation compatibility check
-@jax.jit
-def test_xla(x):
-    return x * 2
-xla_res = test_xla(jax.numpy.ones(10)).block_until_ready()
-if len(xla_res) == 10:
-    print("XLA compile compatibility check passed")
-
-optimizer = optax.adam(0.01)
-params = {"w": jax.numpy.ones((2, 2))}
-opt_state = optimizer.init(params)
-print("Optax optimizer test passed")
-
-class SimpleModel(flax.linen.Module):
-    @flax.linen.compact
-    def __call__(self, x):
-        return flax.linen.Dense(1)(x)
-
-model = SimpleModel()
-variables = model.init(jax.random.PRNGKey(0), jax.numpy.ones((1, 2)))
-output = model.apply(variables, jax.numpy.ones((1, 2)))
-print("Flax neural network test passed")
-
-def test_pomdp_ops():
-    belief = jax.numpy.array([0.5, 0.5])
-    transition = jax.numpy.array([[0.8, 0.2], [0.2, 0.8]])
-    observation = jax.numpy.array([0.9, 0.1])
-    belief_pred = transition @ belief
-    numerator = observation * belief_pred
-    denominator = jax.numpy.sum(numerator)
-    updated_belief = numerator / denominator
-    return updated_belief
-
-pomdp_result = test_pomdp_ops()
-print("POMDP operations test passed")  # nosec B603 -- subprocess calls with controlled/trusted input
-"""
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                [str(VENV_PYTHON), "-c", test_advanced],
-                capture_output=True,
-                text=True,
-                timeout=15
-            )
-
-            if result.returncode == 0:
-                for line in result.stdout.strip().split('\n'):
-                    logger.info(f"✅ {line}")
-                logger.info("✅ JAX, Optax, and Flax advanced functionality verified")
-            else:
-                logger.warning(f"⚠️ JAX advanced tests failed (non-critical): {result.stderr}")
-                if verbose:
-                    logger.debug(result.stderr)
-
-        except Exception as advanced_error:
-            logger.warning(f"⚠️ JAX advanced tests failed (non-critical): {advanced_error}")
-            if verbose:
-                import traceback
-                logger.debug(traceback.format_exc())
-
-        if basic_tests_passed:
-            logger.info("✅ JAX ecosystem is functional")
+        ok2, out2 = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
+        if ok2:
+            logger.info("✅ JAX stack validated after uv sync")
             return True
-        else:
-            logger.warning("⚠️ JAX imports succeeded but basic tests failed")
-            return False
-
-    except ImportError as e:
-        logger.warning(f"JAX, Optax, or Flax not installed: {e}")
-
-        try:
-            logger.info(
-                "Attempting to repair JAX installation using UV sync with execution-frameworks extra..."
-            )
-            install_cmd = ["uv", "sync", "--verbose"]
-            for extra in SETUP_DEFAULT_PIPELINE_EXTRAS:
-                install_cmd.extend(["--extra", extra])
-
-            if verbose:
-                logger.info(f"Running: {' '.join(install_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
-
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=600
-            )
-
-            if result.returncode == 0:
-                logger.info("UV sync (with execution-frameworks) completed successfully")
-                verify = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                    [str(VENV_PYTHON), "-c", "import jax, optax, flax; print('ok')"],
-                    cwd=PROJECT_ROOT,
-                    capture_output=True,
-                    text=True,
-                    timeout=30,
-                )
-                if verify.returncode == 0:
-                    logger.info("JAX installation verified in venv Python")
-                    install_jax_and_test._attempts = 0  # type: ignore[attr-defined]
-                    return True
-                logger.warning("JAX still not importable in venv after sync: %s", verify.stderr)
-                return False
-            else:
-                logger.error(f"Failed to install JAX using UV: {result.stderr}")
-                return False
-
-        except Exception as install_error:
-            logger.error(f"Failed to install JAX using UV: {install_error}")
-            return False
-
+        logger.warning("JAX stack still failing after sync: %s", out2[:2000] if out2 else "")
+        return False
     except Exception as e:
-        logger.error(f"JAX test failed: {e}")
+        logger.error("JAX stack repair failed: %s", e)
         return False
 
 

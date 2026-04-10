@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-24T13:58:20.526905",
+  "timestamp": "2026-04-10T10:25:04.533692",
   "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
   "model_name": "T-Maze Epistemic Foraging Agent",
   "pomdp_dimensions": {
@@ -14,7 +14,8 @@
     "jax",
     "discopy",
     "pytorch",
-    "numpyro"
+    "numpyro",
+    "bnlearn"
   ],
   "frameworks_processed": [
     "pymdp",
@@ -23,7 +24,8 @@
     "jax",
     "discopy",
     "pytorch",
-    "numpyro"
+    "numpyro",
+    "bnlearn"
   ],
   "frameworks_failed": []
 }

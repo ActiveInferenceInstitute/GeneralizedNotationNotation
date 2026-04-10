@@ -63,8 +63,16 @@ def run_gui(
         if headless or _GUI_BACKEND is None:
             # Enhanced recovery handling for missing GUI backend
             if _GUI_BACKEND is None:
-                logger.warning("⚠️ Gradio not available - generating recovery artifacts only")
-                logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
+                if headless:
+                    logger.info(
+                        "Gradio not installed; generating recovery artifacts only "
+                        "(expected for default pipeline — use uv sync --extra gui for interactive UI)"
+                    )
+                else:
+                    logger.warning(
+                        "Gradio not available - generating recovery artifacts only"
+                    )
+                logger.info("Install GUI support with: uv sync --extra gui")
             else:
                 logger.info("📦 Running GUI 1 in HEADLESS mode - generating artifacts only")
 
@@ -81,7 +89,7 @@ def run_gui(
                 "status": "fallback_mode" if _GUI_BACKEND is None else "headless_mode",
                 "reason": "gradio_not_available" if _GUI_BACKEND is None else "headless_requested",
                 "recommendations": [
-                    "Install gradio with: uv pip install gradio>=4.0.0",
+                    "Install with: uv sync --extra gui",
                     "Run with --interactive for full GUI experience",
                     "Use generated template as starting point for manual editing"
                 ] if _GUI_BACKEND is None else [

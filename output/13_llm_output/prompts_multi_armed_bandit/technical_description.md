@@ -6,68 +6,32 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from scipy import stats
+You can use the following code to create a GNN representation of the multi-armed bandit:
 
-def multi_arm_bandit(reward_obs, reward_context):
-    """
-    Perform multi-armed bandit using a POMDP representation.
+1. Create an instance of the GNN model using `GnnModel`:
+   ```python
+  gnn = GNN(num_hidden_states=3, num_actions=4)
+  gnn.encode([
+    (0.2567989699999991, 0.2567989699999991),
+    (0.2567989699999991, 0.2567989699999991),
+    (0.2567989699999991, 0.2567989699999991)
+  ])
 
-    Args:
-        reward_obs (array): A 3D array representing the rewards for each arm of the bandit.
-        reward_context (array): A 2D array representing the context of each arm, with each arm's reward and action in the context being equally likely to occur.
-    """
-    
-    # Initialize state space block
-    states = np.zeros((reward_obs.shape[0], reward_context.shape[1]))
+  gnn.encode([
+    (0.3418271630000001, 0.3418271630000001),
+    (0.3418271630000001, 0.3418271630000001)
+  ])
 
-    # Initialize hidden state
-    hid_states = np.zeros(reward_context.shape)
+  gnn.encode([
+    (0.5916268808000001, 0.5916268808000001),
+    (0.5916268808000001, 0.5916268808000001)
+  ])
 
-    # Initialize action vector
-    actions = np.ones([num_actions])
-    
-    # Initialize prior over rewards
-    prior_over_rewards = stats.normalvariate(
-        (
-            num_actions * reward_obs[0] ** 2 + reward_context[1] ** 2,
-            num_actions * reward_obs[0] ** 3 + reward_context[1] ** 3)
-    )
+  gnn.encode([
+    (0.3476169213000001, 0.3476169213000001),
+    (0.3476169213000001, 0.3476169213000001)
+  ])
 
-    # Initialize hidden state
-    hid_states = np.zeros(reward_context.shape)
-    
-    # Initialize action vector
-    actions = np.ones([num_actions])
-    
-    # Initialize prior over rewards
-    prior_over_rewards = stats.normalvariate(
-        (
-            num_actions * reward_obs[0] ** 2 + reward_context[1] ** 2,
-            num_actions * reward_obs[0] ** 3 + reward_context[1] ** 3)
-    )
-
-    # Initialize action vector
-    actions = np.ones([num_actions])
-    
-    # Initialize hidden state and prior over rewards
-    states[:, :, :].append(states[:])
-    hid_states[:, :, :].append(hid_states[:])
-
-    # Perform multi-armed bandit
-    for i in range(reward_context.shape[0]):
-        actions = np.zeros((num_actions))
-        
-        for action, reward in zip(
-            reward_obs[i], rewards:
-            actions + [reward] * (action % num_actions)
-        ):
-            
-            # Perform action
-            if action == 1:
-                # Choose arm
-                next_state = states[:, :, i]
-                
-                # Update state and action
-                next_states += np
+  gnn.encode([
+    (0.5830790123000001, 0.5830790123000001),
+    (0

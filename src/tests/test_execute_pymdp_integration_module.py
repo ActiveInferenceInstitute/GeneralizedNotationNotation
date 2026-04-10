@@ -28,6 +28,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 from src.gnn.parsers.markdown_parser import MarkdownGNNParser
 from src.render.pymdp.pymdp_renderer import PyMDPRenderer
+from src.utils.jax_stack_validation import jax_pymdp_stack_ok
 
 try:
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
@@ -39,7 +40,11 @@ except ImportError:
 @pytest.fixture
 def gnn_file():
     """Get the example GNN file for testing."""
-    return project_root / "input" / "gnn_files" / "actinf_pomdp_agent.md"
+    path = project_root / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+    if path.exists():
+        return path
+    fallback = project_root / "src" / "gnn" / "gnn_examples" / "actinf_pomdp_agent.md"
+    return fallback
 
 
 class TestGNNPyMDPIntegration:
@@ -76,6 +81,10 @@ class TestGNNPyMDPIntegration:
         assert hasattr(renderer, 'render_directory')
         assert callable(renderer.render_file)
 
+    @pytest.mark.skipif(
+        not jax_pymdp_stack_ok(),
+        reason="JAX + inferactively-pymdp>=1.0 required",
+    )
     def test_pymdp_simulation_creation(self):
         """Test PyMDP simulation with GNN-derived parameters."""
         config = {
@@ -88,6 +97,10 @@ class TestGNNPyMDPIntegration:
         simulation = PyMDPSimulation(config)
         assert simulation is not None
 
+    @pytest.mark.skipif(
+        not jax_pymdp_stack_ok(),
+        reason="JAX + inferactively-pymdp>=1.0 required",
+    )
     def test_pymdp_simulation_run(self):
         """Test running a PyMDP simulation."""
         config = {

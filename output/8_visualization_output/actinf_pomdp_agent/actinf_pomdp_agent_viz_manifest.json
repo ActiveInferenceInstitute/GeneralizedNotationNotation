@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 15,
+  "artifact_count": 16,
   "artifacts": [
     "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
     "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_stats.json",
     "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_parameter_bipartite.png",
     "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.png",
     "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_tensor.png",

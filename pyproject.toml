@@ -59,6 +59,13 @@ dependencies = [
     "numpyro>=0.14",
     "torch>=2.0.0",
     "discopy>=1.1.0",
+    # Interactive visualization (Step 9 advanced viz Plotly dashboards; steps 8/16)
+    "pandas>=1.3.0",
+    "plotly>=5.15.0",
+    "seaborn>=0.12.0",
+    "h5py>=3.8.0",
+    # Step 12 bnlearn backend (Bayesian network scripts)
+    "bnlearn>=0.7.0",
 ]
 
 # Development dependencies (enhanced for comprehensive development workflow)
@@ -80,6 +87,7 @@ dev = [
 
     # Security scanning (dev-only tools; pip-audit via uv tool / CI — avoids legacy safety→nltk chain)
     "bandit>=1.7.0",
+    "bandit-sarif-formatter>=1.1.1",
 
     # Code quality and linting
     "isort>=5.12.0",
@@ -151,12 +159,18 @@ llm = [
     "aiohttp>=3.9.0",
 ]
 
-# Enhanced visualization: interactive plots beyond matplotlib (steps 8, 9, 16)
+# Enhanced visualization: interactive plots beyond matplotlib (steps 8, 9, 16).
+# Same pins as core ``dependencies``; kept for ``uv sync --extra visualization``.
 visualization = [
     "pandas>=1.3.0",
     "plotly>=5.15.0",
     "seaborn>=0.12.0",
     "h5py>=3.8.0",
+]
+
+# bnlearn (Step 12); also in core — optional alias for explicit sync.
+inference = [
+    "bnlearn>=0.7.0",
 ]
 
 # Audio synthesis: SAPF/sonification output (step 15)
@@ -240,9 +254,11 @@ all = [
     "aiohttp>=3.9.0",
 
     # Visualization and graphics
+    "pandas>=1.3.0",
     "plotly>=5.15.0",
     "seaborn>=0.12.0",
     "h5py>=3.8.0",
+    "bnlearn>=0.7.0",
     "graphviz>=0.20.0",
     "discopy>=1.1.0",
 

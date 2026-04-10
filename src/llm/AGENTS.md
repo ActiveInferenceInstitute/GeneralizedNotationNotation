@@ -12,7 +12,7 @@
 
 **Version**: 1.0.0
 
-**Last Updated**: 2026-03-23
+**Last Updated**: 2026-04-10
 
 ---
 
@@ -75,16 +75,15 @@ success = process_llm(
 )
 ```
 
-#### `analyze_gnn_file_with_llm(content: str, model_name: str = None, analysis_type: str = "comprehensive", **kwargs) -> Dict[str, Any]`
-**Description**: Analyze a GNN file using LLM with automatic provider selection.
+#### `analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False, ollama_model: Optional[str] = None) -> Dict[str, Any] | Coroutine`
+**Description**: Analyze a GNN file (heuristic extractors + optional LLM summary). When `ollama_model` is set (e.g. from `process_llm` after `_select_best_ollama_model`), summarization uses that tag on Ollama via `LLMOperations.summarize_gnn`.
 
 **Parameters**:
-- `content` (str): GNN file content as string
-- `model_name` (str, optional): Name of the model for context
-- `analysis_type` (str): Type of analysis to perform (default: "comprehensive")
-- `**kwargs`: Additional analysis options
+- `file_path` (Path): Path to the GNN `.md` file
+- `verbose` (bool): Verbose logging
+- `ollama_model` (str, optional): Resolved Ollama tag for the per-file summary; if omitted, summarization follows `LLMProcessor` defaults
 
-**Returns**: `Dict[str, Any]` - Analysis results dictionary
+**Returns**: Result dict, or a coroutine if called while an event loop is already running
 
 #### `extract_variables(content: str) -> List[Dict[str, Any]]`
 **Description**: Extract variable definitions from GNN content.
@@ -139,6 +138,8 @@ success = process_llm(
 | `llm/processor.py` | `_start_ollama_if_needed`, `_select_best_ollama_model`, `_model_is_cached`; step-13 orchestration and `provider_matrix` |
 
 **Model selection** (`_select_best_ollama_model`): `OLLAMA_MODEL` or `OLLAMA_TEST_MODEL` → optional `input/config.yaml` `llm.model` if that name matches an installed tag → built-in preference list (smaller models first: `smollm2`, `tinyllama`, `gemma3:4b`, `gemma2:2b`, …) → first `ollama list` entry → `llm.defaults.DEFAULT_OLLAMA_MODEL`.
+
+**Request wiring**: The tag chosen above is passed to `LLMProcessor.get_response` as `model_name` for every structured PromptType prompt and for custom prompts (same value as cache keys). `AnalysisType.SUMMARY` tasks prefer **Ollama first** when registered, then OpenAI / OpenRouter / Perplexity, so local runs are not blocked by exhausted cloud quota when a key is still present. For per-file summaries, `process_llm` passes the resolved tag into `analyze_gnn_file_with_llm` so it matches the prompt loop. Override defaults with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`. To avoid OpenAI retries when quota is zero, unset `OPENAI_API_KEY` for local-only runs.
 
 ### Recovery Mechanism
 1. `LLMProcessor` loads API keys from the environment; Ollama is enabled unless `OLLAMA_DISABLED` is truthy (`1`, `true`).
@@ -665,7 +666,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ---
 
-**Last Updated**: 2026-03-23
+**Last Updated**: 2026-04-10
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.0.0

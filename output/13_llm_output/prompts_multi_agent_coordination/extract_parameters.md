@@ -3,10 +3,10 @@
 Based on the document, here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and representation of each agent's belief space (A)
-   - B matrices representing the action-belief matrix representations of each agent (B)
-   - C matrices representing the policy vector representations of each agent (C)
-   - D matrices representing the action-policy matrix representations of each agent (D)
+   - A matrices representing the model structure and its dependencies (e.g., state space dimensions)
+   - B matrices representing the action-belief relationships between agents (state space dimensionality)
+   - C matrices representing the policy-action relationships between agents (observation space dimensionality)
+   - D matrices representing the action-policy relationships between agents (observation space dimensionality)
 
 2. **Precision Parameters**:
    - γ: precision parameters and their roles
@@ -14,7 +14,7 @@ Based on the document, here are the key parameters for the GNN implementation:
    - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
-   - State space dimensions for each factor
+   - State space dimensions for each modality
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
 

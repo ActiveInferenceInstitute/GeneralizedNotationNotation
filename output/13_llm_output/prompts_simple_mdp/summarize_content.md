@@ -1,41 +1,26 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here is a concise summary of the GNN specification:
 
-```python
-# Model Overview
-GNN = Sequential()
-GNN.add(Sequential([
-    # Hidden states
-    # 4x4 Identity, 
-    # 4 actions (stay/move-north/south/east)
-    # 4 hidden state transitions
-    # 10 x 2x2 grid positions
-    # 4 actions
-    # 4 actions
-    # 3 actions
-    # 5 actions
-]))
-```
+**Model Overview:**
+This model describes a fully observable Markov Decision Process (MDP), where A = identity matrix, B = identity matrix, C = identity matrix, D = identity matrix, and G(pi) = sum_t EFE(pi, t). The MDP is defined as follows:
+
+1. **Initialization**: Initialize the state space with identity matrices A, B, C, D.
+2. **State Transition**: For each observation (state), transition from state to observation using action pi and policy G(pi) = sum_t EFE(pi, t).
+3. **Policy Selection**: Select actions based on their probabilities of success in the MDP.
+4. **Action Selection**: Select actions based on their probabilities of failure in the MDP.
+5. **State Transition**: For each observation (observation), transition from state to observation using action pi and policy G(pi) = sum_t EFE(pi, t).
+6. **Policy Selection**: Select actions based on their probabilities of success in the MDP.
+7. **Action Selection**: Select actions based on their probabilities of failure in the MDP.
+8. **State Transition**: For each observation (observation), transition from state to observation using action pi and policy G(pi) = sum_t EFE(pi, t).
+9. **Policy Selection**: Select actions based on their probabilities of success in the MDP.
+10. **Action Selection**: Select actions based on their probabilities of failure in the MDP.
+11. **State Transition**: For each observation (observation), transition from state to observation using action pi and policy G(pi) = sum_t EFE(pi, t).
+12. **Policy Selection**: Select actions based on their probabilities of success in the MDP.
+13. **Action Selection**: Select actions based on their probabilities of failure in the MDP.
 
 **Key Variables:**
 
-1. **A**: Identity (identity A). This is the identity matrix representing the MDP's state space and policy. It represents the agent's current state, but it doesn't provide any information about its future behavior or uncertainty.
-
-2. **B**: Identity (identity B), which represents the policy of the agent in the MDP. It represents the policy that maximizes the expected free energy over all possible actions.
-
-3. **C**: Transition matrix: Identity (identity A). This is a 4x4 identity matrix representing the MDP's state space and policy, with each state mapping to its own observation. It represents the agent's current state, but it doesn't provide any information about its future behavior or uncertainty.
-
-4. **D****: Uniform prior: Identity (identity A). This is a 1x2 uniform distribution over the states that are uncertainly sampled from. It provides some information about the policy of the agent and allows for updates to the policy based on new observations.
-
-**Critical Parameters:**
-
-1. **Most important matrices**:
-   - **A**: Identity (identity A). This is a 4x4 identity matrix representing the MDP's state space, which represents the agent's current state. It provides information about its uncertainty and allows for updates to the policy based on new observations.
-   - **B**: Identity (identity B), which represents the policy of the agent in the MDP. This is a 1x2 uniform distribution over the states that are uncertainly sampled from, allowing for updates to the policy based on new observations.
-
-2. **Key hyperparameters and settings**:
-   - **Most important matrices**
-    - **A**: Identity (identity A). This is a 4x4 identity matrix representing the MDP's state space, which represents the agent's current state. It provides information about its uncertainty and allows for updates to the policy based on new observations.
-   
-   - **B**:
+1. **A**: Identity matrix (identity A) representing identity state distribution across all states.
+2. **B**: Identity matrix (identity B) representing identity state distribution across all states, with action 0=stay and action 1=go-to-1 for state A and action 2=go-to-2 for state A.
+3. **C**: Identity matrix (identity C) representing identity state distribution across all states

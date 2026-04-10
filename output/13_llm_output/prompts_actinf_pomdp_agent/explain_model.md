@@ -1,25 +1,45 @@
 # EXPLAIN_MODEL
 
-You've outlined the key components of the Active Inference POMDP agent:
+Here is a concise overview of the key components and concepts involved:
 
-1. **Model Purpose**: This is a classic active inference agent for a discrete POMDP with one observation modality and one hidden state factor. It represents a simple decision-making model that can be used to make predictions about future actions based on current observations.
+**Model Purpose:** This GNN represents an active inference agent for a discrete POMDP with one observation modality (state) and one hidden state factor (observation). The model consists of 3 main components:
 
-2. **Core Components**:
-   - **S** (state space): A set of states, which are the observed outcomes for each observation.
-   - **B** (belief vectors): A set of beliefs associated with each state, representing the probability distribution over all possible actions.
-   - **C** (prior distributions): A set of prior probabilities associated with each action selection.
-   - **D** (decision variables): A set of decisions made by the agent based on its current policy and previous policies.
+1. **Initialization**: A set of observations, actions, and habit distributions over states.
+   - Each action is assigned to a specific state based on its probability distribution.
+   - The policy updates are made using the prior probabilities for each observation.
 
-3. **Model Dynamics**: This model implements Active Inference principles, allowing it to learn from past actions and update beliefs in response to new observations. It also enables predictions about future actions based on available actions.
+2. **State Transition Matrix**: A matrix representing the transition between states from one observation to another.
+   - Each row represents an observation, and each column represents a particular action selection (policy).
 
-4. **Active Inference Context**: This is a framework for understanding how the agent makes decisions based on its current policy and previous policies. It provides insights into what actions are being taken, when they will occur, and why.
+3. **Transition Matrix**: A vector of transitions over actions that move from one state to another.
+   - Each row represents a single observation, and each column represents a particular action selection for the current state.
 
-Here's an overview of the key relationships:
+**Core Components:**
 
-1. **State Transition Matrix**: The state transition matrix represents the probability distribution over all possible actions available to the agent at each time step. It captures the current policy preferences and can be used for planning decisions.
+  1. **Initialization**: A set of observations, actions, and habit distributions over states.
+   - Each observation is assigned to a specific state based on its probability distribution (policy).
 
-2. **Action Vector**: The action vector represents the probabilities associated with each action, which are encoded as log-probabilities of observing a particular outcome. This allows the agent to make predictions about future actions based on its available policies.
+2. **State Transition Matrix**: A matrix representing the transition between states from one observation to another.
+   - Each row represents an observation, and each column represents a particular action selection for the current state.
 
-3. **Policy Vector**: The policy vector represents the probability distribution over all possible actions available to the agent at each time step. It captures the current policy preferences and can be used for planning decisions.
+**Model Dynamics:**
 
-The model's goal is to learn from past observations, update beliefs in response to new information, and make predictions about future actions based on available policies. This allows the agent to take informed decisions that are informed by its knowledge of available actions and policies.
+  1. **Action Selection**: A set of actions that are available in the agent's policy posterior (habit).
+   - Each action is assigned to a specific state based on its probability distribution (policy) over previous states.
+
+2. **Belief Updates**: A set of beliefs about future observations and actions, updated using the prior probabilities for each observation.
+
+**Practical Implications:**
+
+  1. **Decision-making**: The agent can make decisions based on its belief updates to update its beliefs.
+   - Actions are used as input features in the decision-making process (policy).
+
+2. **Action Selection**: The agent selects actions based on their prior probabilities and policy distributions over previous states, updating its beliefs accordingly.
+
+**Active Inference Context:**
+
+  1. **Initialization**: A set of observations, actions, and habit distributions over states.
+   - Each observation is assigned to a specific state based on its probability distribution (policy).
+
+2. **State Transition Matrix**: A matrix representing the transition between states from one observation to another.
+   - Each row represents an observation, and each column represents a

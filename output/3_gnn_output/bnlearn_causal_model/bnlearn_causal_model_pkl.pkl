@@ -1,0 +1,142 @@
+///
+/// GNN Model: Bnlearn Causal Model
+/// Annotation: A Bayesian Network model mapping Active Inference structure:
+- S: Hidden State
+- A: Action
+- S_prev: Previous State
+- O: Observation
+/// Generated: 2026-04-10T10:24:32.876703
+/// Enhanced by GNN PKL Serializer
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+class GNNModel {{
+  name: String = "Bnlearn Causal Model"
+  annotation: String = "A Bayesian Network model mapping Active Inference structure:
+- S: Hidden State
+- A: Action
+- S_prev: Previous State
+- O: Observation"
+
+  variables: Mapping<String, Variable> = new Mapping {{
+    ["A"] = new Variable {
+      name = "A"
+      varType = "likelihood_matrix"
+      dataType = "float"
+      dimensions = List(2, 2)
+    }}
+    ["B"] = new Variable {
+      name = "B"
+      varType = "transition_matrix"
+      dataType = "float"
+      dimensions = List(2, 2, 2)
+    }}
+    ["a"] = new Variable {
+      name = "a"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(2, 1)
+    }}
+    ["o"] = new Variable {
+      name = "o"
+      varType = "observation"
+      dataType = "integer"
+      dimensions = List(2, 1)
+    }}
+    ["s"] = new Variable {
+      name = "s"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+    ["s_prev"] = new Variable {
+      name = "s_prev"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+  }}
+
+  connections: Mapping<String, Connection> = new Mapping {{
+    ["connection_0"] = new Connection {
+      sourceVariables = List("s_prev")
+      targetVariables = List("s")
+      connectionType = "directed"
+    }}
+    ["connection_1"] = new Connection {
+      sourceVariables = List("a")
+      targetVariables = List("s")
+      connectionType = "directed"
+    }}
+    ["connection_2"] = new Connection {
+      sourceVariables = List("s")
+      targetVariables = List("o")
+      connectionType = "directed"
+    }}
+  }}
+
+  parameters: Mapping<String, Parameter> = new Mapping {{
+    ["A"] = new Parameter {
+      name = "A"
+      value = List([0.9, 0.1], [0.1, 0.9])
+      paramType = "constant"
+    }}
+    ["D"] = new Parameter {
+      name = "D"
+      value = List([0.5, 0.5])
+      paramType = "constant"
+    }}
+  }}
+
+  ontologyMappings: List<OntologyMapping> = new List {{
+  }}
+
+}}
+
+class Variable {{
+  name: String
+  varType: String
+  dataType: String
+  dimensions: List<Int>
+}}
+
+class Connection {{
+  sourceVariables: List<String>
+  targetVariables: List<String>
+  connectionType: String
+}}
+
+class Parameter {{
+  name: String
+  value: Any
+  paramType: String
+}}
+
+class TimeSpec {{
+  timeType: String
+  steps: Int
+  description: String?
+}}
+
+class OntologyMapping {{
+  variableName: String
+  ontologyTerm: String
+}}
+
+/* MODEL_DATA: {"model_name":"Bnlearn Causal Model","annotation":"A Bayesian Network model mapping Active Inference structure:\n- S: Hidden State\n- A: Action\n- S_prev: Previous State\n- O: Observation","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[2,2]},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[2,2,2]},{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"s_prev","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[2,1]},{"name":"a","var_type":"action","data_type":"integer","dimensions":[2,1]}],"connections":[{"source_variables":["s_prev"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["a"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["o"],"connection_type":"directed"}],"parameters":[{"name":"A","value":[[0.9,0.1],[0.1,0.9]],"param_type":"constant"},{"name":"D","value":[[0.5,0.5]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":null,"step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"ObservationModel","description":null},{"variable_name":"B","ontology_term":"TransitionModel","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"s_prev","ontology_term":"PreviousState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"a","ontology_term":"Action","description":null}]} */
+
+// Variables:
+// Variable: A (likelihood_matrix)
+// Variable: B (transition_matrix)
+// Variable: s (hidden_state)
+// Variable: s_prev (hidden_state)
+// Variable: o (observation)
+// Variable: a (action)
+// Connections:
+// Connection: s_prev --directed--> s
+// Connection: a --directed--> s
+// Connection: s --directed--> o
+// Parameters:
+// Parameter: A = [[0.9, 0.1], [0.1, 0.9]]
+// Parameter: D = [[0.5, 0.5]]

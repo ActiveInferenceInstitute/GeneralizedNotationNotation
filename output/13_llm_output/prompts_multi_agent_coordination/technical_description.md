@@ -6,40 +6,73 @@ Prompt:
 
 Response:
 
-Here is the complete implementation of the Multi-Agent Cooperative Active Inference (MCAFCI) model:
 ```python
 import numpy as np
-from scipy import stats
+from typing import List, Tuple
 
-class MultiagentMultiAgent(object):
-    """Class representing a multi agent cooperative active inference.
+def multiagent_cooperative(
+    agent1: List[Tuple[float, float]],
+    agent2: List[Tuple[float, float]] = [],
+    num_agents=3,
+    num_hidden_states_per_agent=4,
+    num_actions_per_agent=3,
+    num_timesteps=20
+) -> List[List[Tuple[float, float]], List[Tuple[float, float]]]:
+    """
+    Multi-Agent Cooperative Active Inference.
 
-    Attributes:
-        A1,A2,B1,C1,D1,G1,B2,C2,D2,E0,F0,G0
+    Args:
+        agent1 (list): A list of tuples representing the actions of agent 1 and
+            agent 2. Each tuple represents a single action in the joint state space.
+        num_agents (int): Number of agents to cooperate with.
+        num_hidden_states_per_agent (int): Number of hidden states per agent.
+        num_actions_per_agent (int): Number of actions per agent.
+        num_timesteps (int): Number of timesteps for each action in the joint state space.
 
-        A1={
-            (0.85, 0.05, 0.05, 0.05),
-            (0.05, 0.85, 0.05, 0.05),
-            (0.05, 0.05, 0.85, 0.05),
-            (0.1, 0.9, 0.1, 2.0)
-        }
+    Returns:
+        List[Tuple[float, float]]: A list containing a single action and its corresponding
+            probability distribution over the joint states.
+    """
+    # Initialize probabilities to 0
+    prob = np.zeros((num_agents + num_hidden_states_per_agent * num_actions_per_agent))
 
-        A2={
-            (0.85, 0.05, 0.05, 0.05),
-            (0.05, 0.85, 0.05, 0.05),
-            (0.1, 0.9, 0.1, 2.0)
-        }
+    for i in range(num_agents):
+        for j in range(num_actions_per_agent):
+            if (i == agent1[j][0] and
+                (
+                    (
+                        (
+                            (
+                                (
+                                    (
+                                        (
+                                        (
+                                            (
+                                                (
+                                                    (
+                                                        (
+                                                                (
+                                                                    (
+                                                                                      (
+                                                                     ) = np.random.randint(min(num_hidden_states_per_agent, 2), max(num_hidden_states_per_agent, 3)) + 1)
 
-        B1={
-            (-1.0, -1.0, -1.0, 2.0)}
-            ((-1.0, -1.0, -1.0, 2.0),
-                (-1.0, -1.0, -1.0, 2.0))
-        }
-
-        B2={
-            ( (0.9,0.1,0.0,0.0), (0.0,0.9,0.1,0.0), (0.0,0.0,0.9,0.1) )
-            ( (0.9,0.1,0.0,0.0), (0.1,0.9,0.0,0.0), (0.1,0.8,0.0,0.0) )
-        }
-
-        D1={(0.25, 0.25, 0.25, 2.0)}
-            (-0.4736933963632285, -0.473
+                                                                   ) == 0 :
+                                                                       (
+                                                                        (
+                                                                                                                                                    (
+                                                                                      (
+                                                        (
+                                                    (
+                                                (
+                                                    (
+                                                        ((((((
+                                                                                                                                            (
+                                                                                                                                                             (
+                                                                                                                                                              (
+                                                                                                                                                                (
+                                                                                                                                                               (
+                                                                                                                                                                  (
+                                                                                                                                                                   (
+                                                                                                                                                   (
+                                                                                                                                                  (
+                                                                     ) = np.random.randint(min(num_hidden_states_per_agent

@@ -6,20 +6,33 @@ Prompt:
 
 Response:
 
-Your description is clear and concise, but I can offer some minor suggestions for improvement:
+You can use the following code to generate a GNN representation of the multi-armed bandit:
 
-1. Your text mentions "GNN Representation" instead of "Multi-Armed Bandit Agent". This makes the description more readable and easier to understand.
+1. First, you need to define the model annotations and the parameters for the GNN. You can do this using the `model_annotations` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
 
-2. You mention that "the agent prefers big rewards." While this statement is true, it's not entirely accurate. The GNN representation does indeed represent a single agent with multiple actions (actions 0 through 3). However, in the context of the GNN model described earlier, we can't directly compare the agent to other agents or their actions without considering all possible scenarios and interactions between them.
+2. Then, you can define the GNN parameters using the `model_params` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
 
-3. You mention that "the agent prefers big rewards." This statement is not entirely accurate as well. The GNN representation does represent a single agent with multiple actions (actions 0 through 3), but it doesn't necessarily imply that the agent always prefers big rewards to small ones, or vice versa. It's possible for the agent to prefer one action over another based on its own preferences and biases towards different actions.
+3. Finally, you can define the GNN parameters using the `model_parameters` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
 
-4. You mention "the agent prefers big rewards." This statement is not entirely accurate as well. The GNN representation does represent a single agent with multiple actions (actions 0 through 3), but it doesn't necessarily imply that the agent always prefers big rewards to small ones, or vice versa. It's possible for the agent to prefer one action over another based on its own preferences and biases towards different actions.
+Here's an example implementation:
 
-5. You mention "the agent prefers big rewards." This statement is not entirely accurate as well. The GNN representation does represent a single agent with multiple actions (actions 0 through 3), but it doesn't necessarily imply that the agent always prefers big rewards to small ones, or vice versa. It's possible for the agent to prefer one action over another based on its own preferences and biases towards different actions.
+4. First, define the GNN annotations using the `model_annotations` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
+```python
+import torch
+from pytorch import nn, tensor
 
-Overall, your description is clear and concise, but I can offer some minor suggestions for improvement:
+def model_annotations(annotation):
+    """Annotate a GNN representation of the multi-armed bandit."""
 
-1. The phrase "the agent prefers big rewards" could be rephrased as "The GNN representation represents a single agent with multiple actions (actions 0 through 3)." This change makes the statement more readable and easier to understand.
+    def inference_fn(*args: tuple) -> nn.Module[bool]:
+        """Implement an action inference based on the given annotations."""
 
-2. The phrase "the agent prefers big rewards" is not entirely accurate, but it's close enough for your purposes. It implies that the agent always prefers big rewards to small ones, which isn't necessarily true in this context. It could be argued
+        return nn.Linear(3 * 1024, num_hidden_states + 96)
+```
+
+5. Next, define the GNN parameters using the `model_params` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
+```python
+def model_parameters(annotation):
+    """Define parameters for the GNN."""
+
+    def inference_fn(*args: tuple) -> nn

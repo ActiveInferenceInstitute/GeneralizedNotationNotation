@@ -117,9 +117,19 @@ def _to_clean_nested(obj: Any) -> Any:
         return [_to_clean_nested(x) for x in obj]
     if isinstance(obj, (int, float, bool, str)):
         return obj
+    if isinstance(obj, Path):
+        return str(obj)
+    if isinstance(obj, dict):
+        return {str(k): _to_clean_nested(v) for k, v in obj.items()}
     if hasattr(obj, "tolist"):
         return _to_clean_nested(obj.tolist())
     return obj
+
+
+def _gnn_spec_for_json_embedding(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+    """Ensure JSON-serializable spec (str keys; no Path keys from parsers)."""
+    raw = _to_clean_nested(gnn_spec)
+    return raw if isinstance(raw, dict) else dict(gnn_spec)
 
 
 def _extract_dimensions(
@@ -311,7 +321,9 @@ class PyMDPRenderer:
             "C_literal": _json.dumps(C_vector) if C_vector is not None else "None",
             "D_literal": _json.dumps(D_vector) if D_vector is not None else "None",
             "E_literal": _json.dumps(E_vector) if E_vector is not None else "None",
-            "gnn_spec_literal": _json.dumps(gnn_spec, indent=4, default=str),
+            "gnn_spec_literal": _json.dumps(
+                _gnn_spec_for_json_embedding(gnn_spec), indent=4, default=str
+            ),
             "num_timesteps": int(
                 (gnn_spec.get("model_parameters") or {}).get("num_timesteps", 20)
             ),

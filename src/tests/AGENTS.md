@@ -73,6 +73,15 @@ success = run_tests(
 )
 ```
 
+#### `create_test_runner(args, logger) -> ModularTestRunner`
+**Description**: Factory that returns a `ModularTestRunner` for category-based test execution.
+
+**Defined in**: [`test_runner_modular.py`](test_runner_modular.py). The package [`__init__.py`](__init__.py) imports it from there separately from `runner.run_tests` (which lives in [`runner.py`](runner.py)); a single combined import would fail because `create_test_runner` is not defined on `runner`.
+
+**Parameters**:
+- `args`: Parsed arguments (e.g. from the pipeline CLI)
+- `logger` (logging.Logger): Logger instance
+
 #### `run_fast_pipeline_tests(logger, output_dir, verbose=False) -> bool`
 **Description**: Run fast test suite for quick pipeline validation
 

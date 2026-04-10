@@ -289,7 +289,12 @@ class LLMProcessor:
         task_preferences = {
             AnalysisType.SEARCH_ENHANCED: [ProviderType.PERPLEXITY, ProviderType.OPENROUTER, ProviderType.OPENAI],
             AnalysisType.STRUCTURE: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],
-            AnalysisType.SUMMARY: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],
+            AnalysisType.SUMMARY: [
+                ProviderType.OLLAMA,
+                ProviderType.OPENAI,
+                ProviderType.OPENROUTER,
+                ProviderType.PERPLEXITY,
+            ],
             AnalysisType.QUESTIONS: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],
             AnalysisType.ENHANCEMENT: [ProviderType.OPENROUTER, ProviderType.OPENAI, ProviderType.PERPLEXITY],
             AnalysisType.VALIDATION: [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY],

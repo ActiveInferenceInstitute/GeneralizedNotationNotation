@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/markov_chain/markov_chain_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 12,
+  "artifact_count": 13,
   "artifacts": [
     "output/8_visualization_output/markov_chain/markov_chain_network_graph.png",
     "output/8_visualization_output/markov_chain/markov_chain_network_stats.json",
     "output/8_visualization_output/markov_chain/markov_chain_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/markov_chain/markov_chain_variable_parameter_bipartite.png",
     "output/8_visualization_output/markov_chain/markov_chain_A_heatmap.png",
     "output/8_visualization_output/markov_chain/markov_chain_B_heatmap.png",

@@ -1,34 +1,32 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary:
 
 **Model Overview:**
-This model represents an active inference POMDP that can learn from policy sequences over time. It consists of three main components:
+This GNN implementation is designed to handle multi-step consequence reasoning using a deep learning framework. The model consists of three main components:
 
-1. **Generative Model**: A generative model to generate new policies and actions based on training data, with a learning rate parameter `learning_rate` set to 0.95 (default). The model learns to generate new policies at each timestep by iterating over the policy sequences.
+1. **GNN Representation**: A neural network architecture that learns from training data and represents the policy space as a set of hidden states, actions, and observations.
 
-2. **Action Distribution**: A distribution of action distributions that can be used for inference. It is initialized with a uniform distribution on [[-1, 1]]. Each action has an associated probability distribution over actions and states. The action distributions are updated based on the current state sequence.
+2. **Action Annotation**: A list of action sequences representing policies over time. Each sequence is represented by a tensor with shape (T-step timesteps) and each sequence has a corresponding tensor with shape (1, T).
 
-3. **Policy Sequence**: A sequence of policy sequences (sequences of T-step actions) that can be used for inference. Each action is initialized with a uniform distribution over [[-1, 0]]. Each action has an associated probability distribution over states and actions. The action distributions are updated based on the current state sequence.
+3. **State Rollouts**: A list of actions that are the first 5 steps in the policy space. Actions can be thought of as "actions" or "choices". Each action is represented by a tensor with shape (T-step timesteps) and each action has a corresponding tensor with shape (1, T).
+
+4. **EFE Contribution**: A list of actions that contribute to the overall EFE contribution over time. Actions can be thought of as "actions" or "choices". Each action is represented by a tensor with shape (T-step timesteps) and each action has a corresponding tensor with shape (1, T).
+
+5. **Policy Prior**: A list of actions that are associated with the policy distribution. Each action is represented by a tensor with shape (1, T), and each action has a corresponding tensor with shape (1, T).
 
 **Key Variables:**
+   - Hidden states: [list with brief descriptions]
+   - Observations: [list with brief descriptions]  
+   - Actions/Controls: [list with brief descriptions]
 
-1. **Learning Rate**: A hyperparameter controlling the rate at which the generative model learns to generate new policies and actions. It is initialized with a uniform value of 0.95 (default).
+ **Critical Parameters:**
+   - Most important matrices and their roles
 
-2. **Initialization**: Initializing the learning rate, action distributions, and policy sequences based on training data.
+   - Key hyperparameters and settings (see below)
 
-**Critical Parameters:**
-
-1. **Learning Rate**: A hyperparameter controlling the rate at which the generative model learns to generate new policies and actions. It is initialized with a uniform value of 0.95 (default).
-
-2. **Initialization**: Initializing the learning rate, action distributions, and policy sequences based on training data.
-
-**Notable Features:**
-
-1. **Key Variables**: A distribution of action distributions that can be used for inference. It is initialized with a uniform value of 0.95 (default).
-
-2. **Critical Parameters**: A hyperparameter controlling the rate at which the generative model learns to generate new policies and actions. It is initialized with a uniform value of 0.95 (default).
+ **Notable Features:**
+   - Special properties or constraints of this model design
 
 **Use Cases:**
-
-1. **Multi-step reasoning**: The GNN can be used for multi-step reasoning, where each action has an associated probability distribution over states and actions. Each action has an associated probability distribution over policies and actions.
+   - Multi-step consequence reasoning using GNN. This is the primary use case for this model, as it can handle multi-step actions with a single policy sequence over multiple timesteps and track progress towards goals in each step.

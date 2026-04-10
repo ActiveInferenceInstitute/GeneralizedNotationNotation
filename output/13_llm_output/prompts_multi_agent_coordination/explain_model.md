@@ -1,17 +1,26 @@
 # EXPLAIN_MODEL
 
-You've already done a great job of summarizing the key points about the GNN model. Here are some additional thoughts:
+Here's a concise overview of the key components:
 
-1. **Key relationships**: The model's behavior is modeled using a set of hidden states and actions/controls (u_c0, π_c0). These hidden states represent different types of beliefs or preferences among agents. The action-controlled actions can be thought of as "actions" that affect the state of the network at each time step.
+1. **Model Purpose**: This is a description of what the model represents and how it operates. It provides context for understanding the purpose of the model.
 
-2. **Core components**:
-   - **LikelihoodMatrix** represents the probability distribution of the observed values (state) over all possible states. It captures the uncertainty in the agent's beliefs and provides a way to update their beliefs based on new information.
-   - **TransitionMatrix** is used for updating the belief at each time step, allowing agents to adjust their actions accordingly.
+2. **Core Components**:
+   - **Hidden states (s_f0, s_f1)**: Represented by the likelihood matrices L(x), T(y). These represent the probabilities or likelihood of observing a particular state in the joint space.
+   - **Observations (o_m0, o_m1, etc.)**: Represented by the transition matrices T and the action vectors A. These represent the actions being taken towards each other.
+   - **Actions/Controls (u_c0, π_c0)**: Represented by the probabilities or likelihood of observing a particular state in the joint space. These represent the actions available to the agent.
+   - **Observations (o_m1, π_m1)**: Represented by the probability vectors O(x), T(y). These represent the observed states being taken towards each other.
 
-3. **Model dynamics**: The model evolves through a sequence of "actions" (u_c0) that affect the state of the network. These actions are updated based on new information and can be thought of as "belief updates".
+3. **Model Dynamics**: This describes how the model evolves over time based on its beliefs and actions. It provides a framework for understanding how the agent learns from experience, making predictions about future outcomes, and updating their beliefs in response to new information.
 
-4. **Active inference context**: The model uses a set of hidden states to represent different types of beliefs or preferences among agents. This allows for active inference, where the agent's belief is updated based on new information from other agents.
+Key relationships:
+   - **Action probabilities** (A) represent the probability of observing a particular state given that an action has been taken towards it.
+   - **Observation probabilities** (O(x)) represent the probability of observing a particular state given that an observation has been made by agent x in joint space with other agents.
+   - **State transition matrices**: Represent the updated beliefs and actions based on new information from other agents or observations.
 
-5. **Practical implications**: The model can inform decisions by providing predictions about future actions and beliefs. For example, if an agent believes that they are in a state with higher probabilities of success (e.g., getting closer to the goal), it may be more likely for them to take action A1 or B2 based on their current belief. This provides valuable insights into how agents interact with each other and make decisions under uncertainty.
+4. **Active Inference Context**: This describes how the model learns from experience, making predictions about future outcomes, and updating its beliefs based on new information. It provides a framework for understanding how the agent learns from experience, making predictions about future outcomes, and updating their beliefs in response to new information.
 
-I've tried to provide clear, concise explanations while maintaining scientific accuracy. Feel free to ask follow-up questions if you'd like further clarification!
+Key relationships:
+   - **Action probabilities** (A) represent the probability of observing a particular state given that an action has been taken towards it.
+   - **State transition matrices**: Represent the updated beliefs and actions based on new information from other agents or observations.
+
+5. **Practical Implications**: This describes how the model learns, makes predictions about future outcomes, and updates its

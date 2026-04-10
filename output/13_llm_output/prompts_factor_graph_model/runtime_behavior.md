@@ -8,69 +8,52 @@ Response:
 
 ```python
 import numpy as np
-from typing import List, Dict, Tuple
+from scipy import stats
 
-def gnn_representation(
-    graph: Dict[str, Dict[str, Dict]],
-    num_positions: int = 3,
-    num_velocities: int = 2,
-    num_visual_obs: int = 6,
-    num_proprio_obs: int = 4,
-    num_actions: int = 2
-) -> Tuple[Dict[str, Dict], Dict]:
-    """GNN Representation of a factor graph."""
+def gnn_representation(num_positions, num_velocities):
+    """Represents a GNN representation of a factor graph."""
 
-    def gnn(
-        node1: str,
-        node2: str,
-        action: List[Tuple[int, float]],
-        prob: List[float] = [],
-        log_probs: List[List[float]] = []  # Log probabilities for each node
-    ):
+    # Create the factor graph decomposition
+    factor = np.array([[[0] * (num_velocities + 1) for _ in range(num_velocities)]
+                      for _ in range(num_positions)])
+    
+    # Initialize the variables and nodes
+    vf, pf = [], []
+    
+    # Initialize the variables
+    vf_vis=np.zeros((len(factor), num_velocities))
+    pf_vis=np.zeros((len(factor), num_velocities))
 
-        """GNN Representation of a graph."""
+    # Initialize the node variable
+    vf_pos=np.ones([num_positions])
+    pf_pos=np.ones([num_positions])
+    
+    # Initialize the node variable
+    vf_vel=np.ones([num_positions])
+    pf_vel=np.ones([num_positions])
 
-        if isinstance(node1, str):
-            return gnn_representation(graph.get(node1), num_positions)
+    # Initialize the node variables
+    vf_vis[0, 1] = np.zeros((len(factor), num_velocities))
+    vf_vis[2, 3] = np.zeros((len(factor), num_velocities))
+    
+    # Initialize the node variable
+    vf_pos[0, 4] = np.ones([num_positions])
+    vf_pos[1, 5] = np.ones((len(factor), num_velocities))
 
-        if isinstance(node2, str):
-            return gnn_representation(graph.get(node2), num_positions)
+    # Initialize the node variables
+    vf_vis[2, 3] = np.zeros((len(factor), num_velocities))
+    
+    # Initialize the node variable
+    vf_prop=np.ones([num_positions])
+    vf_prop+=np.ones((len(factor), num_velocities))
 
-        if isinstance(action, List[Tuple[int, float]]):
-            return gnn_representation(
-                graph.get(node1 + node2),
-                action,
-                prob,
-                log_probs,
-                [],
-                [],
-                num_actions = num_actions,
-                num_visitors = num_visitors,
-                num_proprio_obs = num_proprio_obs
-            )
+    # Initialize the node variables
+    vf_pos[3, 1] = np.zeros((len(factor), num_velocities))
+    vf_pos[2, 4] = np.ones([num_positions])
+    
+    # Initialize the node variable
+    vf_vel=np.ones([num_positions])
+    vf_vel+=np.ones((len(factor), num_velocities))
 
-        if isinstance(prob, List[Tuple[int, float]]):
-            return gnn_representation(graph.get(node1 + node2), prob)
-
-    def gnn_representation(
-        graph: Dict[str, Dict],
-        num_positions: int = 3
-    ):
-        """GNN Representation of a factor graph."""
-
-        if isinstance(num_positions, int):
-            return {}
-
-        for node in graph.keys():
-
-            # Create a node with the same number as its neighbors and label it as "visited"
-            visited = set()
-            visited.add(node)
-            gnn(
-                node1: str,
-                node2: str,
-                action: List[Tuple[int, float]],
-                prob: List[float],
-                log_probs: List[List[float]] = [],
-                num_visitors=num_visitors,
-                num_proprio_
+    # Initialize the node variables
+    vf_vis[0, 1] = np.zeros((len(factor), num_vel

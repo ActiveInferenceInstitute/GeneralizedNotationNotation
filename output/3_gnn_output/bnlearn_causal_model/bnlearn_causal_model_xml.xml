@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<gnn_model name="Bnlearn Causal Model" version="1.0">
+  <metadata>
+    <annotation>A Bayesian Network model mapping Active Inference structure:
+- S: Hidden State
+- A: Action
+- S_prev: Previous State
+- O: Observation</annotation>
+    <created_at>2026-04-10T10:24:32.870577</created_at>
+    <modified_at>2026-04-10T10:24:32.870579</modified_at>
+  </metadata>
+  <variables>
+    <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="P(O | S)"/>
+    <variable data_type="float" dimensions="2,2,2" name="B" type="transition_matrix" description="P(S | S_prev, A)"/>
+    <variable data_type="integer" dimensions="2,1" name="a" type="action"/>
+    <variable data_type="integer" dimensions="2,1" name="o" type="observation"/>
+    <variable data_type="float" dimensions="2,1" name="s" type="hidden_state"/>
+    <variable data_type="float" dimensions="2,1" name="s_prev" type="hidden_state"/>
+  </variables>
+  <connections>
+    <connection type="directed">
+      <sources>a</sources>
+      <targets>s</targets>
+    </connection>
+    <connection type="directed">
+      <sources>s</sources>
+      <targets>o</targets>
+    </connection>
+    <connection type="directed">
+      <sources>s_prev</sources>
+      <targets>s</targets>
+    </connection>
+  </connections>
+  <parameters>
+    <parameter name="A">[[0.9, 0.1], [0.1, 0.9]]</parameter>
+    <parameter name="D">[[0.5, 0.5]]</parameter>
+  </parameters>
+  <time_specification type="Dynamic"/>
+  <ontology_mappings>
+    <mapping term="ObservationModel" variable="A"/>
+    <mapping term="TransitionModel" variable="B"/>
+    <mapping term="Action" variable="a"/>
+    <mapping term="Observation" variable="o"/>
+    <mapping term="HiddenState" variable="s"/>
+    <mapping term="PreviousState" variable="s_prev"/>
+  </ontology_mappings>
+<!-- MODEL_DATA: {"model_name":"Bnlearn Causal Model","annotation":"A Bayesian Network model mapping Active Inference structure:\n- S: Hidden State\n- A: Action\n- S_prev: Previous State\n- O: Observation","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[2,2]},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[2,2,2]},{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"s_prev","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[2,1]},{"name":"a","var_type":"action","data_type":"integer","dimensions":[2,1]}],"connections":[{"source_variables":["s_prev"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["a"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["o"],"connection_type":"directed"}],"parameters":[{"name":"A","value":[[0.9,0.1],[0.1,0.9]],"param_type":"constant"},{"name":"D","value":[[0.5,0.5]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":null,"step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"ObservationModel","description":null},{"variable_name":"B","ontology_term":"TransitionModel","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"s_prev","ontology_term":"PreviousState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"a","ontology_term":"Action","description":null}]} -->
+</gnn_model>

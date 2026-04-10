@@ -5,28 +5,28 @@
   "script_path": "output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.797278,
-  "timestamp": "2026-03-24T13:59:22.842333",
+  "execution_time": 3.014956,
+  "timestamp": "2026-04-10T10:25:26.119291",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
+      2,
       0,
-      2,
       4,
-      3,
       4,
-      2,
-      4,
-      3,
       5,
       0,
       0,
+      2,
+      2,
+      1,
       0,
       3,
+      0,
       5,
-      0
+      3
     ],
     "actions": [
       0,
@@ -46,106 +46,106 @@
       0
     ],
     "policy": [],
-    "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-24 13:59:24,424 - __main__ - INFO - A matrix shape: (6, 4)\n2026-03-24 13:59:24,424 - __main__ - INFO - B matrix shape: (4, 4)\n2026-03-24 13:59:24,424 - __main__ - INFO - C vector shape: (6,)\n2026-03-24 13:59:24,424 - __main__ - INFO - D vector shape: (4,)\n2026-03-24 13:59:24,424 - __main__ - INFO - Starting PyMDP simulation for Hidden Markov Model Baseline\n2026-03-24 13:59:24,424 - __main__ - INFO - Output directory: output/pymdp_simulations/Hidden Markov Model Baseline\n2026-03-24 13:59:24,424 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-24 13:59:24,424 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-24 13:59:24,424 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Expanded 2D B matrix (4, 4) to 3D (4, 4, 1) (passive model, 1 action)\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(6, 4), B=(4, 4, 1), C=(6,), D=(4,)\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=2, obs=0, belief=[0.7 0.1 0.1 0.1], action=0.0\n2026-03-24 13:59:24,425 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=2, obs=2, belief=[0.27 0.09 0.57 0.08], action=0.0\n2026-03-24 13:59:24,426 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=2, obs=4, belief=[0.1  0.08 0.61 0.21], action=0.0\n2026-03-24 13:59:24,426 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=3, obs=3, belief=[0.07 0.09 0.19 0.65], action=0.0\n2026-03-24 13:59:24,426 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=3, obs=4, belief=[0.05 0.06 0.34 0.56], action=0.0\n2026-03-24 13:59:24,426 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=3, obs=2, belief=[0.04 0.06 0.77 0.13], action=0.0\n2026-03-24 13:59:24,426 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=3, obs=4, belief=[0.04 0.07 0.67 0.22], action=0.0\n2026-03-24 13:59:24,427 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=3, obs=3, belief=[0.06 0.09 0.2  0.65], action=0.0\n2026-03-24 13:59:24,427 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=0, obs=5, belief=[0.28 0.36 0.14 0.22], action=0.0\n2026-03-24 13:59:24,427 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=0, obs=0, belief=[0.72 0.13 0.07 0.08], action=0.0\n2026-03-24 13:59:24,427 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=0, obs=0, belief=[0.89 0.04 0.03 0.03], action=0.0\n2026-03-24 13:59:24,427 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=1, obs=0, belief=[0.92 0.03 0.03 0.02], action=0.0\n2026-03-24 13:59:24,427 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=0, obs=3, belief=[0.39 0.07 0.07 0.47], action=0.0\n2026-03-24 13:59:24,428 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=0, obs=5, belief=[0.55 0.24 0.07 0.14], action=0.0\n2026-03-24 13:59:24,428 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=0, obs=0, belief=[0.84 0.07 0.04 0.05], action=0.0\n2026-03-24 13:59:24,428 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-24 13:59:24,428 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Hidden Markov Model Baseline/simulation_results.json\n2026-03-24 13:59:24,428 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-24 13:59:24,428 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-24 13:59:24,428 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-24 13:59:24,428 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-24 13:59:24,428 - __main__ - INFO - Results summary:\n2026-03-24 13:59:24,428 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-24 13:59:24,428 - __main__ - INFO -   Success: True\n2026-03-24 13:59:24,428 - __main__ - INFO -   Output: output/pymdp_simulations/Hidden Markov Model Baseline\n",
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-04-10 10:25:27,186 - __main__ - INFO - Running pymdp 1.0.0 rollout for Hidden Markov Model Baseline\n2026-04-10 10:25:27,186 - __main__ - INFO - Output directory: output/pymdp_simulations/Hidden Markov Model Baseline\n2026-04-10 10:25:27,186 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-04-10 10:25:27,187 - src.execute.pymdp.simple_simulation - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-04-10 10:25:27,187 - src.execute.pymdp.simple_simulation - INFO - Dimensions: No=6, Ns=4, Nu=1 | T=15, batch=1, policy_len=1\nINFO:2026-04-10 10:25:27,192:jax._src.xla_bridge:834: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-10 10:25:27,192 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-10 10:25:27,351 - src.execute.pymdp.simple_simulation - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-04-10 10:25:27,988 - src.execute.pymdp.simple_simulation - INFO - t=00 obs=2 belief=[0.1, 0.1, 0.7, 0.1] action=0 next_state=0\n2026-04-10 10:25:28,054 - src.execute.pymdp.simple_simulation - INFO - t=01 obs=0 belief=[0.571, 0.117, 0.235, 0.077] action=0 next_state=2\n2026-04-10 10:25:28,121 - src.execute.pymdp.simple_simulation - INFO - t=02 obs=4 belief=[0.212, 0.093, 0.431, 0.265] action=0 next_state=2\n2026-04-10 10:25:28,188 - src.execute.pymdp.simple_simulation - INFO - t=03 obs=4 belief=[0.083, 0.073, 0.502, 0.341] action=0 next_state=2\n2026-04-10 10:25:28,254 - src.execute.pymdp.simple_simulation - INFO - t=04 obs=5 belief=[0.295, 0.382, 0.19, 0.133] action=0 next_state=2\n2026-04-10 10:25:28,320 - src.execute.pymdp.simple_simulation - INFO - t=05 obs=0 belief=[0.729, 0.131, 0.078, 0.063] action=0 next_state=2\n2026-04-10 10:25:28,388 - src.execute.pymdp.simple_simulation - INFO - t=06 obs=0 belief=[0.89, 0.044, 0.034, 0.031] action=0 next_state=2\n2026-04-10 10:25:28,453 - src.execute.pymdp.simple_simulation - INFO - t=07 obs=2 belief=[0.368, 0.075, 0.489, 0.067] action=0 next_state=2\n2026-04-10 10:25:28,520 - src.execute.pymdp.simple_simulation - INFO - t=08 obs=2 belief=[0.103, 0.062, 0.791, 0.043] action=0 next_state=1\n2026-04-10 10:25:28,587 - src.execute.pymdp.simple_simulation - INFO - t=09 obs=1 belief=[0.07, 0.659, 0.217, 0.053] action=0 next_state=0\n2026-04-10 10:25:28,654 - src.execute.pymdp.simple_simulation - INFO - t=10 obs=0 belief=[0.537, 0.279, 0.115, 0.068] action=0 next_state=0\n2026-04-10 10:25:28,720 - src.execute.pymdp.simple_simulation - INFO - t=11 obs=3 belief=[0.234, 0.155, 0.091, 0.52] action=0 next_state=0\n2026-04-10 10:25:28,787 - src.execute.pymdp.simple_simulation - INFO - t=12 obs=0 belief=[0.689, 0.083, 0.081, 0.147] action=0 next_state=3\n2026-04-10 10:25:28,854 - src.execute.pymdp.simple_simulation - INFO - t=13 obs=5 belief=[0.682, 0.209, 0.052, 0.058] action=0 next_state=3\n2026-04-10 10:25:28,921 - src.execute.pymdp.simple_simulation - INFO - t=14 obs=3 belief=[0.287, 0.13, 0.074, 0.509] action=0 next_state=3\n2026-04-10 10:25:28,922 - src.execute.pymdp.simple_simulation - INFO - Saved simulation results to output/pymdp_simulations/Hidden Markov Model Baseline/simulation_results.json\n2026-04-10 10:25:28,922 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-04-10 10:25:28,922 - __main__ - INFO - Simulation completed successfully\n2026-04-10 10:25:28,922 - __main__ - INFO -   framework:    PyMDP\n2026-04-10 10:25:28,922 - __main__ - INFO -   pymdp ver:    1.0.0\n2026-04-10 10:25:28,922 - __main__ - INFO -   backend:      jax\n2026-04-10 10:25:28,922 - __main__ - INFO -   num_timesteps:15\n",
     "beliefs": [
       [
-        0.6999999999999997,
-        0.10000000000000013,
-        0.10000000000000013,
-        0.10000000000000013
+        0.09999999403953552,
+        0.09999999403953552,
+        0.699999988079071,
+        0.09999999403953552
       ],
       [
-        0.2653061224489795,
-        0.08673469387755113,
-        0.5714285714285714,
-        0.07653061224489807
+        0.5714285969734192,
+        0.11734694242477417,
+        0.23469388484954834,
+        0.07653061300516129
       ],
       [
-        0.09988202909948886,
-        0.08061344868265835,
-        0.6063704286276049,
-        0.21313409359024793
+        0.2119140475988388,
+        0.0927734524011612,
+        0.4306640923023224,
+        0.2646484076976776
       ],
       [
-        0.07141602865772288,
-        0.09333075788438583,
-        0.18955889583479668,
-        0.6456943176230946
+        0.0834379568696022,
+        0.0729992464184761,
+        0.5022061467170715,
+        0.34135663509368896
       ],
       [
-        0.04688839179444504,
-        0.05742632009411118,
-        0.3405105906669334,
-        0.5551746974445103
+        0.29536300897598267,
+        0.3818827271461487,
+        0.18956275284290314,
+        0.13319149613380432
       ],
       [
-        0.043366766488325735,
-        0.05703132888383329,
-        0.7718070516362889,
-        0.127794852991552
+        0.7286148071289062,
+        0.1306968629360199,
+        0.07813612371683121,
+        0.06255219131708145
       ],
       [
-        0.04217903984908242,
-        0.07075562451992796,
-        0.6676388065784786,
-        0.219426529052511
+        0.8904026746749878,
+        0.044099245220422745,
+        0.03441222757101059,
+        0.031085893511772156
       ],
       [
-        0.05548800273537983,
-        0.09264453195237173,
-        0.20181825969925737,
-        0.6500492056129911
+        0.36834073066711426,
+        0.07544086873531342,
+        0.48911598324775696,
+        0.06710246205329895
       ],
       [
-        0.27665816829238027,
-        0.36481942868234635,
-        0.1379806208663641,
-        0.22054178215890927
+        0.10329627245664597,
+        0.06248405948281288,
+        0.7912441492080688,
+        0.04297555610537529
       ],
       [
-        0.7172520225508936,
-        0.12815625582720702,
-        0.07359273503700263,
-        0.08099898658489682
+        0.07043462246656418,
+        0.6593518257141113,
+        0.21738573908805847,
+        0.05282790958881378
       ],
       [
-        0.8877004450405706,
-        0.04405746065602968,
-        0.0346467119169637,
-        0.03359538238643607
+        0.5372487306594849,
+        0.2791106700897217,
+        0.11544007062911987,
+        0.0682004764676094
       ],
       [
-        0.9233942744275943,
-        0.027086465471053475,
-        0.02516469974885967,
-        0.02435456035249254
+        0.23404017090797424,
+        0.1546105444431305,
+        0.09117806702852249,
+        0.5201712250709534
       ],
       [
-        0.39092150051525,
-        0.07098854072455227,
-        0.06874681891186647,
-        0.4693431398483312
+        0.6890227198600769,
+        0.08265320211648941,
+        0.08090174943208694,
+        0.14742235839366913
       ],
       [
-        0.5457494695478329,
-        0.24382384950622107,
-        0.07394091771532108,
-        0.1364857632306249
+        0.6815329194068909,
+        0.20931574702262878,
+        0.05150291323661804,
+        0.05764840915799141
       ],
       [
-        0.8393832229950449,
-        0.07116686884660599,
-        0.042252957014095045,
-        0.04719695114425415
+        0.2870476543903351,
+        0.130144864320755,
+        0.07417955994606018,
+        0.5086278915405273
       ]
     ],
     "num_timesteps": 15
   },
   "execution_metadata": {
-    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 221,
-    "stderr_length": 4763,
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 4080,
     "output_directory": "output/12_execute_output/hmm_baseline/pymdp"
   },
   "collected_outputs": {

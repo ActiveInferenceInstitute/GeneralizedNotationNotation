@@ -6,78 +6,13 @@ Prompt:
 
 Response:
 
-```python
-import random
-from typing import List, Dict
+You can use the following code to generate a GNN representation of the two-state bistable POMDP:
 
-
-def gnn_model(
-    num_hidden_states: int = 1024,
-    num_actions: int = 3687956,
-    num_timesteps=1000,
-    num_layers=1,
-    num_hidden_layers=1,
-):
-    """GNN representation of a minimal 2x2x2 POMDP.
-
-    Args:
-        num_hidden_states (int): Number of hidden states in the model.
-        num_actions (int): Number of actions per state.
-        num_timesteps (int): Number of timesteps to iterate through the model for each action.
-        num_layers (int): Number of layers in the model, default is 1.
-
-    Returns:
-        A dictionary representing the GNN representation of the POMDP.
-    """
-    # Initialize the hidden state and actions
-    hidden = {}
-    
-    # Initialize the transition matrix
-    transition = {}
-    for i in range(num_hidden_states):
-        for j in range(num_actions):
-            if (i == 0) or (j == 0):
-                continue
-            
-            # Initialize the action vector
-            action = {
-                "left": [],
-                "right": []
-            }
-
-            # Initialize the policy vector
-            policy = {}
-            
-    # Initialize the hidden state and actions
-    hidden.update({
-        "left": {"state": [i, j], "action": ["push", "push"]},
-        "right": {"state": [j, i]},
-        "actions": []
-    })
-
-    # Initialize the transition matrix
-    transition = {}
-    
-    for i in range(num_hidden_states):
-        for j in range(num_actions):
-            if (i == 0) or (j == 0):
-                continue
-            
-            # Initialize the action vector
-            action["left"].append("push")
-            
-    # Initialize the policy vector
-    policy = {}
-    
-    for i in range(num_hidden_states):
-        for j in range(num_actions):
-            if (i == 0) or (j == 0):
-                continue
-            
-            # Initialize the policy vector
-            action["left"].append("push")
-            
-    # Initialize the hidden state and actions
-    hidden.update({
-        "left": {"state": [i, j], "action": ["push", "push"]},
-        "right": {"state": [
+1. Create an instance of the `GNN` class with the required parameters and annotations.
+2. Use the `infer_states()` method to infer the actions for each state, which is then used in the `inference_actions()`, `inference_probabilities()`, etc.
+3. Use the `update_state(observation)` method to update the inferred states based on the observed observations and action probabilities.
+4. Use the `infer_states()` method again for each state, which is then used in the inference of actions.
+5. Use the `inference_probabilities()`, `inference_actions()`, etc., to compute the expected free energy per state based on the observed observations and action probabilities.
+6. Use the `update_state()` method again for each state, which is then used in the inference of actions.
+7. Use the `infer_states()` method again for each state, which is then used in the inference of actions.
+8. Use the `inference_probabilities()`, `inference_actions()`, etc., to compute the expected free energy per action based on the observed observations and action probabilities.

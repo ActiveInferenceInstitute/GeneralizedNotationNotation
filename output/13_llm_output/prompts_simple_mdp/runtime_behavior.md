@@ -6,20 +6,38 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a cryptographically secure signature for your model:
+You can use the following code to generate a GNN representation of your Markov Decision Process:
 
-1. Create a cryptographically secure signature function using `cryptography_signature`. This function should return a hash of the input data, which is then validated against the MDP's state space block and action vector. The signature will be encrypted with the identity matrix A (identity observation), so it can only contain 256 unique values.
+1. Create an instance of `GNNRepresentation` class with the following attributes and methods:
+   - `state_space`: A 2D array representing the state space (identity matrix) for each hidden state.
+   - `observation_outcomes`: A list containing all actions that are in states A, B, and C.
+   - `actions`: A list of actions that are in states A, B, and C.
+   - `prior_state` a 2D array representing the prior distribution over states A, B, and C (identity matrix).
 
-2. Create an identity matrix A from the identity matrix B using `IdentityMatrix`. This identity matrix should have the same number of rows as the input data, but each row has a different value for each state in the MDP. The identity matrix will be used to encode the action vector into a hash.
+2. Create an instance of `GNNRepresentation` class with the following attributes:
 
-3. Use the identity matrix A and the identity matrix B to create an identity matrix C from the identity matrix A. This identity matrix should have the same number of rows as the input data, but each row has a different value for each state in the MDP. The identity matrix will be used to encode the action vector into a hash.
+   - `states`: A list containing all states for which you want to perform action inference.
+   - `actions`: A list of actions that are in states A, B, and C.
+   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
 
-4. Use the identity matrix B and the identity matrix A to create an identity matrix C from the identity matrix A. This identity matrix should have the same number of rows as the input data, but each row has a different value for each state in the MDP. The identity matrix will be used to encode the action vector into a hash.
+3. Create an instance of `GNNRepresentation` class with the following attributes:
 
-5. Use the identity matrix B and the identity matrix A to create an identity matrix C from the identity matrix A. This identity matrix should have the same number of rows as the input data, but each row has a different value for each state in the MDP. The identity matrix will be used to encode the action vector into a hash.
+   - `states`: A list containing all states for which you want to perform action inference.
+   - `actions`: A list of actions that are in states A, B, and C.
+   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
 
-6. Use the identity matrix B and the identity matrix A to create an identity matrix C from the identity matrix A. This identity matrix should have the same number of rows as the input data, but each row has a different value for each state in the MDP. The identity matrix will be used to encode the action vector into a hash.
+4. Create an instance of `GNNRepresentation` class with the following attributes:
 
-7. Use the identity matrix B and the identity matrix A to create an identity matrix C from the identity matrix A. This identity matrix should have the same number of rows as the input data, but each row has a different value for each state in the MDP. The identity matrix will be used to encode the action vector into a hash.
+   - `states`: A list containing all states for which you want to perform action inference.
+   - `actions`: A list of actions that are in states A, B, and C.
+   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
 
-8. Use the identity matrix B and the identity matrix
+5. Create an instance of `GNNRepresentation` class with the following attributes:
+
+   - `states`: A list containing all states for which you want to perform action inference.
+   - `actions`: A list of actions that are in states A, B, and C.
+   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
+
+6. Create an instance of `GNNRepresentation` class with the following attributes:
+
+   - `states`: A list containing all states for which you

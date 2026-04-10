@@ -106,7 +106,7 @@ _FRAMEWORK_IMPORT_CHECK = {
     "numpyro": ("numpyro", "uv sync --extra probabilistic-programming"),
     "pytorch": ("torch", "uv sync --extra ml-ai"),
     "discopy": ("discopy", "uv sync --extra graphs"),
-    "bnlearn": ("bnlearn", "uv sync --extra inference"),
+    "bnlearn": ("bnlearn", "uv sync"),
 }
 
 

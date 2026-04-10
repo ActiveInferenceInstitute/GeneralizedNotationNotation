@@ -11,7 +11,7 @@ How to run:
   # Default: ``uv sync`` core dependencies (includes JAX, NumPyro, PyTorch, DisCoPy for step 12)
   python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
 
-  # Skip JAX self-test during setup (still installs core, which includes JAX)
+  # Skip post-install JAX/Optax/Flax/pymdp functional self-test (core deps still installed)
   python src/1_setup.py --setup-core-only --target-dir input/gnn_files --output-dir output --verbose
   
   # Optional groups (LLM client libraries are core deps since 1.3.x)
@@ -134,7 +134,7 @@ run_script = create_standardized_pipeline_script(
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
         "dev": {"type": bool, "help": "Install development dependencies (uv sync --extra dev)"},
         "install_all_extras": {"type": bool, "help": "Install all optional groups (uv sync --all-extras)"},
-        "setup_core_only": {"type": bool, "help": "Core dependencies only; skip execution-frameworks (JAX stack)"},
+        "setup_core_only": {"type": bool, "help": "Skip post-install JAX/Optax/Flax/pymdp functional self-test (deps still installed)"},
         "install_optional": {"type": bool, "help": "Install optional dependencies"},
         "optional_groups": {"type": str, "help": "Comma-separated list of optional groups (jax,pymdp,visualization,audio,llm,ml)"}
     }

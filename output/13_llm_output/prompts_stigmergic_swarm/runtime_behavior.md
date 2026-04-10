@@ -10,66 +10,33 @@ Response:
 import numpy as np
 from scipy import stats
 
-# Initialize the state space block
-state_space = StigmergicSwarmActiveInferenceStateSpace(
-    num_agents=3, grid_size=(9*num_obs+1), num_actions=4)
+# Define the GNN model annotations
+model_annotations = {
+    'GNNVersion': 1,
+    'Flags': ['v', 'a'],
+    'ModelAnnotationType': ['LikelihoodMatrix', 'TransitionVector'],
+    'StateSpaceBlock': [
+        {'type': np.ndarray(shape=[4]),
+            'state': np.array([
+                (0.7, 0.7, 0.7, 0.7),
+                (0.15, 0.15, 0.15, 0.15)
+            ]
+        ),
+    ],
+}
 
-def agent_action():
-    """Agent actions are computed based on their positions."""
 
-    # Agent 1's action is at (0.7, 0.7).
+def gnn_model(state):
+
+    # Define the GNN model annotations
+    model_annotations = {
+        'GNNVersion': 1,
+        'Flags': ['v', 'a'],
+        'ModelAnnotationType': ['LikelihoodMatrix', 'TransitionVector']
+    }
+
     return np.array([
-        (
-            (
-                (
-                    (
-                        (
-                            (
-                                (
-                                    (
-                                        (
-                                            (
-                                                (
-                                                    (
-                                                        (
-                                                      (
-                                                                    (
-                                                                                     (
-                                               (
-                                                  (
-                                                        (
-                                                      (
-                                                   (
-                                       (
-                                           (
-                                              (
-                                     (
-                                          (
-                                      (
-                                         )
-    """
-```python
-  def agent_action():
-    """Agent actions are computed based on their positions."""
-
-    # Agent 1's action is at (0.7, 0.7).
-    return np.array([
-        (
-            (
-                (
-                    (
-                                        (
-                                            (
-                                                (
-                                                    (
-                                                      (
-                                                                    (
-                                                                                     (
-                                               (
-                                                        (
-                                                   (
-                                       (
-                                     (
-                                          (
-                                         )
+        (0.7, 0.7, 0.7, 0.7),
+        (0.15, 0.15, 0.15, 0.15)
+    ]
 ```

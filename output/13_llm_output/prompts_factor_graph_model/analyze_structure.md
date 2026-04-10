@@ -1,30 +1,28 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are some structural analysis of the GNN specification:
+Based on the information provided, here are the structural analysis of the GNN model:
 
-1. **Graph Structure**: The graph consists of 3 variables (A_vis, A_prop, B_pos) and 2 types of nodes (D_vis, D_vel). Each type has a specific number of connections to other types. There are also 6 connected components in the graph structure:
-   - Visual modality
-   - Proprioceptive modality
-   - Visual preferences
-   - Motion-dependent preference
-   - Motion-independent preference
-   - Motion dependence
+1. **Graph Structure**: The graph is represented as a hierarchical structure with variables and their types (represented by nodes). Each variable has two types:
+   - **Type**: A type represents an action-independent probability distribution over the observation space.
+   - **Value**: A value represents a conditional probability of observing a particular observation, which can be either positive or negative depending on whether it is comfortable or uncomfortable.
 
-2. **Variable Analysis**: Variables have a specific number of connections and dependencies, which can be categorized into different types (e.g., directed edges). There are also 6 connected components in the graph structure:
-   - Visual modality
-   - Motion-dependent preference
-   - Motion-independent preference
-   - Motion dependence
+2. **Variable Analysis**: The variable structure consists of two types:
+   - **Type**: A type represents an action-independent probability distribution over the observation space (represented by nodes).
+   - **Value**: A value represents a conditional probability of observing a particular observation, which can be either positive or negative depending on whether it is comfortable or uncomfortable.
 
-3. **Mathematical Structure**: The graph topology is hierarchical with each type having a specific number of connections to other types, and there are also 2 types of nodes (visual modalities vs. motion-dependent preferences). There are also symmetry or special properties in the structure that can be assessed. For example:
-   - There are no "holes" in the graph structure for visual modality variables;
-   - There is a specific number of connections between visual modality and motion-dependent preference variables, which indicates they have different types of dependencies (e.g., direction dependence vs. type dependent).
-   - There are also 2 connected components with different types of nodes (visual modalities vs. motion-independent preferences), indicating that there are different types of dependency relationships in the graph structure.
+3. **Mathematical Structure**: The graph topology consists of two types:
+   - **Type**: A type represents an action-independent probability distribution over the observation space (represented by nodes).
+   - **Value**: A value represents a conditional probability of observing a particular observation, which can be either positive or negative depending on whether it is comfortable or uncomfortable.
 
-4. **Complexity Assessment**: The complexity assessment can be done by analyzing the number and type of connections between variables, as well as their dependencies and interactions. This can help identify specific patterns or structures within the graph. For example:
-   - There is a specific number of connected components for visual modality variables;
-   - There are 2 types of nodes (visual modalities vs. motion-dependent preferences) with different types of connections between them, indicating they have different types of dependencies and interactions.
-
-5. **Design Patterns**: The structure can be used to identify potential design patterns or templates that could improve the performance of the model. For example:
-   - There is a specific number of connected components for visual modality variables;
-   - There are 2 types of nodes (visual modalities vs. motion-dependent preferences) with different types of connections between them, indicating they have different types
+4. **Complexity Assessment**: The graph structure reflects the domain being modeled:
+   - **Computational complexity indicators**: There are two types of graphs (hierarchical and network) with different computational complexities.
+   - **Model scalability considerations**: The graph topology can be analyzed using various algorithms, such as:
+    - **Graph traversal**: This algorithm is used to traverse the graph structure in a recursive manner.
+    - **Information retrieval**: This algorithm uses information retrieval techniques (e.g., dynamic programming) to retrieve the type of variable based on its value.
+    - **Network analysis**: This algorithm analyzes network structures using various algorithms, such as:
+      - **Graph traversal**: This algorithm is used to traverse the graph structure in a recursive manner.
+      - **Information retrieval**: This algorithm uses information retrieval techniques (e.g., dynamic programming) to retrieve the type of variable based on its value.
+    - **Network analysis**: This algorithm analyzes network structures using various algorithms, such as:
+      - **Graph traversal**: This algorithm is used to traverse the graph structure in a recursive manner.
+      - **Information retrieval**: This algorithm uses information retrieval techniques (e.g., dynamic programming) to retrieve the type of variable based on its value.
+    - **Network analysis**: This algorithm analyzes network structures using various algorithms

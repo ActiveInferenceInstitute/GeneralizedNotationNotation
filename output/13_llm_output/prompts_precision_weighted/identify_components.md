@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already done a good job of summarizing the key concepts in the document:
+You've already covered the key concepts:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

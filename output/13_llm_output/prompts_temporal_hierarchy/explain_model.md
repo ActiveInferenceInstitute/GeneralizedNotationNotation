@@ -2,17 +2,18 @@
 
 You've already covered the key points:
 
-1. **Model Purpose**: This is a generative model that represents a hierarchical active inference agent with different temporal scales (level 0 to level 2). It has three levels of complexity and four states/actions, each representing a different type of action or policy.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) representation of a hierarchical active inference agent with three temporal scales and four states. It's based on the Friston et al. framework, which provides a mathematical foundation for understanding how these models work.
 
 2. **Core Components**:
-   - **FIRST_LEVEL** (fast): A set of actions for the first level of the hierarchy that are based on fast sensorimotor inputs from Level 0 to Level 1. These actions represent immediate reflexive responses and can be updated using Friston et al.'s Active Inference framework.
-   - **SECOND_LEVEL** (medium): A set of actions for the second level of the hierarchy, which are based on fast tactical input from Level 2 to Level 3. These actions represent long-term objective management and can be updated using Friston's Active Inference framework.
-   - **THIRD_LEVEL** (slow): A set of actions for the third level of the hierarchy, which are based on slow strategic input from Level 1 to Level 2. These actions represent long-term objectives and can be updated using Friston's Active Inference framework.
+   - **Hidden States**: These are represented by matrices in the model (A0, B0, C0). They represent the beliefs of each level and can be updated based on observations made at lower levels.
+   - **Observations**: These are represented as vectors in the model (D0, D1) that capture actions/controls at different states.
 
-3. **Model Dynamics**: The model is composed of three layers:
-   - **FIRST_LEVEL** (fast): A set of actions for the first level of the hierarchy that are based on fast sensorimotor inputs from Level 0 to Level 1, which represent immediate reflexive responses and can be updated using Friston's Active Inference framework.
-   - **SECOND_LEVEL** (medium): A set of actions for the second level of the hierarchy, which are based on fast tactical input from Level 2 to Level 3, which represent long-term objectives and can be updated using Friston's Active Inference framework.
-   - **THIRD_LEVEL** (slow): A set of actions for the third level of the hierarchy, which are based on slow strategic input from Level 1 to Level 2, which represent long-term objectives and can be updated using Friston's Active Inference framework.
+3. **Key Relationships**:
+   - **Action Updates**: The rate at which beliefs change reflects how well the agent learns from new data and updates its knowledge based on past observations.
+   - **Observation Updates**: The rate at which beliefs change reflects how well the agent learns from new data and updates its knowledge based on past observations, but also captures changes in belief states across different levels of the hierarchy.
 
-4. **Active Inference Context**: The model is composed of three layers:
-   - **FIRST_LEVEL** (fast): A set of actions for the first level of the hierarchy that are based on fast sensorimotor input from Level 0 to Level 1, which represent immediate reflexive responses
+4. **Model Dynamics**: This model implements Active Inference principles by updating beliefs based on predictions made at lower levels (top-down flow), actions taken at higher levels (bottom-up flow) and observing new data from lower levels (bottom-ups). It also captures changes in belief states across different levels of the hierarchy, allowing for more accurate predictions.
+
+5. **Active Inference Context**: This model uses a hierarchical structure to learn how to update beliefs based on observations made at higher levels (top-down flow), actions taken at lower levels (bottom-up flow) and observing new data from lower levels (bottom-ups). It also captures changes in belief states across different levels of the hierarchy, allowing for more accurate predictions.
+
+Please provide clear explanations that cover all key points you've mentioned.

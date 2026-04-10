@@ -1,9 +1,9 @@
 # Audio Processing Summary
 
-Generated on: 2026-03-24T14:11:35.159034
+Generated on: 2026-04-10T10:34:58.334121
 
 ## Overview
-- **Files Processed**: 8
+- **Files Processed**: 9
 - **Success**: True
 - **Errors**: 0
 
@@ -48,6 +48,14 @@ Generated on: 2026-03-24T14:11:35.159034
   - tonal: hmm_baseline_tonal.wav
   - rhythmic: hmm_baseline_rhythmic.wav
   - ambient: hmm_baseline_ambient.wav
+
+### bnlearn_causal_model.md
+- **Variables**: 31
+- **Connections**: 0
+- **Audio Files**: 3
+  - tonal: bnlearn_causal_model_tonal.wav
+  - rhythmic: bnlearn_causal_model_rhythmic.wav
+  - ambient: bnlearn_causal_model_ambient.wav
 
 ### two_state_bistable.md
 - **Variables**: 69

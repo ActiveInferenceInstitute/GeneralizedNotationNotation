@@ -1,16 +1,55 @@
 # EXPLAIN_MODEL
 
-I'm ready to help with your GNN example. Please provide the code snippet for your GNN implementation and explain what each component represents:
+Here's a concise overview of the GNN specification:
 
-1. **Model Purpose**: This is a description of what you're trying to do with this model. It provides context about what you're trying to achieve, such as "Representing attentional modulation via sensory precision" or "Implementing Active Inference principles."
+**GNN Section:**
+ActInfPOMDP
 
-2. **Core Components**:
-   - **Hidden states (s_f0, s_f1, etc.)**: These represent the hidden state distributions of your agent. They capture what happens when you're not actively engaged in a particular action. For example, if you're not actively engaging, there might be no sensory input to detect or control.
-   - **Observations (o_m0, o_m1, etc.)**: These represent the observations that are available to your agent at different times and places. They capture what happens when you're in a particular state. For example, if you're in a certain action space, there might be no sensory input to detect or control.
-   - **Actions/Controls (u_c0, π_c0, etc.)**: These represent the actions available to your agent at different times and places. They capture what happens when you are actively engaged in a particular action. For example, if you're in a certain state space, there might be no sensory input to detect or control.
+```python
+def ActInfPOMDP(
+    A=LikelihoodMatrix,
+    B=TransitionMatrix,
+    C=LogPreferenceVector,
+    D=PriorOverHiddenStates,
+    E=Habit,
+    s=[],
+    o=[],
+    π={},
+    G={
+      (0.9, 0.05, 0.05),
+      (0.05, 0.9, 0.05)
+    },
+    F={(1.0, 0.0, 1.0)}
+):
 
-3. **Model Dynamics**: This is where you can learn new beliefs about the world based on your observations and actions. It provides information about how your agent behaves over time based on its current state and available actions. For example, if you're in a certain action space, there might be no sensory input to detect or control.
+    # Initialize the model with initial parameters and state space matrices
+    A = LikelihoodMatrix
+    
+    # Initialize the action distributions for each hidden state
+    B = TransitionMatrix
+    
+    # Initialize the policy distributions over all states
+    C = LogPreferenceVector
+    
+    # Initialize the habit distribution over actions
+    G={
+      (0.1, 0.1, 1.0)
+    }
 
-4. **Active Inference Context**: This is where you can learn new beliefs about the world based on your observations and actions. It provides information about how your agent behaves over time based on its current state and available actions. For example, if you're in a certain action space, there might be no sensory input to detect or control.
+    # Initialize the Bayesian inference parameters
+    D={}
+    E=Habit
+    
+    # Initialize the action probabilities for each hidden state
+    π={}
+    F={}
+```
+**Core Components:**
 
-5. **Practical Implications**: This is where you can learn new beliefs about the world based on your observations and actions. It provides information about how your agent behaves over time based on its current state and available actions. For example, if you're in a certain action space, there might be no sensory input to detect or control.
+1. **ActInfPOMDP**: A probabilistic graphical model representing an active inference agent with explicit sensory and policy precision biases, as well as a set of hidden states (s_f0, s_f1) to represent the observed actions/controls over all states. The input parameters are initialized from initializations in the `ActInfPOMDP` module.
+
+2. **GNN**: A generalized Notation Notation (GNN) specification for GNN models that can implement Active Inference principles, including:
+   - **Probability distributions**: A set of probability distributions over actions/controls to represent all possible actions and control strategies available in the agent's state space. The input parameters are initialized from initializations in `ActInfPOMDP`.
+   - **Bayesian inference**: A set of Bayesian inference models that can be used to update beliefs based on observed data, including:
+      - **Probabilities** (probabilities over actions/controls): A set of probabilities representing the likelihood distributions for each action or control strategy. The input parameters are initialized from initializations in `ActInfPOMDP`.
+   - **Action probability**: A set of actions that can be used to update beliefs based on

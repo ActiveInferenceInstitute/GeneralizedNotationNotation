@@ -1,11 +1,11 @@
 {
-  "processed_files": 8,
+  "processed_files": 9,
   "success": true,
   "errors": [],
   "system_graph_stats": {
-    "nodes": 40,
-    "edges": 85,
-    "cycles": 79,
+    "nodes": 42,
+    "edges": 88,
+    "cycles": 82,
     "isolated_nodes": 2,
     "components": 3
   },

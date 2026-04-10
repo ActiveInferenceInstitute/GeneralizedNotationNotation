@@ -1,12 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-You've covered the key concepts in the document:
+Here is a systematic breakdown of the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-
+   - What each state means in terms of belief updating
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -15,8 +15,7 @@ You've covered the key concepts in the document:
 3. **Action/Control Variables**:
    - Available actions and their effects
    - Control policies and decision variables
-   - Action space properties
-
+   - Action space properties (e.g., transition matrix, prior over initial states)
 4. **Model Matrices**:
    - A matrices: Observation models P(o|s)
    - B matrices: Transition dynamics P(s'|s,u)
@@ -27,7 +26,6 @@ You've covered the key concepts in the document:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
-
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components

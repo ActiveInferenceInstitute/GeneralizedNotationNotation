@@ -5,147 +5,147 @@
   "script_path": "output/11_render_output/tmaze_epistemic/pymdp/T-Maze Epistemic Foraging Agent_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.85962,
-  "timestamp": "2026-03-24T13:58:59.525230",
+  "execution_time": 2.719854,
+  "timestamp": "2026-04-10T10:25:55.255829",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
       0,
-      3,
-      0,
-      1,
-      3,
       0,
       3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
       0,
       0,
-      1,
       2,
       2,
       3,
-      0,
-      1
+      3
     ],
     "actions": [
       0,
-      2,
-      0,
-      1,
-      2,
       0,
       2,
-      0,
-      1,
-      1,
-      3,
-      3,
+      2,
+      2,
+      2,
+      2,
+      2,
       2,
       0,
-      1
+      0,
+      2,
+      2,
+      2,
+      2
     ],
     "policy": [],
-    "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-24 13:59:01,061 - __main__ - INFO - A matrix shape: (4, 4)\n2026-03-24 13:59:01,061 - __main__ - INFO - B matrix shape: (4, 4, 4)\n2026-03-24 13:59:01,061 - __main__ - INFO - C vector shape: (4,)\n2026-03-24 13:59:01,061 - __main__ - INFO - D vector shape: (4,)\n2026-03-24 13:59:01,061 - __main__ - INFO - Starting PyMDP simulation for T-Maze Epistemic Foraging Agent\n2026-03-24 13:59:01,062 - __main__ - INFO - Output directory: output/pymdp_simulations/T-Maze Epistemic Foraging Agent\n2026-03-24 13:59:01,062 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-24 13:59:01,062 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (4, 4, 4) to (4, 4, 4)\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(4, 4), B=(4, 4, 4), C=(4,), D=(4,)\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-24 13:59:01,062 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=0, obs=0, belief=[1. 0. 0. 0.], action=0.0\n2026-03-24 13:59:01,063 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=2.0\n2026-03-24 13:59:01,063 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=0, obs=0, belief=[1. 0. 0. 0.], action=0.0\n2026-03-24 13:59:01,063 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=1, obs=1, belief=[0. 1. 0. 0.], action=1.0\n2026-03-24 13:59:01,064 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=2.0\n2026-03-24 13:59:01,064 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=0, obs=0, belief=[1. 0. 0. 0.], action=0.0\n2026-03-24 13:59:01,064 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=2.0\n2026-03-24 13:59:01,065 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=0, obs=0, belief=[1. 0. 0. 0.], action=0.0\n2026-03-24 13:59:01,065 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=0, obs=0, belief=[1. 0. 0. 0.], action=1.0\n2026-03-24 13:59:01,065 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=1, obs=1, belief=[0. 1. 0. 0.], action=1.0\n2026-03-24 13:59:01,065 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=3.0\n2026-03-24 13:59:01,066 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=3.0\n2026-03-24 13:59:01,066 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=2.0\n2026-03-24 13:59:01,066 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=0, obs=0, belief=[1. 0. 0. 0.], action=0.0\n2026-03-24 13:59:01,067 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=1, obs=1, belief=[0. 1. 0. 0.], action=1.0\n2026-03-24 13:59:01,067 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-24 13:59:01,067 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/T-Maze Epistemic Foraging Agent/simulation_results.json\n2026-03-24 13:59:01,067 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-24 13:59:01,067 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-24 13:59:01,067 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-24 13:59:01,067 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-24 13:59:01,067 - __main__ - INFO - Results summary:\n2026-03-24 13:59:01,067 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-24 13:59:01,067 - __main__ - INFO -   Success: True\n2026-03-24 13:59:01,067 - __main__ - INFO -   Output: output/pymdp_simulations/T-Maze Epistemic Foraging Agent\n",
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-04-10 10:25:56,225 - __main__ - INFO - Running pymdp 1.0.0 rollout for T-Maze Epistemic Foraging Agent\n2026-04-10 10:25:56,225 - __main__ - INFO - Output directory: output/pymdp_simulations/T-Maze Epistemic Foraging Agent\n2026-04-10 10:25:56,226 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-04-10 10:25:56,226 - src.execute.pymdp.simple_simulation - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-04-10 10:25:56,226 - src.execute.pymdp.simple_simulation - INFO - Dimensions: No=4, Ns=4, Nu=4 | T=15, batch=1, policy_len=1\nINFO:2026-04-10 10:25:56,232:jax._src.xla_bridge:834: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-10 10:25:56,232 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-10 10:25:56,385 - src.execute.pymdp.simple_simulation - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-04-10 10:25:57,074 - src.execute.pymdp.simple_simulation - INFO - t=00 obs=0 belief=[1.0, 0.0, 0.0, 0.0] action=0 next_state=0\n2026-04-10 10:25:57,125 - src.execute.pymdp.simple_simulation - INFO - t=01 obs=0 belief=[1.0, 0.0, 0.0, 0.0] action=0 next_state=3\n2026-04-10 10:25:57,195 - src.execute.pymdp.simple_simulation - INFO - t=02 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,243 - src.execute.pymdp.simple_simulation - INFO - t=03 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,292 - src.execute.pymdp.simple_simulation - INFO - t=04 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,340 - src.execute.pymdp.simple_simulation - INFO - t=05 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,387 - src.execute.pymdp.simple_simulation - INFO - t=06 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,434 - src.execute.pymdp.simple_simulation - INFO - t=07 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,481 - src.execute.pymdp.simple_simulation - INFO - t=08 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=0\n2026-04-10 10:25:57,528 - src.execute.pymdp.simple_simulation - INFO - t=09 obs=0 belief=[1.0, 0.0, 0.0, 0.0] action=0 next_state=0\n2026-04-10 10:25:57,577 - src.execute.pymdp.simple_simulation - INFO - t=10 obs=0 belief=[1.0, 0.0, 0.0, 0.0] action=0 next_state=2\n2026-04-10 10:25:57,622 - src.execute.pymdp.simple_simulation - INFO - t=11 obs=2 belief=[0.0, 0.0, 1.0, 0.0] action=2 next_state=2\n2026-04-10 10:25:57,669 - src.execute.pymdp.simple_simulation - INFO - t=12 obs=2 belief=[0.0, 0.0, 1.0, 0.0] action=2 next_state=3\n2026-04-10 10:25:57,715 - src.execute.pymdp.simple_simulation - INFO - t=13 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,762 - src.execute.pymdp.simple_simulation - INFO - t=14 obs=3 belief=[0.0, 0.0, 0.0, 1.0] action=2 next_state=3\n2026-04-10 10:25:57,762 - src.execute.pymdp.simple_simulation - INFO - Saved simulation results to output/pymdp_simulations/T-Maze Epistemic Foraging Agent/simulation_results.json\n2026-04-10 10:25:57,762 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-04-10 10:25:57,762 - __main__ - INFO - Simulation completed successfully\n2026-04-10 10:25:57,762 - __main__ - INFO -   framework:    PyMDP\n2026-04-10 10:25:57,762 - __main__ - INFO -   pymdp ver:    1.0.0\n2026-04-10 10:25:57,763 - __main__ - INFO -   backend:      jax\n2026-04-10 10:25:57,763 - __main__ - INFO -   num_timesteps:15\n",
     "beliefs": [
       [
         1.0,
-        9.999999999999931e-33,
-        9.999999999999931e-33,
-        9.999999999999931e-33
-      ],
-      [
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        0.9999999999999998
+        4.930398290046586e-32,
+        4.930398290046586e-32,
+        4.930398290046586e-32
       ],
       [
         1.0,
-        3.500000000000001e-32,
-        3.500000000000001e-32,
-        9.999999999999965e-17
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        2.2204500197172533e-16
       ],
       [
-        9.999999999999965e-17,
-        1.0,
-        9.999999999999965e-17,
-        9.999999999999965e-17
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        1.0
       ],
       [
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        0.9999999999999998
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ],
       [
-        1.0,
-        3.500000000000001e-32,
-        3.500000000000001e-32,
-        9.999999999999965e-17
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ],
       [
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        0.9999999999999998
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ],
       [
-        1.0,
-        3.500000000000001e-32,
-        3.500000000000001e-32,
-        9.999999999999965e-17
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ],
       [
-        1.0,
-        9.999999999999965e-17,
-        9.999999999999965e-17,
-        9.999999999999965e-17
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ],
       [
-        9.999999999999965e-17,
-        1.0,
-        9.999999999999965e-17,
-        9.999999999999965e-17
-      ],
-      [
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        0.9999999999999998,
-        9.999999999999963e-17
-      ],
-      [
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        0.9999999999999998,
-        9.999999999999963e-17
-      ],
-      [
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        9.999999999999963e-17,
-        0.9999999999999998
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ],
       [
         1.0,
-        3.500000000000001e-32,
-        3.500000000000001e-32,
-        9.999999999999965e-17
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        2.2204500197172533e-16
       ],
       [
-        9.999999999999965e-17,
         1.0,
-        9.999999999999965e-17,
-        9.999999999999965e-17
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        2.2204500197172533e-16
+      ],
+      [
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        1.0,
+        2.2204500197172533e-16
+      ],
+      [
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        1.0,
+        2.2204500197172533e-16
+      ],
+      [
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        2.2204500197172533e-16,
+        1.0
+      ],
+      [
+        2.2204500197172533e-16,
+        9.860782474160962e-32,
+        9.860782474160962e-32,
+        1.0
       ]
     ],
     "num_timesteps": 15
   },
   "execution_metadata": {
-    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 224,
-    "stderr_length": 4633,
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 3982,
     "output_directory": "output/12_execute_output/tmaze_epistemic/pymdp"
   },
   "collected_outputs": {

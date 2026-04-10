@@ -1,14 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-You've already provided a comprehensive breakdown of the model structure:
-
-Your list is spot on, but I'll add some minor suggestions to make it more readable and concise:
+You've already provided a comprehensive overview of the GNN specification. Here's a more detailed breakdown:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-
+   - What each state signifies in terms of actions and policy transitions
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations

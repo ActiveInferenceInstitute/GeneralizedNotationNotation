@@ -1,9 +1,9 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key areas of analysis, including:
-1. **Analysis**: Understanding the model's structure, parameters, and behavior.
-2. **Modeling**: Describing the system using a mathematical framework.
-3. **Implementation**: Discussing practical applications, use cases, and potential uses in specific domains or industries.
-4. **Performance expectations**: Evaluating performance against benchmarks, constraints, and requirements for different scenarios.
-5. **Benefits and advantages**: Highlighting key capabilities or features of the model.
-6. **Challenges and considerations**: Identifying limitations, difficulties, and potential issues with implementation, data availability, maintenance, monitoring, etc.
+You've covered the key aspects of the GNN model, including its theoretical foundations, mathematical concepts, practical applications, and potential use cases. However, I'd like to provide a more detailed analysis of the model's performance in real-world scenarios:
+
+1. **Real-World Applications**:
+   - What domains could this model be applied to?
+   - Specific use cases and scenarios
+   - Industry or research applications
+   - Cryptographic signatures go here

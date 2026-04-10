@@ -6,55 +6,28 @@ Prompt:
 
 Response:
 
+Here is the complete code for the GNN model:
 ```python
 import numpy as np
 from scipy import stats
 
-def gnn_model(num_hidden_states: int = 2, num_obs: int = 2, num_timesteps=10, action_selection="no"):
-    """GNN Representation.
+def gnn_model(state, observation):
+    # Initialize state and observation variables
+    s = np.array([state])
 
-    Args:
-        num_hidden_states (int): Number of hidden states in the model.
-        num_obs (int): Number of observed observations per timestep.
-        num_timesteps (int): Number of timesteps to observe during inference.
-        action_selection (str, optional): Whether to use action selection or not. Defaults to "no".
+    # Generate observations from states
+    o = np.array([[observation]])
 
-    Returns:
-        A dictionary containing the following keys and values:
-            - `hidden_states`: List of hidden states in the model.
-            - `observation` (optional): Observation at time t.
-            - `beliefs` (optional): Belief update probabilities for each observation.
-            - `action_selection` (optional): Whether to use action selection or not. Defaults to "no".
-    """
+    # Perform inference
+    F = np.zeros((len(s), len(o)))
+    D = np.zeros((len(s), len(o)) * len(np.arange(len(s))))  # Initialize state and observation variables with uniform prior
+    s_prime = np.array([state])
 
-    # Initialize state space and hidden states
-    state = np.zeros((num_hidden_states, num_obs))
-    hidden_states = np.zeros(state)
-    actions = np.zeros(state)
-    beliefs = np.zeros(state)
-    action_selection = np.ones(state)
+    for t in range(10):
+        # Generate observations from states
+        o_t = np.array([[observation]])
 
-    # Initialize the inference parameters
-    D = stats.normalvariate((num_hidden_states, num_obs), (num_timesteps,))
-    F = stats.normalvariate((num_hidden_states, num_obs))
-    t = 10**(-action_selection["time"])
-    timestep = np.arange(t)
-
-    # Initialize the inference parameters and state space
-    for i in range(num_hidden_states):
-        state[i] = (
-            np.random.normalvariate((state[i], num_timesteps), (timestep**2)) +
-                stats.normalvariate((actions[i]), actions) * timestep ** 2
-        )
-
-    # Initialize the inference parameters
-    for i in range(num_hidden_states):
-        hidden_states[i] = state[:i+1]
-        action_selection[i] = actions[i:]
-
-        beliefs[i] = np.zeros((state, num_obs))
-        timestep += 1
-
-    return {
-        "hidden_states": hidden_states,
-        "observation"
+        # Perform inference
+        F[t] = stats.uniform(-np.inf, np.inf)  # Uniform distribution on the interval [-x^2 + y^2: x+y^2].
+    return F
+```

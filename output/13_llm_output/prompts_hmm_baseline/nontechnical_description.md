@@ -8,25 +8,18 @@ Response:
 
 ```python
 import numpy as np
-from scipy import stats
 
-def hidden_state(x):
-    return x[0] + x[1] * (x[2] - x[3]) / 4.0, x[4], x[5] == 0
-
-def forward(x):
-    return x[:num_hidden_states] + x[num_hidden_states:]
-
-def backward(x):
-    return x[:-num_hidden_states] - x[-1:][:,:], x[:, :, :2]
-
-def state_posterior():
-    return stats.norm(
-        [
-            (
-                np.sum((np.arange(len(s)) == 0) * s[i+1:] + s[i+3:]),
-                np.sum(((x[i:j][:,:], x[:, :, :2]) - x[:num_hidden_states]), x[:, :, :2] > 0,
-                    0)
-            ),
-        )
-    )
+# Define the HMM parameters and state space block
+A = np.array([[0.7, 0.1, 0.1, 0.1],
+                  [0.1, 0.7, 0.2, 0.1],
+                  [0.1, 0.1, 0.6, 0.2]])
+B = np.array([[0.25, 0.25, 0.25, 0.25]]).astype(np.float)
+D = np.array([
+    (0.7, 0.1, 0.1, 0.1),
+    (0.1, 0.7, 0.2, 0.1),
+    (0.1, 0.1, 0.6, 0.2)])
+alpha = np.array([
+    0.95, 0.83, 0.45])
+beta = np.array([
+    0.75, 0.55])
 ```

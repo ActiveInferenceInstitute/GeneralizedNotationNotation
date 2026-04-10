@@ -9,47 +9,42 @@ Response:
 ```python
 import numpy as np
 
-def gnn_model(state, observation):
-    # Initialize state and action variables
-    state = np.array([x for x in state])
-
-    # Initialize observation variable
-    observation = np.array([y for y in observation])
-
-    # Initialize initial belief vector
-    A_μ=np.zeros((2, 1))
-    B_f=np.ones(shape=(2, 1), dtype=[dtype='float64'])
-    C_Σ=np.ones((shape[0], shape[1]), dtype=[dtype='float64'])
-
-    # Initialize action vector
-    A_μ = np.zeros([shape[0]])
-    B_f = np.ones(shape[:2])
-    C_Σ = np.ones([[shape[0]]])
-
-    # Initialize prediction matrix
-    A_μ=np.array([])
-    B_f=np.array([])
-    C_Σ=np.array([])
-
-    # Initial guess for state variable
-    x1, y1 = np.random.normal(mean=[x], stddev=[y], size=(shape[0]))
-    x2, y2 = np.random.normal(mean=[x], stddev=[y], size=(shape[1]))
-
-    # Initialize action vector
-    A_μ=np.array([])
-    B_f=np.ones([shape[:2]])
-    C_Σ=np.ones([[shape[0]]])
-
-    # Update state variable
-    x = np.dot(x,A_μ) + B_f*C_Σ
-
-    # Update observation variable
-    y1 = np.dot((x - A_μ),B_f) + C_Σ
-
-    # Update action vector
-    x2 = np.dot(((y1-A_μ)*x+B_f*(c)+C_Σ*x)/np.sqrt(shape[0]),A_μ, dtype=[dtype='float64'])
-    y2 = np.dot((x - A_μ)*y + C_Σ*x)
-
-    # Update prediction matrix
-    x1=np.dot(((x-C_μ)*(c+B_f*(d)+C_Σ))/shape[0],A_μ, dtype=[dtype='float64'])
-    y2 = np.dot((x - A_μ)*y + C_
+# Define the state space, covariance matrix, and action matrices
+state_space = np.array([[1., 0.], [0., 1.]])
+covariance = np.array([
+    ([[0.0], []]), 
+    ([[0.5]]), 
+    ([[0.0] * [[-0.96724836e-01]])
+])
+action_matrix = np.array([[
+    0., 0.],
+     [[0.5, 0.]],
+    [[0.0, 0.0]],
+     []
+])
+belief_mean = np.array([
+    0.0, 0.0] * state_space[1][2], 
+    [0.96724836e-01]] * state_space[1][2],
+    [[0.5*np.ones((state_space[1][2])] + np.ones(shape=(len(state_space), 2))]
+])
+belief_covariance = np.array([
+    0., 0.], shape=[len(state_space)]) * state_space,
+    [[0.] * len(state_space)]
+]
+action_matrix = np.array([[
+    0., 0.],
+     [0.5*np.ones((shape[1])), []],
+     [[-0.96724836e-01]] * state_space)
+])
+belief_mean = np.array([
+    [[0.] * len(state_space)] + np.ones(len(state_space)), 
+    [np.zeros((shape[1]))],
+     []
+])
+action_covariance = np.array([[
+    0.],
+     [[-0.96724836e-01]]* state_space) * state_space,
+    [[] * len(state_space)] + np.ones([len(state_space)])
+])
+belief_mean[0][0] = 0.5*(np.sum((action_matrix @ action_covariance)**2)/1e-6**3)
+```

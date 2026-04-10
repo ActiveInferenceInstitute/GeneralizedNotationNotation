@@ -6,7 +6,7 @@ YAML workflows for CI, documentation audit, workflow lint, dependency review, Co
 
 | File | Triggers | Jobs / behavior |
 |------|----------|-----------------|
-| [ci.yml](ci.yml) | `push` / `pull_request` → `main`; ignores `**/*.md`, `doc/**`; `workflow_dispatch` | **test**: matrix 3.11–3.13, JUnit XML + artifact + summary; MCP ≥ 131 on 3.12. **lint**: Ruff. **security**: Bandit + JSON artifact (on failure too). |
+| [ci.yml](ci.yml) | `push` / `pull_request` → `main`; ignores `**/*.md`, `doc/**`; `workflow_dispatch` | **test**: matrix 3.11–3.13, Ruff on 3.12, JUnit + artifact + summary, MCP ≥ 131 on 3.12. **security**: Bandit SARIF → code scanning + artifact. |
 | [docs-audit.yml](docs-audit.yml) | `push` / `pull_request` when `*.md`, `doc/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, or `doc/development/docs_audit.py` change; `workflow_dispatch` | `docs_audit.py --strict` |
 | [actionlint.yml](actionlint.yml) | Changes under `.github/workflows/**`; `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
 | [dependency-review.yml](dependency-review.yml) | `pull_request` → `main`; `workflow_dispatch` | High severity + AGPL deny; PR comment summary on failure. Fork PRs may get limited review. |

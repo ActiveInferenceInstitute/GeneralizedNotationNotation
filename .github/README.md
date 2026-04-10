@@ -258,7 +258,7 @@ This directory holds **Dependabot** configuration and **GitHub Actions** workflo
 | [dependabot.yml](dependabot.yml) | Dependabot version updates (pip + GitHub Actions) |
 | [AGENTS.md](AGENTS.md) | Permissions, standards, maintenance checklist |
 | [README.md](README.md) | This hub |
-| [workflows/ci.yml](workflows/ci.yml) | Tests, Ruff, Bandit on application code paths |
+| [workflows/ci.yml](workflows/ci.yml) | Tests (Ruff on 3.12), Bandit SARIF on application code paths |
 | [workflows/docs-audit.yml](workflows/docs-audit.yml) | Strict Markdown / doc structure audit |
 | [workflows/actionlint.yml](workflows/actionlint.yml) | Workflow YAML lint |
 | [workflows/dependency-review.yml](workflows/dependency-review.yml) | PR dependency and license gate |
@@ -278,7 +278,7 @@ Configured in [dependabot.yml](dependabot.yml):
 
 | Workflow | Triggers | What it runs |
 |----------|----------|--------------|
-| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13 — `uv sync --frozen --extra dev`, `pytest` with JUnit artifact + summary; MCP count ≥ 131 on 3.12. **lint**: Ruff. **security**: Bandit + JSON artifact (including on failure). |
+| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13 — Ruff on 3.12, `pytest` + JUnit/summary; MCP ≥ 131 on 3.12. **security**: Bandit SARIF → `upload-sarif` + artifact. |
 | [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, `uv run python doc/development/docs_audit.py --strict` |
 | [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
 | [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |
@@ -318,6 +318,8 @@ uv run pytest -m "not pipeline and not mcp" --tb=short -q
 
 uv run ruff check src/
 uv run bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium
+# Same output as CI security job (SARIF for artifacts / code scanning):
+# uv run bandit -r src -c pyproject.toml --severity-level medium --confidence-level medium -f sarif -o bandit-results.sarif
 ```
 
 Full local suite (broader than default CI marker filter): `uv run pytest src/tests/ -v`. Ollama integration tests may need a local daemon; see [README.md](../README.md) and [pytest.ini](../pytest.ini).

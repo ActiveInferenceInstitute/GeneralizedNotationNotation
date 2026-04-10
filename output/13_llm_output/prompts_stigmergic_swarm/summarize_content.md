@@ -1,21 +1,24 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here is a structured summary of the GNN specification:
 
-**Model Overview**
-This model represents an active inference system that uses a hierarchical representation of agents (agents) and environments (stigmergic signals). The model consists of three main components:
+**Overview**
+This model represents an active inference system that uses a set of agents (agents 1-3) to coordinate through environmental traces and interact with each other in a swarm formation. The key variables are:
 
-1. **GNN Representation**: A hierarchical representation of agents, including hidden states, actions, and observations. This structure allows for the analysis of complex interactions between agents and their environment.
-2. **Key Variables**: Hidden state matrices containing information about agent-agent relationships (e.g., identity, preferences), action vectors representing agent-agent interactions, and control variables describing how agents interact with each other.
-3. **Critical Parameters**: Key hyperparameters that define the behavior of the model:
-   - **Most important matrices** (A, B, C, D) and their roles:
-   - **Generalized Notation Notation (GNN)** represents a hierarchical representation of agents and environments. This structure allows for analysis of complex interactions between agents and their environment.
-4. **Notable Features**:
-   - **Special properties or constraints** that define the behavior of the model, such as unique aspects of this model design:
-    - **Unique characteristics** (e.g., specific actions)
+1. **Model Overview**: This section provides a concise overview of the model, including its structure, key parameters, and critical features.
+2. **Key Variables**: Listing specific matrices (A, B, C, D) that describe the system's behavior. These include:
+   - **Hidden states** (lists with brief descriptions): Describe how agents interact through environmental traces.
+   - **Observations** (lists with brief descriptions): Describe actions and their outcomes for each agent.
+   - **Actions/Controls** (list with brief descriptions)
 
-    **Use Cases**:
+3. **Critical Parameters**: Listing specific hyperparameters that define the system's behavior, including:
+   - **Most important matrices** (A, B, C, D): List describing how agents interact through environmental traces and coordinate in a swarm formation.
+   - **Key parameters** (key variables): List describing which actions are taken by each agent based on their state information.
 
-1. **GNN Representation**: Analyze complex interactions between agents and their environment using GNN representation.
-2. **Key Variables**: Identify key variables that describe agent-agent relationships, action vectors, and control variables to analyze the system's behavior.
-3. **Critical Parameters**: Determine which parameters are most important for analyzing the model design (e.g., hidden state matrices) or specific use cases (e.g., GNN representation).
+4. **Notable Features**: Listing specific features of the model that describe its behavior:
+   - **Special properties or constraints**: List describing how certain aspects of the system behave differently under different conditions, such as when agents interact with each other in a swarm formation.
+   - **Unique aspects** (features) of this model design
+
+5. **Use Cases**: Describe scenarios where this model could be applied to:
+   - **Ant colony foraging**: Describe how agents coordinate and communicate through environmental traces based on their state information.
+   - **Demonstrated coordination**: Describe how the system cooperates with each other in a swarm formation, demonstrating emergent behavior from shared signals and actions.

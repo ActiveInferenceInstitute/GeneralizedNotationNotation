@@ -1,111 +1,126 @@
 {
-  "timestamp": "2026-03-24T14:12:38.298444",
+  "timestamp": "2026-04-10T10:35:30.271999",
   "frameworks": {
     "numpyro": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        8.731484,
-        1.460794,
-        1.363943,
-        1.288917,
-        1.272459,
-        1.555278,
-        1.532855,
-        1.344806
+        0.717682,
+        0.798662,
+        0.817426,
+        0.709139,
+        0.712855,
+        0.718057,
+        0.624404,
+        0.715492
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log",
-        "output/12_execute_output/two_state_bistable/numpyro/execution_logs/Two State Bistable POMDP_numpyro.py_execution.log",
-        "output/12_execute_output/tmaze_epistemic/numpyro/execution_logs/T-Maze Epistemic Foraging Agent_numpyro.py_execution.log",
-        "output/12_execute_output/multi_armed_bandit/numpyro/execution_logs/Multi Armed Bandit Agent_numpyro.py_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/numpyro/execution_logs/Active Inference POMDP Agent_numpyro.py_execution.log",
-        "output/12_execute_output/hmm_baseline/numpyro/execution_logs/Hidden Markov Model Baseline_numpyro.py_execution.log",
+        "output/12_execute_output/markov_chain/numpyro/execution_logs/Simple Markov Chain_numpyro.py_execution.log",
         "output/12_execute_output/deep_planning_horizon/numpyro/execution_logs/Deep Planning Horizon POMDP_numpyro.py_execution.log",
-        "output/12_execute_output/markov_chain/numpyro/execution_logs/Simple Markov Chain_numpyro.py_execution.log"
+        "output/12_execute_output/hmm_baseline/numpyro/execution_logs/Hidden Markov Model Baseline_numpyro.py_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/numpyro/execution_logs/Active Inference POMDP Agent_numpyro.py_execution.log",
+        "output/12_execute_output/multi_armed_bandit/numpyro/execution_logs/Multi Armed Bandit Agent_numpyro.py_execution.log",
+        "output/12_execute_output/tmaze_epistemic/numpyro/execution_logs/T-Maze Epistemic Foraging Agent_numpyro.py_execution.log",
+        "output/12_execute_output/two_state_bistable/numpyro/execution_logs/Two State Bistable POMDP_numpyro.py_execution.log",
+        "output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/numpyro",
-        "output/12_execute_output/two_state_bistable/numpyro",
-        "output/12_execute_output/tmaze_epistemic/numpyro",
-        "output/12_execute_output/multi_armed_bandit/numpyro",
-        "output/12_execute_output/actinf_pomdp_agent/numpyro",
-        "output/12_execute_output/hmm_baseline/numpyro",
+        "output/12_execute_output/markov_chain/numpyro",
         "output/12_execute_output/deep_planning_horizon/numpyro",
-        "output/12_execute_output/markov_chain/numpyro"
+        "output/12_execute_output/hmm_baseline/numpyro",
+        "output/12_execute_output/actinf_pomdp_agent/numpyro",
+        "output/12_execute_output/multi_armed_bandit/numpyro",
+        "output/12_execute_output/tmaze_epistemic/numpyro",
+        "output/12_execute_output/two_state_bistable/numpyro",
+        "output/12_execute_output/simple_mdp/numpyro"
       ],
       "beliefs": [
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
           0.0,
-          1.0,
-          0.0
-        ],
-        [
           0.0,
           1.0,
           0.0
         ],
         [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
           0.0,
           1.0,
           0.0
@@ -129,82 +144,82 @@
         0
       ],
       "observations": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
       ],
       "free_energy": [
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ],
         [
-          1.0986123085021973,
-          1.0986123085021973
+          3.1392064094543457,
+          3.1392064094543457
         ]
       ],
       "num_timesteps": 15,
@@ -215,119 +230,136 @@
         "all_valid": true
       },
       "model_parameters": {},
-      "data_source": "output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json"
+      "data_source": "output/12_execute_output/simple_mdp/numpyro/simulation_data/simulation_results.json"
     },
     "pymdp": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        3.100895,
-        4.361664,
-        1.85962,
-        1.73207,
-        1.876388,
-        1.797278,
-        2.199429,
-        1.876918
+        2.597146,
+        2.647969,
+        3.014956,
+        2.623076,
+        2.641339,
+        2.719854,
+        2.51209,
+        2.598617
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple MDP Agent_pymdp.py_execution.log",
-        "output/12_execute_output/two_state_bistable/pymdp/execution_logs/Two State Bistable POMDP_pymdp.py_execution.log",
-        "output/12_execute_output/tmaze_epistemic/pymdp/execution_logs/T-Maze Epistemic Foraging Agent_pymdp.py_execution.log",
-        "output/12_execute_output/multi_armed_bandit/pymdp/execution_logs/Multi Armed Bandit Agent_pymdp.py_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log",
-        "output/12_execute_output/hmm_baseline/pymdp/execution_logs/Hidden Markov Model Baseline_pymdp.py_execution.log",
+        "output/12_execute_output/markov_chain/pymdp/execution_logs/Simple Markov Chain_pymdp.py_execution.log",
         "output/12_execute_output/deep_planning_horizon/pymdp/execution_logs/Deep Planning Horizon POMDP_pymdp.py_execution.log",
-        "output/12_execute_output/markov_chain/pymdp/execution_logs/Simple Markov Chain_pymdp.py_execution.log"
+        "output/12_execute_output/hmm_baseline/pymdp/execution_logs/Hidden Markov Model Baseline_pymdp.py_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log",
+        "output/12_execute_output/multi_armed_bandit/pymdp/execution_logs/Multi Armed Bandit Agent_pymdp.py_execution.log",
+        "output/12_execute_output/tmaze_epistemic/pymdp/execution_logs/T-Maze Epistemic Foraging Agent_pymdp.py_execution.log",
+        "output/12_execute_output/two_state_bistable/pymdp/execution_logs/Two State Bistable POMDP_pymdp.py_execution.log",
+        "output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple MDP Agent_pymdp.py_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/pymdp",
-        "output/12_execute_output/two_state_bistable/pymdp",
-        "output/12_execute_output/tmaze_epistemic/pymdp",
-        "output/12_execute_output/multi_armed_bandit/pymdp",
-        "output/12_execute_output/actinf_pomdp_agent/pymdp",
-        "output/12_execute_output/hmm_baseline/pymdp",
+        "output/12_execute_output/markov_chain/pymdp",
         "output/12_execute_output/deep_planning_horizon/pymdp",
-        "output/12_execute_output/markov_chain/pymdp"
+        "output/12_execute_output/hmm_baseline/pymdp",
+        "output/12_execute_output/actinf_pomdp_agent/pymdp",
+        "output/12_execute_output/multi_armed_bandit/pymdp",
+        "output/12_execute_output/tmaze_epistemic/pymdp",
+        "output/12_execute_output/two_state_bistable/pymdp",
+        "output/12_execute_output/simple_mdp/pymdp"
       ],
       "beliefs": [
         [
+          2.2204500197172533e-16,
+          2.2204500197172533e-16,
           1.0,
-          5.999999999999991e-17,
-          3.9999999999999824e-17
+          2.2204500197172533e-16
         ],
         [
-          6.999999999999933e-16,
-          1.9999999999999807e-16,
-          0.9999999999999991
-        ],
-        [
-          3.333333333333329e-17,
-          0.9999999999999998,
-          1.9999999999999963e-16
-        ],
-        [
-          7.499999999999981e-17,
+          4.930382068224545e-31,
+          4.930382068224545e-31,
           1.0,
-          7.499999999999981e-17
+          1.9984031383911763e-15
         ],
         [
-          0.9999999999999998,
-          1.333333333333327e-16,
-          9.999999999999963e-17
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
         ],
         [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
+        ],
+        [
+          4.930382068224545e-31,
+          4.930382068224545e-31,
           1.0,
-          2.857142857142847e-17,
-          1.428571428571431e-17
+          1.9984031383911763e-15
         ],
         [
-          6.999999999999933e-16,
-          1.9999999999999807e-16,
-          0.9999999999999991
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
         ],
         [
-          3.333333333333329e-17,
-          0.9999999999999998,
-          1.9999999999999963e-16
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
         ],
         [
-          9.999999999999963e-17,
-          1.333333333333327e-16,
-          0.9999999999999998
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
         ],
         [
-          0.9999999999999991,
-          2.99999999999998e-16,
-          5.999999999999971e-16
-        ],
-        [
-          1.0,
-          2.857142857142867e-17,
-          1.428571428571431e-17
-        ],
-        [
-          1.0,
-          2.857142857142847e-17,
-          1.428571428571431e-17
-        ],
-        [
-          3.4999999999999864e-16,
-          0.9999999999999996,
-          5.0000000000000067e-17
-        ],
-        [
-          0.9999999999999998,
-          1.333333333333327e-16,
-          9.999999999999963e-17
-        ],
-        [
-          1.0,
-          2.857142857142847e-17,
-          1.428571428571431e-17
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
         ]
       ],
       "actions": [
+        1,
+        1,
         0,
         0,
         0,
@@ -336,120 +368,168 @@
         0,
         0,
         0,
-        0,
-        0,
-        0,
+        1,
         0,
         0,
         0,
         0
       ],
       "observations": [
-        0,
         2,
-        1,
-        1,
-        0,
-        0,
         2,
-        1,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
         2,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0
+        3,
+        3,
+        3,
+        3
       ],
       "free_energy": [
         [
-          -0.29679362358960415
+          0.6250829696655273,
+          3.02508282661438,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.20066645127616034
+          0.6250829696655273,
+          3.02508282661438,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.009712200787717729
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.00971220078771795
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.2967936235896037
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.2967936235896039
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.20066645127616034
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.009712200787717729
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.20066645127616123
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.29679362358960304
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.2967936235896039
+          0.6250829696655273,
+          3.02508282661438,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.2967936235896039
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.009712200787717729
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.2967936235896037
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ],
         [
-          -0.2967936235896039
+          3.02508282661438,
+          0.6250829696655273,
+          0.3250829875469208,
+          0.3250829875469208
         ]
       ],
       "num_timesteps": 15,
       "validation": {
         "all_beliefs_valid": true,
         "beliefs_sum_to_one": true,
-        "actions_in_range": true
+        "actions_in_range": true,
+        "pymdp_version_ge_1_0_0": true
       },
       "model_parameters": {
         "A_shape": [
-          3,
-          3
+          4,
+          4
         ],
         "B_shape": [
-          3,
-          3,
-          1
+          4,
+          4,
+          4
         ],
         "C_shape": [
-          3
+          4
         ],
         "D_shape": [
-          3
+          4
         ],
-        "num_states": 3,
-        "num_observations": 3,
-        "num_actions": 1
+        "num_states": 4,
+        "num_observations": 4,
+        "num_actions": 4,
+        "batch_size": 1,
+        "policy_len": 1,
+        "gamma": 16.0,
+        "alpha": 16.0
       },
-      "data_source": "output/12_execute_output/markov_chain/pymdp/simulation_data/simulation_results.json",
+      "data_source": "output/12_execute_output/simple_mdp/pymdp/simulation_data/simulation_results.json",
       "belief_confidence": [
         1.0,
-        0.9999999999999991,
-        0.9999999999999998,
-        1.0,
-        0.9999999999999998,
-        1.0,
-        0.9999999999999991,
-        0.9999999999999998,
-        0.9999999999999998,
-        0.9999999999999991,
         1.0,
         1.0,
-        0.9999999999999996,
-        0.9999999999999998,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
         1.0
       ]
     },
@@ -457,125 +537,140 @@
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        1.033899,
-        0.959859,
-        0.863135,
-        0.824987,
-        0.826156,
-        0.949036,
-        1.048697,
-        0.89458
+        0.486332,
+        0.455138,
+        0.456369,
+        0.457399,
+        0.457856,
+        0.45662,
+        0.533655,
+        0.457858
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/pytorch/execution_logs/Simple MDP Agent_pytorch.py_execution.log",
-        "output/12_execute_output/two_state_bistable/pytorch/execution_logs/Two State Bistable POMDP_pytorch.py_execution.log",
-        "output/12_execute_output/tmaze_epistemic/pytorch/execution_logs/T-Maze Epistemic Foraging Agent_pytorch.py_execution.log",
-        "output/12_execute_output/multi_armed_bandit/pytorch/execution_logs/Multi Armed Bandit Agent_pytorch.py_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/pytorch/execution_logs/Active Inference POMDP Agent_pytorch.py_execution.log",
-        "output/12_execute_output/hmm_baseline/pytorch/execution_logs/Hidden Markov Model Baseline_pytorch.py_execution.log",
+        "output/12_execute_output/markov_chain/pytorch/execution_logs/Simple Markov Chain_pytorch.py_execution.log",
         "output/12_execute_output/deep_planning_horizon/pytorch/execution_logs/Deep Planning Horizon POMDP_pytorch.py_execution.log",
-        "output/12_execute_output/markov_chain/pytorch/execution_logs/Simple Markov Chain_pytorch.py_execution.log"
+        "output/12_execute_output/hmm_baseline/pytorch/execution_logs/Hidden Markov Model Baseline_pytorch.py_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/pytorch/execution_logs/Active Inference POMDP Agent_pytorch.py_execution.log",
+        "output/12_execute_output/multi_armed_bandit/pytorch/execution_logs/Multi Armed Bandit Agent_pytorch.py_execution.log",
+        "output/12_execute_output/tmaze_epistemic/pytorch/execution_logs/T-Maze Epistemic Foraging Agent_pytorch.py_execution.log",
+        "output/12_execute_output/two_state_bistable/pytorch/execution_logs/Two State Bistable POMDP_pytorch.py_execution.log",
+        "output/12_execute_output/simple_mdp/pytorch/execution_logs/Simple MDP Agent_pytorch.py_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/pytorch",
-        "output/12_execute_output/two_state_bistable/pytorch",
-        "output/12_execute_output/tmaze_epistemic/pytorch",
-        "output/12_execute_output/multi_armed_bandit/pytorch",
-        "output/12_execute_output/actinf_pomdp_agent/pytorch",
-        "output/12_execute_output/hmm_baseline/pytorch",
+        "output/12_execute_output/markov_chain/pytorch",
         "output/12_execute_output/deep_planning_horizon/pytorch",
-        "output/12_execute_output/markov_chain/pytorch"
+        "output/12_execute_output/hmm_baseline/pytorch",
+        "output/12_execute_output/actinf_pomdp_agent/pytorch",
+        "output/12_execute_output/multi_armed_bandit/pytorch",
+        "output/12_execute_output/tmaze_epistemic/pytorch",
+        "output/12_execute_output/two_state_bistable/pytorch",
+        "output/12_execute_output/simple_mdp/pytorch"
       ],
       "beliefs": [
         [
           0.0,
           0.0,
-          0.9999999999999994
+          0.9999999999999996,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ]
       ],
       "actions": [
-        1,
-        1,
-        0,
-        1,
-        1,
-        1,
         0,
         1,
         1,
         0,
         1,
         0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        1,
         1,
         1,
         1
@@ -599,64 +694,64 @@
       ],
       "free_energy": [
         [
-          1.0986122886681082,
-          1.0986122886681082
+          3.1392063142194524,
+          3.1392063142194524
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ],
         [
-          1.0986122886681091,
-          1.0986122886681091
+          3.1392063142194537,
+          3.1392063142194537
         ]
       ],
       "num_timesteps": 15,
@@ -667,123 +762,138 @@
         "all_valid": true
       },
       "model_parameters": {},
-      "data_source": "output/12_execute_output/markov_chain/pytorch/simulation_data/simulation_results.json"
+      "data_source": "output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json"
     },
     "jax": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        1.322651,
-        1.158032,
-        1.309421,
-        1.170555,
-        1.226747,
-        1.391107,
-        1.297494,
-        1.669084
+        0.752056,
+        0.700402,
+        0.796815,
+        0.673015,
+        0.680808,
+        0.693688,
+        0.649846,
+        0.772229
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/jax/execution_logs/Simple MDP Agent_jax.py_execution.log",
-        "output/12_execute_output/two_state_bistable/jax/execution_logs/Two State Bistable POMDP_jax.py_execution.log",
-        "output/12_execute_output/tmaze_epistemic/jax/execution_logs/T-Maze Epistemic Foraging Agent_jax.py_execution.log",
-        "output/12_execute_output/multi_armed_bandit/jax/execution_logs/Multi Armed Bandit Agent_jax.py_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log",
-        "output/12_execute_output/hmm_baseline/jax/execution_logs/Hidden Markov Model Baseline_jax.py_execution.log",
+        "output/12_execute_output/markov_chain/jax/execution_logs/Simple Markov Chain_jax.py_execution.log",
         "output/12_execute_output/deep_planning_horizon/jax/execution_logs/Deep Planning Horizon POMDP_jax.py_execution.log",
-        "output/12_execute_output/markov_chain/jax/execution_logs/Simple Markov Chain_jax.py_execution.log"
+        "output/12_execute_output/hmm_baseline/jax/execution_logs/Hidden Markov Model Baseline_jax.py_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log",
+        "output/12_execute_output/multi_armed_bandit/jax/execution_logs/Multi Armed Bandit Agent_jax.py_execution.log",
+        "output/12_execute_output/tmaze_epistemic/jax/execution_logs/T-Maze Epistemic Foraging Agent_jax.py_execution.log",
+        "output/12_execute_output/two_state_bistable/jax/execution_logs/Two State Bistable POMDP_jax.py_execution.log",
+        "output/12_execute_output/simple_mdp/jax/execution_logs/Simple MDP Agent_jax.py_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/jax",
-        "output/12_execute_output/two_state_bistable/jax",
-        "output/12_execute_output/tmaze_epistemic/jax",
-        "output/12_execute_output/multi_armed_bandit/jax",
-        "output/12_execute_output/actinf_pomdp_agent/jax",
-        "output/12_execute_output/hmm_baseline/jax",
+        "output/12_execute_output/markov_chain/jax",
         "output/12_execute_output/deep_planning_horizon/jax",
-        "output/12_execute_output/markov_chain/jax"
+        "output/12_execute_output/hmm_baseline/jax",
+        "output/12_execute_output/actinf_pomdp_agent/jax",
+        "output/12_execute_output/multi_armed_bandit/jax",
+        "output/12_execute_output/tmaze_epistemic/jax",
+        "output/12_execute_output/two_state_bistable/jax",
+        "output/12_execute_output/simple_mdp/jax"
       ],
       "beliefs": [
         [
+          0.0,
           1.0,
           0.0,
           0.0
         ],
         [
-          1.0,
           0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9999999403953552,
           0.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
         [
-          1.0,
           0.0,
-          0.0
-        ],
-        [
-          1.0,
           0.0,
-          0.0
-        ],
-        [
-          1.0,
           0.0,
-          0.0
+          1.0
         ]
       ],
       "actions": [
+        2,
         0,
         0,
-        0,
-        0,
+        1,
         0,
         0,
         0,
@@ -797,67 +907,112 @@
         0
       ],
       "observations": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
+        1,
+        3,
+        3,
+        2,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
       ],
       "free_energy": [
         [
-          0.06931471824645996
+          0.4312041401863098,
+          0.4312041401863098,
+          -2.2687957286834717,
+          0.13120412826538086
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          0.13120406866073608,
+          -2.268795967102051,
+          0.43120408058166504,
+          0.4312041103839874
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ],
         [
-          0.06931471824645996
+          -2.2687957286834717,
+          0.13120412826538086,
+          0.4312041401863098,
+          0.4312041401863098
         ]
       ],
       "num_timesteps": 15,
@@ -868,30 +1023,30 @@
       },
       "model_parameters": {
         "A_shape": [
-          3,
-          3
+          4,
+          4
         ],
         "B_shape": [
-          3,
-          3,
-          1
+          4,
+          4,
+          4
         ],
         "C_shape": [
-          3
+          4
         ],
         "D_shape": [
-          3
+          4
         ],
-        "num_states": 3,
-        "num_observations": 3,
-        "num_actions": 1
+        "num_states": 4,
+        "num_observations": 4,
+        "num_actions": 4
       },
-      "data_source": "output/12_execute_output/markov_chain/jax/simulation_data/simulation_results.json",
+      "data_source": "output/12_execute_output/simple_mdp/jax/simulation_data/simulation_results.json",
       "belief_confidence": [
         1.0,
         1.0,
         1.0,
-        1.0,
+        0.9999999403953552,
         1.0,
         1.0,
         1.0,
@@ -906,37 +1061,40 @@
       ]
     },
     "discopy": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        0.403887,
-        0.426348,
-        0.407839,
-        0.409798,
-        0.467377,
-        0.513877,
-        0.481514,
-        0.490917
+        0.235158,
+        0.269416,
+        0.284476,
+        0.235728,
+        0.238225,
+        0.235463,
+        0.242819,
+        0.237351,
+        0.236587
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_execution.log",
-        "output/12_execute_output/two_state_bistable/discopy/execution_logs/Two State Bistable POMDP_discopy.py_execution.log",
-        "output/12_execute_output/tmaze_epistemic/discopy/execution_logs/T-Maze Epistemic Foraging Agent_discopy.py_execution.log",
-        "output/12_execute_output/multi_armed_bandit/discopy/execution_logs/Multi Armed Bandit Agent_discopy.py_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log",
-        "output/12_execute_output/hmm_baseline/discopy/execution_logs/Hidden Markov Model Baseline_discopy.py_execution.log",
+        "output/12_execute_output/markov_chain/discopy/execution_logs/Simple Markov Chain_discopy.py_execution.log",
         "output/12_execute_output/deep_planning_horizon/discopy/execution_logs/Deep Planning Horizon POMDP_discopy.py_execution.log",
-        "output/12_execute_output/markov_chain/discopy/execution_logs/Simple Markov Chain_discopy.py_execution.log"
+        "output/12_execute_output/hmm_baseline/discopy/execution_logs/Hidden Markov Model Baseline_discopy.py_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log",
+        "output/12_execute_output/multi_armed_bandit/discopy/execution_logs/Multi Armed Bandit Agent_discopy.py_execution.log",
+        "output/12_execute_output/tmaze_epistemic/discopy/execution_logs/T-Maze Epistemic Foraging Agent_discopy.py_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/discopy/execution_logs/Bnlearn Causal Model_discopy.py_execution.log",
+        "output/12_execute_output/two_state_bistable/discopy/execution_logs/Two State Bistable POMDP_discopy.py_execution.log",
+        "output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/discopy",
-        "output/12_execute_output/two_state_bistable/discopy",
-        "output/12_execute_output/tmaze_epistemic/discopy",
-        "output/12_execute_output/multi_armed_bandit/discopy",
-        "output/12_execute_output/actinf_pomdp_agent/discopy",
-        "output/12_execute_output/hmm_baseline/discopy",
+        "output/12_execute_output/markov_chain/discopy",
         "output/12_execute_output/deep_planning_horizon/discopy",
-        "output/12_execute_output/markov_chain/discopy"
+        "output/12_execute_output/hmm_baseline/discopy",
+        "output/12_execute_output/actinf_pomdp_agent/discopy",
+        "output/12_execute_output/multi_armed_bandit/discopy",
+        "output/12_execute_output/tmaze_epistemic/discopy",
+        "output/12_execute_output/bnlearn_causal_model/discopy",
+        "output/12_execute_output/two_state_bistable/discopy",
+        "output/12_execute_output/simple_mdp/discopy"
       ],
       "beliefs": [],
       "actions": [],
@@ -949,9 +1107,9 @@
         "num_observations": 4,
         "num_actions": 4
       },
-      "data_source": "output/12_execute_output/simple_mdp/discopy/simulation_data/circuit_info.json",
+      "data_source": "output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_results.json",
       "circuit_info": {
-        "model_name": "Simple MDP Agent",
+        "model_name": "markov_chain",
         "components": [
           "A_matrix",
           "B_matrix",
@@ -964,129 +1122,192 @@
         ],
         "num_components": 8,
         "parameters": {
-          "num_states": 4,
-          "num_observations": 4,
-          "num_actions": 4
+          "num_states": 3,
+          "num_observations": 3,
+          "num_actions": 1
         }
       }
+    },
+    "bnlearn": {
+      "success_count": 9,
+      "total_count": 9,
+      "execution_times": [
+        1.795791,
+        1.791501,
+        1.794016,
+        1.800058,
+        1.818345,
+        1.856554,
+        1.86478,
+        1.827688,
+        1.805646
+      ],
+      "output_files": [
+        "output/12_execute_output/markov_chain/bnlearn/execution_logs/Simple Markov Chain_bnlearn.py_execution.log",
+        "output/12_execute_output/deep_planning_horizon/bnlearn/execution_logs/Deep Planning Horizon POMDP_bnlearn.py_execution.log",
+        "output/12_execute_output/hmm_baseline/bnlearn/execution_logs/Hidden Markov Model Baseline_bnlearn.py_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/bnlearn/execution_logs/Active Inference POMDP Agent_bnlearn.py_execution.log",
+        "output/12_execute_output/multi_armed_bandit/bnlearn/execution_logs/Multi Armed Bandit Agent_bnlearn.py_execution.log",
+        "output/12_execute_output/tmaze_epistemic/bnlearn/execution_logs/T-Maze Epistemic Foraging Agent_bnlearn.py_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/bnlearn/execution_logs/Bnlearn Causal Model_bnlearn.py_execution.log",
+        "output/12_execute_output/two_state_bistable/bnlearn/execution_logs/Two State Bistable POMDP_bnlearn.py_execution.log",
+        "output/12_execute_output/simple_mdp/bnlearn/execution_logs/Simple MDP Agent_bnlearn.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/markov_chain/bnlearn",
+        "output/12_execute_output/deep_planning_horizon/bnlearn",
+        "output/12_execute_output/hmm_baseline/bnlearn",
+        "output/12_execute_output/actinf_pomdp_agent/bnlearn",
+        "output/12_execute_output/multi_armed_bandit/bnlearn",
+        "output/12_execute_output/tmaze_epistemic/bnlearn",
+        "output/12_execute_output/bnlearn_causal_model/bnlearn",
+        "output/12_execute_output/two_state_bistable/bnlearn",
+        "output/12_execute_output/simple_mdp/bnlearn"
+      ],
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": null,
+      "validation": {},
+      "model_parameters": {
+        "model_name": "simple_mdp",
+        "bnlearn_completed": true
+      },
+      "data_source": "output/12_execute_output/simple_mdp/bnlearn/execution_logs/Simple MDP Agent_bnlearn.py_results.json"
     },
     "rxinfer": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        30.539082,
-        25.208203,
-        26.907895,
-        21.447601,
-        20.679205,
-        22.319628,
-        23.111149,
-        20.344404
+        16.868532,
+        13.718742,
+        13.598655,
+        13.716532,
+        13.628652,
+        13.650717,
+        13.704146,
+        13.696943
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/rxinfer/execution_logs/Simple MDP Agent_rxinfer.jl_execution.log",
-        "output/12_execute_output/two_state_bistable/rxinfer/execution_logs/Two State Bistable POMDP_rxinfer.jl_execution.log",
-        "output/12_execute_output/tmaze_epistemic/rxinfer/execution_logs/T-Maze Epistemic Foraging Agent_rxinfer.jl_execution.log",
-        "output/12_execute_output/multi_armed_bandit/rxinfer/execution_logs/Multi Armed Bandit Agent_rxinfer.jl_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log",
-        "output/12_execute_output/hmm_baseline/rxinfer/execution_logs/Hidden Markov Model Baseline_rxinfer.jl_execution.log",
+        "output/12_execute_output/markov_chain/rxinfer/execution_logs/Simple Markov Chain_rxinfer.jl_execution.log",
         "output/12_execute_output/deep_planning_horizon/rxinfer/execution_logs/Deep Planning Horizon POMDP_rxinfer.jl_execution.log",
-        "output/12_execute_output/markov_chain/rxinfer/execution_logs/Simple Markov Chain_rxinfer.jl_execution.log"
+        "output/12_execute_output/hmm_baseline/rxinfer/execution_logs/Hidden Markov Model Baseline_rxinfer.jl_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log",
+        "output/12_execute_output/multi_armed_bandit/rxinfer/execution_logs/Multi Armed Bandit Agent_rxinfer.jl_execution.log",
+        "output/12_execute_output/tmaze_epistemic/rxinfer/execution_logs/T-Maze Epistemic Foraging Agent_rxinfer.jl_execution.log",
+        "output/12_execute_output/two_state_bistable/rxinfer/execution_logs/Two State Bistable POMDP_rxinfer.jl_execution.log",
+        "output/12_execute_output/simple_mdp/rxinfer/execution_logs/Simple MDP Agent_rxinfer.jl_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/rxinfer",
-        "output/12_execute_output/two_state_bistable/rxinfer",
-        "output/12_execute_output/tmaze_epistemic/rxinfer",
-        "output/12_execute_output/multi_armed_bandit/rxinfer",
-        "output/12_execute_output/actinf_pomdp_agent/rxinfer",
-        "output/12_execute_output/hmm_baseline/rxinfer",
+        "output/12_execute_output/markov_chain/rxinfer",
         "output/12_execute_output/deep_planning_horizon/rxinfer",
-        "output/12_execute_output/markov_chain/rxinfer"
+        "output/12_execute_output/hmm_baseline/rxinfer",
+        "output/12_execute_output/actinf_pomdp_agent/rxinfer",
+        "output/12_execute_output/multi_armed_bandit/rxinfer",
+        "output/12_execute_output/tmaze_epistemic/rxinfer",
+        "output/12_execute_output/two_state_bistable/rxinfer",
+        "output/12_execute_output/simple_mdp/rxinfer"
       ],
       "beliefs": [
         [
-          3.333333333317779e-12,
-          0.9999999999933334,
-          3.333333333317779e-12
+          3.999999999964001e-12,
+          3.999999999964001e-12,
+          0.999999999988,
+          3.999999999964001e-12
         ],
         [
-          3.333333333314073e-12,
-          3.333333333314073e-12,
-          0.9999999999933333
+          1.1111111111235803e-12,
+          1.1111111111235803e-12,
+          1.1111111111235803e-12,
+          0.9999999999966667
         ],
         [
-          1.6666666666718518e-12,
-          1.6666666666718518e-12,
-          0.9999999999966668
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          3.3333333333177787e-12,
-          0.9999999999933334,
-          3.3333333333177787e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          2.4999999999987506e-12,
-          0.9999999999950001,
-          2.4999999999987506e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          0.9999999999933334,
-          3.333333333312224e-12,
-          3.333333333312224e-12
+          9.999999999663334e-12,
+          9.999999999663334e-12,
+          0.99999999997,
+          9.999999999663334e-12
         ],
         [
-          0.999999999997143,
-          1.4285714285770071e-12,
-          1.4285714285770071e-12
+          1.1111111111428395e-12,
+          1.1111111111428395e-12,
+          1.1111111111428395e-12,
+          0.9999999999966667
         ],
         [
-          0.999999999997143,
-          1.4285714285731198e-12,
-          1.4285714285731198e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          0.999999999997143,
-          1.4285714285731198e-12,
-          1.4285714285731198e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          4.9999999999492864e-12,
-          0.99999999999,
-          4.9999999999492864e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          2.5000000000018755e-12,
-          0.9999999999950001,
-          2.5000000000018755e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          2.4999999999971883e-12,
-          0.9999999999950001,
-          2.4999999999971883e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          2.4999999999971883e-12,
-          0.9999999999950001,
-          2.4999999999971883e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          0.9999999999933334,
-          3.333333333312224e-12,
-          3.333333333312224e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
         [
-          4.9999999999350006e-12,
-          0.99999999999,
-          4.9999999999350006e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ]
       ],
       "actions": [
+        2,
         1,
         1,
         1,
         1,
-        1,
-        1,
+        2,
         1,
         1,
         1,
@@ -1098,38 +1319,38 @@
         1
       ],
       "observations": [
-        2,
         3,
+        4,
+        4,
+        4,
+        4,
         3,
-        2,
-        2,
-        1,
-        1,
-        1,
-        1,
-        2,
-        2,
-        2,
-        2,
-        1,
-        2
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
       ],
       "free_energy": [
-        0.009712313322605942,
-        0.20066656380655926,
-        0.20066656380894843,
-        0.009712313322605942,
-        0.009712313322677718,
-        0.29679373611898646,
-        0.2967937361222969,
-        0.2967937361222969,
-        0.2967937361222969,
-        0.009712313322462016,
-        0.009712313322677718,
-        0.009712313322677718,
-        0.009712313322677718,
-        0.29679373611898646,
-        0.009712313322462016
+        0.114123340636831,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.11412334036837447,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649,
+        0.1141233407720649
       ],
       "num_timesteps": 15,
       "validation": {
@@ -1138,257 +1359,257 @@
         "beliefs_sum_to_one": true
       },
       "model_parameters": {},
-      "data_source": "output/12_execute_output/markov_chain/rxinfer/simulation_data/simulation_results.json"
+      "data_source": "output/12_execute_output/simple_mdp/rxinfer/simulation_data/simulation_results.json"
     },
     "activeinference_jl": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        75.752876,
-        28.78397,
-        23.82797,
-        23.328553,
-        22.757168,
-        20.357071,
-        23.968256,
-        15.318089
+        10.565799,
+        13.89512,
+        10.279033,
+        13.930742,
+        13.933109,
+        10.364203,
+        13.959456,
+        14.007849
       ],
       "output_files": [
-        "output/12_execute_output/simple_mdp/activeinference_jl/execution_logs/Simple MDP Agent_activeinference.jl_execution.log",
-        "output/12_execute_output/two_state_bistable/activeinference_jl/execution_logs/Two State Bistable POMDP_activeinference.jl_execution.log",
-        "output/12_execute_output/tmaze_epistemic/activeinference_jl/execution_logs/T-Maze Epistemic Foraging Agent_activeinference.jl_execution.log",
-        "output/12_execute_output/multi_armed_bandit/activeinference_jl/execution_logs/Multi Armed Bandit Agent_activeinference.jl_execution.log",
-        "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log",
-        "output/12_execute_output/hmm_baseline/activeinference_jl/execution_logs/Hidden Markov Model Baseline_activeinference.jl_execution.log",
+        "output/12_execute_output/markov_chain/activeinference_jl/execution_logs/Simple Markov Chain_activeinference.jl_execution.log",
         "output/12_execute_output/deep_planning_horizon/activeinference_jl/execution_logs/Deep Planning Horizon POMDP_activeinference.jl_execution.log",
-        "output/12_execute_output/markov_chain/activeinference_jl/execution_logs/Simple Markov Chain_activeinference.jl_execution.log"
+        "output/12_execute_output/hmm_baseline/activeinference_jl/execution_logs/Hidden Markov Model Baseline_activeinference.jl_execution.log",
+        "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log",
+        "output/12_execute_output/multi_armed_bandit/activeinference_jl/execution_logs/Multi Armed Bandit Agent_activeinference.jl_execution.log",
+        "output/12_execute_output/tmaze_epistemic/activeinference_jl/execution_logs/T-Maze Epistemic Foraging Agent_activeinference.jl_execution.log",
+        "output/12_execute_output/two_state_bistable/activeinference_jl/execution_logs/Two State Bistable POMDP_activeinference.jl_execution.log",
+        "output/12_execute_output/simple_mdp/activeinference_jl/execution_logs/Simple MDP Agent_activeinference.jl_execution.log"
       ],
       "implementation_dirs": [
-        "output/12_execute_output/simple_mdp/activeinference_jl",
-        "output/12_execute_output/two_state_bistable/activeinference_jl",
-        "output/12_execute_output/tmaze_epistemic/activeinference_jl",
-        "output/12_execute_output/multi_armed_bandit/activeinference_jl",
-        "output/12_execute_output/actinf_pomdp_agent/activeinference_jl",
-        "output/12_execute_output/hmm_baseline/activeinference_jl",
+        "output/12_execute_output/markov_chain/activeinference_jl",
         "output/12_execute_output/deep_planning_horizon/activeinference_jl",
-        "output/12_execute_output/markov_chain/activeinference_jl"
+        "output/12_execute_output/hmm_baseline/activeinference_jl",
+        "output/12_execute_output/actinf_pomdp_agent/activeinference_jl",
+        "output/12_execute_output/multi_armed_bandit/activeinference_jl",
+        "output/12_execute_output/tmaze_epistemic/activeinference_jl",
+        "output/12_execute_output/two_state_bistable/activeinference_jl",
+        "output/12_execute_output/simple_mdp/activeinference_jl"
       ],
       "beliefs": [
         [
-          0.17734594095428316,
-          0.17734594095428316,
-          0.43440706329174783,
-          0.210901054799686
+          9.997000899730073e-05,
+          9.997000899730073e-05,
+          0.9997000899730081,
+          9.997000899730073e-05
         ],
         [
-          0.11041671699118075,
-          0.10836634857348391,
-          0.6117225082261748,
-          0.1694944262091606
+          1.1110863845008921e-08,
+          1.1110863845008921e-08,
+          1.1120863622469435e-05,
+          0.9999888569146498
         ],
         [
-          0.09693185713192613,
-          0.09621457839832509,
-          0.6670040390422163,
-          0.1398495254275325
+          1.2345389400136321e-12,
+          1.2345389400136321e-12,
+          1.1112085999039307e-05,
+          0.999988887911532
         ],
         [
-          0.08987154280626637,
-          0.08962699308162492,
-          0.6962246406968097,
-          0.12427682341529901
+          1.3717082397186813e-16,
+          1.3717082397186813e-16,
+          1.1112085132118668e-05,
+          0.9999888879148674
         ],
         [
-          0.08630480330500202,
-          0.08622253167799238,
-          0.7110737181479412,
-          0.11639894686906443
+          1.5241183845405893e-20,
+          1.5241183845405893e-20,
+          1.1112085132033065e-05,
+          0.9999888879148678
         ],
         [
-          0.08453515050997415,
-          0.08450765790627167,
-          0.7184681025432563,
-          0.11248908904049777
+          1.1111097392351887e-20,
+          1.1111097392351887e-20,
+          1.1112085132033045e-05,
+          0.9999888879148678
         ],
         [
-          0.08366481265865874,
-          0.08365565602291414,
-          0.7221128812039287,
-          0.11056665011449832
+          1.1111097392351887e-20,
+          1.1111097392351887e-20,
+          1.1112085132033045e-05,
+          0.9999888879148678
         ],
         [
-          0.29524271947623326,
-          0.14333266794185986,
-          0.42793928648720087,
-          0.1334853260947061
+          9.990120891415918e-20,
+          9.990120891415918e-20,
+          0.9991008980006584,
+          0.0008991019993415314
         ],
         [
-          0.47244736519308805,
-          0.15393567462839083,
-          0.24828487943089425,
-          0.12533208074762672
+          1.1119873691072694e-20,
+          1.1119873691072694e-20,
+          1.11998568964173e-05,
+          0.9999888001431035
         ],
         [
-          0.2947361580433291,
-          0.14785014507980115,
-          0.2275673495873041,
-          0.3298463472895657
+          9.990113884247289e-20,
+          9.990113884247289e-20,
+          0.9991008987014455,
+          0.0008991012985545947
         ],
         [
-          0.47789429846125614,
-          0.12909527124236236,
-          0.16566379658011487,
-          0.2273466337162667
+          1.1119873684141078e-20,
+          1.1119873684141078e-20,
+          1.1199856827094566e-05,
+          0.9999888001431728
         ],
         [
-          0.5942409109175308,
-          0.13238009968325157,
-          0.1250814982357235,
-          0.14829749116349403
+          1.1111098259144064e-20,
+          1.1111098259144064e-20,
+          1.1112093800821709e-05,
+          0.9999888879061992
         ],
         [
-          0.3492957661547508,
-          0.13727786717531665,
-          0.1592674564797812,
-          0.3541589101901514
+          1.1111097392437538e-20,
+          1.1111097392437538e-20,
+          1.1112085132889217e-05,
+          0.9999888879148672
         ],
         [
-          0.21215713899559904,
-          0.09019063598907334,
-          0.13746083647754756,
-          0.56019138853778
+          1.1111097392351887e-20,
+          1.1111097392351887e-20,
+          1.1112085132033125e-05,
+          0.9999888879148678
         ],
         [
-          0.11136439158314852,
-          0.05286267844287755,
-          0.1190391003875194,
-          0.7167338295864545
+          1.1111097392351887e-20,
+          1.1111097392351887e-20,
+          1.1112085132033045e-05,
+          0.9999888879148678
         ]
       ],
       "actions": [
         2,
-        4,
-        4,
-        4,
-        4,
-        4,
-        4,
-        4,
-        4,
         1,
-        4,
-        4,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        1,
+        2,
+        1,
+        1,
         1,
         1,
         1
       ],
       "observations": [
         3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        3,
-        1,
-        1,
         4,
-        1,
-        1,
+        4,
+        4,
+        4,
+        4,
+        4,
+        3,
+        4,
+        3,
+        4,
+        4,
         4,
         4,
         4
       ],
       "free_energy": [
         [
-          -1.3361938690714354,
-          -1.283041704262326,
-          -1.3414629663162496,
-          -1.2851006983422781
+          -2.5117910940351234,
+          -0.11275080612149763,
+          -2.8116711300243264,
+          -2.8116711300243264
         ],
         [
-          -1.5225067965822907,
-          -1.424604939432452,
-          -1.5064438069396224,
-          -1.377736021981576
+          -0.1141304157781976,
+          -2.514076982300663,
+          -2.814103632374247,
+          -2.814103632374247
         ],
         [
-          -1.6261931424834801,
-          -1.5140342490088061,
-          -1.5962207707432086,
-          -1.4360823496961728
+          -0.11413036514449071,
+          -2.5140770271257695,
+          -2.814103696127723,
+          -2.814103696127723
         ],
         [
-          -1.683885118413178,
-          -1.5640885279208576,
-          -1.6459094431113965,
-          -1.4682026407033468
+          -0.1141303651389341,
+          -2.514077027130299,
+          -2.8141036961346155,
+          -2.8141036961346155
         ],
         [
-          -1.7139706907062722,
-          -1.590259363044022,
-          -1.6717563174138852,
-          -1.4848520832061707
+          -0.11413036513893338,
+          -2.5140770271302992,
+          -2.814103696134616,
+          -2.814103696134616
         ],
         [
-          -1.7291408436665423,
-          -1.6034722854979861,
-          -1.6847740843707486,
-          -1.4932203443534657
+          -0.11413036513893338,
+          -2.5140770271302992,
+          -2.814103696134616,
+          -2.814103696134616
         ],
         [
-          -1.7366618071622781,
-          -1.610027234394312,
-          -1.6912246333139147,
-          -1.497362225907258
+          -0.11413036513893338,
+          -2.5140770271302992,
+          -2.814103696134616,
+          -2.814103696134616
         ],
         [
-          -1.5143981517422318,
-          -1.484778875509143,
-          -1.5155431625462135,
-          -1.4240725483408214
+          -2.5103878284383083,
+          -0.11470351803514739,
+          -2.8125456732367278,
+          -2.8125456732367278
         ],
         [
-          -1.5874536900802778,
-          -1.6373422843714343,
-          -1.5600063181607902,
-          -1.495467588430028
+          -0.11413042151470848,
+          -2.5140766622016053,
+          -2.8141035418581564,
+          -2.8141035418581564
         ],
         [
-          -1.1068914208883716,
-          -1.130011417802131,
-          -1.1341647848409275,
-          -1.154163870693445
+          -2.51038783134756,
+          -0.11470351758062158,
+          -2.812545674464091,
+          -2.812545674464091
         ],
         [
-          -1.3976537466911805,
-          -1.4696221524575452,
-          -1.380492179635248,
-          -1.3651345758175628
+          -0.11413042151466385,
+          -2.5140766622018935,
+          -2.8141035418582785,
+          -2.8141035418582785
         ],
         [
-          -1.6558057709123837,
-          -1.7626631745123458,
-          -1.5904799875432023,
-          -1.5404432519103648
+          -0.11413036514450159,
+          -2.514077027094258,
+          -2.8141036961193793,
+          -2.8141036961193793
         ],
         [
-          -1.0978247433588475,
-          -1.1498885557969918,
-          -1.1161056567544638,
-          -1.1504267459206443
+          -0.11413036513893415,
+          -2.514077027130296,
+          -2.814103696134615,
+          -2.814103696134615
         ],
         [
-          -0.7625477563736166,
-          -0.8016129437224249,
-          -0.8106123903430447,
-          -0.8896605099042876
+          -0.11413036513893338,
+          -2.5140770271302992,
+          -2.814103696134616,
+          -2.814103696134616
         ],
         [
-          -0.5932947417163603,
-          -0.6150110687814264,
-          -0.6411622068845861,
-          -0.7304407810598935
+          -0.11413036513893338,
+          -2.5140770271302992,
+          -2.814103696134616,
+          -2.814103696134616
         ]
       ],
       "num_timesteps": 15,
@@ -1403,7 +1624,7 @@
         "num_observations": 4,
         "num_actions": 4
       },
-      "data_source": "output/12_execute_output/deep_planning_horizon/activeinference_jl/simulation_data/simulation_results.json"
+      "data_source": "output/12_execute_output/simple_mdp/activeinference_jl/simulation_data/simulation_results.json"
     }
   },
   "comparisons": {
@@ -1413,51 +1634,58 @@
       "pytorch": 1.0,
       "jax": 1.0,
       "discopy": 1.0,
+      "bnlearn": 1.0,
       "rxinfer": 1.0,
       "activeinference_jl": 1.0
     },
     "performance_comparison": {
       "numpyro": {
-        "mean": 2.318817,
-        "std": 2.4257800407689483,
-        "min": 1.272459,
-        "max": 8.731484
+        "mean": 0.726714625,
+        "std": 0.05551567819980564,
+        "min": 0.624404,
+        "max": 0.817426
       },
       "pymdp": {
-        "mean": 2.35053275,
-        "std": 0.8666913557629311,
-        "min": 1.73207,
-        "max": 4.361664
+        "mean": 2.669380875,
+        "std": 0.14156468596055088,
+        "min": 2.51209,
+        "max": 3.014956
       },
       "pytorch": {
-        "mean": 0.925043625,
-        "std": 0.08176046958331619,
-        "min": 0.824987,
-        "max": 1.048697
+        "mean": 0.470153375,
+        "std": 0.02587929375938174,
+        "min": 0.455138,
+        "max": 0.533655
       },
       "jax": {
-        "mean": 1.318136375,
-        "std": 0.15197741849361826,
-        "min": 1.158032,
-        "max": 1.669084
+        "mean": 0.714857375,
+        "std": 0.048971952202096006,
+        "min": 0.649846,
+        "max": 0.796815
       },
       "discopy": {
-        "mean": 0.450194625,
-        "std": 0.040510550955700116,
-        "min": 0.403887,
-        "max": 0.513877
+        "mean": 0.24613588888888888,
+        "std": 0.01698566687563007,
+        "min": 0.235158,
+        "max": 0.284476
+      },
+      "bnlearn": {
+        "mean": 1.817153222222222,
+        "std": 0.025836038588580464,
+        "min": 1.791501,
+        "max": 1.86478
       },
       "rxinfer": {
-        "mean": 23.819645875,
-        "std": 3.296484656053113,
-        "min": 20.344404,
-        "max": 30.539082
+        "mean": 14.072864875,
+        "std": 1.0574622085046859,
+        "min": 13.598655,
+        "max": 16.868532
       },
       "activeinference_jl": {
-        "mean": 29.261744125,
-        "std": 17.92495299193254,
-        "min": 15.318089,
-        "max": 75.752876
+        "mean": 12.616913875,
+        "std": 1.7167159865911452,
+        "min": 10.279033,
+        "max": 14.007849
       }
     },
     "metric_agreement": {
@@ -1478,18 +1706,11 @@
         "same_dimensions": true
       },
       "numpyro_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
+        "confidence_correlation": 0.0,
+        "same_dimensions": true
       },
       "pymdp_vs_pytorch": {
-        "confidence_correlation": -0.17149858514250885,
+        "confidence_correlation": 0.0,
         "same_dimensions": true
       },
       "pymdp_vs_jax": {
@@ -1497,64 +1718,36 @@
         "same_dimensions": true
       },
       "pymdp_vs_rxinfer": {
-        "confidence_correlation": 0.01682604280594706,
+        "confidence_correlation": 0.0,
         "same_dimensions": true
       },
       "pymdp_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
+        "confidence_correlation": 0.0,
+        "same_dimensions": true
       },
       "pytorch_vs_jax": {
-        "confidence_correlation": 0.0,
+        "confidence_correlation": -0.06900655567716599,
         "same_dimensions": true
       },
       "pytorch_vs_rxinfer": {
-        "confidence_correlation": 0.1147963006160072,
+        "confidence_correlation": 0.23804013189186288,
         "same_dimensions": true
       },
       "pytorch_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
+        "confidence_correlation": 0.12883093894274453,
+        "same_dimensions": true
       },
       "jax_vs_rxinfer": {
-        "confidence_correlation": 0.0,
+        "confidence_correlation": -0.09196005355860166,
         "same_dimensions": true
       },
       "jax_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
+        "confidence_correlation": -0.12147017383980854,
+        "same_dimensions": true
       },
       "rxinfer_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
+        "confidence_correlation": -0.07591612475675859,
+        "same_dimensions": true
       }
     },
     "data_coverage": {
@@ -1566,7 +1759,7 @@
         "has_circuit_info": false,
         "num_timesteps": 15,
         "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json"
+        "data_source": "output/12_execute_output/simple_mdp/numpyro/simulation_data/simulation_results.json"
       },
       "pymdp": {
         "has_beliefs": true,
@@ -1576,7 +1769,7 @@
         "has_circuit_info": false,
         "num_timesteps": 15,
         "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/pymdp/simulation_data/simulation_results.json"
+        "data_source": "output/12_execute_output/simple_mdp/pymdp/simulation_data/simulation_results.json"
       },
       "pytorch": {
         "has_beliefs": true,
@@ -1586,7 +1779,7 @@
         "has_circuit_info": false,
         "num_timesteps": 15,
         "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/pytorch/simulation_data/simulation_results.json"
+        "data_source": "output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json"
       },
       "jax": {
         "has_beliefs": true,
@@ -1596,7 +1789,7 @@
         "has_circuit_info": false,
         "num_timesteps": 15,
         "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/jax/simulation_data/simulation_results.json"
+        "data_source": "output/12_execute_output/simple_mdp/jax/simulation_data/simulation_results.json"
       },
       "discopy": {
         "has_beliefs": false,
@@ -1606,7 +1799,17 @@
         "has_circuit_info": true,
         "num_timesteps": null,
         "validation_passed": null,
-        "data_source": "output/12_execute_output/simple_mdp/discopy/simulation_data/circuit_info.json"
+        "data_source": "output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_results.json"
+      },
+      "bnlearn": {
+        "has_beliefs": false,
+        "has_actions": false,
+        "has_observations": false,
+        "has_free_energy": false,
+        "has_circuit_info": false,
+        "num_timesteps": null,
+        "validation_passed": null,
+        "data_source": "output/12_execute_output/simple_mdp/bnlearn/execution_logs/Simple MDP Agent_bnlearn.py_results.json"
       },
       "rxinfer": {
         "has_beliefs": true,
@@ -1616,7 +1819,7 @@
         "has_circuit_info": false,
         "num_timesteps": 15,
         "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/rxinfer/simulation_data/simulation_results.json"
+        "data_source": "output/12_execute_output/simple_mdp/rxinfer/simulation_data/simulation_results.json"
       },
       "activeinference_jl": {
         "has_beliefs": true,
@@ -1626,113 +1829,118 @@
         "has_circuit_info": false,
         "num_timesteps": 15,
         "validation_passed": true,
-        "data_source": "output/12_execute_output/deep_planning_horizon/activeinference_jl/simulation_data/simulation_results.json"
+        "data_source": "output/12_execute_output/simple_mdp/activeinference_jl/simulation_data/simulation_results.json"
       }
     },
     "simulation_statistics": {
       "numpyro": {
         "belief_dims": [
           15,
-          3
+          4
         ],
         "mean_confidence": 1.0,
         "final_belief": [
           0.0,
+          0.0,
           1.0,
           0.0
         ],
-        "efe_mean": 1.0986123085021973,
+        "efe_mean": 3.1392064094543457,
         "efe_std": 0.0,
-        "efe_min": 1.0986123085021973,
-        "efe_max": 1.0986123085021973
+        "efe_min": 3.1392064094543457,
+        "efe_max": 3.1392064094543457
       },
       "pymdp": {
         "belief_dims": [
           15,
-          3
+          4
         ],
-        "mean_confidence": 0.9999999999999998,
+        "mean_confidence": 1.0,
         "final_belief": [
-          1.0,
-          2.857142857142847e-17,
-          1.428571428571431e-17
+          5.478228028292507e-32,
+          5.478228028292507e-32,
+          2.4671690782076066e-17,
+          1.0
         ],
-        "efe_mean": -0.20101314304641227,
-        "efe_std": 0.12104428011998629,
-        "efe_min": -0.29679362358960415,
-        "efe_max": -0.009712200787717729
+        "efe_mean": 1.0750829428434372,
+        "efe_std": 1.1324750977898324,
+        "efe_min": 0.3250829875469208,
+        "efe_max": 3.02508282661438
       },
       "pytorch": {
         "belief_dims": [
           15,
-          3
+          4
         ],
         "mean_confidence": 0.9999999999999999,
         "final_belief": [
           0.0,
           0.0,
-          0.9999999999999999
+          0.9999999999999999,
+          0.0
         ],
-        "efe_mean": 1.0986122886681087,
-        "efe_std": 4.440892098500626e-16,
-        "efe_min": 1.0986122886681082,
-        "efe_max": 1.0986122886681091
+        "efe_mean": 3.139206314219453,
+        "efe_std": 8.656892398314543e-16,
+        "efe_min": 3.1392063142194524,
+        "efe_max": 3.1392063142194537
       },
       "jax": {
         "belief_dims": [
           15,
-          3
+          4
         ],
-        "mean_confidence": 1.0,
+        "mean_confidence": 0.999999996026357,
         "final_belief": [
-          1.0,
           0.0,
-          0.0
+          0.0,
+          0.0,
+          1.0
         ],
-        "efe_mean": 0.06931471824645996,
-        "efe_std": 0.0,
-        "efe_min": 0.06931471824645996,
-        "efe_max": 0.06931471824645996
+        "efe_mean": -0.31879583646853765,
+        "efe_std": 1.1324751131189574,
+        "efe_min": -2.268795967102051,
+        "efe_max": 0.4312041401863098
       },
       "rxinfer": {
         "belief_dims": [
           15,
-          3
+          4
         ],
-        "mean_confidence": 0.9999999999943173,
+        "mean_confidence": 0.9999999999943114,
         "final_belief": [
-          4.9999999999350006e-12,
-          0.99999999999,
-          4.9999999999350006e-12
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          1.1111111111143072e-12,
+          0.9999999999966667
         ],
-        "efe_mean": 0.13086668765341453,
-        "efe_std": 0.13287338129312357,
-        "efe_min": 0.009712313322462016,
-        "efe_max": 0.2967937361222969
+        "efe_mean": 0.11412334073613664,
+        "efe_std": 1.0388825480975982e-10,
+        "efe_min": 0.11412334036837447,
+        "efe_max": 0.1141233407720649
       },
       "activeinference_jl": {
         "belief_dims": [
           15,
           4
         ],
-        "mean_confidence": 0.5662976859876736,
+        "mean_confidence": 0.9998512223398561,
         "final_belief": [
-          0.11136439158314852,
-          0.05286267844287755,
-          0.1190391003875194,
-          0.7167338295864545
+          1.1111097392351887e-20,
+          1.1111097392351887e-20,
+          1.1112085132033045e-05,
+          0.9999888879148678
         ],
-        "efe_mean": -1.3730601001924627,
-        "efe_std": 0.30745741234776947,
-        "efe_min": -1.7626631745123458,
-        "efe_max": -0.5932947417163603
+        "efe_mean": -2.063753760157902,
+        "efe_std": 1.1322815688562669,
+        "efe_min": -2.814103696134616,
+        "efe_max": -0.11275080612149763
       }
     }
   },
   "metrics": {
-    "total_frameworks": 7,
-    "total_successful": 56,
-    "total_executions": 56,
+    "total_frameworks": 8,
+    "total_successful": 66,
+    "total_executions": 66,
     "overall_success_rate": 1.0
   }
 }

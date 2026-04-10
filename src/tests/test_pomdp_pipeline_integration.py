@@ -21,6 +21,13 @@ from analysis.post_simulation import (
 from execute.pymdp.pymdp_simulation import PyMDPSimulation
 from execute.pymdp.pymdp_utils import safe_json_dump
 from render.processor import render_gnn_spec
+from utils.jax_stack_validation import jax_pymdp_stack_ok
+
+
+_skip_no_pymdp = pytest.mark.skipif(
+    not jax_pymdp_stack_ok(),
+    reason="JAX + inferactively-pymdp>=1.0 required (uv sync --extra dev)",
+)
 
 # =============================================================================
 # Fixtures
@@ -111,6 +118,8 @@ class TestRenderPOMDP:
 # Execute Tests
 # =============================================================================
 
+
+@_skip_no_pymdp
 class TestExecutePOMDP:
     """Test that POMDP simulations run and produce valid results."""
 
@@ -170,6 +179,8 @@ class TestExecutePOMDP:
 # Analysis Tests
 # =============================================================================
 
+
+@_skip_no_pymdp
 class TestAnalyzePOMDP:
     """Test the analysis pipeline on simulation results."""
 
@@ -226,6 +237,8 @@ class TestAnalyzePOMDP:
 # End-to-End Pipeline Test
 # =============================================================================
 
+
+@_skip_no_pymdp
 class TestEndToEndPOMDPPipeline:
     """Full pipeline: render → execute → analyze."""
 

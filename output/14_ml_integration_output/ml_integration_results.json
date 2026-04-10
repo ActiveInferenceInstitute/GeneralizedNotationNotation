@@ -4,90 +4,157 @@
   "output_dir": "output/14_ml_integration_output",
   "models_trained": [
     {
-      "source": "simple_mdp.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "pomdp",
-      "num_states": 4,
-      "total_parameters": 102
+      "type": "decision_tree",
+      "framework": "sklearn",
+      "task": "family_classification",
+      "train_accuracy": 1.0,
+      "cv_mean_accuracy": 0.6666666666666666,
+      "cv_std": 0.2721655269759087,
+      "n_folds": 3,
+      "n_samples": 9,
+      "n_features": 14,
+      "feature_names": [
+        "num_states",
+        "num_observations",
+        "num_actions",
+        "num_variables",
+        "connectivity_ratio",
+        "max_dimension",
+        "total_parameters",
+        "planning_horizon",
+        "directed_connections",
+        "undirected_connections",
+        "has_precision",
+        "has_learning",
+        "has_ontology",
+        "has_parameterization"
+      ],
+      "artifact_path": "output/14_ml_integration_output/gnn_decision_tree.pkl",
+      "feature_importance": {
+        "num_states": 0.0,
+        "num_observations": 0.0,
+        "num_actions": 0.0,
+        "num_variables": 0.0,
+        "connectivity_ratio": 0.0,
+        "max_dimension": 0.0,
+        "total_parameters": 0.0,
+        "planning_horizon": 0.0,
+        "directed_connections": 1.0,
+        "undirected_connections": 0.0,
+        "has_precision": 0.0,
+        "has_learning": 0.0,
+        "has_ontology": 0.0,
+        "has_parameterization": 0.0
+      },
+      "top_features": [
+        [
+          "directed_connections",
+          1.0
+        ],
+        [
+          "num_states",
+          0.0
+        ],
+        [
+          "num_observations",
+          0.0
+        ],
+        [
+          "num_actions",
+          0.0
+        ],
+        [
+          "num_variables",
+          0.0
+        ]
+      ]
     },
     {
-      "source": "multi_armed_bandit.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "pomdp",
-      "num_states": 3,
-      "total_parameters": 53
-    },
-    {
-      "source": "deep_planning_horizon.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "pomdp",
-      "num_states": 4,
-      "total_parameters": 566
-    },
-    {
-      "source": "actinf_pomdp_agent.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "pomdp",
-      "num_states": 3,
-      "total_parameters": 56
-    },
-    {
-      "source": "hmm_baseline.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "hmm",
-      "num_states": 4,
-      "total_parameters": 68
-    },
-    {
-      "source": "two_state_bistable.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "pomdp",
-      "num_states": 2,
-      "total_parameters": 26
-    },
-    {
-      "source": "markov_chain.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "hmm",
-      "num_states": 3,
-      "total_parameters": 31
-    },
-    {
-      "source": "tmaze_epistemic.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "sklearn not available",
-      "model_family": "pomdp",
-      "num_states": 0,
-      "total_parameters": 141
+      "type": "random_forest",
+      "framework": "sklearn",
+      "task": "family_classification",
+      "train_accuracy": 1.0,
+      "cv_mean_accuracy": 0.7777777777777778,
+      "cv_std": 0.31426968052735443,
+      "n_folds": 3,
+      "n_samples": 9,
+      "n_features": 14,
+      "feature_names": [
+        "num_states",
+        "num_observations",
+        "num_actions",
+        "num_variables",
+        "connectivity_ratio",
+        "max_dimension",
+        "total_parameters",
+        "planning_horizon",
+        "directed_connections",
+        "undirected_connections",
+        "has_precision",
+        "has_learning",
+        "has_ontology",
+        "has_parameterization"
+      ],
+      "artifact_path": "output/14_ml_integration_output/gnn_random_forest.pkl",
+      "feature_importance": {
+        "num_states": 0.0,
+        "num_observations": 0.115625,
+        "num_actions": 0.084375,
+        "num_variables": 0.13,
+        "connectivity_ratio": 0.1,
+        "max_dimension": 0.064,
+        "total_parameters": 0.05714285714285714,
+        "planning_horizon": 0.0,
+        "directed_connections": 0.4428571428571429,
+        "undirected_connections": 0.005999999999999994,
+        "has_precision": 0.0,
+        "has_learning": 0.0,
+        "has_ontology": 0.0,
+        "has_parameterization": 0.0
+      },
+      "top_features": [
+        [
+          "directed_connections",
+          0.4429
+        ],
+        [
+          "num_variables",
+          0.13
+        ],
+        [
+          "num_observations",
+          0.1156
+        ],
+        [
+          "connectivity_ratio",
+          0.1
+        ],
+        [
+          "num_actions",
+          0.0844
+        ]
+      ]
     }
   ],
-  "feature_importance": {},
+  "feature_importance": {
+    "num_states": 0.0,
+    "num_observations": 0.115625,
+    "num_actions": 0.084375,
+    "num_variables": 0.13,
+    "connectivity_ratio": 0.1,
+    "max_dimension": 0.064,
+    "total_parameters": 0.05714285714285714,
+    "planning_horizon": 0.0,
+    "directed_connections": 0.4428571428571429,
+    "undirected_connections": 0.005999999999999994,
+    "has_precision": 0.0,
+    "has_learning": 0.0,
+    "has_ontology": 0.0,
+    "has_parameterization": 0.0
+  },
   "cross_validation": {},
   "framework_status": {
-    "sklearn": "missing"
+    "sklearn": "available"
   },
   "extracted_features": [
     {
@@ -186,6 +253,25 @@
       "time_type": "discrete"
     },
     {
+      "file_name": "bnlearn_causal_model.md",
+      "model_family": "hmm",
+      "num_variables": 6,
+      "num_states": 2,
+      "num_observations": 2,
+      "num_actions": 2,
+      "max_dimension": 2,
+      "total_parameters": 20,
+      "connectivity_ratio": 0.1,
+      "directed_connections": 3,
+      "undirected_connections": 0,
+      "has_precision": false,
+      "has_learning": true,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "unknown"
+    },
+    {
       "file_name": "two_state_bistable.md",
       "model_family": "pomdp",
       "num_variables": 10,
@@ -242,5 +328,10 @@
       "planning_horizon": 3,
       "time_type": "discrete"
     }
+  ],
+  "classification_task": "family_classification",
+  "label_names": [
+    "hmm",
+    "pomdp"
   ]
 }

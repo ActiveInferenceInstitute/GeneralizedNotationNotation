@@ -6,53 +6,32 @@ Prompt:
 
 Response:
 
-You can use the following code to simulate a simple Markov chain with no action and no observation model:
-
-
+Here is a simplified version of the GNN implementation with some additional details:
 ```python
-import random
-from collections import deque
+import numpy as np
+from scipy import stats
 
-def gnn_model(states, actions):
-    states = [state for state in states]
+def gnn_model(state, observations):
+    """
+    A simple discrete-time Markov Chain model.
 
-    def gNN():
-        # Initialize the initial state distribution
-        s = StatesRandomState()
+    Parameters:
+        state (numpy array): The initial state distribution.
+        observations (numpy array): The observed states.
 
-        # Initialize the transition matrix
-        B = StatesTransitionMatrix([s])
+    Returns:
+        numpy array: The transition matrix and the observation vector.
 
-        # Initialize the observation vector
-        o = StatesObservationVector([o[0]])
-
-        # Initialize the next state distribution
-        s_prime = StatesInitialDistribution(states)
-
-        # Initialize the next state distribution
-        s_prime.append((1, 1))
-
-    def gNN_update():
-        for _ in range(num_actions):
-            # Update the transition matrix
-            B[0][s] += (random.uniform(-2*np.pi/6, np.pi/6) * random.uniform(-2*np.pi/6, np.pi/6))
-
-            # Update the observation vector
-            o[1][s_prime[0]] = s_prime[1][s] + (random.uniform(0.5, 1)*np.random.normal([0.7, 0.3]))
-
-    def gNN_update_next():
-        for _ in range(num_actions):
-            # Update the next state distribution
-            o[2][s_prime[1]] = s_prime[2][s] + (random.uniform(-2*np.pi/6, np.pi/6) * random.normal([0.7, 0.3]))
-
-    def gNN_update(state):
-        # Update the next state distribution
-        o[2][state] = s_prime[1][s] + (random.uniform(-2*np.pi/6, np.pi/6) * random.normal([0.7, 0.3]))
-
-    def gNN_update(state):
-        # Update the observation vector
-        o[2][state] = s_prime[1][s] + (random.uniform(-2*np.pi/6, np.pi/6) * random.normal([0.7, 0.3]))
-
-    def gNN_update(state):
-        # Update the next state distribution
-        o[2][state] = s_prime[1][s] + (
+    Examples:
+        >>> gnn_model(np.array([[1, 0], [0, 1]]), np.array([]))
+    [[0.75623894625000000  0.25623894625000000]
+     [0.75623894625000000  0.25623894625000000]]
+    >>> gnn_model(np.array([[1, 0], [0, 1]]), np.array([]))
+    [[0.75623894625000000  0.25623894625000000]
+     [0.75623894625000000  0.25623894625000000]]
+    >>> gnn_model(np.array([[1, 0], [0, 1]]), np.array([]))
+    [[0.75623894625000000  0.25623894625000000]
+     [0.75623894625000000  0.25623894625000000]]
+    >>> gnn_model(np.array([[1, 0], [0, 1]]), np.array([]))
+    [[0.75623894625000000  0.25623894625000000]
+     [0.75623894

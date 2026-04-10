@@ -6,54 +6,56 @@ Prompt:
 
 Response:
 
-Here is the complete implementation of the GNN model:
+You can use the following code to implement a GNN model with hierarchical inference:
+
+
 ```python
 import numpy as np
 from scipy import stats
-from scipy import linalg
 
-def gnn_model(num_hidden_states, num_actions):
-    """GNN Model Representation.
+def gnn_hierarchical(input, hidden_states):
+    # Initialize state space and action spaces
+    state = input.state
 
-    Args:
-        num_hidden_states (int): Number of hidden states in the POMDP.
-        num_actions (int): Number of actions to be inferred from.
+    # Initialize the initial parameters
+    num_hidden_states = 4
+    num_actions = 3
+    num_contexts = 2
+    timesteps = 5
+    
+    # Initialize the inference horizon
+    inference_horizon = np.zeros((num_hidden_states, num_actions))
+    
+    # Initialize the action maps
+    actions = [input] * hidden_states
 
-    Returns:
-        A numpy array representing the GNN model representation.
-    """
-    # Initialize state space block
-    d1 = np.array([[0, 0], [num_hidden_states - 2 * num_actions + 3 * num_hidden_states // 4]
-              for _ in range(num_actions)])
+    # Initialize the initial state and action
+    input_state = np.random.randint(0, 1)
+    input_action = np.random.randint(0, 1)
+    input_observation = np.random.randint(0, 1)
+    
+    # Initialize the inference horizon
+    inference_horizon[input_state] = np.zeros((num_hidden_states, num_actions))
 
-    # Initialize action-level probabilities matrix
-    d2 = np.array([
-        [[1., 0.], [num_actions - 2 * num_actions + 3 * num_actions // 4]]
-          for _ in range(num_hidden_states)]
-      )
+    # Initialize the action maps
+    actions[input_action] = np.random.rand() * (max(input_observation - input_state + 1) / timesteps)
+    
+    # Initialize the inference horizon
+    inference_horizon[input_state][input_observation] = np.zeros((num_hidden_states, num_actions))
 
-    # Initialize state transition matrices
-    d1a = np.array([[[0, 0], [num_actions - 2 * num_actions + 3 * num_actions // 4]
-              for _ in range(num_actions)])
-    d1b = np.array([
-        [[1., 0.], [num_actions - 2 * num_actions + 3 * num_actions // 4]]
-          for _ in range(num_hidden_states)]
-      )
+    return input_state, action_map, inference_horizon
+```
 
-    # Initialize action-level probabilities matrix
-    d2a = np.array([[[0, 0], [1., 0.]]
-              for _ in range(num_actions)])
-    d2b = np.array([
-        [[1.], [num_actions - 2 * num_actions + 3 * num_actions // 4]]
-          for _ in range(num_hidden_states)]
-      )
+This code initializes the state space and action spaces with random inputs and outputs from the input layer. It then initializes the inference horizon by randomly sampling a range of actions between 0 and 1 (inclusive). Finally, it uses the `numpy` library to initialize the inference horizon based on the specified number of levels (`num_hidden_states`, `num_actions`) and timesteps (`timesteps`), which are set to 5.
 
-    # Initialize state-level probabilities matrix
-    d1a_prime = np.array([[[0, 0], [1., 0.]]
-              for _ in range(num_actions)])
-    d2a_prime = np.array([
-        [[1.], [num_actions - 2 * num_actions + 3 * num_actions // 4]]
-          for _ in range(num_hidden_states)]
-      )
+To test this implementation with some examples, you can use the following code:
 
-    # Initialize
+
+```python
+input = np.random.randint(0, 1)
+action = np.random.randint(0, 1)
+observation = np.random.randint(0, 1)
+
+# Test that the GNN model works correctly
+inputs_and_outputs = gnn_hierarchical([input], [actions])
+print("Input:", inputs_and_outputs[

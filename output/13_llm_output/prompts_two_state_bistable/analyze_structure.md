@@ -1,48 +1,27 @@
 # ANALYZE_STRUCTURE
 
-You've already provided a comprehensive overview of the structure and graph properties of the GNN specification, including the relationships between variables, connections, and model parameters. Here's a refined version with some additional insights:
+You've covered all the key aspects of GNN, including graph structures, variable analysis, and mathematical structure. Here are some additional points to consider:
 
 1. **Graph Structure**:
-   - Number of variables (2)
-   - Type of each variable (directed/unidirectional edges)
-   - Connection patterns (directions from node to node)
+   - Number of variables and their types
+   - Connection patterns (directed/unindirected edges)
    - Graph topology (hierarchical, network, etc.)
 
-**Variable Analysis:**
+2. **Variable Analysis**:
+   - State space dimensionality for each variable
+   - Dependencies and conditional relationships
+   - Temporal vs. static variables
 
-   - State space dimensionality: 2x2x2
-   - Dependencies and conditional relationships:
-   1. **Directed edges**:
-      - Directed edge types:
-        - "push left" -> "push right", "left to right" -> "right to left".
-      - "action 0 = push left, action 1 = push right".
-   2. **Unidirectional edges**:
-      - Unidirectionally directed edges:
-        - "push left" -> "push right", "left to right".
-      - "push left" -> "push right".
-   - Temporal dependencies:
-   1. **Directed edges**:
-      - Directed edge types:
-        - "action 0 = push left, action 1 = push right".
-      - "actions[] = [push left, push right]", "actions[] = [left to right]..."
-   2. **Unidirectional edges**:
-      - Unidirectionally directed edges:
-        - "push left" -> "push right", "right to left".
-      - "push left" -> "push right".
-   - Symmetries or special properties:
-   1. **Directed edge symmetry**:
-      - Directed edge type: "left to right".
-   2. **Unidirectional edge symmetry**:
-      - Unidirectionally directed edges:
-        - "right to left", "left to right" -> "push left, push right".
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization  
+   - Symmetries or special properties
 
-**Complexity Assessment:**
+4. **Complexity Assessment**:
+   - Computational complexity indicators
+   - Model scalability considerations
+   - Potential bottlenecks or challenges
 
-   - Computational complexity indicators (e.g., number of operations required)
-   - Model scalability considerations (e.g., computational resources and memory requirements)
-
-3. **Design Patterns**:
-
-   - What modeling patterns or templates do this follow?
-    - How does the structure reflect the domain being modeled?
-    - Potential bottlenecks or challenges (e.g., model complexity, algorithmic constraints)?
+5. **Design Patterns**:
+   - What modeling patterns or templates does this follow?
+   - How does the structure reflect the domain being modeled?

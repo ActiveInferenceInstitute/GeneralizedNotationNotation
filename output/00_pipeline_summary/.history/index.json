@@ -1,5 +1,5 @@
 {
-  "842b11cce6cf": {
+  "64343273631b": {
     "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
     "config": {
       "args": {
@@ -63,6 +63,7 @@
       "continuous/continuous_navigation.md": "bb6eaaf3114149fd8d77ccf5ca79f165aadf094be77ad6a66d76d7613551fea0",
       "continuous/predictive_coding_agent.md": "447738f0a679abdeab23770fb3307128e32c4d688cdcb98123f748d2740025b7",
       "discrete/actinf_pomdp_agent.md": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
+      "discrete/bnlearn_causal_model.md": "6e4b5a97d577f9ae32edfbb1b08694aa8da0c1c77d0b0f2bee5f64558e24951a",
       "discrete/deep_planning_horizon.md": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
       "discrete/hmm_baseline.md": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265",
       "discrete/markov_chain.md": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb",

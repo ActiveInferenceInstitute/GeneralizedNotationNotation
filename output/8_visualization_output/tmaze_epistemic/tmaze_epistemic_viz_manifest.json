@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/tmaze_epistemic/tmaze_epistemic_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 18,
+  "artifact_count": 19,
   "artifacts": [
     "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_graph.png",
     "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_stats.json",
     "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_variable_parameter_bipartite.png",
     "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_A_loc_heatmap.png",
     "output/8_visualization_output/tmaze_epistemic/tmaze_epistemic_B_loc_tensor.png",

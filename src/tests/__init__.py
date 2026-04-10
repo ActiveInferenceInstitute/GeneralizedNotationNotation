@@ -188,19 +188,24 @@ except Exception:
     def generate_json_report_file(*_: Any, **__: Any) -> bool: return True
     def generate_comprehensive_report(*_: Any, **__: Any) -> bool: return True
 
-# Import runner function
+# Import runner functions (split: create_test_runner lives in test_runner_modular, not runner)
 try:
-    from .runner import create_test_runner, run_tests
+    from .runner import run_tests
 except ImportError:
-    # Recovery implementation if runner import fails
+
     def run_tests(logger: Any, output_dir: Any, verbose: bool = False, **kwargs: Any) -> bool:
-        """Recovery test function when module unavailable."""
-        logger.warning("Tests module not available - using recovery")
+        """Recovery test function when runner import fails."""
+        logger.warning("Tests runner not available - using recovery")
         return True
 
+
+try:
+    from .test_runner_modular import create_test_runner
+except ImportError:
+
     def create_test_runner(args: Any, logger: Any) -> Optional[Any]:
-        """Recovery test runner creation."""
-        logger.warning("Test runner not available - using recovery")
+        """Recovery factory when test_runner_modular import fails."""
+        logger.warning("Test runner factory not available - using recovery")
         return None
 
 # Import pytest markers from conftest

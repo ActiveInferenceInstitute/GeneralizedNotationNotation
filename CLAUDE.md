@@ -41,7 +41,12 @@ pytest --cov=src --cov-report=term-missing
 # Using uv (recommended)
 uv sync
 uv run python src/main.py --target-dir input/gnn_files --verbose
+# Install dev deps (pytest) into .venv so ``uv run pytest`` uses the same interpreter as JAX/pymdp
+uv sync --extra dev
 uv run pytest
+# If JAX/pymdp tests skip or ``ModuleNotFoundError: jax`` during tests, another venv may own ``pytest``:
+# unset VIRTUAL_ENV or run ``PYTHONPATH=src .venv/bin/pytest src/tests/ …``
+# Package integrity probe: ``src/utils/jax_stack_validation.py`` (also Step 1 + CI).
 ```
 
 ## Architecture
@@ -117,7 +122,7 @@ Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInf
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (`uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`: 1,906 passed, 30 skipped, 2026-03-24; enable those files when local `ollama` is available) |
+| `src/tests/` | Test suite (`uv sync --extra dev` then `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`: 1,924 passed, 28 skipped, 2026-04-10; enable those files when local `ollama` is available) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/reference/gnn_syntax.md` | Complete GNN syntax specification |
@@ -165,7 +170,8 @@ s=HiddenState
 uv sync --extra dev                  # Development tools
 uv sync --extra api                  # REST API server (FastAPI + uvicorn)
 uv sync --extra llm                  # Redundant with core (kept for compatibility); base install already includes openai, ollama, dotenv, aiohttp
-uv sync --extra visualization        # Optional visualization stack
+uv sync --extra visualization        # Same pins as core (pandas, plotly, seaborn, h5py); optional alias
+uv sync --extra inference            # bnlearn only; same pin as core; optional alias
 uv sync --extra audio                # Audio processing
 uv sync --extra gui                  # GUI interfaces
 uv sync --extra execution-frameworks # Same pins as core Step 12 stack (compatibility / explicit sync)

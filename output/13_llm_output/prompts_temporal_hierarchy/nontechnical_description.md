@@ -10,42 +10,53 @@ Response:
 import numpy as np
 from typing import List, Dict
 
-def gnn_representation(model: Dict[str, List[List[Dict[str, List[int]]]], Dict]) -> List[Dict[str, List[int]]]:
+def gnn_representation(
+    level0: List[Dict],
+    level1: List[Dict],
+    level2: List[Dict],
+    num_levels: int = 3,
+    num_states_l0: int = 4,
+    num_actions_l0: int = 3
+) -> Dict[str, float]:
     """
-    Represent the GNN representation of a neural network.
+    Represent the GNN representation of a three-level hierarchical active inference agent.
 
     Args:
-        model (dict): A dictionary representing the input data and corresponding output data.
-
-    Returns:
-        list(list) - A list of representations for each level.
+        level0 (list): A list of Level 0 states and transitions.
+        level1 (list): A list of Level 1 states and transitions.
+        level2 (list): A list of Level 2 states and transitions.
+        num_levels (int): The number of levels in the hierarchy.
+        num_states_l0 (int): The number of states at which the agent starts its action flow.
+        num_actions_l0 (int): The number of actions that occur within a state.
+        num_states_l1 (int): The number of states where the agent ends its action flow.
+        num_actions_l1 (int): The number of actions that occur within a state.
     """
-    num_levels = len(model["level"])
-    num_states_l0 = len([state])
-    num_actions_l0 = len([action])
-    num_states_l1 = len([state])
 
-    # Represent the GNN representation in a list of lists, where each level represents one observation.
-    representations: List[Dict[str, List[int]]] = []
+    # Initialize the GNN representation with default values for level0 and level2
+    gnn = {}
 
-    for state, actions in model["level"].items():
-        for action in actions:
-            if isinstance(action, dict):
-                representations += [
-                    {
-                        "state": state,
-                        "actions": actions[action],
-                        "prior_beliefs": [],
-                        "policy": {},
-                        "decision__": {}
-                    }
-                ]
+    # Initialize the GNN representations based on the given levels
+    for i in range(num_levels - 3):
+        if level1[i] == 'A':
+            gnn['level'] = 'Tactic'
+        elif level1[i] == 'B':
+            gnn['state'] = 'Action'
+        else:
+            raise ValueError('Invalid level')
 
-            else:
-                representations.append({
-                    "state": state,
-                    "actions": actions[action]
+        # Initialize the GNN representations based on the given actions
+        for i in range(num_actions_l0 - 2):
+            if level2[i] == 'A':
+                gnn.update({
+                    'level1': 'Tactic',
+                    'state' := level1[i],
+                    'action' := level2[i],
+                    'prior' := gnn['state'],
+                    'policy' := gnn['actions'][i],
+                    'observation' := level0[i]
                 })
-
-    return representations
-```
+            elif level2[i] == 'B':
+                gnn.update({
+                    'level1': 'Tactic',
+                    'state' := level1[i],
+                    'action' := level2[

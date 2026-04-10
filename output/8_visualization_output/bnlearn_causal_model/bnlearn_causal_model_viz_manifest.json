@@ -1,0 +1,27 @@
+{
+  "model_name": "bnlearn_causal_model",
+  "viz_meta": {
+    "source": "parsed_json",
+    "json_path": "output/3_gnn_output/bnlearn_causal_model/bnlearn_causal_model_parsed.json",
+    "json_stale": false
+  },
+  "artifact_count": 12,
+  "artifacts": [
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_network_graph.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_network_stats.json",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_ontology_legend.txt",
+    "True",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_variable_parameter_bipartite.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_A_heatmap.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_D_heatmap.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_combined_analysis.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_matrix_size_distribution.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_section_content_length.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_variable_type_distribution.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_generative_model.png"
+  ],
+  "variable_count": 6,
+  "connection_count": 3,
+  "parameter_count": 2,
+  "ontology_label_count": 6
+}

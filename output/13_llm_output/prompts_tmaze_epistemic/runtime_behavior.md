@@ -9,56 +9,47 @@ Response:
 ```python
 import numpy as np
 from scipy import stats
-from scipy import linalg
 
-def gnn_model(x, x_prime):
-    """GNN model for the T-maze task."""
+def gnn_model(num_locations, num_contexts):
+    """GNN representation of a GNN model."""
 
-    # Initialize state matrices
-    A = np.array([[1., 0.], [0., 1.]])
-    B = np.array([
-        [[0., 0.], [0., 0.]],
-        [[0., 0.], [0., 0.]]
-    ]).T
+    # Initialize the state space matrix
+    states = np.zeros((num_location_obs + 1, num_location_obs))
     
-    # Initialize transition matrix
-    C_loc=np.array([[[0.]]]*x_prime[-1]]) + np.array([]) * x_prime[:-2][-3:]
+    for i in range(num_location_obs+1):
+        for j in range(num_contexts):
+            if (i == 0 and j!= 0) or (j==num_locations-1 and i!= num_locations-2):
+                states[i, j] = np.random.randint(-1, 1, size=(num_location_obs+1))
+    
+    # Initialize the reward matrix
+    reward_matrix = np.zeros((num_location_obs + 1, num_location_obs))
 
-    # Initialize reward vector
-    D_loc = np.array([
-        [[0., 0.], [0., 0.]],
-        [[0., 0.], [0., 0.]]
-    ]).T
+    for i in range(num_locations):
+        reward_matrix[i] = stats.normalvariate(-np.random.randint(*states), **states)
     
-    # Initialize action matrix
-    C_rew=np.array([[[1./2**x_prime[-1]]]*x_prime[:-3][-4:]]) + np.array([]) * x_prime[:3,:]:
+    # Initialize the action matrix
+    action_matrix = np.zeros((num_contexts+2, num_contexts+1))
+    
+    for i in range(num_location_obs):
+        reward_matrix[i] = stats.normalvariate(-np.random.randint(*actions), **actions)
 
-    # Initialize reward vector
-    D_ins = np.array([
-        [[0., 0.], [0., 0.]],
-        [[0., 0.], [0., 0.]]
+    # Initialize the inference matrix
+    inference_matrix = np.zeros((num_locations + 2, num_locations+1))
     
-    ]).T
-    
-def gnn(x):
-    """GNN model for the T-maze task."""
+    for i in range(num_location_obs):
+        reward_history[i] = stats.normalvariate(-np.random.randint(*states), **actions)
 
-    # Initialize state matrices
-    A = np.array([[1./2**x_prime[-1]]]*x_prime[:-3][-4:]) + np.array([]) * x_prime[:3,:]:
+    # Initialize the transition matrix
+    transition_matrix = np.zeros((num_contexts + 2, num_contexts+1))
     
-    # Initialize reward vector
-    D_loc=np.array([
-        [[0., 0.], [0., 0.]],
-        [[0., 0.], [0., 0.]]
-    ]).T
-    
-def gnn(x):
-    """GNN model for the T-maze task."""
+    for i in range(num_location_obs):
+        reward_history[i] = stats.normalvariate(-np.random.randint(*states), **actions)
 
-    # Initialize state matrices
-    A = np.array([[1./2**x_prime[-1]]]*x_prime[:-3][-4:]) + np.array([]) * x_prime[:3,:]:
+    # Initialize the action matrix
+    action_history[0:3] = np.zeros((num_locations + 2, num_locations+1))
     
-    # Initialize reward vector
-    D_rew=np.array([
-        [[0., 0.], [0., 0.]],
-        [[0., 0.], [0., 0.]]
+    for i in range(num_location_obs):
+        reward_history[i] = stats.normalvariate(-np.random.randint(*states), **actions)
+
+    # Initialize the inference matrix
+    inference_matrix = np.zeros((num_locations + 2, num_locations

@@ -1,84 +1,21 @@
 # ANALYZE_STRUCTURE
 
-Here's a detailed analysis of the GNN representation:
+Based on the information provided, here are the key structural analysis points:
 
 1. **Graph Structure**:
-   - Number of variables and their types (num_hidden_states, num_obs)
-   
-   - Connection patterns (directed/unindirected edges):
-   - Graph topology (hierarchical, network, etc.):
-   - Symmetries or special properties
-
-**Signature:**
-
-1. **Graph Structure**:
-   - Number of variables and their types:
-   - Connection patterns:
-   - Graph topology:
-   - Symmetry or special properties:
-   
-   - Computational complexity indicators:
-   - Model scalability considerations:
-   
-   - Potential bottlenecks/challenges:
-
-   **Number of Variables**
-     - Num_hidden_states = 3 (num_observations)
-      - Num_obs = 3 (num_actions)
-         - Num_timesteps = 30
-      
-   **Graph topology**:
-   - Number of edges between variables:
-   
-   **Symmetry or special properties**:
-   - Connection pattern type:
-     - "Temporal" (connected to actions):
-     - "Dynamic" (connecting to reward observations):
-     - "Unbounded" (not connected to action-observation mapping)
+   - Number of variables and their types (e.g., actions, states)
+   - Connection patterns (directed/unindirected edges)
+   - Graph topology (hierarchical, network, etc.)
 
 2. **Variable Analysis**:
    - State space dimensionality for each variable
-   
-   - Dependencies and conditional relationships:
+   - Dependencies and conditional relationships
    - Temporal vs. static variables
 
-**Signature:**
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization (e.g., symmetry)
 
-  1. **Graph Structure**:
-   - Number of variables and their types:
-   - Connection patterns (directed/unindirected edges):
-   - Graph topology:
-   - Symmetry or special properties
-
-3. **Variable Analysis**:
-   - State space dimensionality for each variable
-   
-   - Dependencies and conditional relationships:
-   - Temporal vs. static variables
-
-**Signature:**
-
-  1. **Graph Structure**:
-   - Number of variables and their types:
-   - Connection patterns (directed/unindirected edges):
-   - Graph topology:
-   - Symmetry or special properties
-
-4. **Variable Analysis**:
-   - State space dimensionality for each variable
-   
-   - Dependencies and conditional relationships:
-   - Temporal vs. static variables
-
-**Signature:**
-
-  1. **Graph Structure**:
-   - Number of variables and their types:
-   - Connection patterns (directed/unindirected edges):
-   - Graph topology:
-   - Symmetry or special properties
-
-5. **Variable Analysis**:
-   - State space dimensionality for each variable
-   
-   - Dependencies and
+4. **Complexity Assessment**:
+   - Computational complexity indicators (e.g., number of operations, time complexity)
+   - Model scalability considerations (e.g., performance metrics)

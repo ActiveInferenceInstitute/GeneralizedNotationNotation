@@ -1,47 +1,107 @@
 {
-  "timestamp": "2026-03-24T14:11:48.654278",
+  "timestamp": "2026-04-10T10:35:03.796230",
   "execution_results_dir": "output/12_execute_output/two_state_bistable",
   "framework_results": {
-    "rxinfer": {
-      "framework": "rxinfer",
+    "bnlearn": {
+      "framework": "bnlearn",
+      "result_count": 1,
+      "analyses": []
+    },
+    "discopy": {
+      "framework": "discopy",
+      "result_count": 1,
+      "analyses": []
+    },
+    "jax": {
+      "framework": "jax",
+      "result_count": 1,
+      "analyses": []
+    },
+    "pytorch": {
+      "framework": "pytorch",
+      "result_count": 1,
+      "analyses": []
+    },
+    "pymdp": {
+      "framework": "pymdp",
       "result_count": 2,
       "analyses": [
         {
-          "framework": "rxinfer",
+          "framework": "pymdp",
           "model_name": "Two State Bistable POMDP",
           "free_energy_count": 15,
           "free_energy_values": [
-            0.8214006343287878,
-            0.7918472555037938,
-            0.7847175107461359,
-            0.8780676188768495,
-            0.8061824230203888,
-            1.1411439034672777,
-            1.2679668401875857,
-            0.7606462900802938,
-            0.7774068695509644,
-            0.7813084123541172,
-            0.8798368728919357,
-            1.1798667903049855,
-            0.7721671523294156,
-            0.8847324063868016,
-            0.8365906045057312
+            [
+              1.3821964263916016,
+              0.9579540491104126
+            ],
+            [
+              1.1261727809906006,
+              1.2551548480987549
+            ],
+            [
+              1.397359848022461,
+              0.9339520335197449
+            ],
+            [
+              1.427950143814087,
+              0.8820969462394714
+            ],
+            [
+              1.4340298175811768,
+              0.8711796998977661
+            ],
+            [
+              1.167510747909546,
+              1.2173575162887573
+            ],
+            [
+              1.0391955375671387,
+              1.3257019519805908
+            ],
+            [
+              1.0905184745788574,
+              1.2854559421539307
+            ],
+            [
+              1.4042868614196777,
+              0.9226304292678833
+            ],
+            [
+              1.429337501525879,
+              0.8796248435974121
+            ],
+            [
+              1.1633261442184448,
+              1.2213222980499268
+            ],
+            [
+              1.3892998695373535,
+              0.9468395709991455
+            ],
+            [
+              1.4263269901275635,
+              0.884975254535675
+            ],
+            [
+              1.4337100982666016,
+              0.8717594742774963
+            ],
+            [
+              1.4351625442504883,
+              0.8691213726997375
+            ]
           ],
-          "mean_free_energy": 0.8909254389690043,
-          "std_free_energy": 0.1592954788059647,
-          "min_free_energy": 0.7606462900802938,
-          "max_free_energy": 1.2679668401875857,
-          "free_energy_trend": 0.002924349953276042,
-          "free_energy_decreasing": "False",
-          "convergence_variance": 0.0021265500777415697,
+          "mean_free_energy": 1.1690503338972726,
+          "std_free_energy": 0.01538319271375833,
+          "min_free_energy": 1.152141958475113,
+          "max_free_energy": 1.1924341320991516,
+          "free_energy_trend": -0.001166729096855403,
+          "free_energy_decreasing": "True",
+          "convergence_variance": 2.3522990867756257e-06,
           "converged": true
         }
       ]
-    },
-    "numpyro": {
-      "framework": "numpyro",
-      "result_count": 1,
-      "analyses": []
     },
     "activeinference_jl": {
       "framework": "activeinference_jl",
@@ -124,137 +184,85 @@
         }
       ]
     },
-    "pymdp": {
-      "framework": "pymdp",
+    "numpyro": {
+      "framework": "numpyro",
+      "result_count": 1,
+      "analyses": []
+    },
+    "rxinfer": {
+      "framework": "rxinfer",
       "result_count": 2,
       "analyses": [
         {
-          "framework": "pymdp",
+          "framework": "rxinfer",
           "model_name": "Two State Bistable POMDP",
           "free_energy_count": 15,
           "free_energy_values": [
-            [
-              -1.097220927401219,
-              -0.7941906243709157
-            ],
-            [
-              -1.0323833550560573,
-              -0.8447931674658697
-            ],
-            [
-              -1.0592279175023331,
-              -0.8231087641857278
-            ],
-            [
-              -0.7185648919737573,
-              -1.211069637902372
-            ],
-            [
-              -0.9811512957012751,
-              -0.8893235855806447
-            ],
-            [
-              -1.0794144114315838,
-              -0.8074941755968087
-            ],
-            [
-              -0.7151656560526813,
-              -1.2167817558110159
-            ],
-            [
-              -0.6961005566474558,
-              -1.2499700146392123
-            ],
-            [
-              -0.9622840351980116,
-              -0.9068503446083614
-            ],
-            [
-              -0.7379314699022176,
-              -1.1796086191631794
-            ],
-            [
-              -0.9958792326872539,
-              -0.8760771111683032
-            ],
-            [
-              -0.7305735525910171,
-              -1.1913513851846542
-            ],
-            [
-              -0.6991796302300236,
-              -1.244471819591809
-            ],
-            [
-              -0.6929378105800134,
-              -1.2556759736963659
-            ],
-            [
-              -0.9594529402147486,
-              -0.9095361049851131
-            ]
+            0.8214006343287878,
+            0.7918472555037938,
+            0.7847175107461359,
+            0.8780676188768495,
+            0.8061824230203888,
+            1.1411439034672777,
+            1.2679668401875857,
+            0.7606462900802938,
+            0.7774068695509644,
+            0.7813084123541172,
+            0.8798368728919357,
+            1.1798667903049855,
+            0.7721671523294156,
+            0.8847324063868016,
+            0.8365906045057312
           ],
-          "mean_free_energy": -0.9519256922373334,
-          "std_free_energy": 0.015003635609597296,
-          "min_free_energy": -0.9743068921381897,
-          "max_free_energy": -0.9344945225999308,
-          "free_energy_trend": -0.0009826711723668195,
-          "free_energy_decreasing": "True",
-          "convergence_variance": 0.0003316444027827007,
+          "mean_free_energy": 0.8909254389690043,
+          "std_free_energy": 0.1592954788059647,
+          "min_free_energy": 0.7606462900802938,
+          "max_free_energy": 1.2679668401875857,
+          "free_energy_trend": 0.002924349953276042,
+          "free_energy_decreasing": "False",
+          "convergence_variance": 0.0021265500777415697,
           "converged": true
         }
       ]
-    },
-    "pytorch": {
-      "framework": "pytorch",
-      "result_count": 1,
-      "analyses": []
-    },
-    "jax": {
-      "framework": "jax",
-      "result_count": 1,
-      "analyses": []
-    },
-    "discopy": {
-      "framework": "discopy",
-      "result_count": 1,
-      "analyses": []
     }
   },
   "cross_framework_comparison": {
     "model_name": "two_state_bistable",
     "frameworks_compared": [
-      "rxinfer",
-      "numpyro",
-      "activeinference_jl",
-      "pymdp",
-      "pytorch",
+      "bnlearn",
+      "discopy",
       "jax",
-      "discopy"
+      "pytorch",
+      "pymdp",
+      "activeinference_jl",
+      "numpyro",
+      "rxinfer"
     ],
-    "framework_count": 7,
+    "framework_count": 8,
     "comparisons": {
       "execution_time": {
-        "rxinfer": 25.208203,
-        "numpyro": 1.460794,
-        "activeinference_jl": 28.78397,
-        "pymdp": 4.361664,
-        "pytorch": 0.959859,
-        "jax": 1.158032,
-        "discopy": 0.426348
+        "bnlearn": 1.827688,
+        "discopy": 0.237351,
+        "jax": 0.649846,
+        "pytorch": 0.533655,
+        "pymdp": 2.51209,
+        "activeinference_jl": 13.959456,
+        "numpyro": 0.624404,
+        "rxinfer": 13.704146
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.426348
+        "time": 0.237351
       },
       "success_rates": {
-        "rxinfer": true,
-        "numpyro": true,
-        "activeinference_jl": true,
-        "pymdp": true,
-        "pytorch": true,
+        "bnlearn": true,
+        "discopy": true,
         "jax": true,
-        "discopy": true
+        "pytorch": true,
+        "pymdp": true,
+        "activeinference_jl": true,
+        "numpyro": true,
+        "rxinfer": true
       }
     }
   }

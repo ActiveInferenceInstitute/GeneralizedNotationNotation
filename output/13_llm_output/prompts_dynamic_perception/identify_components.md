@@ -1,13 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-You've already done a good job of describing the key components in the GNN specification:
-
-A dynamic perception model extends the static model with temporal dynamics, allowing for more nuanced observation-based inference. Here's a systematic breakdown of the key components and their relationships:
+You've already covered the key concepts:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -16,7 +15,8 @@ A dynamic perception model extends the static model with temporal dynamics, allo
 3. **Action/Control Variables**:
    - Available actions and their effects
    - Control policies and decision variables
-   - Action space properties (e.g., probability distributions, distributional properties)
+   - Action space properties
+
 4. **Model Matrices**:
    - A matrices: Observation models P(o|s)
    - B matrices: Transition dynamics P(s'|s,u)
@@ -27,6 +27,7 @@ A dynamic perception model extends the static model with temporal dynamics, allo
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
+
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components

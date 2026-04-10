@@ -254,7 +254,15 @@ class TestUVSetupValidation:
         assert isinstance(result, dict), "validate_uv_setup should return a dict"
 
         # Check expected keys
-        expected_keys = ["system_requirements", "uv_environment", "dependencies", "overall_status"]
+        expected_keys = [
+            "system_requirements",
+            "uv_environment",
+            "dependencies",
+            "jax_installation",
+            "jax_stack_functional",
+            "overall_status",
+            "python_version",
+        ]
         for key in expected_keys:
             assert key in result, f"Result missing key: {key}"
 
@@ -262,6 +270,8 @@ class TestUVSetupValidation:
         assert result["system_requirements"] is True, "System requirements check should pass"
         assert result["uv_environment"] is True, "UV environment check should pass"
         assert result["dependencies"] is True, "Dependencies check should pass"
+        assert result["jax_stack_functional"] is True, "JAX + pymdp stack must be functional (core deps)"
+        assert result["jax_installation"] is True, "JAX installation should be reported OK"
         assert result["overall_status"] is True, "Overall status should be True"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")

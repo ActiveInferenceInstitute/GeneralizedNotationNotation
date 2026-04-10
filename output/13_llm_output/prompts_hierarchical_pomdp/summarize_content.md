@@ -1,45 +1,27 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN specification:
 
 **Model Overview:**
-This model represents a hierarchical POMDP where:
+This is a hierarchical active inference POMDP (POMDP) that models a hierarchical network of beliefs represented by two-level hierarchies, each containing one observation and one hidden state. The model consists of three main components:
 
-1. **Level 1**: A high-dimensional probability distribution over observations, with each observation being a single random variable (each observation has two possible outcomes). The probability distributions are based on the actions and beliefs of the agents.
+1. **Hierarchical Belief Propagation**: A set of 4 observations are fed into the first layer to generate a probability distribution over the next level. This is followed by a sequence of actions that update beliefs based on observed data from the previous layers.
 
-2. **Level 2**: A probabilistic graph structure representing the history of actions and beliefs across multiple levels. Each level is represented by a set of nodes that represent observations, while each node represents an action or belief.
+2. **Contextual Information**: The second layer contains information about the current state and its associated predictions, allowing for inference towards new states or actions.
 
-3. **Key Variables**:
-   - Hidden states: [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls: [list with brief descriptions]
-
-   **Critical Parameters:**
-   - Most important matrices (A, B) and their roles
-   - Key hyperparameters and settings
-
-4. **Notable Features**:
-   - Special properties or constraints
-   - Unique aspects of this model design
+3. **Higher-Level Belief Propagation**: A set of 4 observations are fed into the third layer to generate a probability distribution over the next level. This is followed by a sequence of actions that update beliefs based on observed data from the previous layers and higher-level predictions.
 
 **Key Variables:**
-   - Hidden states: [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls: [list with brief descriptions]
+This model consists of three main components:
 
-   **Critical Parameters:**
-   - Most important matrices (A, B) and their roles
-   - Key hyperparameters and settings
+1. **Hierarchical Belief Propagation**: A set of 4 observations are fed into the first layer to generate a probability distribution over the next level. This is followed by a sequence of actions that update beliefs based on observed data from the previous layers and higher-level predictions.
+2. **Contextual Information**: The second layer contains information about the current state and its associated predictions, allowing for inference towards new states or actions.
 
-5. **Notable Features**:
-   - Special properties or constraints
-   - Unique aspects of this model design
+3. **Higher-Level Belief Propagation**: A set of 4 observations are fed into the third layer to generate a probability distribution over the next level. This is followed by a sequence of actions that update beliefs based on observed data from the previous layers and higher-level predictions.
 
-**Use Cases:**
-   - Hierarchical Active Inference POMDP with slow higher-level dynamics: A hierarchical POMDP where actions are slower but more constrained than in other models (GNN v1)
-   - GNN Representation with special features and constraints
+**Critical Parameters:**
+This model consists of three main parameters:
 
-6. **Signature**:
-   - Cryptographic signature goes here
-
-**Summary:** This model is a hierarchical POMDP representing the history of actions, beliefs, and observations across multiple levels. Each level has hidden states, actions/beliefs, and control variables. Key parameters are hidden state distribution (A), action distributions (B) and their roles (C). Special features include constrained actions and restricted beliefs in GNN v1 with special properties. Use cases include hierarchical POMDP with slow higher-level dynamics, GNN Representation with special features and constraints.
+1. **Initial Parameterization**: A set of 4 observations are fed into the first layer to generate a probability distribution over the next level. This is followed by a sequence of actions that update beliefs based on observed data from the previous layers and higher-level predictions.
+2. **Dynamic Parameters**: A set of 3 hidden states (LikelihoodMatrix, TransitionMatrix) are updated every 5 timesteps to generate new probabilities for each observation. These dynamics can be viewed as a sequence of actions that update beliefs based on observed data from the previous layers and higher-level predictions.
+3. **Discrete Parameters**:

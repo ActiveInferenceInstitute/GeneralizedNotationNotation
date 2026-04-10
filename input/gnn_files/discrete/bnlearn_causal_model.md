@@ -31,16 +31,17 @@ A Bayesian Network model mapping Active Inference structure:
 A[2,2,type=float]    # P(O | S)
 B[2,2,2,type=float]  # P(S | S_prev, A)
 
-# Dimensions
+# Dimensions (names must match Connections; see gnn_syntax Connections)
 s[2,1,type=float]
+s_prev[2,1,type=float]
 o[2,1,type=int]
 a[2,1,type=int]
 
 ## Connections
 
-S_prev>S
-A>S
-S>O
+s_prev>s
+a>s
+s>o
 
 ## InitialParameterization
 
@@ -56,7 +57,7 @@ D={(0.5, 0.5)}
 ## Equations
 
 # Structure Learning
-# DAG = make_DAG([('S_prev', 'S'), ('A', 'S'), ('S', 'O')])
+# DAG = make_DAG([('s_prev', 's'), ('a', 's'), ('s', 'o')])
 
 ## Time
 
@@ -67,6 +68,7 @@ Dynamic
 A=ObservationModel
 B=TransitionModel
 s=HiddenState
+s_prev=PreviousState
 o=Observation
 a=Action
 

@@ -1,29 +1,21 @@
 # EXPLAIN_MODEL
 
-Here's a concise summary of the key points:
+1. The model represents a classic active inference paradigm from Friston et al., which is based on the idea of "active inference" and "informed exploration." This paradigm allows agents to explore environments with uncertain outcomes by exploring different locations or actions before committing to an arm, while also providing information about their own location in each scenario.
 
-1. The GNN represents an active inference paradigm that allows agents to explore and exploit environments based on their knowledge and biases.
-   - The model uses hidden states (s_f0, s_f1) and observations (o_m0, o_m1, etc.) to represent the agent's actions and decisions.
-   - The model updates beliefs through a sequence of actions and interactions with control variables (actions).
-   - The goal is to reduce uncertainty about context before committing to reward arms or exploring exploration-exploitation strategies.
+2. The model consists of 4 hidden states (s_f0, s_f1, etc.) and 3 observations (o_m0, o_m1, etc.). These are represented by the following matrices:
+   - s_loc[4,1,type=float] represents location information in each scenario.
+   - o_loc[4,1,type=int] represents location observation information.
+   - A_loc[4,1,type=float] represents reward/cue information for each arm and cue locations.
+   - B_loc[4,1,2,type=float] represents reward/cue information for each arm and cue locations.
+   - C_loc[4,1,2,type=int] represents reward/cue information for each arm and cue locations.
+   - D_loc[4,1,2,type=float] represents reward/cue information for each arm and cue locations.
 
-2. The core components include:
-    - **Hidden states**: Represent the agent's knowledge, biases, and expectations in their environment.
-    - **Observations**: Capture actions taken by agents (actions) based on hidden state information.
-    - **Actions**: Represent actions taken by agents (actions).
-   - **Control variables** represent control mechanisms that allow for exploration or exploitation of environments.
-    - **State factors** capture the relationships between states and actions, enabling agent-level decisions.
+3. The model uses a hidden state matrix to represent the location of agents in each scenario. This allows it to explore different locations without needing to make decisions about which direction to move next. It also provides information about its own location based on observations from other arms or actions, allowing it to learn new behaviors and improve exploration over time.
 
-3. **Model dynamics**: The model evolves over time through a sequence of actions and interactions with control variables.
-   - **Actions**: Represent actions taken by agents (actions).
-   - **Control variables** represent control mechanisms that allow for exploration or exploitation of environments.
-    - **State factors** capture the relationships between states and actions, enabling agent-level decisions.
+4. The model uses a sequence of actions (u_c0, π_c0) to update the beliefs of agents in each scenario. These actions are represented by matrices:
+   - u[1,2] represents the action for arm A-C-B-E-F and agent A-A-D-E-G-H-I (agent's behavior).
+   - π_c0 is a vector representing the reward/cue information for arm A-C-B-E-F.
 
-4. **Active inference context**: The model learns to predict future behavior based on past predictions and interactions with control variables.
-   - **Predictions**: Represent the updated beliefs about the agent's state and action dynamics over time.
-    - **Decision probabilities** represent the probability of observing a reward or avoiding an error.
+5. The model uses a sequence of actions to update the beliefs of agents in each scenario, allowing it to learn new behaviors and improve exploration over time. This process can be thought of as "active inference" or "informed exploration."
 
-5. **Practical implications**: The GNN can inform decisions by providing accurate forecasts based on past predictions and interactions with control variables.
-   - **Action-based decision making**: The model enables agents to make informed decisions about exploration, exploitation, and trade-offs in the active inference paradigm.
-
-Please provide clear explanations of each component and key relationships for a comprehensive understanding of this model's capabilities and limitations.
+Overall, this model represents a classic active inference paradigm that allows agents to explore environments with uncertain outcomes while also

@@ -6,35 +6,20 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of your data:
-```python
-import numpy as np
-from scipy import stats
+This section provides a concise overview of the structure and functionality of the Factor Graph Active Inference Model (FAI). It covers the following key components:
 
-def gnn_representation(data):
-    """Generate a GNN Representation for your data."""
+1. **Factored Observation**: A set of observations, where each observation is associated with two independent variables (`o_vis` and `s_pos`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each observation depends on the modality (visual or proprioceptive) being considered.
 
-    # Define the number of observation modalities (visual, proprioceptive)
-    num_observations = 6
-    
-    # Define the number of variables in each modality
-    num_variables = 3
+2. **Observation Types**: A set of predefined types, where each type corresponds to different modalities and can be associated with specific variables (`o_vis` and `s_pos`) that are used to compute a joint probability distribution over the observed data.
 
-    # Define the number of observations per modality
-    num_obs = 4
-    
-    # Define the number of actions for each modality
-    num_actions = 2
-    
-    # Define the number of timesteps to generate GNN representations
-    num_timesteps = 10
-    
-    # Generate a GNN Representation for your data
-    gnn_representation(data)
-```
-This code generates a GNN representation for your data, where each observation modality is represented as a vector of observations and action-independent variables are represented as vectors of actions. The number of observations per modality is defined by the number of modalities (`num_observations`), while the number of actions is defined by `num_actions`.
-The code generates a GNN Representation for your data, where each observation modality is represented as a vector of observations and action-independent variables are represented as vectors of actions. The number of observations per modality is defined by the number of modalities (`num_observations`), while the number of actions is defined by `num_actions`.
-The code generates a GNN Representation for your data, where each observation modality is represented as a vector of observations and action-independent variables are represented as vectors of actions. The number of observations per modality is defined by the number of modalities (`num_observations`), while the number of actions is defined by `num_actions`.
-The code generates a GNN Representation for your data, where each observation modality is represented as a vector of observations and action-independent variables are represented as vectors of actions. The number of observations per modality is defined by the number of modalities (`num_observations`), while the number of actions is defined by `num_actions`.
-The code generates a GNN Representation for your data, where each observation modality is represented as a vector of observations and action-independent variables are represented as vectors of actions. The number of observations per modality is defined by the number of modalities (`num_observations`), while the number of actions is defined by `num_actions`.
-The code generates a GNN
+3. **Visual Observation**: A visual observation (a collection of observations) is associated with two independent variables (`o_vis` and `s_vel`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each visual observation depends on the modality being considered.
+
+4. **Proprioceptive Observation**: A proprioceptive observation (a collection of observations) is associated with two independent variables (`o_prop` and `s_vel`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each proprioceptive observation depends on the modality being considered.
+
+5. **Proprioceptive Observation Types**: A set of predefined types, where each type corresponds to different modalities and can be associated with specific variables (`s_pos` and `B_vel`) that are used to compute a joint probability distribution over the observed data.
+
+6. **Visual Observation Types**: A visual observation (a collection of observations) is associated with two independent variables (`o_vis` and `b_prop`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each visual observation depends on the modality being considered.
+
+7. **Visual Observation Types**: A set of predefined types, where each type corresponds to different modalities and can be associated with specific variables (`s_pos` and `C_vis`) that are used to compute a joint probability distribution over the observed data.
+
+This structure allows for efficient inference across modality-specific combinations of observation types, enabling more accurate predictions from the same set of observations. The choice of which variable to use depends on the modality being considered, with visual observations typically

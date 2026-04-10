@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/two_state_bistable/two_state_bistable_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 15,
+  "artifact_count": 16,
   "artifacts": [
     "output/8_visualization_output/two_state_bistable/two_state_bistable_network_graph.png",
     "output/8_visualization_output/two_state_bistable/two_state_bistable_network_stats.json",
     "output/8_visualization_output/two_state_bistable/two_state_bistable_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/two_state_bistable/two_state_bistable_variable_parameter_bipartite.png",
     "output/8_visualization_output/two_state_bistable/two_state_bistable_A_heatmap.png",
     "output/8_visualization_output/two_state_bistable/two_state_bistable_B_tensor.png",

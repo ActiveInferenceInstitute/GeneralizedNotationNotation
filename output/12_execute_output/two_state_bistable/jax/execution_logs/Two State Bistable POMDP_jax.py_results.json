@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/jax/Two State Bistable POMDP_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.158032,
-  "timestamp": "2026-03-24T13:58:55.706554",
+  "execution_time": 0.649846,
+  "timestamp": "2026-04-10T10:26:12.659539",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -113,7 +113,7 @@
     "num_timesteps": 15
   },
   "execution_metadata": {
-    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1309,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/two_state_bistable/jax"

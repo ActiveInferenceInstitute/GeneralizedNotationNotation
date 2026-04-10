@@ -1,32 +1,32 @@
 # EXPLAIN_MODEL
 
-Here is a concise overview of the GNN example:
+Here's a concise overview of the key components and core concepts:
 
-**Model Purpose:** This GNN represents a hierarchical active inference POMDP with slow dynamics and a probabilistic graphical model. The model consists of three main components:
+**Model Purpose:** This is an active inference POMDP that represents a hierarchical neural network with two-level hierarchies (Level 1 and Level 2) and slower dynamics in the lower levels (Contextual HIDDEN states). The model aims to learn patterns, make predictions based on observed data, and update beliefs.
 
-1. **Hierarchical Active Inference POMDP**: A two-level hierarchical POMDP where each level has 4 observations, 2 hidden states, 3 actions, and 2 contextual states (contexts are represented by matrices). Each observation is updated based on the next layer of the hierarchy.
+**Core Components:**
 
-2. **Model Parameters**: The model includes a set of parameters representing the hidden state distributions for each level, as well as the observed observations and actions. These represent the dynamics of the POMDP at different levels.
+1. **Hierarchical Neural Network**: A hierarchical neural network with two-level hierarchies (Level 1 and Level 2) that process observations in a sequential manner. Each layer has its own hidden state distribution, which is updated using the action/observation transition matrix. The model learns patterns based on observed data and updates beliefs accordingly.
 
-3. **Action Constraints**: There are two types of action constraints:
-   - **Contextual Actions**: Actions that depend on the current observation (context) or context-dependent actions (action). The goal is to update the observed observations based on the next level of the hierarchy, which can be done using a probabilistic graphical model.
+2. **Contextual HIDDEN States**: A set of hidden states (s_f0, s_f1) that represent actions or decisions made by the network at each level. These hidden states are updated using the action/observation transition matrix to reflect changes in the network's behavior.
 
-4. **Prediction**: There are two types of prediction:
-   - **Contextual Actions**: Actions that depend on the current observation and context. These predictions are updated by applying contextual actions (context-dependent actions) to the observed observations.
-   - **Action Constraints**: Actions that depend on the next level of the hierarchy, which can be done using a probabilistic graphical model.
+3. **Higher-Level Neural Network**: A hierarchical neural network with higher levels of nested networks (Contextual HIDDEN states). Each layer has its own hidden state distribution, which is updated using the action/observation transition matrix to reflect changes in the network's behavior at each level. The model learns patterns based on observed data and updates beliefs accordingly.
 
 **Model Dynamics:**
 
-1. **Initialization**: The model initializes with the learned hidden state distributions and observation matrices for each level. It then updates these parameters based on the observed observations and actions.
+1. **Action Transitions**: Actions are propagated through the network by updating their probabilities based on the actions learned from previous layers. These transitions are updated using the action/observation transition matrix to reflect changes in the network's behavior at each level.
 
-2. **Learning**: The model learns to update its parameters based on the predictions made by the probabilistic graphical model. This is done using a probabilistic graphical model, which allows the model to learn from uncertainty in the data.
-
-**Active Inference Context:**
-
-1. **Initialization**: The model initializes with the learned hidden state distributions and observation matrices for each level. It then updates these parameters based on the observed observations and actions.
-
-2. **Learning**: The model learns to update its parameters based on the predictions made by the probabilistic graphical model, which allows it to learn from uncertainty in the data.
+2. **Contextual HIDDEN States**: Contextual hidden states represent the observed data and can be used for prediction or inference purposes. They are updated by updating their probabilities based on the actions learned from previous layers.
 
 **Practical Implications:**
 
-1. **Decision-making**: The model can make decisions based on the learned hidden state distributions and observation matrices for each level. This enables decision-makers to update
+1. **Learning Patterns**: The model learns patterns in the network's behavior, enabling it to make predictions about future outcomes based on past observations.
+
+2. **Action Recognition**: The model can recognize patterns and make predictions based on observed data by updating its beliefs accordingly.
+
+3. **Decision-Making**: The model can inform decisions using a combination of action recognition and prediction capabilities.
+
+**Key Relationships:**
+
+1. **Contextual HIDDEN States**: These hidden states represent the observed data, allowing the network to learn patterns based on it.
+

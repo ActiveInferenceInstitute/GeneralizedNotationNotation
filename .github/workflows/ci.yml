@@ -53,6 +53,14 @@ jobs:
       - name: Install dependencies (dev)
         run: uv sync --frozen --extra dev
 
+      - name: Validate JAX + PyMDP stack (core)
+        run: |
+          uv run python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
+
+      - name: Ruff check
+        if: matrix.python-version == '3.12'
+        run: uv run ruff check src/
+
       - name: Run unit and integration tests (skip pipeline & MCP)
         id: pytest
         run: |
@@ -96,30 +104,6 @@ jobs:
           print("MCP tool count OK")
           PY
 
-  lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Install dependencies (dev)
-        run: uv sync --frozen --extra dev
-
-      - name: Ruff check
-        run: uv run ruff check src/
-
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -149,15 +133,22 @@ jobs:
           uv run bandit -r src -c pyproject.toml \
             --severity-level medium \
             --confidence-level medium \
-            -f json \
-            -o bandit-results.json
+            -f sarif \
+            -o bandit-results.sarif
 
-      - name: Upload Bandit report artifact
+      - name: Upload Bandit SARIF to code scanning
+        if: always() && hashFiles('bandit-results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: bandit-results.sarif
+          category: bandit
+
+      - name: Upload Bandit SARIF artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bandit-results
-          path: bandit-results.json
+          path: bandit-results.sarif
           if-no-files-found: warn
 
       - name: Fail if Bandit reported issues

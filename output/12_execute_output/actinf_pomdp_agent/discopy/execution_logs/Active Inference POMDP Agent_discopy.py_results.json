@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.467377,
-  "timestamp": "2026-03-24T13:59:20.341109",
+  "execution_time": 0.235728,
+  "timestamp": "2026-04-10T10:25:40.766419",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -49,7 +49,7 @@
     }
   },
   "execution_metadata": {
-    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1570,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"

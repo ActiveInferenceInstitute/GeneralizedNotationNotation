@@ -9,8 +9,19 @@ Response:
 ```python
 import numpy as np
 from scipy import stats
+from scipy import stats, math
 
-# Define the initial state of the system: empty grid, no signal, goal position
-initial_state = np.array([
-    (0., 0.), 
-    (16739215483333333333333333333333333333333
+# Define the environment parameters
+env_signal = np.array([
+    (0.75, 0.75, 0.75, 0.75),
+    (-0.25, -0.25, -0.25, -0.25)
+])
+
+# Define the initial environment parameters
+num_agents = 3
+grid_size = 9
+num_actions = 4
+signal_decay = 1e-6
+signal_deposit_rate = 0.3
+num_timesteps = 30
+```

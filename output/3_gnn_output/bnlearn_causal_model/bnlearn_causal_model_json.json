@@ -1,0 +1,178 @@
+{
+  "annotation": "A Bayesian Network model mapping Active Inference structure:\n- S: Hidden State\n- A: Action\n- S_prev: Previous State\n- O: Observation",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_prev"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "a"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-04-10T10:24:32.870577",
+  "equations": [],
+  "extensions": {
+    "footer": "Bnlearn Causal Discovery Model mapping POMDP structure to a Bayesian Network.",
+    "gnn_section": "ActiveInferencePerception",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Bnlearn Causal Model",
+  "modified_at": "2026-04-10T10:24:32.870579",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "ObservationModel",
+      "variable_name": "A"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionModel",
+      "variable_name": "B"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": null,
+      "ontology_term": "PreviousState",
+      "variable_name": "s_prev"
+    },
+    {
+      "description": null,
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    },
+    {
+      "description": null,
+      "ontology_term": "Action",
+      "variable_name": "a"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D",
+      "type_hint": null,
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": null,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "P(O | S)",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": "P(S | S_prev, A)",
+      "dimensions": [
+        2,
+        2,
+        2
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": null,
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": null,
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s_prev",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": null,
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "integer",
+      "description": null,
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "a",
+      "var_type": "action"
+    }
+  ],
+  "version": "1.0"
+}

@@ -10,19 +10,16 @@ Response:
 import numpy as np
 from scipy import stats
 
-def hidden_state(x):
-    return x * (1 + 2 / (np.sum((x ** 0) <= 1)) - 1)
-
-def forward_algorithm():
-    # Forward algorithm: alpha = sum_{s'} P(o|s) * P(s|s')
-    # Backward algorithm: beta = sum_{s'} P(s|s)
-
-    # State posterior: Q(x) = alpha + beta*x**2
-    # Free energy: F = -logP(o)*alpha + logP(b)*beta
-
-def backward_algorithm():
-    # Backwards algorithm: alpha = sum_{s'} P(o') * B(s'|s)
-
-    # State posterior: Q(x) = alpha*B*(1-alpha)**2 + beta*x**3
-    # Free energy: F = -logP(b)*beta
-```
+# Define the HMM parameters and state space block
+A = np.array([[
+    (0.7, 0.1, 0.1, 0.1),
+    (0.1, 0.7, 0.2, 0.1),
+    (0.1, 0.1, 0.6, 0.2)
+], dtype=np.float32)
+B = np.array([[
+    (0.7, 0.1, 0.1, 0.1),
+    (0.1, 0.7, 0.2, 0.1),
+    (0.1, 0.1, 0.6, 0.2)
+], dtype=np.float32)
+D = np.array([[
+    0.45890000000000007+0.0000000000000010000000000000000000000000000000

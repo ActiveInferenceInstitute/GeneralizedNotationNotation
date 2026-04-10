@@ -52,13 +52,13 @@
   - `recreate_venv` (bool): Recreate virtual environment
   - `dev` (bool): If true, `uv sync --extra dev` (pytest stack, linters, etc.)
   - `install_all_extras` (bool): If true, `uv sync --all-extras` (every optional group in pyproject)
-  - `setup_core_only` (bool): If true, skips the JAX self-test during setup (Step 12 backends are core deps)
+  - `setup_core_only` (bool): If true, skips the post-install JAX/Optax/Flax/pymdp functional probe (`utils.jax_stack_validation`; Step 12 backends remain core deps)
   - `install_optional` (bool): Install optional dependencies
   - `optional_groups` (str): Comma-separated list of optional groups
 
 **Returns**: `True` if setup succeeded
 
-**Note**: Default path runs `uv sync` for core dependencies, which include Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy). `SETUP_DEFAULT_PIPELINE_EXTRAS` is usually empty; the optional `execution-frameworks` extra duplicates those pins for explicit `uv sync --extra execution-frameworks`.
+**Note**: Default path runs `uv sync` for core dependencies, which include Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and the bnlearn backend. `SETUP_DEFAULT_PIPELINE_EXTRAS` is usually empty; the optional `execution-frameworks` extra duplicates those pins for explicit `uv sync --extra execution-frameworks`. Optional `visualization` / `inference` groups mirror the same pins for explicit `uv sync --extra …`. Step 22 (GUI) needs Gradio: `uv sync --extra gui` (otherwise the GUI step runs headless and emits recovery artifacts only).
 
 #### `setup_uv_environment(verbose=False, recreate=False, dev=False, extras=None, install_all_extras=False, skip_jax_test=False, output_dir=None) -> bool`
 **Description**: Set up UV virtual environment with dependencies using native UV sync
@@ -69,7 +69,7 @@
 - `dev`: Install development optional group (`--extra dev`)
 - `extras`: Additional package groups to install (each as `--extra`)
 - `install_all_extras`: If true, `uv sync --all-extras` (takes precedence over `dev`)
-- `skip_jax_test`: Skip JAX functionality test
+- `skip_jax_test`: Skip the JAX stack probe (same probe as ``utils.jax_stack_validation.verify_jax_pymdp_stack``)
 - `output_dir`: Output directory for setup logs
 
 **Returns**: `True` if setup succeeded

@@ -1,55 +1,17 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary:
 
-**GNN Example:** Factor Graph Active Inference Model (Version 1)
+**Model Overview:**
+This GNN Representation is designed to enable modality-specific processing of ActInfOntology annotations in structured models like Factor Graph Active Inference Model (FAM) and GNN Representation (GRN). The key variables include:
 
-```python
-import numpy as np
-from scipy import stats
-
-def factor_graph(x):
-    """
-    A factor graph decomposition for tractable inference in structured models.
-
-    Parameters
-    ----------
-    x : array-like of shape (n, n)
-        Input data to be decomposed into observation and hidden state variables.
-
-    Returns
-    -------
-    array: array of size (n,) with the same shape as input data.
-    """
-    # Define initial parameters
-    A = np.array([x])  # Observation matrix
-    B = np.array([[(0, -1), (-1, 0)])  # Variable matrix
-    C = np.array([[(2, 0), (4, 0)], [[(-3, 5), (6, 7)]])
-
-    # Define the hidden state matrices
-    A_vis = np.array([x] * n)
-    A_prop = np.array([x] * n)
-    B_vis = np.array([[(2, -1), (-0.8, 0)], [[(-3, 5), (6, 7)]])
-
-    # Define the action matrices
-    C_vis=np.array([])
-    C_prop=np.array([x] * n)
-    D_vis = np.array([[(2, -1), (-4)])
-    D_prop = np.array([x] * n)
-    G_vis = np.array([x] * n)
-
-    # Define the transition matrices
-    D_vel=np.array([])
-    D_pos=np.array([x] * n)
-    F_vis = np.array([[(1, 0), (2, -3)], [[(-4, 5), (6, 7)]])
-
-    # Define the belief updates
-    π_vis = np.array([x] * n)
-    π_prop=np.array([])
-    G_vis = np.array([x] * n)
-    B_pos = np.array([[(2, -1), (-4)], [[(-3, 5), (6, 7)]])
-
-    # Define the action matrices
-    C_vel = np.array([x] * n)
-    C_prop=np.array([])
-    D_
+1. **Hidden states**: A set of 3 matrices representing the visual modalities, Proprioceptive, and Visual preferences.
+2. **Observations**: A set of 4 matrices representing the position, velocity, and perception information from each observation modality.
+3. **Actions/Controls**: A set of 1 matrix representing the action-independent probabilities for each observation modality.
+4. **Constraints**: A set of 1 matrix representing the constraints on the observed modalities (e.g., visual modality).
+5. **Key Variables**: A list of 2 matrices representing the hidden states, observational variables, and actions/controls from each observation modality.
+6. **Notable Features**: A set of 3 matrices representing the key features of this model:
+   - **Visual modalities**: A set of 1 matrix representing visual modalities (visual perception)
+   - **Proprioceptive modalities**: A set of 2 matrices representing Proprioceptive modalities (position and velocity)
+   - **Navigation modality**: A set of 3 matrices representing Navigation modality information
+7. **Constraints**: A list of 1 matrix representing the constraints on the observed modalities (e.g., visual modality).

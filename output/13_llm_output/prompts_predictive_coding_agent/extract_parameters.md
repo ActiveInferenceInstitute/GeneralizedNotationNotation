@@ -1,34 +1,15 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN implementation:
-
+You've already covered the key components of the GNN specification:
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation of predictions (beliefs) and actions.
-   - B matrices representing the dimensionality of each factor in the model matrix representation.
-   - C matrices representing the dimensions of each modality, such as sensory perception or action prediction.
-   - D matrices representing the dimensionality of each control variable.
+   - A matrices representing the model structure and its relationships with other models (e.g., Belief, Action)
 
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles.
-   - α (alpha): learning rates and adaptation parameters for improving predictions accuracy.
-   - Other precision/confidence parameters, such as bias-variance tradeoff or sensitivity analysis priorities.
+   - A matrix representing the precision parameters for each modality (e.g., Bias, Correction). 
+
 3. **Dimensional Parameters**:
-   - State space dimensions: 3x4 matrices representing the model structure and interpretation of predictions.
-   - Observation space dimensions: 2x1 matrix representing each modality (sensory perception vs. action prediction).
-   - Action space dimensions: 2x1 matrix representing each control variable, with dimensionality determined by the learning rate parameter α.
+   - A matrix representing the dimensionality of each parameter space (e.g., Bias, Correction). 
+   - A matrix representing the number and types of temporal dependencies within each parameter space (e.g., Temporal, Time)
 
 4. **Temporal Parameters**:
-   - Time horizons for initial states and actions
-   
-   - Temporal dependencies and windows for updating predictions over time
-5. **Initial Conditions**:
-   - Prior beliefs over initial states (initial state)
-   
-   - Initial parameters values for each modality (sensory perception vs. action prediction).
-
-6. **Configuration Summary**:
-   - Parameter file format recommendations:
-   - Tunable vs. fixed parameters, sensitivity analysis priorities and sensitivity analysis prioritization strategies
-7. **Sensitivity Analysis Prior Beliefs Over Initial States**:
-   - Sensitivity analysis priorities:
-   - Sensitivity analysis priorities for initial state biases (bias-variance tradeoff) and sensitivity analysis priorities for initial parameter values.
+   - A matrix representing the timestamps for each parameter space (e.g., Time)

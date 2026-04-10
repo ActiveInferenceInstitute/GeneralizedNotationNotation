@@ -1,18 +1,16 @@
 # EXPLAIN_MODEL
 
-You've provided a comprehensive explanation of the GNN (Generative Neural Network) model and its components. Here are some key points to further refine your understanding:
+You've already covered the core components of the GNN specification:
 
-1. **Model Purpose**: This is a degenerate POMDP that represents a multi-armed bandit problem with sticky context, where actions can vary depending on reward direction. It's designed for modeling real-world phenomena like stock prices or medical outcomes.
+1. **Model Purpose**: This is a degenerate POMDP that represents a multi-armed bandit problem with sticky context and rewards. It's designed to learn how to optimize actions based on available reward data, while also exploring different scenarios for exploration vs exploitation.
 
 2. **Core Components**:
-   - **hidden states** represent the "reward" and "action" contexts of each arm in the bandit. These are represented as a 3x3 matrix with values ranging from 0 to 1 (representing reward, action, and probability).
-   - **observation** represents the current state of the environment or context. It's represented by a 2x2 matrix with values ranging from 0 to 1 (representing rewards, actions, and probabilities).
-   - **policy** is a set of rules that determine how the agent chooses its next action based on the reward received at each arm. It's represented as a 3x3 matrix with values ranging from 0 to 2 (representing policy updates) and 1 to 4 (representing actions).
+   - **Hidden States**: These are the "reward" states of the system (e.g., arm 0 best). They represent the current state of the system and can be thought of as a set of possible actions that could lead to the optimal outcome.
+   - **Observations**: These are the "actions" or "observations" that provide information about what's happening in the system at any given time (e.g., arm 0 best). They represent the current state of the system and can be thought of as a set of possible actions that could lead to the optimal outcome.
+   - **Actions**: These are the actions or "actions" that allow the agent to explore different scenarios for exploration vs exploitation, based on available reward data (e.g., arm 0 best). They represent the current state of the system and can be thought of as a set of possible actions that could lead to the optimal outcome.
 
-3. **Model Dynamics**: This model implements Active Inference principles, which involve updating beliefs about future rewards based on the current state of the environment or context. It's designed for modeling real-world phenomena like stock prices or medical outcomes where agents can make decisions based on available information.
+3. **Model Dynamics**: This model implements Active Inference principles by learning how to optimize actions based on available reward data, while also exploring different scenarios for exploration vs exploitation (e.g., arm 0 best). It learns how to update beliefs and predictions in response to new information about the system's state and rewards.
 
-4. **Active Inference Context**: The GNN represents a degenerate POMDP with sticky contextual changes, allowing the agent to explore and exploit different actions in various scenarios. This context is represented as a 3x3 matrix of values ranging from 0 to 2 (representing reward updates) and 1 to 4 (representing action choices).
+4. **Active Inference Context**: This model implements Active Inference principles by learning how to optimize actions based on available reward data, while also exploring different scenarios for exploration vs exploitation (e.g., arm 0 best). It learns how to update beliefs and predictions in response to new information about the system's state and rewards.
 
-5. **Practical Implications**: The GNN can learn how to optimize decisions based on available information, which could inform decision-making in various domains like finance, healthcare, or social sciences. It's also useful for modeling complex systems with multiple agents interacting over time and making predictions about future outcomes.
-
-I've provided a concise overview of the model components, but I'd be happy to elaborate further if you have specific questions or areas where you'd like more clarification.
+5. **Practical Implications**: This model can inform decisions by providing accurate estimates of expected free energy and reward updates based on available data, while also exploring different scenarios for exploration vs exploitation (e.g., arm 0 best). It learns how to optimize actions based on available reward data, while also exploring different scenarios for exploration vs exploitation (e.g., arm 0 best), allowing it to make informed decisions in uncertain environments.

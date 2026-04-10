@@ -809,6 +809,37 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
 
     return results
 
+
+def _discopy_inline_circuit_from_structured(
+    data: Dict[str, Any], metrics: Dict[str, Any]
+) -> None:
+    """Fill circuit_info / model_parameters from Step 12 DisCoPy execution log JSON."""
+    sim = data.get("simulation_data") or {}
+    analysis = sim.get("analysis")
+    params = sim.get("parameters")
+    components = sim.get("components") or []
+    if analysis is None and not params and not components:
+        return
+    if not metrics.get("circuit_info"):
+        num_c = 0
+        if isinstance(analysis, dict):
+            num_c = int(analysis.get("num_components", 0) or 0)
+        if not num_c and components:
+            num_c = len(components)
+        metrics["circuit_info"] = {
+            "model_name": data.get("model_name", ""),
+            "components": components,
+            "num_components": num_c,
+            "parameters": params or {},
+        }
+    if params and not metrics.get("model_parameters"):
+        metrics["model_parameters"] = {
+            "num_states": params.get("num_states", 0),
+            "num_observations": params.get("num_observations", 0),
+            "num_actions": params.get("num_actions", 0),
+        }
+
+
 def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], execution_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
     """Extract simulation-specific metrics from framework outputs.
     
@@ -841,24 +872,46 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                 logger.debug(f"  [{framework}] impl_dir not found: {impl_dir}")
                 continue
 
-        # Search for simulation data files in multiple locations
-        candidate_files = [
-            # Primary: simulation_data subdirectory
+        # Search for simulation data files: canonical simulation_data/*.json first,
+        # then execution_logs/*_results.json (often sparse stubs). Order matters for
+        # RxInfer/Julia backends that write full traces under simulation_data/.
+        candidate_files: List[Path] = []
+
+        def _add_unique(paths: List[Path], p: Path) -> None:
+            if p not in paths:
+                paths.append(p)
+
+        for p in (
             impl_dir / "simulation_data" / "simulation_results.json",
-            # Direct in impl_dir
             impl_dir / "simulation_results.json",
             impl_dir / "results.json",
             impl_dir / "output.json",
             impl_dir / "traces.json",
-        ]
+        ):
+            _add_unique(candidate_files, p)
 
-        # Also recursively search for any simulation_results.json
         try:
             for found_file in impl_dir.rglob("simulation_results.json"):
-                if found_file not in candidate_files:
-                    candidate_files.append(found_file)
+                _add_unique(candidate_files, found_file)
         except Exception as e:
             logger.debug(f"Error during recursive search in {impl_dir}: {e}")
+
+        sr = detail.get("structured_result_file")
+        if sr:
+            sp = Path(sr)
+            if not sp.is_file():
+                alt = execution_output_dir.parent.parent / sr
+                if alt.is_file():
+                    sp = alt
+            if sp.is_file():
+                _add_unique(candidate_files, sp)
+        exec_logs = impl_dir / "execution_logs"
+        if exec_logs.is_dir():
+            try:
+                for rj in sorted(exec_logs.glob("*_results.json")):
+                    _add_unique(candidate_files, rj)
+            except OSError as e:
+                logger.debug(f"  [{framework}] execution_logs glob failed: {e}")
 
         for output_file in candidate_files:
             if output_file.exists():
@@ -869,10 +922,12 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     metrics["data_source"] = str(output_file)
                     logger.info(f"  [{framework}] Loaded simulation data from: {output_file}")
 
-                    # Extract beliefs - check both top-level and simulation_trace
+                    # Extract beliefs - top-level, simulation_trace, or Step 12 structured simulation_data
                     beliefs = data.get("beliefs", [])
                     if not beliefs:
                         beliefs = data.get("simulation_trace", {}).get("beliefs", [])
+                    if not beliefs:
+                        beliefs = data.get("simulation_data", {}).get("beliefs", [])
                     if beliefs:
                         metrics["beliefs"] = beliefs
 
@@ -880,6 +935,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     actions = data.get("actions", [])
                     if not actions:
                         actions = data.get("simulation_trace", {}).get("actions", [])
+                    if not actions:
+                        actions = data.get("simulation_data", {}).get("actions", [])
                     if actions:
                         metrics["actions"] = actions
 
@@ -887,6 +944,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     observations = data.get("observations", [])
                     if not observations:
                         observations = data.get("simulation_trace", {}).get("observations", [])
+                    if not observations:
+                        observations = data.get("simulation_data", {}).get("observations", [])
                     if observations:
                         metrics["observations"] = observations
 
@@ -898,6 +957,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                         free_energy = data.get("metrics", {}).get("expected_free_energy", [])
                     if not free_energy:
                         free_energy = data.get("simulation_trace", {}).get("efe_history", [])
+                    if not free_energy:
+                        free_energy = data.get("simulation_data", {}).get("free_energy", [])
                     if free_energy:
                         metrics["free_energy"] = free_energy
 
@@ -905,6 +966,18 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     metrics["num_timesteps"] = data.get("num_timesteps", data.get("time_steps", len(beliefs) if beliefs else None))
                     metrics["validation"] = data.get("validation", {})
                     metrics["model_parameters"] = data.get("model_parameters", {})
+                    if (
+                        framework == "bnlearn"
+                        and data.get("success") is not None
+                        and not metrics["model_parameters"]
+                    ):
+                        metrics["model_parameters"] = {
+                            "model_name": data.get("model_name"),
+                            "bnlearn_completed": bool(data.get("success")),
+                        }
+
+                    if framework == "discopy":
+                        _discopy_inline_circuit_from_structured(data, metrics)
 
                     # Extract belief confidence if available
                     confidence = data.get("metrics", {}).get("belief_confidence", [])
@@ -1014,8 +1087,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     except Exception as e:
                         logger.debug(f"  [{framework}] Error reading params {params_file}: {e}")
 
-        # Supplement: circuit_info.json for categorical frameworks (DisCoPy)
-        if not metrics["data_source"]:
+        # Supplement: circuit_info.json for DisCoPy (after execution log may lack vectors)
+        if not metrics.get("circuit_info"):
             circuit_candidates = [
                 impl_dir / "simulation_data" / "circuit_info.json",
             ]
@@ -1033,7 +1106,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     try:
                         with open(circuit_file, 'r') as f:
                             circuit_data = json.load(f)
-                        metrics["data_source"] = str(circuit_file)
+                        if not metrics.get("data_source"):
+                            metrics["data_source"] = str(circuit_file)
                         metrics["circuit_info"] = {
                             "model_name": circuit_data.get("model_name", ""),
                             "components": circuit_data.get("components", []),
@@ -1042,7 +1116,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                         }
                         # Map circuit parameters to standardized model_parameters
                         params = circuit_data.get("parameters", {})
-                        if params:
+                        if params and not metrics.get("model_parameters"):
                             metrics["model_parameters"] = {
                                 "num_states": params.get("num_states", 0),
                                 "num_observations": params.get("num_observations", 0),
@@ -1065,7 +1139,12 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
     if data_found:
         logger.info(f"  [{framework}] Extracted: {', '.join(data_found)}")
     else:
-        logger.warning(f"  [{framework}] No simulation data found")
+        if framework == "bnlearn" and details and all(
+            d.get("skipped", False) for d in details
+        ):
+            logger.info(f"  [{framework}] No simulation data (all runs skipped)")
+        else:
+            logger.warning(f"  [{framework}] No simulation data found")
 
     return metrics
 

@@ -1,25 +1,31 @@
 # EXPLAIN_MODEL
 
-Here's a concise explanation of the GNN Section:
+Here's a concise overview of the GNN Section:
 
-**GNN Section:**
-This section provides an overview of the GNN framework and its key components. It covers the following topics:
+**GNNSection:**
+- **Introduction**: This section provides an overview of the GNN framework and its key components. It covers the model purpose, core components, and how it represents real-world phenomena or problems.
 
-1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
-   - "Hidden Markov Model Baseline" is a general term for any generative model that models probabilistic graphical models, such as Markov Decision Processes (MDPs) or Probabilistic Graph Models (PGMs).
+**ModelPurpose:** The GNN is a discrete Markov chain (DMCH) that models sequential decision-making processes with transition matrices and observable distributions. It encodes information about past states and actions in a probabilistic graphical model.
 
-2. **Core Components**:
-   - "Needs to be implemented" refers to the need to implement Active Inference principles and perform POMDP-based inference on GNN data. This section provides a brief overview of how this can be done using the provided model annotations.
+**Core Components:**
 
-3. **Model Dynamics**: The model evolves over time, capturing changes in its parameters (hidden states) and actions/controls (observations). It also updates beliefs based on observed observations.
-   - "Needs to be implemented" refers to the need for the model to implement Active Inference principles and perform POMDP-based inference using GNN data. This section provides a brief overview of how this can be done using the provided model annotations.
+1. **Hidden States**: Represented by the EMEM matrix, which captures the probability of observing a state at time t+1 given previous states.
 
-4. **Active Inference Context**: The model implements Active Inference principles by updating beliefs based on observed observations, which allows it to learn from past behavior and make predictions about future outcomes.
-   - "Needs to be implemented" refers to the need for the model to implement Active Inference principles and perform POMDP-based inference using GNN data. This section provides a brief overview of how this can be done using the provided model annotations.
+2. **Observations**: Represented as stochastic elements (stochastic matrices) that are updated based on observed events and actions. These elements can be thought of as "actions" in the sense that they represent changes to the system's behavior over time.
 
-5. **Practical Implications**: The GNN Section demonstrates how this model can inform decisions in various domains, such as:
-   - **Predictive modeling** (e.g., financial forecasting)
-   - **Machine learning** (e.g., recommendation systems)
-   - **Data analysis** (e.g., data mining)
+**StateSpaceBlock:** This block represents a state space with 4 states, representing all possible sequences of observations and actions. It captures the probability distribution of each state based on its past history.
 
-6. **Conclusion**: The GNN Section provides a comprehensive overview of the model's capabilities and how it can be applied to various domains, including real-world phenomena and active inference scenarios.
+3. **Initialization**: The initial state is initialized using the EMEM matrix, which encodes information about the system's current state.
+
+**StateTransition:** This block represents a sequence of states that are updated based on observed events and actions. It updates the probabilities of observing each state based on the past behavior of its predecessors.
+
+4. **ForwardAlgorithm**: This is the main algorithm in the GNN framework, which computes the forward probability update for each state. It uses the EMEM matrix to compute the forward probability of a given state.
+
+**BackwardAlgorithm:** This block represents a sequence of states that are updated based on observed events and actions. It updates the probabilities of observing each state based on the past behavior of its predecessors.
+
+5. **ForwardVariable**: This is used for updating the forward probability of each state, which can be thought of as "actions" in the sense that it represents changes to the system's current state.
+
+**BackwardVariable:** This block represents a sequence of states that are updated based on observed events and actions. It updates the probabilities of observing each state based on the past behavior of its predecessors.
+
+6. **InitialStateDistribution**: This is used for updating the forward probability distribution, which can be thought of as "beliefs" in the system's current state.
+

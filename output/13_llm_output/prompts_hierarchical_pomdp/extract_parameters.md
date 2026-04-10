@@ -2,15 +2,15 @@
 
 Based on the document, here are the key parameters for the GNN implementation:
 
-1. **Model Matrices**:
-   - A matrices representing the model structure and its components (e.g., Lambda, Initial Parameters).
-   - B matrices representing the model matrix representation (Likelihood Matrix) and its components.
-   - C matrices representing the model matrix representation (Transition Matrix), Policy Vector, and Observation Vector.
+1. **ModelMatrices**:
+   - A matrices representing the model structure and its properties (e.g., number of hidden states, number of actions)
+   - B matrices representing the model's components (e.g., type of action, type of state)
+   - C matrices representing the model's components (e.g., type of observation, type of action)
 
 2. **Precision Parameters**:
-   - γ: precision parameters for each modality
-   - α: learning rate parameters for each modality
-   - Other precision/confidence parameters 
+   - γ: precision parameters and their roles
+   - α: learning rates and adaptation parameters
+   - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
    - State space dimensions for each modality
@@ -21,3 +21,13 @@ Based on the document, here are the key parameters for the GNN implementation:
    - Time horizons (T)
    - Temporal dependencies and windows
    - Update frequencies and timescales
+
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

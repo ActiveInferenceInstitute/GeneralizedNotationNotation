@@ -1,0 +1,73 @@
+BnlearnCausalModel-Schema DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- GNN Model Schema Definition
+-- Model: Bnlearn Causal Model
+-- A Bayesian Network model mapping Active Inference structure:
+-- - S: Hidden State
+-- - A: Action
+-- - S_prev: Previous State
+-- - O: Observation
+
+GNNModel ::= SEQUENCE {
+    modelName       UTF8String,
+    version         UTF8String,
+    annotation      UTF8String OPTIONAL,
+    variables       SEQUENCE OF Variable OPTIONAL,
+    connections     SEQUENCE OF Connection OPTIONAL,
+    parameters      SEQUENCE OF Parameter OPTIONAL
+}
+
+Variable ::= SEQUENCE {
+    name            UTF8String,
+    varType         UTF8String,
+    dataType        UTF8String,
+    dimensions      SEQUENCE OF INTEGER OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+Connection ::= SEQUENCE {
+    sourceVariables SEQUENCE OF UTF8String,
+    targetVariables SEQUENCE OF UTF8String,
+    connectionType  UTF8String,
+    weight          REAL OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+Parameter ::= SEQUENCE {
+    name            UTF8String,
+    value           UTF8String,
+    typeHint        UTF8String OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+-- Example Values
+exampleModel GNNModel ::= {
+    modelName "Bnlearn Causal Model",
+    version "1.0",
+    annotation "A Bayesian Network model mapping Active Inference structure: - S: Hidden State - A: Action - S_prev: Previous State - O: Observation",
+    variables {
+        {
+            name "A",
+            varType "likelihood_matrix",
+            dataType "float"
+            dimensions { 2, 2 }
+        },
+        {
+            name "B",
+            varType "transition_matrix",
+            dataType "float"
+            dimensions { 2, 2, 2 }
+        },
+        {
+            name "s",
+            varType "hidden_state",
+            dataType "float"
+            dimensions { 2, 1 }
+        }
+    }
+}
+
+END -- BnlearnCausalModel-Schema
+
+
+-- MODEL_DATA: {"model_name":"Bnlearn Causal Model","version":"1.0","annotation":"A Bayesian Network model mapping Active Inference structure:\n- S: Hidden State\n- A: Action\n- S_prev: Previous State\n- O: Observation","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[2,2],"description":"P(O | S)"},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[2,2,2],"description":"P(S | S_prev, A)"},{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[2,1],"description":null},{"name":"s_prev","var_type":"hidden_state","data_type":"float","dimensions":[2,1],"description":null},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[2,1],"description":null},{"name":"a","var_type":"action","data_type":"integer","dimensions":[2,1],"description":null}],"connections":[{"source_variables":["s_prev"],"target_variables":["s"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["a"],"target_variables":["s"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["s"],"target_variables":["o"],"connection_type":"directed","weight":null,"description":null}],"parameters":[{"name":"A","value":[[0.9,0.1],[0.1,0.9]],"type_hint":null,"description":null},{"name":"D","value":[[0.5,0.5]],"type_hint":null,"description":null}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":null,"step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"ObservationModel","description":null},{"variable_name":"B","ontology_term":"TransitionModel","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"s_prev","ontology_term":"PreviousState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"a","ontology_term":"Action","description":null}]}

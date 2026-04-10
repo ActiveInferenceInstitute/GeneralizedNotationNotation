@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/simple_mdp/simple_mdp_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 14,
+  "artifact_count": 15,
   "artifacts": [
     "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_network_stats.json",
     "output/8_visualization_output/simple_mdp/simple_mdp_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",

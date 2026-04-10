@@ -5,11 +5,12 @@
     "json_path": "output/3_gnn_output/deep_planning_horizon/deep_planning_horizon_parsed.json",
     "json_stale": false
   },
-  "artifact_count": 14,
+  "artifact_count": 15,
   "artifacts": [
     "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_graph.png",
     "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_stats.json",
     "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_ontology_legend.txt",
+    "True",
     "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_variable_parameter_bipartite.png",
     "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_A_heatmap.png",
     "output/8_visualization_output/deep_planning_horizon/deep_planning_horizon_B_tensor.png",

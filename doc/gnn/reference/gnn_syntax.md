@@ -46,6 +46,8 @@ X^observed[3,1,type=int] # X with superscript observed
 
 ## Connections
 
+Identifiers in **Connections** must match variable names declared in **StateSpaceBlock** (case-sensitive): use `s>o` if the state variable is `s`, not `S`.
+
 ```gnn
 ## Connections
 s>o          # Directed: s causes o

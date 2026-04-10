@@ -6,47 +6,46 @@ Prompt:
 
 Response:
 
-Here's the complete implementation of the GNN model:
+You've successfully completed the analysis and provided a detailed description of the Active Inference POMDP agent model. Here's a more concise version:
+
 ```python
 import numpy as np
-from typing import List, Dict, Tuple
 
-class ActiveInferencePOMDPAgent(Dict[str, List]):
-    def __init__(self):
-        super().__init__()
+def gnn_model(num_hidden_states, num_obs):
+    """GNN Representation for GNN Agent
 
-        self.actions = []
-        self.beliefs = []
+    Args:
+        num_hidden_states (int): Number of hidden states in the agent.
+        num_obs (int): Number of observations per hidden state.
+        num_actions (int): Number of actions used to initialize the agent.
+        num_timesteps (int): Number of simulation timesteps for all frameworks.
 
-    def update_beliefs(self) -> None:
-        """Update the belief of each observation."""
-        for action in self.actions:
-            # Update beliefs based on actions and policy transitions
-            for state, probabilities in self.beliefs[action]:
-                if probabilities > 0:
-                    self.beliefs[action][state] = np.sum(probabilities) / len(self.beliefs[action])
+    Returns:
+        A dictionary representing the GNN Representation for the agent.
+    """
+    # Define the model parameters
+    gnn_model = {
+        0: {'hidden_states': np.array([num_hidden_states]), 'actions': np.array([[num_actions]]),
+             'observation_outcomes': np.array([np.array([])])},
+        1: {'state_observation': np.array([num_hidden_states]), 'policy': np.array([np.array([num_obs]])],
+                 dtype=[dtype=float] + ['action'] * num_actions,
+                 dtype=[dtype=int]* len(num_hidden_states),
+                 dtype=[dtype=bool]* num_hidden_states}
+    }
 
-    def update_observation(self):
-        """Update the observation of each observation."""
-        for action, state in self.actions:
-            # Update observations based on actions and policy transitions
-            for probabilities in self.beliefs[action]:
-                if probabilities > 0:
-                    self.observations[action][state] = np.sum(probabilities) / len(self.observation_outcomes)
+    # Define the inference parameters
+    inference = {
+        'state': np.array([num_hidden_states]),
+        'observation': np.array([np.array([])]),
+        'action': np.array([[num_actions]]),
+        'policy': np.array([np.array([num_policies])], dtype=[dtype=float] + ['action'] * num_actions,
+                 dtype=[dtype=int]* len(num_hidden_states)},
+    }
 
-    def update_policy(self):
-        """Update the policy of each observation."""
-        # Update policies based on actions and action selection from policy posterior
-
-        # Update habit vector based on actions and action selection from policy posterior
-
-        # Update belief vectors for all actions, states, and observations
-```
-This implementation includes:
-
-1.  **Initialization**: Initializes the agent with a list of actions (actions) and a list of beliefs (beliefs).
-2.  **Action Selection**: Updates the observation based on actions and policy transitions.
-3.  **Policy Update**: Updates policies based on actions and action selection from policy posterior.
-4.  **Observation Update**: Updates observations based on actions, beliefs, and policy updates.
-5.  **Habit Vector Update**: Updates habit vectors for all actions, states, and observations.
-6.  **Action Selection**: Updates the agent's preferences based on actions and action selection from policy posterior.
+    # Define the inference parameters for each framework
+    fhn = {
+        0: {'state': np.array([[num_hidden_states]]), 'observation': np.array([np.array([])]),
+             'action': np.array([[num_actions]]),
+            'policy': np.array([np.array([num_policies])], dtype=[dtype=float] + ['action'] * num_actions,
+                 dtype=[dtype=int]* len(num_hidden_states)},
+        1: {'state': np.array([[num_hidden_states]]),

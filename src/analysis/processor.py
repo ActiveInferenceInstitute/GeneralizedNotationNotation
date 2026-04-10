@@ -116,6 +116,7 @@ def process_analysis(
 
     try:
         log_step_start(logger, "Processing analysis")
+        logging.getLogger("matplotlib.category").setLevel(logging.WARNING)
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)

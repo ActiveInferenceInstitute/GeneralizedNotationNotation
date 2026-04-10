@@ -22,6 +22,7 @@ from .llm_processor import (
     load_api_keys_from_env,
 )
 from .llm_processor import get_processor as get_global_processor
+from .providers.base_provider import LLMConfig, ProviderType
 
 logger = logging.getLogger(__name__)
 
@@ -162,32 +163,53 @@ class LLMOperations:
 
 
 
-    def summarize_gnn(self, gnn_content: str, max_length: int = 500) -> str:
+    def summarize_gnn(
+        self,
+        gnn_content: str,
+        max_length: int = 500,
+        ollama_model: Optional[str] = None,
+    ) -> str:
         """
         Generate a summary of GNN content.
         
         Args:
             gnn_content: The GNN file content to summarize
             max_length: Maximum length of summary
+            ollama_model: When set (e.g. from pipeline model selection), use Ollama with this tag.
             
         Returns:
             Summary text
         """
         try:
-            return self._run_async(self._async_summarize_gnn(gnn_content, max_length))
+            return self._run_async(
+                self._async_summarize_gnn(gnn_content, max_length, ollama_model)
+            )
         except Exception as e:
             logger.error(f"Async summarization failed: {e}")
             return f"Error: Summarization failed - {str(e)}"
 
-    async def _async_summarize_gnn(self, gnn_content: str, max_length: int = 500) -> str:
+    async def _async_summarize_gnn(
+        self,
+        gnn_content: str,
+        max_length: int = 500,
+        ollama_model: Optional[str] = None,
+    ) -> str:
         """Async version using new analysis system."""
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
 
-        response = await self.processor.analyze_gnn(
-            gnn_content=gnn_content,
-            analysis_type=AnalysisType.SUMMARY
-        )
+        if ollama_model:
+            response = await self.processor.analyze_gnn(
+                gnn_content=gnn_content,
+                analysis_type=AnalysisType.SUMMARY,
+                provider_type=ProviderType.OLLAMA,
+                config=LLMConfig(model=ollama_model),
+            )
+        else:
+            response = await self.processor.analyze_gnn(
+                gnn_content=gnn_content,
+                analysis_type=AnalysisType.SUMMARY,
+            )
 
         return response.content
 

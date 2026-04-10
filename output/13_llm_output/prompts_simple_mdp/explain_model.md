@@ -1,19 +1,19 @@
 # EXPLAIN_MODEL
 
-You've already done a great job of summarizing the key points about GNN models:
+You've already covered the key points:
 
-1. **Purpose**: The purpose of GNN is to represent and analyze complex systems with multiple states (A) and actions (B). It's designed for modeling real-world phenomena like decision-making, policy optimization, and scientific research.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification for a Markov Decision Process (MDP). It represents a fully observable Markov Decision Process with identity observation and identity actions, where A is identity and B is identity. The model encodes information about the policy/decision-making process and can be used to make predictions or decisions based on observed outcomes.
 
 2. **Core Components**:
-   - **Hidden States**: These are the positions or observations where the agent can make decisions based on its own actions. They represent a subset of states that are uncertainly about but not yet in control (A).
-   - **Observations**: These are the current state-of-the-world distributions over actions and policy updates, which capture the uncertainty around each action's outcome.
+   - **A** (identity A): This represents the agent's state space and action map. It captures the current state of the agent, which is a dictionary mapping states to actions in the MDP.
+   - **B** (identity B): This represents the policy/decision-making process. It maps the observed observation to its corresponding action in the MDP. The policy assigns each observation to one of two possible actions: stay or move towards the goal location.
+   - **C** (transition matrix): This is a dictionary mapping states to their respective actions, which represent the agent's state and decision-making process. It captures the current state of the agent and its corresponding action in the MDP. The transition matrix represents the policy distribution over actions.
+   - **D** (prior vector): This is a dictionary mapping states to their prior distributions, which are used for updating beliefs about future observations. It also maps each observation to its corresponding prior distribution.
 
-3. **Key Relationships**:
-   - **Action Selection**: The agent selects actions based on its own preferences or biases towards certain states (A). This allows it to update beliefs about future states in a way that is consistent with its current state-of-the-world distribution over actions and policy updates.
-   - **Policy Inference**: The goal of the model is to predict the next state given the current state, which involves updating beliefs based on the available actions (B).
+3. **Model Dynamics**:
+   - **GNN Representation**: A Markov Decision Process with identity and identity actions. The model encodes information about the policy/decision-making process in a dictionary mapping states to their respective actions, which are represented as dictionaries. The transition matrix represents the policy map over actions. The prior vector represents the belief distribution of the agent's current state at each observation.
 
-4. **Model Dynamics**: The GNN represents a system with multiple states and actions that evolve together in a way that reflects the relationships between them. This allows for predictions about future outcomes based on past decisions made by the agent.
+4. **Active Inference Context**:
+   - **Cryptographic signature goes here**
 
-5. **Active Inference Context**: The model uses a sequence of beliefs to update its own knowledge, which enables it to make informed decisions given new information or uncertain data.
-
-Please provide more context and specific examples from the GNN framework that demonstrate how these components work together in practice.
+Please provide clear and concise explanations in a narrative format while maintaining scientific accuracy, avoiding technical jargon or overly complex concepts.

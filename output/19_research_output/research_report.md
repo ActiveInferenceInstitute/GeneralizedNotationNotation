@@ -54,6 +54,14 @@
 - **upgrade_to_pomdp**: Consider extending HMM to full POMDP with action-dependent transitions
   - *Rationale*: HMMs have no action selection. Adding a B[states,states,actions] tensor and preference vector C enables Active Inference policy optimization.
 
+## bnlearn_causal_model.md (hmm model)
+### Medium Priority
+- **connectivity_enrichment**: Investigate potential missing causal links between model components
+  - *Rationale*: Graph density is 0.10 (3 connections, 6 variables). Sparse graphs may miss important dependencies.
+### Low Priority
+- **upgrade_to_pomdp**: Consider extending HMM to full POMDP with action-dependent transitions
+  - *Rationale*: HMMs have no action selection. Adding a B[states,states,actions] tensor and preference vector C enables Active Inference policy optimization.
+
 ## two_state_bistable.md (pomdp model)
 ### High Priority
 - **precision_modulation**: Add precision parameters to modulate sensory and policy uncertainty

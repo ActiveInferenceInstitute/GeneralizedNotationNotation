@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key components of the GNN specification:
+Based on the document, here are the key components of the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

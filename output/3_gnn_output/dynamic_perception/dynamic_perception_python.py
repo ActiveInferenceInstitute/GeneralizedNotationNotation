@@ -8,7 +8,7 @@ A dynamic perception model extending the static model with temporal dynamics:
 - No action selection — the agent passively observes a changing world
 - Demonstrates belief updating (state inference) across time steps
 - Suitable for tracking hidden sources from noisy observations
-Generated: 2026-03-24T13:57:11.263344
+Generated: 2026-04-10T10:24:31.839672
 """
 
 import numpy as np

@@ -1,47 +1,153 @@
 {
-  "timestamp": "2026-03-24T14:11:48.645330",
+  "timestamp": "2026-04-10T10:35:03.791199",
   "execution_results_dir": "output/12_execute_output/deep_planning_horizon",
   "framework_results": {
-    "rxinfer": {
-      "framework": "rxinfer",
-      "result_count": 2,
+    "bnlearn": {
+      "framework": "bnlearn",
+      "result_count": 1,
+      "analyses": []
+    },
+    "discopy": {
+      "framework": "discopy",
+      "result_count": 1,
+      "analyses": []
+    },
+    "jax": {
+      "framework": "jax",
+      "result_count": 1,
       "analyses": [
         {
-          "framework": "rxinfer",
-          "model_name": "Deep Planning Horizon POMDP",
-          "free_energy_count": 15,
+          "framework": "jax",
+          "model_name": "deep_planning_horizon",
+          "free_energy_count": 2,
           "free_energy_values": [
-            1.6721137446744125,
-            2.1198480808949025,
-            1.7928698718218556,
-            1.7844804290317031,
-            1.7840456628916332,
-            2.291543210237703,
-            2.5509037504253955,
-            2.0986856159167466,
-            2.0842823639475347,
-            1.6421439159109137,
-            1.7726424837389898,
-            2.088498553667815,
-            1.6896973358434255,
-            1.8767687243080187,
-            2.0382221822560145
+            1.4769,
+            1.045
           ],
-          "mean_free_energy": 1.9524497283711377,
-          "std_free_energy": 0.24897110615360427,
-          "min_free_energy": 1.6421439159109137,
-          "max_free_energy": 2.5509037504253955,
-          "free_energy_trend": 1.7368677188708748e-05,
-          "free_energy_decreasing": "False",
-          "convergence_variance": 0.02028138800359497,
-          "converged": true
+          "mean_free_energy": 1.26095,
+          "std_free_energy": 0.2159500000000001,
+          "min_free_energy": 1.045,
+          "max_free_energy": 1.4769,
+          "free_energy_trend": -0.4319000000000006,
+          "free_energy_decreasing": "True"
         }
       ]
     },
-    "numpyro": {
-      "framework": "numpyro",
+    "pytorch": {
+      "framework": "pytorch",
       "result_count": 1,
       "analyses": []
+    },
+    "pymdp": {
+      "framework": "pymdp",
+      "result_count": 2,
+      "analyses": [
+        {
+          "framework": "pymdp",
+          "model_name": "Deep Planning Horizon POMDP",
+          "free_energy_count": 15,
+          "free_energy_values": [
+            [
+              0.26805493235588074,
+              0.10717013478279114,
+              0.3854951560497284,
+              0.5217716097831726
+            ],
+            [
+              -0.1298891305923462,
+              0.037176668643951416,
+              -0.005146801471710205,
+              0.32000601291656494
+            ],
+            [
+              0.27519410848617554,
+              0.12561002373695374,
+              0.3531114161014557,
+              0.5049058198928833
+            ],
+            [
+              0.07523319125175476,
+              -0.10288399457931519,
+              0.23307421803474426,
+              0.416251540184021
+            ],
+            [
+              0.06254461407661438,
+              -0.11696621775627136,
+              0.22457969188690186,
+              0.41022107005119324
+            ],
+            [
+              -0.0977940559387207,
+              0.05905640125274658,
+              0.013543307781219482,
+              0.3317032754421234
+            ],
+            [
+              0.07977280020713806,
+              0.04351121187210083,
+              0.39304202795028687,
+              0.47640201449394226
+            ],
+            [
+              0.3763192892074585,
+              0.20344609022140503,
+              0.47929999232292175,
+              0.5665932893753052
+            ],
+            [
+              0.08318760991096497,
+              -0.09609732031822205,
+              0.24104392528533936,
+              0.42045748233795166
+            ],
+            [
+              0.06293916702270508,
+              -0.11657270789146423,
+              0.22493770718574524,
+              0.4104395806789398
+            ],
+            [
+              -0.09775060415267944,
+              0.05910074710845947,
+              0.013592123985290527,
+              0.3317328691482544
+            ],
+            [
+              -0.5730728507041931,
+              -0.32602834701538086,
+              -0.3198038935661316,
+              0.1230894923210144
+            ],
+            [
+              -0.601343035697937,
+              -0.3505037724971771,
+              -0.33961591124534607,
+              0.11097478866577148
+            ],
+            [
+              1.5686988830566406,
+              1.6334385871887207,
+              1.538846492767334,
+              1.4990735054016113
+            ],
+            [
+              1.7040200233459473,
+              1.716700792312622,
+              1.693926215171814,
+              1.6536487340927124
+            ]
+          ],
+          "mean_free_energy": 0.319324499865373,
+          "std_free_energy": 0.5456174274262023,
+          "min_free_energy": -0.2951219826936722,
+          "max_free_energy": 1.692073941230774,
+          "free_energy_trend": 0.04895250387489794,
+          "free_energy_decreasing": "False",
+          "convergence_variance": 0.8231020275021833,
+          "converged": false
+        }
+      ]
     },
     "activeinference_jl": {
       "framework": "activeinference_jl",
@@ -154,161 +260,61 @@
         }
       ]
     },
-    "pymdp": {
-      "framework": "pymdp",
+    "numpyro": {
+      "framework": "numpyro",
+      "result_count": 1,
+      "analyses": []
+    },
+    "rxinfer": {
+      "framework": "rxinfer",
       "result_count": 2,
       "analyses": [
         {
-          "framework": "pymdp",
+          "framework": "rxinfer",
           "model_name": "Deep Planning Horizon POMDP",
           "free_energy_count": 15,
           "free_energy_values": [
-            [
-              -2.56033003728326,
-              -2.338714761247858,
-              -2.344389888016529,
-              -1.9676132945343527
-            ],
-            [
-              -0.5962861260546942,
-              -0.5386121323706969,
-              -0.629197262676816,
-              -0.6740245714298155
-            ],
-            [
-              -0.48924177515656775,
-              -0.47743517827316423,
-              -0.4993600764496394,
-              -0.5397085514630536
-            ],
-            [
-              -0.48789101471596963,
-              -0.4790019673672983,
-              -0.4964639477555085,
-              -0.5353603217683384
-            ],
-            [
-              -0.49227600706840013,
-              -0.5266483740436803,
-              -0.523705217027865,
-              -0.6036549353034751
-            ],
-            [
-              -0.48921329284470105,
-              -0.47707946818846464,
-              -0.49878508097454266,
-              -0.537603813001102
-            ],
-            [
-              -0.48791518306461257,
-              -0.4789753989401071,
-              -0.4964587636025299,
-              -0.5352663909385278
-            ],
-            [
-              -0.4878789788295124,
-              -0.47903295494483905,
-              -0.49639284488461927,
-              -0.5351997594848885
-            ],
-            [
-              -0.48787794715249244,
-              -0.4790345857583076,
-              -0.4963909697901755,
-              -0.5351978497216175
-            ],
-            [
-              -0.4878779179648852,
-              -0.47903463167750393,
-              -0.49639091654789624,
-              -0.5351977946732219
-            ],
-            [
-              -0.4878779171514852,
-              -0.4790346329594263,
-              -0.4963909150413667,
-              -0.5351977930690272
-            ],
-            [
-              -1.3298730811379758,
-              -1.4278895256256587,
-              -1.2569636570574594,
-              -1.235941429181378
-            ],
-            [
-              -2.0578402042708426,
-              -2.2243525974533287,
-              -1.9061837054464768,
-              -1.7366945018647493
-            ],
-            [
-              -0.6079215016542671,
-              -0.657397670082271,
-              -0.6293680361475722,
-              -0.7173434586607783
-            ],
-            [
-              -1.717934170191573,
-              -1.8378947455031942,
-              -1.6106507074499308,
-              -1.5096993421066616
-            ]
+            1.6721137446744125,
+            2.1198480808949025,
+            1.7928698718218556,
+            1.7844804290317031,
+            1.7840456628916332,
+            2.291543210237703,
+            2.5509037504253955,
+            2.0986856159167466,
+            2.0842823639475347,
+            1.6421439159109137,
+            1.7726424837389898,
+            2.088498553667815,
+            1.6896973358434255,
+            1.8767687243080187,
+            2.0382221822560145
           ],
-          "mean_free_energy": -0.8709861595841161,
-          "std_free_energy": 0.6024110478065591,
-          "min_free_energy": -2.3027619952705,
-          "max_free_energy": -0.4996253145553263,
-          "free_energy_trend": -0.022724985927882885,
-          "free_energy_decreasing": "True",
-          "convergence_variance": 0.3215654889710933,
-          "converged": false
+          "mean_free_energy": 1.9524497283711377,
+          "std_free_energy": 0.24897110615360427,
+          "min_free_energy": 1.6421439159109137,
+          "max_free_energy": 2.5509037504253955,
+          "free_energy_trend": 1.7368677188708748e-05,
+          "free_energy_decreasing": "False",
+          "convergence_variance": 0.02028138800359497,
+          "converged": true
         }
       ]
-    },
-    "pytorch": {
-      "framework": "pytorch",
-      "result_count": 1,
-      "analyses": []
-    },
-    "jax": {
-      "framework": "jax",
-      "result_count": 1,
-      "analyses": [
-        {
-          "framework": "jax",
-          "model_name": "deep_planning_horizon",
-          "free_energy_count": 2,
-          "free_energy_values": [
-            1.4769,
-            1.045
-          ],
-          "mean_free_energy": 1.26095,
-          "std_free_energy": 0.2159500000000001,
-          "min_free_energy": 1.045,
-          "max_free_energy": 1.4769,
-          "free_energy_trend": -0.4319000000000006,
-          "free_energy_decreasing": "True"
-        }
-      ]
-    },
-    "discopy": {
-      "framework": "discopy",
-      "result_count": 1,
-      "analyses": []
     }
   },
   "cross_framework_comparison": {
     "model_name": "deep_planning_horizon",
     "frameworks_compared": [
-      "rxinfer",
-      "numpyro",
-      "activeinference_jl",
-      "pymdp",
-      "pytorch",
+      "bnlearn",
+      "discopy",
       "jax",
-      "discopy"
+      "pytorch",
+      "pymdp",
+      "activeinference_jl",
+      "numpyro",
+      "rxinfer"
     ],
-    "framework_count": 7,
+    "framework_count": 8,
     "comparisons": {
       "free_energy": {
         "jax": {
@@ -322,26 +328,28 @@
         "mean_fe": 1.26095
       },
       "execution_time": {
-        "rxinfer": 23.111149,
-        "numpyro": 1.532855,
-        "activeinference_jl": 23.968256,
-        "pymdp": 2.199429,
-        "pytorch": 1.048697,
-        "jax": 1.297494,
-        "discopy": 0.481514
+        "bnlearn": 1.791501,
+        "discopy": 0.269416,
+        "jax": 0.700402,
+        "pytorch": 0.455138,
+        "pymdp": 2.647969,
+        "activeinference_jl": 13.89512,
+        "numpyro": 0.798662,
+        "rxinfer": 13.718742
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.481514
+        "time": 0.269416
       },
       "success_rates": {
-        "rxinfer": true,
-        "numpyro": true,
-        "activeinference_jl": true,
-        "pymdp": true,
-        "pytorch": true,
+        "bnlearn": true,
+        "discopy": true,
         "jax": true,
-        "discopy": true
+        "pytorch": true,
+        "pymdp": true,
+        "activeinference_jl": true,
+        "numpyro": true,
+        "rxinfer": true
       }
     }
   }

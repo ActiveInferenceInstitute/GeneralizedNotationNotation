@@ -39,12 +39,18 @@ try:
     from analysis.pymdp.visualizer import PyMDPVisualizer
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
+    from utils.jax_stack_validation import jax_pymdp_stack_ok
 except ImportError:
     from src.analysis.pymdp.visualizer import PyMDPVisualizer
     from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
     from src.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
+    from src.utils.jax_stack_validation import jax_pymdp_stack_ok
 
 
+@unittest.skipUnless(
+    jax_pymdp_stack_ok(),
+    "JAX + inferactively-pymdp>=1.0 required (uv sync --extra dev; use project interpreter)",
+)
 class TestPyMDPSimulation(unittest.TestCase):
     """Test PyMDP simulation functionality with GNN integration."""
 

@@ -27,6 +27,8 @@ class TestSetupModule:
         assert "torch" in blob
         assert "numpyro" in blob
         assert "discopy" in blob
+        assert "plotly" in blob
+        assert "bnlearn" in blob
 
     def test_build_step_command_passes_setup_core_only(self):
         """main.py forwards --setup-core-only to 1_setup when set on pipeline args."""
