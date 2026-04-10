@@ -2,7 +2,9 @@
 Tests for the Stan renderer component of GNN.
 """
 import pytest
-from render.stan.stan_renderer import render_stan, _stan_type
+
+from render.stan.stan_renderer import _stan_type, render_stan
+
 
 def test_stan_type_mapping():
     """Test mapping of GNN types and dimensions to Stan types."""

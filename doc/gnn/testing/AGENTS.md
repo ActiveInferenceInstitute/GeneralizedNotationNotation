@@ -1,23 +1,16 @@
-# Testing Directory Manifest (`AGENTS.md`)
+# Testing - Agent Scaffolding
 
-**Role**: Maintains metadata and architectural manifest for the `testing` subdirectory.
-**Version**: v2.0.0
-**Context**: Part of the GNN (Generalized Notation Notation) documentation ecosystem.
+## Module Overview
 
-## Directory Identity
+**Purpose**: This directory serves as a categorized documentation index for the `Testing` layer of the GNN Framework.
 
-- **Path**: `doc/gnn/testing/`
-- **Purpose**: Domain-specific documentation regarding GNN Testing.
+**Category**: Documentation Index
 
-## File Index
+## Contained Indices
 
-| File | Purpose |
-|------|---------|
-| `README.md` | Human-readable entrypoint |
-| `AGENTS.md` | Machine-readable manifest (this file) |
-| `mcp_audit.md` | GNN MCP Audit Framework |
-| `test_patterns.md` | GNN Test Patterns and Standards |
+- [GNN MCP Audit Framework](mcp_audit.md)
+- [GNN Test Patterns and Standards](test_patterns.md)
 
-## Integration
 
-This directory's contents act strictly as documentation and specification. They integrate conceptually with `src/main.py` by defining the standards by which the computational pipeline operates.
+## Implementation Details
+This is a static reference directory. The above files can be explicitly referenced by external LLMs to retrieve detailed syntax and operational knowledge for GNN generation tasks.

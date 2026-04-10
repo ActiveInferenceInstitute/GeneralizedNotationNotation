@@ -42,6 +42,9 @@ This directory is part of the `gnn/` module and provides documentation resources
 
 ## Related Documentation
 
-- Main GNN module documentation: `../AGENTS.md`
-- GNN module README: `../README.md`
-- GNN syntax reference: See main `doc/` directory
+- Module docs: [`../AGENTS.md`](../AGENTS.md), [`../README.md`](../README.md), [`../SPEC.md`](../SPEC.md)
+- Normative syntax (repo root): [`doc/gnn/gnn_syntax.md`](../../../doc/gnn/gnn_syntax.md)
+- Reference guide with examples: [`doc/gnn/reference/gnn_syntax.md`](../../../doc/gnn/reference/gnn_syntax.md)
+- File structure (doc tree): [`doc/gnn/reference/gnn_file_structure_doc.md`](../../../doc/gnn/reference/gnn_file_structure_doc.md)
+
+MCP exposes `file_structure.md` and `punctuation.md` via `get_gnn_documentation` in [`../mcp.py`](../mcp.py).

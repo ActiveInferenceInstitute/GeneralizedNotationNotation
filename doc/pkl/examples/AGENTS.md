@@ -1,22 +1,23 @@
-# pkl examples
+# Examples - Agent Scaffolding
 
-## Overview
+## Module Overview
 
-Documentation for GNN models serialized using the PKL format.
-
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
-
-## Purpose
-
-Showcasing the multi-format serialization capabilities of the GNN ecosystem.
-
-## Quick Navigation
-
-- **PKL Docs**: [pkl/](../README.md)
+**Purpose**: Responsible for `Examples` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
 ---
 
-**Status**: ✅ Production Ready  
+## Core Functionality
+
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

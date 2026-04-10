@@ -3,7 +3,6 @@
 import logging
 import os
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -45,13 +44,9 @@ def test_pipeline_logger_caching():
 
 def test_setup_step_logging():
     """Test step-specific logging setup."""
-    with patch('utils.logging_utils.PipelineLogger.get_logger') as mock_get:
-        mock_logger = MagicMock()
-        mock_get.return_value = mock_logger
-        
-        logger = setup_step_logging("3_gnn", verbose=True)
-        assert logger is mock_logger
-        mock_get.assert_called_with("3_gnn", logging.DEBUG)
+    logger = setup_step_logging("3_gnn", verbose=True)
+    assert logger.name == "3_gnn"
+    assert logger.level == logging.DEBUG
 
 def test_gnn_pipeline_config_defaults():
     """Test GNNPipelineConfig default values."""
@@ -73,11 +68,10 @@ def test_config_validation_success():
     # but GNNPipelineConfig expects it relative to src/
     assert isinstance(errors, list)
 
-def test_load_config_missing_raises():
+def test_load_config_missing_raises(tmp_path):
     """Test load_config raises FileNotFoundError when explicit path is missing."""
-    with patch('pathlib.Path.exists', return_value=False):
-        with pytest.raises(FileNotFoundError):
-            load_config(Path("nonexistent.yaml"))
+    with pytest.raises(FileNotFoundError):
+        load_config(tmp_path / "nonexistent.yaml")
 
 def test_argument_parser_step_parsing():
     """Test parsing logic for a specific step."""

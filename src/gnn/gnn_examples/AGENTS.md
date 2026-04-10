@@ -23,5 +23,5 @@ The reference file demonstrates all required GNN sections:
 ## For AI Agents
 
 1. **Use as reference** when parsing or generating GNN files — this is the canonical example
-2. **Use for testing** — this file is the reference for round-trip validation across all 23 formats
+2. **Use for testing** — reference model for round-trip tests configured in [`../testing/test_round_trip.py`](../testing/test_round_trip.py); scope vs all **23** `GNNFormat` values is defined in [`../SPEC.md`](../SPEC.md)
 3. **Model structure**: The POMDP agent demonstrates proper Active Inference variable naming (A=likelihood, B=transition, C=preference, D=prior, E=policy prior)

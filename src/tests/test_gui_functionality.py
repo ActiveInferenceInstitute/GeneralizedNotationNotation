@@ -212,7 +212,7 @@ class TestGUIHTMLNavigation:
         gui_output = pipeline_output / "22_gui_output"
         gui_output.mkdir(parents=True, exist_ok=True)
 
-        # Create some dummy output directories
+        # Create some test output directories
         (pipeline_output / "3_gnn_output").mkdir()
         (pipeline_output / "3_gnn_output" / "test.json").write_text("{}")
 

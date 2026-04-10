@@ -1,26 +1,19 @@
-# Operations Directory Manifest (`AGENTS.md`)
+# Operations - Agent Scaffolding
 
-**Role**: Maintains metadata and architectural manifest for the `operations` subdirectory.
-**Version**: v2.0.0
-**Context**: Part of the GNN (Generalized Notation Notation) documentation ecosystem.
+## Module Overview
 
-## Directory Identity
+**Purpose**: This directory serves as a categorized documentation index for the `Operations` layer of the GNN Framework.
 
-- **Path**: `doc/gnn/operations/`
-- **Purpose**: Domain-specific documentation regarding GNN Operations.
+**Category**: Documentation Index
 
-## File Index
+## Contained Indices
 
-| File | Purpose |
-|------|---------|
-| `README.md` | Human-readable entrypoint |
-| `AGENTS.md` | Machine-readable manifest (this file) |
-| `REPO_COHERENCE_CHECK.md` | GNN Repo Coherence Check |
-| `gnn_tools.md` | GNN Tools and Resources |
-| `gnn_troubleshooting.md` | GNN Troubleshooting Guide |
-| `improvement_analysis.md` | GNN Pipeline Improvement Analysis |
-| `resource_metrics.md` | GNN Resource Metrics |
+- [GNN Tools and Resources](gnn_tools.md)
+- [GNN Pipeline Improvement Analysis](improvement_analysis.md)
+- [GNN Resource Metrics](resource_metrics.md)
+- [GNN Repo Coherence Check](REPO_COHERENCE_CHECK.md)
+- [GNN Troubleshooting Guide](gnn_troubleshooting.md)
 
-## Integration
 
-This directory's contents act strictly as documentation and specification. They integrate conceptually with `src/main.py` by defining the standards by which the computational pipeline operates.
+## Implementation Details
+This is a static reference directory. The above files can be explicitly referenced by external LLMs to retrieve detailed syntax and operational knowledge for GNN generation tasks.

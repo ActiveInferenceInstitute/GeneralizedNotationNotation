@@ -1,11 +1,27 @@
-# Gui 1
+# GUI 1: Form-based Interactive GNN Constructor
 
 ## Overview
-This module provides Gui 1 functionality for the GNN pipeline.
+This module provides the primary form-based GUI functionality for the Generalized Notation Notation (GNN) pipeline. Operating as a component of **Step 22**, it provides a real-time, interactive environment to scaffold, edit, and orchestrate generative model parameters directly from the browser.
 
-## Components
-- Core processing logic
-- Integration utilities
+## Key Features
+- **Form-Based Component Management**: Interactive Gradio forms to dynamically add, update, and remove model components such as matrices (A, B, C, D) and vectors.
+- **State Space Editing**: Live validation and manipulation of hierarchical state spaces and modalities.
+- **Live Markdown Synchronization**: A split-pane layout giving real-time visualization of changes mapping directly into the standard GNN `.md` underlying storage format.
+- **Headless Mode Capable**: Easily triggerable in headless pipelines for automated text-layer synchronization.
 
-## Usage
-Import and use standard functions from this module.
+## Quick Start
+You can launch this GUI directly via the pipeline's GUI orchestrator:
+```bash
+# General invocation
+python src/22_gui.py --gui-types gui_1 --target-dir input/gnn_files/ --output-dir output/22_gui_output/
+
+# Headless setup
+python src/22_gui.py --gui-types gui_1 --headless
+```
+
+## Internal Architecture
+- **`__init__.py`**: Public module registry pointing to execution entry points.
+- **`ui.py`**: Gradio interface layouts and event endpoint bindings.
+- **`processor.py`**: Intermediary logic connecting interface behaviors to core GNN parsing structures.
+- **`markdown.py`**: AST-like string synchronization logic ensuring robust read/writing without corrupting manual edits.
+- **`mcp.py`**: Model Context Protocol registration (for AI agents using remote operations).

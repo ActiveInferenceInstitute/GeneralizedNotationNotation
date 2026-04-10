@@ -9091,7 +9091,7 @@
           "name": "GNNFormalParser",
           "lineno": 182,
           "bases": [],
-          "doc": "Stub class for when Lark is not available.",
+          "doc": "Fallback class for when Lark is not available.",
           "methods": [
             {
               "name": "__init__",

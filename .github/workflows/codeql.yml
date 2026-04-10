@@ -3,8 +3,14 @@ name: CodeQL
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "doc/**"
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "doc/**"
   schedule:
     - cron: "28 4 * * 1"
   workflow_dispatch:
@@ -20,7 +26,7 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     permissions:
       contents: read
       security-events: write
@@ -32,10 +38,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Database must be initialized before dependency install (advanced setup).
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies (matches CI)
+        run: uv sync --frozen --extra dev
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3

@@ -46,7 +46,7 @@ cat /etc/os-release  # Linux
 sw_vers  # macOS
 
 # 2. Error Context
-python src/main.py --verbose --target-dir problem_file.md > debug.log 2>&1
+python src/main.py --verbose --target-dir ./problem_models > debug.log 2>&1
 
 # 3. System Resources
 free -h  # Memory
@@ -69,7 +69,7 @@ wc -l problem_file.md
 
 ```bash
 # Quick syntax check
-python src/main.py --only-steps 1,4 --strict --target-dir your_file.md
+python src/main.py --only-steps 1,4 --strict --target-dir ./your_models
 
 # Manual structure check
 grep -n "^##" your_file.md | head -10
@@ -263,7 +263,7 @@ python -c "import jax; print('Devices:', jax.devices())"
 
 ```bash
 # Monitor pipeline execution
-python src/main.py --verbose --target-dir your_file.md &
+python src/main.py --verbose --target-dir ./your_models &
 PIPELINE_PID=$!
 
 # Monitor resources in another terminal
@@ -280,7 +280,7 @@ done
 # Test individual pipeline steps
 for step in {1..13}; do
     echo "Testing step $step..."
-    timeout 300 python src/main.py --only-steps $step --target-dir your_file.md
+    timeout 300 python src/main.py --only-steps $step --target-dir ./your_models
     if [ $? -eq 0 ]; then
         echo "✅ Step $step passed"
     else
@@ -386,7 +386,7 @@ except Exception as e:
 
 ```bash
 # CPU profiling
-python -m cProfile -o profile.stats src/main.py --target-dir your_file.md
+python -m cProfile -o profile.stats src/main.py --target-dir ./your_models
 python -c "
 import pstats
 stats = pstats.Stats('profile.stats')
@@ -394,10 +394,10 @@ stats.sort_stats('cumulative').print_stats(20)
 "
 
 # Memory profiling
-python -m memory_profiler src/main.py --target-dir your_file.md
+python -m memory_profiler src/main.py --target-dir ./your_models
 
 # Line-by-line profiling (if available)
-kernprof -l -v src/main.py --target-dir your_file.md
+kernprof -l -v src/main.py --target-dir ./your_models
 ```
 
 ### **Step 2: Bottleneck Identification**
@@ -622,16 +622,16 @@ echo "🏁 Automated debugging complete"
 
 ```bash
 # Quick syntax validation
-python src/main.py --only-steps 4 --strict --target-dir file.md
+python src/main.py --only-steps 4 --strict --target-dir ./models
 
 # Verbose debugging  
-python src/main.py --verbose --target-dir file.md > debug.log 2>&1
+python src/main.py --verbose --target-dir ./models > debug.log 2>&1
 
 # Resource monitoring
-python -m memory_profiler src/main.py --target-dir file.md
+python -m memory_profiler src/main.py --target-dir ./models
 
 # Step isolation
-python src/main.py --only-steps 1,2,3 --target-dir file.md
+python src/main.py --only-steps 1,2,3 --target-dir ./models
 
 # Environment check
 python src/1_setup.py --verbose

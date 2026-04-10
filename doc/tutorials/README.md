@@ -55,20 +55,22 @@ Static
 ```
 
 ## Step 2: Validate Model
+Put `my_first_model.md` in a folder (for example `path/to/my_models/`) and pass that folder to `--target-dir`.
+
 ```bash
-python src/main.py --target-dir path/to/my_first_model.md --only-steps 1,4
+python src/main.py --target-dir path/to/my_models --only-steps 1,4
 ```
 
 ## Step 3: Visualize Model
 ```bash
-python src/main.py --target-dir path/to/my_first_model.md --only-steps 6
+python src/main.py --target-dir path/to/my_models --only-steps 8
 ```
 
 Check `output/8_visualization_output/` for generated diagrams.
 
 ## Step 4: Export Model
 ```bash
-python src/main.py --target-dir path/to/my_first_model.md --only-steps 5
+python src/main.py --target-dir path/to/my_models --only-steps 7
 ```
 
 Your model is now exported to JSON, XML, and other formats!

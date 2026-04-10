@@ -1,12 +1,8 @@
-# Gui 1 Specification
+# Specification: Gui 1
 
-## Overview
-Technical specification for the Gui 1 module.
+## Design Requirements
+This module (`gui_1`) maps structural logic to the overall execution graph.
+It ensures that `Gui 1` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: No specific classes exported.

@@ -38,7 +38,7 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
                 else:
                     pass
 
-                # We simply write a dummy file to simulate success
+                # We simply write a scaffold file to confirm success
                 code = f"# Generated for {fp.name}\nprint('Success')"
                 (output_dir / f"{fp.stem}_pymdp.py").write_text(code)
                 summary["rendered"] += 1

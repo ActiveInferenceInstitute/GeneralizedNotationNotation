@@ -205,7 +205,7 @@ class TestRenderModuleComprehensive:
 			from src.render import render_gnn_to_discopy
 
 			# Test with sample GNN content
-			dummy_spec = {
+			sample_spec = {
 				"model_name": "TestModel",
 				"variables": [{"name": "A", "dimensions": [2, 2]}],
 				"model_parameters": {},
@@ -217,7 +217,7 @@ class TestRenderModuleComprehensive:
 			with tempfile.TemporaryDirectory() as td:
 				output_path = Path(td) / "discopy_diagram.py"
 				# Pass required arguments: gnn_spec and output_script_path
-				result = render_gnn_to_discopy(dummy_spec, output_path)
+				result = render_gnn_to_discopy(sample_spec, output_path)
 
 				# Result is (success, message, warnings)
 				assert isinstance(result, tuple), "render_gnn_to_discopy should return a tuple"

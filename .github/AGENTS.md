@@ -12,6 +12,7 @@ Repository automation: Dependabot and GitHub Actions. **Start here for humans**:
 ## Operating rules
 
 - Keep permissions least-privilege at workflow and job level.
+- Expect [dependency review](workflows/dependency-review.yml) to be limited or skipped for PRs from forks (GitHub dependency graph behavior).
 - Keep dependency operations deterministic (`--frozen` where lockfile behavior matters).
 - Validate workflow changes with actionlint before merge (see [workflows/actionlint.yml](workflows/actionlint.yml)).
 - Keep `output/` tracked in git; do not use `.github` automation to alter that policy.

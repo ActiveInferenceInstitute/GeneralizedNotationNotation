@@ -1,6 +1,11 @@
-# visualization.analysis
+# Analysis
 
-Combined multi-panel and cross-file analysis figures.
+## Overview
+This module handles `Analysis` components.
 
-- [AGENTS.md](AGENTS.md)
-- [../README.md](../README.md)
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: count_elements, generate_combined_analysis, generate_combined_visualizations
+
+## Usage
+Import necessary members directly to orchestrate tasks related to Analysis.

@@ -23,7 +23,6 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
-
 _PIPELINE_RUNNER_TEMPLATE = '''#!/usr/bin/env python3
 """
 pymdp 1.0.0 runner for {model_display_name}
@@ -481,7 +480,7 @@ def generate_example_usage_template(
         "        jax_key, subkey = jr.split(jax_key)",
         "        action_keys = jr.split(subkey, agent.batch_size + 1)",
         "        action = agent.sample_action(q_pi, rng_key=action_keys[1:])",
-        f"        print(f\"t={{t}} action={{action}} vfe={{float(info['vfe'].mean()):.3f}}\")",
+        "        print(f\"t={t} action={action} vfe={float(info['vfe'].mean()):.3f}\")",
         "        empirical_prior = agent.update_empirical_prior(action, qs)",
         "",
         f"    print('Rollout finished: {model_name}')",

@@ -54,10 +54,32 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Run unit and integration tests (skip pipeline & MCP)
+        id: pytest
         run: |
+          mkdir -p junit
           uv run pytest -m "not pipeline and not mcp" \
             --tb=short \
-            -q
+            -q \
+            --junitxml=junit/pytest-${{ matrix.python-version }}.xml
+
+      - name: Pytest JUnit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-junit-${{ matrix.python-version }}
+          path: junit/pytest-${{ matrix.python-version }}.xml
+          if-no-files-found: warn
+
+      - name: Test job summary
+        if: always()
+        run: |
+          {
+            echo "### Tests (Python ${{ matrix.python-version }})"
+            echo ""
+            echo "Outcome: **${{ steps.pytest.outcome }}**"
+            echo ""
+            echo "JUnit XML is attached as artifact \`pytest-junit-${{ matrix.python-version }}\` when present."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: MCP tool count assertion
         if: matrix.python-version == '3.12'
@@ -121,6 +143,8 @@ jobs:
         run: uv sync --frozen --extra dev
 
       - name: Run Bandit scan (medium+ findings fail)
+        id: bandit
+        continue-on-error: true
         run: |
           uv run bandit -r src -c pyproject.toml \
             --severity-level medium \
@@ -129,7 +153,13 @@ jobs:
             -o bandit-results.json
 
       - name: Upload Bandit report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: bandit-results
           path: bandit-results.json
+          if-no-files-found: warn
+
+      - name: Fail if Bandit reported issues
+        if: steps.bandit.outcome == 'failure'
+        run: exit 1

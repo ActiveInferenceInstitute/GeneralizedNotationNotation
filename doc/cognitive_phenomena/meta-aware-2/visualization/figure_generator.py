@@ -900,9 +900,9 @@ if __name__ == "__main__":
     # Create figure generator
     generator = FigureGenerator("./test_figures")
     
-    # Create mock results for testing
+    # Create test results for validation
     time_steps = 200
-    mock_results = {
+    sample_results = {
         'model_name': 'test_meta_awareness',
         'num_levels': 3,
         'level_names': ['perception', 'attention', 'meta_awareness'],
@@ -928,21 +928,21 @@ if __name__ == "__main__":
     }
     
     # Add some oddballs
-    mock_results['stimulus_sequence'][[40, 80, 120, 160]] = 1
+    sample_results['stimulus_sequence'][[40, 80, 120, 160]] = 1
     
     # Generate test figures
-    fig7_path = generator.generate_figure_7(mock_results)
-    fig10_path = generator.generate_figure_10(mock_results)
-    fig11_path = generator.generate_figure_11(mock_results)
+    fig7_path = generator.generate_figure_7(sample_results)
+    fig10_path = generator.generate_figure_10(sample_results)
+    fig11_path = generator.generate_figure_11(sample_results)
     
-    precision_path = generator.generate_precision_analysis(mock_results)
-    free_energy_path = generator.generate_free_energy_analysis(mock_results)
+    precision_path = generator.generate_precision_analysis(sample_results)
+    free_energy_path = generator.generate_free_energy_analysis(sample_results)
     
     # Generate model comparison (using same results for both models for testing)
-    comparison_path = generator.generate_model_comparison(mock_results, mock_results)
+    comparison_path = generator.generate_model_comparison(sample_results, sample_results)
     
     # Save analysis summary
-    summary_path = generator.save_analysis_summary(mock_results)
+    summary_path = generator.save_analysis_summary(sample_results)
     
     print(f"Test figures generated:")
     print(f"  Figure 7: {fig7_path}")

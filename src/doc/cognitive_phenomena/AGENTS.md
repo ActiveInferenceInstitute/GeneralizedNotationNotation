@@ -1,15 +1,23 @@
-# src/doc/cognitive_phenomena Agent Guide
+# Cognitive Phenomena - Agent Scaffolding
 
-## Purpose
+## Module Overview
 
-This subtree contains source-facing cognitive-phenomena documentation artifacts.
+**Purpose**: Responsible for `Cognitive Phenomena` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-## Coverage
+---
 
-- `effort/`: cognitive effort model notes.
-- `memory/`: memory systems model notes.
+## Core Functionality
 
-## Notes
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
 
-- This area is documentation-only and does not define runtime pipeline code.
-- Keep links and terminology aligned with canonical docs under `doc/cognitive_phenomena/`.
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

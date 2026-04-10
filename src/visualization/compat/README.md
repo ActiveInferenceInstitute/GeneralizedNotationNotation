@@ -1,6 +1,11 @@
-# visualization.compat
+# Compat
 
-Shared optional imports (`plt` / `np` / `sns`) for step 8 and related code.
+## Overview
+This module handles `Compat` components.
 
-- [AGENTS.md](AGENTS.md)
-- [../README.md](../README.md)
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Usage
+Import necessary members directly to orchestrate tasks related to Compat.

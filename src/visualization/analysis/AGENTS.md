@@ -1,8 +1,23 @@
-# visualization.analysis
+# Analysis - Agent Scaffolding
 
-| Symbol | Location |
-|--------|----------|
-| `generate_combined_analysis` | Per-model four-panel + standalone + generative schematic |
-| `generate_combined_visualizations` | Cross-file summary; file stats use `load_visualization_model` |
+## Module Overview
 
-Root `combined_analysis.py` re-exports both.
+**Purpose**: Responsible for `Analysis` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
+
+---
+
+## Core Functionality
+
+### Primary Responsibilities
+Combined analysis plots, standalone panels, generative model diagrams, cross-file charts.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: count_elements, generate_combined_analysis, generate_combined_visualizations
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

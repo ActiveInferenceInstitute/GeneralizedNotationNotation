@@ -1,12 +1,8 @@
-# Sapf Specification
+# Specification: Sapf
 
-## Overview
-Technical specification for the Sapf module.
+## Design Requirements
+This module (`sapf`) maps structural logic to the overall execution graph.
+It ensures that `Sapf` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: SAPFGNNProcessor, SyntheticAudioGenerator

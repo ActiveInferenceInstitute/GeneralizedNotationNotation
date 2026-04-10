@@ -1,11 +1,11 @@
 # Gui 3
 
 ## Overview
-This module provides Gui 3 functionality for the GNN pipeline.
+This module handles `Gui 3` components.
 
-## Components
-- Core processing logic
-- Integration utilities
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: build_design_studio, export_design, get_gui_3_info, gui_3, launch_gui, preview_design, run_gui
 
 ## Usage
-Import and use standard functions from this module.
+Import necessary members directly to orchestrate tasks related to Gui 3.

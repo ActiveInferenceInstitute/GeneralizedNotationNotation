@@ -1,11 +1,11 @@
 # Discopy
 
 ## Overview
-This module provides Discopy functionality for the GNN pipeline.
+This module handles `Discopy` components.
 
-## Components
-- Core processing logic
-- Integration utilities
+## Available Members
+- **Classes**: DisCoPyExecutor
+- **Functions**: analyze_jax_output, execute_directory, execute_discopy_script, run_discopy_analysis, validate_diagram
 
 ## Usage
-Import and use standard functions from this module.
+Import necessary members directly to orchestrate tasks related to Discopy.

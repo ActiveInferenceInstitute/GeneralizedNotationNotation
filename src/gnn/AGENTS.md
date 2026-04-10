@@ -22,13 +22,13 @@
 
 1. Discover GNN specification files in target directories
 2. Parse GNN markdown specifications into structured data
-3. Serialize parsed models to 23 different formats
+3. Serialize parsed models to **22** registered output formats (**23** `GNNFormat` values; PNML is parser-focused — see [SPEC.md](SPEC.md))
 4. Validate GNN syntax and semantic correctness
 
 ### Key Capabilities
 
 - Multi-format GNN parsing (markdown, JSON, YAML, etc.)
-- 23 format serialization (Scala, Lean, Coq, Python, BNF, EBNF, Isabelle, Maxima, XML, JSON, Protobuf, YAML, XSD, ASN.1, PKL, Alloy, Z-notation, TLA+, Agda, Haskell, Pickle, Markdown, PNML)
+- **22** registered serializers for **23** `GNNFormat` values (PNML: parse-only in `SERIALIZER_REGISTRY` — see [SPEC.md](SPEC.md)); covers Scala, Lean, Coq, Python, BNF, EBNF, Isabelle, Maxima, XML, JSON, Protobuf, YAML, XSD, ASN.1, PKL, Alloy, Z-notation, TLA+, Agda, Haskell, Pickle, Markdown
 - Round-trip validation (parse → serialize → parse)
 - Cross-format consistency checking
 
@@ -268,25 +268,22 @@ success = process_gnn_multi_format(
 
 ---
 
-### Public Classes
+### Parser and registry types
 
-#### `GNNParser`
+#### `GNNParsingSystem` (`parsers/system.py`)
 
-**Description**: Main parser for GNN specifications
+**Description**: Unified registry-backed API — loads parsers/serializers from `PARSER_REGISTRY` / `SERIALIZER_REGISTRY`.
 
-**Methods**:
+**Typical use**: `GNNParsingSystem().parse_file(path)`, then serialize via the system’s serializer map for a chosen `GNNFormat`.
 
-- `parse(file_path: Path) -> GNNModel` - Parse GNN file to model
-- `validate(model: GNNModel) -> ValidationResult` - Validate model
-- `serialize(model: GNNModel, format: GNNFormat) -> str` - Serialize to format
+#### `GNNFormalParser` (`parser.py`)
 
-**Example**:
+**Description**: Formal / section-oriented parsing helpers used with `validate_gnn`, `parse_gnn_formal`, etc.
 
-```python
-parser = GNNParser()
-model = parser.parse(Path("model.md"))
-json_output = parser.serialize(model, GNNFormat.JSON)
-```
+#### `GNNParser` (two meanings)
+
+- **`schema_validator.GNNParser`**: Section-level parser used by enhanced validation.
+- **`parsers.common.GNNParser`**: **Protocol** implemented by concrete format parsers.
 
 #### `GNNFormat` (Enum)
 
@@ -392,7 +389,7 @@ run_script = create_standardized_pipeline_script(
 
 - **Primary Outputs**:
   - Parsed model JSON files (`*_parsed.json`)
-  - 23 format serializations per model
+  - One artifact per **serializer-backed** format (**22** registered serializers; **PNML** is parse-only in `SERIALIZER_REGISTRY` — see [SPEC.md](SPEC.md))
 - **Metadata Files**:
   - `gnn_processing_results.json` - Processing summary
   - `gnn_processing_summary.json` - Detailed statistics
@@ -408,7 +405,7 @@ output/3_gnn_output/
 │   ├── model_name.lean
 │   ├── model_name.coq
 │   ├── model_name.py
-│   ├── ... (19 more formats)
+│   ├── ... (additional serializer outputs)
 ├── gnn_processing_results.json
 └── gnn_processing_summary.json
 ```
@@ -490,14 +487,13 @@ input/gnn_files/*.md → GNN Parser → Multi-Format Serializer → output/3_gnn
 
 ### Test Coverage
 
-- **Current**: 85%
-- **Target**: 90%+
+Measure locally: `uv run pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing`. Targets are project-defined (see CI / maintainer notes); do not treat fixed percentages in docs as measured unless cited from a report.
 
 ### Key Test Scenarios
 
 1. Parse valid GNN markdown files
 2. Handle malformed GNN syntax gracefully
-3. Serialize to all 23 formats
+3. Serialize to all **serializer-backed** formats (**22**; **23** enum values — see [SPEC.md](SPEC.md))
 4. Round-trip validation (parse → serialize → parse)
 5. Cross-format consistency checking
 
@@ -518,25 +514,19 @@ pytest src/tests/test_gnn_parsing.py -v
 
 ## MCP Integration
 
-### Tools Registered
+### Tools Registered (representative)
 
-- `gnn_parse` - Parse GNN file and return structured model
-- `gnn_validate` - Validate GNN syntax
-- `gnn_serialize` - Serialize model to specified format
+See **`mcp.py`** `register_tools` for the authoritative list. Examples include:
 
-### Tool Endpoints
-
-```python
-@mcp_tool("gnn_parse")
-def parse_tool(file_path: str):
-    """Parse a GNN specification file"""
-    parser = GNNParser()
-    return parser.parse(Path(file_path))
-```
+- `get_gnn_documentation` — load bundled docs / schema / grammar snippets
+- `validate_gnn_content` — validate content with level and optional round-trip flags
+- `parse_gnn_content` — parse content with format hint
+- `validate_cross_format_consistency_content` — cross-format checks
+- `process_gnn_directory`, `run_round_trip_tests`, `get_gnn_module_info`, etc.
 
 ### MCP File Location
 
-- `src/gnn/mcp.py` - MCP tool registrations
+- `src/gnn/mcp.py` — MCP tool registrations
 
 ---
 
@@ -546,7 +536,7 @@ def parse_tool(file_path: str):
 
 - **Memory**: ~5MB per GNN file + 2MB per format
 - **CPU**: Low (primarily I/O bound)
-- **Disk**: ~150KB per format × 22 formats = ~3.3MB per model
+- **Disk**: Order of magnitude ~150KB per format × **22** serializer outputs (varies by model)
 
 ### Execution Time
 
@@ -565,10 +555,11 @@ def parse_tool(file_path: str):
 
 ### Adding New Formats
 
-1. Add format to `GNNFormat` enum
-2. Implement serializer in `src/gnn/serializers/`
-3. Add format tests
-4. Update documentation
+1. Add a value to **`GNNFormat`** in `src/gnn/parsers/common.py` (if it is a new format id).
+2. Implement **`src/gnn/parsers/<name>_parser.py`** and, unless parse-only, **`src/gnn/parsers/<name>_serializer.py`**.
+3. Register classes in **`PARSER_REGISTRY`** and, when applicable, **`SERIALIZER_REGISTRY`** in **`src/gnn/parsers/system.py`**.
+4. Add tests under `src/tests/` and extend **`src/gnn/testing/test_round_trip.py`** if the format should join the default round-trip list.
+5. Update **[SPEC.md](SPEC.md)** if canonical counts change.
 
 ### Code Style
 
@@ -579,9 +570,7 @@ def parse_tool(file_path: str):
 
 ### Testing Requirements
 
-- All new formats must have serialization tests
-- Round-trip tests for all formats
-- Coverage must remain >85%
+- New serializers need tests; round-trip tests should cover any format claimed in **[SPEC.md](SPEC.md)** / `test_round_trip.py` config.
 
 ---
 
@@ -628,7 +617,7 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 **Features**:
 
-- 23 format serialization support
+- **23** `GNNFormat` values; **22** registered serializers (see [SPEC.md](SPEC.md))
 - Round-trip validation
 - Cross-format consistency checking
 - Comprehensive error handling
@@ -660,8 +649,6 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ---
 
-
----
 ## Documentation
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows

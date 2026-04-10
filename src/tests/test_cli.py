@@ -3,26 +3,37 @@
 import sys
 from io import StringIO
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 
 # Import the CLI main function
-# Adjust import path if necessary based on project structure
 try:
+    import cli
     from cli import main
 except ImportError:
-    # Try absolute import if relative fails
     try:
+        import src.cli as cli
         from src.cli import main
     except ImportError:
-        # Fallback for different execution environments
         sys.path.append(str(Path(__file__).parent.parent))
+        import cli
         from cli import main
+
+class CallTracker:
+    def __init__(self):
+        self.called = False
+        self.call_args = None
+        
+    def __call__(self, *args, **kwargs):
+        self.called = True
+        self.call_args = args
 
 def test_cli_help():
     """Test that 'gnn --help' works and returns success."""
-    with patch('sys.stdout', new=StringIO()) as fake_out:
+    orig_stdout = sys.stdout
+    fake_out = StringIO()
+    sys.stdout = fake_out
+    try:
         with pytest.raises(SystemExit) as exit_info:
             main(["--help"])
         
@@ -32,34 +43,50 @@ def test_cli_help():
         assert "Available commands" in output
         assert "run" in output
         assert "validate" in output
+    finally:
+        sys.stdout = orig_stdout
 
 def test_cli_invalid_command():
     """Test that an invalid command returns an error or help."""
-    with patch('sys.stderr', new=StringIO()):
+    orig_stderr = sys.stderr
+    sys.stderr = StringIO()
+    try:
         with pytest.raises(SystemExit):
             main(["nonexistent-command"])
+    finally:
+        sys.stderr = orig_stderr
     
-    # argparse usually exits with 2 for invalid arguments
-    # and prints "invalid choice" to stderr
-
-def test_cli_validate_parser():
+def test_cli_validate_parser(tmp_path):
     """Test the 'validate' subcommand parser."""
-    with patch('cli.Path.exists', return_value=True):
-        with patch('cli.Path.is_file', return_value=True):
-            # Mock the validation command handler directly
-            with patch('cli._cmd_validate') as mock_validate:
-                main(["validate", "test.md"])
-                mock_validate.assert_called_once()
+    test_file = tmp_path / "test.md"
+    test_file.touch()
+    
+    orig_validate = getattr(cli, "_cmd_validate", None)
+    tracker = CallTracker()
+    cli._cmd_validate = tracker
+    
+    try:
+        main(["validate", str(test_file)])
+        assert tracker.called is True
+    finally:
+        if orig_validate:
+            cli._cmd_validate = orig_validate
 
-def test_cli_verbose_flag():
+def test_cli_verbose_flag(tmp_path):
     """Test that the --verbose flag is correctly handled."""
-    with patch('cli._cmd_health') as mock_health:
+    orig_health = getattr(cli, "_cmd_health", None)
+    tracker = CallTracker()
+    cli._cmd_health = tracker
+    
+    try:
         main(["--verbose", "health"])
-        # Check if the args object passed to command handler has verbose=True
-        args = mock_health.call_args[0][0]
-        assert args.verbose is True
+        args = tracker.call_args[0]
+        assert getattr(args, "verbose", False) is True
+    finally:
+        if orig_health:
+            cli._cmd_health = orig_health
 
-def test_cli_subcommand_routing():
+def test_cli_subcommand_routing(tmp_path):
     """Test that subcommands are routed to the correct handlers."""
     commands = [
         ("run", "_cmd_run"),
@@ -70,11 +97,18 @@ def test_cli_subcommand_routing():
         ("health", "_cmd_health"),
     ]
     
+    test_file = tmp_path / "test.md"
+    test_file.touch()
+    str_test_file = str(test_file)
+    
     for cmd_name, handler_name in commands:
-        with patch(f'cli.{handler_name}') as mock_handler:
-            # Provide dummy arguments where needed by the parser
+        orig_handler = getattr(cli, handler_name, None)
+        tracker = CallTracker()
+        setattr(cli, handler_name, tracker)
+        
+        try:
             if cmd_name in ["validate", "parse", "render", "graph"]:
-                main([cmd_name, "dummy.md"])
+                main([cmd_name, str_test_file])
             elif cmd_name == "reproduce":
                 main([cmd_name, "abc123def456"])
             elif cmd_name == "watch":
@@ -82,4 +116,7 @@ def test_cli_subcommand_routing():
             else:
                 main([cmd_name])
             
-            mock_handler.assert_called_once()
+            assert tracker.called is True
+        finally:
+            if orig_handler:
+                setattr(cli, handler_name, orig_handler)

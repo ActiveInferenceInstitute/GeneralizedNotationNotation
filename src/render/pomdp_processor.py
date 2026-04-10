@@ -697,7 +697,7 @@ class POMDPRenderProcessor:
             
             return {
                 'success': success,
-                'message': f"bnlearn code generated" if success else "Failed to generate bnlearn code",
+                'message': "bnlearn code generated" if success else "Failed to generate bnlearn code",
                 'artifacts': [str(output_file)] if success else [],
                 'warnings': []
             }

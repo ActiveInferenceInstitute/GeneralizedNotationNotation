@@ -140,10 +140,10 @@ class TestBaseProcessor:
         """Test BaseProcessor.find_files method."""
         from utils.base_processor import create_processor
 
-        def dummy_process(file_path: Any, output_dir: Any) -> bool:
+        def sample_process(file_path: Any, output_dir: Any) -> bool:
             return True
 
-        processor = create_processor("test", dummy_process)
+        processor = create_processor("test", sample_process)
 
         # Create temp directory with test files
         with tempfile.TemporaryDirectory() as tmpdir:

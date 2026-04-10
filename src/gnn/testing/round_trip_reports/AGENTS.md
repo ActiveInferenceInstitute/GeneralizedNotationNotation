@@ -1,16 +1,23 @@
-# Round Trip Reports Agent Scaffolding
+# Round Trip Reports - Agent Scaffolding
 
 ## Module Overview
-**Purpose**: Round Trip Reports functionality implementation.
-**Status**: Production Ready
-**Version**: 1.0.0
 
-## Core Capabilities
-- Round Trip Reports processing and management
-- Integration with GNN pipeline
+**Purpose**: Responsible for `Round Trip Reports` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-## API Reference
-See the source code for detailed method documentation.
+---
 
-## Testing
-Run tests via `pytest src/tests/`
+## Core Functionality
+
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

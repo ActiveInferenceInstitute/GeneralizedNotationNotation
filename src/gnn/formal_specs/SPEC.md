@@ -21,8 +21,8 @@ This module provides **static formal specification files** in 8 proof/specificat
 
 1. **Completeness**: Each spec must formalize the core GNN types (`StateSpaceBlock`, `Connections`, `Parameters`, `Equations`)
 2. **Consistency**: All 8 specs must describe the same structural invariants
-3. **Round-trip**: Each spec format must support serialization and parsing via `gnn/parsers/`
+3. **Interchange**: Languages that have Python parsers/serializers (Lean, Coq, Agda, TLA+, Alloy, Z, Maxima, BNF) participate in the **`gnn/parsers/`** pipeline. **EBNF** shares **`GrammarSerializer`** with **BNF** and is not always a separate row in `test_round_trip.py`.
 
 ## Testing
 
-Round-trip fidelity is verified by `gnn/testing/test_round_trip.py`, which tests all formal spec formats.
+Automated round-trip coverage for formal *file* formats follows **`test_round_trip.py`** `FORMAT_TEST_CONFIG` (e.g. Agda, TLA+, Alloy, Z, BNF — not necessarily every formal artifact in this directory on every run). See **[../SPEC.md](../SPEC.md)** and **`../testing/README_round_trip.md`**.

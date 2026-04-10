@@ -1,11 +1,11 @@
 # Parsers
 
 ## Overview
-This module provides Parsers functionality for the GNN pipeline.
+This module handles `Parsers` components.
 
-## Components
-- Core processing logic
-- Integration utilities
+## Available Members
+- **Classes**: ASN1Parser, ASN1Serializer, ASTNode, ASTVisitor, AgdaParser, AgdaSerializer, AlloyParser, AlloySerializer, BNFParser, BaseGNNParser, BaseGNNSerializer, BinarySerializer, Connection, ConnectionType, ConversionError, CoqGNNParser, CoqSerializer, DataType, EBNFParser, Equation, FormatConverter, FunctionalSerializer, GNNFormat, GNNInternalRepresentation, GNNParser, GNNParserValidationResult, GNNParsingSystem, GNNSerializer, GNNValidator, GrammarSerializer, HaskellGNNParser, IsabelleParser, IsabelleSerializer, JSONGNNParser, JSONSerializer, LeanGNNParser, LeanSerializer, MarkdownGNNParser, MarkdownSerializer, MaximaParser, MaximaSerializer, OntologyMapping, PKLParser, PKLSerializer, PNMLParser, Parameter, ParameterParsingMixin, ParseError, ParseResult, PickleGNNParser, PrintVisitor, ProtobufGNNParser, ProtobufSerializer, PythonGNNParser, PythonSerializer, ScalaGNNParser, ScalaSerializer, SchemaSerializer, Section, TLAParser, TLASerializer, TemporalSerializer, TimeSpecification, UnifiedGNNParser, ValidationError, ValidationIssue, ValidationSeverity, ValidationWarning, Variable, VariableType, XMLGNNParser, XMLSerializer, XSDParser, XSDSerializer, YAMLGNNParser, YAMLSerializer, ZNotationParser, ZNotationSerializer
+- **Functions**: accept, add_error, add_issue, add_warning, clear_parser_cache, convert, convert_gnn_format, create_empty_model, create_parse_error, dfs, extract_embedded_json_data, get_available_parsers, get_available_serializers, get_children, get_connections_for_variable, get_parameter_by_name, get_summary, get_supported_extensions, get_supported_formats, get_variable_by_name, get_variables_by_type, has_errors, has_warnings, infer_variable_type, is_supported, is_valid, normalize_variable_name, parse_connection_operator, parse_content, parse_dimensions, parse_file, parse_gnn_file_structured, parse_string, parse_xml_element, register_conversion, safe_enum_convert, serialize, serialize_obj, serialize_pickle_direct, serialize_to_file, to_dict, validate, validate_structure, visit, visit_children
 
 ## Usage
-Import and use standard functions from this module.
+Import necessary members directly to orchestrate tasks related to Parsers.

@@ -14,7 +14,9 @@ from .parser import (
     validate_gnn_syntax_formal,
 )
 from .parsers.common import GNNFormat
-from .parsers.system import GNNParsingSystem  # canonical 23-format registry (23 parsers, 22 serializers; PNML is parse-only)
+from .parsers.system import (
+    GNNParsingSystem,  # canonical 23-format registry (23 parsers, 22 serializers; PNML is parse-only)
+)
 from .processor import (
     discover_gnn_files,
     generate_gnn_report,

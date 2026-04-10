@@ -1,13 +1,11 @@
-# MCP SDK (`src/mcp/sdk`)
+# Sdk
 
-Helper modules for MCP server/client interoperability inside this repository.
+## Overview
+This module handles `Sdk` components.
 
-## Scope
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
 
-- Shared SDK utilities used by `src/mcp/` components.
-- Protocol helpers, capability metadata, and support code for integration paths.
-
-## Notes
-
-- This folder is maintained source code, not generated output.
-- Generated artifacts and caches are excluded from folder doc coverage policy.
+## Usage
+Import necessary members directly to orchestrate tasks related to Sdk.

@@ -37,7 +37,7 @@ class TestRenderTargets:
     Fixtures:
     - tmp_path: Temporary directory for artifact output
     - sample_gnn_spec: Basic GNN specification dict
-    - mock_render_module: Real RealRenderModule instance (not a simulated)
+    - test_render_module: Real RealRenderModule instance (not a simulated)
     """
 
     @pytest.mark.unit

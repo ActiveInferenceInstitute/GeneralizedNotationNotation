@@ -35,7 +35,7 @@
 
 **Pip:** So, if I had one of these GNN files, what would it look like? Is it like a recipe from a cookbook?
 
-**Professor Cogswell:** (Taps his pipe) In a way, Pip, in a way! A GNN file, typically a Markdown file – that's `.md` to you – has specific sections, like chapters in a book, or ingredients and instructions in that recipe. Let me give you the lowdown on the main parts, the "GNN File Structure," as we call it in the `doc/gnn_file_structure_doc.md` and its twin, `src/gnn/gnn_file_structure.md`. Two peas in a pod, those two, keeping us honest!
+**Professor Cogswell:** (Taps his pipe) In a way, Pip, in a way! A GNN file, typically a Markdown file – that's `.md` to you – has specific sections, like chapters in a book, or ingredients and instructions in that recipe. Let me give you the lowdown on the main parts, the "GNN File Structure," as we call it in `doc/gnn/reference/gnn_file_structure_doc.md` and the companion under `src/gnn/documentation/file_structure.md`. Two peas in a pod, those two, keeping us honest!
 
 **Pip:** Markdown, like those headings with the little hash marks? I've seen those! So, what are these "sections," Professor? Spill the beans!
 
@@ -51,7 +51,7 @@
     *   `s` would be your variable, maybe "state," see?
     *   `[2,1]` – those square fellas, they tell you the **dimensions**. This "s" is like a list with 2 rows and 1 column. A vector, as the highbrows say.
     *   `type=float` – that just means it's a number that can have a decimal point, a "floating-point" number. Not just whole beans like an "int" for integer.
-    We got a whole guide to this, the `doc/gnn_syntax.md` and its partner `src/gnn/gnn_punctuation.md`. They're the rulebooks for how to write these things just so.
+    We got a whole guide to this, `doc/gnn/gnn_syntax.md` and its partner `src/gnn/documentation/punctuation.md`. They're the rulebooks for how to write these things just so.
 
 **Pip:** So the StateSpaceBlock is like a list of all the players and their positions? And the syntax tells you how to write down their stats?
 

@@ -1,16 +1,25 @@
-# Grammars Agent Scaffolding
+# Grammars - Agent Scaffolding
 
 ## Module Overview
-**Purpose**: Grammars functionality implementation.
-**Status**: Production Ready
-**Version**: 1.0.0
 
-## Core Capabilities
-- Grammars processing and management
-- Integration with GNN pipeline
+**Purpose**: Responsible for `Grammars` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-## API Reference
-See the source code for detailed method documentation.
+---
 
-## Testing
-Run tests via `pytest src/tests/`
+## Core Functionality
+
+### Primary Responsibilities
+Grammars module for GNN
+
+This module contains grammar specifications (BNF, EBNF).
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

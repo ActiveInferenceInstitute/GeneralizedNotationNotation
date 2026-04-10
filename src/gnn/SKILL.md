@@ -33,24 +33,38 @@ python src/main.py --only-steps 3 --verbose
 ## API
 
 ```python
-from gnn import discover_gnn_files, parse_gnn_file, process_gnn_directory
+import logging
+from pathlib import Path
+from gnn import (
+    discover_gnn_files,
+    parse_gnn_file,
+    process_gnn_directory,
+    process_gnn_multi_format,
+    validate_gnn,
+)
+from gnn import GNNFormalParser
+
+logger = logging.getLogger(__name__)
 
 # Discover GNN files in a directory
 files = discover_gnn_files("input/gnn_files/")
 
-# Parse a single file
+# Parse a single file (lightweight dict-style summary)
 model = parse_gnn_file("input/gnn_files/my_model.md")
 
 # Process entire directory (used by pipeline)
 results = process_gnn_directory("input/gnn_files/", "output/")
 
-# Multi-format processing
-from gnn import process_gnn_multi_format
-results = process_gnn_multi_format("input/gnn_files/", "output/")
+# Multi-format processing (requires a Logger — same contract as 3_gnn.py)
+process_gnn_multi_format(
+    Path("input/gnn_files"),
+    Path("output"),
+    logger,
+    verbose=True,
+)
 
 # Formal parsing and validation
-from gnn import validate_gnn, parse_gnn_formal, GNNFormalParser
-is_valid, errors = validate_gnn(content)
+is_valid, errors = validate_gnn(content_string)
 ```
 
 ## Key Exports
@@ -58,9 +72,11 @@ is_valid, errors = validate_gnn(content)
 - `discover_gnn_files` — find `.md` GNN files in a directory tree
 - `parse_gnn_file` — parse a single GNN file into structured data
 - `process_gnn_directory` — process all files in a directory
+- `process_gnn_multi_format` — full multi-format serialization (needs `logging.Logger`)
 - `validate_gnn_structure` — structural validation of a parsed model
 - `validate_gnn` — content-level syntax validation
-- `GNNFormalParser`, `ParsedGNN`, `ParsedGNNFormal` — parser classes
+- `GNNParsingSystem`, `GNNFormat` — registry-backed multi-format I/O
+- `GNNFormalParser`, `ParsedGNN`, `ParsedGNNFormal` — formal parser types
 
 ## Output
 

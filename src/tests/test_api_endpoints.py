@@ -1,6 +1,5 @@
 """Tests for the GNN API endpoints."""
 
-from unittest.mock import patch
 
 import pytest
 
@@ -63,20 +62,32 @@ def test_api_submit_run_success():
     app = create_app()
     client = TestClient(app)
     
-    # Mock compute_run_hash to avoid real hashing logic
-    with patch('pipeline.hasher.compute_run_hash', return_value="test_hash_123"):
-        # Mock background task execution
-        with patch('api.app._execute_pipeline'):
-            response = client.post("/api/v1/run", json={
-                "target_dir": "input/gnn_files",
-                "output_dir": "output",
-                "skip_steps": [13]
-            })
-            
-            assert response.status_code == 200
-            data = response.json()
-            assert data["run_hash"] == "test_hash_123"
-            assert data["status"] == "queued"
+    import api.app as api_app
+    import pipeline.hasher
+    
+    orig_hasher = getattr(pipeline.hasher, "compute_run_hash", None)
+    orig_execute = getattr(api_app, "_execute_pipeline", None)
+    
+    # We must not use mock/patch; manually replace the reference instead
+    pipeline.hasher.compute_run_hash = lambda *args, **kwargs: "test_hash_123"
+    api_app._execute_pipeline = lambda *args, **kwargs: None
+    
+    try:
+        response = client.post("/api/v1/run", json={
+            "target_dir": "input/gnn_files",
+            "output_dir": "output",
+            "skip_steps": [13]
+        })
+        
+        assert response.status_code == 200
+        data = response.json()
+        assert data["run_hash"] == "test_hash_123"
+        assert data["status"] == "queued"
+    finally:
+        if orig_hasher:
+            pipeline.hasher.compute_run_hash = orig_hasher
+        if orig_execute:
+            api_app._execute_pipeline = orig_execute
 
 def test_api_availability_flag():
     """Verify that the availability flag matches reality."""

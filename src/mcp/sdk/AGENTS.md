@@ -1,19 +1,25 @@
-# MCP SDK Agent Manifest
+# Sdk - Agent Scaffolding
 
-## Directory
+## Module Overview
 
-`src/mcp/sdk/`
+**Purpose**: Responsible for `Sdk` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-## Purpose
+---
 
-Documents expectations for SDK-level MCP helpers used by repository modules.
+## Core Functionality
 
-## Responsibilities
+### Primary Responsibilities
+MCP SDK server shim: delegates to the parent mcp.server implementation.
+Present so MCPSDKStatus health check finds a complete SDK under src/mcp/sdk/. MCP SDK client shim: minimal client interface delegating to the parent mcp module.
+Present so MCPSDKStatus health check finds a complete SDK under src
 
-- Keep protocol helper behavior documented at a high level.
-- Keep references aligned with `src/mcp/` module docs.
-- Preserve stable interfaces for internal callers.
+### Extracted Code Entities
 
-## Exclusions
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
 
-Generated outputs, caches, and temporary artifacts are excluded from folder documentation coverage.
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

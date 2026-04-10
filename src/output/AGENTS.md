@@ -1,12 +1,23 @@
-# Output Stubs — Agent Scaffolding
+# Output - Agent Scaffolding
 
 ## Module Overview
 
-**Purpose**: Not a pipeline module. Sample or cached artifacts under `src/` for tests or documentation.
-**Pipeline Step**: Infrastructure module (not a numbered step)
-**Category**: Infrastructure / Caching
-**Status**: ✅ Production Ready
-**Version**: 1.0.0
-**Last Updated**: 2026-03-24
+**Purpose**: Responsible for `Output` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-- [README.md](README.md) — distinction from repo root `output/`
+---
+
+## Core Functionality
+
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

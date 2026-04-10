@@ -14,7 +14,6 @@ import logging
 from typing import Dict, Any, Optional
 logger = logging.getLogger(__name__)
 
-
 def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
     """
     MCP tool for function description.
@@ -55,7 +54,6 @@ def function_name_mcp(mcp_instance_ref=None, **kwargs) -> Dict[str, Any]:
         logger.error(f"MCP tool error: {e}")
         return {"success": False, "error": str(e), "error_type": "execution_error"}
 
-
 # Registry with full metadata
 MCP_TOOLS: Dict[str, Dict[str, Any]] = {
     "tool_name": {
@@ -71,7 +69,6 @@ MCP_TOOLS: Dict[str, Dict[str, Any]] = {
         },
     }
 }
-
 
 def register_tools(mcp=None) -> None:
     """Register all MCP tools with the central server."""

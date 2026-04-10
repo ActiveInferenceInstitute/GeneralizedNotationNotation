@@ -1482,12 +1482,12 @@ if __name__ == "__main__":
 
 if __name__ == '__main__':
     # Example usage for standalone testing of this translator module
-    # This requires a dummy GNN file to be present at the specified path.
+    # This requires a test GNN file to be present at the specified path.
 
     # Configure basic logging for standalone testing
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-    # Create a dummy GNN file for testing
+    # Create a test GNN file for testing
     test_gnn_file_content = """
 ## ModelName
 Test DisCoPy Model
@@ -1505,11 +1505,11 @@ A > B
 B > C
 # D > A # Example of a connection that might cause issues with simple linear assumption if not handled
 """
-    dummy_gnn_path = Path("__test_discopy_gnn.md")
-    with open(dummy_gnn_path, 'w', encoding='utf-8') as f_dummy:
-        f_dummy.write(test_gnn_file_content)
+    test_gnn_path = Path("__test_discopy_gnn.md")
+    with open(test_gnn_path, 'w', encoding='utf-8') as f_test:
+        f_test.write(test_gnn_file_content)
 
-    logger.info(f"--- Running Translator Standalone Test with {dummy_gnn_path} ---")
+    logger.info(f"--- Running Translator Standalone Test with {test_gnn_path} ---")
 
     # Test parsing
     parsed_data = parse_gnn_content(test_gnn_file_content)
@@ -1544,8 +1544,8 @@ B > C
         logger.error("Parsing failed in standalone test.")
 
     # Test the main orchestrator function
-    logger.info(f"--- Testing gnn_file_to_discopy_diagram on {dummy_gnn_path} ---")
-    overall_diagram = gnn_file_to_discopy_diagram(dummy_gnn_path, verbose=True)
+    logger.info(f"--- Testing gnn_file_to_discopy_diagram on {test_gnn_path} ---")
+    overall_diagram = gnn_file_to_discopy_diagram(test_gnn_path, verbose=True)
     if overall_diagram:
         # Log diagram properties safely
         if overall_diagram is not None:
@@ -1560,10 +1560,10 @@ B > C
         else:
             logger.info("Overall diagram creation failed.")
     else:
-        logger.error(f"Overall diagram creation failed for {dummy_gnn_path}.")
+        logger.error(f"Overall diagram creation failed for {test_gnn_path}.")
 
-    # Clean up dummy file
-    dummy_gnn_path.unlink(missing_ok=True)
+    # Clean up test file
+    test_gnn_path.unlink(missing_ok=True)
     Path("__test_discopy_diagram.png").unlink(missing_ok=True)
 
     # Example for MatrixDiagram (if JAX is available and GNN file is adapted)
@@ -1581,22 +1581,22 @@ C[2]
 # BoxName | DomSpec (ignored) | CodSpec (ignored) | Initializer
 A_to_B    | 2                 | 2                 | [[1.0, 0.0], [0.0, 1.0]]
 B_to_C    | 2                 | 2                 | "random_normal:bc_key" 
-# C_to_A | 2                 | 2                 | "load:./dummy_tensor_data.npy" # Needs dummy_tensor_data.npy
+# C_to_A | 2                 | 2                 | "load:./test_tensor_data.npy" # Needs test_tensor_data.npy
 
 ## Connections
 A > B
 B > C
 # C > A # Cycle
 """
-        dummy_matrix_gnn_path = Path("__test_discopy_matrix_gnn.md")
-        # numpy.save("__dummy_tensor_data.npy", numpy.array([[0.5,0.5],[0.5,0.5]])) # If using load
+        test_matrix_gnn_path = Path("__test_discopy_matrix_gnn.md")
+        # numpy.save("__test_tensor_data.npy", numpy.array([[0.5,0.5],[0.5,0.5]])) # If using load
 
-        with open(dummy_matrix_gnn_path, 'w', encoding='utf-8') as f_dummy_matrix:
-            f_dummy_matrix.write(test_gnn_matrix_content)
+        with open(test_matrix_gnn_path, 'w', encoding='utf-8') as f_test_matrix:
+            f_test_matrix.write(test_gnn_matrix_content)
 
-        logger.info(f"--- Testing gnn_file_to_discopy_matrix_diagram on {dummy_matrix_gnn_path} ---")
+        logger.info(f"--- Testing gnn_file_to_discopy_matrix_diagram on {test_matrix_gnn_path} ---")
         if JAX_AVAILABLE and DISCOPY_MATRIX_MODULE_AVAILABLE and discopy_backend is not None: # Ensure backend is available for the context manager
-            matrix_diagram = gnn_file_to_discopy_matrix_diagram(dummy_matrix_gnn_path, verbose=True, jax_seed=42)
+            matrix_diagram = gnn_file_to_discopy_matrix_diagram(test_matrix_gnn_path, verbose=True, jax_seed=42)
             if matrix_diagram:
                 logger.info(f"MatrixDiagram created: dom={matrix_diagram.dom}, cod={matrix_diagram.cod}, boxes: {len(matrix_diagram.boxes) if hasattr(matrix_diagram, 'boxes') else 'N/A'}")
                 if hasattr(matrix_diagram, 'boxes') and matrix_diagram.boxes and hasattr(matrix_diagram.boxes[0], 'data') and matrix_diagram.boxes[0].data is not None:
@@ -1640,9 +1640,9 @@ B > C
                 else:
                     logger.info(f"MatrixDiagram is a placeholder: {type(matrix_diagram)}")
             else:
-                logger.error(f"Overall MatrixDiagram creation failed for {dummy_matrix_gnn_path}.")
+                logger.error(f"Overall MatrixDiagram creation failed for {test_matrix_gnn_path}.")
 
-        dummy_matrix_gnn_path.unlink(missing_ok=True)
-        # Path("__dummy_tensor_data.npy").unlink(missing_ok=True) # If using load
+        test_matrix_gnn_path.unlink(missing_ok=True)
+        # Path("__test_tensor_data.npy").unlink(missing_ok=True) # If using load
 
     logger.info("--- Standalone Translator Test Finished ---")

@@ -127,12 +127,12 @@ class TestVisualizationOptimizer:
         
         assert cache.is_cached(key) is False
         
-        dummy_file = tmp_path / "viz.png"
-        dummy_file.touch()
-        cache.cache_visualization(key, [str(dummy_file)])
+        test_file = tmp_path / "viz.png"
+        test_file.touch()
+        cache.cache_visualization(key, [str(test_file)])
         
         assert cache.is_cached(key) is True
-        assert cache.get_cached_files(key) == [str(dummy_file)]
+        assert cache.get_cached_files(key) == [str(test_file)]
 
     def test_data_sampler(self):
         sampler = DataSampler(max_nodes=10)
@@ -146,12 +146,12 @@ class TestVisualizationOptimizer:
     def test_optimizer_batch(self, tmp_path):
         optimizer = VisualizationOptimizer(cache_dir=tmp_path / "cache")
         
-        def dummy_proc(file_path, **kwargs):
+        def sample_proc(file_path, **kwargs):
             return {"success": True, "file": str(file_path)}
             
         files = [tmp_path / f"file_{i}.md" for i in range(3)]
         for f in files: f.touch()
         
-        results = optimizer.optimize_batch_processing(files, tmp_path, dummy_proc)
+        results = optimizer.optimize_batch_processing(files, tmp_path, sample_proc)
         assert len(results["processed_files"]) == 3
         assert results["optimization_stats"]["caching_enabled"] is True

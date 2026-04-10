@@ -5,6 +5,8 @@ This module provides utility functions for pytest command building,
 output parsing, and dependency checking.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import re

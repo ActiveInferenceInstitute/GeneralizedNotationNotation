@@ -1,22 +1,23 @@
-# actinf_jl_src
+# Actinf Jl Src - Agent Scaffolding
 
-## Overview
+## Module Overview
 
-Documentation for the core Julia source code for Active Inference.
-
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
-
-## Purpose
-
-Explaining the underlying Julia implementation of Active Inference principles.
-
-## Quick Navigation
-
-- **Julia Docs**: [activeinference_jl/](../README.md)
+**Purpose**: Responsible for `Actinf Jl Src` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
 ---
 
-**Status**: ✅ Production Ready  
+## Core Functionality
+
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

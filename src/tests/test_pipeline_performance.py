@@ -319,6 +319,7 @@ class TestNetworkOperationTiming:
     @pytest.mark.integration
     def test_api_request_timing(self, isolated_environment):
         """Test API request timing and performance with real requests."""
+        pytest.importorskip("requests")
         import requests
 
         from src.utils.network_utils import timed_request
@@ -344,6 +345,7 @@ class TestNetworkOperationTiming:
     @pytest.mark.integration
     def test_batch_request_performance(self, isolated_environment):
         """Test batch request performance with real requests."""
+        pytest.importorskip("requests")
         import requests
 
         from src.utils.network_utils import batch_request

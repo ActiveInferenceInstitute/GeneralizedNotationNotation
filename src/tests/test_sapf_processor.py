@@ -1,6 +1,6 @@
 """Tests for the SAPF audio bridge module."""
 
-from unittest.mock import patch
+
 
 # Import the SAPF shim
 try:
@@ -50,7 +50,12 @@ def test_sapf_fallback_logic() -> None:
     # We can't easily break the real audio.sapf import once it's imported,
     # but we can mock the _audio_sapf reference in the sapf module.
     if sapf:
-        with patch("sapf._audio_sapf", None):
+        # We must not use mock/patch; manually replace the reference instead
+        original = getattr(sapf, "_audio_sapf", None)
+        sapf._audio_sapf = None
+        try:
             info = sapf.get_module_info()
             assert info["version"] == sapf.__version__
             assert "SAPF audio bridge" in info["description"]
+        finally:
+            sapf._audio_sapf = original

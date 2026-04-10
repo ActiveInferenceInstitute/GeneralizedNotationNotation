@@ -391,10 +391,10 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
         # Import basic generators
         from .generators import (
             generate_activeinference_jl_code,
+            generate_bnlearn_code,
             generate_discopy_code,
             generate_pymdp_code,
             generate_rxinfer_code,
-            generate_bnlearn_code,
         )
 
         # Create basic model data from filename

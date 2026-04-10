@@ -1,5 +1,11 @@
-# Effort Model Docs
+# Effort
 
-This directory contains cognitive effort model documentation:
+## Overview
+This module handles `Effort` components.
 
-- `effort_model.md`
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Usage
+Import necessary members directly to orchestrate tasks related to Effort.

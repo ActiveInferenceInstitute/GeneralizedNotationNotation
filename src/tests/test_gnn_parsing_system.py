@@ -116,7 +116,7 @@ class TestGNNParsingSystemDetectFormat:
         self.ps = GNNParsingSystem(strict_validation=False)
 
     def _path_with_ext(self, ext):
-        return Path(f"dummy{ext}")
+        return Path(f"test_file{ext}")
 
     def test_md_detected_as_markdown(self):
         assert self.ps._detect_format(self._path_with_ext(".md")) == GNNFormat.MARKDOWN

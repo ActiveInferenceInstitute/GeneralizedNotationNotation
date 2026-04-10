@@ -13,16 +13,21 @@
 ## Common Operations
 
 ```python
-# Parse GNN file
-from gnn.parser import GNNParser
-parser = GNNParser()
-result = parser.parse_file("input/gnn_files/model.md")
+from pathlib import Path
+from gnn.pomdp_extractor import extract_pomdp_from_file
 
-# Extract POMDP
-from gnn.pomdp_extractor import POMDPExtractor
-extractor = POMDPExtractor()
-pomdp = extractor.extract(result)
-# pomdp.num_states, pomdp.num_observations, pomdp.A, pomdp.B, etc.
+# POMDP matrices and dimensions from a Markdown GNN file
+pomdp = extract_pomdp_from_file(Path("input/gnn_files/model.md"))
+if pomdp:
+    # pomdp.num_states, pomdp.num_observations, pomdp.A_matrix, pomdp.B_matrix, ...
+    pass
+
+# Multi-format parse/serialize (registry in parsers/system.py)
+from gnn import GNNParsingSystem
+from gnn.parsers.common import GNNFormat
+
+system = GNNParsingSystem()
+result = system.parse_file(Path("input/gnn_files/model.md"), format_hint=GNNFormat.MARKDOWN)
 ```
 
 ## Integration Points
@@ -30,20 +35,22 @@ pomdp = extractor.extract(result)
 | Direction | Module | Data |
 |-----------|--------|------|
 | **Input** | input/gnn_files/ | *.md GNN files |
-| **Output** | render/* | POMDPStateSpace objects |
+| **Output** | render/* | Downstream uses parsed models / POMDPStateSpace |
 
 ## Key Files
 
-- `parser.py` - Main `GNNParser` class
-- `pomdp_extractor.py` - `POMDPExtractor` for state space extraction
-- `__init__.py` - Public API exports
+- `parsers/system.py` — `GNNParsingSystem`, `PARSER_REGISTRY`, `SERIALIZER_REGISTRY`
+- `parser.py` — `validate_gnn`, `GNNFormalParser`, lightweight helpers
+- `schema_validator.py` — `GNNParser` (section-level) and `GNNValidator` for strict validation
+- `pomdp_extractor.py` — `POMDPExtractor`, `extract_pomdp_from_file`
+- `__init__.py` — Public API exports
 
 ## Tips for AI Assistants
 
-1. **Entry Point:** GNN parsing is the foundation - Step 3 of pipeline
-2. **POMDPStateSpace:** Core data structure with A, B, C, D, E matrices
-3. **Dimensions:** num_states, num_observations, num_actions, num_factors
-4. **Format:** GNN uses markdown sections for model specification
+1. **Entry Point:** GNN parsing is Step 3 of the pipeline (`3_gnn.py`).
+2. **POMDPStateSpace:** Dataclass with `A_matrix`, `B_matrix`, dimensions, etc.
+3. **Format counts:** See [SPEC.md](SPEC.md) (23 enum, 22 serializers).
+4. **Format:** GNN uses markdown sections for model specification.
 
 ## GNN Format Structure
 

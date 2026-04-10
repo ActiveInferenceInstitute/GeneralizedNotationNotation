@@ -246,12 +246,16 @@ License: MIT
 
 ### 2. Run the Pipeline
 
+Put `my_first_model.md` in a directory (for example `my_models/`), then point `--target-dir` at that directory — not at the file.
+
 ```bash
-# Process your model through the complete pipeline
-uv run python src/main.py --target-dir my_first_model.md
+mkdir -p my_models
+# move or save my_first_model.md into my_models/
+
+uv run python src/main.py --target-dir my_models
 
 # Or run specific steps
-uv run python src/main.py --target-dir my_first_model.md --only-steps "1,2,3,4,5"
+uv run python src/main.py --target-dir my_models --only-steps "1,2,3,4,5"
 ```
 
 ### 3. Check the Results
@@ -276,7 +280,13 @@ output/
 If you have GNN installed and want to run a model *right now*, follow these 3 steps:
 
 ### **1. Copy this GNN Snippet**
-Save this as `fast_agent.md`:
+Save this as `models/fast_agent.md` (any directory works; `models/` keeps a single-file run isolated):
+
+```bash
+mkdir -p models
+```
+
+Then create `models/fast_agent.md` with:
 ```gnn
 ## ModelName
 FastAgent
@@ -294,7 +304,7 @@ s_f0, u_c0 > s_f0
 ### **2. Generate and Execute in One Command**
 
 ```bash
-uv run python src/main.py --target-dir fast_agent.md --only-steps "1,2,3,4,5,6,7,8,9,10"
+uv run python src/main.py --target-dir models --only-steps "1,2,3,4,5,6,7,8,9,10"
 ```
 
 ### **3. Inspect the Logic**
@@ -360,44 +370,40 @@ julia simple_agent.jl
 
 ### Development Workflow
 
+Assume your `.md` models live under `./models/` (see above). `--target-dir` must always be a directory.
+
 ```bash
 # Quick validation only
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,3,4"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,3,4"
 
 # Generate code for specific framework
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,4,5,9"
 
 # Include visualization
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,4,5,6"
 
 # Full pipeline with documentation
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13"
 ```
 
-### Batch Processing
+### Batch processing
 
 ```bash
-# Process all models in a directory
-uv run python src/main.py --target-dir ./examples/
+# Process all models in a directory (recursive discovery uses the tree under target-dir)
+uv run python src/main.py --target-dir ./examples/ --recursive
 
-# Process specific pattern
-uv run python src/main.py --target-dir ./models/ --pattern "*.md"
-
-# Parallel processing
-uv run python src/main.py --target-dir ./models/ --parallel --workers 4
+# Limit scope: use a subdirectory per model family
+uv run python src/main.py --target-dir ./models/experiment_a/
 ```
 
 ### Configuration
 
 ```bash
-# Use custom configuration
-uv run python src/main.py my_model.md --config config/development.yaml
+# Use a custom configuration file (see also input/config.yaml)
+uv run python src/main.py --target-dir ./models --config-file input/config.yaml --verbose
 
 # Set output directory
-uv run python src/main.py my_model.md --output-dir ./my_results/
-
-# Debug mode
-uv run python src/main.py my_model.md --debug --verbose
+uv run python src/main.py --target-dir ./models --output-dir ./my_results/ --verbose
 ```
 
 ## 📚 Learning Path
@@ -407,7 +413,9 @@ uv run python src/main.py my_model.md --debug --verbose
 ```bash
 # Explore provided examples
 ls src/gnn/gnn_examples/
-uv run python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
+# --target-dir must be a directory (not a single .md file)
+uv run python src/main.py --target-dir src/gnn/gnn_examples --verbose
+# Canonical pipeline samples also live under input/gnn_files/
 ```
 
 ### 2. Learn GNN Syntax (15 minutes)
@@ -420,13 +428,13 @@ uv run python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.m
 
 ```bash
 # Generate PyMDP code
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,4,5,9"
 
 # Generate RxInfer code  
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,4,5,9"
 
 # Create visualizations
-uv run python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,4,5,6"
 ```
 
 ### 4. Advanced Features (30 minutes)
@@ -465,8 +473,8 @@ uv run python src/5_type_checker.py --target-dir . --verbose
 ### Missing Dependencies
 
 ```bash
-# Check what's missing
-uv run python src/1_setup.py --check-dependencies
+# Sync environment (see src/1_setup.py --help for options)
+uv run python src/1_setup.py --verbose
 
 # Install optional dependencies using UV
 uv pip install torch  # For PyTorch integration
@@ -535,27 +543,27 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 1. **Check Examples**: Look at `src/gnn/gnn_examples/` for similar models
 2. **Validate First**: Run step 4 (type checker) to catch common errors
 3. **Read Error Messages**: They often contain helpful hints
-4. **Use Debug Mode**: Add `--debug --verbose` for detailed output
+4. **Verbose logs**: Add `--verbose` for detailed output
 
 ## 🎯 Quick Reference Card
 
 ### Essential Commands
 
 ```bash
-# Basic processing
-uv run python src/main.py model.md
+# Basic processing (directory containing your .md models)
+uv run python src/main.py --target-dir ./models --verbose
 
 # Just validation  
-uv run python src/main.py --target-dir model.md --only-steps "1,2,3,4"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,3,4"
 
 # Generate code
-uv run python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,9"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,3,4,5,9"
 
 # Full pipeline
-uv run python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13,14"
+uv run python src/main.py --target-dir ./models --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13,14"
 
-# Debug mode
-uv run python src/main.py model.md --debug --verbose
+# Verbose
+uv run python src/main.py --target-dir ./models --verbose
 ```
 
 ### Key File Locations

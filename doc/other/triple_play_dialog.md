@@ -2,7 +2,7 @@
 
 **Characters:**
 
-*   **Abner Doubleplay:** Earnest, precise, a true believer in the System. He's trying to explain the "rules" of Generalized Notation Notation (GNN). He often clutches a heavily annotated copy of what looks like a rulebook, but is in fact `doc/gnn_file_structure_doc.md`.
+*   **Abner Doubleplay:** Earnest, precise, a true believer in the System. He's trying to explain the "rules" of Generalized Notation Notation (GNN). He often clutches a heavily annotated copy of what looks like a rulebook, but is in fact `doc/gnn/reference/gnn_file_structure_doc.md`.
 *   **Casey "Specs" Stumble:** An old-time baseball manager, weathered, full of cracker-barrel philosophy and prone to spectacular misunderstandings. He's always looking for the "angle," the "specs" on the new talent, and how this all plays out on "The Diamond" (which he sometimes confuses with the GNN `Connections` graph). He squints at everything through thick, smudged spectacles.
 *   **Branch "Rickety" Right:** A shadowy, almost spectral figure. Perhaps a long-disenfranchised league commissioner, a rogue statistician, or a philosopher of the Great American Pastime now haunting the ontological back-alleys of model specification. He speaks in oracular, often unsettling, pronouncements, his voice like the creak of an old stadium gate.
 
@@ -28,7 +28,7 @@ The deepest, dustiest back office of the "National Generative Model League" (NGM
 
 **Rickety:** (Voice rasps from the shadows, like dry leaves skittering across an abandoned home plate) The Name… yes. Before the Word, there is the naming. Before the `Connections` are drawn, the `ModelName` is whispered into the void. It is the first casting of the die, the initial `PriorBlock` from which all subsequent beliefs unfold. Does the Name sing to the `ActInfOntologyAnnotation`? Or does it merely echo in the empty grandstands of failed hypotheses?
 
-**Abner:** Precisely, Mr. Right! Well, almost. It's less about singing and more about… unambiguous referencing. As stipulated in `doc/gnn_file_structure_doc.md`, Section Two! It's a descriptor, a label. For instance, "gnn_example_pymdp_agent". Concise. Informative.
+**Abner:** Precisely, Mr. Right! Well, almost. It's less about singing and more about… unambiguous referencing. As stipulated in `doc/gnn/reference/gnn_file_structure_doc.md`, Section Two! It's a descriptor, a label. For instance, "gnn_example_pymdp_agent". Concise. Informative.
 
 **Specs:** "Pymdp Agent"? Sounds foreign. Is he one of them international league fellas? Got a good arm, this Agent? Can he play multiple positions? Like, can he cover `HiddenState` and also fill in at `Observation` if we're in a pinch? Versatility, that's the ticket in this league. A real `Triple Play` threat, if you catch my drift.
 
@@ -50,7 +50,7 @@ The deepest, dustiest back office of the "National Generative Model League" (NGM
 
 **Specs:** So, `StateSpaceBlock` is the field? And `ModelName` is playing *on* the field? But you said `ModelName` was the team name! I'm confused. Who's on first?
 
-**Rickety:** `Who` is but a fleeting `Observation`, Specs. `What` is a `HiddenState`. And `ModelName`… `ModelName` is the echo of the question itself, resonating through the `src/gnn/gnn_examples/` folder, forever seeking its `gnn_file_structure.md`. The first turn of the triple play often ends in such ontological pickles.
+**Rickety:** `Who` is but a fleeting `Observation`, Specs. `What` is a `HiddenState`. And `ModelName`… `ModelName` is the echo of the question itself, resonating through the `src/gnn/gnn_examples/` folder, forever seeking its `doc/gnn/reference/gnn_file_structure_doc.md`. The first turn of the triple play often ends in such ontological pickles.
 
 **(The ticker-tape machine sputters: "ERROR: AMBIGUOUS_REFERENCE_TO_FIRST_BASE. CONSULT_SRC_MCP_MCP.PY")**
 
@@ -84,7 +84,7 @@ The deepest, dustiest back office of the "National Generative Model League" (NGM
 
 **Rickety:** The `A` matrix… the lens through which the world is perceived. The `B` matrix… the currents upon which the agent is carried, or against which it strives. The `C` vector… the siren song of `Preferences`. And the `D` vector… the whisper of `Priors` from a forgotten yesterday. All mere `GNNSection`s in a grander, unwritten `gnn_dsl_manual.md`. The true triple play is understanding how `Text-Based Models` become `Graphical Models` in the mind, and then `Executable Cognitive Models` in the `src/render/` engines of fate.
 
-**Abner:** Exactly! The `StateSpaceBlock` defines the players and their potential. `A_m0` is the likelihood – how observations depend on states. `B_f0` is how states change. `C_m0` is what the agent *wants* to observe. `D_f0` is where it thinks it starts. It's all there! These are the fundamental building blocks! The `src/gnn/gnn_file_structure.md` lays it all out!
+**Abner:** Exactly! The `StateSpaceBlock` defines the players and their potential. `A_m0` is the likelihood – how observations depend on states. `B_f0` is how states change. `C_m0` is what the agent *wants* to observe. `D_f0` is where it thinks it starts. It's all there! These are the fundamental building blocks! See `doc/gnn/reference/gnn_file_structure_doc.md` and `src/gnn/documentation/file_structure.md` for the full layout!
 
 **Specs:** So, if `A_m0` is How-We-See, and `B_f0` is How-We-Move, and `C_m0` is What-We-Want, and `D_f0` is Where-We-Start… who is `G`? The `ExpectedFreeEnergyScalar`? Sounds like the owner. Always worried about the bottom line.
 

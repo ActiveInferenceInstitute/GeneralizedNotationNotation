@@ -153,7 +153,7 @@ The `ObservationPheromoneModality`,
 All bound in sacred `Reality`!  
 
 **Urizen** the Lawgiver speaks thus to the `TypeChecker`:  
-> "Bring me your `gnn_file_structure.md`!  
+> "Bring me your `documentation/file_structure.md`!  
 > Show me the `syntax` pure!  
 > Every `bracket` shall be measured,  
 > Every `comma` held secure!"

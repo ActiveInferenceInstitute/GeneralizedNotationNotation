@@ -1,9 +1,23 @@
-# Memory Docs Agent Guide
+# Memory - Agent Scaffolding
 
-## Purpose
+## Module Overview
 
-Documents memory-systems model notes located in this folder.
+**Purpose**: Responsible for `Memory` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-## File
+---
 
-- `memory_model.md`: Active Inference/GNN-oriented memory systems documentation.
+## Core Functionality
+
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

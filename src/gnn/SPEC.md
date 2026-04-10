@@ -4,6 +4,19 @@
 
 The GNN module follows the **Thin Orchestrator** pattern: lightweight coordination scripts delegate to focused processing modules.
 
+## Format and serializer counts (canonical)
+
+These definitions are the single source of truth for cross-references in READMEs and status docs:
+
+| Concept | Count | Notes |
+|---------|------:|--------|
+| **`GNNFormat` enum** | **23** | All supported formats, defined in `parsers/common.py`. |
+| **Parsers registered** | **23** | `PARSER_REGISTRY` in `parsers/system.py` — one parser class per format. |
+| **Serializers registered** | **22** | `SERIALIZER_REGISTRY` in `parsers/system.py` — **PNML** has a parser but no dedicated serializer (parse-focused / XML-related). |
+| **Round-trip test list** | **21** strings in `testing/test_round_trip.py` `FORMAT_TEST_CONFIG['test_formats']` | Includes `markdown` plus **20** other formats. **EBNF** and **PNML** are not in this list (PNML round-trip disabled in config). |
+
+When a document says “100% round-trip,” it refers to the **formats exercised by** `test_round_trip.py`, not necessarily every enum value.
+
 ## Components
 
 | Component | File | Purpose |
@@ -24,7 +37,7 @@ The GNN module follows the **Thin Orchestrator** pattern: lightweight coordinati
 
 | Directory | Purpose |
 |-----------|---------|
-| `parsers/` | Format-specific parsers & serializers for 23 formats (17 parser files + 22 serializer files, wired through `PARSER_REGISTRY` / `SERIALIZER_REGISTRY`) |
+| `parsers/` | Format-specific parsers & serializers: `PARSER_REGISTRY` (23) and `SERIALIZER_REGISTRY` (22); per-format `*_parser.py` / `*_serializer.py` modules in `parsers/system.py` |
 | `schemas/` | Schema definition files (JSON, YAML, XSD, Proto, ASN.1, PKL) |
 | `grammars/` | BNF and EBNF grammar definitions |
 | `testing/` | Round-trip tests, performance benchmarks, integration tests |
@@ -53,7 +66,7 @@ from gnn import (
 ## Testing
 
 ```bash
-python -m pytest src/tests/test_gnn_overall.py src/tests/test_gnn_validation.py src/tests/test_gnn_parsing.py src/tests/test_gnn_processing.py -v
+uv run pytest src/tests/test_gnn_overall.py src/tests/test_gnn_validation.py src/tests/test_gnn_parsing.py src/tests/test_gnn_processing.py -v
 ```
 
 

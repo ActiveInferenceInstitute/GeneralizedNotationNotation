@@ -1,12 +1,8 @@
-# Gui 2 Specification
+# Specification: Gui 2
 
-## Overview
-Technical specification for the Gui 2 module.
+## Design Requirements
+This module (`gui_2`) maps structural logic to the overall execution graph.
+It ensures that `Gui 2` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: No specific classes exported.

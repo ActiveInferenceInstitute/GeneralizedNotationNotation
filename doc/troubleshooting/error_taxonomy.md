@@ -174,10 +174,9 @@ SOLUTION: Add third column or reduce state space to 2
 
 ### Error Context Collection
 ```bash
-# Collect comprehensive error context
-python src/main.py --verbose --debug-mode \
-  --save-error-state \
-  --target-dir problematic_model.md \
+# Collect comprehensive error context (use a directory containing the model)
+python src/main.py --verbose \
+  --target-dir ./problematic_models \
   > debug_output.log 2>&1
 ```
 
@@ -196,7 +195,7 @@ print(f"Connections: {model.connections}")
 ### Performance Profiling
 ```bash
 # Profile memory usage
-python -m memory_profiler src/main.py --target-dir large_model.md
+python -m memory_profiler src/main.py --target-dir ./large_models
 
 # Profile CPU usage  
 python -m cProfile -o profile_output.prof src/main.py
@@ -216,7 +215,7 @@ python -m pstats profile_output.prof
 ```bash
 # Pre-commit validation
 git add model.md
-python src/main.py --only-steps 4 --strict --target-dir model.md
+python src/main.py --only-steps 4 --strict --target-dir ./models
 
 # Continuous integration
 uv run python src/2_tests.py --comprehensive

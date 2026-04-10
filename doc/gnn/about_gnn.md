@@ -1,9 +1,9 @@
 # About GNN
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
-**Status**: Maintained  
-**Pipeline Steps**: 25  
+**Version**: v2.0.0
+**Last Updated**: 2026-03-24
+**Status**: Maintained
+**Pipeline Steps**: 25
 
 For a shorter onboarding narrative and ecosystem context, see **[GNN Overview](gnn_overview.md)**. For the canonical v1.1 syntax spec, see **[GNN v1.1 Syntax Specification](gnn_syntax.md)** and **[GNN Syntax Reference](reference/gnn_syntax.md)**.
 
@@ -99,7 +99,7 @@ Specification of GNN release and optional flags that govern the file's interpret
 
 The GNN file structure is designed to be machine-readable, with each section clearly delineated by Markdown headers. This allows for automated parsing and processing of GNN files, enabling:
 
-- Validation of GNN syntax and structure  
+- Validation of GNN syntax and structure
 - Automatic conversion to computational implementations
 - Visualization of model structure
 

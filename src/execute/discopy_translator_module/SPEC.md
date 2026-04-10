@@ -1,12 +1,8 @@
-# Discopy Translator Module Specification
+# Specification: Discopy Translator Module
 
-## Overview
-Technical specification for the Discopy Translator Module module.
+## Design Requirements
+This module (`discopy_translator_module`) maps structural logic to the overall execution graph.
+It ensures that `Discopy Translator Module` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: No specific classes exported.

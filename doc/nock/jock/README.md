@@ -1,14 +1,11 @@
 # Jock
 
 ## Overview
+This module handles `Jock` components.
 
-Integration of Jock (Nock in JavaScript) with the GNN ecosystem.
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
 
-## Purpose
-
-To provide a cognitive security framework using formal methods and Nock-based processing.
-
-## Contents
-- Jock implementation details
-- Integration scripts
-- Verification tests
+## Usage
+Import necessary members directly to orchestrate tasks related to Jock.

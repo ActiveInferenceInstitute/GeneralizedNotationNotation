@@ -1,16 +1,25 @@
-# Helpers Agent Scaffolding
+# Helpers - Agent Scaffolding
 
 ## Module Overview
-**Purpose**: Helpers functionality implementation.
-**Status**: Production Ready
-**Version**: 1.0.0
 
-## Core Capabilities
-- Helpers processing and management
-- Integration with GNN pipeline
+**Purpose**: Responsible for `Helpers` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
-## API Reference
-See the source code for detailed method documentation.
+---
 
-## Testing
-Run tests via `pytest src/tests/`
+## Core Functionality
+
+### Primary Responsibilities
+Test Helpers Module
+
+Provides reusable helper functions and utilities for test execution. Render recovery helper for testing pipeline resilience.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: get_sample_gnn_model, get_test_data_dir, load_sample_gnn_spec, render_gnn_files
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

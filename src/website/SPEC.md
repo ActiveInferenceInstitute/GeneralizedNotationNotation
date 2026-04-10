@@ -1,27 +1,8 @@
-# Website Module Specification
+# Specification: Website
 
-## Overview
-Website generation for GNN pipeline.
+## Design Requirements
+This module (`website`) maps structural logic to the overall execution graph.
+It ensures that `Website` tasks resolve without runtime dependency loops.
 
 ## Components
-
-### Core
-- `processor.py` - Website processor
-
-## Features
-- Static site generation
-- HTML output
-- Documentation hosting
-
-## Key Exports
-```python
-from website import process_website
-```
-
-
----
-## Documentation
-- **[README](README.md)**: Module Overview
-- **[AGENTS](AGENTS.md)**: Agentic Workflows
-- **[SPEC](SPEC.md)**: Architectural Specification
-- **[SKILL](SKILL.md)**: Capability API
+Expected available types: WebsiteGenerator, WebsiteRenderer

@@ -1,10 +1,11 @@
-# Cognitive Phenomena (src/doc)
+# Cognitive Phenomena
 
-Source-local documentation for cognitive-phenomena models.
+## Overview
+This module handles `Cognitive Phenomena` components.
 
-## Subdirectories
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
 
-- `effort/`
-- `memory/`
-
-For broader documentation, see `doc/cognitive_phenomena/`.
+## Usage
+Import necessary members directly to orchestrate tasks related to Cognitive Phenomena.

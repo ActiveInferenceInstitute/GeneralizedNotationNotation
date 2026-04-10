@@ -1,13 +1,15 @@
 import pytest
+
 from render.generators import (
-    generate_bnlearn_code,
-    generate_pymdp_code,
-    generate_activeinference_jl_code,
-    generate_discopy_code,
     _matrix_to_julia,
+    _sanitize_identifier,
     _to_pascal_case,
-    _sanitize_identifier
+    generate_activeinference_jl_code,
+    generate_bnlearn_code,
+    generate_discopy_code,
+    generate_pymdp_code,
 )
+
 
 def test_bnlearn_generator():
     res = generate_bnlearn_code({"model_name": "TestModel"})

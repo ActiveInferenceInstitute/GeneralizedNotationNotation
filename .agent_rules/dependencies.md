@@ -79,7 +79,7 @@ except ImportError:
         "Continuing with fallback mode."
     )
 
-# Pattern 2: Stub class
+# Pattern 2: Fallback class
 try:
     from pymdp import Agent as PyMDPAgent
 except ImportError:

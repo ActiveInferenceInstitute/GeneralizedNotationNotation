@@ -1,9 +1,9 @@
 # GNN Overview
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
-**Status**: Maintained  
-**Pipeline Steps**: 25  
+**Version**: v2.0.0
+**Last Updated**: 2026-03-24
+**Status**: Maintained
+**Pipeline Steps**: 25
 
 For a longer specification-style summary (symbols, file structure narrative), see **[About GNN](about_gnn.md)**.
 
@@ -28,7 +28,7 @@ graph TD
     CODE[Code Implementation]
     DOC[Documentation]
     ONTO[Ontology]
-    
+
     AI --> GNN
     GNN --> RM
     GNN --> SIM
@@ -65,21 +65,21 @@ flowchart LR
         P3[Replication Challenges]
         P4[Limited Interoperability]
     end
-    
+
     subgraph GNN
         S1[Standardized Syntax]
         S2[Structured File Format]
         S3[Triple Play Approach]
         S4[Machine Readability]
     end
-    
+
     subgraph Benefits
         B1[Clearer Communication]
         B2[Consistent Implementation]
         B3[Improved Reproducibility]
         B4[Enhanced Collaboration]
     end
-    
+
     Problems --> GNN
     GNN --> Benefits
 ```
@@ -104,13 +104,13 @@ graph TB
     GNN[GNN Specification] --> TXT[Text-Based Models]
     GNN --> GRAPH[Graphical Models]
     GNN --> EXEC[Executable Models]
-    
+
     TXT --> DOCS[Documentation/Papers]
     TXT --> MATH[Mathematical Formulas]
-    
+
     GRAPH --> FG[Factor Graphs]
     GRAPH --> DEP[Dependency Networks]
-    
+
     EXEC --> SIM[Simulations]
     EXEC --> CODE[Program Code]
 ```
@@ -135,7 +135,7 @@ graph LR
     GNN[Generalized Notation Notation]
     AIMOD[AI Models Repository]
     SOFT[Software Implementations]
-    
+
     FEP --> AI
     AI --> AIO
     AIO <--> GNN

@@ -781,8 +781,8 @@ GNN files can be visualized to create comprehensive graphical representations of
 #### 🎯 Usage
 
 ```bash
-# Generate visualizations
-python src/main.py --only-steps 8 --target-dir path/to/gnn_file.md
+# Generate visualizations (target-dir is a folder of GNN files)
+python src/main.py --only-steps 8 --target-dir path/to/gnn_models/
 ```
 
 #### 🖼️ Visualization Types
@@ -1095,11 +1095,11 @@ Explore practical GNN implementations and use cases:
 ### 🏃‍♂️ Running Examples
 
 ```bash
-# Process all examples
+# Process all packaged examples (--target-dir is always a directory)
 python src/main.py --target-dir src/gnn/gnn_examples
 
-# Process specific example
-python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
+# Default pipeline input directory (includes actinf_pomdp_agent.md)
+python src/main.py --target-dir input/gnn_files
 
 # Process with full analysis
 python src/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verbose
@@ -1122,8 +1122,8 @@ python src/main.py --only-steps 5 --strict
 # Visualization only (quick preview)
 python src/main.py --only-steps 8
 
-# Complete analysis for single file
-python src/main.py --target-dir path/to/file.md --verbose
+# Complete analysis for a directory of models
+python src/main.py --target-dir path/to/gnn_models/ --verbose
 ```
 
 **🎯 Pipeline Optimization**

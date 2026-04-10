@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 from typing import Dict, Optional, Union
 
+
 def generate_bnlearn_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate bnlearn python script for Bayesian Network causal discovery and Inference."""
     try:

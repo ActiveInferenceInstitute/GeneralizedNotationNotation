@@ -1,12 +1,8 @@
-# Pymdp Specification
+# Specification: Pymdp
 
-## Overview
-Technical specification for the Pymdp module.
+## Design Requirements
+This module (`pymdp`) maps structural logic to the overall execution graph.
+It ensures that `Pymdp` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: GnnToPyMdpConverter, MarkdownGNNParser, NumpySafeOperations, ParseResult, PyMDPRenderer

@@ -1,199 +1,69 @@
 # GNN Folder Alignment Status
 
-**Generated:** 2026-02-23 (Last verified 2026-04-09 — 100% Round-Trip Success)
+**Last updated:** 2026-04-10
 
-**Reference:** actinf_pomdp_agent.md (Active Inference POMDP Agent specification)
+**Reference model:** `input/gnn_files/actinf_pomdp_agent.md` (also under `src/gnn/gnn_examples/`)
 
-**Purpose:** This file tracks the alignment of all files and subdirectories in src/gnn/ with the reference GNN model. Alignment means:
+**Purpose:** Track alignment of `src/gnn/` with the reference GNN model: schemas/grammars, parsers, validators, documentation, and round-trip behavior.
 
-- Schemas/grammars describe the reference structure accurately.
-- Parsers can read/parse the reference correctly.
-- Implementations/validators handle the reference's features.
-- Documentation reflects the reference's conventions.
-- **Round-trip fidelity**: Complete semantic preservation across format conversions.
+Canonical **format counts** (23 enum, 22 serializers, round-trip scope): see **[SPEC.md](SPEC.md)**.
 
-## Round-Trip Testing Results
+## Round-trip testing (default suite)
 
-**Overall Success Rate: 100.0% (21/21 round-trip tested formats; 23 total defined)** 🎉
+The suite in [`testing/test_round_trip.py`](testing/test_round_trip.py) uses **21** format strings in `FORMAT_TEST_CONFIG['test_formats']`: **`markdown`** plus **20** conversion targets. For the reference model, that suite reports **100%** success.
 
-### ✅ Schema Formats: 100% SUCCESS (7/7)
+**Not in the default round-trip list:** **`ebnf`** (same `GrammarSerializer` path as **BNF**; not separately exercised), **`pnml`** (disabled in config; PNML remains **parse**-focused in `parsers/system.py`).
 
-- ✅ **JSON**: Perfect round-trip with embedded data preservation
-- ✅ **XML**: Perfect round-trip with embedded data preservation  
-- ✅ **YAML**: Perfect round-trip with embedded data preservation
-- ✅ **Protobuf**: Perfect round-trip with embedded data preservation
-- ✅ **XSD**: Perfect round-trip with embedded data preservation
-- ✅ **ASN1**: Perfect round-trip with embedded data preservation
-- ✅ **PKL**: Perfect round-trip with embedded data preservation
+**Serializers:** `SERIALIZER_REGISTRY` in [`parsers/system.py`](parsers/system.py) has **22** entries (no PNML serializer). **`GNNFormat`** has **23** values.
 
-### ✅ Language Formats: 100% SUCCESS (6/6)
+### Schema formats (7/7 in suite)
 
-- ✅ **Python**: Perfect round-trip with embedded data preservation
-- ✅ **Scala**: Perfect round-trip with embedded data preservation
-- ✅ **Lean**: Perfect round-trip with embedded data preservation
-- ✅ **Coq**: Perfect round-trip with embedded data preservation
-- ✅ **Isabelle**: Perfect round-trip with embedded data preservation
-- ✅ **Haskell**: Perfect round-trip with embedded data preservation
+JSON, XML, YAML, Protobuf, XSD, ASN.1, PKL — round-trip with embedded model data where applicable.
 
-### ✅ Formal Specification Formats: 100% SUCCESS (6/6)
+### Language formats (6/6)
 
-- ✅ **TLA+**: Perfect round-trip with embedded data preservation
-- ✅ **Agda**: Perfect round-trip with embedded data preservation
-- ✅ **Alloy**: Perfect round-trip with embedded data preservation
-- ✅ **Z-notation**: Perfect round-trip with embedded data preservation
-- ✅ **BNF**: Perfect round-trip with embedded data preservation
-- ✅ **EBNF**: Perfect round-trip with embedded data preservation
+Python, Scala, Lean, Coq, Isabelle, Haskell.
 
-### ✅ Other Formats: 100% SUCCESS (2/2)
+### Formal / grammar (5 + BNF; EBNF noted above)
 
-- ✅ **Maxima**: Perfect round-trip with embedded data preservation
-- ✅ **Pickle**: Perfect round-trip with embedded data preservation
+TLA+, Agda, Alloy, Z-notation, BNF.
 
-## Revolutionary Embedded Data Architecture
+### Other (2/2)
 
-**REVOLUTIONARY ACHIEVEMENT COMPLETE**: Successfully implemented and deployed embedded data technique across ALL formats for perfect semantic preservation:
+Maxima, Pickle.
 
-```python
-# Universal Serialization - Embeds complete JSON model data in format-specific comments
-model_data = {complete_json_model_representation}
-lines.append("# MODEL_DATA: " + json.dumps(model_data))  # BNF/EBNF
-lines.append("% MODEL_DATA: " + json.dumps(model_data))  # Z-notation
-lines.append("<!-- MODEL_DATA: " + json.dumps(model_data) + " -->")  # XML
+### Reference
 
-# Universal Parsing - Extracts and restores complete model data
-embedded_data = self._extract_embedded_json_data(content)
-if embedded_data:
-    return self._parse_from_embedded_data(embedded_data, result)
-```
+Markdown (source format for the reference file).
 
-This technique has now achieved **100% semantic fidelity across ALL 21 round-trip tested formats** (23 total defined in GNNFormat enum) with complete format interoperability.
+## Embedded model data
 
-## Folder Structure and Status
+Serializers embed a JSON snapshot of the model in comments or equivalent so parsers can restore semantics after `serialize → parse`. Patterns vary by format (e.g. `MODEL_DATA` in comments). Implementation is spread across [`parsers/*_serializer.py`](parsers/) modules, coordinated by [`parsers/system.py`](parsers/system.py).
 
-- **src/gnn/** : Status: **Fully Enhanced** (100% round-trip success, 100% infrastructure success)
-  - **gnn_examples/** : Status: Aligned (Reference actinf_pomdp_agent.md example)
-    - **actinf_pomdp_agent.md** : Status: **Perfect** (Successfully round-trips through 15 formats)
-  - **parsers/** : Status: **Comprehensively Enhanced** (All 21 parsers functional, 15 with perfect round-trip)
-    - **lark_parser.py** : Status: **Enhanced** (Fixed zero-width terminal errors, Unicode support)
-    - **common.py** : Status: **Enhanced** (Enhanced enum handling, Unicode normalization)
-    - **serializers.py** : Status: **Revolutionized** (Embedded data architecture for 15 formats)
-    - **markdown_parser.py** : Status: **Perfect** (Reference format with full fidelity)
-    - **json_parser.py** : Status: **Perfect** (100% round-trip success)
-    - **xml_parser.py** : Status: **Perfect** (100% round-trip success)
-    - **yaml_parser.py** : Status: **Perfect** (100% round-trip success)
-    - **protobuf_parser.py** : Status: **Perfect** (Enhanced with embedded data extraction)
-    - **schema_parser.py** : Status: **Perfect** (XSD, ASN1, PKL all with perfect round-trip)
-    - **python_parser.py** : Status: **Perfect** (Enhanced with embedded data support)
-    - **scala_parser.py** : Status: **Perfect** (Enhanced with embedded data support)
-    - **lean_parser.py** : Status: **Perfect** (Enhanced with embedded data support)
-    - **coq_parser.py** : Status: **Perfect** (Enhanced with embedded data support)
-    - **isabelle_parser.py** : Status: **Perfect** (Enhanced with embedded data support)
-    - **functional_parser.py** : Status: **Perfect** (Haskell with embedded data support)
-    - **temporal_parser.py** : Status: **Enhanced** (TLA+, Agda with embedded data support)
-    - **grammar_parser.py** : Status: **Functional** (BNF/EBNF need embedded data enhancement)
-    - **binary_parser.py** : Status: **Functional** (Pickle needs embedded data enhancement)
-    - **maxima_parser.py** : Status: **Functional** (Needs embedded data enhancement)
-    - **validators.py** : Status: **Enhanced** (Improved Active Inference model validation)
-    - **unified_parser.py** : Status: **Enhanced** (Robust error handling, format detection)
-    - **converters.py** : Status: **Enhanced** (Cross-format conversion with validation)
-  - **schemas/** : Status: **Perfect** (All schemas support reference with 100% round-trip)
-    - **json.json** : Status: **Perfect** (Unicode support, perfect round-trip)
-    - **yaml.yaml** : Status: **Perfect** (Unicode support, perfect round-trip)  
-    - **xsd.xsd** : Status: **Perfect** (Enhanced schema with perfect round-trip)
-    - **asn1.asn1** : Status: **Perfect** (Enhanced schema with perfect round-trip)
-    - **pkl.pkl** : Status: **Perfect** (Enhanced schema with perfect round-trip)
-    - **proto.proto** : Status: **Perfect** (Enhanced schema with perfect round-trip)
-  - **testing/** : Status: **Revolutionized** (Comprehensive round-trip testing system)
-    - **test_round_trip.py** : Status: **Production-Ready** (Complete 21-format testing system)
-    - **README_round_trip.md** : Status: **Comprehensive** (Detailed methodology and results)
-    - **round_trip_reports/** : Status: **Active** (Detailed test reports and analysis)
-  - ****init**.py** : Status: **Enhanced** (Complete format ecosystem registration)
-  - **cross_format_validator.py** : Status: **Enhanced** (Cross-format consistency validation)
-  - **schema_validator.py** : Status: **Enhanced** (Format-aware validation with Unicode support)
-  - **processors.py** : Status: **Enhanced** (Compatible with all successful formats)
+## Folder structure (high level)
 
-## Technical Achievements
+| Path | Role |
+|------|------|
+| `parsers/system.py` | `PARSER_REGISTRY`, `SERIALIZER_REGISTRY`, `GNNParsingSystem` |
+| `parsers/common.py` | `GNNFormat`, protocols, shared types |
+| `parsers/*_parser.py`, `*_serializer.py` | Per-format I/O |
+| `schemas/` | JSON, YAML, XSD, Proto, ASN.1, PKL definitions |
+| `grammars/` | BNF / EBNF grammars |
+| `testing/test_round_trip.py` | Round-trip harness |
+| `gnn_examples/` | Reference Markdown models |
+| `formal_specs/` | Standalone formal artifacts (Isabelle, Lean, Coq, etc.) |
 
-### Infrastructure Excellence
+## Technical notes
 
-- **100% Parser Functionality**: All 21 parsers initialize and function correctly
-- **100% Serializer Functionality**: All 21 serializers generate valid output  
-- **Zero Critical Errors**: No parsing initialization failures
-- **Comprehensive Error Handling**: Graceful degradation for all edge cases
-- **Format-Aware Validation**: Intelligent validation across different format types
+- **Parsers:** 23 registered in `PARSER_REGISTRY`.
+- **Serializers:** 22 registered; PNML is not serializer-registered (see SPEC.md).
+- **Cross-format validation:** `cross_format_validator.py`; optional in tests via config flags.
+- **Unicode:** Policy variables such as π supported in grammars and reference models.
 
-### Semantic Preservation Innovation
+## History (January 2025 milestone)
 
-- **Embedded Data Architecture**: Revolutionary technique for 100% semantic preservation
-- **15 Perfect Round-Trip Formats**: Complete semantic equivalence validation
-- **Unicode Support**: Full mathematical symbol support (π, σ, μ) across all formats
-- **Cross-Format Consistency**: Deterministic output with semantic checksum validation
-- **Production-Ready Testing**: Enterprise-grade test suite with comprehensive reporting
-
-### Active Inference Compatibility
-
-- **Perfect POMDP Model Support**: Complete handling of actinf_pomdp_agent.md reference
-- **Standard Variable Recognition**: Enhanced support for A, B, C, D, E, F, G variables
-- **Ontology Mapping Preservation**: Complete semantic annotation preservation
-- **Time Specification Support**: Dynamic/discrete time model specifications
-- **Parameter Preservation**: Full parameter value and type preservation
-
-## Historic Achievements (January 2025)
-
-- **2025-01-18**: 🏆 **HISTORIC MILESTONE ACHIEVED** - **100% round-trip success rate (21/21 formats)**
-- **2025-01-18**: ✅ **Universal Format Support** - ALL categories now at 100% success
-- **2025-01-18**: 🔧 **Complete Embedded Data Deployment** - Z-notation, BNF, EBNF, XML enhanced
-- **2025-01-18**: 🧮 **Formal Specification Formats 100%** - All 6 formats perfect (TLA+, Agda, Alloy, Z-notation, BNF, EBNF)
-- **2025-01-18**: 🔧 **Binary Format Support** - Pickle validation enhanced for binary files
-- **2025-01-18**: 🎯 **PERFECT ECOSYSTEM** - First ever 100% success across ALL GNN formats
-- **2025-01-17**: 🎉 **Foundation Milestone** - Initial 71.4% round-trip success rate  
-- **2025-01-17**: ✅ **Schema Formats 100% Success** - All 7 schema formats (JSON, XML, YAML, Protobuf, XSD, ASN1, PKL)
-- **2025-01-17**: ✅ **Language Formats 100% Success** - All 6 language formats (Python, Scala, Lean, Coq, Isabelle, Haskell)  
-- **2025-01-17**: 🚀 **Embedded Data Architecture** - Revolutionary semantic preservation technique
-
-## Mission Accomplished - Future Research Directions
-
-Having achieved the unprecedented **100% round-trip success rate**, the GNN ecosystem now focuses on advanced research:
-
-### Completed Achievements ✅
-
-- ✅ **Universal Format Support**: All 23 formats with perfect round-trip fidelity (expanded from 21 in January 2025 to include PNML and Pickle)
-- ✅ **Complete Semantic Preservation**: Revolutionary embedded data architecture
-- ✅ **Production-Ready Infrastructure**: Enterprise-grade parsing and serialization
-- ✅ **Comprehensive Validation**: Cross-format consistency verification
-- ✅ **Binary Format Support**: Enhanced validation for all file types
-
-### Future Research Frontiers
-
-- **Performance Optimization**: Parallel processing for large model conversions  
-- **Advanced Analytics**: Deep semantic analysis across format families
-- **ML-Enhanced Translation**: AI-powered format-specific optimization
-- **Distributed Processing**: Cloud-scale model conversion infrastructure
-- **Extended Format Ecosystem**: Integration with emerging scientific formats
-
-## Impact Assessment
-
-### Scientific Impact
-
-- **Format Standardization**: First comprehensive multi-format Active Inference model interchange
-- **Semantic Preservation**: Revolutionary embedded data technique for complex scientific models
-- **Reproducibility**: Deterministic format conversion with complete validation
-- **Interoperability**: Seamless conversion between 15+ scientific computing formats
-
-### Technical Impact
-
-- **Production-Ready Architecture**: Enterprise-grade parsing and serialization system
-- **Comprehensive Testing**: Industry-standard round-trip validation methodology
-- **Modular Design**: Extensible architecture for future format additions
-- **Error Resilience**: Robust handling of edge cases and format variations
-
-### Research Impact
-
-- **Active Inference Standardization**: Complete support for POMDP agent specifications
-- **Cross-Platform Compatibility**: Universal model interchange across research tools
-- **Scientific Reproducibility**: Verifiable model translation with semantic checksums
-- **Community Collaboration**: Open architecture for scientific computing integration
+Round-trip reliability for the then-configured format set was brought to **100%** for the reference model, with embedded-data serialization and parser fixes documented in `testing/README_round_trip.md`.
 
 ---
 
-**Status Summary**: The GNN ecosystem has achieved **HISTORIC SUCCESS** with 100% round-trip fidelity across its 23 supported formats (originally 21 at the January 2025 milestone; expanded to 23 by 2026 with PNML parse-path and the separated Pickle/Binary handler). This represents the **first-ever complete universal format interoperability** in scientific computing, enabled by revolutionary embedded data architecture and comprehensive testing. The system now provides **perfect semantic preservation** across the entire format ecosystem.
+**Summary:** Alignment is measured against the reference POMDP-style model and the **default** round-trip configuration. For enum vs serializer vs test scope, always use **[SPEC.md](SPEC.md)**.

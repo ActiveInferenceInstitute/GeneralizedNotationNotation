@@ -165,8 +165,8 @@ def _require_pymdp_1():
     try:
         import jax.numpy as jnp  # noqa: F401
         import jax.random as jr  # noqa: F401
-        from pymdp.agent import Agent  # noqa: F401
         from pymdp import utils as pymdp_utils  # noqa: F401
+        from pymdp.agent import Agent  # noqa: F401
     except ImportError as e:
         raise ImportError(
             "pymdp 1.0.0 (JAX-first) is required. Install with:\n"
@@ -218,7 +218,6 @@ def _build_pymdp_agent(
     """
     Agent, _, _, _ = _require_pymdp_1()
 
-    num_states = int(A_np.shape[1])
     num_actions = int(B_np.shape[-1])
 
     A_list = [_to_jax_batched(A_np, batch_size)]

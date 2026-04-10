@@ -26,8 +26,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 try:
     import jax.numpy as jnp
     import jax.random as jr
-    from pymdp.agent import Agent
     from pymdp import utils as pymdp_utils
+    from pymdp.agent import Agent
 
     PYMDP_AVAILABLE = True
     PYMDP_IS_1_0_0_PLUS = hasattr(Agent, "update_empirical_prior")

@@ -6,7 +6,7 @@
 
 ## Overview
 
-This directory contains comprehensive API documentation for the GNN (Generalized Notation Notation) codebase, providing programmatic interfaces for integrating GNN capabilities into applications, research workflows, and production systems.
+This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py); a machine-readable index is [`api_index.json`](api_index.json). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) labels legacy illustrative sections—verify names in `src/` before importing.
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0
@@ -64,11 +64,11 @@ This directory contains comprehensive API documentation for the GNN (Generalized
 
 ## API Categories
 
-### Core Parsing API
-- **GNNParser**: High-level GNN file parser with validation
-- **ParseConfig**: Configuration options for parsing
-- **ValidationLevel**: Strictness levels for validation
-- **GNNModel**: Structured model representation
+### Core Parsing API (package `gnn`)
+- **GNNParsingSystem**, **GNNFormat**: Registry-backed multi-format I/O ([`src/gnn/parsers/system.py`](../../src/gnn/parsers/system.py))
+- **discover_gnn_files**, **parse_gnn_file**, **process_gnn_directory**, **process_gnn_multi_format**: Discovery and processing ([`src/gnn/__init__.py`](../../src/gnn/__init__.py))
+- **validate_gnn**, **ValidationLevel**: Validation entry points
+- See [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md) for format counts
 
 ### Pipeline API
 - **Pipeline**: Pipeline execution and orchestration
@@ -144,20 +144,20 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ### Basic API Usage
 
 ```python
-from gnn import GNNParser, Pipeline, Visualizer
+import logging
+from pathlib import Path
+from gnn import discover_gnn_files, parse_gnn_file, GNNParsingSystem, GNNFormat, process_gnn_multi_format
 
-# Parse GNN model
-parser = GNNParser()
-model = parser.parse_file("examples/navigation_agent.md")
+paths = discover_gnn_files(Path("input/gnn_files"))
+info = parse_gnn_file(paths[0])
+system = GNNParsingSystem()
+result = system.parse_file(paths[0], format_hint=GNNFormat.MARKDOWN)
 
-# Execute pipeline
-pipeline = Pipeline(config="production")
-results = pipeline.process(model, steps=[1, 4, 6, 9])
-
-# Generate visualizations
-viz = Visualizer()
-diagrams = viz.create_all_visualizations(model, results)
+logger = logging.getLogger(__name__)
+process_gnn_multi_format(Path("input/gnn_files"), Path("output"), logger)
 ```
+
+Full pipeline runs use `python src/main.py` (see [Pipeline docs](../gnn/operations/gnn_tools.md)).
 
 ### Framework Integration
 

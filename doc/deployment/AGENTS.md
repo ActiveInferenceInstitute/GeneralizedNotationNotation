@@ -1,5 +1,10 @@
 # Deployment Documentation — Agent Scaffolding
 
+## Purpose
+
+Orientation for this subtree: scripts, data, and docs co-located for the cognitive/meta-aware experiments.
+
+
 ## Module Overview
 
 **Purpose**: Documentation for deploying GNN applications and pipelines.

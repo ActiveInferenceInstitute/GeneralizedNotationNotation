@@ -641,7 +641,11 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     for pkg in core_packages:
         try:
             result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                [str(VENV_PYTHON), "-c", f"import {pkg}; print({pkg}.__version__)"],
+                [
+                    str(VENV_PYTHON),
+                    "-c",
+                    "import importlib.metadata as m; print(m.version(" + repr(pkg) + "))",
+                ],
                 capture_output=True,
                 text=True,
                 timeout=5

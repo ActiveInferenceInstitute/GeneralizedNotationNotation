@@ -1,6 +1,11 @@
-# visualization.parse
+# Parse
 
-Markdown and file parsing fallbacks when step-3 JSON is absent or stale.
+## Overview
+This module handles `Parse` components.
 
-- [AGENTS.md](AGENTS.md)
-- [../README.md](../README.md)
+## Available Members
+- **Classes**: GNNParser
+- **Functions**: extract_sections, parse_file, parse_gnn_content
+
+## Usage
+Import necessary members directly to orchestrate tasks related to Parse.

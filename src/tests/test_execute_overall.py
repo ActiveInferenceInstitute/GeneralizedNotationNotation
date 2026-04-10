@@ -24,7 +24,6 @@ import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict
-from unittest.mock import patch
 
 import pytest
 
@@ -48,7 +47,7 @@ class TestExecuteOverall:
     @pytest.fixture
     def test_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a sample GNN file for testing."""
-        return safe_filesystem.create_file("test.gnn", "dummy content")
+        return safe_filesystem.create_file("test.gnn", "test content")
 
     @pytest.fixture
     def sample_render_output(self, safe_filesystem: Any) -> Dict[str, Any]:
@@ -183,7 +182,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
 
         output_dir = safe_filesystem.create_dir("exec_output")
 
-        # Create some dummy output files that would be alongside the script
+        # Create some sample output files that would be alongside the script
         safe_filesystem.create_file("sandbox_scripts/output.json", '{"result": "ok"}')
 
         # Test collection
@@ -329,12 +328,12 @@ print(json.dumps(result))
             "framework": "jax",
             "executor": sys.executable,
         }
-        with patch.object(
-            execute_processor,
-            "_is_python_framework_dependency_available",
-            return_value=False,
-        ):
+        original_method = execute_processor._is_python_framework_dependency_available
+        execute_processor._is_python_framework_dependency_available = lambda *args, **kwargs: False
+        try:
             result = execute_single_script(script_info, results_dir, False, logger)
+        finally:
+            execute_processor._is_python_framework_dependency_available = original_method
         assert result.get("skipped") is True
         assert result.get("success") is False
         assert "Dependency not installed" in (result.get("error") or "")

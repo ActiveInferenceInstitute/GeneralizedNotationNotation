@@ -2,29 +2,30 @@
 
 ## Purpose
 
-This module contains **formal mathematical specifications** of GNN models in 8 different proof and specification languages. These provide machine-verifiable foundations for the GNN type system and model structure.
+Static **reference specifications** of GNN-related structures in eight external languages (proof assistants and specification tools). These files are **not** the Python round-trip suite itself; they complement [`../parsers/`](../parsers/) and [`../types.py`](../types.py).
 
-## Formal Specification Files
+## Files
 
-| File | Language | Focus |
-|------|----------|-------|
-| `isabelle_spec.thy` | Isabelle/HOL | Higher-order logic formalization of GNN types |
-| `lean_spec.lean` | Lean 4 | Dependent type verification of GNN models |
-| `coq_spec.v` | Coq | Constructive proof of GNN properties |
-| `agda_spec.agda` | Agda | Dependently-typed GNN specification |
-| `alloy_spec.als` | Alloy | Relational model checking for GNN constraints |
-| `z_spec.zed` | Z-notation | Set-theoretic specification of GNN semantics |
-| `tlaplus_spec.tla` | TLA+ | Temporal logic specification of GNN state machines |
-| `maxima_spec.mac` | Maxima | Symbolic computation verification |
+| File | Language |
+|------|----------|
+| `isabelle.thy` | Isabelle/HOL |
+| `lean.lean` | Lean 4 |
+| `coq.v` | Coq |
+| `agda.agda` | Agda |
+| `alloy.als` | Alloy |
+| `z_notation.zed` | Z notation |
+| `tla_plus.tla` | TLA+ |
+| `maxima.mac` | Maxima |
 
-## Integration Points
+See **[README.md](README.md)** for focus and how to invoke each tool.
 
-- **Parsers** (`gnn/parsers/`): Each formal language has a corresponding parser (e.g., `lean_parser.py`, `coq_parser.py`, `isabelle_parser.py`)
-- **Serializers** (`gnn/parsers/`): Each formal language has a corresponding serializer for round-trip conversion
-- **Type Systems** (`gnn/type_systems/`): Scala and Haskell type system implementations complement these formal specs
+## Relationship to Python parsers
 
-## For AI Agents
+Where the same surface syntax exists in the pipeline (e.g. Lean, Coq, Agda, TLA+, Alloy, Z, Maxima, BNF family), [`../parsers/`](../parsers/) provides **parse/serialize** for interchange. **Isabelle** and other files here are primarily **manual** verification artifacts.
 
-1. Use these specs as the **ground truth** for GNN model structure and constraints
-2. Each spec can be used to verify that parser output conforms to the formal model
-3. All 8 formats achieve 100% round-trip fidelity via the embedded data architecture
+Round-trip **automation** is defined by [`../testing/test_round_trip.py`](../testing/test_round_trip.py) and **[../SPEC.md](../SPEC.md)** — not by “all eight files round-trip at 100%” as a blanket statement.
+
+## For AI agents
+
+1. Treat these as **ground-truth references** for formal semantics, not as guaranteed-identical to every Python serialization path.
+2. For runtime format counts and serializer registry facts, use **[../SPEC.md](../SPEC.md)**.

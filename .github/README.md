@@ -278,12 +278,14 @@ Configured in [dependabot.yml](dependabot.yml):
 
 | Workflow | Triggers | What it runs |
 |----------|----------|--------------|
-| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix Python 3.11 / 3.12 / 3.13 — `uv sync --frozen --extra dev`, `pytest -m "not pipeline and not mcp"`; on 3.12 only, MCP tool count must be ≥ 131. **lint**: Ruff on `src/`. **security**: Bandit medium+ on `src` (JSON artifact upload). |
+| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13 — `uv sync --frozen --extra dev`, `pytest` with JUnit artifact + summary; MCP count ≥ 131 on 3.12. **lint**: Ruff. **security**: Bandit + JSON artifact (including on failure). |
 | [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, `uv run python doc/development/docs_audit.py --strict` |
 | [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
-| [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `actions/dependency-review-action@v4` — `fail-on-severity: high`; denies AGPL licenses listed in the workflow |
-| [codeql.yml](workflows/codeql.yml) | `push` / `pull_request` to `main`, weekly schedule, `workflow_dispatch` | CodeQL init + analyze for Python |
-| [supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Weekly cron (`0 6 * * 1` UTC), `workflow_dispatch` | **pip-audit (core)**: `uv export --frozen --no-dev --no-hashes --no-emit-project` then OSV pip-audit. **pip-audit (all extras, no dev)**: `uv export --frozen --all-extras --no-dev --no-hashes --no-emit-project` then same. |
+| [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |
+| [codeql.yml](workflows/codeql.yml) | `push` / `pull_request` (paths-ignore doc-only), weekly schedule, `workflow_dispatch` | `init` → `uv sync --frozen --extra dev` → `analyze` (Python). |
+| [supply-chain-audit.yml](workflows/supply-chain-audit.yml) | Weekly cron (`0 6 * * 1` UTC), `workflow_dispatch` | **pip-audit (core)** and **pip-audit (all extras, no dev)** via frozen `uv export`; OSV; job summaries. |
+
+**Fork PRs:** Dependency review may be limited for PRs from forks; see the link in the dependency-review row above.
 
 ### Why CI and docs-audit split
 

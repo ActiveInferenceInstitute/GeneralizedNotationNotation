@@ -12,4 +12,4 @@ Directories listed contain `.py` files and/or subdirectories (package-like).
 
 ## Notes
 
-- Add stub `AGENTS.md` / `README.md` when a directory becomes a maintained package.
+- Add scaffold `AGENTS.md` / `README.md` when a directory becomes a maintained package.

@@ -1,6 +1,11 @@
-# visualization.graph
+# Graph
 
-Network layouts, directed/undirected edges, bipartite variable–parameter sketch.
+## Overview
+This module handles `Graph` components.
 
-- [AGENTS.md](AGENTS.md)
-- [../README.md](../README.md)
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: generate_network_visualizations, generate_variable_parameter_bipartite
+
+## Usage
+Import necessary members directly to orchestrate tasks related to Graph.

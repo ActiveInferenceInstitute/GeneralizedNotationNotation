@@ -54,7 +54,7 @@ def main() -> None:
             "",
             "## Notes",
             "",
-            "- Add stub `AGENTS.md` / `README.md` when a directory becomes a maintained package.",
+            "- Add scaffold `AGENTS.md` / `README.md` when a directory becomes a maintained package.",
         ]
     )
     OUT.write_text("\n".join(lines) + "\n", encoding="utf-8")

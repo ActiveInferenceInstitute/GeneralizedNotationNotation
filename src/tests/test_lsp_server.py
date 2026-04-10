@@ -1,7 +1,5 @@
 """Tests for the GNN Language Server."""
 
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 # Import the LSP server logic
@@ -31,11 +29,15 @@ def test_word_at_position() -> None:
 
 def test_extract_line() -> None:
     """Test extracting line number from error objects or strings."""
-    # From object with .line
-    mock_err = MagicMock()
-    mock_err.line = 42
-    assert _extract_line(mock_err) == 42
-    
+    # From object with .line attribute — use a real lightweight object
+    class _ErrorWithLine:
+        """Minimal object with a .line attribute for testing."""
+        def __init__(self, line: int) -> None:
+            self.line = line
+
+    err_obj = _ErrorWithLine(42)
+    assert _extract_line(err_obj) == 42
+
     # From string with line info
     assert _extract_line("Parse error at :15") == 15
     assert _extract_line("No line info here") == 1
@@ -43,9 +45,15 @@ def test_extract_line() -> None:
 
 def test_create_server_graceful() -> None:
     """Test that create_server handles missing pygls gracefully."""
-    with patch("lsp.PYGLS_AVAILABLE", False):
+    import lsp as lsp_mod
+
+    original_flag = lsp_mod.PYGLS_AVAILABLE
+    try:
+        lsp_mod.PYGLS_AVAILABLE = False
         server = create_server()
         assert server is None
+    finally:
+        lsp_mod.PYGLS_AVAILABLE = original_flag
 
 @pytest.mark.skipif(not PYGLS_AVAILABLE, reason="pygls not installed")
 def test_create_server_success() -> None:
@@ -62,5 +70,5 @@ def test_lsp_availability_flag() -> None:
         expected = True
     except ImportError:
         expected = False
-    
+
     assert PYGLS_AVAILABLE == expected

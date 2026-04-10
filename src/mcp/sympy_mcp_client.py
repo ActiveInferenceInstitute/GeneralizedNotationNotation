@@ -17,15 +17,15 @@ try:
     HTTPX_AVAILABLE = True
 except ImportError:
     HTTPX_AVAILABLE = False
-    # Create a dummy httpx module for type checking
-    class _DummyHttpx:
+    # Create a fallback httpx module for type checking
+    class _FallbackHttpx:
         class AsyncClient:
             def __init__(self, **kwargs): pass
             async def get(self, url: str): raise NotImplementedError()
             async def post(self, url: str, **kwargs): raise NotImplementedError()
             async def aclose(self): pass
         class RequestError(Exception): pass
-    httpx = _DummyHttpx()
+    httpx = _FallbackHttpx()
 
 logger = logging.getLogger(__name__)
 

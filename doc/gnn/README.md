@@ -1,8 +1,8 @@
 # GNN Documentation Index
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
-**Status**: Maintained  
+**Version**: v2.0.0
+**Last Updated**: 2026-03-24
+**Status**: Maintained
 **Pipeline Steps**: 25
 
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation. For the machine-oriented tree manifest (directory counts and new-module index), see **[AGENTS.md](AGENTS.md)**. Parent doc hub: [doc/README.md](../README.md), [doc/INDEX.md](../INDEX.md).
@@ -248,9 +248,9 @@ All GNN documentation follows these principles:
 
 ---
 
-**GNN Version**: v2.0.0  
-**Pipeline Version**: 2.0.0  
-**Total Pipeline Steps**: 25 (0–24)  
-**Last Updated**: 2026-03-24  
+**GNN Version**: v2.0.0
+**Pipeline Version**: 2.0.0
+**Total Pipeline Steps**: 25 (0–24)
+**Last Updated**: 2026-03-24
 
 **Status**: Maintained (re-run `uv run python doc/development/docs_audit.py` after link or tree changes)

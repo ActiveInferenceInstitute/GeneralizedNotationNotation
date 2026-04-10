@@ -40,7 +40,6 @@ def safe_to_fail_step(target_dir: Path, output_dir: Path, logger) -> bool:
 
     return True  # ALWAYS True — never stop the pipeline
 
-
 def main() -> int:
     """Entry point — always returns 0 for safe-to-fail steps."""
     try:

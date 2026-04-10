@@ -164,7 +164,7 @@ License: [License type]
 
 5. **Test your model**:
    ```bash
-   python src/main.py --target-dir path/to/your/pomdp_model.md
+   python src/main.py --target-dir path/to/your/pomdp_models
    ```
 
 ## POMDP Design Patterns

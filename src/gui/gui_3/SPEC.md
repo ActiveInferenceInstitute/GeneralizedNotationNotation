@@ -1,12 +1,8 @@
-# Gui 3 Specification
+# Specification: Gui 3
 
-## Overview
-Technical specification for the Gui 3 module.
+## Design Requirements
+This module (`gui_3`) maps structural logic to the overall execution graph.
+It ensures that `Gui 3` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: No specific classes exported.

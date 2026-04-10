@@ -1,13 +1,11 @@
-# PyTorch Analyzer
+# Pytorch
 
-`src/analysis/pytorch/` reads `simulation_results.json` emitted by PyTorch simulations and produces a compact analysis JSON plus optional plots.
+## Overview
+This module handles `Pytorch` components.
 
-## Entry point
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: generate_analysis_from_logs
 
-- `generate_analysis_from_logs(results_dir, output_dir=None, verbose=False) -> List[str]`
-
-## Dependencies
-
-- required: `numpy`
-- optional: `matplotlib` (plots)
-
+## Usage
+Import necessary members directly to orchestrate tasks related to Pytorch.

@@ -1,23 +1,23 @@
-# attention
+# Attention - Agent Scaffolding
 
-## Overview
+## Module Overview
 
-Documentation for attention models based on precision-weighted prediction error.
-
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
-
-## Purpose
-
-Modeling selective attention and resource allocation in Active Inference.
-
-## Quick Navigation
-
-- **README.md**: [Directory overview](README.md)
-- **Cognitive Phenomena**: [cognitive_phenomena/](../README.md)
+**Purpose**: Responsible for `Attention` operations within the GNN pipeline architecture.
+**Category**: Generated Pipeline Component
+**Status**: Development
 
 ---
 
-**Status**: ✅ Production Ready  
+## Core Functionality
+
+### Primary Responsibilities
+Handles internal processing and logical orchestration for this namespace.
+
+### Extracted Code Entities
+
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
+
+## Implementation Details
+
+This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.

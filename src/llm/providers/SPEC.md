@@ -1,12 +1,8 @@
-# Providers Specification
+# Specification: Providers
 
-## Overview
-Technical specification for the Providers module.
+## Design Requirements
+This module (`providers`) maps structural logic to the overall execution graph.
+It ensures that `Providers` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: BaseLLMProvider, LLMConfig, LLMMessage, LLMResponse, OllamaProvider, OpenAIProvider, OpenRouterProvider, PerplexityProvider, ProviderType

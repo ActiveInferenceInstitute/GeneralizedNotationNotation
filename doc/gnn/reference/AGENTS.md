@@ -1,29 +1,22 @@
-# Reference Directory Manifest (`AGENTS.md`)
+# Reference - Agent Scaffolding
 
-**Role**: Maintains metadata and architectural manifest for the `reference` subdirectory.
-**Version**: v2.0.0
-**Context**: Part of the GNN (Generalized Notation Notation) documentation ecosystem.
+## Module Overview
 
-## Directory Identity
+**Purpose**: This directory serves as a categorized documentation index for the `Reference` layer of the GNN Framework.
 
-- **Path**: `doc/gnn/reference/`
-- **Purpose**: Domain-specific documentation regarding GNN Reference.
+**Category**: Documentation Index
 
-## File Index
+## Contained Indices
 
-| File | Purpose |
-|------|---------|
-| `README.md` | Human-readable entrypoint |
-| `AGENTS.md` | Machine-readable manifest (this file) |
-| `architecture_reference.md` | GNN Architecture Reference |
-| `gnn_dsl_manual.md` | GNN DSL Manual |
-| `gnn_file_structure_doc.md` | GNN File Structure |
-| `gnn_schema.md` | GNN Schema Specification |
-| `gnn_standards.md` | GNN Standards |
-| `gnn_syntax.md` | GNN Syntax Reference |
-| `gnn_type_system.md` | GNN Type System Guide |
-| `technical_reference.md` | GNN Technical Reference |
+- [GNN Technical Reference](technical_reference.md)
+- [GNN Standards](gnn_standards.md)
+- [GNN Type System Guide](gnn_type_system.md)
+- [GNN Architecture Reference](architecture_reference.md)
+- [GNN Syntax Reference](gnn_syntax.md)
+- [GNN File Structure](gnn_file_structure_doc.md)
+- [GNN DSL Manual](gnn_dsl_manual.md)
+- [GNN Schema Specification](gnn_schema.md)
 
-## Integration
 
-This directory's contents act strictly as documentation and specification. They integrate conceptually with `src/main.py` by defining the standards by which the computational pipeline operates.
+## Implementation Details
+This is a static reference directory. The above files can be explicitly referenced by external LLMs to retrieve detailed syntax and operational knowledge for GNN generation tasks.

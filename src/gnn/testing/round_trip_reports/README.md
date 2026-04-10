@@ -1,11 +1,11 @@
 # Round Trip Reports
 
 ## Overview
-This module provides Round Trip Reports functionality for the GNN pipeline.
+This module handles `Round Trip Reports` components.
 
-## Components
-- Core processing logic
-- Integration utilities
+## Available Members
+- **Classes**: No specific classes exported.
+- **Functions**: No specific public functions exported.
 
 ## Usage
-Import and use standard functions from this module.
+Import necessary members directly to orchestrate tasks related to Round Trip Reports.

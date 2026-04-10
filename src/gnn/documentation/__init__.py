@@ -1,8 +1,6 @@
 """
-Documentation module for GNN
+Documentation package for GNN.
 
-This module contains user-facing documentation files.
+Markdown references (`file_structure.md`, `punctuation.md`, etc.) live on disk next
+to this file; they are not imported as Python data structures.
 """
-
-# Module contents will be imported as needed
-pass

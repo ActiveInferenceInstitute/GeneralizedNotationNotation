@@ -281,7 +281,7 @@ License: [License type]
 
 5. **Test coordination**:
    ```bash
-   python src/main.py --target-dir path/to/your/multiagent_model.md
+   python src/main.py --target-dir path/to/your/multiagent_models
    ```
 
 ## Multi-Agent Design Patterns

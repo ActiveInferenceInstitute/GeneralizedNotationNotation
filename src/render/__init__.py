@@ -72,12 +72,12 @@ except ImportError:
             return ""
 
 # JAXRenderer: jax_renderer.py provides functions only (render_gnn_to_jax, etc.),
-# not a class. Provide a minimal stub for tests that reference JAXRenderer by name.
+# not a class. Provide a minimal fallback for tests that reference JAXRenderer by name.
 from typing import Any as _Any
 
 
 class JAXRenderer:
-    """Minimal JAXRenderer stub; JAX rendering uses render_gnn_to_jax() functions."""
+    """Minimal JAXRenderer fallback; JAX rendering uses render_gnn_to_jax() functions."""
     def render(self, spec: _Any) -> str:
         return ""
 

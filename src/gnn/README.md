@@ -4,14 +4,21 @@ This module provides enhanced infrastructure for GNN (Generalized Notation Notat
 
 ## Format Interoperability Status
 
-GNN currently supports **23 formats** with **100% round-trip compatibility**:
+Canonical numbers (enum size, serializer count, round-trip scope) are defined in **[SPEC.md](SPEC.md)**.
 
-### Supported Format Categories
+- **`GNNFormat`**: 23 values (`parsers/common.py`).
+- **Serializers**: 22 registered (`parsers/system.py`); **PNML** is parse-only in the registry sense (no dedicated serializer entry).
+- **Round-trip tests**: [`testing/test_round_trip.py`](testing/test_round_trip.py) exercises **markdown** plus **20** target formats (21 entries total). **EBNF** and **PNML** are outside the default round-trip list.
 
-- **Schema Formats**: JSON, XML, YAML, Protobuf, XSD, ASN.1, PKL (7 formats) ✅ **100% Success**
-- **Language Formats**: Python, Scala, Lean, Coq, Isabelle, Haskell (6 formats) ✅ **100% Success**
-- **Formal Specifications**: TLA+, Agda, Alloy, Z-notation, BNF (5 formats) ✅ **100% Success**
-- **Other Formats**: Maxima, Pickle (2 formats) ✅ **100% Success**
+For the reference model used in tests, those **21** formats achieve **100%** round-trip success in that suite.
+
+### Supported Format Categories (round-trip suite)
+
+- **Schema**: JSON, XML, YAML, Protobuf, XSD, ASN.1, PKL (7)
+- **Languages**: Python, Scala, Lean, Coq, Isabelle, Haskell (6)
+- **Formal / grammar**: TLA+, Agda, Alloy, Z-notation, BNF (5); EBNF shares machinery with BNF but is not separately listed in the default round-trip config
+- **Other**: Maxima, Pickle (2)
+- **Reference**: Markdown (1)
 
 ## Overview
 
@@ -206,24 +213,26 @@ flowchart LR
 src/gnn/
 ├── __init__.py                    # Module initialization with format ecosystem
 ├── README.md                      # This documentation
+├── SPEC.md                        # Canonical format counts and architecture
 ├── mcp.py                         # Model Context Protocol integration
 ├── schema_validator.py            # Enhanced validator with multiple validation levels
 ├── cross_format_validator.py      # Cross-format consistency validation
 ├── processors.py                  # Enhanced processing with comprehensive testing
 ├── alignment_status.md            # Format compatibility status tracking
 │
-├── parsers/                       # Parser ecosystem (23 formats)
-│   ├── __init__.py               # Parser registry and format ecosystem
-│   ├── unified_parser.py         # Unified parsing system
-│   ├── serializers.py            # Enhanced serializers with embedded data
+├── parsers/                       # Parser ecosystem (see SPEC.md for 23/22 counts)
+│   ├── __init__.py               # Package exports
+│   ├── system.py                 # PARSER_REGISTRY / SERIALIZER_REGISTRY, GNNParsingSystem
+│   ├── unified_parser.py         # Unified parsing entry
+│   ├── *_parser.py / *_serializer.py  # Per-format parsers and serializers
 │   ├── grammar_parser.py         # BNF/EBNF parsers
 │   ├── schema_parser.py          # Schema parsers (XSD, ASN.1, PKL, etc.)
-│   ├── xml_parser.py             # XML parser with embedded data support
-│   ├── binary_parser.py          # Binary format support
-│   └── [format parsers...]       # Additional format parsers
+│   ├── xml_parser.py             # XML / PNML
+│   ├── binary_parser.py          # Pickle and binary paths
+│   └── common.py                 # GNNFormat enum, protocols, shared types
 │
 ├── testing/                       # Testing infrastructure
-│   ├── test_round_trip.py        # Comprehensive round-trip testing
+│   ├── test_round_trip.py        # Round-trip suite (see SPEC.md)
 │   ├── README_round_trip.md      # Testing methodology and results
 │   └── round_trip_reports/       # Test reports and analysis
 │
@@ -235,9 +244,8 @@ src/gnn/
 │   ├── pkl.pkl                   # PKL schema
 │   └── [additional schemas...]   # Additional schema files
 │
-└── input/gnn_files/              # Example files
-    ├── actinf_pomdp_agent.md     # Reference model for testing
-    └── [examples...]             # Example models in various formats
+├── gnn_examples/                  # Reference Markdown models (e.g. actinf_pomdp_agent.md)
+└── (repo root) input/gnn_files/   # Pipeline input examples; tests often use input/gnn_files/actinf_pomdp_agent.md
 ```
 
 ## Validation System
@@ -265,9 +273,9 @@ print(f"Errors: {len(result.errors)}")
 
 ## Round-Trip Testing
 
-### 🎉 100% Success Achievement
+### Suite status
 
-The system has achieved **100% round-trip success** across all 23 supported formats with complete semantic preservation.
+For the reference model and the formats listed in [`testing/test_round_trip.py`](testing/test_round_trip.py), the suite reports **100%** round-trip success. See **[SPEC.md](SPEC.md)** for how that relates to all 23 enum formats (PNML/EBNF not in the default list).
 
 ### Embedded Data Architecture
 
@@ -520,10 +528,11 @@ parsing_system.register_parser(GNNFormat.NEW_FORMAT, NewFormatParser)
 - **`alignment_status.md`**: Format compatibility status
 - **Format-specific guides**: Documentation for each supported format
 - **Performance guides**: Optimization best practices
+- **[SPEC.md](SPEC.md)**: Canonical format counts and architecture
 
 ## Summary
 
-The GNN module provides comprehensive infrastructure for Active Inference model specification with support for 23 different formats and **100% round-trip success**. Key features include multi-level validation, cross-format consistency checking, and round-trip testing capabilities that ensure semantic preservation during format conversion.
+The GNN module provides infrastructure for Active Inference model specification: **23** `GNNFormat` values, **22** serializers, and a round-trip test suite (see SPEC.md) that achieves **100%** pass rate for its configured formats. Key features include multi-level validation, cross-format consistency checking, and round-trip testing with embedded model data where formats allow it.
 
 ## License and Citation
 
@@ -536,8 +545,6 @@ This implementation follows the GNN specification v1.0+ and is part of the Gener
 - Architecture guide: ../../ARCHITECTURE.md
 - Pipeline details: ../../doc/pipeline/README.md
 
-
----
 ## Documentation
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows

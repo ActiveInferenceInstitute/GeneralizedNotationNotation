@@ -292,7 +292,7 @@ License: [License type]
 
 5. **Test hierarchical behavior**:
    ```bash
-   python src/main.py --target-dir path/to/your/hierarchical_model.md
+   python src/main.py --target-dir path/to/your/hierarchical_models
    ```
 
 ## Hierarchical Design Patterns

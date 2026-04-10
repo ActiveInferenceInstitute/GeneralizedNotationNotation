@@ -1,25 +1,26 @@
 # Testing and Benchmarks
 
-This directory contains testing infrastructure and performance benchmarks:
+This directory holds round-trip tests, integration tests, and benchmarks for the GNN module.
 
-- `test_round_trip.py` - Comprehensive round-trip testing (100% success rate achieved)
-- `README_round_trip.md` - Detailed testing methodology and results
-- `round_trip_reports/` - Test reports and analysis
+- **`test_round_trip.py`** — Round-trip harness (`GNNRoundTripTester`). Default config lists **21** format strings in `FORMAT_TEST_CONFIG['test_formats']` (**`markdown`** plus **20** targets). See **[../SPEC.md](../SPEC.md)** for how that relates to all **23** `GNNFormat` values and **22** serializers.
+- **`README_round_trip.md`** — Methodology, configuration, and historical notes.
+- **`round_trip_reports/`** — Generated reports when enabled.
+- **`performance_benchmarks.py`**, **`test_*.py`** — Other tests as named.
 
-## Current Status: 🎉 100% Success Achieved
+## Round-trip suite status
 
-**Success Rate: 100.0% (20/20 formats)**
+For the reference model (`input/gnn_files/actinf_pomdp_agent.md`) and the default `test_formats` list, the suite is configured to report **100%** pass rate.
 
-### Perfect Round-Trip Formats
-- **Schema Formats (7/7)**: JSON, XML, YAML, PKL, ASN.1, Protobuf, XSD
-- **Language Formats (6/6)**: Scala, Python, Lean, Coq, Isabelle, Haskell  
-- **Formal Formats (5/5)**: Alloy, BNF, Z-notation, TLA+, Agda
-- **Other Formats (2/2)**: Pickle, Maxima
+**Outside the default round-trip list:** `ebnf` (shares BNF / `GrammarSerializer` machinery; not a separate row in `test_formats`), `pnml` (disabled in config; parse-focused). See `FORMAT_TEST_CONFIG` in `test_round_trip.py`.
 
-### Performance Benchmarks
-- **Total Test Time**: ~0.07 seconds for all 20 formats
-- **Individual Format**: <0.01 seconds per format
-- **Success Rate**: 100% (20/20 formats)
-- **Semantic Checksum Match**: 19/20 formats (95%)
+### Categories (20 conversion targets + markdown reference)
 
-These tools ensure code quality and monitor performance of GNN operations with complete format interoperability.
+- **Schema (7):** JSON, XML, YAML, PKL, ASN.1, Protobuf, XSD  
+- **Languages (6):** Scala, Python, Lean, Coq, Isabelle, Haskell  
+- **Formal (5):** Alloy, BNF, Z-notation, TLA+, Agda  
+- **Other (2):** Pickle, Maxima  
+- **Reference (1):** Markdown  
+
+### Performance (order of magnitude)
+
+Typical full suite run is sub-second on small models; exact numbers depend on hardware and `REFERENCE_CONFIG` / logging flags.

@@ -1,12 +1,8 @@
-# Round Trip Reports Specification
+# Specification: Round Trip Reports
 
-## Overview
-Technical specification for the Round Trip Reports module.
+## Design Requirements
+This module (`round_trip_reports`) maps structural logic to the overall execution graph.
+It ensures that `Round Trip Reports` tasks resolve without runtime dependency loops.
 
-## Architecture
-- Thin orchestrator pattern compliance
-- Standard input/output handling
-
-## Requirements
-- Python 3.12+
-- Standard GNN dependencies
+## Components
+Expected available types: No specific classes exported.

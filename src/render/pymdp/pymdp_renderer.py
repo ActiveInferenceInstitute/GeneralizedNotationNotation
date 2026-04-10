@@ -32,11 +32,17 @@ from .pymdp_templates import (
 )
 
 try:
-    from ...gnn.parsers.common import GNNInternalRepresentation, ParseResult  # noqa: F401
+    from ...gnn.parsers.common import (  # noqa: F401
+        GNNInternalRepresentation,
+        ParseResult,
+    )
     from ...gnn.parsers.markdown_parser import MarkdownGNNParser
 except ImportError:  # pragma: no cover - fallback when used standalone
     try:
-        from gnn.parsers.common import GNNInternalRepresentation, ParseResult  # noqa: F401
+        from gnn.parsers.common import (  # noqa: F401
+            GNNInternalRepresentation,
+            ParseResult,
+        )
         from gnn.parsers.markdown_parser import MarkdownGNNParser
     except ImportError:
         logging.warning("GNN parsers not available, using simplified parsing stubs")

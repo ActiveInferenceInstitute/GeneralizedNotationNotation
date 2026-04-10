@@ -106,7 +106,7 @@ class TestReportGeneration:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Create minimal pipeline data
-        # Create dummy pipeline output structure
+        # Create test pipeline output structure
         pipeline_dir = tmp_path / "pipeline_output"
         pipeline_dir.mkdir()
         (pipeline_dir / "summary.json").write_text("{}")

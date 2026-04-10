@@ -4,145 +4,59 @@
 > **Type**: API Reference | **Audience**: Developers & Integrators | **Complexity**: Intermediate-Advanced  
 > **Cross-References**: [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [Framework Integration](../gnn/integration/framework_integration_guide.md)
 
-This comprehensive reference documents all programmatic interfaces for integrating with the GeneralizedNotationNotation (GNN) system.
+This comprehensive reference documents programmatic integration with the GeneralizedNotationNotation (GNN) system.
 
-## 🎯 API Overview
+> **Accuracy**  
+> **Authoritative `gnn` exports:** [`src/gnn/__init__.py`](../../src/gnn/__init__.py). **Format counts / registries:** [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md). **Symbol index:** [`api_index.json`](api_index.json) (regenerate with `python src/generate_api_index.py`).  
+> Sections **below this box** that show modules such as `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` are **legacy illustrative sketches** unless you confirm the same names in `src/` or `api_index.json`.
 
-### **📚 API Categories**
+## API map
 
-1. **🔍 Core Parsing API**: GNN file parsing and validation
-2. **⚙️ Pipeline API**: Pipeline execution and orchestration  
-3. **🔧 Framework Integration API**: PyMDP, RxInfer, DisCoPy interfaces
-4. **📊 Visualization API**: Programmatic visualization generation
-5. **🤖 LLM Integration API**: AI-enhanced model analysis
-6. **📡 MCP API**: Model Context Protocol integration
-7. **⚡ Performance API**: Monitoring and optimization interfaces
+1. **Package `gnn` (Step 3)** — file discovery, parsing, validation, multi-format serialization under [`src/gnn/`](../../src/gnn/).
+2. **Pipeline CLI** — `python src/main.py`, numbered `src/N_*.py` scripts.
+3. **Render / execute / viz / LLM / MCP** — see `api_index.json` and [`src/AGENTS.md`](../../src/AGENTS.md).
 
-### **🚀 Quick Start Example**
+### Quick start (current `gnn` exports)
 
 ```python
-# Complete GNN API usage example
-from gnn import GNNParser, Pipeline, Visualizer
+import logging
+from pathlib import Path
+from gnn import (
+    discover_gnn_files,
+    parse_gnn_file,
+    process_gnn_directory,
+    process_gnn_multi_format,
+    validate_gnn,
+    GNNParsingSystem,
+    GNNFormat,
+)
 
-# Parse GNN model
-parser = GNNParser()
-model = parser.parse_file("examples/navigation_agent.md")
+paths = discover_gnn_files(Path("input/gnn_files"))
+info = parse_gnn_file(paths[0])
 
-# Execute pipeline
-pipeline = Pipeline(config="production")
-results = pipeline.process(model, steps=[1, 4, 6, 9])
+system = GNNParsingSystem()
+result = system.parse_file(paths[0], format_hint=GNNFormat.MARKDOWN)
 
-# Generate visualizations
-viz = Visualizer()
-diagrams = viz.create_all_visualizations(model, results)
+process_gnn_directory("input/gnn_files", "output")
 
-print(f"✅ Model processed: {len(diagrams)} visualizations generated")
+logger = logging.getLogger(__name__)
+process_gnn_multi_format(Path("input/gnn_files"), Path("output"), logger)
+
+ok, errors = validate_gnn(Path("input/gnn_files/model.md").read_text(encoding="utf-8"))
 ```
 
-## 🔍 Core Parsing API
+| Symbol | Role |
+|--------|------|
+| `GNNParsingSystem` | Registry-backed parse/serialize (`parsers/system.py`) |
+| `GNNFormat` | Supported formats ([`SPEC.md`](../../src/gnn/SPEC.md)) |
+| `discover_gnn_files`, `parse_gnn_file`, `process_gnn_directory` | Discovery and lightweight processing |
+| `process_gnn_multi_format` | Step 3 multi-format output (**requires** `logging.Logger`) |
+| `validate_gnn`, `validate_gnn_file` | Validation |
+| `schema_validator.GNNParser` | Section-level parser for strict validation (submodule import) |
 
-### **📄 GNNParser Class**
+## Legacy illustrative reference (verify in `src/`)
 
-The primary interface for parsing GNN files into structured model objects.
-
-```python
-from gnn.parsing import GNNParser, ParseConfig, ValidationLevel
-
-class GNNParser:
-    """High-level GNN file parser with validation and error handling."""
-    
-    def __init__(self, 
-                 config: ParseConfig = None,
-                 validation_level: ValidationLevel = ValidationLevel.STRICT):
-        """
-        Initialize GNN parser.
-        
-        Args:
-            config: Parsing configuration options
-            validation_level: STRICT, NORMAL, PERMISSIVE, or DISABLED
-        """
-    
-    def parse_file(self, filepath: str) -> GNNModel:
-        """
-        Parse a single GNN file.
-        
-        Args:
-            filepath: Path to GNN markdown file
-            
-        Returns:
-            GNNModel: Parsed and validated model object
-            
-        Raises:
-            ParseError: If file cannot be parsed
-            ValidationError: If model validation fails
-        """
-    
-    def parse_directory(self, dirpath: str, 
-                       pattern: str = "*.md",
-                       recursive: bool = True) -> List[GNNModel]:
-        """
-        Parse all GNN files in a directory.
-        
-        Args:
-            dirpath: Directory path to scan
-            pattern: File pattern to match
-            recursive: Whether to scan subdirectories
-            
-        Returns:
-            List[GNNModel]: List of parsed models
-        """
-    
-    def parse_string(self, content: str, 
-                    model_name: str = "unnamed") -> GNNModel:
-        """
-        Parse GNN content from string.
-        
-        Args:
-            content: GNN model content
-            model_name: Name for the model
-            
-        Returns:
-            GNNModel: Parsed model object
-        """
-    
-    def validate_model(self, model: GNNModel) -> ValidationResult:
-        """
-        Validate a parsed model.
-        
-        Args:
-            model: GNN model to validate
-            
-        Returns:
-            ValidationResult: Validation report with errors/warnings
-        """
-
-# Usage examples:
-parser = GNNParser(validation_level=ValidationLevel.STRICT)
-
-# Parse single file
-model = parser.parse_file("path/to/model.md")
-
-# Parse directory  
-models = parser.parse_directory("examples/", recursive=True)
-
-# Parse from string
-gnn_content = """
-## ModelName
-TestModel
-
-## StateSpaceBlock
-s_f0[2,1,type=categorical]
-o_m0[2,1,type=categorical]
-"""
-model = parser.parse_string(gnn_content, "TestModel")
-
-# Validate model
-validation = parser.validate_model(model)
-if validation.is_valid:
-    print("✅ Model is valid")
-else:
-    print(f"❌ Validation errors: {validation.errors}")
-```
+The remainder of this file retains older narrative examples. **Do not import** `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` unless listed in [`src/gnn/__init__.py`](../../src/gnn/__init__.py) or `api_index.json`.
 
 ### **📊 GNNModel Class**
 
@@ -633,9 +547,8 @@ server = MCPServer()
 @server.tool("parse_gnn_model")
 def parse_gnn_model(filepath: str) -> dict:
     """Parse GNN model and return structured representation."""
-    parser = GNNParser()
-    model = parser.parse_file(filepath)
-    return model.to_dict()
+    # Illustrative — use gnn.GNNParsingSystem().parse_file(...) or gnn.mcp.parse_gnn_content in practice.
+    raise NotImplementedError("Wire to gnn.GNNParsingSystem or MCP parse_gnn_content")
 
 @server.tool("visualize_model")
 def visualize_model(model_data: dict, viz_type: str) -> str:
@@ -690,8 +603,8 @@ monitor.start_monitoring()
 
 @monitor.measure_operation("model_parsing")
 def parse_model(filepath):
-    parser = GNNParser()
-    return parser.parse_file(filepath)
+    # Illustrative — use gnn.GNNParsingSystem or parse_gnn_file
+    return filepath
 
 # Get performance metrics
 metrics = monitor.get_metrics("model_parsing")
@@ -729,7 +642,7 @@ config_manager = ConfigManager("gnn_config.yaml")
 
 # Get parsing configuration
 parse_config = config_manager.get_config("parsing")
-parser = GNNParser(config=parse_config)
+# Illustrative — no GNNParser(config=...) in package root; use GNNParsingSystem / validate_gnn
 
 # Modify pipeline configuration
 config_manager.set_config("pipeline", "parallel", True)
@@ -744,17 +657,14 @@ config_manager.save_config()
 Complete example showing full GNN API integration
 for building a custom Active Inference research workflow.
 """
-from gnn import (
-    GNNParser, Pipeline, Visualizer, LLMAnalyzer,
-    PyMDPConverter, PerformanceMonitor
-)
+from gnn import GNNParsingSystem  # illustrative workflow — verify other symbols in src/
 
 class ActiveInferenceWorkflow:
     """Complete Active Inference research workflow."""
     
     def __init__(self):
-        # Initialize components
-        self.parser = GNNParser(validation_level="STRICT")
+        # Initialize components (illustrative — Pipeline/Visualizer/LLMAnalyzer may differ in src/)
+        self.parser = GNNParsingSystem()
         self.pipeline = Pipeline()
         self.visualizer = Visualizer()
         self.llm_analyzer = LLMAnalyzer()
