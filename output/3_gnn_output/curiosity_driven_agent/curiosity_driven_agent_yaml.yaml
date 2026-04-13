@@ -115,10 +115,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-04-10T10:24:33.664588'
+created_at: '2026-04-12T17:23:02.249964'
 equations: []
 model_name: Curiosity-Driven Active Inference Agent
-modified_at: '2026-04-10T10:24:33.664589'
+modified_at: '2026-04-12T17:23:02.249965'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

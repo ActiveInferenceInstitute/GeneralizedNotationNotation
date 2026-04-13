@@ -2,10 +2,21 @@
 
 > **📋 Document Metadata**  
 > **Type**: Testing Guide | **Audience**: Developers & QA Engineers | **Complexity**: Intermediate  
-> **Cross-References**: [Development Guide](../development/README.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [AGENTS.md](AGENTS.md) | [src/tests/README.md](../../src/tests/README.md) | [doc/gnn/modules/02_tests.md](../gnn/modules/02_tests.md)
+> **Cross-References**: [Development Guide](../development/README.md) | [Pipeline Architecture](../gnn/operations/gnn_tools.md) | [AGENTS.md](AGENTS.md) | [src/tests/README.md](../../src/tests/README.md) | [doc/gnn/modules/02_tests.md](../gnn/modules/02_tests.md) | [doc/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 This guide covers the comprehensive testing strategy for GeneralizedNotationNotation (GNN), including unit tests, integration tests, performance tests, and validation procedures.
+
+### Canonical commands (measured counts)
+
+Pass/skip totals are **not** fixed in this file. Run and read the terminal output:
+
+```bash
+uv sync --extra dev
+uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py
+```
+
+CI uses a narrower marker (`-m "not pipeline and not mcp"`); see [.github/workflows/ci.yml](../../.github/workflows/ci.yml) and [CLAUDE.md](../../CLAUDE.md) for parity notes. Enable `test_llm_ollama*.py` when local Ollama is available.
 
 **Layout note:** The tree below is a **conceptual** organization. The repository’s pytest collection lives primarily under [`src/tests/`](../../src/tests/) as flat `test_*.py` modules plus [`src/tests/infrastructure/`](../../src/tests/infrastructure/) and [`src/tests/helpers/`](../../src/tests/helpers/). For the canonical layout and commands, use [`src/tests/README.md`](../../src/tests/README.md) and root [`README.md`](../../README.md).
 

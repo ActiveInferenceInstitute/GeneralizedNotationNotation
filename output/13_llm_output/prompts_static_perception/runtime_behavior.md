@@ -8,19 +8,31 @@ Response:
 
 ```python
 import numpy as np
+from scipy import stats
 
-# Define the input data and corresponding hidden states
-input_data = np.array([[0.9, 0.1], [0.2, 0.8]])
-hidden_states = np.array([
-    (0.5, 0.5),
-    (0.4, 0.3)
-])
-# Initialize the hidden state and prior beliefs
-d=np.zeros((input_data.shape[1], input_data.shape[2]))
-A=np.zeros(input_data.shape[1])
-D=np.zeros(input_data.shape[2])
-s=np.array([
-    (0.9, 0.1),
-    (0.2, 0.8)
-])
+# Define the input data and corresponding GNN parameters
+input_data = np.array([[0.956342718, 0.1],
+                  [0.256286694, 0.8]])
+output_data = np.array([
+    (0.956342718, 0.1),
+    (0.256286694, 0.8)]
+)
+```
+This implementation uses the `numpy` library to create a tensor of shape `(input_data.shape[0], input_data.shape[1])`. It then creates a tensor of shape `(output_data.shape[0], output_data.shape[1])`, where each element is a tensor with shape `(num_hidden_states, num_obs)`. The GNN parameters are defined as:
+```python
+input_data = np.array([[0.956342718, 0.1],
+                  [0.256286694, 0.8]])
+output_data = np.array([
+    (0.956342718, 0.1),
+    (0.256286694, 0.8)]
+)
+```
+The `numpy` library is used to create a tensor of shape `(input_data.shape[0], input_data.shape[1])`. The GNN parameters are defined as:
+```python
+input_data = np.array([[0.956342718, 0.1],
+                  [0.256286694, 0.8]])
+output_data = np.array([
+    (0.956342718, 0.1),
+    (0.256286694, 0.8)]
+)
 ```

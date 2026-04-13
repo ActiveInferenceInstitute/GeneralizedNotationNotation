@@ -53,6 +53,6 @@ F = VariationalFreeEnergy
 t = Time
 
 ## Footer
-Generated: 2026-04-10T10:24:31.839307
+Generated: 2026-04-12T17:23:00.029965
 
 ## Signature

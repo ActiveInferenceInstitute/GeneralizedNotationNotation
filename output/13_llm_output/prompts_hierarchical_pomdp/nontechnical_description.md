@@ -6,48 +6,44 @@ Prompt:
 
 Response:
 
-You can create a GNN model using the following code:
 ```python
 import numpy as np
-from scipy import stats
+from typing import List, Tuple
 
-def gnn(x):
-    """GNN implementation of the standard Bayesian inference algorithm."""
+def gnn(
+    level: List[List[float]],
+    num_hidden_states: int = 4,
+    num_actions: int = 3,
+    timesteps=20,
+    timescale_ratio=5,
+    signature="gNN",
+    **kwargs) -> List[Tuple[int, float]]:
+    """GNN Representation of a hierarchical Active Inference POMDP.
 
-    # Initialize state space and parameters
-    x_state = np.array([
-        (1, 0.85, 0.05, 0.05),
-        (0.05, 0.85, 0.05, 0.05)
-    ])
+    Args:
+        level (List[List[float]], type=list): A list of levels to be processed.
+        num_hidden_states (int), number of hidden states in the hierarchy.
+        num_actions (int), number of actions per level.
+        timesteps (int), time step size for each level.
+        signature: `str` or `bytes`: Signature of GNN representation, can be used to compute
+    """
 
-    # Initialize the state space and parameters
-    x_state = np.array([x])
+    # Initialize state space block
+    A1 = np.array([level[0] + [num_hidden_states - 2]] * num_hidden_states)
+    B1 = np.array([[num_actions][timestep], [num_actions][timestep]])
+    C1 = np.array(
+        [[num_actions, num_actions], [num_actions]], dtype=np.float64
+    )
 
-    # Initialize the initial parameterization
-    A1=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B1=np.array([[0, 0], [0]])
-    C1=np.array([((1+x)**(-1)for x in np.random.rand())]
+    # Initialize higher-level beliefs
+    A2 = np.zeros((num_hidden_states + 3))
+    B2 = np.ones([num_actions])
+    C2 = np.ones(num_actions)
+    D2 = np.ones(((num_actions - num_actions % 2), num_actions, num_actions * num_actions / 2))
 
-    # Initialize the initial parameterization
-    A2=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B2=np.array([((0+x)**(-1)for x in np.random.rand())]
+    # Initialize the initial parameters
+    A1[0] = A1[:num_hidden_states + num_actions // 2], B1[0:num_actions // 2], C1[0:num_actions // 2], D1[0:num_actions // 2]
 
-    # Initialize the initial parameterization
-    A3=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B3=np.array([((0+x)**(-1)for x in np.random.rand())]
-
-    # Initialize the initial parameterization
-    A4=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B4=np.array([((0+x)**(-1)for x in np.random.rand())]
-
-    # Initialize the initial parameterization
-    A5=np.array([[(1/2**i for i in range(num_hidden_states)]),
-                  (1/(2*num_actions))])
-    B5=np.array([((0+x)**(-1)for x in np.random.rand())]
-
-    # Initialize the initial parameterization
-    A6=np.array([[(1
+    # Initialize the initial parameters
+    A1[num_actions - num_actions % 2, num_hidden_states + num_actions / 2:] = A1[:num_hidden_states + num_actions // 2], B1[num_actions // 2:], C1[num_actions // 2:num_actions // 2]
+    A1[num

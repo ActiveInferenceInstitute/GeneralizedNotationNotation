@@ -1,35 +1,27 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key components of the model:
+Based on the documentation, here are the key components of the GNN specification:
 
-1. **Model Matrices**:
-   - A matrices representing the location and reward distributions for each action/observation pair (A)
-   - A matrix representing the probability distribution over actions (B), which is used to update the agent's belief in its current state space based on the observed rewards
-   - A matrix representing the probability distribution of the reward at a particular time step (C)
+1. **Model Annotation**: A list of hidden state and observation matrices representing the agent's actions and their corresponding reward/cue values for each action. This annotation is used to generate parameter files that can be loaded into a Bayesian inference engine (BFI).
 
-2. **Precision Parameters**:
-   - γ: precision parameters, which are used for training and evaluation purposes
-   - α: learning rate parameter, which is set to 0.1 during training
-   - Other precision/confidence parameters
+2. **Initial Parameters**: A list of initial parameters, which are generated based on the model annotations and configuration summaries provided in the documentation. These parameters represent the starting point for the agent's exploration/exploitation process.
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality (D)
-   - Observation space dimensions for each action/observation pair (A), with the goal of reducing uncertainty and exploring different actions based on their reward distributions
-   - Action space dimensions for each control factor (C)
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows (W)
-   - Update frequencies and timescales (F)
+3. **Parameter Files**: A list of parameter files that contain the data from the GNN specification. These file formats provide a convenient way to load the parameter information into a Bayesian inference engine (BFI).
 
-5. **Initial Conditions**:
-   - Initial parameters:
-      - γ
+4. **Initial Parameters**: A list of initial parameters, which are generated based on the model annotations and configuration summaries provided in the documentation. These parameters represent the starting point for the agent's exploration/exploitation process.
 
-      - α
+5. **Configuration Summary**: A list of parameter files that contain the data from the GNN specification. These file formats provide a convenient way to load the parameter information into a Bayesian inference engine (BFI).
 
-      - Other precision/confidence parameters
+6. **Temporal Parameters**: A list of initial parameters, which are generated based on the model annotations and configuration summaries provided in the documentation. These parameters represent the starting point for the agent's exploration/exploitation process.
 
-   6. **Configuration Summary**:
-    - Parameter file format recommendations
-    - Tunable vs. fixed parameters
-    - Sensitivity analysis priorities
+So in summary:
+
+1. **Model Annotation**: List of hidden state matrices representing the agent's actions and their corresponding reward/cue values for each action.
+
+2. **Initial Parameters**: List of initial parameters, which are generated based on the model annotations and configuration summaries provided in the documentation.
+
+3. **Parameter Files**: List of parameter files that contain the data from the GNN specification. These file formats provide a convenient way to load the parameter information into a Bayesian inference engine (BFI).
+
+4. **Initial Parameters**: List of initial parameters, which are generated based on the model annotations and configuration summaries provided in the documentation.
+
+5. **Configuration Summary**: List of parameter files that contain the data from the GNN specification. These file formats provide a convenient way to load the parameter information into a Bayesian inference engine (BFI).

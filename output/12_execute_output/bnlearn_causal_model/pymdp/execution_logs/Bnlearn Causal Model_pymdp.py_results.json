@@ -1,0 +1,129 @@
+{
+  "framework": "pymdp",
+  "model_name": "bnlearn_causal_model",
+  "script_name": "Bnlearn Causal Model_pymdp.py",
+  "script_path": "output/11_render_output/bnlearn_causal_model/pymdp/Bnlearn Causal Model_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 2.641093,
+  "timestamp": "2026-04-12T17:24:37.109157",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1
+    ],
+    "actions": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-04-12 17:24:38,113 - __main__ - INFO - Running pymdp 1.0.0 rollout for Bnlearn Causal Model\n2026-04-12 17:24:38,113 - __main__ - INFO - Output directory: output/pymdp_simulations/Bnlearn Causal Model\n2026-04-12 17:24:38,113 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-04-12 17:24:38,114 - src.execute.pymdp.simple_simulation - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-04-12 17:24:38,114 - src.execute.pymdp.simple_simulation - INFO - Dimensions: No=2, Ns=2, Nu=2 | T=15, batch=1, policy_len=1\nINFO:2026-04-12 17:24:38,120:jax._src.xla_bridge:834: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-12 17:24:38,120 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-04-12 17:24:38,267 - src.execute.pymdp.simple_simulation - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-04-12 17:24:38,858 - src.execute.pymdp.simple_simulation - INFO - t=00 obs=1 belief=[0.1, 0.9] action=0 next_state=0\n2026-04-12 17:24:38,945 - src.execute.pymdp.simple_simulation - INFO - t=01 obs=0 belief=[0.823, 0.177] action=1 next_state=1\n2026-04-12 17:24:38,992 - src.execute.pymdp.simple_simulation - INFO - t=02 obs=1 belief=[0.061, 0.939] action=0 next_state=1\n2026-04-12 17:24:39,037 - src.execute.pymdp.simple_simulation - INFO - t=03 obs=1 belief=[0.051, 0.949] action=0 next_state=1\n2026-04-12 17:24:39,082 - src.execute.pymdp.simple_simulation - INFO - t=04 obs=1 belief=[0.05, 0.95] action=0 next_state=1\n2026-04-12 17:24:39,127 - src.execute.pymdp.simple_simulation - INFO - t=05 obs=0 belief=[0.809, 0.191] action=1 next_state=1\n2026-04-12 17:24:39,172 - src.execute.pymdp.simple_simulation - INFO - t=06 obs=0 belief=[0.845, 0.155] action=1 next_state=1\n2026-04-12 17:24:39,218 - src.execute.pymdp.simple_simulation - INFO - t=07 obs=1 belief=[0.059, 0.941] action=0 next_state=1\n2026-04-12 17:24:39,263 - src.execute.pymdp.simple_simulation - INFO - t=08 obs=1 belief=[0.051, 0.949] action=0 next_state=0\n2026-04-12 17:24:39,309 - src.execute.pymdp.simple_simulation - INFO - t=09 obs=0 belief=[0.809, 0.191] action=1 next_state=0\n2026-04-12 17:24:39,356 - src.execute.pymdp.simple_simulation - INFO - t=10 obs=0 belief=[0.845, 0.155] action=1 next_state=1\n2026-04-12 17:24:39,401 - src.execute.pymdp.simple_simulation - INFO - t=11 obs=1 belief=[0.059, 0.941] action=0 next_state=1\n2026-04-12 17:24:39,446 - src.execute.pymdp.simple_simulation - INFO - t=12 obs=1 belief=[0.051, 0.949] action=0 next_state=1\n2026-04-12 17:24:39,492 - src.execute.pymdp.simple_simulation - INFO - t=13 obs=1 belief=[0.05, 0.95] action=0 next_state=1\n2026-04-12 17:24:39,536 - src.execute.pymdp.simple_simulation - INFO - t=14 obs=1 belief=[0.05, 0.95] action=0 next_state=1\n2026-04-12 17:24:39,537 - src.execute.pymdp.simple_simulation - INFO - Saved simulation results to output/pymdp_simulations/Bnlearn Causal Model/simulation_results.json\n2026-04-12 17:24:39,537 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-04-12 17:24:39,537 - __main__ - INFO - Simulation completed successfully\n2026-04-12 17:24:39,537 - __main__ - INFO -   framework:    PyMDP\n2026-04-12 17:24:39,537 - __main__ - INFO -   pymdp ver:    1.0.0\n2026-04-12 17:24:39,537 - __main__ - INFO -   backend:      jax\n2026-04-12 17:24:39,537 - __main__ - INFO -   num_timesteps:15\n",
+    "beliefs": [
+      [
+        0.09999998658895493,
+        0.8999999761581421
+      ],
+      [
+        0.8225806355476379,
+        0.17741933465003967
+      ],
+      [
+        0.06149732694029808,
+        0.9385026693344116
+      ],
+      [
+        0.050693169236183167,
+        0.949306845664978
+      ],
+      [
+        0.04974963888525963,
+        0.9502503871917725
+      ],
+      [
+        0.8089176416397095,
+        0.19108234345912933
+      ],
+      [
+        0.8445537686347961,
+        0.15544626116752625
+      ],
+      [
+        0.059348512440919876,
+        0.940651535987854
+      ],
+      [
+        0.05050470307469368,
+        0.9494953155517578
+      ],
+      [
+        0.8091320991516113,
+        0.19086791574954987
+      ],
+      [
+        0.8445057272911072,
+        0.15549425780773163
+      ],
+      [
+        0.05935314670205116,
+        0.9406468868255615
+      ],
+      [
+        0.05050511658191681,
+        0.9494948983192444
+      ],
+      [
+        0.04973330348730087,
+        0.9502667188644409
+      ],
+      [
+        0.04966629669070244,
+        0.9503337144851685
+      ]
+    ],
+    "num_timesteps": 15
+  },
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 3849,
+    "output_directory": "output/12_execute_output/bnlearn_causal_model/pymdp"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/bnlearn_causal_model/pymdp/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

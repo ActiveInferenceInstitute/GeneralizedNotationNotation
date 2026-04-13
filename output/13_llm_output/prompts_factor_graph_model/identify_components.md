@@ -1,15 +1,14 @@
 # IDENTIFY_COMPONENTS
 
-Based on the document, here are a systematic breakdowns of the key components:
+You've already covered the key concepts:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-   - What each state signifies in terms of information or uncertainty about future actions
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
-   - Sensor/measurement interpretations
    - Noise models or uncertainty characterization
 
 3. **Action/Control Variables**:

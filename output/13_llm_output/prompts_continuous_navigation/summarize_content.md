@@ -2,17 +2,16 @@
 
 Here is a concise summary of the GNN specification:
 
-**Model Overview:**
-This model represents a continuous state-space agent that navigates a 2D environment using Gaussian belief updates based on a set of hidden states and observations. The agent's actions are governed by linear Gaussian beliefs, while its predictions are made from joint probability distributions of observation and action probabilities. The goal is to minimize the difference between predicted and observed values for each state-space variable.
-**Key Variables:**
+**Model Overview**
+This model represents a continuous state-space agent that navigates a 2D environment using Gaussian belief updates based on a linear Gaussian approximation for Gaussian probability distributions. The agent's actions are governed by a set of uncertain, Gaussian-valued beliefs and actions are guided by the available data. The goal is to minimize the uncertainty in the observed position and velocity while minimizing the error between predicted and actual positions/velocities.
+**Key Variables**
    - Hidden states: [list with brief descriptions]
    - Observations: [list with brief descriptions]  
    - Actions/Controls: [list with brief descriptions]
 
- **Critical Parameters:**
+ **Critical Parameters**
    - Most important matrices (A, B, C, D) and their roles
    - Key hyperparameters and settings
-**Notable Features:**
-   - Unique aspects of this model design
-   - Special properties or constraints
-   - Unique characteristics of this model implementation
+**Notable Features**
+    - Special properties or constraints
+    - Unique aspects of this model design

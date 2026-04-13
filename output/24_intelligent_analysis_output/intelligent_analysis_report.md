@@ -1,6 +1,6 @@
 # Pipeline Intelligent Analysis Report
 
-**Generated**: 2026-04-10T10:35:43.605840
+**Generated**: 2026-04-12T17:35:07.960886
 
 **Status**: ✅ SUCCESS
 
@@ -12,83 +12,105 @@
 | Metric | Value |
 |--------|-------|
 | Total Steps | 24 |
-| Duration | 726.55s |
-| Peak Memory | 39.2 MB |
+| Duration | 804.66s |
+| Peak Memory | 37.9 MB |
 | 🔴 Red Flags | 0 |
-| 🟡 Yellow Flags | 2 |
-| ✅ Green (Clean) | 22 |
+| 🟡 Yellow Flags | 3 |
+| ✅ Green (Clean) | 21 |
 
 ## AI-Powered Analysis
 
-🟡 **0_template.py** (Template initialization): Completed successfully in 0.30s
-✅ **1_setup.py** (Environment setup): Completed successfully in 3.28s
-✅ **2_tests.py** (Test suite execution): Completed successfully in 54.11s
-🟡 **1_type_checker.py** (Type checking): Completed successfully in 1.85s
-🟡 **6_validation.py** (Validation): Completed successfully in 1.67s
-✅ **7_export.py** (Multi-format export): Completed successfully in 0.24s
-🟡 **8_visualization.py** (Visualization): Completed successfully in 17.09s
-✅ **9_advanced_viz.py** (Advanced visualization): Completed successfully in 8.55s
-🟡 **10_ontology.py** (Ontology processing): Completed successfully in 0.49s
-🟡 **11_render.py** (Code rendering): Completed successfully in 0.29s
-✅ **12_execute.py** (Execution): Completed with 1 flag(s) in 296.11s | Flags: Very slow: 296.5s (>120.0s threshold)
-🟡 **13_llm.py** (LLM processing): Completed successfully in 2.48s
-✅ **14_ml_integration.**: Completed successfully in 0.29s
-✅ **15_audio.py** (Audio processing): Completed successfully in 1.53s
-🟡 **16_analysis.**: Completed successfully in 17.09s
-✅ **17_integration.**: Completed successfully in 0.29s
+✅ **0_template.py** (Template initialization): Completed successfully in 0.24s
+✅ **1_setup.py** (Environment setup): Completed successfully in 5.71s
+🟡 **2_tests.py** (Test suite execution): Completed with 1 flag(s) in 73.82s | Flags: Slow: 73.8s (>60.0s threshold)
+✅ **3_gnn.py** (GNN file processing): Completed successfully in 2.83s
+✅ **4_model_registry.py** (Model registry): Completed successfully in 0.48s
+✅ **5_type_checker.py** (Type checking): Completed successfully in 1.95s
+✅ **6_validation.py** (Validation): Completed successfully in 1.65s
+✅ **7_export.py** (Multi-format export): Completed successfully in 0.29s
+✅ **8_visualization.py** (Visualization): Completed successfully in 18.17s
+✅ **9_advanced_viz.py** (Advanced visualization): Completed successfully in 8.81s
+✅ **10_ontology.py** (Ontology processing): Completed successfully in 1.31s
+✅ **11_render.py** (Code rendering): Completed successfully in 1.99s
+✅ **12_execute.py** (Execution): Completed with 1 flag(s) in 341.27s | Flags: Very slow: 341.3s (>120.0s threshold)
+✅ **13_llm.py** (LLM processing): Completed successfully in 1.99s
+✅ **14_ml_integration.**: Completed successfully in 1.31s
+✅ **15_audio.py**.*: Completed successfully in 0.29s
+✅ **16_analysis.**: Completed successfully in 41.65s
+✅ **17_integration.**: Completed successfully in 0.39s
 ✅ **18_security.**: Completed successfully in 0.24s
 ✅ **19_research.**: Completed successfully in 0.24s
-🟡 **20_website.**: Completed successfully in 0.21s
-✅ **21_mcp.**: Completed successfully in 0.36s
-✅ **22_gui.**: Completed successfully in 0.34s
-✅ **23_report.**: Completed successfully in 0.41s
+✅ **20_website.**: Completed successfully in 0.21s
+✅ **21_mcp.**: Completed successfully in 0.21s
+✅ **23_gui.**: Completed successfully in 0.34s
+✅ **25_report.**: Completed successfully in 0.45s
 
 ## 🟡 Yellow Flags (Warnings)
 
 | Step | Duration | Memory | Issues |
 |------|----------|--------|--------|
-| 12_execute.py | 296.1s | 39MB | Very slow: 296.1s (>120.0s threshold) |
-| 13_llm.py | 296.5s | 39MB | Very slow: 296.5s (>120.0s threshold) |
+| 2_tests.py | 73.8s | 25MB | Slow: 73.8s (>60.0s threshold) |
+| 12_execute.py | 341.3s | 29MB | Very slow: 341.3s (>120.0s threshold) |
+| 13_llm.py | 300.2s | 29MB | Very slow: 300.2s (>120.0s threshold) |
 
 ## Per-Step Execution Details
 
 | # | Step | Status | Duration | Memory | Flags |
 |---|------|--------|----------|--------|-------|
-| 1 | 0_template.py | ✅ SUCCESS | 0.30s | 38MB | - |
-| 2 | 1_setup.py | ✅ SUCCESS | 3.28s | 38MB | - |
-| 3 | 2_tests.py | ✅ SUCCESS | 54.11s | 38MB | - |
-| 4 | 3_gnn.py | ✅ SUCCESS | 2.48s | 38MB | - |
-| 5 | 4_model_registry.py | ✅ SUCCESS | 0.30s | 38MB | - |
-| 6 | 5_type_checker.py | ✅ SUCCESS | 1.85s | 38MB | - |
-| 7 | 6_validation.py | ✅ SUCCESS | 1.67s | 38MB | - |
-| 8 | 7_export.py | ✅ SUCCESS | 0.24s | 38MB | - |
-| 9 | 8_visualization.py | ✅ SUCCESS | 17.09s | 38MB | - |
-| 10 | 9_advanced_viz.py | ✅ SUCCESS | 8.55s | 38MB | - |
-| 11 | 10_ontology.py | ✅ SUCCESS | 0.49s | 38MB | - |
-| 12 | 11_render.py | ✅ SUCCESS | 0.29s | 38MB | - |
-| 13 | 12_execute.py | 🟡 SUCCESS | 296.11s | 39MB | 1 |
-| 14 | 13_llm.py | 🟡 SUCCESS | 296.48s | 39MB | 1 |
-| 15 | 14_ml_integration.py | ✅ SUCCESS | 0.95s | 39MB | - |
-| 16 | 15_audio.py | ✅ SUCCESS | 1.53s | 39MB | - |
-| 17 | 16_analysis.py | ✅ SUCCESS | 37.24s | 39MB | - |
-| 18 | 17_integration.py | ✅ SUCCESS | 0.29s | 39MB | - |
-| 19 | 18_security.py | ✅ SUCCESS | 0.24s | 39MB | - |
-| 20 | 19_research.py | ✅ SUCCESS | 0.24s | 39MB | - |
-| 21 | 20_website.py | ✅ SUCCESS | 0.29s | 39MB | - |
-| 22 | 21_mcp.py | ✅ SUCCESS | 1.74s | 39MB | - |
-| 23 | 22_gui.py | ✅ SUCCESS | 0.34s | 39MB | - |
-| 24 | 23_report.py | ✅ SUCCESS | 0.41s | 39MB | - |
+| 1 | 0_template.py | ✅ SUCCESS | 0.24s | 38MB | - |
+| 2 | 1_setup.py | ✅ SUCCESS | 5.71s | 38MB | - |
+| 3 | 2_tests.py | 🟡 SUCCESS | 73.82s | 25MB | 1 |
+| 4 | 3_gnn.py | ✅ SUCCESS | 2.83s | 28MB | - |
+| 5 | 4_model_registry.py | ✅ SUCCESS | 0.48s | 28MB | - |
+| 6 | 5_type_checker.py | ✅ SUCCESS | 1.95s | 28MB | - |
+| 7 | 6_validation.py | ✅ SUCCESS | 1.65s | 28MB | - |
+| 8 | 7_export.py | ✅ SUCCESS | 0.29s | 29MB | - |
+| 9 | 8_visualization.py | ✅ SUCCESS | 18.17s | 29MB | - |
+| 10 | 9_advanced_viz.py | ✅ SUCCESS | 8.81s | 29MB | - |
+| 11 | 10_ontology.py | ✅ SUCCESS | 0.48s | 29MB | - |
+| 12 | 11_render.py | ✅ SUCCESS | 0.29s | 29MB | - |
+| 13 | 12_execute.py | 🟡 SUCCESS | 341.27s | 29MB | 1 |
+| 14 | 13_llm.py | 🟡 SUCCESS | 300.21s | 29MB | 1 |
+| 15 | 14_ml_integration.py | ✅ SUCCESS | 1.31s | 29MB | - |
+| 16 | 15_audio.py | ✅ SUCCESS | 1.52s | 29MB | - |
+| 17 | 16_analysis.py | ✅ SUCCESS | 41.65s | 29MB | - |
+| 18 | 17_integration.py | ✅ SUCCESS | 0.39s | 28MB | - |
+| 19 | 18_security.py | ✅ SUCCESS | 0.24s | 29MB | - |
+| 20 | 19_research.py | ✅ SUCCESS | 0.24s | 29MB | - |
+| 21 | 20_website.py | ✅ SUCCESS | 0.29s | 29MB | - |
+| 22 | 21_mcp.py | ✅ SUCCESS | 1.99s | 29MB | - |
+| 23 | 22_gui.py | ✅ SUCCESS | 0.34s | 29MB | - |
+| 24 | 23_report.py | ✅ SUCCESS | 0.45s | 30MB | - |
 
 ## Detailed Step Output (Flagged Steps)
+
+### 2_tests.py
+
+**Test suite execution**
+
+- Status: SUCCESS
+- Duration: 73.82s
+- Memory: 25MB
+- Flags: Slow: 73.8s (>60.0s threshold)
+
+**Output Snippet**:
+```
+2026-04-12 17:21:46,873 - 2_tests.py - INFO - Executing fast tests: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/
+```
+
+**Error Output**:
+```
+2026-04-12 17:21:46,873 - 2_tests.py - INFO - Executing fast tests: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/
+```
 
 ### 12_execute.py
 
 **Execution**
 
 - Status: SUCCESS
-- Duration: 296.11s
-- Memory: 39MB
-- Flags: Very slow: 296.1s (>120.0s threshold)
+- Duration: 341.27s
+- Memory: 29MB
+- Flags: Very slow: 341.3s (>120.0s threshold)
 
 **Output Snippet**:
 ```
@@ -97,11 +119,11 @@
 
 **Error Output**:
 ```
-2026-04-10 10:25:06,743 - execute - INFO - ✅ Successfully executed Simple Markov Chain_numpyro.py
-2026-04-10 10:25:09,342 - execute - INFO - ✅ Successfully executed Simple Markov Chain_pymdp.py
-2026-04-10 10:25:10,293 - execute - INFO - ✅ Successfully executed Simple Markov Chain_pytorch.py
-2026-04-10 10:25:11,230 - execute - INFO - ✅ Successfully executed Simple Markov Chain_jax.py
-2026-04-10 10:25:11,750 - execute - INFO - ✅ Successfully executed Simple Markov Chain_discopy.py
+2026-04-12 17:23:37,526 - execute - INFO - ✅ Successfully executed Simple Markov Chain_numpyro.py
+2026-04-12 17:23:40,207 - execute - INFO - ✅ Successfully executed Simple Markov Chain_pymdp.py
+2026-04-12 17:23:41,396 - execute - INFO - ✅ Successfully executed Simple Markov Chain_pytorch.py
+2026-04-12 17:23:42,305 - execute - INFO - ✅ Successfully executed Simple Markov Chain_jax.py
+2026-04-12 17:23:42,783 - execute - INFO - ✅ Successfully executed Simple Markov Chain_discopy.py
 ```
 
 ### 13_llm.py
@@ -109,32 +131,34 @@
 **LLM processing**
 
 - Status: SUCCESS
-- Duration: 296.48s
-- Memory: 39MB
-- Flags: Very slow: 296.5s (>120.0s threshold)
+- Duration: 300.21s
+- Memory: 29MB
+- Flags: Very slow: 300.2s (>120.0s threshold)
 
 **Error Output**:
 ```
-2026-04-10 10:30:01,835 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2026-04-10 10:30:01,844 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2026-04-10 10:30:14,209 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2026-04-10 10:30:25,261 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
-2026-04-10 10:30:42,520 - llm.providers.openai_provider - INFO - OpenAI prov
+2026-04-12 17:29:17,528 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-04-12 17:29:17,537 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-04-12 17:29:29,156 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-04-12 17:29:44,427 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-04-12 17:30:01,013 - llm.providers.openai_provider - INFO - OpenAI prov
 ```
 
 ## Performance Bottlenecks
 
 | Step | Duration (s) | Memory (MB) | Above Avg Ratio |
 |------|-------------|-------------|-----------------|
-| 13_llm.py | 296.5 | 39 | 9.8x |
-| 12_execute.py | 296.1 | 39 | 9.8x |
+| 12_execute.py | 341.3 | 29 | 10.2x |
+| 13_llm.py | 300.2 | 29 | 9.0x |
+| 2_tests.py | 73.8 | 25 | 2.2x |
 
 ## Recommendations
 
-- 🟡 **WARNINGS**: 2 step(s) have yellow flags that should be reviewed.
--    ↳ **12_execute.py**: Very slow: 296.1s (>120.0s threshold)
--    ↳ **13_llm.py**: Very slow: 296.5s (>120.0s threshold)
-- ⚡ **Performance**: Slowest step is **13_llm.py** (296.5s). Consider parallelization or caching.
+- 🟡 **WARNINGS**: 3 step(s) have yellow flags that should be reviewed.
+-    ↳ **2_tests.py**: Slow: 73.8s (>60.0s threshold)
+-    ↳ **12_execute.py**: Very slow: 341.3s (>120.0s threshold)
+-    ↳ **13_llm.py**: Very slow: 300.2s (>120.0s threshold)
+- ⚡ **Performance**: Slowest step is **12_execute.py** (341.3s). Consider parallelization or caching.
 - ✅ **Health**: Pipeline is healthy (100/100). All systems nominal.
 
 ## Pipeline Configuration

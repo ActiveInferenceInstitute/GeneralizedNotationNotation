@@ -9,30 +9,51 @@ Response:
 Here is the complete implementation of the GNN model:
 ```python
 import numpy as np
-from scipy import stats
 
-# Define initial parameters and action distributions
-initial_parameters = [
-    (0.9, 0.05, 0.05),
-    (0.05, 0.9, 0.05),
-    (0.05, 0.05, 0.9)
-]
+def gnn_model(input_shape=(3,), num_hidden=1, num_actions=2):
+    """
+    GNN Representation for a neural network with 4 hidden states and 6 actions.
 
-# Define action distributions for each state and actions
-action_distribution = np.array([
-    1.0, 0.0, 0.0
-])
-actions = np.array([[(1.0), (0.0), (0.0)], [[(1.0), (1.0), (1.0)]]])
-```
-The `GNNModel` class represents the GNN model and has a number of attributes:
+    Parameters
+    ----------
+    input_shape : tuple
+        The shape of the input data (batch size) and number of neurons in each hidden state.
+    num_hidden: int
+        Number of hidden states, default is 1.
+    num_actions: int
+        Number of actions to be trained for each hidden state. Default is 2.
+    """
 
-1. **Initial Parameters**: A list of initial parameters, which are initialized with default values for each state and actions.
-2. **Action Distribution**: A numpy array representing an action distribution (represented as a 3x3 matrix) that maps states to their corresponding actions.
-3. **Actions**: A numpy array representing the actions taken by the agent at each time step, which are initialized with default values for each state and actions.
-4. **Initial Parameters**: A list of initial parameters, which are initialized with default values for each state and actions.
-5. **Action Distribution**: A numpy array representing an action distribution (represented as a 3x3 matrix) that maps states to their corresponding actions.
-6. **Actions**: A numpy array representing the actions taken by the agent at each time step, which are initialized with default values for each state and actions.
-7. **Initial Parameters**: A list of initial parameters, which are initialized with default values for each state and actions.
-8. **Action Distribution**: A numpy array representing an action distribution (represented as a 3x3 matrix) that maps states to their corresponding actions.
-9. **Actions**: A numpy array representing the actions taken by the agent at each time step, which are initialized with default values for each state and actions.
-10. **Initial Parameters**: A list of initial parameters, which are initialized with default values for each state and actions.
+    # Initialize the GNN model with input shape (3,) and num_hidden neurons in each hidden state
+    gnn = np.zeros((num_hidden + 4, num_actions), dtype=np.float)
+    
+    # Initialize the GNN model parameters
+    for i in range(num_hidden):
+        gnn[i] = np.random.normal([0.9], size=(input_shape[1], input_shape[2]), dtype=[dtype])
+
+    # Initialize the action weights and bias vector
+    for i in range(num_actions):
+        action_weights = np.zeros((input_shape[3], num_hidden + 4))
+        action_bias = np.zeros((input_shape[1], input_shape[2]))
+
+        # Initialize the transition matrix
+        for j in range(num_actions):
+            transition_matrix = np.random.normal([0.9, 0.05]) * (
+                num_hidden + 4)
+
+            # Initialize the policy vector
+            for k in range(input_shape[3]):
+                policy_vector = np.zeros((input_shape[1], input_shape[2]))
+
+                # Initialize the habit vector
+                for l in range(num_actions):
+                    habit_vector = np.zeros((input_shape[1], num_hidden + 4))
+
+                    # Initialize the action probabilities (probability of transitioning from state i to state j)
+                    action_probabilities = np.random.normal([0.9, 0.05]) * (
+                        input_shape[2] - k - 1
+                    )
+
+                # Initialize the habit vector
+                for l in range(input_shape[3]):
+                    habit_vector = np.zeros((input_shape[1], num

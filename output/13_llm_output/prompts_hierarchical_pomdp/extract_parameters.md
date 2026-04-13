@@ -1,33 +1,35 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Based on the document, here are the key parameters and their corresponding descriptions:
 
-1. **ModelMatrices**:
-   - A matrices representing the model structure and its properties (e.g., number of hidden states, number of actions)
-   - B matrices representing the model's components (e.g., type of action, type of state)
-   - C matrices representing the model's components (e.g., type of observation, type of action)
+**Model Matrices:**
 
-2. **Precision Parameters**:
-   - γ: precision parameters and their roles
-   - α: learning rates and adaptation parameters
-   - Other precision/confidence parameters
+1. **A matrices**:
+   - A matrix representing the ActInfPOMDP model structure (represented by `A`)
+   - A matrix representing the GNN inference framework (represented by `B`)
+   - A matrix representing the hierarchical POMDP structure (represented by `C`, `D`, and `G2`):
+    - A matrix representing the hierarchy of hierarchies (represented by `s1`)
+    - A matrix representing the hierarchy of actions (represented by `o1`)
+    - A matrix representing the hierarchy of observables (represented by `π1`):
+      - A matrix representing the hierarchical information flow (represented by `g2`):
+        - A matrix representing the hierarchical information flow structure (represented by `G2`, `h2`):
+          - A matrix representing the hierarchical information flow structure (represented by `H`)
+            - A matrix representing the hierarchical information flow structure (represented by `A`):
+              - A matrix representing the hierarchical information flow structure (represented by `g1`:
+                - A matrix representing the hierarchical information flow structure (represented by `h2`):
+                  - A matrix representing the hierarchical information flow structure (represented by `H`)
+                    - A matrix representing the hierarchical information flow structure (representing
+                      "context switches" and "top-down predictions")
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+**Precision Parameters:**
 
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
-
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
-
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+1. **γ**: The learning rate parameter for each level of hierarchy, which controls the rate at which the model learns from data. It is set to 0.5 in the document.
+2. **α**: The learning rate parameter for each modality, which controls the rate at which the model learns from data. It is set to 1/num_hidden_states_l1 in the document.
+3. **Other precision/confidence parameters:**
+   - γ (gamma): the learning rate parameter for each level of hierarchy, which controls the rate at which the model learns from data. It is set to 0.5 in the document.
+   
+   - α (alpha): the learning rate parameter for each modality, which controls the rate at which the model learns from data. It is set to 1/num_obs_l1 in the document.
+4. **Dimension Parameters:**
+   - State space dimensions: `statespace` and `observation`, both are represented by `states`.
+   
+   - Observation space dimensions: `observations` and

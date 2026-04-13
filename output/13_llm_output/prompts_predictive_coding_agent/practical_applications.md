@@ -1,22 +1,26 @@
 # PRACTICAL_APPLICATIONS
 
-You've already covered the key points about the GNN model, including its structure, connection mechanisms, initial parameters, and predictions. Here are some additional thoughts to consider:
+You've already covered the key points about GNN, including its role as a predictive coding agent, its applications, and practical considerations for real-world use cases. Here are some additional thoughts to consider:
 
-1. **Real-world applications**: Predictive coding is a versatile algorithm that can be applied in various domains, such as healthcare, finance, transportation systems, and more. It's not limited to specific industries or research areas; it could potentially solve problems across multiple fields. However, its applicability may depend on the specific domain and requirements of your project.
+1. **Real-World Applications**: Predictive Coding Active Inference Agent is designed to be applied in various domains where accurate predictions can have significant implications or impact on outcomes. It's particularly useful when dealing with complex systems that rely heavily on prediction, such as financial markets, healthcare data, and transportation systems.
 
-2. **Implementation considerations**: The implementation of this model involves several steps:
-   - Data collection and processing: Gathering data from sensors, cameras, and other sources to ensure accuracy in prediction accuracy. This can be done using various methods like machine learning algorithms (e.g., neural networks), natural language processing, or distributed computing approaches.
-   - Model evaluation and validation: Assessing the performance of the model on a variety of scenarios is crucial for evaluating its reliability and robustness. This involves metrics such as accuracy, precision, recall, F1-score, and other relevant metrics to evaluate different aspects of the model's behavior.
+2. **Implementation Considerations**: The implementation of GNN requires a high degree of computational resources, which could be challenging for large-scale applications like finance or healthcare. However, the model can still provide valuable insights into complex systems with uncertain outcomes.
 
-3. **Performance expectations**: The GNN model can be evaluated against various performance metrics, including:
-   - Accuracy: A measure of how well the predicted outcomes match actual data.
-   - Precision: A measure of how accurate predictions are when combined with observations and other inputs.
-   - Recall: A measure of how accurately predictions reflect observed events or behaviors.
-   - F1-score: A metric for evaluating both precision and recall, providing a balanced evaluation of model performance across different aspects.
+3. **Performance Expectations**: The performance expectations are quite ambitious and depend on various factors such as:
+   - Computational requirements (e.g., number of neurons in the neural network)
+   - Data availability and quality
+   - Integration with existing systems
 
-4. **Benefits and advantages**: The GNN model can solve problems in various domains by handling uncertainty, allowing for attentional modulation, and enabling predictive coding. It's particularly useful when dealing with real-time data or situations where the accuracy of predictions is critical. Additionally, it provides a flexible framework to explore different types of models and algorithms that could be applied to specific applications.
+4. **Deployment Scenarios**: The deployment scenarios can vary depending on the specific use cases, but common ones include:
+   - Online processing for real-time applications
+   - Real-time monitoring or analysis
+   - Autonomous vehicles (e.g., self-driving cars)
 
-5. **Challenges and considerations**: There are several challenges and considerations involved in implementing this model:
-   - Computational requirements: The computational resources required for training and validation may increase with the size of the dataset or data processing time increases as well. This can impact the scalability of the algorithm.
-   - Data availability: Ensuring that sufficient data is available to train the model, evaluate its performance, and validate predictions will be crucial in ensuring reliable results.
-   - Integration with existing systems: Integrating this model into existing systems may require
+5. **Benefits and Advantages**: GNN is a powerful predictive coding agent that has been proven to be effective in various domains with high accuracy, reliability, and scalability. It can handle complex systems with uncertain outcomes and provide valuable insights into their behavior.
+
+6. **Challenges and Considerations**: The main challenges are:
+   - Computational requirements (e.g., number of neurons)
+   - Data availability and quality
+   - Integration with existing systems
+
+Overall, while GNN is a promising predictive coding agent, its performance expectations can be challenging to meet in certain scenarios or domains due to computational resources limitations. However, it has the potential to provide valuable insights into complex systems that rely on prediction.

@@ -6,21 +6,39 @@ Prompt:
 
 Response:
 
-You've already done a good job of summarizing the GNN model and its components, so I'll just add a few more details to provide context for your analysis.
+```python
+import numpy as np
+from scipy import stats
 
-The GNN representation is composed of three main layers:
+def gnn_model(num_levels, num_states):
+    """GNN model for three-level hierarchical active inference."""
 
-1) **Fast** layer with 3 states (fast), which represents the agent's actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The state transitions are represented by a single state transition matrix.
-2) **Medium** layer with 6 states (medium), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
-3) **Slow** layer with 2 states (slowly), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
+    # Initialize state matrices
+    A = np.array([[0.85 + 0.1], [0.25 + 0.1]])
+    B = np.array([(-0.5 + 0.1), (-0.5 - 0.1)])
+    C = np.array([-0.5, -0.1])
 
-The GNN model is composed of three layers:
+    # Initialize action matrices
+    A_fast = np.array([[0.85 + 0.2], [0.1 + 0.9]])
+    B_fast = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
+    C_fast = np.array([-0.5, -0.1])
 
-1) **Fast** layer with 3 states (fast), which represents the agent's actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The state transitions are represented by a single state transition matrix.
-2) **Medium** layer with 6 states (medium), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
-3) **Slow** layer with 2 states (slowly), which represents the agent's beliefs about their own behavior based on their actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The belief vectors are represented by a single vector.
+    # Initialize policy matrices
+    A_slow = np.array([[0.85 + 0.2], [0.1 + 0.9]])
+    B_slow = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
+    C_slow = np.array([-0.5, -0.1])
 
-The GNN model is composed of three layers:
+    # Initialize action matrices
+    A_fast = np.array([[0.85 + 0.2], [0.1 + 0.9]])
+    B_fast = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
+    C_fast = np.array([-0.5, -0.1])
 
-1) **Fast** layer with 3 states (fast), which represents the agent's actions in terms of sensorimotor preferences and strategic decisions. This layer has 4 states, each representing one level of the hierarchy. The state transitions are represented by a single state transition matrix.
-2) **Medium** layer
+    # Initialize state matrices
+    A_slow = np.array([[0.85 + 0.2], [0.1 + 0.9]])
+    B_slow = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
+    C_slow = np.array([-0.5, -0.1])
+
+    # Initialize action matrices
+    A_fast = np.array([[0.85 + 0.2], [0.1 + 0.9]])
+    B_fast = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
+    C_fast = np.array

@@ -36,6 +36,35 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 
+# Maximum figure dimension (inches) to prevent RendererAgg pixel overflow.
+# At 300 DPI, 200 inches = 60,000 pixels — well within safe 32-bit limits.
+_MAX_FIGURE_DIMENSION = 200
+
+
+def _safe_figsize(width: float, height: float) -> tuple:
+    """Clamp figure dimensions to prevent matplotlib RendererAgg overflow.
+
+    Large models can produce data-dependent figsize values that exceed
+    the renderer's pixel buffer capacity (e.g. 5 * 10,000 actions).
+    This helper caps both dimensions to _MAX_FIGURE_DIMENSION inches.
+
+    Args:
+        width: Desired figure width in inches.
+        height: Desired figure height in inches.
+
+    Returns:
+        Tuple of (clamped_width, clamped_height).
+    """
+    clamped_w = min(max(width, 1), _MAX_FIGURE_DIMENSION)
+    clamped_h = min(max(height, 1), _MAX_FIGURE_DIMENSION)
+    if clamped_w != width or clamped_h != height:
+        logger.debug(
+            "Figure size clamped from (%.1f, %.1f) to (%.1f, %.1f) to prevent renderer overflow",
+            width, height, clamped_w, clamped_h,
+        )
+    return (clamped_w, clamped_h)
+
+
 class MatrixVisualizer:
     """
     Handles matrix visualization for GNN models.
@@ -256,8 +285,8 @@ class MatrixVisualizer:
             # Get dimensions
             dim1, dim2, dim3 = tensor.shape
 
-            # Create figure with subplots for each slice
-            fig = plt.figure(figsize=(5*dim3, 8))
+            # Create figure with subplots for each slice (clamped to prevent overflow)
+            fig = plt.figure(figsize=_safe_figsize(5*dim3, 8))
 
             # Create subplot grid
             gs = fig.add_gridspec(2, dim3, height_ratios=[3, 1], hspace=0.3, wspace=0.3)
@@ -612,7 +641,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             cols = min(3, n_matrices)
             rows = (n_matrices + cols - 1) // cols
 
-            fig, axes = plt.subplots(rows, cols, figsize=(15, 5 * rows))
+            fig, axes = plt.subplots(rows, cols, figsize=_safe_figsize(15, 5 * rows))
             if n_matrices == 1:
                 axes = [axes]
             elif rows == 1:
@@ -714,7 +743,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             cols = min(3, total_plots)
             rows = (total_plots + cols - 1) // cols
 
-            fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows))
+            fig, axes = plt.subplots(rows, cols, figsize=_safe_figsize(5*cols, 4*rows))
             if total_plots == 1:
                 axes = [axes]
             elif rows == 1:
@@ -1149,7 +1178,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             cols = min(3, num_matrices)
             rows = (num_matrices + cols - 1) // cols
 
-            fig, axes = plt.subplots(rows, cols, figsize=(5*cols, 4*rows))
+            fig, axes = plt.subplots(rows, cols, figsize=_safe_figsize(5*cols, 4*rows))
 
             if rows == 1 and cols == 1:
                 axes = [axes]

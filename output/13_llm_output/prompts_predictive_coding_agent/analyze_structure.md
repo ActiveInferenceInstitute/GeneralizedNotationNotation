@@ -1,31 +1,30 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are some key structural analysis points:
+Based on your description, here are some key structural aspects of the GNN specification:
 
-1. **Graph Structure**: The graph is hierarchical and consists of two main components:
-   - **State space dimensionality**: There are 3 variables (beliefs) with a total dimensionality of 4. Each variable has its own set-point or state parameter.
-   - **Connection patterns**: There are 2 types of connections, one directed and one undirected. The directed connections have the following properties:
-    - **Directed connections** can be traversed in either direction (from left to right).
-    - **Undirected connections** do not allow traversal in any direction.
+1. **Graph Structure**: The graph is composed of 3 variables (beliefs, predictions, and actions) with a hierarchical structure consisting of nodes representing different types of data (sensory input, sensory prediction errors, dynamics predictions). Each node has an associated probability distribution for each type of error.
 
-2. **Variable Analysis**:
-   - **State space dimensionality**: There are 3 variables with a total dimensionality of 4, each having its own set-point or state parameter.
-   - **Dependencies and conditional relationships**: Each variable has its own dependencies (e.g., from left to right). Each dependency is directed in one direction but not in the other.
-   - **Temporal vs. static variables**: There are 2 types of temporal dependencies:
-    - **Directed temporal dependencies** allow traversal in either direction, allowing for a direct comparison between states.
-    - **Undirected temporal dependencies** do not allow traversal in any direction but can be traversed in one direction (from left to right).
+2. **Variable Analysis**: There are 4 types of variables:
+   - Belief distributions
+   - Prediction probabilities
+   - Action probabilities
+   - Temporal dependencies and conditional relationships between variables 
 
-3. **Mathematical Structure**:
-   - **Matrix dimensions and compatibility**: Each variable has its own matrix dimensionality of 4, which is compatible with the other variables.
-   - **Symmetries or special properties**: There are two types of symmetries:
-      - **Directed symmetry** (one-to-many) allows traversal in one direction but not in another.
-      - **Undirected symmetry** (two-to-one) allows traversal in both directions, allowing for a direct comparison between states.
+3. **Mathematical Structure**: The graph is composed of nodes representing different types of data (sensory input, sensory prediction errors, dynamics predictions). Each node has an associated probability distribution for each type of error.
 
-4. **Design Patterns**:
-   - **What modeling patterns or templates does this follow?**
-    - **Symmetry of variables**: Each variable has its own symmetries and can be traversed in one direction but not in another (from left to right).
-    - **Directed symmetry** allows traversal in either direction, allowing for a direct comparison between states.
-    - **Undirected symmetry** allows traversal in both directions, allowing for a direct comparison between states.
+4. **Complexity Assessment**: The structure reflects the domain being modeled by providing a detailed structural analysis covering:
+   - Computational complexity indicators
+   - Model scalability considerations
+   - Potential bottlenecks or challenges
 
-These patterns and templates reflect the domain being modeled:
-   - **Symmetry of variables**: Each variable
+Some key mathematical concepts and patterns that are present in this specification include:
+- **Graph Topology**: The graph topology is composed of nodes representing different types of data (sensory input, sensory prediction errors, dynamics predictions). Each node has an associated probability distribution for each type of error.
+- **Symmetries or Special Properties**: There are symmetries and special properties present in the structure that reflect the domain being modeled. For example:
+   - **Computational complexity indicators**: The graph topology is composed of nodes representing different types of data (sensory input, sensory prediction errors). Each node has an associated probability distribution for each type of error.
+- **Model Scalability Considerations**: The structure reflects the domain being modeled by providing a detailed structural analysis covering:
+   - Computational complexity indicators
+   - Model scalability considerations
+
+5. **Design Patterns**: There are design patterns present in this specification that reflect the domain being modeled, such as:
+   - **Cryptographic signature**: This pattern is used to encode and decode data using cryptographic protocols (e.g., RSA).
+- **Signature**: This pattern is used to encode and decode data using cryptographic protocols (e.g., HMAC).

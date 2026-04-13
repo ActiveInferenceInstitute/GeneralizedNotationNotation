@@ -6,7 +6,7 @@
 - Fixed transition and emission matrices
 - No action selection (passive inference only)
 - Suitable for sequence modeling and state estimation tasks
-/// Generated: 2026-04-10T10:24:32.867926
+/// Generated: 2026-04-12T17:23:01.368931
 /// Enhanced by GNN PKL Serializer
 ///
 

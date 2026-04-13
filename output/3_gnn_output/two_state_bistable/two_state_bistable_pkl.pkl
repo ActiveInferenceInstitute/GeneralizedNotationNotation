@@ -7,7 +7,7 @@
 - 2 actions: push-left or push-right.
 - The agent prefers observation 1 ("right") over observation 0 ("left").
 - Tests the absolute smallest POMDP with full active inference structure.
-/// Generated: 2026-04-10T10:24:32.889818
+/// Generated: 2026-04-12T17:23:01.396344
 /// Enhanced by GNN PKL Serializer
 ///
 

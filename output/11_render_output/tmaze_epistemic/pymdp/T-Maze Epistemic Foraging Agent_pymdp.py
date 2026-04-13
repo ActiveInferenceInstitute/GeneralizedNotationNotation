@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        T-Maze Epistemic Foraging Agent
 Description:  
-Generated:    2026-04-10 10:25:04
+Generated:    2026-04-12 17:23:34
 
 State Space:
   - Hidden States: 4

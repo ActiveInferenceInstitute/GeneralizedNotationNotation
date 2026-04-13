@@ -1,21 +1,24 @@
 # PRACTICAL_APPLICATIONS
 
-You've already covered the practical applications of GNN, including its use cases for causal discovery and prediction. Now, let's dive deeper into the theoretical aspects:
+You've already covered the practical applications of GNN models, including their use cases for causal discovery and modeling. Now, let's delve into some key concepts and considerations related to GNNs:
 
-1. **Active Inference**: The active inference framework provides a powerful toolset for analyzing complex systems with multiple layers of information. It allows you to analyze the relationships between variables in a hierarchical structure, enabling you to identify patterns, correlations, and causal dependencies within the data. This is particularly useful when dealing with uncertain or noisy data.
+1. **Generalized Notation**: The Bayesian framework provides a powerful toolset for analyzing complex data structures with multiple layers of interconnected nodes (neurons). This allows you to model relationships between variables using probability distributions or conditional probabilities. In the context of GNN, this enables you to represent and analyze causal dependencies in your models.
 
-2. **Bayesian Inference**: The Bayesian inference framework provides a flexible and interpretable way to model uncertainty based on probability distributions. It allows you to update your beliefs in light of new evidence, making it an ideal choice for analyzing causal relationships between variables.
+2. **Active Inference**: The Bayesian framework provides a flexible and interpretable way to encode information about past events into future predictions based on current observations. This allows you to model complex relationships between variables using probability distributions or conditional probabilities. In the context of GNN, this enables you to represent causal dependencies in your models by mapping observed actions onto predicted states.
 
-3. **GNN Syntax and Semantics**: The GNN syntax and semantics provide a rigorous foundation for modeling complex causal networks with multiple layers of information. This enables you to analyze the relationships between variables using probabilistic graphical models, which are essential in understanding how actions interact with each other within the network structure.
+3. **Model Parameters**: The Bayesian framework provides a way to specify the parameters of your model, which can be used for inference and prediction purposes. This allows you to encode information about past events into future predictions based on current observations. In the context of GNN, this enables you to represent causal dependencies in your models by mapping observed actions onto predicted states.
 
-4. **Model Evaluation**: The performance expectations of GNN can be evaluated through metrics such as accuracy, precision, recall, and F1-score for different types of data and scenarios. These metrics provide a quantitative measure of how well your model performs on specific tasks or domains.
+4. **Model Evaluation**: The evaluation metrics for GNNs depend heavily on their performance and adaptability. These include metrics such as accuracy, precision, recall, F1-score, and mean squared error (MSE). In the context of GNN, these metrics can be used to evaluate different types of models based on their ability to capture causal relationships between variables.
 
-5. **Performance and Limitations**: While GNN is an effective tool in analyzing causal relationships within complex systems, it has its limitations. It can be computationally intensive to train and evaluate, especially when dealing with noisy data or uncertain outcomes. Additionally, the model's ability to learn from uncertainty may not always generalize well across different domains or scenarios.
+5. **Performance Expectations**: The performance expectations for GNNs are influenced by various factors such as:
+   - **Computational requirements** and scalability
+   - **Data availability** and quality
+   - **Integration with existing systems**
 
-6. **Benefits and Advantages**: GNN offers several benefits in terms of accuracy, interpretability, and predictive power. It can help identify causal relationships within complex systems by analyzing patterns and correlations between variables. Furthermore, it provides a flexible framework for modeling uncertain data and handling uncertainty-based predictions.
+When evaluating GNN models, you should consider the following key considerations:
 
-To illustrate the practical considerations, let's consider an example:
+   - **Model parameters**: These can be tuned using optimization algorithms to optimize performance expectations.
+   - **Error metrics**: These provide insights into how well your model captures causal relationships between variables based on its predictions and accuracy.
+   - **Comparison with alternative approaches**: You should evaluate GNN models against other types of models, such as neural networks or Bayesian networks, to assess their suitability for specific applications.
 
-1. **Real-World Applications**:
-   - **Medical Diagnosis**: GNN can be used to analyze medical images or genomic data to identify potential causal relationships between variables. For instance, a patient with a specific disease may receive treatment based on their behavior and actions within the network structure. This could involve analyzing patterns in action sequences that trigger corresponding behavioral responses from patients' behaviors.
-   - **Social Network Analysis**: GNN can be used to analyze social networks or communities by identifying
+In summary, understanding the concepts behind GNNs is crucial for developing accurate and reliable causal discovery models that can capture complex relationships between variables in a wide range of domains.

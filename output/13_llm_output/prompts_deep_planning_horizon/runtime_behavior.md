@@ -6,50 +6,44 @@ Prompt:
 
 Response:
 
-You can use the following code to implement a GNN model for evaluating multi-step consequence reasoning. This implementation uses the following steps:
-
-1. Initialize an empty graph structure (`G`): The graph represents all possible actions and policies, with each action having two states (hidden state) and one observation.
-
-2. Initialize the probability distribution over actions (`P(a_τ)`): This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
+Here's the complete implementation of the GNN model in Python using the `scipy` library and the `numpy` library. The `GNNModel` class is used to represent the GNN model:
 ```python
-G = {}
-for t in range(10000, 5000):
-    G[t] = {}
-    for i in range(num_actions):
-        G[t][i] = 1
+import numpy as np
+from scipy import stats
 
-    # Initialize initial state and actions
-    s = []
-    for t in range(10000, 5000):
-        s.append((t + 1) * (2 ** t))
-```
+def gnn_model(num_hidden_states, num_obs, num_actions, planning_horizon):
+    """
+    GNN representation of a GNN model.
 
-3. Initialize the probability distribution over actions (`P(a_τ)`). This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
-```python
-G[0][0] = 1
-for i in range(num_actions):
-    G[0][i] = 1
+    Parameters:
+        num_hidden_states (int): Number of hidden states in the model.
+        num_obs (int): Number of observations to consider for inference.
+        num_actions (int): Number of actions to be inferred from.
+        planning_horizon (int): Number of timesteps to evaluate GNN inference.
+        num_policies (int): Number of policies to be considered in the inference.
+        num_timesteps (int): Number of time steps for inference.
 
-    # Initialize initial state and actions
-    s = []
-    for t in range(1000, 5000):
-        s.append((t + 1) * (2 ** t))
-```
+    Returns:
+        A dictionary containing the following keys:
+            - `learning_rate`: The learning rate used during training.
+            - `action_space` (list[float]): List of actions that are taken by each observation in the policy space.
+            - `policy_distribution`: The probability distribution over policies for each action.
+            - `prior_over_actions`: Prior distribution over all actions, where the prior is a list of 4 states and 10 actions.
+            - `prior_over_policies` (list[float]): List of probabilities that are taken by each policy in the policy space.
+            - `prior_over_policy` (list[float]): List of probabilities that are taken by each action in the action space.
+    """
 
-4. Initialize the probability distribution over policies (`P(a_τ)`). This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
-```python
-G[0][0] = 1
-for i in range(num_actions):
-    G[0][i] = 1
+    learning_rate = 0.1
+    num_hidden_states = num_hidden_states + num_actions * num_policies
+    num_obs = num_obs + num_actions * num_policy_spaces
+    num_actions = num_actions + num_policies * num_timesteps
+    planning_horizon = planning_horizon - 1
 
-    # Initialize initial state and actions
-    s = []
-    for t in range(1000, 5000):
-        s.append((t + 1) * (2 ** t))
-```
+    # Initialize the GNN model with a random initialization of states and actions
+    GnnModel.init(num_hidden_states, num_obs, num_actions)
 
-5. Initialize the probability distribution over policy sequences (`P(a_τ)`). This is a probability distribution that assigns probabilities to actions based on their past outcomes. It can be initialized using the following code:
-```python
-G[0][0] = 1
-for i in range(num_actions):
-    G
+    # Initialize the prior distribution over policies for each action
+    GnnModel.prior_over_policies = np.zeros((num_policy_spaces + 1))
+
+    # Initialize the prior distributions over all actions and policy spaces
+    Gnn

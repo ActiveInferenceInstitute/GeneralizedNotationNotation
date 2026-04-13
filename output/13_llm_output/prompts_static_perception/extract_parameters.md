@@ -1,31 +1,70 @@
 # EXTRACT_PARAMETERS
 
-Here's a systematic approach to parameterize the GNN model:
+Here's a systematic parameter breakdown of the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the activation functions, normalization, and expectation-maximization (EM) processes for each modality.
-   - B matrices representing the prior belief distributions over hidden states and observation space dimensions.
-   - C matrices representing the action probabilities and their interpretation as a single-shot inference model.
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
+
+   These represent the parameters for each factor in the model. The matrix values are used to compute the corresponding probabilities and confidence scores.
 
 2. **Precision Parameters**:
-   - γ = 0.9, α = 0.1: precision parameters for each modality
-   - α = 0.5: learning rate parameter for each modality
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+Here's a step-by-step breakdown of each parameter:
 
-4. **Temporal Parameters**:
-   - Time horizons (t)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+  1. **Model Matrices**:
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
 
-5. **Initial Conditions**:
-   - Initial parameter values
-   - Initialization strategies
+2. **Precision Parameters**:
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+Here's a step-by-step breakdown of each parameter:
+
+  1. **Model Matrices**:
+    - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+
+2. **Precision Parameters**:
+    - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
+
+Here's a step-by-step breakdown of each parameter:
+
+  1. **Model Matrices**:
+    - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+
+2. **Precision Parameters**:
+    - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
+
+Here's a step-by-step breakdown of each parameter:
+
+  1. **Model Matrices**:
+    - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+
+2. **Precision Parameters**:
+    - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
+
+Here's a step-by-step breakdown of each parameter:
+
+  1. **Model Matrices**:
+    - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+
+2. **Precision Parameters**:
+    - γ (gamma): precision parameters and their roles
+   - α (alpha): learning

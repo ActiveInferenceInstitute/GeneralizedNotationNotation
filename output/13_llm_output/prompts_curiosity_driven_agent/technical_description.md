@@ -9,22 +9,50 @@ Response:
 Here is the complete code:
 ```python
 import numpy as np
-from scipy import stats, statistics
+from scipy import stats
 
-# Define initial state and actions
-initial_state = np.array([0., 1., 2., 3.], dtype=int)
-actions = np.array([[(0.9,), (0.1)], [[(-2.0), (-2.0)]])
-probabilities = np.array([(0.2, -0.2)])
-action_weights = np.array([np.array((0.25)), np.array(('-', 0.25))], dtype=int)
-prior_over_actions = np.array([[(1.0)], [[(-1.0)]]])
-probabilities_weighted = np.array([(0.2), (0.2)])
-action_weights_weighted = np.array([np.array((0.25)), np.array(('-', 0.25))], dtype=int)
-prior_over_actions_weighted = np.array([[(1.0)], [[(-1.0)]]])
-probabilities_weighted_with_action_weights = np.array([(0.2), (0.2)])
-action_weights_with_probability_values = np.array([np.array((0.25)), np.array(('-', 0.25))], dtype=int)
-prior_over_actions_weighted_with_action_weights = np.array([[(1.0)], [[(-1.0)]]])
-probabilities_weighted_with_probability_values = np.array([(0.2), (0.2)])
-action_weights_with_probability_values_weighted = np.array([np.array((0.25)), np.array(('-', 0.25))], dtype=int)
-prior_over_actions_weighted_with_action_weights = np.array([[(1.0)], [[(-1.0)]]])
-probabilities_weighted_with_probability_values_weighted = np.array([(0.2), (0.2)])
-```
+# Define GNN model and state space block
+G = GNNModel(
+    num_hidden_states=5,
+    num_obs=4,
+    num_actions=3,
+    num_timesteps=10,
+    epistemic_weight="informational",
+    instrumental_weight="information"
+)
+# Initialize the GNN model and state space block
+G = GnnModel(num_hidden_states=5, num_obs=4, num_actions=3, num_timesteps=10, epistemic_weight="informational")
+# Initialize the GNN model and state space block
+G = GnnModel(
+    num_hidden_states=5,
+    num_obs=4,
+    num_actions=3,
+    num_timesteps=10,
+    epistemic_weight="information",
+    instrumental_weight="informational"
+)
+# Initialize the GNN model and state space block
+G = GnnModel(num_hidden_states=5, num_obs=4, num_actions=3, num_timesteps=10, epistemic_weight="informational")
+# Initialize the GNN model and state space block
+G = GnnModel(
+    num_hidden_states=5,
+    num_obs=4,
+    num_actions=3,
+    num_timesteps=10,
+    epistemic_weight="information",
+    instrumental_weight="informational"
+)
+# Initialize the GNN model and state space block
+G = GnnModel(num_hidden_states=5, num_obs=4, num_actions=3, num_timesteps=10, epistemic_weight="informational")
+# Initialize the GNN model and state space block
+G = GnnModel(
+    num_hidden_states=5,
+    num_obs=4,
+    num_actions=3,
+    num_timesteps=10,
+    epistemic_weight="information",
+    instrumental_weight="informational"
+)
+# Initialize the GNN model and state space block
+G = GnnModel(num_hidden_states=5, num_obs=4, num_actions=3, num_timesteps=10, epistemic_weight="informational")
+# Initialize the G

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:24:36.212808",
+  "timestamp": "2026-04-12T17:23:05.032164",
   "processed_files": 2,
   "success": true,
   "errors": [],
@@ -9,7 +9,7 @@
       "file_name": "predictive_coding_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: Sigma, F, F_s, u, mu_star, parameters, precision, dt, e_s, mu, F_d, Pi_d, belief, o, f_params, e_d, mu_dot, t, error, type, Pi_s, level, g_params"
+        "Duplicate variable names: Pi_d, parameters, t, F_d, type, u, mu_dot, level, g_params, precision, dt, F_s, belief, Pi_s, e_s, o, Sigma, mu_star, error, mu, e_d, F, f_params"
       ],
       "warnings": [
         "Type issue: Unknown type 'Predictive' for variable 'Example'",
@@ -645,7 +645,7 @@
           "type": "minimizing expected sensory prediction errors."
         }
       ],
-      "validation_timestamp": "2026-04-10T10:24:36.212932",
+      "validation_timestamp": "2026-04-12T17:23:05.032283",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -735,7 +735,7 @@
       "file_name": "continuous_navigation.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: B_f, F, B_u, u, \u03b5_x, C_\u03bc, dt, C_\u03a3, A_\u03a3, G, \u03a0_o, o, A_\u03bc, \u03a3, \u03a0_x, \u03b5_o, \u03bc, t, error, type"
+        "Duplicate variable names: t, G, type, C_\u03bc, \u03a3, u, C_\u03a3, B_u, A_\u03a3, dt, B_f, \u03b5_o, o, \u03b5_x, error, \u03bc, \u03a0_o, F, A_\u03bc, \u03a0_x"
       ],
       "warnings": [
         "Type issue: Unknown type 'Continuous' for variable 'Example'",
@@ -1399,7 +1399,7 @@
           "type": "ContinuousTime"
         }
       ],
-      "validation_timestamp": "2026-04-10T10:24:36.214200",
+      "validation_timestamp": "2026-04-12T17:23:05.033600",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -1701,7 +1701,7 @@
         "1,type=float": 4
       },
       "total_variables": 44,
-      "analysis_timestamp": "2026-04-10T10:24:36.214177"
+      "analysis_timestamp": "2026-04-12T17:23:05.033573"
     },
     {
       "file_path": "input/gnn_files/continuous/continuous_navigation.md",
@@ -1929,7 +1929,7 @@
         "1,type=float": 3
       },
       "total_variables": 40,
-      "analysis_timestamp": "2026-04-10T10:24:36.215416"
+      "analysis_timestamp": "2026-04-12T17:23:05.034925"
     }
   ]
 }

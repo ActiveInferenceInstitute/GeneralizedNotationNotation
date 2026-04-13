@@ -77,23 +77,57 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
 
         logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
 
-        # Validation results
-        validation_results = {
-            "timestamp": datetime.datetime.now().isoformat(),
-            "source_directory": str(target_dir),
-            "output_directory": str(output_dir),
-            "files_validated": [],
-            "summary": {
-                "total_files": 0,
-                "successful_validations": 0,
-                "failed_validations": 0,
-                "validation_scores": {
-                    "semantic": [],
-                    "performance": [],
-                    "consistency": []
+        # Load existing validation results if present (accumulate across subdirectory passes)
+        validation_results_file = output_dir / "validation_results.json"
+        if validation_results_file.exists():
+            try:
+                with open(validation_results_file, 'r') as f:
+                    validation_results = json.load(f)
+                # Ensure all expected keys exist for safe accumulation
+                validation_results.setdefault("files_validated", [])
+                validation_results.setdefault("summary", {})
+                validation_results["summary"].setdefault("total_files", 0)
+                validation_results["summary"].setdefault("successful_validations", 0)
+                validation_results["summary"].setdefault("failed_validations", 0)
+                validation_results["summary"].setdefault("validation_scores", {})
+                for k in ("semantic", "performance", "consistency"):
+                    validation_results["summary"]["validation_scores"].setdefault(k, [])
+                # Update source directory to show accumulated sources
+                prev_sources = validation_results.get("source_directories", [])
+                if not prev_sources:
+                    prev_src = validation_results.get("source_directory", "")
+                    prev_sources = [prev_src] if prev_src else []
+                if str(target_dir) not in prev_sources:
+                    prev_sources.append(str(target_dir))
+                validation_results["source_directories"] = prev_sources
+                validation_results["source_directory"] = str(target_dir)
+                validation_results["timestamp"] = datetime.datetime.now().isoformat()
+                logger.info(f"Accumulating validation results from {len(validation_results['files_validated'])} previously validated files")
+            except (json.JSONDecodeError, OSError) as e:
+                logger.warning(f"Could not load existing validation results, starting fresh: {e}")
+                validation_results = None
+
+        if not validation_results_file.exists():
+            validation_results = None
+
+        if validation_results is None:
+            validation_results = {
+                "timestamp": datetime.datetime.now().isoformat(),
+                "source_directory": str(target_dir),
+                "source_directories": [str(target_dir)],
+                "output_directory": str(output_dir),
+                "files_validated": [],
+                "summary": {
+                    "total_files": 0,
+                    "successful_validations": 0,
+                    "failed_validations": 0,
+                    "validation_scores": {
+                        "semantic": [],
+                        "performance": [],
+                        "consistency": []
+                    }
                 }
             }
-        }
 
         # Process each file
         for file_result in gnn_results["processed_files"]:

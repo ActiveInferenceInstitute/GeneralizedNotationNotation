@@ -1,15 +1,53 @@
 # ANALYZE_STRUCTURE
 
-Based on the analysis, here are some key insights and findings:
+Here's a detailed analysis of the GNN specification:
 
-1. **Graph Structure**: The graph representation of the GNN is a hierarchical network with different types of variables (e.g., Likelihood Matrix, Transition Matrix), connections between them, and relationships among variables. This structure reflects the domain being modeled and can be used to identify patterns or structures that reflect specific aspects of the problem.
+1. **Graph Structure**:
+   - Number of variables and their types (num_hidden_states, num_obs)
+   - Connection patterns (directed/undirected edges):
+    - Luminance connections between hidden states
+    - Hitting-connected connections between actions
 
-2. **Variable Analysis**: The graph structure reveals that each variable has a unique type (Likelihood Matrix, Transition Matrix) and connection pattern (directed edges). This indicates that each variable is connected to other variables based on their types.
+    This structure is based on the idea that each variable has a corresponding action. The connection pattern indicates how these variables interact with each other and their actions.
 
-3. **Mathematical Structure**: The graph representation showcases how the different variables interact with each other through connections and relationships among them. This structure reflects the domain being modeled and can be used to identify patterns or structures that reflect specific aspects of the problem.
+2. **Variable Analysis**:
+   - State space dimensionality: 3 (num_hidden_states, num_obs)
+   
+   - Dependencies and conditional relationships:
+    - Temporal dependencies between states
+    - Spatial dependencies between actions
 
-4. **Complexity Assessment**: The analysis highlights potential bottlenecks in modeling the GNN, which could indicate areas where more information is needed for better model performance. For example, it suggests that there may be redundant connections between variables due to their types and connection pattern. This can help identify areas where additional data or information might improve model accuracy.
+    This structure is based on the idea that each variable has a corresponding action. The connection pattern indicates how these variables interact with each other and their actions.
 
-5. **Design Patterns**: The analysis demonstrates how different modeling patterns (e.g., Graph Representation) reflect specific aspects of the problem being modeled. For instance, the graph representation shows that there are correlations between variables based on their types and connection pattern, indicating potential areas where more data could be collected for better model performance.
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility (matrix dimensionality):
+     - Symmetry of connections:
+      - Luminance connections between hidden states and actions
 
-Overall, these findings provide a comprehensive understanding of the structure and mathematical properties of the GNN, including its graph representation and modeling patterns.
+      This structure is based on the idea that each variable has a corresponding action. The connection pattern indicates how these variables interact with each other and their actions.
+
+4. **Complexity Assessment**:
+   - Computational complexity indicators (e.g., number of edges, time)
+   
+   - Model scalability considerations (i.e., computational complexity):
+      - Number of parameters: 10
+      
+     - Complexity of the model:
+         - Complexity of the graph structure:
+             - Complexity of the connection pattern:
+                - Complexity of the network topology:
+                    - Complexity of the parameter space:
+                      - Complexity of the mapping between variables and actions:
+                        - Complexity of the mapping from hidden states to action probabilities:
+                          - Complexity of the mapping from action probability to state distribution:
+                            - Complexity of the mapping from action probability to state distribution:
+                              - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state distribution:
+                                  - Complexity of the mapping from action probability to state

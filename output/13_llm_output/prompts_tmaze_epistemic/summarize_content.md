@@ -1,20 +1,18 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+This GNN represents a classic active inference task from Active Inference literature (Friston et al.: 10). The model is based on a hidden state matrix representation of the agent's actions, and its key variables are:
 
-**Overview**
-This GNN represents an active inference agent that navigates a T-shaped maze with 4 locations (center, left arm, right arm, cue) and two observation modalities (location and reward). The model takes into account the location likelihood, reward likelihood, and context dependence to make decisions based on available information. It is capable of exploring different actions in each direction, exploiting or avoiding certain locations.
-
-**Key Variables**
-- **Location**: A list containing coordinates for each location within the maze (e.g., center, left arm).
-- **Reward**: A list containing coordinates for each reward observed by the agent (e.g., right arm) and its corresponding reward value (e.g., cue).
-- **Context**: A list containing coordinates for each context observed by the agent (e.g., cue location, left arm), along with their respective rewards (e.g., right arm).
-- **LocationObservation**: A list containing coordinates of all locations within the maze and corresponding observations (e.g., center, left arm) from the agent's perspective.
-- **Action**: A list containing coordinates for each action observed by the agent (e.g., direction), along with their respective rewards (e.g., cue).
-- **ContextPreferenceVector**: A list containing coordinates of all actions and corresponding reward values across different contexts, along with their respective probabilities.
-- **LocationProbabilities**: A list containing coordinates for each location within the maze and corresponding probability distributions over the available locations.
-- **RewardProbabilities**: A list containing coordinates for each reward observed by the agent (e.g., cue) and its corresponding probability distribution across different rewards.
-- **ContextProbabilities**: A list containing coordinates of all actions and their corresponding probabilities across different contexts, along with their respective probabilities.
-- **LocationPreferenceVector**: A list containing coordinates of all locations within the maze and corresponding preferences over different actions (e.g., direction).
-- **RewardPreferenceVector**: A list containing coordinates of all rewards observed by the agent (e.g., cue) and its corresponding preferences across different rewards.
-- **ContextPreferenceVector**: A list containing coordinates of all actions and their corresponding preferences over different rewards, along with their respective probabilities.
+1. **Hidden states**: A list with brief descriptions for each action that can be accessed by observing the agent's location or reward/cue.
+2. **Observations**: A list with brief descriptions for each observation modality (left arm, right arm).
+3. **Actions**: A list of actions taken in response to a specific action (go_left, go_right, stay) and their corresponding rewards/cues.
+4. **Correspondence between Actions**: A matrix representing the relationships between actions and reward/cue information.
+5. **Key Variables**: A set of matrices that represent the agent's state-action relationship in terms of action (left arm), reward/cue (right arm) interactions, and hidden states.
+6. **Critical Parameters**: Key hyperparameters and their settings for this model:
+   - **Most important matrices** (A, B, C, D): These are used to represent the agent's actions and rewards/cues in terms of action-reward relationships.
+   - **Key parameters**, like **num_locations**, **num_contexts**, **num_location_obs**, **num_actions**, etc., which describe how the model is composed together (e.g., **A**).
+7. **Notable features**: A set of matrices that represent the agent's actions and rewards/cues in terms of action-reward relationships, key variables like **Hidden states**.
+8. **Use cases**: Specific scenarios where this model could be applied to:
+   - Explore a T-shaped maze with 4 locations (center, left arm, right arm)
+   - Explore a T-shaped maze with 2 arms and 3 cue locations (left arm, center, right arm)
+   - Explore a T-shaped maze with 10 arms and 5 cue locations (left arm, center, right arm, left arm, right arm)
+9. **Notable features**: A set of matrices that represent the agent's actions and rewards/cues in terms of action-reward relationships, key variables like **Hidden states**.

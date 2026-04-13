@@ -1,7 +1,7 @@
 {
   "input_file": "input/gnn_files/structured/factor_graph_model.md",
   "output_file": "output/0_template_output/factor_graph_model/factor_graph_model_processed.md",
-  "timestamp": "2026-04-10T10:23:34.161874",
+  "timestamp": "2026-04-12T17:21:40.226092",
   "file_size_bytes": 4380,
   "file_size_lines": 175,
   "processing_options": {

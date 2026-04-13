@@ -1,13 +1,24 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters and their corresponding descriptions:
+Based on the information provided, here are the key parameters for the Active Inference POMDP agent:
 
-**Model Matrices:**
+1. **Model Matrices**:
+   - A matrices representing the model structure and interpretation of the input data (observation space dimensions) and action selection policies (policy distributions).
+   - B matrices representing the policy prior distribution over actions and habit preferences, respectively.
+   - C matrices representing the initial policy prior distribution over actions and habit preferences, respectively.
 
-1. **A matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs` (number of observations). Each matrix has dimensions `(3, 3)` for the action space (`state=0:1`) and `(3, 3)` for the policy space.
-2. **B matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs`. Each matrix has dimensions `(3, 3)` for the action space (`state=0:1`) and `(3, 3)` for the policy space.
-3. **C matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs`. Each matrix has dimensions `(3, 3)` for the action space (`state=0:1`) and `(3, 3)` for the policy space.
-4. **D matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs`. Each matrix has dimensions `(3, 3)` for the action space (`state=0:1`) and `(3, 3)` for the policy space.
-5. **E matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs`. Each matrix has dimensions `(3, 3)` for the action space (`state=0:1`) and `(3, 3)` for the policy space.
-6. **G matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs`. Each matrix has dimensions `(3, 3)` for the action space (`state=0:1`) and `(3, 3)` for the policy space.
-7. **π matrix representing a POMDP agent**: A list of matrices with dimensions `num_hidden_states` (number of hidden states) and `num_obs`. Each matrix has dimensions `(3,
+2. **Precision Parameters**:
+   - γ: precision parameters for each factor
+   - α: learning rates and adaptation parameters
+   - Other precision/confidence parameters (optional)
+3. **Dimensional Parameters**:
+   - State space dimensions for each modality
+   - Observation space dimensions for each action dimension
+   - Action space dimensions for each control variable
+
+4. **Temporal Parameters**:
+   - Time horizons (t): number of simulation timesteps for all frameworks and their roles in the parameter file format recommendations
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies (optional)

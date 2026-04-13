@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Reference | **Audience**: Developers, DevOps, Security Teams | **Complexity**: Intermediate  
-> **Cross-References**: [Deployment Guide](../deployment/README.md) | [MCP Security](../mcp/README.md#security) | [API Security](../api/README.md#security)
+> **Cross-References**: [Deployment Guide](../deployment/README.md) | [MCP Security](../mcp/README.md#security) | [API Security](../api/README.md#security) | [doc/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 

@@ -7,7 +7,7 @@
 - 4 actions: stay, move-north, move-south, move-east.
 - Preferences strongly favor state/observation 3 (goal location).
 - Tests the degenerate POMDP case where partial observability is absent.
-/// Generated: 2026-04-10T10:24:32.803394
+/// Generated: 2026-04-12T17:23:01.292258
 /// Enhanced by GNN PKL Serializer
 ///
 

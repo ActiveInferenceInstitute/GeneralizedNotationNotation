@@ -10,6 +10,7 @@ STEP_TIMEOUTS = {
     "2_tests.py": {"default": 900, "comprehensive": 1200},
     "9_advanced_viz.py": 300,
     "13_llm.py": 900,       # 72 LLM calls (9 prompts × 8 files), ~12s each
+    "16_analysis.py": 300,  # 9+ models × multi-framework visualization generation
     "17_integration.py": 300,  # Dependency graph + system checks
     "22_gui.py": 600,
     "11_render.py": 300,

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:39.408974",
+  "timestamp": "2026-04-12T17:35:03.614850",
   "mcp_version": "1.1.3",
   "tools_count": 133,
   "resources_count": 1,
@@ -949,8 +949,8 @@
   "registered_modules": 31,
   "registered_module_names": [
     "research",
-    "pipeline",
     "ml_integration",
+    "pipeline",
     "intelligent_analysis",
     "model_registry",
     "security",
@@ -976,8 +976,8 @@
     "validation",
     "advanced_visualization",
     "visualization",
-    "llm",
     "execute",
+    "llm",
     "sympy_mcp"
   ],
   "target_dir": "input/gnn_files/discrete",

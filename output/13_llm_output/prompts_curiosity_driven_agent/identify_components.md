@@ -1,12 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-Here's a systematic breakdown of the key components in the GNN specification:
+You've outlined the key steps in creating a GNN model with an active inference agent:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-   - What each state signifies conceptsually
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -27,3 +27,7 @@ Here's a systematic breakdown of the key components in the GNN specification:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
+
+6. **Temporal Structure**:
+   - Time horizons and temporal dependencies
+   - Dynamic vs. static components

@@ -6,33 +6,52 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of the multi-armed bandit:
-
-1. First, you need to define the model annotations and the parameters for the GNN. You can do this using the `model_annotations` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
-
-2. Then, you can define the GNN parameters using the `model_params` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
-
-3. Finally, you can define the GNN parameters using the `model_parameters` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
-
-Here's an example implementation:
-
-4. First, define the GNN annotations using the `model_annotations` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
 ```python
-import torch
-from pytorch import nn, tensor
+import numpy as np
+from scipy import stats
 
-def model_annotations(annotation):
-    """Annotate a GNN representation of the multi-armed bandit."""
+def multi_arm_bandit(num_hidden_states, num_actions):
+    """
+    A multi-armed bandit implemented in Python with a sparse reward distribution.
 
-    def inference_fn(*args: tuple) -> nn.Module[bool]:
-        """Implement an action inference based on the given annotations."""
+    Args:
+        num_hidden_states (int): Number of hidden states to use for the action space.
+        num_actions (int): Number of actions to use for the action space.
 
-        return nn.Linear(3 * 1024, num_hidden_states + 96)
-```
+    Returns:
+        A numpy array representing the rewards and actions across all 3 arms
+    """
+    # Initialize state-action matrices
+    s = np.zeros((num_hidden_states, num_actions))
+    b = np.zeros(num_hidden_states)
+    c = np.zeros(num_hidden_states)
 
-5. Next, define the GNN parameters using the `model_params` function from the `pytorch` library. This will allow you to specify the type of inference (e.g., "action", "observation"), the number of actions (number of actions), and the action space (the set of all possible actions).
-```python
-def model_parameters(annotation):
-    """Define parameters for the GNN."""
+    # Initialize action probabilities
+    π = np.zeros((num_actions, num_actions))
+    u = np.zeros((num_actions, num_actions))
 
-    def inference_fn(*args: tuple) -> nn
+    # Initialize reward distributions
+    qs = np.zeros((num_hidden_states, num_actions))
+    g = np.zeros(num_hidden_states)
+    s=np.zeros((num_actions, num_actions))
+    c=np.zeros(num_actions)
+
+    # Initialize action probabilities
+    π[0] = np.array([1])  # Arm 0 best
+    π[1] = np.array([-2/3 + 4*random.normalvariate(-5,-2, -6)*random.normalvariate()])
+    π[2] = np.array([[]])
+
+    # Initialize action probabilities for arms with no reward
+    u[0]=np.zeros((num_actions))
+    u[1]=np.ones(num_actions)
+    u[2]=np.ones(num_actions)
+
+    # Initialize action distributions
+    qs[0] = np.array([random.normalvariate(-5,-2, -6)*random.normalvariate()])
+    g[0][0:1] = np.zeros((num_actions))  # Arm 0 best
+    g[0][1:] = np.ones(num_actions)
+
+    # Initialize action distributions for arms with reward
+    u[1]=np.array([random.normalvariate(-5,-2, -6)*random.normalvariate()])
+    g[1] = np.zeros((num_actions))  # Arm 0 best
+    g[1][

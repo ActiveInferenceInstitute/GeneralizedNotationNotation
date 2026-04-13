@@ -1,7 +1,7 @@
 {
   "input_file": "input/gnn_files/discrete/simple_mdp.md",
   "output_file": "output/0_template_output/simple_mdp/simple_mdp_processed.md",
-  "timestamp": "2026-04-10T10:23:34.159945",
+  "timestamp": "2026-04-12T17:21:40.224534",
   "file_size_bytes": 3311,
   "file_size_lines": 154,
   "processing_options": {

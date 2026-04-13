@@ -1,6 +1,6 @@
 # GNN Rendering Results
 
-Generated: 2026-04-10T10:25:04.537323
+Generated: 2026-04-12T17:23:34.722400
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
@@ -8,7 +8,7 @@ Processing Type: **POMDP-aware rendering**
 - **Total Files**: 9
 - **Successfully Processed**: 9
 - **Failed**: 0
-- **Framework Renderings**: 66/72 (91.7% success rate)
+- **Framework Renderings**: 72/72 (100.0% success rate)
 
 ## Configuration
 
@@ -65,13 +65,13 @@ Processing Type: **POMDP-aware rendering**
   - ✅ numpyro: NumPyro script generated: output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py
   - ✅ bnlearn: bnlearn code generated
 - ✅ **bnlearn_causal_model.md** - Successfully processed
-  - ❌ pymdp: POMDP not compatible with pymdp: Missing required matrices: ['B']
-  - ❌ rxinfer: POMDP not compatible with rxinfer: Missing required matrices: ['B']
-  - ❌ activeinference_jl: POMDP not compatible with activeinference_jl: Missing required matrices: ['B']
-  - ❌ jax: POMDP not compatible with jax: Missing required matrices: ['B']
+  - ✅ pymdp: Generated pymdp 1.0.0 runner: output/11_render_output/bnlearn_causal_model/pymdp/Bnlearn Causal Model_pymdp.py
+  - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/bnlearn_causal_model/rxinfer/Bnlearn Causal Model_rxinfer.jl
+  - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Bnlearn Causal Model_activeinference.jl
+  - ✅ jax: JAX model generated successfully.
   - ✅ discopy: Generated DisCoPy categorical diagram script: output/11_render_output/bnlearn_causal_model/discopy/Bnlearn Causal Model_discopy.py
-  - ❌ pytorch: POMDP not compatible with pytorch: Missing required matrices: ['B']
-  - ❌ numpyro: POMDP not compatible with numpyro: Missing required matrices: ['B']
+  - ✅ pytorch: PyTorch script generated: output/11_render_output/bnlearn_causal_model/pytorch/Bnlearn Causal Model_pytorch.py
+  - ✅ numpyro: NumPyro script generated: output/11_render_output/bnlearn_causal_model/numpyro/Bnlearn Causal Model_numpyro.py
   - ✅ bnlearn: bnlearn code generated
 - ✅ **two_state_bistable.md** - Successfully processed
   - ✅ pymdp: Generated pymdp 1.0.0 runner: output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py

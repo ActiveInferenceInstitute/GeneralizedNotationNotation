@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:40.448211",
+  "timestamp": "2026-04-12T17:35:04.615470",
   "target_dir": "input/gnn_files/discrete",
   "output_dir": "output/23_report_output",
   "pipeline_output_dir": "output",
@@ -12,7 +12,7 @@
     "PIPELINE_REPORT.md"
   ],
   "report_count": 4,
-  "visualizations_discovered": 143,
+  "visualizations_discovered": 146,
   "html_reports_generated": 1,
   "html_validation_status": "valid",
   "html_validation_errors": [],

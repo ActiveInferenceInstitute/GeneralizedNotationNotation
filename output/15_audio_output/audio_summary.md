@@ -1,6 +1,6 @@
 # Audio Processing Summary
 
-Generated on: 2026-04-10T10:34:58.334121
+Generated on: 2026-04-12T17:34:17.759982
 
 ## Overview
 - **Files Processed**: 9
@@ -50,7 +50,7 @@ Generated on: 2026-04-10T10:34:58.334121
   - ambient: hmm_baseline_ambient.wav
 
 ### bnlearn_causal_model.md
-- **Variables**: 31
+- **Variables**: 37
 - **Connections**: 0
 - **Audio Files**: 3
   - tonal: bnlearn_causal_model_tonal.wav

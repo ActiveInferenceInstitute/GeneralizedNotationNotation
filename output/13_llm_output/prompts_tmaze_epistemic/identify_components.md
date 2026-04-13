@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts in the GNN specification:
+You've already covered the key concepts in the document:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -30,4 +30,22 @@ You've already covered the key concepts in the GNN specification:
 
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
-   - Dynamic vs. static components
+
+Your comprehensive breakdown highlights the key concepts:
+
+1. **State Variables (Hidden States)**:
+   - Variable names and dimensions
+   - What each state represents conceptually
+   - State space structure (discrete/continuous, finite/infinite)
+
+2. **Observation Variables**:
+   - Observation modalities and their meanings
+   - Sensor/measurement interpretations
+   - Noise models or uncertainty characterization
+
+Your comprehensive breakdown highlights the key concepts:
+
+1. **State Variables (Hidden States)**:
+   - Variable names and dimensions
+   - What each state represents conceptually
+   - State space structure (discrete/continuous, finite/infinite)

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.284476,
-  "timestamp": "2026-04-10T10:25:31.285470",
+  "execution_time": 0.239954,
+  "timestamp": "2026-04-12T17:24:02.938018",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

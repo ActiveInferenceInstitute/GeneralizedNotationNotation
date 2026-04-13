@@ -1,6 +1,6 @@
 {
   "processed_files": 9,
-  "total_visualizations": 144,
+  "total_visualizations": 147,
   "visualization_files": [
     "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_network_stats.json",
@@ -87,6 +87,9 @@
     "True",
     "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_variable_parameter_bipartite.png",
     "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_A_heatmap.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+    "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
     "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_D_heatmap.png",
     "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_combined_analysis.png",
     "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_matrix_size_distribution.png",

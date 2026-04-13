@@ -1,12 +1,13 @@
 # IDENTIFY_COMPONENTS
 
-You've already provided a comprehensive overview of the GNN specification. Here's a more detailed breakdown:
+Here's a systematic breakdown of the key components in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-   - What each state signifies in terms of actions and policy transitions
+   - What each state signifies
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations

@@ -2,18 +2,16 @@
 
 You've already covered the key points:
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification that describes a minimal 2-state bistable POMDP with no noise and an optimal policy for action selection.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification that describes a minimal 2-state bistable POMDP with no noise and an action-dependent transition matrix. It represents a model of a Markov Decision Process (MDP).
 
 2. **Core Components**:
-   - **hidden states** represent the "actions" or actions taken by the agent, which are represented as lists of numbers (numbers).
-   - **observations** represent the current state of the agent, which can be either a list of numbers or an empty list if there is no action yet.
-   - **action selection** represents the policy that the agent will take next based on its actions and their probabilities.
-   - **policy vector**: A dictionary representing the policy over actions (policies).
+   - **Hidden states**: The state space is represented by the two hidden states, "left" and "right".
+   - **Observations**: There are 3 actions: push left/push right.
+   - **Actions**: There are 4 actions: push-left/push-right.
+   - **PomDP**: A probabilistic graphical model representing a Markov Decision Process (MDP).
 
-3. **Model Dynamics**: This model implements Active Inference principles, which are used to update beliefs about future states based on available actions. The goal is to minimize the expected Free Energy (EFE) of the agent's current state and action set. The model updates its belief vector based on the probability of each possible policy assignment.
+3. **Model Dynamics**: The model evolves over time by updating beliefs and updating the probability of states based on available actions, while controlling the policy for each state. It also updates the probabilities of observing different states to reflect their relative importance in the decision-making process.
 
-4. **Active Inference Context**: This model implements Active Inference principles, which are used to update beliefs about future states based on available actions. The goal is to minimize the expected Free Energy (EFE) of the agent's current state and action set. The model updates its belief vector based on the probability of each possible policy assignment.
+4. **Active Inference Context**: This is a crucial part of the GNN specification because it allows you to predict and update your beliefs using the POMDP based on available actions, while controlling the policy for each state. It also updates the probabilities of observing different states by reflecting their relative importance in the decision-making process.
 
-5. **Practical Implications**: This model can inform decisions by providing accurate predictions for uncertain future states, which are represented as probabilities over actions. It also provides a way to update beliefs about future states based on available actions and policies.
-
-Please provide clear explanations in plain language while maintaining scientific accuracy.
+5. **Practical Implications**: This model can inform decisions about how to allocate resources or prioritize tasks based on the current beliefs and priorities. It provides a framework for analyzing uncertainty, making predictions, and updating your beliefs based on available actions.

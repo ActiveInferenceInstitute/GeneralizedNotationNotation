@@ -3,29 +3,21 @@
 Here's a concise overview of the GNN Section:
 
 **GNNSection:**
-- **Introduction**: This section provides an overview of the GNN framework and its key components. It covers the model purpose, core components, and how it represents real-world phenomena or problems.
+This section provides an explanation of the GNN (Generalized Notation Notation) framework used to model and analyze Markov Decision Processes (MDPs). It covers key concepts, including:
 
-**ModelPurpose:** The GNN is a discrete Markov chain (DMCH) that models sequential decision-making processes with transition matrices and observable distributions. It encodes information about past states and actions in a probabilistic graphical model.
+1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
+   - "GNN" stands for Generalized Notation Notation Notation. This is a mathematical notation that allows you to describe the behavior of an MDP using a set of rules and axioms.
 
-**Core Components:**
+2. **Core Components**:
+   - "Hidden States": Represented as matrices with 4x4 entries, representing the state space of the Markov Chain (MCMC).
+   - "Observations": Represented as columns in the matrix representation, capturing the current state of the MCMC and its transition probabilities.
+   - "Forward Algorithm": A sequence of operations that update the belief distribution of the MCMC based on the observed data.
 
-1. **Hidden States**: Represented by the EMEM matrix, which captures the probability of observing a state at time t+1 given previous states.
+3. **Model Dynamics**: How does this model evolve over time? What actions/controls are available and what do they do?
+   - "Action Inference Context" is a set of rules used to define how to update beliefs based on new observations, allowing you to make predictions about future states.
 
-2. **Observations**: Represented as stochastic elements (stochastic matrices) that are updated based on observed events and actions. These elements can be thought of as "actions" in the sense that they represent changes to the system's behavior over time.
+4. **Active Inference**: What beliefs are being updated and what decisions can be made based on the current state?
+   - "Forward Algorithm" defines the sequence of operations that update the belief distribution of the MCMC based on the observed data.
 
-**StateSpaceBlock:** This block represents a state space with 4 states, representing all possible sequences of observations and actions. It captures the probability distribution of each state based on its past history.
-
-3. **Initialization**: The initial state is initialized using the EMEM matrix, which encodes information about the system's current state.
-
-**StateTransition:** This block represents a sequence of states that are updated based on observed events and actions. It updates the probabilities of observing each state based on the past behavior of its predecessors.
-
-4. **ForwardAlgorithm**: This is the main algorithm in the GNN framework, which computes the forward probability update for each state. It uses the EMEM matrix to compute the forward probability of a given state.
-
-**BackwardAlgorithm:** This block represents a sequence of states that are updated based on observed events and actions. It updates the probabilities of observing each state based on the past behavior of its predecessors.
-
-5. **ForwardVariable**: This is used for updating the forward probability of each state, which can be thought of as "actions" in the sense that it represents changes to the system's current state.
-
-**BackwardVariable:** This block represents a sequence of states that are updated based on observed events and actions. It updates the probabilities of observing each state based on the past behavior of its predecessors.
-
-6. **InitialStateDistribution**: This is used for updating the forward probability distribution, which can be thought of as "beliefs" in the system's current state.
-
+**Signature:**
+Cryptographic signature goes here

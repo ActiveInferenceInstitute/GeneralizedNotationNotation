@@ -1,6 +1,6 @@
 {
   "model_name": "Two State Bistable POMDP",
-  "timestamp": "2026-04-10 10:25:04",
+  "timestamp": "2026-04-12 17:23:34",
   "parameters": {
     "num_states": 2,
     "num_observations": 2,

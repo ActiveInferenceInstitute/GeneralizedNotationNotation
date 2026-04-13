@@ -1,26 +1,20 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the key components:
+This is a comprehensive explanation of the GNN (Generalized Notation Notation) model and its components:
 
-1. **Model Purpose**: This is a description of what the model represents and how it operates. It provides context for understanding the purpose of the model.
+1. **Model Purpose**: This model represents a cooperative agent-agent system that cooperates to achieve goals based on shared observation space. It captures the idea of "actions" or "observations", which are actions taken by each agent towards their goal, and "prior" beliefs about future actions from other agents.
 
 2. **Core Components**:
-   - **Hidden states (s_f0, s_f1)**: Represented by the likelihood matrices L(x), T(y). These represent the probabilities or likelihood of observing a particular state in the joint space.
-   - **Observations (o_m0, o_m1, etc.)**: Represented by the transition matrices T and the action vectors A. These represent the actions being taken towards each other.
-   - **Actions/Controls (u_c0, π_c0)**: Represented by the probabilities or likelihood of observing a particular state in the joint space. These represent the actions available to the agent.
-   - **Observations (o_m1, π_m1)**: Represented by the probability vectors O(x), T(y). These represent the observed states being taken towards each other.
+   - **Hidden states (s_f0, s_f1, etc.)**: These represent the collective knowledge of all agents in the system. They capture the shared belief or intention of each agent towards their goal.
+   - **Observations** (o_m0, o_m1, etc.): These are actions taken by each agent towards their goal based on shared observation space. They represent the collective action set of the system.
+   - **Actions/Controls**: These represent the actions or decisions made by individual agents towards their goals. They capture the collective knowledge and beliefs of all agents in the system.
 
-3. **Model Dynamics**: This describes how the model evolves over time based on its beliefs and actions. It provides a framework for understanding how the agent learns from experience, making predictions about future outcomes, and updating their beliefs in response to new information.
+3. **Model Dynamics**: This model implements Active Inference principles, which are based on cooperative decision-making between agents. It allows for the inference of future state transitions from shared observation space to actions taken by each agent towards their goal. The key relationships include:
+   - **Initialization**: Each agent starts with a belief in its own goal and then updates it based on shared observation space.
+   - **Evolution**: The system evolves over time as new information is gained or lost, allowing for the inference of future state transitions from shared observation space to actions taken by each agent towards their goals.
 
-Key relationships:
-   - **Action probabilities** (A) represent the probability of observing a particular state given that an action has been taken towards it.
-   - **Observation probabilities** (O(x)) represent the probability of observing a particular state given that an observation has been made by agent x in joint space with other agents.
-   - **State transition matrices**: Represent the updated beliefs and actions based on new information from other agents or observations.
+4. **Active Inference Context**: This model implements Active Inference principles in a way that allows for the inference of P-states (beliefs) and P-actions (action sets). It uses a probabilistic graphical model, which represents the system's beliefs based on shared observation space and actions taken by each agent towards their goals. The key relationships include:
+   - **Initialization**: Each agent starts with an initial belief in its own goal and then updates it based on shared observation space to make future state transitions from shared observation space to action sets for each agent.
+   - **Evolution**: The system evolves over time as new information is gained or lost, allowing for the inference of P-states (beliefs) and P-actions (action sets).
 
-4. **Active Inference Context**: This describes how the model learns from experience, making predictions about future outcomes, and updating its beliefs based on new information. It provides a framework for understanding how the agent learns from experience, making predictions about future outcomes, and updating their beliefs in response to new information.
-
-Key relationships:
-   - **Action probabilities** (A) represent the probability of observing a particular state given that an action has been taken towards it.
-   - **State transition matrices**: Represent the updated beliefs and actions based on new information from other agents or observations.
-
-5. **Practical Implications**: This describes how the model learns, makes predictions about future outcomes, and updates its
+5. **Practical Implications**: This model can inform decisions by providing a probabilistic graphical

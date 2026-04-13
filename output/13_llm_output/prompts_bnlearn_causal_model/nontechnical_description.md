@@ -7,52 +7,62 @@ Prompt:
 Response:
 
 ```python
-import bnlearn as nn
+import bnlearn as bn
 from typing import List, Dict, Tuple
 
-def create_network(
+def create_model(
     num_timesteps: int = 30,
     num_hidden_states: int = 2,
     num_actions: int = 2,
     num_layers: int = 4,
     num_nodes: int = 16,
     num_edges: int = 8
-) -> nn.Module[List[Tuple[int, int]], List[Dict[str, str]]]:
-    """Create a Bayesian Network model mapping ActInfOntology annotations to POMDPs."""
+):
+    """Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks.
 
-    # Create network structure
-    network = nn.Network(
-        num_timesteps=num_timesteps,
-        num_hidden_states=num_hidden_states,
-        num_actions=num_actions,
-        num_layers=num_layers,
-        num_nodes=len(network),
-        num_edges=len(network)
+    Args:
+        num_timesteps (int): Number of timesteps for the training data.
+        num_hidden_states (int): Number of hidden states in the network.
+        num_actions (int): Number of actions per node.
+        num_layers (int): Number of layers in the network.
+        num_nodes (int): Number of nodes in the network.
+        num_edges (int): Number of edges between nodes.
+    """
+
+    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
+    bnlearn = bn(num_layers=4)
+    bnlearn.add_node('s', 'a')
+    bnlearn.add_node('o', 'b')
+    bnlearn.add_edge(
+        ('s', 's'),
+        (
+            ('S', 'A'),
+            (
+                ('B', 'O'))
+        )
     )
 
-    # Create network structure
-    for node in network:
-        for action in node.get('action'):
-            if isinstance(node['state'], str):
-                node = node[0]
+    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
+    bnlearn = bn(num_layers=4)
+    bnlearn.add_node('s', 'a')
+    bnlearn.add_node('o', 'b')
+    bnlearn.add_edge(
+        ('S', 'A'),
+        (
+            ('B', 'O'))
+        # Add a node for the action of flipping states
+        )
 
-            if isinstance(node['next'], str):
-                node = node[1:]
+    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
+    bnlearn = bn(num_layers=4)
+    bnlearn.add_node('s', 'a')
+    bnlearn.add_node('o', 'b')
+    bnlearn.add_edge(
+        ('S', 'A'),
+        (
+            ('B', 'O'))
+        # Add a node for the action of flipping states
+        )
 
-                # Add nodes to graph
-                for i, (_, _) in enumerate(
-                    zip([node['id']], [node.get('action', []) + [ACTION_IDENTITY])),
-                ):
-                    network[node]['nodes'].append((i))
-
-            if isinstance(node['next'], str):
-                node = node[1:]
-
-                # Add nodes to graph
-                for i, (_, _) in enumerate(zip([node['id']], [node.get('action', []) + [ACTION_IDENTITY])),):
-                    network[node]['nodes'].append((i))
-
-    return nn.Module(
-        network
-    )
-```
+    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
+   

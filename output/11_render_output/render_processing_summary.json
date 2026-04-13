@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-04-10T10:25:04.537323",
+  "timestamp": "2026-04-12T17:23:34.722400",
   "processing_type": "POMDP-aware rendering",
   "total_files": 9,
   "successful_files": 9,
   "failed_files": 0,
   "total_framework_attempts": 72,
-  "successful_framework_renderings": 66,
-  "framework_success_rate": 91.66666666666666,
+  "successful_framework_renderings": 72,
+  "framework_success_rate": 100.0,
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
@@ -668,28 +668,66 @@
       "overall_success": true,
       "framework_results": {
         "pymdp": {
-          "success": false,
-          "message": "POMDP not compatible with pymdp: Missing required matrices: ['B']",
-          "output_files": [],
-          "warnings": []
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: output/11_render_output/bnlearn_causal_model/pymdp/Bnlearn Causal Model_pymdp.py",
+          "output_files": [
+            "output/11_render_output/bnlearn_causal_model/pymdp/Bnlearn Causal Model_pymdp.py"
+          ],
+          "output_directory": "output/11_render_output/bnlearn_causal_model/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 226,
+            "total_lines": 259,
+            "functions": 1,
+            "classes": 0
+          }
         },
         "rxinfer": {
-          "success": false,
-          "message": "POMDP not compatible with rxinfer: Missing required matrices: ['B']",
-          "output_files": [],
-          "warnings": []
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/bnlearn_causal_model/rxinfer/Bnlearn Causal Model_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/bnlearn_causal_model/rxinfer/Bnlearn Causal Model_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/bnlearn_causal_model/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ],
+          "code_metrics": {
+            "lines_of_code": 241,
+            "total_lines": 343,
+            "functions": 8,
+            "classes": 0
+          }
         },
         "activeinference_jl": {
-          "success": false,
-          "message": "POMDP not compatible with activeinference_jl: Missing required matrices: ['B']",
-          "output_files": [],
-          "warnings": []
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Bnlearn Causal Model_activeinference.jl",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/bnlearn_causal_model/activeinference_jl/Bnlearn Causal Model_activeinference.jl"
+          ],
+          "output_directory": "output/11_render_output/bnlearn_causal_model/activeinference_jl",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 281,
+            "total_lines": 392,
+            "functions": 0,
+            "classes": 0
+          }
         },
         "jax": {
-          "success": false,
-          "message": "POMDP not compatible with jax: Missing required matrices: ['B']",
-          "output_files": [],
-          "warnings": []
+          "success": true,
+          "message": "JAX model generated successfully.",
+          "output_files": [
+            "output/11_render_output/bnlearn_causal_model/jax/Bnlearn Causal Model_jax.py"
+          ],
+          "output_directory": "output/11_render_output/bnlearn_causal_model/jax",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 292,
+            "total_lines": 427,
+            "functions": 13,
+            "classes": 0
+          }
         },
         "discopy": {
           "success": true,
@@ -707,16 +745,34 @@
           }
         },
         "pytorch": {
-          "success": false,
-          "message": "POMDP not compatible with pytorch: Missing required matrices: ['B']",
-          "output_files": [],
-          "warnings": []
+          "success": true,
+          "message": "PyTorch script generated: output/11_render_output/bnlearn_causal_model/pytorch/Bnlearn Causal Model_pytorch.py",
+          "output_files": [
+            "output/11_render_output/bnlearn_causal_model/pytorch/Bnlearn Causal Model_pytorch.py"
+          ],
+          "output_directory": "output/11_render_output/bnlearn_causal_model/pytorch",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 104,
+            "total_lines": 145,
+            "functions": 1,
+            "classes": 0
+          }
         },
         "numpyro": {
-          "success": false,
-          "message": "POMDP not compatible with numpyro: Missing required matrices: ['B']",
-          "output_files": [],
-          "warnings": []
+          "success": true,
+          "message": "NumPyro script generated: output/11_render_output/bnlearn_causal_model/numpyro/Bnlearn Causal Model_numpyro.py",
+          "output_files": [
+            "output/11_render_output/bnlearn_causal_model/numpyro/Bnlearn Causal Model_numpyro.py"
+          ],
+          "output_directory": "output/11_render_output/bnlearn_causal_model/numpyro",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 117,
+            "total_lines": 157,
+            "functions": 1,
+            "classes": 0
+          }
         },
         "bnlearn": {
           "success": true,

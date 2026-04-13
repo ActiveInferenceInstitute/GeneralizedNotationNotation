@@ -1,32 +1,25 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the key components and core concepts:
+You've already covered the key points:
 
-**Model Purpose:** This is an active inference POMDP that represents a hierarchical neural network with two-level hierarchies (Level 1 and Level 2) and slower dynamics in the lower levels (Contextual HIDDEN states). The model aims to learn patterns, make predictions based on observed data, and update beliefs.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) model that represents hierarchical active inference based on Bayesian inference and probabilistic graphical models. It encodes information about how to update beliefs, actions, and predictions in a hierarchical structure of beliefs, actions, and predictions.
 
-**Core Components:**
+2. **Core Components**:
+   - **Hierarchical Belief Matrix**: A matrix representing the belief distributions for each level of the hierarchy (level 1) and its dependencies with other levels (levels 2). It captures how information is updated based on the current state of the model.
+   - **Context Transition Matrix**: A matrix representing the transition probabilities between different states in the hierarchical structure, which encode the relationships between actions/beliefs/actions within each level.
 
-1. **Hierarchical Neural Network**: A hierarchical neural network with two-level hierarchies (Level 1 and Level 2) that process observations in a sequential manner. Each layer has its own hidden state distribution, which is updated using the action/observation transition matrix. The model learns patterns based on observed data and updates beliefs accordingly.
+3. **Model Dynamics**: The model implements Active Inference principles by updating beliefs and predictions based on the available information from the previous state of the model (level 1). It also updates actions and predictions based on the current state of the model, which are encoded in a probabilistic graphical representation.
 
-2. **Contextual HIDDEN States**: A set of hidden states (s_f0, s_f1) that represent actions or decisions made by the network at each level. These hidden states are updated using the action/observation transition matrix to reflect changes in the network's behavior.
+4. **Active Inference Context**: This is a set of rules that govern how to update beliefs/actions/predictions based on the available information from previous states. It represents the relationships between actions/beliefs/actions within each level and its dependencies with other levels (levels 2).
 
-3. **Higher-Level Neural Network**: A hierarchical neural network with higher levels of nested networks (Contextual HIDDEN states). Each layer has its own hidden state distribution, which is updated using the action/observation transition matrix to reflect changes in the network's behavior at each level. The model learns patterns based on observed data and updates beliefs accordingly.
+5. **Practical Implications**: The model can learn to predict future state-level probabilities, which are encoded in a probabilistic graphical representation. This enables predictions about what actions will be taken next based on current beliefs/prior knowledge of the previous states.
 
-**Model Dynamics:**
+Please provide clear and concise explanations that cover all key points:
 
-1. **Action Transitions**: Actions are propagated through the network by updating their probabilities based on the actions learned from previous layers. These transitions are updated using the action/observation transition matrix to reflect changes in the network's behavior at each level.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) model representing hierarchical active inference based on Bayesian inference, probabilistic graphical models, and probabilistic graphical representations. It encodes information about how to update beliefs/actions/predictions in a hierarchical structure of beliefs, actions, and predictions.
 
-2. **Contextual HIDDEN States**: Contextual hidden states represent the observed data and can be used for prediction or inference purposes. They are updated by updating their probabilities based on the actions learned from previous layers.
+2. **Core Components**:
+   - **Hierarchical Belief Matrix**: A matrix representing the belief distributions for each level of the hierarchy (level 1) and its dependencies with other levels (levels 2). It captures how information is updated based on the current state of the model.
+   - **Context Transition Matrix**: A matrix representing the transition probabilities between different states in the hierarchical structure, which encode the relationships between actions/beliefs/actions within each level.
 
-**Practical Implications:**
-
-1. **Learning Patterns**: The model learns patterns in the network's behavior, enabling it to make predictions about future outcomes based on past observations.
-
-2. **Action Recognition**: The model can recognize patterns and make predictions based on observed data by updating its beliefs accordingly.
-
-3. **Decision-Making**: The model can inform decisions using a combination of action recognition and prediction capabilities.
-
-**Key Relationships:**
-
-1. **Contextual HIDDEN States**: These hidden states represent the observed data, allowing the network to learn patterns based on it.
-
+3.

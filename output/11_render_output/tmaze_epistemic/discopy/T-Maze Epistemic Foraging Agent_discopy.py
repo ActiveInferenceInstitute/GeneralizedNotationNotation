@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: T-Maze Epistemic Foraging Agent
-Generated: 2026-04-10 10:25:04
+Generated: 2026-04-12 17:23:34
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'T-Maze Epistemic Foraging Agent',
-        'timestamp': '2026-04-10 10:25:04',
+        'timestamp': '2026-04-12 17:23:34',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

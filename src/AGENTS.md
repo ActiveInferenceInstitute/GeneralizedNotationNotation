@@ -185,7 +185,7 @@ graph TD
 - **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
 - **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests (local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,906 passed, 30 skipped (2026-03-24). Re-include those modules when `ollama` is installed and responsive.
+- **Tests (local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-12). Re-include those modules when `ollama` is installed and responsive.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; configurable).
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
 
@@ -330,7 +330,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-04-09
+**Last Updated**: 2026-04-12
 **Pipeline Version**: 1.3.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

@@ -8,48 +8,34 @@ Response:
 
 ```python
 import numpy as np
-from scipy import stats
 
-def gnn_model(x, x):
-    """GNN model implementation using the T-Maze Epistemic Foraging Agent."""
+def t_maze(num_locations, num_contexts):
+    """
+    T-Maze Epistemic Foraging Agent Representation
 
-    # Initialize state and action matrices
-    A = np.zeros((4, 2))
-    B = np.zeros((3, 1))
-    C = np.zeros((3, 1))
+    Args:
+        num_locations (int): Number of locations to explore.
+        num_contexts (int): Number of contexts to explore.
+        num_location_obs (int): Number of locations to explore in a single context.
+        num_reward_obs (int): Number of rewards to consider when exploring new regions.
+        num_actions: Number of actions taken during exploration and exploitation.
+    """
 
-    # Initialize random initial states for each location
-    s_loc=np.random.rand(x[0], x[1])
-    o_loc=np.random.rand(x[2], x[3])
-    u=np.random.rand(x[4], x[5])
+    # Initialize the state space matrix
+    state = np.zeros((num_locations, num_contexts))
+    
+    # Initialize the reward vector
+    reward = np.zeros(num_location_obs)
+    
+    # Initialize the action vector
+    action = np.zeros(num_actions)
+    
+    # Initialize the hidden state matrix
+    hidden_state = np.zeros((num_locations, num_contexts))
 
-    # Initialize action matrices
-    A = np.zeros((6, 2))
-    B = np.zeros((3, 1))
-    C = np.zeros((3, 1))
+    # Initialize the reward vector
+    reward = np.zeros(num_reward_obs)
 
-    # Initialize random actions for each location
-    s_action=np.random.rand(x)
-    o_action=np.random.rand(x[0])
-    u_action=np.random.rand(x[2])
-
-    # Initialize state matrices
-    A = np.zeros((4, 1))
-    B = np.zeros((3, 1))
-    C = np.zeros((3, 1))
-
-    # Initialize random initial states for each location
-    s_loc=np.random.rand(x[0])
-    o_loc=np.random.rand(x[2])
-    u_loc=np.random.rand(x[4])
-
-    # Initialize action matrices
-    A = np.zeros((6, 1))
-    B = np.zeros((3, 1))
-    C = np.zeros((3, 1))
-
-    # Initialize random actions for each location
-    s_action=np.random.rand(x)
-    o_action=np.random.rand(x[0])
-    u_action=np.random.rand(x[2])
+    # Initialize the action vector
+    action = np.zeros(num_action)
 ```

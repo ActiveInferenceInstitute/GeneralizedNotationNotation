@@ -8,41 +8,78 @@ Response:
 
 ```python
 import numpy as np
-from scipy import stats
+from typing import List, Dict
 
-class SimpleGNN(object):
-    """Simple Markov Chain with passive dynamics and no action."""
+def gnn_model(
+    state: List[List[float]],
+    observation: List[int],
+    num_hidden_states: int = 3,
+    num_actions: int = 1,
+    num_timesteps: int = 40,
+    action_type: str = 'action'
+) -> Dict[str, float]:
+    """GNN representation of a simple discrete-time Markov chain.
 
-    def __init__(self, num_states=3, num_actions=1, num_timesteps=40,
-                 timestep=-1, **kwargs):
-        self.num_states = num_states
-        self.num_actions = num_actions
+    Args:
+        state (List[list]): A list of states representing weather data.
+        observation (List[int]): A list of observations representing the current state distribution.
+        num_hidden_states (int): The number of hidden states in the model.
+        num_actions (int): The number of actions available to the system.
+        num_timesteps (int): The number of timesteps for each observation.
 
-        self._state_space(
-            num_states=num_states,
-            num_actions=num_actions)
+    Returns:
+        Dict[str, float]: A dictionary representing the Markov chain with the following structure:
 
-    def _state_space(self, n: int) -> np.ndarray:
-        """Return a state space representation of the Markov chain."""
-        return np.zeros((len(n), len(n)))
+        - Initial state distribution:
+            [
+                {
+                    'observations': [
+                        [
+                            # Observation data is directly observed by the system.
+                        ],
+                        ...
+                        ...
+                        ...
+                    ]
+                },
+                ...
+                ...
+            ]
+        - Next states transition matrix:
+            [[] for i in range(num_hidden_states)]
+            [
+                [0.7, 0.3, 0.1],
+                [0.2, 0.4, 0.3],
+                [0.1, 0.3, 0.6]
+            ]
+        - Next states transition matrix:
+            [[]]
+    """
 
-    def _transition_matrix(self):
-        """Create transition matrix from states to next states."""
-        return self._state_space()
+    # Initialize the state and observation variables
+    state = np.array([state])
+    observation = np.array([])
+    timesteps = 40
+    num_hidden_states = num_hidden_states + num_actions
+    num_actions = num_actions - action_type == 'action'
 
-    def _observation_vector(self, n: int) -> np.ndarray:
-        """Return observation vector of the state space representation."""
-        return np.zeros((len(n), len(n)))
+    # Define the transition matrix
+    D = np.zeros((num_hidden_states, num_actions))
+    for i in range(num_hidden_states):
+        D[i] = np.array([
+            [
+                (
+                    state[0],
+                    observation[0],
+                    timesteps - 1
+                ]
+            ],
+            ...
+            [
+                ([state[:i]], [], []
+            ]
+        ])
 
-    def _initialization(self):
-        """Initialize states and actions in the transition matrix."""
-        self._state_space()
-
-        # Initialize states with identity
-        for i in range(num_states):
-            self._transition_matrix()[i] = np.zeros((len(s[0]), len(s)))
-
-    def _observation_vector(self, n: int) -> np.ndarray:
-        """Return observation vector of the state space representation."""
-        return np.zeros((len(n),))
-```
+    # Initialize the transition matrix
+    for i in range(num_hidden_states):
+        D

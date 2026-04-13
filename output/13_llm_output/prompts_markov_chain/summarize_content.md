@@ -1,22 +1,37 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN specification:
 
 **Overview:**
-This model represents a simple discrete-time Markov chain (DPMCH) that evolves passively over time based on two types of observations: one directly observed and another indirectly observable. The state space consists of three states, A, B, and C, with each state having an initial probability distribution over the next state. The transition matrix is initialized to a random identity matrix, while the observation matrix contains all possible actions.
+This model describes a simple discrete-time Markov Chain (PMTMC3) that evolves passively without any actions or control over time. It is based on a 3x3 identity matrix, with states directly observed and actions inferred from their transitions. The transition matrices are initialized to the identity matrix, and the initial state distribution is chosen for simplicity.
 **Key Variables:**
-   - **Hidden States**: List of 3 matrices representing the system's initial probabilities (identity) for direct observation and indirect observation.
-   - **Observation**: List of 2 matrices containing the current state distribution over each observation.
-   - **Initial State Distribution**: List of 1 matrix containing all possible states at the beginning of time.
-**Critical Parameters:**
-   - **Most important matrices**: A, B, C, D (two identities) and their roles:
-   - **A**: Identity Matrix representing the system's initial probability distribution over each state.
-   - **B**: Transition Matrix representing the system's transition probabilities between states.
-   - **C**: Observation Matrix containing all possible actions at each time step.
+
+1. **Hidden States**: A list of lists containing the states that define the Markov Chain's identity (identity). Each state has a corresponding probability distribution over its own state space.
+
+2. **Observations**: A list of lists containing the observed data points, which are used to update the transition probabilities and actions based on their transitions. The number of observations is limited by the number of states in the chain.
+
+3. **Actions/Controls**: A list of lists containing the actions that define the Markov Chain's identity (identity). Each action has a corresponding probability distribution over its own state space, which updates the transition probabilities and actions based on their transitions.
 **Notable Features:**
-   - **Special properties or constraints**: Unique aspects of this model design, such as having a specific initial probability distribution over each state and having an identity matrix for direct observation.
-   - **Unique characteristics**: Unique features that make this model unique to the context it is applied in (e.g., it does not require any action selection).
+
+1. **Random Initialization**: The initial state is initialized with a random value, allowing for simplicity in modeling the chain's behavior.
+
+2. **Initial Permutation**: The initial states are randomly permuted to ensure that they do not influence each other during evolution.
+
+3. **Random Initialization**: The transition matrices and actions are initialized with random values, ensuring that they remain consistent over time.
 **Use Cases:**
-   - **Simple Markov Chain**: Simple discrete-time Markov chain with no actions, no observable state transitions.
-   - **Passive DPMCH**: Simple discrete-time Markov chain without any actions or observations.
-   - **GNN Representation**: Simple discrete-time Markov chain with passive dynamics and no action selection.
+
+1. **Simple Markov Chain**: This model is designed for modeling simple systems where the state transitions can be modeled using a single probability distribution (identity).
+
+2. **Passive Dynamics**: This model models the evolution of a passive system with no actions or control, allowing for simplicity in modeling its behavior and avoiding complex interactions between states and actions.
+**Key Parameters:**
+
+1. **Initialization Matrix**: A list containing the initial state probabilities and their corresponding transition probabilities.
+
+2. **Transition Matrix**: A list containing the current state distribution and its corresponding probability over each state space.
+
+3. **Action Distribution**: A list of lists containing the current actions, which update the transition probabilities based on their transitions.
+**Notable Features:**
+
+1. **Random Initialization**: The initial states are randomly permuted to ensure that they do not influence each other during evolution.
+
+2. **Random Initialization**: The transition matrices and

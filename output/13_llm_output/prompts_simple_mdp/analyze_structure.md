@@ -1,29 +1,24 @@
 # ANALYZE_STRUCTURE
 
-You've already covered the key aspects of GNN and its components, including graph structures, variable analysis, mathematical structure, and complexity assessment. Here are some additional points to consider:
+You've already covered the key aspects of GNN and its components:
 
-1. **Graph Structure**: The graph structure provides a visual representation of the model's behavior, allowing you to understand how variables interact with each other. This can help identify potential bottlenecks or challenges in modeling specific components.
+1. **Graph Structure**: The graph representation is a hierarchical data structure with variables, connections, and relationships between them. It's structured to represent the MDP as a sequence of states (A), actions (B) and transitions (C).
 
-2. **Variable Analysis**: Analyzing variable relationships and dependencies is crucial for understanding how they contribute to the overall behavior of the model. This analysis helps identify patterns that might not be immediately apparent from looking at individual variables directly.
+2. **Variable Analysis**: Variables are connected by edges in the graph, which can be either directed or undirected based on their type. The types of connections determine how they interact with each other.
 
-3. **Mathematical Structure**: The mathematical structure, including the connections between variables, can provide insight into the underlying mechanisms driving the model's behavior. This includes identifying special properties or symmetries that are preserved across different components of the model.
+3. **Mathematical Structure**: The structure reflects the domain being modeled: it's structured to represent the MDP as a sequence of states (A), actions (B) and transitions (C). It also contains relationships between variables, which can be either directed or undirected based on their type.
 
-4. **Complexity Assessment**: Understanding the complexity of the model and its interactions with other components is essential for designing more effective models. This involves analyzing how variables interact, dependencies between variables, and relationships between variables to identify potential bottlenecks or challenges in modeling specific components.
+4. **Complexity Assessment**: This analysis assesses how well each variable fits into the graph structure:
+   - The number of variables is fixed at 4 for simplicity reasons but could potentially increase to 5 if needed (e.g., more variables are added). However, this would require additional computations and may not be feasible in practice due to computational resources.
 
-Some additional points worth mentioning:
+5. **Design Patterns**: This analysis identifies patterns or templates that can improve the model's performance:
+   - The graph structure is structured to represent the MDP as a sequence of states (A), actions (B) and transitions (C). It also contains relationships between variables, which can be either directed or undirected based on their type.
 
-1. **Computational Complexity Indicators**: These can provide insights into the computational complexity of the model's structure and its interactions with other components. For example, they might indicate whether certain components are computationally infeasible due to their dependence on each other or if there are specific types of variables that cannot be used together in a particular way.
+6. **Symmetries or Special Properties**: This analysis identifies patterns that are specific to the domain being modeled:
+   - The graph structure is structured to represent the MDP as a sequence of states (A), actions (B) and transitions (C). It also contains relationships between variables, which can be either directed or undirected based on their type.
 
-2. **Model Scalability Considerations**: Understanding how the model scales up or down based on changes in its structure can help identify potential bottlenecks or challenges in modeling specific components. This involves analyzing how different components interact with each other and their dependencies across different parts of the model.
+7. **Key Components**: This analysis identifies key components that are relevant for modeling:
+   - The graph structure is structured to represent the MDP as a sequence of states (A), actions (B) and transitions (C). It also contains relationships between variables, which can be either directed or undirected based on their type.
 
-Some additional resources to explore:
-
-1. **Graph Theory and Network Analysis**: Studying graph structures, including relationships between variables, can provide valuable insights into the underlying mechanisms driving the model's behavior.
-
-2. **Symmetry and Special Properties**: Analyzing symmetries or special properties within the model can help identify potential bottlenecks in modeling specific components. This involves analyzing how different components interact with each other based on their symmetry or special properties.
-
-Some additional resources to explore:
-
-1. **Graph Theory and Network Analysis**: Studying graph structures, including relationships between variables, can provide valuable insights into the underlying mechanisms driving the model's behavior.
-
-2. **Symmetry and Special Properties**: Analyzing symmetries or special properties within the model can help identify potential
+8. **Key Components**: This analysis identifies key components that are relevant for modeling:
+   - The graph structure is structured to represent the MDP as a sequence of states (A), actions (B) and transitions (C). It also contains relationships between variables, which can be either directed

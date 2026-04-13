@@ -322,10 +322,11 @@ def main() -> int:
         C=C_list,
         D=D_list,
         num_controls=[num_actions],
-        control_fac_idx=[0],
         policy_len=1,
         batch_size=1,
     )
+    if num_actions > 1:
+        kwargs["control_fac_idx"] = [0]
     if E_np is not None:
         kwargs["E"] = _to_batched_jax(E_np)
     agent = Agent(**kwargs)

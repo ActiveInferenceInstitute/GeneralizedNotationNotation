@@ -1,35 +1,42 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are the key structural features of the GNN specification:
+Based on your description, here's a detailed structural analysis of the GNN specification:
 
-1. **Graph Structure**: The graph consists of two main components:
-   - `A`: Hidden state (representing the action) and Action (the transition from one state to another).
-   - `B`: Transition model (represented as a set of nodes, each representing an observation or action).
-   - `D`: Connection structure mapping between states.
+1. **Graph Structure**:
+   - Number of variables and their types:
+   - Connection patterns (directed/uniform edges)
+   - Graph topology (hierarchical, network, etc.)
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization
 
-2. **Variable Analysis**: Variables are represented by nodes in the graph. Each node has two types:
-   - `A` and `B`: Actions and Observations.
-   - `S_prev`: Previous state (representing the previous state).
-   - `O`: Observation (represented as a set of nodes, each representing an observation or action).
+**Variable Analysis:**
 
-3. **Variable Analysis**: Variables are represented by nodes in the graph. Each node has two types:
-   - `A` and `B`: Actions and Observations.
-   - `S_prev`: Previous state.
-   - `O`: Observation (represented as a set of nodes, each representing an observation or action).
+   - State space dimensionality for each variable:
+    - 2x1 matrix
+   - 30 connections
+   - Connection patterns are directed/uniform in nature.
 
-4. **Mathematical Structure**: The structure reflects the domain being modeled by mapping Active Inference structures to Bayesian Network models.
+2. **Variable Analysis**:
+   - State space dimensionality for each variable:
+    - 2x1 matrix
+   - 30 connections
+   - Connection patterns are directed/uniform in nature.
 
-5. **Complexity Assessment**: The graph has several key characteristics:
-   - **Computational complexity indicators**:
-   - **Symmetry and special properties**:
-   - **Potential bottlenecks or challenges**:
+**Mathematical Structure:**
 
-To provide a detailed structural analysis, you can consider the following steps:
+   - Matrix dimensions and compatibility:
+    - Symmetry of the structure (e.g., symmetric matrices)
+    - Symmetries or special properties (e.g., identity matrices, block matrices)
 
-1. **Identify the key variables**: Determine which variables are represented by nodes in the graph (A, B) and which are not (S_prev).
-2. **Analyze the connections between variables**: Examine how different types of variables relate to each other within the graph structure.
-3. **Examine the connection patterns**: Look for relationships between variables that can be modeled using a Bayesian Network model.
-4. **Check for symmetry and special properties**: Verify that certain types of variables are symmetric (e.g., A = B) or have specific connections to each other within the graph structure.
-5. **Analyze the dependencies**: Examine how different types of variables interact with each other within the graph structure, including dependencies between actions and observations.
-6. **Check for special properties**: Verify that certain types of variables are not symmetric (e.g., A = B) or have specific connections to each other within the graph structure.
-7. **Analyze the model parameters
+3. **Complexity Assessment**:
+   - Computational complexity indicators:
+    - Type-specific complexity indicators for each variable
+    - Model scalability considerations
+    - Potential bottlenecks or challenges
+
+**Design Patterns:**
+
+   - What modeling patterns or templates does this follow?
+    - How does the structure reflect the domain being modeled?
+    - What is the optimal number of connections to explore (e.g., maximum depth)?
+    - How does the structure mirror the domain's characteristics, such as its complexity and scalability?

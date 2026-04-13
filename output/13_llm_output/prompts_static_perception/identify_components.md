@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already identified the key components of the GNN specification:
+Here is a systematic breakdown of the key components in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -12,73 +12,22 @@ You've already identified the key components of the GNN specification:
    - Sensor/measurement interpretations
    - Noise models or uncertainty characterization
 
-You've also identified the following parameters:
-
-  1. **InitialParameterization**
-    - A = RecognitionMatrix
-   - D = Prior
-   - s=HiddenState
-   - o=Observation
-
 3. **Action/Control Variables**:
    - Available actions and their effects
    - Control policies and decision variables
    - Action space properties
 
-You've also identified the following parameters:
+4. **Model Matrices**:
+   - A matrices: Observation models P(o|s)
+   - B matrices: Transition dynamics P(s'|s,u)
+   - C matrices: Preferences/goals
+   - D matrices: Prior beliefs over initial states
 
-  1. **Parameterization**
-    - A[2,2] = RecognitionMatrix
-   - D[2,1] = Prior
-   - s=HiddenState
-   - o=Observation
-
-4. **Model Parameters**:
-   - Precision parameters (γ, α)
+5. **Parameters and Hyperparameters**:
+   - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
+   - Fixed vs. learnable parameters
 
-You've also identified the following hyperparameters:
-
-  1. **InitialParameterization**
-    - A[2,2] = RecognitionMatrix
-   - D[2,1] = Prior
-   - s=HiddenState
-   - o=Observation
-
-5. **Model Parameters**:
-   - Precision parameters (γ, α)
-   - Learning rates and adaptation parameters
-
-You've also identified the following hyperparameters:
-
-  1. **InitialParameterization**
-    - A[2,2] = RecognitionMatrix
-   - D[2,1] = Prior
-   - s=HiddenState
-   - o=Observation
-
-6. **Model Parameters**:
-   - Precision parameters (γ, α)
-   - Learning rates and adaptation parameters
-
-You've also identified the following hyperparameters:
-
-  1. **InitialParameterization**
-    - A[2,2] = RecognitionMatrix
-   - D[2,1] = Prior
-   - s=HiddenState
-   - o=Observation
-
-5. **Model Parameters**:
-   - Precision parameters (γ, α)
-   - Learning rates and adaptation parameters
-
-You've also identified the following hyperparameters:
-
-  1. **InitialParameterization**
-    - A[2,2] = RecognitionMatrix
-   - D[2,1] = Prior
-   - s=HiddenState
-   - o=Observation
-
-6. **
+6. **Temporal Structure**:
+   - Time horizons and temporal dependencies
+   - Dynamic vs. static components

@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-04-10T10:35:40.271025",
+  "report_generation_time": "2026-04-12T17:35:04.429638",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
@@ -14,10 +14,10 @@
         },
         ".md": {
           "count": 20,
-          "total_size_mb": 0.07414817810058594
+          "total_size_mb": 0.07439136505126953
         }
       },
-      "last_modified": "2026-04-10T10:23:34.163019",
+      "last_modified": "2026-04-12T17:21:40.226997",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -40,7 +40,7 @@
           "total_size_mb": 0.014655113220214844
         }
       },
-      "last_modified": "2026-04-10T10:23:37.440858",
+      "last_modified": "2026-04-12T17:21:45.899946",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -50,15 +50,15 @@
       "directory": "output/2_tests_output",
       "exists": true,
       "file_count": 6,
-      "total_size_mb": 2.69,
+      "total_size_mb": 6.86,
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 2.300294876098633
+          "total_size_mb": 6.41671085357666
         },
         ".txt": {
           "count": 1,
-          "total_size_mb": 0.31111621856689453
+          "total_size_mb": 0.3651466369628906
         },
         ".md": {
           "count": 1,
@@ -77,19 +77,19 @@
           "total_size_mb": 0.00067138671875
         }
       },
-      "last_modified": "2026-04-10T10:24:31.584808",
+      "last_modified": "2026-04-12T17:22:59.739227",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [
         {
           "file": "pytest.log",
-          "size_mb": 2.3
+          "size_mb": 6.42
         }
       ],
       "key_files": [
         {
           "name": "pytest_reliable_output.txt",
-          "size_mb": 0.31,
+          "size_mb": 0.37,
           "type": ".txt"
         }
       ]
@@ -98,94 +98,94 @@
       "directory": "output/3_gnn_output",
       "exists": true,
       "file_count": 463,
-      "total_size_mb": 3.5,
+      "total_size_mb": 3.51,
       "file_types": {
         ".json": {
           "count": 43,
-          "total_size_mb": 0.6570653915405273
+          "total_size_mb": 0.6586055755615234
         },
         ".bnf": {
           "count": 20,
-          "total_size_mb": 0.11731529235839844
+          "total_size_mb": 0.11746788024902344
         },
         ".lean": {
           "count": 20,
-          "total_size_mb": 0.11928081512451172
+          "total_size_mb": 0.11942195892333984
         },
         ".scala": {
           "count": 20,
-          "total_size_mb": 0.1153860092163086
+          "total_size_mb": 0.11552715301513672
         },
         ".pkl": {
           "count": 40,
-          "total_size_mb": 0.35169506072998047
+          "total_size_mb": 0.3523836135864258
         },
         ".z": {
           "count": 20,
-          "total_size_mb": 0.12626075744628906
+          "total_size_mb": 0.1264019012451172
         },
         ".xsd": {
           "count": 20,
-          "total_size_mb": 0.13416099548339844
+          "total_size_mb": 0.13430213928222656
         },
         ".v": {
           "count": 20,
-          "total_size_mb": 0.11366462707519531
+          "total_size_mb": 0.11380577087402344
         },
         ".xml": {
           "count": 20,
-          "total_size_mb": 0.20984172821044922
+          "total_size_mb": 0.2101144790649414
         },
         ".als": {
           "count": 20,
-          "total_size_mb": 0.1833181381225586
+          "total_size_mb": 0.18358325958251953
         },
         ".proto": {
           "count": 20,
-          "total_size_mb": 0.15659236907958984
+          "total_size_mb": 0.1568307876586914
         },
         ".hs": {
           "count": 20,
-          "total_size_mb": 0.1184844970703125
+          "total_size_mb": 0.11862564086914062
         },
         ".ebnf": {
           "count": 20,
-          "total_size_mb": 0.11731529235839844
+          "total_size_mb": 0.11746788024902344
         },
         ".agda": {
           "count": 20,
-          "total_size_mb": 0.1042795181274414
+          "total_size_mb": 0.10442066192626953
         },
         ".asn1": {
           "count": 20,
-          "total_size_mb": 0.1707315444946289
+          "total_size_mb": 0.17089557647705078
         },
         ".thy": {
           "count": 20,
-          "total_size_mb": 0.11468124389648438
+          "total_size_mb": 0.1148223876953125
         },
         ".md": {
           "count": 20,
-          "total_size_mb": 0.0348968505859375
+          "total_size_mb": 0.03496742248535156
         },
         ".tla": {
           "count": 20,
-          "total_size_mb": 0.10458755493164062
+          "total_size_mb": 0.10472869873046875
         },
         ".max": {
           "count": 20,
-          "total_size_mb": 0.1268177032470703
+          "total_size_mb": 0.1270294189453125
         },
         ".yaml": {
           "count": 20,
-          "total_size_mb": 0.12758159637451172
+          "total_size_mb": 0.12780094146728516
         },
         ".py": {
           "count": 20,
-          "total_size_mb": 0.19591712951660156
+          "total_size_mb": 0.19615554809570312
         }
       },
-      "last_modified": "2026-04-10T10:24:34.050979",
+      "last_modified": "2026-04-12T17:23:02.537160",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -208,7 +208,7 @@
           "total_size_mb": 0.005742073059082031
         }
       },
-      "last_modified": "2026-04-10T10:24:34.392245",
+      "last_modified": "2026-04-12T17:23:03.085255",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -235,7 +235,7 @@
           "total_size_mb": 0.00032711029052734375
         }
       },
-      "last_modified": "2026-04-10T10:24:36.216681",
+      "last_modified": "2026-04-12T17:23:05.035842",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -252,7 +252,7 @@
           "total_size_mb": 0.004118919372558594
         }
       },
-      "last_modified": "2026-04-10T10:24:37.877240",
+      "last_modified": "2026-04-12T17:23:06.666225",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -291,7 +291,7 @@
           "total_size_mb": 0.025316238403320312
         }
       },
-      "last_modified": "2026-04-10T10:24:38.140047",
+      "last_modified": "2026-04-12T17:23:06.992260",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -351,16 +351,16 @@
     "8_visualization_output": {
       "directory": "output/8_visualization_output",
       "exists": true,
-      "file_count": 172,
-      "total_size_mb": 61.37,
+      "file_count": 176,
+      "total_size_mb": 61.69,
       "file_types": {
         ".png": {
-          "count": 105,
-          "total_size_mb": 19.70406436920166
+          "count": 108,
+          "total_size_mb": 20.020546913146973
         },
         ".json": {
           "count": 19,
-          "total_size_mb": 0.032980918884277344
+          "total_size_mb": 0.03351306915283203
         },
         ".html": {
           "count": 9,
@@ -371,11 +371,11 @@
           "total_size_mb": 0.0020313262939453125
         },
         ".csv": {
-          "count": 30,
-          "total_size_mb": 0.0032052993774414062
+          "count": 31,
+          "total_size_mb": 0.0032796859741210938
         }
       },
-      "last_modified": "2026-04-10T10:24:55.055153",
+      "last_modified": "2026-04-12T17:23:24.986885",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -551,8 +551,13 @@
           "type": ".png"
         },
         {
+          "name": "bnlearn_causal_model_B_analysis.png",
+          "size_mb": 0.07,
+          "type": ".png"
+        },
+        {
           "name": "bnlearn_causal_model_section_content_length.png",
-          "size_mb": 0.19,
+          "size_mb": 0.2,
           "type": ".png"
         },
         {
@@ -562,13 +567,23 @@
         },
         {
           "name": "bnlearn_causal_model_variable_parameter_bipartite.png",
-          "size_mb": 0.1,
+          "size_mb": 0.12,
+          "type": ".png"
+        },
+        {
+          "name": "bnlearn_causal_model_B_tensor.png",
+          "size_mb": 0.15,
           "type": ".png"
         },
         {
           "name": "bnlearn_causal_model_network_interactive.html",
           "size_mb": 4.62,
           "type": ".html"
+        },
+        {
+          "name": "bnlearn_causal_model_C_heatmap.png",
+          "size_mb": 0.07,
+          "type": ".png"
         },
         {
           "name": "tmaze_epistemic_matrix_size_distribution.png",
@@ -960,7 +975,7 @@
       "file_types": {
         ".png": {
           "count": 13,
-          "total_size_mb": 2.3497276306152344
+          "total_size_mb": 2.3497190475463867
         },
         ".html": {
           "count": 2,
@@ -968,7 +983,7 @@
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.009796142578125
+          "total_size_mb": 0.009778976440429688
         },
         ".d2": {
           "count": 5,
@@ -979,7 +994,7 @@
           "total_size_mb": 0.12569522857666016
         }
       },
-      "last_modified": "2026-04-10T10:25:03.593420",
+      "last_modified": "2026-04-12T17:23:33.826887",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1102,7 +1117,7 @@
           "total_size_mb": 0.04555511474609375
         }
       },
-      "last_modified": "2026-04-10T10:25:04.285163",
+      "last_modified": "2026-04-12T17:23:34.451904",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1111,35 +1126,35 @@
     "11_render_output": {
       "directory": "output/11_render_output",
       "exists": true,
-      "file_count": 221,
-      "total_size_mb": 0.99,
+      "file_count": 242,
+      "total_size_mb": 1.08,
       "file_types": {
         ".md": {
-          "count": 67,
-          "total_size_mb": 0.1025705337524414
+          "count": 73,
+          "total_size_mb": 0.10953044891357422
         },
         ".json": {
-          "count": 78,
-          "total_size_mb": 0.29087162017822266
+          "count": 85,
+          "total_size_mb": 0.31896018981933594
         },
         ".jl": {
-          "count": 16,
-          "total_size_mb": 0.19856739044189453
+          "count": 18,
+          "total_size_mb": 0.22269630432128906
         },
         ".py": {
-          "count": 50,
-          "total_size_mb": 0.3911724090576172
+          "count": 54,
+          "total_size_mb": 0.421783447265625
         },
         ".csv": {
-          "count": 5,
-          "total_size_mb": 0.0027589797973632812
+          "count": 6,
+          "total_size_mb": 0.0032787322998046875
         },
         ".txt": {
-          "count": 5,
-          "total_size_mb": 0.004063606262207031
+          "count": 6,
+          "total_size_mb": 0.0048656463623046875
         }
       },
-      "last_modified": "2026-04-10T10:30:00.261241",
+      "last_modified": "2026-04-12T17:29:15.560227",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1390,6 +1405,36 @@
           "type": ".py"
         },
         {
+          "name": "Bnlearn Causal Model_rxinfer.jl",
+          "size_mb": 0.01,
+          "type": ".jl"
+        },
+        {
+          "name": "Bnlearn Causal Model_numpyro.py",
+          "size_mb": 0.0,
+          "type": ".py"
+        },
+        {
+          "name": "Bnlearn Causal Model_activeinference.jl",
+          "size_mb": 0.01,
+          "type": ".jl"
+        },
+        {
+          "name": "Bnlearn Causal Model_pymdp.py",
+          "size_mb": 0.01,
+          "type": ".py"
+        },
+        {
+          "name": "Bnlearn Causal Model_pytorch.py",
+          "size_mb": 0.0,
+          "type": ".py"
+        },
+        {
+          "name": "Bnlearn Causal Model_jax.py",
+          "size_mb": 0.01,
+          "type": ".py"
+        },
+        {
           "name": "Bnlearn Causal Model_discopy.py",
           "size_mb": 0.01,
           "type": ".py"
@@ -1484,27 +1529,27 @@
     "12_execute_output": {
       "directory": "output/12_execute_output",
       "exists": true,
-      "file_count": 208,
-      "total_size_mb": 1.08,
+      "file_count": 228,
+      "total_size_mb": 1.17,
       "file_types": {
         ".log": {
-          "count": 67,
-          "total_size_mb": 0.13639545440673828
+          "count": 73,
+          "total_size_mb": 0.14687156677246094
         },
         ".json": {
-          "count": 135,
-          "total_size_mb": 0.9076824188232422
+          "count": 148,
+          "total_size_mb": 0.9885396957397461
         },
         ".md": {
           "count": 1,
-          "total_size_mb": 0.028757095336914062
+          "total_size_mb": 0.031281471252441406
         },
         ".csv": {
-          "count": 5,
-          "total_size_mb": 0.0027589797973632812
+          "count": 6,
+          "total_size_mb": 0.0032787322998046875
         }
       },
-      "last_modified": "2026-04-10T10:30:00.518815",
+      "last_modified": "2026-04-12T17:29:15.836212",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1514,18 +1559,18 @@
       "directory": "output/13_llm_output",
       "exists": true,
       "file_count": 362,
-      "total_size_mb": 1.66,
+      "total_size_mb": 1.69,
       "file_types": {
         ".json": {
           "count": 181,
-          "total_size_mb": 1.3460311889648438
+          "total_size_mb": 1.3703575134277344
         },
         ".md": {
           "count": 181,
-          "total_size_mb": 0.3103170394897461
+          "total_size_mb": 0.32073020935058594
         }
       },
-      "last_modified": "2026-04-10T10:34:56.983600",
+      "last_modified": "2026-04-12T17:34:16.033907",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2452,7 +2497,7 @@
           "total_size_mb": 0.008608818054199219
         }
       },
-      "last_modified": "2026-04-10T10:34:58.036390",
+      "last_modified": "2026-04-12T17:34:17.429701",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2477,7 +2522,7 @@
           "total_size_mb": 0.0019731521606445312
         }
       },
-      "last_modified": "2026-04-10T10:34:59.616963",
+      "last_modified": "2026-04-12T17:34:19.051768",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2682,23 +2727,23 @@
     "16_analysis_output": {
       "directory": "output/16_analysis_output",
       "exists": true,
-      "file_count": 440,
-      "total_size_mb": 42.24,
+      "file_count": 490,
+      "total_size_mb": 47.22,
       "file_types": {
         ".json": {
-          "count": 27,
-          "total_size_mb": 0.3472728729248047
+          "count": 29,
+          "total_size_mb": 0.3627481460571289
         },
         ".md": {
           "count": 3,
-          "total_size_mb": 0.014037132263183594
+          "total_size_mb": 0.015027046203613281
         },
         ".png": {
-          "count": 410,
-          "total_size_mb": 41.882150650024414
+          "count": 458,
+          "total_size_mb": 46.84280872344971
         }
       },
-      "last_modified": "2026-04-10T10:35:36.664358",
+      "last_modified": "2026-04-12T17:35:00.561025",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2730,7 +2775,7 @@
           "total_size_mb": 0.000202178955078125
         }
       },
-      "last_modified": "2026-04-10T10:35:37.160761",
+      "last_modified": "2026-04-12T17:35:01.061452",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2751,7 +2796,7 @@
           "total_size_mb": 0.0004978179931640625
         }
       },
-      "last_modified": "2026-04-10T10:35:37.410077",
+      "last_modified": "2026-04-12T17:35:01.320050",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2772,7 +2817,7 @@
           "total_size_mb": 0.010625839233398438
         }
       },
-      "last_modified": "2026-04-10T10:35:37.648475",
+      "last_modified": "2026-04-12T17:35:01.553057",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2786,7 +2831,7 @@
       "file_types": {
         ".html": {
           "count": 9,
-          "total_size_mb": 0.3865957260131836
+          "total_size_mb": 0.39240169525146484
         },
         ".json": {
           "count": 1,
@@ -2794,10 +2839,10 @@
         },
         ".png": {
           "count": 13,
-          "total_size_mb": 2.3497276306152344
+          "total_size_mb": 2.3497190475463867
         }
       },
-      "last_modified": "2026-04-10T10:35:37.922843",
+      "last_modified": "2026-04-12T17:35:01.838354",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2860,7 +2905,7 @@
           "total_size_mb": 0.058349609375
         }
       },
-      "last_modified": "2026-04-10T10:35:39.410069",
+      "last_modified": "2026-04-12T17:35:03.615924",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2893,10 +2938,10 @@
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.07204055786132812
+          "total_size_mb": 0.07203197479248047
         }
       },
-      "last_modified": "2026-04-10T10:35:40.013288",
+      "last_modified": "2026-04-12T17:35:04.193039",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2929,11 +2974,11 @@
     }
   },
   "summary": {
-    "total_files_processed": 2052,
+    "total_files_processed": 2147,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 142.20000000000002,
+    "total_size_mb": 151.89000000000001,
     "success_rate": 100.0
   },
   "performance_metrics": {},
@@ -2941,28 +2986,28 @@
   "file_type_analysis": {
     "total_by_type": {
       ".json": {
-        "count": 540,
-        "total_size_mb": 3.88
+        "count": 562,
+        "total_size_mb": 4.03
       },
       ".md": {
-        "count": 300,
-        "total_size_mb": 0.58
+        "count": 306,
+        "total_size_mb": 0.6
       },
       ".log": {
-        "count": 68,
-        "total_size_mb": 2.44
+        "count": 74,
+        "total_size_mb": 6.56
       },
       ".txt": {
-        "count": 15,
-        "total_size_mb": 0.32
+        "count": 16,
+        "total_size_mb": 0.37
       },
       ".csv": {
-        "count": 41,
+        "count": 44,
         "total_size_mb": 0.01
       },
       ".png": {
-        "count": 542,
-        "total_size_mb": 66.37
+        "count": 593,
+        "total_size_mb": 71.64
       },
       ".bnf": {
         "count": 20,
@@ -3037,8 +3082,8 @@
         "total_size_mb": 0.13
       },
       ".py": {
-        "count": 70,
-        "total_size_mb": 0.59
+        "count": 74,
+        "total_size_mb": 0.62
       },
       ".gexf": {
         "count": 2,
@@ -3061,8 +3106,8 @@
         "total_size_mb": 0.13
       },
       ".jl": {
-        "count": 16,
-        "total_size_mb": 0.2
+        "count": 18,
+        "total_size_mb": 0.22
       },
       ".wav": {
         "count": 39,
@@ -3086,7 +3131,7 @@
         },
         "3_gnn_output": {
           "count": 43,
-          "size_mb": 0.6570653915405273
+          "size_mb": 0.6586055755615234
         },
         "4_model_registry_output": {
           "count": 1,
@@ -3106,27 +3151,27 @@
         },
         "8_visualization_output": {
           "count": 19,
-          "size_mb": 0.032980918884277344
+          "size_mb": 0.03351306915283203
         },
         "9_advanced_viz_output": {
           "count": 1,
-          "size_mb": 0.009796142578125
+          "size_mb": 0.009778976440429688
         },
         "10_ontology_output": {
           "count": 12,
           "size_mb": 0.04555511474609375
         },
         "11_render_output": {
-          "count": 78,
-          "size_mb": 0.29087162017822266
+          "count": 85,
+          "size_mb": 0.31896018981933594
         },
         "12_execute_output": {
-          "count": 135,
-          "size_mb": 0.9076824188232422
+          "count": 148,
+          "size_mb": 0.9885396957397461
         },
         "13_llm_output": {
           "count": 181,
-          "size_mb": 1.3460311889648438
+          "size_mb": 1.3703575134277344
         },
         "14_ml_integration_output": {
           "count": 1,
@@ -3137,8 +3182,8 @@
           "size_mb": 0.010625839233398438
         },
         "16_analysis_output": {
-          "count": 27,
-          "size_mb": 0.3472728729248047
+          "count": 29,
+          "size_mb": 0.3627481460571289
         },
         "17_integration_output": {
           "count": 1,
@@ -3168,7 +3213,7 @@
       ".md": {
         "0_template_output": {
           "count": 20,
-          "size_mb": 0.07414817810058594
+          "size_mb": 0.07439136505126953
         },
         "2_tests_output": {
           "count": 1,
@@ -3176,23 +3221,23 @@
         },
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.0348968505859375
+          "size_mb": 0.03496742248535156
         },
         "5_type_checker_output": {
           "count": 1,
           "size_mb": 0.00032711029052734375
         },
         "11_render_output": {
-          "count": 67,
-          "size_mb": 0.1025705337524414
+          "count": 73,
+          "size_mb": 0.10953044891357422
         },
         "12_execute_output": {
           "count": 1,
-          "size_mb": 0.028757095336914062
+          "size_mb": 0.031281471252441406
         },
         "13_llm_output": {
           "count": 181,
-          "size_mb": 0.3103170394897461
+          "size_mb": 0.32073020935058594
         },
         "15_audio_output": {
           "count": 1,
@@ -3200,7 +3245,7 @@
         },
         "16_analysis_output": {
           "count": 3,
-          "size_mb": 0.014037132263183594
+          "size_mb": 0.015027046203613281
         },
         "17_integration_output": {
           "count": 1,
@@ -3222,25 +3267,25 @@
       ".log": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 2.300294876098633
+          "size_mb": 6.41671085357666
         },
         "12_execute_output": {
-          "count": 67,
-          "size_mb": 0.13639545440673828
+          "count": 73,
+          "size_mb": 0.14687156677246094
         }
       },
       ".txt": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.31111621856689453
+          "size_mb": 0.3651466369628906
         },
         "8_visualization_output": {
           "count": 9,
           "size_mb": 0.0020313262939453125
         },
         "11_render_output": {
-          "count": 5,
-          "size_mb": 0.004063606262207031
+          "count": 6,
+          "size_mb": 0.0048656463623046875
         }
       },
       ".csv": {
@@ -3249,16 +3294,16 @@
           "size_mb": 9.34600830078125e-05
         },
         "8_visualization_output": {
-          "count": 30,
-          "size_mb": 0.0032052993774414062
+          "count": 31,
+          "size_mb": 0.0032796859741210938
         },
         "11_render_output": {
-          "count": 5,
-          "size_mb": 0.0027589797973632812
+          "count": 6,
+          "size_mb": 0.0032787322998046875
         },
         "12_execute_output": {
-          "count": 5,
-          "size_mb": 0.0027589797973632812
+          "count": 6,
+          "size_mb": 0.0032787322998046875
         }
       },
       ".png": {
@@ -3267,44 +3312,44 @@
           "size_mb": 0.07970809936523438
         },
         "8_visualization_output": {
-          "count": 105,
-          "size_mb": 19.70406436920166
+          "count": 108,
+          "size_mb": 20.020546913146973
         },
         "9_advanced_viz_output": {
           "count": 13,
-          "size_mb": 2.3497276306152344
+          "size_mb": 2.3497190475463867
         },
         "16_analysis_output": {
-          "count": 410,
-          "size_mb": 41.882150650024414
+          "count": 458,
+          "size_mb": 46.84280872344971
         },
         "20_website_output": {
           "count": 13,
-          "size_mb": 2.3497276306152344
+          "size_mb": 2.3497190475463867
         }
       },
       ".bnf": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.11731529235839844
+          "size_mb": 0.11746788024902344
         }
       },
       ".lean": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.11928081512451172
+          "size_mb": 0.11942195892333984
         }
       },
       ".scala": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.1153860092163086
+          "size_mb": 0.11552715301513672
         }
       },
       ".pkl": {
         "3_gnn_output": {
           "count": 40,
-          "size_mb": 0.35169506072998047
+          "size_mb": 0.3523836135864258
         },
         "7_export_output": {
           "count": 2,
@@ -3318,25 +3363,25 @@
       ".z": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.12626075744628906
+          "size_mb": 0.1264019012451172
         }
       },
       ".xsd": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.13416099548339844
+          "size_mb": 0.13430213928222656
         }
       },
       ".v": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.11366462707519531
+          "size_mb": 0.11380577087402344
         }
       },
       ".xml": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.20984172821044922
+          "size_mb": 0.2101144790649414
         },
         "7_export_output": {
           "count": 2,
@@ -3346,71 +3391,71 @@
       ".als": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.1833181381225586
+          "size_mb": 0.18358325958251953
         }
       },
       ".proto": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.15659236907958984
+          "size_mb": 0.1568307876586914
         }
       },
       ".hs": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.1184844970703125
+          "size_mb": 0.11862564086914062
         }
       },
       ".ebnf": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.11731529235839844
+          "size_mb": 0.11746788024902344
         }
       },
       ".agda": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.1042795181274414
+          "size_mb": 0.10442066192626953
         }
       },
       ".asn1": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.1707315444946289
+          "size_mb": 0.17089557647705078
         }
       },
       ".thy": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.11468124389648438
+          "size_mb": 0.1148223876953125
         }
       },
       ".tla": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.10458755493164062
+          "size_mb": 0.10472869873046875
         }
       },
       ".max": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.1268177032470703
+          "size_mb": 0.1270294189453125
         }
       },
       ".yaml": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.12758159637451172
+          "size_mb": 0.12780094146728516
         }
       },
       ".py": {
         "3_gnn_output": {
           "count": 20,
-          "size_mb": 0.19591712951660156
+          "size_mb": 0.19615554809570312
         },
         "11_render_output": {
-          "count": 50,
-          "size_mb": 0.3911724090576172
+          "count": 54,
+          "size_mb": 0.421783447265625
         }
       },
       ".gexf": {
@@ -3436,11 +3481,11 @@
         },
         "20_website_output": {
           "count": 9,
-          "size_mb": 0.3865957260131836
+          "size_mb": 0.39240169525146484
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.07204055786132812
+          "size_mb": 0.07203197479248047
         }
       },
       ".d2": {
@@ -3457,8 +3502,8 @@
       },
       ".jl": {
         "11_render_output": {
-          "count": 16,
-          "size_mb": 0.19856739044189453
+          "count": 18,
+          "size_mb": 0.22269630432128906
         }
       },
       ".wav": {
@@ -3665,11 +3710,11 @@
     "missing_prerequisites": []
   },
   "visualizations": {
-    "total_count": 143,
+    "total_count": 146,
     "by_step": {
       "8_visualization_output": {
         "step": "8_visualization_output",
-        "count": 114,
+        "count": 117,
         "files": [
           {
             "name": "combined_analysis.png",
@@ -3957,7 +4002,7 @@
             "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 490155,
+            "size_bytes": 496565,
             "size_mb": 0.47,
             "step": "8_visualization_output"
           },
@@ -3987,7 +4032,17 @@
             "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_matrix_size_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 77221,
+            "size_bytes": 73093,
+            "size_mb": 0.07,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "bnlearn_causal_model_B_analysis.png",
+            "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+            "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 74749,
             "size_mb": 0.07,
             "step": "8_visualization_output"
           },
@@ -3997,8 +4052,8 @@
             "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 203144,
-            "size_mb": 0.19,
+            "size_bytes": 205839,
+            "size_mb": 0.2,
             "step": "8_visualization_output"
           },
           {
@@ -4017,8 +4072,28 @@
             "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_variable_parameter_bipartite.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 108655,
-            "size_mb": 0.1,
+            "size_bytes": 122073,
+            "size_mb": 0.12,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "bnlearn_causal_model_B_tensor.png",
+            "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+            "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 161941,
+            "size_mb": 0.15,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "bnlearn_causal_model_C_heatmap.png",
+            "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
+            "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 76771,
+            "size_mb": 0.07,
             "step": "8_visualization_output"
           },
           {
@@ -4903,7 +4978,7 @@
             "relative_path": "9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 31464,
+            "size_bytes": 31459,
             "size_mb": 0.03,
             "step": "9_advanced_viz_output"
           },
@@ -4913,7 +4988,7 @@
             "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 332766,
+            "size_bytes": 332747,
             "size_mb": 0.32,
             "step": "9_advanced_viz_output"
           },
@@ -4923,7 +4998,7 @@
             "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 223148,
+            "size_bytes": 223193,
             "size_mb": 0.21,
             "step": "9_advanced_viz_output"
           },
@@ -4933,7 +5008,7 @@
             "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 217600,
+            "size_bytes": 217573,
             "size_mb": 0.21,
             "step": "9_advanced_viz_output"
           },
@@ -4943,7 +5018,7 @@
             "relative_path": "9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 31081,
+            "size_bytes": 31078,
             "size_mb": 0.03,
             "step": "9_advanced_viz_output"
           },
@@ -5059,7 +5134,7 @@
             "relative_path": "20_website_output/analysis.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 183546,
+            "size_bytes": 189618,
             "size_mb": 0.18,
             "step": "20_website_output"
           },
@@ -5089,7 +5164,7 @@
             "relative_path": "20_website_output/reports.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 88499,
+            "size_bytes": 88515,
             "size_mb": 0.08,
             "step": "20_website_output"
           },
@@ -5404,7 +5479,7 @@
           "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 490155,
+          "size_bytes": 496565,
           "size_mb": 0.47,
           "step": "8_visualization_output"
         },
@@ -5434,7 +5509,17 @@
           "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_matrix_size_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 77221,
+          "size_bytes": 73093,
+          "size_mb": 0.07,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "bnlearn_causal_model_B_analysis.png",
+          "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+          "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 74749,
           "size_mb": 0.07,
           "step": "8_visualization_output"
         },
@@ -5444,8 +5529,8 @@
           "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 203144,
-          "size_mb": 0.19,
+          "size_bytes": 205839,
+          "size_mb": 0.2,
           "step": "8_visualization_output"
         },
         {
@@ -5464,8 +5549,28 @@
           "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_variable_parameter_bipartite.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 108655,
-          "size_mb": 0.1,
+          "size_bytes": 122073,
+          "size_mb": 0.12,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "bnlearn_causal_model_B_tensor.png",
+          "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+          "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 161941,
+          "size_mb": 0.15,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "bnlearn_causal_model_C_heatmap.png",
+          "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
+          "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 76771,
+          "size_mb": 0.07,
           "step": "8_visualization_output"
         },
         {
@@ -6254,7 +6359,7 @@
           "relative_path": "9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 31464,
+          "size_bytes": 31459,
           "size_mb": 0.03,
           "step": "9_advanced_viz_output"
         },
@@ -6264,7 +6369,7 @@
           "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 332766,
+          "size_bytes": 332747,
           "size_mb": 0.32,
           "step": "9_advanced_viz_output"
         },
@@ -6274,7 +6379,7 @@
           "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 223148,
+          "size_bytes": 223193,
           "size_mb": 0.21,
           "step": "9_advanced_viz_output"
         },
@@ -6284,7 +6389,7 @@
           "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 217600,
+          "size_bytes": 217573,
           "size_mb": 0.21,
           "step": "9_advanced_viz_output"
         },
@@ -6294,7 +6399,7 @@
           "relative_path": "9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 31081,
+          "size_bytes": 31078,
           "size_mb": 0.03,
           "step": "9_advanced_viz_output"
         },
@@ -6496,7 +6601,7 @@
           "relative_path": "20_website_output/analysis.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 183546,
+          "size_bytes": 189618,
           "size_mb": 0.18,
           "step": "20_website_output"
         },
@@ -6526,7 +6631,7 @@
           "relative_path": "20_website_output/reports.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 88499,
+          "size_bytes": 88515,
           "size_mb": 0.08,
           "step": "20_website_output"
         },
@@ -6839,7 +6944,7 @@
         "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 490155,
+        "size_bytes": 496565,
         "size_mb": 0.47,
         "step": "8_visualization_output"
       },
@@ -6869,7 +6974,17 @@
         "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_matrix_size_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 77221,
+        "size_bytes": 73093,
+        "size_mb": 0.07,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "bnlearn_causal_model_B_analysis.png",
+        "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+        "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 74749,
         "size_mb": 0.07,
         "step": "8_visualization_output"
       },
@@ -6879,8 +6994,8 @@
         "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 203144,
-        "size_mb": 0.19,
+        "size_bytes": 205839,
+        "size_mb": 0.2,
         "step": "8_visualization_output"
       },
       {
@@ -6899,8 +7014,28 @@
         "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_variable_parameter_bipartite.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 108655,
-        "size_mb": 0.1,
+        "size_bytes": 122073,
+        "size_mb": 0.12,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "bnlearn_causal_model_B_tensor.png",
+        "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+        "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_B_tensor.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 161941,
+        "size_mb": 0.15,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "bnlearn_causal_model_C_heatmap.png",
+        "path": "output/8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
+        "relative_path": "8_visualization_output/bnlearn_causal_model/bnlearn_causal_model_C_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 76771,
+        "size_mb": 0.07,
         "step": "8_visualization_output"
       },
       {
@@ -7779,7 +7914,7 @@
         "relative_path": "9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 31464,
+        "size_bytes": 31459,
         "size_mb": 0.03,
         "step": "9_advanced_viz_output"
       },
@@ -7789,7 +7924,7 @@
         "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 332766,
+        "size_bytes": 332747,
         "size_mb": 0.32,
         "step": "9_advanced_viz_output"
       },
@@ -7799,7 +7934,7 @@
         "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 223148,
+        "size_bytes": 223193,
         "size_mb": 0.21,
         "step": "9_advanced_viz_output"
       },
@@ -7809,7 +7944,7 @@
         "relative_path": "9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 217600,
+        "size_bytes": 217573,
         "size_mb": 0.21,
         "step": "9_advanced_viz_output"
       },
@@ -7819,7 +7954,7 @@
         "relative_path": "9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 31081,
+        "size_bytes": 31078,
         "size_mb": 0.03,
         "step": "9_advanced_viz_output"
       },
@@ -7929,7 +8064,7 @@
         "relative_path": "20_website_output/analysis.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 183546,
+        "size_bytes": 189618,
         "size_mb": 0.18,
         "step": "20_website_output"
       },
@@ -7959,7 +8094,7 @@
         "relative_path": "20_website_output/reports.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 88499,
+        "size_bytes": 88515,
         "size_mb": 0.08,
         "step": "20_website_output"
       },
@@ -7987,7 +8122,7 @@
   },
   "health_score": 95.0,
   "report_metadata": {
-    "generation_time": "2026-04-10T10:35:40.364204",
+    "generation_time": "2026-04-12T17:35:04.541970",
     "formats_generated": [
       "html",
       "markdown",

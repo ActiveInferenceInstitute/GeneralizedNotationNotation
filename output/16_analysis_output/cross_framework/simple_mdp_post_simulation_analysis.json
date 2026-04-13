@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:03.787317",
+  "timestamp": "2026-04-12T17:34:23.780577",
   "execution_results_dir": "output/12_execute_output/simple_mdp",
   "framework_results": {
     "bnlearn": {
@@ -301,18 +301,18 @@
     "framework_count": 8,
     "comparisons": {
       "execution_time": {
-        "bnlearn": 1.805646,
-        "discopy": 0.236587,
-        "jax": 0.772229,
-        "pytorch": 0.457858,
-        "pymdp": 2.598617,
-        "activeinference_jl": 14.007849,
-        "numpyro": 0.715492,
-        "rxinfer": 13.696943
+        "bnlearn": 1.902171,
+        "discopy": 0.239677,
+        "jax": 0.708112,
+        "pytorch": 0.497435,
+        "pymdp": 2.664974,
+        "activeinference_jl": 14.26204,
+        "numpyro": 0.724365,
+        "rxinfer": 13.81629
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.236587
+        "time": 0.239677
       },
       "success_rates": {
         "bnlearn": true,

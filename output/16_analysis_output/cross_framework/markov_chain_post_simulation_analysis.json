@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:03.798695",
+  "timestamp": "2026-04-12T17:34:23.792057",
   "execution_results_dir": "output/12_execute_output/markov_chain",
   "framework_results": {
     "bnlearn": {
@@ -177,18 +177,18 @@
         "mean_fe": 0.0693
       },
       "execution_time": {
-        "bnlearn": 1.795791,
-        "discopy": 0.235158,
-        "jax": 0.752056,
-        "pytorch": 0.486332,
-        "pymdp": 2.597146,
-        "activeinference_jl": 10.565799,
-        "numpyro": 0.717682,
-        "rxinfer": 16.868532
+        "bnlearn": 1.87446,
+        "discopy": 0.239024,
+        "jax": 0.720521,
+        "pytorch": 0.486359,
+        "pymdp": 2.678134,
+        "activeinference_jl": 16.396706,
+        "numpyro": 0.896716,
+        "rxinfer": 16.707271
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.235158
+        "time": 0.239024
       },
       "success_rates": {
         "bnlearn": true,

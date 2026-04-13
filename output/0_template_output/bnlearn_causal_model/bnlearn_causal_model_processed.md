@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/discrete/bnlearn_causal_model.md
-# Processed on: 2026-04-10T10:23:34.160944
+# Processed on: 2026-04-12T17:21:40.225331
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: bnlearn Causal Discovery Model
@@ -57,7 +57,17 @@ A={
   (0.1, 0.9)
 }
 
-# Uniform action distribution
+# Transition model: P(S | S_prev, A)
+# Action 0: state tends to persist; Action 1: state tends to flip
+B={
+  ( (0.7, 0.3), (0.3, 0.7) ),
+  ( (0.3, 0.7), (0.7, 0.3) )
+}
+
+# Preference vector: slight preference for observation 1
+C={(0.0, 1.0)}
+
+# Uniform prior over initial hidden states
 D={(0.5, 0.5)}
 
 ## Equations

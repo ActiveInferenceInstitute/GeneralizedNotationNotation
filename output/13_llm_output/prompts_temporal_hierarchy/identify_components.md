@@ -1,11 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-You've already provided a comprehensive overview of the structure and content of the model specification. Here are some additional insights:
+Based on the document, here are the key steps in providing a systematic breakdown of the GNN representation:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -14,7 +15,8 @@ You've already provided a comprehensive overview of the structure and content of
 3. **Action/Control Variables**:
    - Available actions and their effects
    - Control policies and decision variables
-   - Action space properties (e.g., range, phase)
+   - Action space properties
+
 4. **Model Matrices**:
    - A matrices: Observation models P(o|s)
    - B matrices: Transition dynamics P(s'|s,u)
@@ -25,6 +27,7 @@ You've already provided a comprehensive overview of the structure and content of
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
+
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components

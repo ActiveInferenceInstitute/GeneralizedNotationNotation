@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-**Related:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/gnn/operations/gnn_troubleshooting.md](../gnn/operations/gnn_troubleshooting.md)
+**Related:** [AGENTS.md](AGENTS.md) · [doc/INDEX.md](../INDEX.md) · [doc/SPEC.md](../SPEC.md) (versioning policy) · [doc/gnn/operations/gnn_troubleshooting.md](../gnn/operations/gnn_troubleshooting.md)
 
 ## Overview
 This guide helps resolve common issues encountered when working with GeneralizedNotationNotation (GNN).

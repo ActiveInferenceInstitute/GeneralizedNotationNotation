@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:25:04.525641",
+  "timestamp": "2026-04-12T17:23:34.709981",
   "source_file": "input/gnn_files/discrete/two_state_bistable.md",
   "model_name": "Two State Bistable POMDP",
   "pomdp_dimensions": {

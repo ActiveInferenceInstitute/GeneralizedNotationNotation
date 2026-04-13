@@ -1,5 +1,7 @@
 # Triple review — AGENTS.md / README.md
 
+> **Snapshot disclaimer:** Numbers in the **Last run log** below are historical unless you re-run the same commands today. For current pytest pass/skip totals and CI parity, follow [CLAUDE.md](../../CLAUDE.md) and the commands there; do not treat this table as ground truth.
+
 Formal **three-pass** gate so structural, canonical, and semantic checks do not collapse into a single skim.
 
 | Pass | Focus | Primary tools |

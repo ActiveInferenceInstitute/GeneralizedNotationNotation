@@ -3,13 +3,13 @@
     "test_mode": "fast_pipeline",
     "command": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/",
     "exit_code": 0,
-    "tests_run": 1835,
-    "tests_passed": 1807,
+    "tests_run": 1870,
+    "tests_passed": 1842,
     "tests_failed": 0,
     "tests_skipped": 28,
     "tests_errors": 0,
     "collection_errors": 0,
     "coverage": {},
-    "timestamp": "2026-04-10 10:24:31"
+    "timestamp": "2026-04-12 17:22:59"
   }
 }

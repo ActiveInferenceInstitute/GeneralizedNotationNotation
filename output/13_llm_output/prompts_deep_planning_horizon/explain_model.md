@@ -1,25 +1,19 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here's a concise overview of the key points:
 
-1. **Model Purpose**: This is a generative model that represents a sequence of actions and their corresponding beliefs (actions) over time. It's designed to learn from data and make predictions about future outcomes based on past behavior.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification that represents an active inference system for evaluating policies over 5 steps and performing action-based reasoning in multi-step policy evaluation. The model aims to learn from experience, perform inference based on available actions/controls, update beliefs about the current state of affairs, and make predictions about future states.
 
 2. **Core Components**:
-   - **hidden states** represent the current state of the system, which are represented as vectors in a matrix representation called "states" or "beliefs". These represent actions that can be taken next.
-   - **observations** represent the current state and its corresponding action sequence. They capture the current policy distribution (policy) over T timesteps.
-   - **actions** represent the current policy, which are represented as vectors in a matrix representation called "prior" or "beliefs". These represent actions that can be taken next based on previous policies.
+   - **hidden_states** represent the hidden states (actions) that are learned during training. They capture the policy space and can be updated using a sequence of actions.
+   - **observations** represent the observed observations from previous timesteps to update beliefs.
+   - **policies** represent the current policies, which are trained based on the available actions/controls.
+   - **actions** represent the selected actions for each step in the policy evaluation process.
+   - **prior_over_steps** represents the prior distribution over all steps and can be updated using a sequence of actions to update beliefs about future states.
+   - **policy_distribution** is used to learn from experience, where learned policies are trained based on available actions/controls.
 
-3. **Key Relationships**:
-   - **observations** capture the current state and its corresponding action sequence over time. This represents the system's behavior at each timestep.
-   - **actions** represent the current policy, which are represented as vectors in a matrix representation called "prior" or "beliefs". These represent actions that can be taken next based on previous policies.
+3. **Model Dynamics**: The model implements Active Inference principles by learning from experience and updating beliefs in the active inference process. It learns from policy-based reasoning using a sequence of actions and actions taken during training. It also performs inference based on available actions/controls, updating beliefs about future states.
 
-4. **Model Dynamics**:
-   - The model evolves over time by updating its beliefs and actions based on new data points (policy sequences). This allows it to learn from past behavior and make predictions about future outcomes.
+4. **Active Inference Context**: The model uses a sequence of actions to learn from experience and update beliefs in the active inference process. It learns by learning policies and applying learned policies to new observations. It also performs inference based on available actions/controls, updating beliefs about future states.
 
-5. **Active Inference Context**:
-   - It learns from the data using a process called "active inference" or "action-based inference". This involves iterating through the policy sequence, updating its beliefs based on new data points, and then applying these actions to generate new policy sequences. The goal is to make predictions about future outcomes based on past behavior.
-
-6. **Practical Implications**:
-   - This model can inform decisions by providing accurate forecasts of future outcomes based on current policies and actions. It can also help identify potential risks or opportunities in a given situation.
-
-Please provide clear, concise explanations that cover the key points you've mentioned.
+5. **Practical Implications**: This model can inform decisions using policy-based reasoning, enabling multi-step consequence reasoning with a wide range of decision scenarios. It can also provide insights into the behavior and uncertainty associated with each action taken during training.

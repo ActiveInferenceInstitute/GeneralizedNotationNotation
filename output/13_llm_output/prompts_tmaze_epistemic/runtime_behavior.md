@@ -6,50 +6,24 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from scipy import stats
+The GNN model is a classic active inference agent that explores different environments and rewards based on the available data. It has been used in various applications, including reinforcement learning, decision-making under uncertainty, and optimization problems. The model uses a Bayesian approach to update its beliefs based on new information, allowing it to adaptively explore different scenarios and make decisions based on the available data.
 
-def gnn_model(num_locations, num_contexts):
-    """GNN representation of a GNN model."""
+The GNN representation is composed of three main components:
 
-    # Initialize the state space matrix
-    states = np.zeros((num_location_obs + 1, num_location_obs))
-    
-    for i in range(num_location_obs+1):
-        for j in range(num_contexts):
-            if (i == 0 and j!= 0) or (j==num_locations-1 and i!= num_locations-2):
-                states[i, j] = np.random.randint(-1, 1, size=(num_location_obs+1))
-    
-    # Initialize the reward matrix
-    reward_matrix = np.zeros((num_location_obs + 1, num_location_obs))
+1. **Location**: A set of locations representing different environments or actions. Each location has two types of observations (location type) and a reward/cue vector that represents the reward received from each location. The reward vector can be represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about the rewards.
 
-    for i in range(num_locations):
-        reward_matrix[i] = stats.normalvariate(-np.random.randint(*states), **states)
-    
-    # Initialize the action matrix
-    action_matrix = np.zeros((num_contexts+2, num_contexts+1))
-    
-    for i in range(num_location_obs):
-        reward_matrix[i] = stats.normalvariate(-np.random.randint(*actions), **actions)
+2. **LocationType**: A set of locations representing different actions or behaviors. Each location has two types of observations (location type) and a reward/cue vector that represents the reward received from each location. The reward vector can be represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about the rewards.
 
-    # Initialize the inference matrix
-    inference_matrix = np.zeros((num_locations + 2, num_locations+1))
-    
-    for i in range(num_location_obs):
-        reward_history[i] = stats.normalvariate(-np.random.randint(*states), **actions)
+3. **Location**: A set of locations representing different actions or behaviors. Each location has two types of observations (action type) and a reward/cue vector that represents the reward received from each location. The reward vector can be represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about the rewards.
 
-    # Initialize the transition matrix
-    transition_matrix = np.zeros((num_contexts + 2, num_contexts+1))
-    
-    for i in range(num_location_obs):
-        reward_history[i] = stats.normalvariate(-np.random.randint(*states), **actions)
+The GNN model uses Bayesian inference to update its beliefs based on new information. It starts with an initial belief of the agent's current state (location type) and then updates it based on new data. The policy is represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about rewards.
 
-    # Initialize the action matrix
-    action_history[0:3] = np.zeros((num_locations + 2, num_locations+1))
-    
-    for i in range(num_location_obs):
-        reward_history[i] = stats.normalvariate(-np.random.randint(*states), **actions)
+The GNN model has several key characteristics:
 
-    # Initialize the inference matrix
-    inference_matrix = np.zeros((num_locations + 2, num_locations
+1. **Randomized initialization**: The initial belief of the agent's current state is randomly initialized to represent its current state. This allows for random sampling from different environments or actions.
+
+2. **Initialization with probability distribution**: The initial beliefs are represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about rewards.
+
+3. **Random initialization**: The initial belief is randomly initialized to represent the current state of the agent's environment. This allows for random sampling from different environments or actions.
+
+4. **Initialization with probability distribution**: The initial beliefs are represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based

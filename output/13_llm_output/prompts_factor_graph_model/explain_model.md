@@ -1,23 +1,20 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the key points:
+This is a comprehensive explanation of the GNN (Generalized Notation Notation) specification and its application to active inference models:
 
-1. **Model Purpose**: This is about what real-world phenomenon or problem this model represents and how it enables modality-specific processing. It provides context for understanding the purpose of this model.
+1. **Purpose**: The purpose of this document is to provide an overview of the GNN model's capabilities in active inference, including how it represents real-world phenomena and what key components are involved.
 
 2. **Core Components**:
-   - **Visual Likelihood Matrix (VLF)**: Representes the probability distribution of observed values over different observation modalities, allowing for modality-specific inference.
-   - **Proprioceptive Likelihood Matrix (PLM)**: Represents the likelihood of observing a particular value based on the position and velocity information from the visible modality.
-   - **Visual Preference Vector (VPF)**: Representes the probability distribution of observed values over different visual modalities, allowing for modality-specific inference.
-   - **Proprioceptive Preferences (PPV)**: Represents the likelihood of observing a particular value based on the position and velocity information from the proprioceptive modality.
+   - **Visual modality**: A factor graph decomposition for tractable inference in structured models.
+   - **Proprioceptive modality**: A visual perception module that can process information from the visual modality (position) to visualize a visualization feature, while controlling the motion of an observation (velocity).
+   - **Visual preferences**: A decision-making module that can make decisions based on prior beliefs about the behavior of another observation.
 
-3. **Model Dynamics**: How does this model implement Active Inference principles? What beliefs are being updated and what actions/controls are available?
-   - **Visual Likelihood Matrix (VLF)**: Allows for modality-specific inference by representing the probability distribution of observed values over different modalities, allowing for modality-specific inference.
-   - **Proprioceptive Likelihood Matrix (PLM)**: Represents the likelihood of observing a particular value based on the position and velocity information from the visible modality, allowing for modality-specific inference.
-   - **Visual Preference Vector (VPF)**: Allows for modality-specific inference by representing the probability distribution of observed values over different visual modalities, allowing for modality-specific inference.
+3. **Model Dynamics**: How does this model implement Active Inference principles? What actions/controls are available and what do they do?
+   - **Fixed belief update**: The model updates its beliefs based on new information from the graph, allowing it to learn patterns in data.
+   - **Action-independent belief updating**: The model learns how to make decisions based on prior knowledge or intuition about the behavior of another observation.
 
-4. **Active Inference Context**: How does this model implement Active Inference principles? What beliefs are being updated and what actions/controls are available?
-   - **Visual Likelihood Matrix (VLF)**: Allows for modality-specific inference by representing the probability distribution of observed values over different modalities, allowing for modality-specific inference.
-   - **Proprioceptive Likelihood Matrix (PLM)**: Represents the likelihood of observing a particular value based on the position and velocity information from the visible modality, allowing for modality-specific inference.
-   - **Visual Preference Vector (VPF)**: Allows for modality-specific inference by representing the probability distribution of observed values over different visual modalities, allowing for modality-specific inference.
+4. **Practical Implications**: What can you learn/predict using this model? What decisions can it inform?
+   - **Visualization**: How does the model represent real-world phenomena and what actions are available?
+   - **Action planning**: The ability to make predictions based on prior beliefs or intuition about the behavior of another observation.
 
-5. **Practical Implications
+5. **Signature**: A cryptographic signature goes here, indicating that this is a cryptographic signature for data transmission.

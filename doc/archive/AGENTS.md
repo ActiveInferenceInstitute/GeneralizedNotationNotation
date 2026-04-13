@@ -38,6 +38,10 @@ This directory contains:
 
 **Note**: Archive materials are preserved for historical reference. For current documentation, see the main [doc/](../) directory.
 
+## Audit / maintenance
+
+[`docs_audit.py`](../development/docs_audit.py) does **not** treat `doc/archive/` as a maintained documentation subtree (see `DOC_MAINTAINED_SKIP_PARTS` in that script). Historical content may not meet current pairing or link rules applied elsewhere under `doc/`. Current documentation: [doc/README.md](../README.md).
+
 ## Integration with Pipeline
 
 This documentation is integrated with the 25-step GNN processing pipeline:

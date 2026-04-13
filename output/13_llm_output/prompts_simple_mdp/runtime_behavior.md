@@ -6,38 +6,37 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of your Markov Decision Process:
+You can use the following code to generate a GNN representation of the simple MDP agent:
 
-1. Create an instance of `GNNRepresentation` class with the following attributes and methods:
-   - `state_space`: A 2D array representing the state space (identity matrix) for each hidden state.
-   - `observation_outcomes`: A list containing all actions that are in states A, B, and C.
-   - `actions`: A list of actions that are in states A, B, and C.
-   - `prior_state` a 2D array representing the prior distribution over states A, B, and C (identity matrix).
 
-2. Create an instance of `GNNRepresentation` class with the following attributes:
+```python
+import numpy as np
+from scipy import stats
 
-   - `states`: A list containing all states for which you want to perform action inference.
-   - `actions`: A list of actions that are in states A, B, and C.
-   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
+def gnn_representation(states, actions):
+    """Generate a GNN Representation for the simple MDP agent.
 
-3. Create an instance of `GNNRepresentation` class with the following attributes:
+    Parameters:
+        states (list[np.ndarray]): A list of state-action pairs representing the MDP.
+        actions (list[np.array]): A list of action-state pairs representing the policy and control.
 
-   - `states`: A list containing all states for which you want to perform action inference.
-   - `actions`: A list of actions that are in states A, B, and C.
-   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
-
-4. Create an instance of `GNNRepresentation` class with the following attributes:
-
-   - `states`: A list containing all states for which you want to perform action inference.
-   - `actions`: A list of actions that are in states A, B, and C.
-   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
-
-5. Create an instance of `GNNRepresentation` class with the following attributes:
-
-   - `states`: A list containing all states for which you want to perform action inference.
-   - `actions`: A list of actions that are in states A, B, and C.
-   - `prior_state`: A 2D array representing the prior distribution over states A, B, and C (identity matrix).
-
-6. Create an instance of `GNNRepresentation` class with the following attributes:
-
-   - `states`: A list containing all states for which you
+    Returns:
+        np.ndarray: A GNN Representation for the simple MDP agent.
+    """
+    # Generate a GNN representation using the identity matrix
+    gnn_representation = np.zeros((len(states), len(actions)), dtype=np.float)
+    
+    # Apply the identity matrix to each state-action pair
+    for i in range(len(states)):
+        for j in range(len(actions)):
+            if states[i][0] == actions[j]:
+                gnn_representation[i, j] = np.random.normal([np.nan], 1/256)
+    
+    # Apply the identity matrix to each state-action pair
+    for i in range(len(states)):
+        for j in range(len(actions)):
+            if states[i][0] == actions[j]:
+                gnn_representation[i, j] = np.random.normal([np.nan], 1/256)
+    
+    return gnn_representation
+```

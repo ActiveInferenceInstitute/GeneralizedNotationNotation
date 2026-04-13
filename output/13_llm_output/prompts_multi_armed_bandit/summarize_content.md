@@ -1,30 +1,29 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise overview of the GNN implementation:
+Here's a concise summary of the GNN specification:
 
-**Overview:**
-This is a simple neural network that represents a multi-armed bandit (MAB) as an action-based probabilistic graphical model. The model consists of three main components:
+**Model Overview**
 
-1. **ActInfPOMDP**: This is a POMDP representing the MAB with two hidden states and 3 actions, each acting on different reward contexts. It learns to predict which arm is best based on its reward distribution across all rewards.
+This is a degenerate POMDP representing a multi-armed bandit where each arm has a reward context and an action sequence, with rewards being proportional to their corresponding actions. The agent chooses arms based on its knowledge about the reward context and actions, but also adjusts its actions in response to changes in reward contexts or actions.
 
-2. **MultiArmedBanditAgent**: This agent implements the GNN representation of the MAB as an action-based probabilistic graphical model. It learns to predict which arm is best based on its reward distributions across all rewards, and it also learns to optimize a policy over arms with sticky context.
+**Key Variables**
 
-3. **G(pi)**: This is a softmax function that maps each reward observation to its probability of being in the next state (i.e., the action). It then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
+1. **Hidden States**: A set of 3 hidden states representing the "reward context" (e.g., rewards are proportional to their corresponding actions). Each state is initialized with a random value and has no prior knowledge about its own reward context, action sequence, or reward history.
 
-**Key Variables:**
+2. **Observations**: A list of 3 observation sequences representing each arm's reward sequence and actions. Each observation can be either "good" (action selected) or "bad" (action not selected). The rewards are proportional to their corresponding actions in the reward context.
 
-1. **A**: This is an action-based probabilistic graphical model representing the MAB. It learns to predict which arm is best based on its reward distributions across all rewards.
+3. **Actions/Controls**: A set of 2 action sequences, with each action having a probability distribution over the reward sequence and actions. Each action has no prior knowledge about its own reward trajectory but can be "optimized" based on its reward history or rewards received from other arms.
 
-2. **B**: This is a transition matrix that maps each reward observation to its probability of being in the next state (i.e., the action). It then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
+**Key Parameters**
 
-**Critical Parameters:**
+1. **Initialization**: A list of 3 hidden states initialized with random values, each representing a different arm's reward context and actions. Each state has no prior knowledge about its own reward trajectory but can be "optimized" based on its reward history or rewards received from other arms.
+2. **Model Parameters**
 
-1. **Most important matrices**:
-   - **A**: This is the action-observation mapping matrix that maps each reward observation to its probability of being in the next state (i.e., the action). It then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
+3. **Notable Features**: A set of 4 hidden states initialized with random values, each representing a different arm's reward context and actions. Each state has no prior knowledge about its own reward trajectory but can be "optimized" based on its reward history or rewards received from other arms.
 
-2. **B**: This is the transition matrix that maps each reward observation to its probability of being in the next state (i.e., the action), and it then assigns probabilities to actions based on their reward distribution across all rewards, and it also learns to optimize a policy over arms with sticky context.
+**Use Cases**
 
-**Notable Features:**
+1. **Multi-armed Bandit**: A simple multi-armed bandit where each arm chooses a different action sequence, with rewards proportional to their corresponding actions and actions in the reward context.
 
-1. **Key Variables**:
-   - **A**: This is an action-observation mapping matrix that maps each reward observation to
+2. **Random Action**: A random action chosen by the agent based on its knowledge about the reward context and actions. This action can be "optimized" based on its reward history or rewards received from other arms.
+3. **Optimization**: A set of actions selected based on their reward histories

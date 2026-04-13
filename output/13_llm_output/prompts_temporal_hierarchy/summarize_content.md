@@ -1,12 +1,25 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary:
+Here's a concise version of the summary:
 
-**Overview:** This model represents a hierarchical active inference agent that uses three-level temporal hierarchies (Level 0, Level 1, and Level 2) to learn from sensorimotor data and make decisions based on strategic information. The model is composed of four key variables:
+**Summary:**
+This active inference agent is designed to analyze and generate predictions based on sensorimotor data from multiple levels (level 0 through level 2). The model consists of three main components:
 
-1. **Hidden states**: A set of vectors representing the state trajectories of each level
-2. **Observations**: A set of vectors representing the actions or control flows at each level
-3. **Actions/Controls**: A set of vectors representing the actions and controls at each level
-4. **Key Variables**: A matrix containing information about the model's structure, including hidden states, observations, actions, and strategic summaries.
-5. **Critical Parameters**: Key hyperparameters that control the behavior of the model (e.g., the number of levels, the rate of action updates)
-6. **Notable Features**: Unique aspects of this model design, such as special properties or constraints related to the agent's structure, actions, and strategic interactions.
+1. **Hidden states**: A set of matrices representing the relationships between different actions, goals, and observations. These represent the interactions between the agents and their environment.
+2. **Observations**: A set of vectors containing information about what is happening in each level (level 0 through level 3). Each observation represents a single action or goal at that level.
+3. **Actions/Controls**: A set of matrices representing the relationships between actions, goals, and observations. These represent the interactions between agents and their environment.
+4. **Key Variables**: A list of matrices containing information about what is happening in each level (level 0 through level 2). Each key variable represents a specific action or goal at that level.
+5. **Critical Parameters**: A set of matrices representing the relationships between actions, goals, and observations. These represent the interactions between agents and their environment.
+6. **Notable Features**: A list of matrices containing information about what is happening in each level (level 0 through level 3). Each feature represents a specific action or goal at that level.
+7. **Use Cases**: Specific scenarios where this model can be applied to:
+   - Analyze sensorimotor data from multiple levels and generate predictions based on the relationships between actions, goals, and observations.
+   - Generate predictions based on interactions between agents and their environment using the key variables.
+   - Analyze and generate predictions based on interactions between sensors and other objects in a given level.
+8. **Use Cases**: Specific scenarios where this model can be applied to:
+   - Analyze sensorimotor data from multiple levels and generate predictions based on the relationships between actions, goals, and observations.
+   - Generate predictions based on interactions between agents and their environment using the key variables.
+   - Analyze and generate predictions based on interactions between sensors and other objects in a given level.
+9. **Use Cases**: Specific scenarios where this model can be applied to:
+   - Analyze sensorimotor data from multiple levels and generate predictions based on the relationships between actions, goals, and observations.
+   - Generate predictions based on interactions between agents and their environment using the key variables.
+   - Analyze and generate predictions based on interactions between sensors and other objects in a given level

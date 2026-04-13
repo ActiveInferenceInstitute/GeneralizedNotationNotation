@@ -6,37 +6,43 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from scipy import stats
+You can use the following code to generate a GNN model for Stigmergic Swarm:
 
-# Define the GNN model annotations
-model_annotations = {
-    'GNNVersion': 1,
-    'Flags': ['v', 'a'],
-    'ModelAnnotationType': ['LikelihoodMatrix', 'TransitionVector'],
-    'StateSpaceBlock': [
-        {'type': np.ndarray(shape=[4]),
-            'state': np.array([
-                (0.7, 0.7, 0.7, 0.7),
-                (0.15, 0.15, 0.15, 0.15)
-            ]
-        ),
-    ],
-}
+1. Create an instance of the `GNNModel` class with the following parameters:
+   - `model`: The representation of the GNN model (e.g., `StigmergicSwarm`): A dictionary containing the state space, environment, and agent probabilities.
+   - `num_agents`: The number of agents in the simulation.
+   - `grid_size`: The size of the grid used to represent the environment.
+   - `num_actions`: The number of actions taken by each agent.
 
+2. Initialize an instance of the `GNNModel` class with the following parameters:
 
-def gnn_model(state):
+   - `model`: A dictionary containing the state space, environment, and agent probabilities.
+   - `num_agents`: The number of agents in the simulation.
+   - `grid_size`: The size of the grid used to represent the environment.
 
-    # Define the GNN model annotations
-    model_annotations = {
-        'GNNVersion': 1,
-        'Flags': ['v', 'a'],
-        'ModelAnnotationType': ['LikelihoodMatrix', 'TransitionVector']
-    }
+3. Initialize an instance of the `GNNModel` class with the following parameters:
 
-    return np.array([
-        (0.7, 0.7, 0.7, 0.7),
-        (0.15, 0.15, 0.15, 0.15)
-    ]
-```
+   - `model`: A dictionary containing the state space, environment, and agent probabilities.
+   - `num_agents`: The number of agents in the simulation.
+   - `grid_size`: The size of the grid used to represent the environment.
+
+4. Initialize an instance of the `GNNModel` class with the following parameters:
+
+   - `model`: A dictionary containing the state space, environment, and agent probabilities.
+   - `num_actions`: The number of actions taken by each agent.
+
+5. Initialize a list of agents in the simulation to represent their actions. Each agent can move from one grid cell to another using an action vector (represented as a 3x3 matrix).
+6. Initialize an instance of the `GNNModel` class with the following parameters:
+
+   - `model`: A dictionary containing the state space, environment, and agent probabilities.
+   - `num_actions`: The number of actions taken by each agent.
+
+7. Initialize an instance of the `GNNModel` class with the following parameters:
+
+   - `model`: A dictionary containing the state space, environment, and agent probabilities.
+   - `num_agents`: The number of agents in the simulation.
+   - `grid_size`: The size of the grid used to represent the environment.
+
+8. Initialize an instance of the `GNNModel` class with the following parameters:
+
+   - `model`: A dictionary containing the

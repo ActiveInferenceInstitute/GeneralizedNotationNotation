@@ -1,49 +1,28 @@
 # ANALYZE_STRUCTURE
 
-Based on the information provided, here are the structural analysis for GNN:
+Based on your description, here are a few key structural aspects of the GNN specification:
 
-1. **Graph Structure**:
-   - Number of variables and their types (e.g., states, actions)
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
+1. **Graph Structure**: The graph is composed of 3 variables (states) and 4 edges representing states directly observed by the system. Each state has an associated transition matrix with its own probability distribution over the next state. There are also connections between states, which can be thought of as "actions" or transitions from one state to another.
 
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
+2. **Variable Analysis**: The variable structure is hierarchical and consists of 3 types:
+   - **Directed edges** (directed) represent actions that influence the system's behavior.
+   - **Indirected edges** (indirectly) represent states with their own probability distributions over transitions, which can be thought as "actions" or transitions from one state to another.
 
-3. **Mathematical Structure**:
-   - Matrix dimensions and compatibility (e.g., symmetric matrices)
-   - Parameter structure (symmetry of parameters, etc.)
+3. **Mathematical Structure**: The graph topology is hierarchical and consists of 4 types:
+   - **Directed edges** are directed edges representing actions that influence the system's behavior (e.g., states transitioning from one state to another).
+   - **Indirected edges** represent states with their own probability distributions over transitions, which can be thought as "actions" or transitions from one state to another.
 
-Here are some key insights:
+4. **Complexity Assessment**: The graph structure and variable analysis suggest that the model is composed of a hierarchical network of interconnected nodes (states) and edges representing actions/transitions between them. This suggests that the model has a high degree of complexity, with many variables and connections contributing to its overall behavior.
 
-1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
+To assess these aspects, we can perform various analyses:
 
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
-
-Some key insights:
-
-1. **Symmetry of Parameters**:
-   - Symmetry between states-action pairs (e.g., no action selection)
-   - Symmetry between actions-state pairs (e.g., no action selection, but some are the same)
-
-2. **Parameter Structure**:
-   - Symmetry between state and action variables
-   - Symmetry between actions and observation variables
-
-Some key insights:
-
-1. **Computational Complexity Indicators**:
-   - Computational complexity indicators for each variable
-   - Potential bottlenecks or challenges in modeling GNNs
-
-3. **Design Patterns**:
-   - What modeling patterns or templates does this follow?
-   - How does the structure reflect the domain being modeled?
+1. **Graph Structure Analysis**: We can examine the graph structure using techniques such as:
+   - **Directed edges analysis** (e.g., using adjacency matrices)
+   - **Indirected edges analysis** (e.g., using adjacency matrices or other data structures)
+2. **Variable Analysis**: We can analyze the variable properties of each state and its corresponding transition matrix, such as:
+   - **Directed edge properties**, like their probability distribution over transitions
+   - **Indirected edge properties**, like their probability distribution over states
+   - **Symmetry analysis** (e.g., checking if there are any cycles or loops)
+3. **Mathematical Structure Analysis**: We can examine the mathematical structure of each variable, such as:
+   - **Directed edges and directions** (e.g., using adjacency matrices)
+   - **Indirected edges and

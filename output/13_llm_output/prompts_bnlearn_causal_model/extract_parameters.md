@@ -3,14 +3,12 @@
 Based on the information provided, here are the key parameters for the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the hidden states and actions of the Bayesian network model.
-   - B matrices representing the action distributions over the hidden state space.
-   - C matrices representing the observation spaces and action sequences.
-   - D matrices representing the temporal dependencies and windows for each modality.
-   - Other precision/confidence parameters
-
+   - A matrices representing the hidden states and actions of the model
+   - B matrices representing the hidden states and actions of the model
+   - C matrices representing the hidden states and actions of the model
+   - D matrices representing the hidden states and actions of the model
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters, roles in the model structure
+   - γ (gamma): precision parameters and their roles
    - α (alpha): learning rates and adaptation parameters
    - Other precision/confidence parameters
 
@@ -18,14 +16,17 @@ Based on the information provided, here are the key parameters for the GNN model
    - State space dimensions for each factor
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
+4. **Temporal Parameters**:
+   - Time horizons (T)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
 
-Here are some summary statistics:
-- **Initial Conditions**:
-   - Initial state (initialization strategy)
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
    - Initial parameter values
    - Initialization strategies
 
-4. **Configuration Summary**:
+6. **Configuration Summary**:
    - Parameter file format recommendations
    - Tunable vs. fixed parameters
    - Sensitivity analysis priorities

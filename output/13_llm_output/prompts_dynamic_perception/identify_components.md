@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts:
+You've already provided a comprehensive overview of the GNN specification. Here's a more detailed breakdown:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -12,22 +12,64 @@ You've already covered the key concepts:
    - Sensor/measurement interpretations
    - Noise models or uncertainty characterization
 
-3. **Action/Control Variables**:
-   - Available actions and their effects
+You've also provided a systematic breakdown for the GNN specification:
+
+  1. **State Variable Names and Dimensions**
+    - Variable names (e.g., "observation")
+    - What each state represents conceptually
+    - Observation modalities and their meanings
+
+3. **Observation Variables**:
+   - Observation modalities and their effects
    - Control policies and decision variables
-   - Action space properties
+   - Action/control variables
 
-4. **Model Matrices**:
-   - A matrices: Observation models P(o|s)
-   - B matrices: Transition dynamics P(s'|s,u)
-   - C matrices: Preferences/goals
-   - D matrices: Prior beliefs over initial states
+You've also provided a systematic breakdown for the GNN specification:
 
-5. **Parameters and Hyperparameters**:
-   - Precision parameters (γ, α, etc.)
-   - Learning rates and adaptation parameters
-   - Fixed vs. learnable parameters
+  1. **State Variable Names and Dimensions**
+    - Variable names (e.g., "observation")
+    - What each state represents conceptually
+    - Observation modalities and their effects
 
-6. **Temporal Structure**:
-   - Time horizons and temporal dependencies
-   - Dynamic vs. static components
+2. **Observation Variables**:
+   - Observation modalities and their effects
+   - Control policies and decision variables
+
+You've also provided a systematic breakdown for the GNN specification:
+
+  1. **State Variable Names and Dimensions**
+    - Variable names (e.g., "observation")
+    - What each state represents conceptually
+    - Observation modalities and their effects
+
+2. **Observation Variables**:
+   - Observation modalities and their effects
+   - Control policies and decision variables
+
+You've also provided a systematic breakdown for the GNN specification:
+
+  1. **State Variable Names and Dimensions**
+    - Variable names (e.g., "observation")
+    - What each state represents conceptually
+    - Observation modalities and their effects
+
+2. **Observation Variables**:
+   - Observation modalities and their effects
+   - Control policies and decision variables
+
+You've also provided a systematic breakdown for the GNN specification:
+
+  1. **State Variable Names and Dimensions**
+    - Variable names (e.g., "observation")
+    - What each state represents conceptually
+    - Observation modalities and their effects
+
+2. **Observation Variables**:
+   - Observation modalities and their effects
+   - Control policies and decision variables
+
+You've also provided a systematic breakdown for the GNN specification:
+
+  1. **State Variable Names and Dimensions**
+    - Variable names (e.g., "observation")
+    - What

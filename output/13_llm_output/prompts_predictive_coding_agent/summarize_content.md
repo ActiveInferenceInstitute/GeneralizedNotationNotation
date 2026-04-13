@@ -1,19 +1,36 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN implementation:
+Here's a concise summary of this GNN implementation:
 
-**Model Overview**
-This model represents a neural network that predicts actions based on sensory data from an action-based encoder (A) and decoder (D). The A encodes predictions in a hidden state, while the D maps those predictions to observable states. The goal is to minimize prediction errors for each observation.
+**Model Overview:**
+This is a generalized neural network (GNN) representation that models predictive coding based on continuous-state active inference agents. It consists of three main components:
 
-Key Variables:
-   - Hidden states: [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls: [list with brief descriptions]
+1. **Input**: A set of sensory data, representing observations from hidden causes and dynamics predictions.
+2. **Output**: A set of predicted actions or states based on the input data.
+3. **Key Variables**: A list of matrices containing information about each observation (sensory prediction error) and action/state transition probabilities.
+4. **Critical Parameters**: Key variables that define how to optimize the model, including:
+   - **Most important matrices**: The ones with detailed descriptions or constraints.
+   - **Key hyperparameters**: The parameters used to tune the model's performance.
 
-3. **Critical Parameters**:
-   - Most important matrices (A, B, C, D) and their roles
-   - Key hyperparameters and settings
+5. **Notable Features**: A set of features representing specific aspects of the model design and its key characteristics.
 
-**Notable Features**
-   - Special properties or constraints
-   - Unique aspects of this model design
+**Key Variables:**
+- **Input**: A list containing sensory data, representing observations from hidden causes and dynamics predictions.
+   - **Observation**: A list with detailed descriptions of each observation (sensory prediction error).
+
+6. **Output**: A set of predicted actions or states based on the input data.
+   - **Action**: A list of matrices containing information about each action/state transition probability.
+
+**Critical Parameters:**
+- **Most important matrices**: The ones with detailed descriptions or constraints, representing specific aspects of the model design and its key characteristics.
+
+7. **Key hyperparameters**:
+   - **Most important matrices**: The parameters used to tune the model's performance based on their importance in optimizing the model's performance.
+
+**Notable Features:**
+- **Special properties/constraints**: Representing constraints or special aspects of the model design and its key characteristics, such as:
+    - **Unique aspects**: Representing specific features that are unique to this particular implementation.
+
+8. **Use Cases**:
+This GNN is designed for predictive coding based on continuous-state active inference agents with a set of sensory data (observations) from hidden causes and dynamics predictions. It models the prediction error in terms of predicted actions/states, enabling attentional modulation of belief updates via gradient descent on free energy. The model's key variables are represented by matrices containing information about each observation and action/state transition probabilities.
+This implementation is designed to be applied to predict future observations based on current predictions from hidden causes or dynamics predictions. It models the prediction

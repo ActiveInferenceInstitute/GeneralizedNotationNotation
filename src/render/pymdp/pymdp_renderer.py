@@ -132,6 +132,22 @@ def _gnn_spec_for_json_embedding(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     return raw if isinstance(raw, dict) else dict(gnn_spec)
 
 
+def _json_to_python_literal(json_str: str) -> str:
+    """Convert a JSON string into a valid Python dict literal.
+
+    Replaces JSON keywords (``null``, ``true``, ``false``) with their Python
+    equivalents (``None``, ``True``, ``False``) so the resulting string can
+    be embedded directly into generated Python source code.
+    """
+    import re
+    # Only replace bare JSON keywords that appear as values (after : or in arrays)
+    # Use word-boundary matching to avoid replacing substrings in keys
+    s = re.sub(r'\bnull\b', 'None', json_str)
+    s = re.sub(r'\btrue\b', 'True', s)
+    s = re.sub(r'\bfalse\b', 'False', s)
+    return s
+
+
 def _extract_dimensions(
     gnn_spec: Dict[str, Any], init_params: Dict[str, Any]
 ) -> Tuple[int, int, int]:
@@ -321,8 +337,10 @@ class PyMDPRenderer:
             "C_literal": _json.dumps(C_vector) if C_vector is not None else "None",
             "D_literal": _json.dumps(D_vector) if D_vector is not None else "None",
             "E_literal": _json.dumps(E_vector) if E_vector is not None else "None",
-            "gnn_spec_literal": _json.dumps(
-                _gnn_spec_for_json_embedding(gnn_spec), indent=4, default=str
+            "gnn_spec_literal": _json_to_python_literal(
+                _json.dumps(
+                    _gnn_spec_for_json_embedding(gnn_spec), indent=4, default=str
+                )
             ),
             "num_timesteps": int(
                 (gnn_spec.get("model_parameters") or {}).get("num_timesteps", 20)

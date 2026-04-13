@@ -6,21 +6,59 @@ Prompt:
 
 Response:
 
-Your description covers the key components and structure of the Active Inference POMDP agent model:
+Here's the complete code for the GNN model:
+```python
+import numpy as np
+from scipy import stats
 
-1. **GNN Representation**: This is a representation that defines the agent's actions based on its state space, hidden states, preferences, etc. It provides an overview of how the agent makes decisions based on its policy and prior distributions over actions.
+def gnn_model(num_hidden_states=3, num_actions=1):
+    """GNN Representation of a GNN agent.
 
-2. **ModelAnnotation**: This annotation describes the agent's behavior using a list of annotations (actions) representing different types of actions:
-   - Actions are represented as lists of actions in the form `(action_id, state)` where `state` is an integer index representing the current observation and `action` is an integer index representing the action. This allows for easy manipulation of the agent's behavior based on its policy and prior distributions over actions.
+    Args:
+        num_hidden_states (int): Number of hidden states for the agent.
+        num_actions (int): Number of actions to use as policy prior.
+        num_timesteps (int): Number of simulation timesteps per episode, default is 30.
+    """
+    # Initialize state space and action spaces
+    A = np.array([
+          [
+            [[1., 2.],
+              [0.956784..., -0.000000],
+            0.956784...]]
+        )
 
-3. **ModelAnnotation**: This annotation describes the agent's preferences using a list of annotations (choices) representing different types of choices:
-   - Choices are represented as lists of choices in the form `(choice_id, choice)` where `choice` is an integer index representing the current observation and `choice` is an integer index representing the action. This allows for easy manipulation of the agent's preferences based on its policy and prior distributions over actions.
+    B = np.array([[[0.33333, 0.33333, 0.33333]],
+              [0.33333, 0.33333, 0.33333]])
+    C = np.array([[
+          [[1., 2.],
+             [0.956784..., -0.000000],
+            0.956784...]]
+        )
 
-4. **ModelAnnotation**: This annotation describes the agent's habit using a list of annotations (choices) representing different types of choices:
-   - Habits are represented as lists of choices in the form `(choice_id, choice)` where `choice` is an integer index representing the current observation and `choice` is an integer index representing the action. This allows for easy manipulation of the agent's preferences based on its policy and prior distributions over actions.
+    D = np.array([
+          [[
+            [[0.33333, 0.33333, 0.33333]],
+              [0.33333, 0.33333, 0.33333]]
+        ]
+      ])
 
-5. **ModelAnnotation**: This annotation describes the agent's policy using a list of annotations (choices) representing different types of choices:
-   - Policies are represented as lists of choices in the form `(choice_id, choice)` where `choice` is an integer index representing the current observation and `choice` is an integer index representing the action. This allows for easy manipulation of the agent's preferences based on its policy and prior distributions over actions.
+    E = np.array([
+          [[
+            [[1., 2.],
+             [0.956784..., -0.000000],
+            0.956784...]]
+        ]
+      ])
+    G = np.array([[[
+        0.33333, 0.33333, 0.33333]],
+          [
+            [[1., 2.],
+              [0.956784..., -0.000000],
+            0.956784...]]
+        ])
+    π = np.array([
+        0.956784...
+      ]).T
 
-6. **ModelAnnotation**: This annotation describes the agent's initial state using a list of annotations (choices) representing different types of choices:
-   - Initial states are represented as lists of choices in the form `(choice_id, choice)` where `choice` is an integer index representing the current observation and `choice` is an integer
+    # Initialize action space
+    A

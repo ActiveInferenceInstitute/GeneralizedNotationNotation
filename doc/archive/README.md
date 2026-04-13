@@ -13,6 +13,10 @@ This directory contains archived documentation, historical materials, and exampl
 
 > **⚠️ Note**: Archive materials are preserved for historical reference. For current documentation and examples, see the main [doc/](../) directory and [GNN Examples](../gnn/tutorials/gnn_examples_doc.md).
 
+### Audit / maintenance
+
+This subtree is **archival**. [`doc/development/docs_audit.py`](../development/docs_audit.py) excludes `doc/archive/` from maintained-folder checks (`AGENTS.md` / `README.md` pairing for “maintained” trees). Do not expect the same scaffolding or link hygiene as active hubs; for current docs start at [doc/README.md](../README.md).
+
 ## Quick Navigation
 
 ### This Directory

@@ -1,28 +1,24 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN specification:
 
-**Overview**
-This model represents an active inference agent that uses a set of hidden states (represented as lists) and actions/controls (represented as lists). The agent's goal is to explore, explore, explore, explore. It rewards exploration based on its performance in exploring new states or actions, while penalizing exploration if it fails to find the same state multiple times.
+**Overview:**
+This model is an active inference agent that uses a combination of epistemic value (information gain) and instrumental value (preference satisfaction). It models exploration-exploitation dynamics, where agents can move towards or away from their goals based on action choices. The agent's behavior is guided by its knowledge about the environment and its own preferences.
 
-**Key Variables**
-- **Hidden States**: List of hidden states (represented as lists) that are used for exploration and exploration purposes. These represent different types of actions/states that can be performed in a given environment.
-- **Observations**: List of observed actions/stateitions (represented as lists). Each observation represents an action or state, with the goal to find new states or actions within a predefined time horizon.
-- **Actions**: List of actions taken by the agent during exploration and exploration purposes. These represent different types of actions that can be performed in a given environment.
-- **Controls**: List of actions/states used for control (represented as lists). Each action/state represents an action or state, with the goal to find new states within a predefined time horizon.
-- **Prediction**: List of predictions made by the agent based on its performance and exploration goals during exploration. These represent different types of predictions that can be made in a given environment.
+**Key Variables:**
 
-**Critical Parameters**
-- **Most important matrices (A, B, C, D) and their roles**:
-   - **Anatomy**: List of hidden states used for exploration/exploration purposes.
-   - **Action**: List of actions taken by the agent during exploration/exploitation purposes.
-   - **Prediction**: List of predictions made by the agent based on its performance in exploring new states or actions within a predefined time horizon.
-- **Key hyperparameters and their settings**
+1. **Hidden states**: A set of 5 hidden states (represented as lists with brief descriptions) that encode information about the agent's actions, decisions, and interactions with other agents or environments. Each state has a corresponding action in the navigation context.
 
-   - **Anatomy**: List of hidden states used for exploration/exploration purposes (represented as lists). Each hidden state represents different types of actions/states that can be performed during exploration.
-   - **Action**: List of actions taken by the agent during exploration/exploitation purposes (represented as lists). Each action/state represents an action or state, with the goal to find new states within a predefined time horizon.
-   
-**Notable Features**
+2. **Observations**: A list of 4 observations (representing different actions taken by the agent) to track its progress towards or away from goals. The observation data are collected using a sequence-based approach, where each observation is associated with an action and the outcome of that action.
 
-   - **Special properties and constraints**: List of special features that can be used for modeling specific scenarios in this model design.
-   -
+3. **Actions/Controls**: A set of 5 actions (represented as lists with brief descriptions) used to guide the agent's behavior in the navigation context. Each action has a corresponding reward or penalty for its execution.
+
+4. **Key Parameters:**
+   - **Estimate** parameters: The estimated probability distribution over the policy, prior distributions over actions, and prior probabilities of actions (including those that are not observed). These parameters represent the agent's epistemic value and instrumental value components in the model.
+   - **Initialization** parameters: Initializing the state-action transition matrix, which is used to initialize the reward/penalty distribution for each action. The initial state is initialized with a random value (representing the agent's current state).
+
+5. **Randomized Actions**: A set of 4 actions that are randomly assigned to the agents' actions in the navigation context. These actions can be obtained from a sequence-based approach, where each action has a corresponding reward/penalty for its execution.
+
+**Critical Parameters:**
+   - **Estimate** parameters: The estimated probability distribution over the policy, prior distributions over actions, and prior probabilities of actions (including those that are not observed). These parameters represent the agent's epistemic value and instrumental value components in the model.
+   - **Initialization** parameters: Initializing the state-action transition matrix, which is used to initialize the reward/penalty distribution for each action. The initial state is initialized with a random value (

@@ -6,25 +6,42 @@ Prompt:
 
 Response:
 
-You can use the following code to implement a GNN representation for Predictive Coding Active Inference Agent:
+```python
+import numpy as np
 
-1. Define the model annotations as follows:
-   - `GNNModel`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
+# Define the GNN model annotations and state-space block
+GNN_model=np.array([[
+    [
+        [
+            [
+                [
+                    [
+                        [
+                            [
+                                [
+                                    [
+                                        [
+                                            [
+                                                [
+                                                    [
+                                                        [
+                                                            [
+                                                                10.5, 2.496873e-05, 1.496873e-05]
 
-2. Define the model parameters as follows:
-   - `GNNModel`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
+                                     ]
+                                 ]
+                                 ]
+                             ],
+                         ]
+                     ]
+                   ]
+               ]
+           ]
+       ]])
 
-3. Define the action annotations as follows:
-   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
+       # Define the GNN model annotations and state-space block
+    for i in range(len(GNN_model)):
+        GNN_model[i][1, 2].append('g')
 
-4. Define the action annotations as follows:
-   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
-
-5. Define the action annotations as follows:
-   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
-
-6. Define the action annotations as follows:
-   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts sensory data based on predictions from the backward layer. The backward layer performs prediction error correction to prevent biased predictions. The forward and backward are connected by a sigmoid activation function.
-
-7. Define the action annotations as follows:
-   - `ActionAnnotation`: A neural network with two layers, one in each direction (forward) and one backward (backward). The forward layer predicts
+    return GNN_model
+```

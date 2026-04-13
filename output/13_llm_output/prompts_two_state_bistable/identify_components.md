@@ -1,12 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-Here is a systematic breakdown of the GNN specification:
+You've already covered the key concepts in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-   - What each state means in terms of belief updating
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -15,7 +15,8 @@ Here is a systematic breakdown of the GNN specification:
 3. **Action/Control Variables**:
    - Available actions and their effects
    - Control policies and decision variables
-   - Action space properties (e.g., transition matrix, prior over initial states)
+   - Action space properties
+
 4. **Model Matrices**:
    - A matrices: Observation models P(o|s)
    - B matrices: Transition dynamics P(s'|s,u)
@@ -26,6 +27,42 @@ Here is a systematic breakdown of the GNN specification:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
+
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
-   - Dynamic vs. static components
+
+Your comprehensive breakdown includes key concepts like:
+- **State Variables (Hidden States)**:
+  - Variable names and dimensions
+  - What each state represents conceptually
+  - State space structure (discrete/continuous, finite/infinite)
+
+4. **Observation Variables**:
+  - Observation modalities and their meanings
+  - Sensor/measurement interpretations
+  - Noise models or uncertainty characterization
+5. **Action/Control Variables**:
+  - Available actions and their effects
+  - Control policies and decision variables
+  - Action space properties (e.g., transition dynamics, prior beliefs)
+
+6. **Model Matrices**:
+  - A matrices: Observation models P(o|s)
+  - B matrices: Transition dynamics P(s'|s,u)
+  - C matrices: Preferences/goals
+  - D matrices: Prior beliefs over initial states
+
+Your comprehensive breakdown includes key concepts like:
+- **State Variables (Hidden States)**:
+  - Variable names and dimensions
+  - What each state represents conceptually
+  - State space structure (discrete/continuous, finite/infinite)
+
+4. **Observation Variables**:
+  - Observation modalities and their meanings
+  - Sensor/measurement interpretations
+  - Noise models or uncertainty characterization
+5. **Action/Control Variables**:
+  - Available actions and their effects
+  - Control policies and decision variables
+  - Action space properties (e.g., transition dynamics, prior beliefs)

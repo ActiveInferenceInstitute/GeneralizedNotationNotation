@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:37.406091",
+  "timestamp": "2026-04-12T17:35:01.316081",
   "processed_files": 9,
   "success": true,
   "errors": [],
@@ -12,7 +12,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.406379"
+      "check_timestamp": "2026-04-12T17:35:01.316372"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -22,7 +22,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.406991"
+      "check_timestamp": "2026-04-12T17:35:01.316972"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -32,7 +32,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.407372"
+      "check_timestamp": "2026-04-12T17:35:01.317352"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -42,7 +42,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.407786"
+      "check_timestamp": "2026-04-12T17:35:01.317784"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -52,17 +52,17 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.408198"
+      "check_timestamp": "2026-04-12T17:35:01.318190"
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
       "file_name": "bnlearn_causal_model.md",
-      "file_hash": "6e4b5a97d577f9ae32edfbb1b08694aa8da0c1c77d0b0f2bee5f64558e24951a",
-      "file_size": 1376,
+      "file_hash": "d108293a713435c668aec0bea48bb880f760ed5bd803e61347911e02fc36d067",
+      "file_size": 1631,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.408455"
+      "check_timestamp": "2026-04-12T17:35:01.318454"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -72,7 +72,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.408662"
+      "check_timestamp": "2026-04-12T17:35:01.318682"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -82,7 +82,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.408961"
+      "check_timestamp": "2026-04-12T17:35:01.318981"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -92,7 +92,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-10T10:35:37.409303"
+      "check_timestamp": "2026-04-12T17:35:01.319320"
     }
   ],
   "vulnerabilities": [],

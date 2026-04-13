@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:03.796230",
+  "timestamp": "2026-04-12T17:34:23.790588",
   "execution_results_dir": "output/12_execute_output/two_state_bistable",
   "framework_results": {
     "bnlearn": {
@@ -241,18 +241,18 @@
     "framework_count": 8,
     "comparisons": {
       "execution_time": {
-        "bnlearn": 1.827688,
-        "discopy": 0.237351,
-        "jax": 0.649846,
-        "pytorch": 0.533655,
-        "pymdp": 2.51209,
-        "activeinference_jl": 13.959456,
-        "numpyro": 0.624404,
-        "rxinfer": 13.704146
+        "bnlearn": 1.934086,
+        "discopy": 0.240165,
+        "jax": 0.662887,
+        "pytorch": 0.465323,
+        "pymdp": 2.626204,
+        "activeinference_jl": 14.145758,
+        "numpyro": 0.642649,
+        "rxinfer": 13.816052
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.237351
+        "time": 0.240165
       },
       "success_rates": {
         "bnlearn": true,

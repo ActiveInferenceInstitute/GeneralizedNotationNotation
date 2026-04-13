@@ -2,19 +2,15 @@
 
 Here's a concise summary:
 
-**Model Overview:**
-This GNN represents a dynamic perception model that can learn from noisy observations and adaptively infer hidden sources based on their behavior. The model consists of two main components:
+**Overview:** This GNN represents a dynamic perception model that can learn from noisy observations by tracking hidden sources (state inference) and updating beliefs based on observed actions/policies (belief updates). The model is designed to handle passive observers, allowing for the learning of probabilistic graphical models. It has two main components:
 
-1. **GNN Representation**: A neural network with 2 hidden states, 2 observation maps, and an action-based inference mechanism. It learns to predict the next state based on a sequence of observed states and actions.
-**Key Variables:**
-   - Hidden states (represented by lists): [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls (represented by lists): [list with brief descriptions]
-
- **Critical Parameters:**
-   - Most important matrices (A, B, C, D) and their roles:
-   - Key hyperparameters and settings:
-   - Unique aspects of this model design:
-**Notable Features:**
-   - Special properties or constraints
-   - Unique aspects of this model design:
+1. **GNN Representation**: A representation of a dynamic perception model that can learn from noisy observations by tracking hidden sources.
+2. **Model Overview**: A description of the model's key variables and their roles in handling passive observer-driven belief updating.
+3. **Key Variables**: Hidden states, actions/policies, and action maps (transition matrices).
+4. **Critical Parameters**: The most important matrices:
+   - **A** (representative matrix): A representation that can learn from noisy observations by tracking hidden sources.
+   - **B** (prior distribution): A representation of the initial state to avoid interference with observed actions/policies.
+   - **D** (belief updating matrix): A representation for updating beliefs based on observed actions/policies.
+5. **Notable Features**:
+   - **Special properties or constraints**: The model's ability to learn from noisy observations and handle passive observers, allowing it to adaptively update its beliefs in response to new data.
+   - **Unique aspects of this model design**: The ability to learn probabilistic graphical models that can capture the behavior of a dynamic perception system without relying on actions/policies.

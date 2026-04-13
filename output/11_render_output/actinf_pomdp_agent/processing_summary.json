@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:25:04.516219",
+  "timestamp": "2026-04-12T17:23:34.697811",
   "source_file": "input/gnn_files/discrete/actinf_pomdp_agent.md",
   "model_name": "Active Inference POMDP Agent",
   "pomdp_dimensions": {

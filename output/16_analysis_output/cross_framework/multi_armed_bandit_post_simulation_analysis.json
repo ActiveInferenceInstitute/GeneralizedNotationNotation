@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:03.789461",
+  "timestamp": "2026-04-12T17:34:23.782746",
   "execution_results_dir": "output/12_execute_output/multi_armed_bandit",
   "framework_results": {
     "bnlearn": {
@@ -298,18 +298,18 @@
         "mean_fe": 0.12990000000000002
       },
       "execution_time": {
-        "bnlearn": 1.818345,
-        "discopy": 0.238225,
-        "jax": 0.680808,
-        "pytorch": 0.457856,
-        "pymdp": 2.641339,
-        "activeinference_jl": 13.933109,
-        "numpyro": 0.712855,
-        "rxinfer": 13.628652
+        "bnlearn": 1.871513,
+        "discopy": 0.239984,
+        "jax": 0.683445,
+        "pytorch": 0.463819,
+        "pymdp": 2.682456,
+        "activeinference_jl": 14.135987,
+        "numpyro": 0.728401,
+        "rxinfer": 13.764156
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.238225
+        "time": 0.239984
       },
       "success_rates": {
         "bnlearn": true,

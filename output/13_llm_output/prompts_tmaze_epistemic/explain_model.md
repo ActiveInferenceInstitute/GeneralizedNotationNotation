@@ -1,21 +1,26 @@
 # EXPLAIN_MODEL
 
-1. The model represents a classic active inference paradigm from Friston et al., which is based on the idea of "active inference" and "informed exploration." This paradigm allows agents to explore environments with uncertain outcomes by exploring different locations or actions before committing to an arm, while also providing information about their own location in each scenario.
+Here is a concise overview of the key components:
 
-2. The model consists of 4 hidden states (s_f0, s_f1, etc.) and 3 observations (o_m0, o_m1, etc.). These are represented by the following matrices:
-   - s_loc[4,1,type=float] represents location information in each scenario.
-   - o_loc[4,1,type=int] represents location observation information.
-   - A_loc[4,1,type=float] represents reward/cue information for each arm and cue locations.
-   - B_loc[4,1,2,type=float] represents reward/cue information for each arm and cue locations.
-   - C_loc[4,1,2,type=int] represents reward/cue information for each arm and cue locations.
-   - D_loc[4,1,2,type=float] represents reward/cue information for each arm and cue locations.
+1. **Model Purpose**: This document provides an explanation of what active inference models are and how they represent real-world phenomena or problems. It covers the model's purpose (model representation), core components, and key relationships.
 
-3. The model uses a hidden state matrix to represent the location of agents in each scenario. This allows it to explore different locations without needing to make decisions about which direction to move next. It also provides information about its own location based on observations from other arms or actions, allowing it to learn new behaviors and improve exploration over time.
+2. **Core Components**:
+   - **Hidden states** (`s_f0`, `s_f1`) represent the agent's state of mind at each time step. They capture information about where they are in space and what actions they can take to explore or avoid a location.
+   - **Observations** (`o_m0`, `o_m1`) represent the current state of the environment, which is updated based on the agent's decisions (actions).
+   - **Actions/Controls** (`u_c0`, `π_c0`), which are available at each time step and can be used to explore or avoid a location.
 
-4. The model uses a sequence of actions (u_c0, π_c0) to update the beliefs of agents in each scenario. These actions are represented by matrices:
-   - u[1,2] represents the action for arm A-C-B-E-F and agent A-A-D-E-G-H-I (agent's behavior).
-   - π_c0 is a vector representing the reward/cue information for arm A-C-B-E-F.
+3. **Model Dynamics**: The model evolves over time by updating beliefs about what actions will happen next based on the current state of the environment (state factors). It implements Active Inference principles, including:
+   - **Initialization** (`A_loc`) represents the agent's initial belief in their location and context.
+   - **Evolution** (`B_loc`, `C_loc`), which represent changes to the beliefs over time based on actions taken by the agent (actions).
+   - **Learning** (`G_epi`), which updates the beliefs based on new information from observations made during each iteration of the model's evolution.
 
-5. The model uses a sequence of actions to update the beliefs of agents in each scenario, allowing it to learn new behaviors and improve exploration over time. This process can be thought of as "active inference" or "informed exploration."
+4. **Active Inference Context**: The model implements Active Inference principles, including:
+   - **Initialization** (`A_loc`) represents the agent's initial belief in their location and context (state factors).
+   - **Evolution** (`B_loc`, `C_loc`), which represent changes to the beliefs over time based on actions taken by the agent.
+   - **Learning** (`G_ins`), which updates the beliefs based on new information from observations made during each iteration of the model's evolution.
 
-Overall, this model represents a classic active inference paradigm that allows agents to explore environments with uncertain outcomes while also
+5. **Practical Implications**: The model can inform decisions in real-world applications, such as:
+   - **Decision-making**: Actions taken by agents to explore and avoid locations (actions).
+   - **Optimization**: Estimation of optimal actions based on current beliefs (`belief updates`) or predictions about future outcomes (`learning`).
+
+Please provide clear explanations that are easy

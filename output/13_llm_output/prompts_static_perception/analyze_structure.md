@@ -1,77 +1,50 @@
 # ANALYZE_STRUCTURE
 
-Based on the information provided, here are the structural analysis and mathematical framework for analyzing GNN models:
-
-**Structural Analysis:**
+Based on the information provided, here are the structural analysis of the GNN specification:
 
 1. **Graph Structure**:
-   - Number of variables (num_hidden_states)
-   
-   - Connection patterns (directed/uniform edges):
-      - Directed edges with directional weights:
-        - Type 2 connections:
-          - Type 3 connections:
-            - Type 4 connections:
-              - Type 5 connections:
-                - Type 6 connections:
-                  - Type 7 connections:
-                    - Type 8 connections:
-                      - Type 9 connections:
-                        - Type 10 connections:
-                          - Type 11 connections:
-                            - Type 12 connections:
-                                  - Type 13 connections:
+   - Number of variables and their types
+   - Connection patterns (directed/uniform)
+   - Graph topology (hierarchical, network, etc.)
 
-              **Type 2 connections**:
-                - Type 4 connections:
-                  - Type 5 connections:
-                    - Type 6 connections:
-                      - Type 7 connections:
-                        - Type 8 connections:
-                          - Type 9 connections:
-                            - Type 10 connections:
-                                  - Type 11 connections:
+2. **Variable Analysis**:
+   - State space dimensionality for each variable
+   - Dependencies and conditional relationships
+   - Temporal vs. static variables
 
-              **Type 3 connections**:
-                - Type 4 connections:
-                  - Type 5 connections:
-                    - Type 6 connections:
-                      - Type 7 connections:
-                        - Type 8 connections:
-                          - Type 9 connections:
-                            - Type 10 connections:
-                                  - Type 11 connections:
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization  
+   - Symmetries or special properties
 
-              **Type 5 connections**:
-                - Type 6 connections:
-                  - Type 7 connections:
-                    - Type 8 connections:
-                      - Type 9 connections:
-                        - Type 10 connections:
-                          - Type 11 connections:
-                            - Type 12 connections:
-                                  - Type 13 connections:
+**Structure:**
+The GNN specification consists of two main components:
 
-              **Type 6 connections**:
-                - Type 7 connections:
-                  - Type 8 connections:
-                    - Type 9 connections:
-                      - Type 10 connections:
-                        - Type 11 connections:
-                          - Type 12 connections:
-                            - Type 13 connections:
-                                  - Type 14 connections:
+1. **GNN Representation**: A representation that encodes the observation-belief relationship in terms of a single-shot inference model. This represents all possible actions, beliefs, and observations. It is based on a simple neural network with 2 hidden states (hidden state) and 2 observable variables (observation). The connection between each pair of neurons corresponds to an action or belief.
 
-              **Type 7 connections**:
-                - Type 8 connections:
-                  - Type 9 connections:
-                    - Type 10 connections:
-                      - Type 11 connections:
-                        - Type 12 connections:
-                          - Type 13 connections:
-                            - Type 14 connections:
-                                  - Type 15 connections:
+2. **GNN Variable**: A representation that encodes the observation-belief relationship in terms of a single-shot inference model. This represents all possible actions, beliefs, and observations. It is based on a neural network with 1 hidden state (hidden state) and 2 observable variables (observation). The connection between each pair of neurons corresponds to an action or belief.
 
-              **Type 6 connections**:
-                - Type 7 connections:
-                  - Type
+**Mathematical Structure:**
+
+1. **Matrix Dimensions**:
+   - Number of variables: 3
+   - Type of variable: float
+   - Type of observation: int
+   - Type of hidden state: int
+   - Type of observable: int
+   - Type of connection between neurons: matrix (connected)
+
+2. **Connection Patterns**:
+   - Directed edges: (0, 0), (1, 1), ... (n-1, n-1)
+   - Indirect edges: (x, y) -> (y, x)
+   - Conditional relationships: (x, y) -> (x, y)
+
+3. **Parameter Structure**:
+   - Matrix dimensions and compatibility:
+    - Type of variable: float
+    - Type of observation: int
+    - Type of connection between neurons: matrix
+
+**Design Patterns:**
+
+1. **GNN Representation**: A representation that encodes the observation-belief relationship in terms of a single-shot inference model. This represents all possible actions, beliefs, and observations. It is based on a neural network with 2 hidden states (hidden state

@@ -1,14 +1,14 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-04-10T10:35:40.271025  
+**Generated:** 2026-04-12T17:35:04.429638  
 **Pipeline Output Directory:** output  
 **Health Score:** 95.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 24
-- **Total Files Processed:** 2052
-- **Total Size:** 142.20000000000002 MB
+- **Total Files Processed:** 2147
+- **Total Size:** 151.89000000000001 MB
 - **Success Rate:** 100.0%
 
 ## ⚡ Performance Metrics
@@ -21,7 +21,7 @@
 
 - **Files:** 41
 - **Size:** 0.08 MB
-- **Last Modified:** 2026-04-10T10:23:34.163019
+- **Last Modified:** 2026-04-12T17:21:40.226997
 - **Status:** success
 
 - **File Types:** .json: 21, .md: 20
@@ -32,7 +32,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-04-10T10:23:37.440858
+- **Last Modified:** 2026-04-12T17:21:45.899946
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -41,20 +41,20 @@
 ### ✅ 2 Tests Output
 
 - **Files:** 6
-- **Size:** 2.69 MB
-- **Last Modified:** 2026-04-10T10:24:31.584808
+- **Size:** 6.86 MB
+- **Last Modified:** 2026-04-12T17:22:59.739227
 - **Status:** success
 
 - **File Types:** .log: 1, .txt: 1, .md: 1, .csv: 1, .png: 1, .json: 1
 - **Key Files:**
-  - pytest_reliable_output.txt (0.31 MB)
+  - pytest_reliable_output.txt (0.37 MB)
 - **Dependencies:** Complete
 
 ### ✅ 3 Gnn Output
 
 - **Files:** 463
-- **Size:** 3.5 MB
-- **Last Modified:** 2026-04-10T10:24:34.050979
+- **Size:** 3.51 MB
+- **Last Modified:** 2026-04-12T17:23:02.537160
 - **Status:** success
 
 - **File Types:** .json: 43, .bnf: 20, .lean: 20, .scala: 20, .pkl: 40, .z: 20, .xsd: 20, .v: 20, .xml: 20, .als: 20, .proto: 20, .hs: 20, .ebnf: 20, .agda: 20, .asn1: 20, .thy: 20, .md: 20, .tla: 20, .max: 20, .yaml: 20, .py: 20
@@ -66,7 +66,7 @@
 
 - **Files:** 1
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-04-10T10:24:34.392245
+- **Last Modified:** 2026-04-12T17:23:03.085255
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -78,7 +78,7 @@
 
 - **Files:** 2
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-04-10T10:24:36.216681
+- **Last Modified:** 2026-04-12T17:23:05.035842
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -88,7 +88,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-04-10T10:24:37.877240
+- **Last Modified:** 2026-04-12T17:23:06.666225
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -100,7 +100,7 @@
 
 - **Files:** 12
 - **Size:** 0.09 MB
-- **Last Modified:** 2026-04-10T10:24:38.140047
+- **Last Modified:** 2026-04-12T17:23:06.992260
 - **Status:** success
 
 - **File Types:** .json: 4, .gexf: 2, .graphml: 2, .xml: 2, .pkl: 2
@@ -112,12 +112,12 @@
 
 ### ✅ 8 Visualization Output
 
-- **Files:** 172
-- **Size:** 61.37 MB
-- **Last Modified:** 2026-04-10T10:24:55.055153
+- **Files:** 176
+- **Size:** 61.69 MB
+- **Last Modified:** 2026-04-12T17:23:24.986885
 - **Status:** success
 
-- **File Types:** .png: 105, .json: 19, .html: 9, .txt: 9, .csv: 30
+- **File Types:** .png: 108, .json: 19, .html: 9, .txt: 9, .csv: 31
 - **Key Files:**
   - combined_analysis.png (0.39 MB)
   - simple_mdp_matrix_size_distribution.png (0.07 MB)
@@ -128,7 +128,7 @@
 
 - **Files:** 26
 - **Size:** 2.55 MB
-- **Last Modified:** 2026-04-10T10:25:03.593420
+- **Last Modified:** 2026-04-12T17:23:33.826887
 - **Status:** success
 
 - **File Types:** .png: 13, .html: 2, .json: 1, .d2: 5, .svg: 5
@@ -142,7 +142,7 @@
 
 - **Files:** 12
 - **Size:** 0.05 MB
-- **Last Modified:** 2026-04-10T10:25:04.285163
+- **Last Modified:** 2026-04-12T17:23:34.451904
 - **Status:** success
 
 - **File Types:** .json: 12
@@ -150,12 +150,12 @@
 
 ### ✅ 11 Render Output
 
-- **Files:** 221
-- **Size:** 0.99 MB
-- **Last Modified:** 2026-04-10T10:30:00.261241
+- **Files:** 242
+- **Size:** 1.08 MB
+- **Last Modified:** 2026-04-12T17:29:15.560227
 - **Status:** success
 
-- **File Types:** .md: 67, .json: 78, .jl: 16, .py: 50, .csv: 5, .txt: 5
+- **File Types:** .md: 73, .json: 85, .jl: 18, .py: 54, .csv: 6, .txt: 6
 - **Key Files:**
   - render_processing_summary.json (0.04 MB)
   - Simple Markov Chain_rxinfer.jl (0.01 MB)
@@ -164,19 +164,19 @@
 
 ### ✅ 12 Execute Output
 
-- **Files:** 208
-- **Size:** 1.08 MB
-- **Last Modified:** 2026-04-10T10:30:00.518815
+- **Files:** 228
+- **Size:** 1.17 MB
+- **Last Modified:** 2026-04-12T17:29:15.836212
 - **Status:** success
 
-- **File Types:** .log: 67, .json: 135, .md: 1, .csv: 5
+- **File Types:** .log: 73, .json: 148, .md: 1, .csv: 6
 - **Dependencies:** Complete
 
 ### ✅ 13 Llm Output
 
 - **Files:** 362
-- **Size:** 1.66 MB
-- **Last Modified:** 2026-04-10T10:34:56.983600
+- **Size:** 1.69 MB
+- **Last Modified:** 2026-04-12T17:34:16.033907
 - **Status:** success
 
 - **File Types:** .json: 181, .md: 181
@@ -190,7 +190,7 @@
 
 - **Files:** 3
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-04-10T10:34:58.036390
+- **Last Modified:** 2026-04-12T17:34:17.429701
 - **Status:** success
 
 - **File Types:** .pkl: 2, .json: 1
@@ -200,7 +200,7 @@
 
 - **Files:** 41
 - **Size:** 22.89 MB
-- **Last Modified:** 2026-04-10T10:34:59.616963
+- **Last Modified:** 2026-04-12T17:34:19.051768
 - **Status:** success
 
 - **File Types:** .wav: 39, .json: 1, .md: 1
@@ -212,12 +212,12 @@
 
 ### ✅ 16 Analysis Output
 
-- **Files:** 440
-- **Size:** 42.24 MB
-- **Last Modified:** 2026-04-10T10:35:36.664358
+- **Files:** 490
+- **Size:** 47.22 MB
+- **Last Modified:** 2026-04-12T17:35:00.561025
 - **Status:** success
 
-- **File Types:** .json: 27, .md: 3, .png: 410
+- **File Types:** .json: 29, .md: 3, .png: 458
 - **Key Files:**
   - analysis_results.json (0.25 MB)
   - analysis_summary.md (0.0 MB)
@@ -227,7 +227,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-04-10T10:35:37.160761
+- **Last Modified:** 2026-04-12T17:35:01.061452
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -237,7 +237,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-04-10T10:35:37.410077
+- **Last Modified:** 2026-04-12T17:35:01.320050
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -247,7 +247,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-04-10T10:35:37.648475
+- **Last Modified:** 2026-04-12T17:35:01.553057
 - **Status:** success
 
 - **File Types:** .md: 1, .json: 1
@@ -257,7 +257,7 @@
 
 - **Files:** 23
 - **Size:** 2.74 MB
-- **Last Modified:** 2026-04-10T10:35:37.922843
+- **Last Modified:** 2026-04-12T17:35:01.838354
 - **Status:** success
 
 - **File Types:** .html: 9, .json: 1, .png: 13
@@ -271,7 +271,7 @@
 
 - **Files:** 3
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-04-10T10:35:39.410069
+- **Last Modified:** 2026-04-12T17:35:03.615924
 - **Status:** success
 
 - **File Types:** .json: 3
@@ -284,7 +284,7 @@
 
 - **Files:** 6
 - **Size:** 0.08 MB
-- **Last Modified:** 2026-04-10T10:35:40.013288
+- **Last Modified:** 2026-04-12T17:35:04.193039
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .html: 1
@@ -307,12 +307,12 @@
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
-| .json | 540 | 3.88 |
-| .md | 300 | 0.58 |
-| .log | 68 | 2.44 |
-| .txt | 15 | 0.32 |
-| .csv | 41 | 0.01 |
-| .png | 542 | 66.37 |
+| .json | 562 | 4.03 |
+| .md | 306 | 0.6 |
+| .log | 74 | 6.56 |
+| .txt | 16 | 0.37 |
+| .csv | 44 | 0.01 |
+| .png | 593 | 71.64 |
 | .bnf | 20 | 0.12 |
 | .lean | 20 | 0.12 |
 | .scala | 20 | 0.12 |
@@ -331,22 +331,22 @@
 | .tla | 20 | 0.1 |
 | .max | 20 | 0.13 |
 | .yaml | 20 | 0.13 |
-| .py | 70 | 0.59 |
+| .py | 74 | 0.62 |
 | .gexf | 2 | 0.0 |
 | .graphml | 2 | 0.0 |
 | .html | 21 | 42.15 |
 | .d2 | 5 | 0.0 |
 | .svg | 5 | 0.13 |
-| .jl | 16 | 0.2 |
+| .jl | 18 | 0.22 |
 | .wav | 39 | 22.88 |
 
 ## 🎨 Visualizations
 
-**Total Visualizations:** 143
+**Total Visualizations:** 146
 
 ### 8 Visualization
 
-**Count:** 114
+**Count:** 117
 
 **Files:**
 - [combined_analysis.png](../8_visualization_output/combined_analysis.png) (0.39 MB)
@@ -359,7 +359,7 @@
 - [simple_mdp_A_heatmap.png](../8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png) (0.09 MB)
 - [simple_mdp_B_analysis.png](../8_visualization_output/simple_mdp/simple_mdp_B_analysis.png) (0.08 MB)
 - [simple_mdp_variable_type_distribution.png](../8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png) (0.19 MB)
-- ... and 104 more
+- ... and 107 more
 
 ### 9 Advanced Viz
 

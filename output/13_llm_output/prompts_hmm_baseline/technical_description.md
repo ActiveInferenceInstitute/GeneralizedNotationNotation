@@ -6,27 +6,54 @@ Prompt:
 
 Response:
 
-Here's a concise summary of the GNN model:
+```python
+import numpy as np
+from scipy import stats
 
-1. **GNN Example**: A standard discrete Hidden Markov Model with 4 hidden states and 6 observation symbols, followed by an initial state distribution (EMP) and forward algorithm for emission and transition matrices, respectively.
+def hmm_model(x, y):
+    """Hidden Markov Model Baseline."""
 
-2. **ModelAnnotation**: A standard discrete Hidden Markov Model with 4 hidden states and 6 observation symbols, followed by an initial state distribution (EMP). The Forward algorithm is used to compute the forward probability of observing a state in the next time step.
+    # Initialize state space and observation matrix
+    states = [
+        [[0.7], 0.1]
+        [
+            [[0.1], 0.7]]
+        ] + [
+            0.25 * x[i+1:i, i*4:] + [
+            0.25 * x[i+1:i, i*4:],
+            0.36 * x[i+1:i*4:, i]
+            ],
+            [[0.7], 0.1]]
+        ]
+    # Initialize the emission matrix
+    emission = np.zeros((len(states), len(x)))
 
-3. **GNNVersionAndFlags**: This model version includes:
-   - **InitialStateBlock**: A set of 4 states with Markovian dynamics and an initial state distribution, which allows for inference based on the current observation.
-   - **ForwardVariable**: A set of 6 observations with a forward probability calculation to compute the forward probability of observing a state in the next time step.
-   - **BackwardVariable**: A set of 4 states with a backward probability calculation to compute the backward probability of observing a state in the next time step.
+    for i in range(len(states)):
+        emission[i, i*4:] += x[i+1:i*4:, i] + x[(i+1):i*4:],
+            [
+                x[i+1:i*4:, i],
+                x[i+1:i*4:, i]*x[i*4:, i:(len(states)-2)*4:]
+            ]
 
-4. **GNNVersionAndFlags**: This model version includes:
-   - **InitialStateBlock**: A set of 4 states with Markovian dynamics and an initial state distribution, which allows for inference based on the current observation.
-   - **ForwardVariable**: A set of 6 observations with a forward probability calculation to compute the forward probability of observing a state in the next time step.
-   - **BackwardVariable**: A set of 4 states with a backward probability calculation to compute the backward probability of observing a state in the next time step.
+    # Initialize the transition matrix
+    transition = np.zeros((len(states), len(y)))
 
-5. **GNNVersionAndFlags**: This model version includes:
-   - **InitialStateBlock**: A set of 4 states with Markovian dynamics and an initial state distribution, which allows for inference based on the current observation.
-   - **ForwardVariable**: A set of 6 observations with a forward probability calculation to compute the forward probability of observing a state in the next time step.
-   - **BackwardVariable**: A set of 4 states with a backward probability calculation to compute the backward probability of observing a state in the next time step.
+    for i in range(len(states)):
+        transition[i, 0] += x[i+1:i*4:, 0]*x[(i+1):i*4:],
+            [
+                x[i+1:i*4:, 0],
+                x[i+1:i*4:, i]*x[i*4:, i:(len(states)-2)*4:]
+            ]
 
-6. **GNNVersionAndFlags**: This model version includes:
-   - **InitialStateBlock**: A set of 4 states with Markovian dynamics and an initial state distribution, which allows for inference based on the current observation.
-   - **ForwardVariable**: A set of
+    # Initialize the forward and backward variables
+    alpha = np.zeros((len(states), len(y)))
+    beta = np.zeros((len(states), len(y)) * 1)
+    for i in range(len(states)):
+        alpha[i, i*4:i+2] += x[(i+1):i*4:, i]*x[(i+1):i*4:],
+            [
+                x[i+1:i*4:, i],
+                x[i+1:i*4:, i]*x[i*4:, i:(len(states)-2)*4:]
+            ]
+
+    # Initialize the forward and backward variables
+    gamma = np.zeros

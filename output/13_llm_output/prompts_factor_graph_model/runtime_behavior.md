@@ -8,52 +8,36 @@ Response:
 
 ```python
 import numpy as np
-from scipy import stats
+from typing import List, Tuple
 
-def gnn_representation(num_positions, num_velocities):
-    """Represents a GNN representation of a factor graph."""
+def gnn_representation(factor: List[Tuple[int, int]]) -> List[List[Tuple[float, float]]]:
+    """
+    GNN Representation of a factor graph.
 
-    # Create the factor graph decomposition
-    factor = np.array([[[0] * (num_velocities + 1) for _ in range(num_velocities)]
-                      for _ in range(num_positions)])
+    Args:
+        factor (list): A list of tuples representing the input data for the factor graph.
+
+    Returns:
+        List[List[Tuple[float, float]]]: A representation of the factor graph with modality-specific processing and efficient belief propagation.
+    """
+    # Create a dictionary to store the state variables associated with each observation node
+    state_variables = {}
     
-    # Initialize the variables and nodes
-    vf, pf = [], []
-    
-    # Initialize the variables
-    vf_vis=np.zeros((len(factor), num_velocities))
-    pf_vis=np.zeros((len(factor), num_velocities))
+    # Initialize all nodes as None (representing no input)
+    for i in range(len(factor)):
+        if isinstance(factor[i], tuple):
+            state_variables[(int, int)] = factor[i]
 
-    # Initialize the node variable
-    vf_pos=np.ones([num_positions])
-    pf_pos=np.ones([num_positions])
+    # Create a dictionary to store the joint probabilities associated with each observation node
+    joint_probabilities = {}
     
-    # Initialize the node variable
-    vf_vel=np.ones([num_positions])
-    pf_vel=np.ones([num_positions])
+    # Initialize all nodes as None (representing no input)
+    for i in range(len(factor)):
+        if isinstance(factor[i], tuple):
+            state_variables[(int, int)] = factor[i]
 
-    # Initialize the node variables
-    vf_vis[0, 1] = np.zeros((len(factor), num_velocities))
-    vf_vis[2, 3] = np.zeros((len(factor), num_velocities))
+    # Create a dictionary to store the joint probabilities associated with each observation node
+    joint_probabilities.update({node: np.array([np.sum(state_variables) for node in graph])})
     
-    # Initialize the node variable
-    vf_pos[0, 4] = np.ones([num_positions])
-    vf_pos[1, 5] = np.ones((len(factor), num_velocities))
-
-    # Initialize the node variables
-    vf_vis[2, 3] = np.zeros((len(factor), num_velocities))
-    
-    # Initialize the node variable
-    vf_prop=np.ones([num_positions])
-    vf_prop+=np.ones((len(factor), num_velocities))
-
-    # Initialize the node variables
-    vf_pos[3, 1] = np.zeros((len(factor), num_velocities))
-    vf_pos[2, 4] = np.ones([num_positions])
-    
-    # Initialize the node variable
-    vf_vel=np.ones([num_positions])
-    vf_vel+=np.ones((len(factor), num_velocities))
-
-    # Initialize the node variables
-    vf_vis[0, 1] = np.zeros((len(factor), num_vel
+    return [list(map(lambda x: (x[0], x[1]), state_variables)) + list(joint_probabilities)]
+```

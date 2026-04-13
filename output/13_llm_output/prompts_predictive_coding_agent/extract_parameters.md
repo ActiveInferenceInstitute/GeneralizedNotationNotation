@@ -1,15 +1,30 @@
 # EXTRACT_PARAMETERS
 
-You've already covered the key components of the GNN specification:
-1. **Model Matrices**:
-   - A matrices representing the model structure and its relationships with other models (e.g., Belief, Action)
+Based on the document, here are the key parameters for the GNN implementation:
 
+1. **Model Matrices**:
+   - A matrices representing the model structure and its relationships with other models (e.g., BeliefNet)
+   - B matrices representing the model's predictions and biases
+   - C matrices representing the model's actions and expectations
+   - D matrices representing the model's predictions and uncertainties
 2. **Precision Parameters**:
-   - A matrix representing the precision parameters for each modality (e.g., Bias, Correction). 
+   - γ = minimizing sensory prediction errors, learning rate estimation, and adaptation parameters
+   - α = minimizing expected sensory prediction errors (e.g., sensitivity analysis)
 
 3. **Dimensional Parameters**:
-   - A matrix representing the dimensionality of each parameter space (e.g., Bias, Correction). 
-   - A matrix representing the number and types of temporal dependencies within each parameter space (e.g., Temporal, Time)
-
+   - State space dimensions for each factor
+   - Observation space dimensions for each modality
+   - Action space dimensions for each control factor
 4. **Temporal Parameters**:
-   - A matrix representing the timestamps for each parameter space (e.g., Time)
+   - Time horizons (t)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

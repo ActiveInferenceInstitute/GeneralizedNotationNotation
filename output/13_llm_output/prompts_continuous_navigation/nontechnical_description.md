@@ -9,42 +9,43 @@ Response:
 ```python
 import numpy as np
 
-# Define the state space, covariance matrix, and action matrices
-state_space = np.array([[1., 0.], [0., 1.]])
-covariance = np.array([
-    ([[0.0], []]), 
-    ([[0.5]]), 
-    ([[0.0] * [[-0.96724836e-01]])
-])
-action_matrix = np.array([[
-    0., 0.],
-     [[0.5, 0.]],
-    [[0.0, 0.0]],
-     []
-])
-belief_mean = np.array([
-    0.0, 0.0] * state_space[1][2], 
-    [0.96724836e-01]] * state_space[1][2],
-    [[0.5*np.ones((state_space[1][2])] + np.ones(shape=(len(state_space), 2))]
-])
-belief_covariance = np.array([
-    0., 0.], shape=[len(state_space)]) * state_space,
-    [[0.] * len(state_space)]
-]
-action_matrix = np.array([[
-    0., 0.],
-     [0.5*np.ones((shape[1])), []],
-     [[-0.96724836e-01]] * state_space)
-])
-belief_mean = np.array([
-    [[0.] * len(state_space)] + np.ones(len(state_space)), 
-    [np.zeros((shape[1]))],
-     []
-])
-action_covariance = np.array([[
-    0.],
-     [[-0.96724836e-01]]* state_space) * state_space,
-    [[] * len(state_space)] + np.ones([len(state_space)])
-])
-belief_mean[0][0] = 0.5*(np.sum((action_matrix @ action_covariance)**2)/1e-6**3)
-```
+def gnn(state_space, observation):
+    """GNN representation of continuous state space agent."""
+
+    # Initialize states and actions
+    states = np.array([
+        [np.random.normal(-10.0, 2), np.random.normal(-10.0, 2)],
+        [np.random.normal(0.0, 2), np.random.normal(0.0, 2)]
+    ]).astype('float32')
+
+    # Initialize action matrices
+    actions = np.array([
+        [
+            np.ones((state_space[:, 1]), dtype=dtype['int']),
+            np.ones((state_space[:, 2], dtype=dtype['int']))
+        ],
+        [np.zeros(shape=(len(actions), len(states)), dtype=dtype['int'])]
+    ]).astype('float32')
+
+    # Initialize probabilities for each state and action
+    probabilities = np.array([
+        np.ones((state_space[:, 1]), dtype=dtype['int']),
+        np.zeros(shape=(len(actions), len(states)), dtype=dtype['int'])
+    ]).astype('float32')
+
+    # Initialize the initial belief for each state and action
+    beliefs = np.array([
+        np.ones((state_space[:, 1]), dtype=dtype['int']),
+        np.zeros(shape=(len(actions), len(states)), dtype=dtype['int'])
+    ]).astype('float32')
+
+    # Initialize the initial belief for each state and action
+    beliefs[np.random.choice([False, True], size=[state_space[:, 1]])] = [0.5 * np.ones((len(actions), len(states)), dtype=dtype['int'])] + [0.5 * np.zeros((len(actions), len(states))]
+    ]
+
+    # Initialize the initial belief for each state and action
+    beliefs[np.random.choice([False, True], size=[state_space[:, 1]])][:length(beliefs)] = [0.5 * np.ones((len(actions), length(states)), dtype=dtype['int'])] + [0.5 * np.zeros((len(actions), len(states))]
+    ]
+
+    # Initialize the initial belief for each state and action
+    beliefs[np.random.choice([False, True

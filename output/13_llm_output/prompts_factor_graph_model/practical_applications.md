@@ -1,25 +1,29 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points:
+You've covered the key points about the GNN Model, including its theoretical foundations, mathematical concepts, practical applications, and considerations for deployment scenarios. 
 
-1. **Real-World Applications**: This model can be applied to various domains, such as healthcare, finance, transportation, and more. It enables modality-specific processing of observational data, which is particularly useful in fields like medicine, social sciences, and engineering.
+Regarding your questions:
 
-2. **Implementation Considerations**: The implementation requirements are diverse, including:
-   - Real-time processing for real-world applications (e.g., healthcare)
-   - Data collection strategies to ensure compatibility with existing systems
-   - Integration with existing data sources and tools
+1. **Real-World Applications**: This model can be applied to various domains where modality-specific processing is required, such as:
+   - Healthcare: Analyzing medical images or data from wearable devices that require modality-dependent inference.
+   - Finance: Financial transactions involving financial instruments (e.g., loans, investments) requiring modality-dependent inference and analysis.
 
-3. **Performance Expectations**: This model can be applied to various domains, such as:
-   - Healthcare: detecting diseases or abnormalities in medical images
-   - Finance: identifying fraudulent transactions or market movements
-   - Transportation: tracking vehicle movement through roads and highways
-   - Engineering: monitoring equipment performance (e.g., sensors)
+2. **Implementation Considerations**:
+   - Computational requirements and scalability: The computational resources required to implement the model are substantial compared to other models like Active Inference or Bayesian Inference. This requires significant investment in hardware infrastructure and software development efforts.
+   - Data requirements and collection strategies: The data used for inference should be compatible with modality-dependent inference, ensuring that the model can learn from real-world data without relying on external sources of information.
 
-4. **Benefits and Advantages**: This model can solve problems well by enabling modality-specific processing, providing insights into observational data, and facilitating real-time analysis of complex systems. It also offers unique capabilities in specific domains.
+3. **Performance Expectations**:
+   - What kinds of performance can be expected?
+   - Metrics for evaluation and validation: Performance metrics like accuracy, precision, recall, F1 score, etc., are available in various frameworks (e.g., OpenCV, TensorFlow). However, these metrics may not capture the nuances of modality-dependent inference or its limitations compared to other models.
 
-5. **Challenges and Considerations**: The implementation requirements are diverse, including:
-   - Handling large datasets with varying sizes and structures (e.g., unstructured data)
-   - Ensuring compatibility with existing systems for integration with existing tools and databases
-   - Maintaining performance expectations while adapting to changing system environments and constraints
+4. **Deployment Scenarios**:
+   - Online vs. offline processing: The model can be deployed on a network with minimal latency and low computational resources. This approach is suitable for real-time applications where data availability is critical, but it may not scale well in terms of computation or storage requirements.
+   - Real-time constraints and requirements: The model's performance should be evaluated against specific requirements such as handling large volumes of data, high throughput, and minimal latency on a network.
 
-6. **Benefits and Advantages**: This model can solve problems well by enabling modality-specific processing, providing insights into observational data, facilitating real-time analysis of complex systems, and offering unique capabilities in specific domains. It also offers benefits in terms of scalability, efficiency, and cost savings compared to traditional methods.
+5. **Benefits and Advantages**:
+   - What problems does this model solve?
+   - Unique capabilities or features
+   - Comparison to alternative approaches: This model can provide insights into modality-specific inference in structured models without relying on external sources of information. It also has the potential for handling real-world data with minimal computational resources, which could be beneficial in certain applications.
+
+6. **Challenges and Considerations**:
+   - Potential difficulties in implementation: The model's performance may not scale well due to its complexity and reliance on external data sources, making it challenging to integrate with existing systems or infrastructure. Additionally, the model's scalability is limited by its computational resources, which could impact

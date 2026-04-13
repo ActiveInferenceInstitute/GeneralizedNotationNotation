@@ -15,10 +15,10 @@
     "mean_confidence": 0.9999999999999999,
     "final_confidence": 0.9999999999999999,
     "action_distribution": {
-      "0": 6,
-      "1": 9
+      "0": 7,
+      "1": 8
     },
-    "mean_efe": 3.139206314219453
+    "mean_efe": 0.13920631421945634
   },
   "plots_generated": true
 }

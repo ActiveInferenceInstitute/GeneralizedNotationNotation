@@ -1,17 +1,24 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary:
+Here is a concise summary of the GNN specification:
 
-**Model Overview:**
-This GNN Representation is designed to enable modality-specific processing of ActInfOntology annotations in structured models like Factor Graph Active Inference Model (FAM) and GNN Representation (GRN). The key variables include:
+**Overview**
+This GNN implementation enables modality-specific processing by decomposing an active inference generative model into independent observation modalities (visual and proprioceptive) and joint probability distributions over variables (position, velocity). The model consists of two main components:
 
-1. **Hidden states**: A set of 3 matrices representing the visual modalities, Proprioceptive, and Visual preferences.
-2. **Observations**: A set of 4 matrices representing the position, velocity, and perception information from each observation modality.
-3. **Actions/Controls**: A set of 1 matrix representing the action-independent probabilities for each observation modality.
-4. **Constraints**: A set of 1 matrix representing the constraints on the observed modalities (e.g., visual modality).
-5. **Key Variables**: A list of 2 matrices representing the hidden states, observational variables, and actions/controls from each observation modality.
-6. **Notable Features**: A set of 3 matrices representing the key features of this model:
-   - **Visual modalities**: A set of 1 matrix representing visual modalities (visual perception)
-   - **Proprioceptive modalities**: A set of 2 matrices representing Proprioceptive modalities (position and velocity)
-   - **Navigation modality**: A set of 3 matrices representing Navigation modality information
-7. **Constraints**: A list of 1 matrix representing the constraints on the observed modalities (e.g., visual modality).
+1. **Visual modality**: A factor graph decomposition for tractable inference in structured models with visual and proprioceptive modalities.
+2. **Proprioceptive modality**: A factor graph decomposition for constrained constraint-based reasoning using the joint probability distribution over variables (position, velocity).
+3. **Action/Policy**: A decision tree model that enables modality-specific processing of action-independent information from actions to decisions and policy updates based on preferences.
+4. **Factor graphs**: Represented as matrices with key variables for each observation modality and action constraint.
+5. **Model parameters** are represented in the form of matrices, which can be used to perform inference using a specific model type or to specify additional constraints (e.g., restricted actions).
+6. **Key features** include:
+   - Hidden states
+   - Observations
+   - Actions/Controls
+   - Variables
+   - Constraints
+
+7. **Notable features**:
+   - Unique aspects of this implementation design, including modality-specific processing and inference capabilities based on constraints (e.g., restricted actions).
+8. **Use cases** include:
+   - Constraint-based reasoning using constrained constraint-based decision trees for constrained action spaces.
+   - Constraint-based reasoning with constrained constraint matrices to enable modality-specific processing of constrained action spaces.

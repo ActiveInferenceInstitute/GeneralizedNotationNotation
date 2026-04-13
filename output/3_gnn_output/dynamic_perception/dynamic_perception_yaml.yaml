@@ -62,10 +62,10 @@ connections:
   target_variables:
   - F
   weight: null
-created_at: '2026-04-10T10:24:31.838755'
+created_at: '2026-04-12T17:23:00.029431'
 equations: []
 model_name: Dynamic Perception Model
-modified_at: '2026-04-10T10:24:31.838755'
+modified_at: '2026-04-12T17:23:00.029432'
 ontology_mappings:
 - description: null
   ontology_term: RecognitionMatrix

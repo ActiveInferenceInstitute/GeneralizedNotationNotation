@@ -6,12 +6,18 @@ Prompt:
 
 Response:
 
-Based on the documentation and code examples provided in the document, here are some steps to implement a GNN representation for an active inference agent:
+You've already provided the relevant information for the GNN model in your response. Here's an updated version with some additional details:
 
-1. **Initialization**: Initialize the model with the parameters specified by the user (e.g., `A`, `B`, `C`). This is done using the `initialize_model()` function from the `ActiveInferencePOMDP` module.
-2. **Model Initialization**: Initialize the model with the initial set of parameters (`A`) and a random initialization for each observation dimension (e.g., `num_hidden_states`, `num_actions`, `num_timesteps`, `num_observations`.). This is done using the `initialize()` function from the `ActiveInferencePOMDP` module.
-3. **Initialization**: Initialize the model with the initial set of parameters (`A`) and a random initialization for each observation dimension (e.g., `num_hidden_states`, `num_actions`, `num_timesteps`, `num_observations`.). This is done using the `initialize()` function from the `ActiveInferencePOMDP` module.
-4. **Initialization**: Initialize the model with the initial set of parameters (`A`) and a random initialization for each observation dimension (e.g., `num_hidden_states`, `num_actions`, `num_timesteps`, `num_observations`.). This is done using the `initialize()` function from the `ActiveInferencePOMDP` module.
-5. **Initialization**: Initialize the model with the initial set of parameters (`A`) and a random initialization for each observation dimension (e.g., `num_hidden_states`, `num_actions`, `num_timesteps`, `num_observations`.). This is done using the `initialize()` function from the `ActiveInferencePOMDP` module.
-6. **Initialization**: Initialize the model with the initial set of parameters (`A`) and a random initialization for each observation dimension (e.g., `num_hidden_states`, `num_actions`, `num_timesteps`, `num_observations`.). This is done using the `initialize()` function from the `ActiveInferencePOMDP` module.
-7. **Initialization**: Initialize the model with the initial set of parameters (`A`) and a random initialization for each observation dimension (e.g., `num_hidden_states
+1. **GNN Section**: The `ActiveInferencePOMDP` class represents a classic Active Inference agent, which is suitable for rendering into various simulation or inference backends. It defines a set of parameters that can be used to initialize the agent and specify its behavior in different scenarios.
+
+2. **ModelName**: The `ActiveInferencePOMDP` class has attributes representing the available actions (actions), states, hidden states, preferences, habit, policy prior, and initial belief distribution. These are represented by lists of tuples containing the corresponding values for each attribute.
+
+3. **InitializationParameters** - This is a dictionary that contains the parameters used to initialize the agent. It's initialized with default values based on the type of action selected (action = "inference", policy_prior = "policy") and actions chosen (actions = "observation" or "action").
+
+4. **ModelAnnotation**: The `model` attribute represents the model annotation for the GNN instance, which specifies the name of the model object to be used as an inference agent in a different backend implementation. This allows you to use the same model annotations across different implementations.
+
+5. **GNNVersionAndFlags** - This is another dictionary that contains information about the version and flags associated with the GNN instance, which can be useful for debugging purposes or when comparing models between different implementations.
+
+To summarize:
+- `ActiveInferencePOMDP` represents a classic Active Inference agent for a discrete POMDP with one observation modality (state) and one hidden state factor. It has an initial policy prior (habit), a history of actions, preferences, habit, and policy prior, as well as a belief distribution over observations.
+- `GNNVersionAndFlags` contains information about the version and flags associated with the GNN instance, which can be useful for debugging purposes or when comparing models between different implementations.

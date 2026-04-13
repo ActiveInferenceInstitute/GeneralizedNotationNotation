@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 13.718742,
-  "timestamp": "2026-04-10T10:26:54.401552",
+  "execution_time": 13.751801,
+  "timestamp": "2026-04-12T17:25:38.317446",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

@@ -1,18 +1,19 @@
 {
-  "timestamp": "2026-04-10T10:35:30.271999",
+  "timestamp": "2026-04-12T17:34:53.492008",
   "frameworks": {
     "numpyro": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        0.717682,
-        0.798662,
-        0.817426,
-        0.709139,
-        0.712855,
-        0.718057,
-        0.624404,
-        0.715492
+        0.896716,
+        0.774636,
+        0.87741,
+        0.800783,
+        0.728401,
+        0.733679,
+        0.634298,
+        0.642649,
+        0.724365
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/numpyro/execution_logs/Simple Markov Chain_numpyro.py_execution.log",
@@ -21,6 +22,7 @@
         "output/12_execute_output/actinf_pomdp_agent/numpyro/execution_logs/Active Inference POMDP Agent_numpyro.py_execution.log",
         "output/12_execute_output/multi_armed_bandit/numpyro/execution_logs/Multi Armed Bandit Agent_numpyro.py_execution.log",
         "output/12_execute_output/tmaze_epistemic/numpyro/execution_logs/T-Maze Epistemic Foraging Agent_numpyro.py_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/numpyro/execution_logs/Bnlearn Causal Model_numpyro.py_execution.log",
         "output/12_execute_output/two_state_bistable/numpyro/execution_logs/Two State Bistable POMDP_numpyro.py_execution.log",
         "output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log"
       ],
@@ -31,6 +33,7 @@
         "output/12_execute_output/actinf_pomdp_agent/numpyro",
         "output/12_execute_output/multi_armed_bandit/numpyro",
         "output/12_execute_output/tmaze_epistemic/numpyro",
+        "output/12_execute_output/bnlearn_causal_model/numpyro",
         "output/12_execute_output/two_state_bistable/numpyro",
         "output/12_execute_output/simple_mdp/numpyro"
       ],
@@ -233,17 +236,18 @@
       "data_source": "output/12_execute_output/simple_mdp/numpyro/simulation_data/simulation_results.json"
     },
     "pymdp": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        2.597146,
-        2.647969,
-        3.014956,
-        2.623076,
-        2.641339,
-        2.719854,
-        2.51209,
-        2.598617
+        2.678134,
+        2.652493,
+        2.995405,
+        2.7315,
+        2.682456,
+        2.699716,
+        2.641093,
+        2.626204,
+        2.664974
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/pymdp/execution_logs/Simple Markov Chain_pymdp.py_execution.log",
@@ -252,6 +256,7 @@
         "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log",
         "output/12_execute_output/multi_armed_bandit/pymdp/execution_logs/Multi Armed Bandit Agent_pymdp.py_execution.log",
         "output/12_execute_output/tmaze_epistemic/pymdp/execution_logs/T-Maze Epistemic Foraging Agent_pymdp.py_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/pymdp/execution_logs/Bnlearn Causal Model_pymdp.py_execution.log",
         "output/12_execute_output/two_state_bistable/pymdp/execution_logs/Two State Bistable POMDP_pymdp.py_execution.log",
         "output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple MDP Agent_pymdp.py_execution.log"
       ],
@@ -262,6 +267,7 @@
         "output/12_execute_output/actinf_pomdp_agent/pymdp",
         "output/12_execute_output/multi_armed_bandit/pymdp",
         "output/12_execute_output/tmaze_epistemic/pymdp",
+        "output/12_execute_output/bnlearn_causal_model/pymdp",
         "output/12_execute_output/two_state_bistable/pymdp",
         "output/12_execute_output/simple_mdp/pymdp"
       ],
@@ -534,17 +540,18 @@
       ]
     },
     "pytorch": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        0.486332,
-        0.455138,
-        0.456369,
-        0.457399,
-        0.457856,
-        0.45662,
-        0.533655,
-        0.457858
+        0.486359,
+        0.46497,
+        0.462374,
+        0.460284,
+        0.463819,
+        0.462165,
+        0.464507,
+        0.465323,
+        0.497435
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/pytorch/execution_logs/Simple Markov Chain_pytorch.py_execution.log",
@@ -553,6 +560,7 @@
         "output/12_execute_output/actinf_pomdp_agent/pytorch/execution_logs/Active Inference POMDP Agent_pytorch.py_execution.log",
         "output/12_execute_output/multi_armed_bandit/pytorch/execution_logs/Multi Armed Bandit Agent_pytorch.py_execution.log",
         "output/12_execute_output/tmaze_epistemic/pytorch/execution_logs/T-Maze Epistemic Foraging Agent_pytorch.py_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/pytorch/execution_logs/Bnlearn Causal Model_pytorch.py_execution.log",
         "output/12_execute_output/two_state_bistable/pytorch/execution_logs/Two State Bistable POMDP_pytorch.py_execution.log",
         "output/12_execute_output/simple_mdp/pytorch/execution_logs/Simple MDP Agent_pytorch.py_execution.log"
       ],
@@ -563,6 +571,7 @@
         "output/12_execute_output/actinf_pomdp_agent/pytorch",
         "output/12_execute_output/multi_armed_bandit/pytorch",
         "output/12_execute_output/tmaze_epistemic/pytorch",
+        "output/12_execute_output/bnlearn_causal_model/pytorch",
         "output/12_execute_output/two_state_bistable/pytorch",
         "output/12_execute_output/simple_mdp/pytorch"
       ],
@@ -570,188 +579,188 @@
         [
           0.0,
           0.0,
-          0.9999999999999996,
-          0.0
+          0.0,
+          0.9999999999999996
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
         [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ]
       ],
       "actions": [
         0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        1,
+        0,
         1,
         1,
         0,
         1,
         0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1,
-        1
+        0
       ],
       "observations": [
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2,
-        2
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
       ],
       "free_energy": [
         [
-          3.1392063142194524,
-          3.1392063142194524
+          0.13920631421945598,
+          0.13920631421945598
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ],
         [
-          3.1392063142194537,
-          3.1392063142194537
+          0.13920631421945634,
+          0.13920631421945634
         ]
       ],
       "num_timesteps": 15,
@@ -765,17 +774,18 @@
       "data_source": "output/12_execute_output/simple_mdp/pytorch/simulation_data/simulation_results.json"
     },
     "jax": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        0.752056,
-        0.700402,
-        0.796815,
-        0.673015,
-        0.680808,
-        0.693688,
-        0.649846,
-        0.772229
+        0.720521,
+        0.774075,
+        0.830731,
+        0.683569,
+        0.683445,
+        0.70001,
+        0.658662,
+        0.662887,
+        0.708112
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/jax/execution_logs/Simple Markov Chain_jax.py_execution.log",
@@ -784,6 +794,7 @@
         "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log",
         "output/12_execute_output/multi_armed_bandit/jax/execution_logs/Multi Armed Bandit Agent_jax.py_execution.log",
         "output/12_execute_output/tmaze_epistemic/jax/execution_logs/T-Maze Epistemic Foraging Agent_jax.py_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/jax/execution_logs/Bnlearn Causal Model_jax.py_execution.log",
         "output/12_execute_output/two_state_bistable/jax/execution_logs/Two State Bistable POMDP_jax.py_execution.log",
         "output/12_execute_output/simple_mdp/jax/execution_logs/Simple MDP Agent_jax.py_execution.log"
       ],
@@ -794,6 +805,7 @@
         "output/12_execute_output/actinf_pomdp_agent/jax",
         "output/12_execute_output/multi_armed_bandit/jax",
         "output/12_execute_output/tmaze_epistemic/jax",
+        "output/12_execute_output/bnlearn_causal_model/jax",
         "output/12_execute_output/two_state_bistable/jax",
         "output/12_execute_output/simple_mdp/jax"
       ],
@@ -1064,15 +1076,15 @@
       "success_count": 9,
       "total_count": 9,
       "execution_times": [
-        0.235158,
-        0.269416,
-        0.284476,
-        0.235728,
-        0.238225,
-        0.235463,
-        0.242819,
-        0.237351,
-        0.236587
+        0.239024,
+        0.23968,
+        0.239954,
+        0.249964,
+        0.239984,
+        0.237615,
+        0.23897,
+        0.240165,
+        0.239677
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/discopy/execution_logs/Simple Markov Chain_discopy.py_execution.log",
@@ -1132,15 +1144,15 @@
       "success_count": 9,
       "total_count": 9,
       "execution_times": [
-        1.795791,
-        1.791501,
-        1.794016,
-        1.800058,
-        1.818345,
-        1.856554,
-        1.86478,
-        1.827688,
-        1.805646
+        1.87446,
+        1.867333,
+        1.863996,
+        1.863733,
+        1.871513,
+        1.885945,
+        1.909742,
+        1.934086,
+        1.902171
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/bnlearn/execution_logs/Simple Markov Chain_bnlearn.py_execution.log",
@@ -1177,17 +1189,18 @@
       "data_source": "output/12_execute_output/simple_mdp/bnlearn/execution_logs/Simple MDP Agent_bnlearn.py_results.json"
     },
     "rxinfer": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        16.868532,
-        13.718742,
-        13.598655,
-        13.716532,
-        13.628652,
-        13.650717,
-        13.704146,
-        13.696943
+        16.707271,
+        13.751801,
+        14.239339,
+        13.864051,
+        13.764156,
+        13.761807,
+        13.919696,
+        13.816052,
+        13.81629
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/rxinfer/execution_logs/Simple Markov Chain_rxinfer.jl_execution.log",
@@ -1196,6 +1209,7 @@
         "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log",
         "output/12_execute_output/multi_armed_bandit/rxinfer/execution_logs/Multi Armed Bandit Agent_rxinfer.jl_execution.log",
         "output/12_execute_output/tmaze_epistemic/rxinfer/execution_logs/T-Maze Epistemic Foraging Agent_rxinfer.jl_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/rxinfer/execution_logs/Bnlearn Causal Model_rxinfer.jl_execution.log",
         "output/12_execute_output/two_state_bistable/rxinfer/execution_logs/Two State Bistable POMDP_rxinfer.jl_execution.log",
         "output/12_execute_output/simple_mdp/rxinfer/execution_logs/Simple MDP Agent_rxinfer.jl_execution.log"
       ],
@@ -1206,6 +1220,7 @@
         "output/12_execute_output/actinf_pomdp_agent/rxinfer",
         "output/12_execute_output/multi_armed_bandit/rxinfer",
         "output/12_execute_output/tmaze_epistemic/rxinfer",
+        "output/12_execute_output/bnlearn_causal_model/rxinfer",
         "output/12_execute_output/two_state_bistable/rxinfer",
         "output/12_execute_output/simple_mdp/rxinfer"
       ],
@@ -1362,17 +1377,18 @@
       "data_source": "output/12_execute_output/simple_mdp/rxinfer/simulation_data/simulation_results.json"
     },
     "activeinference_jl": {
-      "success_count": 8,
-      "total_count": 8,
+      "success_count": 9,
+      "total_count": 9,
       "execution_times": [
-        10.565799,
-        13.89512,
-        10.279033,
-        13.930742,
-        13.933109,
-        10.364203,
-        13.959456,
-        14.007849
+        16.396706,
+        14.367737,
+        10.627071,
+        14.202086,
+        14.135987,
+        10.60753,
+        14.199994,
+        14.145758,
+        14.26204
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/activeinference_jl/execution_logs/Simple Markov Chain_activeinference.jl_execution.log",
@@ -1381,6 +1397,7 @@
         "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log",
         "output/12_execute_output/multi_armed_bandit/activeinference_jl/execution_logs/Multi Armed Bandit Agent_activeinference.jl_execution.log",
         "output/12_execute_output/tmaze_epistemic/activeinference_jl/execution_logs/T-Maze Epistemic Foraging Agent_activeinference.jl_execution.log",
+        "output/12_execute_output/bnlearn_causal_model/activeinference_jl/execution_logs/Bnlearn Causal Model_activeinference.jl_execution.log",
         "output/12_execute_output/two_state_bistable/activeinference_jl/execution_logs/Two State Bistable POMDP_activeinference.jl_execution.log",
         "output/12_execute_output/simple_mdp/activeinference_jl/execution_logs/Simple MDP Agent_activeinference.jl_execution.log"
       ],
@@ -1391,6 +1408,7 @@
         "output/12_execute_output/actinf_pomdp_agent/activeinference_jl",
         "output/12_execute_output/multi_armed_bandit/activeinference_jl",
         "output/12_execute_output/tmaze_epistemic/activeinference_jl",
+        "output/12_execute_output/bnlearn_causal_model/activeinference_jl",
         "output/12_execute_output/two_state_bistable/activeinference_jl",
         "output/12_execute_output/simple_mdp/activeinference_jl"
       ],
@@ -1640,52 +1658,52 @@
     },
     "performance_comparison": {
       "numpyro": {
-        "mean": 0.726714625,
-        "std": 0.05551567819980564,
-        "min": 0.624404,
-        "max": 0.817426
+        "mean": 0.756993,
+        "std": 0.08615609540053835,
+        "min": 0.634298,
+        "max": 0.896716
       },
       "pymdp": {
-        "mean": 2.669380875,
-        "std": 0.14156468596055088,
-        "min": 2.51209,
-        "max": 3.014956
+        "mean": 2.707997222222222,
+        "std": 0.10586489214169553,
+        "min": 2.626204,
+        "max": 2.995405
       },
       "pytorch": {
-        "mean": 0.470153375,
-        "std": 0.02587929375938174,
-        "min": 0.455138,
-        "max": 0.533655
+        "mean": 0.46969288888888894,
+        "std": 0.01224265787631686,
+        "min": 0.460284,
+        "max": 0.497435
       },
       "jax": {
-        "mean": 0.714857375,
-        "std": 0.048971952202096006,
-        "min": 0.649846,
-        "max": 0.796815
+        "mean": 0.7135568888888889,
+        "std": 0.05274757892589204,
+        "min": 0.658662,
+        "max": 0.830731
       },
       "discopy": {
-        "mean": 0.24613588888888888,
-        "std": 0.01698566687563007,
-        "min": 0.235158,
-        "max": 0.284476
+        "mean": 0.2405592222222222,
+        "std": 0.003405954875990571,
+        "min": 0.237615,
+        "max": 0.249964
       },
       "bnlearn": {
-        "mean": 1.817153222222222,
-        "std": 0.025836038588580464,
-        "min": 1.791501,
-        "max": 1.86478
+        "mean": 1.8858865555555555,
+        "std": 0.02311524596024168,
+        "min": 1.863733,
+        "max": 1.934086
       },
       "rxinfer": {
-        "mean": 14.072864875,
-        "std": 1.0574622085046859,
-        "min": 13.598655,
-        "max": 16.868532
+        "mean": 14.182273666666667,
+        "std": 0.9039459394681122,
+        "min": 13.751801,
+        "max": 16.707271
       },
       "activeinference_jl": {
-        "mean": 12.616913875,
-        "std": 1.7167159865911452,
-        "min": 10.279033,
-        "max": 14.007849
+        "mean": 13.660545444444445,
+        "std": 1.761221404017495,
+        "min": 10.60753,
+        "max": 16.396706
       }
     },
     "metric_agreement": {
@@ -1876,13 +1894,13 @@
         "final_belief": [
           0.0,
           0.0,
-          0.9999999999999999,
-          0.0
+          0.0,
+          0.9999999999999999
         ],
-        "efe_mean": 3.139206314219453,
-        "efe_std": 8.656892398314543e-16,
-        "efe_min": 3.1392063142194524,
-        "efe_max": 3.1392063142194537
+        "efe_mean": 0.13920631421945634,
+        "efe_std": 9.316396450723393e-17,
+        "efe_min": 0.13920631421945598,
+        "efe_max": 0.13920631421945634
       },
       "jax": {
         "belief_dims": [
@@ -1939,8 +1957,8 @@
   },
   "metrics": {
     "total_frameworks": 8,
-    "total_successful": 66,
-    "total_executions": 66,
+    "total_successful": 72,
+    "total_executions": 72,
     "overall_success_rate": 1.0
   }
 }

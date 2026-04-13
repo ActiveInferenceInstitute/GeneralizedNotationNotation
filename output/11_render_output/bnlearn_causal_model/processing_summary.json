@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:25:04.524652",
+  "timestamp": "2026-04-12T17:23:34.706218",
   "source_file": "input/gnn_files/discrete/bnlearn_causal_model.md",
   "model_name": "Bnlearn Causal Model",
   "pomdp_dimensions": {
@@ -18,15 +18,14 @@
     "bnlearn"
   ],
   "frameworks_processed": [
-    "discopy",
-    "bnlearn"
-  ],
-  "frameworks_failed": [
     "pymdp",
     "rxinfer",
     "activeinference_jl",
     "jax",
+    "discopy",
     "pytorch",
-    "numpyro"
-  ]
+    "numpyro",
+    "bnlearn"
+  ],
+  "frameworks_failed": []
 }

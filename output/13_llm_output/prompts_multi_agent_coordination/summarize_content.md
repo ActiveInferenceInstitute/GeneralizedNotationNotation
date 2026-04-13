@@ -1,23 +1,19 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here's a concise version:
 
-**Model Overview**
-This is a simple multi-agent cooperative active inference (MCAF) model that uses a shared observation space to coordinate actions and preferences among two agents. The key variables are hidden states, observations, actions/controls, and action probabilities.
-Key Variables:
-   - Hidden states: [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls: [list with brief descriptions]
+**Model Overview:**
+This is an active inference framework that models cooperative multi-agent systems where agents can cooperate or compete in various ways based on shared observation space. The model consists of two main components:
 
- **Key Parameters**
-    - Most important matrices (A, B, C, D) and their roles
-    - Key hyperparameters and settings
-**Notable Features**
-    - Unique aspects of this model design
-    - Special properties or constraints
-    - Unique features that are not present in other models
-**Use Cases**
-   - Multi-agent cooperative active inference with two agents (A and B)
-   - Model description, including key variables and parameters
-
- **Summary**: A concise summary of the GNN specification. Focuses on the model's structure, key variables, and critical parameters. This is a beginner level summary that provides an overview without excessive detail or unnecessary elaboration.
+1. **GNN Representation**: A set of matrices representing the joint probability distributions for each agent's actions and their corresponding beliefs, with a hidden state matrix (H) that represents the collective belief of all agents.
+2. **Key Variables**: A list of matrices containing information about the actions/actions-belief pairs of two agents. These variables are used to compute expected free energy (EFE), which is a measure of cooperation between agents.
+3. **Critical Parameters**: Key parameters that determine how well the model performs in different scenarios, including:
+   - **Number of agents**: The number of agents acting independently or collectively.
+   - **Initialization**: Initial values for hidden states and actions/beliefs.
+   - **Model Accuracy**: A measure of how well the model predicts future outcomes based on its predictions.
+4. **Notable Features**:
+   - **Random Actions**: Random actions that are not shared among agents, which can help identify cooperation or competition between agents.
+   - **Random Actions**: Random actions that are shared among agents, which can help identify cooperation or competition between agents.
+   - **Random Actions**: Random actions that are correlated with each other and with the action of the previous agent (e.g., if two agents act together), which can help identify cooperation or competition between agents.
+5. **Use Cases**:
+   - **Multi-Agent Cooperative Active Inference**: A model designed to analyze cooperative multi-agent systems where agents cooperate in various ways based on shared observation space and aligned preferences.

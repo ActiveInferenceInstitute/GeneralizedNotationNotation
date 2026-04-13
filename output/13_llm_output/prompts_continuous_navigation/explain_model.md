@@ -1,28 +1,42 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the GNN Model:
+You've provided a comprehensive overview of the GNN (Generalized Notation Notation) specification and its key components. Here's a rewritten version with some minor edits for clarity and flow:
 
-**Model Purpose:**
-This model represents continuous state-space models that navigate a 2D environment and update their beliefs based on noisy or uncertain data. It uses Laplace approximation for Gaussian belief updating, Generalized coordinate matrices to capture uncertainty in predictions, and Bayesian inference to update beliefs. The goal is to learn from the observed data and make accurate decisions based on available information.
+**GNN Section:**
+ActInfContinuous
+```python
+# Define the model parameters
+state_dim = 2
+obs_dim = 2
+action_dim = 2
+dt = 0.1
+simulation_time = 10.0
+goal_x = 1.0
+goal_y = 1.0
+```
+
+**Model Purpose:** This model represents a continuous state-space agent navigating a 2D environment with noisy position measurements and Gaussian noise uncertainty covariance. The goal is to update the belief of the agent based on its actions, while also updating the probability distribution of the observed positions and velocities.
 
 **Core Components:**
 
-1. **State space**: A 2D state-space model representing a sequence of positions (x) and velocities (v).
-2. **Observations**: A sequence of noisy or uncertain positions, velocities, and actions to update the beliefs.
-3. **Actions**: A sequence of actions that can be performed based on the observed data.
-4. **Constraints**: A set of constraints representing uncertainty in predictions.
-5. **Action parameters**: A set of action parameters (e.g., belief mean) that are updated based on the current state and observations.
-6. **Predictions**: A sequence of predictions, which can be made using the actions or constraints.
-7. **Constraints**: A set of constraints representing uncertainty in predictions.
-8. **Action probabilities**: A probability distribution for each action parameter (belief mean) based on the current state and observations.
-9. **Prediction probabilities**: A probability distribution for each prediction parameter (action mean) based on the current state and observations.
-10. **Constraints**: A set of constraints representing uncertainty in predictions.
+1. **Belief Mean**: A set of values representing the current state-of-the-art beliefs about the agent's position and velocity. These are updated using a Laplace approximation for Gaussian belief updates.
+
+2. **State Transition Matrix**: A matrix representation of the observed positions and velocities, with each row representing one observation. The columns represent the actions taken by the agent (action_dim = 1).
+
+3. **Observation Covariance**: A set of values representing the current state-of-the-art observables for the agent's position and velocity. These are updated using a Laplace approximation for Gaussian observable updates.
 
 **Model Dynamics:**
 
-1. **Initialization**: A sequence of actions that can be performed based on the observed data, which are updated using Bayesian inference to update beliefs.
-2. **Learning**: The model learns from its observations and actions by updating its beliefs based on the current state and observations.
-3. **Adaptation**: The model adapts its behavior based on new information or uncertain predictions, allowing it to learn from a broader range of data.
-4. **Model convergence** (e.g., convergence to a stable equilibrium): A sequence of actions that converge towards a stable equilibrium in the state space.
-5. **Learning rate**, **decay rate**, and **bias**: Control parameters for updating beliefs based on new information or uncertain predictions, allowing the model to learn from a broader range of data.
-6. **Model stability** (e.g., stability to unstable regime): A sequence of
+1. **Action Matrix**: A matrix representation of the observed positions and velocities, with each row representing one observation. The columns represent the actions taken by the agent (action_dim = 2).
+
+2. **Prediction Matrix**: A set of values representing the current state-of-the-art predictions for the agent's position and velocity based on its actions. These are updated using a Laplace approximation for Gaussian prediction updates.
+
+**Active Inference Context:**
+
+1. **Goal Position**: A vector representing the goal position at each time step, with the goal being determined by the current state of the environment (goal_x = 1.0).
+
+2. **Objective**: A set of values representing the agent's objective function, which is a linear combination of the observed positions and velocities based on their actions. This represents the agent's overall performance in navigating the environment.
+
+**Practical Implications:**
+
+1.

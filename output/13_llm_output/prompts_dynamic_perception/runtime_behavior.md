@@ -6,25 +6,46 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of your model:
 ```python
 import numpy as np
-from scipy import stats
 
-# Define the parameters for your GNN model
-num_hidden_states = 2
-num_obs = 2
-num_timesteps = 10
+def gnn_model(input_shape):
+    """GNN model with dynamic perception and Bayesian inference."""
 
-# Generate the GNN representation
-GnnModel=np.random.rand(num_hidden_states, num_obs) * np.ones((num_hidden_states, num_obs)) + stats.normalvariate(
-    (0.95*D[2:4]),
-    (1/2)*ln(B^T*(o_t-F)),
-    (1/(2*np.sqrt(A)))
-) * np.ones((num_hidden_states, num_obs)) + stats.normalvariate(-0.95*D[2:4])**2 / 2 **2 # Softmax over states
-```
-This code generates a GNN representation of your model with the specified parameters and initializes it with random values for each hidden state. It then generates predictions using the transition matrix B, which is initialized to zero at time t=0 (no actions). The softmax function calculates the probability that the observed observation belongs to a particular hidden state based on the previous states.
-The `stats` module provides a way to calculate the distribution of values for each parameter in your model. For example, if you want to compute the distribution of values for the transition matrix B at time t=0 (no actions), you can use the following code:
-```python
-B = np.random.rand(num_hidden_states) * np.ones((num_hidden_states)) + stats.normalvariate(-1*D[2:4])**2 / 2 **2 # Softmax over states
-```
+    # Define the input shape
+    input_shape = (
+        input_shape[0],
+        input_shape[1] + 2,
+        input_shape[2] + 3,
+        input_shape[4] + 5,
+        input_shape[6] + 7,
+        input_shape[8] + 9
+    )
+
+    # Define the hidden state and observation matrices
+    H = np.array([[input_shape[0], input_shape[1]], [[input_shape[2]]]])
+    B = np.array([[input_shape[3], input_shape[4]], [[input_shape[5]]])
+    D = np.array([[input_shape[6], input_shape[7]], [[input_shape[8]]]])
+
+    # Define the transition matrix
+    A = np.array([
+        ([0, 1]),
+        ([1, 2]),
+        ([3, 4]),
+        ([5, 6])
+    ])
+    B = np.array([[0, 1], [1, 2]], dtype=np.float)
+
+    # Define the prior distribution
+    P(o_t|s_{tau}) = np.random.normal([0, 0.9/num_hidden_states] * num_timesteps + np.random.normal([0, 0.1]) * num_timesteps ** 2)
+
+    # Define the transition matrix
+    D = np.array([[input_shape[3], input_shape[4]], [[input_shape[5]]]])
+    D = np.dot(D, P(o_t|s_{tau}) + P(o_t|b)) / (np.sum((P(o_t) * d^T * s_(t+1)).sum() ** 2 for p in range(num_hidden_states))
+
+    # Define the prior distribution
+    P = np.random.normal([0, 0.9/num_hidden_states] * num_timesteps + np.random.normal([0, 0.1]) * num_timesteps ** 2)
+
+    # Initialize the inference parameters
+    F = np.zeros(input_shape[3:])
+    D = np.ones((input_

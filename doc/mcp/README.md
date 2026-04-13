@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Integration Guide | **Audience**: AI Developers & Integrators | **Complexity**: Advanced  
-> **Cross-References**: [API Documentation](../api/README.md) | [FastMCP Guide](fastmcp.md)
+> **Cross-References**: [API Documentation](../api/README.md) | [FastMCP Guide](fastmcp.md) | [doc/SPEC.md](../SPEC.md) (versioning policy)
 
 ## Overview
 The GNN project implements Model Context Protocol (MCP) to provide structured APIs for AI assistants and LLM integrations. MCP enables external tools and AI systems to interact with GNN processing capabilities through standardized interfaces.

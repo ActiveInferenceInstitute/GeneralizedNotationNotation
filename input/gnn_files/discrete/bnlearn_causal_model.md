@@ -51,7 +51,17 @@ A={
   (0.1, 0.9)
 }
 
-# Uniform action distribution
+# Transition model: P(S | S_prev, A)
+# Action 0: state tends to persist; Action 1: state tends to flip
+B={
+  ( (0.7, 0.3), (0.3, 0.7) ),
+  ( (0.3, 0.7), (0.7, 0.3) )
+}
+
+# Preference vector: slight preference for observation 1
+C={(0.0, 1.0)}
+
+# Uniform prior over initial hidden states
 D={(0.5, 0.5)}
 
 ## Equations

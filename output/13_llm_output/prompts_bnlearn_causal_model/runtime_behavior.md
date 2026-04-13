@@ -6,61 +6,41 @@ Prompt:
 
 Response:
 
-```python
-import bnlearn as bn
-from bnlearn import utils, gnn_syntax
+To implement the GNN model, we can use the following steps:
 
+1. Define the input parameters for the GNN model:
+   - `A`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
+   - `B`: The action map representing the transition probabilities between states
+   - `s`: The previous state, represented as a dictionary mapping to an integer
 
-def create_gnn(
-    num_timesteps=30,
-    num_hidden_states=2,
-    num_actions=2,
-    num_layers=16,
-    num_nodes=5,
-    num_classes=4,
-    num_steps=None):
-    """Create a Bayesian Network model mapping Active Inference structure to a Bayesian Network.
+2. Define the input parameters for the GNN model:
+   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
+   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
+3. Define the input parameters for the GNN model:
+   - `D`: A dictionary mapping to an integer
 
-    Parameters:
-        num_timesteps (int): Number of timesteps in the training set.
-            This is used for generating the network.
-            It should be consistent with the number of steps per node, so that
-                it can generate a graph where each node has 2 connections from one
-                    to itself and from another node to itself.
+4. Define the input parameters for the GNN model:
+   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
+   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
+5. Define the input parameters for the GNN model:
+   - `D`: A dictionary mapping to an integer
 
-    Parameters:
-        num_timesteps (int): Number of timesteps in the training set.
-            This is used for generating the network.
-            It should be consistent with the number of steps per node, so that
-                it can generate a graph where each node has 2 connections from one
-                    to itself and from another node to itself.
+6. Define the input parameters for the GNN model:
+   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
+   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
+7. Define the input parameters for the GNN model:
+   - `D`: A dictionary mapping to an integer
 
-    Parameters:
-        num_hidden_states (int): Number of hidden states in the Bayesian Network.
-            This is used for generating the network.
-            It should be consistent with the number of nodes per layer, so that
-                it can generate a graph where each node has 2 connections from one
-                    to itself and from another node to itself.
+8. Define the input parameters for the GNN model:
+   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
+   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
+9. Define the input parameters for the GNN model:
+   - `D`: A dictionary mapping to an integer
 
-    Parameters:
-        num_actions (int): Number of actions in the Bayesian Network.
-            This is used for generating the network.
-            It should be consistent with the number of nodes per layer, so that
-                it can generate a graph where each node has 2 connections from one
-                    to itself and from another node to itself.
+10. Define the input parameters for the GNN model:
+   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
+   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
+11. Define the input parameters for the GNN model:
+   - `D`: A dictionary mapping to an integer
 
-    Parameters:
-        num_layers (int): Number of layers in the Bayesian Network.
-            This is used for generating the network.
-            It should be consistent with the number of nodes per layer, so that
-                it can generate a graph where each node has 2 connections from one
-                    to itself and from another node to itself.
-
-    Parameters:
-        num_classes (int): Number of classes in the Bayesian Network.
-            This is used for generating the network.
-            It should be consistent with the number of nodes per layer, so that
-                it can generate a graph where each node has 2 connections from one
-                    to itself and from another node to itself.
-
-   
+12. Define

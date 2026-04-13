@@ -1,32 +1,24 @@
 # EXTRACT_PARAMETERS
 
-You've already provided the structure of the model annotations and parameter breakdowns for the GNN example. Here's a more detailed overview:
+Based on the document, here are the key components of the model structure:
 
-1. **Model Matrices**:
-   - A matrices representing the state space, action spaces (policy distributions), and hidden states. The matrix represents each action sequence with its corresponding policy distribution and prior over actions. Each action is represented by an action vector in the state space. The transition matrix represents the transitions between actions sequences. The logPreferenceVector represents the probability of transitioning from one action to another based on a given action sequence. The PolicyPriorVector represents the prior over initial states, which are initialized with random values and updated using a weighted average.
+1. **Initial Parameters**:
+   - **Accuracy**: Accuracy is a measure of how well each parameter fits into the overall model. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
 
-2. **Precision Parameters**:
-   - γ (gamma): precision parameters for each action sequence. This parameter is used to update the probability of transitioning from one action to another based on the previous actions in the sequence. The α parameter represents the learning rate, which controls how quickly the transition probabilities are updated. The other α values represent different types of transitions:
-   - α1 (α1): initializes the transition probabilities with random values and updates them using a weighted average. This allows for more flexible updating policies based on new data.
-   - α2 (α2): initializes the transition probabilities to their previous value, which can be useful when there are multiple actions in sequence.
+2. **Initial Parameters**:
+   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
 
-3. **Dimensional Parameters**:
-   - State space dimensions: 4
-   - Observation space dimensions: 4
-   - Action space dimensions: 64
-   - Action sequence dimensionality: 128 (for action sequences with T=5) and 1024 (for action sequences with T=30).
+3. **Initial Parameters**:
+   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
 
-4. **Temporal Parameters**:
-   - Time horizons: 30 seconds in the case of GNNs, which allows for more flexible updating policies based on new data. The time horizon is set to 30 seconds when using a fixed parameter. However, this can be adjusted by adjusting the parameters of the parameter file.
+4. **Initial Parameters**:
+   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
 
-5. **Initial Conditions**:
-   - Initial conditions:
-    - Initial state (initialized actions):
-    - Initial action sequence:
-      - Initial position and velocity for each action sequence
+5. **Initial Parameters**:
+   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
 
-      - Initial reward distribution:
-        - Initial reward distribution is initialized with random values based on a weighted average from all actions sequences in the initial state space. This allows for more flexible updating policies based on new data.
+6. **Initial Parameters**:
+   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
 
-    - Initial policy parameters:
-    - Initial policy parameter set to 0 (initial
+7. **Initialization Strategies**:
+  

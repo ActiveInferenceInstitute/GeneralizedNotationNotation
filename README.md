@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-12
 
 <div align="center">
 
@@ -48,10 +48,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-03-24  
+**Last Updated**: 2026-04-12  
 **Version**: 1.3.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,906 passed, 30 skipped (2026-03-24). Including `test_llm_ollama*.py` adds integration cases that call the local `ollama` CLI (default tag overridable via `OLLAMA_MODEL`); without a responsive daemon they may time out or fail.  
+**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-12). Including `test_llm_ollama*.py` adds integration cases that call the local `ollama` CLI (default tag overridable via `OLLAMA_MODEL`); without a responsive daemon they may time out or fail.  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 

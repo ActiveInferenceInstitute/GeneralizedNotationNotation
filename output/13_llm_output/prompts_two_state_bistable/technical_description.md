@@ -6,25 +6,53 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of the two-state bistable POMDP:
+```python
+import numpy as np
+from typing import List, Tuple
 
-1. Create an instance of the GNN model with 2 hidden states, 2 observations, and 2 actions.
-2. Use the `infer_states` method to compute the Bayesian belief update for each observation based on the action sequence.
-3. Use the `transition_matrix` method to compute the transition matrix from one state to another in a symmetric bistable potential.
-4. Use the `logpreferenceVector` method to compute the log-likelihood vector of the policy and control actions.
-5. Use the `priorOverHiddenStates` method to compute the prior over hidden states for each observation.
-6. Use the `habitvector` method to compute the habit vector from one state to another in a symmetric bistable potential.
-7. Use the `likelihoodMatrix` and `logpreferenceVector` methods to compute the likelihood of observing observation 1 versus observation 0, respectively.
-8. Use the `priorOverHiddenStates` method to compute the prior over hidden states for each observation.
-9. Use the `habitvector` method to compute the habit vector from one state to another in a symmetric bistable potential.
-10. Use the `likelihoodMatrix` and `logpreferenceVector` methods to compute the likelihood of observing observation 2 versus observation 1, respectively.
-11. Use the `priorOverHiddenStates` method to compute the prior over hidden states for each observation.
-12. Use the `habitvector` method to compute the habit vector from one state to another in a symmetric bistable potential.
-13. Use the `likelihoodMatrix` and `logpreferenceVector` methods to compute the likelihood of observing observation 0 versus observation 1, respectively.
+class GNNModel(object):
+    """GNN model with minimal state spaces and no hidden states."""
 
-You can use the following code as an example:
+    def __init__(self) -> None:
+        self.states = [
+            (0., 0.),
+            (123456789,),
+            (0., 0.)
+        ]
 
-1. Create an instance of the GNN model with 2 hidden states, 2 observations, 2 actions.
-2. Use the `infer_states` method to compute the Bayesian belief update for each observation based on the action sequence.
-3. Use the `transition_matrix` method to compute the transition matrix from one state to another in a symmetric bistable potential.
-4. Use the `logpreferenceVector` method to compute the log-likelihood vector of the policy and control actions.
+        # Initialize the initial observation for each action
+        self.observations, self.hidden_states = [], []
+
+    def infer(self) -> List[Tuple[float, float]]:
+        """Activate an action."""
+        return [(-1**i + 2*np.random.rand()) * (
+            -0.85 ** i / 4 for i in range(num_actions)]
+
+        # Initialize the next observation and policy
+    def infer_states(self) -> List[Tuple[float, float]]:
+        """Activate an action."""
+        return [(-1**i + 2*np.random.rand()) * (
+            -0.85 ** i / 4 for i in range(num_actions))]
+
+        # Initialize the next observation and policy
+    def infer_hidden_states(self) -> List[Tuple[float, float]]:
+        """Activate an action."""
+        return [(-1**i + 2*np.random.rand()) * (
+            -0.85 ** i / 4 for i in range(num_actions))]
+
+        # Initialize the next observation and policy
+    def infer_hidden_states_with_noise(self) -> List[Tuple[float, float]]:
+        """Activate an action."""
+        return [(-1**i + 2*np.random.rand()) * (
+            -0.85 ** i / 4 for i in range(num_actions))]
+
+        # Initialize the next observation and policy
+    def infer_policy(self) -> List[Tuple[float, float]]:
+        """Activate an action."""
+        return [(-1**i + 2*np.random.rand()) * (
+            -0.85 ** i / 4 for i in range(num_actions))]
+
+        # Initialize the next observation and policy
+    def infer_policy_with_noise(self) -> List[Tuple[float, float]]:
+        """Activate an action."""
+        return [(-1**i + 2*np.random.rand()) * (

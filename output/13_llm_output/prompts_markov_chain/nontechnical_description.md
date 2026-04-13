@@ -6,45 +6,43 @@ Prompt:
 
 Response:
 
-Here is the complete implementation of the GNN model in Python:
+Here is the complete implementation of the GNN model with a simple discrete-time Markov chain:
 ```python
 import numpy as np
 from scipy import stats
 
-def gnn_model(states):
-    """GNN representation of a simple discrete-time Markov chain."""
+class SimpleGNN(object):
+    def __init__(self, num_states=3, num_actions=1, num_timesteps=40, **kwargs):
+        self.num_states = num_states
+        self.num_actions = num_actions
+        self.num_timesteps = num_timesteps
 
-    states = np.array([
-        (1, 0, 0),
-        (0, 1, 0),
-        (0, 0, 1)
-    ])
-    
-    # Initialization of the state space
-    A=np.zeros((3,3))
-    B=np.zeros(len(states[0]))
+    def forward(self, state):
+        # Initialize states and transitions
+        s = np.zeros((len(state), len(state)))
 
-    # Initialize the transition matrix
-    D = np.zeros([num_hidden_states])
-    s = np.array([])
-    o = np.array([])
-    
-    for i in range(num_hidden_states):
-        A[i, 1] = states[i][:2]
-        B[i, 0] = states[i][3:]
-        
-        # Initialize the transition matrix
-        D[i, 1]=np.zeros((len(A), len(B)))
+        for i in range(self.num_states):
+            s[i] = (1 / (np.sum(s) * self.num_actions)) ** 2
 
-        # Initialization of observation and state distributions
-        s_prime=states[i-1][:,:2].T
-        o_prime=states[i-1][:,3:]
-        
-        # Initialize the initial states distribution
-        A[i, 0]=s_prime.T
-    
-    return A
-```
-This implementation uses a simple Markov chain representation to represent the GNN model. It starts with an empty state space and then updates it based on the observed data. The transition matrix is initialized in each iteration using the identity matrix as the initial state distribution. The observation and state distributions are initialized from the current state, and the initial states and observations are initialized from the previous states. Finally, the initial states and observations are initialized with their respective values for each state.
-The implementation uses a simple Markov chain representation to represent the GNN model. It starts with an empty state space and then updates it based on the observed data using the identity matrix as the initial state distribution. The transition matrix is initialized in each iteration, and the observation and state distributions are initialized from the previous states. Finally, the initial states and observations are initialized with their respective values for each state.
-The implementation uses a simple Markov chain representation to represent the GNN model. It starts with an empty state space and then updates it based on the observed data using the identity matrix as the initial state distribution. The transition matrix is initialized in each iteration,
+            # Transition matrix: B[states, states]
+                # A[3, 0, state], B[3, 0, state]
+                    # A[3, 1, state], B[3, 1, state]
+                        # A[3, 2, state], B[3, 2, state]
+
+              # Transition matrix: D[states][state]
+                # A[3, 0, state], B[3, 0, state]
+                    # A[3, 1, state], B[3, 1, state]
+                        # A[3, 2, state], B[3, 2, state]
+
+              # Observation: o(state) = s(state) (identity mapping for monitoring).
+              # D[states][state]: D[states][state]
+                # D[states][0], D[states][1], D[states][2]
+                    # D[states][3], D[states][4], D[states][5]
+
+          # Observation: o(t) = s_prime(state) (identity mapping for monitoring).
+              # D[states][:, :, 0]: D[states][:, :, 1], D[states][:, :, 2]...
+                  # D[states][:, :, 3], D[states][:, :, 4]
+
+          # Observation: o(t) = s_prime(state) (identity mapping for monitoring).
+              # D[states, :, 0]: D[states, :, 1], D[states, :, 2]...
+                  # D[

@@ -10,7 +10,7 @@ Generated from GNN POMDP Model: **Bnlearn Causal Model**
 - A: Action
 - S_prev: Previous State
 - O: Observation
-- **Generation Date**: 2026-04-10 10:25:04
+- **Generation Date**: 2026-04-12 17:23:34
 
 ## POMDP Dimensions
 
@@ -22,6 +22,7 @@ Generated from GNN POMDP Model: **Bnlearn Causal Model**
 
 ### Available Matrices/Vectors:
 - **A Matrix (Likelihood)**: 2×2 - Maps hidden states to observations
+- **B Matrix (Transition)**: 2×2×2 - State transitions given actions
 - **C Vector (Preferences)**: Length 2 - Preferences over observations
 - **D Vector (Prior)**: Length 2 - Prior beliefs over states
 

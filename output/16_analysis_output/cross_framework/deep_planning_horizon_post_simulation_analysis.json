@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-10T10:35:03.791199",
+  "timestamp": "2026-04-12T17:34:23.784445",
   "execution_results_dir": "output/12_execute_output/deep_planning_horizon",
   "framework_results": {
     "bnlearn": {
@@ -328,18 +328,18 @@
         "mean_fe": 1.26095
       },
       "execution_time": {
-        "bnlearn": 1.791501,
-        "discopy": 0.269416,
-        "jax": 0.700402,
-        "pytorch": 0.455138,
-        "pymdp": 2.647969,
-        "activeinference_jl": 13.89512,
-        "numpyro": 0.798662,
-        "rxinfer": 13.718742
+        "bnlearn": 1.867333,
+        "discopy": 0.23968,
+        "jax": 0.774075,
+        "pytorch": 0.46497,
+        "pymdp": 2.652493,
+        "activeinference_jl": 14.367737,
+        "numpyro": 0.774636,
+        "rxinfer": 13.751801
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.269416
+        "time": 0.23968
       },
       "success_rates": {
         "bnlearn": true,

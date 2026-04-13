@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.712855,
-  "timestamp": "2026-04-10T10:25:44.957279",
+  "execution_time": 0.728401,
+  "timestamp": "2026-04-12T17:24:16.969610",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -46,7 +46,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.443s\nResults saved to: output/12_execute_output/multi_armed_bandit/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.454s\nResults saved to: output/12_execute_output/multi_armed_bandit/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [

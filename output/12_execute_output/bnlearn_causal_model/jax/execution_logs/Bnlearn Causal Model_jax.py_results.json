@@ -1,0 +1,132 @@
+{
+  "framework": "jax",
+  "model_name": "bnlearn_causal_model",
+  "script_name": "Bnlearn Causal Model_jax.py",
+  "script_path": "output/11_render_output/bnlearn_causal_model/jax/Bnlearn Causal Model_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 0.658662,
+  "timestamp": "2026-04-12T17:24:40.866196",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.0372,
+      0.1633
+    ],
+    "states": [],
+    "observations": [
+      1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    "actions": [
+      0,
+      0,
+      1,
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (2, 2)\n   B matrix shape: (2, 2, 2)\n   C vector shape: (2,)\n   D vector shape: (2,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 2\n- Number of observations: 2\n- Number of actions: 2\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.5 0.5]\n   Updated belief: [0.9 0.1]\n   Selected action: 1\n   Expected free energy: 0.0372\n   EFE for all actions: [0.29322276 0.03722268]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 1 0 1 1 0 0 0 0 0 1 0 0 0]\n   Final belief: [0.31990403 0.680096  ]\n   Average EFE: 0.1633\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/bnlearn_causal_model/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.10000000149011612,
+        0.8999999761581421
+      ],
+      [
+        0.054140131920576096,
+        0.9458599090576172
+      ],
+      [
+        0.8101603984832764,
+        0.18983957171440125
+      ],
+      [
+        0.06273425370454788,
+        0.9372656941413879
+      ],
+      [
+        0.81256502866745,
+        0.18743494153022766
+      ],
+      [
+        0.84373539686203,
+        0.15626463294029236
+      ],
+      [
+        0.0594276487827301,
+        0.9405723214149475
+      ],
+      [
+        0.05051163583993912,
+        0.9494883418083191
+      ],
+      [
+        0.04973386228084564,
+        0.9502660632133484
+      ],
+      [
+        0.04966634884476662,
+        0.9503335952758789
+      ],
+      [
+        0.049660492688417435,
+        0.9503394961357117
+      ],
+      [
+        0.8088923096656799,
+        0.19110769033432007
+      ],
+      [
+        0.06286146491765976,
+        0.9371386170387268
+      ],
+      [
+        0.05081303045153618,
+        0.9491869807243347
+      ],
+      [
+        0.04976004734635353,
+        0.9502400159835815
+      ]
+    ],
+    "num_timesteps": 15
+  },
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 1307,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/bnlearn_causal_model/jax"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/bnlearn_causal_model/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

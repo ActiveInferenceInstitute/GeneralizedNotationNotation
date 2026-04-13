@@ -1,51 +1,35 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Based on the document, here are the key parameters for the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation of the input data.
-   - B matrices representing the action-dependent transitions between states.
-   - C matrices representing the policy updates over actions.
-   - D matrices representing the habit biases in the hidden state space.
-   - E matrices representing the expected free energy per policy across different actions.
+   - A matrices representing the hidden states and actions of the agent
+   - B matrices representing the transition matrix and prior over initial states
+   - C matrices representing the habit vector and prior over action selection
+   - D matrices representing the habit vector and prior over action selection
+   - E matrices representing the action selection parameters
 
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles.
-   - α (alpha): learning rates and adaptation parameters.
-   - Other precision/confidence parameters, such as δ, ε, and β are not specified but can be inferred based on the document.
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
-   - State space dimensions for each factor:
-      - A matrices representing the model structure and interpretation of the input data.
-      - B matrices representing the action-dependent transitions between states.
-      - C matrices representing the policy updates over actions.
-      - D matrices representing the habit biases in the hidden state space.
+   - State space dimensions for each factor
+   - Observation space dimensions for each modality
+   - Action space dimensions for each control factor
 
 4. **Temporal Parameters**:
-   - Time horizons (t): The time horizon for each parameter, which can be inferred from the document.
-   - Temporal dependencies and windows: The temporal dependencies between different parameters are not specified but can be inferred based on the document.
-   - Update frequencies and timescales: The update frequency is set to 10% of the total number of states (T=2), while the update time is set to 5 seconds for each parameter.
+   - Time horizons (T)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
 
 5. **Initial Conditions**:
-   - Initial parameters:
-      - γ = 0.9
-      
-    - α = 0.8
-      
-    - Other initial conditions are not specified but can be inferred based on the document.
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
 
-The document provides a systematic parameter breakdown, with the following key information for each parameter:
-
-1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation of the input data.
-   - B matrices representing the action-dependent transitions between states.
-   - C matrices representing the policy updates over actions.
-   - D matrices representing the habit biases in the hidden state space.
-   - E matrices representing the expected free energy per policy across different actions.
-
-2. **Precision Parameters**:
-   - γ = 0.9
-      
-    - α = 0.8
-      
-    - Other precision/confidence parameters, such as δ, ε, and β are not specified but can be
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

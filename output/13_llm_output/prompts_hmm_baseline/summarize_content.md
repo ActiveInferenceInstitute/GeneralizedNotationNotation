@@ -1,33 +1,27 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here's a concise version:
 
-**Model Overview**
-This is a discrete Hidden Markov Model (HMM) that models the behavior of a sequence of states and actions over time. The model consists of four hidden states, six observation symbols, and two action-based transitions. It has 4 hidden states with 6 observations, 10 initial state distributions, and 50 timesteps.
+**Model Overview:** This GNN-based model represents an active inference framework that enables continuous learning from sequential data. It consists of four hidden states (`A`, `B`), six observation symbols (`s`) and two action variables (`o`). The model is composed of three main components:
 
-**Key Variables**
-The model includes:
+1. **Hidden Markov Model Baseline**: A discrete, stochastic model with 4 hidden states (represented by the matrices `A` and `B`) and a fixed transition matrix (`D`), which allows for continuous learning from sequential data.
+2. **Randomized Notation Notation (GNN) Representation**: A probabilistic graphical model that enables active inference based on probability distributions of observed observations, action sequences, and hidden states.
+3. **State Transition Model**: A stochastic model with 6 observation symbols (`s`) to capture the dynamics of observable states.
+4. **Forward Algorithm**: A forward algorithm for learning from sequential data using a random initialization process.
+5. **Backward Algorithm**: A backward algorithm for learning from observed state sequences and hidden states, allowing for continuous inference based on probability distributions of action sequences.
+6. **State Posterior**: A probabilistic graphical model that captures the joint distribution of observable states and actions in each state.
+7. **Free Energy**: A measure of the total energy of the system, which is a function of the current state and its interactions with other states.
+8. **Forward Variable**: A variable representing the probability of observing a particular observation based on the action sequence.
+9. **Backward Variable**: A variable representing the probability of observing an observable state based on the previous observed state and action sequences.
+10. **Action Variables**: A set of variables that represent actions taken in each state, allowing for continuous inference based on probability distributions of action sequences.
 
-1. **Hidden States**: A set of 2x3 matrices representing the current state and its transition probabilities between states. Each state is represented by a vector containing the probability distribution for each state.
+**Key Parameters:**
 
-2. **Observations**: A set of 6 columns in a stochastic matrix that represents the current observation, with each column having the corresponding state from the hidden state. Each state has a probability distribution over all possible actions and observations.
-
-3. **Actions/Controls**: A set of 4 matrices representing the action-based transitions between states. Each transition is represented by a vector containing the probabilities for each state and its next state, with the current state being at the end of the transition.
-
-**Critical Parameters**
-The model includes:
-
-1. **Random Initial State Distribution**: A set of 2x3 matrices representing the initial state distribution (prior). Each matrix has a probability distribution over all possible actions and observations.
-
-2. **Forward Variable**: A set of 4 matrices representing the forward algorithm for updating the action-based probabilities based on the current state. The forward algorithm updates the action probabilities in each state, with the next state being at the end of the transition.
-
-3. **Backward Variable**: A set of 6 matrices representing the backward algorithm for updating the action-based probabilities based on the current state. The backward algorithm updates the action probabilities in each state, with the previous state being at the end of the transition.
-
-**Notable Features**
-The model includes:
-
-1. **Random Initial State Distribution**: A set of 2x3 matrices representing the initial state distribution (prior). Each matrix has a probability distribution over all possible actions and observations.
-
-2. **Forward Variable**: A set of 4 matrices representing the forward algorithm for updating the action-based probabilities based on the current state. The forward algorithm updates the action probabilities in each state, with the previous state being at the end of the transition.
-
-3. **Backward Variable**: A set
+1. **Number of hidden states**: 4
+   - `A`: 6
+   - `B`: 2 (fixed)
+   - `C`: 3 (randomized)
+   - `D`: 0 (no actions, but can be used for inference in future variants)
+2. **Initial state distribution**: A random initialization process to initialize the hidden states and action variables.
+3. **Forward algorithm**: A forward algorithm that learns from sequential data using a random initialization process.
+4. **Backward algorithm**: A backward algorithm that learns from observed state sequences and action variables, allowing for continuous

@@ -10,7 +10,7 @@
 - Signal decay: environmental signals decay over time (volatility)
 - Demonstrates emergent collective behavior from individual free energy minimization
 - Models ant colony foraging, distributed robotics, and decentralized coordination
-/// Generated: 2026-04-10T10:24:32.385666
+/// Generated: 2026-04-12T17:23:00.872464
 /// Enhanced by GNN PKL Serializer
 ///
 

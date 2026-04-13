@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/bnlearn/Multi Armed Bandit Agent_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.818345,
-  "timestamp": "2026-04-10T10:25:52.462490",
+  "execution_time": 1.871513,
+  "timestamp": "2026-04-12T17:24:24.583524",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

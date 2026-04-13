@@ -2,16 +2,27 @@
 
 Based on your description, here are some key aspects of the GNN specification:
 
-1. **Graph Structure**: The specification consists of a continuous state space with two types of variables (beliefs and actions). Each variable has its own type and dimensionality. There is also an assumption that each variable can be represented as a single graph structure. This suggests that there are multiple graphs, which could indicate different models or representations being used in the specification.
+1. **Graph Structure**: The specification consists of a continuous state space with two types of variables (belief and action), connected to each other by directed edges. The graph is represented as a network topology with connections between nodes representing different actions or states.
 
-2. **Variable Analysis**: The specification contains information about how variables interact with each other (directed edges). There are directed edges between two variables if they have the same type and dimensionality. There is also a dependency graph where one variable depends on another, which could indicate different models or representations being used in the specification.
+2. **Variable Analysis**: The variable analysis involves examining the structure of the graph, including its number of variables, type of connection, and connectivity patterns. This can be done using various methods such as:
+   - Graph traversal (e.g., breadth-first search) to explore connections between nodes.
+   - Network flow diagrams or network graphs to visualize the relationships between different states/actions.
 
-3. **Mathematical Structure**: The specification contains information about how variables interact with each other (directed edges). There are directed edges between two variables if they have the same type and dimensionality. There is also a dependency graph where one variable depends on another, which could indicate different models or representations being used in the specification.
+3. **Mathematical Structure**: The mathematical structure of the specification includes:
+   - Matrix dimensions and compatibility for each variable
+   - Parameter structures, including symmetry properties (e.g., Cayley tables)
+   - Symmetries or special properties of variables (e.g., Cayley tables).
 
-4. **Complexity Assessment**: The complexity of the specification can be assessed by examining how it relates to other models or representations being used in the domain (e.g., Laplace approximation). This is done using a variety of metrics and indicators such as:
-   - Computational complexity indicators, like the number of directed edges between variables
-   - Symmetry properties, which indicate if there are different types of graphs with similar structure
+4. **Complexity Assessment**: The complexity assessment involves evaluating the computational complexity of modeling patterns based on the specified structure. This can be done using various methods such as:
+   - Computational complexity indicators (e.g., complexity-based algorithms)
+   - Model scalability considerations (e.g., performance metrics, stability analysis).
 
-5. **Design Patterns**: The specification follows a specific pattern for representing models in terms of graph structures (directed/undirected edges). This suggests that there are different representations being used in the domain, and these representations could reflect different models or representations being used in the specification.
+5. **Design Patterns**: The specification follows a general pattern for representing complex systems with different types of variables and connections between them. This can be seen in the structure of the graph:
+   - Each variable has its own type based on its connection to other variables or actions (e.g., belief, action)
+   - Each connected component represents a specific state/action pair
 
-Overall, the GNN specification is structured to support various modeling patterns and correspondences between variables, allowing for a wide range of possible representation types and relationships between variables.
+6. **Symmetry Analysis**: The specification also includes symmetry analysis for each variable and their connections between them. This can be seen in the structure of the graph:
+   - Each node has its own type based on its connection to other nodes (e.g., belief, action)
+   - Each connected component represents a specific state/action pair
+
+Overall, these aspects provide insight into the underlying structure and mathematical relationships of the GNN specification.

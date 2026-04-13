@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/discrete/two_state_bistable.md
-# Processed on: 2026-04-10T10:23:34.161140
+# Processed on: 2026-04-12T17:21:40.225509
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Two-State Bistable POMDP

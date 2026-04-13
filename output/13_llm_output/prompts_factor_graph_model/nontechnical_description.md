@@ -6,20 +6,52 @@ Prompt:
 
 Response:
 
-This section provides a concise overview of the structure and functionality of the Factor Graph Active Inference Model (FAI). It covers the following key components:
+```python
+import numpy as np
 
-1. **Factored Observation**: A set of observations, where each observation is associated with two independent variables (`o_vis` and `s_pos`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each observation depends on the modality (visual or proprioceptive) being considered.
+def factor_graph(x):
+    """Factor graph representation of a visual observation."""
+    x = np.array([x])
 
-2. **Observation Types**: A set of predefined types, where each type corresponds to different modalities and can be associated with specific variables (`o_vis` and `s_pos`) that are used to compute a joint probability distribution over the observed data.
+    # Define the number of observations and their positions
+    num_positions = 3
+    num_velocities = 2
+    num_visual_obs = 6
+    num_proprio_obs = 4
+    num_actions = 2
+    num_timesteps = 25
 
-3. **Visual Observation**: A visual observation (a collection of observations) is associated with two independent variables (`o_vis` and `s_vel`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each visual observation depends on the modality being considered.
+    # Define the variables for the graph
+    x_vis, x_prop, x_vel, x_pos, x_vel_vel, x_vel_pos, x_vel_vel_pos, x_vel_vel_pos, x_vel_vel_pos_prior = [
+        ([x], [[x]]), 
+        ([x]=[[x]])
+    ]
 
-4. **Proprioceptive Observation**: A proprioceptive observation (a collection of observations) is associated with two independent variables (`o_prop` and `s_vel`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each proprioceptive observation depends on the modality being considered.
+    # Define the variables for the graph
+    x_vis_probabilities = np.array([np.zeros((num_positions))])
+    x_prop_probabilities = np.array([np.zeros((num_velocities))])
+    x_vel_probabilities = np.array([np.zeros((num_visual_obs))])
 
-5. **Proprioceptive Observation Types**: A set of predefined types, where each type corresponds to different modalities and can be associated with specific variables (`s_pos` and `B_vel`) that are used to compute a joint probability distribution over the observed data.
+    # Define the variables for the graph
+    x_pos_prior, x_vel_prior = [
+        ([x], [[x]]), 
+        ([x]=[[x]])
+    ]
 
-6. **Visual Observation Types**: A visual observation (a collection of observations) is associated with two independent variables (`o_vis` and `b_prop`) that are used to compute a joint probability distribution over the observed data. The choice of which variable to use for each visual observation depends on the modality being considered.
+    # Define the variables for the graph
+    x_vis_probabilities += np.array([np.zeros((num_positions))])
+    x_prop_probabilities += np.array([np.zeros((num_velocities))])
+    x_vel_probabilities += np.array([np.zeros((num_visual_obs))])
 
-7. **Visual Observation Types**: A set of predefined types, where each type corresponds to different modalities and can be associated with specific variables (`s_pos` and `C_vis`) that are used to compute a joint probability distribution over the observed data.
+    # Define the variables for the graph
+    x_pos = [
+        ([x], [[x]]), 
+        ([x]=[[x]])
+    ]
 
-This structure allows for efficient inference across modality-specific combinations of observation types, enabling more accurate predictions from the same set of observations. The choice of which variable to use depends on the modality being considered, with visual observations typically
+    # Define the variables for the graph
+    x_vel = [
+        ([x], [[x]]), 
+        ([x]=[[x]])
+    ]
+```
