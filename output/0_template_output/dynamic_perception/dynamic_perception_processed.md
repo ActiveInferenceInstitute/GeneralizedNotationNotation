@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/basics/dynamic_perception.md
-# Processed on: 2026-04-14T10:56:40.576298
+# Processed on: 2026-04-14T11:51:42.080761
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Dynamic Perception Model

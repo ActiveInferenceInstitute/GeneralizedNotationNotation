@@ -29,10 +29,10 @@ connections:
   target_variables:
   - s
   weight: null
-created_at: '2026-04-14T10:58:13.111128'
+created_at: '2026-04-14T11:53:26.058378'
 equations: []
 model_name: Bnlearn Causal Model
-modified_at: '2026-04-14T10:58:13.111129'
+modified_at: '2026-04-14T11:53:26.058381'
 ontology_mappings:
 - description: null
   ontology_term: ObservationModel

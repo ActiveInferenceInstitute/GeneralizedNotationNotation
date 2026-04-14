@@ -7,54 +7,55 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
+import json
 from typing import List, Dict, Tuple
 
 def gnn(
-    level: List[Tuple[List[int], int]],
-    num_hidden_states: int = 4,
-    num_actions: int = 3,
-    timesteps: int = 20,
+    input: Dict[str, str],
+    model: Dict[str, str] = None,
+    num_hidden_states=4,
+    num_actions=3,
+    timesteps=20,
     timescale_ratio=5,
-    signature="GNN",
-) -> Dict[str, List[float]]:
-    """
-    GNN Representation of a hierarchical POMDP.
+    output_file="output/10_ontology_output",
+) -> List[Dict[str, str]]:
+    """GNN implementation of the GNN model.
 
-    Args:
-        level (List[Tuple[int], int]): A list of Level objects representing the hierarchy.
-        num_hidden_states (int): The number of hidden states in the hierarchy.
-        num_actions (int): The number of actions per level.
-        timesteps (int): The time step size for each level.
-        signature: A string indicating a GNN signature, which is used to encode the POMDP representation.
+    This function takes in a list of input dictionaries and returns a list of
+    dictionaries that represent the GNN inference models on to which they refer.
+    The input dictionary represents an input data stream from which the inference is
+    made. Each dictionary contains one or more input parameters, each with its own
+    type (e.g., "level", "action"), and corresponding values for the
+    level-1 and action-wise probabilities of the input parameter.
 
-    Returns:
-        Dict[str, List[float]]: A dictionary representing the hierarchical POMDP.
-    """
-    # Create a list of Level objects representing the hierarchy
-    level_objects = [level] + level_objects for level in level
-    
-    # Create a list of timesteps to compute the GNN updates
-    timestep_list = []
-
-    # Initialize an empty list to store the aggregated values
-    aggregated_values = []
-
-    # Iterate over all Level objects and update their probabilities
-    for level, level_obj in enumerate(level):
-        aggregated_value = level.get("prob", {}).sum()
-
-        if level_obj["type"] == "float":
-            aggregated_value += level_obj["probability"].mean().astype(np.float32) * timestep_list[0]
-        
-        elif level_obj["type"] == "int":
-            aggregated_value = level_obj["prob"][timestep_list[1]]
-            
-            # Update the aggregated value by applying a weighted average of the probabilities
-            aggregated_values += aggregated_value
-
-        else:
-            raise ValueError("Unknown type for Level object")
-
-    return aggregated_values
-```
+    For example:
+        {
+            "input": {"level": 0},
+            "actions": [
+                ("A2", {"probabilities": [
+                    ([{"type":"float"},
+                        ([{"value": 0, "probability": 0}],
+                      ["action"]])]),
+                   (("B1", {"probabilities": [
+                     ([{"type":"float"}]),
+                       ([{{"value": 0.9}}]])]),
+                  ("C2", {"probabilities": [
+                    ([{"value": 0, "probability": 0}],
+                      ["action"]])]),
+                   (("D1", {"probabilities": [
+                     ([{"type":"float"}]),
+                       ([{{"value": 0.9}}]])]),
+                  ("G2", {"probabilities": [
+                    ([{"value": 0, "probability": 0}],
+                      ["action"]])]},
+                   (("A1", {"probabilities": [
+                     ([{"type":"float"}]),
+                       ([{{"value": 0.9}}]])]),
+                  ("B2", {"probabilities": [
+                    ([{"value": 0, "probability": 0}],
+                      ["action"]])]},
+                   (("C1", {"probabilities": [
+                     ([{"type":"float"}]),
+                       ([{{"value": 0.9}}]])]),
+                  ("D2", {"probabilities": [
+                    ([{"value": 0, "

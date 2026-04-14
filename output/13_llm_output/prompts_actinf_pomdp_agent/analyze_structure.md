@@ -1,38 +1,15 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are some key aspects of the GNN specification:
+Based on the document, here are the key aspects of active inference in GNN:
 
-1. **Graph Structure**: The graph is represented as a bipartite graph with 3 variables (states) and 4 edges. Each edge has two types of connections (`A`-type and `B`) and one type of connection (`π`, which represents actions). There are also 20 nodes in the graph, representing observations, actions, and hidden states.
+1. **Graph Structure**: The graph is represented as a directed acyclic graph (DAG) with 3 variables and 4 types of edges. Each variable has its own set of connections to other variables. The number of variables increases from 2 to 6, indicating the complexity of the model structure.
 
-2. **Variable Analysis**: The variable is represented as a dictionary with keys corresponding to variables (states) and values associated with their types (actions or probabilities). Each key-value pair has type information for each variable.
+2. **Variable Analysis**: Variables are connected by directed edges that represent actions or decisions made by the agent. There is a connection between states and actions in each state variable. There are also connections between states and hidden states (actions). The number of connections increases from 3 to 6, indicating more complex relationships between variables.
 
-3. **Mathematical Structure**: The graph structure reflects the domain being modeled, which includes:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
+3. **Variable Analysis**: Variables have their own dependencies and conditional relationships with other variables. There are connections between states and actions that indicate the agent's preferences or decisions made by others in the network. There is also a connection between states and hidden states (actions). The number of connections increases from 6 to 12, indicating more complex relationships between variables.
 
-Some key mathematical concepts to explore in this specification include:
+4. **Mathematical Structure**: Variables have their own set of dependencies and conditional relationships with other variables. There are connections between states and actions that indicate the agent's preferences or decisions made by others in the network. There is also a connection between states and hidden states (actions). The number of connections increases from 6 to 12, indicating more complex relationships between variables.
 
-   - **Graph Topology**: The graph structure reflects the domain being modeled. This includes:
-    - **Number of variables and their types**
-    - **Connection patterns**
-    - **Network topology**
-   - **Symmetries or special properties**
+5. **Complexity Assessment**: The graph structure reflects the complexity of the model architecture. It shows that there are many interconnected nodes with many edges connecting them. This suggests that the network is not self-consistent and may be prone to errors or bottlenecks in computation.
 
-4. **Complexity Assessment**: The complexity assessment involves analyzing how the graph structure relates to the domain model, which can help identify potential bottlenecks or challenges in modeling the system. This includes:
-
-   - **Computational complexity indicators**: These indicate whether a particular type of problem is computationally intractable (e.g., NP-complete) or solvable using specific algorithms.
-   - **Model scalability considerations**
-    - **Potential bottlenecks/challenges**
-
-5. **Design Patterns**: The specification includes design patterns for:
-
-   - **Graph Topology**: This pattern represents the graph structure as a bipartite graph with 3 variables and 4 edges, reflecting the domain being modeled.
-   - **Symmetry or special properties**: This pattern identifies specific types of problems that are solvable using specific algorithms (e.g., NP-complete).
-
-6. **Modeling Patterns**: The specification includes modeling patterns for:
-
-   - **Graph Topology**: This pattern represents the graph structure as a bipartite graph with 3 variables and 4 edges, reflecting the domain being modeled.
-   - **Symmetry or special properties**: This pattern identifies specific types of problems that are solvable using specific algorithms (e.g., NP-complete).
-
-Some key design patterns to
+Overall, these structural features indicate a high degree of complexity and robustness within the GNN representation.

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T11:10:15.398461",
+  "timestamp": "2026-04-14T12:03:25.223912",
   "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "bnlearn": {
@@ -82,18 +82,18 @@
         "mean_fe": 0.0458
       },
       "execution_time": {
-        "bnlearn": 2.109693,
-        "discopy": 0.253575,
-        "jax": 0.686022,
-        "pytorch": 0.49073,
-        "pymdp": 2.737703,
+        "bnlearn": 2.076453,
+        "discopy": 0.245796,
+        "jax": 0.68649,
+        "pytorch": 0.472828,
+        "pymdp": 2.799377,
         "activeinference_jl": 13.99198,
-        "numpyro": 0.710411,
+        "numpyro": 0.720683,
         "rxinfer": 13.57827
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.253575
+        "time": 0.245796
       },
       "success_rates": {
         "bnlearn": true,

@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Two State Bistable POMDP
-Generated: 2026-04-14 10:58:57
+Generated: 2026-04-14 11:53:47
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Two State Bistable POMDP',
-        'timestamp': '2026-04-14 10:58:57',
+        'timestamp': '2026-04-14 11:53:47',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

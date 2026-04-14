@@ -1,14 +1,26 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN implementation:
 
-**Model Overview**
-This model represents a continuous-state active inference agent that learns from sensory data and predicts future observations based on predictions made by its actions (actions/control). The agent has two main layers, one for prediction accuracy and another for action refinement. The goal is to minimize the error between predicted and actual outcomes while minimizing uncertainty in the state of observation space.
+**Summary:**
+This is an active inference agent that uses hierarchical prediction error minimization (PMA) to predict predictions based on sensory data and actions. It implements predictive coding, which enables accurate predictions from hidden causes and dynamics models, while also enabling attentional modulation of predicted outcomes. The model consists of two main components:
 
-**Key Variables**
-- **Hidden states**: Represented as a set of vectors with information about sensory data (sensory predictions) and actions/controls (action predictions). These are used for prediction accuracy, action refinement, and learning from sensor data. The hidden states can be thought of as the "belief" or "expectation" in the state space that is updated based on new observations.
-- **Observations**: Represented as vectors with information about sensory input (sensory predictions) and actions/controls (action predictions). These are used for prediction accuracy, action refinement, and learning from sensor data. The observables can be thought of as the "covariate" in the state space that is updated based on new observations.
-- **Actions**: Represented as vectors with information about sensory input (sensory predictions) and actions/controls (action predictions). These are used for prediction accuracy, action refinement, and learning from sensor data. The actions can be thought of as "actions" in the state space that are updated based on new observations.
-- **Prediction Errors**: Represented as vectors with information about sensory input (sensory predictions) and actions/controls (action predictions). These are used for prediction accuracy, action refinement, and learning from sensor data. The predictions can be thought of as "actions" in the state space that are updated based on new observations.
-- **Prediction Errors**: Represented as vectors with information about sensory input (sensory predictions) and actions/controls (action predictions). These are used for prediction accuracy, action refinement, and learning from sensor data. The predictions can be thought of as "actions" in the state space that are updated based on new observations.
-- **Prediction Errors**: Represented as vectors with information about sensory input (sensory predictions) and actions/controls (action predictions). These are used for prediction accuracy, action refinement, and learning from sensor data. The predictions can be thought of as "actions" in the state space that are updated based on new
+1. **GNN Representation**: A continuous-state active inference agent that learns to optimize its performance using a hierarchical prediction error minimization framework.
+2. **Model Overview**: A structured summary with key variables and critical parameters, including hidden states, actions/controls, predictions, and use cases.
+**Key Variables:**
+   - **Hidden States**: [list of brief descriptions]
+   - **Observations**: [list of brief descriptions]  
+   - **Actions/Controls**: [list of brief descriptions]
+
+3. **Critical Parameters**:
+   - **Most important matrices (A, B, C, D) and their roles**
+    - **"hidden_states":", ".*", "actions/", "observations/")**
+      - **"belief_"*: 10.0
+  - **Key Hyperparameters**:
+      - **most important matrices (A, B, C, D)**:  2.5
+
+4. **Notable Features**:
+      - **Special properties or constraints**
+    - **Unique aspects of this model design**.
+
+This is a simple and informative summary that provides an overview of the GNN implementation. It's suitable for someone familiar with Active Inference but new to this specific model, as it focuses on key variables and critical parameters.

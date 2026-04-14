@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T11:10:15.400595",
+  "timestamp": "2026-04-14T12:03:25.226435",
   "execution_results_dir": "output/12_execute_output/hmm_baseline",
   "framework_results": {
     "bnlearn": {
@@ -85,18 +85,18 @@
         "mean_fe": 1.6736
       },
       "execution_time": {
-        "bnlearn": 1.975944,
-        "discopy": 0.244608,
-        "jax": 0.825245,
-        "pytorch": 0.462358,
-        "pymdp": 3.121709,
+        "bnlearn": 1.986696,
+        "discopy": 0.243739,
+        "jax": 0.799395,
+        "pytorch": 0.470835,
+        "pymdp": 3.23366,
         "activeinference_jl": 15.571787,
-        "numpyro": 0.809339,
+        "numpyro": 0.868665,
         "rxinfer": 14.153628
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.244608
+        "time": 0.243739
       },
       "success_rates": {
         "bnlearn": true,

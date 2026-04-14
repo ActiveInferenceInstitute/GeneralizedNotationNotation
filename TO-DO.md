@@ -1,95 +1,67 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-04-13
-**Current Version**: 1.3.0
-**Next Target**: v1.4.0
+**Last Updated**: 2026-04-14
+**Current Version**: 1.5.0
+**Next Target**: v1.6.0
 
 ---
 
-## v1.4.0 — Test Coverage Milestone
+## 🎯 v1.6.0 — Multi-Agent Ecology & RxInfer Scale
 
-> **Scope**: Achieve ≥ 85% line coverage across all 31 modules.
+> **Scope**: Advanced topologies bridging DisCoPy categorical semantics with highly scalable multi-agent solvers via Julia (RxInfer/ActiveInference.jl). This moves the pipeline from single-agent generation to macroscopic swarm architectures.
 
-- [ ] **CI enforcement** — Add `--cov-fail-under=80` to CI workflow (`ci.yml`)
-- [ ] **Core modules ≥ 85%** — `gnn/`, `render/`, `execute/`, `validation/`, `type_checker/`
-- [ ] **Infrastructure ≥ 80%** — `pipeline/`, `utils/`, `cli/`, `api/`, `lsp/`
+- [ ] **Renderer Integration Depth** — Guarantee the complete end-to-end pathway from Markdown Specification -> NumPyro/Stan execution seamlessly without abstract layer data loss.
+- [ ] **Multi-Agent Message Passing (RxInfer)** — Expand the `execute/` layer to handle clustered topologies (1,000+ agents) passing states asynchronously utilizing advanced graph factorization in Julia.
+- [ ] **Categorical Symmetries (DisCoPy)** — Sync matrix permutations natively to string diagrams, allowing visual topology validation before simulation generation.
 
 ### Acceptance
-
 ```bash
-uv run pytest --cov=src --cov-fail-under=80  # must pass
+uv run python src/main.py --frameworks "rxinfer,discopy,numpyro" --target-dir input/multi_agent_models
 ```
 
 ---
 
-## v1.5.0 — Structured Logging & Print Cleanup
+## 🧠 v1.7.0 — Sensorimotor Streams: Real-Time Audio & Advanced GUI
 
-> **Scope**: ~105 raw `print()` calls remain in non-test production code. Replace with `logging` and add pipeline metrics export.
+> **Scope**: Push the interactive boundaries of GNN from static configurations to real-time streams and live dynamic editing. Bridging outputs dynamically into external reality.
 
-- [ ] **Print audit** — Replace raw `print()` in `src/` production files with `logger.info()` / `logger.debug()` (currently ~105 occurrences)
-- [ ] **JSON log format** — Ensure `--log-format json` produces valid JSON-lines output from all 25 steps
-- [ ] **Performance dashboard** — Generate `output/00_pipeline_summary/performance_dashboard.html` with step timing, memory, and throughput charts
+- [ ] **Reactive WebSocket Architectures** — Overhaul the local GUI stack (Step 22) into a cohesive websockets-powered frontend allowing users to adjust agent matrices on the fly without pipeline re-execution.
+- [ ] **Audio Parameter Streaming** — Bridge Step 15 (Audio, Pedalboard/SAPF) to accept dynamic telemetry updates from long-running PyMDP agent simulations in real time.
+- [ ] **3D Generative Matrix Plottings** — Upgrade the standard Matrix Visualization module into live, explorable Three.js canvas structures.
 
 ### Acceptance
-
 ```bash
-grep -rn "print(" src/ --include="*.py" | grep -v test_ | grep -v __pycache__ | wc -l  # should be 0
+uv run pytest src/tests/test_audio*.py src/tests/test_gui*.py
 ```
 
 ---
 
-## v1.6.0 — Renderer & Executor Parity
+## 🌐 v1.8.0 — Enterprise Protocol Integration & Developer Kit (MCP)
 
-> **Scope**: All 8 renderers produce runnable code; execute module has matching runners.
->
-> **Current state**: `render/stan/` exists but no `execute/stan/` runner. DisCoPy has both. PyMDP, JAX, PyTorch, NumPyro, RxInfer, ActiveInference.jl, bnlearn all operational.
+> **Scope**: Standardizing GNN as the definitive orchestration language for external agents and enterprises via robust standard protocols.
 
-- [ ] **Stan executor** — Create `execute/stan/` runner or document as render-only with rationale
-- [ ] **Renderer smoke tests** — Ensure all 8 renderers pass output-validation smoke tests
-- [ ] **Cross-framework test** — Integration test that renders + executes the same GNN model across ≥ 3 frameworks
+- [ ] **MCP Capability Mapping** — Fully expose all 25 modules natively through Model Context Protocol (Step 21), allowing remote orchestration and CI/CD agent manipulation.
+- [ ] **GNN Template Library Engine** — Enable package-manager style downloads for specialized active-inference setups directly using `gnn pull [template_name]`.
+- [ ] **Pre-commit Ecosystem** — Ship robust developer velocity upgrades (`just`, lint matrices, auto-formatters, devcontainers) making repository contributions frictionless.
 
 ### Acceptance
-
 ```bash
-uv run pytest src/tests/test_render*.py src/tests/test_execute*.py -v  # all pass
+mcp-test-client ping gnn-server  # 100% payload acceptance
 ```
 
 ---
 
-## v1.7.0 — Documentation Quality
+## 🚀 v2.0.0 — Multimodal Autonomy & Self-Modifying Workflows
 
-> **Scope**: Raise docstring coverage and eliminate broken links.
->
-> **Current state**: `doc/gnn/modules/[00-24].md` freshly synced from `src/*/AGENTS.md`. Several production modules still have functions without docstrings.
+> **Scope**: Evolving the pipeline from a linear generator into a continuously-running autonomous ecology. Agents define, write, evaluate, and rewrite their own generative models.
 
-- [ ] **Docstring coverage ≥ 80%** — Prioritise `visualization/`, `ml_integration/`, `research/` (currently weakest)
-- [ ] **Broken link audit** — Run link checker across `doc/` and fix any broken references
-- [ ] **API reference** — Auto-generate API docs from docstrings using `pdoc` for top 10 modules
+- [ ] **Self-Modifying Active Inference** — Implement the capacity for the pipeline to self-recompile agent matrices based on failed execution evaluations, entering a recursive design loop.
+- [ ] **Multimodal Agent Interfaces** — Integrate real-time vision processing directly into the `execute/` modules, allowing simulated agents to optimize policies based on dynamic camera or dataset streams natively defined in their notation.
+- [ ] **Distributed Ecology Scaling** — Implement K8s orchestration allowing massive-scale distributed agent computing clusters directly triggered by GNN architecture definitions.
 
 ### Acceptance
-
 ```bash
-# Zero broken internal links verified by link checker
-```
-
----
-
-## v1.8.0 — Developer Experience
-
-> **Scope**: Pre-commit hooks, justfile, and dev containers.
->
-> **Current state**: `[tool.ruff]` and `[tool.mypy]` already configured in `pyproject.toml`. No `.pre-commit-config.yaml`, `justfile`, `.vscode/`, or `.devcontainer/` exist yet.
-
-- [ ] **Pre-commit hooks** — Add `.pre-commit-config.yaml` with ruff, black, mypy, and markdownlint
-- [ ] **justfile** — Create `justfile` with common commands (`just test`, `just lint`, `just run`, `just docs`)
-- [ ] **VS Code settings** — Add `.vscode/settings.json` + `.vscode/extensions.json`
-- [ ] **Dev containers** — Add `.devcontainer/devcontainer.json` for GitHub Codespaces
-
-### Acceptance
-
-```bash
-pre-commit run --all-files  # passes
-just test                   # runs test suite
+uv run python src/autonomous_ecology_manager.py --target-dir input/recursive_models/
 ```
 
 ---
@@ -97,6 +69,4 @@ just test                   # runs test suite
 ## Conventions
 
 - Versions follow [SemVer](https://semver.org/) — `MAJOR.MINOR.PATCH`
-- Patch releases (1.3.x) target a single file or narrow focus area, completable in 1 session
-- Minor releases (1.x.0) are milestone releases requiring multiple sessions
-- Each release has concrete acceptance criteria with verifiable commands
+- All releases require 100% pipeline stability, 0-mock policy adherence, documentation integrity, and verifiable console acceptance metrics.

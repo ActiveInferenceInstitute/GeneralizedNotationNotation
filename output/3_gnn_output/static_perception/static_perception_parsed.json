@@ -7,7 +7,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "129f46de-fb12-4868-8128-d294f7e1002b",
+      "id": "e06f6388-7c60-4b2d-8919-5351e1bb11a7",
       "name": "A",
       "var_type": "likelihood_matrix",
       "dimensions": [
@@ -22,7 +22,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "211a53b5-e871-4dcf-90db-d8f31804fcc7",
+      "id": "9fef6aa6-a2df-431d-b9c2-b7eb242132cc",
       "name": "D",
       "var_type": "prior_vector",
       "dimensions": [
@@ -37,7 +37,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "3345309f-5c79-4df9-907c-8f4036b3dde2",
+      "id": "50c0db70-ef8f-40f7-88f2-2956b2188dc2",
       "name": "s",
       "var_type": "hidden_state",
       "dimensions": [
@@ -52,7 +52,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "1d674a47-214c-408c-b9d6-b9013a9579d1",
+      "id": "85514bf1-2a4b-45d3-a193-fb666c94fcec",
       "name": "o",
       "var_type": "observation",
       "dimensions": [
@@ -69,7 +69,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "6aa03614-727e-40ca-b4b4-13deb6d30f05",
+      "id": "50c55f36-7658-45a4-9b43-bdca287a2dbc",
       "source_variables": [
         "D"
       ],
@@ -84,7 +84,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "c941450e-b415-4c86-b5ce-3090b3e6032a",
+      "id": "ed59d78d-fde8-49a0-ae40-e8f1dcbe7fa2",
       "source_variables": [
         "s"
       ],
@@ -99,7 +99,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "c4bc3a24-a54d-4b87-a634-32f28d4c5c79",
+      "id": "f19173bd-0b26-4919-bec4-51802a3dda62",
       "source_variables": [
         "A"
       ],
@@ -116,7 +116,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "4aadff7f-6506-44af-a25e-97d5a6f7ac6e",
+      "id": "21cdd35f-47a5-4eaf-8bc3-d7a2df7180cc",
       "name": "A",
       "value": [
         [
@@ -135,7 +135,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "8bed4063-3f83-4351-9cef-f8c278f321b6",
+      "id": "15982306-763b-4f65-9903-72af9ef00886",
       "name": "D",
       "value": [
         [
@@ -152,7 +152,7 @@
     "node_type": "TimeSpecification",
     "source_location": null,
     "metadata": {},
-    "id": "81ca8771-3561-419b-a438-71e2cbd023f2",
+    "id": "afcaee2e-3208-4e7c-aba1-dfc07ea5d7b6",
     "time_type": "Static",
     "discretization": null,
     "horizon": null,
@@ -163,7 +163,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "ed723537-b4b2-4b65-b915-d937bd4ccad9",
+      "id": "0204ac7b-ad77-4345-816a-b8c8dbf549e8",
       "variable_name": "A",
       "ontology_term": "RecognitionMatrix",
       "description": null
@@ -172,7 +172,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "4219eb5f-92fb-4e9a-a8fa-14b9d035f4ab",
+      "id": "1fe8869f-5b11-46a5-acda-c4924d173b77",
       "variable_name": "D",
       "ontology_term": "Prior",
       "description": null
@@ -181,7 +181,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "d03ec8bb-27da-45b2-a47f-8294ca52b2e6",
+      "id": "949926c5-93b2-4708-b06e-5309a2333121",
       "variable_name": "s",
       "ontology_term": "HiddenState",
       "description": null
@@ -190,15 +190,15 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "5c3a01ec-d96a-4ff6-89aa-939863fe406d",
+      "id": "67a114a1-564b-4e27-8b80-8c02c4cc3f44",
       "variable_name": "o",
       "ontology_term": "Observation",
       "description": null
     }
   ],
   "source_format": null,
-  "created_at": "2026-04-14T10:58:11.531447",
-  "modified_at": "2026-04-14T10:58:11.531449",
+  "created_at": "2026-04-14T11:53:24.518824",
+  "modified_at": "2026-04-14T11:53:24.518825",
   "checksum": null,
   "extensions": {
     "gnn_section": "ActiveInferencePerception",

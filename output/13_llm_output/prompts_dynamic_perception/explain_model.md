@@ -2,16 +2,26 @@
 
 You've already covered the key points:
 
-1. **Model Purpose**: This is a generative model that represents a dynamic perception of a world based on two hidden states (s_f0 and s_f1) and two observations (o_m0, o_m1). It captures temporal belief updating via variational inference.
+1. **Model Purpose**: This is a representation of an active inference system that aims to capture real-world phenomena and make predictions based on observed data. It represents a probabilistic graphical model with hidden states (s_f0, s_f1), observations (o_m0, o_m1), actions/controls (u_c0, π_c0) and beliefs (F).
 
 2. **Core Components**:
-   - **hidden state** (p(observation | hidden state): represents the observer's current state of perception or observation.
-   - **observations** (u_c0, π_c0, etc.): represent observations made by the observer over time. These are used to update beliefs based on previous predictions and actions.
+   - **Saved Observations**: These are the data points that have been saved for analysis purposes. They represent a sequence of events or observations from which predictions can be made based on future observations.
+   - **StateSpace**: This is a collection of states representing all possible actions/controls available to the agent at each timestep. It captures the current state and its associated beliefs (F).
 
-3. **Model Dynamics**: The model evolves over time using a dynamic inference process that updates its parameters based on new data. It also implements Active Inference principles, which enable it to learn and predict future states based on past observations.
+3. **Model Dynamics**: The model evolves over time by updating its parameters based on observed data. It represents a probabilistic graphical model with hidden states, observations, actions/controls, and beliefs.
 
-4. **Active Inference Context**: This is the input parameterization of the model representing the world observed by the observer (p(observation | hidden state)). It allows the model to update its parameters based on new data.
+4. **Active Inference Context**: This is how it implements Active Inference principles:
+   - **Initial Parameters**: These are the initial state-action relationships that define the behavior of the agent at each timestep. They represent a sequence of events or observations from which predictions can be made based on future observations.
+   - **Model Parameters**: These are the parameters representing the learned beliefs and actions for each observation/state pair. They capture the current belief about the state, its associated action, and its corresponding belief in the next state.
 
-5. **Practical Implications**: The model can learn and predict future states, enabling it to make informed decisions in uncertain environments. It also provides insights into how actions are taken and what beliefs are being updated.
+5. **Practical Implications**: This model makes predictions based on observed data by updating its parameters based on new information from future observations. It can make decisions based on available actions or control inputs to guide a decision-making process.
 
-Please provide more details or clarify any points that require further clarification.
+Please provide clear explanations that cover:
+
+1. **Model Purpose**: What real-world phenomenon or problem does this represent?
+
+2. **Core Components**: 
+   - **Saved Observations**: These are the data points that have been saved for analysis purposes. They represent a sequence of events or observations from which predictions can be made based on future observations.
+   - **StateSpace**: This is a collection of states representing all possible actions/controls available to the agent at each timestep. It captures the current state and its associated beliefs (F).
+
+3. **Model Dynamics**: The model evolves over time by updating its parameters based on observed data. It represents

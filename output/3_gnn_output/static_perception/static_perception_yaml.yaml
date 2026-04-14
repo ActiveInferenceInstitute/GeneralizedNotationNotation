@@ -32,10 +32,10 @@ connections:
   target_variables:
   - A
   weight: null
-created_at: '2026-04-14T10:58:11.531447'
+created_at: '2026-04-14T11:53:24.518824'
 equations: []
 model_name: Static Perception Model
-modified_at: '2026-04-14T10:58:11.531449'
+modified_at: '2026-04-14T11:53:24.518825'
 ontology_mappings:
 - description: null
   ontology_term: RecognitionMatrix

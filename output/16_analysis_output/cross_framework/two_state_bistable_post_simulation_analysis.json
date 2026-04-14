@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T11:10:15.403934",
+  "timestamp": "2026-04-14T12:03:25.232662",
   "execution_results_dir": "output/12_execute_output/two_state_bistable",
   "framework_results": {
     "bnlearn": {
@@ -24,8 +24,83 @@
     },
     "pymdp": {
       "framework": "pymdp",
-      "result_count": 2,
+      "result_count": 3,
       "analyses": [
+        {
+          "framework": "pymdp",
+          "model_name": "Two State Bistable POMDP",
+          "free_energy_count": 15,
+          "free_energy_values": [
+            [
+              1.3821964263916016,
+              0.9579540491104126
+            ],
+            [
+              1.1261727809906006,
+              1.2551548480987549
+            ],
+            [
+              1.397359848022461,
+              0.9339520335197449
+            ],
+            [
+              1.427950143814087,
+              0.8820969462394714
+            ],
+            [
+              1.4340298175811768,
+              0.8711796998977661
+            ],
+            [
+              1.167510747909546,
+              1.2173575162887573
+            ],
+            [
+              1.0391955375671387,
+              1.3257019519805908
+            ],
+            [
+              1.0905184745788574,
+              1.2854559421539307
+            ],
+            [
+              1.4042868614196777,
+              0.9226304292678833
+            ],
+            [
+              1.429337501525879,
+              0.8796248435974121
+            ],
+            [
+              1.1633261442184448,
+              1.2213222980499268
+            ],
+            [
+              1.3892998695373535,
+              0.9468395709991455
+            ],
+            [
+              1.4263269901275635,
+              0.884975254535675
+            ],
+            [
+              1.4337100982666016,
+              0.8717594742774963
+            ],
+            [
+              1.4351625442504883,
+              0.8691213726997375
+            ]
+          ],
+          "mean_free_energy": 1.1690503338972726,
+          "std_free_energy": 0.01538319271375833,
+          "min_free_energy": 1.152141958475113,
+          "max_free_energy": 1.1924341320991516,
+          "free_energy_trend": -0.001166729096855403,
+          "free_energy_decreasing": "True",
+          "convergence_variance": 2.3522990867756257e-06,
+          "converged": true
+        },
         {
           "framework": "pymdp",
           "model_name": "Two State Bistable POMDP",
@@ -241,18 +316,18 @@
     "framework_count": 8,
     "comparisons": {
       "execution_time": {
-        "bnlearn": 2.289774,
-        "discopy": 0.241981,
-        "jax": 0.654252,
-        "pytorch": 0.462022,
-        "pymdp": 2.598523,
+        "bnlearn": 1.996832,
+        "discopy": 0.245942,
+        "jax": 0.659385,
+        "pytorch": 0.466924,
+        "pymdp": 2.804667,
         "activeinference_jl": 13.998361,
-        "numpyro": 0.621288,
+        "numpyro": 0.634667,
         "rxinfer": 13.641768
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.241981
+        "time": 0.245942
       },
       "success_rates": {
         "bnlearn": true,

@@ -60,6 +60,6 @@ beta = BackwardVariable
 t = Time
 
 ## Footer
-Generated: 2026-04-14T10:58:13.104689
+Generated: 2026-04-14T11:53:26.041917
 
 ## Signature

@@ -1,41 +1,40 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+```json
+{
+  "processed_files": [
+    "output/10_ontology_output/simple_mdp_ontology_report.json",
+    "output/10_ontology_output/multi_armed_bandit_ontology_report.json",
+    "output/10_ontology_output/deep_planning_horizon_ontology_report.json",
+    "output/10_ontology_output/actinf_pomdp_agent_ontology_report.json",
+    "output/10_ontology_output/hmm_baseline_ontology_report.json",
+    "output/10_ontology_output/bnlearn_causal_model_ontology_report.json",
+    "output/10_ontology_output/two_state_bistable_ontology_report.json",
+    "output/10_ontology_output/markov_chain_ontology_report.json",
+    "output/10_ontology_output/tmaze_epistemic_ontology_report.json"
+  ],
+  "success": true,
+  "errors": []
+}
 
-**Model Overview**
-This model represents a continuous state-space agent that navigates a 2D environment using Gaussian belief updates based on a mixture of Gaussian distributions (Gaussian probability distributions) and linear Gaussian models with joint covariance matrices. The model uses Laplace approximation for Gaussian beliefs, and the goal is to update the objective function to minimize Expected Free Energy while respecting the constraints of the system.
-**Key Variables**
-- **Hidden states**: [list with brief descriptions]
-   - **μ[2,1,type=float]**: Mean position belief (x) as Gaussian probability distribution
-   - **Σ[2,2,type=float]**: Covariance of position belief
-   - **A_μ:** Gaussian probability matrix
-   - **B_f:** Forward error covariance matrix
-- **Observation**: [list with brief descriptions]
-   - **μ_prime**: Observation mean mapping (identity + noise)
-   - **Σ_prime**: Observation covariance matrix
-   - **C_μ:** Forward prediction matrix
-   - **C_Σ*: Forward prediction matrix
 
- **Critical Parameters**
-- **Most important matrices**: [list with brief descriptions]
-   - **A**, **B**, and **D** are used to represent the state space, actions, and goals respectively.
-   - **Key parameters**:
-   - **μ[2,1,type=float]**: Mean position belief (x) as Gaussian probability distribution
-   - **Σ_prime[2,1,type=float]**: Covariance of position belief
-   - **C_μ:** Forward prediction matrix
-   - **C_Σ*: Forward prediction matrix
+Create a structured summary including:
 
- **Notable Features**
-- **Randomized Observation**: [list with brief descriptions]
-   - **A**, **B**, and **D** are used to represent the observation, actions, and goals respectively.
-   - **Key features**:
-   - **μ[2,1,type=float]**: Mean position belief (x) as Gaussian probability distribution
-   - **Σ_prime[2,1,type=float]**: Covariance of position belief
-   - **C_μ:** Forward prediction matrix
+1. **Model Overview** (2-3 sentences): What is this model and what does it do?
 
- **Use Cases**
-- **Goal Position**: [list with brief descriptions]
-   - **goal_x**, **goal_y** are used to represent the goal positions.
+2. **Key Variables**:
+   - Hidden states: [list with brief descriptions]
+   - Observations: [list with brief descriptions]  
+   - Actions/Controls: [list with brief descriptions]
 
- **Notable Use Cases**
-- **Sensory
+3. **Critical Parameters**:
+   - Most important matrices (A, B, C, D) and their roles
+   - Key hyperparameters and their settings
+
+4. **Notable Features**:
+   - Special properties or constraints
+   - Unique aspects of this model design
+
+5. **Use Cases**: What scenarios would this model be applied to?
+
+Keep the summary focused and informative, suitable for someone familiar with Active Inference but new to this specific model.

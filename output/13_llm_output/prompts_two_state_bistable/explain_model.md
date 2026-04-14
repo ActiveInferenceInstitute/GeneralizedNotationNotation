@@ -1,21 +1,20 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+This is a comprehensive outline of the GNN (Generalized Notation Notation) specification and its application to a simple neural network model. The document provides an overview of the key components, core concepts, and practical implications for active inference on top of this model.
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification that describes a minimal 2-state bistable POMDP with no noise and no habit bias. It represents the minimum possible actions for an agent to take based on their current state beliefs, while minimizing the probability of preferring observation 1 over observation 0.
+**Model Purpose**: This section describes what the model represents: A 2x2x2 POMDP with no noise or bias. It also explains how it learns from data and updates beliefs based on actions and control inputs. The document provides a clear explanation of the key relationships between hidden states, observations, actions, and control variables.
 
-2. **Core Components**:
-   - **hidden states** (s_f0, s_f1) represent the policy/action-dependent transitions that allow the agent to make decisions in a probabilistic graphical model. These are represented as lists of numbers and have values ranging from 0 to 80% accuracy.
-   - **observations** (o_m0, o_m1) represent the current state beliefs for each observation. These are represented as lists of numbers and have values ranging from 2 to 45%.
-   - **actions** (a_c0, a_c1) represent the policy/action-dependent transitions that allow the agent to make decisions in a probabilistic graphical model. These are represented as lists of numbers and have values ranging from 0 to 80% accuracy.
+**Core Components**: 
+1. **Hidden States (s_f0, s_f1)**: These represent the current state of the network, which can be thought of as a set of possible outcomes for each observation. The `hidden_states` are represented by a 2x2 matrix called `A`.
 
-3. **Model Dynamics**:
-   - **actions** (a_b0, a_b1) represent the policy/action-dependent transitions that allow the agent to make decisions in a probabilistic graphical model. These are represented as lists of numbers and have values ranging from 2 to 45%.
-   - **policy** (p_c0, p_c1) represents the action-based transition matrix representing the current state beliefs for each observation. This is represented as a list of numbers and has values ranging from 0 to 80% accuracy.
+2. **Observations (o_m0, o_m1)**: These represent the actions and control inputs to the network. The `observations` are represented as a set of possible outcomes for each observation.
 
-4. **Active Inference Context**:
-   - **actions** represent the policy/action-dependent transitions that allow the agent to make decisions in a probabilistic graphical model based on their current state beliefs, while minimizing the probability of preferring observation 1 over observation 0. This is represented as a list of numbers and has values ranging from 2 to 45%.
-   - **policy** represents the action-based transition matrix representing the current state beliefs for each observation. This is represented as a list of numbers and has values ranging from 0 to 80% accuracy.
+3. **Actions**: These represent the policy updates made by the network based on its current state beliefs. The `actions` are represented as a 2x2 matrix called `B`.
 
-5. **Practical Implications**:
-   - **Active Inference**: The model implements Active Inference principles by updating the
+4. **Habit**: This represents the action-dependent transitions from one observation to another. It is represented as a set of possible actions for each observation, and it can be thought of as a sequence of actions that move the network towards its goal state.
+
+**Model Dynamics**: The model learns from data by updating beliefs based on actions and control inputs. This process involves learning a mapping between hidden states and observable outcomes, which allows the network to learn patterns in the data. The model also updates beliefs based on predictions made by the network, allowing it to make decisions about what actions are available for each observation.
+
+**Active Inference Context**: The model implements Active Inference principles by updating its belief using a sequence of actions and control inputs. This process involves learning a mapping between hidden states and observable outcomes, which allows the network to learn patterns in the data. The model also updates beliefs based on predictions made by the network, allowing it to make decisions about what actions are available for each observation.
+
+**Practical Implications**: The model can be used to inform decisions that depend on uncertain or noisy data. For example, it can help identify optimal

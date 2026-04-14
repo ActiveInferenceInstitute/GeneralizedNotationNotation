@@ -209,40 +209,111 @@ def generate_html_report(report_data: Dict[str, Any]) -> str:
     """
     html = f"""
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
-        <title>GNN Comprehensive Report</title>
+        <meta charset="UTF-8">
+        <title>GNN Comprehensive Analysis Report</title>
         <style>
-            body {{ font-family: Arial, sans-serif; margin: 20px; }}
-            .header {{ background-color: #f0f0f0; padding: 10px; }}
-            .summary {{ margin: 20px 0; }}
-            .file-list {{ margin: 20px 0; }}
-            .error {{ color: red; }}
+            :root {{
+                --bg-color: #fcfcfc;
+                --text-main: #333333;
+                --text-muted: #666666;
+                --accent: #2c3e50;
+                --border: #e2e8f0;
+            }}
+            body {{
+                font-family: 'Merriweather', 'Georgia', serif;
+                line-height: 1.8;
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 40px 20px;
+                background-color: var(--bg-color);
+                color: var(--text-main);
+            }}
+            .manuscript-header {{
+                text-align: center;
+                border-bottom: 2px solid var(--accent);
+                padding-bottom: 20px;
+                margin-bottom: 40px;
+            }}
+            h1 {{ font-size: 2.2em; color: var(--accent); margin-bottom: 10px; font-family: 'Inter', sans-serif; }}
+            h2 {{ font-size: 1.5em; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; margin-top: 40px; font-family: 'Inter', sans-serif; }}
+            .metadata-block {{
+                background: #ffffff;
+                border: 1px solid var(--border);
+                padding: 20px;
+                border-radius: 8px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            }}
+            .metadata-block p {{ margin: 5px 0; font-family: 'Inter', sans-serif; font-size: 0.9em; }}
+            .file-grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 15px;
+                margin-top: 20px;
+            }}
+            .file-card {{
+                background: #ffffff;
+                border: 1px solid var(--border);
+                padding: 15px;
+                border-radius: 6px;
+                font-family: 'Inter', sans-serif;
+                font-size: 0.9em;
+            }}
+            .file-card code {{ color: #e53e3e; background: #fff5f5; padding: 2px 4px; border-radius: 4px; }}
+            .mermaid-container {{ margin: 40px 0; text-align: center; }}
         </style>
+        <script type="module">
+            import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+            mermaid.initialize({{ startOnLoad: true, theme: 'neutral' }});
+        </script>
     </head>
     <body>
-        <div class="header">
-            <h1>GNN Comprehensive Report</h1>
-            <p>Generated on: {report_data.get('timestamp', 'Unknown')}</p>
+        <div class="manuscript-header">
+            <h1>GNN Pipeline Complete Output Report</h1>
+            <p style="font-style: italic; color: var(--text-muted);">Generated on: {report_data.get('timestamp', 'Unknown')}</p>
         </div>
         
-        <div class="summary">
-            <h2>Summary</h2>
-            <p>Total files analyzed: {report_data.get('total_files', 0)}</p>
-            <p>Files successfully analyzed: {len(report_data.get('files_analyzed', []))}</p>
-            <p>Errors: {len(report_data.get('summary', {}).get('errors', []))}</p>
+        <div class="mermaid-container">
+            <div class="mermaid">
+            graph LR
+                A[GNN Input Files] --> B{{GNN Processor}}
+                B --> C[Serialization]
+                B --> D[Semantic Ontology]
+                B --> E[LLM Inference]
+                C --> F[Simulation Generation]
+                D --> F
+                E --> G[Final Analysis]
+                F --> G
+            </div>
+            <p style="font-size: 0.8em; color: var(--text-muted);">Figure 1. GNN pipeline flow diagram demonstrating data integration topologies.</p>
+        </div>
+
+        <h2>I. Executive Summary</h2>
+        <div class="metadata-block">
+            <p><strong>Total Scanned Entities:</strong> {report_data.get('total_files', 0)}</p>
+            <p><strong>Entities Successfully Evaluated:</strong> {len(report_data.get('files_analyzed', []))}</p>
+            <p><strong>Evaluation Errors:</strong> {len(report_data.get('summary', {}).get('errors', []))}</p>
         </div>
         
-        <div class="file-list">
-            <h2>Files Analyzed</h2>
-            <ul>
+        <h2>II. Processed Models Validation</h2>
+        <div class="file-grid">
     """
 
     for file_info in report_data.get('files_analyzed', []):
-        html += f"<li>{file_info['file']}</li>"
+        info = file_info.get('info', {})
+        size = info.get('file_size', 0)
+        lines = info.get('lines', 0)
+        html += f"""
+            <div class="file-card">
+                <strong>{Path(file_info['file']).name}</strong>
+                <p>Size: {size} bytes | Lines: {lines}</p>
+                <p>State Space Matrix: <code>{"Yes" if info.get('has_state_space') else "No"}</code></p>
+            </div>
+        """
 
     html += """
-            </ul>
         </div>
     </body>
     </html>
@@ -260,22 +331,44 @@ def generate_markdown_report(report_data: Dict[str, Any]) -> str:
     Returns:
         Markdown content string
     """
-    markdown = f"""# GNN Comprehensive Report
+    markdown = f"""# GNN Comprehensive Analysis Report
 
-Generated on: {report_data.get('timestamp', 'Unknown')}
+> **Generated on:** {report_data.get('timestamp', 'Unknown')}
+> **Purpose:** Top-level structural audit of GNN notation topologies.
 
-## Summary
+## System Topology Flow
 
-- **Total files analyzed**: {report_data.get('total_files', 0)}
-- **Files successfully analyzed**: {len(report_data.get('files_analyzed', []))}
-- **Errors**: {len(report_data.get('summary', {}).get('errors', []))}
+```mermaid
+graph LR
+    A[GNN Input Files] --> B{{GNN Processor}}
+    B --> C[Serialization]
+    B --> D[Semantic Ontology]
+    B --> E[LLM Inference]
+    C --> F[Simulation Generation]
+    D --> F
+    E --> G[Final Analysis]
+    F --> G
+```
 
-## Files Analyzed
+## I. Executive Summary
 
+- **Total Scanned Entities**: {report_data.get('total_files', 0)}
+- **Entities Successfully Evaluated**: {len(report_data.get('files_analyzed', []))}
+- **Evaluation Errors**: {len(report_data.get('summary', {}).get('errors', []))}
+
+## II. Processed Models Validation
+
+| Model Filename | Size (Bytes) | Lines | State Space Discovered |
+|---|---|---|---|
 """
 
     for file_info in report_data.get('files_analyzed', []):
-        markdown += f"- {file_info['file']}\n"
+        info = file_info.get('info', {})
+        name = Path(file_info['file']).name
+        size = info.get('file_size', 0)
+        lines = info.get('lines', 0)
+        has_state = "✅ Yes" if info.get('has_state_space') else "❌ No"
+        markdown += f"| `{name}` | {size} | {lines} | {has_state} |\n"
 
     return markdown
 

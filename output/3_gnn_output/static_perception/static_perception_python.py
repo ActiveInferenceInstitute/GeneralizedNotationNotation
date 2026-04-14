@@ -7,7 +7,7 @@ The simplest Active Inference model demonstrating pure perception:
 - No temporal dynamics — single-shot inference
 - Demonstrates the core observation model: P(o|s) = A
 - Suitable as a minimal baseline and for testing perception-only inference
-Generated: 2026-04-14T10:58:11.532447
+Generated: 2026-04-14T11:53:24.520167
 """
 
 import numpy as np

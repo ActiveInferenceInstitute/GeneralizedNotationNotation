@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/bnlearn/Simple MDP Agent_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.964926,
-  "timestamp": "2026-04-14T11:00:35.097740",
+  "execution_time": 1.994996,
+  "timestamp": "2026-04-14T11:55:23.055202",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

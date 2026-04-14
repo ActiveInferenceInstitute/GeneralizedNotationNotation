@@ -6,28 +6,56 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of the two-state bistable POMDP:
+```python
+import json
+from typing import List, Dict, Tuple
 
-1. Create an instance of the `GNN` class with the following attributes:
-   - `observations`: A 2x2 matrix representing the state space, where each row represents one observation and each column represents one hidden state.
-   - `hidden_states`: A 2x2 matrix representing the hidden states, where each element is a value between 0 (left) and 1 (right).
+def gnn(state: Dict[str, float], action: Dict[str, float]) -> Dict[str, float]:
+    """GNN implementation of the GNN model.
 
-2. Create an instance of the `GNN` class with the following attributes:
-   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
-   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
+    Args:
+        state (Dict[str, float]): A dictionary representing a single observation.
+        action (Dict[str, float]): A dictionary representing an action sequence.
 
-3. Create an instance of the `GNN` class with the following attributes:
-   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
-   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
+    Returns:
+        Dict[str, float]: The GNN representation of the input data.
+    """
+    # Initialize the initial states and actions
+    for i in range(len(state)):
+        state[i] = 0.1 + random_action([state[i]]) / len(state) * action[i]
 
-4. Create an instance of the `GNN` class with the following attributes:
-   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
-   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
+    # Initialize the hidden states
+    for i in range(num_hidden_states):
+        hidden_states[i] = 2 ** (random_action((state[i], state[i])) - 0.5)
 
-5. Create an instance of the `GNN` class with the following attributes:
-   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
-   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
+    # Initialize the transition matrix
+    for i in range(num_actions):
+        action_probabilities[i][state[i]] = random_action([state[i]]) / len(state) * action[i]
 
-6. Create an instance of the `GNN` class with the following attributes:
-   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
-   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value
+    # Initialize the policy vector
+    for i in range(num_hidden_states):
+        policy_vector[i] = 0.5 + random_action((state[i], state[i])) / len(state) * action[i]
+
+    # Initialize the prior over states and actions
+    prior_over_states = {
+      (1, 2),
+      (1, 4),
+      (1, 6),
+      (0.5, 3),
+      (0.8, 7),
+      (0.9, 1)
+    }
+
+    # Initialize the habit vector
+    habit_vector[state] = random_action((state[i], state[i])) / len(state) * action[i]
+
+    # Initialize the hidden states and actions
+    for i in range(num_hidden_states):
+        hidden_states[i] = 2 ** (random_action([state[i]]))
+
+        # Initialize the transition matrix
+        for i in range(num_actions):
+            action_probabilities[i][state[i]] = random_action((state[i], state[i])) / len(state) * action[i]
+
+    # Initialize the policy vector
+    for i in range(

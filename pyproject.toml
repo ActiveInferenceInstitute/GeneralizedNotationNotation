@@ -75,6 +75,7 @@ dev = [
     "aiohttp>=3.9.0",
     # Testing tools (requests used only in test_pipeline_performance.py)
     "requests>=2.28.0",
+    "hypothesis>=6.0.0",
     "pytest>=6.0.0",
     "pytest-asyncio>=0.23.0",
     "pytest-cov>=3.0.0",

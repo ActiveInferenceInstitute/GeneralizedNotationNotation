@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/discrete/simple_mdp.md
-# Processed on: 2026-04-14T10:56:40.577257
+# Processed on: 2026-04-14T11:51:42.083453
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Simple MDP (Fully Observable)

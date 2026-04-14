@@ -6,46 +6,72 @@
     <title>GNN Pipeline Output Navigation</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
         }
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
         .header {
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #007bff;
+            border-bottom: 2px solid rgba(0, 123, 255, 0.2);
         }
-        h1 { color: #2c3e50; margin: 0; font-size: 2.5em; font-weight: 300; }
-        h2 { color: #34495e; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; border-left: 4px solid #007bff; padding-left: 15px; }
+        h1 { color: #1a202c; margin: 0; font-size: 2.8em; font-weight: 800; letter-spacing: -1px; }
+        h2 { color: #2d3748; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; font-weight: 600; border-left: 5px solid #4299e1; padding-left: 15px; }
         .summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 25px; border-radius: 10px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white; padding: 30px; border-radius: 16px;
             text-align: center; margin: 30px 0;
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.2);
         }
-        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }
-        .summary-card { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; text-align: center; }
-        .summary-card .value { font-size: 2em; font-weight: bold; color: #007bff; margin: 10px 0; }
-        .step-section { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; margin: 20px 0; }
-        .step-header { font-weight: bold; color: #495057; margin-bottom: 15px; font-size: 1.2em; }
-        .file-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; }
-        .file-item { background-color: white; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; transition: transform 0.2s, box-shadow 0.2s; }
-        .file-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .file-item a { color: #007bff; text-decoration: none; font-weight: 500; }
-        .file-item a:hover { text-decoration: underline; }
-        .file-meta { color: #6c757d; font-size: 12px; margin-top: 5px; }
-        .link { color: #007bff; text-decoration: none; }
-        .link:hover { text-decoration: underline; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
+        .summary-card { 
+            background: rgba(255, 255, 255, 0.15); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 12px; padding: 20px; text-align: center; 
+            transition: transform 0.3s ease;
+        }
+        .summary-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.25); }
+        .summary-card .value { font-size: 2.2em; font-weight: 800; color: #fff; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .step-section { 
+            background: rgba(255, 255, 255, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 16px; padding: 25px; margin: 25px 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+        .step-section:hover { background: rgba(255, 255, 255, 0.8); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+        .step-header { font-weight: 700; color: #2d3748; margin-bottom: 15px; font-size: 1.3em; }
+        .file-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
+        .file-item { 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            border-radius: 10px; padding: 15px; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+        .file-item:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: #cbd5e0; }
+        .file-item a { color: #3182ce; text-decoration: none; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .file-item a:hover { color: #2b6cb0; text-decoration: underline; }
+        .file-meta { color: #718096; font-size: 12px; margin-top: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .link { color: #3182ce; text-decoration: none; font-weight: 600; transition: color 0.2s; }
+        .link:hover { color: #2b6cb0; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -60,11 +86,11 @@
             <div class="summary-grid">
                 <div class="summary-card">
                     <div>Pipeline Steps</div>
-                    <div class="value">23</div>
+                    <div class="value">25</div>
                 </div>
                 <div class="summary-card">
                     <div>Total Files</div>
-                    <div class="value">1177</div>
+                    <div class="value">1419</div>
                 </div>
                 <div class="summary-card">
                     <div>Output Directory</div>
@@ -194,7 +220,7 @@
 
                 <div class="file-item">
                     <a href="../1_setup_output/environment_setup_summary.json" target="_blank">environment_setup_summary.json</a>
-                    <div class="file-meta">.json • 0.008 MB</div>
+                    <div class="file-meta">.json • 0.009 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -217,7 +243,7 @@
 
                 <div class="file-item">
                     <a href="../2_tests_output/pytest_reliable_output.txt" target="_blank">pytest_reliable_output.txt</a>
-                    <div class="file-meta">.txt • 0.361 MB</div>
+                    <div class="file-meta">.txt • 0.364 MB</div>
                 </div>
 
             </div>
@@ -373,7 +399,7 @@
 
                 <div class="file-item">
                     <a href="../6_validation_output/validation_results.json" target="_blank">validation_results.json</a>
-                    <div class="file-meta">.json • 0.024 MB</div>
+                    <div class="file-meta">.json • 0.047 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -551,7 +577,7 @@
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/advanced_viz_summary.json" target="_blank">advanced_viz_summary.json</a>
-                    <div class="file-meta">.json • 0.01 MB</div>
+                    <div class="file-meta">.json • 0.008 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -804,7 +830,7 @@
 
         <div class="step-section">
             <div class="step-header">📂 Execute (12_execute_output)</div>
-            <p><strong>Files:</strong> 149</p>
+            <p><strong>Files:</strong> 203</p>
             <div class="file-list">
 
                 <div class="file-item">
@@ -848,6 +874,11 @@
                 </div>
 
                 <div class="file-item">
+                    <a href="../12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/Active Inference POMDP Agent_simulation_results.json" target="_blank">Active Inference POMDP Agent_simulation_results.json</a>
+                    <div class="file-meta">.json • 0.009 MB</div>
+                </div>
+
+                <div class="file-item">
                     <a href="../12_execute_output/bnlearn_causal_model/activeinference_jl/execution_logs/Bnlearn Causal Model_activeinference.jl_results.json" target="_blank">Bnlearn Causal Model_activeinference.jl_results.json</a>
                     <div class="file-meta">.json • 0.004 MB</div>
                 </div>
@@ -888,6 +919,11 @@
                 </div>
 
                 <div class="file-item">
+                    <a href="../12_execute_output/bnlearn_causal_model/pymdp/simulation_data/Bnlearn Causal Model_simulation_results.json" target="_blank">Bnlearn Causal Model_simulation_results.json</a>
+                    <div class="file-meta">.json • 0.007 MB</div>
+                </div>
+
+                <div class="file-item">
                     <a href="../12_execute_output/deep_planning_horizon/activeinference_jl/execution_logs/Deep Planning Horizon POMDP_activeinference.jl_results.json" target="_blank">Deep Planning Horizon POMDP_activeinference.jl_results.json</a>
                     <div class="file-meta">.json • 0.005 MB</div>
                 </div>
@@ -897,18 +933,8 @@
                     <div class="file-meta">.json • 0.004 MB</div>
                 </div>
 
-                <div class="file-item">
-                    <a href="../12_execute_output/deep_planning_horizon/discopy/execution_logs/Deep Planning Horizon POMDP_discopy.py_results.json" target="_blank">Deep Planning Horizon POMDP_discopy.py_results.json</a>
-                    <div class="file-meta">.json • 0.003 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../12_execute_output/deep_planning_horizon/jax/execution_logs/Deep Planning Horizon POMDP_jax.py_results.json" target="_blank">Deep Planning Horizon POMDP_jax.py_results.json</a>
-                    <div class="file-meta">.json • 0.005 MB</div>
-                </div>
-
                 <div class="file-item" style="opacity: 0.7; font-style: italic;">
-                    ... and 129 more files
+                    ... and 183 more files
                 </div>
 
             </div>
@@ -916,7 +942,7 @@
 
         <div class="step-section">
             <div class="step-header">📂 LLM (13_llm_output)</div>
-            <p><strong>Files:</strong> 362</p>
+            <p><strong>Files:</strong> 542</p>
             <div class="file-list">
 
                 <div class="file-item">
@@ -940,7 +966,22 @@
                 </div>
 
                 <div class="file-item">
+                    <a href="../13_llm_output/.cache/010d3b11802975722fcadb40fdfd8707ac31dbd76c98d9f7292f4dfbf2949262.json" target="_blank">010d3b11802975722fcadb40fdfd8707ac31dbd76c98d9f7292f4dfbf2949262.json</a>
+                    <div class="file-meta">.json • 0.003 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../13_llm_output/.cache/017b8115f662250928f7ce3f415753102da00f8b075f1ef8eaacb9b78e740c85.json" target="_blank">017b8115f662250928f7ce3f415753102da00f8b075f1ef8eaacb9b78e740c85.json</a>
+                    <div class="file-meta">.json • 0.002 MB</div>
+                </div>
+
+                <div class="file-item">
                     <a href="../13_llm_output/.cache/02b2725a898514477e24e4bbbbb600fa53b6987262db06d7a3492ad0bf155ead.json" target="_blank">02b2725a898514477e24e4bbbbb600fa53b6987262db06d7a3492ad0bf155ead.json</a>
+                    <div class="file-meta">.json • 0.001 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../13_llm_output/.cache/037ee4df7cfa16a91c029bf8c26f94190cbb244c901bfe6172b2d4f2dbbc225d.json" target="_blank">037ee4df7cfa16a91c029bf8c26f94190cbb244c901bfe6172b2d4f2dbbc225d.json</a>
                     <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
@@ -955,13 +996,33 @@
                 </div>
 
                 <div class="file-item">
+                    <a href="../13_llm_output/.cache/05d399e57ff7466218e8acb9f7dfe03b4b131e1029c0b3daa159aa5196bca307.json" target="_blank">05d399e57ff7466218e8acb9f7dfe03b4b131e1029c0b3daa159aa5196bca307.json</a>
+                    <div class="file-meta">.json • 0.002 MB</div>
+                </div>
+
+                <div class="file-item">
                     <a href="../13_llm_output/.cache/067a555e456746e9125a8366d0d321f9941298def922aea1b6f30db70c143012.json" target="_blank">067a555e456746e9125a8366d0d321f9941298def922aea1b6f30db70c143012.json</a>
                     <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
+                    <a href="../13_llm_output/.cache/06ea4d07798d7db02659af110262cc8f05141099a7dc93a4d949d482b4ca0f59.json" target="_blank">06ea4d07798d7db02659af110262cc8f05141099a7dc93a4d949d482b4ca0f59.json</a>
+                    <div class="file-meta">.json • 0.002 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../13_llm_output/.cache/070d57dac81ceeadafbf417958bf641c94a13e54f097026c4c66b1b84306748b.json" target="_blank">070d57dac81ceeadafbf417958bf641c94a13e54f097026c4c66b1b84306748b.json</a>
+                    <div class="file-meta">.json • 0.003 MB</div>
+                </div>
+
+                <div class="file-item">
                     <a href="../13_llm_output/.cache/07900d453097918fc66fbea25a7985e86da25ce13d214b650ad1363037e89bba.json" target="_blank">07900d453097918fc66fbea25a7985e86da25ce13d214b650ad1363037e89bba.json</a>
                     <div class="file-meta">.json • 0.003 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../13_llm_output/.cache/0802bb31ad88d5d726be6c33f8648bfe2db0828381805fc460467ea16ca19c1d.json" target="_blank">0802bb31ad88d5d726be6c33f8648bfe2db0828381805fc460467ea16ca19c1d.json</a>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -975,52 +1036,17 @@
                 </div>
 
                 <div class="file-item">
-                    <a href="../13_llm_output/.cache/0aa96132d58aebe69a9baa8e2dc38d9275f04142ff7ff71825301d336f105dd2.json" target="_blank">0aa96132d58aebe69a9baa8e2dc38d9275f04142ff7ff71825301d336f105dd2.json</a>
-                    <div class="file-meta">.json • 0.002 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/0acb42d92493a8b4fc7520242c4718913695e4e52915a7de6624e248023a6079.json" target="_blank">0acb42d92493a8b4fc7520242c4718913695e4e52915a7de6624e248023a6079.json</a>
-                    <div class="file-meta">.json • 0.001 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/0b1bc174fa3b15f329bd5202562095c3d465733d4e71c9ad4b086fee53c22f14.json" target="_blank">0b1bc174fa3b15f329bd5202562095c3d465733d4e71c9ad4b086fee53c22f14.json</a>
+                    <a href="../13_llm_output/.cache/09640b3ba5e9474ef5463cbc730c6642dafbfa8ba9736fe8e72c0acc71b12208.json" target="_blank">09640b3ba5e9474ef5463cbc730c6642dafbfa8ba9736fe8e72c0acc71b12208.json</a>
                     <div class="file-meta">.json • 0.003 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../13_llm_output/.cache/0b2a85bff76743ce01387c75338d45818980966c426ec33b40d1985a9af132ae.json" target="_blank">0b2a85bff76743ce01387c75338d45818980966c426ec33b40d1985a9af132ae.json</a>
-                    <div class="file-meta">.json • 0.002 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/0d3cf5264a68a25e78b6f80dc01df6c0a6c71921ebd424f67ebae7222e1fa9aa.json" target="_blank">0d3cf5264a68a25e78b6f80dc01df6c0a6c71921ebd424f67ebae7222e1fa9aa.json</a>
+                    <a href="../13_llm_output/.cache/09d31f6b3368979641d67186b64eec66ab84c4e4359988514404cce11b3dd011.json" target="_blank">09d31f6b3368979641d67186b64eec66ab84c4e4359988514404cce11b3dd011.json</a>
                     <div class="file-meta">.json • 0.001 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/0db7096d6fe433a732f19e51049b591a4871702bdf3f453c3eab04ddf4effaf4.json" target="_blank">0db7096d6fe433a732f19e51049b591a4871702bdf3f453c3eab04ddf4effaf4.json</a>
-                    <div class="file-meta">.json • 0.001 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/0e7b122d97638683114aaccb1cb63b018e0b1ff4c66973bf7fca69e225486088.json" target="_blank">0e7b122d97638683114aaccb1cb63b018e0b1ff4c66973bf7fca69e225486088.json</a>
-                    <div class="file-meta">.json • 0.001 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/0f8a89fd6f8240ab1847a3719de666ba3ddef19b82b75b53c2b8b81d448d10f3.json" target="_blank">0f8a89fd6f8240ab1847a3719de666ba3ddef19b82b75b53c2b8b81d448d10f3.json</a>
-                    <div class="file-meta">.json • 0.002 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../13_llm_output/.cache/1038b88556f2467e24e96a2def3027d95fa69c58db66ed907b50d8507c83e6e7.json" target="_blank">1038b88556f2467e24e96a2def3027d95fa69c58db66ed907b50d8507c83e6e7.json</a>
-                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item" style="opacity: 0.7; font-style: italic;">
-                    ... and 342 more files
+                    ... and 522 more files
                 </div>
 
             </div>
@@ -1163,22 +1189,22 @@
 
                 <div class="file-item">
                     <a href="../16_analysis_output/analysis_results.json" target="_blank">analysis_results.json</a>
-                    <div class="file-meta">.json • 0.258 MB</div>
+                    <div class="file-meta">.json • 0.835 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../16_analysis_output/cross_framework/bnlearn_causal_model_post_simulation_analysis.json" target="_blank">bnlearn_causal_model_post_simulation_analysis.json</a>
-                    <div class="file-meta">.json • 0.007 MB</div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../16_analysis_output/cross_framework/deep_planning_horizon_post_simulation_analysis.json" target="_blank">deep_planning_horizon_post_simulation_analysis.json</a>
                     <div class="file-meta">.json • 0.009 MB</div>
                 </div>
 
                 <div class="file-item">
+                    <a href="../16_analysis_output/cross_framework/deep_planning_horizon_post_simulation_analysis.json" target="_blank">deep_planning_horizon_post_simulation_analysis.json</a>
+                    <div class="file-meta">.json • 0.012 MB</div>
+                </div>
+
+                <div class="file-item">
                     <a href="../16_analysis_output/cross_framework/framework_comparison_data.json" target="_blank">framework_comparison_data.json</a>
-                    <div class="file-meta">.json • 0.05 MB</div>
+                    <div class="file-meta">.json • 0.044 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -1188,12 +1214,12 @@
 
                 <div class="file-item">
                     <a href="../16_analysis_output/cross_framework/markov_chain_post_simulation_analysis.json" target="_blank">markov_chain_post_simulation_analysis.json</a>
-                    <div class="file-meta">.json • 0.005 MB</div>
+                    <div class="file-meta">.json • 0.006 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../16_analysis_output/cross_framework/multi_armed_bandit_post_simulation_analysis.json" target="_blank">multi_armed_bandit_post_simulation_analysis.json</a>
-                    <div class="file-meta">.json • 0.008 MB</div>
+                    <div class="file-meta">.json • 0.011 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -1309,7 +1335,7 @@
 
                 <div class="file-item">
                     <a href="../20_website_output/analysis.html" target="_blank">analysis.html</a>
-                    <div class="file-meta">.html • 0.187 MB</div>
+                    <div class="file-meta">.html • 0.739 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -1344,7 +1370,7 @@
 
                 <div class="file-item">
                     <a href="../20_website_output/reports.html" target="_blank">reports.html</a>
-                    <div class="file-meta">.html • 0.084 MB</div>
+                    <div class="file-meta">.html • 0.101 MB</div>
                 </div>
 
                 <div class="file-item">
@@ -1411,6 +1437,62 @@
                 <div class="file-item">
                     <a href="../22_gui_output/visual_model_gui2.md" target="_blank">visual_model_gui2.md</a>
                     <div class="file-meta">.md • 0.004 MB</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="step-section">
+            <div class="step-header">📂 Report (23_report_output)</div>
+            <p><strong>Files:</strong> 5</p>
+            <div class="file-list">
+
+                <div class="file-item">
+                    <a href="../23_report_output/comprehensive_analysis_report.html" target="_blank">comprehensive_analysis_report.html</a>
+                    <div class="file-meta">.html • 0.035 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../23_report_output/report_generation_summary.json" target="_blank">report_generation_summary.json</a>
+                    <div class="file-meta">.json • 0.001 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../23_report_output/report_processing_summary.json" target="_blank">report_processing_summary.json</a>
+                    <div class="file-meta">.json • 0.001 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../23_report_output/report_summary.json" target="_blank">report_summary.json</a>
+                    <div class="file-meta">.json • 0.276 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../23_report_output/comprehensive_analysis_report.md" target="_blank">comprehensive_analysis_report.md</a>
+                    <div class="file-meta">.md • 0.011 MB</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="step-section">
+            <div class="step-header">📂 Intelligent Analysis (24_intelligent_analysis_output)</div>
+            <p><strong>Files:</strong> 3</p>
+            <div class="file-list">
+
+                <div class="file-item">
+                    <a href="../24_intelligent_analysis_output/analysis_data.json" target="_blank">analysis_data.json</a>
+                    <div class="file-meta">.json • 0.01 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../24_intelligent_analysis_output/intelligent_analysis_summary.json" target="_blank">intelligent_analysis_summary.json</a>
+                    <div class="file-meta">.json • 0.0 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../24_intelligent_analysis_output/intelligent_analysis_report.md" target="_blank">intelligent_analysis_report.md</a>
+                    <div class="file-meta">.md • 0.008 MB</div>
                 </div>
 
             </div>

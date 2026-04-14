@@ -1,33 +1,33 @@
 # PRACTICAL_APPLICATIONS
 
-You've already covered the practical applications of GNN models, including their use cases for weather forecasting, energy management, and sensor networks. Now it's time to discuss some key considerations related to data quality, performance, and integration with existing systems.
+Based on the analysis, here are some key points:
 
-1. **Data Quality**:
-   - **Error-tolerant**: Can handle errors in input data without requiring manual validation or correction.
-   - **Handling missing values**: Can provide a robust representation of the underlying distribution of states based on observed observations.
-   - **Robustness to outliers and anomalies**: Can detect and correct unusual patterns, while maintaining overall accuracy.
+1. **Implementation Considerations**: This model is designed for real-world applications where data quality, computational resources, and scalability are critical factors. It can be applied to various domains such as healthcare, finance, transportation systems, and more.
 
-2. **Performance**:
-   - **Computational requirements**: Requires significant computational resources (e.g., GPU or CPU) for computation-intensive tasks like inference and learning.
-   - **Data availability**: Must be available across a range of data sources to ensure accurate representation of the underlying distribution.
-   - **Scalability**: Can handle large datasets with varying sizes, but may require additional infrastructure such as distributed computing resources or specialized software.
+2. **Performance Expectations**: The model's performance expectations range from simple probabilistic graphical models (PGG) to advanced Bayesian inference with additional constraints like "no action selection" or "action selection based on probability". These are reasonable goals for the model but may not be feasible in all domains due to computational resources and data requirements.
 
-3. **Integration with Existing Systems**:
-   - **Simultaneous processing**: Allows for simultaneous analysis and inference across multiple systems (e.g., IoT devices, sensors).
-   - **Data sharing**: Can facilitate communication between different systems through APIs or protocols like OpenFlow.
-   - **Communication channels**: Can enable real-time data exchange with other systems via network connections or other communication methods.
+3. **Deployment Scenarios**: The model can handle various scenarios, including:
+   - Online processing (e.g., real-time applications)
+   - Real-time constraints and requirements
+   - Hardware and software dependencies
 
-4. **Benefits and Advantages**:
-   - **Robustness to errors**: Allows for accurate representation of the underlying distribution, even in noisy or incomplete data.
-   - **Improved model performance**: Can provide a robust representation of the underlying distribution based on observed observations, leading to better predictions and inference capabilities.
-   - **Enhanced scalability**: Can handle large datasets with varying sizes without requiring manual validation or correction.
+4. **Benefits and Advantages**: This model has several key benefits such as:
+   - Simplified modeling of complex systems with minimal data loss
+   - Potential for more accurate predictions than traditional probabilistic graphical models (PGMs)
+   - Ability to handle a wide range of scenarios without requiring extensive training or tuning efforts
+   - Can be applied to various domains, including healthcare, finance, transportation systems, and other industries
 
-5. **Challenges and Considerations**:
-   - **Data quality issues**: May require manual validation or corrections for errors in input data.
-   - **Computational resources limitations**: Can be computationally intensive, especially when dealing with complex models like GNNs.
-   - **Integration challenges**: Requires specialized software infrastructure to facilitate communication between different systems and applications.
-   - **Data availability issues**: May require additional computational resources or specialized software for handling large datasets.
+5. **Challenges and Considerations**: The model's performance is based on probabilistic graphical models with limited data availability and computational resources. This makes it challenging to optimize the model for specific applications in certain domains. 
 
-6. **Deployment Scenarios**:
-   - **Online vs. offline processing**: Can handle data from various sources, including IoT devices, sensors, and other connected systems.
-   - **Real
+6. **Deployment Scenarios**: The model can handle various scenarios such as:
+   - Online processing (e.g., real-time applications)
+   - Real-time constraints and requirements
+   - Hardware and software dependencies
+
+7. **Benefits and Advantages**: This model has several key benefits, including:
+   - Simplified modeling of complex systems with minimal data loss
+   - Potential for more accurate predictions than traditional probabilistic graphical models (PGMs)
+   - Ability to handle a wide range of scenarios without requiring extensive training or tuning efforts
+   - Can be applied to various domains, including healthcare, finance, transportation systems, and other industries
+
+8. **Challenges and Considerations**: The model's performance is based on probabilistic graphical models with limited data availability and computational resources. This makes it challenging to optimize the model for specific applications in certain domains.

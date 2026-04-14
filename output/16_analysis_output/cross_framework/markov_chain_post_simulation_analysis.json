@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T11:10:15.405692",
+  "timestamp": "2026-04-14T12:03:25.236112",
   "execution_results_dir": "output/12_execute_output/markov_chain",
   "framework_results": {
     "bnlearn": {
@@ -40,8 +40,68 @@
     },
     "pymdp": {
       "framework": "pymdp",
-      "result_count": 2,
+      "result_count": 3,
       "analyses": [
+        {
+          "framework": "pymdp",
+          "model_name": "Simple Markov Chain",
+          "free_energy_count": 15,
+          "free_energy_values": [
+            [
+              1.088900089263916
+            ],
+            [
+              0.8018185496330261
+            ],
+            [
+              1.088900089263916
+            ],
+            [
+              1.088900089263916
+            ],
+            [
+              1.088900089263916
+            ],
+            [
+              0.897945761680603
+            ],
+            [
+              0.897945761680603
+            ],
+            [
+              0.897945761680603
+            ],
+            [
+              0.897945761680603
+            ],
+            [
+              1.088900089263916
+            ],
+            [
+              0.8018185496330261
+            ],
+            [
+              0.8018185496330261
+            ],
+            [
+              0.8018185496330261
+            ],
+            [
+              0.897945761680603
+            ],
+            [
+              0.897945761680603
+            ]
+          ],
+          "mean_free_energy": 0.9359632809956868,
+          "std_free_energy": 0.11477501559574242,
+          "min_free_energy": 0.8018185496330261,
+          "max_free_energy": 1.088900089263916,
+          "free_energy_trend": -0.013653524432863518,
+          "free_energy_decreasing": "True",
+          "convergence_variance": 0.00205343131023107,
+          "converged": true
+        },
         {
           "framework": "pymdp",
           "model_name": "Simple Markov Chain",
@@ -177,18 +237,18 @@
         "mean_fe": 0.0693
       },
       "execution_time": {
-        "bnlearn": 2.071806,
-        "discopy": 0.246265,
-        "jax": 0.668619,
-        "pytorch": 0.559492,
-        "pymdp": 2.739263,
+        "bnlearn": 2.287798,
+        "discopy": 0.256614,
+        "jax": 0.702916,
+        "pytorch": 0.50427,
+        "pymdp": 3.067906,
         "activeinference_jl": 29.115092,
-        "numpyro": 0.735309,
+        "numpyro": 1.19063,
         "rxinfer": 17.135859
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.246265
+        "time": 0.256614
       },
       "success_rates": {
         "bnlearn": true,

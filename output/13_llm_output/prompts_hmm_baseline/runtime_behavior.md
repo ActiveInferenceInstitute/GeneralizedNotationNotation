@@ -6,33 +6,77 @@ Prompt:
 
 Response:
 
-Here's a summary of the key components and their corresponding behavior in different scenarios:
+```python
+import json
+from typing import List, Dict, Tuple
 
-1. **GNN Example**:
-   - `HiddenMarkovModel`: Emission, transition, and forward algorithm with no action selection (passive inference only).
-   - `GNNVersionAndFlags`: GNN version, flags for input parameters (`A`, `B`), and default values for state space block.
-   - `modelAnnotation`: Annotated model annotation indicating the type of input parameter annotations used in the algorithm.
+def gnn(model: GNNModel) -> Dict[str, float]:
+    """GNN implementation for sequential learning.
 
-2. **ModelSection**:
-   - `HiddenMarkovModelBaseline`: Emission, transition, and forward algorithm with no action selection (passive inference only).
-   - `GNNVersionAndFlags`: GNN version, flags for input parameters (`A`, `B`), and default values for state space block.
-   - `modelAnnotation`: Annotated model annotation indicating the type of input parameter annotations used in the algorithm.
+    Args:
+        model (GNNModel): A dictionary of input and output states.
 
-3. **ModelSection**:
-   - `HiddenMarkovModelBaseline`: Emission, transition, and forward algorithm with no action selection (passive inference only).
-   - `GNNVersionAndFlags`: GNN version, flags for input parameters (`A`, `B`), and default values for state space block.
-   - `modelAnnotation`: Annotated model annotation indicating the type of input parameter annotations used in the algorithm.
+    Returns:
+        A dictionary containing the following keys:
+            - `input_states`: A list of input states.
+            - `output_states`: A list of output states.
+            - `action_probs` (dictionary): A dictionary representing the action probabilities for each state.
+    """
+    # Initialize an empty dictionary to store the GNN model parameters
+    gnn_params = {}
 
-4. **ModelSection**:
-   - `HiddenMarkovModelBaseline`: Emission, transition, and forward algorithm with no action selection (passive inference only).
-   - `GNNVersionAndFlags`: GNN version, flags for input parameters (`A`, `B`), and default values for state space block.
-   - `modelAnnotation`: Annotated model annotation indicating the type of input parameter annotations used in the algorithm.
+    # Initialize a dictionary with default values for input and output states
+    input_states = {
+        "input": [],
+        "output": []
+    }
 
-5. **ModelSection**:
-   - `HiddenMarkovModelBaseline`: Emission, transition, and forward algorithm with no action selection (passive inference only).
-   - `GNNVersionAndFlags`: GNN version, flags for input parameters (`A`, `B`), and default values for state space block.
-   - `modelAnnotation`: Annotated model annotation indicating the type of input parameter annotations used in the algorithm.
+    # Initialize a dictionary with default values for action probabilities
+    action_probs = {
+        "action1": 0.5,
+        "action2": 0.3,
+        "action3": 0.7
+    }
 
-6. **ModelSection**:
-   - `HiddenMarkovModelBaseline`: Emission, transition, and forward algorithm with no action selection (passive inference only).
-  
+    # Initialize a dictionary with default values for forward and backward parameters
+    forward_param = {
+        "input": [],
+        "output": []
+    }
+    backward_param = {
+        "forward": [],
+        "backward": []
+    }
+    action_probs_dict = {}
+
+    # Initialize an empty dictionary to store the GNN model annotations
+    gnn_annotations = {}
+
+    # Initialize a dictionary with default values for input and output states
+    input_states = {
+        "input1": [],
+        "output": []
+    }
+    action_probs.update(default=0)  # Default value for forward parameter
+    backward_param.update(default=0)  # Default value for backward parameter
+
+    # Initialize an empty dictionary to store the GNN model annotations
+    gnn_annotations = {}
+
+    # Initialize a dictionary with default values for input and output states
+    input_states = {
+        "input1": [],
+        "output": []
+    }
+    action_probs.update(default=0)  # Default value for forward parameter
+    backward_param.update(default=0)  # Default value for backward parameter
+
+    # Initialize an empty dictionary to store the GNN model annotations
+    gnn_annotations = {}
+
+    # Initialize a dictionary with default values for input and output states
+    input_states = {
+        "input1": [],
+        "output": []
+    }
+    action_probs.update(default=

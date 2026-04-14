@@ -1,37 +1,26 @@
 # ANALYZE_STRUCTURE
 
-Here's a detailed analysis of the GNN specification:
+Based on the provided information, here are some key aspects of the GNN implementation:
 
-1. **Graph Structure**:
-   - Number of variables and their types (20)
-   - Connection patterns (directed/unidirectional edges):
-     - 4x4 column stochastic connections with 6 observations, 4 states, and 4 hidden states per variable.
-     - 4x4 column stochastic connections with 1 observation per variable.
-     - 4x3 column stochastic connections with 2 observations per variable.
-     - 4x3 column stochastic connections with 0 observations per variable.
-   - Connection patterns (directed/unidirectional edges):
-     - Forward algorithm: alpha_t(s) = sum_{s'} P(o_t|s) * P(s|s') * alpha_(t-1)(s'), where alpha is the forward operator, s', s'' are the states and observations.
-     - Backward algorithm: beta_t(s) = sum_{s'} P(o_{t+1}|s') * B(s'|s).
-   - Parameter structure (matrix dimensions):
-     - Number of variables per variable: 20
-     - Number of hidden states per variable: 4
-     - Number of observations per variable: 6
-     - Number of timesteps per variable: 50
-     - Number of observations per state: 1
+1. **Graph Structure**: The graph consists of 4 variables (A, B, C, D) with 6 observation symbols and a fixed transition matrix (P(x|y)). Each variable has an associated probability distribution (Emission Matrix), which is used to compute the next state and subsequent states in the Markov Chain.
 
-2. **Variable Analysis**:
-   - State space dimensionality for each variable (number of variables): 3
-   - Dependencies and conditional relationships between states, observations, and hidden states (directed/unidirectional edges)
-   - Temporal dependencies between states, observations, and hidden states (connected components)
-   - Symmetries or special properties of the graph structure
+2. **Variable Analysis**: The graph structure reveals that each variable has a specific type of connection pattern, such as directed edges or undirected edges. These connections are connected by conditional relationships between variables. For example, there are two types of edges:
+   - Directed edges (E(x|y)) represent the transition from state x to state y in the Markov Chain.
+   - Undirected edges (E(x|y))) represent the backward path from state x back to state y in the Markov Chain.
 
-3. **Mathematical Structure**:
-   - Matrix dimensions: 2x1 matrix with dimensionality of state space
-     - 4x4 column stochastic connections with dimensionality of state space
-     - 4x3 column stochastic connections with dimensionality of state space
+3. **Mathematical Structure**: The graph topology is hierarchical, with each variable having a specific type of connection pattern and connections between variables being connected by conditional relationships. This structure reflects the domain being modeled:
+   - Each variable has an associated probability distribution (Emission Matrix) that represents its likelihood of occurrence in the Markov Chain.
+   - The transition matrix (P(x|y)) is used to compute the next state and subsequent states in the Markov Chain, allowing for efficient computation of the free energy.
 
-**Signature:**
-Cryptographic signature goes here
+4. **Complexity Assessment**: The structure reflects the complexity of the domain being modeled:
+   - Each variable has a specific type of connection pattern that allows for efficient computation of the free energy.
+   - Each variable is connected by conditional relationships between variables, which enables efficient computation of the free energy and other properties of each variable.
 
+5. **Design Patterns**: The structure reflects the design patterns used to model the domain:
+   - The graph topology has a hierarchical structure with each variable having a specific type of connection pattern and connections between variables being connected by conditional relationships. This structure reflects the complexity of the domain being modeled.
+   - Each variable is connected by conditional relationships between variables, which enables efficient computation of the free energy and other properties of each variable.
 
-You can find more detailed analysis and code examples in the attached document.
+6. **Design Patterns**: The graph topology has a hierarchical structure with each variable having a specific type of connection pattern and connections between variables being connected by conditional relationships. This structure reflects the complexity of the domain being modeled.
+
+Overall, these patterns reflect the design choices made to model the domain:
+   - Each

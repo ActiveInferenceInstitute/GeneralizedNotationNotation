@@ -1,20 +1,24 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN implementation:
+Based on the document, here are the key components of the GNN Representation:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation (e.g., `A` and `B`)
-   - B matrices representing the model variables and their relationships with other models (e.g., `C`, `D`, `F`)
-   - C matrices representing the model parameters, including initial biases (`γ`), learning rates (`α`), and adaptation parameters (`other_parameters`)
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
+
+   These represent the model's parameters and their roles in inference.
 
 2. **Precision Parameters**:
-   - γ: precision parameter for each modality
-   - α: learning rate parameter for each modality (default is 0)
-   - Other precision/confidence parameters are not specified, but can be inferred based on the provided model structure and interpretation
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
+
 3. **Dimensional Parameters**:
    - State space dimensions for each factor
    - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+
+   These represent the model's parameter values and their roles in inference.
 
 4. **Temporal Parameters**:
    - Time horizons (T)
@@ -25,5 +29,10 @@ Based on the information provided, here are the key parameters for the GNN imple
    - Prior beliefs over initial states
    - Initial parameter values
    - Initialization strategies
+
+   These represent the parameters that should be used to initialize the model, such as a prior belief or a set of initial parameters.
+
 6. **Configuration Summary**:
-   - Parameter file format recommendations for each modality, including initialization priorities, sensitivity analysis prioritusscaping
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

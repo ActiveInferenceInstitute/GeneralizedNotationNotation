@@ -1,20 +1,17 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+You've already provided a comprehensive overview of the GNN (Generalized Notation Notation) specification and its application to active inference on top of an ontology. Here are some additional points to consider:
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) POMDP that represents hierarchical active inference based on Bayesian probability distributions and probabilistic graphical models. It aims to model real-world phenomena, such as decision-making processes or social behavior, where there are multiple levels of uncertainty and relationships between actions and beliefs.
+1. **Model Purpose**: This model represents a hierarchical POMDP with two-level hierarchies, where Level 2 is faster than Level 1 in terms of dynamics. However, it does not represent the entire system or its behavior. It only captures the key components and relationships between them.
 
-2. **Core Components**:
-   - **Hidden states (s_f0, s_f1, etc.)**: Represent the probability distributions for each level of uncertainty in the POMDP. These represent the probabilities of observing a particular outcome based on previous observations or decisions made by the agent at that level.
-   - **Observations (o_m0, o_m1, etc.)**: Represent the actions and control variables available to the agent at each level of uncertainty. These are represented as vectors in the POMDP matrix.
-   - **Actions/Controls (u_c0, π_c0, etc.)**: Represent the actions and decisions made by the agent based on its current state and previous states. These are represented as matrices in the POMDP matrix.
+2. **Core Components**: The hidden states (s_f0, s_f1) are represented by a set of matrices representing different types of actions and beliefs. These matrices can be used to update the model's parameters based on new data or predictions from other models.
 
-3. **Model Dynamics**: The model evolves over time through a sequence of updates that capture changes in the probabilities of observing different outcomes at each level of uncertainty. It implements Active Inference principles, including Bayesian inference and probabilistic graphical models.
+3. **Key Relationships**: There is no explicit relationship between Level 2 and Level 1 (slowly evolving dynamics). However, there are implicit relationships that could exist:
+   - The rate of evolution in level 2 can be influenced by the rate at which the hidden states evolve in level 1. This could indicate a feedback loop or an interaction between levels.
+   - The rate at which the learned beliefs converge to their optimal behavior (i.e., the rate at which the model learns and updates its parameters) is related to the rate of evolution in level 2, but not directly to the rate of evolution in level 1.
 
-4. **Active Inference Context**: This is a set of beliefs or actions available to the agent based on its current state and previous states. These are represented as vectors in the POMDP matrix. The goal of active inference is to update these beliefs based on new information, allowing the agent to make decisions based on their actions.
+4. **Model Accuracy**: The accuracy of this model can be evaluated by comparing its performance with other models that represent different types of POMDPs (e.g., ActInfPomdp). However, there are no explicit comparisons between models like ActInfPomdp and GNNV2.
 
-5. **Practical Implications**: This model can inform decision-making processes or social behavior by providing a framework for analyzing complex scenarios with multiple levels of uncertainty and relationships between actions and beliefs. It can also provide insights into how agents interact with each other in uncertain environments, such as when faced with conflicting goals or uncertain outcomes.
-
-Please note that while this is a comprehensive explanation covering all the key points, it's not exhaustive. There are many additional aspects to explore further, including:
-- **Model Complexity**: The model can be simplified by removing some of the more complex components (e.g., hidden states and actions) or adding simpler components (e.g., probabilities).
-- **Learning mechanisms**: There may be different learning mechanisms that can
+5. **Error Analysis**: There is no explicit error analysis in this model. The errors can be interpreted as the difference between the predictions made by the different models (ActInfPomdp) or the differences in their performance with respect to each other. However, there are implicit relationships that could indicate a mismatch between the accuracy of different models:
+   - If Level 2 is slower than Level 1, it may imply that the model's rate at level 2 does not converge rapidly enough (e.g., due to slow evolution). This could be an indication that the model has learned too much from the same data or that there are other factors influencing its performance.
+   - If Level 2 is faster than Level 1, it may imply that the model's rate at level 2

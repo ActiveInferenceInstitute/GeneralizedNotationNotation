@@ -1,20 +1,32 @@
 # EXTRACT_PARAMETERS
 
-You've already covered the key components of the GNN specification:
+Based on the document, here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation (represented in `A`)
-   - B matrices representing the model structure, interpretation (represented in `B`), and prior distributions (`C`, `D`, etc.) (represented in `E`)
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
+   - D matrices: dimensions, structure, interpretation
 2. **Precision Parameters**:
-   - γ: precision parameters for each modality
-   - α: learning rates and adaptation parameters
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
    - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
-   - State space dimensions for each modality
+   - State space dimensions for each factor
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
 4. **Temporal Parameters**:
-   - Time horizons (t)
+   - Time horizons (T)
    - Temporal dependencies and windows
    - Update frequencies and timescales
+
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

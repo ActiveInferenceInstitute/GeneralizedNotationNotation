@@ -1,28 +1,66 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are a few key aspects of the GNN specification:
+Based on the provided information, here are some key structural analysis points:
 
-1. **Graph Structure**: The graph is hierarchical and consists of two main components:
-   - **State Space**: A set of variables representing the observation space (hidden states) and their corresponding beliefs over hidden states.
-   - **Connection Patterns**: A set of directed edges between nodes in the graph, which represent conditional relationships between observations and actions.
+1. **Graph Structure**:
+   - Number of variables and their types (e.g., 2 for each variable)
+   - Connection patterns (directed/undirected edges)
+   - Graph topology (hierarchical, network, etc.)
 
-2. **Variable Analysis**: The variable is represented by a single-shot inference model with two parameters:
-   - **Initial Parameterization**: A uniform prior on the state space dimensionality (number of variables) and their types.
-   - **Parameter Structure**: A set of directed edges representing conditional relationships between observations and actions, which encode temporal dependencies and action components.
+**Variable Analysis:**
 
-3. **Mathematical Structure**: The graph is represented by a hierarchical structure with nodes connected by directed edges:
-   - **State Space**: A set of variables representing the observation space (hidden states) and their corresponding beliefs over hidden states.
-   - **Connection Patterns**: A set of directed edges between nodes in the graph, which represent conditional relationships between observations and actions.
+   - State space dimensionality for each variable:
+    - 2 for each variable
+    - 1 for each observation
 
-4. **Complexity Assessment**: The structure reflects the domain being modeled by providing a comprehensive representation that captures all possible interactions between variables and actions. This includes:
-   - **Computational Complexity Indicators**: Indicator of computational complexity (e.g., time complexity) or model scalability considerations (e.g., memory, CPU resources).
-   - **Potential Bottlenecks**: Indicator of potential bottlenecks in the modeling process that can be addressed through optimization techniques (e.g., regularization, pruning).
+2. **Connection Patterns**:
+   - Directed edges between variables are common and consistent across all models
+   - Indirect connections can be found in certain cases (e.g., when there is a temporal dependency)
 
-5. **Design Patterns**: The GNN specification follows a general design pattern for active inference:
-   - **Single-shot Inference**: A single observation is made and its corresponding belief is inferred using a probabilistic graphical model based on the prior distribution.
-   - **Bayesian Inference**: The belief update process involves updating the beliefs of all observations, which can be done in a sequential manner (e.g., through backpropagation).
+**Mathematical Structure:**
 
-6. **Model Scalability Considerations**: The GNN specification has been designed to scale well with computational resources and model complexity:
-   - **Computational Complexity Indicators**: Indicator of potential scalability issues or bottlenecks that can be addressed through optimization techniques, such as regularization or pruning.
+   - Matrix dimensions:
+      - 2x1 for each variable
+      - 1x1 for observation
 
-Overall, the structure reflects the domain being modeled by providing a comprehensive representation that captures all possible interactions between variables and actions.
+3. **Symmetries or Special Properties**:
+    - **Transformation of variables**:
+      - Symmetry properties can be observed (e.g., if a certain type of connection is present)
+
+**Design Patterns:**
+
+   - **What modeling patterns or templates does this follow?**
+   - **How does the structure reflect the domain being modeled?**
+
+4. **Potential Bugs and Challenges**:
+    - **Computational complexity indicators**:
+      - Complexity analysis can help identify potential bottlenecks in model performance (e.g., when there are too many connections)
+
+**Recommendations:**
+
+   - **Simplest possible Active Inference models**:
+   - **Simple GNN representations**:
+   - **GNN-based inference models**:
+    - **Generalized Notation Notation (GNN)**:
+      - **Basic GNN**:
+        - **Initialization**:
+          - **Random initialization**:
+            - **Initializing the state space**:
+              - **Initializing the observation**:
+                - **Initializing the hidden states**:
+                  - **Initializing the temporal dependence**:
+                    - **Initializing the action**:
+                      - **Initializing the temporal dependency**:
+                        - **Initializing the action**:
+                          - **Initializing the temporal dependence**:
+                            - **Initializing the action**:
+                                  - **Initializing the temporal dependence**:
+                                    - **Initializing the temporal dependence**:
+                                        - **Initializing the temporal dependence**:
+                                            - **Initializing the temporal dependence**:
+                                            - **Initializing the temporal dependency**:
+                                            - **Initializing the temporal dependency**:
+                                            - **Initializing the temporal dependency**:
+                                            - **Initializing the temporal dependency**:
+                                            - **Initializing the temporal dependency**:
+                                            - **Initial

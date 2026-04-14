@@ -6,25 +6,75 @@ Prompt:
 
 Response:
 
-Here is the implementation of the GNN model in Python:
 ```python
-import numpy as np
-from typing import List, Dict
+import json
+from collections import Counter
 
-class SimpleGNNModel(object):
+class SimpleMarkovChain:
     def __init__(self):
         self.states = {}
+        self.observations = {}
 
-    def state_transition(self, x: float) -> float:
-        # Check if state is already taken
-        if not isinstance(x, (int, float)):
-            raise ValueError("Input must be a number")
+    def add_observation(self, observation):
+        if isinstance(observation, (int, float)):
+            if not self.states[observation]:
+                raise ValueError("Invalid observation")
 
-        # Update the next state distribution based on input
-        states[x] += 1
-```
-The `state_transition` method takes an input value and updates the corresponding state in the model. It checks if the input is already taken by checking whether it's a number or not, raising a `ValueError`. If so, it raises a `ValueError` with a message indicating that the input cannot be converted to a number. Otherwise, it adds 1 to the current state distribution and updates the next state distribution accordingly.
-The `state_transition` method takes an input value and updates the corresponding state in the model based on the input. It checks if the input is already taken by checking whether it's a number or not, raising a `ValueError`. If so, it raises a `ValueError` with a message indicating that the input cannot be converted to a number. Otherwise, it adds 1 to the current state distribution and updates the next state distribution accordingly.
-The `state_transition` method takes an input value and updates the corresponding state in the model based on the input. It checks if the input is already taken by checking whether it's a number or not, raising a `ValueError`. If so, it raises a `ValueError` with a message indicating that the input cannot be converted to a number. Otherwise, it adds 1 to the current state distribution and updates the next state distribution accordingly.
-The `state_transition` method takes an input value and updates the corresponding state in the model based on the input. It checks if the input is already taken by checking whether it's a number or not, raising a `ValueError`. If so, it raises a `ValueError` with a message indicating that the input cannot be converted to a number. Otherwise, it adds 1 to the current state distribution and updates the next state distribution accordingly.
-The `state_transition` method takes an input value and updates the corresponding state in the model based on the input. It checks if the input is already taken by checking whether it's a number or
+        self.states[observation] += 1
+
+    def add_state(self, state):
+        if not self.states:
+            raise ValueError("No states yet")
+
+        for key in self.states:
+            if isinstance(key, (int, float)):
+                if not self.states[key]:
+                    raise ValueError("Invalid state")
+
+            self.states[key] += 1
+
+    def add_observation(self):
+        if not self.states:
+            raise ValueError("No states yet")
+
+        for key in self.states:
+            if isinstance(key, (int, float)):
+                if not self.states[key]:
+                    raise ValueError("Invalid observation")
+
+            self.states[key] += 1
+
+    def add_observation_history(self):
+        if not self.states:
+            raise ValueError("No states yet")
+
+        for state in range(len(self.states) - 2):
+            nextstate = self.states[(state + 1)]
+            prevstate = self.states[nextstate]
+
+            if isinstance(prevstate, (int, float)):
+                if not self.states:
+                    raise ValueError("Invalid observation")
+
+                for i in range(len(self.states) - 2):
+                    nextstate_history = self.states[(i + 1)]
+
+                    prevstate_history = self.states[nextstate_history]
+
+                    if isinstance(prevstate_history, (int, float)):
+                        if not self.states:
+                            raise ValueError("Invalid observation")
+
+                        for i in range(len(self.states) - 2):
+                            nextstate_history_history = self.states[(i + 1)]
+
+                            prevstate_history_history = self.states[nextstate_history]
+
+                            if isinstance(prevstate_history, (int, float)):
+                                if not self.states:
+                                    raise ValueError("Invalid observation")
+
+                            for i in range(len(self.states) - 2):
+                                nextstate_history_history = self.states[(i + 1)]
+
+                                prevstate_history_history = self

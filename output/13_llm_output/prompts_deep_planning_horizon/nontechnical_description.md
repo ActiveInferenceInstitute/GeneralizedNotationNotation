@@ -7,40 +7,59 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
+import json
+from typing import List, Dict, Tuple
 
-# Define the GNN model annotations and parameters
-GNN_model=np.array([
-    ([
-        ([
-            ([
-                ([
-                    ([
-                        ([
-                            ([
-                                ([
-                                    ([
-                                        ([
-                                            ([
-                                                ([
-                                                    ([
-                                                        ([
-                                ], [[[0] * 4**3 + 1]]*64 ** T) - E[H[P(o_τ|s_τ)]], [[0]] * 64 ** T) - E[H[G_tau2|S]], [[0]] * 64 ** T) - E[H[G_tau3|S']]),
-                    ], [[[0] * 1**T + 1]]*64 ** T) - E[H[π|s_τ]][],
-                ])
-            ]
-        ]
-    ]
-])
-```
+def generate_gnn(
+    model: Dict[str, Dict[str, Dict]],
+    num_hidden_states: int = 4,
+    num_actions: int = 64,
+    planning_horizon: int = 5,
+    num_policies: int = 64,
+) -> List[Dict[str, Dict]]:
+    """Generates a GNN model.
 
-This implementation uses a GNN model with 4 hidden states and 4 observations. It implements the following actions:
+    Args:
+        model (dict): A dictionary of action sequences and their corresponding actions.
+        num_hidden_states (int): The number of hidden states in the model.
+        num_actions (int): The number of actions per state.
+        planning_horizon (int): The horizon for each action sequence, starting from 0 to T-step.
+        num_policies (int): The number of policies at each timestep.
+    """
 
-1. `G(θ, θ+1)` is trained to predict the state at time `t` based on the policy sequence `π`. The predicted state is computed using the following steps:
-   - `g_τ(θ) = G[θ] + E[H[P(o_τ|s_τ)]], [[[0]] * 64 ** T] - E[H[G_tau2|S]], [[0]] * 64 ** T) - E[H[π|s_τ]][]`.
-   - `g_(θ+1, θ)= g_[θ + 1]*(G[θ][]) + E[H[P(o_τ|s_τ)]], [[[0]]*64 ** T] - E[H[G_tau2|S']]`
+    # Generate a list of all possible actions and their corresponding states
+    actions = [action["name"] for action in model]
+    states = [state["name"] for state in model]
 
-2. `π=g_(θ+1, θ)`.
-3. `σ = G_τ(π)[].**T`, where `G_τ(π)` is the GNN model's policy distribution over actions and `σ` is its prior over initial states.
-4. `F[G_τ(π)]= F[(θ+1, θ)][], [[[0]]*64 ** T] - E[H[P(o_τ|s_τ)]].**T`.
-5. `E[H[G_tau
+    # Initialize the GNN model with the given parameters
+    gnn_model: Dict[str, Dict[str, Dict]] = {}
+
+    # Generate all possible actions and their corresponding states
+    for i in range(num_actions):
+        action_sequences = []
+
+        # Generate a sequence of 10 actions at each timestep
+        for _ in range(planning_horizon + num_hidden_states - 2 * num_actions):
+            seq, state = model[action["name"]]
+
+            # Generate a sequence of 4 states and their corresponding actions
+            for i in range(num_actions):
+                action_sequences.append((
+                    action['name'],
+                    action['state'] + i * num_hidden_states - 1)
+                ))
+
+        # Add the generated sequences to the list
+        actions = [action["name"] for action in action_sequences]
+
+    # Generate a list of all possible policies and their corresponding states
+    policy_sequences = []
+
+    # Generate a sequence of 4 policies at each timestep
+    for _ in range(planning_horizon + num_policies - 2 * num_actions):
+        seq, state = model[action["name"]]
+
+        # Generate a sequence of 10 policies and their corresponding actions
+        for i in range(num_actions):
+            policy_sequences.append((
+               

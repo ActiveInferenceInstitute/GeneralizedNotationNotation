@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/bnlearn_causal_model/discopy/Bnlearn Causal Model_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.250063,
-  "timestamp": "2026-04-14T11:00:08.714659",
+  "execution_time": 0.244699,
+  "timestamp": "2026-04-14T11:55:00.239481",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -57,8 +57,8 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/bnlearn_causal_model/discopy/simulation_data/circuit_analysis.json",
-      "output/12_execute_output/bnlearn_causal_model/discopy/simulation_data/circuit_info.json"
+      "output/12_execute_output/bnlearn_causal_model/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/bnlearn_causal_model/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

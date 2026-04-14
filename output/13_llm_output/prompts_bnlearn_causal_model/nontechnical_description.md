@@ -6,30 +6,71 @@ Prompt:
 
 Response:
 
-A Bayesian Network model mapping Active Inference structure:
-- S: Hidden State
-- A: Action
-- S_prev: Previous State
-- O: Observation
+```python
+import json
+from typing import List, Dict
 
-Generative model parameters:
-- Matrix mappings mapped to CPTs natively in bnlearn generator.
+def gnn(input: str) -> Dict[str, float]:
+    """GNN model implementation."""
 
-## ModelAnnotation
-
-A Bayesian Network model mapping Active Inference structure:
-- S={(0.9, 0.1), (0.1, 0.9)}
-B=TransitionModel
-S_prev={(0.7, 0.3)}, A={(0.0, 1.0)}
-
-# Connections
-A = make_DAG([('s', 'o'), ('a', 's')])
-B = make_DAG([('s', 's'), ('a', 'S_prev')] + [[((0.7, 0.3), (0.3, 0.7)], (()], ([(0.1, 0.9)])] )
-C={(0.5, 0.5)}
-D = make_DAG([('s', 'o'), ('a', 'S')])
-
-## Connections
-A=make_CAUSENetworkConnection[("b", "B")][("c", "B")] + [[((0.7, 0.3), (0.3, 0.7)], (()], ([(0.1, 0.9)])] )
-B = make_CAUSENetworkConnection[("s', 'S')][("b', "S')] + [[(((0.7, 0.3), (0.3, 0.7)), (()]), ((0.1, 0.9)] ] # [((0.5, 0.5)]]
-C = make_CAUSENetworkConnection[("s', 'S')][("b', "B')] + [[(((0.7, 0.3), (0.3, 0.7)), (()]), ((0.1, 0.9)] ] # [((0.5, 0.5)]]
-D = make_CAUSENetworkConnection[("s', 'S')][("b', "B')] + [[(((0.7, 0.3), (0.3, 0.7)), (()]), ((
+    # Create a Bayesian Network (BN) from the input data.
+    bn = bnlearn_network()
+    
+    # Create a GNN object with the given parameters
+    gnn_model = bn.create_gnn(input=input)
+    
+    # Initialize an initial parameterization and initialize all nodes in the network
+    for node, action in bn.get_actions():
+        # Set the initial state to the current observation
+        if isinstance(node, str):
+            node['action'] = 'Action'
+        
+        # Set the transition operator to be a transition operator with probability 0.9
+        # (i.e., the first time it is applied)
+        if isinstance(node, str):
+            node_probabilities = {
+                's': [
+                    {'state': input[0], 'action': action},
+                    {'state': input[1], 'action': action} 
+                ] 
+            }
+        
+        else:
+            # Set the initial state to the current observation
+            if isinstance(node, str):
+                node['state'] = input[0]
+            
+            # Set the transition operator to be a transition operator with probability 0.9
+            # (i.e., the first time it is applied)
+            if isinstance(node, str):
+                node_probabilities = {
+                    's': [
+                        {'state': input[1], 'action': action} 
+                    ] 
+                }
+        
+        for key in node['actions']:
+            # Set the initial state to the current observation
+            if isinstance(key, str):
+                key.append('S')
+            
+            # Set the transition operator to be a transition operator with probability 0.9
+            # (i.e., the first time it is applied)
+            if isinstance(key, str):
+                node_probabilities[
+                    {'state': input[1], 'action': action} 
+                ] = {
+                    's': [
+                        {'state': input[2], 'action': action} 
+                    ] 
+                }
+        
+        # Set the initial state to the current observation
+        if isinstance(node['actions'], list):
+            for key in node['actions']:
+                # Set the initial state to the current observation
+                if isinstance(key, str):
+                    key.append('S')
+            
+            # Set the transition operator to be a transition operator with probability 0.9
+            #

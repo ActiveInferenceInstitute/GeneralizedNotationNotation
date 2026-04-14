@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.24848,
-  "timestamp": "2026-04-14T10:59:17.231161",
+  "execution_time": 0.249113,
+  "timestamp": "2026-04-14T11:54:07.980158",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -57,8 +57,8 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/deep_planning_horizon/discopy/simulation_data/circuit_analysis.json",
-      "output/12_execute_output/deep_planning_horizon/discopy/simulation_data/circuit_info.json"
+      "output/12_execute_output/deep_planning_horizon/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/deep_planning_horizon/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

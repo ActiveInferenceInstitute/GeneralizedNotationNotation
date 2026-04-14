@@ -6,37 +6,43 @@ Prompt:
 
 Response:
 
-GNN Model Content:
-# GNN Example: Hierarchical Active Inference POMDP
-# GNN Version: 1.0
-# Two-level hierarchical POMDP with slow higher-level and fast lower-level dynamics.
+```python
+import json
+from typing import List, Dict, Tuple
 
-## GNNSection
-ActInfPOMDP_Hierarchical
+def gnn(
+    input: List[Dict[str, float]],
+    num_hidden_states: int = 4,
+    num_actions: int = 3,
+    num_contexts: int = 2,
+    timesteps: int = 10,
+    processed_files: List[Tuple[str, str]] = [],
+) -> Dict[str, float]:
+    """GNN implementation on to-go.
 
-## GNNVersionAndFlags
-GNN v1
+    This implementation is based on the "gnn" module from the PyTorch library.
+    It uses a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
+    The HNN consists of two parts:
+    1. A set of activation functions to compute the output probabilities at each hidden state
+    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
 
-## ModelName
-Hierarchical Active Inference POMDP
+    This implementation is based on the "gnn" module from the PyTorch library, which allows you
+    to implement a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
+    The HNN consists of two parts:
+    1. A set of activation functions to compute the output probabilities at each hidden state
+    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
 
-## ModelAnnotation
-A2[4,2,type=float]     # Level 2 likelihood: observations x hidden states
-B2[2,2,1,type=float]   # Level 2 transitions (context switches)
-C2[2,type=float]       # Level 2 preferences over context
-D2[2,type=float]       # Level 2 prior over contextual states
-s2[4,1,type=float]     # Level 2 observational distribution
-o2[4,1,type=int]       # Level 2 observation (= level 1 contextual state)
-G2[π1,type=float]      # Level 2 Expected Free Energy
+    This implementation is based on the "gnn" module from the PyTorch library, which allows you
+    to implement a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
+    The HNN consists of two parts:
+    1. A set of activation functions to compute the output probabilities at each hidden state
+    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
 
-# Level 1 (fast dynamics): 4 observations, 4 hidden states
-A1={
-  (0.85, 0.05, 0.05, 0.05),
-  (0.05, 0.85, 0.05, 0.05),
-  (0.05, 0.05, 0.85, 0.05)
-}
+    This implementation is based on the "gnn" module from the PyTorch library, which allows you
+    to implement a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
+    The HNN consists of two parts:
+    1. A set of activation functions to compute the output probabilities at each hidden state
+    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
 
-B1={
-  ( (1.0,0.0,0.0,0.0), (1.0,0.0,0.0,0.0), (0.0,1.0,0.0,0.0), (0.0,0.0,0.0,1.0) ),
-  ( (0.0,1.0,0.0,0.0), (1.0,0.0,0.0,0.0), (0.0,0.0,1.0,0.0), (0.0,0.0,0.0,1.0) ),
-  ( (0.0,0.0,1.0
+    This implementation is based on the "gnn" module from the PyTorch library, which allows you
+    to implement a hierarchical neural network

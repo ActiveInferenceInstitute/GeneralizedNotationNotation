@@ -7,15 +7,66 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
+import json
+from typing import List, Dict
 
-# Define the state space and initial parameters
-state_space = np.array([[1, 0], [0, 1]])
-initial_belief = np.array([np.zeros((2 * initial_size + 1))])
-action_probabilities = np.array([])
-sensory_prediction_error = np.array([])
-action_probability = np.array([])
-sensory_precision = np.array([])
-goal_x = np.array(range(-initial_state[0], initial_size + 1))
-goal_y = np.array([initial_state[1]])
-```
+class GNNModel:
+    def __init__(self):
+        self.state = {}
+
+    def add_observation(self, x):
+        if isinstance(x, (list, tuple)):
+            for item in x:
+                if type(item) == list or type(item) == tuple:
+                    item[0] = [item[1]]
+                else:
+                    raise TypeError("Input is not a list/tuple")
+
+    def add_observation_noise(self):
+        self.state["obs"] = []
+
+    def add_action(self, x):
+        if isinstance(x, (list, tuple)):
+            for item in x:
+                if type(item) == list or type(item) == tuple:
+                    item[0] = [item[1]]
+                else:
+                    raise TypeError("Input is not a list/tuple")
+
+    def add_action_noise(self):
+        self.state["actions"] = []
+
+    def add_observation_error(self, x):
+        if isinstance(x, (list, tuple)):
+            for item in x:
+                if type(item) == list or type(item) == tuple:
+                    item[0] = [item[1]]
+                else:
+                    raise TypeError("Input is not a list/tuple")
+
+    def add_action_error(self, x):
+        if isinstance(x, (list, tuple)):
+            for item in x:
+                if type(item) == list or type(item) == tuple:
+                    item[0] = [item[1]]
+                else:
+                    raise TypeError("Input is not a list/tuple")
+
+    def add_observation_error(self, x):
+        if isinstance(x, (list, tuple)):
+            for item in x:
+                if type(item) == list or type(item) == tuple:
+                    item[0] = [item[1]]
+                else:
+                    raise TypeError("Input is not a list/tuple")
+
+    def add_action_error(self, x):
+        if isinstance(x, (list, tuple)):
+            for item in x:
+                if type(item) == list or type(item) == tuple:
+                    item[0] = [item[1]]
+                else:
+                    raise TypeError("Input is not a list/tuple")
+
+    def add_observation_error(self, x):
+        if isinstance(x, (list

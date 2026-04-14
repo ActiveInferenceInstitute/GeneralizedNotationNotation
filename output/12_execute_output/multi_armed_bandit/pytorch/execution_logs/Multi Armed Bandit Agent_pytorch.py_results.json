@@ -5,123 +5,123 @@
   "script_path": "output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.490408,
-  "timestamp": "2026-04-14T10:59:46.564257",
+  "execution_time": 0.495395,
+  "timestamp": "2026-04-14T11:54:38.106768",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
     ],
     "actions": [
       1,
-      0,
-      0,
-      0,
-      0,
       1,
       1,
       0,
       0,
+      1,
+      1,
+      1,
+      1,
+      1,
       0,
       1,
       1,
-      0,
-      0,
+      1,
       0
     ],
     "policy": [],
-    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.001s\nResults saved to: output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.024s\nResults saved to: output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
+        0.0,
         0.9999999999999997,
-        0.0,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ],
       [
-        0.9999999999999999,
         0.0,
+        0.9999999999999999,
         0.0
       ]
     ],
@@ -136,7 +136,7 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/simulation_results.json"
+      "output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/simulation_data_simulation_results.json"
     ],
     "traces": [],
     "other": []

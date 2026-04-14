@@ -1,42 +1,34 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN model:
+Based on the information provided, here are the key components of the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the state space and action spaces
-   - B matrices representing the belief matrix and prediction matrix
-   - C matrices representing the probability matrices (beliefs) and predictions
-   - D matrices representing the decision variables and actions
-2. **Precision Parameters**:
-   - γ: precision parameters for each modality
-   - α: learning rate for each modality
+   - A matrices representing the model structure and interpretation (e.g., BeliefNet)
+   - B matrices representing the action-belief matrix relationships between actions and observations
+   - C matrices representing the prediction accuracy over initial states and predictions for each modality
+   - D matrices representing the temporal dependencies and window parameters
 
+2. **Precision Parameters**:
+   - γ = 0.1 (initial guess of a parameter)
+   - α = 0.5 (initial learning rate)
+   - Other precision/confidence parameters are not provided, but can be inferred from the description in the document.
 3. **Dimensional Parameters**:
-   - State space dimensions for each modality
+   - State space dimensions for each factor
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
 
 4. **Temporal Parameters**:
-   - Time horizons (T)
+   - Time horizons (t)
    - Temporal dependencies and windows
-   - Update frequencies and timescales
+   - Update frequencies and timescales are not provided, but can be inferred from the description in the document.
 5. **Initial Conditions**:
    - Prior beliefs over initial states
    - Initial parameter values
    - Initialization strategies
 
 6. **Configuration Summary**:
-   - Parameter file format recommendations for each modality:
-    - Decision variables and actions (decision probabilities)
-    - Action parameters (action weights, action biases)
-    - Prediction parameters (prediction probability matrices)
-7. **Tunable vs. Fixed Parameters**:
-   - Sensitivity analysis priorities based on parameter values
+   - Parameter file format recommendations:
+    - "input/10_ontology_output/simple_mdp_ontology_report.json" (contains the input data)
+    - "input/10_ontology_output/multi_armed_bandit_ontology_report.json" (contains the output data)
 
-8. **Parameter File Format Recommendations**:
-   - Use tabular format for parameter file formats:
-      - Tabulate the parameter values and their corresponding decision probabilities
-      - Use tabular formatting to specify parameters in a tabular format
-9. **Tunable vs. Fixed Parameters**:
-   - Use tabular format for parameter evaluation metrics (e.g., accuracy, precision)
-    - Use tabular format for parameter interpretation (e.g., sensitivity analysis priorities)
+Overall, these components provide a comprehensive representation of the GNN implementation and its parameters.

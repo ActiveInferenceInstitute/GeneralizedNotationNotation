@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-04-14T11:11:08.150922",
+  "report_generation_time": "2026-04-14T12:31:40.073160",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
@@ -17,7 +17,7 @@
           "total_size_mb": 0.07439136505126953
         }
       },
-      "last_modified": "2026-04-14T10:56:40.580127",
+      "last_modified": "2026-04-14T11:51:42.087019",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -37,10 +37,10 @@
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.014655113220214844
+          "total_size_mb": 0.014773368835449219
         }
       },
-      "last_modified": "2026-04-14T10:56:47.687439",
+      "last_modified": "2026-04-14T11:51:57.642203",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -50,15 +50,15 @@
       "directory": "output/2_tests_output",
       "exists": true,
       "file_count": 6,
-      "total_size_mb": 6.96,
+      "total_size_mb": 0.45,
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 6.51664924621582
+          "total_size_mb": 0.0
         },
         ".txt": {
           "count": 1,
-          "total_size_mb": 0.3614482879638672
+          "total_size_mb": 0.36441802978515625
         },
         ".md": {
           "count": 1,
@@ -77,15 +77,10 @@
           "total_size_mb": 0.00067138671875
         }
       },
-      "last_modified": "2026-04-14T10:58:10.872238",
+      "last_modified": "2026-04-14T12:31:17.843945",
       "status": "success",
       "performance_metrics": {},
-      "error_logs": [
-        {
-          "file": "pytest.log",
-          "size_mb": 6.52
-        }
-      ],
+      "error_logs": [],
       "key_files": [
         {
           "name": "pytest_reliable_output.txt",
@@ -185,7 +180,7 @@
           "total_size_mb": 0.19615554809570312
         }
       },
-      "last_modified": "2026-04-14T10:58:14.191184",
+      "last_modified": "2026-04-14T11:53:27.736547",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -208,7 +203,7 @@
           "total_size_mb": 0.005742073059082031
         }
       },
-      "last_modified": "2026-04-14T10:58:14.824165",
+      "last_modified": "2026-04-14T11:53:28.223898",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -224,7 +219,7 @@
       "directory": "output/5_type_checker_output",
       "exists": true,
       "file_count": 26,
-      "total_size_mb": 2.53,
+      "total_size_mb": 2.54,
       "file_types": {
         ".json": {
           "count": 1,
@@ -236,10 +231,10 @@
         },
         ".png": {
           "count": 24,
-          "total_size_mb": 2.507692337036133
+          "total_size_mb": 2.5154075622558594
         }
       },
-      "last_modified": "2026-04-14T10:58:21.434452",
+      "last_modified": "2026-04-14T11:53:34.972058",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -249,21 +244,21 @@
       "directory": "output/6_validation_output",
       "exists": true,
       "file_count": 2,
-      "total_size_mb": 0.02,
+      "total_size_mb": 0.05,
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.024538040161132812
+          "total_size_mb": 0.04806327819824219
         }
       },
-      "last_modified": "2026-04-14T10:58:24.231193",
+      "last_modified": "2026-04-14T11:53:38.578006",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "validation_results.json",
-          "size_mb": 0.02,
+          "size_mb": 0.05,
           "type": ".json"
         }
       ]
@@ -295,7 +290,7 @@
           "total_size_mb": 0.025316238403320312
         }
       },
-      "last_modified": "2026-04-14T10:58:24.599193",
+      "last_modified": "2026-04-14T11:53:39.242870",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -364,7 +359,7 @@
         },
         ".json": {
           "count": 19,
-          "total_size_mb": 0.03351306915283203
+          "total_size_mb": 0.030838966369628906
         },
         ".html": {
           "count": 9,
@@ -379,7 +374,7 @@
           "total_size_mb": 0.0032796859741210938
         }
       },
-      "last_modified": "2026-04-14T10:58:47.589752",
+      "last_modified": "2026-04-14T12:31:26.649358",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -987,7 +982,7 @@
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.009778976440429688
+          "total_size_mb": 0.008436203002929688
         },
         ".d2": {
           "count": 5,
@@ -998,7 +993,7 @@
           "total_size_mb": 0.12569522857666016
         }
       },
-      "last_modified": "2026-04-14T10:58:56.928372",
+      "last_modified": "2026-04-14T11:53:46.258281",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1121,7 +1116,7 @@
           "total_size_mb": 0.04555511474609375
         }
       },
-      "last_modified": "2026-04-14T10:58:57.599952",
+      "last_modified": "2026-04-14T11:53:46.943657",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1139,7 +1134,7 @@
         },
         ".json": {
           "count": 85,
-          "total_size_mb": 0.31890296936035156
+          "total_size_mb": 0.31893253326416016
         },
         ".jl": {
           "count": 18,
@@ -1158,7 +1153,7 @@
           "total_size_mb": 0.0048656463623046875
         }
       },
-      "last_modified": "2026-04-14T11:05:09.386128",
+      "last_modified": "2026-04-14T11:55:20.771563",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1533,27 +1528,27 @@
     "12_execute_output": {
       "directory": "output/12_execute_output",
       "exists": true,
-      "file_count": 228,
-      "total_size_mb": 1.17,
+      "file_count": 282,
+      "total_size_mb": 1.26,
       "file_types": {
         ".log": {
           "count": 73,
           "total_size_mb": 0.14687156677246094
         },
         ".json": {
-          "count": 148,
-          "total_size_mb": 0.9885377883911133
+          "count": 202,
+          "total_size_mb": 1.0830955505371094
         },
         ".md": {
           "count": 1,
-          "total_size_mb": 0.031281471252441406
+          "total_size_mb": 0.030722618103027344
         },
         ".csv": {
           "count": 6,
           "total_size_mb": 0.0032787322998046875
         }
       },
-      "last_modified": "2026-04-14T11:05:09.641047",
+      "last_modified": "2026-04-14T11:55:25.107841",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1562,19 +1557,19 @@
     "13_llm_output": {
       "directory": "output/13_llm_output",
       "exists": true,
-      "file_count": 362,
-      "total_size_mb": 1.67,
+      "file_count": 542,
+      "total_size_mb": 1.46,
       "file_types": {
         ".json": {
-          "count": 181,
-          "total_size_mb": 1.3546361923217773
+          "count": 361,
+          "total_size_mb": 1.1411800384521484
         },
         ".md": {
           "count": 181,
-          "total_size_mb": 0.3120851516723633
+          "total_size_mb": 0.32372283935546875
         }
       },
-      "last_modified": "2026-04-14T11:10:06.771357",
+      "last_modified": "2026-04-14T12:31:38.071176",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1981,7 +1976,7 @@
         },
         {
           "name": "technical_description.md",
-          "size_mb": 0.0,
+          "size_mb": 0.01,
           "type": ".md"
         },
         {
@@ -2501,7 +2496,7 @@
           "total_size_mb": 0.008608818054199219
         }
       },
-      "last_modified": "2026-04-14T11:10:08.173611",
+      "last_modified": "2026-04-14T12:00:43.954094",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2526,7 +2521,7 @@
           "total_size_mb": 0.0019731521606445312
         }
       },
-      "last_modified": "2026-04-14T11:10:10.362529",
+      "last_modified": "2026-04-14T12:00:46.139011",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2731,30 +2726,30 @@
     "16_analysis_output": {
       "directory": "output/16_analysis_output",
       "exists": true,
-      "file_count": 532,
-      "total_size_mb": 61.27,
+      "file_count": 541,
+      "total_size_mb": 60.75,
       "file_types": {
         ".json": {
           "count": 29,
-          "total_size_mb": 0.3688640594482422
+          "total_size_mb": 0.9531288146972656
         },
         ".md": {
           "count": 3,
-          "total_size_mb": 0.015027046203613281
+          "total_size_mb": 0.014919281005859375
         },
         ".png": {
-          "count": 500,
-          "total_size_mb": 60.88604736328125
+          "count": 509,
+          "total_size_mb": 59.785783767700195
         }
       },
-      "last_modified": "2026-04-14T11:11:02.319616",
+      "last_modified": "2026-04-14T12:04:20.294172",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "analysis_results.json",
-          "size_mb": 0.26,
+          "size_mb": 0.83,
           "type": ".json"
         },
         {
@@ -2779,7 +2774,7 @@
           "total_size_mb": 0.000202178955078125
         }
       },
-      "last_modified": "2026-04-14T11:11:02.809310",
+      "last_modified": "2026-04-14T12:04:20.934739",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2800,7 +2795,7 @@
           "total_size_mb": 0.0004978179931640625
         }
       },
-      "last_modified": "2026-04-14T11:11:03.071688",
+      "last_modified": "2026-04-14T12:04:21.242056",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2821,7 +2816,7 @@
           "total_size_mb": 0.010625839233398438
         }
       },
-      "last_modified": "2026-04-14T11:11:03.307279",
+      "last_modified": "2026-04-14T12:04:21.503227",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2831,11 +2826,11 @@
       "directory": "output/20_website_output",
       "exists": true,
       "file_count": 23,
-      "total_size_mb": 2.75,
+      "total_size_mb": 3.32,
       "file_types": {
         ".html": {
           "count": 9,
-          "total_size_mb": 0.3977165222167969
+          "total_size_mb": 0.9675531387329102
         },
         ".json": {
           "count": 1,
@@ -2846,7 +2841,7 @@
           "total_size_mb": 2.3497190475463867
         }
       },
-      "last_modified": "2026-04-14T11:11:03.587556",
+      "last_modified": "2026-04-14T12:04:21.789293",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2868,7 +2863,7 @@
         },
         {
           "name": "analysis.html",
-          "size_mb": 0.19,
+          "size_mb": 0.74,
           "type": ".html"
         },
         {
@@ -2883,7 +2878,7 @@
         },
         {
           "name": "reports.html",
-          "size_mb": 0.08,
+          "size_mb": 0.1,
           "type": ".html"
         },
         {
@@ -2909,7 +2904,7 @@
           "total_size_mb": 0.058349609375
         }
       },
-      "last_modified": "2026-04-14T11:11:06.495178",
+      "last_modified": "2026-04-14T12:04:25.025074",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2930,7 +2925,7 @@
       "directory": "output/22_gui_output",
       "exists": true,
       "file_count": 6,
-      "total_size_mb": 0.08,
+      "total_size_mb": 0.09,
       "file_types": {
         ".json": {
           "count": 3,
@@ -2942,10 +2937,10 @@
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.0720357894897461
+          "total_size_mb": 0.07587814331054688
         }
       },
-      "last_modified": "2026-04-14T11:11:07.841138",
+      "last_modified": "2026-04-14T12:31:39.702722",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2957,7 +2952,7 @@
         },
         {
           "name": "navigation.html",
-          "size_mb": 0.07,
+          "size_mb": 0.08,
           "type": ".html"
         }
       ]
@@ -2965,24 +2960,46 @@
     "23_report_output": {
       "directory": "output/23_report_output",
       "exists": true,
-      "file_count": 0,
-      "total_size_mb": 0.0,
-      "file_types": {},
-      "last_modified": null,
-      "status": "generating",
+      "file_count": 5,
+      "total_size_mb": 0.32,
+      "file_types": {
+        ".json": {
+          "count": 3,
+          "total_size_mb": 0.2773141860961914
+        },
+        ".html": {
+          "count": 1,
+          "total_size_mb": 0.034806251525878906
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.010923385620117188
+        }
+      },
+      "last_modified": "2026-04-14T12:04:27.046498",
+      "status": "success",
       "performance_metrics": {},
       "error_logs": [],
-      "key_files": [],
-      "note": "Report step output (self-referencing \u2014 files generated during this step)",
-      "estimated_file_count": 6
+      "key_files": [
+        {
+          "name": "report_summary.json",
+          "size_mb": 0.28,
+          "type": ".json"
+        },
+        {
+          "name": "comprehensive_analysis_report.html",
+          "size_mb": 0.03,
+          "type": ".html"
+        }
+      ]
     }
   },
   "summary": {
-    "total_files_processed": 2213,
+    "total_files_processed": 2461,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 168.52,
+    "total_size_mb": 162.30999999999997,
     "success_rate": 100.0
   },
   "performance_metrics": {},
@@ -2990,16 +3007,16 @@
   "file_type_analysis": {
     "total_by_type": {
       ".json": {
-        "count": 562,
-        "total_size_mb": 4.02
+        "count": 799,
+        "total_size_mb": 4.78
       },
       ".md": {
-        "count": 306,
-        "total_size_mb": 0.6
+        "count": 307,
+        "total_size_mb": 0.62
       },
       ".log": {
         "count": 74,
-        "total_size_mb": 6.66
+        "total_size_mb": 0.15
       },
       ".txt": {
         "count": 16,
@@ -3010,8 +3027,8 @@
         "total_size_mb": 0.01
       },
       ".png": {
-        "count": 659,
-        "total_size_mb": 88.19
+        "count": 668,
+        "total_size_mb": 87.1
       },
       ".bnf": {
         "count": 20,
@@ -3098,8 +3115,8 @@
         "total_size_mb": 0.0
       },
       ".html": {
-        "count": 21,
-        "total_size_mb": 42.16
+        "count": 22,
+        "total_size_mb": 42.77
       },
       ".d2": {
         "count": 5,
@@ -3127,7 +3144,7 @@
         },
         "1_setup_output": {
           "count": 2,
-          "size_mb": 0.014655113220214844
+          "size_mb": 0.014773368835449219
         },
         "2_tests_output": {
           "count": 1,
@@ -3147,7 +3164,7 @@
         },
         "6_validation_output": {
           "count": 2,
-          "size_mb": 0.024538040161132812
+          "size_mb": 0.04806327819824219
         },
         "7_export_output": {
           "count": 4,
@@ -3155,11 +3172,11 @@
         },
         "8_visualization_output": {
           "count": 19,
-          "size_mb": 0.03351306915283203
+          "size_mb": 0.030838966369628906
         },
         "9_advanced_viz_output": {
           "count": 1,
-          "size_mb": 0.009778976440429688
+          "size_mb": 0.008436203002929688
         },
         "10_ontology_output": {
           "count": 12,
@@ -3167,15 +3184,15 @@
         },
         "11_render_output": {
           "count": 85,
-          "size_mb": 0.31890296936035156
+          "size_mb": 0.31893253326416016
         },
         "12_execute_output": {
-          "count": 148,
-          "size_mb": 0.9885377883911133
+          "count": 202,
+          "size_mb": 1.0830955505371094
         },
         "13_llm_output": {
-          "count": 181,
-          "size_mb": 1.3546361923217773
+          "count": 361,
+          "size_mb": 1.1411800384521484
         },
         "14_ml_integration_output": {
           "count": 1,
@@ -3187,7 +3204,7 @@
         },
         "16_analysis_output": {
           "count": 29,
-          "size_mb": 0.3688640594482422
+          "size_mb": 0.9531288146972656
         },
         "17_integration_output": {
           "count": 1,
@@ -3212,6 +3229,10 @@
         "22_gui_output": {
           "count": 3,
           "size_mb": 0.003772735595703125
+        },
+        "23_report_output": {
+          "count": 3,
+          "size_mb": 0.2773141860961914
         }
       },
       ".md": {
@@ -3237,11 +3258,11 @@
         },
         "12_execute_output": {
           "count": 1,
-          "size_mb": 0.031281471252441406
+          "size_mb": 0.030722618103027344
         },
         "13_llm_output": {
           "count": 181,
-          "size_mb": 0.3120851516723633
+          "size_mb": 0.32372283935546875
         },
         "15_audio_output": {
           "count": 1,
@@ -3249,7 +3270,7 @@
         },
         "16_analysis_output": {
           "count": 3,
-          "size_mb": 0.015027046203613281
+          "size_mb": 0.014919281005859375
         },
         "17_integration_output": {
           "count": 1,
@@ -3266,12 +3287,16 @@
         "22_gui_output": {
           "count": 2,
           "size_mb": 0.008327484130859375
+        },
+        "23_report_output": {
+          "count": 1,
+          "size_mb": 0.010923385620117188
         }
       },
       ".log": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 6.51664924621582
+          "size_mb": 0.0
         },
         "12_execute_output": {
           "count": 73,
@@ -3281,7 +3306,7 @@
       ".txt": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.3614482879638672
+          "size_mb": 0.36441802978515625
         },
         "8_visualization_output": {
           "count": 9,
@@ -3317,7 +3342,7 @@
         },
         "5_type_checker_output": {
           "count": 24,
-          "size_mb": 2.507692337036133
+          "size_mb": 2.5154075622558594
         },
         "8_visualization_output": {
           "count": 108,
@@ -3328,8 +3353,8 @@
           "size_mb": 2.3497190475463867
         },
         "16_analysis_output": {
-          "count": 500,
-          "size_mb": 60.88604736328125
+          "count": 509,
+          "size_mb": 59.785783767700195
         },
         "20_website_output": {
           "count": 13,
@@ -3489,11 +3514,15 @@
         },
         "20_website_output": {
           "count": 9,
-          "size_mb": 0.3977165222167969
+          "size_mb": 0.9675531387329102
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.0720357894897461
+          "size_mb": 0.07587814331054688
+        },
+        "23_report_output": {
+          "count": 1,
+          "size_mb": 0.034806251525878906
         }
       },
       ".d2": {
@@ -5122,7 +5151,7 @@
             "relative_path": "20_website_output/pipeline.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 16499,
+            "size_bytes": 16483,
             "size_mb": 0.02,
             "step": "20_website_output"
           },
@@ -5132,7 +5161,7 @@
             "relative_path": "20_website_output/index.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 16647,
+            "size_bytes": 16631,
             "size_mb": 0.02,
             "step": "20_website_output"
           },
@@ -5142,8 +5171,8 @@
             "relative_path": "20_website_output/analysis.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 195758,
-            "size_mb": 0.19,
+            "size_bytes": 775161,
+            "size_mb": 0.74,
             "step": "20_website_output"
           },
           {
@@ -5172,8 +5201,8 @@
             "relative_path": "20_website_output/reports.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 88104,
-            "size_mb": 0.08,
+            "size_bytes": 106250,
+            "size_mb": 0.1,
             "step": "20_website_output"
           },
           {
@@ -6589,7 +6618,7 @@
           "relative_path": "20_website_output/pipeline.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 16499,
+          "size_bytes": 16483,
           "size_mb": 0.02,
           "step": "20_website_output"
         },
@@ -6599,7 +6628,7 @@
           "relative_path": "20_website_output/index.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 16647,
+          "size_bytes": 16631,
           "size_mb": 0.02,
           "step": "20_website_output"
         },
@@ -6609,8 +6638,8 @@
           "relative_path": "20_website_output/analysis.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 195758,
-          "size_mb": 0.19,
+          "size_bytes": 775161,
+          "size_mb": 0.74,
           "step": "20_website_output"
         },
         {
@@ -6639,8 +6668,8 @@
           "relative_path": "20_website_output/reports.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 88104,
-          "size_mb": 0.08,
+          "size_bytes": 106250,
+          "size_mb": 0.1,
           "step": "20_website_output"
         },
         {
@@ -8052,7 +8081,7 @@
         "relative_path": "20_website_output/pipeline.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 16499,
+        "size_bytes": 16483,
         "size_mb": 0.02,
         "step": "20_website_output"
       },
@@ -8062,7 +8091,7 @@
         "relative_path": "20_website_output/index.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 16647,
+        "size_bytes": 16631,
         "size_mb": 0.02,
         "step": "20_website_output"
       },
@@ -8072,8 +8101,8 @@
         "relative_path": "20_website_output/analysis.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 195758,
-        "size_mb": 0.19,
+        "size_bytes": 775161,
+        "size_mb": 0.74,
         "step": "20_website_output"
       },
       {
@@ -8102,8 +8131,8 @@
         "relative_path": "20_website_output/reports.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 88104,
-        "size_mb": 0.08,
+        "size_bytes": 106250,
+        "size_mb": 0.1,
         "step": "20_website_output"
       },
       {
@@ -8130,7 +8159,7 @@
   },
   "health_score": 95.0,
   "report_metadata": {
-    "generation_time": "2026-04-14T11:11:08.269300",
+    "generation_time": "2026-04-14T12:31:40.178389",
     "formats_generated": [
       "html",
       "markdown",

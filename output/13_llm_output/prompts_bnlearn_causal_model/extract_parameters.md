@@ -1,19 +1,42 @@
 # EXTRACT_PARAMETERS
 
-You've already done a thorough job in extracting the parameters from the GNN specification, but here are some additional insights to consider:
+Here is a systematic parameter breakdown of the GNN model:
 
-1. **Initialization strategies**: You mentioned that initial parameter values should be chosen based on their sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+1. **Model Matrices**:
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
 
-2. **Parameter decomposition**: You've already provided a systematic breakdown of the parameters, including matrix mappings, action annotations, transition probabilities, and inference mechanisms. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles, interpretations, or implications within the model structure. For example:
-   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+   The matrix M(x) represents the mapping from states to actions and transitions between states. The matrix M is used for inference on the model parameters.
 
-3. **Temporal parameters**: You've already provided a systematic breakdown of the temporal parameters, including timesteps, initialization strategies, and decision-making priorities. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles within the model structure. For example:
-   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+2. **Precision Parameters**:
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
+   - Other precision/confidence parameters
 
-4. **Configuration summary**: You've already provided a systematic breakdown of the parameters, including matrix mappings, action annotations, transition probabilities, and inference mechanisms. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles within the model structure. For example:
-   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+   These are used as input arguments to the model, which can be tuned using a tuning strategy. The parameter file format recommendations provide guidance on how to tune these parameters based on specific training data or evaluation metrics.
 
-5. **Temporal parameters**: You've already provided a systematic breakdown of the temporal parameters, including timesteps, initialization strategies, and decision-making priorities. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles within the model structure. For example:
-   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+3. **Dimensional Parameters**:
+   - State space dimensions for each factor
+   - Observation space dimensions for each modality
 
-6. **Configuration summary**: You've already provided a systematic breakdown of the parameters, including matrix mappings, action annotations, transition probabilities, and inference
+   These are used as input arguments to the model, which can be tuned using a tuning strategy. The parameter file format recommendations provide guidance on how to tune these parameters based on specific training data or evaluation metrics.
+
+4. **Temporal Parameters**:
+   - Time horizons (T)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
+
+   These are used as input arguments to the model, which can be tuned using a tuning strategy. The parameter file format recommendations provide guidance on how to tune these parameters based on specific training data or evaluation metrics.
+
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
+
+   These are used as input arguments to the model, which can be tuned using a tuning strategy. The parameter file format recommendations provide guidance on how to tune these parameters based on specific training data or evaluation metrics.
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

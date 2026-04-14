@@ -1,20 +1,24 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here is a summary of the key points:
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) agent that represents continuous state-space models with Gaussian beliefs and covariance matrices. It uses Laplace approximation for Gaussian belief updates, and Generalized coordinate systems to represent its actions and predictions.
+1. The model represents a continuous state-space agent that navigates a 2D environment with noisy position measurements and Gaussian noise. It uses Laplace approximation for Gaussian belief updating to update its beliefs based on observed data, while also incorporating actions (state transitions) and predictions (actions).
 
-2. **Core Components**:
-   - **Belief Mean**: A set of values representing the current belief or action.
-   - **Observation Mean Mapping**: A matrix mapping between observed positions (position) and predicted positions/actions based on a Gaussian belief distribution.
-   - **Observation Noise**: A set of values representing the uncertainty in the observation, which can be used to make predictions about future observations.
+2. The model's core components include:
+   - A continuous state-space agent that updates its beliefs based on observations from the environment.
+   - A neural network with a hidden layer representing the action space. This allows for smooth predictive control of the agent, while also incorporating actions to update its belief and predictions.
+   - A probabilistic graphical model representation of the agent's behavior.
 
-3. **Model Dynamics**: This agent implements Active Inference principles by using Laplace approximation for Gaussian beliefs and covariance matrices. It uses a Gaussian action matrix to update its belief distribution based on observed data. The goal is to predict actions based on available actions (actions) and the current state of the environment, while also updating their probabilities in order to make predictions about future observations.
+3. The model is designed to implement Active Inference principles by updating beliefs based on observed data and applying actions in a flexible way. It uses a combination of active inference (using Laplace approximation for Gaussian belief updates) and Bayesian inference (using probability distributions).
 
-4. **Active Inference Context**: This agent learns from past behavior by observing how it reacts to different actions/controls. It uses this knowledge to update its beliefs and predict new observations based on available actions. The goal is to learn a set of rules that allow the agent to adaptively adjust its belief distribution in response to new data, while also updating its predictions about future observations.
+4. Practical implications include:
+   - Learning from noisy observations allows the agent to learn accurate predictions about future positions, velocities, and trajectories based on available data.
+   - The model can inform decisions by updating its beliefs in a flexible way based on observed actions and predictions.
+   - It provides valuable insights into how the agent's behavior evolves over time, allowing for informed decision-making.
 
-5. **Practical Implications**: This model can be used for various applications such as:
-   - **Navigation**: It can navigate through a 2D environment by adjusting its beliefs based on available actions and observing the current state of the environment.
-   - **Control**: It can control other agents' behavior using their own beliefs, while also updating their predictions about future observations to make decisions in uncertain environments.
+5. Key relationships include:
+   - The belief updates are made using Laplace approximation to update the agent's beliefs based on observations from the environment.
+   - The Bayesian inference allows the agent to learn accurate predictions about future positions and velocities based on available data.
+   - The probabilistic graphical representation of the agent's behavior enables the agent to make informed decisions by updating its beliefs in a flexible way based on observed actions and predictions.
 
-Please provide clear explanations that cover all aspects of this model's purpose, components, dynamics, and practical implications.
+Please provide clear, concise explanations that cover all key points.

@@ -1,22 +1,23 @@
 # ANALYZE_STRUCTURE
 
-Based on the information provided, here are the structural analysis for the GNN specification:
+Based on the document, here are the key points:
 
 1. **Graph Structure**:
-   - Number of variables and their types: 2 (hidden states)
-   - Connection patterns: Directed edges between states
-   - Graph topology: Hierarchical network with a single state per node
+   - Number of variables and their types
+   - Connection patterns (directed/undirected edges)
+   - Graph topology (hierarchical, network, etc.)
 
 2. **Variable Analysis**:
-   - State space dimensionality for each variable: 2
-   - Dependencies and conditional relationships:
-   - Temporal vs. static variables (represented by directed edges)
-   - Symmetry or special properties of the graph structure
+   - State space dimensionality for each variable
+   - Dependencies and conditional relationships
+   - Temporal vs. static variables
 
-**Signature:**
-```python
-import numpy as np
-from scipy import stats
-def signature(x):
-    return stats.expm1((np.arange(2, 4)) * x + np.random.normal([0], 0) - np.random.normal([-1/3]**2*x + np.random.normal(-1/(6-np.random.normal([0]), 0), 0)))
-```
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization  
+   - Symmetries or special properties
+
+4. **Complexity Assessment**:
+   - Computational complexity indicators
+   - Model scalability considerations
+   - Potential bottlenecks or challenges

@@ -5,43 +5,43 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/pytorch/Active Inference POMDP Agent_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.49073,
-  "timestamp": "2026-04-14T10:59:36.203814",
+  "execution_time": 0.472828,
+  "timestamp": "2026-04-14T11:54:27.700195",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
     ],
     "actions": [
       1,
       0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
       1,
       0,
       1,
+      1,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      0,
       0,
       0
     ],
@@ -50,78 +50,78 @@
     "raw_error": "",
     "beliefs": [
       [
-        0.0,
         0.9999999999999997,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ],
       [
-        0.0,
         0.9999999999999999,
+        0.0,
         0.0
       ]
     ],
@@ -136,7 +136,7 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/actinf_pomdp_agent/pytorch/simulation_data/simulation_results.json"
+      "output/12_execute_output/actinf_pomdp_agent/pytorch/simulation_data/simulation_data_simulation_results.json"
     ],
     "traces": [],
     "other": []

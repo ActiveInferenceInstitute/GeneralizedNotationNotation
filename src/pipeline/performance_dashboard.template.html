@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNN Pipeline Performance Dashboard</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #3b82f6;
+  --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 32px; }
+.header { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+.header p { color: var(--muted); margin-top: 8px; }
+
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.metric-card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+.metric-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.metric-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+.chart-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+.chart-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+
+.gantt-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 40px; }
+.gantt-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+#gantt-chart { min-width: 800px; height: 400px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GNN Pipeline Performance</h1>
+  <p id="dashboard-meta">Loading execution metrics...</p>
+</div>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-value" id="val-health" style="color: var(--success)">--</div>
+    <div class="metric-label">Overall Health Score</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-duration" style="color: var(--accent)">--</div>
+    <div class="metric-label">Total Duration (s)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-memory" style="color: var(--warning)">--</div>
+    <div class="metric-label">Peak Memory (MB)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-errors" style="color: var(--danger)">--</div>
+    <div class="metric-label">Total Errors</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-container">
+    <h2>Step Duration Distribution</h2>
+    <canvas id="durationChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <h2>Memory Usage Profile</h2>
+    <canvas id="memoryChart"></canvas>
+  </div>
+</div>
+
+<div class="gantt-container">
+  <h2>Execution Gantt Chart (D3.js)</h2>
+  <div id="gantt-chart"></div>
+</div>
+
+<script>
+// JSON placeholder replaced by standard python formatting
+const rawData = {SUMMARY_JSON};
+
+document.addEventListener("DOMContentLoaded", () => {
+    try {
+        if (!rawData || !rawData.steps) {
+            document.getElementById('dashboard-meta').innerText = 'No valid execution data found.';
+            return;
+        }
+
+        // 1. Populate Header & Metrics
+        document.getElementById('dashboard-meta').innerText = `Execution ID: ${rawData.process_id || 'Unknown'} | Timestamp: ${rawData.timestamp || ''}`;
+        
+        // Mock health score if not exactly provided, though Step 24 generates one
+        const health = rawData.health_score || (100 - (rawData.failures ? rawData.failures.length : 0) * 10);
+        document.getElementById('val-health').innerText = `${health}/100`;
+        // Color code health
+        document.getElementById('val-health').style.color = health > 80 ? 'var(--success)' : health > 50 ? 'var(--warning)' : 'var(--danger)';
+
+        document.getElementById('val-duration').innerText = (rawData.total_duration_seconds || rawData.total_duration || 0).toFixed(2);
+        
+        // Find Peak Memory
+        const maxMem = Math.max(...rawData.steps.map(s => s.memory_mb || 0).filter(v => v));
+        document.getElementById('val-memory').innerText = maxMem > 0 ? maxMem.toFixed(1) : 'N/A';
+        
+        const errs = rawData.failures ? rawData.failures.length : 0;
+        document.getElementById('val-errors').innerText = errs;
+
+
+        // 2. Prepare Chart Data
+        const labels = rawData.steps.map(s => s.name);
+        const durations = rawData.steps.map(s => Math.max(0, s.duration_seconds || 0));
+        const memories = rawData.steps.map(s => Math.max(0, s.memory_mb || 0));
+
+        // 3. Duration Chart (Chart.js)
+        new Chart(document.getElementById('durationChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Duration (seconds)',
+                    data: durations,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 4. Memory Chart (Chart.js)
+        new Chart(document.getElementById('memoryChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Memory (MB)',
+                    data: memories,
+                    borderColor: 'rgba(245, 158, 11, 0.8)',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 5. Build D3 Gantt Chart
+        const ganttDiv = d3.select("#gantt-chart");
+        const width = 800;
+        const height = rawData.steps.length * 30 + 50;
+
+        const svg = ganttDiv.append("svg")
+            .attr("width", "100%")
+            .attr("height", height)
+            .style("background", "var(--surface)");
+
+        // We build cumulative start times
+        let currentStart = 0;
+        const ganttData = rawData.steps.map(s => {
+            const dur = Math.max(0.1, s.duration_seconds || 0); // min 0.1s for visibility
+            const item = {
+                name: s.name,
+                status: s.status,
+                start: currentStart,
+                duration: dur,
+                end: currentStart + dur
+            };
+            currentStart += dur;
+            return item;
+        });
+
+        const xScale = d3.scaleLinear()
+            .domain([0, currentStart])
+            .range([200, width - 40]);
+
+        const yScale = d3.scaleBand()
+            .domain(ganttData.map(d => d.name))
+            .range([0, height - 30])
+            .padding(0.2);
+
+        // Name Labels
+        svg.selectAll(".gantt-label")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", 190)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("text-anchor", "end")
+            .attr("fill", "#94a3b8")
+            .attr("font-size", "12px")
+            .text(d => d.name.length > 25 ? d.name.substring(0,25)+'...' : d.name);
+
+        // Bars
+        svg.selectAll(".gantt-bar")
+            .data(ganttData)
+            .enter().append("rect")
+            .attr("x", d => xScale(d.start))
+            .attr("y", d => yScale(d.name))
+            .attr("width", d => Math.max(2, xScale(d.end) - xScale(d.start))) // Min 2px width
+            .attr("height", yScale.bandwidth())
+            .attr("rx", 4)
+            .attr("fill", d => {
+                const s = String(d.status).toLowerCase();
+                if (s.includes("success") || s.includes("passed")) return "#22c55e";
+                if (s.includes("warn")) return "#f59e0b";
+                if (s.includes("fail") || s.includes("error")) return "#ef4444";
+                return "#3b82f6";
+            })
+            .style("opacity", 0.9);
+
+        // Duration overlay inside/next to bar
+        svg.selectAll(".gantt-dur")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", d => xScale(d.end) + 5)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("fill", "#64748b")
+            .attr("font-size", "10px")
+            .text(d => d.duration.toFixed(2) + "s");
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('dashboard-meta').innerText = 'Error initializing dashboard visuals.';
+    }
+});
+</script>
+</body>
+</html>

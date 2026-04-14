@@ -1,16 +1,13 @@
 # EXPLAIN_MODEL
 
-Here is a concise overview of the key concepts:
+You've already provided a comprehensive explanation of the GNN (Generative Model) specification and its components. Here's an expanded version with additional details:
 
-1. **Model Purpose**: This document provides an explanation of what the GNN represents and how it works. It covers the main components of the model (hidden state matrices A, B, C, D), its core principles, and practical implications for active inference in scientific contexts.
+1. **Model Purpose**: This model represents a type of active inference that can be used to analyze complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on shared signals from the environment.
 
 2. **Core Components**:
-   - **Hidden states**: These are represented by the hidden state matrices A, B, C, D. They capture information about how agents interact with each other (e.g., actions).
-   - **Observations**: These represent observations of the environment and agent behavior (actions) in a given timestep.
-   - **Actions/Controls**: These are represented by the action vectors u_c0, π_c0, and their corresponding probabilities.
-
-3. **Model Dynamics**: The model evolves over time based on the learned beliefs about how agents interact with each other and their environment (actions). It implements Active Inference principles to update these beliefs.
-
-4. **Active Inference Context**: This document provides a comprehensive explanation of what happens when using this model in scientific contexts, including key relationships between actions and beliefs. It also highlights practical implications for active inference in various domains.
-
-Please provide accurate descriptions of the models' components, core principles, and relevant concepts to ensure clarity and accessibility.
+   - **GNN (Generalized Notation Notation)**: A type of active inference that can be used for analyzing complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on shared signals from the environment.
+   - **GNN Representation**: A type of active inference that can be used for analyzing complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on shared signals from the environment.
+   - **ActInfPomdp**: A type of active inference that can be used for analyzing complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on shared signals from the environment.
+   - **BnLearn**: A type of active inference that can be used for analyzing complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on shared signals from the environment.
+   - **Smoothing**: A type of active inference that can be used for analyzing complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on shared signals from the environment.
+   - **ActInf**: A type of active inference that can be used for analyzing complex systems, such as social networks or autonomous robots. It aims to capture emergent behavior by combining multiple agents' actions in a coordinated manner. The core idea is to identify patterns and relationships between different data points based on

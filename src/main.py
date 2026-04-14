@@ -685,6 +685,20 @@ def main(override_args: Optional[PipelineArguments] = None, override_config: Opt
                     file_hashes=pipeline_summary.get("file_hashes")
                 )
 
+            # --- BEGIN DASHBOARD INJECTION ---
+            try:
+                template_path = Path(__file__).parent / "pipeline" / "performance_dashboard.template.html"
+                if template_path.exists():
+                    template_content = template_path.read_text()
+                    json_payload = json.dumps(pipeline_summary)
+                    final_html = template_content.replace("{SUMMARY_JSON}", json_payload)
+                    db_path = summary_path.parent / "performance_dashboard.html"
+                    db_path.write_text(final_html)
+                    logger.info(f"📊 D3 Performance Dashboard rendered to: {db_path}")
+            except Exception as e:
+                logger.warning(f"Could not render performance dashboard: {e}")
+            # --- END DASHBOARD INJECTION ---
+
             # Log summary statistics
             steps = pipeline_summary["steps"]
             successful = sum(1 for step in steps if step["status"] in ("SUCCESS", "SUCCESS_WITH_WARNINGS"))

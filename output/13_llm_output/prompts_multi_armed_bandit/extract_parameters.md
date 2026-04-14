@@ -1,39 +1,48 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Based on the document, here are the key information for generating a signature:
 
 1. **Model Matrices**:
-   - A matrices representing the state space and action spaces.
-   - B matrices representing the reward and observation spaces.
-   - C matrices representing the policy and control variables.
-   - D matrices representing the hidden states and actions.
-   - EFE (Efficient Generalized Notation) parameters, which are used to estimate the agent's behavior based on its predictions.
+    - A matrices representing the model structure and its relationships to other models (e.g., ActInfPOMDP)
+    - B matrices representing the action-observation mapping between actions and states
+    - C matrices representing the reward-observations relationship between actions and rewards
+    - D matrices representing the action-observation mapping between actions and rewards
 
 2. **Precision Parameters**:
-   - γ: precision parameter for each action variable
-   - α: learning rate parameter for each action variable
-   - Other precision/confidence parameters
-
+    - γ (gamma): precision parameters for each factor
+    - α (alpha): learning rate and adaptation parameters
+    - Other precision/confidence parameters
 3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+    - State space dimensions for each factor
+    - Observation space dimensions for each modality
+    - Action space dimensions for each control factor
 
 4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
-
+    - Time horizons (T)
+    - Temporal dependencies and windows
+    - Update frequencies and timescales
 5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
-
+    - Prior beliefs over initial states
+    - Initial parameter values
+    - Initialization strategies
 6. **Configuration Summary**:
-   - Parameter file format recommendations for the GNN implementation
+    - Parameter file format recommendations for generating a signature:
+      - "Input" field specifies the input data (e.g., token, state)
+      - "Output" field contains the output data and parameters
+      - "Model" field is used to generate a signature based on the model structure
 
-So in summary, the parameters are:
-- **Model Matrices**: A matrix representing the state space and action spaces (A) and reward/observation spaces (B).
-- **Precision Parameters**: A matrix representing each precision parameter.
-- **Dimensional Parameters**: A matrix representing each dimension of the states and actions.
-- **Temporal Parameters**: A matrix representing each temporal dependency and window for each action variable.
+7. **Tunable Parameters**:
+    - Sensitivity analysis priorities for generating signatures:
+      - "Null Hypothesis" parameter value (e.g., 0.1)
+      - "Random Sampling" parameter value (e.g., 0.5)
+      - "Sensitivity Analysis" parameter value (e.g., 0.2)
+    - Sensitivity analysis priorities for generating signatures:
+      - "Null Hypothesis" parameter value (e.g., 0.1)
+      - "Random Sampling" parameter value (e.g., 0.5)
+      - "Sensitivity Analysis" parameter value (e.g., 0.2)
+    - Sensitivity analysis priorities for generating signatures:
+      - "Null Hypothesis" parameter value (e.g., 0.1)
+      - "Random Sampling" parameter value (e.g., 0.5)
+      - "Sensitivity Analysis" parameter value (e.g., 0.2)
+    - Sensitivity analysis priorities for generating signatures:
+      - "Null Hypothesis" parameter value (e.g., 0.1

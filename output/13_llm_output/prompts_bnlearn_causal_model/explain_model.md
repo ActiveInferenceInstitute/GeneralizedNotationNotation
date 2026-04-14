@@ -1,18 +1,23 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+You've already provided a comprehensive explanation of the GNN model's purpose, core components, and key relationships. Here are some additional points to consider:
 
-1. **Model Purpose**: This is a Bayesian Network model mapping active inference structure to causal discovery. It represents real-world phenomena like social networks or decision-making processes.
+1. **Model Purpose**: This is a description of what the model represents, which can be useful for understanding its function or domain relevance.
 
-2. **Core Components**:
-   - **S** (hidden state): Represents all possible states of interest, including actions and control mechanisms.
-   - **A** (action): Represents the current observation.
-   - **B** (transition model): Represents the probability distribution over future observations based on previous ones.
-   - **C** (observation mapping): Represents the probabilities of observing a particular state or action in subsequent states.
+2. **Core Components**: The hidden states (s_f0, s_f1) represent the underlying mechanisms and relationships within the network. These components are crucial to understand how the model learns from data.
 
-3. **Model Dynamics**: The model evolves over time by updating its beliefs and actions, allowing it to learn from past behavior and make predictions about uncertain outcomes. It also implements Active Inference principles, including belief updates based on probability distributions.
-4. **Active Inference Context**: This is a Bayesian network that learns from the observed data and makes predictions using active inference mechanisms. It uses probabilistic graphical models (PGMs) to represent uncertainty and probabilities in its model parameters.
+3. **Key Relationships**: The model's key relationships include:
+   - **P(O | S** represents the probability of observing a particular observation given that it is in the hidden state (s_f0). This can be thought of as "the likelihood" or "probability" of observing the observation.
 
-5. **Practical Implications**: The model can learn to make decisions based on available information, such as observing certain actions or controlling others' behavior. It also provides a framework for making informed decisions under uncertain scenarios.
+   - **A* represents the action associated with observing the observation, which could include actions like updating beliefs, learning new information, etc.
+   - **B** represents the transition from one hidden state to another based on observed observations (s_f1). This can be thought of as "the probability" or "likelihood" of transitioning between states.
 
-Please provide clear explanations of the key components, their relationships, and how they contribute to the model's performance.
+4. **Model Dynamics**: The model's evolution over time is represented by its key relationships, which include:
+   - **D** represents the transition from one hidden state to another based on observed observations (s_f0). This can be thought of as "the probability" or "likelihood" of transitioning between states.
+
+   - **A* represents the action associated with observing a particular observation, which could include actions like updating beliefs, learning new information, etc.
+   - **B** represents the transition from one hidden state to another based on observed observations (s_f1). This can be thought of as "the probability" or "likelihood" of transitioning between states.
+
+5. **Practical Implications**: The model's key relationships and dynamics are crucial for understanding how it learns, makes decisions, and informs decision-making processes in the context of a wide range of applications.
+
+Please provide clear explanations that cover these points to ensure your readers understand what you've covered so far.

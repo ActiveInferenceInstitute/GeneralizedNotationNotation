@@ -1,20 +1,22 @@
 # EXPLAIN_MODEL
 
-You've outlined the key components of the model:
+This is a comprehensive overview of the `Predictive Coding Active Inference Agent` (PAAI) framework. It provides an explanation on what the model represents and how it operates within the context of active inference. The model's core components include:
 
-1. **Model Purpose**: This is a description of what the model represents and how it operates. It provides context for understanding its behavior and capabilities.
+1. **Input**: A continuous-state agent using hierarchical prediction error minimization, which aims to minimize predictions errors based on sensory data input from hidden causes (sensory prediction) and dynamics data (action).
 
-2. **Core Components**:
-   - **Belief Mean**: A measure of the accuracy of predictions based on sensory data, representing the uncertainty in the input data.
-   - **Sensory Prediction Error**: The error made by a prediction when using the predicted values from hidden causes to predict observations.
-   - **Dynamics Prediction Error**: The error made by a prediction when using the predicted values from dynamics models to predict actions and control inputs.
-   - **Action Parameters**: Represented as beliefs, which are updated based on predictions and actions.
+2. **Model Purpose**: Representing the core predictive processing architecture of PAAI. It minimizes predicted accuracy by adjusting sensory inputs based on observed actions/controls.
 
-3. **Model Dynamics**: How does this model implement Active Inference principles? What beliefs are being updated and what do they represent?
-   - **Sensory Prediction Error**: The error made by a prediction when using the predicted values from hidden causes to predict observations.
-   - **Dynamics Prediction Error**: The error made by a prediction when using the predicted values from dynamics models to predict actions and control inputs.
-   - **Action Parameters**: Represented as beliefs, which are updated based on predictions and actions.
+3. **Core Components**:
+   - **Input**: A continuous-state agent using hierarchical prediction error minimization, which aims to minimize predictions errors based on sensory data input from hidden causes (sensory prediction).
+   - **Model Parameters**: Representing the model's parameters and their relationships within the network structure.
+   - **Initial Parameterization**: Initializing state beliefs and actions based on observed observations/actions.
 
-4. **Model Insights**: What can you learn or predict? What decisions can it inform?
+4. **Action**: A continuous-state agent using hierarchical prediction error minimization, which aims to minimize predictions errors based on sensory data input from hidden causes (sensory prediction).
+   - **Prediction Error**: Minimizes predicted accuracy by adjusting sensory inputs based on observed actions/controls.
+   - **Prediction Errors**: Adjustments in sensor and action parameters to optimize predictions for better performance.
 
-Please provide clear explanations of what each component represents, its role in the model's behavior, and how it contributes to the overall understanding of the problem being modeled.
+5. **Model Dynamics**: How does the model evolve over time? What are the key relationships between hidden states, observations, actions, and predictions?
+
+The goal of this framework is to provide a comprehensive explanation on what PAAI represents and how it operates within the context of active inference. It provides an overview of the core predictive processing architecture of PAAI while maintaining scientific accuracy. The model's components are described in clear language while adhering to scientific standards, ensuring that the reader can understand the underlying concepts and mechanisms.
+
+Please provide a detailed explanation on what happens when you apply this framework to your specific problem or domain, providing accurate and scientifically rigorous explanations.

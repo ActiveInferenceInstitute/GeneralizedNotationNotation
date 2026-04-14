@@ -1,24 +1,29 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN specification:
 
-**Model Overview:**
-This model describes a simple discrete-time Markov chain (DPMCH) that evolves passively from one state to another based on observable transitions and actions. The system consists of three states, with no direct observation or action selection. The transition matrix is initialized with identity values for each state, allowing the system to evolve independently without any external influence.
+**Summary:**
+
+This is a simple discrete-time Markov Chain (DPMC) representation that models weather data using identity matrices and transition matrices. The model consists of three main components:
+
+1. **Input**: A dictionary containing states, observations, and actions.
+2. **Output**: A dictionary with the next state distribution for each observation.
+3. **Initialization**: A dictionary containing a list of states that are directly observed (identity mapping).
+4. **State Transition Matrix**: A matrix representing the transition between states based on observable data.
+5. **Observation**: A dictionary containing the current observation and its corresponding state.
+6. **Time**: A dictionary with keys for each observation, indicating when it was last observed.
+7. **Initialization**: A dictionary containing a list of states that are directly observed (identity mapping).
+8. **State Transition Matrix**: A matrix representing the transition between states based on observable data.
+9. **Observation**: A dictionary containing the current state distribution for each observation.
+10. **Time**: A dictionary with keys for each observation, indicating when it was last observed.
+
 **Key Variables:**
-   - **Hidden States**: A list of 3x3 identities representing the initial states and their corresponding transitions.
-   - **Observations**: A list of 1x2 lists containing the current state distribution (identity matrix) for each observation, which can be used to update the system's parameters based on new observations.
-   - **Actions/Controls**: A list of 3x3 identities representing the actions and their corresponding transitions, allowing the system to evolve independently without any external influence.
-**Critical Parameters:**
-   - **Random Initialization**: A random initialization matrix is initialized with identity values for each state, ensuring that the system's parameters are randomly updated based on new observations.
-   - **Initial State Distribution**: A list of 1x2 lists containing the current state distribution and its corresponding transition probabilities (identity matrices). This allows the system to evolve independently without any external influence.
-**Notable Features:**
-   - **Random Initialization**: A random initialization matrix is initialized with identity values for each state, ensuring that the system's parameters are randomly updated based on new observations.
-   - **Initial State Distribution**: A list of 1x2 lists containing the current state distribution and its corresponding transition probabilities (identity matrices). This allows the system to evolve independently without any external influence.
-**Use Cases:**
-   - **Simple Markov Chain**: A simple discrete-time Markov chain that evolves passively from one state to another based on observable transitions and actions.
-   - **Random Initialization**: A random initialization matrix is initialized with identity values for each state, ensuring that the system's parameters are randomly updated based on new observations.
-**Signature:**
-   - **EmissionMatrix**: A list of 3x3 identities representing the initial states and their corresponding transitions.
-   - **TransitionMatrix**: A list of 1x2 lists containing the current state distribution (identity matrices) for each observation, allowing the system to evolve independently without any external influence.
-**Use Cases:**
-   - **Simple Markov Chain**: A simple discrete-time Markov chain that evolves passively from
+
+1. **hidden_states**: A list of 3x3 identity matrices representing states directly observed (identity mapping).
+2. **observations**: A dictionary containing the current state distribution and its corresponding state.
+3. **actions**: A dictionary with a list of actions that are performed based on observable data.
+4. **actions_dict**: A dictionary with keys for each action, indicating when it was last observed (identity mapping).
+5. **observation**: A dictionary containing the current observation and its corresponding state.
+6. **timesteps**: A dictionary with a list of timesteps that are used to update the model parameters based on observable data.
+7. **actions_dict**: A dictionary with keys for each action, indicating when it was last observed (identity mapping).
+8. **action_dict**: A dictionary with keys for each action, indicating when it was last observed (identity mapping).

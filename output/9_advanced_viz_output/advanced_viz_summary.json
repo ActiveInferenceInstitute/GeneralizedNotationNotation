@@ -1,9 +1,9 @@
 {
-  "timestamp": "2026-04-14T10:58:56.927942",
+  "timestamp": "2026-04-14T11:53:46.257953",
   "total_attempts": 19,
-  "successful": 13,
+  "successful": 10,
   "failed": 2,
-  "skipped": 4,
+  "skipped": 7,
   "total_duration_ms": 0.0,
   "output_files": [
     "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
@@ -11,21 +11,11 @@
     "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
     "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
     "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
     "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
     "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
     "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png",
     "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-    "output/9_advanced_viz_output/continuous_navigation_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
-    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+    "output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
   ],
   "warnings": [],
   "errors": [
@@ -33,7 +23,7 @@
     "MatrixVisualizer not available"
   ],
   "skipped_features": {
-    "count": 4,
+    "count": 7,
     "by_reason": {
       "Not applicable to this model type (B matrix not found)": [
         "pomdp_transitions:predictive_coding_agent",
@@ -42,6 +32,11 @@
       "MatrixVisualizer not available": [
         "interactive_dashboard:predictive_coding_agent",
         "interactive_dashboard:continuous_navigation"
+      ],
+      "D2 CLI not installed": [
+        "d2_diagrams:Predictive Coding Active Inference Agent",
+        "d2_diagrams:Continuous State Navigation Agent",
+        "d2_pipeline_diagrams:gnn_pipeline"
       ]
     },
     "details": [
@@ -56,6 +51,11 @@
         "fallback_available": false
       },
       {
+        "feature": "d2_diagrams:Predictive Coding Active Inference Agent",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
+      },
+      {
         "feature": "pomdp_transitions:continuous_navigation",
         "reason": "Not applicable to this model type (B matrix not found)",
         "fallback_available": false
@@ -64,6 +64,16 @@
         "feature": "interactive_dashboard:continuous_navigation",
         "reason": "MatrixVisualizer not available",
         "fallback_available": false
+      },
+      {
+        "feature": "d2_diagrams:Continuous State Navigation Agent",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
+      },
+      {
+        "feature": "d2_pipeline_diagrams:gnn_pipeline",
+        "reason": "D2 CLI not installed",
+        "fallback_available": true
       }
     ]
   },
@@ -72,7 +82,7 @@
       "viz_type": "3d",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 206.27593994140625,
+      "duration_ms": 180.3278923034668,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png"
       ],
@@ -83,7 +93,7 @@
       "viz_type": "statistical",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 195.13511657714844,
+      "duration_ms": 211.1830711364746,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png"
       ],
@@ -94,7 +104,7 @@
       "viz_type": "matrix_correlations",
       "model_name": "predictive_coding_agent",
       "status": "failed",
-      "duration_ms": 0.0,
+      "duration_ms": 0.0011920928955078125,
       "output_files": [],
       "error_message": "MatrixVisualizer not available",
       "fallback_used": false
@@ -103,7 +113,7 @@
       "viz_type": "pomdp_transitions",
       "model_name": "predictive_coding_agent",
       "status": "skipped",
-      "duration_ms": 0.011920928955078125,
+      "duration_ms": 0.020265579223632812,
       "output_files": [],
       "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
@@ -112,7 +122,7 @@
       "viz_type": "policy",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 96.73690795898438,
+      "duration_ms": 99.9002456665039,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png"
       ],
@@ -123,7 +133,7 @@
       "viz_type": "interactive_dashboard",
       "model_name": "predictive_coding_agent",
       "status": "skipped",
-      "duration_ms": 22.01700210571289,
+      "duration_ms": 23.49710464477539,
       "output_files": [],
       "error_message": "MatrixVisualizer not available",
       "fallback_used": false
@@ -132,7 +142,7 @@
       "viz_type": "dashboard",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 144.50502395629883,
+      "duration_ms": 312.7567768096924,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
       ],
@@ -143,7 +153,7 @@
       "viz_type": "network_metrics",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 162.69588470458984,
+      "duration_ms": 178.03406715393066,
       "output_files": [
         "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png"
       ],
@@ -153,20 +163,17 @@
     {
       "viz_type": "d2_diagrams",
       "model_name": "Predictive Coding Active Inference Agent",
-      "status": "success",
-      "duration_ms": 1912.672758102417,
-      "output_files": [
-        "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-        "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png"
-      ],
-      "error_message": null,
-      "fallback_used": false
+      "status": "skipped",
+      "duration_ms": 0.7288455963134766,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
     },
     {
       "viz_type": "3d",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 178.0838966369629,
+      "duration_ms": 184.91697311401367,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png"
       ],
@@ -177,7 +184,7 @@
       "viz_type": "statistical",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 183.945894241333,
+      "duration_ms": 183.4571361541748,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png"
       ],
@@ -188,7 +195,7 @@
       "viz_type": "matrix_correlations",
       "model_name": "continuous_navigation",
       "status": "failed",
-      "duration_ms": 0.00095367431640625,
+      "duration_ms": 0.0,
       "output_files": [],
       "error_message": "MatrixVisualizer not available",
       "fallback_used": false
@@ -197,7 +204,7 @@
       "viz_type": "pomdp_transitions",
       "model_name": "continuous_navigation",
       "status": "skipped",
-      "duration_ms": 0.017881393432617188,
+      "duration_ms": 0.010013580322265625,
       "output_files": [],
       "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
@@ -206,7 +213,7 @@
       "viz_type": "policy",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 101.38177871704102,
+      "duration_ms": 97.27883338928223,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png"
       ],
@@ -217,7 +224,7 @@
       "viz_type": "interactive_dashboard",
       "model_name": "continuous_navigation",
       "status": "skipped",
-      "duration_ms": 0.0026226043701171875,
+      "duration_ms": 0.0040531158447265625,
       "output_files": [],
       "error_message": "MatrixVisualizer not available",
       "fallback_used": false
@@ -226,7 +233,7 @@
       "viz_type": "dashboard",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 59.08918380737305,
+      "duration_ms": 60.77003479003906,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
       ],
@@ -237,7 +244,7 @@
       "viz_type": "network_metrics",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 163.2246971130371,
+      "duration_ms": 176.31101608276367,
       "output_files": [
         "output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
       ],
@@ -247,30 +254,20 @@
     {
       "viz_type": "d2_diagrams",
       "model_name": "Continuous State Navigation Agent",
-      "status": "success",
-      "duration_ms": 976.2578010559082,
-      "output_files": [
-        "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
-        "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png"
-      ],
-      "error_message": null,
-      "fallback_used": false
+      "status": "skipped",
+      "duration_ms": 0.11992454528808594,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
     },
     {
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
-      "status": "success",
-      "duration_ms": 3538.0520820617676,
-      "output_files": [
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
-        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
-      ],
-      "error_message": null,
-      "fallback_used": false
+      "status": "skipped",
+      "duration_ms": 0.04506111145019531,
+      "output_files": [],
+      "error_message": "D2 CLI not installed",
+      "fallback_used": true
     }
   ]
 }

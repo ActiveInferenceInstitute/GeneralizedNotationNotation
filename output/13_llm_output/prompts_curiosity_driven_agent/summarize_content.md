@@ -1,26 +1,62 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here is a concise summary of the GNN specification:
+```json
+{
+  "outputs": [
+    {
+      "name": "curiosity-driven active inference agent",
+      "type": "active inference",
+      "model_annotation": {
+        "labels": ["GNNVersionAndFlags"],
+        "annotations": [
+          {
+            "label": "gnn version and flags",
+            "value": "1.0"
+          },
+          {
+            "label": "generated alpha value",
+            "value": "5.0"
+          }
+        ]
+      },
+      ...
+    ],
+    "outputs_type": "json",
+    "model_annotations": [
+      {
+        "name": "gnn version and flags",
+        "labels": ["GNNVersionAndFlags"],
+        "values": [
+            {
+                "label": "1.0"
+            }
+          },
+          {
+            "label": "generated alpha value",
+            "value": "5.0"
+          }
+        ]
+      },
+      ...
+    ],
+  ]
+}
+```
+This summary includes:
 
-**Model Overview:**
-This is a `GNN`-based active inference agent that models exploration and exploitation based on epistemic value (information gain) and instrumental value (preference satisfaction). The agent operates in a navigation context, where it explores different actions to reduce uncertainty. It also has an action policy with 5 hidden states and 5 observations, which are used for decision-making.
-**Key Variables:**
+1. **Key Variables**:
+   - `GNNVersionAndFlags`: `{type="float"}` representing the version and flags of the model (e.g., 1 for version, 0 for flag).
+   - `generated alpha value`: `{type="float"}`, indicating that the algorithm generated an alpha value based on the previous actions.
 
-1. **Hidden States**: A set of 4 states (Likelihood Matrix) that represent the agent's exploration/exploitation dynamics. Each state is represented by a list containing 3 values:
-   - `probability`: The probability of each possible action in the current state.
-   - `prior_value`: The prior over the hidden states, which represents the initial belief about what actions are available to explore next.
+2. **Critical Parameters**:
+   - `most important matrices` are lists with brief descriptions of what is included in each matrix (`A`) and what it represents (e.g., `hidden states`.).
+   - `key hyperparameters`: `1.0`, representing the number of hidden states, which can be used to initialize the model.
+   - `unique aspects`: `[list]` indicating that there are only two types of matrices (`A`) and their values represent distinct subsets (e.g., `hidden state belief`.).
 
-2. **Observations**: A set of 4 observations (actions) that represent the agent's exploration/exploitation dynamics. Each observation is represented by a list containing 3 values:
-   - `action`: The action being explored in the current state.
-   - `probability_next` and `prior_next`: These are used to update the belief about what actions are available next based on the current state.
+3. **Notable Features**:
+   - `special properties or constraints`: `{type="float"}`, representing the special properties of this model, which can be used to initialize it.
+   - `unique aspects`: `[list]` indicating that there are only two types of matrices (`A`) and their values represent distinct subsets (e.g., `observation state belief`.).
 
-3. **Actions**: A set of 4 actions (actions) that represent the agent's exploration/exploitation dynamics, with each action representing a specific step in the navigation context. Each action is represented by a list containing 2 values:
-   - `action`: The action being explored in the current state.
-   - `probability_next` and `prior_next`: These are used to update the belief about what actions are available next based on the current state.
-**Critical Parameters:**
-
-1. **Randomization**: A set of 4 random values (probabilities) that represent the agent's exploration/exploitation dynamics, with each value representing a specific step in the navigation context. The goal is to reduce uncertainty by exploring different actions and states.
-
-2. **Initial Value**: A list containing the initial belief about what actions are available next based on the current state. This allows for easy updates of the agent's beliefs during exploration/exploitation.
-
-3. **Randomization**: A set of 4 random values (prior_value) that represent the agent's exploration/exploitation dynamics, with each value representing a specific step in the navigation context. The goal is
+4. **Use Cases**:
+   - "Activation" is a list with brief descriptions for

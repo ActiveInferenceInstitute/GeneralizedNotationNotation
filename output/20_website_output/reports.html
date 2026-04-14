@@ -341,7 +341,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-04-14 11:11</p>
+      <p>Generated 2026-04-14 12:04</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -362,13 +362,84 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     
 <div class="page-header">
   <h1>📋 Reports</h1>
-  <p class="subtitle">57 report artifacts collected from pipeline output</p>
+  <p class="subtitle">71 report artifacts collected from pipeline output</p>
 </div>
 <div class="section">
 <details>
+  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 379420 bytes</span></summary>
+  <div class="details-body"><pre>{
+    "run_hash": "3ad3a6ea722f",
+    "file_hashes": {
+        "basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+        "basics/static_perception.md": "5bdf61e8d8c20a935957c41900b40d9edb19e8eac8b237b85e604b158c0c8d70",
+        "continuous/continuous_navigation.md": "bb6eaaf3114149fd8d77ccf5ca79f165aadf094be77ad6a66d76d7613551fea0",
+        "continuous/predictive_coding_agent.md": "447738f0a679abdeab23770fb3307128e32c4d688cdcb98123f748d2740025b7",
+        "discrete/actinf_pomdp_agent.md": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
+        "discrete/bnlearn_causal_model.md": "d108293a713435c668aec0bea48bb880f760ed5bd803e61347911e02fc36d067",
+        "discrete/deep_planning_horizon.md": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
+        "discrete/hmm_baseline.md": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265",
+        "discrete/markov_chain.md": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb",
+        "discrete/multi_armed_bandit.md": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a",
+        "discrete/simple_mdp.md": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c",
+        "discrete/tmaze_epistemic.md": "6c7270ac428fcb9e92de8b9e798e65869334247e8b4f115ed705bf23d71bcd0c",
+        "discrete/two_state_bistable.md": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361",
+        "hierarchical/hier</pre></div>
+</details>
+<details>
+  <summary>index.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 3914 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "3ad3a6ea722f": {
+    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
+    "config": {
+      "args": {
+        "target_dir": "input/gnn_files",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": false,
+        "log_format": "human",
+        "enable_round_trip": false,
+        "enable_cross_format": false,
+        "skip_steps": null,
+        "only_steps": null,
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": null,
+        "llm_timeout": null,
+        "website_html_filename": null,
+        "recreate_venv": false,
+        "dev": true,
+        "setup_core_only": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "render_output_dir": null,
+        "distributed": false,
+        "backend": "ray",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": true,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "skip_llm": false,
+        "install_all_extras": false,
+        "performance_mode": "low",
+        "timesteps": 15,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "advanced_stats": false
+      },
+      "pipeline": {
+        "enabled": true,
+        "steps": [],
+        "skip_steps": [],
+        "fast_only": true,</pre></div>
+</details>
+<details>
   <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 374 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:56:40.580052",
+  "timestamp": "2026-04-14T11:51:42.086970",
   "step_name": "template",
   "input_directory": "input/gnn_files",
   "output_directory": "output/0_template_output",
@@ -388,7 +459,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "input/gnn_files/discrete/simple_mdp.md",
   "output_file": "output/0_template_output/simple_mdp/simple_mdp_processed.md",
-  "timestamp": "2026-04-14T10:56:40.577426",
+  "timestamp": "2026-04-14T11:51:42.083650",
   "file_size_bytes": 3311,
   "file_size_lines": 154,
   "processing_options": {
@@ -403,7 +474,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "input/gnn_files/discrete/two_state_bistable.md",
   "output_file": "output/0_template_output/two_state_bistable/two_state_bistable_processed.md",
-  "timestamp": "2026-04-14T10:56:40.578520",
+  "timestamp": "2026-04-14T11:51:42.085742",
   "file_size_bytes": 2742,
   "file_size_lines": 160,
   "processing_options": {
@@ -418,7 +489,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "input/gnn_files/structured/factor_graph_model.md",
   "output_file": "output/0_template_output/factor_graph_model/factor_graph_model_processed.md",
-  "timestamp": "2026-04-14T10:56:40.579071",
+  "timestamp": "2026-04-14T11:51:42.086288",
   "file_size_bytes": 4380,
   "file_size_lines": 175,
   "processing_options": {
@@ -433,7 +504,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "input/gnn_files/multiagent/multi_agent_coordination.md",
   "output_file": "output/0_template_output/multi_agent_coordination/multi_agent_coordination_processed.md",
-  "timestamp": "2026-04-14T10:56:40.577106",
+  "timestamp": "2026-04-14T11:51:42.083327",
   "file_size_bytes": 4225,
   "file_size_lines": 184,
   "processing_options": {
@@ -685,7 +756,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>render_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 46881 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:57.917739",
+  "timestamp": "2026-04-14T11:53:47.302197",
   "processing_type": "POMDP-aware rendering",
   "total_files": 9,
   "successful_files": 9,
@@ -730,7 +801,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 581 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:57.878297",
+  "timestamp": "2026-04-14T11:53:47.261063",
   "source_file": "input/gnn_files/discrete/simple_mdp.md",
   "model_name": "Simple MDP Agent",
   "pomdp_dimensions": {
@@ -764,7 +835,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 597 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:57.905400",
+  "timestamp": "2026-04-14T11:53:47.289142",
   "source_file": "input/gnn_files/discrete/two_state_bistable.md",
   "model_name": "Two State Bistable POMDP",
   "pomdp_dimensions": {
@@ -798,7 +869,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 595 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:57.900654",
+  "timestamp": "2026-04-14T11:53:47.284166",
   "source_file": "input/gnn_files/discrete/bnlearn_causal_model.md",
   "model_name": "Bnlearn Causal Model",
   "pomdp_dimensions": {
@@ -832,7 +903,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 601 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:57.913188",
+  "timestamp": "2026-04-14T11:53:47.297896",
   "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
   "model_name": "T-Maze Epistemic Foraging Agent",
   "pomdp_dimensions": {
@@ -864,14 +935,14 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 471843 bytes</span></summary>
+  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 370724 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:59.666209",
+  "timestamp": "2026-04-14T11:53:48.813243",
   "target_directory": "input/gnn_files/discrete",
   "output_directory": "output/12_execute_output",
   "total_scripts_found": 72,
-  "successful_executions": 72,
-  "failed_executions": 0,
+  "successful_executions": 54,
+  "failed_executions": 18,
   "skipped_executions": 0,
   "execution_details": [
     {
@@ -882,10 +953,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
       "success": true,
       "return_code": 0,
-      "stdout": "NumPyro POMDP simulation complete: 15 timesteps in 0.454s\nResults saved to: output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+      "stdout": "NumPyro POMDP simulation complete: 15 timesteps in 0.631s\nResults saved to: output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
       "stderr": "",
-      "execution_time": 0.735309,
-      "timestamp": "2026-04-14T10:58:59.956152",
+      "execution_time": 1.19063,
+      "timestamp": "2026-04-14T11:53:49.243152",
       "simulation_data": {
         "traces": [],
         "free_energy": [],
@@ -926,8 +997,8 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   "script_path": "output/11_render_output/markov_chain/bnlearn/Simple Markov Chain_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 2.071806,
-  "timestamp": "2026-04-14T10:59:09.200344",
+  "execution_time": 2.287798,
+  "timestamp": "2026-04-14T11:53:59.260069",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -935,10 +1006,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "\u2705 Starting bnlearn analysis for Simple Markov Chain\n[bnlearn]&gt; Auto generate placeholders for the CPTs.\n[bnlearn] &gt;CPT for S:\n+--------+-----------+-----------+-----------+-----------+\n| S_prev | S_prev(0) | S_prev(0) | S_prev(1) | S_prev(1) |\n+--------+-----------+-----------+-----------+-----------+\n| A      | A(0)      | A(1)      | A(0)      | A(1)      |\n+--------+-----------+-----------+-----------+-----------+\n| S(0)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n| S(1)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n[bnlearn] &gt;CPT for O:\n+------+------+------+\n| S    | S(0) | S(1) |\n+------+------+------+\n| O(0) | 0.5  | 0.5  |\n+------+------+------+\n| O(1) | 0.5  | 0.5  |\n+------+------+------+\n[bnlearn] &gt;CPT for S_prev:\n+-----------+-----+\n| S_prev(0) | 0.5 |\n+-----------+-----+\n| S_prev(1) | 0.5 |\n+-----------+-----+\n[bnlearn] &gt;CPT for </pre></div>
+    "raw_output": "\u2705 Starting bnlearn analysis for Simple Markov Chain\n[bnlearn]&gt; Auto generate placeholders for the CPTs.\n[bnlearn] &gt;CPT for S:\n+--------+-----------+-----------+-----------+-----------+\n| S_prev | S_prev(0) | S_prev(0) | S_prev(1) | S_prev(1) |\n+--------+-----------+-----------+-----------+-----------+\n| A      | A(0)      | A(1)      | A(0)      | A(1)      |\n+--------+-----------+-----------+-----------+-----------+\n| S(0)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n| S(1)   | 0.5       | 0.5       | 0.5       | 0.5       |\n+--------+-----------+-----------+-----------+-----------+\n[bnlearn] &gt;CPT for O:\n+------+------+------+\n| S    | S(0) | S(1) |\n+------+------+------+\n| O(0) | 0.5  | 0.5  |\n+------+------+------+\n| O(1) | 0.5  | 0.5  |\n+------+------+------+\n[bnlearn] &gt;CPT for A:\n+------+-----+\n| A(0) | 0.5 |\n+------+-----+\n| A(1) | 0.5 |\n+------+-----+\n[bnlearn] &gt;CPT for S_prev:\n+-----------+-----+\n</pre></div>
 </details>
 <details>
-  <summary>Simple Markov Chain_discopy.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 3469 bytes</span></summary>
+  <summary>Simple Markov Chain_discopy.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 3503 bytes</span></summary>
   <div class="details-body"><pre>{
   "framework": "discopy",
   "model_name": "markov_chain",
@@ -946,8 +1017,8 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   "script_path": "output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.246265,
-  "timestamp": "2026-04-14T10:59:05.833534",
+  "execution_time": 0.256614,
+  "timestamp": "2026-04-14T11:53:56.029994",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -968,10 +1039,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>circuit_info.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 491 bytes</span></summary>
+  <summary>discopy_diagrams_circuit_info.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 491 bytes</span></summary>
   <div class="details-body"><pre>{
   "model_name": "Simple Markov Chain",
-  "timestamp": "2026-04-14 10:58:57",
+  "timestamp": "2026-04-14 11:53:47",
   "parameters": {
     "num_states": 3,
     "num_observations": 3,
@@ -997,26 +1068,18 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>llm_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 1055587 bytes</span></summary>
+  <summary>llm_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 1070650 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:05:11.366583",
+  "timestamp": "2026-04-14T11:55:26.383283",
   "processed_files": 20,
   "success": true,
   "errors": [],
   "auth_errors": [],
   "provider_matrix": {
     "ollama": {
-      "available": true,
-      "models": [
-        "smollm2:135m-instruct-q4_K_S",
-        "llama3.2:latest",
-        "gemma3:4b",
-        "nomic-embed-text:latest",
-        "hermes3:latest",
-        "qwen3:4b",
-        "llama3.2:1b"
-      ],
-      "selected_model": "smollm2:135m-instruct-q4_K_S"
+      "available": false,
+      "models": [],
+      "selected_model": null
     },
     "openai": {
       "available": true,
@@ -1065,48 +1128,57 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
           "line": 33
         },
         {
-          "na</pre></div>
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 2",
+          "line": 84
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 2",
+          "line": 85
+        },
+        </pre></div>
 </details>
 <details>
-  <summary>c9980df3662e046d8db7cca7e565346e3b8ce1a2246532170619cf2ecd5196e6.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2018 bytes</span></summary>
+  <summary>88077e266e88eaf219d4632131f8595616b9d2bb0d5442ffd4cde087d8921762.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2443 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "c9980df3662e046d8db7cca7e565346e3b8ce1a2246532170619cf2ecd5196e6",
+  "key": "88077e266e88eaf219d4632131f8595616b9d2bb0d5442ffd4cde087d8921762",
   "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-04-14T11:09:18.704885",
-  "content_length": 3104,
-  "prompt_length": 61,
-  "response": "Here is the complete implementation of the GNN model:\n```python\nimport numpy as np\nfrom scipy import stats\n\ndef gnn_model(input, num_hidden_states=3):\n    \"\"\"GNN Representation for a neural network with 10 hidden states and 4 neurons.\n\n    Args:\n        input (numpy array): Input data to be fed into the GNN model.\n        num_hidden_states (int): Number of hidden states in the model.\n        num_neurons (int): Number of neurons in the model.\n    \"\"\"\n    # Initialize state space matrices\n    A = np.array([[1, 0], [0, 1]])\n\n    # Initialize transition matrix\n    B = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),\n                     (input[i+1]]**2),\n                     [-(input[i+1])**2],\n                     [0, 0, 1]])\n\n    # Initialize habit vector\n    C = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),\n                     (input[i+1]]**2),\n                     [-(input[i+1])**2],\n                     [0, 0, 1]])\n\n    # Initialize action vector\n    D = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),\n                     (input[i+1]]**2),\n                     [-(input[i+1])**2],\n                     [0, 0, 1]])\n\n    # Initialize prior over h</pre></div>
+  "timestamp": "2026-04-14T11:59:58.563346",
+  "content_length": 4587,
+  "prompt_length": 5389,
+  "response": "Here is a concise summary of the GNN specification:\n```json\n{\n  \"outputs\": [\n    {\n      \"name\": \"curiosity-driven active inference agent\",\n      \"type\": \"active inference\",\n      \"model_annotation\": {\n        \"labels\": [\"GNNVersionAndFlags\"],\n        \"annotations\": [\n          {\n            \"label\": \"gnn version and flags\",\n            \"value\": \"1.0\"\n          },\n          {\n            \"label\": \"generated alpha value\",\n            \"value\": \"5.0\"\n          }\n        ]\n      },\n      ...\n    ],\n    \"outputs_type\": \"json\",\n    \"model_annotations\": [\n      {\n        \"name\": \"gnn version and flags\",\n        \"labels\": [\"GNNVersionAndFlags\"],\n        \"values\": [\n            {\n                \"label\": \"1.0\"\n            }\n          },\n          {\n            \"label\": \"generated alpha value\",\n            \"value\": \"5.0\"\n          }\n        ]\n      },\n      ...\n    ],\n  ]\n}\n```\nThis summary includes:\n\n1. **Key Variables**:\n   - `GNNVersionAndFlags`: `{type=\"float\"}` representing the version and flags of the model (e.g., 1 for version, 0 for flag).\n   - `generated alpha value`: `{type=\"float\"}`, indicating that the algorithm generated an alpha val</pre></div>
 </details>
 <details>
-  <summary>828faee0f275d89fe7bc9474a0c24851d89ae606926a8c8d1264e2b8df0bcc86.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 691 bytes</span></summary>
+  <summary>9a92bf21b90662006ebefca8b45b60160ccd5e0ef2823c145d959eec5f9ccfc7.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2915 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "828faee0f275d89fe7bc9474a0c24851d89ae606926a8c8d1264e2b8df0bcc86",
+  "key": "9a92bf21b90662006ebefca8b45b60160ccd5e0ef2823c145d959eec5f9ccfc7",
   "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-04-14T11:06:39.542727",
-  "content_length": 4225,
-  "prompt_length": 97,
-  "response": "```python\nimport numpy as np\nfrom scipy import stats\n\n# Define the number of agents and their actions\nnum_agents = 2\nactions_per_agent = 4\nnum_hidden_states = 4\nnum_obs = 3\ntimesteps = 20\n\n# Initialize the GNN representation for each agent\nGNNRepresentation = MultiAgentCooperativeActiveInference(\n    num_agents, actions=actions_per_agent, num_hidden_states=num_hidden_states_per_agent,\n    num_obs=num_observations, timesteps=timesteps)\n```"
+  "timestamp": "2026-04-14T11:57:59.496163",
+  "content_length": 5068,
+  "prompt_length": 6190,
+  "response": "Based on the provided specifications, here are the key parameters for Active Inference POMDP Agent:\n\n1. **Model Matrices**:\n   - A matrices representing the model's structure and interpretation of the input data (e.g., Likelihood Matrix).\n   - B matrices representing the action-belief relationships between actions and states.\n   - C matrices representing the policy prior, habit distribution, and initial preferences for each mode.\n   - D matrices representing the transition probabilities over actions and their corresponding beliefs.\n\n2. **Precision Parameters**:\n   - \u03b3 (gamma): precision parameters and their roles in determining the agent's performance on the input data.\n   - \u03b1 (alpha): learning rate parameter to adjust the accuracy of predictions based on the model's training data.\n   - Other precision/confidence parameters, such as \u03b3 or \u03b1\n\n3. **Dimensional Parameters**:\n   - State space dimensions for each factor:\n      - A matrices representing the state-action relationships between actions and states.\n      - B matrices representing the action-belief relationships over actions and their corresponding beliefs.\n      - C matrices representing the policy prior distribution over actions, with a probability of tr</pre></div>
+</details>
+<details>
+  <summary>a8f8841a871c42428b08e824043fdbb18829f5c3a0c187784582241b82ea2525.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 837 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "key": "a8f8841a871c42428b08e824043fdbb18829f5c3a0c187784582241b82ea2525",
+  "model": "smollm2:135m-instruct-q4_K_S",
+  "timestamp": "2026-04-14T11:56:49.982259",
+  "content_length": 4995,
+  "prompt_length": 5797,
+  "response": "```json\n{\n  \"processed_files\": [\n    \"output/10_ontology_output/simple_mdp_ontology_report.json\",\n    \"output/10_ontology_output/multi_armed_bandit_ontology_report.json\",\n    \"output/10_ontology_output/deep_planning_horizon_ontology_report.json\",\n    \"output/10_ontology_output/actinf_pomdp_agent_ontology_report.json\",\n    \"output/10_ontology_output/hmm_baseline_ontology_report.json\",\n    \"output/10_ontology_output/markov_chain_ontology_report.json\",\n    \"output/10_ontology_output/tmaze_epistemic_ontology_report.json\"\n  ],\n  \"success\": true,\n  \"errors\": []\n}\n```"
 }</pre></div>
 </details>
 <details>
-  <summary>8852f925dfff4b31ae931a0e5c1857ecd7aeae68c249473be99ee9791eafbca1.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2891 bytes</span></summary>
+  <summary>2adf912eb42aeeb85398e759facd6e7c631cb8a9723135ee45ec0d890ff0cd8c.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2350 bytes</span></summary>
   <div class="details-body"><pre>{
-  "key": "8852f925dfff4b31ae931a0e5c1857ecd7aeae68c249473be99ee9791eafbca1",
+  "key": "2adf912eb42aeeb85398e759facd6e7c631cb8a9723135ee45ec0d890ff0cd8c",
   "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-04-14T11:09:35.483779",
-  "content_length": 3817,
-  "prompt_length": 61,
-  "response": "Based on the document, we can analyze the GNN model as follows:\n\n1. The model is represented by a dictionary `D` with keys representing states (represented by strings) and actions (represented by lists). Each state has an associated action list that represents the next state in the sequence. Actions are also represented by lists of actions.\n\n2. The transition matrix `G_epi`, which is initialized to a uniform distribution over all possible actions, represents the probability of transitioning from one state to another based on the current action. This allows us to calculate the expected information gain (Bayesian surprise) for each state and action pair in the sequence.\n\n3. The policy vector `G` has two components: one representing the preference satisfaction (preference satisfaction), which is a weighted sum of all possible preferences, and another representing the epistemic value (information gain). This allows us to calculate the expected information gain based on the current state and action pair in the sequence.\n\n4. The habit vector `G_ins` has two components: one representing the preference satisfaction, which is a weighted sum of all possible preferences, and another representing the epistemic value. This allows us to calculate the expe</pre></div>
-</details>
-<details>
-  <summary>001f4304250550d563bb5be82dd57b0f6964bd767cb9637792d3bab38a616d3b.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 3166 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "key": "001f4304250550d563bb5be82dd57b0f6964bd767cb9637792d3bab38a616d3b",
-  "model": "smollm2:135m-instruct-q4_K_S",
-  "timestamp": "2026-04-14T11:09:00.777507",
-  "content_length": 4380,
-  "prompt_length": 5453,
-  "response": "You've covered the key points:\n\n1. **Real-World Applications**: This model can be applied to various domains, such as healthcare (e.g., diagnosing diseases), finance (e.g., risk assessment), or engineering (e.g., optimizing systems). It enables modality-specific processing and efficient belief propagation on factor graphs.\n\n2. **Implementation Considerations**: The implementation of this model involves several steps:\n   - Data requirements and collection strategies: Gathering data for the input variables, handling missing values, and ensuring consistency across different datasets are crucial to ensure reliable results.\n   - Computational requirements and scalability: Implementing a scalable algorithm that can handle large amounts of data efficiently is essential. This includes efficient algorithms like gradient descent or neural networks with regularization techniques.\n\n3. **Performance Expectations**: The performance expectations for this model depend on the specific use cases, domains, and industry/research applications it's designed to support. For example:\n   - Healthcare: It can be applied to diseases diagnosis, risk assessment, and disease progression analysis.\n   - Finance: It can help optimize financial systems by identifying opt</pre></div>
+  "timestamp": "2026-04-14T11:55:39.777398",
+  "content_length": 2433,
+  "prompt_length": 97,
+  "response": "```python\nimport json\nimport numpy as np\nfrom typing import List\n\nclass GNNModel:\n    \"\"\"GNN model with simple inference on a binary classification problem.\"\"\"\n\n    def __init__(self):\n        self.model = None\n\n        # Initialize the model parameters\n        self.num_hidden_states = 2\n        self.num_obs = 2\n        self.dna_matrix = np.array([\n            [[0, 1], [1]],\n            [[0, 0], [1]]])\n\n    def generate(self):\n        \"\"\"Generate a GNN model.\"\"\"\n\n        # Generate the input data\n        with open(\"input/GNNModelData.json\", \"r\") as f:\n            self.model = json.load(f)\n\n        # Generate the training data\n        with open(\"input/GNNModelTrainingData.json\", \"r\") as f:\n            self.training_data = json.load(f)\n\n    def generate_random_sample_examples(self, num_samples=10):\n        \"\"\"Generate a random sample of 2 samples from the training data.\"\"\"\n\n        # Generate a random subset of the training data\n        with open(\"input/GNNModelTrainingData.json\", \"r\") as f:\n            self.training_data = json.load(f)\n\n    def generate_random_examples(self, num_samples=10):\n        \"\"\"Generate a random sample of 2 samples from the training data.\"\"\"\n\n        #</pre></div>
 </details>
 <details>
   <summary>ml_integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">14_ml_integration_output · 9027 bytes</span></summary>
@@ -1167,7 +1239,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>audio_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 18742 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:10:08.492104",
+  "timestamp": "2026-04-14T12:00:44.234605",
   "processed_files": 9,
   "success": true,
   "errors": [],
@@ -1182,7 +1254,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       },
       "variables_count": 67,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-14T11:10:09.081203"
+      "generation_timestamp": "2026-04-14T12:00:44.819676"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -1194,7 +1266,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       },
       "variables_count": 60,
       "connections_count": 2,
-      "generation_timestamp": "2026-04-14T11:10:09.229432"
+      "generation_timestamp": "2026-04-14T12:00:44.970015"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -1207,9 +1279,9 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "varia</pre></div>
 </details>
 <details>
-  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 270370 bytes</span></summary>
+  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 875279 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:10:11.508622",
+  "timestamp": "2026-04-14T12:00:47.297360",
   "processed_files": 9,
   "success": true,
   "errors": [],
@@ -1276,9 +1348,9 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
        </pre></div>
 </details>
 <details>
-  <summary>hmm_baseline_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2558 bytes</span></summary>
+  <summary>hmm_baseline_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2557 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:10:15.400595",
+  "timestamp": "2026-04-14T12:03:25.226435",
   "execution_results_dir": "output/12_execute_output/hmm_baseline",
   "framework_results": {
     "bnlearn": {
@@ -1343,9 +1415,9 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "</pre></div>
 </details>
 <details>
-  <summary>multi_armed_bandit_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 8736 bytes</span></summary>
+  <summary>multi_armed_bandit_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 11246 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:10:15.393961",
+  "timestamp": "2026-04-14T12:03:25.216428",
   "execution_results_dir": "output/12_execute_output/multi_armed_bandit",
   "framework_results": {
     "bnlearn": {
@@ -1386,7 +1458,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     },
     "pymdp": {
       "framework": "pymdp",
-      "result_count": 2,
+      "result_count": 3,
       "analyses": [
         {
           "framework": "pymdp",
@@ -1404,23 +1476,23 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
      </pre></div>
 </details>
 <details>
-  <summary>framework_comparison_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 51980 bytes</span></summary>
+  <summary>framework_comparison_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 45703 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:10:46.943836",
+  "timestamp": "2026-04-14T12:04:00.745416",
   "frameworks": {
     "numpyro": {
       "success_count": 9,
       "total_count": 9,
       "execution_times": [
-        0.735309,
-        0.712945,
-        0.809339,
-        0.710411,
-        0.752889,
-        0.852136,
-        0.621686,
-        0.621288,
-        4.418549
+        1.19063,
+        0.748298,
+        0.868665,
+        0.720683,
+        0.73061,
+        0.729302,
+        0.635329,
+        0.634667,
+        0.723398
       ],
       "output_files": [
         "output/12_execute_output/markov_chain/numpyro/execution_logs/Simple Markov Chain_numpyro.py_execution.log",
@@ -1433,12 +1505,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "output/12_execute_output/two_state_bistable/numpyro/execution_logs/Two State Bistable POMDP_numpyro.py_execution.log",
         "output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log"
       ],
-    </pre></div>
+      </pre></div>
 </details>
 <details>
   <summary>actinf_pomdp_agent_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2443 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:10:15.398461",
+  "timestamp": "2026-04-14T12:03:25.223912",
   "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "bnlearn": {
@@ -1526,7 +1598,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>security_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">18_security_output · 8879 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T11:11:03.067653",
+  "timestamp": "2026-04-14T12:04:21.237597",
   "processed_files": 9,
   "success": true,
   "errors": [],
@@ -1539,7 +1611,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-14T11:11:03.067948"
+      "check_timestamp": "2026-04-14T12:04:21.237888"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -1549,7 +1621,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-14T11:11:03.068553"
+      "check_timestamp": "2026-04-14T12:04:21.238520"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -1559,7 +1631,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-04-14T11:11:03.068948"
+      "check_timestamp": "2026-04-14T12:04:21.238902"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -1602,7 +1674,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
  </pre></div>
 </details>
 <details>
-  <summary>installed_packages.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 6509 bytes</span></summary>
+  <summary>installed_packages.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 6567 bytes</span></summary>
   <div class="details-body"><pre>{
   "absl-py": "2.3.1",
   "aiofiles": "24.1.0",
@@ -1670,9 +1742,9 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   "h</pre></div>
 </details>
 <details>
-  <summary>environment_setup_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 8858 bytes</span></summary>
+  <summary>environment_setup_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 8924 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:56:46.469704",
+  "timestamp": "2026-04-14T11:51:56.796371",
   "validation": {
     "system_requirements": true,
     "uv_environment": true,
@@ -1720,27 +1792,509 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   </pre></div>
 </details>
 <details>
+  <summary>website_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">20_website_output · 37 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "success": true,
+  "pages_created": 7
+}</pre></div>
+</details>
+<details>
+  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 883 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-14T11:11:06.495106",
+  "target_dir": "input/gnn_files/discrete",
+  "output_dir": "output/21_mcp_output",
+  "processing_status": "completed",
+  "mcp_version": "1.1.3",
+  "tools_registered": 133,
+  "registered_modules_count": 31,
+  "registered_modules": [
+    "research",
+    "ml_integration",
+    "pipeline",
+    "intelligent_analysis",
+    "model_registry",
+    "security",
+    "integration",
+    "website",
+    "setup",
+    "tests",
+    "template",
+    "render",
+    "utils",
+    "mcp",
+    "cli",
+    "ontology",
+    "gnn",
+    "audio",
+    "analysis",
+    "type_checker",
+    "api",
+    "report",
+    "sapf",
+    "visualization",
+    "export",
+    "validation",
+    "advanced_visualization",
+    "llm",
+    "execute",
+    "gui",
+    "sympy_mcp"
+  ],
+  "resources_count": 1,
+  "message": "MCP processing completed - 133 tools registered from 31 modules"
+}</pre></div>
+</details>
+<details>
+  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 28694 bytes</span></summary>
+  <div class="details-body"><pre>[
+  {
+    "name": "analyze_audio_characteristics",
+    "description": "Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.).",
+    "module": "src.audio",
+    "category": "audio",
+    "version": "1.0.0"
+  },
+  {
+    "name": "analyze_gnn_with_llm",
+    "description": "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
+    "module": "src.llm",
+    "category": "llm",
+    "version": "1.0.0"
+  },
+  {
+    "name": "build_website_from_pipeline_output",
+    "description": "Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories.",
+    "module": "src.website",
+    "category": "website",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_audio_backends",
+    "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.",
+    "module": "src.sapf",
+    "category": "audio",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_execute_dependencies",
+    "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
+    "module": "src.execute",
+    "category": "execute",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_integration_dependencies",
+    "description": "Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed.",
+    "module": "src.integration",
+    "category": "integration",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_ml_frameworks",
+   </pre></div>
+</details>
+<details>
+  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 31607 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-14T11:11:06.494228",
+  "mcp_version": "1.1.3",
+  "tools_count": 133,
+  "resources_count": 1,
+  "tools": [
+    {
+      "name": "analyze_audio_characteristics",
+      "description": "Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.).",
+      "module": "src.audio",
+      "category": "audio",
+      "version": "1.0.0"
+    },
+    {
+      "name": "analyze_gnn_with_llm",
+      "description": "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
+      "module": "src.llm",
+      "category": "llm",
+      "version": "1.0.0"
+    },
+    {
+      "name": "build_website_from_pipeline_output",
+      "description": "Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories.",
+      "module": "src.website",
+      "category": "website",
+      "version": "1.0.0"
+    },
+    {
+      "name": "check_audio_backends",
+      "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.",
+      "module": "src.sapf",
+      "category": "audio",
+      "version": "1.0.0"
+    },
+    {
+      "name": "check_execute_dependencies",
+      "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
+      "module": "src.execute",
+      "category": "execute",
+      "version": "1.0.0"
+    },
+    {
+      "name": "check_integration_dependencies",
+      "description": "Check which third-pa</pre></div>
+</details>
+<details>
+  <summary>gui_status.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 473 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "backend": "gradio",
+  "launched": false,
+  "export_file": "output/22_gui_output/visual_model_gui2.md",
+  "gui_type": "visual_matrix_editor",
+  "status": "headless_mode",
+  "visual_data_file": "output/22_gui_output/visual_matrices.json",
+  "features": [
+    "Visual matrix editing",
+    "Drag-and-drop interface",
+    "Real-time GNN generation",
+    "POMDP template-based"
+  ],
+  "recommendations": [
+    "Run with --interactive to launch GUI server on port 7861"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>gui_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 1052 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "mode": "headless",
+  "gui_types": [
+    "gui_1",
+    "gui_2"
+  ],
+  "results": {
+    "gui_1": {
+      "gui_type": "gui_1",
+      "description": "Form-based Interactive GNN Constructor",
+      "success": true,
+      "output_file": "output/22_gui_output/constructed_model_gui1.md",
+      "backend": "headless",
+      "features": [
+        "Component management via forms",
+        "State space editing",
+        "Live markdown synchronization",
+        "Two-pane interface"
+      ]
+    },
+    "gui_2": {
+      "gui_type": "gui_2",
+      "description": "Visual Matrix Editor for GNN Models",
+      "success": true,
+      "output_file": "output/22_gui_output/visual_model_gui2.md",
+      "backend": "headless",
+      "features": [
+        "Visual matrix representation and editing",
+        "Drag-and-drop state space modification",
+        "Real-time GNN markdown generation",
+        "POMDP template-based initialization",
+        "Interactive heatmaps and plots",
+        "Matrix dimension validation"
+      ]
+    }
+  },
+  "overall_success": true
+}</pre></div>
+</details>
+<details>
+  <summary>visual_matrices.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 2431 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "visual_matrices": {
+    "A": {
+      "type": "matrix",
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "description": "Likelihood matrix",
+      "editable": true
+    },
+    "B": {
+      "type": "tensor",
+      "depth": 3,
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "description": "Transition matrices",
+      "editable": true,
+      "current_slice": 0
+    },
+    "C": {
+      "type": "vector",
+      "size": 3,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "description": "Preference vector",
+      </pre></div>
+</details>
+<details>
+  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 288835 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "report_generation_time": "2026-04-14T11:11:08.150922",
+  "pipeline_output_directory": "output",
+  "steps": {
+    "0_template_output": {
+      "directory": "output/0_template_output",
+      "exists": true,
+      "file_count": 41,
+      "total_size_mb": 0.08,
+      "file_types": {
+        ".json": {
+          "count": 21,
+          "total_size_mb": 0.007513999938964844
+        },
+        ".md": {
+          "count": 20,
+          "total_size_mb": 0.07439136505126953
+        }
+      },
+      "last_modified": "2026-04-14T10:56:40.580127",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "template_processing_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "1_setup_output": {
+      "directory": "output/1_setup_output",
+      "exists": true,
+      "file_count": 2,
+      "total_size_mb": 0.01,
+      "file_types": {
+        ".json": {
+          "count": 2,
+          "total_size_mb": 0.014655113220214844
+        }
+      },
+      "last_modified": "2026-04-14T10:56:47.687439",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": []
+    },
+    "2_tests_output": {
+      "directory": "output/2_tests_output",
+      "exists": true,
+      "file_count": 6,
+      "total_size_mb": 6.96,
+      "file_types": {
+        ".log": {
+          "count": 1,
+          "total_size_mb": 6.51664924621582
+        },
+        ".tx</pre></div>
+</details>
+<details>
+  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 525 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "report_generation_summary": {
+    "generation_time": "2026-04-14T11:11:08.273457",
+    "pipeline_directory": "output",
+    "report_directory": "output/23_report_output",
+    "health_score": 95.0,
+    "generated_files": [
+      "comprehensive_analysis_report.html",
+      "comprehensive_analysis_report.md",
+      "report_summary.json"
+    ],
+    "pipeline_summary": {
+      "total_steps": 24,
+      "successful_steps": 24,
+      "total_files": 2213,
+      "total_size_mb": 168.52,
+      "success_rate": 100.0
+    }
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 631 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-14T11:11:08.347798",
+  "target_dir": "input/gnn_files/discrete",
+  "output_dir": "output/23_report_output",
+  "pipeline_output_dir": "output",
+  "processing_status": "completed",
+  "report_format": "comprehensive",
+  "reports_generated": [
+    "comprehensive_analysis_report.html",
+    "comprehensive_analysis_report.md",
+    "report_summary.json",
+    "PIPELINE_REPORT.md"
+  ],
+  "report_count": 4,
+  "visualizations_discovered": 146,
+  "html_reports_generated": 1,
+  "html_validation_status": "valid",
+  "html_validation_errors": [],
+  "formats_generated": [
+    "html",
+    "markdown",
+    "json"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>intelligent_analysis_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 391 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-14T11:15:35.721352",
+  "overall_status": "SUCCESS",
+  "health_score": 95.0,
+  "failure_count": 0,
+  "red_flag_count": 0,
+  "yellow_flag_count": 4,
+  "bottleneck_count": 3,
+  "recommendation_count": 6,
+  "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
+  "data_file": "output/24_intelligent_analysis_output/analysis_data.json"
+}</pre></div>
+</details>
+<details>
+  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 10971 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-14T11:15:35.720439",
+  "analysis": {
+    "overall_status": "SUCCESS",
+    "total_duration": 878.528803,
+    "step_count": 25,
+    "failures": [],
+    "warnings": [
+      {
+        "step": "24_intelligent_analysis.py",
+        "message": "ummary.\n2026-04-14 11:11:18,560 - 24_intelligent_analysis.py - INFO - LLM analysis completed\n2026-04-14 11:11:18,561 - 24_intelligent_analysis.py - INFO - Analysis report saved to output/24_intelligent_analysis_output/intelligent_analysis_report.md\n2026-04-14 11:11:18,563 - 24_intelligent_analysis.py - INFO - Analysis data saved to output/24_intelligent_analysis_output/analysis_data.json\n2026-04-14 11:11:18,563 - 24_intelligent_analysis.py - INFO - \u2705 Intelligent analysis completed successfully\n\n"
+      }
+    ],
+    "performance_metrics": {
+      "peak_memory_mb": 37.84375,
+      "successful_steps": 25,
+      "failed_steps": 0,
+      "warning_count": 1
+    },
+    "health_score": 95.0
+  },
+  "step_analyses": [
+    {
+      "step_number": 1,
+      "script_name": "0_template.py",
+      "description": "Template initialization",
+      "status": "SUCCESS",
+      "duration_seconds": 0.2906529903411865,
+      "memory_mb": 37.765625,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.29s"
+    },
+    {
+      "step_number": 2,
+      "script_name": "1_setup.py",
+      "description": "Environment setup",
+      "status": "SUCCESS",
+      "duration_seconds": 7.</pre></div>
+</details>
+<details>
   <summary>test_execution_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 704 bytes</span></summary>
   <div class="details-body"><pre>{
   "execution_summary": {
     "test_mode": "fast_pipeline",
     "command": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python -m pytest --tb=short --maxfail=5 --durations=10 -ra --timeout 600 -q -m not slow --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py --ignore=src/tests/test_pipeline_performance.py --ignore=src/tests/test_pipeline_recovery.py --ignore=src/tests/test_report_integration.py src/tests/",
     "exit_code": 0,
-    "tests_run": 1868,
-    "tests_passed": 1840,
+    "tests_run": 1872,
+    "tests_passed": 1843,
     "tests_failed": 0,
-    "tests_skipped": 28,
+    "tests_skipped": 29,
     "tests_errors": 0,
     "collection_errors": 0,
     "coverage": {},
-    "timestamp": "2026-04-14 10:58:10"
+    "timestamp": "2026-04-14 11:53:24"
   }
 }</pre></div>
 </details>
 <details>
   <summary>gnn_processing_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 11247 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:14.171167",
+  "timestamp": "2026-04-14T11:53:27.702210",
   "source_directory": "input/gnn_files/continuous",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
@@ -1922,7 +2476,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "6edefc7e-7aca-442b-a1a9-6e2fe80d081d",
+      "id": "c28ad800-13a1-4c01-b0e6-e3afa642ad0e",
       "name": "A",
       "var_type": "likelihood_matrix",
       "dimensions": [
@@ -1937,7 +2491,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "926cab6a-73e1-4f1d-a080-ec70977a8bbf",
+      "id": "d89e6514-ccbe-4778-a0e8-803797f31453",
       "name": "B",
       "var_type": "transition_matrix",
       "dimensions": [
@@ -1953,7 +2507,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "da5c1db1-c411-4d34-b7bb-f2d4222bf1a8",
+      "id": "e605dc2e-2136-4197-a980-d2864ca9f7f0",
       "name": "C",
       "var_type": "preference_vector",
       "dimensions": [
@@ -2029,19 +2583,19 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <summary>model_registry.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">4_model_registry_output · 6021 bytes</span></summary>
   <div class="details-body"><pre>{
   "version": "1.0.0",
-  "updated_at": "2026-04-14T10:58:14.823969",
+  "updated_at": "2026-04-14T11:53:28.223707",
   "models": {
     "simple_mdp": {
       "model_id": "simple_mdp",
       "name": "GNN Example: Simple MDP (Fully Observable)",
       "description": "ActInfPOMDP",
       "created_at": "2026-04-14T10:58:14.823262",
-      "updated_at": "2026-04-14T10:58:14.823377",
+      "updated_at": "2026-04-14T11:53:28.223248",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/simple_mdp.md",
-          "created_at": "2026-04-14T10:58:14.823288",
+          "created_at": "2026-04-14T11:53:28.223182",
           "metadata": {},
           "hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c"
         }
@@ -2055,12 +2609,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "name": "GNN Example: Multi-Armed Bandit",
       "description": "ActInfPOMDP",
       "created_at": "2026-04-14T10:58:14.823454",
-      "updated_at": "2026-04-14T10:58:14.823480",
+      "updated_at": "2026-04-14T11:53:28.223341",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-          "created_at": "2026-04-14T10:58:14.823457",
+          "created_at": "2026-04-14T11:53:28.223320",
           "metadata": {},
           "hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a"
         }
@@ -2076,7 +2630,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>type_check_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">5_type_checker_output · 26230 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:20.957998",
+  "timestamp": "2026-04-14T11:53:34.460976",
   "processed_files": 2,
   "success": true,
   "errors": [],
@@ -2086,7 +2640,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "file_name": "predictive_coding_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: parameters, belief, precision, error, level"
+        "Duplicate variable names: precision, parameters, belief, level, error"
       ],
       "warnings": [
         "Type issue: Unknown type 'Predictive' for variable 'Example'",
@@ -2107,13 +2661,27 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "Type issue: Unknown type 'moderate' for variable '</pre></div>
 </details>
 <details>
-  <summary>validation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 750 bytes</span></summary>
+  <summary>validation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 1212 bytes</span></summary>
   <div class="details-body"><pre>{
-  "total_files": 14,
-  "successful_validations": 14,
+  "total_files": 28,
+  "successful_validations": 28,
   "failed_validations": 0,
   "validation_scores": {
     "semantic": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
       1.0,
       1.0,
       1.0,
@@ -2143,9 +2711,37 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       0.7,
       0.7,
       0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
+      0.7,
       0.7
     ],
     "consistency": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
       1.0,
       1.0,
       1.0,
@@ -2168,9 +2764,9 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 24980 bytes</span></summary>
+  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 49186 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:24.229881",
+  "timestamp": "2026-04-14T11:53:38.573510",
   "source_directory": "input/gnn_files/continuous",
   "source_directories": [
     "input/gnn_files/basics",
@@ -2220,7 +2816,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>export_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 2690 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:24.593763",
+  "timestamp": "2026-04-14T11:53:39.231974",
   "source_directory": "input/gnn_files/discrete",
   "output_directory": "output/7_export_output",
   "files_exported": [
@@ -2289,7 +2885,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "1eff1c82-6c5d-40c1-ae91-5c8fff8dfe01",
+      "id": "cc9d92ae-067b-4923-ab83-9d0a1bc2ddd5",
       "name": "mu",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2304,7 +2900,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "ce40f02d-94d9-4dc1-95e1-4fa086fae33a",
+      "id": "e3c6acc4-8e07-489a-bee8-8abbf429fd8c",
       "name": "mu_dot",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2325,7 +2921,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "f40632cd-08d5-4399-86cb-58530939eadc",
+      "id": "b880efb0-2391-4d38-8322-97487fdc4107",
       "name": "μ",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2340,7 +2936,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "a27e5af1-0a57-463c-a0e7-8ab5adcfd7dc",
+      "id": "4f2f112d-dfa4-4d8f-a8e4-e3a0ab6a912a",
       "name": "Σ",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2355,7 +2951,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "14b086df-c3da-4003-8742-c6447293d808",
+      "id": "061727ae-f9c3-4257-b857-fcc5ee834a49",
       "name": "μ_prime",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2366,30 +2962,29 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "description": "Next positi</pre></div>
 </details>
 <details>
-  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 12869 bytes</span></summary>
+  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 10065 bytes</span></summary>
   <div class="details-body"><pre>{
   "processed_files": 9,
-  "total_visualizations": 147,
+  "total_visualizations": 108,
   "visualization_files": [
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_stats.json",
-    "output/8_visualization_output/simple_mdp/simple_mdp_ontology_legend.txt",
-    "True",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_B_analysis.png",
+    "output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_D_heatmap.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_matrix_size_distribution.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
     "output/8_visualization_output/simple_mdp/simple_mdp_generative_model.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_viz_manifest.json",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_graph.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_stats.json",
-    "output/8_visualizat</pre></div>
+    "output/8_visualization_output/simple_mdp/simple_mdp_matrix_size_distribution.png",
+    "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
+    "output/8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
+    "output/8_visualization_output/simple_mdp/simple_mdp_variable_parameter_bipartite.png",
+    "output/8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_A_heatmap.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_analysis.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_tensor.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_C_heatmap.png",
+    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_D_heatmap.png",
+    "output/</pre></div>
 </details>
 <details>
   <summary>simple_mdp_viz_manifest.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 1457 bytes</span></summary>
@@ -2535,13 +3130,13 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "output/8_vi</pre></div>
 </details>
 <details>
-  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 10254 bytes</span></summary>
+  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 8846 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-04-14T10:58:56.927942",
+  "timestamp": "2026-04-14T11:53:46.257953",
   "total_attempts": 19,
-  "successful": 13,
+  "successful": 10,
   "failed": 2,
-  "skipped": 4,
+  "skipped": 7,
   "total_duration_ms": 0.0,
   "output_files": [
     "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
@@ -2549,15 +3144,27 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
     "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
     "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
     "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
     "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
     "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png",
     "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-    "output/9_advanced_viz_output/continuous_navigation_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/contin</pre></div>
+    "output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
+  ],
+  "warnings": [],
+  "errors": [
+    "MatrixVisualizer not available",
+    "MatrixVisualizer not available"
+  ],
+  "skipped_features": {
+    "count": 7,
+    "by_reason": {
+      "Not applicable to this model type (B matrix not found)": [
+        "pomdp_transitions:predictive_coding_agent",
+        "pomdp_transitions:continuous_navigation"
+      ],
+      "MatrixVisualizer not available": [
+        "interactive_dashboard:predictive_coding_agent",
+        "interactive_dashboard:continuous_navigation</pre></div>
 </details></div>
   </main>
 </body>

@@ -1,36 +1,17 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
-
-```python
-# Model Overview
-GNN_Model = {
-    "model": "Active Inference",
-    "version": "1.0"
-  }
-
-  # Key Variables
-  hidden_states = [["A", "B"], ["C", "D"]]
-  
-  # Key Parameters
-  A, B, C, D = hidden_states[0]
-  x = hidden_state(x)
+```json
+{
+  "processed_files": [
+    "output/10_ontology_output/simple_mdp_ontology_report.json",
+    "output/10_ontology_output/multi_armed_bandit_ontology_report.json",
+    "output/10_ontology_output/deep_planning_horizon_ontology_report.json",
+    "output/10_ontology_output/actinf_pomdp_agent_ontology_report.json",
+    "output/10_ontology_output/hmm_baseline_ontology_report.json",
+    "output/10_ontology_output/markov_chain_ontology_report.json",
+    "output/10_ontology_output/tmaze_epistemic_ontology_report.json"
+  ],
+  "success": true,
+  "errors": []
+}
 ```
-
-**Key Variables**
-
-1. **hidden_states**: List of lists containing the state trajectories for each level. Each list represents a single observation at that level. The states are indexed by their indices from 0 to `num_levels - 1`.
-
-2. **observations**: List of lists representing the observations at each level, with each element in the list being an observation. Each element is indexed by its index from 0 to `num_states - 1`.
-
-**Actions/Controls**
-
-3. **actions**: List of lists containing the actions for each level. Each element in the list represents a single action at that level, with each element having two indices: one representing the state and another representing the target state (the next level). The index is indexed by its corresponding state from 0 to `num_states - 1`.
-
-**Key Parameters**
-
-4. **x**: List of lists containing the predictions for each observation at each level, with each element in the list being an observation. Each element has two indices: one representing the target state and another representing the next level (the next level). The index is indexed by its corresponding state from 0 to `num_states - 1`.
-
-**Notable Features**
-
-5. **Special Properties**: List of lists containing special properties or constraints at each level, with each element in the list having a unique value. These are used for specific scenarios and can be useful for understanding how the model handles different types of interactions between levels.

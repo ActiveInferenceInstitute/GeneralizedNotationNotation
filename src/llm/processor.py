@@ -463,6 +463,18 @@ async def _process_llm_async(
                     if processor_initialized and processor:
                         with open(gnn_file, 'r') as f:
                             gnn_content = f.read()
+                        
+                        # --- BEGIN ONTOLOGY INJECTION ---
+                        ontology_file = output_dir.parent / "10_ontology_output" / "ontology_results.json"
+                        if ontology_file.exists():
+                            try:
+                                with open(ontology_file, "r") as fn:
+                                    ont_data = json.load(fn)
+                                gnn_content += f"\n\n--- INJECTED ACTIVE INFERENCE ONTOLOGY META ---\n{json.dumps(ont_data, indent=2)}\n"
+                                logger.info("🧠 Injected Neurosymbolic Ontology context into LLM prompt.")
+                            except Exception as oe:
+                                logger.warning(f"Could not inject ontology metadata: {oe}")
+                        # --- END ONTOLOGY INJECTION ---
                         # Build custom prompt sequence including user-requested prompts
                         prompt_sequence = [
                             PromptType.SUMMARIZE_CONTENT,

@@ -587,6 +587,34 @@ def _generate_rule_based_summary(
     return "".join(parts)
 
 
+def generate_recovery_plan(context: Dict[str, Any]) -> List[str]:
+    """Generate a heuristic-based programmatic recovery plan for failed pipeline components."""
+    plan = []
+    health = context.get("health_score", 100)
+    
+    if health >= 100:
+        return plan
+
+    failures = context.get("failures", [])
+    for failure in failures:
+        script = failure.get("script_name", "")
+        error_msg = str(failure.get("error", "")).lower()
+        # Heuristics based on observed failure modes
+        if "timeout" in error_msg:
+            plan.append(f"Execute `{script}` with an extended timeout: `uv run python src/{script} --timeout 600`")
+        elif "memory" in error_msg or "allocation" in error_msg:
+            plan.append(f"Execute `{script}` with strict memory bounds and GC enabled: `uv run python src/{script} --gc-frequent`")
+        elif "llm" in script.lower() or "connection" in error_msg:
+            plan.append(f"Fallback override: Ensure provider is running. Try: `uv run python src/{script} --verbose`")
+        else:
+            plan.append(f"Retry `{script}` in isolated verbose mode: `uv run python src/{script} --verbose`")
+
+    if health < 70 and len(failures) > 2:
+        plan.insert(0, "CRITICAL: Multiple cascading failures detected. Recommend executing `uv run python src/main.py --target-dir input/gnn_files --verbose` to trace.")
+    
+    return plan
+
+
 def generate_executive_report(
     analysis: Dict[str, Any],
     bottlenecks: List[Dict[str, Any]],
@@ -731,6 +759,17 @@ def generate_executive_report(
         report_parts.append(f"- {rec}")
     report_parts.append("")
 
+    # Autonomous Execution Recovery Section
+    if summary_data:
+        recovery_plan = generate_recovery_plan(summary_data)
+        if recovery_plan:
+            report_parts.append("## 🛡️ Execution Recovery Plan\n")
+            report_parts.append("The following heuristic terminal commands are recommended to forcibly recover failed components:\n")
+            for plan_item in recovery_plan:
+                report_parts.append(f"- {plan_item}")
+            report_parts.append("")
+
+
     # Pipeline Arguments (for context)
     if summary_data and summary_data.get("arguments"):
         args = summary_data["arguments"]
@@ -845,8 +884,9 @@ def process_intelligent_analysis(
     # 5. Extract Failure Context
     failures = extract_failure_context(summary_data)
 
-    # 6. Generate Recommendations
+    # 6. Generate Recommendations and Recovery Plan
     recommendations = generate_recommendations(analysis, bottlenecks, flags_by_type)
+    recovery_plan = generate_recovery_plan(analysis)
 
     # 7. Run LLM Analysis
     llm_analysis = None
@@ -921,6 +961,7 @@ def process_intelligent_analysis(
                 "bottlenecks": bottlenecks,
                 "failures": failures,
                 "recommendations": recommendations,
+                "recovery_plan": recovery_plan,
                 "llm_analysis_available": llm_analysis is not None and "Unavailable" not in llm_analysis
             }, f, indent=2)
         logger.info(f"Analysis data saved to {analysis_data_path}")
@@ -940,6 +981,8 @@ def process_intelligent_analysis(
                 "yellow_flag_count": yellow_count,
                 "bottleneck_count": len(bottlenecks),
                 "recommendation_count": len(recommendations),
+                "recovery_plan_length": len(recovery_plan),
+                "recovery_plan": recovery_plan,
                 "report_file": str(report_path),
                 "data_file": str(analysis_data_path)
             }, f, indent=2)

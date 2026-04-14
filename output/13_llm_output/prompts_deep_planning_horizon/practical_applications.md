@@ -1,35 +1,15 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points, including:
+You've covered the general aspects of GNN, including its applications, use cases, and practical considerations for a GNN model. However, you're missing some key areas to expand upon:
 
-1. **Key concepts**:
-   - Active Inference (AI)
-   - GNN
-   - ModelAnnotation
-   - ModelStateSpaceBlock
-   - StateSpaceBlock
-   - Connection connections between models 
+1. **Model Complexity**: The complexity of the model can impact its performance, reliability, and scalability. You mentioned that the model is based on Generative models with 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
 
-2. **Model Parameters**:
-   - Number of hidden states
-   - Number of actions
-   - Policy space growth exponentially with T
+2. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
 
-3. **Implementation Considerations**:
-   - Computational requirements and scalability
-   - Data requirements and collection strategies
-   - Integration with existing systems
+3. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
 
-4. **Performance Expectations**:
-   - What kinds of performance can be expected?
-   - Metrics for evaluation and validation
-   - Limitations and failure modes
+4. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
 
-5. **Deployment Scenarios**:
-   - Online vs. offline processing
-   - Real-time constraints and requirements
-   - Hardware and software dependencies
+5. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
 
-6. **Benefits and Advantages**:
-   - Unique capabilities or features
-   - Comparison to alternative approaches
+6. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.

@@ -6,38 +6,71 @@ Prompt:
 
 Response:
 
-You can use the following code for your GNN implementation:
 ```python
-import numpy as np
+import json
+from typing import List, Dict
 
-def gnn_agent(x):
-    x = np.array([x])
 
-    # Initialize state and reward matrices
-    A = np.zeros((4, 3))
-    B = np.ones((2, 1))
-    C = np.ones((2, 1))
-    D = np.ones((2, 1))
+def gnn(model: Dict[str, str], num_locations: int = 4) -> List[Dict[str, str]]:
+    """GNN implementation for Active Inference.
 
-    # Initialize action vectors
-    A[0] = (x[:, 0], x[:, 1])
-    A[1] = (x[:, 0], x[:, 1])
-    A[2][:, :, :] = (np.array([x[:3]])).T
+    Args:
+        model (dict): A dictionary of input parameters and actions.
+        num_locations (int): Number of locations to explore in the maze. Defaults to 4.
 
-    B[0] = (x[:, 0], x[:, 1])
-    B[1] = (x[:, 0], x[:, 1])
-    B[2][:, :, :] = (np.array([x[:4]]).T)
+    Returns:
+        List[Dict]: A list of GNN models with their corresponding action sequences, reward sequences, and state-value sequences for each location.
+    """
+    gnn = {}
+    for x, y, actions in model["outputs"]:
+        if isinstance(x, str):
+            # Move to the next location
+            gnn_next = {
+                "location": (x, y),
+                "action": action_,
+                "reward": 0,
+                "state": {"left": x}
+            }
 
-    C[0] = (x, x)
-    C[1] = (x,)
+            # Explore the maze and visit each arm
+            for i in range(num_locations):
+                if actions == "go" or actions == "stay":
+                    gnn[str(x)] = {
+                        "location": (i + 1),
+                        "action": action_,
+                        "reward": 0,
+                        "state": {"left": x}
+                    }
 
-    D[0] = (x, x)
-    D[1] = (x,)
+            # Explore the left arm
+            for i in range(num_locations - 2):
+                if actions == "go" or actions == "stay":
+                    gnn[str(x)] = {
+                        "location": (i + 1),
+                        "action": action_,
+                        "reward": 0,
+                        "state": {"left": x}
+                    }
 
-    return A
-```
-This implementation uses a state-value matrix (`A`) and reward vector (`B`), as well as the transition matrices (`C` and `D`, respectively). The agent starts at the center of the maze. It then explores one arm, visits another arm, explores an adjacent arm, and so on until it reaches the cue location or ends up in a corner (which is not explored yet).
-The GNN representation for this agent can be obtained using the following code:
-```python
-G = np.array([[x[0] + x[:, 1]], [x[2]]])
-```
+            # Explore the right arm
+            for i in range(num_locations - 2):
+                if actions == "go" or actions == "stay":
+                    gnn[str(x)] = {
+                        "location": (i + 1),
+                        "action": action_,
+                        "reward": 0,
+                        "state": {"left": x}
+                    }
+
+            # Explore the cue location
+            for i in range(num_locations - 2):
+                if actions == "go" or actions == "stay":
+                    gnn[str(x)] = {
+                        "location": (i + 1),
+                        "action": action_,
+                        "reward": 0,
+                        "state": {"left": x}
+                    }
+
+            # Explore the cue arm
+            for i in range

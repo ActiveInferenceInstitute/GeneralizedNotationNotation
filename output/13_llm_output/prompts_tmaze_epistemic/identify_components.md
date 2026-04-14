@@ -1,12 +1,11 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts in the document:
+You've already provided a comprehensive overview of the GNN specification framework in Active Inference literature. Here's a more detailed breakdown:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -15,8 +14,7 @@ You've already covered the key concepts in the document:
 3. **Action/Control Variables**:
    - Available actions and their effects
    - Control policies and decision variables
-   - Action space properties
-
+   - Action space properties (e.g., action types, reward distributions)
 4. **Model Matrices**:
    - A matrices: Observation models P(o|s)
    - B matrices: Transition dynamics P(s'|s,u)
@@ -27,8 +25,6 @@ You've already covered the key concepts in the document:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
-
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
-
-Your comprehensive breakdown provides a clear overview of the key concepts involved in the GNN representation model.
+   - Dynamic vs. static components

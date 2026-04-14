@@ -1,30 +1,20 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the practical applications of GNNs, but there are a few more areas where you can expand your knowledge:
+Based on the provided information, here are some key points about the GNN Model:
 
-1. **State-of-the-art implementations**: Research papers often focus on specific architectures or techniques used in recent work. You could explore these and discuss their strengths and weaknesses.
+1. **Model Name**: "GNN Version" is a standard discrete Hidden Markov Model with 4 hidden states, 6 observation symbols, fixed transition matrix (no action dependence), and no action selection. The model name represents the underlying structure of the model.
 
-2. **Comparison to other models**: Familiarize yourself with the various variants of GNNs, including Active Inference POMDPs (AIMPDP) and Bayesian inference models like Bayesian Markov Chain Monte Carlo (BMCMC). This will help you understand how they differ in terms of their underlying mechanisms, assumptions, and performance metrics.
+2. **Model Annotation**: A "Hidden Markov Model Baseline" version of the GNN model is provided. This version includes a set of parameters for inference, including an initial state distribution, forward and backward algorithm, and time step size. It also provides information about the number of hidden states, observed observations, and transition matrices.
 
-3. **Performance evaluation**: You can analyze the performance of GNN variants using metrics such as:
-   - **Forward error correction (FER)**: A measure of how well the model generalizes to new data points.
-   - **Backward error correction (BER)**: A measure of how well the model generalizes to new observations.
-   - **State-of-the-art performance evaluations**: Such as metrics like **state-space block**, **forward and backward forward errors**, or **backward forward errors**.
+3. **Model Parameters**: The model has 4 hidden states with Markovian dynamics, 6 observation symbols, fixed transition matrix (no action dependence), and no action selection. This allows for inference on a single state at each time step. It also provides information about the number of hidden states, observed observations, and transition matrices.
 
-4. **Data requirements and collection strategies**: Understand how you can collect data for your GNNs, including:
-   - **Dataset selection** (e.g., **sample size**, **data quality**, etc.)
-   - **Data processing** (e.g., **batch size**, **processing time**, etc.)
+4. **StateSpaceBlock**: The model has an initial state distribution (prior) with 6 observations and 4 hidden states. It also has an initial state distribution (posterior) with 1 observation per time step. This allows for inference on a single state at each time step.
 
-5. **Integration with existing systems**: Familiarize yourself with the various models and techniques used in recent research, including:
-   - **Bayesian inference models** (e.g., **BMCMC**, **BAMM**, **BLUMEO**).
-   - **Random graph networks** (RGN) or **GCNs**.
+5. **ModelAnnotation**: A "Hidden Markov Model Baseline" version of the GNN model is provided, which includes parameters such as:
+   - Initial State Distribution (prior): A set of 6 observations with no action dependence and fixed transition matrix. This allows for inference on a single state at each time step.
+   - Forward Algorithm: A set of 4 hidden states with Markovian dynamics. It also provides information about the number of hidden states, observed observations, and transition matrices.
+   - Backward Algorithm: A set of 6 observation symbols with no action dependence and fixed transition matrix. This allows for inference on a single state at each time step.
 
-6. **Benefits and advantages**:
-   - **Improved model performance**: You can analyze the performance of GNN variants using metrics like **state-space block**, **forward and backward forward errors**, or **backward forward errors**.
-   - **Increased interpretability**: You can provide a more intuitive understanding of how your models generalize to new data points.
+6. **ModelParameters**: The model has an initial state distribution (prior) with 4 hidden states and 1 observation per time step, which provides information about the number of hidden states, observed observations, and transition matrices. It also provides information about the number of hidden states, observed observations, and transition matrices.
 
-7. **Deployment scenarios**:
-   - **Online vs. offline processing** (e.g., **online computation**, **offline computation**).
-   - **Real-time constraints and requirements**.
-
-Feel free to share any additional resources, such as papers or case studies related to GNNs
+7. **ModelAccuracy**: The model's accuracy is reported as a percentage of its total predictions. This indicates that the model can correctly predict the next state with 100% accuracy

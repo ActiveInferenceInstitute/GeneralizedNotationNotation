@@ -6,52 +6,55 @@ Prompt:
 
 Response:
 
-Here's the complete implementation:
+You can use the following code to generate an Active Inference POMDP agent:
 ```python
-import numpy as np
-from typing import List, Dict, Tuple
+import json
+from typing import List, Dict
 
-def gnn_model(
-    num_hidden_states: int = 3,
-    num_actions: int = 3,
-    num_timesteps=10,
-    hidden_state_factor=2.5,
-    action_prior="",
-    policy_prior="",
-    prior_over-hidden_states=[np.array([0]), np.array([])],
-):
+def generate_inference(input_data):
+    """Generate a list of inference actions based on input data.
+
+    Args:
+        input_data (list[Dict]): A list of dictionaries containing the following keys:
+            "observation": A dictionary with two keys:
+                "state" - The current state of the agent,
+                "action" - The action selected by the agent
     """
-    GNN Representation of an Active Inference POMDP agent with one observation modality and one hidden state factor.
+    # Initialize an empty list to store inference actions.
+    inference = []
 
-    Parameters:
-        num_hidden_states (int): Number of hidden states in the agent's POMDP representation.
-            Default is 3, representing all possible actions.
+    for observation in input_data:
+        # Get all observations and assign them to a new observation dictionary
+        observation_dict = {
+            "observation": observation["observation"],
+            "state": observation["state"]
+        }
 
-        num_actions (int): Number of actions available for inference.
-            Default is 3, representing all possible actions.
+        # Define the action vector based on the current state
+        action_vector = {"action": observation['action'],
+                "probability": observation['prob']}
 
-        num_timesteps (int): Number of timesteps to simulate each action.
-            Default is 10, representing an unbounded time horizon.
+        # Initialize the inference actions and assign them to the input data
+        for action in observation:
+            if action.get("type") == "float" or action.get("type") == "int"):
+                inference.append(
+                    {
+                        "observation": observation["observation"],
+                        "action": {"state": observation['state'],
+                            "probability": observation['prob']},
+                        "action_vector": {"action": action,
+                                "probability": action_vector}
+                    }
+            else:
+                # If the action is not a float or int, assign it to None
+                inference.append(None)
 
-        hidden_state_factor (float): Hidden state factor used as initial policy prior.
-            Default is 2.5, representing a uniform policy prior with probability 0.9/1.0 = 0.33333.
-            This parameter allows for inference to be performed in an unbounded time horizon without any planning horizon constraint.
-
-        action_prior (Dict[str, float]): Action selection from policy posterior.
-            Default is {"action": "random", "policy": ["uniform"]); this allows for inference to be performed in a bounded time horizon with no planning horizon constraint.
-
-            Example: {"action": "random"} will allow for inference to be performed in an unbounded time horizon without any planning horizon constraint, but it does not allow for inference to be performed in a constrained time horizon.
-
-    """
-    # Initialize the model parameters
-    num_hidden_states = num_hidden_states + 1
-    hidden_state_factor = hidden_state_factor + 2.5 / (num_actions * num_timesteps)
-    action_prior = "uniform" if np.random.rand() < 0.3 else "uniform"
-
-    # Initialize the model parameters
-    state_observation = {
-        "observation": {"x", "y"},
-        "state": {"x", "y"}
-    }
-    actions = {
-        "action":
+    return json.dumps(
+        inference
+    )
+```
+This code generates an Inference POMDP agent based on input data and defines a list of inference actions using dictionaries with keys "observation" and "action". The `generate_inference` function takes in the input data as a list of dictionaries containing the following keys:
+  - "observation": A dictionary with two keys:
+    - "state": The current state of the agent,
+    - "action": The action selected by the agent
+- "action" is assigned to None if it's not a float or int. This ensures that the inference actions are initialized as None for all actions in the input data.

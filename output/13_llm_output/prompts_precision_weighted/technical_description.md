@@ -6,50 +6,61 @@ Prompt:
 
 Response:
 
-Here is the complete implementation of the GNN model:
+Here is the GNN implementation:
 ```python
 import numpy as np
-from scipy import stats
+from typing import List, Dict, Tuple
 
-def gnn_model(input, num_hidden_states=3):
-    """GNN Representation for a neural network with 10 hidden states and 4 neurons.
+def gnn(
+    input_data: List[Tuple[List[float], float]],
+    num_hidden_states: int = 3,
+    num_actions: int = 3,
+    sensory_precision: float = 4.0,
+    policy_precision: float = 2.0,
+    num_timesteps: int = 30
+) -> Dict[str, List[float]]:
+  """GNN implementation for the GNN-based probabilistic inference agent."""
 
-    Args:
-        input (numpy array): Input data to be fed into the GNN model.
-        num_hidden_states (int): Number of hidden states in the model.
-        num_neurons (int): Number of neurons in the model.
-    """
-    # Initialize state space matrices
-    A = np.array([[1, 0], [0, 1]])
+  # Initialize state space matrix
+  A = np.array([
+      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
+          [3.0] * num_timesteps,  # Next hidden states
+      (0.9,),
+      (0.05,),
+  ])
 
-    # Initialize transition matrix
-    B = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),
-                     (input[i+1]]**2),
-                     [-(input[i+1])**2],
-                     [0, 0, 1]])
+  # Initialize transition matrix
+  B = np.array([
+      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
+          [3.0] * num_timesteps,  # Next hidden states
+      (0.9,),
+      (0.05,),
+  ])
 
-    # Initialize habit vector
-    C = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),
-                     (input[i+1]]**2),
-                     [-(input[i+1])**2],
-                     [0, 0, 1]])
+  # Initialize action vector
+  C = np.array([
+      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
+          [3.0] * num_timesteps,  # Next actions
+      (0.9,),
+      (0.05,),
+  ])
 
-    # Initialize action vector
-    D = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),
-                     (input[i+1]]**2),
-                     [-(input[i+1])**2],
-                     [0, 0, 1]])
+  # Initialize habit vector
+  D = np.array([
+      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
+          [3.0] * num_timesteps,  # Next actions
+      (0.9,),
+      (0.05,),
+  ])
 
-    # Initialize prior over hidden states
-    π = np.array([[1/4*np.pi*(input[i] + input[i]), -1/(num_hidden_states-3)*np.sqrt(
-                    (input[i+1])**2),
-                     (-1/(num_hidden_states-3)*np.sqrt(
-                        (input[i+1])**2)],
-                     [0, 0, 1]])
+  # Initialize action vector
+  E = np.array([
+      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
+          [3.0] * num_timesteps,  # Next actions
+      (0.9,),
+      (0.05,),
+  ])
 
-    # Initialize action vector
-    G = np.array([[-(input[i] + input[i]), -np.ones((num_hidden_states-2)),
-                     (input[i]+input[i])] * num_actions)
-
-    # Initialize softmax over observations
-    F = np.array([[1
+  # Initialize state space matrix
+  A = np.array([
+      ([1.0], [4

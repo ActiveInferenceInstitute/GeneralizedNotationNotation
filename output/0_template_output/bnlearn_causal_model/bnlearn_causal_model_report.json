@@ -1,7 +1,7 @@
 {
   "input_file": "input/gnn_files/discrete/bnlearn_causal_model.md",
   "output_file": "output/0_template_output/bnlearn_causal_model/bnlearn_causal_model_processed.md",
-  "timestamp": "2026-04-14T10:56:40.578342",
+  "timestamp": "2026-04-14T11:51:42.084599",
   "file_size_bytes": 1631,
   "file_size_lines": 98,
   "processing_options": {

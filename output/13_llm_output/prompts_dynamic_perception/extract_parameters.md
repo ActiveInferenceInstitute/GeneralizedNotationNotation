@@ -1,27 +1,37 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN model:
+Based on the provided documentation, here are the key parameters for the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the state space dimensions and the corresponding probabilities of each observation (state inference) over time.
-   - B matrices representing the transition matrix and the prior belief distribution over states.
-   - D matrices representing the prior distributions over hidden states, observed states, and action parameters.
+   - A matrices representing the input and output data sets (e.g., `A`)
+   - B matrices representing the learned beliefs (`B`), which represent the predictions made by the agent based on its actions (`D`, `F`, etc.)
+2. **Initial Parameters**:
+   - γ = 0.1
+   - α = 0.5
+   - Other parameters:
+      - γ (gamma) is a hyperparameter that controls the rate at which the model learns from data points with different probabilities of occurrence, and it has various roles in enabling parameter exploration and tuning.
 
-2. **Precision Parameters**:
-   - γ: precision parameter for each modality
-   - α: learning rate for each modality (default is 0.1)
-   - Other precision/confidence parameters
 3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+   - State space dimensions for each factor (`A`)
+   
+   - Observation space dimensions for each modality (e.g., `s_t`), where `s_prime`, `o_t`, etc. are the observed states of the agent, which can be thought as a set of input data points with different probabilities of occurrence.
 
 4. **Temporal Parameters**:
-   - Time horizons (t): time horizon over which the model is trained
-   - Temporal dependencies and windows: window parameters to allow for updating of parameter values based on temporal dependencies
+   - Time horizons (`T`)
+   
+   - Temporal dependencies and windows (`W`)
+   
+   - Update frequencies (e.g., `F`)
+   
+   - Time scales for each control factor (`C`)
 5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+   - Initial parameters:
+      - γ = 0.1
 
-6. **Configuration Summary**: A tabular representation of the model parameters, including their roles, priorities, and sensitivity analysis.
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+ 
+Here are the key performance metrics and their corresponding values in the GNN model:
+- **Accuracy**: `accuracy` (number of correct predictions / total number of predictions)
+- **Precision**: `precision`, which is a hyperparameter that controls the rate at which the model learns from data points with different probabilities of occurrence. It has various roles and priorities based on the type of parameter being explored.
+- **F1 score**: `f1_score` (average precision), which is a metric for evaluating performance across multiple categories, including accuracy. It also has several values that can be tuned to focus on specific types of parameters or their role in achieving optimal performance.

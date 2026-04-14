@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.241981,
-  "timestamp": "2026-04-14T11:00:18.411136",
+  "execution_time": 0.245942,
+  "timestamp": "2026-04-14T11:55:10.366440",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -57,8 +57,8 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/two_state_bistable/discopy/simulation_data/circuit_analysis.json",
-      "output/12_execute_output/two_state_bistable/discopy/simulation_data/circuit_info.json"
+      "output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

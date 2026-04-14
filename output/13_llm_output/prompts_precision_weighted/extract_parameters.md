@@ -1,29 +1,33 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters of the GNN model:
+Based on the provided information, here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the input data (state space) and output predictions for each action parameter.
-   - B matrices representing the biases/weights in the neural network architecture.
-   - C matrices representing the conditional probabilities of actions based on their respective states.
-   - D matrices representing the conditional probabilities of actions based on their corresponding states.
+   - A matrices representing the model matrix and its structure (e.g., Lambda, Policy, EFE).
+   - B matrices representing the transition matrix and action vector representations of actions.
+   - C matrices representing the habit distribution over observations.
+   - D matrices representing the habit distribution over actions.
 
 2. **Precision Parameters**:
-   - α (alpha): learning rate and adaptation parameters for each action parameter.
-   - Other precision/confidence parameters:
-   - Sensitivity analysis priorities, such as sensitivity to initial conditions or prior beliefs over initial state space dimensions.
+   - γ: learning rate parameter for each modality (e.g., α, β)
+   - α: learning rate parameters for each modality (e.g., δ)
+   - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+   - State space dimensions of the model matrices and their interpretation (dimensions, structure).
+   - Observation space dimensions of the state matrix and its interpretation (dimensionality).
+   - Action space dimensions of the action vector representation of actions (dimensionality).
+   - Action space dimensionality for each modality
 
 4. **Temporal Parameters**:
-   - Time horizons (T)
+   - Time horizons (t)
    - Temporal dependencies and windows
    - Update frequencies and timescales
 
 5. **Initial Conditions**:
    - Prior beliefs over initial states
    - Initial parameter values
-   - Initialization strategies, such as sensitivity to initial conditions or prior beliefs of actions/actions-based biases.
+   - Initialization strategies
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations for each model matrix, state space matrices, action vectors, and observation spaces (dimensions).

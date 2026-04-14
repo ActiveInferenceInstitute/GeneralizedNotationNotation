@@ -13,7 +13,7 @@ Generated from GNN POMDP Model: **T-Maze Epistemic Foraging Agent**
 - Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)
 - Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation
 - The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value
-- **Generation Date**: 2026-04-14 10:58:57
+- **Generation Date**: 2026-04-14 11:53:47
 
 ## POMDP Dimensions
 

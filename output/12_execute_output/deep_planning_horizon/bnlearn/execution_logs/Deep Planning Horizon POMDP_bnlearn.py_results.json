@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/bnlearn/Deep Planning Horizon POMDP_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 2.014609,
-  "timestamp": "2026-04-14T10:59:19.415048",
+  "execution_time": 2.042527,
+  "timestamp": "2026-04-14T11:54:10.365963",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

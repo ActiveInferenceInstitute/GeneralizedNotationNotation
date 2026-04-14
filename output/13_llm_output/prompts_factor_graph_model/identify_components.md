@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Based on the document, here are a few key steps to follow:
+Here is a systematic breakdown of the information in the document:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

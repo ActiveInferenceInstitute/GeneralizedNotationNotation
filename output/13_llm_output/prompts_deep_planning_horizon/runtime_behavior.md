@@ -6,37 +6,63 @@ Prompt:
 
 Response:
 
-Here is the complete code for the GNN model in Python using the `numpy` library and the `scipy.stats` module to compute the expected free energy:
 ```python
-import numpy as np
-from scipy.stats import gauss, log
+import json
+from typing import List, Dict
 
-def gnn_model(num_hidden_states=4, num_obs=4, num_actions=64):
-    """GNN model for a multi-step policy evaluation with T=5 horizon and 30 timesteps."""
+class GNNModel:
+    def __init__(self):
+        self.model = None
 
-    # Define the GNN representation of the model
-    G = gauss.normal(loc=-1e-27, scale=(1E-9,-1E-9), size=[num_hidden_states])
-    
-    # Initialize the state space
-    s = np.array([[-np.ones((num_actions+1) * num_actions], dtype=dtype('float64')]) + [0] * num_actions**2
+    def set_model(self, model):
+        """Set the active inference model."""
+        if not isinstance(model, dict) or len(model["states"]) == 0:
+            raise ValueError("Invalid input type")
 
-    # Define the policy distribution
-    π = np.array([[[]]*num_actions, 0]*num_actions**3 for _ in range(num_actions)])
-    
-    # Initialize the action distributions
-    a1 = np.array([[-np.ones((num_hidden_states+1) * num_hidden_states], dtype=dtype('float64'))] + [0])
+        self.model = model
 
-    # Define the policy sequence distribution
-    s_tau1 = gauss.normal(loc=-1e-27, scale=(1E-9,-1E-9), size=[num_actions**3 for _ in range(num_actions)])
-    
-    # Initialize the action distributions
-    a2 = np.array([[-np.ones((num_hidden_states+1) * num_hidden_states], dtype=dtype('float64'))] + [0])
+    def set_state_space(self, state_space):
+        """Set a new state space for the active inference model."""
+        if not isinstance(state_space, list) or len(state_space) == 1:
+            raise ValueError("Invalid input type")
 
-    # Define the policy sequence distribution
-    s_tau2 = gauss.normal(loc=-1e-27, scale=(1E-9,-1E-9), size=[num_actions**3 for _ in range(num_actions)])
-    
-    # Initialize the action distributions
-    a3 = np.array([[-np.ones((num_hidden_states+1) * num_hidden_states], dtype=dtype('float64'))] + [0])
+        self.states = state_space
 
-    # Define the policy sequence distribution
-    s_tau3 = gauss.normal(loc=-1e-27, scale=(
+    def set_policy_distribution(self, policy_distribution):
+        """Set a new policy distribution for the active inference model."""
+        if not isinstance(policy_distribution, dict) or len(policy_distribution["actions"]) == 0:
+            raise ValueError("Invalid input type")
+
+        self.policies = policy_distribution
+
+    def set_prior_distribution(self, prior):
+        """Set a new prior distribution for the active inference model."""
+        if not isinstance(prior, dict) or len(prior["states"]) == 1:
+            raise ValueError("Invalid input type")
+
+        self.prior = prior
+
+    def set_action_probability(self, action_probabilities):
+        """Set a new action probability distribution for the active inference model."""
+        if not isinstance(action_probabilities, dict) or len(action_probabilities["actions"]) == 0:
+            raise ValueError("Invalid input type")
+
+        self.prior = action_probabilities
+
+    def set_policy_probability(self, policy):
+        """Set a new policy probability distribution for the active inference model."""
+        if not isinstance(policy, dict) or len(policy["states"]) == 1:
+            raise ValueError("Invalid input type")
+
+        self.policies = policy
+
+    def set_action_prior(self, action_probabilities):
+        """Set a new action prior distribution for the active inference model."""
+        if not isinstance(action_probabilities, dict) or len(action_probabilities["actions"]) == 0:
+            raise ValueError("Invalid input type")
+
+        self.prior = action_probabilities
+
+    def set_policy_probability(self, policy):
+        """Set a new policy probability distribution for the active inference model."""
+        if not isinstance(policy,

@@ -1,26 +1,24 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here's a concise version of the document:
 
-**Model Overview:**
-This is a discrete Hidden Markov Model (HMM) that models the behavior of an agent in a sequence-based environment. The model consists of four states and four actions, with each state having two possible outcomes based on its action. The transition matrix represents the probability of transitioning from one state to another, while the emission matrix captures the probability of observing a specific observation at a particular time step.
+**Introduction**
 
-**Key Variables:**
+This document provides an overview of the `HiddenMarkovModelBaseline` GNN implementation in Active Inference POMDP variants, focusing on the `SimpleHMM` and `GNNVersionAndFlags`. It covers key concepts, including:
 
-1. **Hidden States**: A list containing all states in the model. Each state has two possible outcomes: `(0, 0)` and `(0, 1)`. The action space is defined by the actions `(a, b)`, where `a` represents an observation at time step `t`, and `b` represents a specific observable at time step `t+1`.
+1. **Basic structure**: A simple HMM with 4 hidden states, 6 observation symbols, fixed transition matrix, and no action selection (passive inference only).
+2. **Model Overview**: A detailed description of the model's components, including the `HiddenMarkovModelBaseline` class.
+3. **Key Variables**: A list of matrices representing the HMM parameters (`A`, `B`, `C`) and their roles (`actions/controls`), along with their respective values in each hidden state (`state_x`).
+4. **Critical Parameters**: Key hyperparameters, including those relevant to the model's design (e.g., `num_hidden_states`, `num_observations`, `action_selection`) and constraints on their settings (`actions/controls`):
+   - `max_steps`: Maximum number of steps taken by an observer in a single observation.
+   - `stepsize` is the step size used to update the state distribution (fixed transition matrix).
+   - `num_timesteps`, which controls the number of time steps taken by the agent (`state_x`) and its updates with respect to the observed states (`observation`.
+5. **Notable Features**: A list of matrices representing the model's key features, including those relevant to the model design (e.g., `actions/controls`).
+6. **Use Cases**: Specific scenarios where this model can be applied, such as:
+   - **Simple HMM with 4 hidden states**
+   - **GNNVersionAndFlags version**
 
-2. **Observations**: A list containing all observations in the model. Each observation has two possible outcomes: `(x_i, y_i)` for each observation `i`. The action space is defined by the actions `(a, b)`, where `a` represents an observation at time step `t`, and `b` represents a specific observable at time step `t+1`.
-
-3. **Actions**: A list containing all actions in the model. Each action has two possible outcomes: `(x_i, y_i)` for each observation `i`. The action space is defined by the actions `(a, b)`, where `a` represents an observation at time step `t`, and `b` represents a specific observable at time step `t+1`.
-
-**Critical Parameters:**
-
-1. **Most Important Matrices**: A list containing all matrices in the model that describe the state transition probabilities of each state, while controlling for actions. The action matrix is used to update the probability distribution of states based on their actions.
-
-2. **Key Variables**: A list containing all variables describing the model parameters and their roles. The key variable `alpha` represents the forward direction of the Markov chain, while the key variable `beta` represents the backward direction of the Markov chain.
-
-**Notable Features:**
-
-1. **Randomized Forward Direction**: The probability distribution of states is randomized based on the action space, allowing for a more flexible and adaptive model design.
-
-2. **Randomized Backward Direction**: The probability distribution of
+7. **Summary**: A concise overview of the model's structure and key features, along with a summary of its critical parameters (`max_steps`, `stepsize`), which are relevant to the model design (e.g., `actions/controls`) and constraints on their settings (`actions/controls`):
+   - `action_selection`: A constraint that determines whether an observer is allowed to take actions in a specific state or not.
+   - `state_x`, `observation`.
+8. **Use Cases**: Specific scenarios where this model can be applied,

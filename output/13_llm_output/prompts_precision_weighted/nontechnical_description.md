@@ -6,55 +6,33 @@ Prompt:
 
 Response:
 
-Here is the complete implementation of the GNN model:
 ```python
-import numpy as np
+import json
+from typing import List, Dict, Tuple
 
-def gnn_model(input_data, num_hidden_states=3):
+# Load the input data into a JSON format using `json` module's `load()` function
+input_data = [
+    {"name": "Input Data", "type": "list"},
+    {"name": "ActInfPomDPAgentInfo", "type": "dict"}
+]
+
+def generate_ontology(input_data: List[Dict[str, str]]) -> Dict[str, str]:
+    """Generate a dictionary of input data with the following properties:
+
+    - `input_data`: A list of dictionaries containing input data.
+    - `output_file` (optional): The file path to save the output data. If not provided, it will be created automatically by default.
     """
-    GNN representation for a neural network.
+    # Load the input data into a JSON format using `json` module's `load()` function
+    with open(input_data[0], 'r') as f:
+        return json.load(f)
 
-    Args:
-        input_data (numpy.ndarray): Input data to be fed into the network.
-        num_hidden_states (int): Number of hidden states in the model.
-        num_actions (int): Number of actions taken by the agent.
-        sensory_precision (float): Sensitivity of predictions to sensory precision.
-        policy_precision (float): Sensitivity of predictions to policy precision.
-        num_timesteps (int): Number of timesteps per iteration for learning.
+def generate_ontology_from_dict(input_data: List[Dict[str, str]]) -> Dict[str, str]:
+    """Generate a dictionary of input data with the following properties:
+
+    - `input_data`: A list of dictionaries containing input data.
+    - `output_file` (optional): The file path to save the output data. If not provided, it will be created automatically by default.
     """
-
-    # Initialize state and observation matrices
-    A = np.array([input_data])
-    B = np.array([])
-    C = np.array([])
-    D = np.array([])
-
-    # Initialize action parameters
-    G = np.array([[0, 1], [0, 2]])
-    F = np.array([[1/num_hidden_states] + [1/(num_actions)]] * num_actions)
-    E = np.array([np.ones((3, num_actions), dtype=bool)])
-
-    # Initialize state and observation matrices
-    A[0:4, 0:2]: A-O
-    B[0:4, 0:2] : B-F
-    C[0:4, 1:2]: C-G
-    D[0:4, 1:2] : D-E
-
-    # Initialize action parameters
-    G_prime = np.array([[0], [0]])
-    F_prime = np.array([np.ones((3, num_actions), dtype=bool)])
-    E_prime = np.array([])
-    G_prime[4:] = np.zeros(num_hidden_states)
-
-    # Initialize action parameters
-    A_prime = np.array([[0], [1]])
-    B_prime = np.array([np.ones((3, num_actions), dtype=bool)])
-    C_prime = np.array([])
-    D_prime = np.array([])
-
-    # Initialize state and observation matrices
-    A[4:6]: A-O
-    B[4:6] : B-F
-    C[4:6] : C-G
-    D[4:6] : D-E
+    # Load the input data into a JSON format using `json` module's `load()` function
+    with open(input_data[0], 'r') as f:
+        return json.load(f)
 ```

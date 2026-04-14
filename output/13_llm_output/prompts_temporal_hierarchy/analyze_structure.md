@@ -1,38 +1,13 @@
 # ANALYZE_STRUCTURE
 
-Based on the document, here are the key structural analysis points:
+Based on the document, here are some key aspects of active inference analysis:
 
-1. **Graph Structure**:
-   - Number of variables and their types (num_levels)
-   
-   - Connection patterns (directed/unindirected edges):
-   
-   - Graph topology (hierarchical, network, etc.)
+1. **Graph Structure**: The document provides a detailed structural analysis covering graph topology (hierarchical), network, and other mathematical structures relevant to active inference. It includes information about variables, connections, and their types, as well as model structure and complexity assessment.
 
-   - Model structure:
-   
-   - Variable analysis:
-   
-   - Mathematical structure:
-   
-   - Complexity assessment:
-   
-   - Design pattern recognition:
-   
-   - Potential bottlenecks or challenges:
-   
-Key points to note are:
-   - The document highlights the importance of understanding graph structures and their connections.
+2. **Variable Analysis**: The document highlights the importance of variable analysis in understanding the behavior of agents based on data flow patterns and relationships between variables. It provides examples of graph-based models for various domains (e.g., social networks, decision trees) and discusses how these models reflect domain-specific characteristics.
 
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
-   - Symmetries/special properties (e.g., symmetry, special properties)
-Key points to note are:
-   - The document highlights the importance of understanding graph structures and their connections.
+3. **Mathematical Structure**: The document highlights mathematical structures relevant to active inference analysis, such as matrix dimensions, symmetry properties, and model scalability considerations. It provides examples of graph-based models for various domains (e.g., social networks, decision trees) that demonstrate how these models reflect domain-specific characteristics.
 
-3. **Mathematical Structure**:
-   - Matrix dimensions and compatibility
-   - Parameter structure and organization  
-   - Symmetries or special properties (e.g., symmetry, special properties)
+4. **Complexity Assessment**: The document emphasizes the importance of complexity assessment in understanding the behavior of agents based on data flow patterns and relationships between variables. It provides examples of graph-based models for various domains (e.g., social networks, decision trees) that demonstrate how these models reflect domain-specific characteristics.
+
+5. **Design Patterns**: The document highlights design patterns relevant to active inference analysis, such as the use of graph-based models and symmetry properties in modeling agents based on data flow patterns. It provides examples of graph-based models for various domains (e.g., social networks, decision trees) that demonstrate how these models reflect domain-specific characteristics.

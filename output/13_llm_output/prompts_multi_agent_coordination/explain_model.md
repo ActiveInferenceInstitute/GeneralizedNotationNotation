@@ -1,25 +1,37 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here is a comprehensive explanation of the GNN Representation:
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification that represents an active inference system for cooperative agent-agent cooperation. It provides a framework to analyze and predict the behavior of agents based on their joint actions, observations, and preferences.
+**Introduction**
+
+This document provides an overview of the GNN Representation for active inference on to-do lists and other real-world phenomena. It covers the following topics:
+
+1. **Model Purpose**: What are the hidden states (s_f0, s_f1, etc.) and what do they represent?
+   - The model represents a multi-agent cooperative cooperative agent that cooperates with each other to achieve goals in a given task space.
 
 2. **Core Components**:
-   - **Hidden states** represent the collective beliefs or expectations of all agents in the system (represented by LikelihoodMatrix). They capture the shared knowledge among the agents.
-   - **Observations** are a collection of actions/observations from each agent, which provide information about their current state and preferences.
-   - **Actions** are a sequence of actions taken by one or more agents to achieve a goal (represented by TransitionMatrix). These actions can be either directed towards the same goal or towards different goals depending on the choice made by the agent.
-   - **Control variables** represent the collective beliefs or expectations of all agents in the system, which capture their shared knowledge and preferences. Control variables are used to update the beliefs/expectations of other agents based on new information from the environment (represented by PolicyVector).
+   - **Likelihood Matrix**: A probability distribution over the joint state of all agents (agents) across actions, which captures their beliefs and preferences.
+   - **Transition Matrix**: A probability distribution over the joint state of all agents (agents), which captures their actions and policy distributions.
+   - **Probability Vector**: A probability distribution over the joint states of all agents (agents).
 
-3. **Model Dynamics**: This model implements Active Inference principles:
-   - **Action selection** is a sequence of actions taken by one or more agents, which provide information about their current state and preferences.
-   - **Observation sequences** are sequences of actions/observations from each agent to achieve the same goal (represented by TransitionVector). These action-observation sequences allow for updating beliefs/expectations based on new information from the environment.
-   - **Control variables**, represented as PolicyVector, represent collective beliefs or expectations of all agents in the system. Control variables are used to update the collective beliefs/expectations of other agents based on new information from the environment (represented by PolicyVector).
+3. **Model Dynamics**: How does this model evolve over time? What are the key relationships?
+   - The model updates its beliefs based on new observations, allowing it to learn from past behavior and adapt to future actions.
 
-4. **Practical Implications**: This model can learn and predict cooperative behavior:
-   - **Action selection** allows for learning how to maximize cooperation among agents, given their joint actions and preferences.
-   - **Observation sequences**, represented as PolicyVector, allow for prediction of cooperative outcomes based on collective beliefs/expectations.
-   - **Control variables**, represented as PolicyVector, enable the prediction of cooperative outcomes based on collective beliefs/expectations.
+4. **Active Inference Context**: How does this model implement Active Inference principles? What beliefs are being updated and how?
+   - The model uses a probabilistic graphical model (PGM) to represent the joint state of all agents across actions. It updates its beliefs based on new observations, allowing it to learn from past behavior and adapt to future actions.
 
-5. **Model Summary**: This model implements Active Inference principles:
-   - **Action selection** allows for learning how to maximize cooperation among agents, given their joint actions and preferences.
-  
+5. **Practical Implications**: What can you learn or predict using this model? What decisions can it inform?
+   - The model provides insights into how it cooperates with other agents in achieving goals, enabling it to make informed decisions about action choices and policy updates.
+
+**Signature**
+
+This document is structured as follows:
+
+1. **Introduction**: A comprehensive overview of the GNN Representation for active inference on to-do lists and other real-world phenomena.
+
+2. **Model Purpose**: The model represents a multi-agent cooperative cooperative agent that cooperates with each other to achieve goals in a given task space.
+
+3. **Core Components**:
+   - **Likelihood Matrix**: A probability distribution over the joint state of all agents across actions, which captures their beliefs and preferences.
+   - **Transition Matrix**: A probability distribution over the joint states of all agents (agents), which captures their actions and policy distributions.
+   - **Probability Vector**: A

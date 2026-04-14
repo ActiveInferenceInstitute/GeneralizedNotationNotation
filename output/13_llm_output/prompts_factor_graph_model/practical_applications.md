@@ -1,31 +1,21 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points:
+Based on the provided information, here are some key points about the GNN Model:
 
-1. **Real-World Applications**: This model can be applied to various domains, such as healthcare (e.g., diagnosing diseases), finance (e.g., risk assessment), or engineering (e.g., optimizing systems). It enables modality-specific processing and efficient belief propagation on factor graphs.
-
-2. **Implementation Considerations**: The implementation of this model involves several steps:
-   - Data requirements and collection strategies: Gathering data for the input variables, handling missing values, and ensuring consistency across different datasets are crucial to ensure reliable results.
-   - Computational requirements and scalability: Implementing a scalable algorithm that can handle large amounts of data efficiently is essential. This includes efficient algorithms like gradient descent or neural networks with regularization techniques.
-
-3. **Performance Expectations**: The performance expectations for this model depend on the specific use cases, domains, and industry/research applications it's designed to support. For example:
-   - Healthcare: It can be applied to diseases diagnosis, risk assessment, and disease progression analysis.
-   - Finance: It can help optimize financial systems by identifying optimal investment strategies based on customer behavior and market trends.
-   - Engineering: It can aid in optimizing complex systems, such as medical imaging or robotics control.
-
-4. **Benefits and Advantages**: This model has several key benefits:
-   - It enables modality-specific processing of data across different variables (e.g., visual vs. proprioceptive).
-   - It provides efficient belief propagation on factor graphs based on the input variables.
-   - It can handle large amounts of data efficiently, reducing computational requirements and improving performance.
-   - It has unique capabilities or features that make it suitable for specific domains.
-
-5. **Challenges and Considerations**: The implementation requires several technical challenges:
-   - Handling missing values and inconsistencies in data collection is crucial to ensure reliable results.
-   - Ensuring consistency across different datasets can be challenging, especially when dealing with large amounts of data.
-   - Balancing the performance expectations with computational requirements can be difficult due to scalability issues or limitations in the algorithm's complexity.
-
-6. **Benefits and Advantages**: This model has several key benefits:
-   - It enables modality-specific processing of data across different variables (e.g., visual vs. proprioceptive).
-   - It provides efficient belief propagation on factor graphs based on input variables, reducing computational requirements.
-   - It can handle large amounts of data efficiently, improving performance and scalability.
-   - It has unique capabilities or features that make it suitable for specific domains.
+1. **Model Name**: `Factor Graph Active Inference Model`
+2. **Version**: `1.0`
+3. **ModelAnnotation**: `A_vis[6,type=int]    # Visual modality (6 possible)`, `B_vis[6,type=float]  # Visual likelihood factor: P(o_vis|s_pos)`
+4. **StateSpaceBlock**: `D_vis[2,1,type=int]   # Position state (3 discrete locations)`, `C_vis[2,1,type=int]   # Position transition factor`
+5. **ModelName**: `Factor Graph Active Inference Model`
+6. **Version**: `1.0`
+7. **ModelAnnotation**: `A_vis[6,3,type=float]  # Visual modality (4 discrete locations)`, `B_vis[2,1,type=float]   # Visual likelihood factor: P(o_vis|s_vel)`
+8. **Stateful Model**: `D_vis[2,1,type=int]    # Observation modality`
+9. **Fixed Observation Types**: `A_vis[6,3,type=float]  # Observation type (visual and proprioceptive)`, `B_vis[4,1,type=float]   # Observation type (position/velocity)`, `C_vis[2,1,type=int]    # Observation type (action-independent)`
+10. **Fixed Observation Types**: `A_vis[6,3,type=float]  # Observation type (visual modality)**
+11. **Variable Observation Types**: `B_vis[4,1,type=float]   # Variable observation types`
+12. **Constraints**: `D_vis[2,1,type=int]    # Constraints on observed variables**
+13. **Error Messages**: `F(x) = F(y)`
+14. **Performance Expectations**: `A_vis[6,type=float]   # Performance expectation (maximum possible value)**
+15. **Comparison to Other Models**: `G(x) = G(y)`
+16. **Benefits and Advantages**: `F(x) = F(y)`
+1

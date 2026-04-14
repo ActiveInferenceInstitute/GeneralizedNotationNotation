@@ -1390,6 +1390,7 @@ dev = [
     { name = "bandit-sarif-formatter" },
     { name = "black" },
     { name = "flake8" },
+    { name = "hypothesis" },
     { name = "ipdb" },
     { name = "ipython" },
     { name = "ipywidgets" },
@@ -1516,6 +1517,7 @@ requires-dist = [
     { name = "h5py", marker = "extra == 'all'", specifier = ">=3.8.0" },
     { name = "h5py", marker = "extra == 'visualization'", specifier = ">=3.8.0" },
     { name = "httpx", specifier = ">=0.27.0" },
+    { name = "hypothesis", marker = "extra == 'dev'", specifier = ">=6.0.0" },
     { name = "inferactively-pymdp", specifier = ">=1.0.0" },
     { name = "ipdb", marker = "extra == 'dev'", specifier = ">=0.13.0" },
     { name = "ipython", marker = "extra == 'dev'", specifier = ">=8.0.0" },
@@ -1868,6 +1870,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ba/66/a3921783d54be8a6870ac4ccffcd15c4dc0dd7fcce51c6d63b8c63935276/humanize-4.15.0.tar.gz", hash = "sha256:1dd098483eb1c7ee8e32eb2e99ad1910baefa4b75c3aff3a82f4d78688993b10", size = 83599, upload-time = "2025-12-20T20:16:13.19Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c5/7b/bca5613a0c3b542420cf92bd5e5fb8ebd5435ce1011a091f66bb7693285e/humanize-4.15.0-py3-none-any.whl", hash = "sha256:b1186eb9f5a9749cd9cb8565aee77919dd7c8d076161cf44d70e59e3301e1769", size = 132203, upload-time = "2025-12-20T20:16:11.67Z" },
+]
+
+[[package]]
+name = "hypothesis"
+version = "6.152.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "sortedcontainers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1a/84/0745a9d34f71394af0123fe9b66a2fa261555ea2b39cf5f52815889bf30f/hypothesis-6.152.0.tar.gz", hash = "sha256:c0a7619904f5c218c2a5eac1fed7889b1fdc22cf09d8970775c5b13c8cd57e97", size = 465087, upload-time = "2026-04-14T18:21:08.458Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/68/5c52f30714a1058879e72420bd599eef87ae01007db444619b03e50368fc/hypothesis-6.152.0-py3-none-any.whl", hash = "sha256:824037e8214559ad037362c6aaa51f6118f62e548e62b2ad215fbf52f2f45eb4", size = 530765, upload-time = "2026-04-14T18:21:05.594Z" },
 ]
 
 [[package]]

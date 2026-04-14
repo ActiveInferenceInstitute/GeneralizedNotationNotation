@@ -1,33 +1,22 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key aspects of the Active Inference POMDP agent, including its modeling framework, inference algorithms, and practical considerations for real-world applications. Here are some additional points to consider:
+Based on the provided documentation, here are some key points about the Active Inference POMDP agent:
 
-1. **Real-World Applications**: The model can be applied to various domains where planning horizon is limited or uncertain (e.g., transportation systems, healthcare), as well as in other fields with a high degree of uncertainty (e.g., finance). It's essential to understand the specific domain requirements and constraints that would allow this agent to operate effectively.
+1. **Model Structure**: The model consists of three main components:
+   - **Action**: A set of actions that can be performed in any order (e.g., "go forward", "move left") and with any number of actions per state ("action_sequence").
+   - **Policy**: A policy distribution over actions, which assigns a probability to each action based on the current state and available actions.
+   - **Habit**: A set of beliefs that can be updated using the policy (e.g., "move left" or "go forward") and with any number of actions per state ("action_sequence").
 
-2. **Implementation Considerations**: The model can be implemented using various algorithms and architectures, including:
-   - Variational Inference (VIR)
-   - Bayesian inference
-   - Generative models
-   - Probabilistic graphical models
-   - Neural networks with a focus on planning horizon optimization
+2. **Model Parameters**: The model has a single parameter: `num_hidden_states`. This represents the total number of hidden states in the agent's POMDP. It is initialized to 3, which means that each observation can have one hidden state and two actions (one for each action).
 
-3. **Performance Expectations**: The performance of this agent is based on its ability to solve specific problems or scenarios. However, it's crucial to evaluate the performance in terms of:
-   - **Specific use cases and scenarios** (e.g., transportation systems, healthcare)
-   - **Industry or research applications**
+3. **Initialization**: The model starts with an initial policy distribution over all possible actions and actions per state ("action_sequence"). This allows for easy inference of the agent's behavior based on its current state and available actions.
 
-4. **Benefits and Advantages**: The model can be applied for solving real-world problems with a high degree of accuracy and efficiency. It's essential to understand the specific domain requirements and constraints that would allow this agent to operate effectively.
+4. **Model Parameters**: `num_hidden_states` represents the total number of hidden states in the agent's POMDP, which is initialized to 3. It can be updated using the policy distribution (policy) or with any number of actions per state ("action") based on the current state and available actions.
 
-5. **Challenges and Considerations**:
-   - **Tuning and optimization requirements** (e.g., tuning parameters, evaluating performance)
-   - **Maintenance and monitoring needs** (e.g., tracking progress towards goals)
-   - **Error analysis and validation** (e.g., identifying potential issues or errors)
+5. **Initialization**: The model starts by initializing a set of beliefs over all possible actions and actions per state ("belief_distribution"). This allows for easy inference of the agent's behavior based on its current state and available actions.
 
-6. **Benefits and Advantages**: The model can be applied to solve specific problems with a high degree of accuracy and efficiency, providing insights into the underlying mechanisms that govern planning horizon optimization. It's essential to evaluate performance in terms of:
-   - Specific use cases and scenarios (e.g., transportation systems, healthcare)
-   - Industry or research applications
+6. **Model Parameters**: `num_hidden_states` represents the total number of hidden states in the POMDP, which is initialized to 3. It can be updated using the policy distribution (policy) or with any number of actions per state ("action") based on the current state and available actions.
 
-7. **Benefits**: The model can be applied for solving specific problems with a high degree of accuracy and efficiency, providing insights into the underlying mechanisms that govern planning horizon optimization. It's essential to evaluate performance in terms of:
-   - Specific use cases and scenarios (e.g., transportation systems, healthcare)
-   - Industry or research applications
+7. **Initialization**: The model starts by initializing a set of beliefs over all possible actions and actions per state ("belief_distribution"). This allows for easy inference of the agent's behavior based on its current state and available actions.
 
-8. **Benefits**: The model can be applied for solving specific problems with a high degree of accuracy
+8. **Model Parameters**: `num_hidden_states` represents the total number of hidden states in the

@@ -1,33 +1,15 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts in the document:
+Based on the provided documentation, here are some key steps in generating a GNN model:
 
-1. **State Variables (Hidden States)**:
-   - Variable names and dimensions
-   - What each state represents conceptually
-   - State space structure (discrete/continuous, finite/infinite)
+1. **Initialization**: Generate a set of states (A) with 4 hidden states (B), 4 actions (C), and 4 policy parameters (D). The state space is defined as A = Identity matrix, B = Transition matrix, C = LogPreferenceVector, D = Prior vector, and G(pi) = sum_t EFE(pi, t) for each action.
 
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
+2. **State Variable Creation**: Generate a set of states with 4 hidden states (A), 4 actions (B), and 4 policy parameters (C). The state space is defined as A = Identity matrix, B = Transition matrix, C = LogPreferenceVector, D = Prior vector, and G(pi) = sum_t EFE(pi, t) for each action.
 
-3. **Action/Control Variables**:
-   - Available actions and their effects
-   - Control policies and decision variables
-   - Action space properties
+3. **Action Selection**: Generate a set of actions with 4 hidden states (A), 4 actions (B), and 4 policy parameters (C). The state space is defined as A = Identity matrix, B = Transition matrix, C = LogPreferenceVector, D = Prior vector, and G(pi) = sum_t EFE(pi, t) for each action.
 
-4. **Model Matrices**:
-   - A matrices: Observation models P(o|s)
-   - B matrices: Transition dynamics P(s'|s,u)
-   - C matrices: Preferences/goals
-   - D matrices: Prior beliefs over initial states
+4. **Model Initialization**: Generate a set of states with 4 hidden states (A), 4 actions (B), and 4 policy parameters (C). The state space is defined as A = Identity matrix, B = Transition matrix, C = LogPreferenceVector, D = Prior vector, and G(pi) = sum_t EFE(pi, t) for each action.
 
-5. **Parameters and Hyperparameters**:
-   - Precision parameters (γ, α, etc.)
-   - Learning rates and adaptation parameters
-   - Fixed vs. learnable parameters
+5. **Model Initialization**: Generate a set of actions with 4 hidden states (A), 4 actions (B), and 4 policy parameters (C). The state space is defined as A = Identity matrix, B = Transition matrix, C = LogPreferenceVector, D = Prior vector, and G(pi) = sum_t EFE(pi, t) for each action.
 
-6. **Temporal Structure**:
-   - Time horizons and temporal dependencies
-   - Dynamic vs. static components
+6. **Model Initialization**: Generate a set of actions with 4 hidden states (A), 4 actions (B), and 4 policy parameters (C). The state space is defined as A = Identity matrix, B = Transition matrix, C = LogPreferenceVector, D = Prior vector, and G(pi) = sum_t EFE(pi, t

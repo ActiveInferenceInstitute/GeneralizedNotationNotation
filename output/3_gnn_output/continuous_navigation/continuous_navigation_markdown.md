@@ -90,6 +90,6 @@ G = ExpectedFreeEnergy
 t = ContinuousTime
 
 ## Footer
-Generated: 2026-04-14T10:58:14.182569
+Generated: 2026-04-14T11:53:27.718800
 
 ## Signature

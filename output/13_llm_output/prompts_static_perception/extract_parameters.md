@@ -1,31 +1,24 @@
 # EXTRACT_PARAMETERS
 
-Based on the GNN specification, here are the key parameters:
-
+You've already provided a comprehensive list of parameters for the Active Inference model, including:
 1. **Model Matrices**:
-   - A matrices representing the state space dimensions for each factor
-   - B matrices representing the prior belief over hidden states
-   - C matrices representing the initial beliefs and their interpretation
-   - D matrices representing the initial parameter values
-2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles
-   - α (alpha): learning rates and adaptation parameters
-   - Other precision/confidence parameters
+	* A matrices representing the input and output data sets (A) and (D).
+2. **Initial Parameters**
+    * Initial belief values over hidden states (`B`)
+    * Initialization strategy to avoid vanishing gradient issues
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+3. **Prediction Parameters**
+    * Initial prediction parameters for each modality
+    * Initial parameter value range based on the training dataset
 
-5. **Initial Conditions**:
-   - Initial parameter values
-   - Initialization strategies
+4. **Model Parameters**:
+    * Number of hidden states and prior beliefs (num_hidden_states)
+    * Number of observation and action spaces (`num_obs`)
+    * Number of actions and actions learned from the data set
+5. **Initialization Strategies**
+    * Random initialization for each modality, with a fixed number of initial parameters
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+6. **Parameter File Format Recommendations**:
+    * Use JSON format to store parameter file information (e.g., `input/10_ontology_output/simple_mdp_ontology_report.json`)
+	* Use `model_file` for storing model-specific metadata and configuration details
+	* Use `parameter_file` for storing parameter file information, including initial parameters, initialization strategies, etc.

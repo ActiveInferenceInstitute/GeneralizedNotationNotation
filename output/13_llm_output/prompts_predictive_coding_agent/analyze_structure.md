@@ -1,12 +1,11 @@
 # ANALYZE_STRUCTURE
 
-You've already covered the key aspects of the analysis:
+Based on the provided information, here are some key structural analysis points:
 
 1. **Graph Structure**:
-   - Number of variables and their types
+   - Number of variables and their types (e.g., 3 for perception, 4 for action)
    - Connection patterns (directed/unindirected edges)
    - Graph topology (hierarchical, network, etc.)
-
 2. **Variable Analysis**:
    - State space dimensionality for each variable
    - Dependencies and conditional relationships
@@ -14,14 +13,13 @@ You've already covered the key aspects of the analysis:
 
 3. **Mathematical Structure**:
    - Matrix dimensions and compatibility
-   - Parameter structure and organization  
-   - Symmetries or special properties
-
-You've also mentioned some structural patterns that can be identified, such as:
-
-   - Computational complexity indicators (e.g., number of steps to solve the problem)
+   - Parameter structure and organization
+   - Symmetries or special properties of the model (e.g., symmetry, special properties)
+4. **Complexity Assessment**:
+   - Computational complexity indicators
    - Model scalability considerations
+   - Potential bottlenecks or challenges in modeling
 
-4. **Design Patterns**:
+5. **Design Patterns**:
    - What modeling patterns or templates does this follow?
    - How does the structure reflect the domain being modeled?

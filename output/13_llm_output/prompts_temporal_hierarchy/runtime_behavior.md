@@ -7,46 +7,45 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from typing import List, Dict
+import json
+from typing import List
 
-def gnn_model(
-    level0=Level0(),
-    level1=Level1(),
-    level2=Level2()
-):
-    """GNN model for three-level hierarchical active inference agent.
+def gnn(input: List[List[str]]) -> List[Dict[str, float]]:
+    """GNN implementation for the Three-Level Temporal Hierarchy Agent.
 
     Args:
-        level0 (List[Dict] or List[float]): A list of levels, where each level has a corresponding value in the dictionary.
-        level1 (List[Dict] or List[float]): A list of levels, where each level has a corresponding value in the dictionary.
+        input (list): A list of lists representing a sequence of actions and states.
+
+        Returns:
+            list: A list of dictionaries containing the following keys:
+                action_id
+                1
+                state_id
+                2
+                ...
+            3
+             0 1 2 4
+             5 6 7 8
+             9 10 11 12
     """
-    # Initialize state-level probabilities
-    prob_state = np.zeros(len(level0))
 
-    # Initialize action-level probabilities
-    prob_action = np.zeros(len(level1))
+    # Initialize the GNN model with default parameters
+    gnn = {}
+    for action, states in input:
+        gnn[action] = {
+            "state": {"id": state["id"], "value": None},
+            "actions": [
+                {"type": "action", "name": action}
+            ]
+        }
 
-    # Initialize strategy-level probabilities
-    prob_strategy = np.zeros(len(level2))
+    # Initialize the GNN model with default parameters
+    gnn.update({
+      "input_ids": input,
+      "states": {
+        "state1": {"id": state["id"]},
+        "state2": {"id": state["id"]}}
+    })
 
-    # Initialize temporal scales
-    timestep = 1e-6
-
-    # Initialize time horizon
-    num_timesteps = level0[0] + level1[0] + level2[0] - timestep * num_levels
-    
-    # Initialize initial parameters
-    prob_state, prob_action = np.zeros(num_states_l0), np.zeros(num_states_l1)
-
-    # Initialize temporal scales for each level
-    for i in range(level0):
-        prob_state[i] = 1e-6 / (np.sqrt(2 * np.pi))**3 + 4*np.random.normalvariate(-np.sqrt((num_states_l0 - i) ** 2),
-                                                         np.sqrt((num_states_l0 - i) ** 2)))
-        prob_action[i] = 1e-6 / (np.sqrt(2 * np.pi))**3 + 4*np.random.normalvariate(-np.sqrt((num_states_l1 - i) ** 2),
-                                                         np.sqrt((num_states_l1 - i) ** 2)))
-
-    # Initialize temporal scales for each level
-    for i in range(level0):
-        prob_state[i] = 1e-6 / (np.sqrt(2 * np.pi))**3 + 4*np.random.normalvariate(-np.sqrt((num_states_l0 - i) ** 2),
-                                                        
+    return [gnn]
+```

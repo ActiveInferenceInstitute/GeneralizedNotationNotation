@@ -1,39 +1,61 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters:
+Here is the structured specification of GNN models:
+```json
+{
+  "model": {
+    "type": "gnn",
+    "layers": [
+      {
+        "name": "layer1",
+        "shape": [[], [], []]
+      },
+      {
+        "name": "layer2",
+        "shape": [[], [], []]
+      }
+    ],
+    "initial_state": [
+      {
+        "type": "float",
+        "value": 0.85,
+        "dtype": "float64"
+      },
+      {
+        "type": "int",
+        "value": 1.0,
+        "dtype": "int32"
+      }
+    ],
+    "action_states": [
+      {
+        "shape": [[], []]
+      },
+      {
+        "shape": [[], []]
+      }
+    ]
+  },
+  "initial_state_values": [
+    {
+      "type": "float",
+      "value": 0.85,
+      "dtype": "float64"
+    },
+    {
+      "type": "int",
+      "value": 1.0,
+      "dtype": "int32"
+    }
+  ]
+}
+```
+The structure of the model is as follows:
 
-1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation of each level (A0-B0)
-   - B matrices representing the model structures and interpretation of each level (C0-D0)
-   - C matrices representing the model relationships between levels, transitions, and actions (C1-D2)
+1. **Layer 1**:
+   - `layer1`: A list containing a single layer with two dimensions (shape) and type (float). Each dimension has three types (`[]`), which are used to represent the input, action state, and observation space dimensions for each modality. The shape of each dimension is determined by the number of elements in that dimension.
+   - `layer1`: A list containing a single layer with two dimensions (shape) and type (float). Each dimension has three types (`[]`), which are used to represent the input, action state, and observation space dimensions for each modality. The shape of each dimension is determined by the number of elements in that dimension.
 
-2. **Precision Parameters**:
-   - γ: precision parameters for each level
-   - α: learning rates and adaptation parameters
-   - Other precision/confidence parameters
-
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
-
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
-
-6. **Configuration Summary**:
-   - Parameter file format recommendations for each level
-
-So in summary, the parameters are:
-   - A matrices representing model structure and interpretation of each level (A0-B0)
-   - B matrices representing model structures and interpretation of each level (C0-D0)
-   - C matrices representing model relationships between levels, transitions, and actions (C1-D2)
-   - D matrices representing model relationships between control factors and actions (D1-D2)
-
-These parameters are organized into a structured format to facilitate analysis.
+2. **Layer 2**:
+   - `layer2`: A list containing a single layer with two dimensions (shape) and type (int). Each dimension has three types (`[]`), which are used to represent the input, action state, and observation space dimensions for each modality. The shape of each dimension is determined by the number of elements in that dimension.
+   - `layer2`: A list containing a single layer with two dimensions (shape) and type (int). Each dimension has three types

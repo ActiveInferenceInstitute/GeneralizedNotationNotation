@@ -83,9 +83,11 @@ def process_gui(
         }
 
         # Run each requested GUI
-        for gui_type in gui_types:
+        for index, gui_type in enumerate(gui_types, 1):
             try:
+                logger.debug(f"[{index}/{len(gui_types)}] Initializing pipeline for GUI component: {gui_type}...")
                 if gui_type in gui_functions:
+                    logger.info(f"🎨 Generating visual assets via {gui_type} engine...")
                     result = gui_functions[gui_type](
                         target_dir=Path(target_dir),
                         output_dir=Path(output_dir),
@@ -93,8 +95,12 @@ def process_gui(
                         verbose=verbose,
                         **gui_kwargs
                     )
+                    if result.get('success', False):
+                        logger.info(f"✅ Successfully compiled {gui_type} visual DOM artifacts.")
+                    else:
+                        logger.warning(f"⚠️ Warning: {gui_type} returned non-success parsing state.")
                 else:
-                    logger.warning(f"Unknown GUI type: {gui_type}")
+                    logger.warning(f"Unknown GUI type configuration: '{gui_type}'. Skipping.")
                     result = {
                         "gui_type": gui_type,
                         "success": False,
@@ -106,7 +112,7 @@ def process_gui(
                     overall_success = False
 
             except Exception as e:
-                logger.error(f"GUI {gui_type} failed: {e}")
+                logger.error(f"🚨 GUI render exception in {gui_type}: {e}", exc_info=verbose)
                 results[gui_type] = {
                     "gui_type": gui_type,
                     "success": False,
@@ -284,46 +290,72 @@ def _build_navigation_html(
     <title>GNN Pipeline Output Navigation</title>
     <style>
         body {{
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f8f9fa;
-            color: #333;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
         }}
         .container {{
             max-width: 1400px;
             margin: 0 auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }}
         .header {{
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 3px solid #007bff;
+            border-bottom: 2px solid rgba(0, 123, 255, 0.2);
         }}
-        h1 {{ color: #2c3e50; margin: 0; font-size: 2.5em; font-weight: 300; }}
-        h2 {{ color: #34495e; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; border-left: 4px solid #007bff; padding-left: 15px; }}
+        h1 {{ color: #1a202c; margin: 0; font-size: 2.8em; font-weight: 800; letter-spacing: -1px; }}
+        h2 {{ color: #2d3748; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; font-weight: 600; border-left: 5px solid #4299e1; padding-left: 15px; }}
         .summary {{
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 25px; border-radius: 10px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white; padding: 30px; border-radius: 16px;
             text-align: center; margin: 30px 0;
+            box-shadow: 0 8px 20px rgba(118, 75, 162, 0.2);
         }}
-        .summary-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }}
-        .summary-card {{ background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; text-align: center; }}
-        .summary-card .value {{ font-size: 2em; font-weight: bold; color: #007bff; margin: 10px 0; }}
-        .step-section {{ background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; margin: 20px 0; }}
-        .step-header {{ font-weight: bold; color: #495057; margin-bottom: 15px; font-size: 1.2em; }}
-        .file-list {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; }}
-        .file-item {{ background-color: white; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; transition: transform 0.2s, box-shadow 0.2s; }}
-        .file-item:hover {{ transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }}
-        .file-item a {{ color: #007bff; text-decoration: none; font-weight: 500; }}
-        .file-item a:hover {{ text-decoration: underline; }}
-        .file-meta {{ color: #6c757d; font-size: 12px; margin-top: 5px; }}
-        .link {{ color: #007bff; text-decoration: none; }}
-        .link:hover {{ text-decoration: underline; }}
+        .summary-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }}
+        .summary-card {{ 
+            background: rgba(255, 255, 255, 0.15); 
+            border: 1px solid rgba(255,255,255,0.2); 
+            border-radius: 12px; padding: 20px; text-align: center; 
+            transition: transform 0.3s ease;
+        }}
+        .summary-card:hover {{ transform: translateY(-5px); background: rgba(255, 255, 255, 0.25); }}
+        .summary-card .value {{ font-size: 2.2em; font-weight: 800; color: #fff; margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+        .step-section {{ 
+            background: rgba(255, 255, 255, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 16px; padding: 25px; margin: 25px 0; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }}
+        .step-section:hover {{ background: rgba(255, 255, 255, 0.8); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }}
+        .step-header {{ font-weight: 700; color: #2d3748; margin-bottom: 15px; font-size: 1.3em; }}
+        .file-list {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }}
+        .file-item {{ 
+            background: rgba(255, 255, 255, 0.9); 
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            border-radius: 10px; padding: 15px; 
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); 
+        }}
+        .file-item:hover {{ transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.08); border-color: #cbd5e0; }}
+        .file-item a {{ color: #3182ce; text-decoration: none; font-weight: 600; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+        .file-item a:hover {{ color: #2b6cb0; text-decoration: underline; }}
+        .file-meta {{ color: #718096; font-size: 12px; margin-top: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }}
+        .link {{ color: #3182ce; text-decoration: none; font-weight: 600; transition: color 0.2s; }}
+        .link:hover {{ color: #2b6cb0; text-decoration: underline; }}
     </style>
 </head>
 <body>

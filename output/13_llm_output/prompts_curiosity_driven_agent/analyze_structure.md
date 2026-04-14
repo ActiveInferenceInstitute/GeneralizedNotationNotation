@@ -1,22 +1,21 @@
 # ANALYZE_STRUCTURE
 
-You've already provided a comprehensive overview of the structure and graph properties of the GNN specification, including the number of variables, connections, and variable analysis. Here are some additional insights:
+Based on the document, here are some key insights and analysis:
 
-1. **Graph Structure**: The graph consists of 5 nodes (states) with 4 edges connecting them. Each node has an associated probability distribution over states (actions), which is a weighted sum of probabilities for each state. This allows us to represent the probability distributions as matrices, making it easier to analyze and manipulate the network structure.
+1. **Graph Structure**: The document provides a detailed structural analysis of the GNN model architecture, including its number of variables (num_hidden_states), connected components, and graph topology (hierarchical). This includes information about the types of nodes in each layer, their connections, and how they interact with other nodes.
 
-2. **Variable Analysis**: The variable analysis involves examining the connections between variables. We can identify specific types of connections (e.g., directed edges) that are associated with particular states or actions. These connections may be connected by other variables, which could indicate a dependency relationship between them.
+2. **Variable Analysis**: The document discusses various mathematical structures that can be used to represent GNN models, including:
+   - **Directed edges** (directed edges): Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to.
+   - **Uniformized edges** (uniformized edges): Graph structure with each node having an unrestricted degree of connection to all other nodes in the graph, allowing for easy inference and exploration.
+   - **Directed-uniformized edges**: Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to, but also allows for inference and exploration by exploring directed paths between variables.
 
-3. **Mathematical Structure**: The structure reflects the domain being modeled in terms of graph topology and symmetry properties. For example:
-   - The network is hierarchical (each node has an associated probability distribution over its neighbors), indicating that there are dependencies among nodes.
-   - The connections between variables have specific types, which can indicate a dependency relationship or a correlation between them.
-   - The symmetric structure allows us to identify the most likely actions for each state, based on their probabilities and conditional relationships with other states.
+3. **Mathematical Structure**: The document discusses various mathematical structures that can be used to represent GNN models, including:
+   - **Directed-uniformized edges** (directed-uniformized edges): Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to, allowing for easy inference and exploration.
+   - **Uniformized-directed-uniformized edges**: Graph structure with each node having an unrestricted degree of connection to all other nodes in the graph, allowing for easy inference and exploration by exploring directed paths between variables.
 
-4. **Complexity Assessment**: Analyzing the graph structure provides insights into its complexity. For example:
-   - The network is highly interconnected (many variables are connected), indicating a high degree of connectivity between nodes. This can help identify potential bottlenecks or challenges in modeling or analyzing the system.
-   - The symmetry properties, such as the presence of certain types of connections and correlations, suggest that the graph has a well-defined structure with specific patterns and relationships.
+4. **Complexity Assessment**: The document highlights various mathematical structures that can be used to represent GNN models, including:
+   - **Directed-uniformized edges** (directed-uniformized edges): Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to, allowing for easy inference and exploration.
+   - **Uniformized-directed-uniformized edges**: Graph structure with each node having an unrestricted degree of connection to all other nodes in the graph, allowing for easy inference and exploration by exploring directed paths between variables.
 
-5. **Design Patterns**: The GNN specification is designed to facilitate exploration and exploitation of the network structure. For example:
-   - The agent's actions are based on their probabilities (probabilities over states), which can be used to identify potential action combinations or dependencies among states.
-   - The policy distribution is based on its conditional probability distributions, allowing us to analyze how different actions interact with each other and with the environment.
-
-Overall, these insights provide a solid foundation for understanding the structure of the GNN specification and facilitating exploration and exploitation of the network structure.
+5. **Design Patterns**: The document discusses various design patterns that can be used to represent GNN models, including:
+   - **Directed-uniformized edges** (directed-uniformized edges): Graph structure where a variable is connected to its direct neighbors

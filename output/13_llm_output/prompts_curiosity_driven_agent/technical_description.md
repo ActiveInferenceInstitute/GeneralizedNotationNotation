@@ -6,20 +6,61 @@ Prompt:
 
 Response:
 
-Based on the document, we can analyze the GNN model as follows:
+```python
+import json
+from collections import Counter
 
-1. The model is represented by a dictionary `D` with keys representing states (represented by strings) and actions (represented by lists). Each state has an associated action list that represents the next state in the sequence. Actions are also represented by lists of actions.
+def compute_inference(state):
+    # TODO: Implement inference logic for this example
 
-2. The transition matrix `G_epi`, which is initialized to a uniform distribution over all possible actions, represents the probability of transitioning from one state to another based on the current action. This allows us to calculate the expected information gain (Bayesian surprise) for each state and action pair in the sequence.
+    return {'type': 'int', 'value': state['action']}
 
-3. The policy vector `G` has two components: one representing the preference satisfaction (preference satisfaction), which is a weighted sum of all possible preferences, and another representing the epistemic value (information gain). This allows us to calculate the expected information gain based on the current state and action pair in the sequence.
 
-4. The habit vector `G_ins` has two components: one representing the preference satisfaction, which is a weighted sum of all possible preferences, and another representing the epistemic value. This allows us to calculate the expected information gain (Bayesian surprise) based on the current state and action pair in the sequence.
+def generate_input_and_output_files():
+    """Generate input and output files with the following structure.
 
-5. The transition matrix `G_ins` has two components: one representing the preference satisfaction, which is a weighted sum of all possible preferences, and another representing the epistemic value. This allows us to calculate the expected information gain (Bayesian surprise) based on the current state and action pair in the sequence.
+    Input file:
+        input/10_ontology_output/simple_mdp_ontology_report.json
 
-6. The policy vector `G_ins` has two components: one representing the preference satisfaction, which is a weighted sum of all possible preferences, and another representing the epistemic value. This allows us to calculate the expected information gain (Bayesian surprise) based on the current state and action pair in the sequence.
+        This is a JSON file containing a list of dictionaries representing
+        actions, states, and histories for an action-action pair. Each
+        dictionary represents a single action in the input data set. For example,
+        `actions = [{'type': 'int', 'value': 1}, {'type': 'int',
+            'value': 2}]` represents the actions of the first two actions.
+    """
 
-7. The transition matrix `G_epi` has two components: one representing the preference satisfaction, which is a weighted sum of all possible preferences, and another representing the epistemic value. This allows us to calculate the expected information gain (Bayesian surprise) based on the current state and action pair in the sequence.
+    # Generate input files with the following structure:
+    inputs_file = f"input/10_ontology_output/{state['action']}"
+    outputs_file = f"outputs/{state['action']}."
+    output_files += [f"{inputs_file}|{outputs_file}.json", ".".join(
+        ["type"] * len(state["actions"]), sep="\n"])
 
-8. The policy vector `G_epi` has two components: one representing the preference satisfaction, which is a weighted sum of all possible preferences, and another representing the epistemic value. This allows us to calculate the expected information gain (Bayesian surprise
+    return inputs_file, outputs_file
+
+
+def generate_output_and_input_files():
+    """Generate and save output files with the following structure.
+
+    Output file:
+        input/10_ontology_output/{state['action']}
+
+        This is a JSON file containing a list of dictionaries representing
+        actions, states, and histories for an action-action pair. Each
+        dictionary represents a single action in the output data set. For example,
+        `actions = [{'type': 'int', 'value': 1}, {'type':
+            'int', 'value': 2}]` represents the actions of the first two actions.
+    """
+
+    # Generate output files with the following structure:
+    outputs_file = f"outputs/{state['action']}."
+    inputs_file = f"{inputs_file}|{outputs_file}.json".join(
+        ["type"] * len(state["actions"]), sep="\n"])
+
+    return outputs_file, inputs_file
+
+
+def generate_input_and_output_files():
+    """Generate and save input files with the following structure.
+
+    Input file:
+        input/10_ontology_output/{state['action']}

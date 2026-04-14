@@ -2,21 +2,75 @@
 
 Here's a concise summary of the GNN specification:
 
-**Model Overview**
-This is a general framework for modeling decision-making processes in various domains. It provides an active inference system that can handle planning horizon rolling out, policy evaluation, and reward attribution. The key variables are hidden states (represented by matrices A), observations (representing actions/controls), actions (representing policies), and action sequences (representing decisions).
-Key Variables:
-   - Hidden states: [list with brief descriptions]
-   - Observations: [list with brief descriptions]  
-   - Actions/Controls: [list with brief descriptions]
-
-3. **Critical Parameters**:
-   - Most important matrices (A, B, C, D) and their roles
-   - Key hyperparameters and settings
-**Notable Features**
-    - Unique aspects of this model design
-
-    - Special properties or constraints
-
-    - Unique characteristics of the model architecture
-
-4. **Use Cases**: What scenarios would this model be applied to?
+```json
+{
+  "summary": [
+    {
+      "name": "GNN",
+      "type": "Active Inference",
+      "model_annotation": "Deep Planning Horizon POMDP",
+      "description": "A model that uses rolling out Expected Free Energy to evaluate a sequence of actions and policies.",
+      "inputs": [
+        {
+          "name": "actions",
+          "value": 0.9,
+          "type": "float"
+        },
+        {
+          "name": "policies",
+          "value": 0.1,
+          "type": "float"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "G_tau1",
+          "value": -E_Q[G_tau1],
+          "type": "float"
+        },
+        {
+          "name": "G_tau2",
+          "value": E_Q[G_tau2] + G_tau3,
+          "type": "float"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "B",
+          "value": 0.95 * G_tau1 + 0.86 * G_tau2,
+          "type": "float"
+        },
+        {
+          "name": "C",
+          "value": E_Q[G_tau1] - G_tau3,
+          "type": "float"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "D",
+          "value": 0.95 * G_tau2 + 0.86 * G_tau1,
+          "type": "float"
+        },
+        {
+          "name": "E",
+          "value": E_Q[G_tau1] - G_tau3,
+          "type": "float"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "π",
+          "value": 0.95 * G_tau2 + 0.86 * G_tau1,
+          "type": "float"
+        },
+        {
+          "name": "G_tau1",
+          "value": E_Q[G_tau1] - G_tau3,
+          "type": "float"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "π",
+          "value": 0.95

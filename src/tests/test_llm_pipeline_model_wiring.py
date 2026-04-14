@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -17,22 +16,24 @@ def test_summary_task_prefers_ollama_when_registered() -> None:
     from llm.llm_processor import LLMProcessor
     from llm.providers.base_provider import ProviderType
 
+    class StubProvider:
+        def __init__(self, ptype):
+            self.provider_type = ptype
+
     proc = LLMProcessor(
         preferred_providers=[ProviderType.OLLAMA, ProviderType.OPENAI]
     )
-    mock_ollama = MagicMock()
-    mock_ollama.provider_type = ProviderType.OLLAMA
-    mock_openai = MagicMock()
-    mock_openai.provider_type = ProviderType.OPENAI
+    stub_ollama = StubProvider(ProviderType.OLLAMA)
+    stub_openai = StubProvider(ProviderType.OPENAI)
     proc.providers = {
-        ProviderType.OLLAMA: mock_ollama,
-        ProviderType.OPENAI: mock_openai,
+        ProviderType.OLLAMA: stub_ollama,
+        ProviderType.OPENAI: stub_openai,
     }
 
     from llm.llm_processor import AnalysisType
 
     best = proc.get_best_provider_for_task(AnalysisType.SUMMARY)
-    assert best is mock_ollama
+    assert best is stub_ollama
 
 
 @pytest.mark.unit
@@ -46,26 +47,33 @@ async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config
         model_used="smollm2:135m-instruct-q4_K_S",
         provider="ollama",
     )
-    mock_analyze = AsyncMock(return_value=mock_response)
+
+    class StubProcessor:
+        def __init__(self):
+            self.called = False
+            self.call_args = {}
+        async def analyze_gnn(self, **kwargs):
+            self.called = True
+            self.call_args = kwargs
+            return mock_response
 
     ops = LLMOperations.__new__(LLMOperations)
-    ops.processor = MagicMock()
-    ops.processor.analyze_gnn = mock_analyze
+    ops.processor = StubProcessor()
     ops._initialized = True  # type: ignore[attr-defined]
 
     out = await LLMOperations._async_summarize_gnn(
         ops, "dummy gnn", max_length=100, ollama_model="smollm2:135m-instruct-q4_K_S"
     )
     assert out == "summary text"
-    mock_analyze.assert_awaited_once()
-    call_kw = mock_analyze.call_args.kwargs
+    assert ops.processor.called
+    call_kw = ops.processor.call_args
     assert call_kw["provider_type"] == ProviderType.OLLAMA
     assert isinstance(call_kw["config"], LLMConfig)
     assert call_kw["config"].model == "smollm2:135m-instruct-q4_K_S"
 
 
 @pytest.mark.unit
-def test_structured_prompt_get_response_passes_model_name(tmp_path: Path) -> None:
+def test_structured_prompt_get_response_passes_model_name(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     """process_llm structured prompt loop must pass model_name matching cache key (ollama_model)."""
     from llm.providers.base_provider import ProviderType
 
@@ -86,52 +94,44 @@ def test_structured_prompt_get_response_passes_model_name(tmp_path: Path) -> Non
         encoding="utf-8",
     )
 
-    with patch("llm.processor.LLMProcessor") as MockProc:
-        instance = MockProc.return_value
-        instance.initialize = AsyncMock(return_value=True)
-        instance.close = AsyncMock(return_value=None)
-        instance.get_available_providers = MagicMock(return_value=[ProviderType.OLLAMA])
-        instance.get_response = fake_get_response
+    with monkeypatch.context() as m:
+        async def fake_init(*args, **kwargs): return True
+        async def fake_close(*args, **kwargs): return None
+        
+        class FakeProc:
+            def __init__(self, *args, **kwargs):
+                self.initialize = fake_init
+                self.close = fake_close
+                self.get_response = fake_get_response
+                self.get_available_providers = lambda: [ProviderType.OLLAMA]
 
-        with patch("llm.processor.analyze_gnn_file_with_llm", new=AsyncMock(return_value={"status": "SUCCESS"})):
-            with patch("llm.processor.generate_model_insights", return_value={}):
-                with patch("llm.processor.generate_code_suggestions", return_value={}):
-                    with patch("llm.processor.generate_documentation", return_value={}):
-                        with patch(
-                            "llm.processor._start_ollama_if_needed",
-                            return_value=(True, ["smollm2:135m-instruct-q4_K_S"]),
-                        ):
-                            with patch(
-                                "llm.processor._select_best_ollama_model",
-                                return_value="smollm2:135m-instruct-q4_K_S",
-                            ):
-                                with patch("llm.processor.LLMCache") as MockLLMCache:
-                                    _cache_inst = MagicMock()
-                                    _cache_inst.get = MagicMock(return_value=None)
-                                    _cache_inst.put = MagicMock()
-                                    _cache_inst.summary = MagicMock(
-                                        return_value={
-                                            "hits": 0,
-                                            "misses": 0,
-                                            "writes": 0,
-                                            "hit_ratio_pct": 0.0,
-                                            "cache_dir": str(tmp_path),
-                                            "entries_on_disk": 0,
-                                        }
-                                    )
-                                    MockLLMCache.return_value = _cache_inst
-                                    with patch(
-                                        "llm.processor.generate_llm_summary",
-                                        return_value="# summary\n",
-                                    ):
-                                        with patch("llm.processor.get_prompt") as gp:
-                                            gp.return_value = {
-                                                "system_message": "s",
-                                                "user_prompt": "u",
-                                                "max_tokens": 512,
-                                            }
-                                            from llm.processor import process_llm
-
-                                            process_llm(target, out, verbose=False)
+        m.setattr("llm.processor.LLMProcessor", lambda *args, **kwargs: FakeProc())
+        
+        async def fake_analyze(*args, **kwargs): return {"status": "SUCCESS"}
+        m.setattr("llm.processor.analyze_gnn_file_with_llm", fake_analyze)
+        
+        m.setattr("llm.processor.generate_model_insights", lambda *args, **kwargs: {})
+        m.setattr("llm.processor.generate_code_suggestions", lambda *args, **kwargs: {})
+        m.setattr("llm.processor.generate_documentation", lambda *args, **kwargs: {})
+        m.setattr("llm.processor._start_ollama_if_needed", lambda *args, **kwargs: (True, ["smollm2:135m-instruct-q4_K_S"]))
+        m.setattr("llm.processor._select_best_ollama_model", lambda *args, **kwargs: "smollm2:135m-instruct-q4_K_S")
+        
+        class FakeCache:
+            def get(self, *args, **kwargs): return None
+            def put(self, *args, **kwargs): pass
+            def summary(self, *args, **kwargs): 
+                return {
+                    "hits": 0, "misses": 0, "writes": 0, "hit_ratio_pct": 0.0, 
+                    "cache_dir": str(tmp_path), "entries_on_disk": 0
+                }
+                
+        m.setattr("llm.processor.LLMCache", lambda *args, **kwargs: FakeCache())
+        m.setattr("llm.processor.generate_llm_summary", lambda *args, **kwargs: "# summary\n")
+        m.setattr("llm.processor.get_prompt", lambda *args, **kwargs: {
+            "system_message": "s", "user_prompt": "u", "max_tokens": 512
+        })
+        
+        from llm.processor import process_llm
+        process_llm(target, out, verbose=False)
 
     assert captured.get("model_name") == "smollm2:135m-instruct-q4_K_S"

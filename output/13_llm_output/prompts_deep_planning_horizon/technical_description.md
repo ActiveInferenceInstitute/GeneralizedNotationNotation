@@ -6,31 +6,101 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
+To implement the GNN model and generate a GNN representation for the input data:
 
-# Define the GNN model annotations and parameters
-model_annotations = {
-    'G': {'type': 'numpy',
-        'dtype': np.float64},
-    'A': {'type': 'numpy'},
-    'B': {'type': 'numpy'},
-    'C': {'type': 'numpy'}
-}
-
-# Define the GNN model annotations and parameters
-model_annotations = {
-    'G': {'type': 'numpy',
-        'dtype': np.float64},
-    'A': {'type': 'numpy'},
-    'B': {'type': 'numpy'},
-    'C': {'type': 'numpy'}
-}
-```
-
-To evaluate the GNN model, you can use the following steps:
-
-1. **Initialization**: Initialize the state and action variables with random values (random actions).
-2. **Learning**: Use the learned parameters to update the state-action transition matrix (state space) based on the observed policy sequence.
-3. **Training**: Train the model using the learned parameters, updating them as you learn new policies or actions.
-4. **Evaluating**: Evaluate the GNN model's performance by comparing its predictions with the expected reward over a specified horizon (`t`).
+1.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "a"},
+                {"action": "b"}
+            },
+            ...
+             {
+                "actions",
+                {"action": "c"},
+                {"action": "d"}
+            }
+        ]
+2.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "a"},
+                {"action": "b"}
+            },
+            ...
+             {
+                "actions",
+                {"action": "c"},
+                {"action": "d"}
+            }
+        ]
+3.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "a"},
+                {"action": "b"}
+            },
+            ...
+             {
+                "actions",
+                {"action": "c"},
+                {"action": "d"}
+            }
+        ]
+4.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "a"},
+                {"action": "b"}
+            },
+            ...
+             {
+                "actions",
+                {"action": "c"},
+                {"action": "d"}
+            }
+        ]
+5.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "a"},
+                {"action": "b"}
+            },
+            ...
+             {
+                "actions",
+                {"action": "c"},
+                {"action": "d"}
+            }
+        ]
+6.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "a"},
+                {"action": "b"}
+            },
+            ...
+             {
+                "actions",
+                {"action": "c"},
+                {"action": "d"}
+            }
+        ]
+7.  Define the input data structure using `inputdata`.
+    - InputData = {
+        "state_space" : [
+            {
+                "actions",
+                {"action": "

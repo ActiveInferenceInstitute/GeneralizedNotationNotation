@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already identified the key components in the GNN specification:
+Here is a systematic breakdown of the information in the document:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -28,56 +28,6 @@ You've already identified the key components in the GNN specification:
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
 
-Now let's discuss the structure learning component of the GNN specification:
-
-1. **State Variables (Hidden States)**:
-   - Variable names and dimensions
-   - What each state represents conceptually
-   - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
-
-The key components are:
-
-  1. **State Variable(s):
-
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
-
-The key components are:
-
-  1. **State Variable(s):
-
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
-
-The key components are:
-
-  1. **State Variable(s):
-
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
+6. **Temporal Structure**:
+   - Time horizons and temporal dependencies
+   - Dynamic versus static components

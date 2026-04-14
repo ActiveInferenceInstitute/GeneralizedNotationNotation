@@ -7,65 +7,82 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from typing import List, Tuple
+import json
+from typing import List
 
-def multiagent_cooperative(
-    agent1: List[List[Tuple[int, int]]],
-    agent2: List[List[Tuple[int, int]]],
-    shared_environment=None,
-    num_agents=30,
-    num_hidden_states=4,
-    num_actions=6
-) -> Tuple[bool, List[float]]:
-    """
-    Multi-agent cooperative active inference.
+class MultiAgentCooperativeActiveInference:
+    def __init__(self):
+        self._model = {}
 
-    Args:
-        agent1 (List[List[Tuple[int, int]]]): A list of 2x2 lists representing the actions and beliefs of two agents.
-        agent2 (List[List[Tuple[int, int]]]): A list of 3x3 lists representing the actions and beliefs of two agents.
-        shared_environment (None): If provided, a dictionary containing the environment state for each pair of agents.
-        num_agents: Number of agents to cooperate with.
-        num_hidden_states: Number of hidden states per agent.
-        num_actions: Number of actions per agent.
+    def add_agent(self, agent1, agent2):
+        """Add a new agent to the graph."""
 
-    Returns:
-        bool: True if all agents cooperated successfully; False otherwise
-    """
-    # Initialize the state space for each pair of agents
-    state1 = np.zeros((num_agents, 4))
-    state2 = np.zeros((num_agents, 3))
+        if isinstance(agent1, (int, float)):
+            self.add_agent(
+                Agent(
+                    "A",
+                    {"x": 0},
+                    {"y": 0}
+                )
+        elif isinstance(agent2, (int, float)):
+            self.add_agent(
+                Agent(
+                    "B",
+                    {"x": 1},
+                    {"y": 1}
+                )
+        else:
+            raise ValueError("Invalid agent type")
 
-    # Perform cooperative inference on the two actions and beliefs
-    for i in range(num_actions):
-        action1 = agent1[i]
-        action2 = agent2[i]
+    def add_agent(self, agent):
+        """Add a new agent to the graph."""
 
-        # Check if there are shared states
-        if (
-            isinstance(state1[action1], np.ndarray) or
-                isinstance(state2[action2], np.ndarray),
-            True,
-        ):
+        if isinstance(agent, (int, float)):
+            self.add_agent(
+                Agent(
+                    "A",
+                    {"x": 0},
+                    {"y": 1}
+                )
+        elif isinstance(agent, (list[float], list[int])):
+            for i in range(len(agent) + 1):
+                if isinstance(agent[i], (int, float)):
+                    self.add_agent(
+                        Agent(
+                            "B",
+                            {"x": 0},
+                            {"y": 1}
+                        )
+        else:
+            raise ValueError("Invalid agent type")
 
-            # Perform cooperative inference on the two actions and beliefs
-            for i in range(num_actions):
-                action = state1[i]
+    def add_agent_with_policy(self):
+        """Add a new agent with policy."""
 
-                # Check if there are shared states
-                if (
-                    isinstance(state2[action], np.ndarray) or
-                        isinstance(state2[action], np.ndarray),
-                ):
+        if isinstance(self.add_agent, (list[float], list[int])):
+            for i in range(len(self)):
+                self.add_agent([
+                    Agent(
+                        "A",
+                        {"x": 0},
+                        {"y": 1}
+                    )
+                ]).append(Agent("B"))
 
-                    # Perform cooperative inference on the two actions and beliefs
-                    for i in range(num_actions):
-                        action = state1[i]
+    def add_agent_with_policy(self, agent):
+        """Add a new agent with policy."""
 
-                        # Check if there are shared states
-                        if (
-                            isinstance(state2[action], np.ndarray) or
-                                isinstance(state2[action], np.ndarray),
-                        ):
+        if isinstance(self.add_agent, (list[float], list[int])):
+            for i in range(len(self)):
+                self.add_agent([
+                    Agent(
+                        "A",
+                        {"x": 0},
+                        {"y": 1}
+                    )
+                ]).append(Agent("B"))
 
-                            # Perform cooperative inference
+    def add_agent_with_policy(self, agent):
+        """Add a new agent with policy."""
+
+        if isinstance(self.add_agent

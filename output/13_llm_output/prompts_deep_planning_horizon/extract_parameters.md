@@ -1,30 +1,65 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Based on the document, here is a systematic parameter breakdown for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation of the input data (policy space)
-   - B matrices representing the action sequences and their probabilities
-   - C matrices representing the policy distributions and their probability density functions
-   - D matrices representing the decision boundaries, actions, and control variables
-2. **Precision Parameters**:
-   - γ: precision parameters for each factor
-   - α: learning rate parameters
-   - Other precision/confidence parameters
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
+   - D matrices: dimensions, structure, interpretation
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality (action sequence)
-   - Observation space dimensions for each action variable
-   - Action space dimensions for each control variable
-4. **Temporal Parameters**:
-   - Time horizons for each factor
-   - Temporal dependencies and windows for each modality
-   - Update frequencies and timescales for each parameter
+**Initial Parameters:**
 
-5. **Initial Conditions**:
-   - Prior beliefs over initial states (policy sequence)
-   - Initial parameters values (actions, actions sequences, etc.)
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+   - **A (Likelihood Matrix):**
+    - Number of hidden states: 4
+    - Number of actions: 4
+    - Number of timesteps: 30
+    - Initial parameter values:
+      - γ = 1.5
+      - α = 0.25
+   - **B (Transition Matrix):**
+    - Number of actions: 4
+    - Number of observations: 4
+    - Number of policies: 64
+    - Number of timesteps: 30
+    - Initial parameter values:
+      - γ = 1.5
+      - α = 0.25
+   - **C (Policy Prior Vector):**
+    - Number of actions: 4
+    - Number of observations: 4
+    - Number of policies: 64
+    - Number of timesteps: 30
+    - Initial parameter values:
+      - γ = 1.5
+      - α = 0.25
+   - **D (Prior Over Hidden States):**
+    - Number of actions: 4
+    - Number of observations: 4
+    - Number of policies: 64
+    - Number of timesteps: 30
+    - Initial parameter values:
+      - γ = 1.5
+      - α = 0.25
+   - **E (Policy Prior Vector):**
+    - Number of actions: 4
+    - Number of observations: 4
+    - Number of policies: 64
+    - Number of timesteps: 30
+    - Initial parameter values:
+      - γ = 1.5
+      - α = 0.25
+   - **G (Policy Prior Vector):**
+    - Number of actions: 4
+    - Number of observations: 4
+    - Number of policies: 64
+    - Number of timesteps: 30
+    - Initial parameter values:
+      - γ = 1.5
+      - α = 0.25
+   - **G (Initial Policy Vector):**
+    - Number of actions: 4
+    - Number of observations: 4
+    - Number of policies: 64
+    - Number of timesteps: 30
+   

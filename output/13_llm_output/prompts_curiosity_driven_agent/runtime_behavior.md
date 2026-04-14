@@ -6,51 +6,61 @@ Prompt:
 
 Response:
 
-Here is the implementation of the GNNSA model:
 ```python
-import numpy as np
-from scipy import stats
+import json
+from typing import List, Dict
 
-def gnn_sa(num_hidden_states, num_obs=10):
-    """Gamma-distributed neural network for active inference.
+class GNNModel:
+    def __init__(self):
+        self.agent = {}
 
-    Args:
-        num_hidden_states (int): Number of hidden states to use in the GNNSA model.
-        num_obs (int): Number of observations per state to use as input.
-        num_actions (int): Number of actions to be used as input.
-        num_timesteps (int): Number of timesteps to be used for training.
+    def add(self, action_id, reward):
+        """Add a new action to the agent."""
+        if action_id in self.agent and reward == 0:
+            self.agent[action_id] = {
+                "next": {"state": {"x": 1},
+                "goal": {"x": 2}}
+            }
 
-    Returns:
-        A neural network with the following components:
-            - GNNSA model representation
-                - G(H[P(o|s)][x]) = G_epi + γ * G_ins
+    def add(self, action):
+        """Add an action to the agent."""
+        if action in self.agent and reward == 0:
+            self.agent[action]["next"]["reward"] = reward
 
-            - GNAS-aware agent
-                - G(G_eps)[h] = G_ins[g] + G_epi[h]
+        elif isinstance(action_id, str) or action_id not in self.agent:
+            raise ValueError("Action ID is not valid.")
 
-    """
-    # Initialize the neural network with the following components:
-    gnn_sa=np.zeros((num_hidden_states, num_obs))
-    
-    # Initialize the GNNSA model representation
-    for i in range(num_hidden_states):
-        gnn_sa[i]=np.zeros((num_hidden_states, num_actions + 1), dtype=[dtype] * (num_actions + 1) )
+    def add_actions(self):
+        """Add actions to the agent."""
+        for action_id in self.agents():
+            if action_id == "action":
+                continue
 
-    # Initialize the GNAS-aware agent
-    for i in range(num_hidden_states):
-        gsn=np.zeros((num_hidden_states, num_actions + 1))
-    
-    # Initialize the GNNSA model representation
-    for i in range(num_hidden_states):
-        gnn_sa[i]=gnn_sa[i]
+            try:
+                reward = self._add_reward(action_id)
 
-    # Initialize the GNAS-aware agent
-    for i in range(num_hidden_states):
-        gsn=np.zeros((num_hidden_states, num_actions + 1))
-    
-    # Initialize the GNNSA model representation
-    for i in range(num_hidden_states):
-        gnn_sa[i]=gnn_sa[i]
+                # Add a new action with the same reward as the current action
+                if isinstance(reward, int):
+                    self.agent[action_id]["next"]["reward"] += reward
 
-    return gnn_sa
+        return
+
+    def _add_reward(self, action_id):
+        """Add an action to the agent."""
+        actions = []
+        for i in range(len(self.agents()) - 1):
+            if isinstance(self.agents()[i], str) or self.agents():
+                continue
+
+            reward = self._add_reward(action_id, self.agents[i])
+
+            # Add a new action with the same reward as the current action
+            if isinstance(reward, int):
+                actions.append({"next": {"x": 1}, "goal": {"x": 2}})
+
+        return
+
+    def _add_reward(self, action_id, reward):
+        """Add an action to the agent."""
+        self._add_action(action_id, reward)
 ```

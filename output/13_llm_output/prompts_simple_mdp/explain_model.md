@@ -1,18 +1,27 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the key components:
+You've already covered the key points:
 
-1. **Model Purpose**: This is the purpose of the GNN model. It represents a fully observable Markov Decision Process (MDP). The goal is to simulate agent A making decisions based on their actions and observe the outcomes.
+1. **Model Purpose**: This is a simple MDP agent that represents a fully observable Markov Decision Process (MDP). It's designed to test the performance of an active inference model on a specific problem domain, which is the case here with the Simple MDP Agent.
 
 2. **Core Components**:
-   - **Hidden States**: These are the positions where the agent's state/observation is uncertain, with probabilities indicating what happens next.
-   - **Observations**: These represent the current states of the agents (A) and (B), respectively. They capture the agent's uncertainty about their own position.
-   - **Actions**: These are actions that affect the policy or action-policy transition matrix. They describe how the agent makes decisions based on its current state/observation.
+   - **hidden states** represent the grid positions where the agent can move and observe its own state.
+   - **observations** are identical to the current state in the MDP.
+   - **actions** are actions taken by the agent based on their policy.
+   - **preferences** are preferences for each action, which are used to update beliefs about future states.
 
-3. **Model Dynamics**: This model implements Active Inference principles by simulating agent A making decisions based on their actions and observing outcomes. It represents a fully observable Markov Decision Process (MDP). The goal is to simulate agent A's decision-making process, with the goal of predicting future states and actions.
+3. **Model Dynamics**: The model evolves over time using a Markov Decision Process (MDP) framework. It updates its belief in order to predict the next state and actions of the agent based on their policy. This process is described by the following equations:
+   - **log(G)** = log(ln(A[o,:]) + log(ln(B[s_prev] @ pi))
+   - **log(π)** = log(ln(C[θ]) + log(ln(D[θ])) + log(1/n) * log(g(pi)))
 
-4. **Active Inference Context**: This model uses the history of observed state/observation transitions to update beliefs about the agents' current positions based on their actions. It represents a fully observable Markov Decision Process (MDP). The agent makes decisions by updating its belief in the policy-action transition matrix, which is updated using the action-policy transition matrix.
+4. **Active Inference Context**: The agent learns from its own beliefs and actions based on the policy it uses to make decisions in the MDP. This context is described by the following equations:
+   - **log(G)** = log(ln(A[o,:]) + log(ln(B[s_prev] @ pi))
 
-5. **Practical Implications**: This model can learn to predict future states and actions of agents A based on their current state/observation probabilities. It also provides insights into how they make decisions based on uncertainty about their own position.
+   - **log(π)** = log(ln(C[θ]) + log(ln(D[θ])) + log(1/n) * log(g(pi)))
 
-Please provide clear explanations in simple terms, focusing on the core components and key relationships between them.
+5. **Practical Implications**: The model can learn to predict the next state and actions of the agent based on its beliefs about future states, which is described by the following equations:
+   - **log(G)** = log(ln(A[o,:]) + log(ln(B[s_prev] @ pi))
+
+   - **log(π)** = log(ln(C[θ]) + log(ln(D[θ])) + log(1/n) * log(g(pi)))
+
+6. **Decision-Making**: The agent can make decisions based on its policy and actions, which are

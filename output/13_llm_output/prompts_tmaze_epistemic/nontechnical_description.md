@@ -7,50 +7,70 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
-from scipy import stats
+import json
+from typing import List, Dict
 
-def t_maze(num_locations, num_contexts):
-    """
-    T-Maze Epistemic Foraging Agent
+def gnn(input: str) -> Dict[str, float]:
+    """GNN implementation of the T-Maze Epistemic Foraging Agent.
 
     Args:
-        num_locations (int): Number of locations to explore.
-        num_contexts (int): Number of contexts to explore.
-        num_location_obs (int): Number of locations in each context.
-        num_reward_obs (int): Number of rewards per location within a context.
-        num_actions (int): Number of actions taken by the agent during exploration.
-        num_timesteps (int): Number of steps to explore at any given time step.
+        input (str): The name of the input data file containing the T-maze task.
+
+    Returns:
+        Dict[str, float]: A dictionary representing the GNN model representation for the input data.
     """
+    # Load the training data from a JSON file
+    with open(input) as f:
+        data = json.load(f)
+    
+    # Initialize the model parameters
+    num_locations = 4
+    num_contexts = 2
+    num_location_obs = 4
+    num_reward_obs = 3
+    num_actions = 4
 
-    # Initialize state matrices for each type of action
-    A = np.zeros((num_locations, 4))
-    B = np.zeros(num_locations)
-    C = np.zeros(num_contexts)
-    D = np.zeros(num_location_obs)
-
-    # Initialize the reward matrix
-    G = stats.gauss(0., 1.)
-
-    # Initialize the prior distribution for each action
-    P = np.zeros((num_actions, num_locations))
-
-    # Initialize the reward vector for each action
-    R = np.zeros((num_actions, num_locations))
-
-    # Initialize the reward matrix for each context
-    B[np.arange(num_contexts), A] = stats.gauss(0., 1.)
-    B[np.arange(num_contexts), B] = stats.gauss(0., 1.)
-
-    # Initialize the prior distribution for each action
-    P[np.arange(num_actions), A] = stats.gaussian(0, 1)
-    P[np.arange(num_actions), B] = stats.gaussian(0, 1)
-
-    # Initialize the reward vector for each context
-    R[np.arange(num_contexts), A] = stats.gauss(0., 1.)
-    R[np.arange(num_contexts), B] = stats.gauss(0., 1.)
-
-    # Initialize the reward matrix for each action
-    P[np.arange(num_actions), A] = stats.gaussian(0, 1)
-    P[np.arange(num_actions), B] = stats.gaussian(0, 1)
-```
+    # Load the training data from a JSON file
+    with open('input.json', 'r') as f:
+        input_data = json.load(f)
+    
+    # Initialize the model parameters
+    gnn_model = {}
+    
+    # Initialize the GNN representation for the input data
+    for location in input_data['locations']:
+        if isinstance(location, str):
+            location = location[0]
+        
+        # Load the training data from a JSON file
+        with open('input.json', 'r') as f:
+            input_data = json.load(f)
+    
+    # Initialize the GNN representation for the training data
+    for context in input_data['contexts']:
+        if isinstance(context, str):
+            context = context[0]
+        
+        # Load the training data from a JSON file
+        with open('input.json', 'r') as f:
+            input_data = json.load(f)
+    
+    # Initialize the GNN representation for the training data
+    for action in input_data['actions']:
+        if isinstance(action, str):
+            action = action[0]
+        
+        # Load the training data from a JSON file
+        with open('input.json', 'r') as f:
+            input_data = json.load(f)
+    
+    # Initialize the GNN representation for the training data
+    for state in input_data['states']:
+        if isinstance(state, str):
+            state = state[0]
+        
+        # Load the training data from a JSON file
+        with open('input.json', 'r') as f:
+            input_data = json.load(f)
+    
+    # Initialize the GNN representation for the training

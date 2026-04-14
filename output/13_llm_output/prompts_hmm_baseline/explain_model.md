@@ -1,23 +1,26 @@
 # EXPLAIN_MODEL
 
-This GNN example represents a Markov Chain Monte Carlo (MCMC) algorithm for estimating the probability of observing a sequence of states and actions based on a set of observed observations. The model is composed of 4 hidden states (`s`) with transition matrices (`P(o)`), while 6 observation symbols (`O`).
+Here is a concise summary of the GNN Section:
 
-The model's core components are:
+**GNNSection:**
+A standard discrete Hidden Markov Model (HMM) with 4 hidden states and 6 observation symbols has been implemented for comparison to Active Inference POMDP variants, including the HMM Baseline. The model consists of four hidden states, two action-based states, and a single observable state. The input data are represented as sparse matrices representing the observed and predicted outcomes from the model.
 
-1. **Hidden Markov Model Baseline**: A discrete Markov Chain (DMC) that models the evolution of a sequence of states and actions based on observed observations. The DMC consists of 4 hidden states (`s`) with transition matrices (`P(o)`).
+**GNNVersionAndFlags:**
+The GNN version v1 is implemented for comparison to Active Inference POMDP variants with HMM Baseline. The model consists of four hidden states, two action-based states, and a single observable state. The input data are represented as sparse matrices representing the observed outcomes from the model.
 
-2. **Random Walks**: A stochastic process that generates random samples from the DMC's state space, allowing for inference about future states and actions. Each step in the Markov Chain corresponds to a sequence of observations (actions) being observed.
+**ModelAnnotation:**
+A standard discrete Hidden Markov Model (HMM) with 4 hidden states and 6 observation symbols has been implemented for comparison to Active Inference POMDP variants with HMM Baseline. The model consists of four hidden states, two action-based states, and a single observable state. The input data are represented as sparse matrices representing the observed outcomes from the model.
 
-3. **Forward Algorithm**: The algorithm iteratively updates the belief distribution (`B`) based on the observed outcomes (`o`), while backward algorithms update the beliefs (`F`) using the observed outcomes (`s_prime`, `O_m0`, and `O_m1`.
+**StateSpaceBlock:**
+The GNN specification has 4 hidden states, 6 observation symbols, and fixed transition matrix (no action dependence). The initial state distribution is specified to be a random state with probability of 1/256 for each hidden state. The next hidden state is specified to have the same probability as the previous one but now it represents the current state instead of the previous state. The last hidden state has no observable and is fixed in its value at time t = 0, which corresponds to the initial state.
 
-4. **State Posterior**: The model estimates the probability of observing a sequence of states and actions by updating the belief distribution based on the observed outcomes. This process is repeated for each observation, allowing for inference about future states and actions.
+**InferenceQuantities:**
+The GNN inference quantities are specified for each hidden state and action-based states:
 
-The key relationships between the hidden states (`s`) and observable states (`o`) are:
+1. **Forward Algorithm:**
+   - Alpha_t(s) = sum_{s'} P(o_t|s) * P(s|s')
+   - Beta_t(s) = sum_{s'} P(o_{t+1}|s') * B(s'|s)
 
-1. **Forward Algorithm**: The algorithm iteratively updates the belief distribution (`B`) based on the observed outcomes (`o`). This process is repeated for each observation, allowing for inference about future states and actions.
-
-2. **Backward Algorithm**: The algorithm iteratively updates the beliefs (`F`) using the observed outcomes (`s_prime`, `O_m0`, and `O_m1`.
-
-The model's predictions are based on a probabilistic graphical model that incorporates the learned beliefs (`B`) from previous steps, allowing for inference about future states and actions. The predictions can be used to make decisions in uncertain environments or predict outcomes with high confidence.
-
-This GNN provides an example of how to implement Active Inference principles using a Markov Chain Monte Carlo (MCMC) algorithm. It demonstrates the use of a probabilistic graphical model, allowing for inference about future states and actions based on observed outcomes. The model's predictions are used as benchmarks in other Active Inference variants
+2. **Backward Algorithm:**
+   - Alpha_b(s) = sum_{s'} P(o_b|s') * B(s'|s)
+   - Beta_b(s) = sum_{s'} P(o_{t

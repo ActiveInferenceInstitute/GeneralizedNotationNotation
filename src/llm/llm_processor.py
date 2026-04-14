@@ -194,6 +194,10 @@ class LLMProcessor:
         self.api_keys = api_keys or {}
         self.provider_configs = _merge_provider_configs(provider_configs)
         self._initialized = False
+        
+        # Circuit breaker state
+        self._circuit_breakers: Dict[ProviderType, int] = {}
+        self.MAX_FAILURES = 2
 
     async def initialize(self) -> bool:
         """
@@ -326,12 +330,24 @@ class LLMProcessor:
         """
         if not self.providers:
             raise RuntimeError("No providers available")
-        if provider_type and provider_type in self.providers:
+            
+        def _is_healthy(ptype: ProviderType) -> bool:
+            return self._circuit_breakers.get(ptype, 0) < self.MAX_FAILURES
+
+        if provider_type and provider_type in self.providers and _is_healthy(provider_type):
             return self.providers[provider_type]
+            
         if analysis_type is not None:
             best = self.get_best_provider_for_task(analysis_type)
-            if best:
+            if best and _is_healthy(best.provider_type):
                 return best
+                
+        # Find first healthy provider
+        for p_type, provider in self.providers.items():
+            if _is_healthy(p_type):
+                return provider
+                
+        logger.warning("All LLM providers tripping circuit breaker. Blindly returning first provider.")
         return next(iter(self.providers.values()))
 
     async def analyze_gnn(
@@ -542,13 +558,19 @@ class LLMProcessor:
             return await provider.generate_response(messages, config)
         except Exception as e:
             logger.error(f"Response generation failed with {provider.provider_type.value}: {e}")
+            self._circuit_breakers[provider.provider_type] = self._circuit_breakers.get(provider.provider_type, 0) + 1
+            
             # Try recovery providers
             for fallback_provider in self.providers.values():
-                if fallback_provider != provider:
+                if fallback_provider != provider and self._circuit_breakers.get(fallback_provider.provider_type, 0) < self.MAX_FAILURES:
                     try:
                         logger.info(f"Trying recovery provider: {fallback_provider.provider_type.value}")
-                        return await fallback_provider.generate_response(messages, config)
+                        response = await fallback_provider.generate_response(messages, config)
+                        # Reset circuit breaker on success
+                        self._circuit_breakers[fallback_provider.provider_type] = 0
+                        return response
                     except Exception as fallback_e:
+                        self._circuit_breakers[fallback_provider.provider_type] = self._circuit_breakers.get(fallback_provider.provider_type, 0) + 1
                         logger.warning(f"Recovery provider {fallback_provider.provider_type.value} also failed: {fallback_e}")
                         continue
 

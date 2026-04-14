@@ -7,39 +7,41 @@ Prompt:
 Response:
 
 ```python
-import numpy as np
+import json
+from typing import List
 
-# Define the model parameters
-GNN_model = GNN(
-    num_hidden_states=2,
-    num_obs=2,
-    num_timesteps=10,
-    GNN_type="dynamic",
-    D={
-        (0.9, 0.1),
-        (0.7, 0.3)
-    },
-    B={
-        (0.5, 0.5)}
-)
-# Initialize the model parameters
-GNN_model = GNN(num_hidden_states=2, num_obs=2, num_timesteps=10, GNN_type="dynamic", D={
-        (0.9, 0.1),
-        (0.7, 0.3)
-    }, B={
-        (0.5, 0.5)}
-)
-# Initialize the model parameters and initialize the inference horizon
-GNN_model = GNN(num_hidden_states=2, num_obs=2, num_timesteps=10, GNN_type="dynamic", D={
-            (0.9, 0.1),
-            (0.7, 0.3)
-    }, B={
-        (0.5, 0.5)}
-)
-# Initialize the inference horizon and initialize the observation mapping
-GNN_model = GNN(num_hidden_states=2, num_obs=2, num_timesteps=10, GNN_type="dynamic", D={
-            (0.9, 0.1),
-            (0.7, 0.3)
-    }, B={
-        (0.5, 0.5)}
+
+def gnn(input: list[List[str]], output: List[Dict[str, str]]) -> dict:
+    """GNN Representation of a GNN model.
+
+    Args:
+        input (list): A list of strings representing the input data.
+        output (list): A list of dictionaries containing the learned beliefs and actions for each state.
+
+    Returns:
+        dict: A dictionary mapping states to their corresponding actions, with the belief updating operator
+    """
+    # Initialize the GNN model
+    gnn = {}
+    for i in range(len(input)):
+        if input[i] == "1":
+            gnn["hidden_states"][i] = [
+                {
+                    "state": "0",
+                    "belief": 1,
+                    "action": "0"
+                }
+            ]
+        elif input[i] == "2":
+            gnn.update({input[i]: {"belief": 1}})
+    for i in range(len(output)):
+        if output[i]["state"] == "1":
+            gnn["hidden_states"][i] = [
+                {
+                    "state": "0",
+                    "action": "0"
+                }
+            ]
+
+    return gnn
 ```

@@ -1,29 +1,76 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters:
+Here is a systematic parameter breakdown of the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and its components (actions, states, etc.)
-   - B matrices representing the state space dimensions for each action/action pair
-   - C matrices representing the observation spaces for each modality
-   - D matrices representing the action-observation relationships
+   - A matrices: dimensions, structure, interpretation
+   - B matrices: dimensions, structure, interpretation
+   - C matrices: dimensions, structure, interpretation
+   - D matrices: dimensions, structure, interpretation
+
+   These matrices represent the state space and observation spaces for each factor in the model.
+
 2. **Precision Parameters**:
-   - α: learning rate parameters
-   - γ: precision parameter
+   - γ (gamma): precision parameters and their roles
+   - α (alpha): learning rates and adaptation parameters
    - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-   - Initialization strategies (e.g., using a specific number of initial states, actions)
+   - State space dimensions for each modality:
+      - A matrices: dimensions, structure, interpretation
+
+      These represent the state spaces of each modality in the model. For example, for a particular action, we can have two states (A) and one observation (B). Each dimension represents an element of the state space.
+
 4. **Temporal Parameters**:
-   - Time horizons (t): time horizon parameters
-   - Temporal dependencies and windows: window parameters
-   - Update frequencies and timescales
+   - Time horizons (T):
+      - Initialization strategies:
+
+      - Random initialization with random initializations
+
+      - Random initialization with fixed parameters
+
+      - Random initialization with fixed parameter values
+
+      - Random initialization with fixed parameter values and time-varying parameters
+
+      - Random initialization with fixed parameter values, temporal dependencies, and window sizes
 
 5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies (e.g., using a specific number of initial states, actions)
-6. **Configuration Summary**: A structured document that summarizes the model structure, parameters, and configuration details for each parameter.
+   - Initializing the model:
+      - Initialization strategies:
+
+        - Random initialization with random initializations
+        - Random initialization with fixed parameters
+        - Random initialization with fixed parameter values
+        - Random initialization with fixed parameter values and time-varying parameters
+
+      - Random initialization with fixed parameter values (fixed parameter value)
+
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+      - For each modality, we have a list of dictionaries representing the initial conditions for that modality:
+
+        - Initialization strategies
+        - Initializations based on the state space dimensions and observation spaces
+
+        - Random initialization with random initializations
+
+      - Initialization based on the state space dimensions and observation spaces
+
+    - Tunable vs. fixed parameters
+      - For each modality, we have a list of dictionaries representing the initial conditions for that modality:
+
+        - Initialization strategies
+        - Initializations based on the state space dimensions and observation spaces
+
+        - Random initialization with random initializations
+
+      - Initialization based on the state space dimensions and observation spaces
+
+    - Sensitivity analysis priorities
+    - For each modality, we have a list of dictionaries representing the initial conditions for that modality:
+
+        - Initialization strategies
+        - Initializations based on the state space dimensions and observation spaces
+
+       

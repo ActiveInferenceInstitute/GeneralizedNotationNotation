@@ -6,71 +6,79 @@ Prompt:
 
 Response:
 
-Here is the complete implementation of the GNN model in Python:
+Here is the implementation of the GNN model:
 ```python
 import numpy as np
-from scipy import stats
+from typing import List, Dict
 
-def gnn_model(state=None, observation=np.array([]), num_states=3):
-    """
-    A simple discrete-time Markov Chain with no actions and no observable state space.
+class SimpleGNNModel(object):
+    def __init__(self):
+        self.states = {}
 
-    Parameters:
-        - state (numpy array of shape (num_states)): The initial state distribution.
-            If not specified, the initial state is assumed to be a random state.
-            If specified as None, it's assumed that the system evolves passively.
+    def state_evolution(self, states, actions=None):
+        """
+        Update the transition matrix based on a given set of states and actions.
 
-        - observation (numpy array of shape (num_observations))
-                A list of states representing observations over time.
+        Parameters:
+            states (List[Dict[str, float]]): A list of dictionaries representing
+                the current state distribution for each observation.
+                Each dictionary represents an observation with two keys: "observations"
+                and "states".
+                The values are lists containing the next state distribution for that
+                observation.
+                The transition matrix is initialized to be identity-based (no action
+            actions = None if not isinstance(actions, list) else [action]
+        """
 
-    Returns:
-        - A dictionary containing the following keys:
-            - `state`: The current state distribution
-            - `observation`: The next state distribution
-            - `actions`: A dictionary with the actions associated to each observation
-    """
-    # Initialize the initial state distribution and transition matrix
-    state_distribution = stats.identity(num_states)
+        # Initialize the states dictionary with empty keys
+        self.states[0].update({
+            "observations": [],
+            "actions": []
+        })
 
-    # Initialize the transition matrix
-    transition_matrix = np.zeros((state_distribution, num_states))
+    def observation_evolution(self):
+        """
+        Update the transition matrix based on a given set of observations and actions.
 
-    # Initialize the hidden states
-    hidden_states = [
-        (0., 1.) ** (
-            num_states // 2 + 1
-        ),
-        (1., 1.) ** (num_states // 2)
-    ]
+        Parameters:
+            observations (List[Dict[str, float]]): A list of dictionaries representing
+                the current state distribution for each observation.
+                Each dictionary represents an observation with two keys: "observations"
+                and "states".
+                The values are lists containing the next state distribution for that
+                observation.
+                The transition matrix is initialized to be identity-based (no action)
+        """
 
-    # Initialize the observation distribution
-    observation = np.array([state])
+        # Update the states dictionary with empty keys
+        self.states[0].update({
+            "observation": [],
+            "actions": []
+        })
 
-    # Initialize the next state distribution
-    next_state = np.array(observation).T
+    def update_state(self, observations):
+        """
+        Update the state distribution based on a given observation and actions.
 
-    # Initialize the transition matrix
-    transition_matrix = [[0.] * num_states] + [
-        [[1., 1.], ...[1e6]] ** (
-            num_states // 2 + 1
-        )**(-num_states // 2, num_states) for _ in range(
-                num_states - 3
-    ]
+        Parameters:
+            observations (List[Dict[str, float]]): A list of dictionaries representing
+                the current state distribution for each observation.
+                Each dictionary represents an observation with two keys: "observation"
+                and "actions".
+                The values are lists containing the next state distribution for that
+                observation.
+                The transition matrix is initialized to be identity-based (no action)
+        """
 
-    # Initialize the hidden states
-    hidden_states = [
-        ([0., 1.], [[1.]]) ** (
-            num_states // 2 + 1
-        ),
-        ([1., 1.] * num_states, [[1.]]**(-num_states // 2)) for _ in range(
-                num_states - 3
-    ]
+        # Update the states dictionary with empty keys
+        self.states[0].update({
+            "observations": [],
+            "actions": []
+        })
 
-    # Initialize the observation distribution
-    observation = np.array([state])
+    def update_observation(self, observations):
+        """
+        Update the observation distribution based on a given observation and actions.
 
-    return {
-        'state': state,
-        'observation': observation,
-        'actions': [
-            [0
+        Parameters:
+            observations (List[Dict[str,

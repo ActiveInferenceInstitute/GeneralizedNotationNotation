@@ -1,18 +1,34 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here is a concise summary of the key points:
 
-1. **Model Purpose**: This is a simple discrete-time Markov Chain (DPMC) that represents passive dynamics with no actions and no observation model. It's designed to illustrate the basic principles of active inference, including how it learns from data and updates beliefs based on new observations.
+**Summary:**
+This document provides an overview of the Simple Markov Chain (SMC) model representation and its core components. It covers the following topics:
+
+1. **Model Purpose**: The SMC represents passive dynamics, no actions, and no control over states.
+   - **Key Components**:
+   - **Hidden States**:
+   - **Observations**:
+   - **Actions/Controls**:
+   - **Initialization**:
+   - **State Transition Matrix**:
+   - **Transition Matrix**:
+   - **Activation Function**:
+   - **Model Parameters**:
 
 2. **Core Components**:
-   - **Hidden States**: These are represented by 3x3 identity matrices (A) that represent the system's state transitions. The states can be thought of as directly observable outcomes or "actions" in a sense, but they're not explicitly defined for inference purposes.
-   - **Observations**: These are represented by 3x1 identities (B), which capture the current observation and its corresponding state distribution.
-   - **Initial State Distribution**: This is an identity matrix representing the initial state of the system. It's used to initialize the transition matrices B, A, and D based on the observed data.
+   - **"Input"**: A 3x3 Identity matrix representing the state transition and observation matrices.
+   - **"Output"**: A 3x1 Identity matrix representing the transition and observation matrices.
+   - **"Initialization"**: A 3x1 Identity matrix representing the initial state distribution.
+   - **"State Transition Matrix"**: A 2x1 Identity matrix representing the transition and observation matrices.
 
-3. **Model Dynamics**: The model evolves over time by updating beliefs (s_f0, s_f1) based on new observations (o_m0, o_m1). This process is described in detail elsewhere.
+3. **Model Dynamics**: The SMC evolves passively over time, capturing observable states and actions/controls.
+   - **Key Relationships**:
+   - **Initialization**: Initializes the state transition matrix with a random identity matrix (identity).
+   - **State Transition Matrix**: Updates the state transition matrix based on observed observations.
+   - **Activation Function**: Activates the initial state distribution using an activation function.
+   - **Model Parameters**: Control over states and actions/controls are implemented through the activation functions in the model parameters.
 
-4. **Active Inference Context**: The model uses the history of observed data to update its beliefs and make predictions about future outcomes. It's designed to learn from past behavior and predict uncertain outcomes using probabilistic graphical models.
+4. **Practical Implications**: The SMC can inform decisions about future actions, predictions of outcomes, and decision-making under uncertainty.
 
-5. **Practical Implications**: The model can inform decisions based on new observations, such as predicting weather patterns or identifying potential risks in a given scenario. Additionally, it provides insights into the system's behavior under uncertainty, allowing for more informed decision-making processes.
-
-Please provide clear and concise explanations of each component to ensure understanding is achieved.
+Please provide clear and concise explanations while maintaining scientific accuracy.

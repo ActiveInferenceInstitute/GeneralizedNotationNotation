@@ -1,12 +1,60 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters and their corresponding descriptions:
+Based on the document, here are the key parameters for the GNN implementation:
 
-**Model Matrices:**
-- A matrices represent a Markov Chain model with no actions or no observation data (A matrix). The dimensions of A represent the number of states in the model. The structure of A is determined by the identity matrix B that represents the state transition matrix. The dimensionality of A determines how many states are directly observed and how many observations are made at each state.
-- B matrices represent a Markov Chain model with no actions or no observation data (B matrix). The dimensions of B represent the number of states in the model, while the structure of B represents how many states are directly observed by the system. The dimensionality of B determines how many states are directly observed and how many observations are made at each state.
-- C matrices represent a Markov Chain model with no actions or no observation data (C matrix). The dimensions of C represent the number of states in the model, while the structure of C represents how many states are directly observed by the system. The dimensionality of C determines how many states are directly observed and how many observations are made at each state.
-- D matrices represent a Markov Chain model with no actions or no observation data (D matrix). The dimensions of D represent the number of states in the model, while the structure of D represents how many states are directly observed by the system. The dimensionality of D determines how many states are directly observed and how many observations are made at each state.
-- E matrices represent a Markov Chain model with no actions or no observation data (E matrix). The dimensions of E represent the number of states in the model, while the structure of E represents how many states are directly observed by the system. The dimensionality of E determines how many states are directly observed and how many observations are made at each state.
-- F matrices represent a Markov Chain model with no actions or no observation data (F matrix). The dimensions of F represent the number of states in the model, while the structure of F represents how many states are directly observed by the system. The dimensionality of F determines how many states are directly observed and how many observations are made at each state.
-- G matrices represent a Markov Chain model with no actions or no observation data (G matrix). The dimensions of G represent the number of states in the model, while the structure of G represents how many states are directly observed by the system. The dimensionality of G determines how many states are directly observed and
+1. **Model Matrices**:
+   - A matrices representing the state space dimensions and their interpretation (e.g., identity matrix)
+   - B matrices representing the transition matrices and their interpretations (identity matrix)
+   - D matrices representing the hidden states and their interpretations (identity matrix)
+   - C matrices representing the action spaces, observation sets, and temporal dependencies
+
+2. **Precision Parameters**:
+   - γ = 0.15
+   - α = 0.3
+   - Other precision/confidence parameters
+
+Here are some summary statistics for each parameter:
+- **Model Matrices**:
+    - A matrices representing the state space dimensions and their interpretation (identity matrix)
+    - B matrices representing the transition matrices and their interpretations (identity matrix)
+    - D matrices representing the hidden states and their interpretations (identity matrix)
+
+3. **Precision Parameters**:
+   - γ = 0.15
+   - α = 0.3
+   - Other precision/confidence parameters
+
+Here are some summary statistics for each parameter:
+- **Model Matrices**:
+    - A matrices representing the state space dimensions and their interpretation (identity matrix)
+    - B matrices representing the transition matrices and their interpretations (identity matrix)
+    - D matrices representing the hidden states and their interpretations (identity matrix)
+
+4. **Precision Parameters**:
+   - γ = 0.15
+   - α = 0.3
+   - Other precision/confidence parameters
+
+Here are some summary statistics for each parameter:
+- **Model Matrices**:
+    - A matrices representing the state space dimensions and their interpretation (identity matrix)
+    - B matrices representing the transition matrices and their interpretations (identity matrix)
+    - D matrices representing the hidden states and their interpretations (identity matrix)
+
+5. **Precision Parameters**:
+   - γ = 0.15
+   - α = 0.3
+   - Other precision/confidence parameters
+
+Here are some summary statistics for each parameter:
+- **Model Matrices**:
+    - A matrices representing the state space dimensions and their interpretation (identity matrix)
+    - B matrices representing the transition matrices and their interpretations (identity matrix)
+    - D matrices representing the hidden states and their interpretations (identity matrix)
+
+6. **Precision Parameters**:
+   - γ = 0.15
+   - α = 0.3
+   - Other precision/confidence parameters
+
+Here are some summary statistics

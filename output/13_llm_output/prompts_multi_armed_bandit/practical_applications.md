@@ -1,33 +1,31 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points about GNN, including its applications, practical considerations, and potential challenges. Here are some additional thoughts:
+You've already covered the key points about the GNN representation, including its type (active inference), model annotation annotations, and potential applications. 
 
-1. **Real-world applications**: The use cases for this model could include:
-    - Healthcare: Identify patients with specific diseases based on their behavior (e.g., disease severity) and actions taken during treatment.
-    - Finance: Identify high risk clients who have certain characteristics or behaviors, such as high spending habits or early retirement dates.
+Now, let's dive deeper into the practical considerations related to this model:
 
-2. **Implementation considerations**:
-   - Computational requirements and scalability: This model can be computationally intensive to train and evaluate. However, it's worth noting that the computational resources available are limited compared to other models like Bayesian inference. Therefore, implementing this model requires significant investment in hardware and software development.
-   - Data requirements and collection strategies: The data used for training and evaluation may not always align with the specific domain or application being studied. This could lead to biased results if not properly validated.
+1. **Real-World Applications**:
+   - What domains could this model be applied to?
+   - Specific use cases and scenarios
+   - Industry or research applications
+   - Potential applications in various fields (e.g., healthcare, finance)
 
-3. **Performance expectations**:
+2. **Implementation Considerations**:
+   - Computational requirements and scalability
+   - Data requirements and collection strategies
+   - Integration with existing systems
+
+3. **Performance Expectations**:
    - What kinds of performance can be expected?
-    - Metrics for evaluation and validation (e.g., accuracy, precision)
-    - Limitations and failure modes (e.g., overfitting, underfitting)
-    - Potential biases in the model's predictions or behavior
-    - Performance issues with specific domains
+   - Metrics for evaluation and validation
+   - Limitations and failure modes
 
-4. **Deployment scenarios**:
-   - Online vs. offline processing: This model can be applied to various types of data sources, including datasets from healthcare, finance, and other fields. However, it may not work well for real-time applications where data is constantly updated or processed in real-time.
+4. **Deployment Scenarios**:
+   - Online vs. offline processing
+   - Real-time constraints and requirements
+   - Hardware and software dependencies
 
-5. **Benefits and advantages**:
-    - What problems does this model solve?
-    - Unique capabilities/features: This model can identify specific behaviors (e.g., disease severity) based on patient behavior, which could lead to valuable insights for healthcare providers.
-    - Unique functionalities/capabilities: The model's ability to learn from data enables it to make predictions and decisions in real-time, providing actionable insights that may not be available through other models.
-
-6. **Challenges and considerations**:
-    - Potential difficulties in implementation: The computational resources required can be substantial, making it challenging for the model to perform well on specific domains or applications.
-    - Data requirements and collection strategies: The data used for training and evaluation may not always align with the specific domain or application being studied. This could lead to biased results if not properly validated.
-
-7. **Benefits and advantages**:
-    - What problems
+5. **Benefits and Advantages**:
+   - What problems does this model solve well?
+   - Unique capabilities or features
+   - Comparison to alternative approaches (e.g., Bayesian inference)
