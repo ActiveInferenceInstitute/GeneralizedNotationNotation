@@ -39,4 +39,4 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2026-01-20
+**Last Updated**: 2026-04-14

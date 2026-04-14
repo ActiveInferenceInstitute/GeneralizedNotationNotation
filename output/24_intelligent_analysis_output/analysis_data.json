@@ -1,18 +1,23 @@
 {
-  "timestamp": "2026-04-12T17:35:07.962265",
+  "timestamp": "2026-04-14T11:15:35.720439",
   "analysis": {
     "overall_status": "SUCCESS",
-    "total_duration": 804.657085,
-    "step_count": 24,
+    "total_duration": 878.528803,
+    "step_count": 25,
     "failures": [],
-    "warnings": [],
+    "warnings": [
+      {
+        "step": "24_intelligent_analysis.py",
+        "message": "ummary.\n2026-04-14 11:11:18,560 - 24_intelligent_analysis.py - INFO - LLM analysis completed\n2026-04-14 11:11:18,561 - 24_intelligent_analysis.py - INFO - Analysis report saved to output/24_intelligent_analysis_output/intelligent_analysis_report.md\n2026-04-14 11:11:18,563 - 24_intelligent_analysis.py - INFO - Analysis data saved to output/24_intelligent_analysis_output/analysis_data.json\n2026-04-14 11:11:18,563 - 24_intelligent_analysis.py - INFO - \u2705 Intelligent analysis completed successfully\n\n"
+      }
+    ],
     "performance_metrics": {
-      "peak_memory_mb": 37.921875,
-      "successful_steps": 24,
+      "peak_memory_mb": 37.84375,
+      "successful_steps": 25,
       "failed_steps": 0,
-      "warning_count": 0
+      "warning_count": 1
     },
-    "health_score": 100
+    "health_score": 95.0
   },
   "step_analyses": [
     {
@@ -20,142 +25,142 @@
       "script_name": "0_template.py",
       "description": "Template initialization",
       "status": "SUCCESS",
-      "duration_seconds": 0.24105095863342285,
-      "memory_mb": 37.859375,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 0.24s"
-    },
-    {
-      "step_number": 2,
-      "script_name": "1_setup.py",
-      "description": "Environment setup",
-      "status": "SUCCESS",
-      "duration_seconds": 5.711315870285034,
-      "memory_mb": 37.921875,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 5.71s"
-    },
-    {
-      "step_number": 3,
-      "script_name": "2_tests.py",
-      "description": "Test suite execution",
-      "status": "SUCCESS",
-      "duration_seconds": 73.81870889663696,
-      "memory_mb": 25.09375,
-      "exit_code": 0,
-      "flags": [
-        "Slow: 73.8s (>60.0s threshold)"
-      ],
-      "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 73.82s"
-    },
-    {
-      "step_number": 4,
-      "script_name": "3_gnn.py",
-      "description": "GNN file processing",
-      "status": "SUCCESS",
-      "duration_seconds": 2.831083059310913,
-      "memory_mb": 27.59375,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 2.83s"
-    },
-    {
-      "step_number": 5,
-      "script_name": "4_model_registry.py",
-      "description": "Model registry",
-      "status": "SUCCESS",
-      "duration_seconds": 0.47664880752563477,
-      "memory_mb": 27.75,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 0.48s"
-    },
-    {
-      "step_number": 6,
-      "script_name": "5_type_checker.py",
-      "description": "Type checking",
-      "status": "SUCCESS",
-      "duration_seconds": 1.9477989673614502,
-      "memory_mb": 28.3125,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 1.95s"
-    },
-    {
-      "step_number": 7,
-      "script_name": "6_validation.py",
-      "description": "Validation",
-      "status": "SUCCESS",
-      "duration_seconds": 1.6509120464324951,
-      "memory_mb": 28.453125,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 1.65s"
-    },
-    {
-      "step_number": 8,
-      "script_name": "7_export.py",
-      "description": "Multi-format export",
-      "status": "SUCCESS",
-      "duration_seconds": 0.2932250499725342,
-      "memory_mb": 28.53125,
+      "duration_seconds": 0.2906529903411865,
+      "memory_mb": 37.765625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
       "summary": "Completed successfully in 0.29s"
     },
     {
+      "step_number": 2,
+      "script_name": "1_setup.py",
+      "description": "Environment setup",
+      "status": "SUCCESS",
+      "duration_seconds": 7.12006402015686,
+      "memory_mb": 37.84375,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 7.12s"
+    },
+    {
+      "step_number": 3,
+      "script_name": "2_tests.py",
+      "description": "Test suite execution",
+      "status": "SUCCESS",
+      "duration_seconds": 83.36090207099915,
+      "memory_mb": 24.21875,
+      "exit_code": 0,
+      "flags": [
+        "Slow: 83.4s (>60.0s threshold)"
+      ],
+      "flag_type": "yellow",
+      "summary": "Completed with 1 flag(s) in 83.36s"
+    },
+    {
+      "step_number": 4,
+      "script_name": "3_gnn.py",
+      "description": "GNN file processing",
+      "status": "SUCCESS",
+      "duration_seconds": 3.1556737422943115,
+      "memory_mb": 24.046875,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 3.16s"
+    },
+    {
+      "step_number": 5,
+      "script_name": "4_model_registry.py",
+      "description": "Model registry",
+      "status": "SUCCESS",
+      "duration_seconds": 0.6576550006866455,
+      "memory_mb": 27.65625,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.66s"
+    },
+    {
+      "step_number": 6,
+      "script_name": "5_type_checker.py",
+      "description": "Type checking",
+      "status": "SUCCESS",
+      "duration_seconds": 6.5810019969940186,
+      "memory_mb": 27.671875,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 6.58s"
+    },
+    {
+      "step_number": 7,
+      "script_name": "6_validation.py",
+      "description": "Validation",
+      "status": "SUCCESS",
+      "duration_seconds": 2.814596652984619,
+      "memory_mb": 27.671875,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 2.81s"
+    },
+    {
+      "step_number": 8,
+      "script_name": "7_export.py",
+      "description": "Multi-format export",
+      "status": "SUCCESS",
+      "duration_seconds": 0.39570093154907227,
+      "memory_mb": 27.78125,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.40s"
+    },
+    {
       "step_number": 9,
       "script_name": "8_visualization.py",
       "description": "Visualization",
       "status": "SUCCESS",
-      "duration_seconds": 18.167295932769775,
-      "memory_mb": 28.578125,
+      "duration_seconds": 23.089476108551025,
+      "memory_mb": 27.84375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 18.17s"
+      "summary": "Completed successfully in 23.09s"
     },
     {
       "step_number": 10,
       "script_name": "9_advanced_viz.py",
       "description": "Advanced visualization",
       "status": "SUCCESS",
-      "duration_seconds": 8.806714057922363,
-      "memory_mb": 28.625,
+      "duration_seconds": 9.291656255722046,
+      "memory_mb": 27.171875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 8.81s"
+      "summary": "Completed successfully in 9.29s"
     },
     {
       "step_number": 11,
       "script_name": "10_ontology.py",
       "description": "Ontology processing",
       "status": "SUCCESS",
-      "duration_seconds": 0.47558116912841797,
-      "memory_mb": 28.65625,
+      "duration_seconds": 0.5732250213623047,
+      "memory_mb": 27.6875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.48s"
+      "summary": "Completed successfully in 0.57s"
     },
     {
       "step_number": 12,
       "script_name": "11_render.py",
       "description": "Code rendering",
       "status": "SUCCESS",
-      "duration_seconds": 0.29360389709472656,
-      "memory_mb": 29.03125,
+      "duration_seconds": 0.29087018966674805,
+      "memory_mb": 28.09375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
@@ -166,36 +171,36 @@
       "script_name": "12_execute.py",
       "description": "Execution",
       "status": "SUCCESS",
-      "duration_seconds": 341.266047000885,
-      "memory_mb": 29.03125,
+      "duration_seconds": 371.9381151199341,
+      "memory_mb": 28.09375,
       "exit_code": 0,
       "flags": [
-        "Very slow: 341.3s (>120.0s threshold)"
+        "Very slow: 371.9s (>120.0s threshold)"
       ],
       "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 341.27s"
+      "summary": "Completed with 1 flag(s) in 371.94s"
     },
     {
       "step_number": 14,
       "script_name": "13_llm.py",
       "description": "LLM processing",
       "status": "SUCCESS",
-      "duration_seconds": 300.2135798931122,
-      "memory_mb": 28.5625,
+      "duration_seconds": 297.0827441215515,
+      "memory_mb": 25.171875,
       "exit_code": 0,
       "flags": [
-        "Very slow: 300.2s (>120.0s threshold)"
+        "Very slow: 297.1s (>120.0s threshold)"
       ],
       "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 300.21s"
+      "summary": "Completed with 1 flag(s) in 297.08s"
     },
     {
       "step_number": 15,
       "script_name": "14_ml_integration.py",
       "description": "ML integration",
       "status": "SUCCESS",
-      "duration_seconds": 1.3091521263122559,
-      "memory_mb": 28.921875,
+      "duration_seconds": 1.307715892791748,
+      "memory_mb": 25.84375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
@@ -206,44 +211,44 @@
       "script_name": "15_audio.py",
       "description": "Audio processing",
       "status": "SUCCESS",
-      "duration_seconds": 1.5161678791046143,
-      "memory_mb": 28.984375,
+      "duration_seconds": 2.1188690662384033,
+      "memory_mb": 25.875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 1.52s"
+      "summary": "Completed successfully in 2.12s"
     },
     {
       "step_number": 17,
       "script_name": "16_analysis.py",
       "description": "Analysis",
       "status": "SUCCESS",
-      "duration_seconds": 41.64696407318115,
-      "memory_mb": 28.984375,
+      "duration_seconds": 52.05704712867737,
+      "memory_mb": 25.875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 41.65s"
+      "summary": "Completed successfully in 52.06s"
     },
     {
       "step_number": 18,
       "script_name": "17_integration.py",
       "description": "Integration",
       "status": "SUCCESS",
-      "duration_seconds": 0.3920309543609619,
-      "memory_mb": 28.46875,
+      "duration_seconds": 0.4000546932220459,
+      "memory_mb": 25.875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.39s"
+      "summary": "Completed successfully in 0.40s"
     },
     {
       "step_number": 19,
       "script_name": "18_security.py",
       "description": "Security",
       "status": "SUCCESS",
-      "duration_seconds": 0.23560786247253418,
-      "memory_mb": 28.515625,
+      "duration_seconds": 0.2392559051513672,
+      "memory_mb": 25.921875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
@@ -254,8 +259,8 @@
       "script_name": "19_research.py",
       "description": "Research",
       "status": "SUCCESS",
-      "duration_seconds": 0.2404179573059082,
-      "memory_mb": 28.515625,
+      "duration_seconds": 0.2391648292541504,
+      "memory_mb": 25.9375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
@@ -266,8 +271,8 @@
       "script_name": "20_website.py",
       "description": "Website generation",
       "status": "SUCCESS",
-      "duration_seconds": 0.29349565505981445,
-      "memory_mb": 28.546875,
+      "duration_seconds": 0.29264307022094727,
+      "memory_mb": 25.96875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
@@ -278,74 +283,88 @@
       "script_name": "21_mcp.py",
       "description": "Model Context Protocol processing",
       "status": "SUCCESS",
-      "duration_seconds": 1.994732141494751,
-      "memory_mb": 28.609375,
+      "duration_seconds": 3.2218759059906006,
+      "memory_mb": 26.046875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 1.99s"
+      "summary": "Completed successfully in 3.22s"
     },
     {
       "step_number": 23,
       "script_name": "22_gui.py",
       "description": "GUI (Interactive GNN Constructor)",
       "status": "SUCCESS",
-      "duration_seconds": 0.34218597412109375,
-      "memory_mb": 28.65625,
+      "duration_seconds": 1.0835158824920654,
+      "memory_mb": 26.09375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.34s"
+      "summary": "Completed successfully in 1.08s"
     },
     {
       "step_number": 24,
       "script_name": "23_report.py",
       "description": "Report generation",
       "status": "SUCCESS",
-      "duration_seconds": 0.45157885551452637,
-      "memory_mb": 29.609375,
+      "duration_seconds": 0.4527921676635742,
+      "memory_mb": 27.109375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
       "summary": "Completed successfully in 0.45s"
+    },
+    {
+      "step_number": 25,
+      "script_name": "24_intelligent_analysis.py",
+      "description": "Intelligent pipeline analysis",
+      "status": "SUCCESS_WITH_WARNINGS",
+      "duration_seconds": 10.427042007446289,
+      "memory_mb": 27.125,
+      "exit_code": 0,
+      "flags": [
+        "Step completed with warnings"
+      ],
+      "flag_type": "yellow",
+      "summary": "Status: SUCCESS_WITH_WARNINGS (10.43s)"
     }
   ],
   "flags_summary": {
     "red_count": 0,
-    "yellow_count": 3,
+    "yellow_count": 4,
     "green_count": 21
   },
   "bottlenecks": [
     {
       "step": "12_execute.py",
-      "duration_seconds": 341.266047000885,
+      "duration_seconds": 371.9381151199341,
       "threshold_exceeded": true,
-      "above_average_ratio": 10.17924843061775,
-      "memory_mb": 29.03125
+      "above_average_ratio": 10.584678557531332,
+      "memory_mb": 28.09375
     },
     {
       "step": "13_llm.py",
-      "duration_seconds": 300.2135798931122,
+      "duration_seconds": 297.0827441215515,
       "threshold_exceeded": true,
-      "above_average_ratio": 8.954739678422136,
-      "memory_mb": 28.5625
+      "above_average_ratio": 8.454431594089192,
+      "memory_mb": 25.171875
     },
     {
       "step": "2_tests.py",
-      "duration_seconds": 73.81870889663696,
+      "duration_seconds": 83.36090207099915,
       "threshold_exceeded": true,
-      "above_average_ratio": 2.201856830733506,
-      "memory_mb": 25.09375
+      "above_average_ratio": 2.3722988228911532,
+      "memory_mb": 24.21875
     }
   ],
   "failures": [],
   "recommendations": [
-    "\ud83d\udfe1 **WARNINGS**: 3 step(s) have yellow flags that should be reviewed.",
-    "   \u21b3 **2_tests.py**: Slow: 73.8s (>60.0s threshold)",
-    "   \u21b3 **12_execute.py**: Very slow: 341.3s (>120.0s threshold)",
-    "   \u21b3 **13_llm.py**: Very slow: 300.2s (>120.0s threshold)",
-    "\u26a1 **Performance**: Slowest step is **12_execute.py** (341.3s). Consider parallelization or caching.",
-    "\u2705 **Health**: Pipeline is healthy (100/100). All systems nominal."
+    "\ud83d\udfe1 **WARNINGS**: 4 step(s) have yellow flags that should be reviewed.",
+    "   \u21b3 **2_tests.py**: Slow: 83.4s (>60.0s threshold)",
+    "   \u21b3 **12_execute.py**: Very slow: 371.9s (>120.0s threshold)",
+    "   \u21b3 **13_llm.py**: Very slow: 297.1s (>120.0s threshold)",
+    "\u26a1 **Performance**: Slowest step is **12_execute.py** (371.9s). Consider parallelization or caching.",
+    "\u2705 **Health**: Pipeline health is good (95/100)."
   ],
   "llm_analysis_available": true
 }

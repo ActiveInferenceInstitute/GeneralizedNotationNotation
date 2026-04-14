@@ -15,6 +15,7 @@ Following the project's Zero Simulated policy - all tests use real methods.
 
 import json
 import logging
+import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 from pathlib import Path
@@ -28,6 +29,9 @@ pytestmark = [pytest.mark.integration, pytest.mark.uv]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.absolute()
 VENV_PATH = PROJECT_ROOT / ".venv"
 VENV_PYTHON = VENV_PATH / "bin" / "python" if sys.platform != "win32" else VENV_PATH / "Scripts" / "python.exe"
+
+# Resolve 'uv' binary
+UV_BIN = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
 
 # Import setup module
 try:
@@ -65,7 +69,7 @@ class TestUVAvailability:
     def test_uv_cli_available(self):
         """Test that UV CLI is available in PATH."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "--version"],
+            [UV_BIN, "--version"],
             capture_output=True,
             text=True,
             timeout=10
@@ -83,7 +87,7 @@ class TestUVAvailability:
     def test_uv_version_compatible(self):
         """Test that UV version is compatible (0.9.x or higher)."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "--version"],
+            [UV_BIN, "--version"],
             capture_output=True,
             text=True,
             timeout=10
@@ -198,7 +202,7 @@ class TestDependencyManagement:
     def test_uv_pip_list_works(self):
         """Test that uv pip list command works."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "pip", "list", "--format=json"],
+            [UV_BIN, "pip", "list", "--format=json"],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
@@ -214,7 +218,7 @@ class TestDependencyManagement:
     def test_uv_sync_check(self):
         """Test that uv sync --dry-run reports no changes needed."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "sync", "--frozen", "--check"],
+            [UV_BIN, "sync", "--frozen", "--check"],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
@@ -429,7 +433,7 @@ class TestUVRunIntegration:
     def test_uv_run_python(self):
         """Test that uv run python works."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "run", "python", "-c", "print('Hello from UV')"],
+            [UV_BIN, "run", "python", "-c", "print('Hello from UV')"],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
@@ -441,7 +445,7 @@ class TestUVRunIntegration:
     def test_uv_run_module_import(self):
         """Test that uv run can import project modules."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "run", "python", "-c", "from src.setup import FEATURES; print('Import OK')"],
+            [UV_BIN, "run", "python", "-c", "from src.setup import FEATURES; print('Import OK')"],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
@@ -477,7 +481,7 @@ class TestUVCacheAndPerformance:
     def test_uv_cache_dir_accessible(self):
         """Test that UV cache directory is accessible."""
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "cache", "dir"],
+            [UV_BIN, "cache", "dir"],
             capture_output=True,
             text=True,
             timeout=10
@@ -493,7 +497,7 @@ class TestUVCacheAndPerformance:
 
         start = time.time()
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "sync", "--frozen"],
+            [UV_BIN, "sync", "--frozen", "--all-extras"],
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),

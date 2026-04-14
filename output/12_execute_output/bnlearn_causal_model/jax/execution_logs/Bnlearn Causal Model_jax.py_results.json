@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/bnlearn_causal_model/jax/Bnlearn Causal Model_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.658662,
-  "timestamp": "2026-04-12T17:24:40.866196",
+  "execution_time": 0.648094,
+  "timestamp": "2026-04-14T11:00:07.825849",
   "simulation_data": {
     "traces": [],
     "free_energy": [

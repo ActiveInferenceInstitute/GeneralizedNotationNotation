@@ -41,5 +41,5 @@ This module should be validated by:
 - [`../test_infrastructure_utils_statistics.py`](../test_infrastructure_utils_statistics.py): `parse_test_statistics`, `parse_coverage_statistics` edge cases, `flatten_pipeline_test_summary`
 - smoke tests for `TestRunner` command construction (without requiring long-running executions)
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-14
 

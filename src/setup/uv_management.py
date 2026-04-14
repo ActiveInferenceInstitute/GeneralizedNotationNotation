@@ -49,6 +49,11 @@ def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True
         The completed process object with stdout and stderr attributes.
     """
     command_str_list = [str(c) for c in command]
+    
+    # Robustly resolve the uv binary to handle missing PATH in test/CI environments
+    if command_str_list and command_str_list[0] == "uv":
+        command_str_list[0] = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
+        
     if verbose:
         logger.debug(f"Running command: '{' '.join(command_str_list)}' in {cwd}")
     else:
@@ -258,7 +263,8 @@ def install_uv_dependencies(
     try:
         start_time = time.time()
 
-        sync_cmd = ["uv", "sync"]
+        uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
+        sync_cmd = [uv_bin, "sync"]
 
         if verbose:
             sync_cmd.append("--verbose")
@@ -333,7 +339,8 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
     sys.stdout.flush()
 
     try:
-        list_cmd = ["uv", "pip", "list", "--python", str(VENV_PYTHON), "--format=json"]
+        uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
+        list_cmd = [uv_bin, "pip", "list", "--python", str(VENV_PYTHON), "--format=json"]
         result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             list_cmd,
             cwd=PROJECT_ROOT,
@@ -600,8 +607,9 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     logger.info("🏥 Running GNN environment health check...")
 
     try:
+        uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
         uv_result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-            ["uv", "--version"],
+            [uv_bin, "--version"],
             capture_output=True,
             text=True,
             timeout=5

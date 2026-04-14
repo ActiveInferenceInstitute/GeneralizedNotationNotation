@@ -1,19 +1,29 @@
 # EXPLAIN_MODEL
 
-Here is a concise overview of the GNN Model:
+Here is a concise summary of the key points:
 
-**Model Purpose:** 
-1. Represent real-world phenomena (e.g., decision making) and provide insights into their behavior.
-2. Represent hidden states (s_f0, s_f1, etc.) using probability distributions.
-3. Provide a framework for planning actions based on observed observations.
-4. Implement Active Inference principles in the model:
-- **State inference**: Use Variational Free Energy to update beliefs and estimate probabilities of observing new data.
-- **Policy inference**: Use Expected Free Energy (E) to update policies and estimate expected values.
-- **Action selection**: Use Action Selection from Policy Prior (A) to update actions based on observed observations.
-5. **Model dynamics**: Implement Active Inference principles:
-- **State evolution**: Update beliefs using Variational Free Energy (VFE), E, or A/B (Bayesian inference).
-- **Action selection**: Use Action Selection from Policy Prior (A) to update actions based on observed observations.
-6. **Practical implications**: 
-1. **Estimate probabilities of observing new data**: Update beliefs using VFE and A/B.
-2. **Make decisions**: Use A/B or Bayesian inference to make predictions about future outcomes.
-3. **Predict future behavior**: Use A/B or Bayesian inference to predict the outcome of a given action.
+1. **Model Purpose**: This GNN represents an active inference agent for a discrete POMDP with one observation modality and one hidden state factor. It uses Variational Free Energy (VFE) to update beliefs, while controlling actions based on prior probabilities. The agent's preferences are encoded as log-probabilities over observations.
+
+2. **Core Components**:
+   - **hidden states** represent the policy distribution of each action selection.
+   - **observations** capture the current state and previous states.
+   - **actions** track the next observation, which is a transition matrix representing actions taken in the agent's control space.
+   - **policy** represents the prior probability distribution over actions.
+   - **habit** tracks the policy of each action.
+   - **observation** captures the current observation (integer index).
+
+3. **Model Dynamics**: The model evolves over time by updating beliefs and controlling actions based on prior probabilities. Actions are controlled by actions that map to states, with a goal-directed policy applied in each step.
+
+4. **Active Inference Context**: The agent's preferences encode the belief update process. It updates its beliefs using Bayes' theorem (POMDP) and uses probability distributions over actions to make decisions based on prior probabilities.
+
+5. **Practical Implications**: This model can learn from a wide range of real-world applications, including:
+   - **Medical diagnosis**: The agent's preferences encode the belief update process for medical diagnoses.
+   - **Robotics**: The agent's preferences encode the belief updates in robotics tasks.
+   - **Computer vision**: The agent's preferences encode the belief updates in computer vision tasks.
+
+6. **Key Relationships**: The model can learn from a wide range of real-world applications, including:
+   - **Medical Diagnosis**: The agent's beliefs encode the belief update process for medical diagnoses.
+   - **Robotics**: The agent's beliefs encode the belief updates in robotics tasks.
+   - **Computer Vision**: The agent's beliefs encode the belief updates in computer vision tasks.
+
+Please provide clear and concise explanations to ensure understanding of the key points, while maintaining scientific accuracy.

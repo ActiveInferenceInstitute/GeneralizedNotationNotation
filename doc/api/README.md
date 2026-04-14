@@ -6,10 +6,14 @@
 
 ## Overview
 
-This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py); a machine-readable index is [`api_index.json`](api_index.json). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) labels legacy illustrative sections—verify names in `src/` before importing.
+This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py); a machine-readable index is [`api_index.json`](api_index.json). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) includes illustrative narrative below the accuracy box—confirm symbol names in `src/` and `api_index.json` before importing.
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0
+
+## Security
+
+API surfaces follow normal Python packaging and process boundaries: validate inputs at trust boundaries, avoid logging secrets, and review auto-generated clients. See [security/README.md](../security/README.md).
 
 ## Quick Navigation
 
@@ -206,7 +210,7 @@ All documentation in this module adheres to professional standards:
 
 ## See Also
 
-- **[API Reference](../CROSS_REFERENCE_INDEX.md#api-reference--integration)**: Cross-reference index entry
+- **[API Reference](../CROSS_REFERENCE_INDEX.md#api-reference-integration)**: Cross-reference index entry
 - **[Development Guide](../development/README.md)**: Development workflows
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol documentation
 - **[Main Index](../README.md)**: Return to main documentation

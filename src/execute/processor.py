@@ -344,6 +344,17 @@ def process_execute(
                         if "error" in exec_result:
                             execution_results["framework_status"][framework]["error"] = exec_result["error"]
 
+        # Populate backward-compatible keys before saving
+        total_found = execution_results["total_scripts_found"]
+        successful = execution_results["successful_executions"]
+        failed = execution_results["failed_executions"]
+        skipped = execution_results.get("skipped_executions", 0)
+        attempted = total_found - skipped
+        execution_results["total_scripts"] = total_found
+        execution_results["success_rate"] = (
+            round(successful / attempted * 100, 2) if attempted > 0 else 100.0
+        )
+
         # Save detailed results to summaries subfolder
         summaries_dir = results_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)

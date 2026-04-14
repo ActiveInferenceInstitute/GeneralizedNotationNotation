@@ -6,13 +6,16 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-
-# Define the input and output arrays for the GNN representation
-input_arrays = np.array([[0.9, 0.1], [0.2, 0.8]])
-output_arrays = np.array([
-    (0.5, 0.5),
-    (0.4, 0.6)
-])
-```
+GNNModelContent = [
+    "gnn-model"="static-perception",
+    "type":"SimpleActiveInferenceModel",
+    "name":["Static Perception Model"],
+    "annotation":[
+        {
+            "label":["A"]},
+            {
+                "label":["D"]}
+        },
+        {"label":["S"]},
+        {"label":["o"]}}
+]

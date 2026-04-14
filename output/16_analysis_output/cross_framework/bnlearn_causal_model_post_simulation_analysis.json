@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-12T17:34:23.789013",
+  "timestamp": "2026-04-14T11:10:15.402079",
   "execution_results_dir": "output/12_execute_output/bnlearn_causal_model",
   "framework_results": {
     "bnlearn": {
@@ -268,18 +268,18 @@
         "mean_fe": 0.10025
       },
       "execution_time": {
-        "bnlearn": 1.909742,
-        "discopy": 0.23897,
-        "jax": 0.658662,
-        "pytorch": 0.464507,
-        "pymdp": 2.641093,
-        "activeinference_jl": 14.199994,
-        "numpyro": 0.634298,
-        "rxinfer": 13.919696
+        "bnlearn": 1.967745,
+        "discopy": 0.250063,
+        "jax": 0.648094,
+        "pytorch": 0.468858,
+        "pymdp": 2.678282,
+        "activeinference_jl": 14.192798,
+        "numpyro": 0.621686,
+        "rxinfer": 13.543188
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.23897
+        "time": 0.250063
       },
       "success_rates": {
         "bnlearn": true,

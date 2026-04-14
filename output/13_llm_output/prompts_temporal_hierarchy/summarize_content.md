@@ -1,25 +1,36 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise version of the summary:
+Here is a concise summary of the GNN specification:
 
-**Summary:**
-This active inference agent is designed to analyze and generate predictions based on sensorimotor data from multiple levels (level 0 through level 2). The model consists of three main components:
+```python
+# Model Overview
+GNN_Model = {
+    "model": "Active Inference",
+    "version": "1.0"
+  }
 
-1. **Hidden states**: A set of matrices representing the relationships between different actions, goals, and observations. These represent the interactions between the agents and their environment.
-2. **Observations**: A set of vectors containing information about what is happening in each level (level 0 through level 3). Each observation represents a single action or goal at that level.
-3. **Actions/Controls**: A set of matrices representing the relationships between actions, goals, and observations. These represent the interactions between agents and their environment.
-4. **Key Variables**: A list of matrices containing information about what is happening in each level (level 0 through level 2). Each key variable represents a specific action or goal at that level.
-5. **Critical Parameters**: A set of matrices representing the relationships between actions, goals, and observations. These represent the interactions between agents and their environment.
-6. **Notable Features**: A list of matrices containing information about what is happening in each level (level 0 through level 3). Each feature represents a specific action or goal at that level.
-7. **Use Cases**: Specific scenarios where this model can be applied to:
-   - Analyze sensorimotor data from multiple levels and generate predictions based on the relationships between actions, goals, and observations.
-   - Generate predictions based on interactions between agents and their environment using the key variables.
-   - Analyze and generate predictions based on interactions between sensors and other objects in a given level.
-8. **Use Cases**: Specific scenarios where this model can be applied to:
-   - Analyze sensorimotor data from multiple levels and generate predictions based on the relationships between actions, goals, and observations.
-   - Generate predictions based on interactions between agents and their environment using the key variables.
-   - Analyze and generate predictions based on interactions between sensors and other objects in a given level.
-9. **Use Cases**: Specific scenarios where this model can be applied to:
-   - Analyze sensorimotor data from multiple levels and generate predictions based on the relationships between actions, goals, and observations.
-   - Generate predictions based on interactions between agents and their environment using the key variables.
-   - Analyze and generate predictions based on interactions between sensors and other objects in a given level
+  # Key Variables
+  hidden_states = [["A", "B"], ["C", "D"]]
+  
+  # Key Parameters
+  A, B, C, D = hidden_states[0]
+  x = hidden_state(x)
+```
+
+**Key Variables**
+
+1. **hidden_states**: List of lists containing the state trajectories for each level. Each list represents a single observation at that level. The states are indexed by their indices from 0 to `num_levels - 1`.
+
+2. **observations**: List of lists representing the observations at each level, with each element in the list being an observation. Each element is indexed by its index from 0 to `num_states - 1`.
+
+**Actions/Controls**
+
+3. **actions**: List of lists containing the actions for each level. Each element in the list represents a single action at that level, with each element having two indices: one representing the state and another representing the target state (the next level). The index is indexed by its corresponding state from 0 to `num_states - 1`.
+
+**Key Parameters**
+
+4. **x**: List of lists containing the predictions for each observation at each level, with each element in the list being an observation. Each element has two indices: one representing the target state and another representing the next level (the next level). The index is indexed by its corresponding state from 0 to `num_states - 1`.
+
+**Notable Features**
+
+5. **Special Properties**: List of lists containing special properties or constraints at each level, with each element in the list having a unique value. These are used for specific scenarios and can be useful for understanding how the model handles different types of interactions between levels.

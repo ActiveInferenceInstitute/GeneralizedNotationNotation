@@ -1,36 +1,303 @@
-# Step 6: Validation — Semantic Validation and QA
+# Step 6: Validation
 
-## Overview
+## Architectural Mapping
 
-Performs semantic validation, performance profiling, and consistency checking on GNN models. Builds on Step 5's type checking with deeper analysis.
+**Orchestrator**: `src/6_validation.py` (47 lines)
+**Implementation Layer**: `src/validation/`
 
-## Usage
+## Module Description
 
-```bash
-python src/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
-python src/6_validation.py --strict --profile --verbose
+This module provides comprehensive validation capabilities for GNN models, including consistency checking, semantic validation, and quality assessment.
+
+
+```
+src/validation/
+├── __init__.py                    # Module initialization, exports, and process_validation orchestrator
+├── README.md                      # This documentation
+├── AGENTS.md                      # Agent scaffolding documentation
+├── SPEC.md                        # Module specification
+├── PAI.md                         # Pipeline integration documentation
+├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
+├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
+├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)
+└── mcp.py                         # Model Context Protocol integration
+
+## Agent Identity & Capabilities
+
+# Validation Module - Agent Scaffolding
+
+## Module Overview
+
+**Purpose**: Advanced validation and consistency checking for GNN models and pipeline components
+
+**Pipeline Step**: Step 6: Validation (6_validation.py)
+
+**Category**: Validation / Quality Assurance
+
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2026-01-21
+
+---
+
+## Core Functionality
+
+### Primary Responsibilities
+1. Advanced validation and consistency checking
+2. Model structure and semantic validation
+3. Performance profiling and optimization
+4. Cross-format consistency verification
+5. Quality assurance and compliance checking
+
+### Key Capabilities
+- Comprehensive model validation
+- Semantic consistency checking
+- Performance profiling and analysis
+- Cross-format validation
+- Quality metrics and compliance
+
+---
+
+## API Reference
+
+### Public Functions
+
+#### `process_validation(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main validation processing function called by orchestrator (6_validation.py)
+
+**Parameters**:
+- `target_dir` (Path): Directory containing GNN files to validate
+- `output_dir` (Path): Output directory for validation results
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
+- `strict` (bool): Enable strict validation mode (default: False)
+- `profile` (bool): Enable performance profiling (default: False)
+- `**kwargs`: Additional validation options
+
+**Returns**: `True` if validation succeeded
+
+**Example**:
+```python
+from validation import process_validation
+
+success = process_validation(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/6_validation_output"),
+    verbose=True,
+    strict=True,
+    profile=True
+)
 ```
 
-## Architecture
+#### `process_semantic_validation(model_data: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Perform semantic validation on model data
 
-| Component | Path |
-|-----------|------|
-| Orchestrator | `src/6_validation.py` (47 lines) |
-| Module | `src/validation/` |
-| Module function | `process_validation()` |
+**Parameters**:
+- `model_data` (Dict[str, Any]): Parsed GNN model data
 
-## CLI Arguments
+**Returns**: Dictionary with semantic validation results
 
-| Argument | Type | Description |
-|----------|------|-------------|
-| `--strict` | `bool` | Enable strict validation mode |
-| `--profile` | `bool` | Enable performance profiling |
+#### `profile_performance(model_data: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Profile model performance characteristics
 
-## Output
+**Parameters**:
+- `model_data` (Dict[str, Any]): Parsed GNN model data
 
-- **Directory**: `output/6_validation_output/`
-- Semantic validation reports, quality scores, performance profiles, and consistency checks
+**Returns**: Dictionary with performance metrics
 
-## Source
+#### `check_consistency(model_data: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Check consistency of model data
 
-- **Script**: [src/6_validation.py](../../../src/6_validation.py)
+**Parameters**:
+- `model_data` (Dict[str, Any]): Parsed GNN model data
+
+**Returns**: Dictionary with consistency results
+
+---
+
+## Dependencies
+
+### Required Dependencies
+- `pathlib` - Path manipulation
+- `re` - Regular expressions for parsing
+
+### Internal Dependencies
+- `utils.pipeline_template` - Pipeline utilities
+
+---
+
+## Configuration
+
+### Validation Settings
+```python
+VALIDATION_CONFIG = {
+    'strict_validation': False,
+    'profile_performance': True,
+    'check_consistency': True,
+    'validate_semantics': True
+}
+```
+
+---
+
+## Usage Examples
+
+### Basic Validation
+```python
+from validation import process_validation
+
+success = process_validation(
+    target_dir="input/gnn_files",
+    output_dir="output/6_validation_output"
+)
+```
+
+### Model Structure Validation
+```python
+from validation import validate_model_structure
+
+with open("model.gnn", "r") as f:
+    content = f.read()
+
+validation = validate_model_structure(content)
+if validation['valid']:
+    print("Model structure is valid")
+else:
+    print("Validation issues:")
+    for issue in validation['issues']:
+        print(f"  - {issue}")
+```
+
+### Performance Profiling
+```python
+from validation import profile_model_performance
+
+profile = profile_model_performance(content)
+print(f"Estimated complexity: {profile['complexity_score']}")
+print(f"Performance rating: {profile['performance_rating']}")
+```
+
+---
+
+## Output Specification
+
+### Output Products
+- `validation_results.json` - Validation results
+- `performance_profile.json` - Performance profiling
+- `consistency_report.json` - Consistency checking
+- `validation_summary.md` - Human-readable summary
+
+### Output Directory Structure
+```
+output/6_validation_output/
+├── validation_results.json
+├── performance_profile.json
+├── consistency_report.json
+├── validation_summary.md
+└── detailed_analysis/
+    ├── structure_validation.json
+    └── semantic_validation.json
+```
+
+---
+
+## Performance Characteristics
+
+### Latest Execution
+- **Duration**: ~1-5 seconds per model
+- **Memory**: ~20-100MB
+- **Status**: ✅ Production Ready
+
+### Expected Performance
+- **Basic Validation**: < 1 second
+- **Structure Validation**: 1-3 seconds
+- **Performance Profiling**: 2-5 seconds
+- **Consistency Checking**: 1-4 seconds
+
+---
+
+## Error Handling
+
+### Validation Errors
+1. **Structure Errors**: Invalid model structure
+2. **Semantic Errors**: Semantic inconsistencies
+3. **Performance Issues**: Performance problems
+4. **Consistency Errors**: Cross-format inconsistencies
+
+### Recovery Strategies
+- **Structure Repair**: Suggest structural fixes
+- **Semantic Resolution**: Provide semantic guidance
+- **Performance Optimization**: Suggest performance improvements
+- **Consistency Reconciliation**: Resolve format differences
+
+---
+
+## Integration Points
+
+### Orchestrated By
+- **Script**: `6_validation.py` (Step 6)
+- **Function**: `process_validation()`
+
+### Imports From
+- `utils.pipeline_template` - Pipeline utilities
+
+### Imported By
+- `main.py` - Pipeline orchestration
+- `tests.test_validation_*` - Validation tests
+
+### Data Flow
+```
+Model Content → Structure Validation → Semantic Validation → Performance Profiling → Consistency Checking
+```
+
+---
+
+## Testing
+
+### Test Files
+- `src/tests/test_validation_overall.py` - Module-level validation tests
+- `src/tests/test_gnn_validation.py` - GNN validation-focused tests (shared)
+
+### Test Coverage
+- **Current**: 82%
+- **Target**: 85%+
+
+### Key Test Scenarios
+1. Model structure validation
+2. Semantic consistency checking
+3. Performance profiling accuracy
+4. Error handling and recovery
+
+---
+
+## MCP Integration
+
+### Tools Registered
+- `validation.validate_structure` - Validate model structure
+- `validation.profile_performance` - Profile model performance
+- `validation.check_consistency` - Check cross-format consistency
+- `validation.analyze_quality` - Analyze model quality
+
+### Tool Endpoints
+```python
+@mcp_tool("validation.validate_structure")
+def validate_structure_tool(content):
+    """Validate model structure"""
+    # Implementation
+```
+
+---
+
+---
+## Documentation
+- **[README](../../../src/validation/README.md)**: Module Overview
+- **[AGENTS](../../../src/validation/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/validation/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/validation/SKILL.md)**: Capability API
+
+
+---
+
+**Source Reference**: [src/validation](../../../src/validation)

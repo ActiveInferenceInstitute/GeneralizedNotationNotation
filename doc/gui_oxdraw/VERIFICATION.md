@@ -100,7 +100,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 
 ### Minor Test Issues (Non-blocking, 3/69 = 4%)
 1. **test_generate_styles** - Style ordering expectation (functionality works)
-2. **test_extract_metadata_legacy_format** - Legacy JSON format edge case
+2. **test_extract_metadata_legacy_format** - Older JSON metadata shape (edge case)
 3. **test_extract_trapezoid_nodes** - Regex escaping in test assertion
 
 ---

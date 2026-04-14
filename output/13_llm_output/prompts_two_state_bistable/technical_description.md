@@ -6,53 +6,28 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from typing import List, Tuple
+You can use the following code to generate a GNN representation of the two-state bistable POMDP:
 
-class GNNModel(object):
-    """GNN model with minimal state spaces and no hidden states."""
+1. Create an instance of the `GNN` class with the following attributes:
+   - `observations`: A 2x2 matrix representing the state space, where each row represents one observation and each column represents one hidden state.
+   - `hidden_states`: A 2x2 matrix representing the hidden states, where each element is a value between 0 (left) and 1 (right).
 
-    def __init__(self) -> None:
-        self.states = [
-            (0., 0.),
-            (123456789,),
-            (0., 0.)
-        ]
+2. Create an instance of the `GNN` class with the following attributes:
+   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
+   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
 
-        # Initialize the initial observation for each action
-        self.observations, self.hidden_states = [], []
+3. Create an instance of the `GNN` class with the following attributes:
+   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
+   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
 
-    def infer(self) -> List[Tuple[float, float]]:
-        """Activate an action."""
-        return [(-1**i + 2*np.random.rand()) * (
-            -0.85 ** i / 4 for i in range(num_actions)]
+4. Create an instance of the `GNN` class with the following attributes:
+   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
+   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
 
-        # Initialize the next observation and policy
-    def infer_states(self) -> List[Tuple[float, float]]:
-        """Activate an action."""
-        return [(-1**i + 2*np.random.rand()) * (
-            -0.85 ** i / 4 for i in range(num_actions))]
+5. Create an instance of the `GNN` class with the following attributes:
+   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
+   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value between 0 (left) and 1 (right).
 
-        # Initialize the next observation and policy
-    def infer_hidden_states(self) -> List[Tuple[float, float]]:
-        """Activate an action."""
-        return [(-1**i + 2*np.random.rand()) * (
-            -0.85 ** i / 4 for i in range(num_actions))]
-
-        # Initialize the next observation and policy
-    def infer_hidden_states_with_noise(self) -> List[Tuple[float, float]]:
-        """Activate an action."""
-        return [(-1**i + 2*np.random.rand()) * (
-            -0.85 ** i / 4 for i in range(num_actions))]
-
-        # Initialize the next observation and policy
-    def infer_policy(self) -> List[Tuple[float, float]]:
-        """Activate an action."""
-        return [(-1**i + 2*np.random.rand()) * (
-            -0.85 ** i / 4 for i in range(num_actions))]
-
-        # Initialize the next observation and policy
-    def infer_policy_with_noise(self) -> List[Tuple[float, float]]:
-        """Activate an action."""
-        return [(-1**i + 2*np.random.rand()) * (
+6. Create an instance of the `GNN` class with the following attributes:
+   - `actions`: A 2x2 matrix representing the actions, where each row represents one action and each column represents one hidden state.
+   - `policy_vector`: A 2x2 matrix representing the policy vector, where each element is a value

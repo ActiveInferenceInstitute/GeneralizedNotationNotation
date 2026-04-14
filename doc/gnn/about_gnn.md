@@ -215,6 +215,8 @@ B=ObservationLikelihoodMatrix
 
 ## The Triple Play: Modalities
 
+### The triple play modalities of GNN
+
 GNN expressions support three complementary modalities for model representation, which can be used together for comprehensive model documentation:
 
 1. **Text-Based Models**: Plain-text GNN files render directly into formulas, pseudocode, or prose using tools like regex or LLMs. This modality provides a human-readable specification that can be shared in papers, documentation, and educational materials.

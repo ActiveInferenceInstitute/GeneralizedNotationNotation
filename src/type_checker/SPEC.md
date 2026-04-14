@@ -1,34 +1,14 @@
-# Type Checker Module Specification
+# Specification: Type Checker Subsystem
 
 ## Overview
-GNN model type checking and resource estimation.
+The `src/type_checker/` module represents a strict architectural barrier guaranteeing that invalidly mapped Generative Notation models are accurately constrained before mathematical serialization.
 
-## Components
+## Interface Mapping
+- `5_type_checker.py`: The single executable orchestrator bounding `processor.GNNTypeChecker`.
+- `estimation_strategies.py`: Computational Algebra mappings measuring matrix load requirements.
+- `visualizer.py`: The isolated generation of all model Dashboard reporting structures.
 
-### Core
-- `checker.py` - Type checker (1344 lines)
-- `resource_estimator.py` - Resource estimation (1742 lines)
-
-### Utilities
-- `analysis_utils.py` - Analysis utilities
-- `output_utils.py` - Output formatting
-- `cli.py` - Command-line interface
-
-## Features
-- Variable type validation
-- Dimension checking
-- Memory/FLOPS estimation
-- Inference time prediction
-
-## Key Exports
-```python
-from type_checker import GNNTypeChecker, GNNResourceEstimator
-```
-
-
----
-## Documentation
-- **[README](README.md)**: Module Overview
-- **[AGENTS](AGENTS.md)**: Agentic Workflows
-- **[SPEC](SPEC.md)**: Architectural Specification
-- **[SKILL](SKILL.md)**: Capability API
+## Standards 
+- Rejects legacy mathematical assignments (e.g. `error = sum`); evaluating strict multidimensional references intrinsically bounded (e.g. `s[3,1,type=float]`).
+- Evaluates against Active Inference topologies directly (`POMDP`, `Categorical`, `Continuous`).
+- Output formats MUST natively synthesize both `.json` data files tracking parameter scores AND high-level `matplotlib` abstractions (Dashboards/Mosaics/Model Cards) straight into `type_check_summary.md`.

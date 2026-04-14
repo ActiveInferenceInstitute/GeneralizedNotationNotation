@@ -2,7 +2,7 @@
 
 ## Overview
 
-This directory contains archived documentation, historical materials, and deprecated resources from the GNN (Generalized Notation Notation) project.
+This directory contains archived documentation and superseded materials from the GNN (Generalized Notation Notation) project.
 
 **Status**: ✅ Documentation Module (Archive)  
 **Version**: 1.0  
@@ -11,7 +11,7 @@ This directory contains archived documentation, historical materials, and deprec
 
 ## Purpose
 
-The archive serves as a historical record of previous documentation, superseded implementations, and legacy materials from the GNN project development.
+The archive holds older documentation, superseded implementations, and retired integration notes from GNN development.
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 25-step processing pipeline.
 
@@ -30,10 +30,10 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 This directory contains:
 
-- Historical documentation versions
-- Deprecated implementation guides
+- Older documentation versions
+- Retired implementation guides
 - Superseded examples and tutorials
-- Legacy framework integrations
+- Older framework integration notes
 - Previous architecture designs
 
 **Note**: Archive materials are preserved for historical reference. For current documentation, see the main [doc/](../) directory.

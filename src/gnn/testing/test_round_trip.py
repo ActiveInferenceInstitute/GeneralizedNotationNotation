@@ -54,26 +54,7 @@ FORMAT_TEST_CONFIG = {
         'tla_plus',  # Test TLA+ serialization - ✅ CONFIRMED 100% FUNCTIONAL
         'agda',      # Test Agda serialization - ✅ CONFIRMED 100% FUNCTIONAL
         'maxima',    # Test Maxima serialization - ✅ CONFIRMED 100% FUNCTIONAL
-        # 'xml',       # Test XML serialization
-        # 'yaml',      # Test YAML serialization
-        # 'python',    # Test Python serialization
-        # 'pkl',       # Test PKL serialization
-        # 'scala',     # Test Scala serialization
-        # 'protobuf',  # Test Protobuf serialization
-        # 'xsd',       # Test XSD serialization
-        # 'asn1',      # Test ASN.1 serialization
-        # 'alloy',     # Test Alloy serialization
-        # 'lean',      # Test Lean serialization
-        # 'coq',       # Test Coq serialization
-        # 'isabelle',  # Test Isabelle serialization
-        # 'haskell',   # Test Haskell serialization
-        # 'bnf',       # Test BNF serialization
-        # 'pickle',    # Test Pickle serialization
-        # 'z_notation', # Test Z notation serialization
-        # 'tla_plus',  # Test TLA+ serialization
-        # 'agda',      # Test Agda serialization
-        # 'maxima',    # Test Maxima serialization
-        # 'pnml',      # Test PNML (uses XML serializer) - DISABLED due to parsing issues
+        # PNML disabled in default list (parse-focused; see SPEC.md / FORMAT_TEST_CONFIG notes)
     ],
 
     # Format categories to test (when test_all_formats=True)

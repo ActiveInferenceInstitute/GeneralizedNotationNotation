@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.3.0
 
-**Last Updated**: 2026-04-09
+**Last Updated**: 2026-04-14
 
 ---
 
@@ -118,16 +118,18 @@ success = process_gnn_multi_format(
 
 #### `discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> List[Path]`
 
-**Description**: Discovers all GNN specification files in target directory with support for multiple formats.
+**Description**: Discovers candidate files for **lightweight** processing (`process_gnn_directory`, reports, etc.). This is **not** the same discovery policy as pipeline Step 3.
 
 **Parameters**:
 
 - `directory` (Union[str, Path]): Directory to search
 - `recursive` (bool): Whether to search subdirectories (default: True)
 
-**Returns**: `List[Path]` - List of Path objects for discovered GNN files
+**Returns**: `List[Path]` - List of Path objects for discovered files
 
-**Supported Extensions**: `.md`, `.markdown`, `.json`, `.xml`, `.yaml`, `.yml`, `.py`, `.jl`, `.hs`, `.lean`, `.v`, `.thy`, `.max`, `.proto`, `.xsd`, `.asn1`, `.pkl`, `.als`, `.z`, `.tla`, `.agda`, `.bnf`, `.ebnf`
+**Glob patterns**: `*.md`, `*.gnn`, `*.txt` only. Excludes `README.md`, `CHANGELOG.md`, `LICENSE.md`, and names matching `*.template.md` / `*.example.md`.
+
+**Pipeline Step 3 (`process_gnn_multi_format`)** uses a **broader** extension list in `multi_format_processor.py` (e.g. `.json`, `.yaml`, `.lean`, …) so interchange artifacts on disk are found and re-processed. See [SPEC.md](SPEC.md) § File discovery.
 
 **Location**: `src/gnn/processor.py`
 
@@ -460,7 +462,7 @@ output/3_gnn_output/
 ### Data Flow
 
 ```
-input/gnn_files/*.md → GNN Parser → Multi-Format Serializer → output/3_gnn_output/
+input/gnn_files/ (mixed extensions per multi_format_processor) → GNNParsingSystem → Serializers → output/3_gnn_output/
                             ↓
                     Parsed Model JSON
                             ↓

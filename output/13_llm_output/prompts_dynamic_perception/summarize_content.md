@@ -1,16 +1,9 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary:
+This is a comprehensive description of the GNN Representation model, covering key variables, critical parameters, and use cases. It provides an overview of what the model does, its structure, and how it works. The summary includes:
 
-**Overview:** This GNN represents a dynamic perception model that can learn from noisy observations by tracking hidden sources (state inference) and updating beliefs based on observed actions/policies (belief updates). The model is designed to handle passive observers, allowing for the learning of probabilistic graphical models. It has two main components:
-
-1. **GNN Representation**: A representation of a dynamic perception model that can learn from noisy observations by tracking hidden sources.
-2. **Model Overview**: A description of the model's key variables and their roles in handling passive observer-driven belief updating.
-3. **Key Variables**: Hidden states, actions/policies, and action maps (transition matrices).
-4. **Critical Parameters**: The most important matrices:
-   - **A** (representative matrix): A representation that can learn from noisy observations by tracking hidden sources.
-   - **B** (prior distribution): A representation of the initial state to avoid interference with observed actions/policies.
-   - **D** (belief updating matrix): A representation for updating beliefs based on observed actions/policies.
-5. **Notable Features**:
-   - **Special properties or constraints**: The model's ability to learn from noisy observations and handle passive observers, allowing it to adaptively update its beliefs in response to new data.
-   - **Unique aspects of this model design**: The ability to learn probabilistic graphical models that can capture the behavior of a dynamic perception system without relying on actions/policies.
+1. **Overview**: A concise description of the model's purpose, components, and key features.
+2. **Key Variables**: List with brief descriptions for each variable.
+3. **Critical Parameters**: List with brief descriptions for each parameter.
+4. **Notable Features**: List with brief descriptions for each feature.
+5. **Use Cases**: A list of scenarios where this model could be applied, along with examples and explanations.

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/jax/Simple MDP Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.708112,
-  "timestamp": "2026-04-12T17:25:00.249750",
+  "execution_time": 0.781715,
+  "timestamp": "2026-04-14T11:00:31.575572",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

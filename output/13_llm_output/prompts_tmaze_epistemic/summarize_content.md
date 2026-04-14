@@ -1,18 +1,32 @@
 # SUMMARIZE_CONTENT
 
-This GNN represents a classic active inference task from Active Inference literature (Friston et al.: 10). The model is based on a hidden state matrix representation of the agent's actions, and its key variables are:
+Here's a concise overview of the GNN specification:
 
-1. **Hidden states**: A list with brief descriptions for each action that can be accessed by observing the agent's location or reward/cue.
-2. **Observations**: A list with brief descriptions for each observation modality (left arm, right arm).
-3. **Actions**: A list of actions taken in response to a specific action (go_left, go_right, stay) and their corresponding rewards/cues.
-4. **Correspondence between Actions**: A matrix representing the relationships between actions and reward/cue information.
-5. **Key Variables**: A set of matrices that represent the agent's state-action relationship in terms of action (left arm), reward/cue (right arm) interactions, and hidden states.
-6. **Critical Parameters**: Key hyperparameters and their settings for this model:
-   - **Most important matrices** (A, B, C, D): These are used to represent the agent's actions and rewards/cues in terms of action-reward relationships.
-   - **Key parameters**, like **num_locations**, **num_contexts**, **num_location_obs**, **num_actions**, etc., which describe how the model is composed together (e.g., **A**).
-7. **Notable features**: A set of matrices that represent the agent's actions and rewards/cues in terms of action-reward relationships, key variables like **Hidden states**.
-8. **Use cases**: Specific scenarios where this model could be applied to:
-   - Explore a T-shaped maze with 4 locations (center, left arm, right arm)
-   - Explore a T-shaped maze with 2 arms and 3 cue locations (left arm, center, right arm)
-   - Explore a T-shaped maze with 10 arms and 5 cue locations (left arm, center, right arm, left arm, right arm)
-9. **Notable features**: A set of matrices that represent the agent's actions and rewards/cues in terms of action-reward relationships, key variables like **Hidden states**.
+**Overview:**
+This is a generic active inference model that can be used as an example or in conjunction with other models like GMMs or Bayesian networks. It provides a framework for analyzing and modeling epistemic foraging behavior, where agents navigate through a maze to explore different locations while exploiting rewards from nearby arms.
+
+Key Variables:
+
+1. **Hidden States**: A list of 4 variables representing the location state (center, left arm, right arm, cue) that encode information about the agent's current position and exploration direction. These states are used for inference purposes but not explicitly defined in this specification.
+
+2. **Observations**: A list of 3 variables representing the location observation (left or right arm). These observations represent the agent's current state during exploration, while also providing context to guide future actions.
+
+3. **Actions/Controls**: A list of 4 variables representing the agent's actions and control strategies (choices) in relation to each other. These actions are used for inference purposes but not explicitly defined in this specification.
+
+4. **Action**: A list of 2 variables representing the action taken by the agent during exploration, which can be either "exploit" or "visit". This is a crucial aspect of the model design and should not change based on the specific actions being explored.
+
+**Key Parameters:**
+
+1. **Hidden States**: A list of 4 variables describing the location state (center, left arm, right arm). These states encode information about the agent's current position and exploration direction.
+
+2. **Observations**: A list of 3 variables representing the location observation (left or right arm) that represent the agent's current state during exploration. This is a crucial aspect of the model design but should not change based on the specific actions being explored.
+
+**Critical Parameters:**
+
+1. **Random Direction**: A parameter describing how to explore different directions in space, which can be either "exploit" or "visit". The choice between these two strategies depends on the specific actions taken by the agent during exploration.
+
+2. **Initialization**: A parameter representing the initial state of the maze (center, left arm, right arm). This is a crucial aspect of the model design but should not change based on the specific actions being explored.
+
+**Notable Features:**
+
+1. **Random Direction**: A parameter describing how to explore different directions in space, which can

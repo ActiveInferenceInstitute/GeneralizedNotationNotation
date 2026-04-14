@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.240165,
-  "timestamp": "2026-04-12T17:24:51.347364",
+  "execution_time": 0.241981,
+  "timestamp": "2026-04-14T11:00:18.411136",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

@@ -13,6 +13,7 @@ from typing import Any, Dict, List
 _module_logger = logging.getLogger(__name__)
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
+from .visualizer import generate_all_visualizations
 
 
 class GNNTypeChecker:
@@ -59,7 +60,7 @@ class GNNTypeChecker:
             }
 
             # Find GNN files
-            gnn_files = list(target_dir.glob("*.md"))
+            gnn_files = list(target_dir.rglob("*.md"))
             if not gnn_files:
                 logger.warning("No GNN files found for type checking")
                 results["success"] = False
@@ -91,6 +92,11 @@ class GNNTypeChecker:
             results_file = output_dir / "type_check_results.json"
             with open(results_file, 'w') as f:
                 json.dump(results, f, indent=2)
+
+            # Generate visualizations natively from results matrix
+            visual_embeddings = generate_all_visualizations(results, output_dir)
+            if visual_embeddings:
+                results["visual_embeddings"] = visual_embeddings
 
             # Generate type check summary
             summary = self._generate_type_check_summary(results)
@@ -127,17 +133,24 @@ class GNNTypeChecker:
 
             # Check for type definitions
             type_patterns = [
-                r'(\w+)\s*:\s*(\w+)',  # name: type
-                r'(\w+)\s*\[([^\]]+)\]',  # name[dimensions]
-                r'(\w+)\s*=\s*([^;\n]+)',  # name = value
+                r'([^#\w])(\w+)\s*:\s*([a-zA-Z0-9_]+)',  # name: type (excluding comments)
+                r'(\w+)\s*\[(?:[^\]]*?)type=([a-zA-Z0-9_]+)(?:[^\]]*?)\]',  # name[...type=float...]
+                r'(\w+)\s*\[([0-9\s,]+)\]',  # name[dimensions] with pure numbers acting as shapes
             ]
 
             found_types = []
             for pattern in type_patterns:
                 matches = re.finditer(pattern, content)
                 for match in matches:
-                    var_name = match.group(1)
-                    var_type = match.group(2)
+                    if len(match.groups()) >= 3 and pattern.startswith(r'([^#'):
+                        var_name = match.group(2)
+                        var_type = match.group(3)
+                    elif len(match.groups()) >= 2:
+                        var_name = match.group(1)
+                        var_type = match.group(2)
+                    else:
+                        continue
+                    
                     found_types.append({
                         "name": var_name,
                         "type": var_type,
@@ -169,6 +182,10 @@ class GNNTypeChecker:
                 for warning in dim_check["warnings"]:
                     validation_result["warnings"].append(warning)
 
+            # Assign resource estimation metadata for baseball cards
+            resources = estimate_file_resources(content)
+            validation_result["resource_estimation"] = resources
+
             return validation_result
 
         except Exception as e:
@@ -187,7 +204,9 @@ class GNNTypeChecker:
         return {
             "valid_types": [
                 "int", "float", "double", "string", "bool", "array", "matrix",
-                "vector", "tensor", "state", "action", "observation", "belief"
+                "vector", "tensor", "state", "action", "observation", "belief",
+                "Categorical", "Dirichlet", "Gaussian", "Continuous", "Discrete",
+                "POMDP", "MDP", "GenerativeModel", "Distribution"
             ],
             "type_patterns": {
                 "numeric": r"^[0-9]+(\.[0-9]+)?$",
@@ -245,17 +264,27 @@ class GNNTypeChecker:
 
             # Extract type information
             type_patterns = [
-                r'(\w+)\s*:\s*(\w+)',  # name: type
-                r'(\w+)\s*\[([^\]]+)\]',  # name[dimensions]
+                r'([^#\w])(\w+)\s*:\s*([a-zA-Z0-9_]+)',  # name: type
+                r'(\w+)\s*\[(?:[^\]]*?)type=([a-zA-Z0-9_]+)(?:[^\]]*?)\]',  # name[...type=float...]
+                r'(\w+)\s*\[([0-9\s,]+)\]',  # name[dimensions] with pure numbers acting as shapes
             ]
 
             types_found = []
             for pattern in type_patterns:
                 matches = re.finditer(pattern, content)
                 for match in matches:
+                    if len(match.groups()) >= 3 and pattern.startswith(r'([^#'):
+                        var_name = match.group(2)
+                        var_type = match.group(3)
+                    elif len(match.groups()) >= 2:
+                        var_name = match.group(1)
+                        var_type = match.group(2)
+                    else:
+                        continue
+                        
                     types_found.append({
-                        "name": match.group(1),
-                        "type": match.group(2),
+                        "name": var_name,
+                        "type": var_type,
                         "line": content[:match.start()].count('\n') + 1
                     })
 
@@ -303,6 +332,16 @@ class GNNTypeChecker:
 - **Type Analyses**: {len(results.get('type_analysis', []))}
 - **Total Variables**: {sum(a.get('total_variables', 0) for a in results.get('type_analysis', []))}
 
+## Graphical Abstracts
+"""
+        visual_embeddings = results.get("visual_embeddings", [])
+        if visual_embeddings:
+            for embedding in visual_embeddings:
+                summary += f"\n{embedding}\n"
+        else:
+            summary += "\n*No visual summaries could be generated.*\n"
+
+        summary += """
 ## Error Summary
 """
 
@@ -319,79 +358,64 @@ class GNNTypeChecker:
         return summary
 
 def estimate_file_resources(content: str) -> Dict[str, Any]:
-    """Estimate computational resources needed for a GNN file.
-
-    Uses framework-aware complexity tiers based on variable dimensions
-    rather than naive variable*connection multiplication.
+    """Estimate computational resources needed for a GNN file using core framework logic.
     """
+    import math
     try:
+        from .estimation_strategies import (
+            calculate_complexity,
+            estimate_memory,
+        )
+        from .resource_estimator import GNNResourceEstimator
+        
         # Extract structured dimensions
         variables_with_dims = extract_gnn_dimensions(content)
+        
+        # Formulate variables map compatible with rigorous estimators
+        vars_map = {}
+        for k, v in variables_with_dims.items():
+            vars_map[k] = {"dimensions": v, "type": "float"}
+            
+        # Connections math
+        directed = re.findall(r'(\w+)\s*>\s*(\w+)', content)
+        undirected = re.findall(r'(\w+)\s*-\s*(\w+)', content)
+        edges = [{"source": u, "target": v, "type": "directed"} for u, v in directed]
+        edges.extend([{"source": u, "target": v, "type": "undirected"} for u, v in undirected])
+        
+        equations = "\n".join([f"{u}={v}" for u, v in re.findall(r'(\w+)\s*=\s*(.+)', content)])
 
-        # Count connections (directed and undirected)
-        directed_connections = len(re.findall(r'(\w+)\s*>\s*(\w+)', content))
-        undirected_connections = len(re.findall(r'(\w+)\s*-\s*(\w+)', content))
-        total_connections = directed_connections + undirected_connections
-
-        # Compute total parameter count from actual dimensions
-        total_parameters = 0
-        max_single_var = 0
-        for _, dims in variables_with_dims.items():
-            elements = 1
-            for d in dims:
-                elements *= d
-            total_parameters += elements
-            max_single_var = max(max_single_var, elements)
-
-        # Recovery: use regex variable count if no structured dims found
+        memory_bytes = estimate_memory(vars_map, GNNResourceEstimator.MEMORY_FACTORS) * 1024 # convert kb to bytes loosely
+        complexity_metrics = calculate_complexity(vars_map, edges, equations)
+        
+        total_parameters = sum([math.prod(v) if isinstance(v, list) else 1 for v in variables_with_dims.values()])
         if total_parameters == 0:
-            var_count = len(re.findall(r'(\w+)\s*[:=]', content))
-            total_parameters = var_count * 9  # assume 3x3 average
+            total_parameters = len(re.findall(r'(\w+)\s*[:=]', content)) * 9
 
-        # Framework-aware complexity tiers
-        if total_parameters < 100:
-            complexity_tier = "minimal"
-            estimated_time = 0.1
-            estimated_memory = total_parameters * 8
-        elif total_parameters < 1000:
-            complexity_tier = "small"
-            estimated_time = 0.5
-            estimated_memory = total_parameters * 8 + 1024 * 1024  # 1MB overhead
-        elif total_parameters < 10000:
-            complexity_tier = "medium"
-            estimated_time = 5.0
-            estimated_memory = total_parameters * 8 + 10 * 1024 * 1024  # 10MB overhead
-        elif total_parameters < 100000:
-            complexity_tier = "large"
-            estimated_time = 30.0
-            estimated_memory = total_parameters * 8 + 100 * 1024 * 1024  # 100MB overhead
-        else:
-            complexity_tier = "very_large"
-            estimated_time = 120.0
-            estimated_memory = total_parameters * 8 + 500 * 1024 * 1024  # 500MB overhead
+        complexity_tier = "minimal"
+        score = complexity_metrics.get("overall_complexity", 0)
+        if score > 2.0: complexity_tier = "small"
+        if score > 5.0: complexity_tier = "medium"
+        if score > 8.0: complexity_tier = "large"
 
         return {
-            "variables": len(variables_with_dims),
-            "connections": total_connections,
-            "total_parameters": total_parameters,
-            "max_single_variable_elements": max_single_var,
-            "estimated_memory_bytes": int(estimated_memory),
-            "estimated_time_seconds": estimated_time,
-            "complexity_score": total_parameters * (1 + total_connections * 0.1),
             "complexity_tier": complexity_tier,
-            "dimension_map": variables_with_dims
+            "estimated_memory_bytes": int(memory_bytes),
+            "total_parameters": total_parameters,
+            "variables": len(variables_with_dims),
+            "connections": len(edges),
+            "flops_estimate": score * 500.0, # Rough FLOPS parameter correlation
+            "complexity_score": score
         }
-
     except Exception as e:
         return {
-            "error": str(e),
+            "complexity_tier": "unknown",
+            "estimated_memory_bytes": 0,
+            "total_parameters": 0,
             "variables": 0,
             "connections": 0,
-            "total_parameters": 0,
-            "estimated_memory_bytes": 0,
-            "estimated_time_seconds": 0,
+            "flops_estimate": 0,
             "complexity_score": 0,
-            "complexity_tier": "unknown"
+            "error": str(e)
         }
 
 

@@ -1,26 +1,22 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN specification:
 
-**Overview**
-This GNN (Generalized Notation Notation) specification describes a fully observable Markov Decision Process (MDP):
+**Model Overview:**
+This is a Markov Decision Process (MDP) that models agent A as identity, agent B as identity, and agent C as identity. The MDP consists of 4 hidden states (`A`) and 4 actions (`s`), with each state mapping to its own observation (`observation_outcomes`, `actions`, `π`).
 
-- **A**: 4 hidden states representing grid positions, each with identity and identity matrices.
-- **B**: 4 actions that are action-based, with actions ranging from stay to move-north/south/east/west.
-- **C**: A uniform prior over the observation space (identity matrix).
-- **D**: A categorical distribution over actions (actions vector), with a uniform prior across all actions and actions in turn.
-- **G**: The probability of observing state/observation transition matrices, with action selection based on the policy distribution.
-- **EFE(pi)**: The probability of observing observation/state 3 given state/observation transitions.
-**Key Variables**
-   - **A**: Identity matrix representing identity (fully observable).
-   - **B**: Identity matrix representing identity (identity matrix), with identity and identity matrices.
-   - **C**: Identity matrix representing identity, with identity and identity matrices.
-   - **D**: Uniform distribution over actions, with action selection based on the policy distribution.
-**Critical Parameters**
-   - **Most important matrices**: A hidden state matrix, a uniform prior across all actions, and a categorical distribution over actions.
-   - **Key hyperparameters**: Most important matrices (A, B, C, D) and their roles:
-   - **Most important matrices**: A hidden state matrix, a uniform prior across all actions, and a categorical distribution over actions.
-   - ****
-- **Notable Features**
-   - **Special properties or constraints**: Unique aspects of this model design.
-   - **Unique characteristics**: Unique features that describe the MDP's behavior.
+**Key Variables:**
+
+1. **Hidden States**: A list containing the identities of all hidden states, which are identity matrices representing the MDP agent's knowledge about their positions and actions. Each hidden state is represented by a matrix with 4 elements (identity matrices), each element represents an observation in that state.
+
+2. **Observations**: A list containing the observables (`states`, `actions`). Each observable is a tensor of shape `(num_hidden_states, num_observations)`. Each observation has two dimensions: one for the current state and another for its corresponding action. The number of observations in each hidden state corresponds to the number of actions in that state.
+
+3. **Actions**: A list containing the actions (`actions`). Each action is a tensor with shape `(num_hidden_states,)`. Each action has two dimensions: one for the current observation and another for its corresponding action. The number of actions in each hidden state corresponds to the number of actions taken by that state.
+
+4. **Policies**: A list containing the policies (`pi`) representing the policy distribution over actions (policy matrices). Each policy is a tensor with shape `(num_hidden_states,)`. Each policy has two dimensions: one for the current observation and another for its corresponding action. The number of policies in each hidden state corresponds to the number of actions taken by that state.
+
+**Critical Parameters:**
+
+1. **Most Important Matrices**: A list containing the most important matrices (`A`, `B`) representing the MDP agent's knowledge about their positions, actions, and policy distributions over observation. Each matrix has 4 elements (identity matrices). The number of hidden states in each state corresponds to the number of actions taken by that state.
+
+2. **Key Variables**: A list containing the key variables (`A`, `B`) representing the MDP agent's knowledge about its positions, actions, and policy distributions over observation. Each matrix has 4 elements (identity matrices). The number of hidden states in each state corresponds to the

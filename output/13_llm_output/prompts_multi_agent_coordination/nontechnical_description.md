@@ -6,18 +6,19 @@ Prompt:
 
 Response:
 
-Your description is accurate and comprehensive, providing a clear overview of the structure and behavior of the Multi-Agent Cooperative Active Inference (MCAF) model. Here's a concise summary:
+```python
+import numpy as np
+from scipy import stats
 
-1. **Model Overview**: The MCAF model consists of two main components:
-   - **Multi-Agent Cooperative**: A cooperative agent with multiple actions that can cooperate or compete with each other, and
-   - **GNN Representation**: A representation of the MCAF model in terms of its state space, action spaces, and shared environment.
+# Define the number of agents and their actions
+num_agents = 2
+actions_per_agent = 4
+num_hidden_states = 4
+num_obs = 3
+timesteps = 20
 
-2. **Model Annotation**: The GNN version annotation includes information about the MCAF model's structure, including:
-    - **Multi-Agent Cooperative**: The cooperative agent with multiple actions that can cooperate or compete with each other.
-    - **GNN Representation**: A representation of the MCAF model in terms of its state space and action spaces.
-
-3. **ModelAnnotation** (optional): Additional information about the GNN version annotation, such as:
-   - **Multi-Agent Cooperative**: The cooperative agent with multiple actions that can cooperate or compete with each other.
-   - **GNN Representation**: A representation of the MCAF model in terms of its state space and action spaces.
-
-Your description is clear and concise, providing a comprehensive overview of the structure and behavior of the Multi-Agent Cooperative Active Inference (MCAF) model.
+# Initialize the GNN representation for each agent
+GNNRepresentation = MultiAgentCooperativeActiveInference(
+    num_agents, actions=actions_per_agent, num_hidden_states=num_hidden_states_per_agent,
+    num_obs=num_observations, timesteps=timesteps)
+```

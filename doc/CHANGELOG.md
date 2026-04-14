@@ -1,77 +1,70 @@
 # GNN Documentation Changelog
 
-> **Latest Update**: March 2026
-> **Status**: Production Ready
+**Hub**: [README.md](README.md).
 
-This document tracks changes, additions, and improvements to the GNN documentation ecosystem.
+> **Latest update**: April 2026  
+> **Status**: Maintained
+
+This document tracks notable changes, additions, and improvements to the GNN documentation ecosystem.
 
 ---
 
-## 📋 Version History
+## Version History
 
 ### v2.0.0 (March 2026)
 
-#### 🆕 New Documentation Added
+#### New documentation
 
-- **doc/CHANGELOG.md** - New! Comprehensive changelog for tracking documentation updates
-- **doc/QUICK_REFERENCE.md** - New! Quick reference guide with common commands and patterns
-- **doc/arc-agi/** - New directory with ARC-AGI model documentation
-- **doc/cerebrum/** - New directory with Cerebrum v1.4 integration
-- **doc/muscle-mem/** - New directory with muscle memory model documentation
+- **doc/CHANGELOG.md** — Changelog for documentation updates
+- **doc/QUICK_REFERENCE.md** — Short command and pattern reference
+- **doc/arc-agi/** — ARC-AGI model documentation
+- **doc/cerebrum/** — Cerebrum integration notes
+- **doc/muscle-mem/** — Muscle memory model documentation
 
-#### 📚 Expanded Documentation
+#### Expanded documentation
 
-- **cognitive_phenomena/attention/** - Added `attention_model.md` with implementation details
-- **cognitive_phenomena/consciousness/** - Added `global_workspace_model.md` with neural network mapping
-- **cognitive_phenomena/effort/** - Enhanced with computational load examples
-- **doc/gnn/** - Expanded to 10 subdirectories: advanced, implementations, integration, language, mcp, modules, operations, reference, testing, tutorials
+- **cognitive_phenomena/** — Additional topic pages (attention, consciousness, effort, etc.)
+- **doc/gnn/** — Subdirectories include advanced, implementations, integration, language, mcp, modules, operations, reference, testing, tutorials
 
-#### 🔗 Improved Cross-References
+#### Cross-references
 
-- Enhanced cross-linking between related documentation sections
-- Added bidirectional references between GNN spec and framework docs
-- Updated INDEX.md with better navigation structure
+- Tighter linking between GNN spec and framework docs
+- **INDEX.md** navigation updates
 
-#### 🏗️ Documentation Infrastructure
+#### Infrastructure
 
-- 89 AGENTS.md files now covering all major modules
-- 94 README.md files across documentation directories
-- Complete coverage of 170+ subdirectories
+- AGENTS/README coverage expanded across subtrees (see [development/docs_audit.py](development/docs_audit.py))
 
 ---
 
 ### v1.3.0 (February 2026)
 
-#### 🆕 New Features
-
-- Added **CROSS_REFERENCE_INDEX.md** - Machine-readable documentation navigation
-- Expanded **learning_paths.md** with four distinct learning tracks
-- Added **style_guide.md** for documentation consistency
+- **CROSS_REFERENCE_INDEX.md** — Topic navigation
+- **learning_paths.md** — Multiple learning tracks
+- **style_guide.md** — Documentation conventions
 
 ---
 
-## 📊 Documentation Metrics
+## Documentation metrics
 
-| Metric | Count |
-|--------|-------|
-| Total Markdown Files | 454 |
-| Directories | 170 |
-| AGENTS.md Files | 89 |
-| README.md Files | 94 |
-| Cross-References | 1400+ |
+Counts drift as the tree grows. For **mechanical** link and pairing checks, run from the repository root:
 
----
+```bash
+uv run python doc/development/docs_audit.py --strict
+```
 
-## 🚀 Contributing to Documentation
-
-When adding new documentation:
-
-1. Create appropriate `README.md` in the directory
-2. Add `AGENTS.md` for agent-facing documentation
-3. Update `doc/INDEX.md` with new entry
-4. Update `doc/CROSS_REFERENCE_INDEX.md` for machine navigation
-5. Add entry to this changelog
+Approximate scale (order of magnitude): hundreds of Markdown files under `doc/`, many AGENTS/README pairs, cross-links maintained via audits rather than fixed integers here.
 
 ---
 
-*Last updated: March 2026*
+## Contributing to documentation
+
+1. Add or update **README.md** in the relevant directory
+2. Add **AGENTS.md** where the subtree uses agent-oriented signposts
+3. Update **doc/INDEX.md** when adding a major entry point
+4. Update **doc/CROSS_REFERENCE_INDEX.md** for topic graph changes when appropriate
+5. Add a short entry to this changelog for user-visible doc changes
+
+---
+
+*Last updated: April 2026*

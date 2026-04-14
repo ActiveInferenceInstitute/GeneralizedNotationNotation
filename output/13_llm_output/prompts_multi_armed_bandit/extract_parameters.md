@@ -1,56 +1,39 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters that describe the GNN model:
+Based on the document, here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the state space dimensions and dimensionality of each parameter
-   - B matrices representing the transition matrix and prior over actions
-   - C matrices representing the action-observation mapping (policy) and prior probabilities
-   - D matrices representing the action-observations relationships and prior probability
+   - A matrices representing the state space and action spaces.
+   - B matrices representing the reward and observation spaces.
+   - C matrices representing the policy and control variables.
+   - D matrices representing the hidden states and actions.
+   - EFE (Efficient Generalized Notation) parameters, which are used to estimate the agent's behavior based on its predictions.
 
 2. **Precision Parameters**:
-   - γ: precision parameters, which are used to estimate the accuracy of predictions
-   - α: learning rate parameter, which is used for optimization purposes
-   - Other precision/confidence parameters (optional)
+   - γ: precision parameter for each action variable
+   - α: learning rate parameter for each action variable
+   - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
    - State space dimensions for each factor
    - Observation space dimensions for each modality
    - Action space dimensions for each control factor
 
-The document provides a systematic parameter breakdown of the GNN model:
+4. **Temporal Parameters**:
+   - Time horizons (T)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
 
-1. **Model Matrices**:
-   - A matrices representing the state space dimensions and dimensionality of each parameter
-   - B matrices representing the transition matrix and prior over actions
-   - C matrices representing the action-observation mapping (policy) and prior probabilities
-   - D matrices representing the action-observations relationships and prior probability
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
 
-2. **Precision Parameters**:
-   - γ: precision parameters, which are used to estimate the accuracy of predictions
-   - α: learning rate parameter, which is used for optimization purposes
-   - Other precision/confidence parameters (optional)
+6. **Configuration Summary**:
+   - Parameter file format recommendations for the GNN implementation
 
-The document provides a systematic parameter breakdown of the GNN model:
-
-1. **Model Matrices**:
-   - A matrices representing the state space dimensions and dimensionality of each parameter
-   - B matrices representing the transition matrix and prior over actions
-   - C matrices representing the action-observation mapping (policy) and prior probabilities
-   - D matrices representing the action-observations relationships and prior probability
-
-2. **Precision Parameters**:
-   - γ: precision parameters, which are used to estimate the accuracy of predictions
-   - α: learning rate parameter, which is used for optimization purposes
-   - Other precision/confidence parameters (optional)
-
-The document provides a systematic parameter breakdown of the GNN model:
-
-1. **Model Matrices**:
-   - A matrices representing the state space dimensions and dimensionality of each parameter
-   - B matrices representing the transition matrix and prior over actions
-   - C matrices representing the action-observation mapping (policy) and prior probabilities
-   - D matrices representing the action-observations relationships and prior probability
-
-2. **Precision Parameters**:
-   - γ: precision
+So in summary, the parameters are:
+- **Model Matrices**: A matrix representing the state space and action spaces (A) and reward/observation spaces (B).
+- **Precision Parameters**: A matrix representing each precision parameter.
+- **Dimensional Parameters**: A matrix representing each dimension of the states and actions.
+- **Temporal Parameters**: A matrix representing each temporal dependency and window for each action variable.

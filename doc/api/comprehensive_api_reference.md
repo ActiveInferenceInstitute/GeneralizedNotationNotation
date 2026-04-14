@@ -8,7 +8,7 @@ This comprehensive reference documents programmatic integration with the General
 
 > **Accuracy**  
 > **Authoritative `gnn` exports:** [`src/gnn/__init__.py`](../../src/gnn/__init__.py). **Format counts / registries:** [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md). **Symbol index:** [`api_index.json`](api_index.json) (regenerate with `python src/generate_api_index.py`).  
-> Sections **below this box** that show modules such as `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` are **legacy illustrative sketches** unless you confirm the same names in `src/` or `api_index.json`.
+> Sections **below this box** that show modules such as `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` are **illustrative sketches** unless you confirm the same names in `src/` or `api_index.json`.
 
 ## API map
 
@@ -54,7 +54,7 @@ ok, errors = validate_gnn(Path("input/gnn_files/model.md").read_text(encoding="u
 | `validate_gnn`, `validate_gnn_file` | Validation |
 | `schema_validator.GNNParser` | Section-level parser for strict validation (submodule import) |
 
-## Legacy illustrative reference (verify in `src/`)
+## Illustrative reference (verify in `src/`)
 
 The remainder of this file retains older narrative examples. **Do not import** `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` unless listed in [`src/gnn/__init__.py`](../../src/gnn/__init__.py) or `api_index.json`.
 

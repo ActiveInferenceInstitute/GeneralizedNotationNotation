@@ -6,41 +6,26 @@ Prompt:
 
 Response:
 
-To implement the GNN model, we can use the following steps:
+```python
+import bnlearn as bl
+from bnlearn import model, gnn_syntax, connections
 
-1. Define the input parameters for the GNN model:
-   - `A`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
-   - `B`: The action map representing the transition probabilities between states
-   - `s`: The previous state, represented as a dictionary mapping to an integer
+# Create the BN network and connect it with the input layer
+BN = bl.BN(input=bnlearn.InputLayer("B", "b"))
+BN.connect([
+    (0.9, 0.1),
+    (0.1, 0.9)
+])
+```
 
-2. Define the input parameters for the GNN model:
-   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
-   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
-3. Define the input parameters for the GNN model:
-   - `D`: A dictionary mapping to an integer
+This implementation uses a Bayesian network model to learn the causal relationships between input and output states. The `input` layer is connected with the `bnlearn.InputLayer`, which connects the input state to the hidden state using the `BN(...)` function. Then, the `OutputLayer` connects the output state back to itself using the `BN(...)` function.
 
-4. Define the input parameters for the GNN model:
-   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
-   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
-5. Define the input parameters for the GNN model:
-   - `D`: A dictionary mapping to an integer
+The `BnlearnCausalModel` class represents a Bayesian network model mapping active inference structure to a Bayesian network. It maps input states to hidden states and action transitions between states to observable actions. The `input`, `output`, and `action` variables are initialized with the input layer's output state, the input layer's hidden state, and the input layer itself, respectively.
 
-6. Define the input parameters for the GNN model:
-   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
-   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
-7. Define the input parameters for the GNN model:
-   - `D`: A dictionary mapping to an integer
+The `BN(...)` function connects the input layer to the hidden state using the `bnlearn.InputLayer` function. Then, the `OutputLayer` connects the output state back to itself using the `BN(...)` function. The `BnlearnCausalModel` class maps the input and output states to observable actions by connecting them with the `BN(...)` function.
 
-8. Define the input parameters for the GNN model:
-   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
-   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
-9. Define the input parameters for the GNN model:
-   - `D`: A dictionary mapping to an integer
+The `input`, `output`, and `action` variables are initialized with the input layer's output state, the input layer itself, and the input layer itself, respectively. The `BnlearnCausalModel` class maps the hidden states to observable actions by connecting them with the `BN(...)` function.
 
-10. Define the input parameters for the GNN model:
-   - `A` and `B`: The hidden state of the network (represented as a dictionary mapping to a boolean value)
-   - `S_prev`, `a`, and `o`: The actions representing the transition probabilities between states
-11. Define the input parameters for the GNN model:
-   - `D`: A dictionary mapping to an integer
+The `input`, `output`, and `action` variables are initialized with the input layer's output state, the input layer itself, and the input layer itself, respectively. The `BnlearnCausalModel` class maps the hidden states to observable actions by connecting them with the `BN(...)` function.
 
-12. Define
+The `input`, `output`, and `action` variables are initialized with the input layer's output state, the input layer itself, and the input layer itself, respectively. The `BnlearnCausalModel` class maps the hidden states to

@@ -1,6 +1,6 @@
 # GNN Quick Reference Guide
 
-> **Version**: 2.0 | **Last Updated**: March 2026
+> **Version**: 2.0 | **Last Updated**: April 2026
 
 A concise reference for common GNN operations, syntax patterns, and frequently used commands.
 
@@ -12,10 +12,10 @@ A concise reference for common GNN operations, syntax patterns, and frequently u
 
 ```bash
 # Full pipeline (all 25 steps)
-python src/main.py --target-dir input/gnn_files --verbose
+uv run python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific steps
-python src/main.py --only-steps "3,5,7,8,11,12" --verbose
+uv run python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 ```
 
 ---

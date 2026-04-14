@@ -1139,4 +1139,40 @@ class MultiAgentGNNAgent:
 
 ---
 
+## Category theory
+
+Compositional semantics for GNN ↔ DisCoPy: see [DisCoPy integration](../../discopy/gnn_discopy.md) and [Mathematical Foundations](#mathematical-foundations).
+
+## Causal inference
+
+Explicit causal structure appears in [Connections](#connections) graphs and validation (Steps 5–6); pair with [Modeling Patterns](#modeling-patterns).
+
+## Decision theory
+
+Risk and utility: see [Pattern: Risk-Sensitive Decision Making](#pattern-risk-sensitive-decision-making).
+
+## Geometric foundations
+
+Spatial embeddings: see [Pattern: Spatial Hierarchies](#pattern-spatial-hierarchies).
+
+## Hierarchical architectures
+
+Layered models: see [Hierarchical Modeling](#1-hierarchical-modeling) and [Pattern: Temporal Hierarchies](#pattern-temporal-hierarchies).
+
+## Learning algorithms
+
+Inference and learning hooks are framework-specific after Step 11 render; see [Pipeline Processing for Advanced Models](#pipeline-processing-for-advanced-models).
+
+## Mathematical foundations
+
+Priors, transitions, and constraints are expressed through `A`/`B`/`C`/`D` blocks throughout this guide—start from [Overview](#overview).
+
+## Social cognition
+
+Multi-agent and ToM-style patterns: see [2. Multi-Agent Systems](#2-multi-agent-systems) and [Pattern: Language and Communication](#pattern-language-and-communication).
+
+## Temporal hierarchy
+
+Slow–fast decompositions: see [Pattern: Temporal Hierarchies](#pattern-temporal-hierarchies).
+
 **This guide provides a foundation for sophisticated GNN modeling. Start with simpler patterns and gradually incorporate complexity as needed for your specific application domain.**

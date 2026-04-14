@@ -477,6 +477,11 @@ async def _run_llm_analysis(
 
 ---
 
+IMPORTANT STRONGLY ENFORCED RULES:
+1. You are writing a BUSINESS REPORT in pure Markdown prose.
+2. Output ONLY the requested headings and their content. No greeting, no scripts, no meta-commentary.
+3. Use the exact headings listed below and fill them in with analytical paragraphs and bullet points.
+
 Please provide analysis in EXACTLY this format:
 
 ### Executive Summary
@@ -508,7 +513,14 @@ Please provide analysis in EXACTLY this format:
             model_name=model_name,
             max_tokens=2500
         )
-        return response.content
+        content = response.content.strip()
+        
+        # Fallback if the small model hallucinated a python script (e.g. smollm2 135m)
+        if "```python" in content.lower() or "def " in content:
+            logger.warning("LLM hallucinated python code instead of prose. Using robust rule-based summary.")
+            return _generate_rule_based_summary(context, step_analyses, flags_by_type)
+            
+        return content
     except Exception as e:
         logger.error(f"Error calling LLM: {e}")
         return _generate_rule_based_summary(context, step_analyses, flags_by_type)

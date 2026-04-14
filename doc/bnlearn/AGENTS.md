@@ -27,7 +27,7 @@ The bnlearn Framework documentation system is part of the broader GNN (Generaliz
 
 - **README.md**: Comprehensive guide, features, pipelines, and code examples for `bnlearn` integration.
 
-**Last Updated**: 2026-04-09
+**Last Updated**: 2026-04-14
 
 ## Quick Navigation
 

@@ -139,6 +139,8 @@ Follow the project [Style Guide](doc/style_guide.md) for formatting and naming c
 
 ## Security
 
+### Security considerations
+
 If you discover a security vulnerability, please follow the reporting process in [SECURITY.md](SECURITY.md). Do **not** open a public issue for security vulnerabilities.
 
 ## Code of Conduct

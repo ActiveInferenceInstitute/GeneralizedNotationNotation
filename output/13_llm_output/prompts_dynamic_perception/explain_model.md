@@ -1,22 +1,17 @@
 # EXPLAIN_MODEL
 
-You've already done a great job summarizing the key concepts of the GNN specification. Here's a rewritten version with some additional suggestions:
+You've already covered the key points:
 
-1. **Key Components**:
-   - **hidden states** (s_f0, s_f1) represent the observer's beliefs about their current state and future actions. These are represented as vectors in the model space.
-   - **observations** (o_m0, o_m1) capture the observed data points from the observer. They can be thought of as a collection of observations that reflect the observer's behavior over time.
-   - **actions/policies**: These represent actions taken by the observer to update their beliefs and make decisions based on available information. Actions are represented as matrices in the model space, with each action representing a specific state transition. Policies are represented as vectors in the model space, with each policy representing a particular action.
+1. **Model Purpose**: This is a generative model that represents a dynamic perception of a world based on two hidden states (s_f0 and s_f1) and two observations (o_m0, o_m1). It captures temporal belief updating via variational inference.
 
-2. **Model Purpose**: This GNN represents a dynamic perception model that can learn from observed data and make predictions about future states based on past observations. It also implements Active Inference principles, allowing it to update its beliefs based on new information.
+2. **Core Components**:
+   - **hidden state** (p(observation | hidden state): represents the observer's current state of perception or observation.
+   - **observations** (u_c0, π_c0, etc.): represent observations made by the observer over time. These are used to update beliefs based on previous predictions and actions.
 
-3. **Core Components**:
-   - **hidden state** (s_f0) represent the observer's current belief in their current state. This is represented as a vector in the model space.
-   - **observation** (o_m0) represents the observed data point from the observer. It can be thought of as a collection of observations that reflect the observer's behavior over time.
-   - **action/policy**: These represent actions taken by the observer to update their beliefs and make decisions based on available information. Actions are represented as matrices in the model space, with each action representing a specific state transition. Policies are represented as vectors in the model space, with each policy representing a particular action.
+3. **Model Dynamics**: The model evolves over time using a dynamic inference process that updates its parameters based on new data. It also implements Active Inference principles, which enable it to learn and predict future states based on past observations.
 
-4. **Model Dynamics**: This GNN represents active inference by updating its beliefs based on new data points and actions taken by the observer. It also implements Active Inference principles to learn from observed data and make predictions about future states based on past observations.
+4. **Active Inference Context**: This is the input parameterization of the model representing the world observed by the observer (p(observation | hidden state)). It allows the model to update its parameters based on new data.
 
-5. **Active Inference Context**: This model can learn from observed data using a probabilistic graphical model, allowing it to update its beliefs based on new information. It can also implement Active Inference principles by updating its beliefs based on actions taken by the observer.
+5. **Practical Implications**: The model can learn and predict future states, enabling it to make informed decisions in uncertain environments. It also provides insights into how actions are taken and what beliefs are being updated.
 
-Please provide more details and context about what you're trying to achieve with this GNN specification, such as:
-   - What specific problems or domains
+Please provide more details or clarify any points that require further clarification.

@@ -6,33 +6,21 @@ Prompt:
 
 Response:
 
+Here is a simplified version of the GNN representation:
 ```python
-import numpy as np
-from scipy import stats
-
-# Define the input data and corresponding GNN parameters
-input_data = np.array([[0.956342718, 0.1],
-                  [0.256286694, 0.8]])
-output_data = np.array([
-    (0.956342718, 0.1),
-    (0.256286694, 0.8)]
-)
+GNNModel=
+    """
+    # Representation of GNN model
+    #
+    # This represents an active inference model with 2 hidden states,
+    # and two observations.
+    #
+    # The input to this model consists of two inputs (observation) and one output (perception).
+    #
+    # Input: A[1,2,type=float]    # Recognition/likelihood matrix: P(observation | hidden state)
+    # Output: D[2,1,type=float]   # Prior belief over hidden states
+    #
+    """
 ```
-This implementation uses the `numpy` library to create a tensor of shape `(input_data.shape[0], input_data.shape[1])`. It then creates a tensor of shape `(output_data.shape[0], output_data.shape[1])`, where each element is a tensor with shape `(num_hidden_states, num_obs)`. The GNN parameters are defined as:
-```python
-input_data = np.array([[0.956342718, 0.1],
-                  [0.256286694, 0.8]])
-output_data = np.array([
-    (0.956342718, 0.1),
-    (0.256286694, 0.8)]
-)
-```
-The `numpy` library is used to create a tensor of shape `(input_data.shape[0], input_data.shape[1])`. The GNN parameters are defined as:
-```python
-input_data = np.array([[0.956342718, 0.1],
-                  [0.256286694, 0.8]])
-output_data = np.array([
-    (0.956342718, 0.1),
-    (0.256286694, 0.8)]
-)
-```
+This representation is simple and easy to understand. It shows the basic structure of the GNN model with two inputs (observation) and one output (perception). The input and output are represented as a single tensor `A`. The input tensor has 2 elements, representing the input observation (`x`) and the hidden state (`hidden_state`), respectively. The prior belief is represented by a scalar value of `D`, which represents the initial belief over the hidden states.
+The model parameters are initialized with random values (0.9 for each) to represent the GNN representation. Then, we define two tensors: `A[1,2,type=float]` and `D[2,1,type=float].`, representing the input observation (`x`) and the hidden state (`hidden_state`), respectively. The prior belief is initialized with a scalar value of 0.9 for each observation (representing the initial belief). Finally, we define two tensors: `A[2,1]` and `D[2,1], type=int].`, representing the input and output observations (`x`) and the hidden states respectively. The prior belief is initialized with a scalar value of 0 for each observation (representing the initial belief). Finally, we define two tensors: `A[2,1]` and `D[2,1], type=int].`, representing the input and output observations (`x`) and the hidden states respectively. The prior belief is initialized with a scalar value of 0 for each observation (representing the initial belief). Finally, we define two tensors: `A[2,1]` and `D[2,1], type=int].`, representing the input and output observations (`x`) and the hidden states respectively. The prior belief is initialized with a scalar value of 0 for each observation (

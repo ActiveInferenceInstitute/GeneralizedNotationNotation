@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-04-12T17:34:53.492008
+Generated: 2026-04-14T11:10:46.943836
 
 ## Summary
 
@@ -14,7 +14,7 @@ Generated: 2026-04-12T17:34:53.492008
 ### NUMPYRO
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 0.90s
+- Execution Time: 0.74s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
@@ -23,7 +23,7 @@ Generated: 2026-04-12T17:34:53.492008
 ### PYMDP
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 2.68s
+- Execution Time: 2.74s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅, pymdp_version_ge_1_0_0=✅)
@@ -32,7 +32,7 @@ Generated: 2026-04-12T17:34:53.492008
 ### PYTORCH
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 0.49s
+- Execution Time: 0.56s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
@@ -41,7 +41,7 @@ Generated: 2026-04-12T17:34:53.492008
 ### JAX
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 0.72s
+- Execution Time: 0.67s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -50,19 +50,19 @@ Generated: 2026-04-12T17:34:53.492008
 ### DISCOPY
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 0.24s
+- Execution Time: 0.25s
 - Data Source: `output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_results.json`
 
 ### BNLEARN
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 1.87s
+- Execution Time: 2.07s
 - Data Source: `output/12_execute_output/simple_mdp/bnlearn/execution_logs/Simple MDP Agent_bnlearn.py_results.json`
 
 ### RXINFER
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 16.71s
+- Execution Time: 17.14s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, actions_in_range=✅, beliefs_sum_to_one=✅)
@@ -71,7 +71,7 @@ Generated: 2026-04-12T17:34:53.492008
 ### ACTIVEINFERENCE_JL
 
 - Success Rate: 100.0% (9/9)
-- Execution Time: 16.40s
+- Execution Time: 29.12s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, actions_in_range=✅, all_valid=✅, beliefs_sum_to_one=✅)
@@ -83,7 +83,7 @@ Generated: 2026-04-12T17:34:53.492008
 |-----------|-----------|-----------------|----------|---------|
 | numpyro | 15 | 1.0000 | 3.1392 | 0.0000 |
 | pymdp | 15 | 1.0000 | 1.0751 | 1.1325 |
-| pytorch | 15 | 1.0000 | 0.1392 | 0.0000 |
+| pytorch | 15 | 1.0000 | 3.1392 | 0.0000 |
 | jax | 15 | 1.0000 | -0.3188 | 1.1325 |
 | rxinfer | 15 | 1.0000 | 0.1141 | 0.0000 |
 | activeinference_jl | 15 | 0.9999 | -2.0638 | 1.1323 |
@@ -123,11 +123,11 @@ Generated: 2026-04-12T17:34:53.492008
 
 | Framework | Mean Time (s) | Std Dev | Min | Max |
 |-----------|---------------|---------|-----|-----|
-| numpyro | 0.757 | 0.086 | 0.634 | 0.897 |
-| pymdp | 2.708 | 0.106 | 2.626 | 2.995 |
-| pytorch | 0.470 | 0.012 | 0.460 | 0.497 |
-| jax | 0.714 | 0.053 | 0.659 | 0.831 |
-| discopy | 0.241 | 0.003 | 0.238 | 0.250 |
-| bnlearn | 1.886 | 0.023 | 1.864 | 1.934 |
-| rxinfer | 14.182 | 0.904 | 13.752 | 16.707 |
-| activeinference_jl | 13.661 | 1.761 | 10.608 | 16.397 |
+| numpyro | 1.137 | 1.162 | 0.621 | 4.419 |
+| pymdp | 2.812 | 0.151 | 2.599 | 3.122 |
+| pytorch | 0.482 | 0.029 | 0.460 | 0.559 |
+| jax | 0.705 | 0.056 | 0.648 | 0.825 |
+| discopy | 0.247 | 0.004 | 0.242 | 0.254 |
+| bnlearn | 2.062 | 0.110 | 1.965 | 2.290 |
+| rxinfer | 14.146 | 1.076 | 13.543 | 17.136 |
+| activeinference_jl | 16.135 | 4.619 | 13.992 | 29.115 |

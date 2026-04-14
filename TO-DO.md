@@ -1,6 +1,6 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-03-15
+**Last Updated**: 2026-04-13
 **Current Version**: 1.3.0
 **Next Target**: v1.4.0
 
@@ -8,93 +8,89 @@
 
 ## v1.4.0 — Test Coverage Milestone
 
-> **Scope**: Achieve ≥ 85% line coverage across all 31 modules. This is a minor release milestone.
+> **Scope**: Achieve ≥ 85% line coverage across all 31 modules.
 
-- [x] **Coverage baseline** — Run `uv run pytest --cov=src --cov-report=term-missing` and record per-module coverage
-- [x] **Identify gaps** — List all modules below 80% coverage with specific uncovered functions
-- [ ] **Core modules** — Ensure `gnn/`, `render/`, `execute/`, `validation/`, `type_checker/` each exceed 85%
-- [ ] **Infrastructure modules** — Ensure `pipeline/`, `utils/`, `cli/`, `api/`, `lsp/` each exceed 80%
 - [ ] **CI enforcement** — Add `--cov-fail-under=80` to CI workflow (`ci.yml`)
+- [ ] **Core modules ≥ 85%** — `gnn/`, `render/`, `execute/`, `validation/`, `type_checker/`
+- [ ] **Infrastructure ≥ 80%** — `pipeline/`, `utils/`, `cli/`, `api/`, `lsp/`
 
-### v1.4.0 Acceptance
+### Acceptance
 
-- [ ] `uv run pytest --cov=src --cov-fail-under=80` passes
-- [ ] CI pipeline enforces coverage floor
+```bash
+uv run pytest --cov=src --cov-fail-under=80  # must pass
+```
 
 ---
 
-## v1.5.0 — Pipeline Observability & Structured Logging
+## v1.5.0 — Structured Logging & Print Cleanup
 
-> **Scope**: Replace raw `print()` calls with structured logging and add pipeline metrics dashboard.
+> **Scope**: ~105 raw `print()` calls remain in non-test production code. Replace with `logging` and add pipeline metrics export.
 
-- [ ] **Structured logging** — Audit and replace raw `print()` calls in non-test production code with `logger.info()` / `logger.debug()`
+- [ ] **Print audit** — Replace raw `print()` in `src/` production files with `logger.info()` / `logger.debug()` (currently ~105 occurrences)
 - [ ] **JSON log format** — Ensure `--log-format json` produces valid JSON-lines output from all 25 steps
 - [ ] **Performance dashboard** — Generate `output/00_pipeline_summary/performance_dashboard.html` with step timing, memory, and throughput charts
-- [ ] **Memory profiling** — Add optional `--profile-memory` flag that records peak RSS per step
-- [ ] **Step dependency graph** — Generate live Mermaid diagram of step DAG execution in pipeline summary
 
-### v1.5.0 Acceptance
+### Acceptance
 
-- [ ] Zero raw `print()` calls in non-test `src/` files (all use `logging`)
-- [ ] `gnn run --log-format json` produces valid JSONL
-- [ ] Pipeline summary includes HTML performance dashboard
+```bash
+grep -rn "print(" src/ --include="*.py" | grep -v test_ | grep -v __pycache__ | wc -l  # should be 0
+```
 
 ---
 
-## v1.6.0 — Renderer Parity & Execution Coverage
+## v1.6.0 — Renderer & Executor Parity
 
-> **Scope**: Ensure all 8 renderers produce runnable code and execute module has matching runners.
+> **Scope**: All 8 renderers produce runnable code; execute module has matching runners.
+>
+> **Current state**: `render/stan/` exists but no `execute/stan/` runner. DisCoPy has both. PyMDP, JAX, PyTorch, NumPyro, RxInfer, ActiveInference.jl, bnlearn all operational.
 
-- [ ] **Stan renderer** — Verify `render/stan/` produces valid `.stan` files; add smoke test
-- [ ] **DisCoPy renderer** — Verify `render/discopy/` produces valid DisCoPy circuits; add smoke test
-- [ ] **Execute parity** — Create `execute/stan/` runner (or document as render-only with rationale)
-- [ ] **Execute parity** — Create `execute/discopy/` runner (or document as render-only with rationale)
-- [ ] **Cross-framework test** — Add integration test that renders + executes the same GNN model across PyMDP, JAX, and PyTorch
-- [ ] **Renderer benchmarks** — Generate timing comparison table across all 8 renderers for `actinf_pomdp_agent.md`
+- [ ] **Stan executor** — Create `execute/stan/` runner or document as render-only with rationale
+- [ ] **Renderer smoke tests** — Ensure all 8 renderers pass output-validation smoke tests
+- [ ] **Cross-framework test** — Integration test that renders + executes the same GNN model across ≥ 3 frameworks
 
-### v1.6.0 Acceptance
+### Acceptance
 
-- [ ] All 8 renderers pass smoke tests
-- [ ] `execute/` has runners for ≥ 6 of 8 frameworks (remaining 2 documented as render-only)
-- [ ] Cross-framework integration test passes
-
----
-
-## v1.7.0 — Documentation Quality & Discoverability
-
-> **Scope**: Raise all module documentation to comprehensive quality and improve cross-linking.
-
-- [ ] **Docstring coverage** — Increase from current level to ≥ 80% of all public functions having docstrings
-- [ ] **`doc/` index** — Create `doc/INDEX.md` that lists all 580+ documentation files with one-line descriptions
-- [ ] **Module READMEs** — Ensure all 31 module README.md files have ≥ 50 lines with usage examples
-- [ ] **API reference** — Auto-generate API docs from docstrings using `pdoc` or `sphinx-autodoc` for top 10 modules
-- [ ] **Search index** — Add `doc/search_index.json` for documentation search tooling
-- [ ] **Broken link audit** — Run link checker across all `doc/` files and fix any broken references
-
-### v1.7.0 Acceptance
-
-- [ ] Docstring coverage ≥ 80%
-- [ ] `doc/INDEX.md` exists with ≥ 500 entries
-- [ ] Zero broken internal links in `doc/`
+```bash
+uv run pytest src/tests/test_render*.py src/tests/test_execute*.py -v  # all pass
+```
 
 ---
 
-## v1.8.0 — Developer Experience & Tooling
+## v1.7.0 — Documentation Quality
 
-> **Scope**: Improve the development workflow with pre-commit hooks, linting, and automation.
+> **Scope**: Raise docstring coverage and eliminate broken links.
+>
+> **Current state**: `doc/gnn/modules/[00-24].md` freshly synced from `src/*/AGENTS.md`. Several production modules still have functions without docstrings.
+
+- [ ] **Docstring coverage ≥ 80%** — Prioritise `visualization/`, `ml_integration/`, `research/` (currently weakest)
+- [ ] **Broken link audit** — Run link checker across `doc/` and fix any broken references
+- [ ] **API reference** — Auto-generate API docs from docstrings using `pdoc` for top 10 modules
+
+### Acceptance
+
+```bash
+# Zero broken internal links verified by link checker
+```
+
+---
+
+## v1.8.0 — Developer Experience
+
+> **Scope**: Pre-commit hooks, justfile, and dev containers.
+>
+> **Current state**: `[tool.ruff]` and `[tool.mypy]` already configured in `pyproject.toml`. No `.pre-commit-config.yaml`, `justfile`, `.vscode/`, or `.devcontainer/` exist yet.
 
 - [ ] **Pre-commit hooks** — Add `.pre-commit-config.yaml` with ruff, black, mypy, and markdownlint
-- [ ] **Ruff configuration** — Add `[tool.ruff]` section to `pyproject.toml` with project-specific rules
-- [ ] **Mypy configuration** — Add `[tool.mypy]` section to `pyproject.toml` with gradual typing config
-- [ ] **Makefile / justfile** — Create `justfile` with common developer commands (`just test`, `just lint`, `just run`, `just docs`)
-- [ ] **VS Code settings** — Add `.vscode/settings.json` + `.vscode/extensions.json` for recommended dev environment
-- [ ] **Dev containers** — Add `.devcontainer/devcontainer.json` for GitHub Codespaces / VS Code remote containers
+- [ ] **justfile** — Create `justfile` with common commands (`just test`, `just lint`, `just run`, `just docs`)
+- [ ] **VS Code settings** — Add `.vscode/settings.json` + `.vscode/extensions.json`
+- [ ] **Dev containers** — Add `.devcontainer/devcontainer.json` for GitHub Codespaces
 
-### v1.8.0 Acceptance
+### Acceptance
 
-- [ ] `pre-commit run --all-files` passes
-- [ ] `just test` runs test suite
-- [ ] `.devcontainer/` works in GitHub Codespaces
+```bash
+pre-commit run --all-files  # passes
+just test                   # runs test suite
+```
 
 ---
 

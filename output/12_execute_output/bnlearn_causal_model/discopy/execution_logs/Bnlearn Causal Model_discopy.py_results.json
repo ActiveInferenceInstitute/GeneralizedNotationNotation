@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/bnlearn_causal_model/discopy/Bnlearn Causal Model_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.23897,
-  "timestamp": "2026-04-12T17:24:41.763975",
+  "execution_time": 0.250063,
+  "timestamp": "2026-04-14T11:00:08.714659",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

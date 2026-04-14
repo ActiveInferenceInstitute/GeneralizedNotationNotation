@@ -72,7 +72,7 @@ class OntologyProcessor:
         }
 
     # Additional methods expected by some tests
-    def validate_terms(self, terms: list[str] | None = None) -> bool:
+    def validate_terms(self, terms: Optional[List[str]] = None) -> bool:
         terms = terms or []
         defined = load_defined_ontology_terms()
         return all(t in defined for t in terms)
@@ -82,20 +82,20 @@ class OntologyValidator:
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def validate(self, annotations: list[str] | None = None) -> Dict[str, Any]:
+    def validate(self, annotations: Optional[List[str]] = None) -> Dict[str, Any]:
         annotations = annotations or []
         terms = load_defined_ontology_terms()
         res = validate_annotations(annotations, terms)
         return {"valid": len(res.get("invalid_annotations", [])) == 0, "details": res, "errors": [], "warnings": []}
 
-    def validate_ontology(self, content: str) -> bool | Dict[str, Any]:
+    def validate_ontology(self, content: str) -> Union[bool, Dict[str, Any]]:
         parsed = parse_gnn_ontology_section(content)
         result = self.validate(parsed.get('annotations', []))
         # Some tests expect a boolean True/False
         return result.get("valid", False)
 
     # Additional method expected by tests
-    def check_consistency(self, annotations: list[str] | None = None) -> bool:
+    def check_consistency(self, annotations: Optional[List[str]] = None) -> bool:
         return self.validate(annotations).get("valid", False)
 
 __all__ = [

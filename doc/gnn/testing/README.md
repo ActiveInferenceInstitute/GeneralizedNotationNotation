@@ -1,7 +1,7 @@
 # GNN Testing Documentation
 
 **Version**: v2.0.0  
-**Last Updated**: 2026-04-10  
+**Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 

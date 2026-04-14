@@ -1,24 +1,30 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key components of the model structure:
+Based on the document, here are the key parameters for the GNN implementation:
 
-1. **Initial Parameters**:
-   - **Accuracy**: Accuracy is a measure of how well each parameter fits into the overall model. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
+1. **Model Matrices**:
+   - A matrices representing the model structure and interpretation of the input data (policy space)
+   - B matrices representing the action sequences and their probabilities
+   - C matrices representing the policy distributions and their probability density functions
+   - D matrices representing the decision boundaries, actions, and control variables
+2. **Precision Parameters**:
+   - γ: precision parameters for each factor
+   - α: learning rate parameters
+   - Other precision/confidence parameters
 
-2. **Initial Parameters**:
-   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
+3. **Dimensional Parameters**:
+   - State space dimensions for each modality (action sequence)
+   - Observation space dimensions for each action variable
+   - Action space dimensions for each control variable
+4. **Temporal Parameters**:
+   - Time horizons for each factor
+   - Temporal dependencies and windows for each modality
+   - Update frequencies and timescales for each parameter
 
-3. **Initial Parameters**:
-   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
-
-4. **Initial Parameters**:
-   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
-
-5. **Initial Parameters**:
-   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
-
-6. **Initial Parameters**:
-   - **Accuracy**: Accuracy measures how well each parameter fits into the overall model, providing a sense of how accurately each parameter contributes to prediction accuracy. It's calculated as the sum of all parameters and their corresponding error values divided by the total number of parameters. This provides an idea of how accurate each parameter is in predicting the outcome based on its role in the model structure.
-
-7. **Initialization Strategies**:
-  
+5. **Initial Conditions**:
+   - Prior beliefs over initial states (policy sequence)
+   - Initial parameters values (actions, actions sequences, etc.)
+6. **Configuration Summary**:
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

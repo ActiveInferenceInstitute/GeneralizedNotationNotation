@@ -7,8 +7,8 @@
 - Fixed transition and emission matrices
 - No action selection (passive inference only)
 - Suitable for sequence modeling and state estimation tasks</annotation>
-    <created_at>2026-04-12T17:23:01.361516</created_at>
-    <modified_at>2026-04-12T17:23:01.361519</modified_at>
+    <created_at>2026-04-14T10:58:13.103974</created_at>
+    <modified_at>2026-04-14T10:58:13.103975</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="6,4" name="A" type="likelihood_matrix" description="Emission matrix: observations x hidden states"/>

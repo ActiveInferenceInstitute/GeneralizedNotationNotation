@@ -7,7 +7,7 @@
 - Joint task state includes both agents' positions (4x4 = 16 joint states)
 - Cooperative preferences: both agents prefer the same goal configuration
 - Models social cognition and coordination without explicit communication
-/// Generated: 2026-04-12T17:23:00.902762
+/// Generated: 2026-04-14T10:58:12.554920
 /// Enhanced by GNN PKL Serializer
 ///
 

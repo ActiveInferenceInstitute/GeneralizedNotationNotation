@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-12T17:23:05.032164",
+  "timestamp": "2026-04-14T10:58:20.957998",
   "processed_files": 2,
   "success": true,
   "errors": [],
@@ -9,7 +9,7 @@
       "file_name": "predictive_coding_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: Pi_d, parameters, t, F_d, type, u, mu_dot, level, g_params, precision, dt, F_s, belief, Pi_s, e_s, o, Sigma, mu_star, error, mu, e_d, F, f_params"
+        "Duplicate variable names: parameters, belief, precision, error, level"
       ],
       "warnings": [
         "Type issue: Unknown type 'Predictive' for variable 'Example'",
@@ -38,70 +38,7 @@
         "Type issue: Unknown type '5' for variable 'simulation_time'",
         "Type issue: Unknown type '1' for variable 'learning_rate_belief'",
         "Type issue: Unknown type '0' for variable 'learning_rate_action'",
-        "Type issue: Unknown type 'perception' for variable 'architecture'",
-        "Type issue: Unknown type '3,1,type=float' for variable 'mu'",
-        "Type issue: Unknown type '3,1,type=float' for variable 'mu_dot'",
-        "Type issue: Unknown type '3,3,type=float' for variable 'Sigma'",
-        "Type issue: Unknown type '4,1,type=float' for variable 'e_s'",
-        "Type issue: Unknown type '3,1,type=float' for variable 'e_d'",
-        "Type issue: Unknown type '12,type=float' for variable 'g_params'",
-        "Type issue: Unknown type '9,type=float' for variable 'f_params'",
-        "Type issue: Unknown type '4,4,type=float' for variable 'Pi_s'",
-        "Type issue: Unknown type '3,3,type=float' for variable 'Pi_d'",
-        "Type issue: Unknown type '4,1,type=float' for variable 'o'",
-        "Type issue: Unknown type '2,1,type=float' for variable 'u'",
-        "Type issue: Unknown type '1,type=float' for variable 'F'",
-        "Type issue: Unknown type '1,type=float' for variable 'F_s'",
-        "Type issue: Unknown type '1,type=float' for variable 'F_d'",
-        "Type issue: Unknown type '3,1,type=float' for variable 'mu_star'",
-        "Type issue: Unknown type '1,type=float' for variable 't'",
-        "Type issue: Unknown type 'float]         # State belief: mean of hidden cause (3D)' for variable 'type'",
-        "Type issue: Unknown type 'float]     # Velocity of hidden cause (first temporal derivative)' for variable 'type'",
-        "Type issue: Unknown type 'float]      # Covariance of hidden cause belief' for variable 'type'",
-        "Type issue: Unknown type 'float]        # Sensory prediction error: o - g(mu)' for variable 'type'",
-        "Type issue: Unknown type 'float]        # Dynamics prediction error: mu_dot - f(mu)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Sensory mapping parameters: o = g(mu, g_params) + noise' for variable 'type'",
-        "Type issue: Unknown type 'float]     # Dynamics parameters: mu_dot = f(mu, f_params) + noise' for variable 'type'",
-        "Type issue: Unknown type 'float]       # Sensory precision: confidence in observations' for variable 'type'",
-        "Type issue: Unknown type 'float]       # Dynamics precision: confidence in dynamics model' for variable 'type'",
-        "Type issue: Unknown type 'float]          # Continuous observation vector (4D sensory input)' for variable 'type'",
-        "Type issue: Unknown type 'float]          # Continuous action (2D motor command)' for variable 'type'",
-        "Type issue: Unknown type 'float]            # Variational Free Energy (scalar)' for variable 'type'",
-        "Type issue: Unknown type 'float]          # Sensory contribution to VFE' for variable 'type'",
-        "Type issue: Unknown type 'float]          # Dynamics contribution to VFE' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Desired state (prior expectation / set-point)' for variable 'type'",
-        "Type issue: Unknown type 'float]            # Continuous time' for variable 'type'",
-        "Type issue: Unknown type '{(0.0), (0.0), (0.0)}' for variable 'mu'",
-        "Type issue: Unknown type '{(0.0), (0.0), (0.0)}' for variable 'mu_dot'",
-        "Type issue: Unknown type '{' for variable 'Sigma'",
-        "Type issue: Unknown type '{' for variable 'Pi_s'",
-        "Type issue: Unknown type '{' for variable 'Pi_d'",
-        "Type issue: Unknown type '{(1.0), (1.0), (0.5)}' for variable 'mu_star'",
-        "Type issue: Unknown type 'o - g(mu)' for variable 'e_s'",
-        "Type issue: Unknown type 'mu_dot - f(mu)' for variable 'e_d'",
-        "Type issue: Unknown type '(1/2) *e_s^T Pi_s e_s + (1/2)* e_d^T Pi_d e_d' for variable 'F'",
-        "Type issue: Unknown type 'mu_dot - kappa_mu * dF/d(mu)' for variable 'dt'",
-        "Type issue: Unknown type '-kappa_u *dF/d(u) = -kappa_u* dg/du^T Pi_s e_s' for variable 'dt'",
-        "Type issue: Unknown type 't' for variable 'Time'",
-        "Type issue: Unknown type '5.0' for variable 'ModelTimeHorizon'",
-        "Type issue: Unknown type 'BeliefMean' for variable 'mu'",
-        "Type issue: Unknown type 'BeliefVelocity' for variable 'mu_dot'",
-        "Type issue: Unknown type 'BeliefCovariance' for variable 'Sigma'",
-        "Type issue: Unknown type 'SensoryPredictionError' for variable 'e_s'",
-        "Type issue: Unknown type 'DynamicPredictionError' for variable 'e_d'",
-        "Type issue: Unknown type 'SensoryMappingParameters' for variable 'g_params'",
-        "Type issue: Unknown type 'DynamicsParameters' for variable 'f_params'",
-        "Type issue: Unknown type 'SensoryPrecision' for variable 'Pi_s'",
-        "Type issue: Unknown type 'DynamicPrecision' for variable 'Pi_d'",
-        "Type issue: Unknown type 'Observation' for variable 'o'",
-        "Type issue: Unknown type 'ContinuousAction' for variable 'u'",
-        "Type issue: Unknown type 'VariationalFreeEnergy' for variable 'F'",
-        "Type issue: Unknown type 'SensoryFreeEnergy' for variable 'F_s'",
-        "Type issue: Unknown type 'DynamicFreeEnergy' for variable 'F_d'",
-        "Type issue: Unknown type 'PriorExpectation' for variable 'mu_star'",
-        "Type issue: Unknown type 'ContinuousTime' for variable 't'",
-        "Type issue: Unknown type 'minimizing sensory prediction errors,' for variable 'perception'",
-        "Type issue: Unknown type 'minimizing expected sensory prediction errors.' for variable 'action'"
+        "Type issue: Unknown type 'perception' for variable 'architecture'"
       ],
       "type_issues": [
         {
@@ -265,387 +202,9 @@
           "message": "Unknown type 'perception' for variable 'architecture'",
           "variable": "architecture",
           "type": "perception"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '3,1,type=float' for variable 'mu'",
-          "variable": "mu",
-          "type": "3,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '3,1,type=float' for variable 'mu_dot'",
-          "variable": "mu_dot",
-          "type": "3,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '3,3,type=float' for variable 'Sigma'",
-          "variable": "Sigma",
-          "type": "3,3,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '4,1,type=float' for variable 'e_s'",
-          "variable": "e_s",
-          "type": "4,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '3,1,type=float' for variable 'e_d'",
-          "variable": "e_d",
-          "type": "3,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '12,type=float' for variable 'g_params'",
-          "variable": "g_params",
-          "type": "12,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '9,type=float' for variable 'f_params'",
-          "variable": "f_params",
-          "type": "9,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '4,4,type=float' for variable 'Pi_s'",
-          "variable": "Pi_s",
-          "type": "4,4,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '3,3,type=float' for variable 'Pi_d'",
-          "variable": "Pi_d",
-          "type": "3,3,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '4,1,type=float' for variable 'o'",
-          "variable": "o",
-          "type": "4,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '2,1,type=float' for variable 'u'",
-          "variable": "u",
-          "type": "2,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 'F'",
-          "variable": "F",
-          "type": "1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 'F_s'",
-          "variable": "F_s",
-          "type": "1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 'F_d'",
-          "variable": "F_d",
-          "type": "1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '3,1,type=float' for variable 'mu_star'",
-          "variable": "mu_star",
-          "type": "3,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 't'",
-          "variable": "t",
-          "type": "1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]         # State belief: mean of hidden cause (3D)' for variable 'type'",
-          "variable": "type",
-          "type": "float]         # State belief: mean of hidden cause (3D)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]     # Velocity of hidden cause (first temporal derivative)' for variable 'type'",
-          "variable": "type",
-          "type": "float]     # Velocity of hidden cause (first temporal derivative)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]      # Covariance of hidden cause belief' for variable 'type'",
-          "variable": "type",
-          "type": "float]      # Covariance of hidden cause belief"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]        # Sensory prediction error: o - g(mu)' for variable 'type'",
-          "variable": "type",
-          "type": "float]        # Sensory prediction error: o - g(mu)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]        # Dynamics prediction error: mu_dot - f(mu)' for variable 'type'",
-          "variable": "type",
-          "type": "float]        # Dynamics prediction error: mu_dot - f(mu)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Sensory mapping parameters: o = g(mu, g_params) + noise' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Sensory mapping parameters: o = g(mu, g_params) + noise"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]     # Dynamics parameters: mu_dot = f(mu, f_params) + noise' for variable 'type'",
-          "variable": "type",
-          "type": "float]     # Dynamics parameters: mu_dot = f(mu, f_params) + noise"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]       # Sensory precision: confidence in observations' for variable 'type'",
-          "variable": "type",
-          "type": "float]       # Sensory precision: confidence in observations"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]       # Dynamics precision: confidence in dynamics model' for variable 'type'",
-          "variable": "type",
-          "type": "float]       # Dynamics precision: confidence in dynamics model"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]          # Continuous observation vector (4D sensory input)' for variable 'type'",
-          "variable": "type",
-          "type": "float]          # Continuous observation vector (4D sensory input)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]          # Continuous action (2D motor command)' for variable 'type'",
-          "variable": "type",
-          "type": "float]          # Continuous action (2D motor command)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]            # Variational Free Energy (scalar)' for variable 'type'",
-          "variable": "type",
-          "type": "float]            # Variational Free Energy (scalar)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]          # Sensory contribution to VFE' for variable 'type'",
-          "variable": "type",
-          "type": "float]          # Sensory contribution to VFE"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]          # Dynamics contribution to VFE' for variable 'type'",
-          "variable": "type",
-          "type": "float]          # Dynamics contribution to VFE"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Desired state (prior expectation / set-point)' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Desired state (prior expectation / set-point)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]            # Continuous time' for variable 'type'",
-          "variable": "type",
-          "type": "float]            # Continuous time"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{(0.0), (0.0), (0.0)}' for variable 'mu'",
-          "variable": "mu",
-          "type": "{(0.0), (0.0), (0.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{(0.0), (0.0), (0.0)}' for variable 'mu_dot'",
-          "variable": "mu_dot",
-          "type": "{(0.0), (0.0), (0.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{' for variable 'Sigma'",
-          "variable": "Sigma",
-          "type": "{"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{' for variable 'Pi_s'",
-          "variable": "Pi_s",
-          "type": "{"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{' for variable 'Pi_d'",
-          "variable": "Pi_d",
-          "type": "{"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{(1.0), (1.0), (0.5)}' for variable 'mu_star'",
-          "variable": "mu_star",
-          "type": "{(1.0), (1.0), (0.5)}"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'o - g(mu)' for variable 'e_s'",
-          "variable": "e_s",
-          "type": "o - g(mu)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'mu_dot - f(mu)' for variable 'e_d'",
-          "variable": "e_d",
-          "type": "mu_dot - f(mu)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '(1/2) *e_s^T Pi_s e_s + (1/2)* e_d^T Pi_d e_d' for variable 'F'",
-          "variable": "F",
-          "type": "(1/2) *e_s^T Pi_s e_s + (1/2)* e_d^T Pi_d e_d"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'mu_dot - kappa_mu * dF/d(mu)' for variable 'dt'",
-          "variable": "dt",
-          "type": "mu_dot - kappa_mu * dF/d(mu)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '-kappa_u *dF/d(u) = -kappa_u* dg/du^T Pi_s e_s' for variable 'dt'",
-          "variable": "dt",
-          "type": "-kappa_u *dF/d(u) = -kappa_u* dg/du^T Pi_s e_s"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 't' for variable 'Time'",
-          "variable": "Time",
-          "type": "t"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '5.0' for variable 'ModelTimeHorizon'",
-          "variable": "ModelTimeHorizon",
-          "type": "5.0"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'BeliefMean' for variable 'mu'",
-          "variable": "mu",
-          "type": "BeliefMean"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'BeliefVelocity' for variable 'mu_dot'",
-          "variable": "mu_dot",
-          "type": "BeliefVelocity"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'BeliefCovariance' for variable 'Sigma'",
-          "variable": "Sigma",
-          "type": "BeliefCovariance"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'SensoryPredictionError' for variable 'e_s'",
-          "variable": "e_s",
-          "type": "SensoryPredictionError"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'DynamicPredictionError' for variable 'e_d'",
-          "variable": "e_d",
-          "type": "DynamicPredictionError"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'SensoryMappingParameters' for variable 'g_params'",
-          "variable": "g_params",
-          "type": "SensoryMappingParameters"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'DynamicsParameters' for variable 'f_params'",
-          "variable": "f_params",
-          "type": "DynamicsParameters"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'SensoryPrecision' for variable 'Pi_s'",
-          "variable": "Pi_s",
-          "type": "SensoryPrecision"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'DynamicPrecision' for variable 'Pi_d'",
-          "variable": "Pi_d",
-          "type": "DynamicPrecision"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'Observation' for variable 'o'",
-          "variable": "o",
-          "type": "Observation"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'ContinuousAction' for variable 'u'",
-          "variable": "u",
-          "type": "ContinuousAction"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'VariationalFreeEnergy' for variable 'F'",
-          "variable": "F",
-          "type": "VariationalFreeEnergy"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'SensoryFreeEnergy' for variable 'F_s'",
-          "variable": "F_s",
-          "type": "SensoryFreeEnergy"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'DynamicFreeEnergy' for variable 'F_d'",
-          "variable": "F_d",
-          "type": "DynamicFreeEnergy"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'PriorExpectation' for variable 'mu_star'",
-          "variable": "mu_star",
-          "type": "PriorExpectation"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'ContinuousTime' for variable 't'",
-          "variable": "t",
-          "type": "ContinuousTime"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'minimizing sensory prediction errors,' for variable 'perception'",
-          "variable": "perception",
-          "type": "minimizing sensory prediction errors,"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'minimizing expected sensory prediction errors.' for variable 'action'",
-          "variable": "action",
-          "type": "minimizing expected sensory prediction errors."
         }
       ],
-      "validation_timestamp": "2026-04-12T17:23:05.032283",
+      "validation_timestamp": "2026-04-14T10:58:20.958365",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -728,17 +287,23 @@
             1
           ]
         }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 324,
+        "total_parameters": 81,
+        "variables": 16,
+        "connections": 34,
+        "flops_estimate": 2334.5290906369414,
+        "complexity_score": 4.669058181273883
       }
     },
     {
       "file_path": "input/gnn_files/continuous/continuous_navigation.md",
       "file_name": "continuous_navigation.md",
-      "valid": false,
-      "errors": [
-        "Duplicate variable names: t, G, type, C_\u03bc, \u03a3, u, C_\u03a3, B_u, A_\u03a3, dt, B_f, \u03b5_o, o, \u03b5_x, error, \u03bc, \u03a0_o, F, A_\u03bc, \u03a0_x"
-      ],
+      "valid": true,
+      "errors": [],
       "warnings": [
-        "Type issue: Unknown type 'Continuous' for variable 'Example'",
         "Type issue: Unknown type '1' for variable 'Version'",
         "Type issue: Unknown type '2D' for variable 'states'",
         "Type issue: Unknown type 'noisy' for variable 'Observations'",
@@ -746,10 +311,8 @@
         "Type issue: Unknown type 'position' for variable 'identity'",
         "Type issue: Unknown type 'goal' for variable 'Target'",
         "Type issue: Unknown type 'starting' for variable 'belief'",
-        "Type issue: Unknown type '\u03b5_o' for variable 'error'",
-        "Type issue: Unknown type '\u03b5_x' for variable 'error'",
         "Type issue: Unknown type 'F' for variable 'Energy'",
-        "Type issue: Unknown type 'd\u03bc' for variable 'update'",
+        "Type issue: Unknown type 'd' for variable 'update'",
         "Type issue: Unknown type 'u' for variable 'Action'",
         "Type issue: Unknown type '2' for variable 'state_dim'",
         "Type issue: Unknown type '2' for variable 'obs_dim'",
@@ -765,81 +328,14 @@
         "Type issue: Invalid variable name '\u03bc_ddot'",
         "Type issue: Invalid variable name 'A_\u03bc'",
         "Type issue: Invalid variable name 'A_\u03a3'",
-        "Type issue: Unknown type '2,1,type=float' for variable 'o'",
-        "Type issue: Unknown type '2,2,type=float' for variable 'B_f'",
-        "Type issue: Unknown type '2,2,type=float' for variable 'B_u'",
         "Type issue: Invalid variable name 'C_\u03bc'",
         "Type issue: Invalid variable name 'C_\u03a3'",
-        "Type issue: Unknown type '2,1,type=float' for variable 'u'",
-        "Type issue: Unknown type '1,type=float' for variable 'F'",
-        "Type issue: Unknown type '1,type=float' for variable 'G'",
         "Type issue: Invalid variable name '\u03b5_o'",
         "Type issue: Invalid variable name '\u03b5_x'",
         "Type issue: Invalid variable name '\u03a0_o'",
-        "Type issue: Invalid variable name '\u03a0_x'",
-        "Type issue: Unknown type '1,type=float' for variable 't'",
-        "Type issue: Unknown type 'float]      # Mean of position belief (x, y)' for variable 'type'",
-        "Type issue: Unknown type 'float]      # Covariance of position belief' for variable 'type'",
-        "Type issue: Unknown type 'float] # Next position mean (predicted)' for variable 'type'",
-        "Type issue: Unknown type 'float]  # Velocity (first motion derivative)' for variable 'type'",
-        "Type issue: Unknown type 'float] # Acceleration (second motion derivative)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Observation mean mapping (identity + noise)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Observation noise covariance' for variable 'type'",
-        "Type issue: Unknown type 'float]      # Observation (noisy position measurement)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # State transition matrix (flow)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Action effect matrix' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Target position (preference mean)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Preference uncertainty' for variable 'type'",
-        "Type issue: Unknown type 'float]      # Continuous velocity command' for variable 'type'",
-        "Type issue: Unknown type 'float]        # Variational Free Energy (scalar)' for variable 'type'",
-        "Type issue: Unknown type 'float]        # Expected Free Energy (scalar)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Sensory prediction error' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Dynamic prediction error' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Sensory precision matrix (inverse noise cov)' for variable 'type'",
-        "Type issue: Unknown type 'float]    # Dynamic precision matrix' for variable 'type'",
-        "Type issue: Unknown type 'float]        # Continuous time' for variable 'type'",
-        "Type issue: Invalid variable name 'A_\u03bc'",
-        "Type issue: Invalid variable name 'A_\u03a3'",
-        "Type issue: Unknown type '{(1.0, 0.0), (0.0, 1.0)}' for variable 'B_f'",
-        "Type issue: Unknown type '{(0.1, 0.0), (0.0, 0.1)}' for variable 'B_u'",
-        "Type issue: Invalid variable name 'C_\u03bc'",
-        "Type issue: Invalid variable name 'C_\u03a3'",
-        "Type issue: Invalid variable name '\u03bc'",
-        "Type issue: Invalid variable name '\u03a3'",
-        "Type issue: Invalid variable name '\u03a0_o'",
-        "Type issue: Invalid variable name '\u03a0_x'",
-        "Type issue: Invalid variable name '\u03b5_o'",
-        "Type issue: Invalid variable name '\u03b5_x'",
-        "Type issue: Unknown type '0.5 * (\u03b5_o^T \u03a0_o \u03b5_o + \u03b5_x^T \u03a0_x \u03b5_x)' for variable 'F'",
-        "Type issue: Unknown type '-\u2202F/\u2202\u03bc (gradient descent on VFE)' for variable 'dt'",
-        "Type issue: Unknown type '-\u2202G/\u2202u (minimize Expected Free Energy w.r.t. action)' for variable 'u'",
-        "Type issue: Unknown type 't' for variable 'Time'",
-        "Type issue: Unknown type '10.0' for variable 'ModelTimeHorizon'",
-        "Type issue: Invalid variable name '\u03bc'",
-        "Type issue: Invalid variable name '\u03a3'",
-        "Type issue: Invalid variable name 'A_\u03bc'",
-        "Type issue: Invalid variable name 'A_\u03a3'",
-        "Type issue: Unknown type 'Observation' for variable 'o'",
-        "Type issue: Unknown type 'DynamicsMatrix' for variable 'B_f'",
-        "Type issue: Unknown type 'ActionEffectMatrix' for variable 'B_u'",
-        "Type issue: Invalid variable name 'C_\u03bc'",
-        "Type issue: Invalid variable name 'C_\u03a3'",
-        "Type issue: Unknown type 'ContinuousAction' for variable 'u'",
-        "Type issue: Unknown type 'VariationalFreeEnergy' for variable 'F'",
-        "Type issue: Unknown type 'ExpectedFreeEnergy' for variable 'G'",
-        "Type issue: Invalid variable name '\u03b5_o'",
-        "Type issue: Invalid variable name '\u03b5_x'",
-        "Type issue: Invalid variable name '\u03a0_o'",
-        "Type issue: Invalid variable name '\u03a0_x'",
-        "Type issue: Unknown type 'ContinuousTime' for variable 't'"
+        "Type issue: Invalid variable name '\u03a0_x'"
       ],
       "type_issues": [
-        {
-          "valid": false,
-          "message": "Unknown type 'Continuous' for variable 'Example'",
-          "variable": "Example",
-          "type": "Continuous"
-        },
         {
           "valid": false,
           "message": "Unknown type '1' for variable 'Version'",
@@ -884,27 +380,15 @@
         },
         {
           "valid": false,
-          "message": "Unknown type '\u03b5_o' for variable 'error'",
-          "variable": "error",
-          "type": "\u03b5_o"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '\u03b5_x' for variable 'error'",
-          "variable": "error",
-          "type": "\u03b5_x"
-        },
-        {
-          "valid": false,
           "message": "Unknown type 'F' for variable 'Energy'",
           "variable": "Energy",
           "type": "F"
         },
         {
           "valid": false,
-          "message": "Unknown type 'd\u03bc' for variable 'update'",
+          "message": "Unknown type 'd' for variable 'update'",
           "variable": "update",
-          "type": "d\u03bc"
+          "type": "d"
         },
         {
           "valid": false,
@@ -958,448 +442,82 @@
           "valid": false,
           "message": "Invalid variable name '\u03bc'",
           "variable": "\u03bc",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03a3'",
           "variable": "\u03a3",
-          "type": "2,2,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03bc_prime'",
           "variable": "\u03bc_prime",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03bc_dot'",
           "variable": "\u03bc_dot",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03bc_ddot'",
           "variable": "\u03bc_ddot",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name 'A_\u03bc'",
           "variable": "A_\u03bc",
-          "type": "2,2,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name 'A_\u03a3'",
           "variable": "A_\u03a3",
-          "type": "2,2,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '2,1,type=float' for variable 'o'",
-          "variable": "o",
-          "type": "2,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '2,2,type=float' for variable 'B_f'",
-          "variable": "B_f",
-          "type": "2,2,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '2,2,type=float' for variable 'B_u'",
-          "variable": "B_u",
-          "type": "2,2,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name 'C_\u03bc'",
           "variable": "C_\u03bc",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name 'C_\u03a3'",
           "variable": "C_\u03a3",
-          "type": "2,2,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '2,1,type=float' for variable 'u'",
-          "variable": "u",
-          "type": "2,1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 'F'",
-          "variable": "F",
-          "type": "1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 'G'",
-          "variable": "G",
-          "type": "1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03b5_o'",
           "variable": "\u03b5_o",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03b5_x'",
           "variable": "\u03b5_x",
-          "type": "2,1,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03a0_o'",
           "variable": "\u03a0_o",
-          "type": "2,2,type=float"
+          "type": "float"
         },
         {
           "valid": false,
           "message": "Invalid variable name '\u03a0_x'",
           "variable": "\u03a0_x",
-          "type": "2,2,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '1,type=float' for variable 't'",
-          "variable": "t",
-          "type": "1,type=float"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]      # Mean of position belief (x, y)' for variable 'type'",
-          "variable": "type",
-          "type": "float]      # Mean of position belief (x, y)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]      # Covariance of position belief' for variable 'type'",
-          "variable": "type",
-          "type": "float]      # Covariance of position belief"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float] # Next position mean (predicted)' for variable 'type'",
-          "variable": "type",
-          "type": "float] # Next position mean (predicted)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]  # Velocity (first motion derivative)' for variable 'type'",
-          "variable": "type",
-          "type": "float]  # Velocity (first motion derivative)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float] # Acceleration (second motion derivative)' for variable 'type'",
-          "variable": "type",
-          "type": "float] # Acceleration (second motion derivative)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Observation mean mapping (identity + noise)' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Observation mean mapping (identity + noise)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Observation noise covariance' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Observation noise covariance"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]      # Observation (noisy position measurement)' for variable 'type'",
-          "variable": "type",
-          "type": "float]      # Observation (noisy position measurement)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # State transition matrix (flow)' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # State transition matrix (flow)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Action effect matrix' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Action effect matrix"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Target position (preference mean)' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Target position (preference mean)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Preference uncertainty' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Preference uncertainty"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]      # Continuous velocity command' for variable 'type'",
-          "variable": "type",
-          "type": "float]      # Continuous velocity command"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]        # Variational Free Energy (scalar)' for variable 'type'",
-          "variable": "type",
-          "type": "float]        # Variational Free Energy (scalar)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]        # Expected Free Energy (scalar)' for variable 'type'",
-          "variable": "type",
-          "type": "float]        # Expected Free Energy (scalar)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Sensory prediction error' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Sensory prediction error"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Dynamic prediction error' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Dynamic prediction error"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Sensory precision matrix (inverse noise cov)' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Sensory precision matrix (inverse noise cov)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]    # Dynamic precision matrix' for variable 'type'",
-          "variable": "type",
-          "type": "float]    # Dynamic precision matrix"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'float]        # Continuous time' for variable 'type'",
-          "variable": "type",
-          "type": "float]        # Continuous time"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'A_\u03bc'",
-          "variable": "A_\u03bc",
-          "type": "{(1.0, 0.0), (0.0, 1.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'A_\u03a3'",
-          "variable": "A_\u03a3",
-          "type": "{(0.1, 0.0), (0.0, 0.1)}"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{(1.0, 0.0), (0.0, 1.0)}' for variable 'B_f'",
-          "variable": "B_f",
-          "type": "{(1.0, 0.0), (0.0, 1.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '{(0.1, 0.0), (0.0, 0.1)}' for variable 'B_u'",
-          "variable": "B_u",
-          "type": "{(0.1, 0.0), (0.0, 0.1)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'C_\u03bc'",
-          "variable": "C_\u03bc",
-          "type": "{(1.0), (1.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'C_\u03a3'",
-          "variable": "C_\u03a3",
-          "type": "{(0.05, 0.0), (0.0, 0.05)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03bc'",
-          "variable": "\u03bc",
-          "type": "{(0.0), (0.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03a3'",
-          "variable": "\u03a3",
-          "type": "{(0.5, 0.0), (0.0, 0.5)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03a0_o'",
-          "variable": "\u03a0_o",
-          "type": "{(10.0, 0.0), (0.0, 10.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03a0_x'",
-          "variable": "\u03a0_x",
-          "type": "{(20.0, 0.0), (0.0, 20.0)}"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03b5_o'",
-          "variable": "\u03b5_o",
-          "type": "o - A_\u03bc * \u03bc"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03b5_x'",
-          "variable": "\u03b5_x",
-          "type": "\u03bc_dot - (B_f * \u03bc + B_u * u)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '0.5 * (\u03b5_o^T \u03a0_o \u03b5_o + \u03b5_x^T \u03a0_x \u03b5_x)' for variable 'F'",
-          "variable": "F",
-          "type": "0.5 * (\u03b5_o^T \u03a0_o \u03b5_o + \u03b5_x^T \u03a0_x \u03b5_x)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '-\u2202F/\u2202\u03bc (gradient descent on VFE)' for variable 'dt'",
-          "variable": "dt",
-          "type": "-\u2202F/\u2202\u03bc (gradient descent on VFE)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '-\u2202G/\u2202u (minimize Expected Free Energy w.r.t. action)' for variable 'u'",
-          "variable": "u",
-          "type": "-\u2202G/\u2202u (minimize Expected Free Energy w.r.t. action)"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 't' for variable 'Time'",
-          "variable": "Time",
-          "type": "t"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type '10.0' for variable 'ModelTimeHorizon'",
-          "variable": "ModelTimeHorizon",
-          "type": "10.0"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03bc'",
-          "variable": "\u03bc",
-          "type": "BeliefMean"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03a3'",
-          "variable": "\u03a3",
-          "type": "BeliefCovariance"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'A_\u03bc'",
-          "variable": "A_\u03bc",
-          "type": "ObservationMeanMapping"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'A_\u03a3'",
-          "variable": "A_\u03a3",
-          "type": "ObservationNoise"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'Observation' for variable 'o'",
-          "variable": "o",
-          "type": "Observation"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'DynamicsMatrix' for variable 'B_f'",
-          "variable": "B_f",
-          "type": "DynamicsMatrix"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'ActionEffectMatrix' for variable 'B_u'",
-          "variable": "B_u",
-          "type": "ActionEffectMatrix"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'C_\u03bc'",
-          "variable": "C_\u03bc",
-          "type": "PreferenceMean"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name 'C_\u03a3'",
-          "variable": "C_\u03a3",
-          "type": "PreferenceCovariance"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'ContinuousAction' for variable 'u'",
-          "variable": "u",
-          "type": "ContinuousAction"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'VariationalFreeEnergy' for variable 'F'",
-          "variable": "F",
-          "type": "VariationalFreeEnergy"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'ExpectedFreeEnergy' for variable 'G'",
-          "variable": "G",
-          "type": "ExpectedFreeEnergy"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03b5_o'",
-          "variable": "\u03b5_o",
-          "type": "SensoryPredictionError"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03b5_x'",
-          "variable": "\u03b5_x",
-          "type": "DynamicPredictionError"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03a0_o'",
-          "variable": "\u03a0_o",
-          "type": "SensoryPrecision"
-        },
-        {
-          "valid": false,
-          "message": "Invalid variable name '\u03a0_x'",
-          "variable": "\u03a0_x",
-          "type": "DynamicPrecision"
-        },
-        {
-          "valid": false,
-          "message": "Unknown type 'ContinuousTime' for variable 't'",
-          "variable": "t",
-          "type": "ContinuousTime"
+          "type": "float"
         }
       ],
-      "validation_timestamp": "2026-04-12T17:23:05.033600",
+      "validation_timestamp": "2026-04-14T10:58:20.960878",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -1440,6 +558,15 @@
             1
           ]
         }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 60,
+        "total_parameters": 15,
+        "variables": 7,
+        "connections": 24,
+        "flops_estimate": 2013.5802469135804,
+        "complexity_score": 4.027160493827161
       }
     }
   ],
@@ -1551,37 +678,37 @@
         {
           "name": "state_dim",
           "type": "3",
-          "line": 182
+          "line": 181
         },
         {
           "name": "obs_dim",
           "type": "4",
-          "line": 183
+          "line": 182
         },
         {
           "name": "action_dim",
           "type": "2",
-          "line": 184
+          "line": 183
         },
         {
           "name": "dt",
           "type": "0",
-          "line": 185
+          "line": 184
         },
         {
           "name": "simulation_time",
           "type": "5",
-          "line": 186
+          "line": 185
         },
         {
           "name": "learning_rate_belief",
           "type": "1",
-          "line": 187
+          "line": 186
         },
         {
           "name": "learning_rate_action",
           "type": "0",
-          "line": 188
+          "line": 187
         },
         {
           "name": "architecture",
@@ -1590,82 +717,82 @@
         },
         {
           "name": "mu",
-          "type": "3,1,type=float",
+          "type": "float",
           "line": 36
         },
         {
           "name": "mu_dot",
-          "type": "3,1,type=float",
+          "type": "float",
           "line": 37
         },
         {
           "name": "Sigma",
-          "type": "3,3,type=float",
+          "type": "float",
           "line": 38
         },
         {
           "name": "e_s",
-          "type": "4,1,type=float",
+          "type": "float",
           "line": 42
         },
         {
           "name": "e_d",
-          "type": "3,1,type=float",
+          "type": "float",
           "line": 43
         },
         {
           "name": "g_params",
-          "type": "12,type=float",
+          "type": "float",
           "line": 47
         },
         {
           "name": "f_params",
-          "type": "9,type=float",
+          "type": "float",
           "line": 48
         },
         {
           "name": "Pi_s",
-          "type": "4,4,type=float",
+          "type": "float",
           "line": 52
         },
         {
           "name": "Pi_d",
-          "type": "3,3,type=float",
+          "type": "float",
           "line": 53
         },
         {
           "name": "o",
-          "type": "4,1,type=float",
+          "type": "float",
           "line": 57
         },
         {
           "name": "u",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 61
         },
         {
           "name": "F",
-          "type": "1,type=float",
+          "type": "float",
           "line": 65
         },
         {
           "name": "F_s",
-          "type": "1,type=float",
+          "type": "float",
           "line": 66
         },
         {
           "name": "F_d",
-          "type": "1,type=float",
+          "type": "float",
           "line": 67
         },
         {
           "name": "mu_star",
-          "type": "3,1,type=float",
+          "type": "float",
           "line": 71
         },
         {
           "name": "t",
-          "type": "1,type=float",
+          "type": "float",
           "line": 75
         }
       ],
@@ -1691,17 +818,10 @@
         "0": 2,
         "5": 1,
         "perception": 1,
-        "3,1,type=float": 4,
-        "3,3,type=float": 2,
-        "4,1,type=float": 2,
-        "12,type=float": 1,
-        "9,type=float": 1,
-        "4,4,type=float": 1,
-        "2,1,type=float": 1,
-        "1,type=float": 4
+        "float": 16
       },
       "total_variables": 44,
-      "analysis_timestamp": "2026-04-12T17:23:05.033573"
+      "analysis_timestamp": "2026-04-14T10:58:20.960733"
     },
     {
       "file_path": "input/gnn_files/continuous/continuous_navigation.md",
@@ -1748,23 +868,13 @@
           "line": 96
         },
         {
-          "name": "error",
-          "type": "\u03b5_o",
-          "line": 105
-        },
-        {
-          "name": "error",
-          "type": "\u03b5_x",
-          "line": 106
-        },
-        {
           "name": "Energy",
           "type": "F",
           "line": 107
         },
         {
           "name": "update",
-          "type": "d\u03bc",
+          "type": "d",
           "line": 108
         },
         {
@@ -1775,136 +885,136 @@
         {
           "name": "state_dim",
           "type": "2",
-          "line": 137
+          "line": 136
         },
         {
           "name": "obs_dim",
           "type": "2",
-          "line": 138
+          "line": 137
         },
         {
           "name": "action_dim",
           "type": "2",
-          "line": 139
+          "line": 138
         },
         {
           "name": "dt",
           "type": "0",
-          "line": 140
+          "line": 139
         },
         {
           "name": "simulation_time",
           "type": "10",
-          "line": 141
+          "line": 140
         },
         {
           "name": "goal_x",
           "type": "1",
-          "line": 142
+          "line": 141
         },
         {
           "name": "goal_y",
           "type": "1",
-          "line": 143
+          "line": 142
         },
         {
           "name": "\u03bc",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 24
         },
         {
           "name": "\u03a3",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 25
         },
         {
           "name": "\u03bc_prime",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 26
         },
         {
           "name": "\u03bc_dot",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 29
         },
         {
           "name": "\u03bc_ddot",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 30
         },
         {
           "name": "A_\u03bc",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 33
         },
         {
           "name": "A_\u03a3",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 34
         },
         {
           "name": "o",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 35
         },
         {
           "name": "B_f",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 38
         },
         {
           "name": "B_u",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 39
         },
         {
           "name": "C_\u03bc",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 42
         },
         {
           "name": "C_\u03a3",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 43
         },
         {
           "name": "u",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 46
         },
         {
           "name": "F",
-          "type": "1,type=float",
+          "type": "float",
           "line": 49
         },
         {
           "name": "G",
-          "type": "1,type=float",
+          "type": "float",
           "line": 50
         },
         {
           "name": "\u03b5_o",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 51
         },
         {
           "name": "\u03b5_x",
-          "type": "2,1,type=float",
+          "type": "float",
           "line": 52
         },
         {
           "name": "\u03a0_o",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 55
         },
         {
           "name": "\u03a0_x",
-          "type": "2,2,type=float",
+          "type": "float",
           "line": 56
         },
         {
           "name": "t",
-          "type": "1,type=float",
+          "type": "float",
           "line": 59
         }
       ],
@@ -1916,20 +1026,16 @@
         "position": 1,
         "goal": 1,
         "starting": 1,
-        "\u03b5_o": 1,
-        "\u03b5_x": 1,
         "F": 1,
-        "d\u03bc": 1,
+        "d": 1,
         "u": 1,
         "2": 3,
         "0": 1,
         "10": 1,
-        "2,1,type=float": 9,
-        "2,2,type=float": 8,
-        "1,type=float": 3
+        "float": 20
       },
-      "total_variables": 40,
-      "analysis_timestamp": "2026-04-12T17:23:05.034925"
+      "total_variables": 38,
+      "analysis_timestamp": "2026-04-14T10:58:20.963387"
     }
   ]
 }

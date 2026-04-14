@@ -601,6 +601,24 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                 with open(trace_file, 'r') as f:
                     data = json.load(f)
 
+                # Local Helper for attaching robust context
+                def apply_chart_metadata() -> None:
+                    try:
+                        meta_parts = [
+                            f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+                            f"FW: {framework}"
+                        ]
+                        if 'num_timesteps' in data:
+                            meta_parts.append(f"T={data.get('num_timesteps')}")
+                        elif 'time_steps' in data:
+                            meta_parts.append(f"T={data.get('time_steps')}")
+                        if 'model_parameters' in data and data['model_parameters'].get('num_states'):
+                            meta_parts.append(f"|S|={data['model_parameters']['num_states']}")
+                        
+                        plt.figtext(0.99, 0.01, " | ".join(meta_parts), ha='right', va='bottom', fontsize=8, color='gray', alpha=0.6)
+                    except Exception as e:
+                        logger.debug(f"Metadata application failed: {e}")
+
                 # Plot traces (e.g., belief over time)
                 if 'beliefs' in data or 'states' in data:
                     plt.figure(figsize=(10, 6))
@@ -614,6 +632,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         fw_viz_dir = output_dir / framework
                         fw_viz_dir.mkdir(parents=True, exist_ok=True)
                         plot_file = fw_viz_dir / f"{model_name}_{framework}_belief_trace.png"
+                        apply_chart_metadata()
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
@@ -659,6 +678,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                             fw_viz_dir = output_dir / framework
                             fw_viz_dir.mkdir(parents=True, exist_ok=True)
                             plot_file = fw_viz_dir / f"{model_name}_{framework}_belief_convergence.png"
+                            apply_chart_metadata()
                             plt.savefig(plot_file)
                             plt.close()
                             visualizations.append(str(plot_file))
@@ -674,6 +694,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         plt.ylabel("Free Energy / Expected Free Energy")
                         plt.legend()
                         plot_file = output_dir / f"{model_name}_{framework}_free_energy.png"
+                        apply_chart_metadata()
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
@@ -689,6 +710,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         plt.ylabel("Precision (Gamma/w)")
                         plt.legend()
                         plot_file = output_dir / f"{model_name}_{framework}_precision.png"
+                        apply_chart_metadata()
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
@@ -711,6 +733,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         fw_viz_dir = output_dir / framework
                         fw_viz_dir.mkdir(parents=True, exist_ok=True)
                         plot_file = fw_viz_dir / f"{model_name}_{framework}_action_frequencies.png"
+                        apply_chart_metadata()
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))

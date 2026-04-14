@@ -17,11 +17,20 @@ These definitions are the single source of truth for cross-references in READMEs
 
 When a document says “100% round-trip,” it refers to the **formats exercised by** `test_round_trip.py`, not necessarily every enum value.
 
+## File discovery (two strategies)
+
+| API / entry | Policy | Where |
+|-------------|--------|--------|
+| **`discover_gnn_files()`** | Narrow globs: `*.md`, `*.gnn`, `*.txt`; filters common non-model filenames | `processor.py` |
+| **`process_gnn_multi_format()`** (Step **3**) | Broad extension list so serialized formats (JSON, YAML, Lean, etc.) under the target tree are discovered | `multi_format_processor.py` (list is inline next to discovery loop) |
+
+Do not assume the two lists stay identical: lightweight discovery favors typical author workflows; the pipeline step favors full multi-format round-tripping from a folder of mixed artifacts.
+
 ## Components
 
 | Component | File | Purpose |
 |-----------|------|---------|
-| Types | `types.py` | Shared data classes (`ParsedGNN`, `ValidationResult`, `GNNFormat`, etc.) |
+| Types | `types.py` | Shared data classes (`ParsedGNN`, `ValidationResult`, etc.). **`GNNFormat` is defined in `parsers/common.py`** and re-exported from `types.py` for consumers that import domain types from one place. |
 | Parser | `parser.py` | GNN file parsing, format detection, validation entry point |
 | Schema Validator | `schema_validator.py` | Full `GNNParser` with section-level parsing, `GNNValidator` for multi-level validation |
 | Simple Validator | `simple_validator.py` | Lightweight recovery validator without complex dependencies |

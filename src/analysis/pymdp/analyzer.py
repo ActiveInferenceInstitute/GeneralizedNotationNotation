@@ -86,6 +86,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                 observations = trace.get('observations') or data.get('observations', [])
                 actions = trace.get('actions') or data.get('actions', [])
                 efe_history = trace.get('efe_history') or data.get('metrics', {}).get('expected_free_energy', [])
+                vfe_history = trace.get('vfe_history') or data.get('metrics', {}).get('variational_free_energy', [])
 
                 # Get model parameters
                 params = data.get('model_parameters', {})
@@ -106,6 +107,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                         "observations": observations,
                         "metrics": {
                             "expected_free_energy": efe_history,
+                            "variational_free_energy": vfe_history,
                             "belief_confidence": [max(b) for b in beliefs] if beliefs else [],
                         },
                         "num_states": num_states

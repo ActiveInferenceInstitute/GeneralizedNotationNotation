@@ -1,53 +1,55 @@
 # ANALYZE_STRUCTURE
 
-Here's a detailed analysis of the GNN specification:
+Based on the document, here's a detailed structural analysis of the GNN specification:
 
 1. **Graph Structure**:
-   - Number of variables and their types (num_hidden_states, num_obs)
-   - Connection patterns (directed/undirected edges):
-    - Luminance connections between hidden states
-    - Hitting-connected connections between actions
+   - Number of variables and their types (num_hidden_states): 3
+   - Connection patterns (directed/undirected edges)
+   - Graph topology (hierarchical, network, etc.)
 
-    This structure is based on the idea that each variable has a corresponding action. The connection pattern indicates how these variables interact with each other and their actions.
+**Variable Analysis:**
 
-2. **Variable Analysis**:
-   - State space dimensionality: 3 (num_hidden_states, num_obs)
-   
-   - Dependencies and conditional relationships:
-    - Temporal dependencies between states
-    - Spatial dependencies between actions
+   - State space dimensionality for each variable:
+    - Num. hidden states = 2
+   - Number of variables in the graph structure:
+     - num_hidden_states = 3
+       - num_variables = 4
 
-    This structure is based on the idea that each variable has a corresponding action. The connection pattern indicates how these variables interact with each other and their actions.
+1. **Variable Analysis**:
+   - State space dimensions and dependencies (directed/undirected edges):
+      - Num. hidden states = 3
+    - Dependencies and conditional relationships (connected components) for each variable:
+         - Number of connected components per variable:
+           - num_hidden_states = 2
+       - Number of variables in the graph structure:
+             - num_variables = 4
 
-3. **Mathematical Structure**:
-   - Matrix dimensions and compatibility (matrix dimensionality):
-     - Symmetry of connections:
-      - Luminance connections between hidden states and actions
-
-      This structure is based on the idea that each variable has a corresponding action. The connection pattern indicates how these variables interact with each other and their actions.
-
-4. **Complexity Assessment**:
-   - Computational complexity indicators (e.g., number of edges, time)
-   
-   - Model scalability considerations (i.e., computational complexity):
-      - Number of parameters: 10
-      
-     - Complexity of the model:
-         - Complexity of the graph structure:
-             - Complexity of the connection pattern:
-                - Complexity of the network topology:
-                    - Complexity of the parameter space:
-                      - Complexity of the mapping between variables and actions:
-                        - Complexity of the mapping from hidden states to action probabilities:
-                          - Complexity of the mapping from action probability to state distribution:
-                            - Complexity of the mapping from action probability to state distribution:
-                              - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state distribution:
-                                  - Complexity of the mapping from action probability to state
+1. **Mathematical Structure**:
+   - Matrix dimensions and compatibility (matrix dimensionality, symmetry properties):
+    - Num. hidden states = 3
+      - Symmetry property for connected components:
+        - Symmetry property for connected components with no dependencies:
+            - Symmetry property for connected components with dependency:
+                - Symmetry property for connected components with dependency:
+                    - Symmetry property for connected components with dependency:
+                      - Symmetry property for connected components with dependency:
+                        - Symmetry property for connected components with dependency:
+                          - Symmetry property for connected components with dependency:
+                            - Symmetry property for connected components with dependency:
+                              - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry property for connected components with dependency:
+                                  - Symmetry

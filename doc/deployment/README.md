@@ -7,6 +7,10 @@
 ## Overview
 This guide covers various deployment scenarios for GeneralizedNotationNotation (GNN), from local development to production environments.
 
+## Security
+
+Harden hosts that run the pipeline: least-privilege service accounts, secret management for API keys, network segmentation for MCP/HTTP services, and regular dependency updates. See [security/README.md](../security/README.md).
+
 ## Deployment Architectures
 
 ### 1. Local Development Setup

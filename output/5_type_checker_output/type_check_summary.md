@@ -1,7 +1,7 @@
 
 # Type Check Summary
 
-**Generated**: 2026-04-12 17:23:05
+**Generated**: 2026-04-14 10:58:21
 
 ## Processing Results
 - **Files Processed**: 2
@@ -10,12 +10,29 @@
 
 ## Validation Results
 - **Files Validated**: 2
-- **Valid Files**: 0
-- **Invalid Files**: 2
+- **Valid Files**: 1
+- **Invalid Files**: 1
 
 ## Type Analysis
 - **Type Analyses**: 2
-- **Total Variables**: 84
+- **Total Variables**: 82
+
+## Graphical Abstracts
+
+![Type Validity Mosaic](visualizations/type_validity_mosaic.png)
+
+![Issue Distribution](visualizations/type_issue_distribution.png)
+
+![Dimension Compatibility Abstract](visualizations/dimension_compatibility_abstract.png)
+
+![Global Type Category Distribution](visualizations/type_category_distribution.png)
+
+
+### Model Baseball Cards Preview
+
+![Model Card Preview](visualizations/cards/predictive_coding_agent.md_card.png)
+
+![Model Card Preview](visualizations/cards/continuous_navigation.md_card.png)
 
 ## Error Summary
 - No errors encountered

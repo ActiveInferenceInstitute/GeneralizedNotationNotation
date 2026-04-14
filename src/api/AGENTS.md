@@ -6,8 +6,8 @@
 **Pipeline Step**: Infrastructure module (not a numbered step)
 **Category**: Infrastructure / API
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
-**Last Updated**: 2026-03-24
+**Version**: 1.3.0
+**Last Updated**: 2026-04-14
 
 The `api` module provides a FastAPI-based REST interface for the GNN processing pipeline.
 It enables programmatic pipeline invocation, job management, and tool discovery without

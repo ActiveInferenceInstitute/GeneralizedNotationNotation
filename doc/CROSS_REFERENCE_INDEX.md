@@ -1,18 +1,13 @@
 # GNN Documentation Cross-Reference Index
 
-> **📋 Document Metadata**  
-> **Type**: Navigation Index | **Audience**: All Users, Systems | **Complexity**: Reference  
-> **Status**: Production-Ready  
-> **Purpose**: Machine-readable cross-reference network for all GNN documentation
+> **Role**: Topic and framework cross-links (graph-style). **Hub**: [README.md](README.md). **Flat index**: [INDEX.md](INDEX.md). **Canonical step numbering**: [../CLAUDE.md](../CLAUDE.md) and [PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md).
 
 ## Overview
 
-> **🎯 Machine Navigation**: Comprehensive cross-reference system for automated tools and enhanced user navigation  
+- **[Learning paths](learning_paths.md)** — structured curricula
+- **Top-level `doc/` folders**: [expected_dirs.txt](expected_dirs.txt) lists **61** topic directories (see [INDEX.md](INDEX.md) tree)
 
-- **[Learning Paths Overview](learning_paths.md)** - Structured beginner guidance
-- **Total Coverage**: 52 subdirectories, 100% documented
-
-This index provides a comprehensive mapping of all cross-references within the GNN documentation ecosystem, designed for both human navigation and machine processing.
+This index maps relationships between frameworks, theory pages, and tooling. For numbered pipeline steps, use [../CLAUDE.md](../CLAUDE.md) (steps 0–24) as the source of truth; older narrative in this file may predate current step ordering.
 
 ## Learning Pathways
 
@@ -32,8 +27,8 @@ This index provides a comprehensive mapping of all cross-references within the G
 
 1. **[GNN Syntax](gnn/reference/gnn_syntax.md)** → **[Implementation Guide](gnn/integration/gnn_implementation.md)**
 2. **[Template System](templates/README.md)** → **[POMDP Template](templates/pomdp_template.md)**
-3. **[Tools Guide](gnn/operations/gnn_tools.md)** → **[Framework Integration](README.md#framework-integrations)**
-4. **[Type Checker](gnn/operations/gnn_tools.md#validation-tools)** → **[Pipeline Architecture](gnn/reference/architecture_reference.md)**
+3. **[Tools Guide](gnn/operations/gnn_tools.md)** → **[Framework Integration](README.md#framework-integrations)** (see [README.md](README.md) if the anchor does not resolve in your viewer)
+4. **[Type Checker](gnn/operations/gnn_tools.md#validation-tools)** → **[Pipeline architecture](gnn/reference/architecture_reference.md)** (see also [PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md))
 5. **[Configuration Guide](configuration/README.md)** → **[Deployment Guide](deployment/README.md)**
 
 ### Developer Path
@@ -55,7 +50,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 3. **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** → **[Hierarchical Template](templates/hierarchical_template.md)**
 4. **[LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** → **[DSPy Integration](dspy/gnn_dspy.md)**
 5. **[PoE-World Research](poe-world/poe-world.md)** → **[PoE-World GNN Integration](poe-world/poe-world_gnn.md)**
-6. **[Advanced Learning Path](learning_paths.md#advanced-path-research-and-custom-extensions)** - Research extensions
+6. **[Advanced learning path](learning_paths.md#advanced-path-research-and-custom-extensions)** — research extensions
 
 ## Framework Integration Network
 
@@ -66,7 +61,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 - **Primary**: [PyMDP Guide](pymdp/gnn_pymdp.md)
 - **Templates**: [POMDP Template](templates/pomdp_template.md), [Basic Template](templates/basic_gnn_template.md)
 - **Examples**: [Butterfly Agent](archive/gnn_example_butterfly_pheromone_agent.md), [Trading Agent](archive/gnn_airplane_trading_pomdp.md)
-- **Pipeline**: [Step 9 Rendering](gnn/operations/gnn_tools.md#step-9-rendering)
+- **Pipeline**: code generation and execution ([Step 11 render / Step 12 execute](../CLAUDE.md); [gnn_tools pipeline section](gnn/operations/gnn_tools.md#complete-pipeline-stages-25-steps))
 - **Advanced**: [Learning Agent](archive/gnn_example_jax_pymdp_learning_agent.md), [Cognitive Effort](archive/gnn_cognitive_effort.md)
 
 ### RxInfer.jl
@@ -75,9 +70,9 @@ This index provides a comprehensive mapping of all cross-references within the G
 
 - **Primary**: [RxInfer Guide](rxinfer/gnn_rxinfer.md)
 - **Templates**: [Multi-agent Template](templates/multiagent_template.md), [Hierarchical Template](templates/hierarchical_template.md)
-- **Examples**: [Multi-agent Trajectory Planning](rxinfer/multiagent_trajectory_planning/), [Hidden Markov Model](../doc/archive/rxinfer_hidden_markov_model.md)
+- **Examples**: [Multi-agent Trajectory Planning](rxinfer/multiagent_trajectory_planning/), [Hidden Markov Model](archive/rxinfer_hidden_markov_model.md)
 - **Engineering**: [Engineering Guide](rxinfer/engineering_rxinfer_gnn.md)
-- **Pipeline**: [Step 9 Rendering](gnn/operations/gnn_tools.md#step-9-rendering)
+- **Pipeline**: [Step 11 render / Step 12 execute](../CLAUDE.md); [gnn_tools pipeline section](gnn/operations/gnn_tools.md#complete-pipeline-stages-25-steps)
 
 ### DisCoPy
 >
@@ -86,7 +81,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 - **Primary**: [DisCoPy Guide](discopy/gnn_discopy.md)
 - **Templates**: [Hierarchical Template](templates/hierarchical_template.md)
 - **Theory**: [Advanced Patterns - Compositional Modeling](gnn/advanced/advanced_modeling_patterns.md)
-- **Pipeline**: [Step 12 Audio Generation](gnn/operations/gnn_tools.md#step-12-audio-generation), [Step 13 Website Generation](gnn/operations/gnn_tools.md#step-13-website-generation), [Step 14 Report Generation](gnn/operations/gnn_tools.md#step-14-report-generation)
+- **Pipeline**: DisCoPy backends participate in **Step 11 (render)** and **Step 12 (execute)** ([CLAUDE.md](../CLAUDE.md)); see [execute/discopy](../../src/execute/discopy/README.md) and [render/discopy](../../src/render/discopy/README.md)
 - **Examples**: [Simple DisCoPy Test](archive/gnn_simple_discopy_test.md)
 
 ### LLM Integrations
@@ -94,9 +89,9 @@ This index provides a comprehensive mapping of all cross-references within the G
 > **🤖 AI-Enhanced Processing** | **🧠 Intelligent Assistance**
 
 - **DSPy**: [DSPy Integration](dspy/gnn_dspy.md) → [LLM Neurosymbolic](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
-- **AutoGenLib**: [AutoGenLib Guide](autogenlib/gnn_autogenlib.md) → [Code Generation](gnn/operations/gnn_tools.md#code-generation)
+- **AutoGenLib**: [AutoGenLib Guide](autogenlib/gnn_autogenlib.md) → [Conversion tools](gnn/operations/gnn_tools.md#conversion-tools)
 - **PoE-World**: [PoE-World Overview](poe-world/poe-world.md) → [PoE-World GNN Integration](poe-world/poe-world_gnn.md)
-- **Pipeline**: [Step 11 LLM Analysis](gnn/operations/gnn_tools.md#step-11-llm-enhanced-analysis)
+- **Pipeline**: **Step 13** — LLM analysis ([CLAUDE.md](../CLAUDE.md); script `13_llm.py`)
 
 ### Specialized Frameworks
 >
@@ -193,7 +188,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 
 - **PKL Integration**: [PKL Guide](pkl/pkl_gnn.md) → [Configuration Language](pkl/README.md)
 - **Examples**: [Base Model](pkl/examples/BaseActiveInferenceModel.pkl), [Visual Foraging](pkl/examples/VisualForagingModel.pkl)
-- **Multi-Format**: [Export Formats](gnn/operations/gnn_tools.md#export-formats), [Format Converters](README.md#format-converters)
+- **Multi-Format**: [GNN tools / pipeline](gnn/operations/gnn_tools.md), [Framework integrations in README](README.md#framework-integrations)
 - **Pickle Format**: [Pickle Serialization](pkl/pkl_gnn.md) → [Serialization Tools](pkl/README.md)
 
 ### Support and Learning
@@ -221,7 +216,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 > **🧠 Symbolic-Neural Integration** | **🤖 Hybrid Intelligence**
 
 - **LLM Integration**: [LLM Neurosymbolic](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) → [DSPy](dspy/gnn_dspy.md)
-- **Symbolic Reasoning**: [DisCoPy Integration](discopy/gnn_discopy.md) → [Category Theory](gnn/advanced/advanced_modeling_patterns.md#category-theory)
+- **Symbolic Reasoning**: [DisCoPy Integration](discopy/gnn_discopy.md) → [Advanced modeling patterns](gnn/advanced/advanced_modeling_patterns.md)
 - **Program Synthesis**: [PoE-World Integration](poe-world/poe-world_gnn.md) → [AutoGenLib](autogenlib/gnn_autogenlib.md)
 
 ### Mathematical Foundations
@@ -273,30 +268,23 @@ This index provides a comprehensive mapping of all cross-references within the G
 - **Dependencies**: [Package Management](dependencies/OPTIONAL_DEPENDENCIES.md) → [Dependency Guide](dependencies/README.md)
 - **Execution**: [Framework Management](execution/FRAMEWORK_AVAILABILITY.md) → [Execution Strategy](execution/README.md)
 
-## Pipeline Integration Matrix
+## Pipeline integration matrix
 
-### 25-Step Processing Pipeline
->
-> **⚙️ Complete Workflow** | **🔄 Automated Processing**
->
-> *The GNN pipeline consists of 25 steps (0-24). The table below summarizes key steps with cross-references.*
+The pipeline has **25 steps (0–24)**. Do not rely on older step-order tables in archived prose; use:
 
-| Step | Component | Primary Documentation | Cross-References | Framework Integration |
-|------|-----------|---------------------|------------------|---------------------|
-| 1 | **GNN Parsing** | [Pipeline Step 1](gnn/operations/gnn_tools.md#step-1-gnn-parsing) | [Syntax Guide](gnn/reference/gnn_syntax.md), [File Structure](gnn/reference/gnn_file_structure_doc.md) | Universal |
-| 2 | **Setup** | [Setup Guide](SETUP.md), [Pipeline Step 2](gnn/operations/gnn_tools.md#step-2-setup) | [Configuration](configuration/README.md), [Dependencies](SETUP.md#dependencies-explained) | Environment |
-| 3 | **Testing** | [Testing Guide](testing/README.md), [Pipeline Step 3](gnn/operations/gnn_tools.md#step-3-testing) | [Test Examples](#placeholder), [Quality Assurance](testing/README.md#quality-assurance) | Validation |
-| 4 | **Type Checking** | [Type Checker](gnn/operations/gnn_tools.md#validation-tools), [Pipeline Step 4](gnn/operations/gnn_tools.md#step-4-type-checking) | [Resource Metrics](gnn/operations/resource_metrics.md), [Common Errors](troubleshooting/common_errors.md) | Validation |
-| 5 | **Export** | [Export Guide](gnn/operations/gnn_tools.md#export-formats), [Pipeline Step 5](gnn/operations/gnn_tools.md#step-5-export) | [Format Converters](README.md#format-converters), [Multi-Format](pkl/pkl_gnn.md) | Universal |
-| 6 | **Visualization** | [Visualization Guide](gnn/operations/gnn_tools.md#visualization-tools), [Pipeline Step 6](gnn/operations/gnn_tools.md#step-6-visualization) | [DisCoPy Diagrams](discopy/gnn_discopy.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md) | Universal |
-| 7 | **MCP** | [MCP Guide](mcp/README.md), [Pipeline Step 7](gnn/operations/gnn_tools.md#step-7-mcp) | [FastMCP](mcp/fastmcp.md), [API Integration](api/README.md) | Protocol |
-| 8 | **Ontology** | [Ontology System](gnn/advanced/ontology_system.md), [Pipeline Step 8](gnn/operations/gnn_tools.md#step-8-ontology) | [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md) | Semantic |
-| 9 | **Rendering** | [Code Generation](gnn/operations/gnn_tools.md#code-generation), [Pipeline Step 9](gnn/operations/gnn_tools.md#step-9-rendering) | [PyMDP](pymdp/gnn_pymdp.md), [RxInfer](rxinfer/gnn_rxinfer.md) | Framework-Specific |
-| 10 | **Execution** | [Execution Guide](gnn/operations/gnn_tools.md#execution), [Pipeline Step 10](gnn/operations/gnn_tools.md#step-10-execution) | [PyMDP Examples](pymdp/gnn_pymdp.md#examples), [RxInfer Examples](rxinfer/gnn_rxinfer.md#examples) | Framework-Specific |
-| 11 | **LLM** | [LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md), [Pipeline Step 11](gnn/operations/gnn_tools.md#step-11-llm) | [DSPy](dspy/gnn_dspy.md), [PoE-World](poe-world/poe-world_gnn.md) | AI-Enhanced |
-| 12 | **Audio** | [Audio Generation](../src/audio/README.md), [Pipeline Step 12](gnn/operations/gnn_tools.md#step-12-audio) | [SAPF](sapf/sapf.md), [Pedalboard](pedalboard/pedalboard.md) | Audio Processing |
-| 13 | **Website** | [Website Generation](gnn/operations/gnn_tools.md#documentation), [Pipeline Step 13](gnn/operations/gnn_tools.md#step-13-website) | [Documentation](README.md), [Site Generation](README.md) | Documentation |
-| 14 | **Report** | [Report Generation](../src/report/README.md), [Pipeline Step 14](gnn/operations/gnn_tools.md#step-14-report) | [Analysis](../src/report/README.md), [Comprehensive Reports](../src/report/README.md) | Analysis |
+- **[../CLAUDE.md](../CLAUDE.md)** — command-line entry points and step table
+- **[PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md)** — numbered `src/N_*.py` orchestrators
+- **[gnn/operations/gnn_tools.md — GNN Processing Pipeline](gnn/operations/gnn_tools.md#gnn-processing-pipeline-srcmainpy)** — tooling context and [complete pipeline stages](gnn/operations/gnn_tools.md#complete-pipeline-stages-25-steps)
+
+| Step (excerpt) | Script (repo) | Doc |
+|----------------|---------------|-----|
+| 11 Render | `11_render.py` | [PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md), [Framework integration](gnn/integration/framework_integration_guide.md) |
+| 12 Execute | `12_execute.py` | [execution/README.md](execution/README.md), [src/README.md](../src/README.md) |
+| 13 LLM | `13_llm.py` | [llm/README.md](llm/README.md) |
+| 15 Audio | `15_audio.py` | [audio/README.md](audio/README.md) |
+| 20 Website | `20_website.py` | [website docs](../src/website/README.md) |
+| 21 MCP | `21_mcp.py` | [mcp/README.md](mcp/README.md) |
+| 23 Report | `23_report.py` | [report](../src/report/README.md) |
 
 ## Machine-Readable Navigation Data
 
@@ -372,10 +360,10 @@ navigation_graph:
     quality_assurance: [style_guide.md, testing/README.md]
 
   pipeline_integration:
-    preprocessing: [1, 2, 3, 4]  # GNN, Setup, Tests, Type Check
-    processing: [5, 6, 7, 8]     # Export, Visualization, MCP, Ontology
-    generation: [9, 10, 11]      # Rendering, Execution, LLM
-    advanced: [12, 13, 14]       # DisCoPy, JAX, Site
+    note: "Step indices are 0-24; see CLAUDE.md for authoritative ordering"
+    core_examples: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    simulation_examples: [10, 11, 12, 13, 14, 15, 16]
+    output_examples: [17, 18, 19, 20, 21, 22, 23, 24]
     
   cross_reference_density:
     high_density: [README.md, gnn/reference/gnn_syntax.md, templates/README.md, gnn/operations/gnn_tools.md, learning_paths.md]
@@ -383,6 +371,178 @@ navigation_graph:
     specialized: [poe-world/poe-world_gnn.md, cerebrum/gnn_cerebrum.md, axiom/axiom_gnn.md]
     emerging: [onefilellm/onefilellm_gnn.md, vec2text/vec2text_gnn.md, arc-agi/arc-agi-gnn.md]
 ```
+
+## Topic README anchor registry
+
+These headings exist so deep links from `doc/<topic>/README.md` resolve to a stable fragment. Prefer narrative sections above when browsing.
+
+### activeinference_jl
+
+See **ActiveInference.jl** under [Specialized Frameworks](#specialized-frameworks).
+
+### Advanced visualization
+
+See [Technical Implementation](#technical-implementation) and [visualization/README.md](visualization/README.md).
+
+### API reference integration
+
+See [API Documentation](api/README.md) and the doc hub [API Reference & Integration](README.md#api-reference-integration).
+
+### Arc-agi
+
+See [ARC-AGI Integration](arc-agi/arc-agi-gnn.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### Archive
+
+Historical examples: [archive/README.md](archive/README.md).
+
+### Autogenlib
+
+See [AutoGenLib](autogenlib/gnn_autogenlib.md) under [LLM Integrations](#llm-integrations).
+
+### Axiom
+
+See [Axiom](axiom/axiom_gnn.md) under [Specialized Frameworks](#specialized-frameworks) and [Mathematical Foundations](#mathematical-foundations).
+
+### Cerebrum
+
+See [Cerebrum](cerebrum/gnn_cerebrum.md) in [Modeling Patterns](#modeling-patterns).
+
+### D2
+
+See [D2](d2/gnn_d2.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### Data processing
+
+See [OneFileLLM](onefilellm/onefilellm_gnn.md) and [Neurosymbolic AI](#neurosymbolic-ai).
+
+### Dspy
+
+See [DSPy](dspy/gnn_dspy.md) under [LLM Integrations](#llm-integrations).
+
+### Embedding systems
+
+See [Vec2Text](vec2text/vec2text_gnn.md) and [Neurosymbolic AI](#neurosymbolic-ai).
+
+### Export
+
+See [export/README.md](export/README.md) and [Technical Implementation](#technical-implementation).
+
+### Formal methods and verification
+
+See [Mathematical Foundations](#mathematical-foundations) and formal tooling under [Specialized Frameworks](#specialized-frameworks).
+
+### Glowstick
+
+See [Glowstick](glowstick/glowstick_gnn.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### gui_oxdraw
+
+See [GUI Oxdraw](gui_oxdraw/gnn_oxdraw.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### Iroh
+
+See [Iroh](iroh/iroh.md) under [Distributed Systems and Networking](#distributed-systems-and-networking).
+
+### Kit
+
+See [Kit](kit/gnn_kit.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### Klong
+
+See [Klong](klong/klong.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### muscle-mem
+
+See [Muscle-Mem](muscle-mem/gnn-muscle-mem.md) under [Specialized Frameworks](#specialized-frameworks).
+
+### Neuroscience
+
+See [Neuroscience Integration](#neuroscience-integration) and [SPM](spm/spm_gnn.md).
+
+### Nock
+
+See [Nock](nock/nock-gnn.md) under [Mathematical Foundations](#mathematical-foundations).
+
+### Onefilellm
+
+See [OneFileLLM](onefilellm/onefilellm_gnn.md) under [LLM Integrations](#llm-integrations).
+
+### Other
+
+Miscellaneous topics: [other/README.md](other/README.md).
+
+### Pedalboard
+
+See [Pedalboard](pedalboard/pedalboard_gnn.md) under [Audio and Sonification](#audio-and-sonification).
+
+### Performance optimization
+
+See [Performance Guide](performance/README.md), [TimEP](timep/timep_gnn.md), and [Muscle-Mem](muscle-mem/gnn-muscle-mem.md).
+
+### Pkl
+
+See [Pkl](pkl/pkl_gnn.md) under [Data Persistence and Serialization](#data-persistence-and-serialization).
+
+### Poe-world
+
+See [PoE-World](poe-world/poe-world.md) under [Compositional World Modeling](#compositional-world-modeling).
+
+### Pomdp
+
+See [POMDP](pomdp/pomdp_overall.md) under [Mathematical Foundations](#mathematical-foundations) and [Temporal and Dynamical Systems](#temporal-and-dynamical-systems).
+
+### Privacy and interpretability
+
+See [Vec2Text](vec2text/vec2text_gnn.md) and privacy-related notes in [Neurosymbolic AI](#neurosymbolic-ai).
+
+### Quadray
+
+See [Quadray](quadray/quadray_gnn.md) under [Mathematical Foundations](#mathematical-foundations).
+
+### Release management
+
+See [releases/README.md](releases/README.md) and [Support and Learning](#support-and-learning).
+
+### Research
+
+See [Research Integration Network](#research-integration-network) and [Researcher Path](#researcher-path).
+
+### Sapf
+
+See [SAPF](sapf/sapf_gnn.md) under [Audio and Sonification](#audio-and-sonification).
+
+### Spatial modeling
+
+See [Quadray](quadray/quadray_gnn.md) and spatial patterns in [Modeling Patterns](#modeling-patterns).
+
+### Spm
+
+See [SPM](spm/spm_gnn.md) under [Neuroscience Integration](#neuroscience-integration).
+
+### Sympy
+
+See [SymPy](sympy/gnn_sympy.md) under [Mathematical Foundations](#mathematical-foundations).
+
+### Timep
+
+See [TimEP](timep/timep_gnn.md) under [Temporal and Dynamical Systems](#temporal-and-dynamical-systems).
+
+### Type inference zoo
+
+See [type-inference-zoo/README.md](type-inference-zoo/README.md) under [Mathematical Foundations](#mathematical-foundations).
+
+### Vec2text
+
+See [Vec2Text](vec2text/vec2text_gnn.md) under [LLM Integrations](#llm-integrations).
+
+### Visualization
+
+See [visualization/README.md](visualization/README.md) under [Technical Implementation](#technical-implementation).
+
+### X402
+
+See [X402](x402/gnn_x402.md) under [Distributed Systems and Networking](#distributed-systems-and-networking).
 
 ## Quality Metrics
 
@@ -409,7 +569,7 @@ navigation_graph:
 >
 > **✅ Comprehensive Integration** | **📊 Complete Coverage**
 
-- **Coverage**: Comprehensive documentation of all 52 subdirectories with AGENTS.md and README.md
+- **Coverage**: [expected_dirs.txt](expected_dirs.txt) lists 61 top-level `doc/` folders; pairing of README/AGENTS is enforced by [docs_audit.py](development/docs_audit.py) for maintained trees
 - **Sections**: Audio processing, formal methods, distributed systems, infrastructure
 - **Audio**: Sonification frameworks (SAPF, Pedalboard) and audio representation
 - **Formal Methods**: Verification frameworks (Axiom, Petri Nets, Nock) and formal specification
@@ -419,11 +579,9 @@ navigation_graph:
 - **Neuroscience**: SPM integration and neuroscientific methods
 - **YAML Integration**: Framework integrations with tool categories
 - **Topic Clusters**: Comprehensive topic organization and emerging categories
-- **Metrics**: Cross-reference coverage (52 subdirectories, 1400+ references)
+- **Metrics**: Cross-reference density varies by subtree; run `docs_audit.py --strict` for mechanical checks
 
 ---
 
-**Status**: Production Ready  
-**Cross-Reference Network**: ✅ Fully Integrated (1400+ references)  
-**Machine Readability**: ✅ Structured Data Available with YAML Format  
-**Coverage Metrics**: 📊 52 subdirectories, 100% documentation coverage
+**Status**: Maintained — prefer [CLAUDE.md](../CLAUDE.md) and [PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md) for pipeline truth  
+**Top-level doc folders**: 61 ([expected_dirs.txt](expected_dirs.txt))

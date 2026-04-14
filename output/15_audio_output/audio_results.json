@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-12T17:34:17.759982",
+  "timestamp": "2026-04-14T11:10:08.492104",
   "processed_files": 9,
   "success": true,
   "errors": [],
@@ -14,7 +14,7 @@
       },
       "variables_count": 67,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:17.896882"
+      "generation_timestamp": "2026-04-14T11:10:09.081203"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -26,7 +26,7 @@
       },
       "variables_count": 60,
       "connections_count": 2,
-      "generation_timestamp": "2026-04-12T17:34:18.030917"
+      "generation_timestamp": "2026-04-14T11:10:09.229432"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -38,7 +38,7 @@
       },
       "variables_count": 83,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:18.211266"
+      "generation_timestamp": "2026-04-14T11:10:09.421876"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -50,7 +50,7 @@
       },
       "variables_count": 73,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:18.363928"
+      "generation_timestamp": "2026-04-14T11:10:09.588136"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -62,7 +62,7 @@
       },
       "variables_count": 49,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:18.468155"
+      "generation_timestamp": "2026-04-14T11:10:09.708136"
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
@@ -74,7 +74,7 @@
       },
       "variables_count": 37,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:18.545017"
+      "generation_timestamp": "2026-04-14T11:10:09.799296"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -86,7 +86,7 @@
       },
       "variables_count": 69,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:18.685566"
+      "generation_timestamp": "2026-04-14T11:10:09.957008"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -98,7 +98,7 @@
       },
       "variables_count": 46,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:18.785638"
+      "generation_timestamp": "2026-04-14T11:10:10.071733"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -110,7 +110,7 @@
       },
       "variables_count": 115,
       "connections_count": 0,
-      "generation_timestamp": "2026-04-12T17:34:19.042278"
+      "generation_timestamp": "2026-04-14T11:10:10.339855"
     }
   ],
   "sonification_results": [
@@ -119,63 +119,63 @@
       "sonification_file": "output/15_audio_output/simple_mdp_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:17.901427"
+      "generation_timestamp": "2026-04-14T11:10:09.087533"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
       "sonification_file": "output/15_audio_output/multi_armed_bandit_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.038661"
+      "generation_timestamp": "2026-04-14T11:10:09.238353"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
       "sonification_file": "output/15_audio_output/deep_planning_horizon_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.212995"
+      "generation_timestamp": "2026-04-14T11:10:09.424622"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
       "sonification_file": "output/15_audio_output/actinf_pomdp_agent_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.369077"
+      "generation_timestamp": "2026-04-14T11:10:09.594548"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "sonification_file": "output/15_audio_output/hmm_baseline_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.469632"
+      "generation_timestamp": "2026-04-14T11:10:09.710776"
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
       "sonification_file": "output/15_audio_output/bnlearn_causal_model_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.546178"
+      "generation_timestamp": "2026-04-14T11:10:09.801483"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
       "sonification_file": "output/15_audio_output/two_state_bistable_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.692834"
+      "generation_timestamp": "2026-04-14T11:10:09.965277"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
       "sonification_file": "output/15_audio_output/markov_chain_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:18.793410"
+      "generation_timestamp": "2026-04-14T11:10:10.080500"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
       "sonification_file": "output/15_audio_output/tmaze_epistemic_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-04-12T17:34:19.051227"
+      "generation_timestamp": "2026-04-14T11:10:10.349067"
     }
   ],
   "audio_analysis": [
@@ -183,144 +183,396 @@
       "file_path": "input/gnn_files/discrete/simple_mdp.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.046051025390625,
+          "rms_amplitude": 0.008638143222213403
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.993682861328125,
+          "rms_amplitude": 0.12103721066981396
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 6179.87781502078,
+          "spectral_bandwidth": 7343.471722768278
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 1862.0611281077843,
+          "spectral_bandwidth": 2129.8436930658786
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.047760009765625,
+          "rms_amplitude": 0.009128030294779077
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.158477783203125,
+          "rms_amplitude": 0.02504366459523349
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.91009521484375,
+          "rms_amplitude": 0.11512591740504846
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 4681.849088084959,
+          "spectral_bandwidth": 5237.468855957282
+        },
+        "rhythmic": {
+          "dominant_frequency": 2.0,
+          "spectral_centroid": 112.48754078552568,
+          "spectral_bandwidth": 1212.7937653162066
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 1680.7088950255968,
+          "spectral_bandwidth": 1957.1711969363519
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.030975341796875,
+          "rms_amplitude": 0.007761343511086463
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 1.0,
+          "rms_amplitude": 0.12436766777721851
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 15940.0,
+          "spectral_centroid": 7142.666700513661,
+          "spectral_bandwidth": 10841.594769950068
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 3271.5419388038927,
+          "spectral_bandwidth": 4650.874408580497
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.039642333984375,
+          "rms_amplitude": 0.008275642484494536
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 1.0,
+          "rms_amplitude": 0.12358291570867773
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 7109.10436989035,
+          "spectral_bandwidth": 8473.162127439247
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 2595.0459214691,
+          "spectral_bandwidth": 3847.827590147729
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.058990478515625,
+          "rms_amplitude": 0.010100619864628615
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.73321533203125,
+          "rms_amplitude": 0.10511888896733024
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 2945.4470419240415,
+          "spectral_bandwidth": 3120.8289709163096
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 1369.3517506775793,
+          "spectral_bandwidth": 1573.2949400909015
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.06988525390625,
+          "rms_amplitude": 0.01162338081227677
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.559722900390625,
+          "rms_amplitude": 0.09300541602672599
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 1692.9630870059539,
+          "spectral_bandwidth": 1834.5404528302197
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 1042.1969005072135,
+          "spectral_bandwidth": 1216.419585121936
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.04486083984375,
+          "rms_amplitude": 0.008512058509387424
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 1.0,
+          "rms_amplitude": 0.12230800459233393
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 6451.80999078913,
+          "spectral_bandwidth": 7736.291260548729
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 2140.9256390187993,
+          "spectral_bandwidth": 2954.549312673447
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0609130859375,
+          "rms_amplitude": 0.010424706012404058
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.6898193359375,
+          "rms_amplitude": 0.10222555789103498
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 2640.3519994081075,
+          "spectral_bandwidth": 2828.284715049503
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 1287.4604948522917,
+          "spectral_bandwidth": 1482.441631788616
+        }
+      },
       "temporal_analysis": {}
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0277099609375,
+          "rms_amplitude": 0.006593366542881511
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 1.0,
+          "rms_amplitude": 0.1219077502605635
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 18118.0,
+          "spectral_centroid": 8187.370682841681,
+          "spectral_bandwidth": 11868.880550607779
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 4846.9445392015,
+          "spectral_bandwidth": 6453.180322855425
+        }
+      },
       "temporal_analysis": {}
     }
   ]

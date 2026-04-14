@@ -6,80 +6,71 @@ Prompt:
 
 Response:
 
+Here is the complete implementation of the GNN model in Python:
 ```python
 import numpy as np
-from typing import List, Dict
+from scipy import stats
 
-def gnn_model(
-    state: List[List[float]],
-    observation: List[int],
-    num_hidden_states: int = 3,
-    num_actions: int = 1,
-    num_timesteps: int = 40,
-    action_type: str = 'action'
-) -> Dict[str, float]:
-    """GNN representation of a simple discrete-time Markov chain.
+def gnn_model(state=None, observation=np.array([]), num_states=3):
+    """
+    A simple discrete-time Markov Chain with no actions and no observable state space.
 
-    Args:
-        state (List[list]): A list of states representing weather data.
-        observation (List[int]): A list of observations representing the current state distribution.
-        num_hidden_states (int): The number of hidden states in the model.
-        num_actions (int): The number of actions available to the system.
-        num_timesteps (int): The number of timesteps for each observation.
+    Parameters:
+        - state (numpy array of shape (num_states)): The initial state distribution.
+            If not specified, the initial state is assumed to be a random state.
+            If specified as None, it's assumed that the system evolves passively.
+
+        - observation (numpy array of shape (num_observations))
+                A list of states representing observations over time.
 
     Returns:
-        Dict[str, float]: A dictionary representing the Markov chain with the following structure:
-
-        - Initial state distribution:
-            [
-                {
-                    'observations': [
-                        [
-                            # Observation data is directly observed by the system.
-                        ],
-                        ...
-                        ...
-                        ...
-                    ]
-                },
-                ...
-                ...
-            ]
-        - Next states transition matrix:
-            [[] for i in range(num_hidden_states)]
-            [
-                [0.7, 0.3, 0.1],
-                [0.2, 0.4, 0.3],
-                [0.1, 0.3, 0.6]
-            ]
-        - Next states transition matrix:
-            [[]]
+        - A dictionary containing the following keys:
+            - `state`: The current state distribution
+            - `observation`: The next state distribution
+            - `actions`: A dictionary with the actions associated to each observation
     """
-
-    # Initialize the state and observation variables
-    state = np.array([state])
-    observation = np.array([])
-    timesteps = 40
-    num_hidden_states = num_hidden_states + num_actions
-    num_actions = num_actions - action_type == 'action'
-
-    # Define the transition matrix
-    D = np.zeros((num_hidden_states, num_actions))
-    for i in range(num_hidden_states):
-        D[i] = np.array([
-            [
-                (
-                    state[0],
-                    observation[0],
-                    timesteps - 1
-                ]
-            ],
-            ...
-            [
-                ([state[:i]], [], []
-            ]
-        ])
+    # Initialize the initial state distribution and transition matrix
+    state_distribution = stats.identity(num_states)
 
     # Initialize the transition matrix
-    for i in range(num_hidden_states):
-        D
+    transition_matrix = np.zeros((state_distribution, num_states))
+
+    # Initialize the hidden states
+    hidden_states = [
+        (0., 1.) ** (
+            num_states // 2 + 1
+        ),
+        (1., 1.) ** (num_states // 2)
+    ]
+
+    # Initialize the observation distribution
+    observation = np.array([state])
+
+    # Initialize the next state distribution
+    next_state = np.array(observation).T
+
+    # Initialize the transition matrix
+    transition_matrix = [[0.] * num_states] + [
+        [[1., 1.], ...[1e6]] ** (
+            num_states // 2 + 1
+        )**(-num_states // 2, num_states) for _ in range(
+                num_states - 3
+    ]
+
+    # Initialize the hidden states
+    hidden_states = [
+        ([0., 1.], [[1.]]) ** (
+            num_states // 2 + 1
+        ),
+        ([1., 1.] * num_states, [[1.]]**(-num_states // 2)) for _ in range(
+                num_states - 3
+    ]
+
+    # Initialize the observation distribution
+    observation = np.array([state])
+
+    return {
+        'state': state,
+        'observation': observation,
+        'actions': [
+            [0

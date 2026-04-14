@@ -355,6 +355,18 @@ uv run python src/main.py --target-dir input/gnn_files --verbose
 - [Discussion Forum](https://forum.activeinference.org/c/gnn)
 - [Issue Tracker](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 
+## Step 4 GNN type checker
+
+Tutorial “step 4” lines up with the **type checker** in [Validation Tools](#validation-tools) and the **`5_type_checker.py`** orchestrator in [Complete Pipeline Stages (25 Steps)](#complete-pipeline-stages-25-steps).
+
+## GNN type checker and resource estimator
+
+See [Validation Tools](#validation-tools) and [resource metrics](resource_metrics.md).
+
+## GNN visualization
+
+See [Visualization Tools](#visualization-tools) and pipeline Steps 8–9 in [Complete Pipeline Stages (25 Steps)](#complete-pipeline-stages-25-steps).
+
 ## Future Tool Development
 
 Planned tools and features:

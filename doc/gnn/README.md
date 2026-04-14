@@ -1,7 +1,7 @@
 # GNN Documentation Index
 
 **Version**: v2.0.0
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -71,7 +71,7 @@ uv run python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **Framework Integration:**
 
-- **[MCP Hub](mcp/README.md)** — 131 tools, client setup, tool development guide
+- **[MCP Hub](mcp/README.md)** — tool inventory for the **whole pipeline** MCP surface (order-of-magnitude 130+ tools; not Step 3 only), client setup, tool development guide
 - [Framework Integration Guide](integration/framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan
 - [GNN Implementation Guide](integration/gnn_implementation.md) - Implementation workflows and patterns
 - **[Framework Implementations](implementations/README.md)** — Framework documentation for PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, PyTorch, NumPyro, Stan, and CatColab
@@ -252,6 +252,6 @@ All GNN documentation follows these principles:
 **GNN syntax standard**: v1.1 (see [gnn_syntax.md](gnn_syntax.md))
 **Python package** (`generalized-notation-notation`): **1.3.0** ([pyproject.toml](../../pyproject.toml))
 **Total Pipeline Steps**: 25 (0–24)
-**Last Updated**: 2026-04-10
+**Last Updated**: 2026-04-14
 
 **Status**: Maintained (re-run `uv run python doc/development/docs_audit.py` after link or tree changes)

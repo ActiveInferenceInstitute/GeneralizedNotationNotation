@@ -6,44 +6,37 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from typing import List, Tuple
+GNN Model Content:
+# GNN Example: Hierarchical Active Inference POMDP
+# GNN Version: 1.0
+# Two-level hierarchical POMDP with slow higher-level and fast lower-level dynamics.
 
-def gnn(
-    level: List[List[float]],
-    num_hidden_states: int = 4,
-    num_actions: int = 3,
-    timesteps=20,
-    timescale_ratio=5,
-    signature="gNN",
-    **kwargs) -> List[Tuple[int, float]]:
-    """GNN Representation of a hierarchical Active Inference POMDP.
+## GNNSection
+ActInfPOMDP_Hierarchical
 
-    Args:
-        level (List[List[float]], type=list): A list of levels to be processed.
-        num_hidden_states (int), number of hidden states in the hierarchy.
-        num_actions (int), number of actions per level.
-        timesteps (int), time step size for each level.
-        signature: `str` or `bytes`: Signature of GNN representation, can be used to compute
-    """
+## GNNVersionAndFlags
+GNN v1
 
-    # Initialize state space block
-    A1 = np.array([level[0] + [num_hidden_states - 2]] * num_hidden_states)
-    B1 = np.array([[num_actions][timestep], [num_actions][timestep]])
-    C1 = np.array(
-        [[num_actions, num_actions], [num_actions]], dtype=np.float64
-    )
+## ModelName
+Hierarchical Active Inference POMDP
 
-    # Initialize higher-level beliefs
-    A2 = np.zeros((num_hidden_states + 3))
-    B2 = np.ones([num_actions])
-    C2 = np.ones(num_actions)
-    D2 = np.ones(((num_actions - num_actions % 2), num_actions, num_actions * num_actions / 2))
+## ModelAnnotation
+A2[4,2,type=float]     # Level 2 likelihood: observations x hidden states
+B2[2,2,1,type=float]   # Level 2 transitions (context switches)
+C2[2,type=float]       # Level 2 preferences over context
+D2[2,type=float]       # Level 2 prior over contextual states
+s2[4,1,type=float]     # Level 2 observational distribution
+o2[4,1,type=int]       # Level 2 observation (= level 1 contextual state)
+G2[π1,type=float]      # Level 2 Expected Free Energy
 
-    # Initialize the initial parameters
-    A1[0] = A1[:num_hidden_states + num_actions // 2], B1[0:num_actions // 2], C1[0:num_actions // 2], D1[0:num_actions // 2]
+# Level 1 (fast dynamics): 4 observations, 4 hidden states
+A1={
+  (0.85, 0.05, 0.05, 0.05),
+  (0.05, 0.85, 0.05, 0.05),
+  (0.05, 0.05, 0.85, 0.05)
+}
 
-    # Initialize the initial parameters
-    A1[num_actions - num_actions % 2, num_hidden_states + num_actions / 2:] = A1[:num_hidden_states + num_actions // 2], B1[num_actions // 2:], C1[num_actions // 2:num_actions // 2]
-    A1[num
+B1={
+  ( (1.0,0.0,0.0,0.0), (1.0,0.0,0.0,0.0), (0.0,1.0,0.0,0.0), (0.0,0.0,0.0,1.0) ),
+  ( (0.0,1.0,0.0,0.0), (1.0,0.0,0.0,0.0), (0.0,0.0,1.0,0.0), (0.0,0.0,0.0,1.0) ),
+  ( (0.0,0.0,1.0

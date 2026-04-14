@@ -1,48 +1,65 @@
 # ANALYZE_STRUCTURE
 
-You've already covered the key aspects of the analysis, including graph structure and variable analysis. Here's a more detailed breakdown:
+Based on your description, here are some key aspects of the structure and graph properties:
 
 1. **Graph Structure**:
-   - Number of variables and their types (num_hidden_states_l2)
-    - Hierarchical structure with 4 hidden states per level
-  Example Graph Structure:
-   ```python
-# Create an example graph structure
-GNN = Graph(num_nodes=len(A1), num_edges=len(B1))
-```
-
-2. **Variable Analysis**:
-   - State space dimensionality for each variable (num_states_l1)
-    - Hierarchical topology with 4 hidden states per level
-  Example Variable Analysis:
-   ```python
-# Create an example hierarchical topology structure
-Hierarchical = Graph(num_nodes=len(A2), num_edges=len(B2))
-```
-
-3. **Variable Analysis**:
-   - Connection patterns (directed/unindirected edges)
-    - Symmetry of connections between variables
-  Example Variable Analysis:
-   ```python
-# Create an example symmetric connection pattern structure
-Symmetric = Graph(num_nodes=len(A1), num_edges=len(B2))
-```
-
-4. **Mathematical Structure**:
-   - Matrix dimensions and compatibility
-    - Parameter structure and organization (e.g., symmetry, special properties)
-  Example Mathematical Structure:
-   ```python
-# Create an example matrix structure with symmetric connections between variables
-Symmetric = Graph(num_nodes=len(A1), num_edges=len(B2))
-```
-
-5. **Complexity Assessment**:
-   - Computational complexity indicators
-    - Model scalability considerations (e.g., computational complexity, memory)
-  Example Complexity Assessment:
-   ```python
-# Create an example model with a hierarchical topology structure and symmetric connections between variables
-Model = Graph(num_nodes=len(A1), num_edges=len(B2))
-```
+   - Number of variables and their types (num_hidden_states_l2=4)
+   - Connection patterns (directed/undirected edges):
+     - Level 1 connections:
+      - L1-type connections:
+        - L1-connected nodes:
+          - L1-connecting nodes:
+            - L1-nodes with connected neighbors:
+              - L1-nodes with connected neighbors:
+                - L2-connections:
+                  - L2-connected node:
+                    - L2-node with connected neighbor:
+                      - L3-connection:
+                      - L3-connected node:
+                        - L4-connection:
+                      - L4-connected node:
+                          - L5-connection:
+                      - L5-connected node:
+                            - L6-connections:
+                              - L7-nodes:
+                                  - L8-nodes:
+                                  - L9-nodes:
+                                  - L10-nodes:
+                                  - L11-nodes:
+                                  - L12-nodes:
+                                  - L13-nodes:
+                                  - L14-nodes:
+                                  - L15-nodes:
+                                  - L16-nodes:
+                                  - L17-nodes:
+                                  - L18-nodes:
+                                  - L19-nodes:
+                                  - L20-nodes:
+                                  - L21-nodes:
+                                  - L22-nodes:
+                                  - L23-nodes:
+                                  - L24-nodes:
+                                  - L25-nodes:
+                                  - L26-nodes:
+                                  - L27-nodes:
+                                  - L28-nodes:
+                                  - L29-nodes:
+                                  - L30-nodes:
+                                  - L31-nodes:
+                                  - L32-nodes:
+                                  - L33-nodes:
+                                  - L34-nodes:
+                                  - L35-nodes:
+                                  - L36-nodes:
+                                  - L37-nodes:
+                                  - L38-nodes:
+                                  - L39-nodes:
+                                  - L40-nodes:
+                                  - L41-nodes:
+                                  - L42-nodes:
+                                  - L43-nodes:
+                                  - L44-nodes:
+                                  - L45-nodes:
+                                  - L46-nodes:
+                                  - L47-nodes:
+                                  -

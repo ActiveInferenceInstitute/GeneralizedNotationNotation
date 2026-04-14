@@ -4,7 +4,7 @@
 
 This file is the **GitHub-oriented entry point**: GNN concepts, deep links into language and pipeline docs, repository layout, CI, and local validation. The narrative overview, badges, publication block, and long examples live in the root [README.md](../README.md).
 
-**Last updated**: 2026-03-24
+**Last updated**: 2026-04-14
 
 ---
 
@@ -33,7 +33,7 @@ This file is the **GitHub-oriented entry point**: GNN concepts, deep links into 
 
 ## What GNN is
 
-- **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [doc/gnn/gnn_syntax.md](../doc/gnn/gnn_syntax.md) (v1.1 living spec), [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (examples and patterns), and the [language hub](../doc/gnn/language/README.md).
+- **Notation**: Models are written as **Markdown** with labeled sections (for example `## GNNSection`, `## StateSpaceBlock`, `## Connections`, `## InitialParameterization`, ontology annotations). The normative and reference material is split across [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (v1.1 living spec), [doc/gnn/reference/gnn_syntax.md](../doc/gnn/reference/gnn_syntax.md) (examples and patterns), and the [language hub](../doc/gnn/language/README.md).
 - **Processing**: A single orchestrator ([src/main.py](../src/main.py)) runs the numbered steps in order (or a subset via `--only-steps` / `--skip-steps`). Step **3** produces parsed representations consumed by type checking, validation, export, visualization, ontology, render, LLM, and related steps; **11 → 12** is the main **generate code → run simulation** bridge. See [doc/gnn/reference/architecture_reference.md](../doc/gnn/reference/architecture_reference.md) and [doc/gnn/reference/technical_reference.md](../doc/gnn/reference/technical_reference.md).
 - **Architecture**: Each step is a **thin orchestrator** (`src/N_*.py`) delegating to `src/<module>/` with `AGENTS.md` and usually `processor.py`. Diagram and conventions: root [AGENTS.md](../AGENTS.md), [ARCHITECTURE.md](../ARCHITECTURE.md), [src/README.md](../src/README.md).
 

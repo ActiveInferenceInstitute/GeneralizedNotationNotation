@@ -1,12 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-Based on the information provided in the document, here is a systematic breakdown of the key components involved:
+You've already identified the key components in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-   - What each state signifies
+
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -27,6 +27,57 @@ Based on the information provided in the document, here is a systematic breakdow
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
-6. **Temporal Structure**:
-   - Time horizons and temporal dependencies
-   - Dynamic vs. static components
+
+Now let's discuss the structure learning component of the GNN specification:
+
+1. **State Variables (Hidden States)**:
+   - Variable names and dimensions
+   - What each state represents conceptually
+   - State space structure (discrete/continuous, finite/infinite)
+
+2. **Observation Variables**:
+   - Observation modalities and their meanings
+   - Sensor/measurement interpretations
+   - Noise models or uncertainty characterization
+
+The key components are:
+
+  1. **State Variable(s):
+
+    - Variable names and dimensions
+    - What each state represents conceptually
+    - State space structure (discrete/continuous, finite/infinite)
+
+2. **Observation Variables**:
+
+   - Observation modalities and their meanings
+   - Sensor/measurement interpretations
+   - Noise models or uncertainty characterization
+
+The key components are:
+
+  1. **State Variable(s):
+
+    - Variable names and dimensions
+    - What each state represents conceptually
+    - State space structure (discrete/continuous, finite/infinite)
+
+2. **Observation Variables**:
+
+   - Observation modalities and their meanings
+   - Sensor/measurement interpretations
+   - Noise models or uncertainty characterization
+
+The key components are:
+
+  1. **State Variable(s):
+
+    - Variable names and dimensions
+    - What each state represents conceptually
+    - State space structure (discrete/continuous, finite/infinite)
+
+2. **Observation Variables**:
+
+   - Observation modalities and their meanings
+   - Sensor/measurement interpretations
+   - Noise models or uncertainty characterization

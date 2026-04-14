@@ -1,27 +1,18 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+Here's a concise overview of the key components:
 
-1. **Model Purpose**: This is a Markov Decision Process (MDP) that represents a fully observable Markov Decision Process with identity observation and identity action transitions. It tests the MDP special case where A is identity — agent always knows its state.
-
-2. **Core Components**:
-   - **A** represents the identity of the agent, which can be thought of as "always knows" their current state.
-   - **B** represents actions that are available to the agent (e.g., stay or move-north).
-   - **C** represents the policy and action selection for each observation/observation pair in the MDP.
-   - **D** is a prior distribution over the observed states, which provides information about what actions will be taken next based on the current state.
-
-3. **Model Dynamics**: The model evolves over time by updating its beliefs (actions) based on the available observations and actions. It also updates its belief in the policy vector to reflect new actions that are available for the agent.
-
-4. **Active Inference Context**: The MDP is represented as a Markov Decision Process with identity observation and identity action transitions, which enables Active Inference principles to be applied. This allows the agent to update its beliefs based on new observations/actions (policy) and policy updates (action selection).
-
-5. **Practical Implications**: The model can learn from past decisions made by agents in the MDP, enabling predictions of future actions based on current state/observation data. It also provides insights into how the agent's behavior changes over time due to new observations or action selections.
-
-I've provided a comprehensive explanation that covers:
-
-1. **Model Purpose**: This is a Markov Decision Process (MDP) representing a fully observable Markov Decision Process with identity observation and identity action transitions, testing the MDP as degenerate POMDPs. It tests the MDP special case where A is identity — agent always knows its state.
+1. **Model Purpose**: This is the purpose of the GNN model. It represents a fully observable Markov Decision Process (MDP). The goal is to simulate agent A making decisions based on their actions and observe the outcomes.
 
 2. **Core Components**:
-   - **A** represents the identity of the agent, which can be thought of as "always knows" their current state.
-   - **B** represents actions that are available to the agent (e.g., stay or move-north).
-   - **C** represents the policy and action selection for each observation/observation pair in the MDP.
-   - **D** is a prior distribution over the observed states, which provides information about what actions will be taken next based on the
+   - **Hidden States**: These are the positions where the agent's state/observation is uncertain, with probabilities indicating what happens next.
+   - **Observations**: These represent the current states of the agents (A) and (B), respectively. They capture the agent's uncertainty about their own position.
+   - **Actions**: These are actions that affect the policy or action-policy transition matrix. They describe how the agent makes decisions based on its current state/observation.
+
+3. **Model Dynamics**: This model implements Active Inference principles by simulating agent A making decisions based on their actions and observing outcomes. It represents a fully observable Markov Decision Process (MDP). The goal is to simulate agent A's decision-making process, with the goal of predicting future states and actions.
+
+4. **Active Inference Context**: This model uses the history of observed state/observation transitions to update beliefs about the agents' current positions based on their actions. It represents a fully observable Markov Decision Process (MDP). The agent makes decisions by updating its belief in the policy-action transition matrix, which is updated using the action-policy transition matrix.
+
+5. **Practical Implications**: This model can learn to predict future states and actions of agents A based on their current state/observation probabilities. It also provides insights into how they make decisions based on uncertainty about their own position.
+
+Please provide clear explanations in simple terms, focusing on the core components and key relationships between them.

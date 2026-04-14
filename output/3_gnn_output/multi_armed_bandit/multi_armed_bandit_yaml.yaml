@@ -83,10 +83,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-04-12T17:23:01.295923'
+created_at: '2026-04-14T10:58:13.077084'
 equations: []
 model_name: Multi Armed Bandit Agent
-modified_at: '2026-04-12T17:23:01.295925'
+modified_at: '2026-04-14T10:58:13.077085'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

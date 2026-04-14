@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Based on the document, here are the key steps in providing a systematic breakdown of the GNN representation:
+You've covered the key concepts in the document:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

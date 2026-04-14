@@ -489,6 +489,10 @@ pie
     "Flexible Policy" : 10
 ```
 
+## Hierarchical examples
+
+For layered slow–fast models, pair this progression with the [hierarchical template](../../templates/hierarchical_template.md) and [temporal hierarchy patterns](../advanced/advanced_modeling_patterns.md#temporal-hierarchy).
+
 ## Implementation Tips
 
 When implementing these models:

@@ -141,3 +141,19 @@ A=RecognitionMatrix
 ```
 
 This syntax produces models that parse cleanly and execute correctly in the GNN pipeline.
+
+## Variable naming conventions
+
+Use factor/modality indices consistently (`s_f0`, `o_m0`, `u_c0`) as in the [StateSpaceBlock](#statespaceblock) examples above.
+
+## Connection notation
+
+Directed edges use `>`; undirected compatibility uses `-` (see [Connections](#connections)).
+
+## Mathematical expressions
+
+Matrix literals and tuples belong in `InitialParameterization` and equation blocks; keep shapes aligned with the [type checker](../../../src/type_checker/AGENTS.md).
+
+## Multi-agent extensions
+
+Model multiple agents by declaring additional state factors and control indices; see [GNN Multi-Agent](../advanced/gnn_multiagent.md).

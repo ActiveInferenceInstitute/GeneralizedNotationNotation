@@ -9,7 +9,7 @@ This module follows the **static reference** pattern: it contains Markdown files
 | Component | Type | Purpose |
 |-----------|------|---------|
 | `file_structure.md` | Reference | Defines GNN file sections: `GNNVersionAndFlags`, `ModelName`, `StateSpaceBlock`, `Connections`, `InitialParameterization`, `Equations`, `Time`, `ActInfOntologyAnnotation`, `Footer` |
-| `punctuation.md` | Reference | Defines 15 GNN syntax symbols and their semantics |
+| `punctuation.md` | Reference | Defines 16 GNN syntax symbols and their semantics (see the Symbols table in that file) |
 | `README.md` | Documentation | Overview of this module |
 
 ## Requirements

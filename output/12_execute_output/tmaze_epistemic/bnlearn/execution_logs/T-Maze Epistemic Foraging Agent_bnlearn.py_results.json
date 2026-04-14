@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/bnlearn/T-Maze Epistemic Foraging Agent_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.885945,
-  "timestamp": "2026-04-12T17:24:34.334027",
+  "execution_time": 1.966272,
+  "timestamp": "2026-04-14T11:00:01.174070",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

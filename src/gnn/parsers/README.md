@@ -1,11 +1,30 @@
-# Parsers
+# GNN parsers
 
-## Overview
-This module handles `Parsers` components.
+Multi-format **parse** and **serialize** for GNN models: one `*_parser.py` / `*_serializer.py` pair per format family, plus shared infrastructure.
 
-## Available Members
-- **Classes**: ASN1Parser, ASN1Serializer, ASTNode, ASTVisitor, AgdaParser, AgdaSerializer, AlloyParser, AlloySerializer, BNFParser, BaseGNNParser, BaseGNNSerializer, BinarySerializer, Connection, ConnectionType, ConversionError, CoqGNNParser, CoqSerializer, DataType, EBNFParser, Equation, FormatConverter, FunctionalSerializer, GNNFormat, GNNInternalRepresentation, GNNParser, GNNParserValidationResult, GNNParsingSystem, GNNSerializer, GNNValidator, GrammarSerializer, HaskellGNNParser, IsabelleParser, IsabelleSerializer, JSONGNNParser, JSONSerializer, LeanGNNParser, LeanSerializer, MarkdownGNNParser, MarkdownSerializer, MaximaParser, MaximaSerializer, OntologyMapping, PKLParser, PKLSerializer, PNMLParser, Parameter, ParameterParsingMixin, ParseError, ParseResult, PickleGNNParser, PrintVisitor, ProtobufGNNParser, ProtobufSerializer, PythonGNNParser, PythonSerializer, ScalaGNNParser, ScalaSerializer, SchemaSerializer, Section, TLAParser, TLASerializer, TemporalSerializer, TimeSpecification, UnifiedGNNParser, ValidationError, ValidationIssue, ValidationSeverity, ValidationWarning, Variable, VariableType, XMLGNNParser, XMLSerializer, XSDParser, XSDSerializer, YAMLGNNParser, YAMLSerializer, ZNotationParser, ZNotationSerializer
-- **Functions**: accept, add_error, add_issue, add_warning, clear_parser_cache, convert, convert_gnn_format, create_empty_model, create_parse_error, dfs, extract_embedded_json_data, get_available_parsers, get_available_serializers, get_children, get_connections_for_variable, get_parameter_by_name, get_summary, get_supported_extensions, get_supported_formats, get_variable_by_name, get_variables_by_type, has_errors, has_warnings, infer_variable_type, is_supported, is_valid, normalize_variable_name, parse_connection_operator, parse_content, parse_dimensions, parse_file, parse_gnn_file_structured, parse_string, parse_xml_element, register_conversion, safe_enum_convert, serialize, serialize_obj, serialize_pickle_direct, serialize_to_file, to_dict, validate, validate_structure, visit, visit_children
+## Entry points
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Parsers.
+- **`GNNParsingSystem`** in `system.py` — `parse_file`, `serialize`, format conversion.
+- **`PARSER_REGISTRY`** / **`SERIALIZER_REGISTRY`** — map `GNNFormat` to concrete classes.
+- **`GNNFormat`**, **`GNNParser`** (protocol) — `common.py`.
+
+Canonical **enum size**, registry counts, and round-trip scope: **[../SPEC.md](../SPEC.md)**.
+
+## Layout
+
+See **[SPEC.md](SPEC.md)** for the full layout table (`grammar_*`, `schema_*`, `xml_*`, `unified_parser.py`, `validators.py`, etc.).
+
+## Adding a format
+
+1. Extend **`GNNFormat`** in `common.py` if needed.
+2. Implement parser and (unless parse-only) serializer classes.
+3. Register in **`PARSER_REGISTRY`** and **`SERIALIZER_REGISTRY`** in **`system.py`**.
+4. Add tests under `src/tests/` and extend `src/gnn/testing/test_round_trip.py` if the format should join the default round-trip list.
+
+## Tests
+
+```bash
+uv run pytest src/tests/test_gnn_parsing.py src/tests/test_gnn_parsers_common.py -q
+```
+
+Agent-oriented detail: **[AGENTS.md](AGENTS.md)**.

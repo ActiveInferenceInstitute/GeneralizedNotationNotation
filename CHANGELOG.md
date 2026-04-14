@@ -11,7 +11,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 ### Notes
 - **`src/sapf` shim**: Re-exports `audio.sapf` for legacy `import sapf`; track remaining callers and remove the shim after imports migrate to `audio.sapf`.
 
+### Added
+- **Type checker visual dashboards**: Baseball-card style model summary PNGs (dark neon theme), validity mosaics, issue distribution charts, and type category pie charts generated in `output/5_type_checker_output/visualizations/`
+- **Resource estimation integration**: `estimate_file_resources()` now delegates to `estimation_strategies.py` for real FLOPS, memory, and complexity scoring instead of naive heuristics
+- **Documentation hub sync**: Automated `doc/gnn/modules/[00-24].md` reconciliation from `src/*/AGENTS.md` source-of-truth
+
 ### Changed
+- **Type checker consolidation**: Deleted redundant `src/type_checker/checker.py`; all logic unified in `processor.py` (`GNNTypeChecker`)
+- **Test suite alignment**: `test_type_checker_overall.py` rewired to target production `processor.py` orchestrator (zero-mock)
+- **Deprecated marker removed**: `safe_to_fail` marker replaced with standard `xfail` in `pyproject.toml` and `pytest.ini`
 - **Default local LLM**: Ollama default tag is `smollm2:135m-instruct-q4_K_S` (`llm.defaults.DEFAULT_OLLAMA_MODEL`); override with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`.
 - **Core dependencies**: `openai`, `ollama`, `python-dotenv`, and `aiohttp` are installed with the base package (LLM step and OpenRouter/Perplexity providers work without `uv sync --extra llm`).
 
@@ -32,7 +40,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ### Changed
 - All 25 pipeline steps follow thin orchestrator pattern (100% compliant)
-- Test suite expanded to 1,522+ tests across 108 files
+- Test suite expanded to 1,922+ tests across 108 files
 
 ---
 

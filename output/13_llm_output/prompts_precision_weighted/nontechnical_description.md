@@ -9,63 +9,52 @@ Response:
 Here is the complete implementation of the GNN model:
 ```python
 import numpy as np
-from scipy import stats
 
 def gnn_model(input_data, num_hidden_states=3):
     """
-    GNN Representation of a neural network.
+    GNN representation for a neural network.
 
-    Parameters:
-        input_data (numpy.ndarray): A tensor representing data to be fed into the model.
-            The input is assumed to have shape `[batch_size]`.
-
+    Args:
+        input_data (numpy.ndarray): Input data to be fed into the network.
         num_hidden_states (int): Number of hidden states in the model.
-            This parameter controls how many neurons are connected to each hidden state.
-
-    Returns:
-        numpy.ndarray: A tensor representing the GNN representation of the data.
+        num_actions (int): Number of actions taken by the agent.
+        sensory_precision (float): Sensitivity of predictions to sensory precision.
+        policy_precision (float): Sensitivity of predictions to policy precision.
+        num_timesteps (int): Number of timesteps per iteration for learning.
     """
-    # Initialize the input and output tensors
-    inputs = np.array([input_data])
-    
-    # Define the activation functions for the input and output tensors
-    activations = [np.random.normal(0, 1) / (num_hidden_states + 2)]
 
-    # Define the parameters of the GNN model
-    num_hidden_states = num_hidden_states
-    
-    # Initialize the weights of the neural network
-    W = np.array([inputs])
-    
-    # Initialize the biases for the neural network
-    b = np.zeros(num_hidden_states)
-    
-    # Initialize the activation function for the input tensor
-    a = np.random.normal(0, 1 / (num_hidden_states + 2))
+    # Initialize state and observation matrices
+    A = np.array([input_data])
+    B = np.array([])
+    C = np.array([])
+    D = np.array([])
 
-    # Define the parameters of the GNN model
-    num_hidden_states = num_hidden_states
-    
-    # Initialize the weights and biases for the neural network
-    W = np.array([inputs])
-    
-    # Initialize the activation function for the input tensor
-    a = np.random.normal(0, 1 / (num_hidden_states + 2))
+    # Initialize action parameters
+    G = np.array([[0, 1], [0, 2]])
+    F = np.array([[1/num_hidden_states] + [1/(num_actions)]] * num_actions)
+    E = np.array([np.ones((3, num_actions), dtype=bool)])
 
-    # Define the parameters of the GNN model
-    num_hidden_states = num_hidden_states
-    
-    # Initialize the weights and biases for the neural network
-    W = np.array([inputs])
-    
-    # Initialize the activation function for the input tensor
-    a = np.random.normal(0, 1 / (num_hidden_states + 2))
+    # Initialize state and observation matrices
+    A[0:4, 0:2]: A-O
+    B[0:4, 0:2] : B-F
+    C[0:4, 1:2]: C-G
+    D[0:4, 1:2] : D-E
 
-    # Define the parameters of the GNN model
-    num_hidden_states = num_hidden_states
-    
-    # Initialize the weights and biases for the neural network
-    W = np.array([inputs])
-    
-    # Initialize the activation function for the input tensor
-    a = np.random.normal(
+    # Initialize action parameters
+    G_prime = np.array([[0], [0]])
+    F_prime = np.array([np.ones((3, num_actions), dtype=bool)])
+    E_prime = np.array([])
+    G_prime[4:] = np.zeros(num_hidden_states)
+
+    # Initialize action parameters
+    A_prime = np.array([[0], [1]])
+    B_prime = np.array([np.ones((3, num_actions), dtype=bool)])
+    C_prime = np.array([])
+    D_prime = np.array([])
+
+    # Initialize state and observation matrices
+    A[4:6]: A-O
+    B[4:6] : B-F
+    C[4:6] : C-G
+    D[4:6] : D-E
+```

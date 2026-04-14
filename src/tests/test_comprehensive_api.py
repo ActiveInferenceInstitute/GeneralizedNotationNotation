@@ -448,18 +448,16 @@ class TestTypeCheckerModule:
     @pytest.mark.skipif(not TYPE_CHECKER_AVAILABLE, reason="Type Checker module not available")
     def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
-        # Import the main checker module
-        from src.type_checker import checker
-        assert hasattr(checker, 'GNNTypeChecker')
-        assert hasattr(checker, 'TypeCheckResult')
-        assert hasattr(checker, 'check_gnn_file')
-        assert hasattr(checker, 'validate_syntax')
-        assert hasattr(checker, 'estimate_resources')
+        # Verify the public API surface exported by type_checker/__init__.py
+        assert hasattr(src.type_checker, 'GNNTypeChecker')
+        assert hasattr(src.type_checker, 'estimate_file_resources')
+        assert hasattr(src.type_checker, '__version__')
+        assert hasattr(src.type_checker, 'FEATURES')
 
     @pytest.mark.skipif(not TYPE_CHECKER_AVAILABLE, reason="Type Checker module not available")
     def test_type_checker_instantiation(self) -> None:
         """Test that the type checker can be instantiated."""
-        from src.type_checker.checker import GNNTypeChecker
+        from src.type_checker.processor import GNNTypeChecker
         checker = GNNTypeChecker()
         assert checker is not None
 

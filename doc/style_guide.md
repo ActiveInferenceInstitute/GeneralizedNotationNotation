@@ -10,6 +10,10 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 
 **Documentation Philosophy**: Clear, actionable, and scientifically rigorous documentation that serves both beginners and experts.
 
+### Commands in examples
+
+Use **`uv run python`** from the **repository root** for `src/main.py` and `src/N_*.py` invocations (see [CLAUDE.md](../CLAUDE.md)). Avoid bare `python src/...` in new doc unless illustrating a non-uv environment.
+
 ## 📝 **Writing Standards**
 
 ### **Voice and Tone**
@@ -760,7 +764,7 @@ write-good doc/**/*.md
 
 - [Active Inference Ontology](https://github.com/ActiveInferenceInstitute/ActiveInferenceOntology)
 - [GNN Syntax Specification](gnn/reference/gnn_syntax.md)
-- [Framework Documentation](../README.md#framework-integrations)
+- [Framework Documentation](README.md#framework-integrations)
 
 ### **Quality Assurance Tools**
 

@@ -1,32 +1,21 @@
 # EXPLAIN_MODEL
 
-You've already provided a comprehensive explanation of the GNN example. Here's a rewritten version with some minor edits for clarity and flow:
+Here's a concise overview of the key points:
 
-**Introduction**
-This is an active inference agent that represents the behavior of a general-purpose agent in a network of agents, each acting independently to explore their environment. The agent learns from its own actions and observations by updating its beliefs based on new information it receives. This process allows the agent to learn from past outcomes and make decisions about future actions.
+**Model Purpose:** This model represents an active inference agent that uses hidden states (s_f0, s_f1) and observations to update beliefs based on actions/control inputs. The goal is to explore exploration-exploitation scenarios using this agent.
 
-**Core Components**
+**Core Components:**
 
-1. **Hidden states**: Representing all possible actions or goals that can be taken in a given state. These are represented as vectors of probabilities, which represent the likelihood of each action occurring.
+1. **Hidden States**: These are represented by the state space blocks `d` (`D`) in the model. Each block represents a single action, and each block has two states: one for the current observation (s_f0) and another for the next observation (s_f1). The hidden states represent epistemic values that can be updated based on actions/control inputs.
 
-2. **Observations**: Representing the current state and its associated probability distribution over actions/states. Each observation is represented by a vector of probabilities representing the likelihood of observing it at that time.
+2. **Observations**: These are represented by the state space blocks `o` (`O`) in the model. Each block represents a single action, and each block has two observations: one for the current observation (s_f0) and another for the next observation (s_f1). The observables represent beliefs that can be updated based on actions/control inputs.
 
-3. **Actions**: Representing all possible actions taken in a given state, which are represented as vectors of probabilities for each action. Actions can be either "up" or "down", and they represent different types of exploration (e.g., "left" or "right") based on the current state.
+3. **Actions**: These are represented by the state space blocks `p` (`P`) in the model. Each block represents a single action, and each block has two actions: one for the current observation (s_f0) and another for the next observation (s_f1). The actions represent beliefs that can be updated based on actions/control inputs.
 
-**Model Dynamics**
+**Model Dynamics:**
 
-1. **Initialization**: Initializing a set of hidden states, which are represented as vectors of probabilities for each action/state. These are initialized with random values and updated using the learned beliefs.
+1. **Initialization**: The model initializes with a set of states (`d`) and observations (`o`), which are represented by the state space blocks `d`. Each block represents an action, and each block has two actions: one for the current observation (s_f0) and another for the next observation (s_f1).
 
-2. **Learning**: Learning from past actions and observations by updating its beliefs based on new information it receives. This process allows the agent to learn from past outcomes and make decisions about future actions.
+2. **Initialization**: The model initializes with a set of states (`d`) and observations (`o`), which are represented by the state space blocks `d`. Each block represents an action, and each block has two actions: one for the current observation (s_f0) and another for the next observation (s_f1).
 
-**Active Inference Context**
-
-1. **Initialization**: Initializing a set of hidden states, which are represented as vectors of probabilities for each action/state. These are initialized with random values and updated using the learned beliefs.
-
-2. **Learning**: Learning from past actions and observations by updating its beliefs based on new information it receives. This process allows the agent to learn from past outcomes and make decisions about future actions.
-
-**Practical Implications**
-
-1. **Goal exploration**: The goal of exploring different states in a network of agents, each acting independently to explore their environment. By learning from past actions and observations, the agent can optimize its goals based on new information it receives.
-
-2. **Decision-making**: The agent's decision-making process involves updating its beliefs based on new information it receives. This
+3. **Initialization**: The model initializes with a set of states (`d`) and observations (`o`), which are represented by the state space blocks `d`. Each block represents an action, and each block has two actions: one for the current observation (s

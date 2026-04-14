@@ -54,9 +54,9 @@ Historical GNN example models demonstrating various Active Inference application
 
 #### Historical Documentation
 - Previous documentation versions
-- Deprecated implementation guides
+- Retired implementation guides
 - Superseded examples and tutorials
-- Legacy framework integrations
+- Older framework integration notes
 - Previous architecture designs
 
 ## Archive Materials
@@ -97,7 +97,7 @@ Historical GNN example models demonstrating various Active Inference application
 Archive materials represent historical versions of the 25-step GNN processing pipeline:
 
 1. **Historical Processing**: Previous pipeline implementations
-2. **Legacy Formats**: Older GNN syntax and structure
+2. **Older formats**: prior GNN syntax and structure
 3. **Deprecated Features**: Features no longer supported
 4. **Research Lineage**: Evolution of GNN modeling approaches
 

@@ -1,29 +1,33 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points for analyzing GNN models, including their practical applications, use cases, and considerations related to performance expectations, data requirements, integration with existing systems, and deployment scenarios. 
+You've covered the key points about GNN, including its applications, practical considerations, and potential challenges. Here are some additional thoughts:
 
-Regarding your specific questions:
+1. **Real-world applications**: The use cases for this model could include:
+    - Healthcare: Identify patients with specific diseases based on their behavior (e.g., disease severity) and actions taken during treatment.
+    - Finance: Identify high risk clients who have certain characteristics or behaviors, such as high spending habits or early retirement dates.
 
-1. **Real-World Applications**: This model can be applied in various domains where it's relevant or useful, such as:
-   - Healthcare (e.g., medicine)
-   - Finance (e.g., banking)
-   - Sports (e.g., sports analytics)
-   - Education (e.g., education assessment)
+2. **Implementation considerations**:
+   - Computational requirements and scalability: This model can be computationally intensive to train and evaluate. However, it's worth noting that the computational resources available are limited compared to other models like Bayesian inference. Therefore, implementing this model requires significant investment in hardware and software development.
+   - Data requirements and collection strategies: The data used for training and evaluation may not always align with the specific domain or application being studied. This could lead to biased results if not properly validated.
 
-2. **Implementation Considerations**: The model can be implemented in various ways depending on the specific requirements and constraints:
+3. **Performance expectations**:
+   - What kinds of performance can be expected?
+    - Metrics for evaluation and validation (e.g., accuracy, precision)
+    - Limitations and failure modes (e.g., overfitting, underfitting)
+    - Potential biases in the model's predictions or behavior
+    - Performance issues with specific domains
 
-   - **Online processing**: This involves running the GNN inference algorithm across multiple devices or servers, which may require significant computational resources. However, it's generally more efficient than offline processing for large-scale applications.
-   - **Real-time processing**: This approach can be useful in situations where real-time data is critical and requires fast computation. However, it may not always provide the same level of performance as offline processing.
+4. **Deployment scenarios**:
+   - Online vs. offline processing: This model can be applied to various types of data sources, including datasets from healthcare, finance, and other fields. However, it may not work well for real-time applications where data is constantly updated or processed in real-time.
 
-3. **Performance Expectations**: The model's performance expectations are based on its ability to learn from experience and adapt to changing environments:
-   - **Simplicity**: The GNN inference algorithm can be implemented in a simple and intuitive way, making it easier for developers to understand and implement the model.
-   - **Flexibility**: The model is designed with flexibility in mind (i.e., it can handle different types of data), allowing for easy adaptation to new scenarios or situations.
+5. **Benefits and advantages**:
+    - What problems does this model solve?
+    - Unique capabilities/features: This model can identify specific behaviors (e.g., disease severity) based on patient behavior, which could lead to valuable insights for healthcare providers.
+    - Unique functionalities/capabilities: The model's ability to learn from data enables it to make predictions and decisions in real-time, providing actionable insights that may not be available through other models.
 
-4. **Deployment Scenarios**: The model's performance expectations are based on its ability to learn from experience and adapt to changing environments:
-   - **Real-time processing**: This approach is more efficient than offline processing, as it can handle real-time data with ease. However, it may not always provide the same level of performance as offline processing for large-scale applications.
+6. **Challenges and considerations**:
+    - Potential difficulties in implementation: The computational resources required can be substantial, making it challenging for the model to perform well on specific domains or applications.
+    - Data requirements and collection strategies: The data used for training and evaluation may not always align with the specific domain or application being studied. This could lead to biased results if not properly validated.
 
-5. **Benefits and Advantages**: The model's ability to learn from experience and adapt to changing environments makes it a valuable tool in various fields:
-   - **Simplicity**: It can be implemented in simple and intuitive ways, making it easier for developers to understand and implement the model.
-   - **Flexibility**: It can handle different types of data with ease, allowing for easy adaptation to new scenarios or situations.
-
-6. **Challenges and Considerations**: The model's performance expectations are based on its ability to learn from experience and adapt to changing environments:
+7. **Benefits and advantages**:
+    - What problems

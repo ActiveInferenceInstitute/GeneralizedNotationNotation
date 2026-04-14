@@ -2,11 +2,11 @@
 
 > **📋 Document Metadata**  
 > **Type**: Quick Start Guide | **Audience**: All Users | **Complexity**: Beginner  
-> **Cross-References**: [Learning Paths](learning_paths.md) | [Main Documentation](README.md) | [Setup Guide](SETUP.md)
+> **Cross-References**: [Learning Paths](learning_paths.md) | [Documentation hub](README.md) | [Setup Guide](SETUP.md)
 
 ## ⚡ 5-Minute Demo
 
-**Experience GNN instantly without installation!**
+**Fastest path supported in-repo**: clone, `uv sync`, run the pipeline (see [SETUP.md](SETUP.md)).
 
 ### **🎯 What You'll See**
 
@@ -15,24 +15,21 @@
 - Code generation across multiple frameworks
 - Interactive model exploration
 
-### **🚀 Option 1: Online Demo (Recommended)**
+### **🖥️ Option 1: Local (recommended)**
 
 ```bash
-# Use our pre-configured cloud environment
-curl -s https://demo.gnn-ai.org/quick-demo | bash
-
-# Or via web interface:
-# Visit: https://demo.gnn-ai.org/interactive
+uv sync --extra dev
+uv run python src/main.py --target-dir input/gnn_files --verbose
 ```
 
-### **🖥️ Option 2: Local Quick Demo**
+### **Optional: third-party demos**
+
+The snippets below are **not** maintained or verified by this repository; use only if you trust the source.
 
 ```bash
-# One-command demo (no installation required)
-docker run --rm -it gnn-ai/quickdemo:latest
-
-# Or run locally from a clone:
-uv run python src/main.py --target-dir input/gnn_files --verbose
+# Example placeholders — replace with your own environment if used
+# curl -s https://example.com/quick-demo | bash
+# docker run --rm -it <image>:<tag>
 ```
 
 ### **📊 What the Demo Shows**

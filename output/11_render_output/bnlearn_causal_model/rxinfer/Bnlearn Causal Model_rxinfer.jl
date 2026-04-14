@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Bnlearn Causal Model
-# Generated: 2026-04-12 17:23:34
+# Generated: 2026-04-14 10:58:57
 
 using Pkg
 

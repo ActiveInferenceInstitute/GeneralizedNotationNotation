@@ -1,24 +1,15 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the Active Inference POMDP agent:
+Based on the information provided, here are the key parameters for the Active Inference POMDP Agent:
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation of the input data (observation space dimensions) and action selection policies (policy distributions).
-   - B matrices representing the policy prior distribution over actions and habit preferences, respectively.
-   - C matrices representing the initial policy prior distribution over actions and habit preferences, respectively.
+   - A matrices representing the model structure and interpretation of the agent's actions and beliefs.
+   - B matrices representing the action probabilities over observed states and hidden states.
+   - C matrices representing the policy prior distribution, preferences, and habit distributions for each observation modality.
+   - D matrices representing the initial belief distribution and action selection from policy posterior.
 
 2. **Precision Parameters**:
-   - γ: precision parameters for each factor
-   - α: learning rates and adaptation parameters
-   - Other precision/confidence parameters (optional)
-3. **Dimensional Parameters**:
-   - State space dimensions for each modality
-   - Observation space dimensions for each action dimension
-   - Action space dimensions for each control variable
-
-4. **Temporal Parameters**:
-   - Time horizons (t): number of simulation timesteps for all frameworks and their roles in the parameter file format recommendations
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies (optional)
+   - γ (gamma): precision parameters and their roles.
+   - α (alpha): learning rates and adaptation parameters.
+   - Other precision/confidence parameters:
+   - δ (delta) : sensitivity analysis priorities, including sensitivity to the choice of parameter values for each action.

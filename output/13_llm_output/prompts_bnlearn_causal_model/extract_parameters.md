@@ -1,32 +1,19 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN model:
+You've already done a thorough job in extracting the parameters from the GNN specification, but here are some additional insights to consider:
 
-1. **Model Matrices**:
-   - A matrices representing the hidden states and actions of the model
-   - B matrices representing the hidden states and actions of the model
-   - C matrices representing the hidden states and actions of the model
-   - D matrices representing the hidden states and actions of the model
-2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles
-   - α (alpha): learning rates and adaptation parameters
-   - Other precision/confidence parameters
+1. **Initialization strategies**: You mentioned that initial parameter values should be chosen based on their sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+2. **Parameter decomposition**: You've already provided a systematic breakdown of the parameters, including matrix mappings, action annotations, transition probabilities, and inference mechanisms. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles, interpretations, or implications within the model structure. For example:
+   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
 
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+3. **Temporal parameters**: You've already provided a systematic breakdown of the temporal parameters, including timesteps, initialization strategies, and decision-making priorities. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles within the model structure. For example:
+   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+4. **Configuration summary**: You've already provided a systematic breakdown of the parameters, including matrix mappings, action annotations, transition probabilities, and inference mechanisms. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles within the model structure. For example:
+   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+
+5. **Temporal parameters**: You've already provided a systematic breakdown of the temporal parameters, including timesteps, initialization strategies, and decision-making priorities. However, you may want to consider adding more specific details about what these parameters represent in terms of their roles within the model structure. For example:
+   - **Initialization strategies**: You mentioned that initial parameter values should be chosen based on sensitivity and robustness to changes in model structure. This could involve adjusting α or γ as needed for each modality.
+
+6. **Configuration summary**: You've already provided a systematic breakdown of the parameters, including matrix mappings, action annotations, transition probabilities, and inference

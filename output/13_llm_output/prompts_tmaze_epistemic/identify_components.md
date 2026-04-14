@@ -31,21 +31,4 @@ You've already covered the key concepts in the document:
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
 
-Your comprehensive breakdown highlights the key concepts:
-
-1. **State Variables (Hidden States)**:
-   - Variable names and dimensions
-   - What each state represents conceptually
-   - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
-
-Your comprehensive breakdown highlights the key concepts:
-
-1. **State Variables (Hidden States)**:
-   - Variable names and dimensions
-   - What each state represents conceptually
-   - State space structure (discrete/continuous, finite/infinite)
+Your comprehensive breakdown provides a clear overview of the key concepts involved in the GNN representation model.

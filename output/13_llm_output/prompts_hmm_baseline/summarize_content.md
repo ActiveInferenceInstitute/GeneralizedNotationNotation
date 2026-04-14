@@ -1,27 +1,26 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise version:
+Here's a concise summary of the GNN specification:
 
-**Model Overview:** This GNN-based model represents an active inference framework that enables continuous learning from sequential data. It consists of four hidden states (`A`, `B`), six observation symbols (`s`) and two action variables (`o`). The model is composed of three main components:
+**Model Overview:**
+This is a discrete Hidden Markov Model (HMM) that models the behavior of an agent in a sequence-based environment. The model consists of four states and four actions, with each state having two possible outcomes based on its action. The transition matrix represents the probability of transitioning from one state to another, while the emission matrix captures the probability of observing a specific observation at a particular time step.
 
-1. **Hidden Markov Model Baseline**: A discrete, stochastic model with 4 hidden states (represented by the matrices `A` and `B`) and a fixed transition matrix (`D`), which allows for continuous learning from sequential data.
-2. **Randomized Notation Notation (GNN) Representation**: A probabilistic graphical model that enables active inference based on probability distributions of observed observations, action sequences, and hidden states.
-3. **State Transition Model**: A stochastic model with 6 observation symbols (`s`) to capture the dynamics of observable states.
-4. **Forward Algorithm**: A forward algorithm for learning from sequential data using a random initialization process.
-5. **Backward Algorithm**: A backward algorithm for learning from observed state sequences and hidden states, allowing for continuous inference based on probability distributions of action sequences.
-6. **State Posterior**: A probabilistic graphical model that captures the joint distribution of observable states and actions in each state.
-7. **Free Energy**: A measure of the total energy of the system, which is a function of the current state and its interactions with other states.
-8. **Forward Variable**: A variable representing the probability of observing a particular observation based on the action sequence.
-9. **Backward Variable**: A variable representing the probability of observing an observable state based on the previous observed state and action sequences.
-10. **Action Variables**: A set of variables that represent actions taken in each state, allowing for continuous inference based on probability distributions of action sequences.
+**Key Variables:**
 
-**Key Parameters:**
+1. **Hidden States**: A list containing all states in the model. Each state has two possible outcomes: `(0, 0)` and `(0, 1)`. The action space is defined by the actions `(a, b)`, where `a` represents an observation at time step `t`, and `b` represents a specific observable at time step `t+1`.
 
-1. **Number of hidden states**: 4
-   - `A`: 6
-   - `B`: 2 (fixed)
-   - `C`: 3 (randomized)
-   - `D`: 0 (no actions, but can be used for inference in future variants)
-2. **Initial state distribution**: A random initialization process to initialize the hidden states and action variables.
-3. **Forward algorithm**: A forward algorithm that learns from sequential data using a random initialization process.
-4. **Backward algorithm**: A backward algorithm that learns from observed state sequences and action variables, allowing for continuous
+2. **Observations**: A list containing all observations in the model. Each observation has two possible outcomes: `(x_i, y_i)` for each observation `i`. The action space is defined by the actions `(a, b)`, where `a` represents an observation at time step `t`, and `b` represents a specific observable at time step `t+1`.
+
+3. **Actions**: A list containing all actions in the model. Each action has two possible outcomes: `(x_i, y_i)` for each observation `i`. The action space is defined by the actions `(a, b)`, where `a` represents an observation at time step `t`, and `b` represents a specific observable at time step `t+1`.
+
+**Critical Parameters:**
+
+1. **Most Important Matrices**: A list containing all matrices in the model that describe the state transition probabilities of each state, while controlling for actions. The action matrix is used to update the probability distribution of states based on their actions.
+
+2. **Key Variables**: A list containing all variables describing the model parameters and their roles. The key variable `alpha` represents the forward direction of the Markov chain, while the key variable `beta` represents the backward direction of the Markov chain.
+
+**Notable Features:**
+
+1. **Randomized Forward Direction**: The probability distribution of states is randomized based on the action space, allowing for a more flexible and adaptive model design.
+
+2. **Randomized Backward Direction**: The probability distribution of

@@ -290,6 +290,22 @@ This synergy would streamline the workflow from theoretical model design to prac
 
 RxInfer.jl is a powerful Julia package for Bayesian inference on factor graphs using reactive message passing. This guide explains how GNN models are translated to RxInfer.jl code and how to work with the generated implementations for Active Inference applications.
 
+## Getting started
+
+Start from [Overview](#overview), then read [Conceptual Mapping](#conceptual-mapping) and the program-synthesis sections earlier in this file ([GNN for Program Synthesis](#gnn-for-program-synthesis-and-implementation-of-generative-models-in-rxinferjl)).
+
+## Multi-agent examples
+
+See [GNN multi-agent](../gnn/advanced/gnn_multiagent.md) and the [multiagent trajectory planning](multiagent_trajectory_planning/) materials.
+
+## POMDP models
+
+Partially observed settings map through GNN’s POMDP extraction to RxInfer factor graphs; see [GNN for Active Inference Models in RxInfer](#4-gnn-for-active-inference-models-in-rxinfer).
+
+## Security considerations
+
+Run generated Julia with the same care as any simulation code: trust only vetted GNN inputs and review `output/` before publishing.
+
 ## GNN to RxInfer Translation
 
 ### Conceptual Mapping

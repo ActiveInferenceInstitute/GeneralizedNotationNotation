@@ -1,9 +1,8 @@
 # GeneralizedNotationNotation (GNN) Documentation
 
-> **📋 Document Metadata**  
-> **Type**: Navigation Hub | **Audience**: All Users | **Complexity**: Beginner  
-> **Status**: Production-Ready  
-> **Cross-References**: [Setup Guide](SETUP.md) | [Contributing](../CONTRIBUTING.md) | [AGENTS.md](AGENTS.md) (doc tree index) | [SPEC.md](SPEC.md) (versioning policy) | [Doc audit](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict`)
+> **Role**: Primary human onboarding hub for `doc/`. **Flat index**: [INDEX.md](INDEX.md). **Guided tour**: [START_HERE.md](START_HERE.md). **Learning paths**: [learning_paths.md](learning_paths.md). **Cross-topic links**: [CROSS_REFERENCE_INDEX.md](CROSS_REFERENCE_INDEX.md). **Doc tree index for agents**: [AGENTS.md](AGENTS.md).
+>
+> **Setup**: [SETUP.md](SETUP.md) | **Contributing**: [../CONTRIBUTING.md](../CONTRIBUTING.md) | **Versioning**: [SPEC.md](SPEC.md) | **Doc audit**: [development/docs_audit.py](development/docs_audit.py) (`uv run python doc/development/docs_audit.py --strict`)
 
 Welcome to the documentation for Generalized Notation Notation (GNN), a standardized text-based language for expressing Active Inference generative models.
 
@@ -23,7 +22,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
    - *Cross-refs*: [Basic Template](templates/basic_gnn_template.md), [Syntax Reference](gnn/reference/gnn_syntax.md)
 4. **[Basic Syntax Guide](gnn/reference/gnn_syntax.md)** - Essential notation rules
    - *Cross-refs*: [File Structure](gnn/reference/gnn_file_structure_doc.md), [Implementation Guide](gnn/integration/gnn_implementation.md)
-5. **[Tools Setup](gnn/operations/gnn_tools.md#installation)** - Get GNN tools running
+5. **[Tools Setup](gnn/operations/gnn_tools.md#installation-and-setup)** - Get GNN tools running
    - *Cross-refs*: [Pipeline Guide](gnn/operations/gnn_tools.md), [API Documentation](api/README.md)
 
 **📚 Complete Learning Paths**: See [Learning Paths Guide](learning_paths.md) for structured beginner → intermediate → advanced progression
@@ -34,7 +33,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 
 ### For Beginners
 >
-> **📖 Learning Path**: Concepts → Syntax → Examples → Practice ([Full Beginner Path](learning_paths.md#beginner-path))
+> **📖 Learning Path**: Concepts → Syntax → Examples → Practice ([Full Beginner Path](learning_paths.md#beginner-path-getting-started-with-gnn))
 
 - **[GNN Overview](gnn/gnn_overview.md)** - High-level concepts and ecosystem
   - *See Also*: [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md)
@@ -48,7 +47,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 
 ### For Intermediate Users
 >
-> **🛠️ Learning Path**: Syntax → Structure → Implementation → Tools ([Full Intermediate Path](learning_paths.md#intermediate-path))
+> **🛠️ Learning Path**: Syntax → Structure → Implementation → Tools ([Full Intermediate Path](learning_paths.md#intermediate-path-building-and-integrating-models))
 
 - **[GNN Syntax Reference](gnn/reference/gnn_syntax.md)** - Complete notation specification
   - *See Also*: [File Structure](gnn/reference/gnn_file_structure_doc.md), [Examples](gnn/tutorials/gnn_examples_doc.md)
@@ -89,7 +88,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *Framework Integration*: [RxInfer Examples](rxinfer/gnn_rxinfer.md#multi-agent-examples)
 - **[LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** - AI-assisted modeling
   - *See Also*: [DSPy Integration](dspy/gnn_dspy.md), [AutoGenLib](autogenlib/gnn_autogenlib.md)
-  - *Related Tools*: [MCP Protocol](mcp/README.md), [Pipeline Step 11](gnn/operations/gnn_tools.md#step-11-llm-enhanced-analysis)
+  - *Related Tools*: [MCP Protocol](mcp/README.md), [pipeline steps 0–24](gnn/operations/gnn_tools.md#complete-pipeline-stages-25-steps) (LLM is step 13)
 - **[PoE-World Integration](poe-world/poe-world.md)** - Compositional world modeling research
   - *See Also*: [PoE-World GNN Integration](poe-world/poe-world_gnn.md), [Program Synthesis](dspy/gnn_dspy.md)
   - *Research Applications*: [Hierarchical Template](templates/hierarchical_template.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
@@ -194,7 +193,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 
 ## 🎯 Advanced Topics
 
-> **🔬 Learning Path**: Theory → Specification → Applications → Research ([Full Advanced Path](learning_paths.md#advanced-path))  
+> **🔬 Learning Path**: Theory → Specification → Applications → Research ([Full Advanced Path](learning_paths.md#advanced-path-research-and-custom-extensions))  
 > **🧠 Specialized Applications** | **🔗 Related**: [Cognitive Phenomena](cognitive_phenomena/README.md)
 
 - **[Advanced Modeling Patterns](gnn/advanced/advanced_modeling_patterns.md)** - Sophisticated modeling techniques
@@ -202,10 +201,10 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *Applications*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Multi-agent](gnn/advanced/gnn_multiagent.md)
 - **[Ontology System](gnn/advanced/ontology_system.md)** - Active Inference Ontology integration
   - *Cross-refs*: [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md)
-  - *Related*: [Pipeline Step 8](gnn/operations/gnn_tools.md#step-8-ontology-processing)
+  - *Related*: [pipeline steps 0–24](gnn/operations/gnn_tools.md#complete-pipeline-stages-25-steps) (ontology is step 10)
 - **[Resource Metrics](gnn/operations/resource_metrics.md)** - Computational resource estimation
   - *Cross-refs*: [Performance Guide](troubleshooting/performance.md), [Type Checker](gnn/operations/gnn_tools.md#validation-tools)
-  - *Related*: [Pipeline Step 4](gnn/operations/gnn_tools.md#step-4-gnn-type-checker)
+  - *Related*: [type checker (steps 3 & 5)](gnn/operations/gnn_tools.md#gnn-parser-and-type-checker-steps-3-5)
 - **[GNN Kit](kit/gnn_kit.md)** - Comprehensive toolkit documentation
   - *Cross-refs*: [Tools Guide](gnn/operations/gnn_tools.md), [API Documentation](api/README.md)
 - **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** - Advanced cognitive architectures
@@ -232,7 +231,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
 - **Converting to code**: See [Rendering Documentation](gnn/operations/gnn_tools.md#conversion-tools)
   - *Frameworks*: [PyMDP](pymdp/gnn_pymdp.md) | [RxInfer](rxinfer/gnn_rxinfer.md) | [DisCoPy](discopy/gnn_discopy.md)
 - **Visualizing models**: Follow [Visualization Guide](gnn/operations/gnn_tools.md#visualization-tools)
-  - *Pipeline*: [Step 6 Visualization](gnn/operations/gnn_tools.md#step-6-visualization) → [Step 12 Website](gnn/operations/gnn_tools.md#step-12-website-generation)
+  - *Pipeline*: [Visualization (steps 8 & 9)](gnn/operations/gnn_tools.md#gnn-visualization-steps-8-9) → [Website (step 20)](../CLAUDE.md)
 
 ### File Templates
 >
@@ -273,14 +272,14 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *Examples*: [Tool Development](gnn/reference/gnn_dsl_manual.md)
 - **[MCP Integration Guide](mcp/README.md)** - Model Context Protocol APIs
   - *FastMCP*: [FastMCP Guide](mcp/fastmcp.md)
-  - *Pipeline*: [Step 7 MCP](gnn/operations/gnn_tools.md#step-7-model-context-protocol)
+  - *Pipeline*: [MCP (step 21)](gnn/operations/gnn_tools.md#mcp-tools-step-21)
 - **[Tool Development](mcp/README.md#development-guidelines)** - Creating new MCP tools
   - *Cross-refs*: [API Documentation](api/README.md), [DSL Manual](gnn/reference/gnn_dsl_manual.md)
 - **[Interactive GUI Tools](../src/gui/README.md)** - Visual model construction interfaces
   - *GUI 1*: Form-based constructor (localhost:7860)
   - *GUI 2*: Visual matrix editor (localhost:7861)
   - *GUI 3*: State space design studio (localhost:7862)
-  - *Pipeline*: [Step 22 GUI Processing](gnn/operations/gnn_tools.md#step-22-gui-processing)
+  - *Pipeline*: [GUI (step 22)](../CLAUDE.md)
 
 ### Learning Resources
 >
@@ -292,7 +291,7 @@ Welcome to the documentation for Generalized Notation Notation (GNN), a standard
   - *Examples*: [Configuration Examples](configuration/examples.md)
   - *Deployment*: [Deployment Guide](deployment/README.md)
 - **[Testing Guide](testing/README.md)** - Testing strategies and best practices
-  - *Pipeline*: [Step 3 Testing](gnn/operations/gnn_tools.md#step-3-test-execution)
+  - *Pipeline*: [Tests (step 2)](../CLAUDE.md)
   - *Quality*: [Style Guide](style_guide.md) and [Testing Guide](testing/README.md)
 
 ### Security & Compliance
@@ -370,7 +369,7 @@ We welcome contributions! See our **[Contributing Guide](../CONTRIBUTING.md)** a
   - *Templates*: [Template System](templates/README.md)
   - *Examples*: [Example Gallery](#-example-gallery)
 - **Review process and quality criteria**
-  - *Process*: [Contributing Guide](../CONTRIBUTING.md#submitting-changes)
+  - *Process*: [Contributing Guide](../CONTRIBUTING.md#submitting-code-changes)
   - *Quality*: [Testing Guide](testing/README.md)
 - **How to add new examples and tutorials**
   - *Development*: [Development Guide](development/README.md)

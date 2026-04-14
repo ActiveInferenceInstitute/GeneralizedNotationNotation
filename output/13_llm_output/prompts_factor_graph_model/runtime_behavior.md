@@ -6,38 +6,46 @@ Prompt:
 
 Response:
 
+GNN Section:
+ActInfFactorGraph
 ```python
 import numpy as np
-from typing import List, Tuple
+from scipy import stats
 
-def gnn_representation(factor: List[Tuple[int, int]]) -> List[List[Tuple[float, float]]]:
+def gnn(x, y):
     """
-    GNN Representation of a factor graph.
+    GNN Representation of Act Inference Model (AIM)
 
     Args:
-        factor (list): A list of tuples representing the input data for the factor graph.
+        x (numpy.ndarray): Input data for AIM model.
+        y (numpy.ndarray): Output data for AIM model.
 
     Returns:
-        List[List[Tuple[float, float]]]: A representation of the factor graph with modality-specific processing and efficient belief propagation.
+        numpy.ndarray: ARIM representation of input and output data.
     """
-    # Create a dictionary to store the state variables associated with each observation node
-    state_variables = {}
-    
-    # Initialize all nodes as None (representing no input)
-    for i in range(len(factor)):
-        if isinstance(factor[i], tuple):
-            state_variables[(int, int)] = factor[i]
+    # Initialize state variables
+    s_pos = np.array([x[0] + x[1], 0, 0])
+    d_vis = np.array([[x[2]] * (y[3] - y[4]),
+                  [x[5]] * (y[6] - y[7])] ** 2)
 
-    # Create a dictionary to store the joint probabilities associated with each observation node
-    joint_probabilities = {}
-    
-    # Initialize all nodes as None (representing no input)
-    for i in range(len(factor)):
-        if isinstance(factor[i], tuple):
-            state_variables[(int, int)] = factor[i]
+    # Initialize observation variables
+    o_vis = np.array([x[1], x[0]])
+    A_vis = np.array([[x[0]], [[x[3]]])**2 + [x[4]]*[[x[5]]] * [[x[7]]]*[[x[6]]] ** 2
 
-    # Create a dictionary to store the joint probabilities associated with each observation node
-    joint_probabilities.update({node: np.array([np.sum(state_variables) for node in graph])})
-    
-    return [list(map(lambda x: (x[0], x[1]), state_variables)) + list(joint_probabilities)]
+    # Initialize transition variables
+    d_prop = np.array([x[1], x[2]])
+    B_vis = np.array([[x[0]], [[x[3]]])**2 + [x[4]]*[[x[5]]]*[[x[7]]] ** 2
+
+    # Initialize action variables
+    π=np.array([]) * (y)
+    G=np.array([d_vis, d_prop, B_vis])
+
+    # Initialize state variable matrix
+    s = np.array([[x], [[x]])**3 + [x[0]]*[[x[1]]]*[[x[2]]] ** 3 + [x[4]]*(y) * [[x[7]]]*[[x[6]]]**3
+
+    # Initialize action matrix
+    A = np.array([d_vis, d_prop])
+    G=np.array([[π], [[]])*(y))
+
+    return s,A
 ```

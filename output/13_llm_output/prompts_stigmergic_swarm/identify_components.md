@@ -1,12 +1,12 @@
 # IDENTIFY_COMPONENTS
 
-Here is a systematic breakdown of the GNN specification:
+Here is a systematic breakdown of the key concepts:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-
+   - What each state signifies in terms of actions or control variables
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations

@@ -6,41 +6,35 @@ Prompt:
 
 Response:
 
-You can use the following code to create a GNN representation of your Markov Decision Process:
+You can use the following code to generate a GNN representation of your agent:
+```python
+import numpy as np
+from scipy import stats
 
-1. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
+def gnn_representation(state, action):
+    # Initialize state and action variables
+    A = np.array([
+        (0.9541236789 + 0.0000000000 * np.random.rand())
+        for i in range(num_hidden_states)
+        for j in range(num_actions)
+        for k=range(num_timesteps),
+            t = np.array([
+                (
+                    np.random.normal(loc=(state[i], state[j]), size=[1, num_actions])
+                ], dtype="float")
+            ]
+    )
 
-2. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
+    # Initialize the action vector
+    A[action] = 0.5 * A[action][:num_actions] + A[action+1][:,:]
+    A[action+1] = 0.5 * A[action+1][:,:], [
+        np.random.normal(loc=(state[i], state[j]), size=[1, num_states])
+    ]
 
-3. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
+    # Initialize the probability vector
+    P = stats.plumbum()
+    P[action] = P[action + 1] / (num_actions * num_actions)
 
-4. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
-
-5. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
-
-6. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
-
-7. Create an instance of `GNN` class with the following parameters:
-   - `A`: Identity matrix representing the identity state (identity observation model).
-   - `B`: Identity matrix representing the identity state (identity policy MDP).
-   - `pi`: Policy vector representing the policy transition from state to state, and action taken.
-
-8. Create
+    return A
+```
+This code generates a GNN representation of your agent by initializing state and action variables, then generating an action vector based on the policy and controlling actions using the probability vector. The final state is initialized with the identity matrix.

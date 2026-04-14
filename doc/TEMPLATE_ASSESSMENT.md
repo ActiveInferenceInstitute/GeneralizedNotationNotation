@@ -1,5 +1,9 @@
 # Pipeline Template Assessment & Implementation Guide
 
+**Hub**: [README.md](README.md).
+
+> **Historical note**: This file records an **early assessment** of template and infrastructure patterns. **Current behavior**: every numbered script **`src/N_*.py`** (steps **0–24**) is a thin orchestrator delegating to **`src/<module>/`**; see [CLAUDE.md](../CLAUDE.md), [src/STEP_INDEX.md](../src/STEP_INDEX.md), and [src/template/README.md](../src/template/README.md). Sections below retain the original wording for context; they are not an up-to-date status report on each module.
+
 ## Overview
 
 This document provides a comprehensive assessment of the enhanced `0_template.py` implementation and guidance for applying these patterns across all 25 pipeline steps to achieve robust, fail-safe execution with streamlined modular re-use.
@@ -24,10 +28,10 @@ This document provides a comprehensive assessment of the enhanced `0_template.py
 - **Enhanced Argument Parser** (`utils.argument_utils`) - Standardized argument handling
 - **Pipeline Configuration** (`pipeline.config`) - Centralized configuration management
 
-#### Script Categories Identified
-1. **Basic Stubs**: `10_ontology.py`, `13_llm.py`, etc. - Minimal functionality
-2. **Standardized Scripts**: `4_model_registry.py`, `6_validation.py`, `9_advanced_viz.py` - Use standardized pipeline pattern
-3. **Full Implementation**: `1_setup.py`, `2_tests.py`, `8_visualization.py`, `12_execute.py` - Comprehensive implementations
+#### Script categories (assessment-era snapshot)
+1. **Thin / minimal in review**: `10_ontology.py`, `13_llm.py`, etc. — labeled minimal in the original assessment
+2. **Standardized pattern**: `4_model_registry.py`, `6_validation.py`, `9_advanced_viz.py` — use shared pipeline helper
+3. **Full surface in review**: `1_setup.py`, `2_tests.py`, `8_visualization.py`, `12_execute.py` — broader orchestration in the original write-up
 
 #### Inconsistencies Found
 - Variable error handling approaches across scripts
@@ -176,8 +180,8 @@ Each step should generate:
 
 ## Migration Strategy
 
-### Phase 1: Update Basic Stubs (Priority 1)
-Scripts to update first (currently minimal implementations):
+### Phase 1: Deeper instrumentation (Priority 1, assessment list)
+Scripts the assessment singled out for follow-up (verify current need against [src/STEP_INDEX.md](../src/STEP_INDEX.md)):
 - `10_ontology.py`
 - `13_llm.py`
 - `14_ml_integration.py`
@@ -246,11 +250,13 @@ The enhanced template has been validated through:
 
 ## Next Steps
 
-1. **Apply patterns to basic stub scripts** using the template as a reference
-2. **Enhance existing comprehensive scripts** with infrastructure integration
-3. **Standardize error handling** across all pipeline steps
-4. **Implement resource management** for memory-intensive operations
-5. **Add correlation logging** for improved traceability
+Follow-ups from the assessment period:
+
+1. **Apply patterns from `0_template.py`** where modules still benefit from extra instrumentation
+2. **Align error handling and logging** with utilities already used in thin orchestrators
+3. **Standardize optional-resource behavior** per module SPEC
+
+For **current** step responsibilities and scripts, use [doc/PIPELINE_SCRIPTS.md](PIPELINE_SCRIPTS.md) and [src/STEP_INDEX.md](../src/STEP_INDEX.md) rather than the migration phases above as a status dashboard.
 
 ## Conclusion
 

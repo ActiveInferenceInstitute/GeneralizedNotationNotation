@@ -1,5 +1,7 @@
 # 📚 GNN Documentation: Multi-Framework Active Inference Ecosystem
 
+**Hub**: [README.md](README.md).
+
 > A comprehensive single-sentence guide to every documentation folder in the GNN ecosystem
 
 ## 🗺️ Documentation Map
@@ -11,10 +13,11 @@
 | **📊 advanced_visualization** | [README.md](advanced_visualization/README.md) | Advanced visualization techniques and patterns | Provides sophisticated visual representations of complex model dynamics | 🟡 Visualization |
 | **⚡ api** | [comprehensive_api_reference.md](api/comprehensive_api_reference.md) | Complete API documentation for GNN pipeline components | Essential reference for developers integrating GNN into applications | 🟢 Core |
 | **🎯 arc-agi** | [arc-agi-gnn.md](arc-agi/arc-agi-gnn.md) | ARC-AGI benchmark integration for abstract reasoning tasks | Connects GNN to frontier AI reasoning and generalization benchmarks | 🔵 Research |
-| **📦 archive** | [Archive Collection](archive/) | Historical models and deprecated implementations | Preserves research lineage and enables reproducibility of past experiments | 🟡 Stable |
+| **📦 archive** | [Archive Collection](archive/) | Historical models and superseded docs | Preserves research lineage and enables reproducibility of past experiments | 🟡 Stable |
 | **🔊 audio** | [README.md](audio/README.md) | Audio processing and sonification integration | Enables auditory representation and analysis of model dynamics | 🔵 Audio |
 | **🤖 autogenlib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Microsoft AutoGen integration for multi-agent Active Inference | Enables collaborative AI systems with Active Inference principles | 🔵 Experimental |
 | **✔️ axiom** | [axiom_gnn.md](axiom/axiom_gnn.md) | Axiom formal verification framework for theorem proving | Enables provably correct Active Inference model specification | 🔵 Research |
+| **📊 bnlearn** | [README.md](bnlearn/README.md) | Bayesian network learning and structure discovery alongside GNN | Supports causal / graphical model workflows paired with pipeline outputs | 🔵 Research |
 | **🔗 catcolab** | [README.md](catcolab/README.md) | CatColab categorical collaborative modeling integration | Provides category-theoretic collaborative modeling capabilities | 🔵 Research |
 | **🧬 cerebrum** | [cerebrum_v1-4.md](cerebrum/cerebrum_v1-4.md) | Neuromorphic Active Inference architecture specification | Bridges theoretical neuroscience with practical AI implementations | 🟠 Research |
 | **🧩 cognitive_phenomena** | [README.md](cognitive_phenomena/README.md) | Models of attention, consciousness, memory, and executive control | Demonstrates GNN's capability for modeling complex cognitive processes | 🟢 Showcase |

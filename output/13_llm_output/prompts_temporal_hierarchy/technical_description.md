@@ -6,39 +6,18 @@ Prompt:
 
 Response:
 
-```python
-import numpy as np
-from scipy import stats
+Here is the signature for GNN model type v1, which represents a hierarchical active inference agent with three levels of temporal scales (fast, medium and slow). The signature also includes the following:
 
-def gnn_model(num_levels, num_states):
-    """GNN model for three-level hierarchical active inference."""
+1) A list of states represented by lists (`A0`, `B0`), each representing a level. Each state has two types of transitions (`s_higher` and `o_higher`) that can be combined into one transition for each level (e.g., `S(a, b)`).
 
-    # Initialize state matrices
-    A = np.array([[0.85 + 0.1], [0.25 + 0.1]])
-    B = np.array([(-0.5 + 0.1), (-0.5 - 0.1)])
-    C = np.array([-0.5, -0.1])
+2) A list of actions represented by lists (`A1`, `B1`, etc.) representing the actions performed at each state level. Each action has two types of transitions (`s_lower` and `u_lower`) that can be combined into one transition for each level (e.g., `S(a, b)`).
 
-    # Initialize action matrices
-    A_fast = np.array([[0.85 + 0.2], [0.1 + 0.9]])
-    B_fast = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
-    C_fast = np.array([-0.5, -0.1])
+3) A list of states represented by lists (`A0`, etc.) representing the initial state at which the agent starts its action sequence. Each state has two types of transitions (`s_higher` and `u_higher`) that can be combined into one transition for each level (e.g., `S(a, b)`).
 
-    # Initialize policy matrices
-    A_slow = np.array([[0.85 + 0.2], [0.1 + 0.9]])
-    B_slow = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
-    C_slow = np.array([-0.5, -0.1])
+4) A list of actions represented by lists (`A1`, etc.) representing the actions performed at each state level. Each action has two types of transitions (`s_lower` and `u_lower`) that can be combined into one transition for each level (e.g., `S(a, b)`).
 
-    # Initialize action matrices
-    A_fast = np.array([[0.85 + 0.2], [0.1 + 0.9]])
-    B_fast = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
-    C_fast = np.array([-0.5, -0.1])
+5) A list of states represented by lists (`A0`, etc.) representing the initial state at which the agent starts its action sequence. Each state has two types of transitions (`s_higher` and `u_higher`) that can be combined into one transition for each level (e.g., `S(a, b)`).
 
-    # Initialize state matrices
-    A_slow = np.array([[0.85 + 0.2], [0.1 + 0.9]])
-    B_slow = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
-    C_slow = np.array([-0.5, -0.1])
+6) A list of actions represented by lists (`A1`, etc.) representing the actions performed at each state level. Each action has two types of transitions (`s_lower` and `u_lower`) that can be combined into one transition for each level (e.g., `S(a, b)`).
 
-    # Initialize action matrices
-    A_fast = np.array([[0.85 + 0.2], [0.1 + 0.9]])
-    B_fast = np.array([(-0.5 + 0.3), (-0.5 - 0.3)])
-    C_fast = np.array
+7) A list of states represented by lists (`A0`, etc.) representing the initial state at which the agent starts its action sequence. Each state has two types of transitions (`s_higher` and `u_higher`) that can be combined into one transition for each level (e.g., `S(a

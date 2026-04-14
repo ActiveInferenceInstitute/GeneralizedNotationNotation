@@ -9,35 +9,38 @@ Response:
 ```python
 import numpy as np
 from scipy import stats
+from scipy import stats
+from scipy import linalg
+from scipy import lru_cache
+from scipy import lru_cache_add
 
-def factor_graph(x):
-    """Factor graph representation of a vectorized action-based generative model."""
+def factorize(x):
+    """Factorize a vector x into two components: P(o,s) and P(o_vis|s).
 
-    # Create the input matrix
-    x = np.array([
-        [
-            (0, 1),
-            (0, 2)
-        ] + [[
-            0, 3],
-            [[
-               0, 4]
-            ] * [x[i+1:i+6][j-1:j]]
-        ],
-        dtype=np.float64
-    )
+    Args:
+        x (numpy.ndarray): A vector of values to be factorized.
 
-    # Create the output matrix
-    y = np.array([
-        [
-            (0,) + [[
-            0, 3],
-            [[
-               0, 2]
-            ] * [x[i+1:i+5][j-1:j]]
-        ],
-        dtype=np.float64
-    ])
+    Returns:
+        numpy.ndarray: A matrix of the form P(o,s), where P(x) = P(o_vis|x) * P(o_vis|x) * P(s_vel|x).
+    """
+    # Factorize x into two components: P(o,s) and P(o_vis|s).
+    factorized = np.zeros((len(x), len(x)))
 
-    return x, y
+    for i in range(len(x)):
+        if i == 0 or i == len(x):
+            factorized[i] = x[i]
+
+        elif i % 2 != 1:
+            # If i is even, we can divide by two to get the right side of the equation.
+            factorization_matrix = np.zeros((len(x), len(x)))
+
+            for j in range(len(x)):
+                if (j == i):
+                    factorization_matrix[i] += x[j]
+
+                elif (j % 2) == 1:
+                    # If we are even, we can divide by two to get the right side of the equation.
+                    factorization_matrix[i][j] = x[(len(x)-i-1)]
+
+    return factorized
 ```

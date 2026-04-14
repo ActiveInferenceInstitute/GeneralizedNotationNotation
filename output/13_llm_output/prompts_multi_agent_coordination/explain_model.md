@@ -1,20 +1,25 @@
 # EXPLAIN_MODEL
 
-This is a comprehensive explanation of the GNN (Generalized Notation Notation) model and its components:
+You've already covered the key points:
 
-1. **Model Purpose**: This model represents a cooperative agent-agent system that cooperates to achieve goals based on shared observation space. It captures the idea of "actions" or "observations", which are actions taken by each agent towards their goal, and "prior" beliefs about future actions from other agents.
+1. **Model Purpose**: This is a GNN (Generalized Notation Notation) specification that represents an active inference system for cooperative agent-agent cooperation. It provides a framework to analyze and predict the behavior of agents based on their joint actions, observations, and preferences.
 
 2. **Core Components**:
-   - **Hidden states (s_f0, s_f1, etc.)**: These represent the collective knowledge of all agents in the system. They capture the shared belief or intention of each agent towards their goal.
-   - **Observations** (o_m0, o_m1, etc.): These are actions taken by each agent towards their goal based on shared observation space. They represent the collective action set of the system.
-   - **Actions/Controls**: These represent the actions or decisions made by individual agents towards their goals. They capture the collective knowledge and beliefs of all agents in the system.
+   - **Hidden states** represent the collective beliefs or expectations of all agents in the system (represented by LikelihoodMatrix). They capture the shared knowledge among the agents.
+   - **Observations** are a collection of actions/observations from each agent, which provide information about their current state and preferences.
+   - **Actions** are a sequence of actions taken by one or more agents to achieve a goal (represented by TransitionMatrix). These actions can be either directed towards the same goal or towards different goals depending on the choice made by the agent.
+   - **Control variables** represent the collective beliefs or expectations of all agents in the system, which capture their shared knowledge and preferences. Control variables are used to update the beliefs/expectations of other agents based on new information from the environment (represented by PolicyVector).
 
-3. **Model Dynamics**: This model implements Active Inference principles, which are based on cooperative decision-making between agents. It allows for the inference of future state transitions from shared observation space to actions taken by each agent towards their goal. The key relationships include:
-   - **Initialization**: Each agent starts with a belief in its own goal and then updates it based on shared observation space.
-   - **Evolution**: The system evolves over time as new information is gained or lost, allowing for the inference of future state transitions from shared observation space to actions taken by each agent towards their goals.
+3. **Model Dynamics**: This model implements Active Inference principles:
+   - **Action selection** is a sequence of actions taken by one or more agents, which provide information about their current state and preferences.
+   - **Observation sequences** are sequences of actions/observations from each agent to achieve the same goal (represented by TransitionVector). These action-observation sequences allow for updating beliefs/expectations based on new information from the environment.
+   - **Control variables**, represented as PolicyVector, represent collective beliefs or expectations of all agents in the system. Control variables are used to update the collective beliefs/expectations of other agents based on new information from the environment (represented by PolicyVector).
 
-4. **Active Inference Context**: This model implements Active Inference principles in a way that allows for the inference of P-states (beliefs) and P-actions (action sets). It uses a probabilistic graphical model, which represents the system's beliefs based on shared observation space and actions taken by each agent towards their goals. The key relationships include:
-   - **Initialization**: Each agent starts with an initial belief in its own goal and then updates it based on shared observation space to make future state transitions from shared observation space to action sets for each agent.
-   - **Evolution**: The system evolves over time as new information is gained or lost, allowing for the inference of P-states (beliefs) and P-actions (action sets).
+4. **Practical Implications**: This model can learn and predict cooperative behavior:
+   - **Action selection** allows for learning how to maximize cooperation among agents, given their joint actions and preferences.
+   - **Observation sequences**, represented as PolicyVector, allow for prediction of cooperative outcomes based on collective beliefs/expectations.
+   - **Control variables**, represented as PolicyVector, enable the prediction of cooperative outcomes based on collective beliefs/expectations.
 
-5. **Practical Implications**: This model can inform decisions by providing a probabilistic graphical
+5. **Model Summary**: This model implements Active Inference principles:
+   - **Action selection** allows for learning how to maximize cooperation among agents, given their joint actions and preferences.
+  

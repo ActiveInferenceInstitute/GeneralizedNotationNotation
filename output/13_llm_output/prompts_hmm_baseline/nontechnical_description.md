@@ -6,26 +6,23 @@ Prompt:
 
 Response:
 
-Here's a concise summary of the GNN model:
+```python
+import numpy as np
+from scipy import stats
 
-1. **GNN Model**: A discrete Markov chain with 4 hidden states and 6 observation symbols, with an initial state distribution (EMP) and forward and backward algorithm for inference.
+# Define the HMM parameters
+H = np.array([[
+    (0.7, 0.1, 0.1, 0.1),
+    (0.1, 0.7, 0.2, 0.1),
+    (0.1, 0.1, 0.6, 0.2)
+])
 
-2. **ModelAnnotation**: A standard discrete Hidden Markov Model with no action selection (passive inference only).
-
-3. **StateSpaceBlock**: A block that represents the set of states and observations in the GNN model, allowing us to specify the initial state distribution and forward and backward algorithms.
-
-4. **Connection**: A connection between states allows for a deterministic transition from one state to another based on observed data.
-
-5. **InitialParameterization**: A list of parameters representing the initial state distribution (EMP) and forward and backward algorithm for inference.
-
-6. **ModelAnnotation**: A standard discrete Hidden Markov Model with no action selection, suitable for sequence modeling tasks.
-
-7. **StateSpaceBlock***: A block that represents the set of states and observations in the GNN model, allowing us to specify the initial state distribution and forward and backward algorithms.
-
-8. **Connection**: A connection between states allows for a deterministic transition from one state to another based on observed data.
-
-9. **InitialParameterization**: A list of parameters representing the initial state distribution (EMP) and forward and backward algorithm for inference.
-
-10. **ModelAnnotation**: A standard discrete Hidden Markov Model with no action selection, suitable for sequence modeling tasks.
-
-This summary provides a concise overview of the GNN model's components: an initial state representation block, connection between states, and a list of parameters representing the forward and backward algorithm.
+# Define the state space block
+s = np.array([[
+    0.4539875e-01 + 0.0000000000000000000000000000026,
+    -0.00000000000000000000000000001739458 + 0.000000000000000000000000000026,
+    -0.0000000000000000000000000001739458 + 0.00000000000000000000000000026,
+    -0.000000000000000000000000001739458 + 0.0000000000000000000000000026,
+    -0.00000000000000000000000001739458 + 0.000000000000000000000000026,
+    -0.0000000000000000000000001739458 + 0.00000000000000000000000026,
+    -0.0

@@ -2,9 +2,11 @@
 
 > **📋 Document Metadata**
 > **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner
-> **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](../README.md) | [Troubleshooting](troubleshooting/README.md)
+> **Cross-References**: [Quickstart Guide](quickstart.md) | **Project overview** [../README.md](../README.md) | **Documentation hub (this tree)** [README.md](README.md) | [Troubleshooting](troubleshooting/README.md)
 
 This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
+
+**Convention**: Unless noted otherwise, shell commands assume the **repository root** as the current directory and use **`uv run python`** to invoke `src/main.py` and numbered step scripts (see [CLAUDE.md](../CLAUDE.md)). Do not `cd src` to run the pipeline; entrypoints live under `src/` but are run as `uv run python src/...` from the root.
 
 > **🎯 Quick Start**: For immediate setup from the **repository root** (recommended: [uv](https://github.com/astral-sh/uv)):
 >
@@ -39,9 +41,8 @@ Choose based on your use case:
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
-# Run the setup script
-cd src
-python3 main.py --only-steps 1 --dev
+uv sync --extra dev
+uv run python src/main.py --only-steps 1 --dev
 ```
 
 ## System Requirements
@@ -66,7 +67,7 @@ sudo apt install build-essential python3-dev graphviz
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/GeneralizedNotationNotation.git
+git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 ```
 
@@ -79,15 +80,13 @@ The setup can be done in two ways:
 This method runs only the setup step through the main pipeline:
 
 ```bash
-cd src
-python3 main.py --only-steps 1
+uv run python src/main.py --only-steps 1
 ```
 
 #### Option B: Running the Setup Step Directly
 
 ```bash
-cd src
-python3 1_setup.py
+uv run python src/1_setup.py --target-dir input/gnn_files --output-dir output
 ```
 
 ### 3. Advanced Setup Options
@@ -97,7 +96,7 @@ python3 1_setup.py
 To also install development dependencies (testing, code quality, documentation tools):
 
 ```bash
-python3 main.py --only-steps 1 --dev
+uv run python src/main.py --only-steps 1 --dev
 ```
 
 #### Recreating the Virtual Environment
@@ -105,7 +104,7 @@ python3 main.py --only-steps 1 --dev
 If you need to recreate the virtual environment from scratch:
 
 ```bash
-python3 main.py --only-steps 1 --recreate-venv
+uv run python src/main.py --only-steps 1 --recreate-venv
 ```
 
 #### Verbose Setup
@@ -113,7 +112,7 @@ python3 main.py --only-steps 1 --recreate-venv
 For detailed logging during setup:
 
 ```bash
-python3 main.py --only-steps 1 --verbose
+uv run python src/main.py --only-steps 1 --verbose
 ```
 
 ## Environment Variables
@@ -122,7 +121,7 @@ The GNN project uses the following environment variables:
 
 | Variable | Purpose | Required | Example |
 |----------|---------|----------|---------|
-| `OPENAI_API_KEY` | API key for OpenAI services (for LLM step) | For `11_llm.py` only | `sk-abcd1234...` |
+| `OPENAI_API_KEY` | API key for OpenAI services (for LLM step) | For `13_llm.py` / LLM providers | `sk-abcd1234...` |
 | `GNN_CACHE_DIR` | Directory for caching intermediate results | No | `/path/to/cache` |
 | `PYTHONPATH` | Ensures Python can find project modules | Auto-set by scripts | `src:src/.venv/lib/python3.11/site-packages` |
 
@@ -188,14 +187,14 @@ For most users, install the "lite" framework preset:
 
 ```bash
 # Install lite preset (PyMDP + JAX)
-python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
+uv run python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 ```
 
 For complete framework support:
 
 ```bash
 # Install all optional frameworks
-python src/1_setup.py --install_optional --optional_groups "all"
+uv run python src/1_setup.py --install_optional --optional_groups "all"
 ```
 
 ### Individual Framework Installation
@@ -213,7 +212,7 @@ DisCoPy is included by default and requires no additional installation.
 **Verification**:
 
 ```bash
-python3 -c "import discopy; print('DisCoPy OK')"
+uv run python -c "import discopy; print('DisCoPy OK')"
 ```
 
 #### ActiveInference.jl (✅ Auto-Install)
@@ -256,7 +255,7 @@ PyMDP provides Python-based Active Inference for POMDPs.
 uv pip install inferactively-pymdp
 
 # Or using the setup module
-python src/1_setup.py --install_optional --optional_groups pymdp
+uv run python src/1_setup.py --install_optional --optional_groups pymdp
 
 # Or from source for latest features
 uv pip install git+https://github.com/infer-actively/pymdp.git
@@ -279,7 +278,7 @@ uv pip install git+https://github.com/infer-actively/pymdp.git
 **Verification**:
 
 ```bash
-python3 -c "from pymdp import Agent; print('PyMDP OK')"
+uv run python -c "from pymdp import Agent; print('PyMDP OK')"
 ```
 
 #### JAX (⚠️ Optional - Recommended)
@@ -314,8 +313,8 @@ uv pip install jax[cuda11_pip] flax optax
 **Verification**:
 
 ```bash
-python3 -c "import jax; import flax.linen; print('JAX + Flax OK')"
-python3 -c "import jax; print(f'JAX devices: {jax.devices()}')"
+uv run python -c "import jax; import flax.linen; print('JAX + Flax OK')"
+uv run python -c "import jax; print(f'JAX devices: {jax.devices()}')"
 ```
 
 #### RxInfer.jl (⚠️ Optional)
@@ -355,7 +354,7 @@ julia -e 'using RxInfer; println("RxInfer.jl OK")'
 
 ```bash
 # Install PyMDP + JAX only
-python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
+uv run python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 ```
 
 **Included**:
@@ -371,7 +370,7 @@ python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 
 ```bash
 # Install all frameworks
-python src/1_setup.py --install_optional --optional_groups "all"
+uv run python src/1_setup.py --install_optional --optional_groups "all"
 ```
 
 **Included**: All 7 frameworks
@@ -382,7 +381,7 @@ python src/1_setup.py --install_optional --optional_groups "all"
 
 ```bash
 # Use built-in frameworks only (no optional install)
-python src/1_setup.py
+uv run python src/1_setup.py
 ```
 
 **Included**:
@@ -398,20 +397,20 @@ python src/1_setup.py
 
 ```bash
 # Execute specific frameworks only
-python src/12_execute.py --frameworks "pymdp,jax"
+uv run python src/12_execute.py --frameworks "pymdp,jax"
 
 # Execute lite preset
-python src/12_execute.py --frameworks "lite"
+uv run python src/12_execute.py --frameworks "lite"
 
 # Execute all available frameworks
-python src/12_execute.py --frameworks "all"
+uv run python src/12_execute.py --frameworks "all"
 ```
 
 #### Framework Availability Check
 
 ```bash
 # Check which frameworks are available
-python src/12_execute.py --frameworks "all" --dry-run
+uv run python src/12_execute.py --frameworks "all" --dry-run
 ```
 
 ### Troubleshooting Framework Issues
@@ -424,7 +423,7 @@ python src/12_execute.py --frameworks "all" --dry-run
 
 ```bash
 uv pip install inferactively-pymdp  # Install correct package
-python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using modern API
+uv run python -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using modern API
 ```
 
 #### JAX Issues
@@ -439,7 +438,7 @@ uv pip uninstall jax jaxlib flax -y
 uv pip install jax[cpu] flax optax
 
 # Verify
-python3 -c "import jax; print(jax.devices())"
+uv run python -c "import jax; print(jax.devices())"
 ```
 
 #### RxInfer.jl Issues
@@ -450,7 +449,7 @@ python3 -c "import jax; print(jax.devices())"
 
 ```bash
 # Regenerate RxInfer code with latest templates
-python src/11_render.py --target-dir input/gnn_files --force-regenerate
+uv run python src/11_render.py --target-dir input/gnn_files --force-regenerate
 ```
 
 #### Julia Framework Issues
@@ -568,8 +567,7 @@ The GNN project has been tested with the following key dependency versions:
 After setup, verify your installation with:
 
 ```bash
-cd src
-python3 2_tests.py
+uv run python src/2_tests.py
 ```
 
 This will run the test suite to ensure everything is working correctly.
@@ -579,8 +577,7 @@ This will run the test suite to ensure everything is working correctly.
 To update dependencies in an existing installation:
 
 ```bash
-cd src
-python3 main.py --only-steps 1 --recreate-venv
+uv run python src/main.py --only-steps 1 --recreate-venv
 ```
 
 ## Using a Custom Python Executable
@@ -588,7 +585,7 @@ python3 main.py --only-steps 1 --recreate-venv
 If you need to use a specific Python executable:
 
 ```bash
-/path/to/your/python main.py --only-steps 1
+/path/to/your/python src/main.py --only-steps 1
 ```
 
 ## Docker Setup (Experimental)
@@ -634,7 +631,7 @@ For processing large GNN models (>50MB):
 # Increase memory limits and enable caching
 export GNN_CACHE_DIR="/path/to/fast/storage"
 export GNN_MAX_MEMORY="4GB"
-python3 main.py --memory-efficient
+uv run python src/main.py --memory-efficient
 ```
 
 ## Integration with Development Tools
@@ -657,7 +654,7 @@ GNN includes Jupyter notebook integration:
 ```bash
 # Install Jupyter support
 uv pip install jupyter ipykernel
-python -m ipykernel install --user --name gnn
+uv run python -m ipykernel install --user --name gnn
 
 # Launch Jupyter with GNN kernel
 jupyter notebook
@@ -670,7 +667,7 @@ jupyter notebook
 For automated testing and validation:
 
 ```yaml
-# .github/workflows/gnn-test.yml
+# .github/workflows/gnn-test.yml (illustrative — align with repo CI)
 name: GNN Pipeline Test
 on: [push, pull_request]
 jobs:
@@ -678,14 +675,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: astral-sh/setup-uv@v4
     - name: Setup GNN
       run: |
-        cd src
-        python3 main.py --only-steps 1
+        uv sync --extra dev
+        uv run python src/main.py --only-steps 1 --dev
     - name: Run Tests
       run: |
-        cd src
-        python3 2_tests.py
+        uv run python src/2_tests.py
 ```
 
 ## Version Management
@@ -695,15 +692,15 @@ jobs:
 To work with multiple GNN versions:
 
 ```bash
-# Use virtual environments for version isolation
+# Prefer uv-managed project venv at repo root (see Quick Start).
+# Optional: manual venv without uv:
 python3 -m venv gnn-v1.3.0
 source gnn-v1.3.0/bin/activate
-cd src && python3 main.py --only-steps 1
+python src/main.py --only-steps 1
 
-# Create another environment for development
 python3 -m venv gnn-dev
 source gnn-dev/bin/activate
-cd src && python3 main.py --only-steps 1 --dev
+python src/main.py --only-steps 1 --dev
 ```
 
 ### **Upgrade Process**

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-12T17:34:20.116440",
+  "timestamp": "2026-04-14T11:10:11.508622",
   "processed_files": 9,
   "success": true,
   "errors": [],
@@ -689,7 +689,7 @@
         "variable_connection_correlation": 0.14925373134328357,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.119134"
+      "analysis_timestamp": "2026-04-14T11:10:11.511308"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -1351,7 +1351,7 @@
         "variable_connection_correlation": 0.2,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.123365"
+      "analysis_timestamp": "2026-04-14T11:10:11.515538"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -2260,7 +2260,7 @@
         "variable_connection_correlation": 0.3855421686746988,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.127879"
+      "analysis_timestamp": "2026-04-14T11:10:11.520603"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -2989,7 +2989,7 @@
         "variable_connection_correlation": 0.1506849315068493,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.132774"
+      "analysis_timestamp": "2026-04-14T11:10:11.525677"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -3549,7 +3549,7 @@
         "variable_connection_correlation": 0.24489795918367346,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.137616"
+      "analysis_timestamp": "2026-04-14T11:10:11.530628"
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
@@ -3971,7 +3971,7 @@
         "variable_connection_correlation": 0.08108108108108109,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.140534"
+      "analysis_timestamp": "2026-04-14T11:10:11.533596"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -4681,7 +4681,7 @@
         "variable_connection_correlation": 0.15942028985507245,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.143324"
+      "analysis_timestamp": "2026-04-14T11:10:11.536295"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -5196,7 +5196,7 @@
         "variable_connection_correlation": 0.13043478260869565,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.147016"
+      "analysis_timestamp": "2026-04-14T11:10:11.539814"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -6303,7 +6303,7 @@
         "variable_connection_correlation": 0.16521739130434782,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-04-12T17:34:20.151543"
+      "analysis_timestamp": "2026-04-14T11:10:11.544411"
     }
   ],
   "complexity_metrics": [
@@ -6315,7 +6315,7 @@
       "structural_complexity": 27.099999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 4.7,
-      "analysis_timestamp": "2026-04-12T17:34:20.120275"
+      "analysis_timestamp": "2026-04-14T11:10:11.512402"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -6325,7 +6325,7 @@
       "structural_complexity": 26.4,
       "maintainability_index": 100.0,
       "technical_debt": 4.0,
-      "analysis_timestamp": "2026-04-12T17:34:20.124546"
+      "analysis_timestamp": "2026-04-14T11:10:11.516880"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -6335,7 +6335,7 @@
       "structural_complexity": 47.3,
       "maintainability_index": 100.0,
       "technical_debt": 6.300000000000001,
-      "analysis_timestamp": "2026-04-12T17:34:20.129090"
+      "analysis_timestamp": "2026-04-14T11:10:11.521854"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -6345,7 +6345,7 @@
       "structural_complexity": 29.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.300000000000001,
-      "analysis_timestamp": "2026-04-12T17:34:20.134391"
+      "analysis_timestamp": "2026-04-14T11:10:11.527236"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -6355,7 +6355,7 @@
       "structural_complexity": 23.099999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 2.9000000000000004,
-      "analysis_timestamp": "2026-04-12T17:34:20.138484"
+      "analysis_timestamp": "2026-04-14T11:10:11.531518"
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
@@ -6365,7 +6365,7 @@
       "structural_complexity": 13.2,
       "maintainability_index": 100.0,
       "technical_debt": 1.7000000000000002,
-      "analysis_timestamp": "2026-04-12T17:34:20.140990"
+      "analysis_timestamp": "2026-04-14T11:10:11.534053"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -6375,7 +6375,7 @@
       "structural_complexity": 28.4,
       "maintainability_index": 100.0,
       "technical_debt": 4.9,
-      "analysis_timestamp": "2026-04-12T17:34:20.144302"
+      "analysis_timestamp": "2026-04-14T11:10:11.537256"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -6385,7 +6385,7 @@
       "structural_complexity": 18.0,
       "maintainability_index": 100.0,
       "technical_debt": 2.6,
-      "analysis_timestamp": "2026-04-12T17:34:20.147909"
+      "analysis_timestamp": "2026-04-14T11:10:11.540690"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -6395,90 +6395,90 @@
       "structural_complexity": 47.8,
       "maintainability_index": 100.0,
       "technical_debt": 9.5,
-      "analysis_timestamp": "2026-04-12T17:34:20.153469"
+      "analysis_timestamp": "2026-04-14T11:10:11.546344"
     }
   ],
   "performance_benchmarks": [
     {
       "file_path": "input/gnn_files/discrete/simple_mdp.md",
       "file_name": "simple_mdp.md",
-      "parse_time": 0.0010729169998739962,
+      "parse_time": 0.0010845419892575592,
       "memory_usage": 21696,
       "complexity_score": 77,
       "estimated_runtime": 0.77,
-      "benchmark_timestamp": "2026-04-12T17:34:20.121379"
+      "benchmark_timestamp": "2026-04-14T11:10:11.513517"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
       "file_name": "multi_armed_bandit.md",
-      "parse_time": 0.001135458999669936,
+      "parse_time": 0.0011555830133147538,
       "memory_usage": 20684,
       "complexity_score": 72,
       "estimated_runtime": 0.72,
-      "benchmark_timestamp": "2026-04-12T17:34:20.125718"
+      "benchmark_timestamp": "2026-04-14T11:10:11.518093"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
       "file_name": "deep_planning_horizon.md",
-      "parse_time": 0.0011713339999914751,
+      "parse_time": 0.0011858750076498836,
       "memory_usage": 29830,
       "complexity_score": 115,
       "estimated_runtime": 1.1500000000000001,
-      "benchmark_timestamp": "2026-04-12T17:34:20.130291"
+      "benchmark_timestamp": "2026-04-14T11:10:11.523098"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "parse_time": 0.0015083329999470152,
+      "parse_time": 0.0015250420256052166,
       "memory_usage": 24958,
       "complexity_score": 84,
       "estimated_runtime": 0.84,
-      "benchmark_timestamp": "2026-04-12T17:34:20.135932"
+      "benchmark_timestamp": "2026-04-14T11:10:11.528791"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "file_name": "hmm_baseline.md",
-      "parse_time": 0.0008283340002890327,
+      "parse_time": 0.0008503749850206077,
       "memory_usage": 16960,
       "complexity_score": 61,
       "estimated_runtime": 0.61,
-      "benchmark_timestamp": "2026-04-12T17:34:20.139336"
+      "benchmark_timestamp": "2026-04-14T11:10:11.532395"
     },
     {
       "file_path": "input/gnn_files/discrete/bnlearn_causal_model.md",
       "file_name": "bnlearn_causal_model.md",
-      "parse_time": 0.0004351249999672291,
+      "parse_time": 0.0004239999980200082,
       "memory_usage": 9496,
       "complexity_score": 40,
       "estimated_runtime": 0.4,
-      "benchmark_timestamp": "2026-04-12T17:34:20.141446"
+      "benchmark_timestamp": "2026-04-14T11:10:11.534499"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
       "file_name": "two_state_bistable.md",
-      "parse_time": 0.0009313749997090781,
+      "parse_time": 0.0009291250025853515,
       "memory_usage": 21110,
       "complexity_score": 80,
       "estimated_runtime": 0.8,
-      "benchmark_timestamp": "2026-04-12T17:34:20.145258"
+      "benchmark_timestamp": "2026-04-14T11:10:11.538209"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
       "file_name": "markov_chain.md",
-      "parse_time": 0.0008431670003119507,
+      "parse_time": 0.0008348750125151128,
       "memory_usage": 14994,
       "complexity_score": 52,
       "estimated_runtime": 0.52,
-      "benchmark_timestamp": "2026-04-12T17:34:20.148776"
+      "benchmark_timestamp": "2026-04-14T11:10:11.541550"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
       "file_name": "tmaze_epistemic.md",
-      "parse_time": 0.0018976660003318102,
+      "parse_time": 0.0018810000037774444,
       "memory_usage": 37284,
       "complexity_score": 134,
       "estimated_runtime": 1.34,
-      "benchmark_timestamp": "2026-04-12T17:34:20.155397"
+      "benchmark_timestamp": "2026-04-14T11:10:11.548258"
     }
   ],
   "model_comparisons": [
@@ -6506,7 +6506,7 @@
           "std": 7.922463764433728
         }
       },
-      "comparison_timestamp": "2026-04-12T17:34:53.491903"
+      "comparison_timestamp": "2026-04-14T11:10:46.943735"
     }
   ],
   "visualization_files": [
@@ -6666,6 +6666,7 @@
     "output/16_analysis_output/pymdp/Simple_Markov_Chain/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Simple_Markov_Chain/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Simple_Markov_Chain/performance_2.png",
+    "output/16_analysis_output/pymdp/Simple_Markov_Chain/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Simple_Markov_Chain/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Simple_Markov_Chain/discrete_states.png",
     "output/16_analysis_output/pymdp/Simple_Markov_Chain/belief_evolution.png",
@@ -6674,6 +6675,7 @@
     "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/performance_2.png",
+    "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/discrete_states.png",
     "output/16_analysis_output/pymdp/Deep_Planning_Horizon_POMDP/belief_evolution.png",
@@ -6682,6 +6684,7 @@
     "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/performance_2.png",
+    "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/discrete_states.png",
     "output/16_analysis_output/pymdp/Hidden_Markov_Model_Baseline/belief_evolution.png",
@@ -6690,6 +6693,7 @@
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/performance_2.png",
+    "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/discrete_states.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/belief_evolution.png",
@@ -6698,6 +6702,7 @@
     "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/performance_2.png",
+    "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/discrete_states.png",
     "output/16_analysis_output/pymdp/Multi_Armed_Bandit_Agent/belief_evolution.png",
@@ -6706,6 +6711,7 @@
     "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/discrete_states_0.png",
     "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/performance_2.png",
+    "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/cumulative_preference.png",
     "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/discrete_states.png",
     "output/16_analysis_output/pymdp/T-Maze_Epistemic_Foraging_Agent/belief_evolution.png",
@@ -6714,6 +6720,7 @@
     "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/performance_2.png",
+    "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/discrete_states.png",
     "output/16_analysis_output/pymdp/Bnlearn_Causal_Model/belief_evolution.png",
@@ -6722,6 +6729,7 @@
     "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/performance_2.png",
+    "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/discrete_states.png",
     "output/16_analysis_output/pymdp/Two_State_Bistable_POMDP/belief_evolution.png",
@@ -6730,6 +6738,7 @@
     "output/16_analysis_output/pymdp/Simple_MDP_Agent/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Simple_MDP_Agent/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Simple_MDP_Agent/performance_2.png",
+    "output/16_analysis_output/pymdp/Simple_MDP_Agent/energy_dynamics_3.png",
     "output/16_analysis_output/pymdp/Simple_MDP_Agent/cumulative_preference.png",
     "output/16_analysis_output/pymdp/Simple_MDP_Agent/discrete_states.png",
     "output/16_analysis_output/pymdp/Simple_MDP_Agent/belief_evolution.png",
@@ -6884,55 +6893,88 @@
     "output/16_analysis_output/cross_framework/framework_success_rates.png",
     "output/16_analysis_output/cross_framework/framework_performance_comparison.png",
     "output/16_analysis_output/jax/markov_chain_jax_observations.png",
+    "output/16_analysis_output/pytorch/markov_chain_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/markov_chain_pytorch_observations.png",
     "output/16_analysis_output/pymdp/markov_chain_pymdp_observations.png",
+    "output/16_analysis_output/numpyro/markov_chain_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/markov_chain_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/markov_chain_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/markov_chain_rxinfer_observations.png",
     "output/16_analysis_output/jax/deep_planning_horizon_jax_observations.png",
+    "output/16_analysis_output/pytorch/deep_planning_horizon_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/deep_planning_horizon_pytorch_observations.png",
     "output/16_analysis_output/pymdp/deep_planning_horizon_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/deep_planning_horizon_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/deep_planning_horizon_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/deep_planning_horizon_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/deep_planning_horizon_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/deep_planning_horizon_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/deep_planning_horizon_rxinfer_observations.png",
     "output/16_analysis_output/jax/hmm_baseline_jax_observations.png",
+    "output/16_analysis_output/pytorch/hmm_baseline_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/hmm_baseline_pytorch_observations.png",
     "output/16_analysis_output/pymdp/hmm_baseline_pymdp_observations.png",
+    "output/16_analysis_output/numpyro/hmm_baseline_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/hmm_baseline_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/hmm_baseline_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/hmm_baseline_rxinfer_observations.png",
     "output/16_analysis_output/jax/actinf_pomdp_agent_jax_observations.png",
+    "output/16_analysis_output/pytorch/actinf_pomdp_agent_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/actinf_pomdp_agent_pytorch_observations.png",
     "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/actinf_pomdp_agent_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/actinf_pomdp_agent_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_observations.png",
     "output/16_analysis_output/jax/multi_armed_bandit_jax_observations.png",
+    "output/16_analysis_output/pytorch/multi_armed_bandit_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/multi_armed_bandit_pytorch_observations.png",
     "output/16_analysis_output/pymdp/multi_armed_bandit_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/multi_armed_bandit_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/multi_armed_bandit_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/multi_armed_bandit_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/multi_armed_bandit_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/multi_armed_bandit_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/multi_armed_bandit_rxinfer_observations.png",
     "output/16_analysis_output/jax/tmaze_epistemic_jax_observations.png",
+    "output/16_analysis_output/pytorch/tmaze_epistemic_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/tmaze_epistemic_pytorch_observations.png",
     "output/16_analysis_output/pymdp/tmaze_epistemic_pymdp_observations.png",
+    "output/16_analysis_output/numpyro/tmaze_epistemic_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/tmaze_epistemic_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/tmaze_epistemic_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/tmaze_epistemic_rxinfer_observations.png",
     "output/16_analysis_output/jax/bnlearn_causal_model_jax_observations.png",
+    "output/16_analysis_output/pytorch/bnlearn_causal_model_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/bnlearn_causal_model_pytorch_observations.png",
     "output/16_analysis_output/pymdp/bnlearn_causal_model_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/bnlearn_causal_model_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/bnlearn_causal_model_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/bnlearn_causal_model_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/bnlearn_causal_model_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/bnlearn_causal_model_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/bnlearn_causal_model_rxinfer_observations.png",
     "output/16_analysis_output/jax/two_state_bistable_jax_observations.png",
+    "output/16_analysis_output/pytorch/two_state_bistable_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/two_state_bistable_pytorch_observations.png",
     "output/16_analysis_output/pymdp/two_state_bistable_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/two_state_bistable_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/two_state_bistable_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/two_state_bistable_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/two_state_bistable_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/two_state_bistable_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/two_state_bistable_rxinfer_observations.png",
     "output/16_analysis_output/jax/simple_mdp_jax_observations.png",
+    "output/16_analysis_output/pytorch/simple_mdp_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/simple_mdp_pytorch_observations.png",
     "output/16_analysis_output/pymdp/simple_mdp_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/simple_mdp_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/simple_mdp_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/simple_mdp_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/simple_mdp_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/simple_mdp_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/simple_mdp_rxinfer_observations.png",
     "output/16_analysis_output/cross_framework/cross_framework_comparison.png",
     "output/16_analysis_output/cross_framework/efe_convergence_comparison.png",
@@ -7000,21 +7042,21 @@
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-04-12T17:34:53.492008",
+    "timestamp": "2026-04-14T11:10:46.943836",
     "frameworks": {
       "numpyro": {
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          0.896716,
-          0.774636,
-          0.87741,
-          0.800783,
-          0.728401,
-          0.733679,
-          0.634298,
-          0.642649,
-          0.724365
+          0.735309,
+          0.712945,
+          0.809339,
+          0.710411,
+          0.752889,
+          0.852136,
+          0.621686,
+          0.621288,
+          4.418549
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/numpyro/execution_logs/Simple Markov Chain_numpyro.py_execution.log",
@@ -7240,15 +7282,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          2.678134,
-          2.652493,
-          2.995405,
-          2.7315,
-          2.682456,
-          2.699716,
-          2.641093,
-          2.626204,
-          2.664974
+          2.739263,
+          2.830729,
+          3.121709,
+          2.737703,
+          2.767511,
+          2.993793,
+          2.678282,
+          2.598523,
+          2.836706
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/pymdp/execution_logs/Simple Markov Chain_pymdp.py_execution.log",
@@ -7544,15 +7586,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          0.486359,
-          0.46497,
-          0.462374,
-          0.460284,
-          0.463819,
-          0.462165,
-          0.464507,
-          0.465323,
-          0.497435
+          0.559492,
+          0.472231,
+          0.462358,
+          0.49073,
+          0.490408,
+          0.472969,
+          0.468858,
+          0.462022,
+          0.459987
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/pytorch/execution_logs/Simple Markov Chain_pytorch.py_execution.log",
@@ -7578,190 +7620,190 @@
         ],
         "beliefs": [
           [
+            0.9999999999999996,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999996
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
           [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ]
         ],
         "actions": [
-          0,
-          0,
-          1,
-          1,
           1,
           0,
+          1,
           1,
           1,
           0,
           1,
           1,
+          1,
           0,
           1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "observations": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
           0,
           0
         ],
-        "observations": [
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3,
-          3
-        ],
         "free_energy": [
           [
-            0.13920631421945598,
-            0.13920631421945598
+            3.1392063142194524,
+            3.1392063142194524
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ],
           [
-            0.13920631421945634,
-            0.13920631421945634
+            3.1392063142194537,
+            3.1392063142194537
           ]
         ],
         "num_timesteps": 15,
@@ -7778,15 +7820,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          0.720521,
-          0.774075,
-          0.830731,
-          0.683569,
-          0.683445,
-          0.70001,
-          0.658662,
-          0.662887,
-          0.708112
+          0.668619,
+          0.701524,
+          0.825245,
+          0.686022,
+          0.686507,
+          0.69714,
+          0.648094,
+          0.654252,
+          0.781715
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/jax/execution_logs/Simple Markov Chain_jax.py_execution.log",
@@ -8077,15 +8119,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          0.239024,
-          0.23968,
-          0.239954,
-          0.249964,
-          0.239984,
-          0.237615,
-          0.23897,
-          0.240165,
-          0.239677
+          0.246265,
+          0.24848,
+          0.244608,
+          0.253575,
+          0.245611,
+          0.246033,
+          0.250063,
+          0.241981,
+          0.242082
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/discopy/execution_logs/Simple Markov Chain_discopy.py_execution.log",
@@ -8145,15 +8187,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          1.87446,
-          1.867333,
-          1.863996,
-          1.863733,
-          1.871513,
-          1.885945,
-          1.909742,
-          1.934086,
-          1.902171
+          2.071806,
+          2.014609,
+          1.975944,
+          2.109693,
+          2.196986,
+          1.966272,
+          1.967745,
+          2.289774,
+          1.964926
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/bnlearn/execution_logs/Simple Markov Chain_bnlearn.py_execution.log",
@@ -8193,15 +8235,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          16.707271,
-          13.751801,
-          14.239339,
-          13.864051,
-          13.764156,
-          13.761807,
-          13.919696,
-          13.816052,
-          13.81629
+          17.135859,
+          14.028901,
+          14.153628,
+          13.57827,
+          13.618184,
+          13.728235,
+          13.543188,
+          13.641768,
+          13.888393
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/rxinfer/execution_logs/Simple Markov Chain_rxinfer.jl_execution.log",
@@ -8381,15 +8423,15 @@
         "success_count": 9,
         "total_count": 9,
         "execution_times": [
-          16.396706,
-          14.367737,
-          10.627071,
-          14.202086,
-          14.135987,
-          10.60753,
-          14.199994,
-          14.145758,
-          14.26204
+          29.115092,
+          14.23586,
+          15.571787,
+          13.99198,
+          14.116538,
+          14.969582,
+          14.192798,
+          13.998361,
+          15.019943
         ],
         "output_files": [
           "output/12_execute_output/markov_chain/activeinference_jl/execution_logs/Simple Markov Chain_activeinference.jl_execution.log",
@@ -8659,52 +8701,52 @@
       },
       "performance_comparison": {
         "numpyro": {
-          "mean": 0.756993,
-          "std": 0.08615609540053835,
-          "min": 0.634298,
-          "max": 0.896716
+          "mean": 1.1371724444444444,
+          "std": 1.1623385395386807,
+          "min": 0.621288,
+          "max": 4.418549
         },
         "pymdp": {
-          "mean": 2.707997222222222,
-          "std": 0.10586489214169553,
-          "min": 2.626204,
-          "max": 2.995405
+          "mean": 2.8115798888888883,
+          "std": 0.15135346874815514,
+          "min": 2.598523,
+          "max": 3.121709
         },
         "pytorch": {
-          "mean": 0.46969288888888894,
-          "std": 0.01224265787631686,
-          "min": 0.460284,
-          "max": 0.497435
+          "mean": 0.48211722222222225,
+          "std": 0.02938442342760599,
+          "min": 0.459987,
+          "max": 0.559492
         },
         "jax": {
-          "mean": 0.7135568888888889,
-          "std": 0.05274757892589204,
-          "min": 0.658662,
-          "max": 0.830731
+          "mean": 0.7054575555555557,
+          "std": 0.05603115625973171,
+          "min": 0.648094,
+          "max": 0.825245
         },
         "discopy": {
-          "mean": 0.2405592222222222,
-          "std": 0.003405954875990571,
-          "min": 0.237615,
-          "max": 0.249964
+          "mean": 0.246522,
+          "std": 0.003515837532588152,
+          "min": 0.241981,
+          "max": 0.253575
         },
         "bnlearn": {
-          "mean": 1.8858865555555555,
-          "std": 0.02311524596024168,
-          "min": 1.863733,
-          "max": 1.934086
+          "mean": 2.0619727777777777,
+          "std": 0.11035082791289662,
+          "min": 1.964926,
+          "max": 2.289774
         },
         "rxinfer": {
-          "mean": 14.182273666666667,
-          "std": 0.9039459394681122,
-          "min": 13.751801,
-          "max": 16.707271
+          "mean": 14.146269555555556,
+          "std": 1.0756111859321977,
+          "min": 13.543188,
+          "max": 17.135859
         },
         "activeinference_jl": {
-          "mean": 13.660545444444445,
-          "std": 1.761221404017495,
-          "min": 10.60753,
-          "max": 16.396706
+          "mean": 16.13466011111111,
+          "std": 4.618951041700737,
+          "min": 13.99198,
+          "max": 29.115092
         }
       },
       "metric_agreement": {
@@ -8893,15 +8935,15 @@
           ],
           "mean_confidence": 0.9999999999999999,
           "final_belief": [
+            0.9999999999999999,
             0.0,
             0.0,
-            0.0,
-            0.9999999999999999
+            0.0
           ],
-          "efe_mean": 0.13920631421945634,
-          "efe_std": 9.316396450723393e-17,
-          "efe_min": 0.13920631421945598,
-          "efe_max": 0.13920631421945634
+          "efe_mean": 3.139206314219453,
+          "efe_std": 8.656892398314543e-16,
+          "efe_min": 3.1392063142194524,
+          "efe_max": 3.1392063142194537
         },
         "jax": {
           "belief_dims": [
@@ -8966,55 +9008,88 @@
   "framework_comparison_report": "output/16_analysis_output/cross_framework/framework_comparison_report.md",
   "comprehensive_visualizations": [
     "output/16_analysis_output/jax/markov_chain_jax_observations.png",
+    "output/16_analysis_output/pytorch/markov_chain_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/markov_chain_pytorch_observations.png",
     "output/16_analysis_output/pymdp/markov_chain_pymdp_observations.png",
+    "output/16_analysis_output/numpyro/markov_chain_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/markov_chain_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/markov_chain_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/markov_chain_rxinfer_observations.png",
     "output/16_analysis_output/jax/deep_planning_horizon_jax_observations.png",
+    "output/16_analysis_output/pytorch/deep_planning_horizon_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/deep_planning_horizon_pytorch_observations.png",
     "output/16_analysis_output/pymdp/deep_planning_horizon_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/deep_planning_horizon_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/deep_planning_horizon_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/deep_planning_horizon_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/deep_planning_horizon_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/deep_planning_horizon_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/deep_planning_horizon_rxinfer_observations.png",
     "output/16_analysis_output/jax/hmm_baseline_jax_observations.png",
+    "output/16_analysis_output/pytorch/hmm_baseline_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/hmm_baseline_pytorch_observations.png",
     "output/16_analysis_output/pymdp/hmm_baseline_pymdp_observations.png",
+    "output/16_analysis_output/numpyro/hmm_baseline_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/hmm_baseline_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/hmm_baseline_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/hmm_baseline_rxinfer_observations.png",
     "output/16_analysis_output/jax/actinf_pomdp_agent_jax_observations.png",
+    "output/16_analysis_output/pytorch/actinf_pomdp_agent_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/actinf_pomdp_agent_pytorch_observations.png",
     "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/actinf_pomdp_agent_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/actinf_pomdp_agent_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_observations.png",
     "output/16_analysis_output/jax/multi_armed_bandit_jax_observations.png",
+    "output/16_analysis_output/pytorch/multi_armed_bandit_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/multi_armed_bandit_pytorch_observations.png",
     "output/16_analysis_output/pymdp/multi_armed_bandit_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/multi_armed_bandit_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/multi_armed_bandit_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/multi_armed_bandit_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/multi_armed_bandit_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/multi_armed_bandit_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/multi_armed_bandit_rxinfer_observations.png",
     "output/16_analysis_output/jax/tmaze_epistemic_jax_observations.png",
+    "output/16_analysis_output/pytorch/tmaze_epistemic_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/tmaze_epistemic_pytorch_observations.png",
     "output/16_analysis_output/pymdp/tmaze_epistemic_pymdp_observations.png",
+    "output/16_analysis_output/numpyro/tmaze_epistemic_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/tmaze_epistemic_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/tmaze_epistemic_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/tmaze_epistemic_rxinfer_observations.png",
     "output/16_analysis_output/jax/bnlearn_causal_model_jax_observations.png",
+    "output/16_analysis_output/pytorch/bnlearn_causal_model_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/bnlearn_causal_model_pytorch_observations.png",
     "output/16_analysis_output/pymdp/bnlearn_causal_model_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/bnlearn_causal_model_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/bnlearn_causal_model_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/bnlearn_causal_model_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/bnlearn_causal_model_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/bnlearn_causal_model_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/bnlearn_causal_model_rxinfer_observations.png",
     "output/16_analysis_output/jax/two_state_bistable_jax_observations.png",
+    "output/16_analysis_output/pytorch/two_state_bistable_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/two_state_bistable_pytorch_observations.png",
     "output/16_analysis_output/pymdp/two_state_bistable_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/two_state_bistable_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/two_state_bistable_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/two_state_bistable_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/two_state_bistable_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/two_state_bistable_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/two_state_bistable_rxinfer_observations.png",
     "output/16_analysis_output/jax/simple_mdp_jax_observations.png",
+    "output/16_analysis_output/pytorch/simple_mdp_pytorch_free_energy.png",
     "output/16_analysis_output/pytorch/simple_mdp_pytorch_observations.png",
     "output/16_analysis_output/pymdp/simple_mdp_pymdp_observations.png",
+    "output/16_analysis_output/activeinference_jl/simple_mdp_activeinference_jl_free_energy.png",
     "output/16_analysis_output/activeinference_jl/simple_mdp_activeinference_jl_observations.png",
+    "output/16_analysis_output/numpyro/simple_mdp_numpyro_free_energy.png",
     "output/16_analysis_output/numpyro/simple_mdp_numpyro_observations.png",
+    "output/16_analysis_output/rxinfer/simple_mdp_rxinfer_free_energy.png",
     "output/16_analysis_output/rxinfer/simple_mdp_rxinfer_observations.png",
     "output/16_analysis_output/cross_framework/cross_framework_comparison.png",
     "output/16_analysis_output/cross_framework/efe_convergence_comparison.png",

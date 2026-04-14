@@ -1,50 +1,28 @@
 # ANALYZE_STRUCTURE
 
-Based on the information provided, here are the structural analysis of the GNN specification:
+Based on your description, here are a few key aspects of the GNN specification:
 
-1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/uniform)
-   - Graph topology (hierarchical, network, etc.)
+1. **Graph Structure**: The graph is hierarchical and consists of two main components:
+   - **State Space**: A set of variables representing the observation space (hidden states) and their corresponding beliefs over hidden states.
+   - **Connection Patterns**: A set of directed edges between nodes in the graph, which represent conditional relationships between observations and actions.
 
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
+2. **Variable Analysis**: The variable is represented by a single-shot inference model with two parameters:
+   - **Initial Parameterization**: A uniform prior on the state space dimensionality (number of variables) and their types.
+   - **Parameter Structure**: A set of directed edges representing conditional relationships between observations and actions, which encode temporal dependencies and action components.
 
-3. **Mathematical Structure**:
-   - Matrix dimensions and compatibility
-   - Parameter structure and organization  
-   - Symmetries or special properties
+3. **Mathematical Structure**: The graph is represented by a hierarchical structure with nodes connected by directed edges:
+   - **State Space**: A set of variables representing the observation space (hidden states) and their corresponding beliefs over hidden states.
+   - **Connection Patterns**: A set of directed edges between nodes in the graph, which represent conditional relationships between observations and actions.
 
-**Structure:**
-The GNN specification consists of two main components:
+4. **Complexity Assessment**: The structure reflects the domain being modeled by providing a comprehensive representation that captures all possible interactions between variables and actions. This includes:
+   - **Computational Complexity Indicators**: Indicator of computational complexity (e.g., time complexity) or model scalability considerations (e.g., memory, CPU resources).
+   - **Potential Bottlenecks**: Indicator of potential bottlenecks in the modeling process that can be addressed through optimization techniques (e.g., regularization, pruning).
 
-1. **GNN Representation**: A representation that encodes the observation-belief relationship in terms of a single-shot inference model. This represents all possible actions, beliefs, and observations. It is based on a simple neural network with 2 hidden states (hidden state) and 2 observable variables (observation). The connection between each pair of neurons corresponds to an action or belief.
+5. **Design Patterns**: The GNN specification follows a general design pattern for active inference:
+   - **Single-shot Inference**: A single observation is made and its corresponding belief is inferred using a probabilistic graphical model based on the prior distribution.
+   - **Bayesian Inference**: The belief update process involves updating the beliefs of all observations, which can be done in a sequential manner (e.g., through backpropagation).
 
-2. **GNN Variable**: A representation that encodes the observation-belief relationship in terms of a single-shot inference model. This represents all possible actions, beliefs, and observations. It is based on a neural network with 1 hidden state (hidden state) and 2 observable variables (observation). The connection between each pair of neurons corresponds to an action or belief.
+6. **Model Scalability Considerations**: The GNN specification has been designed to scale well with computational resources and model complexity:
+   - **Computational Complexity Indicators**: Indicator of potential scalability issues or bottlenecks that can be addressed through optimization techniques, such as regularization or pruning.
 
-**Mathematical Structure:**
-
-1. **Matrix Dimensions**:
-   - Number of variables: 3
-   - Type of variable: float
-   - Type of observation: int
-   - Type of hidden state: int
-   - Type of observable: int
-   - Type of connection between neurons: matrix (connected)
-
-2. **Connection Patterns**:
-   - Directed edges: (0, 0), (1, 1), ... (n-1, n-1)
-   - Indirect edges: (x, y) -> (y, x)
-   - Conditional relationships: (x, y) -> (x, y)
-
-3. **Parameter Structure**:
-   - Matrix dimensions and compatibility:
-    - Type of variable: float
-    - Type of observation: int
-    - Type of connection between neurons: matrix
-
-**Design Patterns:**
-
-1. **GNN Representation**: A representation that encodes the observation-belief relationship in terms of a single-shot inference model. This represents all possible actions, beliefs, and observations. It is based on a neural network with 2 hidden states (hidden state
+Overall, the structure reflects the domain being modeled by providing a comprehensive representation that captures all possible interactions between variables and actions.

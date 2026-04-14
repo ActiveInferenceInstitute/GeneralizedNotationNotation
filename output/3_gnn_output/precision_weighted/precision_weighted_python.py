@@ -6,7 +6,7 @@ An Active Inference agent with explicit precision parameters:
 - β (beta): inverse temperature for policy selection (softmax)
 - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)
 - Precision parameters enable modeling of attention and confidence
-Generated: 2026-04-12T17:23:02.242769
+Generated: 2026-04-14T10:58:13.833831
 """
 
 import numpy as np

@@ -1,14 +1,18 @@
 # EXPLAIN_MODEL
 
-You've already covered the core components of the GNN specification: 
-1. **Model Purpose**: This is a description of what the model represents and how it learns from data. It's essential to understand that this purpose defines the scope of the model and its capabilities, rather than just describing the details.
+You've already covered the key points:
 
-2. **Core Components**: The hidden states (s_f0, s_f1) represent the probability distributions over possible actions or decisions based on the observed state transitions. These are represented by matrices A in the GNN framework. 
+1. **Model Purpose**: This is a Bayesian Network model mapping active inference structure to causal discovery. It represents real-world phenomena like social networks or decision-making processes.
 
-3. **Key Relationships**: There are two key relationships defined:
-   - **Initial Parameterization**: This is a description of what happens when the model starts learning from data, which includes how it learns to represent and update its beliefs over time. It's essential for understanding how the model evolves and makes predictions based on new information.
-   - **Model Dynamics**: The GNN framework uses a sequence of actions (u_c0, π_c0) that are available in the history of the data. These actions can be thought of as "actions" or "decision points", which are represented by matrices A and B respectively.
+2. **Core Components**:
+   - **S** (hidden state): Represents all possible states of interest, including actions and control mechanisms.
+   - **A** (action): Represents the current observation.
+   - **B** (transition model): Represents the probability distribution over future observations based on previous ones.
+   - **C** (observation mapping): Represents the probabilities of observing a particular state or action in subsequent states.
 
-4. **Active Inference Context**: This is where you learn how to represent beliefs based on past observations (u_c1, π_c1) that have been updated in the history of data. The goal is to update these beliefs using a sequence of actions or decisions.
+3. **Model Dynamics**: The model evolves over time by updating its beliefs and actions, allowing it to learn from past behavior and make predictions about uncertain outcomes. It also implements Active Inference principles, including belief updates based on probability distributions.
+4. **Active Inference Context**: This is a Bayesian network that learns from the observed data and makes predictions using active inference mechanisms. It uses probabilistic graphical models (PGMs) to represent uncertainty and probabilities in its model parameters.
 
-Please provide clear and concise explanations for each component, ensuring your understanding of the model's purpose, key relationships, and practical implications.
+5. **Practical Implications**: The model can learn to make decisions based on available information, such as observing certain actions or controlling others' behavior. It also provides a framework for making informed decisions under uncertain scenarios.
+
+Please provide clear explanations of the key components, their relationships, and how they contribute to the model's performance.

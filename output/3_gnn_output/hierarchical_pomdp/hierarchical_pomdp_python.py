@@ -5,7 +5,7 @@ A two-level hierarchical POMDP where:
 - Level 2 (slow): 2 contextual states that modulate Level 1 likelihood
 - Higher-level beliefs are updated at a slower timescale
 - Top-down predictions constrain bottom-up inference at Level 1
-Generated: 2026-04-12T17:23:00.313526
+Generated: 2026-04-14T10:58:12.012309
 """
 
 import numpy as np

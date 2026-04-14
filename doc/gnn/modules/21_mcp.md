@@ -1,242 +1,457 @@
-# Step 21: MCP — Model Context Protocol Server
+# Step 21: Mcp
 
-## Overview
+## Architectural Mapping
 
-Orchestrates Model Context Protocol (MCP) processing. Discovers all pipeline modules, registers every module's domain-specific tools, and serves them as MCP-compatible tools accessible to AI agents and IDE extensions.
+**Orchestrator**: `src/21_mcp.py` (53 lines)
+**Implementation Layer**: `src/mcp/`
 
-**Last Updated**: 2026-03-24  
-**Status**: Tools registered are audited by `test_mcp_audit.py`; full `pytest` counts are in the repository [README.md](../../../README.md).
+## Module Description
 
-## Usage
+This directory contains the comprehensive Model Context Protocol (MCP) implementation for the GeneralizedNotationNotation (GNN) project. The MCP server exposes all GNN functionalities as standardized tools that can be accessed by MCP-compatible clients.
 
-```bash
-uv run python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
+
+The GNN MCP implementation provides:
+- **Core MCP Server**: JSON-RPC 2.0 compliant server with tool and resource management
+- **Multiple Transport Layers**: stdio and HTTP transport support
+- **Comprehensive Tool Ecosystem**: Tools from all GNN modules (gnn, type_checker, export, visualization, etc.)
+- **Meta-Tools**: Server introspection and diagnostic capabilities
+- **CLI Interface**: Command-line access to all MCP functionality
+- **Extensible Architecture**: Easy addition of new tools and resources
+
+
+
+```mermaid
+
+## Agent Identity & Capabilities
+
+# MCP Module - Agent Scaffolding
+
+## Module Overview
+
+**Purpose**: Model Context Protocol implementation for standardized tool discovery, registration, and execution across all GNN modules
+
+**Pipeline Step**: Step 21: Model Context Protocol processing (21_mcp.py)
+
+**Category**: Protocol Integration / Tool Management
+
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2026-01-21
+
+---
+
+## Core Functionality
+
+### Primary Responsibilities
+1. Implement Model Context Protocol (MCP) for tool registration and discovery
+2. Provide standardized interface for tool execution across modules
+3. Enable inter-module communication and resource sharing
+4. Manage MCP server lifecycle and client connections
+5. Support multiple MCP transport protocols (stdio, HTTP, WebSocket)
+
+### Key Capabilities
+- Tool registration and discovery system
+- Resource access and management
+- JSON-RPC protocol implementation
+- Server and client implementations
+- Enhanced error handling and validation
+- Performance monitoring and caching
+- Concurrent execution control
+
+---
+
+## API Reference
+
+### Public Functions
+
+#### `process_mcp(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main MCP processing function called by orchestrator (21_mcp.py). Discovers and registers MCP tools from all modules.
+
+**Parameters**:
+- `target_dir` (Path): Directory containing GNN files
+- `output_dir` (Path): Output directory for MCP results
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `mcp_mode` (str, optional): MCP mode ("tool_discovery", "server", "client") (default: "tool_discovery")
+- `enable_tools` (bool, optional): Enable MCP tools functionality (default: True)
+- `transport` (str, optional): Transport protocol ("stdio", "http") (default: "stdio")
+- `**kwargs`: Additional MCP options
+
+**Returns**: `bool` - True if MCP processing succeeded, False otherwise
+
+**Example**:
+```python
+from mcp import process_mcp
+from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
+success = process_mcp(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/21_mcp_output"),
+    logger=logger,
+    verbose=True,
+    mcp_mode="tool_discovery",
+    enable_tools=True,
+    transport="stdio"
+)
 ```
 
-## Architecture
+#### `register_module_tools(module_name: str, tools: List[Dict[str, Any]]) -> bool`
+**Description**: Register tools from a specific module in the MCP system.
 
-| Component | Path |
-|-----------|------|
-| Orchestrator | `src/21_mcp.py` (53 lines) |
-| Core MCP engine | `src/mcp/` |
-| Module function | `process_mcp()` |
-| Server | `src/mcp/server.py` |
-| Audit script | `src/mcp/validate_tools.py` |
+**Parameters**:
+- `module_name` (str): Name of the module registering tools
+- `tools` (List[Dict[str, Any]]): List of tool definitions with:
+  - `name` (str): Tool name
+  - `func` (Callable): Tool function
+  - `schema` (Dict): JSON schema for parameters
+  - `description` (str): Tool description
 
-## MCP Tool Registry (131 real tools)
+**Returns**: `bool` - True if registration succeeded, False otherwise
 
-All tools are real named callable functions — no placeholders, no lambdas, no generic wrappers. Each tool has a non-empty description and its `register_tools()` calls `logger.info`.
+#### `get_available_tools() -> List[Dict[str, Any]]`
+**Description**: Get list of all available MCP tools across all modules.
 
-### GNN Core (gnn module)
+**Returns**: `List[Dict[str, Any]]` - List of tool information dictionaries with:
+- `name` (str): Tool name
+- `module` (str): Source module
+- `description` (str): Tool description
+- `schema` (Dict): Parameter schema
+- `category` (str): Tool category
 
-| Tool | Description |
-|------|-------------|
-| `parse_gnn_content` | Parse a GNN specification string |
-| `validate_gnn_content` | Validate a GNN specification string |
-| `get_gnn_module_info` | Return GNN module version and capabilities |
+---
 
-### Analysis (analysis module)
+## MCP Protocol Implementation
 
-| Tool | Description |
-|------|-------------|
-| `process_analysis` | Run statistical analysis on GNN files |
-| `get_analysis_results` | Retrieve cached analysis results |
-| `compute_complexity_metrics` | Compute complexity scores for a GNN model |
-| `list_analysis_tools` | List available analysis capabilities |
+### Core Classes
 
-### Audio (audio module)
+#### `MCP` - Main Protocol Class
+**Description**: Core Model Context Protocol implementation
 
-| Tool | Description |
-|------|-------------|
-| `process_audio` | Run GNN audio processing pipeline |
-| `check_audio_backends` | Check which audio backends are available |
-| `get_audio_generation_options` | List configurable audio generation options |
-| `analyze_audio_characteristics` | Analyse characteristics of a GNN model for sonification |
-| `validate_audio_content` | Validate audio content from GNN specs |
-| `get_audio_module_info` | Return audio module version and capabilities |
+**Key Methods**:
+- `initialize()` - Initialize MCP server
+- `register_tools()` - Register available tools
+- `handle_request()` - Process incoming requests
+- `list_tools()` - List available tools
 
-### Advanced Visualization (advanced_visualization module)
+#### `MCPTool` - Tool Definition Class
+**Description**: Represents a registered MCP tool
 
-| Tool | Description |
-|------|-------------|
-| `process_advanced_visualization` | Process advanced visualization for GNN files (D2 diagrams, dashboards) |
-| `check_visualization_capabilities` | Check which advanced visualization libraries are available |
-| `list_d2_visualization_types` | List supported D2 diagram types |
-| `get_advanced_visualization_module_info` | Return module info and capabilities |
+**Attributes**:
+- `name` - Tool name
+- `description` - Tool description
+- `input_schema` - JSON schema for inputs
+- `handler` - Function to execute tool
 
-### Execute (execute module)
+#### `MCPResource` - Resource Definition Class
+**Description**: Represents accessible MCP resources
 
-| Tool | Description |
-|------|-------------|
-| `process_execute` | Run GNN execution pipeline across frameworks |
-| `execute_gnn_model` | Execute a single GNN model file |
-| `execute_pymdp_simulation` | Run a PyMDP simulation from rendered code |
-| `check_execute_dependencies` | Check execution framework dependencies |
-| `get_execute_module_info` | Return execute module version and capabilities |
+**Attributes**:
+- `uri` - Resource URI
+- `name` - Resource name
+- `description` - Resource description
+- `mime_type` - Resource MIME type
 
-### Export (export module)
+### Transport Protocols
 
-| Tool | Description |
-|------|-------------|
-| `process_export` | Run multi-format export pipeline |
-| `list_export_formats` | List all supported export formats |
-| `validate_export_format` | Validate an export format specifier |
+#### STDIO Transport
+- **Purpose**: Standard input/output communication
+- **Use Case**: Local tool execution and testing
+- **Implementation**: `mcp.server_stdio`
 
-### GUI (gui module)
+#### HTTP Transport
+- **Purpose**: Web-based MCP server
+- **Use Case**: Remote tool access and web integration
+- **Implementation**: `mcp.server_http`
 
-| Tool | Description |
-|------|-------------|
-| `process_gui` | Process GNN files for GUI generation |
-| `list_available_guis` | List available GUI types |
-| `get_gui_module_info` | Return GUI module version and feature flags |
+#### WebSocket Transport
+- **Purpose**: Real-time bidirectional communication
+- **Use Case**: Live tool execution and streaming results
+- **Implementation**: `mcp.server_websocket`
 
-### Integration (integration module)
+---
 
-| Tool | Description |
-|------|-------------|
-| `process_integration` | Run system integration pipeline |
-| `list_supported_integrations` | List all supported integration targets |
-| `check_integration_dependencies` | Check integration dependency availability |
+## Dependencies
 
-### Intelligent Analysis (intelligent_analysis module)
+### Required Dependencies
+- `json` - JSON-RPC protocol implementation
+- `pathlib` - Path and URI handling
+- `typing` - Type annotations and validation
+- `logging` - Request/response logging
 
-| Tool | Description |
-|------|-------------|
-| `process_intelligent_analysis` | Run intelligent analysis on pipeline results |
-| `get_analysis_capabilities` | List intelligent analysis capabilities |
-| `get_intelligent_analysis_module_info` | Return module version and capabilities |
+### Optional Dependencies
+- `aiohttp` - HTTP server implementation (recovery: basic HTTP)
+- `websockets` - WebSocket server (recovery: polling-based)
+- `fastapi` - REST API framework (recovery: basic HTTP)
 
-### LLM (llm module)
+### Internal Dependencies
+- `utils.pipeline_template` - Standardized pipeline processing
+- `pipeline.config` - Configuration management
 
-| Tool | Description |
-|------|-------------|
-| `process_llm` | Run LLM analysis pipeline for all GNN files |
-| `analyze_gnn_with_llm` | Analyse a single GNN file with the configured LLM |
-| `generate_llm_documentation` | Generate LLM-powered documentation for a GNN model |
-| `get_llm_providers` | List available LLM providers and their status |
-| `get_llm_module_info` | Return LLM module version and capabilities |
+---
 
-### ML Integration (ml_integration module)
+## Configuration
 
-| Tool | Description |
-|------|-------------|
-| `process_ml_integration` | Process ML integration for GNN files |
-| `check_ml_frameworks` | Check which ML frameworks are available |
-| `list_ml_integration_targets` | List ML integration targets |
-| `get_ml_module_info` | Return ML integration module version and capabilities |
+### Environment Variables
+- `MCP_SERVER_PORT` - MCP server port (default: 8080)
+- `MCP_TRANSPORT` - Transport protocol ("stdio", "http", "websocket")
+- `MCP_LOG_LEVEL` - MCP logging level ("DEBUG", "INFO", "WARNING", "ERROR")
+- `MCP_TIMEOUT` - MCP request timeout (default: 30 seconds)
 
-### Ontology (ontology module)
+### Configuration Files
+- `mcp_config.yaml` - MCP server and tool configuration
 
-| Tool | Description |
-|------|-------------|
-| `process_ontology` | Run Active Inference ontology processing |
-| `validate_ontology_terms` | Validate ontology annotation terms |
-| `extract_ontology_annotations` | Extract ontology annotations from a GNN file |
-| `list_standard_ontology_terms` | List all standard Active Inference ontology terms |
-
-### Pipeline (pipeline module)
-
-| Tool | Description |
-|------|-------------|
-| `get_pipeline_steps` | List all 25 pipeline steps (0-24) with metadata |
-| `get_pipeline_status` | Get current pipeline execution status |
-
-### Render (render module)
-
-| Tool | Description |
-|------|-------------|
-| `process_render` | Run code generation for all GNN files |
-| `render_gnn_to_format` | Render a GNN file to a specific framework format |
-| `list_render_frameworks` | List supported rendering frameworks |
-| `get_render_module_info` | Return render module version and capabilities |
-
-### Report (report module)
-
-| Tool | Description |
-|------|-------------|
-| `generate_report` | Generate a comprehensive pipeline report |
-| `list_report_formats` | List available report formats |
-| `read_report` | Read a previously generated report |
-| `get_report_module_info` | Return report module version and capabilities |
-
-### Research (research module)
-
-| Tool | Description |
-|------|-------------|
-| `process_research` | Run research tools pipeline |
-| `list_research_topics` | List active research topics and experimental features |
-
-### SAPF (sapf module)
-
-| Tool | Description |
-|------|-------------|
-| `process_sapf` | Run SAPF audio pipeline |
-| `list_audio_artifacts` | List generated audio artifacts |
-| `get_sapf_module_info` | Return SAPF module version and capabilities |
-
-### Security (security module)
-
-| Tool | Description |
-|------|-------------|
-| `process_security` | Run security validation pipeline |
-| `scan_gnn_file` | Scan a GNN file for security issues |
-| `list_security_checks` | List all security checks performed |
-
-### Utils (utils module)
-
-| Tool | Description |
-|------|-------------|
-| `get_utils_info` | Return utils module version and available utilities |
-
-### Validation (validation module)
-
-| Tool | Description |
-|------|-------------|
-| `process_validation` | Run GNN validation pipeline |
-| `validate_gnn_file` | Validate a single GNN file |
-| `get_validation_report` | Get the latest validation report |
-| `check_schema_compliance` | Check schema compliance for a GNN file |
-
-### Visualization (visualization module)
-
-| Tool | Description |
-|------|-------------|
-| `process_visualization` | Run graph and matrix visualization pipeline |
-| `get_visualization_options` | List configurable visualization options |
-| `list_visualization_artifacts` | List generated visualization artifacts |
-
-### Website (website module)
-
-| Tool | Description |
-|------|-------------|
-| `process_website` | Generate static HTML website from pipeline output |
-| `build_website_from_pipeline_output` | Build website from pipeline artifacts |
-| `get_website_status` | Get current website generation status |
-| `list_generated_website_pages` | List all generated website pages |
-| `get_website_module_info` | Return website module version and capabilities |
-
-## Tool Quality Audit
-
-All tools verified by `src/tests/test_mcp_audit.py` (run as part of `src/tests/`; see [README.md](../../../README.md) for suite totals):
-
-- ✅ Every tool has a callable named function (no lambdas, no `None`)
-- ✅ Every tool has a non-empty description
-- ✅ Every `register_tools()` calls `logger.info` with tool count
-- ✅ Zero generic placeholders (`list_functions` / `call_function` removed)
-- ✅ Zero async polling timing issues (fixture polls for stabilisation)
-
-Run the audit:
-
-```bash
-uv run pytest src/tests/test_mcp_audit.py -v
+### Default Settings
+```python
+DEFAULT_MCP_SETTINGS = {
+    'server': {
+        'port': 8080,
+        'host': 'localhost',
+        'transport': 'stdio',
+        'timeout': 30,
+        'max_concurrent_requests': 10
+    },
+    'tools': {
+        'auto_register': True,
+        'validate_schemas': True,
+        'cache_results': True,
+        'rate_limiting': True
+    },
+    'logging': {
+        'level': 'INFO',
+        'format': 'json',
+        'include_request_id': True
+    }
+}
 ```
 
-## Output
+---
 
-- **Directory**: `output/21_mcp_output/`
-- MCP server configuration, audit report (`mcp_audit_report.json`), tool registrations
+## Usage Examples
 
-## Source
+### Basic MCP Processing
+```python
+from mcp.processor import process_mcp
 
-- **Script**: [src/21_mcp.py](../../../src/21_mcp.py)
-- **Audit Tests**: [src/tests/test_mcp_audit.py](../../../src/tests/test_mcp_audit.py)
+success = process_mcp(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/21_mcp_output"),
+    logger=logger,
+    mcp_mode="tool_discovery"
+)
+```
+
+### Tool Registration
+```python
+from mcp import register_module_tools
+
+tools = [
+    {
+        'name': 'gnn_parse',
+        'description': 'Parse GNN model files',
+        'handler': parse_gnn_file,
+        'input_schema': {...}
+    }
+]
+
+success = register_module_tools('gnn', tools)
+```
+
+### Tool Discovery
+```python
+from mcp import get_available_tools
+
+tools = get_available_tools()
+for tool in tools:
+    print(f"Tool: {tool['name']} - {tool['description']}")
+```
+
+---
+
+## Output Specification
+
+### Output Products
+- `mcp_processing_summary.json` - MCP processing summary
+- `registered_tools.json` - All registered tools information
+- `mcp_server_status.json` - Server status and configuration
+- `tool_execution_log.json` - Tool execution history
+
+### Output Directory Structure
+```
+output/21_mcp_output/
+├── mcp_processing_summary.json
+├── registered_tools.json
+├── mcp_server_status.json
+└── tool_execution_log.json
+```
+
+---
+
+## Performance Characteristics
+
+### Latest Execution
+- **Duration**: ~1-3 seconds (tool registration)
+- **Memory**: ~10-20MB for tool registry
+- **Status**: ✅ Production Ready
+
+### Expected Performance
+- **Fast Path**: <1s for tool discovery
+- **Slow Path**: ~5s for comprehensive tool validation
+- **Memory**: ~5-15MB for typical tool sets
+
+---
+
+## Error Handling
+
+### Graceful Degradation
+- **No transport libraries**: Recovery to stdio-only mode
+- **Tool registration failures**: Continue with available tools
+- **Server startup failures**: Recovery to client-only mode
+
+### Error Categories
+1. **Protocol Errors**: Invalid JSON-RPC requests/responses
+2. **Tool Errors**: Tool execution failures or timeouts
+3. **Transport Errors**: Network or I/O communication failures
+4. **Validation Errors**: Invalid tool schemas or parameters
+
+---
+
+## Integration Points
+
+### Orchestrated By
+- **Script**: `21_mcp.py` (Step 21)
+- **Function**: `process_mcp()`
+
+### Imports From
+- `utils.pipeline_template` - Standardized processing patterns
+- `pipeline.config` - Configuration management
+
+### Imported By
+- `src/tests/test_mcp_overall.py` - MCP module tests
+- `main.py` - Pipeline orchestration
+
+### Data Flow
+```
+Module Tools → MCP Registration → Tool Discovery → Execution Requests → Response Handling
+```
+
+---
+
+## Testing
+
+### Test Files
+- `src/tests/test_mcp_tools.py` - Tool registration tests
+- `src/tests/test_mcp_functional.py` - Functional tests
+- `src/tests/test_mcp_audit.py` - Audit tests
+- `src/tests/test_mcp_tools.py` - Tool registration tests
+
+### Test Coverage
+- **Current**: 82%
+- **Target**: 90%+
+
+### Key Test Scenarios
+1. Tool registration and discovery across modules
+2. JSON-RPC protocol compliance
+3. Multiple transport protocol operation
+4. Error handling with malformed requests
+5. Performance under concurrent tool execution
+
+---
+
+## MCP Integration
+
+### Tools Registered (Across All Modules)
+- `gnn_*` - GNN file processing tools
+- `analysis_*` - Statistical analysis tools
+- `visualization_*` - Visualization generation tools
+- `render_*` - Code generation tools
+- `gui_*` - GUI interaction tools
+
+### Tool Categories
+- **File Processing**: GNN parsing, validation, transformation
+- **Analysis**: Statistical analysis, complexity metrics
+- **Visualization**: Chart generation, interactive displays
+- **Code Generation**: Multi-framework code rendering
+- **Model Management**: Registry operations, version control
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Tool registration fails
+**Symptom**: Tools not discovered or registered  
+**Cause**: Module discovery issues or tool definition errors  
+**Solution**: 
+- Verify all modules have `mcp.py` files with tool definitions
+- Check tool function signatures match expected format
+- Use `--verbose` flag for detailed discovery logs
+- Review MCP tool registration patterns
+
+#### Issue 2: Tool execution errors
+**Symptom**: Tools registered but execution fails  
+**Cause**: Parameter validation errors or function implementation issues  
+**Solution**:
+- Verify tool parameter schemas are correct
+- Check tool function implementations handle errors
+- Review tool execution logs for specific errors
+- Validate tool inputs match schema
+
+---
+
+## Version History
+
+### Current Version: 2.0.0
+
+**Features**:
+- Tool registration and discovery
+- Resource access and management
+- JSON-RPC protocol implementation
+- Server and client implementations
+- Enhanced error handling
+- Performance monitoring
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced transport protocols
+- **Future**: Real-time tool monitoring
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../../src/mcp/../../README.md)
+- [Architecture Guide](../../../src/mcp/../../ARCHITECTURE.md)
+- [MCP Implementation Spec](../../../src/mcp/mcp_implementation_spec.md)
+- [MCP Integration Guide](../../../src/mcp/../../doc/mcp/)
+
+### External Resources
+- [Model Context Protocol Specification](https://modelcontextprotocol.io)
+
+---
+
+**Last Updated**: 2026-01-21
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 2.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+
+
+---
+## Documentation
+- **[README](../../../src/mcp/README.md)**: Module Overview
+- **[AGENTS](../../../src/mcp/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/mcp/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/mcp/SKILL.md)**: Capability API
+
+
+---
+
+**Source Reference**: [src/mcp](../../../src/mcp)

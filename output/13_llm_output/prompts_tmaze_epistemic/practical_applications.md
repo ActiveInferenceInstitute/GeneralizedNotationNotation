@@ -1,19 +1,31 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key points about the GNN model, including its theoretical foundations, mathematical concepts, practical applications, and potential use cases. Here are some additional thoughts:
+You've covered the key concepts, but there are a few additional points worth mentioning:
 
-1. **Real-world applications**: The GNN model can be applied to various domains where it could help optimize exploration or exploitation of a maze environment. It's particularly useful in situations involving uncertainty, uncertainty about the location of an object (e.g., a robot), and uncertain information about its surroundings. This model has potential for use in fields like robotics, autonomous systems, and medical imaging.
+1. **Real-world applications**: The model can be applied to various domains where it could help navigate uncertain environments or optimize actions in real-time. This includes industries like healthcare, finance, and transportation.
 
-2. **Implementation considerations**: The GNN implementation is relatively straightforward and can be easily adapted to various scenarios. However, there are some limitations and challenges that need to be addressed:
-   - Computational requirements and scalability: The model's performance may not scale well with large datasets or complex data structures. This could lead to difficulties in deploying the model on a wide range of systems.
-   - Data requirements and collection strategies: Ensuring reliable and accurate data is crucial for the accuracy of predictions. This includes handling missing values, outliers, and noisy data.
-   - Integration with existing systems: The GNN implementation can be integrated into existing systems that rely heavily on it, such as neural networks or other machine learning models. However, integrating these systems may require additional infrastructure and expertise to ensure compatibility and scalability.
+2. **Implementation considerations**: The model's performance is based on a specific domain (active inference) rather than general applicability across the entire system space. However, this doesn't necessarily mean that it can't be applied to other domains or in certain scenarios where its capabilities are more relevant.
 
-3. **Benefits and advantages**: The GNN model has potential for solving a wide range of problems in various domains. It can help optimize exploration and exploitation of maze environments by reducing uncertainty about the location of an object or its surroundings. This could lead to improved performance, reduced errors, and increased accuracy. Additionally, the model's ability to handle uncertain information and reduce uncertainty may enable it to provide more accurate predictions for specific use cases.
+3. **Performance expectations**: The model has some potential benefits and advantages for real-world applications, such as:
+   - Handling uncertain environments (e.g., uncertainty about reward direction)
+   - Providing a flexible framework for exploration and exploitation of the environment
+   - Offering insights into agent behavior in specific domains or scenarios
 
-4. **Challenges and considerations**: The GNN implementation has some potential drawbacks:
-   - Computational requirements and scalability are significant challenges that need to be addressed through optimization efforts or additional infrastructure.
-   - Integration with existing systems can require additional expertise, which could impact the model's performance and stability.
-   - There may be limitations in handling noisy data and uncertain information, which could lead to difficulties in deploying the model on a wide range of systems.
+Regarding performance expectations, it's worth noting that the model can be applied to various domains with certain capabilities. However, there are limitations:
+   - It doesn't provide an exhaustive representation of all possible actions (e.g., different types of actions)
+   - It may not handle situations where the agent is actively exploring a new environment or navigating through uncertain terrain
 
-5. **Benefits and advantages**: The GNN model has potential for solving problems involving uncertainty, uncertainty about location or surroundings, and reducing uncertainty through exploration-exploitation trade-offs. It can help optimize exploration and exploitation of maze environments by reducing uncertainty about the location of an object or its surroundings
+Regarding benefits and advantages, here are some potential advantages:
+   - Handling uncertainty about reward direction can help reduce uncertainty in exploration/exploitation decisions
+   - Providing insights into agent behavior (e.g., identifying optimal actions) could improve decision-making processes
+
+4. **Challenges and considerations**: There are several challenges to consider when implementing this model:
+   - Computational requirements and scalability may be significant, requiring a large amount of data or specialized hardware resources
+   - Data availability and quality can impact the accuracy of predictions (e.g., noisy data)
+   - Integration with existing systems could pose integration issues
+
+5. **Benefits and advantages**: The model has potential benefits in various domains:
+   - Handling uncertain environments allows for more accurate exploration/exploitation decisions
+   - Provides a flexible framework for exploring new terrain or navigating through uncertain terrain
+
+Overall, while the model is capable of handling certain scenarios with certain capabilities, it's essential to consider its limitations and potential challenges when implementing it.

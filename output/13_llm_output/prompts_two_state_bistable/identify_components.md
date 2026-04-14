@@ -1,12 +1,13 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts in the GNN specification:
+Here is a systematic breakdown of the key components in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
    - What each state represents conceptually
    - State space structure (discrete/continuous, finite/infinite)
-
+   - Action/control variables
+   - Action space properties
 2. **Observation Variables**:
    - Observation modalities and their meanings
    - Sensor/measurement interpretations
@@ -27,42 +28,6 @@ You've already covered the key concepts in the GNN specification:
    - Precision parameters (γ, α, etc.)
    - Learning rates and adaptation parameters
    - Fixed vs. learnable parameters
-
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
-
-Your comprehensive breakdown includes key concepts like:
-- **State Variables (Hidden States)**:
-  - Variable names and dimensions
-  - What each state represents conceptually
-  - State space structure (discrete/continuous, finite/infinite)
-
-4. **Observation Variables**:
-  - Observation modalities and their meanings
-  - Sensor/measurement interpretations
-  - Noise models or uncertainty characterization
-5. **Action/Control Variables**:
-  - Available actions and their effects
-  - Control policies and decision variables
-  - Action space properties (e.g., transition dynamics, prior beliefs)
-
-6. **Model Matrices**:
-  - A matrices: Observation models P(o|s)
-  - B matrices: Transition dynamics P(s'|s,u)
-  - C matrices: Preferences/goals
-  - D matrices: Prior beliefs over initial states
-
-Your comprehensive breakdown includes key concepts like:
-- **State Variables (Hidden States)**:
-  - Variable names and dimensions
-  - What each state represents conceptually
-  - State space structure (discrete/continuous, finite/infinite)
-
-4. **Observation Variables**:
-  - Observation modalities and their meanings
-  - Sensor/measurement interpretations
-  - Noise models or uncertainty characterization
-5. **Action/Control Variables**:
-  - Available actions and their effects
-  - Control policies and decision variables
-  - Action space properties (e.g., transition dynamics, prior beliefs)
+   - Dynamic vs. static components

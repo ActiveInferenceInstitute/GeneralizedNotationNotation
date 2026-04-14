@@ -21,7 +21,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Quick Navigation
 
-- **Docs audit**: `uv run python doc/development/docs_audit.py` from repo root (`--strict` for CI); report includes `doc/**/AGENTS.md` orientation checks. See [README.md](README.md#documentation-audit-tooling), [agents_readme_review.md](agents_readme_review.md), [agents_readme_triple_review.md](agents_readme_triple_review.md)
+- **Docs audit**: `uv run python doc/development/docs_audit.py` from repo root (`--strict` for CI; failures print per-issue lines on stderr by default, `-q` for summary only); report includes `doc/**/AGENTS.md` orientation checks. See [README.md](README.md#documentation-audit-tooling), [agents_readme_review.md](agents_readme_review.md), [agents_readme_triple_review.md](agents_readme_triple_review.md)
 - **README.md**: [Directory overview](README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Main Documentation**: [doc/README.md](../README.md)

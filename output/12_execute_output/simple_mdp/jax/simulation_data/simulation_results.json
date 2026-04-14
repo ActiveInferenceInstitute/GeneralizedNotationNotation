@@ -3,7 +3,7 @@
   "framework": "jax",
   "model_name": "GNNModel",
   "num_timesteps": 15,
-  "timestamp": "2026-04-12T17:25:00.796031",
+  "timestamp": "2026-04-14T11:00:32.183865",
   "simulation_trace": {
     "observations": [
       1,

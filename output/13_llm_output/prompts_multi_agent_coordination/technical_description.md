@@ -6,58 +6,66 @@ Prompt:
 
 Response:
 
-Here's a summary of the GNN model:
-
 ```python
 import numpy as np
 from typing import List, Tuple
 
-class MultiAgentCooperativeActiveInference(object):
+def multiagent_cooperative(
+    agent1: List[List[Tuple[int, int]]],
+    agent2: List[List[Tuple[int, int]]],
+    shared_environment=None,
+    num_agents=30,
+    num_hidden_states=4,
+    num_actions=6
+) -> Tuple[bool, List[float]]:
     """
-    A multi-agent cooperative active inference.
+    Multi-agent cooperative active inference.
 
-    This class represents a single agent and its cooperation with another agent.
-    It has two main components:
-    1) The agent's belief distribution is represented by the belief matrix B (represented as Lambda).
-    2) The agent's action distributions are represented by the transition matrices T (representing the actions of the other agent).
+    Args:
+        agent1 (List[List[Tuple[int, int]]]): A list of 2x2 lists representing the actions and beliefs of two agents.
+        agent2 (List[List[Tuple[int, int]]]): A list of 3x3 lists representing the actions and beliefs of two agents.
+        shared_environment (None): If provided, a dictionary containing the environment state for each pair of agents.
+        num_agents: Number of agents to cooperate with.
+        num_hidden_states: Number of hidden states per agent.
+        num_actions: Number of actions per agent.
 
-    The GNN representation can be summarized in the following table.
+    Returns:
+        bool: True if all agents cooperated successfully; False otherwise
     """
-    
-    def __init__(self,
-                 num_agents: int = 10,
-                 num_hidden_states_per_agent=4,
-                 num_actions_per_agent=3,
-                 num_timesteps=20):
-        """
+    # Initialize the state space for each pair of agents
+    state1 = np.zeros((num_agents, 4))
+    state2 = np.zeros((num_agents, 3))
 
-        Args:
-            num_agents (int): Number of agents.
-            num_hidden_states_per_agent (int): Number of hidden states per agent.
-            num_actions_per_agent (int): Number of actions per agent.
-            num_timesteps (int): Number of timesteps for the simulation.
+    # Perform cooperative inference on the two actions and beliefs
+    for i in range(num_actions):
+        action1 = agent1[i]
+        action2 = agent2[i]
 
-        """
-        self._agents = {}
-        
-        if num_agents == 1:
-            self._num_states = num_hidden_states_per_agent + num_actions_per_agent - 2
-            
-            # Initialize the belief distribution with a random value from 0 to 1,
-            # and then apply it to each state.
-            for i in range(self._agents[0]):
-                self._belief_distribution = np.random.normal([0], size=num_states)
-                
-        elif num_agents == 2:
-            self._num_states = num_hidden_states_per_agent + num_actions_per_agent - 1
-            
-            # Initialize the action distributions with a random value from 0 to 1,
-            # and then apply them to each state.
-            for i in range(self._agents[0]):
-                self._action_distribution = np.random.normal([0], size=num_states)
-                
-        elif num_agents == 3:
-            self._num_states = num_hidden_states_per_agent + num_actions_per_agent - 1
-            
-            # Initialize the belief distribution with a random value from 0 to 1,
-            # and then apply
+        # Check if there are shared states
+        if (
+            isinstance(state1[action1], np.ndarray) or
+                isinstance(state2[action2], np.ndarray),
+            True,
+        ):
+
+            # Perform cooperative inference on the two actions and beliefs
+            for i in range(num_actions):
+                action = state1[i]
+
+                # Check if there are shared states
+                if (
+                    isinstance(state2[action], np.ndarray) or
+                        isinstance(state2[action], np.ndarray),
+                ):
+
+                    # Perform cooperative inference on the two actions and beliefs
+                    for i in range(num_actions):
+                        action = state1[i]
+
+                        # Check if there are shared states
+                        if (
+                            isinstance(state2[action], np.ndarray) or
+                                isinstance(state2[action], np.ndarray),
+                        ):
+
+                            # Perform cooperative inference

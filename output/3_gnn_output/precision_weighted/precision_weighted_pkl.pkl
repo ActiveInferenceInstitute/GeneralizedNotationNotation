@@ -6,7 +6,7 @@
 - β (beta): inverse temperature for policy selection (softmax)
 - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)
 - Precision parameters enable modeling of attention and confidence
-/// Generated: 2026-04-12T17:23:02.248753
+/// Generated: 2026-04-14T10:58:13.839931
 /// Enhanced by GNN PKL Serializer
 ///
 

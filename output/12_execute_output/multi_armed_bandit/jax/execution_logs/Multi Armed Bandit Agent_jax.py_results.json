@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/jax/Multi Armed Bandit Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.683445,
-  "timestamp": "2026-04-12T17:24:21.496195",
+  "execution_time": 0.686507,
+  "timestamp": "2026-04-14T10:59:47.278528",
   "simulation_data": {
     "traces": [],
     "free_energy": [

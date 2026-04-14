@@ -11,8 +11,8 @@ Orientation for this subtree: scripts, data, and docs co-located for the cogniti
 **Pipeline Step**: Documentation Agent
 **Category**: Documentation / Deployment
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
-**Last Updated**: 2026-03-24
+**Version**: 1.3.0
+**Last Updated**: 2026-04-14
 
 ---
 

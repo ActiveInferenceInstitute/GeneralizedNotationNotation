@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/bnlearn_causal_model/rxinfer/Bnlearn Causal Model_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 13.919696,
-  "timestamp": "2026-04-12T17:27:51.659219",
+  "execution_time": 13.543188,
+  "timestamp": "2026-04-14T11:03:45.336455",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

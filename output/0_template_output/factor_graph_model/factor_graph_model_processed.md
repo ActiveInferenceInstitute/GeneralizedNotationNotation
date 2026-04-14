@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/structured/factor_graph_model.md
-# Processed on: 2026-04-12T17:21:40.226024
+# Processed on: 2026-04-14T10:56:40.579010
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Factor Graph Active Inference Model

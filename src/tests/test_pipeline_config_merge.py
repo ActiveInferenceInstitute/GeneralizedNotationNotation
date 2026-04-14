@@ -105,6 +105,6 @@ def test_install_uv_dependencies_sync_flags(kwargs, expect_all_extras, expect_ex
     monkeypatch.setattr(uv_management, "get_installed_package_versions", lambda verbose=False: {})
 
     uv_management.install_uv_dependencies(verbose=False, **kwargs)
-    sync_cmd = next(c for c in captured if len(c) >= 2 and c[0] == "uv" and c[1] == "sync")
+    sync_cmd = next(c for c in captured if len(c) >= 2 and c[0].endswith("uv") and c[1] == "sync")
     assert ("--all-extras" in sync_cmd) is expect_all_extras
     assert ("--extra" in sync_cmd and "dev" in sync_cmd) is expect_extra_dev

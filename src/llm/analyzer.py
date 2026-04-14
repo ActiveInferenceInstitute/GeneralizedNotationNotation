@@ -8,7 +8,7 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Coroutine, Dict, List, Optional
+from typing import Any, Coroutine, Dict, List, Optional, Union
 
 from analysis.analyzer import extract_sections
 
@@ -108,7 +108,7 @@ def analyze_gnn_file_with_llm(
     file_path: Path,
     verbose: bool = False,
     ollama_model: Optional[str] = None,
-) -> Dict[str, Any] | Coroutine[Any, Any, Dict[str, Any]]:
+) -> Union[Dict[str, Any], Coroutine[Any, Any, Dict[str, Any]]]:
     """
     Compatibility wrapper for the async analyzer.
 

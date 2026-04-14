@@ -145,12 +145,15 @@ def _extract_variables_lightweight(content: str) -> List[str]:
 
 def discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> List[Path]:
     """
-    Discover GNN files in a directory.
-    
+    Discover GNN files in a directory (narrow globs: *.md, *.gnn, *.txt).
+
+    Pipeline Step 3 uses ``multi_format_processor.process_gnn_multi_format`` with a
+    broader extension list for full multi-format discovery; see ``src/gnn/SPEC.md``.
+
     Args:
         directory: Directory to search
         recursive: Whether to search subdirectories
-        
+
     Returns:
         List of discovered GNN file paths
     """

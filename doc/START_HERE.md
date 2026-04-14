@@ -1,25 +1,27 @@
 # GNN Generalized Notation Notation — START HERE
 
-Welcome to the Generalized Notation Notation (GNN) documentation hub!
+> **Role**: Narrative map of `doc/` by theme. **Quick link list**: [INDEX.md](INDEX.md). **Onboarding hub**: [README.md](README.md). **Curricula**: [learning_paths.md](learning_paths.md).
 
-The `doc/` directory is vast, encompassing a 25-step script pipeline, theoretical foundations, deep-dive implementation guides, cognitive phenomena models, and integrations across 7 computational frameworks.
+Welcome to the Generalized Notation Notation (GNN) documentation hub.
 
-This document serves as your **Master Table of Contents**, helping you quickly locate exactly what you need.
+The `doc/` directory is vast, encompassing a 25-step script pipeline, theoretical foundations, deep-dive implementation guides, cognitive phenomena models, and integrations across multiple execution frameworks.
+
+This document is a **master table of contents** by domain so you can jump to the area you need.
 
 ---
 
-## 🧭 Entry Points by Audience
+## Entry points by audience
 
 If you are a...
 
 - **Newcomer**: Start with the [GNN Overview](gnn/gnn_overview.md) and build your first model in 15 minutes with the [Quickstart Tutorial](gnn/tutorials/quickstart_tutorial.md).
 - **Researcher**: Read the core theories in [About GNN](gnn/about_gnn.md) and explore [Cognitive Phenomena](cognitive_phenomena/README.md).
 - **Developer/Architect**: Dive straight into the [Pipeline Architecture](../src/README.md) and learn about the "Thin Orchestrator" that governs the 25 processing steps.
-- **System Integrator**: See the [Framework Integration Guide](gnn/integration/framework_integration_guide.md) and explore the 131 available tools in the [MCP Hub](mcp/README.md).
+- **System Integrator**: See the [Framework Integration Guide](gnn/integration/framework_integration_guide.md) and the [MCP Hub](mcp/README.md) (Model Context Protocol tools registered across the **whole pipeline**, not Step 3 only).
 
 ---
 
-## 🗺️ Master Directory Map
+## Master directory map
 
 Here is how the `doc/` directory is organized at a high level. Use these links to jump directly to specific domain areas.
 
@@ -41,7 +43,7 @@ Documents explaining how to run, scale, and fix the processing pipeline.
 - **[Troubleshooting (`doc/troubleshooting/`)](troubleshooting/)**: Master FAQ, error taxonomy, and resolutions for specific script warnings.
 - **[Dependencies (`doc/dependencies/`)](dependencies/)**: Core vs. optional libraries, and Julia/Python interoperability.
 
-### 3. Computional Framework Integrations
+### 3. Computational framework integrations
 
 Deep-dive implementations for how GNN translates to executable code in specific libraries.
 
@@ -54,20 +56,20 @@ Deep-dive implementations for how GNN translates to executable code in specific 
 - **[NumPyro (`src/render/numpyro/`)](../src/render/numpyro/README.md)**: Probabilistic programming render templates.
 - **[CatColab (`doc/catcolab/`)](catcolab/)**: Categorical compositional intelligence.
 
-### 4. Advanced Tooling & UI
+### 4. Advanced tooling and UI
 
-- **[MCP Hub (`doc/mcp/`)](mcp/)**: 131 Model Context Protocol tools to interface with Claude/Cursor/LLMs.
+- **[MCP Hub (`doc/mcp/`)](mcp/)**: Model Context Protocol tooling (order-of-magnitude 130+ tools registered across the full pipeline MCP surface; see [mcp/README.md](mcp/README.md)).
 - **[GUI & Visualization (`doc/visualization/`)](visualization/)**: Advanced multi-layer 3D network graphing, matrix heatmaps, and frontend interfaces.
 - **[LLM Processing (`doc/llm/`)](llm/)**: Workflows detailing how GNN operates in a neurosymbolic pipeline.
 
-### 5. Research & Domain Applications
+### 5. Research and domain applications
 
 - **[Cognitive Phenomena (`doc/cognitive_phenomena/`)](cognitive_phenomena/)**: Theoretical maps to concepts like attention, emotion, learning, depression, and meta-cognition.
 - **[Templates (`doc/templates/`)](templates/)**: Quick-start boilerplate models for building your own GNN specifications.
 
 ---
 
-## 💡 Top Recommended Reads
+## Top recommended reads
 
 If you only read three documents in this entire repository, read these:
 

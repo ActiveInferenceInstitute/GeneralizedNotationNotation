@@ -106,7 +106,7 @@ Each `src/module/` directory contains its own `SKILL.md` with module-specific in
 ## Testing
 
 ```bash
-# Full test suite (1,522+ tests)
+# Full test suite (1,922+ tests)
 pytest src/tests/ -v
 
 # Test a specific module

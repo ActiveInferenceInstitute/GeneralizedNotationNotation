@@ -141,7 +141,7 @@ def process_analysis(
             execution_dir = output_dir.parent / "12_execute_output"
 
         # Find GNN files
-        gnn_files = list(target_dir.glob("*.md"))
+        gnn_files = list(target_dir.rglob("*.md"))
         if not gnn_files:
             logger.warning("No GNN files found for analysis")
             results["success"] = False

@@ -30,6 +30,10 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 
 ---
 
+## Time section
+
+The **`Time`** block and temporal indexing are documented under [### 8. Time](#8-time) and the [Time](#time) examples in this guide.
+
 ## Overview
 
 A GNN file is structured as a Markdown document with specific sections that describe different aspects of an Active Inference model. The file follows a standardized format that enables both human readability and machine processing.

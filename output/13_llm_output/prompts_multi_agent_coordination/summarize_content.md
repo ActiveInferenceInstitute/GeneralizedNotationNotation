@@ -1,19 +1,21 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise version:
+Here is a concise summary of the GNN specification:
 
-**Model Overview:**
-This is an active inference framework that models cooperative multi-agent systems where agents can cooperate or compete in various ways based on shared observation space. The model consists of two main components:
+**Overview**
+This model represents an action-based cooperative cooperation between two agents (A1 and A2) on a joint task space. The model consists of three main components:
 
-1. **GNN Representation**: A set of matrices representing the joint probability distributions for each agent's actions and their corresponding beliefs, with a hidden state matrix (H) that represents the collective belief of all agents.
-2. **Key Variables**: A list of matrices containing information about the actions/actions-belief pairs of two agents. These variables are used to compute expected free energy (EFE), which is a measure of cooperation between agents.
-3. **Critical Parameters**: Key parameters that determine how well the model performs in different scenarios, including:
-   - **Number of agents**: The number of agents acting independently or collectively.
-   - **Initialization**: Initial values for hidden states and actions/beliefs.
-   - **Model Accuracy**: A measure of how well the model predicts future outcomes based on its predictions.
-4. **Notable Features**:
-   - **Random Actions**: Random actions that are not shared among agents, which can help identify cooperation or competition between agents.
-   - **Random Actions**: Random actions that are shared among agents, which can help identify cooperation or competition between agents.
-   - **Random Actions**: Random actions that are correlated with each other and with the action of the previous agent (e.g., if two agents act together), which can help identify cooperation or competition between agents.
-5. **Use Cases**:
-   - **Multi-Agent Cooperative Active Inference**: A model designed to analyze cooperative multi-agent systems where agents cooperate in various ways based on shared observation space and aligned preferences.
+1. **GNN Representation**: A neural network representation that captures the shared observation space, aligned preferences, and actions/control for each agent. This allows for explicit communication between them.
+2. **Key Variables**: A list of matrices representing the hidden states (A) and actions/actions/controls (B), along with their roles in coordinating actions or achieving goals.
+3. **Critical Parameters**: The most important matrices, key hyperparameters that affect the model's performance, including:
+   - **Most Important Matrices** (A1, A2): Represented by the LikelihoodMatrix and TransitionMatrix matrices for each agent respectively. These represent their respective actions/actions/controls in coordination with each other.
+   - **Key Variables**: Represented by the LogPreferenceVector and PriorOverHiddenStates matrices for each agent separately. These represent their respective actions/actions/controls in coordination with each other.
+
+4. **Notable Features**
+- **Special Properties**: Key features that are unique to this model, such as:
+   - **Unique Constraints**: A set of constraints on the actions or actions/actions/control for each agent, ensuring they coordinate their actions and achieve goals together.
+   - **Constrained Actions**: A list of actions (A) from both agents in a specific order that ensures they coordinate with each other to achieve a goal.
+   - **Constraints**: A set of constraints on the actions or actions/actions/control for each agent, ensuring they do not interfere with each other's actions or goals.
+
+5. **Use Cases**
+- **Example Scenario**: A cooperative action between two agents (A1 and A2) to achieve a goal in joint task space. This allows for explicit communication between them while maintaining independence of their beliefs/prior distributions across actions/actions/controls.

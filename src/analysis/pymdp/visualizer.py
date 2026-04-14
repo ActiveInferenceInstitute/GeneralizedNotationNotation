@@ -16,8 +16,8 @@ Features:
 Author: GNN PyMDP Integration
 Date: 2024
 """
-
 import warnings
+from datetime import datetime
 
 warnings.filterwarnings('ignore')
 
@@ -316,12 +316,70 @@ class PyMDPVisualizer:
 
         return fig
 
-    def save_all_plots(self, output_dir: Optional[Path] = None) -> Dict[str, Path]:
+    def visualize_vfe_vs_efe(
+        self,
+        vfe: List[float],
+        efe: List[Any],
+        title: str = "Variational vs Expected Free Energy"
+    ) -> Optional[Any]:
+        """
+        Visualize Variational Free Energy against Expected Free Energy.
+        
+        Args:
+            vfe: List of variational free energy values (scalars)
+            efe: List of expected free energy values (lists of scalars, one per policy)
+            title: Plot title
+            
+        Returns:
+            matplotlib Figure object or None if matplotlib not available
+        """
+        if not MATPLOTLIB_AVAILABLE or plt is None:
+            return None
+
+        # Process EFE (take min across policies if it's a list)
+        efe_summary = []
+        for efe_t in efe:
+            if hasattr(efe_t, '__iter__') and not isinstance(efe_t, str):
+                efe_summary.append(min(efe_t) if len(efe_t) > 0 else 0)
+            else:
+                efe_summary.append(efe_t)
+
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+
+        color1 = 'tab:blue'
+        ax1.set_xlabel('Time Step')
+        ax1.set_ylabel('Variational Free Energy (VFE)', color=color1)
+        ax1.plot(vfe, 'o-', color=color1, linewidth=2, label='VFE (Belief Update Cost)')
+        ax1.tick_params(axis='y', labelcolor=color1)
+        ax1.grid(True, alpha=0.3)
+
+        ax2 = ax1.twinx()
+        color2 = 'tab:orange'
+        ax2.set_ylabel('Expected Free Energy (EFE)', color=color2)
+        ax2.plot(efe_summary, 's--', color=color2, linewidth=2, label='Min EFE (Policy Cost)')
+        ax2.tick_params(axis='y', labelcolor=color2)
+
+        fig.suptitle(title, fontsize=14)
+        fig.tight_layout()
+
+        # Combine legends from both axes
+        lines_1, labels_1 = ax1.get_legend_handles_labels()
+        lines_2, labels_2 = ax2.get_legend_handles_labels()
+        ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+        plt.subplots_adjust(bottom=0.2)
+
+        self.figures[f'energy_dynamics_{self.plot_count}'] = fig
+        self.plot_count += 1
+
+        return fig
+
+    def save_all_plots(self, output_dir: Optional[Path] = None, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Path]:
         """
         Save all generated plots to files.
         
         Args:
             output_dir: Directory to save plots (overrides default)
+            metadata: Optional dictionary with metadata (e.g. timestamp) to embed in images
             
         Returns:
             Dictionary mapping plot names to saved file paths
@@ -336,6 +394,10 @@ class PyMDPVisualizer:
         saved_files = {}
 
         for plot_name, fig in self.figures.items():
+            if metadata:
+                meta_text = " | ".join(f"{k}: {v}" for k, v in metadata.items())
+                fig.text(0.99, 0.01, meta_text, ha='right', va='bottom', fontsize=8, color='gray', alpha=0.7)
+                
             filepath = save_dir / f"{plot_name}.png"
             fig.savefig(filepath, dpi=300, bbox_inches='tight')
             saved_files[plot_name] = filepath
@@ -412,9 +474,24 @@ def save_all_visualizations(
                 simulation_results['metrics'],
                 "Simulation Performance"
             )
+            
+            # Surface dual-energy tracking inherently if both exist natively
+            metrics = simulation_results['metrics']
+            vfe = metrics.get('variational_free_energy') or metrics.get('vfe_history')
+            efe = metrics.get('expected_free_energy') or metrics.get('efe_history')
+            if vfe and efe:
+                visualizer.visualize_vfe_vs_efe(vfe, efe, "Active Inference Energy Dynamics")
 
+        # Build metadata for plots
+        metadata = {
+            "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "PyMDP Framework Mode": "Discrete"
+        }
+        if 'num_states' in simulation_results:
+            metadata["States"] = simulation_results['num_states']
+        
         # Save all plots
-        saved_files = visualizer.save_all_plots()
+        saved_files = visualizer.save_all_plots(metadata=metadata)
 
     finally:
         visualizer.close_all_plots()

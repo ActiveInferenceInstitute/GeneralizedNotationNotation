@@ -1,28 +1,58 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are a few key structural aspects of the GNN specification:
+Based on the information provided, here are a few key structural analyses:
 
-1. **Graph Structure**: The graph is composed of 3 variables (states) and 4 edges representing states directly observed by the system. Each state has an associated transition matrix with its own probability distribution over the next state. There are also connections between states, which can be thought of as "actions" or transitions from one state to another.
+1. **Graph Structure**:
+   - Number of variables and their types
+   - Connection patterns (directed/unidirectional)
+   - Graph topology (hierarchical, network, etc.)
 
-2. **Variable Analysis**: The variable structure is hierarchical and consists of 3 types:
-   - **Directed edges** (directed) represent actions that influence the system's behavior.
-   - **Indirected edges** (indirectly) represent states with their own probability distributions over transitions, which can be thought as "actions" or transitions from one state to another.
+2. **Variable Analysis**:
+   - State space dimensionality for each variable
+   - Dependencies and conditional relationships
+   - Temporal vs. static variables
 
-3. **Mathematical Structure**: The graph topology is hierarchical and consists of 4 types:
-   - **Directed edges** are directed edges representing actions that influence the system's behavior (e.g., states transitioning from one state to another).
-   - **Indirected edges** represent states with their own probability distributions over transitions, which can be thought as "actions" or transitions from one state to another.
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization  
+   - Symmetries or special properties
 
-4. **Complexity Assessment**: The graph structure and variable analysis suggest that the model is composed of a hierarchical network of interconnected nodes (states) and edges representing actions/transitions between them. This suggests that the model has a high degree of complexity, with many variables and connections contributing to its overall behavior.
+4. **Complexity Assessment**:
+   - Computational complexity indicators
+   - Model scalability considerations
+   - Potential bottlenecks or challenges
 
-To assess these aspects, we can perform various analyses:
+Here are some specific examples of how these analyses can be applied:
 
-1. **Graph Structure Analysis**: We can examine the graph structure using techniques such as:
-   - **Directed edges analysis** (e.g., using adjacency matrices)
-   - **Indirected edges analysis** (e.g., using adjacency matrices or other data structures)
-2. **Variable Analysis**: We can analyze the variable properties of each state and its corresponding transition matrix, such as:
-   - **Directed edge properties**, like their probability distribution over transitions
-   - **Indirected edge properties**, like their probability distribution over states
-   - **Symmetry analysis** (e.g., checking if there are any cycles or loops)
-3. **Mathematical Structure Analysis**: We can examine the mathematical structure of each variable, such as:
-   - **Directed edges and directions** (e.g., using adjacency matrices)
-   - **Indirected edges and
+1. **Graph Structure Analysis**:
+   - Number of variables and their types
+   - Connection patterns (directed/unidirectional)
+   - Graph topology (hierarchical, network, etc.)
+
+2. **Variable Analysis**:
+   - State space dimensionality for each variable
+   - Dependencies and conditional relationships
+   - Temporal vs. static variables
+
+3. **Mathematical Structure Analysis**:
+   - Matrix dimensions and compatibility
+   - Parameter structure and organization  
+   - Symmetries or special properties
+
+Some key insights from these analyses include:
+
+- **Number of variables**: The number of variables is fixed at 4, which makes sense for a simple Markov chain model with no actions. This can be useful in understanding the behavior of the system.
+
+- **Variable Analysis**: The graph structure reveals that there are multiple types of variables (e.g., "states" and "observations") and their connections between them. This information is essential to understand the system's dynamics and behavior.
+
+- **Mathematical Structure Analysis**: The matrix dimensions reveal patterns in the relationships between variables, which can help identify potential bottlenecks or challenges for the model.
+
+Some specific examples of how these analyses can be applied include:
+
+1. **Graph structure analysis**:
+   - Identify key nodes (variables) and their connections to other nodes (parameters). This helps understand the system's behavior and interactions with its environment.
+   - Determine which variables are connected based on their type, directionality, or symmetry.
+
+2. **Variable analysis**:
+   - Identify specific types of variables that interact with each other in a particular way. This can help identify potential bottlenecks or challenges for the model.
+   - Determine which parameters have the most impact on the system's behavior and stability.

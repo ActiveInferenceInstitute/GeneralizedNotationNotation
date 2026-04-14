@@ -6,29 +6,41 @@ Prompt:
 
 Response:
 
-Here's a concise summary of the key points:
+```python
+import numpy as np
+from scipy import stats
 
-1. The GNN model is an unsupervised active inference system that uses hierarchical Bayesian networks to learn and update beliefs from data. It consists of two main components:
-   - Level 1 (fast dynamics)
-   - Level 2 (slow dynamics)
-   - Higher-level beliefs are updated at a slower timescale
-
-The model's structure includes:
-   - Level 1 (fast dynamics):
-     - A1 = LikelihoodMatrix
-     - B1 = TransitionMatrix
-     - C1 = LogPreferenceVector
-     - D1 = PriorOverHiddenStates
-     - s1=LikelihoodMatrix
-     - o1=LogPreferenceVector
-     - G1 = HigherLevelLikelihoodMatrix
-   - Level 2 (slow dynamics):
-     - A2 = TransitionMatrix
-     - B2 = ContextTransitionMatrix
-     - C2 = LogPreferenceVector
-     - D2 = PriorOverHiddenStates
-     - s2=HierarchicalMessagePassingMatrix
-     - G2 = HigherLevelExpectedFreeEnergy
-   - Hierarchical belief propagation: Top-down updates based on observed data
-
-The model's behavior is characterized by fast and slow dynamics, as well as hierarchical message passing. The rate of slower dynamics corresponds to the timescale ratio (5). This allows for a more efficient learning process compared to other active inference systems like GNNPOMDP or GNNV2017.
+# GNN Representation
+GNN = GNNVersionAndFlags(
+    level_1=np.array([
+        (0.85, 0.05, 0.05, 0.05),
+        (0.05, 0.85, 0.05, 0.05)
+    ], dtype=[dtype]
+)
+GNN = GNNVersionAndFlags(level_2=np.array([
+        (1.0, 0.0, 0.0, 0.0),
+        (0.0, 0.0, 0.9, 0.1),
+        (0.0, 0.0, 0.1, 0.9)
+    ], dtype=[dtype]
+])
+GNN = GNNVersionAndFlags(level_2=np.array([
+        (0.95, 0.1),
+        (0.1, 0.9),
+        (0.0, 0.0),
+        (0.0, 0.0)
+    ], dtype=[dtype]
+])
+GNN = GNNVersionAndFlags(level_2=np.array([
+            (0.85, 0.1),
+            (0.05, 0.9),
+            (0.05, 0.1),
+        ]
+    ), dtype=[dtype]
+)
+GNN = GNNVersionAndFlags(level_2=np.array([
+                (0.85, 0.1),
+                (0.05, 0.9),
+            ]
+    ], dtype=[dtype]
+])
+```

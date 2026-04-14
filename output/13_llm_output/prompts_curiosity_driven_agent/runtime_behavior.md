@@ -6,45 +6,51 @@ Prompt:
 
 Response:
 
-Here's the annotated code:
+Here is the implementation of the GNNSA model:
 ```python
 import numpy as np
-from typing import List, Dict
+from scipy import stats
 
-def gnn(state_space):
-    """GNN representation of a state space."""
+def gnn_sa(num_hidden_states, num_obs=10):
+    """Gamma-distributed neural network for active inference.
 
-    # Initialize state space with 5 states and 4 actions
-    state = StateSpaceBlock([
-        (0.9, 0.1, 0.025, 0.025),
-        (0.0, 0.1, 0.025, 0.025),
-        (0.0, 0.0, 0.1, 0.9)
-    ])
+    Args:
+        num_hidden_states (int): Number of hidden states to use in the GNNSA model.
+        num_obs (int): Number of observations per state to use as input.
+        num_actions (int): Number of actions to be used as input.
+        num_timesteps (int): Number of timesteps to be used for training.
 
-    # Initialize action space with 4 actions and 3 hidden states
-    action_space = ActionSpace(state[0], state[1])
-    GNNModel=GNNVersionAndFlags()
-    GNNModel.addStateSpaceBlock([
-        (0.2, 0.25, 0.25),
-        (0.4, 0.375, 0.375)
-    ])
+    Returns:
+        A neural network with the following components:
+            - GNNSA model representation
+                - G(H[P(o|s)][x]) = G_epi + γ * G_ins
 
-    # Initialize Epistemic Value component with 1.0 and 1.0 for each state
-    E=E_KL[state] = np.array([np.nan])
+            - GNAS-aware agent
+                - G(G_eps)[h] = G_ins[g] + G_epi[h]
 
-    # Initialize Instrumental Value component with 1.0 and 1.0 for each action
-    F=F_KL[action][GNNModel.getStateSpaceBlock(state)] = np.array([np.nan])
+    """
+    # Initialize the neural network with the following components:
+    gnn_sa=np.zeros((num_hidden_states, num_obs))
+    
+    # Initialize the GNNSA model representation
+    for i in range(num_hidden_states):
+        gnn_sa[i]=np.zeros((num_hidden_states, num_actions + 1), dtype=[dtype] * (num_actions + 1) )
 
-    # Initialize Precision weighting epistemic value with 1.0 and 1.0 for each state
-    γ=γ_k=np.zeros((num_hidden_states, num_actions))
-    F[GNNModel.getStateSpaceBlock(state)] = np.array([np.nan])
+    # Initialize the GNAS-aware agent
+    for i in range(num_hidden_states):
+        gsn=np.zeros((num_hidden_states, num_actions + 1))
+    
+    # Initialize the GNNSA model representation
+    for i in range(num_hidden_states):
+        gnn_sa[i]=gnn_sa[i]
 
-    # Initialize Precision weighting instrumental value with 1.0 and 1.0 for each action
-    F[GNNModel.getStateSpaceBlock(action)] = np.zeros((num_actions, num_states))
+    # Initialize the GNAS-aware agent
+    for i in range(num_hidden_states):
+        gsn=np.zeros((num_hidden_states, num_actions + 1))
+    
+    # Initialize the GNNSA model representation
+    for i in range(num_hidden_states):
+        gnn_sa[i]=gnn_sa[i]
 
-    # Initialize Value of Epistemic Value component with 1.0 and 1.0 for each state
-    G=G_epi=np.array([np.nan])
-    F[G]=[np.nan]*(num_hidden_states)
-    F[G_eps]=np.zeros((num_actions, num_states))
-
-    # Initialize Value of Instrumental
+    return gnn_sa
+```

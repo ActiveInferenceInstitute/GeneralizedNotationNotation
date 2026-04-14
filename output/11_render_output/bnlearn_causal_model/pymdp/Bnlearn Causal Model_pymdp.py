@@ -10,7 +10,7 @@ real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        Bnlearn Causal Model
 Description:  
-Generated:    2026-04-12 17:23:34
+Generated:    2026-04-14 10:58:57
 
 State Space:
   - Hidden States: 2

@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-04-12T17:35:04.429638",
+  "report_generation_time": "2026-04-14T11:11:08.150922",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
@@ -17,7 +17,7 @@
           "total_size_mb": 0.07439136505126953
         }
       },
-      "last_modified": "2026-04-12T17:21:40.226997",
+      "last_modified": "2026-04-14T10:56:40.580127",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -40,7 +40,7 @@
           "total_size_mb": 0.014655113220214844
         }
       },
-      "last_modified": "2026-04-12T17:21:45.899946",
+      "last_modified": "2026-04-14T10:56:47.687439",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -50,15 +50,15 @@
       "directory": "output/2_tests_output",
       "exists": true,
       "file_count": 6,
-      "total_size_mb": 6.86,
+      "total_size_mb": 6.96,
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 6.41671085357666
+          "total_size_mb": 6.51664924621582
         },
         ".txt": {
           "count": 1,
-          "total_size_mb": 0.3651466369628906
+          "total_size_mb": 0.3614482879638672
         },
         ".md": {
           "count": 1,
@@ -77,19 +77,19 @@
           "total_size_mb": 0.00067138671875
         }
       },
-      "last_modified": "2026-04-12T17:22:59.739227",
+      "last_modified": "2026-04-14T10:58:10.872238",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [
         {
           "file": "pytest.log",
-          "size_mb": 6.42
+          "size_mb": 6.52
         }
       ],
       "key_files": [
         {
           "name": "pytest_reliable_output.txt",
-          "size_mb": 0.37,
+          "size_mb": 0.36,
           "type": ".txt"
         }
       ]
@@ -185,7 +185,7 @@
           "total_size_mb": 0.19615554809570312
         }
       },
-      "last_modified": "2026-04-12T17:23:02.537160",
+      "last_modified": "2026-04-14T10:58:14.191184",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -208,7 +208,7 @@
           "total_size_mb": 0.005742073059082031
         }
       },
-      "last_modified": "2026-04-12T17:23:03.085255",
+      "last_modified": "2026-04-14T10:58:14.824165",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -223,19 +223,23 @@
     "5_type_checker_output": {
       "directory": "output/5_type_checker_output",
       "exists": true,
-      "file_count": 2,
-      "total_size_mb": 0.06,
+      "file_count": 26,
+      "total_size_mb": 2.53,
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.06071758270263672
+          "total_size_mb": 0.025014877319335938
         },
         ".md": {
           "count": 1,
-          "total_size_mb": 0.00032711029052734375
+          "total_size_mb": 0.0008296966552734375
+        },
+        ".png": {
+          "count": 24,
+          "total_size_mb": 2.507692337036133
         }
       },
-      "last_modified": "2026-04-12T17:23:05.035842",
+      "last_modified": "2026-04-14T10:58:21.434452",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -245,21 +249,21 @@
       "directory": "output/6_validation_output",
       "exists": true,
       "file_count": 2,
-      "total_size_mb": 0.0,
+      "total_size_mb": 0.02,
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.004118919372558594
+          "total_size_mb": 0.024538040161132812
         }
       },
-      "last_modified": "2026-04-12T17:23:06.666225",
+      "last_modified": "2026-04-14T10:58:24.231193",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "validation_results.json",
-          "size_mb": 0.0,
+          "size_mb": 0.02,
           "type": ".json"
         }
       ]
@@ -291,7 +295,7 @@
           "total_size_mb": 0.025316238403320312
         }
       },
-      "last_modified": "2026-04-12T17:23:06.992260",
+      "last_modified": "2026-04-14T10:58:24.599193",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -352,7 +356,7 @@
       "directory": "output/8_visualization_output",
       "exists": true,
       "file_count": 176,
-      "total_size_mb": 61.69,
+      "total_size_mb": 61.68,
       "file_types": {
         ".png": {
           "count": 108,
@@ -364,7 +368,7 @@
         },
         ".html": {
           "count": 9,
-          "total_size_mb": 41.625643730163574
+          "total_size_mb": 41.62559795379639
         },
         ".txt": {
           "count": 9,
@@ -375,7 +379,7 @@
           "total_size_mb": 0.0032796859741210938
         }
       },
-      "last_modified": "2026-04-12T17:23:24.986885",
+      "last_modified": "2026-04-14T10:58:47.589752",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -979,7 +983,7 @@
         },
         ".html": {
           "count": 2,
-          "total_size_mb": 0.06235218048095703
+          "total_size_mb": 0.062203407287597656
         },
         ".json": {
           "count": 1,
@@ -994,7 +998,7 @@
           "total_size_mb": 0.12569522857666016
         }
       },
-      "last_modified": "2026-04-12T17:23:33.826887",
+      "last_modified": "2026-04-14T10:58:56.928372",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1117,7 +1121,7 @@
           "total_size_mb": 0.04555511474609375
         }
       },
-      "last_modified": "2026-04-12T17:23:34.451904",
+      "last_modified": "2026-04-14T10:58:57.599952",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1135,7 +1139,7 @@
         },
         ".json": {
           "count": 85,
-          "total_size_mb": 0.31896018981933594
+          "total_size_mb": 0.31890296936035156
         },
         ".jl": {
           "count": 18,
@@ -1154,7 +1158,7 @@
           "total_size_mb": 0.0048656463623046875
         }
       },
-      "last_modified": "2026-04-12T17:29:15.560227",
+      "last_modified": "2026-04-14T11:05:09.386128",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1538,7 +1542,7 @@
         },
         ".json": {
           "count": 148,
-          "total_size_mb": 0.9885396957397461
+          "total_size_mb": 0.9885377883911133
         },
         ".md": {
           "count": 1,
@@ -1549,7 +1553,7 @@
           "total_size_mb": 0.0032787322998046875
         }
       },
-      "last_modified": "2026-04-12T17:29:15.836212",
+      "last_modified": "2026-04-14T11:05:09.641047",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1559,18 +1563,18 @@
       "directory": "output/13_llm_output",
       "exists": true,
       "file_count": 362,
-      "total_size_mb": 1.69,
+      "total_size_mb": 1.67,
       "file_types": {
         ".json": {
           "count": 181,
-          "total_size_mb": 1.3703575134277344
+          "total_size_mb": 1.3546361923217773
         },
         ".md": {
           "count": 181,
-          "total_size_mb": 0.32073020935058594
+          "total_size_mb": 0.3120851516723633
         }
       },
-      "last_modified": "2026-04-12T17:34:16.033907",
+      "last_modified": "2026-04-14T11:10:06.771357",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2497,7 +2501,7 @@
           "total_size_mb": 0.008608818054199219
         }
       },
-      "last_modified": "2026-04-12T17:34:17.429701",
+      "last_modified": "2026-04-14T11:10:08.173611",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2507,7 +2511,7 @@
       "directory": "output/15_audio_output",
       "exists": true,
       "file_count": 41,
-      "total_size_mb": 22.89,
+      "total_size_mb": 22.9,
       "file_types": {
         ".wav": {
           "count": 39,
@@ -2515,14 +2519,14 @@
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.010625839233398438
+          "total_size_mb": 0.017873764038085938
         },
         ".md": {
           "count": 1,
           "total_size_mb": 0.0019731521606445312
         }
       },
-      "last_modified": "2026-04-12T17:34:19.051768",
+      "last_modified": "2026-04-14T11:10:10.362529",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2727,30 +2731,30 @@
     "16_analysis_output": {
       "directory": "output/16_analysis_output",
       "exists": true,
-      "file_count": 490,
-      "total_size_mb": 47.22,
+      "file_count": 532,
+      "total_size_mb": 61.27,
       "file_types": {
         ".json": {
           "count": 29,
-          "total_size_mb": 0.3627481460571289
+          "total_size_mb": 0.3688640594482422
         },
         ".md": {
           "count": 3,
           "total_size_mb": 0.015027046203613281
         },
         ".png": {
-          "count": 458,
-          "total_size_mb": 46.84280872344971
+          "count": 500,
+          "total_size_mb": 60.88604736328125
         }
       },
-      "last_modified": "2026-04-12T17:35:00.561025",
+      "last_modified": "2026-04-14T11:11:02.319616",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "analysis_results.json",
-          "size_mb": 0.25,
+          "size_mb": 0.26,
           "type": ".json"
         },
         {
@@ -2775,7 +2779,7 @@
           "total_size_mb": 0.000202178955078125
         }
       },
-      "last_modified": "2026-04-12T17:35:01.061452",
+      "last_modified": "2026-04-14T11:11:02.809310",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2796,7 +2800,7 @@
           "total_size_mb": 0.0004978179931640625
         }
       },
-      "last_modified": "2026-04-12T17:35:01.320050",
+      "last_modified": "2026-04-14T11:11:03.071688",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2817,7 +2821,7 @@
           "total_size_mb": 0.010625839233398438
         }
       },
-      "last_modified": "2026-04-12T17:35:01.553057",
+      "last_modified": "2026-04-14T11:11:03.307279",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2827,11 +2831,11 @@
       "directory": "output/20_website_output",
       "exists": true,
       "file_count": 23,
-      "total_size_mb": 2.74,
+      "total_size_mb": 2.75,
       "file_types": {
         ".html": {
           "count": 9,
-          "total_size_mb": 0.39240169525146484
+          "total_size_mb": 0.3977165222167969
         },
         ".json": {
           "count": 1,
@@ -2842,7 +2846,7 @@
           "total_size_mb": 2.3497190475463867
         }
       },
-      "last_modified": "2026-04-12T17:35:01.838354",
+      "last_modified": "2026-04-14T11:11:03.587556",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2864,7 +2868,7 @@
         },
         {
           "name": "analysis.html",
-          "size_mb": 0.18,
+          "size_mb": 0.19,
           "type": ".html"
         },
         {
@@ -2905,7 +2909,7 @@
           "total_size_mb": 0.058349609375
         }
       },
-      "last_modified": "2026-04-12T17:35:03.615924",
+      "last_modified": "2026-04-14T11:11:06.495178",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2930,18 +2934,18 @@
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.0038003921508789062
+          "total_size_mb": 0.003772735595703125
         },
         ".md": {
           "count": 2,
-          "total_size_mb": 0.008213043212890625
+          "total_size_mb": 0.008327484130859375
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.07203197479248047
+          "total_size_mb": 0.0720357894897461
         }
       },
-      "last_modified": "2026-04-12T17:35:04.193039",
+      "last_modified": "2026-04-14T11:11:07.841138",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2974,11 +2978,11 @@
     }
   },
   "summary": {
-    "total_files_processed": 2147,
+    "total_files_processed": 2213,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 151.89000000000001,
+    "total_size_mb": 168.52,
     "success_rate": 100.0
   },
   "performance_metrics": {},
@@ -2987,7 +2991,7 @@
     "total_by_type": {
       ".json": {
         "count": 562,
-        "total_size_mb": 4.03
+        "total_size_mb": 4.02
       },
       ".md": {
         "count": 306,
@@ -2995,7 +2999,7 @@
       },
       ".log": {
         "count": 74,
-        "total_size_mb": 6.56
+        "total_size_mb": 6.66
       },
       ".txt": {
         "count": 16,
@@ -3006,8 +3010,8 @@
         "total_size_mb": 0.01
       },
       ".png": {
-        "count": 593,
-        "total_size_mb": 71.64
+        "count": 659,
+        "total_size_mb": 88.19
       },
       ".bnf": {
         "count": 20,
@@ -3095,7 +3099,7 @@
       },
       ".html": {
         "count": 21,
-        "total_size_mb": 42.15
+        "total_size_mb": 42.16
       },
       ".d2": {
         "count": 5,
@@ -3139,11 +3143,11 @@
         },
         "5_type_checker_output": {
           "count": 1,
-          "size_mb": 0.06071758270263672
+          "size_mb": 0.025014877319335938
         },
         "6_validation_output": {
           "count": 2,
-          "size_mb": 0.004118919372558594
+          "size_mb": 0.024538040161132812
         },
         "7_export_output": {
           "count": 4,
@@ -3163,15 +3167,15 @@
         },
         "11_render_output": {
           "count": 85,
-          "size_mb": 0.31896018981933594
+          "size_mb": 0.31890296936035156
         },
         "12_execute_output": {
           "count": 148,
-          "size_mb": 0.9885396957397461
+          "size_mb": 0.9885377883911133
         },
         "13_llm_output": {
           "count": 181,
-          "size_mb": 1.3703575134277344
+          "size_mb": 1.3546361923217773
         },
         "14_ml_integration_output": {
           "count": 1,
@@ -3179,11 +3183,11 @@
         },
         "15_audio_output": {
           "count": 1,
-          "size_mb": 0.010625839233398438
+          "size_mb": 0.017873764038085938
         },
         "16_analysis_output": {
           "count": 29,
-          "size_mb": 0.3627481460571289
+          "size_mb": 0.3688640594482422
         },
         "17_integration_output": {
           "count": 1,
@@ -3207,7 +3211,7 @@
         },
         "22_gui_output": {
           "count": 3,
-          "size_mb": 0.0038003921508789062
+          "size_mb": 0.003772735595703125
         }
       },
       ".md": {
@@ -3225,7 +3229,7 @@
         },
         "5_type_checker_output": {
           "count": 1,
-          "size_mb": 0.00032711029052734375
+          "size_mb": 0.0008296966552734375
         },
         "11_render_output": {
           "count": 73,
@@ -3237,7 +3241,7 @@
         },
         "13_llm_output": {
           "count": 181,
-          "size_mb": 0.32073020935058594
+          "size_mb": 0.3120851516723633
         },
         "15_audio_output": {
           "count": 1,
@@ -3261,13 +3265,13 @@
         },
         "22_gui_output": {
           "count": 2,
-          "size_mb": 0.008213043212890625
+          "size_mb": 0.008327484130859375
         }
       },
       ".log": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 6.41671085357666
+          "size_mb": 6.51664924621582
         },
         "12_execute_output": {
           "count": 73,
@@ -3277,7 +3281,7 @@
       ".txt": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.3651466369628906
+          "size_mb": 0.3614482879638672
         },
         "8_visualization_output": {
           "count": 9,
@@ -3311,6 +3315,10 @@
           "count": 1,
           "size_mb": 0.07970809936523438
         },
+        "5_type_checker_output": {
+          "count": 24,
+          "size_mb": 2.507692337036133
+        },
         "8_visualization_output": {
           "count": 108,
           "size_mb": 20.020546913146973
@@ -3320,8 +3328,8 @@
           "size_mb": 2.3497190475463867
         },
         "16_analysis_output": {
-          "count": 458,
-          "size_mb": 46.84280872344971
+          "count": 500,
+          "size_mb": 60.88604736328125
         },
         "20_website_output": {
           "count": 13,
@@ -3473,19 +3481,19 @@
       ".html": {
         "8_visualization_output": {
           "count": 9,
-          "size_mb": 41.625643730163574
+          "size_mb": 41.62559795379639
         },
         "9_advanced_viz_output": {
           "count": 2,
-          "size_mb": 0.06235218048095703
+          "size_mb": 0.062203407287597656
         },
         "20_website_output": {
           "count": 9,
-          "size_mb": 0.39240169525146484
+          "size_mb": 0.3977165222167969
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.07203197479248047
+          "size_mb": 0.0720357894897461
         }
       },
       ".d2": {
@@ -4802,7 +4810,7 @@
             "relative_path": "8_visualization_output/simple_mdp/simple_mdp_network_interactive.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4849293,
+            "size_bytes": 4849285,
             "size_mb": 4.62,
             "step": "8_visualization_output"
           },
@@ -4812,7 +4820,7 @@
             "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_network_interactive.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4849521,
+            "size_bytes": 4849513,
             "size_mb": 4.62,
             "step": "8_visualization_output"
           },
@@ -4832,7 +4840,7 @@
             "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_interactive.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4851147,
+            "size_bytes": 4851139,
             "size_mb": 4.63,
             "step": "8_visualization_output"
           },
@@ -4842,7 +4850,7 @@
             "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_interactive.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4849293,
+            "size_bytes": 4849285,
             "size_mb": 4.62,
             "step": "8_visualization_output"
           },
@@ -4852,7 +4860,7 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_interactive.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4849634,
+            "size_bytes": 4849626,
             "size_mb": 4.62,
             "step": "8_visualization_output"
           },
@@ -4872,7 +4880,7 @@
             "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_interactive.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4852770,
+            "size_bytes": 4852762,
             "size_mb": 4.63,
             "step": "8_visualization_output"
           },
@@ -5088,7 +5096,7 @@
             "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 33687,
+            "size_bytes": 33531,
             "size_mb": 0.03,
             "step": "9_advanced_viz_output"
           }
@@ -5134,8 +5142,8 @@
             "relative_path": "20_website_output/analysis.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 189618,
-            "size_mb": 0.18,
+            "size_bytes": 195758,
+            "size_mb": 0.19,
             "step": "20_website_output"
           },
           {
@@ -5164,7 +5172,7 @@
             "relative_path": "20_website_output/reports.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 88515,
+            "size_bytes": 88104,
             "size_mb": 0.08,
             "step": "20_website_output"
           },
@@ -5184,7 +5192,7 @@
             "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 33687,
+            "size_bytes": 33531,
             "size_mb": 0.03,
             "step": "20_website_output"
           }
@@ -6461,7 +6469,7 @@
           "relative_path": "8_visualization_output/simple_mdp/simple_mdp_network_interactive.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4849293,
+          "size_bytes": 4849285,
           "size_mb": 4.62,
           "step": "8_visualization_output"
         },
@@ -6471,7 +6479,7 @@
           "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_network_interactive.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4849521,
+          "size_bytes": 4849513,
           "size_mb": 4.62,
           "step": "8_visualization_output"
         },
@@ -6491,7 +6499,7 @@
           "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_interactive.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4851147,
+          "size_bytes": 4851139,
           "size_mb": 4.63,
           "step": "8_visualization_output"
         },
@@ -6501,7 +6509,7 @@
           "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_interactive.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4849293,
+          "size_bytes": 4849285,
           "size_mb": 4.62,
           "step": "8_visualization_output"
         },
@@ -6511,7 +6519,7 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_interactive.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4849634,
+          "size_bytes": 4849626,
           "size_mb": 4.62,
           "step": "8_visualization_output"
         },
@@ -6531,7 +6539,7 @@
           "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_interactive.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4852770,
+          "size_bytes": 4852762,
           "size_mb": 4.63,
           "step": "8_visualization_output"
         },
@@ -6561,7 +6569,7 @@
           "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 33687,
+          "size_bytes": 33531,
           "size_mb": 0.03,
           "step": "9_advanced_viz_output"
         },
@@ -6601,8 +6609,8 @@
           "relative_path": "20_website_output/analysis.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 189618,
-          "size_mb": 0.18,
+          "size_bytes": 195758,
+          "size_mb": 0.19,
           "step": "20_website_output"
         },
         {
@@ -6631,7 +6639,7 @@
           "relative_path": "20_website_output/reports.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 88515,
+          "size_bytes": 88104,
           "size_mb": 0.08,
           "step": "20_website_output"
         },
@@ -6651,7 +6659,7 @@
           "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 33687,
+          "size_bytes": 33531,
           "size_mb": 0.03,
           "step": "20_website_output"
         }
@@ -7744,7 +7752,7 @@
         "relative_path": "8_visualization_output/simple_mdp/simple_mdp_network_interactive.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4849293,
+        "size_bytes": 4849285,
         "size_mb": 4.62,
         "step": "8_visualization_output"
       },
@@ -7754,7 +7762,7 @@
         "relative_path": "8_visualization_output/two_state_bistable/two_state_bistable_network_interactive.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4849521,
+        "size_bytes": 4849513,
         "size_mb": 4.62,
         "step": "8_visualization_output"
       },
@@ -7774,7 +7782,7 @@
         "relative_path": "8_visualization_output/tmaze_epistemic/tmaze_epistemic_network_interactive.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4851147,
+        "size_bytes": 4851139,
         "size_mb": 4.63,
         "step": "8_visualization_output"
       },
@@ -7784,7 +7792,7 @@
         "relative_path": "8_visualization_output/multi_armed_bandit/multi_armed_bandit_network_interactive.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4849293,
+        "size_bytes": 4849285,
         "size_mb": 4.62,
         "step": "8_visualization_output"
       },
@@ -7794,7 +7802,7 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_interactive.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4849634,
+        "size_bytes": 4849626,
         "size_mb": 4.62,
         "step": "8_visualization_output"
       },
@@ -7814,7 +7822,7 @@
         "relative_path": "8_visualization_output/deep_planning_horizon/deep_planning_horizon_network_interactive.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4852770,
+        "size_bytes": 4852762,
         "size_mb": 4.63,
         "step": "8_visualization_output"
       },
@@ -8024,7 +8032,7 @@
         "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 33687,
+        "size_bytes": 33531,
         "size_mb": 0.03,
         "step": "9_advanced_viz_output"
       },
@@ -8064,8 +8072,8 @@
         "relative_path": "20_website_output/analysis.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 189618,
-        "size_mb": 0.18,
+        "size_bytes": 195758,
+        "size_mb": 0.19,
         "step": "20_website_output"
       },
       {
@@ -8094,7 +8102,7 @@
         "relative_path": "20_website_output/reports.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 88515,
+        "size_bytes": 88104,
         "size_mb": 0.08,
         "step": "20_website_output"
       },
@@ -8114,7 +8122,7 @@
         "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 33687,
+        "size_bytes": 33531,
         "size_mb": 0.03,
         "step": "20_website_output"
       }
@@ -8122,7 +8130,7 @@
   },
   "health_score": 95.0,
   "report_metadata": {
-    "generation_time": "2026-04-12T17:35:04.541970",
+    "generation_time": "2026-04-14T11:11:08.269300",
     "formats_generated": [
       "html",
       "markdown",

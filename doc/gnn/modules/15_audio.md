@@ -1,63 +1,372 @@
-# Step 15: Audio — Sonification and Analysis
+# Step 15: Audio
 
-## Overview
+## Architectural Mapping
 
-Generates audio sonifications from GNN model structures and performs audio analysis. Supports multiple backends (SAPF, Pedalboard) with configurable duration and analysis options.
+**Orchestrator**: `src/15_audio.py` (83 lines)
+**Implementation Layer**: `src/audio/`
 
-## Usage
+## Module Description
 
-```bash
-# Default sonification
-python src/15_audio.py --target-dir input/gnn_files --output-dir output --verbose
+This module provides comprehensive audio generation capabilities for GNN models, including sonification, audio synthesis, and multi-backend audio processing with support for SAPF (Synthetic Audio Processing Framework) and Pedalboard.
 
-# Custom duration and backend
-python src/15_audio.py --duration 60.0 --audio-backend sapf --verbose
 
-# Full analysis mode
-python src/15_audio.py --full-analysis --verbose
+```
+src/audio/
+├── __init__.py                    # Module initialization and exports
+├── README.md                      # This documentation
+├── generator.py                    # Main audio generation system
+├── mcp.py                         # Model Context Protocol integration
+├── pedalboard/                    # Pedalboard audio processing
+│   └── [pedalboard components]
+└── sapf/                          # SAPF audio framework
+    ├── __init__.py               # SAPF module initialization
+    ├── audio_generators.py       # Audio generation components
+
+## Agent Identity & Capabilities
+
+# Audio Module - Agent Scaffolding
+
+## Module Overview
+
+**Purpose**: Generate audio representations and sonifications of GNN models using SAPF, Pedalboard, and other audio backends
+
+**Pipeline Step**: Step 15: Audio processing (15_audio.py)
+
+**Category**: Audio Generation / Sonification
+
+**Status**: 🔄 In Development
+
+**Version**: 1.0.0
+
+**Last Updated**: 2026-01-21
+
+---
+
+## Core Functionality
+
+### Primary Responsibilities
+1. Convert GNN specifications to audio representations
+2. Generate SAPF (Structured Audio Processing Format) code
+3. Apply audio effects with Pedalboard
+4. Create sonifications of model dynamics
+5. Support multiple audio backends
+
+### Key Capabilities
+- SAPF code generation from GNN models
+- Audio synthesis and processing
+- Model sonification (state transitions, observations)
+- Multi-backend support (SAPF, Pedalboard, Pure Data)
+- WAV file generation
+
+---
+
+## API Reference
+
+### Public Functions
+
+#### `process_audio(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main audio processing function called by orchestrator (15_audio.py)
+
+**Parameters**:
+- `target_dir` (Path): Directory containing GNN files
+- `output_dir` (Path): Output directory for audio files
+- `audio_backend` (str): Audio backend ("auto", "sapf", "pedalboard")
+- `duration` (float): Audio duration in seconds
+- `**kwargs**: Additional options
+
+**Returns**: `True` if audio generation succeeded
+
+#### `generate_audio_from_gnn(gnn_model, duration=30.0) -> Path`
+**Description**: Generate audio file from GNN model
+
+**Returns**: Path to generated WAV file
+
+#### `create_sonification(gnn_model, **kwargs) -> bytes`
+**Description**: Create sonification of model dynamics
+
+**Returns**: Audio data as bytes
+
+---
+
+## Configuration
+
+### Configuration Options
+
+#### Audio Backend Selection
+- `audio_backend` (str): Audio backend to use (default: `"auto"`)
+  - `"auto"`: Automatically select best available backend
+  - `"sapf"`: Use SAPF backend
+  - `"pedalboard"`: Use Pedalboard backend
+  - `"pure_data"`: Use Pure Data backend
+
+#### Audio Generation Parameters
+- `duration` (float): Audio duration in seconds (default: `30.0`)
+- `sample_rate` (int): Audio sample rate in Hz (default: `44100`)
+- `channels` (int): Number of audio channels (default: `1` for mono, `2` for stereo)
+
+#### Sonification Strategy
+- `sonification_strategy` (str): Strategy for model-to-sound mapping (default: `"default"`)
+  - `"default"`: Standard mapping (states→pitch, observations→timbre)
+  - `"harmonic"`: Emphasize harmonic relationships
+  - `"rhythmic"`: Emphasize temporal patterns
+  - `"textural"`: Emphasize timbral variations
+
+#### SAPF Configuration
+- `sapf_output_format` (str): SAPF output format (default: `"python"`)
+  - Options: `"python"`, `"json"`, `"yaml"`
+
+---
+
+## Dependencies
+
+### Required Dependencies
+- `numpy` - Audio sample generation
+- `soundfile` - WAV file I/O
+
+### Optional Dependencies
+- `librosa` - Audio analysis (recovery: basic generation)
+- `pedalboard` - Audio effects (recovery: skip effects)
+- `sapf` - SAPF backend (recovery: skip SAPF)
+
+---
+
+## Usage Examples
+
+### Basic Usage
+```python
+from audio import process_audio
+
+success = process_audio(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/15_audio_output"),
+    audio_backend="auto",
+    duration=30.0
+)
 ```
 
-## Architecture
+### Generate Specific Audio
+```python
+from audio import generate_audio_from_gnn
+from gnn import load_parsed_model
 
-| Component | Path |
-|-----------|------|
-| Orchestrator | `src/15_audio.py` (83 lines) |
-| Module | `src/audio/` |
-| Processor | `src/audio/processor.py` |
-| Module function | `process_audio()` |
-| SAPF framework | `src/sapf/` |
+model = load_parsed_model("actinf_pomdp_agent.md")
+audio_file = generate_audio_from_gnn(model, duration=60.0)
+```
 
-## CLI Arguments
+---
 
-| Argument | Type | Default | Description |
-|----------|------|---------|-------------|
-| `--duration` | `float` | `30.0` | Audio duration in seconds |
-| `--audio-backend` | `str` | `auto` | Backend: `auto`, `sapf`, `pedalboard` |
-| `--sonification` | `bool` | `True` | Generate sonification |
-| `--full-analysis` | `bool` | `False` | Run full audio analysis |
+## Output Specification
 
-## Optional Dependencies
+### Output Products
+- `*.wav` - Generated audio files
+- `*_sapf.py` - SAPF code files
+- `audio_processing_summary.json` - Processing summary
 
-Install with: `uv pip install -e .[audio]`
+### Output Directory Structure
+```
+output/15_audio_output/
+├── model_name_sonification.wav
+├── model_name_sapf.py
+└── audio_processing_summary.json
+```
 
-## Output
+---
 
-- **Directory**: `output/15_audio_output/`
-- Audio files (`.wav`, `.mp3`), spectrograms, and analysis reports
+## Performance Characteristics
 
-## MCP Tools (audio module — 6 real tools)
+### Latest Execution
+- **Duration**: 114ms
+- **Memory**: 19.09 MB
+- **Status**: SUCCESS
+- **Files Processed**: 1
+- **Audio Generated**: 0 (module in development)
 
-Registered by `src/audio/mcp.py` via `register_tools()`:
+### Audio Generation Times
+- **SAPF Generation**: ~50ms per model
+- **WAV Rendering**: ~1-5s for 30s audio
+- **Effects Processing**: +500ms-2s with Pedalboard
 
-| Tool | Description |
-|------|-------------|
-| `process_audio` | Run GNN audio processing pipeline: convert GNN models to audio files |
-| `check_audio_backends` | Check which audio backends are available (SAPF, Pedalboard, soundfile) |
-| `get_audio_generation_options` | List all configurable audio generation options |
-| `analyze_audio_characteristics` | Analyse characteristics of a GNN model for sonification |
-| `validate_audio_content` | Validate audio content derived from GNN specifications |
-| `get_audio_module_info` | Return audio module version and capabilities |
+---
 
-## Source
+## Sonification Strategies
 
-- **Script**: [src/15_audio.py](../../../src/15_audio.py)
+### Model-to-Sound Mapping
+1. **States → Pitch**: State values map to musical pitches
+2. **Observations → Timbre**: Observation probabilities affect tone
+3. **Actions → Rhythm**: Action selection creates rhythmic patterns
+4. **Free Energy → Volume**: Lower FE = louder (more confident)
+5. **Connections → Harmonies**: Connected variables create harmonies
+
+---
+
+## Error Handling
+
+### Graceful Degradation
+- **No SAPF**: Skip SAPF generation, log warning, continue with other backends
+- **No Pedalboard**: Skip effects processing, use basic audio generation
+- **No soundfile**: Return error, cannot generate WAV files
+- **Invalid GNN model**: Return structured error, skip model
+
+### Error Categories
+1. **Backend Unavailable**: Framework not installed (recovery: skip backend)
+2. **Audio Generation Failure**: Cannot generate audio (return error)
+3. **File I/O Errors**: Cannot write WAV files (return error)
+4. **Model Parsing Errors**: Invalid GNN structure (skip model, log error)
+
+### Error Recovery
+- **Backend Recovery**: Automatically try next available backend
+- **Partial Generation**: Generate what's possible, report failures
+- **Resource Cleanup**: Proper cleanup of audio resources on errors
+
+---
+
+## Integration Points
+
+### Pipeline Integration
+- **Input**: Receives GNN models from Step 3 (gnn processing)
+- **Output**: Generates audio files for Step 20 (website generation) and Step 23 (report generation)
+- **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
+
+### Module Dependencies
+- **gnn/**: Reads parsed GNN model data for sonification
+- **sapf/**: Uses SAPF module for structured audio generation
+- **export/**: Uses export formats for audio metadata
+
+### External Integration
+- **SAPF Backend**: Integrates with SAPF audio processing framework
+- **Pedalboard**: Optional integration for audio effects
+- **Pure Data**: Optional integration for advanced audio processing
+
+### Data Flow
+```
+3_gnn.py (GNN parsing)
+  ↓
+15_audio.py (Audio generation)
+  ↓
+  ├→ 20_website.py (Audio embedding)
+  ├→ 23_report.py (Audio analysis)
+  └→ output/15_audio_output/ (Standalone audio files)
+```
+
+---
+
+## Testing
+
+### Test Files
+- `src/tests/test_audio_integration.py`
+- `src/tests/test_audio_sapf.py`
+
+### Test Coverage
+- **Current**: 74%
+- **Target**: 80%+
+
+### Key Test Scenarios
+1. Audio generation from GNN models
+2. SAPF code generation
+3. Audio backend validation
+4. Sonification strategies
+
+---
+
+## MCP Integration
+
+### Tools Registered
+- `audio.generate_audio` - Generate audio from GNN model
+- `audio.create_sonification` - Create model sonification
+- `audio.validate_backend` - Validate audio backend
+
+### Tool Endpoints
+```python
+@mcp_tool("audio.generate_audio")
+def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, Any]:
+    """Generate audio from GNN content"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/audio/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Audio backend not available
+**Symptom**: Audio generation fails with backend errors  
+**Cause**: Required audio libraries not installed  
+**Solution**: 
+- Install audio dependencies: `uv pip install soundfile librosa pedalboard`
+- Check backend availability: `python -c "import soundfile; print('OK')"`
+- Use `--audio-backend auto` for automatic selection
+
+#### Issue 2: WAV file generation fails
+**Symptom**: Audio processing completes but no WAV files created  
+**Cause**: File permissions or disk space issues  
+**Solution**:
+- Check output directory permissions
+- Verify sufficient disk space
+- Check file system format supports WAV files
+
+#### Issue 3: Sonification produces silence
+**Symptom**: Generated audio files are silent  
+**Cause**: Model dynamics not extracted or sonification strategy mismatch  
+**Solution**:
+- Verify GNN model has state transitions or dynamics
+- Try different sonification strategies
+- Check audio sample rate and duration settings
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- SAPF code generation
+- Audio synthesis and processing
+- Model sonification
+- Multi-backend support
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced sonification strategies
+- **Future**: Real-time audio streaming
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../../src/audio/../../README.md)
+- [Architecture Guide](../../../src/audio/../../ARCHITECTURE.md)
+- [SAPF Documentation](../../../src/audio/../../doc/sapf/)
+- [Pedalboard Documentation](../../../src/audio/../../doc/pedalboard/)
+
+### External Resources
+- [SAPF Specification](https://github.com/activeinference/sapf)
+- [Pedalboard Documentation](https://github.com/spotify/pedalboard)
+- [Librosa Documentation](https://librosa.org/)
+
+---
+
+**Last Updated**: 2026-01-21
+**Maintainer**: GNN Pipeline Team
+**Status**: 🔄 In Development
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+
+
+---
+## Documentation
+- **[README](../../../src/audio/README.md)**: Module Overview
+- **[AGENTS](../../../src/audio/AGENTS.md)**: Agentic Workflows
+- **[SPEC](../../../src/audio/SPEC.md)**: Architectural Specification
+- **[SKILL](../../../src/audio/SKILL.md)**: Capability API
+
+
+---
+
+**Source Reference**: [src/audio](../../../src/audio)

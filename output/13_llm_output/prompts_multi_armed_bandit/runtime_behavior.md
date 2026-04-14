@@ -6,59 +6,42 @@ Prompt:
 
 Response:
 
-You can use the following code to implement a multi-armed bandit:
-
-
 ```python
 import numpy as np
 from scipy import stats
 
-def infer_states(reward_obs):
+def multi_arm_bandit(reward, reward_obs):
     """
-    Implies inference based on reward observations.
+    Perform a multi-armed bandit problem where each arm is randomly selected from the rewards.
 
     Args:
-        reward_obs (numpy array): A sequence of rewards, each with the same length and type.
+        reward (float): A reward sequence for each arm.
+        reward_obs (array[int]): A reward sequence over all arms.
 
     Returns:
-        numpy array: The inferred reward distribution for arm 0 given a reward observation.
+        array[[1]] or [2] depending on whether arm 0 is best, and if so, which arm it is
     """
-    # Initialize state space
-    states = np.array([reward_obs])
-    
-    # Perform inference based on reward observations
-    actions = [np.random.randint(low=1, high=num_actions)] + rewards
+    num_actions = len(reward) + 3
+    num_states = len(reward_obs) + 4
+    num_hidden_states = num_actions - num_actions // 2
 
-    # Perform inference using the action-observation mapping (A)
-    for i in range(num_states):
-        next_state = np.random.choice([reward_obs[i]])
-        
-        # Perform inference based on reward observations
-        if actions[next_state] == 1:
-            # If arm is active, choose arm with reward 0 and action 2
-            if actions[actions[next_state]] != 2:
-                next_action = np.random.choice([actions[next_state]])
-            
-            # Perform inference based on reward observations
-            if actions[next_state] == 1:
-                # If arm is active, choose arm with reward 0 and action 3
-                if actions[actions[next_state]] != 2:
-                    next_action = np.random.choice([actions[next_state]])
-            
-            # Perform inference based on reward observations
-            if actions[next_state] == 1:
-                # If arm is active, choose arm with reward 0 and action 4
-                if actions[actions[next_state]] != 2:
-                    next_action = np.random.choice([actions[next_state]])
-            
-            # Perform inference based on reward observations
-            if actions[next_state] == 1:
-                # If arm is active, choose arm with reward 0 and action 5
-                if actions[actions[next_state]] != 2:
-                    next_action = np.random.choice([actions[next_state]])
-            
-            # Perform inference based on reward observations
-            if actions[next_state] == 1:
-                # If arm is active, choose arm with reward 0 and action 6
-                if actions[actions[next_state]] != 2:
-                    next_action =
+    # Initialize the action space
+    action_space = np.zeros((num_actions, num_actions))
+    actions = np.empty((num_actions, num_actions), dtype=np.float32)
+
+    # Initialize the reward sequence for each arm
+    rewards = np.ones(reward_obs, dtype=np.int64)
+
+    # Perform the multi-armed bandit problem with sticky context
+    for i in range(num_actions):
+        action = np.random.choice([1] + [0])  # Randomly select arm 0
+
+        reward = rewards[action]
+        actions[action, :] = reward
+
+        # Perform the next action based on the reward sequence
+        if reward == reward_obs:
+            actions[action][:] += 1
+
+    return np.array(actions)
+```

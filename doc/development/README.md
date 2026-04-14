@@ -16,6 +16,12 @@ From the repository root:
 uv run python doc/development/docs_audit.py
 # Fail the shell if any issues (for CI / pre-commit)
 uv run python doc/development/docs_audit.py --strict
+# With --strict and failures, full per-issue lines go to stderr by default (fix loop). Use -q for summary only.
+uv run python doc/development/docs_audit.py --strict -q
+# Optional: validate #fragments against heading slugs (heuristic; can be noisy)
+uv run python doc/development/docs_audit.py --check-anchors
+# Optional: log markdown file count and other diagnostics to stderr
+uv run python doc/development/docs_audit.py --verbose
 ```
 
 Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `doc/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `doc/`, `.github/`, and the repo root, and **`doc/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `doc/` are excluded from pairing where noted. After moving files under `doc/gnn/`, run the rewriter (idempotent on already-fixed links):
@@ -24,7 +30,7 @@ Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGE
 uv run python doc/development/rewrite_gnn_doc_links.py
 ```
 
-Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py).
+Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py). Stub tracking narrative: [../STUBS_TO_IMPROVE.md](../STUBS_TO_IMPROVE.md).
 
 ## Quick Start for Developers
 

@@ -9,51 +9,47 @@ Response:
 Here is the complete implementation of the GNN model:
 ```python
 import numpy as np
+from scipy import stats
 
-def gnn_model(input_shape=(3,), num_hidden=1, num_actions=2):
+def gnn_model(input, num_hidden_states=3):
+    """GNN Representation for a neural network with 10 hidden states and 4 neurons.
+
+    Args:
+        input (numpy array): Input data to be fed into the GNN model.
+        num_hidden_states (int): Number of hidden states in the model.
+        num_neurons (int): Number of neurons in the model.
     """
-    GNN Representation for a neural network with 4 hidden states and 6 actions.
+    # Initialize state space matrices
+    A = np.array([[1, 0], [0, 1]])
 
-    Parameters
-    ----------
-    input_shape : tuple
-        The shape of the input data (batch size) and number of neurons in each hidden state.
-    num_hidden: int
-        Number of hidden states, default is 1.
-    num_actions: int
-        Number of actions to be trained for each hidden state. Default is 2.
-    """
+    # Initialize transition matrix
+    B = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),
+                     (input[i+1]]**2),
+                     [-(input[i+1])**2],
+                     [0, 0, 1]])
 
-    # Initialize the GNN model with input shape (3,) and num_hidden neurons in each hidden state
-    gnn = np.zeros((num_hidden + 4, num_actions), dtype=np.float)
-    
-    # Initialize the GNN model parameters
-    for i in range(num_hidden):
-        gnn[i] = np.random.normal([0.9], size=(input_shape[1], input_shape[2]), dtype=[dtype])
+    # Initialize habit vector
+    C = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),
+                     (input[i+1]]**2),
+                     [-(input[i+1])**2],
+                     [0, 0, 1]])
 
-    # Initialize the action weights and bias vector
-    for i in range(num_actions):
-        action_weights = np.zeros((input_shape[3], num_hidden + 4))
-        action_bias = np.zeros((input_shape[1], input_shape[2]))
+    # Initialize action vector
+    D = np.array([[-(input[i+1] + input[i]], -np.ones((num_hidden_states-2)),
+                     (input[i+1]]**2),
+                     [-(input[i+1])**2],
+                     [0, 0, 1]])
 
-        # Initialize the transition matrix
-        for j in range(num_actions):
-            transition_matrix = np.random.normal([0.9, 0.05]) * (
-                num_hidden + 4)
+    # Initialize prior over hidden states
+    π = np.array([[1/4*np.pi*(input[i] + input[i]), -1/(num_hidden_states-3)*np.sqrt(
+                    (input[i+1])**2),
+                     (-1/(num_hidden_states-3)*np.sqrt(
+                        (input[i+1])**2)],
+                     [0, 0, 1]])
 
-            # Initialize the policy vector
-            for k in range(input_shape[3]):
-                policy_vector = np.zeros((input_shape[1], input_shape[2]))
+    # Initialize action vector
+    G = np.array([[-(input[i] + input[i]), -np.ones((num_hidden_states-2)),
+                     (input[i]+input[i])] * num_actions)
 
-                # Initialize the habit vector
-                for l in range(num_actions):
-                    habit_vector = np.zeros((input_shape[1], num_hidden + 4))
-
-                    # Initialize the action probabilities (probability of transitioning from state i to state j)
-                    action_probabilities = np.random.normal([0.9, 0.05]) * (
-                        input_shape[2] - k - 1
-                    )
-
-                # Initialize the habit vector
-                for l in range(input_shape[3]):
-                    habit_vector = np.zeros((input_shape[1], num
+    # Initialize softmax over observations
+    F = np.array([[1

@@ -896,6 +896,22 @@ graph LR
     class PYMDP,PYAI,FEP,INFER,CUSTOM framework;
 ```
 
+## Variable design
+
+Name and shape state/observation variables consistently with [GNN Syntax](../reference/gnn_syntax.md#variable-naming-conventions) before wiring renderers.
+
+## Parameter specification
+
+Encode priors and constraints in `InitialParameterization` and matrix blocks as described in [Step 3: Setting Up Model Structure](#step-3-setting-up-model-structure).
+
+## Optimization
+
+Performance tuning spans pipeline configuration (Steps 11–12) and downstream numerics in each framework; see [Performance](../../performance/README.md).
+
+## Multi-agent coordination
+
+Compose multiple agents or factors in GNN structure and validate before render; see [GNN Multi-Agent](../advanced/gnn_multiagent.md).
+
 ## References
 
 1. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.

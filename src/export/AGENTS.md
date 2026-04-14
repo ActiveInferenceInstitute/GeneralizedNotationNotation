@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.3.0
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-14
 
 ---
 
@@ -385,10 +385,10 @@ python src/7_export.py --target-dir input/ --verbose
 
 ---
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-04-14
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.1.3
+**Version**: 1.3.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

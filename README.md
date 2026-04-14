@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-04-12
+**Last Updated**: 2026-04-14
 
 <div align="center">
 
@@ -48,10 +48,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-04-12  
+**Last Updated**: 2026-04-14  
 **Version**: 1.3.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-12). Including `test_llm_ollama*.py` adds integration cases that call the local `ollama` CLI (default tag overridable via `OLLAMA_MODEL`); without a responsive daemon they may time out or fail.  
+**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-14). Including `test_llm_ollama*.py` adds integration cases that call the local `ollama` CLI (default tag overridable via `OLLAMA_MODEL`); without a responsive daemon they may time out or fail.  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -769,9 +769,14 @@ When executed, the type checker writes to `output/5_type_checker_output/`:
 
 ```text
 output/5_type_checker_output/
-├── type_check_results.json
-├── type_check_summary.json
-└── global_type_analysis.json
+├── type_check_results.json       # Per-model validation + resource estimates
+├── type_check_summary.md         # Markdown dashboard with embedded visuals
+└── visualizations/
+    ├── type_validity_mosaic.png   # Pass/fail heatmap grid
+    ├── type_issue_distribution.png
+    ├── dimension_compatibility_abstract.png
+    ├── type_category_distribution.png
+    └── cards/                    # Per-model "baseball card" PNGs
 ```
 
 ### 🎨 Visualization

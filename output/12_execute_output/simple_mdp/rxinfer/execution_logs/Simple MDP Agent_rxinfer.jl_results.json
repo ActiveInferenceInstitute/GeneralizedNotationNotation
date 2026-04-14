@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 13.81629,
-  "timestamp": "2026-04-12T17:28:47.749819",
+  "execution_time": 13.888393,
+  "timestamp": "2026-04-14T11:04:40.723184",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

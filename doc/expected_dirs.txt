@@ -7,6 +7,7 @@ archive
 audio
 autogenlib
 axiom
+bnlearn
 catcolab
 cerebrum
 cognitive_phenomena
@@ -14,6 +15,7 @@ configuration
 d2
 dependencies
 deployment
+dev
 development
 discopy
 dspy
@@ -35,6 +37,7 @@ other
 pedalboard
 performance
 petri_nets
+pipeline
 pkl
 poe-world
 pomdp

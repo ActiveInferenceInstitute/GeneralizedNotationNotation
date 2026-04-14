@@ -1,16 +1,16 @@
 # EXPLAIN_MODEL
 
-1. **Model Purpose**: This is a GNN (Generalized Notation Notation) implementation of the Stigmergic Swarm Active Inference algorithm. It represents a real-world phenomenon: coordinating actions between agents using environmental traces. The model consists of three main components:
-   - **GNN Representation**: A representation that encodes the information about the system, including the hidden states (s_f0, s_f1), observations (o_m0, o_m1, etc.), and actions/controls (u_c0, π_c0, etc.). The model uses a set of learned parameters to represent these components.
-   - **GNN Context**: A representation that provides context for the system's behavior based on its current state. It contains information about how the agent interacts with other agents and their environment.
+Here is a concise overview of the key concepts:
+
+1. **Model Purpose**: This document provides an explanation of what the GNN represents and how it works. It covers the main components of the model (hidden state matrices A, B, C, D), its core principles, and practical implications for active inference in scientific contexts.
 
 2. **Core Components**:
-   - **Hidden States (s_f0, s_f1)**: Representes the hidden states of the system, including the actions/controls available to the agent. These are represented as a set of learned parameters that encode the information about how the system interacts with other agents and its environment.
-   - **Observations (o_m0, o_m1, etc.)**: Representes the observations from the agent's perspective, including actions/controls available to it. These are also represented as a set of learned parameters that encode the information about how the system interacts with other agents and its environment.
-   - **Actions/Control (u_c0, π_c0)**: Representes the actions or control provided by the agent based on its current state. These are also represented as a set of learned parameters that encode the information about how the system interacts with other agents and its environment.
+   - **Hidden states**: These are represented by the hidden state matrices A, B, C, D. They capture information about how agents interact with each other (e.g., actions).
+   - **Observations**: These represent observations of the environment and agent behavior (actions) in a given timestep.
+   - **Actions/Controls**: These are represented by the action vectors u_c0, π_c0, and their corresponding probabilities.
 
-3. **Model Dynamics**:
-   - **Activation Functions**: Representing the rate at which the model evolves over time, controlling the evolution of beliefs/actions based on the observed data. The activation functions are represented as a set of learned parameters that encode the information about how the system interacts with other agents and its environment.
+3. **Model Dynamics**: The model evolves over time based on the learned beliefs about how agents interact with each other and their environment (actions). It implements Active Inference principles to update these beliefs.
 
-4. **Active Inference Context**:
-   - **Initialization**: Representing the initial state of the system (state space), including the actions/controls available to the agent at each time step, controlling the evolution of beliefs/actions based on the observed data. The initial state is represented as a set of learned parameters that encode the information about how the system interacts with other agents
+4. **Active Inference Context**: This document provides a comprehensive explanation of what happens when using this model in scientific contexts, including key relationships between actions and beliefs. It also highlights practical implications for active inference in various domains.
+
+Please provide accurate descriptions of the models' components, core principles, and relevant concepts to ensure clarity and accessibility.

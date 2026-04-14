@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-You've already covered the key concepts:
+Based on the document, here are a few key steps to follow:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -9,6 +9,7 @@ You've already covered the key concepts:
 
 2. **Observation Variables**:
    - Observation modalities and their meanings
+   - Sensor/measurement interpretations
    - Noise models or uncertainty characterization
 
 3. **Action/Control Variables**:

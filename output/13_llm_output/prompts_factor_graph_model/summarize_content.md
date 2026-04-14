@@ -1,24 +1,12 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
+Here's a concise summary of the GNN specification:
 
 **Overview**
-This GNN implementation enables modality-specific processing by decomposing an active inference generative model into independent observation modalities (visual and proprioceptive) and joint probability distributions over variables (position, velocity). The model consists of two main components:
+This is a structured summary that provides an overview of the structure and key features of the GNN specification. It includes:
 
-1. **Visual modality**: A factor graph decomposition for tractable inference in structured models with visual and proprioceptive modalities.
-2. **Proprioceptive modality**: A factor graph decomposition for constrained constraint-based reasoning using the joint probability distribution over variables (position, velocity).
-3. **Action/Policy**: A decision tree model that enables modality-specific processing of action-independent information from actions to decisions and policy updates based on preferences.
-4. **Factor graphs**: Represented as matrices with key variables for each observation modality and action constraint.
-5. **Model parameters** are represented in the form of matrices, which can be used to perform inference using a specific model type or to specify additional constraints (e.g., restricted actions).
-6. **Key features** include:
-   - Hidden states
-   - Observations
-   - Actions/Controls
-   - Variables
-   - Constraints
-
-7. **Notable features**:
-   - Unique aspects of this implementation design, including modality-specific processing and inference capabilities based on constraints (e.g., restricted actions).
-8. **Use cases** include:
-   - Constraint-based reasoning using constrained constraint-based decision trees for constrained action spaces.
-   - Constraint-based reasoning with constrained constraint matrices to enable modality-specific processing of constrained action spaces.
+1. **Model Overview**: A brief description of what the model does, its purpose, and how it works.
+2. **Key Variables**: Listing of variables with brief descriptions (e.g., "Visual modality", "Proprioceptive modality").
+3. **Critical Parameters**: Listings of parameters that are important for the model's performance or behavior (e.g., "Action" parameter).
+4. **Notable Features**: Listing of features relevant to the model design, such as special properties and constraints (e.g., "Unique aspects"), unique characteristics of the model, and key data points (e.g., "Key variables").
+5. **Use Cases**: A list of scenarios where this model could be applied or used for analysis (e.g., "Factor graph active inference", "GNN representation")

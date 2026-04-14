@@ -168,6 +168,27 @@ def _section_step_status(
             step_num = step.get("step_number", step.get("step_num", "?"))
             emoji = "✅" if status in ("SUCCESS", "success") else "⚠️" if "warn" in str(status).lower() else "❌"
             lines.append(f"| {step_num} | {name} | {emoji} {status} | {duration} | {files} | {size} |")
+
+        # Self-referencing rows: the report step itself (step 23_report.py)
+        # and intelligent analysis (24_intelligent_analysis.py) are generated
+        # after the report step runs. If the summary is preliminary (written
+        # before these steps finish), append them so all 25 steps appear.
+        recorded_scripts = {s.get("script_name", "") for s in steps}
+        self_referencing_steps = [
+            ("23_report.py", "Comprehensive analysis report generation"),
+            ("24_intelligent_analysis.py", "AI-powered pipeline analysis and executive reports"),
+        ]
+        for script_name, desc in self_referencing_steps:
+            if script_name not in recorded_scripts:
+                output_dir_name = script_name.replace(".py", "_output")
+                st = step_stats.get(output_dir_name, {})
+                files = st.get("file_count", "—")
+                size = st.get("total_size_kb", "—")
+                # These steps are in-flight when the report is written
+                step_num = int(script_name.split("_")[0]) + 1
+                emoji = "🔄"
+                lines.append(f"| {step_num} | {desc} | {emoji} IN PROGRESS | — | {files} | {size} |")
+
     elif step_stats:
         lines.append("")
         lines.append("| Step Output | Files | Size (KB) |")

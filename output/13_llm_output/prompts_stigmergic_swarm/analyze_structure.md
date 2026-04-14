@@ -1,10 +1,10 @@
 # ANALYZE_STRUCTURE
 
-Based on your description, here are some key structural analysis points:
+You've already covered the key areas of analysis for GNNs:
 
 1. **Graph Structure**:
    - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
+   - Connection patterns (directed/unindirected edges)
    - Graph topology (hierarchical, network, etc.)
 
 2. **Variable Analysis**:
@@ -17,16 +17,20 @@ Based on your description, here are some key structural analysis points:
    - Parameter structure and organization  
    - Symmetries or special properties
 
-Here are some key mathematical patterns that can be applied:
+To provide a detailed structural analysis, I'll focus on the following key areas:
 
-1. **Symmetry Analysis**:
-   - Symmetric graphs (graphs with symmetric connections)
-   - Symmetric graph structures for each variable
-   - Symmetrical relationships between variables 
+1. **Graph Structure**:
+   - Number of variables and their types
+   - Connection patterns (directed/unindirected edges)
+   - Graph topology (hierarchical, network, etc.)
 
-2. **Computational Complexity Indicators**:
-   - Computational complexity indicators (e.g., complexity of the graph, number of edges in a path)
+2. **Variable Analysis**:
+   - State space dimensionality for each variable
+   - Dependencies and conditional relationships
+   - Temporal vs. static variables
 
-3. **Design Patterns**:
-   - What modeling patterns or templates can be applied?
-   - How does the structure reflect the domain being modeled?
+I'll also explore the following mathematical concepts:
+
+1. **Symmetry or Special Properties**:
+   - What patterns are present in GNNs?
+   - How do they relate to specific domains (e.g., social networks, decision-making processes)?

@@ -27,9 +27,9 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 - **[Project.toml](Project.toml)**: Project dependencies and configuration.
 - **[Manifest.toml](Manifest.toml)**: Detailed dependency information for reproducibility.
 
-### Legacy Files
+### Superseded files
 
-- **Original_Multi-agent Trajectory Planning.jl**: Original script version (file not present in current version).
+- **Original_Multi-agent Trajectory Planning.jl**: Earlier script revision (not shipped in this tree).
 
 ## Running the Project
 

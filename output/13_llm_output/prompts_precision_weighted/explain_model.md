@@ -1,38 +1,50 @@
 # EXPLAIN_MODEL
 
-Here is a concise overview of the GNN Section:
+Here's a concise overview of the GNN specification:
 
-**GNNSection:**
+**GNN Section:**
 ActInfPOMDP
 
 ```python
-# Define the base POMDP agent with explicit sensory and policy parameters
-A=LikelihoodMatrix(
-    A, # Likelihood matrix (modulated by ω)
-    B = TransitionMatrix # Transition matrix
-    C = LogPreferenceVector # Prior over hidden states
-    D = PriorOverHiddenStates # Prior over actions
-)
+# Define the state space and action distributions for ActInfPomdp agent
+A = LikelihoodMatrix(shape=(num_hidden_states, num_obs), dtype=complex)
+B = TransitionMatrix()
+C = LogPreferenceVector()
+D = PriorOverHiddenStates()
+E = Habit()
+s = HiddenState()
+o = Observation()
+F = VariableFreeEnergy()
+G = VariableFreeEnergy(shape=(num_actions, num_timesteps))
 ```
+**Model Purpose:**
 
-**GNNVersionAndFlags:**
-GNN v1
+1. **Action**: The agent's actions are represented by a set of states and actions (represented as vectors). Each state is associated with an action vector.
 
-## ModelName: Precision-Weighted Active Inference Agent
+2. **State Space**: The state space represents the range of possible actions available to the agent, including its own actions and those of other agents. It also captures any constraints or restrictions on the agent's behavior.
 
-**ModelAnnotation:**
-An active inference agent with explicit sensory and policy parameters.
+3. **Observation**: The observation represents a sequence of actions (represented as vectors) that are being tracked by the agent. Each action is associated with an observation vector.
 
-**StateSpaceBlock:**
-A = (0.9, 0.05, 0.05) # Likelihood matrix (modulated by ω)
-B = ( )   # Transition matrix
-C = ( )     # Log-preferences over observations
-D = ( )    # Prior over hidden states
-E = ( )      # Habit (prior over actions)
-s=HiddenState  # Hidden state distribution
-s_prime=NextHiddenState # Current observation
-o=Observation   # Observation
-F=Habit          # Action (action-based policy)
-G=ExpectedFreeEnergy    # Expected Free Energy
-# GNN Example: Precision-Weighted Active Inference Agent
-```
+**Core Components:**
+
+1. **Action Distribution**: A set of states and actions, representing the possible actions available to the agent.
+
+2. **State Space**: A set of states and actions, representing the range of possible actions available to the agent.
+
+3. **Observation**: A sequence of actions (represented as vectors) that are being tracked by the agent. Each action is associated with an observation vector.
+
+**Model Dynamics:**
+
+1. **Action Distribution**: A set of states and actions, representing the possible actions available to the agent.
+
+2. **State Space**: A set of states and actions, representing the range of possible actions available to the agent.
+
+3. **Observation**: A sequence of actions (represented as vectors) that are being tracked by the agent. Each action is associated with an observation vector.
+
+**Active Inference Context:**
+
+1. **Action Distribution**: A set of states and actions, representing the possible actions available to the agent.
+
+2. **State Space**: A set of states and actions, representing the range of possible actions available to the agent.
+
+3. **Observation**: A sequence of actions (represented as vectors) that are being tracked by the agent. Each action is associated with

@@ -6,24 +6,46 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of the multi-armed bandit:
+```python
+import numpy as np
+from scipy import stats
 
-1. Create an instance of the GNN model using `GnnModel` from the `pytorch_examples/models/gnn_model` module.
-2. Define the action space and reward distribution for each arm in the "action" column, with the following equations:
-   - For arms 0 (reward) and 1 (action), set the reward to a random value between 0 and 1 (inclusive).
-   - For arms 1 (action), set the reward to a random value between 0 and 2.5 (inclusive).
-   - For arms 2, set the reward to a random value between 0 and 3.5 (inclusive).
-3. Define the transition matrix for each arm in the "transition" column:
-   - For arms 0 (reward) and 1 (action), set the reward to a random value between 0 and 1 (inclusive).
-   - For arms 2, set the reward to a random value between 0 and 3.5 (inclusive).
-4. Define the action vector for each arm in the "actions" column:
-   - For arms 0 (reward) and 1 (action), set the action vector to a random value between 0 and 2.5 (inclusive).
-   - For arms 2, set the action vector to a random value between 0 and 3.5 (inclusive).
-5. Define the prior over reward for each arm in the "prior" column:
-   - For arms 0 (reward) and 1 (action), set the prior of reward to a random value between 0 and 2.5 (inclusive).
-   - For arms 2, set the prior of reward to a random value between 0 and 3.5 (inclusive).
-6. Define the policy vector for each arm in the "policy" column:
-   - For arms 0 (reward) and 1 (action), set the policy over action to a random value between 0 and 2.5 (inclusive).
-   - For arms 2, set the policy over action to a random value between 0 and 3.5 (inclusive).
-7. Define the reward distribution for each arm in the "reward_distribution" column:
-   - For arms 0 (reward) and 1 (action), set the reward distribution to a random
+# Define the action space and reward distribution for the multi-armed bandit
+actions = [
+    (0, 1), # Arm 0 best
+    (1, 2)    # Arm 1 best
+]
+reward_obs = np.array([
+    0.95736480000000000,
+    0.00000000000000000,
+    0.00000000000000001
+]) # Reward distribution for arm 0
+actions = np.array([
+    (0, 0), 
+    (2, 3)    # Arm 1 best
+    (4, 5)   # Arm 2 best
+]) # Context transitions for arms are sticky
+reward_obs = np.array([
+    0.98761210000000000,
+    0.00000000000000000,
+    0.00000000000000001
+]) # Reward distribution for arms are sticky
+actions = np.array([
+    (0, 2), 
+    (4, 3)    # Arm 1 best
+    (6, 5)   # Arm 2 best
+]) # Context transitions for arms are sticky
+reward_obs = np.array([
+    0.98761210000000000,
+    0.00000000000000000,
+    0.00000000000000001
+]) # Reward distribution for arms are sticky
+actions = np.array([
+    (2, 3), 
+    (6, 5)   # Arm 1 best
+    (4, 3)    # Arm 2 best
+]) # Context transitions for arms are sticky
+reward_obs = np.array([
+    0.98761210000000000,
+    0.00000000000000000,
+    0.00000000

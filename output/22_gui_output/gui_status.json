@@ -1,9 +1,9 @@
 {
-  "backend": "none",
+  "backend": "gradio",
   "launched": false,
   "export_file": "output/22_gui_output/visual_model_gui2.md",
   "gui_type": "visual_matrix_editor",
-  "status": "fallback_mode",
+  "status": "headless_mode",
   "visual_data_file": "output/22_gui_output/visual_matrices.json",
   "features": [
     "Visual matrix editing",
@@ -12,7 +12,6 @@
     "POMDP template-based"
   ],
   "recommendations": [
-    "Install with: uv sync --extra gui",
-    "Run with --interactive for full GUI experience"
+    "Run with --interactive to launch GUI server on port 7861"
   ]
 }

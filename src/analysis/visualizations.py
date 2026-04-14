@@ -320,7 +320,9 @@ def visualize_all_framework_outputs(
             # of these plots. Generating them here would create duplicates.
 
             # Generate free energy plot (not produced by per-framework analyzers)
-            free_energy = sim_data.get("free_energy", [])
+            free_energy = sim_data.get("free_energy", []) or sim_data.get("efe_history", []) or sim_data.get("expected_free_energy", [])
+            vfe_energy = sim_data.get("variational_free_energy", []) or sim_data.get("vfe_history", [])
+            
             if free_energy:
                 fe_file = framework_viz_dir / f"{model_name}_{framework}_free_energy.png"
                 try:
@@ -329,6 +331,15 @@ def visualize_all_framework_outputs(
                     log.info(f"Generated free energy plot: {fe_file.name}")
                 except Exception as e:
                     log.warning(f"Failed to generate free energy plot for {key}: {e}")
+                    
+            if free_energy and vfe_energy:
+                fe_dual_file = framework_viz_dir / f"{model_name}_{framework}_vfe_vs_efe.png"
+                try:
+                    generate_vfe_vs_efe_plot(vfe_energy, free_energy, fe_dual_file, f"Active Inference Energy Dynamics - {model_name} ({framework})")
+                    generated_files.append(str(fe_dual_file))
+                    log.info(f"Generated dual free energy plot: {fe_dual_file.name}")
+                except Exception as e:
+                    log.warning(f"Failed to generate dual free energy plot for {key}: {e}")
 
             # Generate observation analysis (not produced by all per-framework analyzers)
             observations = sim_data.get("observations", [])
@@ -618,7 +629,18 @@ def generate_free_energy_plots(
 
     # Distribution of free energy values (using summary EFE)
     ax2 = axes[0, 1]
-    ax2.hist(fe_summary, bins=min(20, n_steps), color='steelblue', edgecolor='white', alpha=0.7)
+    
+    # Check if data is constant to prevent "Too many bins for data range" errors
+    fe_min = np.min(fe_summary)
+    fe_max = np.max(fe_summary)
+    
+    if np.isclose(fe_min, fe_max) or fe_max - fe_min < 1e-10:
+        # For constant or near-constant data, use a single explicit bin range centered around the value
+        bins = [fe_min - 0.5, fe_min + 0.5]
+    else:
+        bins = min(20, max(1, n_steps))
+        
+    ax2.hist(fe_summary, bins=bins, color='steelblue', edgecolor='white', alpha=0.7)
     ax2.axvline(np.mean(fe_summary), color='red', linestyle='--', linewidth=2, label=f'Mean: {np.mean(fe_summary):.3f}')
     ax2.axvline(np.median(fe_summary), color='green', linestyle='--', linewidth=2, label=f'Median: {np.median(fe_summary):.3f}')
     ax2.set_xlabel("Free Energy (Selected)")
@@ -671,6 +693,65 @@ def generate_free_energy_plots(
 
     plt.suptitle(title, fontsize=14, fontweight='bold')
     plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+
+    return str(output_path)
+
+
+def generate_vfe_vs_efe_plot(
+    vfe: List[float],
+    efe: List[Any],
+    output_path: Path,
+    title: str = "Variational vs Expected Free Energy"
+) -> str:
+    """
+    Generate visualization comparing VFE and EFE over time.
+
+    Args:
+        vfe: List of variational free energy values (scalars)
+        efe: List of expected free energy values (lists of scalars, one per policy)
+        output_path: Path to save the visualization
+        title: Title for the plot
+
+    Returns:
+        Path to the generated file
+    """
+    if not vfe or not efe:
+        raise ValueError("Need both VFE and EFE data to generate plot")
+
+    # Process EFE (take min across policies if it's a list)
+    efe_summary = []
+    for efe_t in efe:
+        if hasattr(efe_t, '__iter__') and not isinstance(efe_t, str):
+            efe_summary.append(min(efe_t) if len(efe_t) > 0 else 0)
+        else:
+            efe_summary.append(efe_t)
+
+    fig, ax1 = plt.subplots(figsize=(10, 6))
+
+    color1 = 'tab:blue'
+    ax1.set_xlabel("Time Step")
+    ax1.set_ylabel("Variational Free Energy (VFE)", color=color1)
+    ax1.plot(vfe, 'o-', color=color1, linewidth=2, label="VFE (Belief Update Cost)")
+    ax1.tick_params(axis='y', labelcolor=color1)
+    ax1.grid(True, alpha=0.3)
+
+    ax2 = ax1.twinx()
+    color2 = 'tab:orange'
+    ax2.set_ylabel("Expected Free Energy (EFE)", color=color2)
+    ax2.plot(efe_summary, 's--', color=color2, linewidth=2, label="Min EFE (Policy Cost)")
+    ax2.tick_params(axis='y', labelcolor=color2)
+
+    fig.suptitle(title, fontsize=14, fontweight='bold')
+    fig.tight_layout()
+
+    # Combine legends from both axes
+    lines_1, labels_1 = ax1.get_legend_handles_labels()
+    lines_2, labels_2 = ax2.get_legend_handles_labels()
+    ax1.legend(lines_1 + lines_2, labels_1 + labels_2, loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2)
+    plt.subplots_adjust(bottom=0.2)
+
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
@@ -761,6 +842,7 @@ def generate_unified_framework_dashboard(
     framework_beliefs = {}
     framework_actions = {}
     framework_efe = {}
+    framework_vfe = {}
     framework_metrics = {}
 
     for _key, data in framework_data.items():
@@ -784,6 +866,11 @@ def generate_unified_framework_dashboard(
                     if efe_arr.ndim == 2:
                         efe_data = np.mean(efe_arr, axis=1).tolist()
                     framework_efe[framework] = efe_data
+                    
+            if sim_data.get("vfe_history") or sim_data.get("variational_free_energy"):
+                vfe_data = sim_data.get("vfe_history") or sim_data.get("variational_free_energy") or []
+                if vfe_data:
+                    framework_vfe[framework] = vfe_data
 
             # Collect metrics
             framework_metrics[framework] = {

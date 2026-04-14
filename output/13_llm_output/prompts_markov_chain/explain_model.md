@@ -1,16 +1,18 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points: 
+You've already covered the key points:
 
-1. **Model Purpose**: This is a simple discrete-time Markov Chain with no actions and no observation model. It represents passive dynamics where states are directly observed without any action selection or control.
+1. **Model Purpose**: This is a simple discrete-time Markov Chain (DPMC) that represents passive dynamics with no actions and no observation model. It's designed to illustrate the basic principles of active inference, including how it learns from data and updates beliefs based on new observations.
 
-2. **Core Components**: 
-   - **Hidden States**: These represent the current state of the system, which can be either sunny (state A) or cloudy (state B).
-   - **Observations**: These represent the current observation data, which can be either a single observation (e.g., "s(t)") or multiple observations with different labels for each observation (e.g., "o(t)", "u_c0", etc.).
-   - **Time**: This represents the time step through which the system evolves.
+2. **Core Components**:
+   - **Hidden States**: These are represented by 3x3 identity matrices (A) that represent the system's state transitions. The states can be thought of as directly observable outcomes or "actions" in a sense, but they're not explicitly defined for inference purposes.
+   - **Observations**: These are represented by 3x1 identities (B), which capture the current observation and its corresponding state distribution.
+   - **Initial State Distribution**: This is an identity matrix representing the initial state of the system. It's used to initialize the transition matrices B, A, and D based on the observed data.
 
-3. **Model Dynamics**: The model implements Active Inference principles, where states are directly observed and actions/controls can be applied to update beliefs (e.g., "actions") based on new observations. Actions are also updated based on previous predictions or decisions made by the system.
+3. **Model Dynamics**: The model evolves over time by updating beliefs (s_f0, s_f1) based on new observations (o_m0, o_m1). This process is described in detail elsewhere.
 
-4. **Active Inference Context**: This is a probabilistic graphical model that allows for inference of future state-action relationships, allowing you to make informed decisions about actions and control over the system's behavior. It uses Bayes' theorem to update beliefs based on new observations.
+4. **Active Inference Context**: The model uses the history of observed data to update its beliefs and make predictions about future outcomes. It's designed to learn from past behavior and predict uncertain outcomes using probabilistic graphical models.
 
-Please provide your own explanations in clear language while maintaining scientific accuracy.
+5. **Practical Implications**: The model can inform decisions based on new observations, such as predicting weather patterns or identifying potential risks in a given scenario. Additionally, it provides insights into the system's behavior under uncertainty, allowing for more informed decision-making processes.
+
+Please provide clear and concise explanations of each component to ensure understanding is achieved.

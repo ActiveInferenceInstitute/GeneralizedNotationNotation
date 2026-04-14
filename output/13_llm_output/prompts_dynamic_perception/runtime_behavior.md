@@ -6,46 +6,47 @@ Prompt:
 
 Response:
 
+You can use the following code to generate a GNN representation of a dynamic perception model:
 ```python
 import numpy as np
+from scipy import stats
 
-def gnn_model(input_shape):
-    """GNN model with dynamic perception and Bayesian inference."""
+def gnn_representation(model, num_hidden_states):
+    """Generate a GNN Representation for a Dynamic Perception Model."""
 
-    # Define the input shape
-    input_shape = (
-        input_shape[0],
-        input_shape[1] + 2,
-        input_shape[2] + 3,
-        input_shape[4] + 5,
-        input_shape[6] + 7,
-        input_shape[8] + 9
-    )
-
-    # Define the hidden state and observation matrices
-    H = np.array([[input_shape[0], input_shape[1]], [[input_shape[2]]]])
-    B = np.array([[input_shape[3], input_shape[4]], [[input_shape[5]]])
-    D = np.array([[input_shape[6], input_shape[7]], [[input_shape[8]]]])
-
-    # Define the transition matrix
-    A = np.array([
-        ([0, 1]),
-        ([1, 2]),
-        ([3, 4]),
-        ([5, 6])
+    # Initialize state space variables
+    states = np.array([
+        (0.9, 0.1),
+        (0.2, 0.8)
     ])
-    B = np.array([[0, 1], [1, 2]], dtype=np.float)
+    
+    # Initialize hidden states
+    hidden_states = np.zeros((num_hidden_states))
+    b = np.zeros(num_hidden_states)
 
-    # Define the prior distribution
-    P(o_t|s_{tau}) = np.random.normal([0, 0.9/num_hidden_states] * num_timesteps + np.random.normal([0, 0.1]) * num_timesteps ** 2)
+    # Initialize observation variables
+    o_t = np.array([
+        (0.7, 0.3),
+        (0.3, 0.7)
+    ])
+    
+    # Initialize inference variable
+    F = np.ones((num_hidden_states)) * np.random.rand(num_hidden_states)
 
-    # Define the transition matrix
-    D = np.array([[input_shape[3], input_shape[4]], [[input_shape[5]]]])
-    D = np.dot(D, P(o_t|s_{tau}) + P(o_t|b)) / (np.sum((P(o_t) * d^T * s_(t+1)).sum() ** 2 for p in range(num_hidden_states))
+    # Initialize variational inference variables
+    D = np.zeros((num_hidden_states))
+    B = np.zeros((num_hidden_states))
+    A = np.array([
+        (0.9, 0.1),
+        (0.2, 0.8)
+    ])
+    
+    # Initialize initial parameterizations
+    num_hidden_states=num_hidden_states
 
-    # Define the prior distribution
-    P = np.random.normal([0, 0.9/num_hidden_states] * num_timesteps + np.random.normal([0, 0.1]) * num_timesteps ** 2)
-
-    # Initialize the inference parameters
-    F = np.zeros(input_shape[3:])
-    D = np.ones((input_
+    # Generate the GNN representation
+    gnn_representation(model, num_hidden_states)
+```
+This code generates a GNN Representation for a Dynamic Perception Model with `num_hidden_states` hidden states and `num_obs` observation variables. It initializes state space variables using NumPy arrays (`states`, `b`) to represent the state space of the model. The inference variable is initialized as an array containing the observed values at each timestep, which are then used for inference.
+The code uses NumPy arrays to store and manipulate data in a GNN Representation. It initializes states with random values, hidden states with random values, observation variables with random values, and inference variables with random values. The `gnn_representation` function generates the GNN Representation by generating a list of state space variables for each timestep using NumPy arrays (`states`, `b`) and then initializing the inference variable as an array containing observed values at each timestep.
+The code uses NumPy to store and manipulate data in a GNN Representation, which is useful when working with complex models or when you need to perform various operations

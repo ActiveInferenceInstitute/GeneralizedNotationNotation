@@ -490,7 +490,7 @@ class MathematicalExpression {
 }
 ```
 
-### 2. **Legacy Compatibility**
+### 2. **Backward compatibility (migration)**
 
 **Challenge**: Existing GNN markdown files need migration path.
 

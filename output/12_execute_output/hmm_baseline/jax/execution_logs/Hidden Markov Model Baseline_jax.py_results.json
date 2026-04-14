@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.830731,
-  "timestamp": "2026-04-12T17:24:01.851042",
+  "execution_time": 0.825245,
+  "timestamp": "2026-04-14T10:59:26.752248",
   "simulation_data": {
     "traces": [],
     "free_energy": [

@@ -1,7 +1,7 @@
 # GNN Source Specification
 
 **Version**: 2.0.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.3.0"`  
-**Last Updated**: 2026-04-09  
+**Last Updated**: 2026-04-14  
 **Status**: Maintained
 
 ---

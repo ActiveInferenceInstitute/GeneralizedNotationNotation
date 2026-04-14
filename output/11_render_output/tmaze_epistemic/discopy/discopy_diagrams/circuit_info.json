@@ -1,6 +1,6 @@
 {
   "model_name": "T-Maze Epistemic Foraging Agent",
-  "timestamp": "2026-04-12 17:23:34",
+  "timestamp": "2026-04-14 10:58:57",
   "parameters": {
     "num_states": 4,
     "num_observations": 4,

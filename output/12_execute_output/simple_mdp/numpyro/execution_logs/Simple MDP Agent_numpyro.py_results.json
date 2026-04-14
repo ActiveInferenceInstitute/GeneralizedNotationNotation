@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.724365,
-  "timestamp": "2026-04-12T17:24:55.682133",
+  "execution_time": 4.418549,
+  "timestamp": "2026-04-14T11:00:23.161641",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -46,7 +46,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.453s\nResults saved to: output/12_execute_output/simple_mdp/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.458s\nResults saved to: output/12_execute_output/simple_mdp/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [

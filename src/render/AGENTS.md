@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.3.0
 
-**Last Updated**: 2026-03-17
+**Last Updated**: 2026-04-14
 
 ---
 

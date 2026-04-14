@@ -1,12 +1,14 @@
 # GNN Folder Alignment Status
 
-**Last updated:** 2026-04-10
+**Last updated:** 2026-04-12
 
 **Reference model:** `input/gnn_files/actinf_pomdp_agent.md` (also under `src/gnn/gnn_examples/`)
 
 **Purpose:** Track alignment of `src/gnn/` with the reference GNN model: schemas/grammars, parsers, validators, documentation, and round-trip behavior.
 
 Canonical **format counts** (23 enum, 22 serializers, round-trip scope): see **[SPEC.md](SPEC.md)**.
+
+**File discovery:** `processor.discover_gnn_files()` uses narrow globs (`*.md`, `*.gnn`, `*.txt`); Step 3 `process_gnn_multi_format()` uses a broad extension list — see SPEC § File discovery.
 
 ## Round-trip testing (default suite)
 

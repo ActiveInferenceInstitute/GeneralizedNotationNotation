@@ -6,22 +6,41 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of your decision-making model:
+```python
+import numpy as np
 
-1. Create an instance of `GNNModel` with the specified parameters and initialize the state space block and action sequences.
-2. Use the `generate_state()` function from the `gnnmodel` module to create the initial states, actions, and policy distributions.
-3. Use the `generate_actions()` function from the `gennafunctional` module to generate a sequence of actions for each state.
-4. Use the `generate_policy()`, `generate_action(state)` functions from the `gnnmodel` module to create policies and action sequences, respectively.
-5. Use the `generate_actions()` function again to generate new policy sequences based on the current state and previous actions.
-6. Use the `generate_policies()` function from the `gennafunctional` module to generate a sequence of policy distributions for each state.
-7. Use the `generate_policy()`, `generate_action(state)` functions from the `gnnmodel` module to create policies and action sequences based on the current state and previous actions.
-8. Use the `generate_actions()` function again to generate new policy sequences based on the current state and previous actions.
-9. Use the `generate_policies()`, `generate_action(state)` functions from the `gnnmodel` module to create policies and action sequences based on the current state and previous actions.
-10. Use the `generate_actions()` function again to generate new policy sequences based on the current state and previous actions.
+# Define the GNN model annotations and parameters
+GNN_model=np.array([
+    ([
+        ([
+            ([
+                ([
+                    ([
+                        ([
+                            ([
+                                ([
+                                    ([
+                                        ([
+                                            ([
+                                                ([
+                                                    ([
+                                                        ([
+                                ], [[[0] * 4**3 + 1]]*64 ** T) - E[H[P(o_τ|s_τ)]], [[0]] * 64 ** T) - E[H[G_tau2|S]], [[0]] * 64 ** T) - E[H[G_tau3|S']]),
+                    ], [[[0] * 1**T + 1]]*64 ** T) - E[H[π|s_τ]][],
+                ])
+            ]
+        ]
+    ]
+])
+```
 
-You can then use these methods to generate a GNN representation of your decision-making model:
+This implementation uses a GNN model with 4 hidden states and 4 observations. It implements the following actions:
 
-1. Generate initial states, actions, and policies for each state using `generate_state()`.
-2. Use `generate_actions()` to create new policy sequences based on the current state and previous actions.
-3. Use `generate_policy()` to generate a sequence of policy distributions for each state.
-4. Use `generate_policies()` to generate a sequence of policy distributions for each state.
+1. `G(θ, θ+1)` is trained to predict the state at time `t` based on the policy sequence `π`. The predicted state is computed using the following steps:
+   - `g_τ(θ) = G[θ] + E[H[P(o_τ|s_τ)]], [[[0]] * 64 ** T] - E[H[G_tau2|S]], [[0]] * 64 ** T) - E[H[π|s_τ]][]`.
+   - `g_(θ+1, θ)= g_[θ + 1]*(G[θ][]) + E[H[P(o_τ|s_τ)]], [[[0]]*64 ** T] - E[H[G_tau2|S']]`
+
+2. `π=g_(θ+1, θ)`.
+3. `σ = G_τ(π)[].**T`, where `G_τ(π)` is the GNN model's policy distribution over actions and `σ` is its prior over initial states.
+4. `F[G_τ(π)]= F[(θ+1, θ)][], [[[0]]*64 ** T] - E[H[P(o_τ|s_τ)]].**T`.
+5. `E[H[G_tau

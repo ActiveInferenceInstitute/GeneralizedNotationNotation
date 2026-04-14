@@ -364,7 +364,7 @@ markers = [
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
     "uv: UV package manager environment management tests",
-    "safe_to_fail: Tests that can fail without blocking CI",
+    "xfail: Tests expected to fail in certain environments (e.g. missing ollama)",
     "pipeline: marks tests as full pipeline integration tests (deselect with '-m \"not pipeline\"')",
     "mcp: marks MCP audit tests that require module discovery (deselect with '-m \"not mcp\"')",
 ]

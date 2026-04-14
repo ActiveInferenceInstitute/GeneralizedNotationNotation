@@ -51,7 +51,7 @@ prepends a batch axis and casts to `jnp.float32`.
 
 ### GNN B layout conversion
 
-The legacy GNN convention stores `B` as `(action, prev_state, next_state)`.
+One older GNN convention stores `B` as `(action, prev_state, next_state)`.
 pymdp 1.0.0 uses `(next_state, prev_state, action)`. Canonicalisation happens
 inside `_canonicalise_B`:
 
@@ -147,6 +147,22 @@ uv run pytest \
 - Carry the empirical prior forward explicitly with
   `prior = agent.update_empirical_prior(action, qs)`.
 - `Agent.reset()` is gone — re-seed via `empirical_prior=agent.D`.
+
+## Basic examples
+
+See [Minimal Local Example (JAX-first)](#minimal-local-example-jax-first) and pipeline tests under `src/tests/test_pymdp_*`.
+
+## POMDP examples
+
+POMDP-shaped models use the same `Agent` surface; see [Core Mapping](#core-mapping) and the doc hub [Example Gallery](../README.md#basic-examples).
+
+## Multi-agent examples
+
+Multi-factor and multi-control setups follow the factorial `A`/`B` list layout in [Matrix Shape Convention (pymdp 1.0.0)](#matrix-shape-convention-pymdp-100).
+
+## Security considerations
+
+Treat generated runners like any code that executes on your machine: use trusted GNN sources, avoid pasting secrets into model files, and review `output/` artifacts before sharing.
 
 ## What Is Not Claimed Here
 

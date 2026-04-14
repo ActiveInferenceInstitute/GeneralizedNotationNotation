@@ -1,21 +1,18 @@
 # EXPLAIN_MODEL
 
-Here's a concise overview of the key components:
+You've covered the key points:
 
-1. **Model Purpose**: This is a description of what this model represents and how it works. It provides context for understanding the purpose of the model.
+1. **Model Purpose**: This is a generative model that represents a hierarchical active inference agent with different temporal scales (level 0 to level 2). It's designed to learn and update beliefs based on observed actions, observations, and goals from multiple levels of hierarchy.
 
 2. **Core Components**:
-   - **Saved Actions**: The actions/controls available to the agent are stored in the model's state space, which can be accessed at different times by the agent.
-   - **Observations**: The observations capture what is happening within the agent's scope of knowledge and understanding.
-   - **Actions**: Actions represent decisions made by the agent based on its actions/controls. These actions are stored in the model's state space, which can be accessed at different times by the agent.
+   - **Span**-based representation: This is the core component that represents all possible actions/states in the agent. It encodes all available actions/state transitions into a single matrix (s_f0, s_f1, etc.).
+   - **Observation**-based representation: This is another layer of information represented by the "observations" vector (o_m0, o_m1, ...). It represents all possible observations from different levels.
 
-3. **Model Dynamics**: The model implements Active Inference principles to update beliefs (actions) and predictions about future outcomes based on available information from the environment. It also updates beliefs based on observed events or decisions made by other agents in the system.
+3. **Model Dynamics**: The model implements Active Inference principles and uses a hierarchical structure to represent beliefs/actions/states across multiple levels. It learns and updates these representations based on observed actions and goals.
 
-4. **Active Inference Context**: This is a description of how the agent learns, makes decisions, and predicts actions/states based on its knowledge and understanding of the world. It provides insight into how the agent operates within the context of the problem domain.
+4. **Active Inference Context**: This is the core idea of what can be learned or predicted using this model:
+   - **Action-state relationships**: The agent's belief in a state (action) changes based on its own beliefs about other states/actions, which are updated by observing observations from different levels.
 
-Key relationships:
-   - **Observations**: Actions are stored in state space to allow for updating beliefs based on observed events or decisions made by other agents.
-   - **Actions**: Actions represent decisions made by the agent, which can be updated based on available information from the environment and actions learned from observations.
-   - **State Space**: The model's state space represents the current knowledge of the agent's scope of understanding (actions/observations) and its ability to make predictions about future outcomes based on available information.
+5. **Practical Implications**: What can you learn or predict? What decisions can it inform?
 
-5. **Practical Implications**: This model can inform decisions by providing insights into how it operates within the context of the problem domain, allowing for more informed decision-making. It can also provide a framework for analyzing complex systems with multiple agents interacting in dynamic environments.
+Please provide clear and concise explanations while maintaining scientific accuracy.

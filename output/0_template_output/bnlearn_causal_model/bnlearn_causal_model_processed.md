@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/discrete/bnlearn_causal_model.md
-# Processed on: 2026-04-12T17:21:40.225331
+# Processed on: 2026-04-14T10:56:40.578281
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: bnlearn Causal Discovery Model

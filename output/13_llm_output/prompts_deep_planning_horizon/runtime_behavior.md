@@ -6,44 +6,37 @@ Prompt:
 
 Response:
 
-Here's the complete implementation of the GNN model in Python using the `scipy` library and the `numpy` library. The `GNNModel` class is used to represent the GNN model:
+Here is the complete code for the GNN model in Python using the `numpy` library and the `scipy.stats` module to compute the expected free energy:
 ```python
 import numpy as np
-from scipy import stats
+from scipy.stats import gauss, log
 
-def gnn_model(num_hidden_states, num_obs, num_actions, planning_horizon):
-    """
-    GNN representation of a GNN model.
+def gnn_model(num_hidden_states=4, num_obs=4, num_actions=64):
+    """GNN model for a multi-step policy evaluation with T=5 horizon and 30 timesteps."""
 
-    Parameters:
-        num_hidden_states (int): Number of hidden states in the model.
-        num_obs (int): Number of observations to consider for inference.
-        num_actions (int): Number of actions to be inferred from.
-        planning_horizon (int): Number of timesteps to evaluate GNN inference.
-        num_policies (int): Number of policies to be considered in the inference.
-        num_timesteps (int): Number of time steps for inference.
+    # Define the GNN representation of the model
+    G = gauss.normal(loc=-1e-27, scale=(1E-9,-1E-9), size=[num_hidden_states])
+    
+    # Initialize the state space
+    s = np.array([[-np.ones((num_actions+1) * num_actions], dtype=dtype('float64')]) + [0] * num_actions**2
 
-    Returns:
-        A dictionary containing the following keys:
-            - `learning_rate`: The learning rate used during training.
-            - `action_space` (list[float]): List of actions that are taken by each observation in the policy space.
-            - `policy_distribution`: The probability distribution over policies for each action.
-            - `prior_over_actions`: Prior distribution over all actions, where the prior is a list of 4 states and 10 actions.
-            - `prior_over_policies` (list[float]): List of probabilities that are taken by each policy in the policy space.
-            - `prior_over_policy` (list[float]): List of probabilities that are taken by each action in the action space.
-    """
+    # Define the policy distribution
+    π = np.array([[[]]*num_actions, 0]*num_actions**3 for _ in range(num_actions)])
+    
+    # Initialize the action distributions
+    a1 = np.array([[-np.ones((num_hidden_states+1) * num_hidden_states], dtype=dtype('float64'))] + [0])
 
-    learning_rate = 0.1
-    num_hidden_states = num_hidden_states + num_actions * num_policies
-    num_obs = num_obs + num_actions * num_policy_spaces
-    num_actions = num_actions + num_policies * num_timesteps
-    planning_horizon = planning_horizon - 1
+    # Define the policy sequence distribution
+    s_tau1 = gauss.normal(loc=-1e-27, scale=(1E-9,-1E-9), size=[num_actions**3 for _ in range(num_actions)])
+    
+    # Initialize the action distributions
+    a2 = np.array([[-np.ones((num_hidden_states+1) * num_hidden_states], dtype=dtype('float64'))] + [0])
 
-    # Initialize the GNN model with a random initialization of states and actions
-    GnnModel.init(num_hidden_states, num_obs, num_actions)
+    # Define the policy sequence distribution
+    s_tau2 = gauss.normal(loc=-1e-27, scale=(1E-9,-1E-9), size=[num_actions**3 for _ in range(num_actions)])
+    
+    # Initialize the action distributions
+    a3 = np.array([[-np.ones((num_hidden_states+1) * num_hidden_states], dtype=dtype('float64'))] + [0])
 
-    # Initialize the prior distribution over policies for each action
-    GnnModel.prior_over_policies = np.zeros((num_policy_spaces + 1))
-
-    # Initialize the prior distributions over all actions and policy spaces
-    Gnn
+    # Define the policy sequence distribution
+    s_tau3 = gauss.normal(loc=-1e-27, scale=(

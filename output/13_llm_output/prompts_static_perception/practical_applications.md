@@ -1,26 +1,35 @@
 # PRACTICAL_APPLICATIONS
 
-You've already covered the practical applications of GNN models, including their use cases for perception-only inference and analysis. Here are some additional points to consider:
+Your analysis is thorough, but there are a few areas where you can refine your understanding:
 
-1. **Real-world applications**: The model can be applied in various domains where people perceive objects or events based on their own perceptions. For example, it could help identify patterns in customer behavior, detect anomalies in social media conversations, or analyze the accuracy of medical diagnoses.
+1. **Simplest possible GNN model**: This model demonstrates pure perception without any temporal dynamics or action components. It's not the most efficient approach for inference in general, as it relies on a single-shot inference and requires a minimal set of parameters to achieve accurate predictions.
 
-2. **Implementation considerations**: The implementation requirements for GNN models are relatively straightforward and feasible with existing systems. However, there are some potential challenges to consider:
+2. **ModelAnnotation**: The annotation provides information about the model architecture, including its classification type (classification), prior distribution, and loss function. This helps identify potential biases or limitations in the model's performance.
 
-   - **Computational resources**: Implementing a GNN model requires significant computational resources (e.g., GPUs) or specialized hardware infrastructure. This could be a challenge if not managed properly.
-   - **Data requirements**: The number of hidden states and observations required for inference can vary greatly depending on the specific problem domain, data availability, and system performance.
+3. **StateSpaceBlock**: The state space representation is simplified for clarity, but it still contains some important information:
+   - `A` represents the probability of observing a particular observation
+   - `D` represents the prior belief over hidden states
+   - `s` and `o` represent the corresponding actions (observation) and predictions respectively
 
-3. **Performance expectations**: GNN models are generally well-suited to handling large amounts of data with reasonable computational resources. However, there may be limitations in terms of scalability or data requirements that could impact their performance:
+4. **InitialParameterization**: The model parameters are straightforward to understand, but they're not particularly informative about their behavior or limitations in specific domains.
 
-   - **Data quality**: The number of hidden states and observations required for inference can vary greatly depending on the specific problem domain.
-   - **Computational complexity**: The computation required to train a GNN model is substantial compared to other types of neural networks, which may limit its applicability in certain domains or scenarios.
+5. **Implementation Considerations**: The implementation is simple yet can be simplified for more efficient inference:
+   - `A` represents the probability of observing a particular observation
+   - `D` represents the prior belief over hidden states
+   - `s` and `o` represent the corresponding actions (observation) and predictions respectively
 
-4. **Benefits and advantages**: GNN models have been shown to be effective for tasks like sentiment analysis, object detection, and pattern recognition. They can also help identify patterns in data that are not easily interpretable using traditional methods.
+6. **Performance Expectations**: The model's performance is evaluated using metrics, such as accuracy or precision for different classification types and loss functions. However, these metrics are not directly applicable to real-world applications due to their limitations in terms of data availability and computational resources.
 
-   - **Improved accuracy**: The ability of GNN models to learn from complex data sets may lead to improved performance on certain types of problems.
-   - **Increased insight**: By providing a unified representation of the world, GNN models can provide insights into specific aspects of data that are not easily captured by traditional methods.
+To better understand the model's capabilities and advantages, you can consider:
 
-5. **Challenges and considerations**: There are several challenges to consider:
+1. **Comparison with existing models**: Analyze how well each model performs across different domains or use cases. This will help identify areas where the model excels or falls short.
 
-   - **Computational complexity**: The computational resources required for training a GNN model may be substantial compared to other types of neural networks or statistical models, which could limit their applicability in certain domains or scenarios.
-   - **Data quality**: The number of hidden states and observations required for inference can vary greatly depending on the specific problem domain.
-   - **Scalability**: The computational resources required for training a GNN
+2. **Performance evaluation metrics**: Use metrics like accuracy, precision, recall, F1-score, and other relevant performance indicators to evaluate the model's ability to make accurate predictions in specific contexts.
+
+3. **Data requirements and collection strategies**: Understand how data availability affects the model's performance and potential limitations of collecting or processing large datasets for training.
+
+To address these challenges, you can consider:
+
+1. **Simplification of parameters**: Simplify the parameterization to improve model accuracy and interpretability in specific domains.
+
+2. **Data augmentation and feature engineering**: Apply

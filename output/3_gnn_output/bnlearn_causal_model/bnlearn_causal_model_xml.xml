@@ -6,8 +6,8 @@
 - A: Action
 - S_prev: Previous State
 - O: Observation</annotation>
-    <created_at>2026-04-12T17:23:01.371883</created_at>
-    <modified_at>2026-04-12T17:23:01.371885</modified_at>
+    <created_at>2026-04-14T10:58:13.111128</created_at>
+    <modified_at>2026-04-14T10:58:13.111129</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="P(O | S)"/>

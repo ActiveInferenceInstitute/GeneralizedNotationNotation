@@ -1,8 +1,34 @@
 # GNN Learning Paths
 
+> **Role**: Step-by-step curricula (beginner → advanced). **Hub**: [README.md](README.md). **Flat index**: [INDEX.md](INDEX.md). **Topic graph**: [CROSS_REFERENCE_INDEX.md](CROSS_REFERENCE_INDEX.md).
+
 This document outlines structured learning paths for users of varying expertise levels in Generalized Notation Notation (GNN) and Active Inference. Each path includes key resources, prerequisites, and progression steps. Paths are designed to be modular, example-driven, and tied to the project's pipeline for reproducibility.
 
 **See also**: [doc/SPEC.md](SPEC.md) (how `doc/` versioning relates to the GNN language and the Python package), [CLAUDE.md](../CLAUDE.md) (commands and measured test expectations).
+
+## Research-focused path
+
+Theory-first track: see [Advanced Path: Research and Custom Extensions](#advanced-path-research-and-custom-extensions) and the [Research](CROSS_REFERENCE_INDEX.md#research) entry in the cross-reference index.
+
+## Developer-focused path
+
+Implementation focus: [Intermediate Path](#intermediate-path-building-and-integrating-models), [Development Guide](development/README.md), and [Practitioner Path](CROSS_REFERENCE_INDEX.md#practitioner-path).
+
+## Academic learning path
+
+Structured progression: [Beginner Path](#beginner-path-getting-started-with-gnn) → [Intermediate](#intermediate-path-building-and-integrating-models) → [Advanced](#advanced-path-research-and-custom-extensions).
+
+## Quick exploration path
+
+Fast orientation: [Quickstart](quickstart.md), [INDEX](INDEX.md), and [CROSS_REFERENCE_INDEX](CROSS_REFERENCE_INDEX.md).
+
+## Beginner path
+
+Same content as [Beginner Path: Getting Started with GNN](#beginner-path-getting-started-with-gnn).
+
+## Intermediate path
+
+Same content as [Intermediate Path: Building and Integrating Models](#intermediate-path-building-and-integrating-models).
 
 ## Beginner Path: Getting Started with GNN
 

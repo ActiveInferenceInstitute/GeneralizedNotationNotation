@@ -6,24 +6,38 @@ Prompt:
 
 Response:
 
-The GNN model is a classic active inference agent that explores different environments and rewards based on the available data. It has been used in various applications, including reinforcement learning, decision-making under uncertainty, and optimization problems. The model uses a Bayesian approach to update its beliefs based on new information, allowing it to adaptively explore different scenarios and make decisions based on the available data.
+You can use the following code for your GNN implementation:
+```python
+import numpy as np
 
-The GNN representation is composed of three main components:
+def gnn_agent(x):
+    x = np.array([x])
 
-1. **Location**: A set of locations representing different environments or actions. Each location has two types of observations (location type) and a reward/cue vector that represents the reward received from each location. The reward vector can be represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about the rewards.
+    # Initialize state and reward matrices
+    A = np.zeros((4, 3))
+    B = np.ones((2, 1))
+    C = np.ones((2, 1))
+    D = np.ones((2, 1))
 
-2. **LocationType**: A set of locations representing different actions or behaviors. Each location has two types of observations (location type) and a reward/cue vector that represents the reward received from each location. The reward vector can be represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about the rewards.
+    # Initialize action vectors
+    A[0] = (x[:, 0], x[:, 1])
+    A[1] = (x[:, 0], x[:, 1])
+    A[2][:, :, :] = (np.array([x[:3]])).T
 
-3. **Location**: A set of locations representing different actions or behaviors. Each location has two types of observations (action type) and a reward/cue vector that represents the reward received from each location. The reward vector can be represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about the rewards.
+    B[0] = (x[:, 0], x[:, 1])
+    B[1] = (x[:, 0], x[:, 1])
+    B[2][:, :, :] = (np.array([x[:4]]).T)
 
-The GNN model uses Bayesian inference to update its beliefs based on new information. It starts with an initial belief of the agent's current state (location type) and then updates it based on new data. The policy is represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about rewards.
+    C[0] = (x, x)
+    C[1] = (x,)
 
-The GNN model has several key characteristics:
+    D[0] = (x, x)
+    D[1] = (x,)
 
-1. **Randomized initialization**: The initial belief of the agent's current state is randomly initialized to represent its current state. This allows for random sampling from different environments or actions.
-
-2. **Initialization with probability distribution**: The initial beliefs are represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based on uncertainty about rewards.
-
-3. **Random initialization**: The initial belief is randomly initialized to represent the current state of the agent's environment. This allows for random sampling from different environments or actions.
-
-4. **Initialization with probability distribution**: The initial beliefs are represented as a probability distribution over all possible outcomes, allowing for exploration and exploitation based
+    return A
+```
+This implementation uses a state-value matrix (`A`) and reward vector (`B`), as well as the transition matrices (`C` and `D`, respectively). The agent starts at the center of the maze. It then explores one arm, visits another arm, explores an adjacent arm, and so on until it reaches the cue location or ends up in a corner (which is not explored yet).
+The GNN representation for this agent can be obtained using the following code:
+```python
+G = np.array([[x[0] + x[:, 1]], [x[2]]])
+```

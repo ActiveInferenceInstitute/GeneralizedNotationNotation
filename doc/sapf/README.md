@@ -27,7 +27,7 @@ This directory contains documentation, resources, and implementation guides for 
 ### Related Directories
 - **[Audio Processing](../audio/README.md)**: Audio generation and sonification
 - **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
-- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio--sonification)**: Audio sonification tools
+- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Audio sonification tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide
@@ -110,7 +110,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 ### Audio Resources
 - **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
 - **[Audio Processing](../audio/README.md)**: Audio generation tools
-- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio--sonification)**: Audio sonification overview
+- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio-and-sonification)**: Audio sonification overview
 
 ### Pipeline Architecture
 - **[Pipeline Documentation](../gnn/operations/gnn_tools.md)**: Complete pipeline guide

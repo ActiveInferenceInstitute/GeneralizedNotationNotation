@@ -1,16 +1,20 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+You've outlined the key components of the model:
 
-1. **Model Purpose**: This is a predictive neural network that represents the core of Active Inference. It aims to minimize sensory prediction errors and maximize expected predictions based on sensor data.
+1. **Model Purpose**: This is a description of what the model represents and how it operates. It provides context for understanding its behavior and capabilities.
 
 2. **Core Components**:
-   - **Belief Mean**: A measure of how well the model's belief aligns with its predictions.
-   - **Sensory Prediction Error**: The error made by the model when it predicts a new observation, which is then used to update its beliefs and predict future observations.
-   - **Dynamics Prediction Error**: The error made by the model in predicting sensory data based on previous predictions.
+   - **Belief Mean**: A measure of the accuracy of predictions based on sensory data, representing the uncertainty in the input data.
+   - **Sensory Prediction Error**: The error made by a prediction when using the predicted values from hidden causes to predict observations.
+   - **Dynamics Prediction Error**: The error made by a prediction when using the predicted values from dynamics models to predict actions and control inputs.
+   - **Action Parameters**: Represented as beliefs, which are updated based on predictions and actions.
 
-3. **Model Dynamics**: How does this model evolve over time? What are key relationships between actions/controls (u_c0, π_c0)? What can be learned or predicted using this model?
-   - **Action**: Actions used to update beliefs and predict future observations.
-   - **Prediction Errors**: The errors made by the model when it predicts new data based on its predictions.
+3. **Model Dynamics**: How does this model implement Active Inference principles? What beliefs are being updated and what do they represent?
+   - **Sensory Prediction Error**: The error made by a prediction when using the predicted values from hidden causes to predict observations.
+   - **Dynamics Prediction Error**: The error made by a prediction when using the predicted values from dynamics models to predict actions and control inputs.
+   - **Action Parameters**: Represented as beliefs, which are updated based on predictions and actions.
 
-4. **Signature**: This is a cryptographic signature that goes here, indicating what actions are available (e_c0, π_c0). It's important to note that this signature does not provide any direct information about how the model learns or performs in practice. Instead, it provides a way of identifying which actions/controls are available and which ones can be learned from their predictions.
+4. **Model Insights**: What can you learn or predict? What decisions can it inform?
+
+Please provide clear explanations of what each component represents, its role in the model's behavior, and how it contributes to the overall understanding of the problem being modeled.

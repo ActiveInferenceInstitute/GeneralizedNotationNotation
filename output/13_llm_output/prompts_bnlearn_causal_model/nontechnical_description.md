@@ -6,63 +6,30 @@ Prompt:
 
 Response:
 
-```python
-import bnlearn as bn
-from typing import List, Dict, Tuple
+A Bayesian Network model mapping Active Inference structure:
+- S: Hidden State
+- A: Action
+- S_prev: Previous State
+- O: Observation
 
-def create_model(
-    num_timesteps: int = 30,
-    num_hidden_states: int = 2,
-    num_actions: int = 2,
-    num_layers: int = 4,
-    num_nodes: int = 16,
-    num_edges: int = 8
-):
-    """Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks.
+Generative model parameters:
+- Matrix mappings mapped to CPTs natively in bnlearn generator.
 
-    Args:
-        num_timesteps (int): Number of timesteps for the training data.
-        num_hidden_states (int): Number of hidden states in the network.
-        num_actions (int): Number of actions per node.
-        num_layers (int): Number of layers in the network.
-        num_nodes (int): Number of nodes in the network.
-        num_edges (int): Number of edges between nodes.
-    """
+## ModelAnnotation
 
-    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
-    bnlearn = bn(num_layers=4)
-    bnlearn.add_node('s', 'a')
-    bnlearn.add_node('o', 'b')
-    bnlearn.add_edge(
-        ('s', 's'),
-        (
-            ('S', 'A'),
-            (
-                ('B', 'O'))
-        )
-    )
+A Bayesian Network model mapping Active Inference structure:
+- S={(0.9, 0.1), (0.1, 0.9)}
+B=TransitionModel
+S_prev={(0.7, 0.3)}, A={(0.0, 1.0)}
 
-    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
-    bnlearn = bn(num_layers=4)
-    bnlearn.add_node('s', 'a')
-    bnlearn.add_node('o', 'b')
-    bnlearn.add_edge(
-        ('S', 'A'),
-        (
-            ('B', 'O'))
-        # Add a node for the action of flipping states
-        )
+# Connections
+A = make_DAG([('s', 'o'), ('a', 's')])
+B = make_DAG([('s', 's'), ('a', 'S_prev')] + [[((0.7, 0.3), (0.3, 0.7)], (()], ([(0.1, 0.9)])] )
+C={(0.5, 0.5)}
+D = make_DAG([('s', 'o'), ('a', 'S')])
 
-    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
-    bnlearn = bn(num_layers=4)
-    bnlearn.add_node('s', 'a')
-    bnlearn.add_node('o', 'b')
-    bnlearn.add_edge(
-        ('S', 'A'),
-        (
-            ('B', 'O'))
-        # Add a node for the action of flipping states
-        )
-
-    # Create a Bayesian Network model mapping ActInfOntology annotations to Bayesian Networks
-   
+## Connections
+A=make_CAUSENetworkConnection[("b", "B")][("c", "B")] + [[((0.7, 0.3), (0.3, 0.7)], (()], ([(0.1, 0.9)])] )
+B = make_CAUSENetworkConnection[("s', 'S')][("b', "S')] + [[(((0.7, 0.3), (0.3, 0.7)), (()]), ((0.1, 0.9)] ] # [((0.5, 0.5)]]
+C = make_CAUSENetworkConnection[("s', 'S')][("b', "B')] + [[(((0.7, 0.3), (0.3, 0.7)), (()]), ((0.1, 0.9)] ] # [((0.5, 0.5)]]
+D = make_CAUSENetworkConnection[("s', 'S')][("b', "B')] + [[(((0.7, 0.3), (0.3, 0.7)), (()]), ((

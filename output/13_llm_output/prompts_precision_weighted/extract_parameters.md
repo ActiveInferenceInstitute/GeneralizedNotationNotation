@@ -1,64 +1,29 @@
 # EXTRACT_PARAMETERS
 
-Based on the specifications, here are the parameter breakdowns for the GNN:
+Based on the information provided, here are the key parameters of the GNN model:
 
 1. **Model Matrices**:
-   - A matrices: dimensions, structure, interpretation
-   - B matrices: dimensions, structure, interpretation
-   - C matrices: dimensions, structure, interpretation
-
-   These matrices represent the model's parameters and their roles in the analysis. The matrix representing the initial parameter values is a fixed set of parameters that can be tuned based on the choice of action or policy. The matrix representing the initial state space dimension for each modality is also a fixed set of parameters.
+   - A matrices representing the input data (state space) and output predictions for each action parameter.
+   - B matrices representing the biases/weights in the neural network architecture.
+   - C matrices representing the conditional probabilities of actions based on their respective states.
+   - D matrices representing the conditional probabilities of actions based on their corresponding states.
 
 2. **Precision Parameters**:
-   - α (alpha): learning rates and adaptation parameters
+   - α (alpha): learning rate and adaptation parameters for each action parameter.
    - Other precision/confidence parameters:
-    - γ (gamma): learning rate, adaptation parameter, and sensitivity analysis priorities
+   - Sensitivity analysis priorities, such as sensitivity to initial conditions or prior beliefs over initial state space dimensions.
 
-   These are the parameters that determine how well the model learns from its data. The matrix representing the initial parameter values is a fixed set of parameters that can be tuned based on the choice of action or policy. The matrix representing the initial state space dimension for each modality is also a fixed set of parameters.
+3. **Dimensional Parameters**:
+   - State space dimensions for each factor
+   - Observation space dimensions for each modality
+   - Action space dimensions for each control factor
 
-3. **Temporal Parameters**:
+4. **Temporal Parameters**:
    - Time horizons (T)
-   - Temporal dependencies and windows:
-    - Time horizon: 10 seconds, 2 minutes, etc.
-    - Temporal dependencies:
-      - Initial time horizon: 1 second
-      - Initial window size: 500 milliseconds
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
 
-4. **Initial Conditions**:
+5. **Initial Conditions**:
    - Prior beliefs over initial states
    - Initial parameter values
-   - Initialization strategies:
-    - Random initialization (randomly initialized)
-     - Random initialization strategy:
-      - Random initialization strategy:
-        - Random initialization strategy:
-          - Random initialization strategy:
-            - Random initialization strategy:
-              - Random initialization strategy:
-                - Random initialization strategy:
-                  - Random initialization strategy:
-                    - Random initialization strategy:
-                      - Random initialization strategy:
-                      - Random initialization strategy:
-                        - Random initialization strategy:
-                          - Random initialization strategy:
-                            - Random initialization strategy:
-                              - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random initialization strategy:
-                                  - Random
+   - Initialization strategies, such as sensitivity to initial conditions or prior beliefs of actions/actions-based biases.
