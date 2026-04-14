@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Documentation hub version**: v2.0.0 (aligns with [README.md](README.md) front matter; **GNN language** syntax is v1.1 per [gnn_syntax.md](gnn_syntax.md); **Python package** version is `1.3.0` in [pyproject.toml](../../pyproject.toml)).
+**Documentation hub version**: v2.0.0 (aligns with [README.md](README.md) front matter; **GNN language** syntax is v1.1 per [gnn_syntax.md](gnn_syntax.md); **Python package** version is `1.5.0` in [pyproject.toml](../../pyproject.toml)).
 
 ---
 
@@ -27,8 +27,8 @@
 - `doc/gnn/advanced/`: Ontology, multi-agent, LLM/neurosymbolic topics, and advanced modeling patterns.
 - `doc/gnn/implementations/`: Specific platform references (PyMDP, RxInfer, etc.).
 - `doc/gnn/language/`: DSL specific syntax rules.
-- `doc/gnn/modules/`: Component behaviors.
-- `doc/gnn/operations/`: Internal pipeline processing guides.
+- `doc/gnn/modules/`: Component behaviors (including structural documentation for all 25 modules).
+- `doc/gnn/operations/`: Internal pipeline processing guides, troubleshooting, and coherence checks.
 - `doc/gnn/reference/`: Raw variable mappings and type systems.
 - `doc/gnn/testing/`: Testing standards for the notation itself.
 - `doc/gnn/tutorials/`: End-user construction guides.

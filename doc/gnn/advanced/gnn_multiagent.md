@@ -33,7 +33,7 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 
 ```bash
 # Process multi-agent models
-python src/main.py --only-steps "3,11,12,16" --target-dir input/multiagent_models/
+python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
@@ -237,13 +237,13 @@ The simulation loop for a GNN MAS will need to define the order of operations:
 4. **Communication Propagation:** Messages are propagated through channels according to their type and latency.
 5. **Environment Update:** (If a shared environment is modeled) The environment state updates based on agent actions and its own dynamics.
 
-### 5.2. Robust Execution (`RecoveryAgent`)
+### 5.2. Robust Execution (Fallback Mechanism)
 
-The system includes a functional `RecoveryAgent` (in `src/execute/pymdp/simple_simulation.py`) that ensures pipeline continuity when the full PyMDP library is unavailable. This is **not a simulated object**, but a lightweight agent implementation that provides:
+When the full PyMDP library is unavailable, the execution step (Step 12) skips the PyMDP backend with a dependency-reason log rather than failing. This ensures pipeline continuity:
 
-- **Uniform Beliefs**: Maintains valid probability distributions over states.
-- **Random Policy Selection**: Selects actions from valid behavioral ranges.
-- **Structural Integrity**: Preserves data flow for downstream visualization and reporting steps.
+- **Graceful Skip**: Backends with missing dependencies are skipped, not failed.
+- **Structural Integrity**: Downstream visualization and reporting steps receive partial results from available backends.
+- **Dependency Logging**: Clear messages indicate which backends were skipped and why.
 
 ### 5.3. Synchronization
 

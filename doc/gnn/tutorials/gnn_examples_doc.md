@@ -13,10 +13,10 @@ All examples can be processed through the GNN pipeline for parsing, validation, 
 
 ```bash
 # Process all examples
-python src/main.py --target-dir doc/gnn/examples/ --verbose
+python src/main.py --target-dir input/gnn_files --verbose
 
 # Run specific processing steps
-python src/main.py --only-steps "3,5,8,11,12" --target-dir doc/gnn/examples/
+python src/main.py --only-steps "3,5,8,11,12" --target-dir input/gnn_files
 ```
 
 For module-specific documentation:

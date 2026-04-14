@@ -1,7 +1,7 @@
 # GNN Implementation Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -267,7 +267,7 @@ output/16_analysis_output/
 ├── jax/                                # JAX visualizations
 ├── rxinfer/                            # RxInfer visualizations
 └── cross_framework/                    # Cross-framework comparisons
-    └── unified_dashboard/              # Multi-panel comparison dashboard
+    └── unified_dashboard/              # Step 23 interactive D3.js dashboard targets
 ```
 
 ---

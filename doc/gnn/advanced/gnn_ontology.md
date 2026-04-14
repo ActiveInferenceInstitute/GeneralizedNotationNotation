@@ -37,8 +37,8 @@ GNN ontology processing is integrated into the 25-step processing pipeline:
 # Process ontology validation
 python src/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
 
-# Strict ontology validation
-python src/10_ontology.py --target-dir input/gnn_files --output-dir output --strict-validation
+# Run ontology step directly
+python src/10_ontology.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Active Inference Ontology
@@ -195,7 +195,7 @@ Ontology processing integrates throughout the pipeline:
 ### Model Development
 
 - **Early Validation**: Validate ontology early in model development
-- **Strict Mode**: Use strict validation for production models
+- **Verbose Mode**: Use `--verbose` for detailed validation output
 - **Documentation**: Document ontology term usage
 - **Consistency**: Maintain consistency with Active Inference theory
 

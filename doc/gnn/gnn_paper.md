@@ -1,7 +1,7 @@
 # GNN Paper: Generalized Notation Notation
 
-**Version**: v2.0.0
-**Last Updated**: 2026-04-10
+**Version**: v1.5.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-04-14
 **Status**: ✅ Production Ready
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [implementations/README.md](implementations/README.md)) · **Tests**: see [README.md](../../README.md)
 
@@ -132,12 +132,25 @@ the mental processes and structures described by Active Inference. GNN provides
 a means to specify these models in a formal and precise manner, allowing for their
 implementation and testing in computational simulations. Critically, GNN as a
 pseudocode does not restrict which programming language or package ultimately
-implements the particular generative model in question. As already multiple
-software implementations of Active Inference exist with only more on the horizon
-[6], GNN will aid the backwards- and forwards-compatibility of the field. This
-flexible capability of GNN will enable researchers to explore the implications
-of various cognitive models, advancing understanding of active inference and
-catalyzing applications across diverse domains.
+implements the particular generative model in question. 
+
+### 4.5 Neurosymbolic Context Analysis
+
+As of GNN v1.5.0, the Triple Play formulation is heavily augmented by localized Neurosymbolic Analysis. The integration operates via:
+1. **Structural Semantic Extraction:** Mapping matrix nodes into Active Inference ontological databases.
+2. **LLM Synthesis:** Translating complex categorical topologies into heuristically approachable natural language streams, generating self-documenting executable architectures.
+3. **Execution Fallback Heuristics:** Automatically triggering heuristic code recovery when downstream solvers fail, driving a continuous reinforcement iteration loop without explicit mock environments.
+
+```mermaid
+graph LR
+    A[GNN Structural State] --> B{Ontological Mapping}
+    B --> C[Edge-Based LLM Parsing]
+    C --> D[Executable Source Code generation]
+    D --> E{Execution Success?}
+    E -->|No| F[Heuristic Circuit Breaker]
+    F --> C
+    E -->|Yes| G[Intelligent Analysis Report]
+```
 
 ## 5 Discussion
 

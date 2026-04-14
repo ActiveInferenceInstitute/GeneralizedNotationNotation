@@ -14,7 +14,7 @@ The GNN pipeline follows strict architectural patterns and standards:
 - **Module Architecture**: Each module follows consistent structure with public APIs
   - See: **[src/AGENTS.md](../../../src/AGENTS.md)** for complete module registry
 - **Testing Standards**: No substitutions, real data validation, >90% test coverage
-  - See: **[doc/gnn/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
+  - See: **[doc/gnn/operations/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
 
 **Architecture Documentation:**
 
@@ -102,7 +102,7 @@ def test_with_real_data():
 - **Causality**: `>` for directed edges (X>Y), `-` for undirected (X-Y)
 - **Operations**: Standard math operators (+, -, *, /, |)
 - **Grouping**: Parentheses (), exact values {1}, indexing/dimensions [2,3]
-- **Comments**: Triple hashtags (###) for inline comments
+- **Comments**: Lines starting with `#` inside variable/connection blocks are treated as comments
 - **Probability**: Conditional probability notation P(X|Y) using pipe |
 
 ---

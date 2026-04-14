@@ -1,7 +1,7 @@
 # Advanced GNN Modeling Patterns
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -30,7 +30,7 @@ Advanced GNN models benefit from the full pipeline processing capabilities:
 
 ```bash
 # Process advanced models through full pipeline
-python src/main.py --target-dir input/advanced_models/ --verbose
+python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
@@ -90,11 +90,12 @@ class TransitionModule:
 ```
 
 2. [Multi-Agent Systems](#multi-agent-systems)
-2. [Learning and Adaptation](#learning-and-adaptation)
-3. [Temporal Dynamics](#temporal-dynamics)
-4. [Uncertainty and Robustness](#uncertainty-and-robustness)
-5. [Compositional Modeling](#compositional-modeling)
-6. [Domain-Specific Patterns](#domain-specific-patterns)
+3. [Learning and Adaptation](#learning-and-adaptation)
+4. [Temporal Dynamics](#temporal-dynamics)
+5. [Uncertainty and Robustness](#uncertainty-and-robustness)
+6. [Compositional Modeling](#compositional-modeling)
+7. [Dynamic Fallback Cascading (v1.5)](#dynamic-fallback-cascading-v15)
+8. [Domain-Specific Patterns](#domain-specific-patterns)
 
 ---
 
@@ -799,6 +800,49 @@ ModuleUpdateSchedule={perception:1, attention:2, memory:3, planning:5, motor:1}
 
 ### Pattern: Nested Compositional Models
 
+```gnn
+## StateSpaceBlock
+# ... Compositional model implementations ...
+```
+
+---
+
+## 7. Dynamic Fallback Cascading (v1.5)
+
+### Pattern: Execution Rescue Telemetry 
+
+**Use Case**: Zero-Mock autonomous agent pipelines requiring heuristic simulation recovery when rigid framework rendering fails.
+
+```gnn
+## StateSpaceBlock
+# Primary Simulation States
+s_f0[10,1,type=int]     # High_fidelity_state (ideal modeling)
+s_f1[2,1,type=int]      # High_fidelity_actions
+
+# Heuristic Fallback State
+s_f2[4,1,type=int]      # Low_fidelity_proxy
+s_f3[2,1,type=int]      # Sub_optimal_actions
+
+# Solver Matrix
+A_f0[10,2,type=float]   # Formal RxInfer Matrix
+A_f1[4,2,type=float]    # LLM-Guided Heuristic Matrix
+
+## Connections
+(s_f0, s_f1) -> (A_f0)
+(s_f2, s_f3) -> (A_f1)
+
+# The Fallback Circuit Breaker topology
+(A_f0) -> execution_success_polling
+(execution_success_polling) -> (A_f1:heuristic_override)
+
+## ActInf Ontology Annotation
+s_f0=FormalTargetSpace
+s_f2=HeuristicProxySpace
+execution_success_polling=CircuitBreaker
+```
+
+This pattern leverages the Step 24 `Intelligent Analysis` module to inject Neurosymbolic heuristic recovery logic directly into `analysis_data.json` upon formal solver failure.
+
 **Use Case**: Hierarchical composition of cognitive processes.
 
 ```gnn
@@ -1145,7 +1189,7 @@ Compositional semantics for GNN ↔ DisCoPy: see [DisCoPy integration](../../dis
 
 ## Causal inference
 
-Explicit causal structure appears in [Connections](#connections) graphs and validation (Steps 5–6); pair with [Modeling Patterns](#modeling-patterns).
+Explicit causal structure appears in GNN `## Connections` blocks and validation (Steps 5-6); pair with [Hierarchical Modeling](#1-hierarchical-modeling) and other patterns above.
 
 ## Decision theory
 

@@ -1,7 +1,7 @@
 # GNN Framework Integration Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-14  
 **Status**: Maintained  
 
 ## Pipeline Integration
@@ -676,14 +676,16 @@ The GNN pipeline processes each framework through three stages. This section doc
 
 **Analyze:** `extract_discopy_data()` counts diagram executions and extracts categorical outputs from `discopy_diagrams/`. Treats individual diagram evaluations as simulation "steps".
 
-### Cross-Framework Analysis
+### Cross-Framework Analysis & D3.js Telemetry Tracking
 
-After individual framework execution, Step 16 performs comparative analysis:
+After individual framework execution, Step 16 and Step 23 perform comparative analysis and dynamic telemetry visualization:
 
-1. **`analyze_framework_outputs()`** — Loads and normalizes results from all frameworks
-2. **`generate_framework_comparison_report()`** — Generates comparison metrics (execution time, convergence, accuracy)
-3. **`visualize_cross_framework_metrics()`** — Side-by-side metric visualizations
-4. **`generate_unified_framework_dashboard()`** — Multi-panel dashboard comparing beliefs, actions, free energy, and observations across all frameworks
+1. **`analyze_framework_outputs()`** — Loads and normalizes results from all frameworks into standard JSON targets.
+2. **`generate_framework_comparison_report()`** — Generates comparison metrics (execution time, convergence, accuracy).
+3. **`visualize_cross_framework_metrics()`** — Native side-by-side metric visualizations via Python plot engines.
+4. **`generate_unified_framework_dashboard()` (v1.4.0)** — Generates an interactive HTML/D3.js dynamic execution dashboard comparing generative beliefs, action distributions, and observation trajectories entirely in the browser.
+
+By leveraging the `SimulationResult` standard output dictionary, any framework integration (including new experimental wrappers) automatically inherits these unified reporting utilities and execution charts without requiring custom plotting implementations.
 
 ### **Cross-Framework Performance Comparison**
 

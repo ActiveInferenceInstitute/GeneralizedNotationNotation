@@ -95,9 +95,9 @@ def main() -> int:
     return run_script()  # ← Pure orchestration
 ```
 
-#### ### Modular Implementation Layer
+#### Modular Implementation Layer
 
-c/visualization/**init**.py)
+Example: `src/visualization/__init__.py`
 
 ```python
 # Exposes core functionality with safe imports

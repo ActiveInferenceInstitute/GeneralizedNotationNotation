@@ -107,80 +107,50 @@ uv run python src/main.py --only-steps "8,9" --target-dir input/gnn_files --verb
 #### Python API
 
 ```python
-from gnn_tools import visualize
+from visualization.processor import process_visualization
+from pathlib import Path
 
-# Create visualization
-viz = visualize.create_graph("models/dynamic_perception.gnn")
-
-# Customize appearance
-viz.set_theme("light")
-viz.highlight_variables(["s", "o"])
-viz.set_layout("hierarchical")
-
-# Save in different formats
-viz.save_svg("model.svg")
-viz.save_html("model.html", interactive=True)
+# Run visualization on parsed GNN output
+process_visualization(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output"),
+    verbose=True
+)
 ```
 
 ## Conversion Tools
 
 ### GNN to Python Converter
 
-The GNN to Python converter generates executable Python code from GNN files:
+The pipeline generates executable code from GNN files via Step 11 (Render):
 
-```python
-from gnn_tools import converters
+```bash
+# Generate code for all supported frameworks
+python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
 
-# Convert GNN to Python code
-python_code = converters.to_python("models/dynamic_perception.gnn", 
-                                   framework="numpy")
-
-# Save to file
-with open("dynamic_perception.py", "w") as f:
-    f.write(python_code)
-
-# You can also run the model directly
-model = converters.to_python_object("models/dynamic_perception.gnn")
-results = model.run(observations=my_observations)
+# Generate for a specific framework
+python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
 ### GNN to LaTeX Converter
 
-Generate LaTeX equations from GNN models:
+The export step (Step 7) generates multiple output formats including LaTeX:
 
-```python
-from gnn_tools import converters
-
-# Convert GNN equations to LaTeX
-latex_equations = converters.to_latex("models/dynamic_perception.gnn",
-                                     section="equations")
-
-# Generate full LaTeX document
-latex_doc = converters.to_latex_document("models/dynamic_perception.gnn")
-
-# Save to file
-with open("model_equations.tex", "w") as f:
-    f.write(latex_doc)
+```bash
+# Export GNN models to multiple formats
+python src/7_export.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ## Validation Tools
 
 ### GNN Validator
 
-The GNN Validator checks GNN files for syntax and semantic errors:
+The pipeline validates GNN files via Step 5 (Type Checker) and Step 6 (Validation):
 
-```python
-from gnn_tools import validator
-
-# Validate a GNN file
-result = validator.validate("models/dynamic_perception.gnn")
-
-if result.is_valid:
-    print("Model is valid!")
-else:
-    print("Validation errors:")
-    for error in result.errors:
-        print(f"- Line {error.line}: {error.message}")
+```bash
+# Type checking and validation
+python src/5_type_checker.py --target-dir input/gnn_files --output-dir output --strict
+python src/6_validation.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 #### Common Validation Checks
@@ -270,23 +240,13 @@ graph LR
 
 #### PyMDP Integration
 
-```python
-from gnn_tools import converters
-import pymdp
-
-# Convert GNN model to PyMDP compatible format
-model_params = converters.to_pymdp("models/dynamic_perception.gnn")
-
-# Create PyMDP agent
-agent = pymdp.Agent(model_params)
-
-# Run simulation
-observations = [0, 1, 0, 1, 0]
-for t in range(len(observations)):
-    agent.infer_states(observations[t])
-    agent.infer_policies()
-    action = agent.sample_action()
+```bash
+# Render and execute via PyMDP backend
+python src/11_render.py --target-dir input/gnn_files --output-dir output --verbose
+python src/12_execute.py --frameworks "pymdp" --verbose
 ```
+
+See [PyMDP implementation guide](../implementations/pymdp.md) for details on the generated code structure.
 
 ## Model Repository
 
@@ -346,7 +306,7 @@ uv run python src/main.py --target-dir input/gnn_files --verbose
 ### Learning Resources
 
 - [GNN Introduction](https://activeinferenceinstitute.github.io/gnn/intro)
-- [Video Tutorials](https://www.youtube.com/playlist?list=PLxxx)
+- [Active Inference Institute YouTube](https://www.youtube.com/@ActiveInference)
 - [Example Gallery](https://activeinferenceinstitute.github.io/gnn/examples)
 
 ### Community

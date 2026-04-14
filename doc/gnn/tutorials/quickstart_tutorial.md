@@ -18,7 +18,7 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 ## ⚡ Prerequisites
 
 - Basic programming knowledge (any language)
-- Python 3.8+ installed
+- Python 3.11+ installed
 - 15 minutes of focused time
 
 > 💡 **No Active Inference background needed!** This tutorial explains concepts as we go.

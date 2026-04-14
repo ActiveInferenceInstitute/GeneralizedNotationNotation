@@ -1,7 +1,7 @@
 # About GNN
 
-**Version**: v2.0.0
-**Last Updated**: 2026-04-10
+**Version**: v1.5.0 Engine (Bundle v2.0.0)
+**Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25
 
@@ -49,7 +49,7 @@ The syntax is designed to be both human-readable and machine-parsable, making it
 | () | Grouping | (X+Y) | Parenthesized expression |
 | {} | Exact value specification | X{1} | X equals 1 |
 | [] | Dimensionality or indexing | X[2,3] | X is a 2×3 matrix |
-| # / ## / ### | Markdown headings and comments | ## Title | Section header in GNN source file |
+| # / ## | Markdown headings; `#` also acts as inline comment in variable/connection blocks | ## Title | Section header in GNN source file |
 | + | Addition | X+Y | Sum of X and Y |
 | * | Multiplication | X*Y | Product of X and Y |
 | / | Division | X/Y | X divided by Y |
@@ -120,11 +120,12 @@ GNN files are processed through a comprehensive 25-step pipeline orchestrated by
 - `11_render.py`: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro
 - `12_execute.py`: Execution of rendered simulation scripts
 
-### Analysis and Reporting (Steps 13, 16, 23)
+### Analysis and Reporting (Steps 13, 16, 23, 24)
 
-- `13_llm.py`: LLM-enhanced analysis and model interpretation
+- `13_llm.py`: Neurosymbolic LLM Analysis and runtime execution heuristics
 - `16_analysis.py`: Advanced statistical analysis
-- `23_report.py`: Comprehensive report generation
+- `23_report.py`: Comprehensive report generation with D3 Dashboard telemetry
+- `24_intelligent_analysis.py`: Autonomous heuristic fallback and execution recovery plans
 
 For complete pipeline documentation, see:
 

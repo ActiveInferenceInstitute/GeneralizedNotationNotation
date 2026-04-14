@@ -1,6 +1,6 @@
 # GNN v1.1 Syntax Specification
 
-> **Status**: Living document · Last updated 2026-04-10
+> **Status**: Living document · Last updated 2026-04-14
 > **Canonical reference for parsers, validators, and editor support.**
 
 ---
@@ -36,6 +36,7 @@ For CI, type-checking, and pipeline validation, prefer examples that satisfy the
 | `## ModelAnnotation` | Free-text description of the model |
 | `## InitialParameterization` | Concrete matrix / vector values |
 | `## Metadata` | Key-value metadata (author, date, tags) |
+| `## ActInf Ontology Annotation` | Variable semantic bindings to Ontological domains |
 
 ---
 
@@ -137,7 +138,21 @@ on its own line. Each model block must contain its own `## GNNSection` and
 
 ---
 
-## 7  Error Taxonomy
+## 7 ActInf Ontology Annotation (v1.5)
+
+To bind internal variables to external semantic meaning, construct a list mapping variables to CamelCase ontological states. This is requisite for the Neurosymbolic LLM Context Analysis features in `13_llm.py` and heuristics tracking in `24_intelligent_analysis.py`.
+
+```gnn
+## ActInf Ontology Annotation
+s=HiddenState
+o=Observation
+A=StateTransitionMatrix
+B=ObservationLikelihoodMatrix
+```
+
+---
+
+## 8  Error Taxonomy
 
 | Error Code | Meaning |
 |------------|---------|
