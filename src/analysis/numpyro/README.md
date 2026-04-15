@@ -1,11 +1,4 @@
-# Numpyro
+# src/analysis/numpyro
 
 ## Overview
-This module handles `Numpyro` components.
-
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: generate_analysis_from_logs
-
-## Usage
-Import necessary members directly to orchestrate tasks related to Numpyro.
+Internal sub-component. See parent directory documentation.

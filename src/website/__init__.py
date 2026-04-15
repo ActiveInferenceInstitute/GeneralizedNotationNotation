@@ -19,7 +19,7 @@ from .renderer import (
     validate_website_config,
 )
 
-__version__ = "1.3.0"
+__version__ = "1.5.0"
 
 # Feature flags/constants expected by tests
 FEATURES = {

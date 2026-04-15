@@ -1,7 +1,7 @@
 # GNN Quick Start Tutorial
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: Maintained  
 
 **Goal**: Create and run your first GNN model in 15 minutes, no prior Active Inference knowledge required.

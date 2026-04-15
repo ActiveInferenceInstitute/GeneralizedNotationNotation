@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.3.0
+**Version**: 1.5.0
 
-**Last Updated**: 2026-04-14
+**Last Updated**: 2026-04-15
 
 
 ## Core Functionality
@@ -261,7 +261,7 @@ def convert_gnn_to_sapf_tool(gnn_content, output_dir):
 
 ---
 
-**Last Updated**: 2026-04-14
+**Last Updated**: 2026-04-15
 **Status**: ✅ Production Ready
 
 ---

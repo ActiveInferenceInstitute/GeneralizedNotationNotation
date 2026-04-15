@@ -2,7 +2,7 @@
 
 How to add real, tested MCP tools to any GNN pipeline module.
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-15
 
 ## Design Principles
 

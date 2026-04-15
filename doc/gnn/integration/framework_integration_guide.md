@@ -797,6 +797,6 @@ class IntegrationTestSuite:
 
 ---
 
-**Integration Guide Version**: v2.0.0  
+**Integration Guide Version**: v1.5.0 Engine (Bundle v2.0.0)  
 **Framework Coverage**: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan  
 **Status**: Maintained

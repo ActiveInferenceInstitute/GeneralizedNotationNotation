@@ -1,14 +1,7 @@
-# Schemas — agent notes
+# src/gnn/schemas sub-module
 
-## Purpose
+## Subtree Documentation
+This is a deeper architectural sub-component.
+Please refer to the parent module's `AGENTS.md` for the primary API surface and documentation context.
 
-Provide **schema definitions** consumed by the GNN stack (see **`src/gnn/parsers/schema_parser.py`**, **`schema_serializer.py`**, and serializers for JSON, XML, YAML, etc.).
-
-## Files
-
-Listed in **[README.md](README.md)** and **[SPEC.md](SPEC.md)** (`json.json`, `yaml.yaml`, `proto.proto`, `xsd.xsd`, `asn1.asn1`, `pkl.pkl`).
-
-## Related
-
-- **[../SPEC.md](../SPEC.md)** — canonical format counts
-- **`src/gnn/parsers/`** — parsers that embed or validate against these shapes
+**Version**: 1.5.0

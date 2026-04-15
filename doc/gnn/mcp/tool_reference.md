@@ -1,6 +1,6 @@
 # GNN MCP Tool Quick Reference
 
-All 131 real tools registered by the GNN MCP server (v2.0.0; reference refreshed 2026-03-24).  
+All 131 real tools registered by the GNN MCP server (v1.5.0 Engine; reference refreshed 2026-04-15).  
 Sorted alphabetically by domain. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
 ## Full Tool Table

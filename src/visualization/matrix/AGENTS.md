@@ -1,11 +1,7 @@
-# visualization.matrix
+# src/visualization/matrix sub-module
 
-| Symbol | Location |
-|--------|----------|
-| `MatrixVisualizer`, `generate_matrix_visualizations`, `process_matrix_visualization` | `visualizer.py` |
-| `convert_to_matrix`, `extract_matrix_data_from_parameters` | `extract.py` |
-| `parse_matrix_data`, `generate_matrix_visualizations` | `compat.py` — string parse + batch matrix plots |
+## Subtree Documentation
+This is a deeper architectural sub-component.
+Please refer to the parent module's `AGENTS.md` for the primary API surface and documentation context.
 
-Root `matrix_compat.py` re-exports `compat`. Shared plotting imports: `visualization.compat.viz_compat`. Tight layout: `visualization.plotting.utils.safe_tight_layout`.
-
-Root `matrix_visualizer.py` re-exports the public class and module functions.
+**Version**: 1.5.0

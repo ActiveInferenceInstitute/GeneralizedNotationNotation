@@ -143,8 +143,8 @@ This module produces:
 
 ---
 
-**Version**: 2.0.0
-**Last Updated**: 2026-04-14
+**Version**: 1.5.0
+**Last Updated**: 2026-04-15
 **Status**: Production Ready
 
 

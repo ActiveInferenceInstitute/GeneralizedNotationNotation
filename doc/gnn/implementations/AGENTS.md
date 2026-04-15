@@ -13,7 +13,7 @@
 - [DisCoPy Framework Implementation](discopy.md)
 - [JAX Framework Implementation](jax.md)
 - [Stan Framework Implementation](stan.md)
-- [rxinfer.md](rxinfer.md)
+- [RxInfer.jl Framework Implementation](rxinfer.md)
 - [PyMDP Framework Implementation](pymdp.md)
 - [CatColab Framework Implementation](catcolab.md)
 - [NumPyro Framework Implementation](numpyro.md)

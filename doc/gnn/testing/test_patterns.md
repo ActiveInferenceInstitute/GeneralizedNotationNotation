@@ -2,11 +2,11 @@
 
 Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and test files.
 
-**Last Updated**: 2026-03-24
+**Last Updated**: 2026-04-15
 
 ## Real-Implementation Policy
 
-All 91 test files follow a strict **real-implementation** policy enforced by code review and stated in `TEST_SUITE_SUMMARY.md`:
+All test files (134+ as of April 2026) follow a strict **real-implementation** policy enforced by code review and stated in `TEST_SUITE_SUMMARY.md`:
 
 - ❌ No standard testing substitution libraries (like patching)
 - ❌ No monkeypatching of functions or classes

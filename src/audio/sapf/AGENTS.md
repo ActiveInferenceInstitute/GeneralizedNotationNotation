@@ -514,7 +514,7 @@ result = process_sapf_audio(audio_data, spectral_config, debug=True, verbose=Tru
 
 ---
 
-**Last Updated**: 2026-04-14
+**Last Updated**: 2026-04-15
 **Maintainer**: Audio Processing Team
 **Status**: ✅ Production Ready
 

@@ -1,7 +1,7 @@
 # GNN Troubleshooting Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -37,7 +37,7 @@ python src/5_type_checker.py --target-dir input/gnn_files --verbose
 
 Check the `output/` directory for intermediate results and error logs:
 
-- `output/pipeline_execution_summary.json`: Overall status
+- `output/00_pipeline_summary/pipeline_execution_summary.json`: Overall status
 - `output/3_gnn_output/gnn_processing_results.json`: Parsing details
 - `output/5_type_checker_output/type_check_results.json`: Type errors
 

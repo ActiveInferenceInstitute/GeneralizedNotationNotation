@@ -1,7 +1,7 @@
 # GNN Visualization Guide
 
-**Version**: v2.0.0  
-**Last Updated**: 2026-03-24  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
 
@@ -314,5 +314,5 @@ Visualization results are integrated throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2026-03-24  
-**Version**: v2.0.0
+**Last Updated**: 2026-04-15  
+**Version**: v1.5.0 Engine (Bundle v2.0.0)

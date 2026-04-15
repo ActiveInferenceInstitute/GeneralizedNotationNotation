@@ -1,8 +1,7 @@
-# visualization.graph
+# src/visualization/graph sub-module
 
-| Symbol | Location |
-|--------|----------|
-| `generate_network_visualizations` | `network_visualizations.py` — directed vs undirected edges, ontology node labels |
-| `generate_variable_parameter_bipartite` | `bipartite.py` — variables vs parameter names |
+## Subtree Documentation
+This is a deeper architectural sub-component.
+Please refer to the parent module's `AGENTS.md` for the primary API surface and documentation context.
 
-Uses `advanced_visualization._shared.normalize_connection_format`. `{model}_network_stats.json` includes `gnn_edge_orientation` (directed vs undirected pair counts). Root `network_visualizations.py` re-exports `generate_network_visualizations`.
+**Version**: 1.5.0

@@ -570,7 +570,7 @@ result = process_pedalboard_audio(audio_data, effects_chain, debug=True, verbose
 
 ---
 
-**Last Updated**: 2026-04-14
+**Last Updated**: 2026-04-15
 **Maintainer**: Audio Processing Team
 **Status**: ✅ Production Ready
 
