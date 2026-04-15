@@ -8,67 +8,43 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
-class SimpleMDPAgent:
-    def __init__(self):
-        self._state = {}
+def gnn(state: Dict[str, float], actions: Dict[str, float]) -> Dict[str, float]:
+    """GNN representation of a MDP.
 
-    def update(self) -> None:
-        """Update the agent's state and actions."""
+    Args:
+        state (Dict[str, float]): A dictionary representing the current state and action.
+        actions (Dict[str, float]): A dictionary representing all actions available in the policy space.
 
-        # Update states
-        for i in range(len(self.state)):
-            if self.state[i] == 0:
-                self.state[i] = 1
+    Returns:
+        Dict[str, float]: A dictionary representing the GNN representations for each state/action pair.
+    """
+    # Initialize a dictionary to store the GNN representations of states/actions pairs
+    gnn_states = {}
+    gnn_actions = {}
+    
+    # Initialize a dictionary to store the GNN representations of all actions available in the policy space
+    gnn_policies = {}
 
-            elif self.state[i] == 2:
-                self.state[i] = 3
+    # Initialize a dictionary to store the GNN representations of all states and actions
+    gnn_states.update(gnn_state)
+    gnn_actions.update(gnn_action)
+    
+    # Initialize a dictionary to store the GNN representations of all transitions in the policy space
+    gnn_transitions = {}
 
-    def update_actions(self) -> None:
-        """Update the agent's actions."""
+    # Initialize a dictionary to store the GNN representations of all actions available in the policy space
+    gnn_actions.update(gnn_policy)
 
-        # Update states and actions based on action probabilities
-        for i in range(len(self._state)):
-            if self._state[i] < 0 or self._state[i] > len(self.state):
-                return
-
-            # Update state transition matrix
-            for j in range(len(self._state)):
-                if self._state[j] == 1:
-                    self._state[j] = -1
-
-                elif self._state[j] == 3:
-                    self._state[j] = 0
-
-    def update_actions_probabilities(self) -> None:
-        """Update the agent's actions based on action probabilities."""
-
-        # Update states and actions based on action probabilities
-        for i in range(len(self.state)):
-            if self._state[i] < 0 or self._state[i] > len(self.state):
-                return
-
-            # Update state transition matrix
-            for j in range(len(self._state)):
-                if self._state[j] == 1:
-                    self._state[j] = -1
-
-                elif self._state[j] == 3:
-                    self._state[j] = 0
-
-    def update_actions_probabilities_on_states(self) -> None:
-        """Update the agent's actions based on action probabilities."""
-
-        # Update states and actions based on action probabilities
-        for i in range(len(self.state)):
-            if self._state[i] < 0 or self._state[i] > len(self.state):
-                return
-
-            # Update state transition matrix
-            for j in range(len(self._state)):
-                if self._state[j] == 1:
-                    self._state[j] = -1
-
-                elif self._state[j] == 3:
-                    self
+    return {
+        "state": state,
+        "action": action,
+        "states": states,
+        "actions": actions,
+        "transitions": transitions,
+        "policies": policies,
+        "graphs": graphs,
+        "outputs": outputs,
+    }
+```

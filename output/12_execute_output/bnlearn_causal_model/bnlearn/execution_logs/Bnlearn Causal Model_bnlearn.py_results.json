@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/bnlearn_causal_model/bnlearn/Bnlearn Causal Model_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 2.011961,
-  "timestamp": "2026-04-14T11:55:02.507581",
+  "execution_time": 2.044106,
+  "timestamp": "2026-04-15T12:27:46.976835",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

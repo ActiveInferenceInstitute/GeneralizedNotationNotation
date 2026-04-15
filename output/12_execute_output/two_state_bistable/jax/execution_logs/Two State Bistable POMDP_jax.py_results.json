@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/jax/Two State Bistable POMDP_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.659385,
-  "timestamp": "2026-04-14T11:55:09.418656",
+  "execution_time": 0.676247,
+  "timestamp": "2026-04-15T12:27:53.608318",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -121,7 +121,7 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/two_state_bistable/jax/simulation_data/simulation_data_simulation_results.json"
+      "output/12_execute_output/two_state_bistable/jax/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

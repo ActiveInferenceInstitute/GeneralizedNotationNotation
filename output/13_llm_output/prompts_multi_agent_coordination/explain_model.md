@@ -1,37 +1,30 @@
 # EXPLAIN_MODEL
 
-Here is a comprehensive explanation of the GNN Representation:
+Here is a summary of the key points:
 
-**Introduction**
+**Summary:**
 
-This document provides an overview of the GNN Representation for active inference on to-do lists and other real-world phenomena. It covers the following topics:
+This document provides an overview of the Multi-Agent Cooperative Active Inference (MCAF) algorithm and its components. It covers the following topics:
 
-1. **Model Purpose**: What are the hidden states (s_f0, s_f1, etc.) and what do they represent?
-   - The model represents a multi-agent cooperative cooperative agent that cooperates with each other to achieve goals in a given task space.
+1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
+   - "Multi-Agent Cooperative Active Inference" is a type of active inference system that aims to solve complex problems by analyzing multiple agents' actions in coordination with each other.
 
 2. **Core Components**:
-   - **Likelihood Matrix**: A probability distribution over the joint state of all agents (agents) across actions, which captures their beliefs and preferences.
-   - **Transition Matrix**: A probability distribution over the joint state of all agents (agents), which captures their actions and policy distributions.
-   - **Probability Vector**: A probability distribution over the joint states of all agents (agents).
+   - **Hidden states (s_f0, s_f1) and observations** represent the collective behavior of all agents involved in the problem or action space.
+   - **Actions/actions** are available to control the actions of individual agents based on their current state information.
+   - **Control variables** capture the preferences of each agent towards a goal configuration.
 
-3. **Model Dynamics**: How does this model evolve over time? What are the key relationships?
-   - The model updates its beliefs based on new observations, allowing it to learn from past behavior and adapt to future actions.
+3. **Model Dynamics**: The algorithm uses a hierarchical structure, with different layers and interactions between them. This allows for the exploration of complex scenarios by analyzing multiple agents' behavior together.
 
 4. **Active Inference Context**: How does this model implement Active Inference principles? What beliefs are being updated and how?
-   - The model uses a probabilistic graphical model (PGM) to represent the joint state of all agents across actions. It updates its beliefs based on new observations, allowing it to learn from past behavior and adapt to future actions.
+   - **Pseudo-beliefs** represent the collective actions taken by individual agents, while **facts** represent specific observations made by each agent. The goal is to update these beliefs based on new information from other agents or data.
 
-5. **Practical Implications**: What can you learn or predict using this model? What decisions can it inform?
-   - The model provides insights into how it cooperates with other agents in achieving goals, enabling it to make informed decisions about action choices and policy updates.
+5. **Probabilistic graphical models**: The algorithm uses probabilistic graphical models (PGMs) to model the uncertainty and behavior of the agents' actions in coordination with each other. These PGM's are used for inference, prediction, and decision-making.
 
-**Signature**
-
-This document is structured as follows:
-
-1. **Introduction**: A comprehensive overview of the GNN Representation for active inference on to-do lists and other real-world phenomena.
-
-2. **Model Purpose**: The model represents a multi-agent cooperative cooperative agent that cooperates with each other to achieve goals in a given task space.
-
-3. **Core Components**:
-   - **Likelihood Matrix**: A probability distribution over the joint state of all agents across actions, which captures their beliefs and preferences.
-   - **Transition Matrix**: A probability distribution over the joint states of all agents (agents), which captures their actions and policy distributions.
-   - **Probability Vector**: A
+**Key Points:**
+   - **Model Purpose**: This is a type of active inference system aimed at solving complex problems by analyzing multiple agents' actions in coordination with each other.
+   - **Core Components**:
+   - **Hidden states (s_f0, s_f1) and observations** represent the collective behavior of all agents involved in the problem or action space.
+   - **Actions/actions** are available to control the actions of individual agents based on their current state information.
+   - **Control variables** capture the preferences of each agent towards a goal configuration.
+   - **Pseudo-beliefs** represent the collective actions taken by individual agents, while **facts** represent specific observations made by each agent. The goal is to update these beliefs based on new information from other agents or

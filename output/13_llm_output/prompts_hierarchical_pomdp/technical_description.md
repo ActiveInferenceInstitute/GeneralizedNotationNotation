@@ -8,54 +8,35 @@ Response:
 
 ```python
 import json
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
-def gnn(
-    input: Dict[str, str],
-    model: Dict[str, str] = None,
-    num_hidden_states=4,
-    num_actions=3,
-    timesteps=20,
-    timescale_ratio=5,
-    output_file="output/10_ontology_output",
-) -> List[Dict[str, str]]:
-    """GNN implementation of the GNN model.
+def gnn(input: List[Dict[str, int]], output: List[Dict[str, int]]) -> List[Dict[str, int]]:
+    """GNN implementation for hierarchical active inference (HAI) on a set of input data.
 
-    This function takes in a list of input dictionaries and returns a list of
-    dictionaries that represent the GNN inference models on to which they refer.
-    The input dictionary represents an input data stream from which the inference is
-    made. Each dictionary contains one or more input parameters, each with its own
-    type (e.g., "level", "action"), and corresponding values for the
-    level-1 and action-wise probabilities of the input parameter.
+    Args:
+        input: A list of dictionaries representing the input data.
+        output: A list of dictionaries representing the output data.
 
-    For example:
-        {
-            "input": {"level": 0},
-            "actions": [
-                ("A2", {"probabilities": [
-                    ([{"type":"float"},
-                        ([{"value": 0, "probability": 0}],
-                      ["action"]])]),
-                   (("B1", {"probabilities": [
-                     ([{"type":"float"}]),
-                       ([{{"value": 0.9}}]])]),
-                  ("C2", {"probabilities": [
-                    ([{"value": 0, "probability": 0}],
-                      ["action"]])]),
-                   (("D1", {"probabilities": [
-                     ([{"type":"float"}]),
-                       ([{{"value": 0.9}}]])]),
-                  ("G2", {"probabilities": [
-                    ([{"value": 0, "probability": 0}],
-                      ["action"]])]},
-                   (("A1", {"probabilities": [
-                     ([{"type":"float"}]),
-                       ([{{"value": 0.9}}]])]),
-                  ("B2", {"probabilities": [
-                    ([{"value": 0, "probability": 0}],
-                      ["action"]])]},
-                   (("C1", {"probabilities": [
-                     ([{"type":"float"}]),
-                       ([{{"value": 0.9}}]])]),
-                  ("D2", {"probabilities": [
-                    ([{"value": 0, "
+    Returns:
+        A list containing the HAI outputs from the GNN algorithm, or an empty list if there are no valid inputs.
+    """
+    # Check that all input values have a type and value is a dictionary
+    for input_key in input:
+        if isinstance(input[input_key], dict):
+            output = [
+                {
+                    "type": type(input[input_key]),
+                    "value": input[input_key]
+                }
+            ]
+
+            # Check that all inputs have the same type and value
+            for key, value in input.items():
+                if isinstance(value, dict) or isinstance(value["type"], int):
+                    output.append({
+                        "type": type(value),
+                        "value": value
+                    })
+
+    return output
+```

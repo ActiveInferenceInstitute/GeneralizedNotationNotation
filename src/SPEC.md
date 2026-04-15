@@ -1,6 +1,6 @@
 # GNN Source Specification
 
-**Version**: 1.5.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.5.0"`  
+**Version**: 1.6.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.5.0"`  
 **Last Updated**: 2026-04-15  
 **Status**: Maintained
 

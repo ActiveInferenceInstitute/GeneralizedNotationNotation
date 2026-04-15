@@ -8,31 +8,42 @@ Response:
 
 ```python
 import json
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
-# Load the input data into a JSON format using `json` module's `load()` function
-input_data = [
-    {"name": "Input Data", "type": "list"},
-    {"name": "ActInfPomDPAgentInfo", "type": "dict"}
-]
+def gnn(input: List[List[Dict[str, float]]], output: List[Dict[str, float]], num_hidden_states: int = 3) -> List[Dict[str, float]]:
+    """GNN representation of a neural network.
 
-def generate_ontology(input_data: List[Dict[str, str]]) -> Dict[str, str]:
-    """Generate a dictionary of input data with the following properties:
-
-    - `input_data`: A list of dictionaries containing input data.
-    - `output_file` (optional): The file path to save the output data. If not provided, it will be created automatically by default.
+    Args:
+        input (list): A list of input neurons and hidden states for each neuron in the graph.
+        output (list): A list of outputs from the network.
+        num_hidden_states (int): The number of hidden states per node. Defaults to 3.
     """
-    # Load the input data into a JSON format using `json` module's `load()` function
-    with open(input_data[0], 'r') as f:
-        return json.load(f)
+    # TODO(david) Implement GNN representation
 
-def generate_ontology_from_dict(input_data: List[Dict[str, str]]) -> Dict[str, str]:
-    """Generate a dictionary of input data with the following properties:
+    # TODO(david) Implement GNN representation
 
-    - `input_data`: A list of dictionaries containing input data.
-    - `output_file` (optional): The file path to save the output data. If not provided, it will be created automatically by default.
-    """
-    # Load the input data into a JSON format using `json` module's `load()` function
-    with open(input_data[0], 'r') as f:
-        return json.load(f)
+    # TODO(david) Implement GNN representation
+
+    # TODO(david) Implement GNN representation
+
+    # TODO(david) Implement GNN representation
+
+    # TODO(david) Implement GNN representation
+
+    # TODO(david) Implement GNN representation
+
+    # TODO(david) Implement GNN representation
+
+    return [
+        {
+            "type": "float",
+            "value": 1.0,
+            "name": "input"
+        },
+        {
+            "type": "float",
+            "value": 2.0,
+            "name": "output"
+        }
+    ]
 ```

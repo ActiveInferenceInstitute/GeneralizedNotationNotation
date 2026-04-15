@@ -212,7 +212,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-04-14T11:53:26.086824",
+  "created_at": "2026-04-15T12:25:54.064723",
   "equations": [],
   "extensions": {
     "footer": "T-Maze Epistemic Foraging Agent v1 - GNN Representation.\nDemonstrates the natural exploration-exploitation trade-off in Active Inference.\nAgent visits cue location to reduce uncertainty before committing to reward arm.\nClassic paradigm from Friston et al. Active Inference literature.",
@@ -220,7 +220,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "T-Maze Epistemic Foraging Agent",
-  "modified_at": "2026-04-14T11:53:26.086825",
+  "modified_at": "2026-04-15T12:25:54.064726",
   "ontology_mappings": [
     {
       "description": null,

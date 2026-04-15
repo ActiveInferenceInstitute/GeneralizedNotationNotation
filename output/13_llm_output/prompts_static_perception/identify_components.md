@@ -1,31 +1,58 @@
 # IDENTIFY_COMPONENTS
 
-You've already provided a comprehensive overview of the GNN model structure in the document. To further refine your analysis, I'll provide additional insights:
+You've already provided a comprehensive overview of the Active Inference framework for this specific problem. Here's a concise summary:
 
-1. **State Variables (Hidden States)**:
-   - Variable names and dimensions
-   - What each state represents conceptually
-   - State space structure (discrete/continuous, finite/infinite)
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
+**State Variables (Hidden States)**
+- **Observation variables**:
+  - Observation modalities
+  - Sensor/measurement interpretations
+  - Noise models or uncertainty characterization
 
-3. **Action/Control Variables**:
-   - Available actions and their effects
-   - Control policies and decision variables
-   - Action space properties
+1. **Initialization and inference**:
+   - Initial state parameters
+   - Initial observation matrices
+   - Initial action probabilities
+   - Initial choice of actions to be inferred
 
-4. **Model Matrices**:
-   - A matrices: Observation models P(o|s)
-   - B matrices: Transition dynamics P(s'|s,u)
-   - C matrices: Preferences/goals
-   - D matrices: Prior beliefs over initial states
-5. **Parameters and Hyperparameters**:
-   - Precision parameters (γ, α, etc.)
-   - Learning rates and adaptation parameters
-   - Fixed vs. learnable parameters
+2. **Model estimation**:
+   - Initial model parameters
+   - Initial observations
+   - Initial action predictions
+   - Initial choice of actions
 
-6. **Temporal Structure**:
+**Action/Control Variables**
+- **Initialization and inference**:
+  - Initial state variables
+  - Initial observation matrices
+  - Initial action probabilities
+  - Initial choice of actions to be inferred
+
+3. **Model estimation**:
+  - Initial model parameters
+  - Initial observations
+  - Initial action predictions
+  - Initial choice of actions
+
+**Parameterization**
+- **Initialization and inference**:
+   - Initial state variables
+   - Initial observation matrices
+   - Initial action probabilities
+   - Initial choice of actions to be inferred
+
+4. **Model estimation**:
+   - Initial model parameters
+   - Initial observations
+   - Initial action predictions
+   - Initial choice of actions
+
+**Parameters and Hyperparameters**
+- **Initialization and inference**:
+   - Initial state variables
+   - Initial observation matrices
+   - Initial action probabilities
+   - Initial choice of actions to be inferred
+
+5. **Temporal structure**:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components

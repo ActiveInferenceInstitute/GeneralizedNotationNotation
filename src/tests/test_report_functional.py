@@ -174,8 +174,8 @@ class TestComprehensiveReport:
         report_file = Path(result["report_file"])
         assert report_file.exists()
         content = report_file.read_text()
-        assert "<html>" in content
-        assert "GNN Comprehensive Report" in content
+        assert "<html" in content
+        assert "GNN Comprehensive Analysis Report" in content
 
     @pytest.mark.unit
     def test_markdown_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
@@ -186,7 +186,7 @@ class TestComprehensiveReport:
         report_file = Path(result["report_file"])
         assert report_file.exists()
         content = report_file.read_text()
-        assert "# GNN Comprehensive Report" in content
+        assert "# GNN Comprehensive Analysis Report" in content
 
     @pytest.mark.unit
     def test_empty_dir_report(self, empty_gnn_dir: Any, output_dir: Any) -> None:
@@ -213,7 +213,7 @@ class TestHtmlReport:
         }
         html = generate_html_report(report_data)
         assert "<!DOCTYPE html>" in html
-        assert "Total files analyzed: 2" in html
+        assert "Total Scanned Entities:</strong> 2" in html
         assert "model_a.md" in html
         assert "model_b.md" in html
 
@@ -221,8 +221,8 @@ class TestHtmlReport:
     def test_generate_html_empty_data(self) -> None:
         """generate_html_report should handle empty report data."""
         html = generate_html_report({})
-        assert "<html>" in html
-        assert "Total files analyzed: 0" in html
+        assert "<html" in html
+        assert "Total Scanned Entities:</strong> 0" in html
 
 
 class TestMarkdownReport:
@@ -238,12 +238,12 @@ class TestMarkdownReport:
             "summary": {"success": True, "errors": []},
         }
         md = generate_markdown_report(report_data)
-        assert "# GNN Comprehensive Report" in md
+        assert "# GNN Comprehensive Analysis Report" in md
         assert "test.md" in md
-        assert "**Total files analyzed**: 1" in md
+        assert "**Total Scanned Entities**: 1" in md
 
     @pytest.mark.unit
     def test_generate_markdown_empty_data(self) -> None:
         """generate_markdown_report should handle empty report data."""
         md = generate_markdown_report({})
-        assert "# GNN Comprehensive Report" in md
+        assert "# GNN Comprehensive Analysis Report" in md

@@ -1,53 +1,17 @@
 # PRACTICAL_APPLICATIONS
 
-Here are the steps for analyzing GNNs:
+You've covered the basics of GNN, including its mathematical foundations, active inference concepts, and applications in various domains. Now, let's dive deeper into specific aspects:
 
-1. **Initialization**:
-   - Load the data into a Python environment (e.g., pandas, numpy) to prepare the model.
-   - Initialize the parameters (`A`, `B`, etc.) using the provided code and initializing them with random values.
-   - Use the `load_data` function from the `pandas` library to load the data into a DataFrame.
+1. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden states (hidden_states). The model is based on the idea of Bayesian inference, which allows us to update beliefs about the state space using Bayes' theorem. This enables us to make predictions about future actions based on past outcomes.
 
-2. **Initialization**:
-   - Define the action-dependent transition matrix (`D`) based on the input actions (actions) and the policy vector (`P`):
-   
-   ```python
-A = [[0, 1], [1, 0]]
-B = [[0, 1], [1, 0]]
-```
+2. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden states (hidden_states). The model is based on the idea of Bayesian inference, which allows us to update beliefs about the state space using Bayes' theorem. This enables us to make predictions about future actions based on past outcomes.
 
-3. **Initialization**:
-   - Initialize the hidden states (`s`) with random values:
-   
-   ```python
-S=[[random.normalvariate(low=-0.5, high=0.5), random.normalvariate(low=-0.2, high=0.7)] for _ in range(num_hidden_states)]
-```
+3. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden states (hidden_states). The model is based on the idea of Bayesian inference, which allows us to update beliefs about the state space using Bayes' theorem. This enables us to make predictions about future actions based on past outcomes.
 
-4. **Initialization**:
-   - Initialize the action-dependent transition matrix (`C`):
-   
-   ```python
-c = [[random.normalvariate(-1), random.normalvariate(-1)], [random.normalvariate(-0.5, 0)]] for _ in range(num_actions)]
-```
+4. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden states (hidden_states). The model is based on the idea of Bayesian inference, which allows us to update beliefs about the state space using Bayes' theorem. This enables us to make predictions about future actions based on past outcomes.
 
-5. **Initialization**:
-   - Initialize the policy vector (`P`):
-   
-   ```python
-p = [[random.normalvariate(-1), random.normalvariate(-1)], [random.normalvariate(-0.2, 0)]] for _ in range(num_actions)]
-```
+5. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden states (hidden_states). The model is based on the idea of Bayesian inference, which allows us to update beliefs about the state space using Bayes' theorem. This enables us to make predictions about future actions based on past outcomes.
 
-6. **Initialization**:
-   - Initialize the habit vector (`G`):
-   
-   ```python
-g = [[random.normalvariate(-1), random.normalvariate(-1)], [random.normalvariate(-0.2, 0)]] for _ in range(num_actions)]
-```
+6. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden states (hidden_states). The model is based on the idea of Bayesian inference, which allows us to update beliefs about the state space using Bayes' theorem. This enables us to make predictions about future actions based on past outcomes.
 
-7. **Initialization**:
-   - Initialize the action-dependent transition matrix (`D`):
-   
-   ```python
-d = [[random.normalvariate(-1), random.normalvariate(-1)], [random.normalvariate(-0.2, 0)]] for _ in range(num_actions)]
-```
-
-8. **Initialization
+7. **Model Properties**: We have a 2x2x2 POMDP with noisy observations (observation) and two hidden

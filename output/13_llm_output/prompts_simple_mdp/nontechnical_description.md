@@ -6,49 +6,21 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN model:
+You can use the following code to generate a GNN representation of your MDP:
 
 
 ```python
 import numpy as np
+from scipy import stats
 
-# Define the input data and output data for the MDP agent
-input_data = np.array([[10, 25], [30, 40]])
-output_data = np.array([
-    [[(0.9, 0.1), (0.8, 0.2)], 
-    [[(0.7, 0.2), (0.6, 0.2)]], 
-    [[(0.5, 0.4), (0.3, 0.2)]]])
-]
-
-
-# Define the input and output data for the MDP agent
-input_data = np.array([[10, 25]])
-output_data = np.array([
-    [[(0.9, 0.1), (0.8, 0.2)], 
-    [[(0.7, 0.2), (0.6, 0.2)]], 
-    [[(0.5, 0.4), (0.3, 0.2)]]])
-]
-
-
-# Define the input and output data for the MDP agent
-input_data = np.array([[10, 25]])
-output_data = np.array([
-    [[(0.9, 0.1), (0.8, 0.2)], 
-    [[(0.7, 0.2), (0.6, 0.2)]], 
-    [[(0.5, 0.4), (0.3, 0.2)]]])
-]
-
-
-# Define the input and output data for the MDP agent
-input_data = np.array([[10, 25]])
-output_data = np.array([
-    [[(0.9, 0.1), (0.8, 0.2)], 
-    [[(0.7, 0.2), (0.6, 0.2)]], 
-    [[(0.5, 0.4), (0.3, 0.2)]]])
-]
-
-
-# Define the input and output data for the MDP agent
-input_data = np.array([[10, 25]])
-output_data = np.array([
-    [[
+# Define the model parameters and initializations for the agent.
+A = np.array([[1, 0], [0, 1]])
+B = np.array([(-1) * (np.random.rand(4)), (-1) * (np.random.rand(4))])
+C = np.array([((-1) * (np.random.rand(4)))] + [[0]]*3)
+G = stats.gamma_uniform(low=0, high=256, size=(num_hidden_states+1,))  # Initialize the GNN model parameters and initializations for the agent
+B[s: s_prime][s: s_prime] = np.array([(-1) * (np.random.rand(4)), (-1) * (np.random.rand(4))])   # Initialization of the policy vector
+C[s+1: s+2, 0: 3] = np.array([[[-1]]*num_actions], [(-1)]*num_actions])    # Initialization of the prior over states and actions
+G[s+2: s+3, 0: 4] = np.array([((-1) * (np.random.rand(4))]), (-1) * (np.random.rand(4))] + [[(-1)]*num_actions], [(-1)]*num_actions])    # Initialization of the prior over states and actions
+G[s+3: s+2, 0: 6] = np.array([((-1) * (np.random.rand(4))]), (-1) * (np.random.rand(4))] + [[(-1)]*num_actions], [(-1)]*num_actions])    # Initialization of the prior over states and actions
+G[s+2: s, 0: 6] = np.array([((-1) * (np.random.rand(4))]), (-1) * (np.random.rand(4))] + [[(-1)]*num_actions], [(-1)]*num_actions])    # Initialization of the prior over states and actions
+G[s

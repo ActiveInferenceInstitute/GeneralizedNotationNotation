@@ -1,25 +1,29 @@
 # EXPLAIN_MODEL
 
-This document provides a comprehensive explanation of the GNN (Generalized Notation Notation) specification and its application to active inference on domain-specific models. It covers:
+Here's a concise overview of the GNN implementation:
 
-1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
-   - "Active Inference" refers to the process where an agent makes decisions based on available information, with a focus on updating beliefs and actions in response to new data.
+**Introduction**
 
-2. **Core Components**:
-   - "hidden states (s_f0, s_f1)" represents the distribution of observed outcomes over time. The goal is to update these probabilities using Bayes' theorem or other suitable methods based on prior distributions.
-   - "observations" represent the current state and actions in the model.
+This document provides an overview of the GNN (Generalized Notation Notation) framework for active inference on POMDPs and other domains. The model is designed to represent real-world phenomena, such as planning horizon optimization or Bayesian inference in a wide range of applications.
 
-3. **Model Dynamics**:
-   - "actions/controls (u_c0, π_c0)" are available for each observation. These can be thought of as a sequence of decisions made by the agent based on new data. The goal is to update these probabilities using Bayes' theorem or other suitable methods.
+**Model Purpose**
 
-4. **Practical Implications**:
-   - "What beliefs are being updated and what actions/controls are available?" represent the current state of knowledge about the model's behavior, with a focus on updating beliefs based on prior distributions. This can be done by applying Bayesian inference to update probabilities using Bayes' theorem or other suitable methods.
+The model represents a classic Active Inference agent that can be used for various applications:
 
-5. **Model Evolution**:
-   - "What is happening in the next timestep" represents the evolution of the model over time, with each observation representing a decision made by the agent and its corresponding action/controls (actions). This can be done through a sequence of actions-based updates using Bayesian inference or other suitable methods.
+1. **Action selection**: The agent selects actions based on its policy and preferences.
+2. **Belief updating**: The agent updates beliefs based on the available actions, policies, and prior distributions.
+3. **Learning**: The model learns from data by adjusting parameters to improve performance over time.
+4. **Probability update**: The agent updates probabilities using a probabilistic graphical model (PGM).
+5. **Model evolution**: The model evolves over time based on the available actions and policies, learning new beliefs through inference.
+6. **Error analysis**: The model can learn from errors by adjusting parameters to improve performance.
+7. **Key relationships**: The model represents key relationships between different components of the system:
 
-6. **Active Inference Context**:
-   - "What decisions are being made" represent the current state of knowledge about the model's behavior, with each observation representing a decision made by the agent and its corresponding action/controls (actions). This can be done through a sequence of actions-based updates using Bayesian inference or other suitable methods.
-
-7. **Practical Implications**:
-   - "What is happening in the next timestep" represents the evolution of the model over time, with each observation representing a decision made by the agent and its corresponding action/controls (actions). This can be done through a sequence of actions-based updates using Bayesian inference or other suitable methods.
+1. **Hidden states (s_f0, s_f1)**: Representing the agent's actions and decisions based on its policy and preferences.
+2. **Observations (o_m0, o_m1)**: Representing the observed data or observations made by the agent.
+3. **Actions** (`u_c0`, `π_c0`) - Representing the current state of the system based on its policy and preferences.
+4. **Habit**`(s_f0, s_f1)**: Representing the agent's prior distribution over actions and policies.
+5. **Action selection** (`action = sample_action()`), `policy`, and `prior` are represented as a set of probabilities (probabilities).
+6. **Learning** is represented by updating beliefs based on new data, which can be done using a probabilistic graphical model (PGM) or Bayesian inference.
+7. **Probability update** (`update_beliefs()`), `probability`, and `action` are represented as a set of probabilities (probabilities).
+8. **Model evolution** is represented by adjusting parameters based on the available actions, policies, and prior distributions.
+9. **Error analysis**: The model can learn

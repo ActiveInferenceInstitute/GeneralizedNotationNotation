@@ -2,33 +2,24 @@
 
 Here is a concise summary of the key points:
 
-**Summary:**
-This document provides an overview of the Simple Markov Chain (SMC) model representation and its core components. It covers the following topics:
+**Model Purpose:** This GNN represents a simple discrete-time Markov Chain with no actions and no observable state transition matrix (A). The model encodes passive dynamics based on identity matrices A(x) = x, weather transitions B(y), and observation D(t) = y. It also includes an initial parameterization S=EmissionMatrix, which represents the initial states of the Markov Chain.
 
-1. **Model Purpose**: The SMC represents passive dynamics, no actions, and no control over states.
-   - **Key Components**:
-   - **Hidden States**:
-   - **Observations**:
-   - **Actions/Controls**:
-   - **Initialization**:
-   - **State Transition Matrix**:
-   - **Transition Matrix**:
-   - **Activation Function**:
-   - **Model Parameters**:
+**Core Components:**
 
-2. **Core Components**:
-   - **"Input"**: A 3x3 Identity matrix representing the state transition and observation matrices.
-   - **"Output"**: A 3x1 Identity matrix representing the transition and observation matrices.
-   - **"Initialization"**: A 3x1 Identity matrix representing the initial state distribution.
-   - **"State Transition Matrix"**: A 2x1 Identity matrix representing the transition and observation matrices.
+1. **Hidden States**: There are 3 hidden states (A[observations], A[states_next], B[states]) and 2 observations (o[observations]), representing the current state distribution and the next observation, respectively.
 
-3. **Model Dynamics**: The SMC evolves passively over time, capturing observable states and actions/controls.
-   - **Key Relationships**:
-   - **Initialization**: Initializes the state transition matrix with a random identity matrix (identity).
-   - **State Transition Matrix**: Updates the state transition matrix based on observed observations.
-   - **Activation Function**: Activates the initial state distribution using an activation function.
-   - **Model Parameters**: Control over states and actions/controls are implemented through the activation functions in the model parameters.
+2. **Observable State Transition Matrix**: There is a matrix D(t) = InitialStateDistribution that represents the initial state of the Markov Chain at time t. This matrix captures the transition probabilities between states A(x1), B(y1).
 
-4. **Practical Implications**: The SMC can inform decisions about future actions, predictions of outcomes, and decision-making under uncertainty.
+3. **Initial State Distribution**: The initial state distribution S=EmissionMatrix contains all possible states and their corresponding transitions, allowing for passive dynamics based on identity matrices A(x) = x and weather transitions B(y) = y.
 
-Please provide clear and concise explanations while maintaining scientific accuracy.
+**Model Dynamics:**
+
+1. **Action Inference**: The model implements Active Inference principles by updating beliefs over time based on the observed state distribution D(t). This allows for active inference of future states, actions, and control variables.
+
+2. **Practical Implications**: The model can inform decisions in various domains:
+   - **Predictive Actions**: By estimating the probability distributions of future states and actions, it can predict whether an action will be taken or not. For example, if a state is sunny, the model predicts that there are 3 possible outcomes (sunny/cloudy), allowing for predictions about future weather conditions.
+   - **Action Selection**: The model can inform decisions based on its learned beliefs and actions. For instance, it can predict whether an action will be taken or not based on its past probabilities of success in the Markov Chain.
+
+3. **Decision-Making**: By updating its belief over time, the model can make informed decisions about future states and actions. This enables agents to adapt their behavior accordingly.
+
+**Signature:** The GNN represents a simple discrete-time Markov Chain with no actions and no observable state transition matrix (A). It also includes an initial parameterization S=EmissionMatrix that captures

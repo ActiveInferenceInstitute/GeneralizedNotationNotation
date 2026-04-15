@@ -1,18 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Based on the information provided in the doc, here is a systematic breakdown of the signature:
-
-1. **State Variables (Hidden States)**:
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-    - Observation modalities and their meanings
-    - Sensor/measurement interpretations
-    - Noise models or uncertainty characterization
-
-Here is a step-by-step breakdown of the signature:
+Here is a systematic breakdown of the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -24,50 +12,22 @@ Here is a step-by-step breakdown of the signature:
    - Sensor/measurement interpretations
    - Noise models or uncertainty characterization
 
-Here is a step-by-step breakdown of the signature:
+3. **Action/Control Variables**:
+   - Available actions and their effects
+   - Control policies and decision variables
+   - Action space properties
 
-1. **State Variables (Hidden States)**:
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
+4. **Model Matrices**:
+   - A matrices: Observation models P(o|s)
+   - B matrices: Transition dynamics P(s'|s,u)
+   - C matrices: Preferences/goals
+   - D matrices: Prior beliefs over initial states
 
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
+5. **Parameters and Hyperparameters**:
+   - Precision parameters (γ, α, etc.)
+   - Learning rates and adaptation parameters
+   - Fixed vs. learnable parameters
 
-Here is a step-by-step breakdown of the signature:
-
-1. **State Variables (Hidden States)**:
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
-
-Here is a step-by-step breakdown of the signature:
-
-1. **State Variables (Hidden States)**:
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
-
-Here is a step-by-step breakdown of the signature:
-
-1. **State Variables (Hidden States)**:
-    - Variable names and dimensions
-    - What each state represents conceptually
-    - State space structure (discrete/continuous, finite/infinite)
-
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty
+6. **Temporal Structure**:
+   - Time horizons and temporal dependencies
+   - Dynamic vs. static components

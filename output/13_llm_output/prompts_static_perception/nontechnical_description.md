@@ -8,59 +8,59 @@ Response:
 
 ```python
 import json
-import numpy as np
 from typing import List
 
 class GNNModel:
-    """GNN model with simple inference on a binary classification problem."""
-
     def __init__(self):
         self.model = None
 
-        # Initialize the model parameters
-        self.num_hidden_states = 2
-        self.num_obs = 2
-        self.dna_matrix = np.array([
-            [[0, 1], [1]],
-            [[0, 0], [1]]])
+        # Initialize the model with a single-shot inference
+        self.model_annotations = {}
 
-    def generate(self):
-        """Generate a GNN model."""
+    def generate(self, **kwargs):
+        """Generate an action inference based on input data."""
+        if not isinstance(kwargs["input"], list) or len(kwargs["input"]) == 0:
+            raise ValueError("Input must be a list of lists")
 
-        # Generate the input data
-        with open("input/GNNModelData.json", "r") as f:
-            self.model = json.load(f)
+        # Generate the input data and initialize the model with the appropriate parameters.
+        self._generate_action_inference(**kwargs)
 
-        # Generate the training data
-        with open("input/GNNModelTrainingData.json", "r") as f:
-            self.training_data = json.load(f)
+    def generate_actions(self, **kwargs):
+        """Generate an action inference based on input data."""
+        if not isinstance(kwargs["input"], list) or len(kwargs["input"]) == 0:
+            raise ValueError("Input must be a list of lists")
 
-    def generate_random_sample_examples(self, num_samples=10):
-        """Generate a random sample of 2 samples from the training data."""
+        # Generate the actions for each observation.
+        self._generate_actions(**kwargs)
 
-        # Generate a random subset of the training data
-        with open("input/GNNModelTrainingData.json", "r") as f:
-            self.training_data = json.load(f)
+    def generate_action_inference(self, **kwargs):
+        """Generate an action inference based on input data."""
+        if not isinstance(kwargs["input"], list) or len(kwargs["input"]) == 0:
+            raise ValueError("Input must be a list of lists")
 
-    def generate_random_examples(self, num_samples=10):
-        """Generate a random sample of 2 samples from the training data."""
+        # Generate the actions for each observation.
+        self._generate_actions(**kwargs)
 
-        # Generate a random subset of the training data
-        with open("input/GNNModelTrainingData.json", "r") as f:
-            self.training_data = json.load(f)
+    def generate_state_beliefs(self, **kwargs):
+        """Generate an action inference based on input data."""
+        if not isinstance(kwargs["input"], list) or len(kwargs["input"]) == 0:
+            raise ValueError("Input must be a list of lists")
 
-    def generate_random_examples_with_action(self, num_samples=10):
-        """Generate a random sample of 2 samples from the training data."""
+        # Generate the beliefs for each observation.
+        self._generate_state_beliefs(**kwargs)
 
-        # Generate a random subset of the training data
-        with open("input/GNNModelTrainingData.json", "r") as f:
-            self.training_data = json.load(f)
+    def generate_observation_beliefs(self, **kwargs):
+        """Generate an action inference based on input data."""
+        if not isinstance(kwargs["input"], list) or len(kwargs["input"]) == 0:
+            raise ValueError("Input must be a list of lists")
 
-    def generate_random_examples_with_action(self, num_samples=10):
-        """Generate a random sample of 2 samples from the training data."""
+        # Generate the beliefs for each observation.
+        self._generate_observation_beliefs(**kwargs)
 
-        # Generate a random subset of the training data
-        with open("input/GNNModelTrainingData.json", "r") as f:
-            self.training_data = json.load(f)
+    def generate_action_inference(*args, **kwargs):
+        """Generate an action inference based on input data."""
+        if not isinstance(kwargs["input"], list) or len(kwargs["input"]) == 0:
+            raise ValueError("Input must be a list of lists")
 
-    def generate_random
+        # Generate the actions for each observation.
+        self._

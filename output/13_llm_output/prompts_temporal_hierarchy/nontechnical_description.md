@@ -6,77 +6,63 @@ Prompt:
 
 Response:
 
-You can use the following code to generate a GNN representation of an agent:
+```python
+import json
+from typing import List
 
-1. Create a list of dictionaries with the following structure:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        },
-        ...
-    ]
+class GNNModel:
+    """GNN model with hierarchical active inference."""
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json` module for JSON serialization of the data:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        }
-    ]
+    def __init__(self):
+        self.model = None
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json` module for JSON serialization of the data:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        }
-    ]
+        # Initialize the model and initialize all parameters
+        for layer_name, layer in zip(
+            "Layer1",
+            "Layer2"
+        ):
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json` module for JSON serialization of the data:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        }
-    ]
+            if isinstance(layer, list) or len(layer) == 0:
+                raise ValueError("Invalid type of layer")
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json` module for JSON serialization of the data:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        }
-    ]
+                self._load_model(layer[0])
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json` module for JSON serialization of the data:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        }
-    ]
+        # Initialize the model with a hierarchical active inference
+        for layer in zip(["Layer1"], ["Layer2"]) + [
+            ("Layer3", "Layer4" if isinstance(layer, list) else []),
+            ("Layer5", "Layer6" if isinstance(layer, list) else [])]:
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json` module for JSON serialization of the data:
-   ```python
-    [
-        {
-            "type": "int",
-            "value": 0,
-            "name": "action_id"
-        }
-    ]
+            self._load_model(layer[0])
 
-    For each action dictionary in the list, create a dictionary that maps the action ID to its corresponding value. Use the `json`
+        # Initialize the model with a hierarchical active inference
+        for layer in zip(["Layer1"], ["Layer2"]) + [
+            ("Layer3", "Layer4") if isinstance(layer, list) else []],
+            ["Layer5"]+["Layer6" if isinstance(layer, list) else []]
+    def _load_model(self):
+
+        # Load the hierarchical active inference model
+        self.model = load_hierarchical_active_inference()
+
+    def _load_model(self, layer[0]):
+        """Load a hierarchical active inference model."""
+
+        if isinstance(layer, list) or len(layer) == 0:
+            raise ValueError("Invalid type of layer")
+
+            # Load the hierarchy from the list of layers.
+            for layer in zip(["Layer1"], ["Layer2"]) + [
+                ("Layer3", "Layer4" if isinstance(layer, list) else []),
+                ("Layer5", "Layer6" if isinstance(layer, list) else [])]:
+
+                self._load_model(layer[0])
+
+        # Load the hierarchical active inference model
+        for layer in zip(["Layer1"], ["Layer2"]) + [
+            ("Layer3")+["Layer4"]if isinstance(layer,"list")else []],
+                ["Layer5", "Layer6" if isinstance(layer, list) else []]
+
+    def _load_model(self):
+
+        # Load the hierarchical active inference model
+        self.model = load_hierarchical_active_inference()
+```

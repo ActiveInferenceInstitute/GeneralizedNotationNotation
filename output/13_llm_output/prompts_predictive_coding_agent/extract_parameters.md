@@ -1,33 +1,33 @@
 # EXTRACT_PARAMETERS
 
-Based on the provided information, here are some key parameters that can be used to analyze GNN models:
+Based on the information provided, here are the key components of the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the model's input and output data (e.g., `model_matrices`).
-   - B matrices representing the predicted values of each input variable (`state_dim`) and corresponding predictions (`action`, etc.).
-   - C matrices representing the prediction errors for each modality (`bias`, etc.)
-
+   - A matrices representing the model structure and its relationships with other models (e.g., ActInfContinuous)
+   - B matrices representing the bias-variance matrix for each action parameter
+   - C matrices representing the covariance matrix for each sensory prediction error
 2. **Precision Parameters**:
-   - γ parameter: defines how to update the model's accuracy based on the current state space dimensions, while controlling the learning rate of the predicted values (e.g., `learning_rate`).
-   - α parameter: controls the learning rate for each modality (`bias`) and its interpretation in terms of a specific loss function or other parameters.
+   - γ: precision parameters, roles in the model hierarchy
+   
+   - α: learning rate and adaptation parameters
+   - Other precision/confidence parameters
 
 3. **Dimensional Parameters**:
-   - State space dimensions for each input variable (`state_dim`, etc.).
-   - Observation space dimensions for each modality (`obs_dim`).
-   - Action space dimensions for each control factor (`action`, etc.)
-
+   - State space dimensions for each factor
+   - Observation space dimensions for each modality
+   - Action space dimensions for each control factor
 4. **Temporal Parameters**:
    - Time horizons (t)
    - Temporal dependencies and windows
    - Update frequencies and timescales
 
 5. **Initial Conditions**:
-   - Prior beliefs over initial states (`prior`)
-   - Initial parameter values (`bias`), `bias_x`, etc. for each input variable (`action`, etc.)
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
 
-These parameters can be used to:
-- Control the learning rate of predictions based on current state space dimensions and biases (e.g., `learning_rate`)
-- Control the learning rate of prediction errors based on current state space dimensions and bias values (e.g., `learning_rate`)
-- Control the learning rate for each modality (`bias`, etc.) to improve accuracy in predictions
-- Control the learning rate for actions based on current state space dimensions and biases
-- Control the learning rate for predictions based on current state space dimensions and biases
+6. **Configuration Summary**:
+   
+   - Parameter file format recommendations
+   - Tunable vs. fixed parameters
+   - Sensitivity analysis priorities

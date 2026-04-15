@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.245796,
-  "timestamp": "2026-04-14T11:54:29.351530",
+  "execution_time": 0.24511,
+  "timestamp": "2026-04-15T12:27:14.552405",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -57,8 +57,8 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_analysis.json",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_info.json"
     ],
     "traces": [],
     "other": []

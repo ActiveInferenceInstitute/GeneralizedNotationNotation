@@ -7,53 +7,28 @@ Prompt:
 Response:
 
 ```python
-import json
-from typing import List
+import numpy as np
 
-class GNNModel:
-    """Class representing a simple Active Inference model."""
-
-    def __init__(self):
-        self.num_hidden_states = 2
-        self.num_obs = 2
-
-        self.dna_matrix = {}
-        self.A = {}
-        self.D = {}
-        self.s = {}
-        self.o = {}
-        self.a = {}
-
-    def generate(self):
-        """Generate a GNN representation of the input data."""
-        # Generate random observation and hidden state pairs
-
-        for i in range(len(self.input_data)):
-            if len(self.input_data[i]) == 0:
-                raise Exception("Input data is empty")
-
-            self.dna_matrix[i] = []
-            self.A[i][0] = random.randint(-1, 2) * np.random.rand()
-            self.D[i][0] = random.uniform(0, 1)
-
-        for i in range(len(self.input_data)):
-            if len(self.input_data[i]) == 0:
-                raise Exception("Input data is empty")
-
-            self.s[i].append((random.randint(-2*np.random.rand(), np.random.rand() + 1), random.uniform(0, 1)))
-            self.o[i][0] = random.randint(-1, 2) * np.random.rand()
-
-        for i in range(len(self.input_data)):
-            if len(self.input_data[i]) == 0:
-                raise Exception("Input data is empty")
-
-            self.a[i].append((random.uniform(-3*np.random.rand(), np.random.rand() + 1), random.uniform(0, 1)))
-
-        for i in range(len(self.input_data)):
-            if len(self.input_data[i]) == 0:
-                raise Exception("Input data is empty")
-
-            self.b = {}
-            for i in range(len(self.input_data[i])):
-                if len(self.input_data[i][i] != 0:
-                    self.a[i].append((random.uniform(-3*np.random.rand(), np.random.rand() + 1),
+# Define the input data and corresponding output files for the GNN model
+input_data = [
+    {"id": 10},
+    {"id": 2},
+    {"id": 3},
+    {"id": 4}
+]
+output_files = [
+    "output/10_ontology_output/simple_mdp_ontology_report.json",
+    "output/10_ontology_output/multi_armed_bandit_ontology_report.json",
+    "output/10_ontology_output/deep_planning_horizon_ontology_report.json",
+    "output/10_ontology_output/actinf_pomdp_agent_ontology_report.json",
+    "output/10_ontology_output/hmm_baseline_ontology_report.json",
+    "output/10_ontology_output/bnlearn_causal_model_ontology_report.json",
+    "output/10_ontology_output/two_state_bistable_ontology_report.json",
+    "output/10_ontology_output/markov_chain_ontology_report.json",
+    "output/10_ontology_output/tmaze_epistemic_ontology_report.json"
+]
+outputs = [
+    {"id": 2},
+    {"id": 3}
+]
+```

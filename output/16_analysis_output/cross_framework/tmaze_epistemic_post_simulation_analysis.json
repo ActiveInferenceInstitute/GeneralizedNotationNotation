@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T12:03:25.238807",
+  "timestamp": "2026-04-15T12:38:25.506108",
   "execution_results_dir": "output/12_execute_output/tmaze_epistemic",
   "framework_results": {
     "bnlearn": {
@@ -85,18 +85,18 @@
         "mean_fe": 0.6908
       },
       "execution_time": {
-        "bnlearn": 1.980501,
-        "discopy": 0.243427,
-        "jax": 0.704726,
-        "pytorch": 0.464097,
-        "pymdp": 2.863289,
-        "activeinference_jl": 14.969582,
-        "numpyro": 0.729302,
-        "rxinfer": 13.728235
+        "bnlearn": 2.045308,
+        "discopy": 0.240787,
+        "jax": 0.695984,
+        "pytorch": 0.473862,
+        "pymdp": 2.757979,
+        "activeinference_jl": 10.433011,
+        "numpyro": 0.738738,
+        "rxinfer": 13.569665
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.243427
+        "time": 0.240787
       },
       "success_rates": {
         "bnlearn": true,

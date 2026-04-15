@@ -6,30 +6,97 @@ Prompt:
 
 Response:
 
-Here is the implementation of the GNN model:
 ```python
-import numpy as np
-from scipy import stats
+import json
+from typing import List
 
-def gnn(x):
-    x = np.array(x)
 
-    # Initialize state transition matrix
-    state_transition_matrix = [[0 for _ in range(len(x))]
-              [np.ones((len(x), len(x))])]
-    
-    # Initialize action vector
-    actions = [[1, 2],
-                  [3, 4]]
-  
-  def gnn_forward(state):
-    x = np.array([state[0]])
+class ActInfOntologyAnnotation:
+    """Annotated ontology for ActInf agent."""
 
-    for i in range(1, len(state)):
-        state_transition = state_transition_matrix[i][0] + (x)
-        
-        # Perform action based on the current state transition matrix
-        actions[i] = actions[i-1]
-    
-    return x
-```
+    def __init__(self):
+        self.annotations = {}
+
+        # TODO: Implement this annotation type
+        # TODO: Implement this annotation type
+        # TODO: Implement this annotation type
+        # TODO: Implement this annotation type
+
+
+class ActInfOntology(ActInfOntologyAnnotation):
+    """Annotated ontology for ActInf agent."""
+
+    def __init__(self,
+                 entity_type=None,
+                 **kwargs):
+
+        self.annotations = {}
+
+        if hasattr(entity_type, "ontology"):
+            self.ontology = entity_type["ontology"]
+        else:
+            self.ontology = None
+
+            # TODO: Implement this annotation type
+            # TODO: Implement this annotation type
+
+    def __str__(self):
+        """Annotated ontology for ActInf agent."""
+        return json.dumps(jsonify(self))
+
+
+class ActInfOntologyRepresentation(ActInfOntology):
+    """Represented by ActInfo object."""
+
+    def __init__(self,
+                 entity_type=None,
+                 **kwargs):
+
+        self.annotations = {}
+
+        if hasattr(entity_type, "ontology"):
+            self.ontology = entity_type["ontology"]
+        else:
+            self.ontology = None
+
+            # TODO: Implement this annotation type
+            # TODO: Implement this annotation type
+
+    def __str__(self):
+        """Annotated ontology for ActInf agent."""
+        return json.dumps(jsonify(self))
+
+
+class ActInfoRepresentation(ActInfOntology):
+    """Represented by ActInfo object."""
+
+    def __init__(self,
+                 entity_type=None,
+                 **kwargs):
+
+        self.annotations = {}
+
+        if hasattr(entity_type, "ontology"):
+            self.ontology = entity_type["ontology"]
+        else:
+            self.ontology = None
+
+            # TODO: Implement this annotation type
+            # TODO: Implement this annotation type
+
+    def __str__(self):
+        """Annotated ontology for ActInf agent."""
+        return json.dumps(jsonify(self))
+
+
+class ActInfoRepresentation(ActInfOntology):
+    """Represented by ActInfo object."""
+
+    def __init__(self,
+                 entity_type=None,
+                 **kwargs):
+
+        self.annotations = {}
+
+        if hasattr(entity_type, "ontology"):
+            self.ontology =

@@ -8,41 +8,33 @@ Response:
 
 ```python
 import json
-from typing import List, Dict, Tuple
+from typing import List
 
-def gnn(
-    input: List[Dict[str, float]],
-    num_hidden_states: int = 4,
-    num_actions: int = 3,
-    num_contexts: int = 2,
-    timesteps: int = 10,
-    processed_files: List[Tuple[str, str]] = [],
-) -> Dict[str, float]:
-    """GNN implementation on to-go.
+def gnn(input: List[List[int]]) -> List[Dict[str, float]]:
+    """GNN implementation for hierarchical active inference (HAI) on a multi-armed bandit problem.
 
-    This implementation is based on the "gnn" module from the PyTorch library.
-    It uses a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
-    The HNN consists of two parts:
-    1. A set of activation functions to compute the output probabilities at each hidden state
-    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
+    Parameters
+    ----------
+    input : list of lists
+        A list of 2D arrays representing the data points in the HAI problem. Each array represents an action and its probability distribution over the reward space, with each element being a scalar value between 0 (no action) to 1 (action).
 
-    This implementation is based on the "gnn" module from the PyTorch library, which allows you
-    to implement a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
-    The HNN consists of two parts:
-    1. A set of activation functions to compute the output probabilities at each hidden state
-    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
+    Returns
+    -------
+    list[Dict[str, float]]
+        A list of dictionaries containing the following keys:
+            "actions": [
+                {
+                    "type": str,
+                    "probabilities": [
+                        {
+                            "value": int(input[i]),
+                            "probability": int(input[j])
+                        }
+                    ]
+                },
+                ...
+            ]
+    """
 
-    This implementation is based on the "gnn" module from the PyTorch library, which allows you
-    to implement a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
-    The HNN consists of two parts:
-    1. A set of activation functions to compute the output probabilities at each hidden state
-    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
-
-    This implementation is based on the "gnn" module from the PyTorch library, which allows you
-    to implement a hierarchical neural network (HNN) architecture with 4 hidden states and 3 actions for each level of hierarchy.
-    The HNN consists of two parts:
-    1. A set of activation functions to compute the output probabilities at each hidden state
-    2. A set of action-based probability distributions that map the input data to the corresponding hidden state distribution
-
-    This implementation is based on the "gnn" module from the PyTorch library, which allows you
-    to implement a hierarchical neural network
+    # TODO: Implement GNN implementation for HAI on multi-armed bandit problem.
+```

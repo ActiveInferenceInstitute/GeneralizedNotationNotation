@@ -1,48 +1,38 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key information for generating a signature:
+Based on the provided information, here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-    - A matrices representing the model structure and its relationships to other models (e.g., ActInfPOMDP)
-    - B matrices representing the action-observation mapping between actions and states
-    - C matrices representing the reward-observations relationship between actions and rewards
-    - D matrices representing the action-observation mapping between actions and rewards
+   - A matrices representing the action-observation mapping (A) and the policy-action matrix (B).
+   - B represents the reward distribution over actions, while A is used to represent the rewards across states.
+   - C represents the prior probability vector of actions, while D represents the prior probabilities for each state.
 
 2. **Precision Parameters**:
-    - γ (gamma): precision parameters for each factor
-    - α (alpha): learning rate and adaptation parameters
-    - Other precision/confidence parameters
+   - γ: precision parameters and their roles in GNN estimation (e.g., learning rate).
+   - α: learning rates and adaptation parameters.
+   - Other precision/confidence parameters are not provided as parameter values but can be inferred from the context information.
 3. **Dimensional Parameters**:
-    - State space dimensions for each factor
-    - Observation space dimensions for each modality
-    - Action space dimensions for each control factor
+   - State space dimensions for each factor
+   - Observation space dimensions for each modality
+   - Action space dimensions for each control factor
 
 4. **Temporal Parameters**:
-    - Time horizons (T)
-    - Temporal dependencies and windows
-    - Update frequencies and timescales
+   - Time horizons (T)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales are not provided as parameter values but can be inferred from the context information.
 5. **Initial Conditions**:
-    - Prior beliefs over initial states
-    - Initial parameter values
-    - Initialization strategies
-6. **Configuration Summary**:
-    - Parameter file format recommendations for generating a signature:
-      - "Input" field specifies the input data (e.g., token, state)
-      - "Output" field contains the output data and parameters
-      - "Model" field is used to generate a signature based on the model structure
+   - Initial state parameters
+   - Initialization strategies for each factor
 
+6. **Configuration Summary**:
+   - Parameter file format recommendations:
+    - `output/10_ontology_input/simple_mdp_ontology_report.json` and
+    `output/10_ontology_input/multi_armed_bandit_ontology_report.json`.
 7. **Tunable Parameters**:
-    - Sensitivity analysis priorities for generating signatures:
-      - "Null Hypothesis" parameter value (e.g., 0.1)
-      - "Random Sampling" parameter value (e.g., 0.5)
-      - "Sensitivity Analysis" parameter value (e.g., 0.2)
-    - Sensitivity analysis priorities for generating signatures:
-      - "Null Hypothesis" parameter value (e.g., 0.1)
-      - "Random Sampling" parameter value (e.g., 0.5)
-      - "Sensitivity Analysis" parameter value (e.g., 0.2)
-    - Sensitivity analysis priorities for generating signatures:
-      - "Null Hypothesis" parameter value (e.g., 0.1)
-      - "Random Sampling" parameter value (e.g., 0.5)
-      - "Sensitivity Analysis" parameter value (e.g., 0.2)
-    - Sensitivity analysis priorities for generating signatures:
-      - "Null Hypothesis" parameter value (e.g., 0.1
+   - Sensitivity analysis priorities for each factor:
+      - `gamma`: sensitivity analysis prioritizes the choice of gamma parameter value based on the context information.
+      - `α`: sensitivity analysis prioritizes the choice of α parameter value based on the context information.
+    - `other_precision/confidence` parameters are not provided as parameter values but can be inferred from the context information.
+8. **Configuration Summary**:
+   - Parameter file format recommendations:
+    - `output/10_ontology_input/simple_mdp_ontology_report.json`.

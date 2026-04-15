@@ -10,57 +10,30 @@ Response:
 import json
 from typing import List, Dict
 
-class GNNModel:
-    def __init__(self):
-        self.agent = {}
+def gnn(input: List[Dict[str, str]]) -> Dict[str, Dict[str]]:
+    """GNN representation of a neural network.
 
-    def add(self, action_id, reward):
-        """Add a new action to the agent."""
-        if action_id in self.agent and reward == 0:
-            self.agent[action_id] = {
-                "next": {"state": {"x": 1},
-                "goal": {"x": 2}}
-            }
+    Args:
+        input (List[Dict[str, str]]): A list of dictionaries representing the input data.
 
-    def add(self, action):
-        """Add an action to the agent."""
-        if action in self.agent and reward == 0:
-            self.agent[action]["next"]["reward"] = reward
+    Returns:
+        Dict[str, Dict[str]]: A dictionary containing the GNN representations for each input node and its corresponding actions.
+    """
+    gnn_representation = {}
+    
+    for input_node in input:
+        if isinstance(input_node["action"], str):
+            action_dict = input_node["action"]
+            
+            # Extract the reward from the action dictionary
+            reward = input_node["reward"]
 
-        elif isinstance(action_id, str) or action_id not in self.agent:
-            raise ValueError("Action ID is not valid.")
-
-    def add_actions(self):
-        """Add actions to the agent."""
-        for action_id in self.agents():
-            if action_id == "action":
-                continue
-
-            try:
-                reward = self._add_reward(action_id)
-
-                # Add a new action with the same reward as the current action
-                if isinstance(reward, int):
-                    self.agent[action_id]["next"]["reward"] += reward
-
-        return
-
-    def _add_reward(self, action_id):
-        """Add an action to the agent."""
-        actions = []
-        for i in range(len(self.agents()) - 1):
-            if isinstance(self.agents()[i], str) or self.agents():
-                continue
-
-            reward = self._add_reward(action_id, self.agents[i])
-
-            # Add a new action with the same reward as the current action
-            if isinstance(reward, int):
-                actions.append({"next": {"x": 1}, "goal": {"x": 2}})
-
-        return
-
-    def _add_reward(self, action_id, reward):
-        """Add an action to the agent."""
-        self._add_action(action_id, reward)
+            # Extract the loss and expectation from the reward dictionary
+            loss, expectation = input_node["loss"]
+            
+                # Apply the GNN to each node in the graph
+                for action_, node_id in zip(*input_node.items()):
+                    gnn_representation[action_.encode(str) + " -> " + str] += {"reward": reward}
+                    
+    return gnn_representation
 ```

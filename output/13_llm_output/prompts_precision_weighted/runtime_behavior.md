@@ -8,52 +8,97 @@ Response:
 
 ```python
 import json
-from typing import List
+from collections import Counter
 
-class GNNModel:
-    def __init__(self):
-        self.weights = {}
+def gnn(input_data):
+    """GNN implementation for a simple neural network."""
 
-    def add(self, state: List[List[float]], action_prob: float) -> None:
-        """Add a new input layer to the model."""
+    # Input data
+    input = {
+        'x': [
+            {'type': 'float', 'value': 0.9},
+            {'type': 'float', 'value': 0.05}],
+        }
+    }
+    output_data = {
+        'x': [
+            0.1,
+            0.2,
+            0.3
+        ],
+        'y': [
+            0.4,
+            0.6
+        ]
+    }
 
-        # Add an input layer with 3 hidden states and 1 observation
-        if isinstance(state, list) and len(state):
-            self.weights[(int)(len(state))] = {}
+    # Input data with sensory precision and policy precision
+    input_input = {
+        'x': [
+            {'type': 'float', 'value': 0.9},
+            {'type': 'float', 'value': 0.05}],
+        }
+    output_output = {
+        'x': [
+            0.1,
+            0.2,
+            0.3
+        ],
+        'y': [
+            0.4,
+            0.6
+        ]
+    }
 
-            for i in range(2):
-                self.weights[state][i] = state[0]
+    # Input data with policy precision and inverse temperature
+    input_input_policy = {
+        'x': [
+            {'type': 'float', 'value': 1},
+            {'type': 'float', 'value': 0}],
+        }
+    output_output_policy = {
+        'x': [
+            0.2,
+            0.3
+        ],
+        'y': [
+            0.4,
+            0.6
+        ]
+    }
 
-                for j in range(1):
-                    self.weights[state][j] = state[1]
+    # Input data with inverse temperature and inverse temperature
+    input_input_inverse = {
+        'x': [
+            {'type': 'float', 'value': 1},
+            {'type': 'float', 'value': -1}],
+        }
+    output_output_inverse = {
+        'x': [
+            0.2,
+            0.3
+        ],
+        'y': [
+            0.4,
+            0.6
+        ]
+    }
 
-                    if isinstance(action_prob, float) and action_prob < 0:
-                        # Add an input layer with 3 hidden states and 2 observations
-                        self.add_input_layer([int(len(state))], [float('inf')])
+    # Input data with sensory precision and inverse temperature
+    input_input_sensory = {
+        'x': [
+            {'type': 'float', 'value': 1},
+            {'type': 'float', 'value': -2}],
+        }
+    output_output_sensory = {
+        'x': [
+            0.2,
+            0.3
+        ],
+        'y': [
+            0.4,
+            0.6
+        ]
+    }
 
-        else:
-            raise ValueError("Input is not a list of lists")
-
-    def add_input_layer(self, state: List[List[float]], action_prob: float) -> None:
-        """Add an input layer with 3 hidden states and 1 observation."""
-
-        # Add an input layer with 2 hidden states and 0 observations
-        if isinstance(state, list):
-            self.add_input_layer([int(len(state))], [float('inf')])
-
-    def add_input_layer(self, state: List[List[float]], action_prob: float) -> None:
-        """Add an input layer with 2 hidden states and 1 observation."""
-
-        # Add an input layer with 3 hidden states and 0 observations
-        if isinstance(state, list):
-            self.add_input_layer([int(len(state))], [float('inf')])
-
-    def add_action_prob(self: List[List[float]], action_prob) -> None:
-        """Add an input layer with 3 hidden states and 1 observation."""
-
-        # Add an input layer with 2 hidden states and 0 observations
-        if isinstance(state, list):
-            self.add_input_layer([int(len(state))], [float('inf')])
-
-    def add_action_prob(self: List[List[float]], action_prob) -> None:
-        """Add an input layer with 3 hidden
+    # Input

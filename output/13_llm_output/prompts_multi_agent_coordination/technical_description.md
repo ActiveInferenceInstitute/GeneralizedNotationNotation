@@ -8,81 +8,71 @@ Response:
 
 ```python
 import json
-from typing import List
+from typing import List, Dict
 
-class MultiAgentCooperativeActiveInference:
+class GNNModel:
     def __init__(self):
-        self._model = {}
+        self.model = None
 
-    def add_agent(self, agent1, agent2):
-        """Add a new agent to the graph."""
+    def load(self) -> None:
+        """Loads the model from JSON file."""
 
-        if isinstance(agent1, (int, float)):
-            self.add_agent(
-                Agent(
-                    "A",
-                    {"x": 0},
-                    {"y": 0}
-                )
-        elif isinstance(agent2, (int, float)):
-            self.add_agent(
-                Agent(
-                    "B",
-                    {"x": 1},
-                    {"y": 1}
-                )
-        else:
-            raise ValueError("Invalid agent type")
+        with open("GNNModel.json", "r") as f:
+            self._load_data()
 
-    def add_agent(self, agent):
-        """Add a new agent to the graph."""
+        self.model = json.loads(f.read())
 
-        if isinstance(agent, (int, float)):
-            self.add_agent(
-                Agent(
-                    "A",
-                    {"x": 0},
-                    {"y": 1}
-                )
-        elif isinstance(agent, (list[float], list[int])):
-            for i in range(len(agent) + 1):
-                if isinstance(agent[i], (int, float)):
-                    self.add_agent(
-                        Agent(
-                            "B",
-                            {"x": 0},
-                            {"y": 1}
-                        )
-        else:
-            raise ValueError("Invalid agent type")
+    def _load_data(self):
+        """Loads the data from JSON file."""
 
-    def add_agent_with_policy(self):
-        """Add a new agent with policy."""
+        for key, value in self.model["input"].items():
 
-        if isinstance(self.add_agent, (list[float], list[int])):
-            for i in range(len(self)):
-                self.add_agent([
-                    Agent(
-                        "A",
-                        {"x": 0},
-                        {"y": 1}
-                    )
-                ]).append(Agent("B"))
+            if isinstance(value, dict) and len(value["actions"]) > 0:
+                self._add_action_to_state(key)
 
-    def add_agent_with_policy(self, agent):
-        """Add a new agent with policy."""
+    def _load_data(self):
+        """Loads the data from JSON file."""
 
-        if isinstance(self.add_agent, (list[float], list[int])):
-            for i in range(len(self)):
-                self.add_agent([
-                    Agent(
-                        "A",
-                        {"x": 0},
-                        {"y": 1}
-                    )
-                ]).append(Agent("B"))
+        for key, value in self.model["input"].items():
 
-    def add_agent_with_policy(self, agent):
-        """Add a new agent with policy."""
+            if isinstance(value, dict) and len(value["actions"]) > 0:
+                self._add_action_to_state(key)
 
-        if isinstance(self.add_agent
+    def _load_data(self):
+        """Loads the data from JSON file."""
+
+        for key, value in self.model["input"].items():
+
+            if isinstance(value, dict) and len(value["actions"]) > 0:
+                self._add_action_to_state(key)
+
+    def _load_data(self):
+        """Loads the data from JSON file."""
+
+        for key, value in self.model["input"].items():
+
+            if isinstance(value, dict) and len(value["actions"]) > 0:
+                self._add_action_to_state(key)
+
+    def _load_data(self):
+        """Loads the data from JSON file."""
+
+        for key, value in self.model["input"].items():
+
+            if isinstance(value, dict) and len(value["actions"]) > 0:
+                self._add_action_to_state(key)
+
+    def _load_data(self):
+        """Loads the data from JSON file."""
+
+        for key, value in self.model["input"].items():
+
+            if isinstance(value, dict) and len(value["actions"]) > 0:
+                self._add_action_to_state(key)
+
+    def _load_data(self):
+        """Loads the data from JSON file."""
+
+        for key, value in self.model["input"].items():
+
+            if

@@ -10,67 +10,59 @@ Response:
 import json
 from typing import List, Dict
 
+class TMazeEpistemicForagingAgent:
+    def __init__(self):
+        self._state = {}
 
-def gnn(model: Dict[str, str], num_locations: int = 4) -> List[Dict[str, str]]:
-    """GNN implementation for Active Inference.
+    def _get_location(self) -> Location:
+        """Return the location of a given agent."""
+        return Location.loc[0]
 
-    Args:
-        model (dict): A dictionary of input parameters and actions.
-        num_locations (int): Number of locations to explore in the maze. Defaults to 4.
+    def _update_agent(self, action):
+        """Update the agent's state based on its actions."""
+        for action in action:
+            if action not in self._state:
+                raise ValueError("Invalid action")
 
-    Returns:
-        List[Dict]: A list of GNN models with their corresponding action sequences, reward sequences, and state-value sequences for each location.
-    """
-    gnn = {}
-    for x, y, actions in model["outputs"]:
-        if isinstance(x, str):
-            # Move to the next location
-            gnn_next = {
-                "location": (x, y),
-                "action": action_,
-                "reward": 0,
-                "state": {"left": x}
-            }
+            reward = self._get_reward(action)
+            if reward < 0.1 or reward > 1e-6:
+                raise ValueError("Invalid reward value")
 
-            # Explore the maze and visit each arm
-            for i in range(num_locations):
-                if actions == "go" or actions == "stay":
-                    gnn[str(x)] = {
-                        "location": (i + 1),
-                        "action": action_,
-                        "reward": 0,
-                        "state": {"left": x}
-                    }
+            self._state[action] += reward
 
-            # Explore the left arm
-            for i in range(num_locations - 2):
-                if actions == "go" or actions == "stay":
-                    gnn[str(x)] = {
-                        "location": (i + 1),
-                        "action": action_,
-                        "reward": 0,
-                        "state": {"left": x}
-                    }
+    def _update_agent_with_context(self, agent):
+        """Update the agent's state based on its actions."""
+        for action in range(len(self._state)):
+            if isinstance(self._state[action], LocationLikelihoodMatrix) and
+                not self.is_within_bounds(
+                    AgentLocationLikelihoodVector([[0., 1.], [2., 3.]]),
+                    agent):
+                raise ValueError("Invalid location")
 
-            # Explore the right arm
-            for i in range(num_locations - 2):
-                if actions == "go" or actions == "stay":
-                    gnn[str(x)] = {
-                        "location": (i + 1),
-                        "action": action_,
-                        "reward": 0,
-                        "state": {"left": x}
-                    }
+            reward = self._get_reward(agent, action)
+            if reward < 0:
+                raise ValueError("Invalid reward value")
 
-            # Explore the cue location
-            for i in range(num_locations - 2):
-                if actions == "go" or actions == "stay":
-                    gnn[str(x)] = {
-                        "location": (i + 1),
-                        "action": action_,
-                        "reward": 0,
-                        "state": {"left": x}
-                    }
+            self.set_location(AgentLocationLikelihoodMatrix[action])
 
-            # Explore the cue arm
-            for i in range
+    def _update_agent_with_context_and_prior(self):
+        """Update the agent's state based on its actions."""
+        for action in range(len(self._state)):
+            if isinstance(self._state[action], Location) and
+                not self.is_within_bounds(
+                    AgentLocationLikelihoodVector([[0., 1.], [2., 3.]]),
+                    agent):
+                raise ValueError("Invalid location")
+
+            reward = self._get_reward(agent, action)
+            if reward < 0:
+                raise ValueError("Invalid reward value")
+
+            self.set_location(AgentLocationLikelihoodMatrix[action])
+
+    def _update_agent_with_context_and_prior_probabilities(self):
+        """Update the agent's state based on its actions."""
+        for action in range(len(self._state)):
+            if isinstance(self._state[action], Location) and
+                not self.is_within_bounds(
+                    AgentLocationLikelihoodVector([[0

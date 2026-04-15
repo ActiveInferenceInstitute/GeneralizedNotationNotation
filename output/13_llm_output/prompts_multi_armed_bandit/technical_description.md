@@ -8,66 +8,28 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from collections import Counter
 
-class MultiArmedBanditAgent:
-    def __init__(self):
-        self.actions = {}
+def infer_states(reward_obs):
+    """
+    Implemented in the GNN implementation of multi-armed bandit agent.
 
-    def infer_states(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
+    Args:
+        reward_obs (list[float]): A list of rewards, each represented as a float value.
 
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
+    Returns:
+        list[dict]: A dictionary containing the following keys:
+            "states": A dictionary mapping states to their corresponding actions
+                ("A", "action")
+                ("B", "actions").
+    """
+    states = {}
+    for state in reward_obs:
+        if state not in states:
+            raise ValueError("State is empty.")
 
-    def infer_states(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
+        next_state = {k: v for k, v in states[state].items()}
+        next_states.setdefault(next_state["action"], []).append(next_state)
 
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
-
-    def infer_actions(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
-
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
-
-    def infer_actions(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
-
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
-
-    def infer_actions(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
-
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
-
-    def infer_actions(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
-
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
-
-    def infer_actions(self) -> list[Dict[str, float]]:
-        """
-        Implemented in the GNN implementation of the multi-armed bandit algorithm.
-
-        Returns a dictionary containing the actions and reward for each arm.
-        """
-        # TODO: Implement this function to implement the action inference mechanism.
-
-    def infer_actions(self) -> list[Dict[str,
+    return {"states": states}
+```

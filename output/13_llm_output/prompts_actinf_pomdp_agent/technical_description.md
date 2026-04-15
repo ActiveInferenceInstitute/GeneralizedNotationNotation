@@ -10,105 +10,74 @@ Response:
 import json
 from typing import List, Dict
 
-
-def generate_inference(
-    graph: dict = None,
-    inference_type: str = "active",
-    num_hidden_states: int = 3,
-    num_actions: int = 2,
-    action_size: int = 10,
-    hidden_state_size: int = 64
-) -> Dict[str, List[List[Dict[str, str]]]]:
-    """Generate inference graph for a discrete POMDP agent.
+def gnn(input: str) -> dict[str, int]:
+    """GNN Representation of a GNN POMDP Agent.
 
     Args:
-        graph (dict): A dictionary of the form `{'observation': {'action': 'action'}}`.
-        inference_type (str): The type of inference to generate.
-            - "active": Generate an action-based inference, where each action is chosen based on a probability distribution over actions.
-            - "hidden_state": Generate a hidden state-based inference, where the agent chooses actions from a prior distribution over states.
-            - "action_size": The number of actions to generate.
-            - "num_actions": The total number of actions to generate.
+        input (str): The name of the input data file containing the state and action sequences for an agent.
 
     Returns:
-        Dict[str, List]: A dictionary containing the generated action and belief probabilities for each action.
+        A dictionary representing the GNN representation of the agent.
     """
-    inference = {}
-    if graph is not None:
-        inference["graph"] = graph
-    else:
-        inference["graph"] = dict()
+    # Load the input data file into memory
+    with open(input, "r") as f:
+        input_data = json.load(f)
+    
+    # Initialize the model parameters
+    num_hidden_states = 3
+    num_obs = 3
 
-    # Generate a hidden state-based inference
-    if action_size == 10:
-        for i in range(num_actions):
-            actions = []
+    # Initialize the action inference probabilities
+    actions = {
+      "action": (0.15678942, 0.15678942),
+      "policy": (0.05678942,),
+      "beliefs": ([], [])
+    
+    }
 
-            for _action, probabilities in inferred_states():
-                actions.append((
-                    [
-                        (
-                            (
-                                (
-                                    (
-                                        (
-                                            (
-                                        (
-                                            (
-                                                (
-                                                    (
-                                                      (
-                                                                    (
-                                                                                     )=probabilities[0] + 1)
+    # Initialize the policy prior
+    p_prior = {
+        "action": (0.33333, 0.33333),
+        "observation": (1.00000000)
+    }
 
-                                                                    (
-                                                                        (
-                                                                       (
-                                                                            (
-                                                                                (
-                                                                                    (
-                                                                                      (
-                                                                             (
-                                                                                   (
-                                                                                     (
-                                                                                                   (
-                                                                                         (
-                                                                                                                                                        (
-                                                                                 (
-                                                                                                   (
-                                                                               (
-                                                                                 (
-                                                                                                     (
-                                                                                                  (
-                                                                                 (
-                                                                                                    (
-                                                                                 (
-                                                                                  (
+    # Initialize the habit prior
+    habit = {
+      "policy": (0.33333,),
+      "beliefs": ([], [])
+    
+    }
 
-                                    (
-                                        (
-                                            (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
-                                        (
+    # Initialize the action inference probabilities
+    actions_probabilities = [
+        {"action": (1, 0), "probability": 1},
+        {"action": (2, 0), "probability": 0}
+    ]
+
+    # Initialize the belief prior
+    beliefs = {
+      "observation": (1.5678942,),
+      "beliefs": ([], [])
+    
+    }
+
+    # Initialize the action inference probabilities
+    actions_probabilities[actions["action"]] = {"policy": (0, 0), "probability": 1}
+
+    # Initialize the belief prior
+    beliefs[beliefs["observation"]] = {"policy": (0.33333,), "probability": 0}
+    
+    # Initialize the action inference probabilities
+    actions_probabilities[actions["action"]].update(
+        {
+            "policy": (0, 1),
+            "beliefs": ([], [])
+        
+        }
+    )
+
+    return {
+      "state": input.strip(),
+      "observation": input.strip()
+    }
+```

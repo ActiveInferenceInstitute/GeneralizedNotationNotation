@@ -1,34 +1,49 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key components of the GNN implementation:
+Based on the provided specifications, here are the key parameters for Active Inference (AI) and GNN:
+
+**Parameter Breakdown:**
 
 1. **Model Matrices**:
-   - A matrices representing the model structure and interpretation (e.g., BeliefNet)
-   - B matrices representing the action-belief matrix relationships between actions and observations
-   - C matrices representing the prediction accuracy over initial states and predictions for each modality
-   - D matrices representing the temporal dependencies and window parameters
+   - A matrices representing the model's state space structure, including the number of states, actions, and observations.
+   - B matrices representing the belief matrix representation of each action-action pair.
+   - C matrices representing the conditional probability distributions over the available actions (actions).
+   - D matrices representing the conditional probabilities over the available actions.
 
 2. **Precision Parameters**:
-   - γ = 0.1 (initial guess of a parameter)
-   - α = 0.5 (initial learning rate)
-   - Other precision/confidence parameters are not provided, but can be inferred from the description in the document.
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
+   - γ: precision parameters for each modality, including the number of predictions and their corresponding confidence levels.
+   - α: learning rate parameter for each action-action pair.
+   - Other precision/confidence parameters (optional)
 
-4. **Temporal Parameters**:
-   - Time horizons (t)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales are not provided, but can be inferred from the description in the document.
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+**Parameter Breakdown:**
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations:
-    - "input/10_ontology_output/simple_mdp_ontology_report.json" (contains the input data)
-    - "input/10_ontology_output/multi_armed_bandit_ontology_report.json" (contains the output data)
+1. **Model Matrices**:
+   - A matrices representing the model's state space structure, including the number of states, actions, and observations.
+   - B matrices representing the belief matrix representation of each action-action pair.
+   - C matrices representing the conditional probability distributions over the available actions (actions).
+   - D matrices representing the conditional probabilities over the available actions.
 
-Overall, these components provide a comprehensive representation of the GNN implementation and its parameters.
+2. **Precision Parameters**:
+   - γ: precision parameters for each modality, including the number of predictions and their corresponding confidence levels.
+   - α: learning rate parameter for each action-action pair.
+   - Other precision/confidence parameters (optional)
+
+**Configuration Summary:**
+
+   - **Initial Conditions**:
+    - Initial state space dimensions for each modality
+    - Initial observation space dimensions for each modality
+
+3. **Tunable Parameters**:
+    - **Parameter File Format Recommendations**:
+      - **Transformation of parameter file format recommendations**:
+        - **"transformation_file_format_recommendations":
+            - "model_matrices/transformation_file_format_recommendation".json`: Transformed model matrices and parameters.
+          - **"transformation_file_format_recommendation":
+                - "model_matrices/transformation_file_format_recommendation".json**: Transformed parameter file format recommendations for each modality.
+    - **Tunable Parameters**:
+      - **Parameter File Format Recommendations**:
+        - **Transformation of parameter file format recommendations**:
+            - **"transformation_file_format_recommendations":
+                - "model_matrices/transformation_file_format_recommendation".json`: Transformed model matrices and parameters.
+         

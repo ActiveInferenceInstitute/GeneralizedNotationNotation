@@ -8,73 +8,71 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from typing import List, Dict, Tuple
 
-def gnn(input: str) -> dict[str]:
-    """GNN implementation for the Stigmergic Swarm Active Inference model.
+def gnn(
+    agent: List[Dict[str, int]],
+    num_agents=10,
+    num_actions = 4,
+    signal_decay=0.9,
+    signal_deposit_rate=0.3,
+    num_timesteps=30,
+    output_file="input/gnn",
+) -> List[Dict[str, int]]:
+  """Generate an action-based graph representation of the input data."""
 
-    Args:
-        input (str): The input data to be fed into the GNN algorithm.
+  # Initialize a dictionary to store the agent and their actions for each timestep
+  agent_actions = {}
+  
+  # Generate the initial state
+  agent.append(
+    (0., 1.)
+  )
+  agent["state"] = (agent[0],)
+  agent["action"] = "move"
+  agent["next_step"] = (agent, num_agents)
 
-    Returns:
-        dict[str]: A dictionary containing the information from the input data.
+  # Initialize a dictionary to store the action probabilities for each agent
+  agent_probabilities = {}
+  
+  # Generate the initial state and actions of all agents
+  for i in range(num_agents):
+    agent[i] = (0., 1.)
 
-    Examples:
-        >>> gnn("input")
-    {'id': 1, 'state': [0, 2], 'actions': [3]}
-    """
-    # Initialize the model with a dictionary of dictionaries representing the input and output data
-    input_data = {
-        "input": input,
-        "output": {}
-    }
+    # Generate an action-based graph representation of the input data
+    agent.append((agent[0],)
+      .extend([
+        (action, num_actions),
+        (agent[1],)
+      ])
+  )
 
-    # Define the initial parameters for the GNN implementation
-    num_agents: int = 10
-    grid_size: int = 9
-    num_actions: int = 4
-    signal_decay: float = 0.3
-    signal_deposit_rate: float = 0.25
+  # Initialize a dictionary to store the actions for each agent
+  actions = {}
+  
+  # Generate the initial state and actions of all agents
+  for i in range(num_agents):
+    action = "move"
 
-    # Define the initial environment and actions for each agent
-    action_dict: Dict[str, str] = {
-        "id": 1,
-        "state": [0],
-        "actions": [
-            {"action": "push",
-                "target": "active"},
-            {"action": "pop",
-                "target": "active"}
-        ],
-        "states": [
-            [{"action": "push"},
-             {{"action": "pop"},
-             {"action": "push"},
-             {"action": "pop"},
-             {"action": "pop"},
-             {"action": "pop"},
-             {"action": "pop"},
-             {"action": "pop"}]
-    }
+    # Generate an action-based graph representation of the input data
+    agent.append((action, num_actions))
 
-    # Define the initial environment and actions for each agent
-    action_dict: Dict[str, str] = {
-        "id": 2,
-        "state": [0],
-        "actions": [
-            {"action": "push",
-                "target": "active"},
-             {{"action": "pop"},
-             {"action": "pop"},
-             {"action": "pop"},
-             {"action": "pop"}]
-    }
+  # Initialize a dictionary to store the actions for each agent
+  actions["agent"] = (0., 1.)
+  
+  # Generate the initial state and actions of all agents
+  for i in range(num_agents):
+    action = "move"
 
-    # Define the initial environment and actions for each agent
-    action_dict: Dict[str, str] = {
-        "id": 3,
-        "state": [0],
-        "actions": [
-            {"action": "push",
-                "target": "active"},
-             {{"action": "
+    # Generate an action-based graph representation of the input data
+    agent.append((action, num_actions))
+
+  return [
+    {
+      "state": (agent[0],)
+      .extend([
+        (action, num_actions),
+        (agent[1],)
+      ])
+  ]
+```

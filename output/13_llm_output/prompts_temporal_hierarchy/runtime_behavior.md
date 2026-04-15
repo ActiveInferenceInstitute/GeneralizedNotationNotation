@@ -8,44 +8,69 @@ Response:
 
 ```python
 import json
-from typing import List
+from typing import List, Dict
 
-def gnn(input: List[List[str]]) -> List[Dict[str, float]]:
-    """GNN implementation for the Three-Level Temporal Hierarchy Agent.
+def gnn(input: str) -> Dict[str, List]:
+    """GNN implementation for the GNN model."""
 
-    Args:
-        input (list): A list of lists representing a sequence of actions and states.
+    # Input data
+    input_data = {
+        "level0": {"type": "float", "value": 1.25},
+        "level1": {"type": "float"},
+        "levels": [
+            {"name": "Level 0", "value": 0, "probability": 0.9}
+        ],
+    }
 
-        Returns:
-            list: A list of dictionaries containing the following keys:
-                action_id
-                1
-                state_id
-                2
-                ...
-            3
-             0 1 2 4
-             5 6 7 8
-             9 10 11 12
-    """
+    # Input data
+    input_data["level0"]["state"] = {
+        "name": "State 0",
+        "value": 1234567890
+    }
 
-    # Initialize the GNN model with default parameters
-    gnn = {}
-    for action, states in input:
-        gnn[action] = {
-            "state": {"id": state["id"], "value": None},
-            "actions": [
-                {"type": "action", "name": action}
-            ]
-        }
+    # Input data
+    input_data["levels"][0]["policy"].update(input)
+    input_data["levels[0]"]["observation"].append({"type": "float"})
+    input_data["levels"][0]["prior"] = {"value": 1234567890}
 
-    # Initialize the GNN model with default parameters
-    gnn.update({
-      "input_ids": input,
-      "states": {
-        "state1": {"id": state["id"]},
-        "state2": {"id": state["id"]}}
-    })
+    # Input data
+    input_data["level0"]["state"] = {
+        "name": "State 1",
+        "probability": 0.9,
+        "observation": [
+            {"type": "float"},
+            {"type": "int"}
+        ]
+    }
 
-    return [gnn]
-```
+    # Input data
+    input_data["levels"][1]["policy"].update(input)
+    input_data["levels[1]"]["observation].append({"type": "float"})
+    input_data["levels"][1]["prior"] = {"value": 0.9}
+
+    # Input data
+    input_data["level0"]["state"] = {
+        "name": "State 2",
+        "probability": 0.85,
+        "observation": [
+            {"type": "float"},
+            {"type": "int"}
+        ]
+    }
+
+    # Input data
+    input_data["levels"][1]["policy"].update(input)
+    input_data["levels[1]"]["observation].append({"type": "float"})
+    input_data["levels"][1]["prior"] = {"value": 0.85}
+
+    # Input data
+    input_data["level0"]["state"] = {
+        "name": "State 3",
+        "probability": 0.9,
+        "observation": [
+            {"type": "float"},
+            {"type": "int"}
+        ]
+    }
+
+    # Input

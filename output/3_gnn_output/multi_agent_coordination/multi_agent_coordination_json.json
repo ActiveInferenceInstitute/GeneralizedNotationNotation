@@ -234,7 +234,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-04-14T11:53:25.463974",
+  "created_at": "2026-04-15T12:25:53.190937",
   "equations": [],
   "extensions": {
     "footer": "Multi-Agent Cooperative Active Inference v1 - GNN Representation.\nImplicit coordination via shared observation space.\nNo explicit communication — emergent cooperation from aligned preferences.",
@@ -242,7 +242,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Multi-Agent Cooperative Active Inference",
-  "modified_at": "2026-04-14T11:53:25.463975",
+  "modified_at": "2026-04-15T12:25:53.190938",
   "ontology_mappings": [
     {
       "description": null,

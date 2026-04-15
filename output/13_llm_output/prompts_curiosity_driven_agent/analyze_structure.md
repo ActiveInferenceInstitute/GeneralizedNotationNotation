@@ -1,21 +1,45 @@
 # ANALYZE_STRUCTURE
 
-Based on the document, here are some key insights and analysis:
+Based on the provided information, here are some structural analysis of the GNN specification:
 
-1. **Graph Structure**: The document provides a detailed structural analysis of the GNN model architecture, including its number of variables (num_hidden_states), connected components, and graph topology (hierarchical). This includes information about the types of nodes in each layer, their connections, and how they interact with other nodes.
-
-2. **Variable Analysis**: The document discusses various mathematical structures that can be used to represent GNN models, including:
-   - **Directed edges** (directed edges): Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to.
-   - **Uniformized edges** (uniformized edges): Graph structure with each node having an unrestricted degree of connection to all other nodes in the graph, allowing for easy inference and exploration.
-   - **Directed-uniformized edges**: Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to, but also allows for inference and exploration by exploring directed paths between variables.
-
-3. **Mathematical Structure**: The document discusses various mathematical structures that can be used to represent GNN models, including:
-   - **Directed-uniformized edges** (directed-uniformized edges): Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to, allowing for easy inference and exploration.
-   - **Uniformized-directed-uniformized edges**: Graph structure with each node having an unrestricted degree of connection to all other nodes in the graph, allowing for easy inference and exploration by exploring directed paths between variables.
-
-4. **Complexity Assessment**: The document highlights various mathematical structures that can be used to represent GNN models, including:
-   - **Directed-uniformized edges** (directed-uniformized edges): Graph structure where a variable is connected to its direct neighbors based on the type of edge it connects to, allowing for easy inference and exploration.
-   - **Uniformized-directed-uniformized edges**: Graph structure with each node having an unrestricted degree of connection to all other nodes in the graph, allowing for easy inference and exploration by exploring directed paths between variables.
-
-5. **Design Patterns**: The document discusses various design patterns that can be used to represent GNN models, including:
-   - **Directed-uniformized edges** (directed-uniformized edges): Graph structure where a variable is connected to its direct neighbors
+1. **Graph Structure**:
+   - Number of variables and their types: 5 (actions = actions = action inference)
+   - Connection patterns: Directed edges between variables
+   - Graph topology: Hierarchical network with a single layer of nodes for each variable, connected to other layers via directed edges
+2. **Variable Analysis**:
+   - State space dimensionality: 5
+   - Dependencies and conditional relationships: 
+    - Actions = actions = action inference
+    - Instrumental value = instrumental value (information gain)
+    - Epistemic value = epistemic value (information gain/ Bayesian surprise)
+    - Instrumental value = instrumental value (preference satisfaction)
+3. **Mathematical Structure**:
+   - Matrix dimensions and compatibility: 
+    - Matrix dimensionality of each variable is 5, which reflects the number of variables being modeled in this specification 
+   - Symmetries or special properties: 
+    - The structure can be seen as reflecting the domain being modeled (actions = actions = action inference)
+4. **Complexity Assessment**:
+   - Computational complexity indicators
+    - Model scalability considerations
+    - Potential bottlenecks/challenges
+      - What modeling patterns or templates does this follow?
+        - What mathematical structures are present in this specification?
+          - How do they reflect the domain being modeled?
+            - What special properties can be identified within this specification?
+              - What type of model is represented (action inference, instrumental value)?
+                - What specific problem domains might be addressed by this model?
+                  - What types of problems or domains are associated with this model?
+                    - What kinds of models could potentially solve these problems/domains?
+                      - What kind of domain-specific knowledge can be captured within this model?
+                          - What type of domain-specific knowledge is represented in this model?
+                                  - What specific problem domains might be addressed by this model?
+5. **Design Patterns**:
+   - What modeling patterns or templates does this follow?
+    - How do they reflect the domain being modeled?
+        - What mathematical structure can be identified within this specification?
+            - What special properties can be identified within this specification?
+              - What type of model is represented (action inference, instrumental value)?
+                - What specific problem domains might be addressed by this model?
+                      - What types of problems or domains are associated with this model?
+                    - What kind of domain-specific knowledge can be captured within this model?
+                          - What type of domain-specific

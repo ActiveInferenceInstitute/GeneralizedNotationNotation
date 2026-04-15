@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/bnlearn/Two State Bistable POMDP_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.996832,
-  "timestamp": "2026-04-14T11:55:12.579812",
+  "execution_time": 1.956279,
+  "timestamp": "2026-04-15T12:27:56.739043",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

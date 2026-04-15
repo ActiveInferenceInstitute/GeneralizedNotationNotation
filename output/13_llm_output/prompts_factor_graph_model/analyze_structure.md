@@ -1,9 +1,9 @@
 # ANALYZE_STRUCTURE
 
-Based on the document, here are the key structural analysis points:
+Based on the document, here are the key findings:
 
 1. **Graph Structure**:
-   - Number of variables and their types
+   - Number of variables and their types (e.g., visual modality)
    - Connection patterns (directed/unidirectional edges)
    - Graph topology (hierarchical, network, etc.)
 
@@ -15,64 +15,9 @@ Based on the document, here are the key structural analysis points:
 3. **Mathematical Structure**:
    - Matrix dimensions and compatibility
    - Parameter structure and organization  
-   - Symmetries or special properties
+   - Symmetries or special properties (e.g., symmetry, etc.)
 
-Here are some key insights:
-
-1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
-
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
-
-Some key insights from the analysis:
-
-  1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
-
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
-
-Some key insights from the analysis:
-
-  1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
-
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
-
-Some key insights from the analysis:
-
-  1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
-
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Temporal vs. static variables
-
-Some key insights from the analysis:
-
-  1. **Graph Structure**:
-   - Number of variables and their types
-   - Connection patterns (directed/unidirectional edges)
-   - Graph topology (hierarchical, network, etc.)
-
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependencies and conditional relationships
-   - Tem
+4. **Complexity Assessment**:
+   - Computational complexity indicators
+   - Model scalability considerations
+   - Potential bottlenecks or challenges

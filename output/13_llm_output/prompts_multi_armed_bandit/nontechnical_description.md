@@ -8,72 +8,78 @@ Response:
 
 ```python
 import json
-from typing import List
+from typing import List, Dict
 
-class MultiArmedBandit:
+
+class MultiArmedBanditAgent:
     def __init__(self):
-        self.states = {}
+        self.actions = {}
 
-    def update(self, reward_obs):
-        """Update the state of the agent based on rewards."""
-        for arm in range(len(reward_obs)):
-            if arm not in self.states:
-                raise ValueError("Invalid arm")
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            } for _ in range(len(self.actions))
+        ]
 
-            reward_state = self.states[arm]
-            reward_obesistion = reward_obs[arm]
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            } for _ in range(len(self.actions))
+        ]
 
-            # Check if there are no actions to pull arms, so we can't move them
-            if reward_obesistion == 0 or reward_obs[arm] < reward_obs[arm]:
-                raise ValueError("Invalid action")
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            } for _ in range(len(self.actions))
+        ]
 
-            self.states[arm].update(reward_state)
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            } for _ in range(len(self.actions))
+        ]
 
-    def update_actions(self):
-        """Update the actions of the agent based on rewards."""
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            } for _ in range(len(self.actions))
+        ]
 
-        for arm in range(len(reward_obs)):
-            if arm not in self.states:
-                raise ValueError("Invalid arm")
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            } for _ in range(len(self.actions))
+        ]
 
-            reward = reward_obs[arm]
-            action = self.get_action(reward)
-
-            # Check if there are no actions to pull arms, so we can't move them
-            if action == 0 or action == len(self.states):
-                continue
-
-            if action not in self.actions:
-                raise ValueError("Invalid action")
-
-            self.actions[arm] = action
-
-    def get_action(self, reward):
-        """Get the next action based on rewards."""
-
-        actions = []
-        for arm in range(len(reward)):
-            if arm == len(reward) - 1:
-                continue
-
-            # Check if there are no actions to pull arms. So we can't move them
-            if reward_obesistion == 0 or reward_obs[arm] < reward_obs[arm]:
-                raise ValueError("Invalid action")
-
-            actions.append((self.states[arm], arm))
-
-        return actions
-
-    def get_actions(self):
-        """Get the next actions based on rewards."""
-
-        actions = []
-        for arm in range(len(reward)):
-            if arm == len(reward) - 1:
-                continue
-
-            # Check if there are no actions to pull arms. So we can't move them
-            if reward_obesistion == 0 or reward_obs[arm] < reward_obs[arm]:
-                raise ValueError("Invalid action")
-
-            actions.append
+    def infer_states(self) -> List[Dict]:
+        """Fetches the next state from the reward context."""
+        return [
+            {
+                "state": self._next(),
+                "reward": 0,
+                "action": self._getAction()
+            }

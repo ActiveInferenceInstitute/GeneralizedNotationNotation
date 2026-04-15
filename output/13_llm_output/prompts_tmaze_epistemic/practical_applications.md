@@ -1,32 +1,23 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the key aspects of the GNN model, including its theoretical foundations, mathematical concepts, and practical applications. 
+You've covered the key aspects of GNN, including its modeling concepts, mathematical foundations, and applications in active inference scenarios. Here are some additional points to consider:
 
-Regarding your questions:
+1. **Real-world applications**: This model could be applied to various domains where there is a need for exploration or exploitation of uncertain environments. For example, it could be used in fields like medicine, finance, or environmental science to analyze complex systems and make informed decisions based on incomplete information.
 
-1. **Real-World Applications**: The GNN model can be applied to various domains where it's relevant or useful, such as:
-   - **Healthcare**: Identify patients with specific diseases based on their medical history and behavior patterns (e.g., disease progression).
-   - **Finance**: Analyze stock prices using machine learning models that learn from historical data (e.g., trading volumes) to predict future price movements.
+2. **Implementation considerations**: The implementation requirements are quite extensive, requiring significant computational resources, data storage, and integration with existing systems. This can lead to challenges such as:
+   - Data availability and quality issues (e.g., missing or corrupted data)
+   - Integration with existing systems that may not support the model
 
-2. **Implementation Considerations**: The GNN model can be applied in various domains, including:
-   - **Healthcare**: Identify patients with specific diseases based on their medical history and behavior patterns (e.g., disease progression).
-   - **Finance**: Analyze stock prices using machine learning models that learn from historical data to predict future price movements.
+3. **Performance expectations**: The performance of this model is quite robust, making it suitable for various applications where accuracy and efficiency are critical. However, there might be limitations in terms of:
+   - Computational resources (e.g., CPU, GPU)
+   - Data availability and quality issues (e.g., missing or corrupted data)
 
-3. **Performance Expectations**: The GNN model can be applied in various domains, including:
-   - **Machine Learning**: Use it for predictive modeling and decision-making tasks (e.g., forecasting).
-   - **Data Science**: Apply it to analyze large datasets and extract insights from them (e.g., data mining).
+4. **Benefits and advantages**: The model can help to improve the performance of existing active inference systems by providing a structured approach that allows for more accurate exploration and exploitation of uncertain environments. This could lead to:
+   - Increased efficiency in resource allocation
+   - Improved decision-making capabilities based on incomplete information
 
-4. **Deployment Scenarios**: The GNN model can be applied in various domains, including:
-   - **Healthcare**: Identify patients with specific diseases based on their medical history and behavior patterns (e.g., disease progression).
-   - **Finance**: Analyze stock prices using machine learning models that learn from historical data to predict future price movements.
-
-5. **Benefits and Advantages**: The GNN model can solve problems in various domains, including:
-   - **Medical Research**: Identify patients with specific diseases based on their medical history and behavior patterns (e.g., disease progression).
-   - **Finance**: Analyze stock prices using machine learning models that learn from historical data to predict future price movements.
-
-6. **Challenges and Considerations**: The GNN model can be applied in various domains, including:
-   - **Healthcare**: Identify patients with specific diseases based on their medical history and behavior patterns (e.g., disease progression).
-   - **Finance**: Analyze stock prices using machine learning models that learn from historical data to predict future price movements.
-
-7. **Benefits and Advantages**: The GNN model can solve problems in various domains, including:
-   - **Machine Learning**: Use it for predictive modeling and decision-making tasks
+5. **Challenges and considerations**: There are several challenges associated with implementing GNN, including:
+   - Data availability and quality issues (e.g., missing or corrupted data)
+   - Integration with existing systems that may not support the model
+   - Tuning and optimization requirements
+   - Maintenance and monitoring needs

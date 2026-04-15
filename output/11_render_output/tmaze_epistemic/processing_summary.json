@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T11:53:47.297896",
+  "timestamp": "2026-04-15T12:26:34.341531",
   "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
   "model_name": "T-Maze Epistemic Foraging Agent",
   "pomdp_dimensions": {

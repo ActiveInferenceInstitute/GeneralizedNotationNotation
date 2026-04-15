@@ -6,68 +6,55 @@ Prompt:
 
 Response:
 
-You can create a simple Markov Chain model with no actions and no observation model using the following code:
 ```python
-import numpy as np
+import json
+from typing import List, Dict
 
-# Define the input data
-input_data = np.array([[1., 0.], [0., 1.]])
+class SimpleMDP:
+    def __init__(self):
+        self.states = {}
+        self.actions = {}
 
-# Define the output data
-output_data = np.array([
-    ([[1, 2], [3]], [[4, 5]]),
-    ([[6, 7], [8]])
-])
-```
-Then you can create a GNN model using the following code:
-```python
-import numpy as np
+    def add_state(self, state):
+        """Add a new state to the Markov chain."""
+        if not isinstance(state, (list, tuple)):
+            raise TypeError("State must be of type list or tuple.")
 
-# Define the input data
-input_data = np.array([[1., 0.], [0., 1.]])
+        for i in range(len(state) - 1):
+            self.states[state].append((i + 1, i))
 
-# Define the output data
-output_data = np.array([
-    ([[1, 2], [3]], [[4, 5]]),
-    ([[6, 7], [8]])
-])
-```
-Then you can create a GNN model using the following code:
-```python
-import numpy as np
+    def add_action(self, action):
+        """Add an action to the Markov chain."""
+        if not isinstance(action, (list, tuple)):
+            raise TypeError("Action must be of type list or tuple.")
 
-# Define the input data
-input_data = np.array([[1., 0.], [0., 1.]])
+        for i in range(len(action) - 2):
+            self.actions[action].append((i + 1, i))
 
-# Define the output data
-output_data = np.array([
-    ([[1, 2], [3]], [[4, 5]]),
-    ([[6, 7], [8]])
-])
-```
-Then you can create a GNN model using the following code:
-```python
-import numpy as np
+    def add_observation(self, observation):
+        """Add an observation to the Markov chain."""
+        if not isinstance(observation, (list, tuple)):
+            raise TypeError("Observation must be of type list or tuple.")
 
-# Define the input data
-input_data = np.array([[1., 0.], [0., 1.]])
+        for i in range(len(observation) - 2):
+            self.actions[observation].append((i + 1, i))
 
-# Define the output data
-output_data = np.array([
-    ([[1, 2], [3]], [[4, 5]]),
-    ([[6, 7], [8]])
-])
-```
-Then you can create a GNN model using the following code:
-```python
-import numpy as np
+    def add_state_transition(self, state: List[Tuple[int, int]], action: List[List[Tuple[int, int]]]):
+        """Add a transition to the Markov chain."""
 
-# Define the input data
-input_data = np.array([[1., 0.], [0., 1.]])
+        for i in range(len(state) - 2):
+            self.states[state].append((i + 1, i))
 
-# Define the output data
-output_data = np.array([
-    ([[1, 2], [3]], [[4, 5]]),
-    ([[6, 7], [8]])
-])
-```
+    def add_observation_transition(self, observation: List[Tuple[int, int]], action: List[List[Tuple[int, int]]]):
+        """Add an observation to the Markov chain."""
+
+        for i in range(len(observation) - 2):
+            self.actions[observation].append((i + 1, i))
+
+    def add_action_transition(self, state: List[Tuple[int, int]], action: List[List[Tuple[int, int]]]):
+        """Add an action to the Markov chain."""
+
+        for i in range(len(state) - 2):
+            self.actions[state].append((i + 1, i))
+
+    def add_observation_transition(self, observation: List[Tuple[int, int]], action: List[List[Tuple[

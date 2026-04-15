@@ -8,18 +8,17 @@ Response:
 
 ```python
 import json
-from typing import List, Dict, Tuple
+from collections import Counter
 
-class MultiArmedBandit:
-    def __init__(self):
-        self.actions = {}
+def infer_states(reward_obs):
+    """
+    Implements the inference on to a multi-armed bandit problem with sticky context.
 
-    def action(self, state_next, state_previous, actions=None):
-        if actions is not None and actions!= state_next:
-            raise ValueError("Invalid action")
+    Args:
+        reward_obs (list[float]): A list of rewards, each in range [0, 1] representing an arm's reward.
 
-        reward = 0.5 * state_next[1] + (state_next[2] - state_next[3]) / len(state_next) ** 2
-
-    def get_reward(self):
-        return self._get_reward()
+    Returns:
+        A dictionary containing the actions and their corresponding rewards.
+    """
+    # TODO(david): Implement inference logic here
 ```

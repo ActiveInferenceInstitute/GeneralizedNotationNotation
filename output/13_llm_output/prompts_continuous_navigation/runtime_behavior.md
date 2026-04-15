@@ -10,59 +10,55 @@ Response:
 import json
 from typing import List
 
+class GNNModel:
+    """GNN model with continuous state space and neural network implementation."""
 
-def gnn(state: List[List[float]], actions: List[list[int]]) -> float:
-    """GNN Representation of a neural network.
+    def __init__(
+        self,
+        num_layers=10,
+        num_actions=256,
+        action_space=[[-1.0], [-1.0]] + [(-1.0), (1.0)],
+    ):
 
-    Args:
-        state (List[List[float]]): A list of states, each represented as a list of floats.
-        actions (List[List[int]]): A list of actions, each represented as a list of ints.
+        """Initialize the GNN model with continuous state space and neural network."""
 
-    Returns:
-        float: The GNN representation of the neural network.
-    """
-    # Initialize state and action lists with empty lists for each state
-    states = []
-    actions = []
+        self._model = None
+        self._num_layers = num_layers
+        self._action_space = action_space
+        self._actions = action_space
 
-    # Initialize the initial belief matrix
-    beliefs = [[0] * (2 + 1) * (3 - 1)]
+    def _update(self, actions):
+        """Update the neural network parameters based on the current actions.
 
-    # Initialize the transition matrices
-    transitions = [[[[]]] * (4 + 1) * (5 - 1)]
+        Args:
+            actions (list[List[float]]): A list of actions to be taken in each layer.
 
-    # Initialize the action matrices
-    actions_matrix = [[[]]]
+        Returns:
+            None
+        """
 
-    # Initialize the prediction matrix
-    predictions = [[0] * (2 + 1) * (3 - 1)]
+        for i in range(len(actions)):
 
-    # Initialize the transition probabilities
-    transitions_probabilities = [[[]]]
+            if self._num_layers == 10:
+                self._update_layer()
 
-    # Initialize the action probability
-    action_probability = [[0] * (4 + 1) * (5 - 1)]
+                # Update the neural network parameters based on the current action
+                for action, weight in zip([action], [self._actions[i]**2 * (x / x)**2 + y **2 * (y / y) for i = 1 to len(actions)]):
+                    self.update_layer(**weight)
 
-    # Initialize the prediction matrix
-    predictions_matrix[0][0] = 0.0
-    predictions_matrix[0][2] = 0.0
-    predictions_matrix[1][3] = 0.0
-    predictions_matrix[1][4] = 0.0
-    predictions_matrix[2][5] = 0.0
+            else:
 
-    # Initialize the prediction matrix
-    actions_probability[0][0] = 0.0
-    actions_probability[0][2] = 0.0
-    actions_probability[0][3] = 0.0
-    actions_probability[1][4] = 0.0
-    actions_probability[1][5] = 0.0
+                # Update the neural network parameters based on the current action
+                for action, weight in zip([action], [self._actions[i]**2 * (x / x)**2 + y **2 * (y / y) for i = 1 to len(actions)]):
+                    self.update_layer(**weight)
 
-    # Initialize the action probability
-    action_probability[0][0] = 0.0
-    action_probability[0][2] = 0.0
-    action_probability[0][3] = 0.0
-    action_probability[1][4] = 0.0
-    action_probability[1][5] = 0.0
+        # Update the neural network parameters based on the current action
+        for action, weight in zip([action], [self._actions[i]**2 * (x / x)**2 + y **2 * (y / y) for i = 1 to len(actions)]):
+            self.update_layer(**weight)
 
-    # Initialize the prediction matrix
-    predictions_matrix[0
+    def _update_layer(self):
+        """Update the neural network parameters based on the current action."""
+
+        # Update the neural network parameters based on the current action
+        for action, weight in zip([action], [self._actions[i]**2 * (x / x)**2 + y **2 * (y / y) for i = 1 to len(actions)]):
+            self.update_layer(**

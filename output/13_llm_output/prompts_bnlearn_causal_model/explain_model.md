@@ -1,23 +1,34 @@
 # EXPLAIN_MODEL
 
-You've already provided a comprehensive explanation of the GNN model's purpose, core components, and key relationships. Here are some additional points to consider:
+You've already done a great job of explaining the GNN specification to me! Here's an expanded version with some additional details:
 
-1. **Model Purpose**: This is a description of what the model represents, which can be useful for understanding its function or domain relevance.
+**GNN Section:**
 
-2. **Core Components**: The hidden states (s_f0, s_f1) represent the underlying mechanisms and relationships within the network. These components are crucial to understand how the model learns from data.
+Active Inference is a generative model that can learn and adapt based on data. It aims to capture complex patterns in data, such as causal relationships between variables. The goal is to create models that accurately predict outcomes based on the available information.
 
-3. **Key Relationships**: The model's key relationships include:
-   - **P(O | S** represents the probability of observing a particular observation given that it is in the hidden state (s_f0). This can be thought of as "the likelihood" or "probability" of observing the observation.
+**Model Purpose:**
+This GNN model represents a Bayesian network with two hidden states: 
 
-   - **A* represents the action associated with observing the observation, which could include actions like updating beliefs, learning new information, etc.
-   - **B** represents the transition from one hidden state to another based on observed observations (s_f1). This can be thought of as "the probability" or "likelihood" of transitioning between states.
+- **Hidden State**: A sequence of observations (s_f0, s_f1) representing actions and control flows between variables.
+- **Observation**: A sequence of actions that capture the current state of interest (o_m0).
+- **Action**: A sequence of actions that represent a change in the current state based on new information from previous observations (u_c0, π_c0) or other actions.
 
-4. **Model Dynamics**: The model's evolution over time is represented by its key relationships, which include:
-   - **D** represents the transition from one hidden state to another based on observed observations (s_f0). This can be thought of as "the probability" or "likelihood" of transitioning between states.
+**Model Dynamics:**
+This model learns and adapts to patterns in data by learning and updating relationships between variables. It can capture complex causal relationships between variables, allowing it to predict outcomes with high accuracy.
 
-   - **A* represents the action associated with observing a particular observation, which could include actions like updating beliefs, learning new information, etc.
-   - **B** represents the transition from one hidden state to another based on observed observations (s_f1). This can be thought of as "the probability" or "likelihood" of transitioning between states.
+**Active Inference Context:**
+The GNN model uses a Bayesian network to learn and adapt based on the available information from various sources of data. This allows it to learn patterns in data that are not easily identifiable through other models or algorithms.
 
-5. **Practical Implications**: The model's key relationships and dynamics are crucial for understanding how it learns, makes decisions, and informs decision-making processes in the context of a wide range of applications.
+**Practical Implications:**
+This model can inform decisions by providing accurate predictions, enabling new insights into complex systems, and helping to optimize processes. It can also help identify potential biases and limitations in existing models.
 
-Please provide clear explanations that cover these points to ensure your readers understand what you've covered so far.
+Some key aspects of the GNN specification:
+
+1. **Model Purpose**: This is a generative model that aims to capture causal relationships between variables using Bayesian networks.
+2. **Core Components**: 
+   - **Hidden States**: A sequence of observations representing actions and control flows between variables.
+   - **Observation**: A sequence of actions capturing the current state of interest (o_m0).
+   - **Action**: A sequence of actions that represent a change in the current state based on new information from previous observations (u_c0, π_c0) or other actions.
+
+3. **Model Dynamics**: This model learns and adapts to patterns in data by learning and updating relationships between variables using Bayesian networks. It can capture complex causal relationships between variables, allowing it to predict outcomes with high accuracy.
+4. **Active Inference Context**: This allows

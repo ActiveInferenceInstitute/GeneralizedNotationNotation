@@ -1,42 +1,28 @@
 # ANALYZE_STRUCTURE
 
-Here is a detailed analysis of the GNN implementation:
+Based on the provided information, here are some key insights and analysis points:
 
-**1. Graph Structure:**
-The graph representation consists of three main components:
+1. **Graph Structure**: The graph representation of the multi-armed bandit agent is a degenerate POMDP with three hidden states (arms) and 3 actions (pull arm 0, pull arm 1, or pull arm 2). This structure reflects the domain being modeled as a degenerate POMDP.
 
-1. **State Space**: A 2D array representing the reward context, with each row indicating an action and corresponding state. The state space dimensionality represents the number of actions that can be performed in a given time step. Each action is represented by a vector of probabilities (represented as a dot product) for each possible outcome.
+2. **Variable Analysis**: The variable analysis reveals that there are two types of variables:
+   - `states` with an action-observation mapping
+   - `actions` without any actions (e.g., no reward)
+The graph topology is hierarchical and consists of 3 nodes representing the different branches of the agent's state space, each containing a single variable. Each branch has a specific type of node:
+   - `states`: A set of states with an action-observation mapping
+   - `actions` (optional): A list of actions without any reward
 
-2. **Transition Matrix**: A 3x3 matrix representing the transition between states, with each row indicating one action and its corresponding state. The transition matrix has two columns: one represents the action-observation mapping, while the other is used to represent the prior over reward context. Each column contains a probability vector for each possible outcome of the current observation.
+3. **Variable Analysis**: The graph structure reveals that there are two types of variables:
+   - `variables`: A set of variables representing the different branches of the agent's state space, each containing a single variable
+The network topology is hierarchical and consists of 2 nodes representing the different branches of the agent's state space, each containing a subset of the same type of node. Each branch has a specific type of node:
+   - `nodes`: A set of nodes with an action-observation mapping
+   - `actions` (optional): A list of actions without any reward
 
-3. **Probabilities**: A 2x1 matrix representing the probabilities of actions in different states (actions) and observations (observations). The probabilities are represented as dot products between action-observation matrices, with the first row representing the reward context and the second row representing the reward observation.
+4. **Mathematical Structure**: The graph structure reveals that there are two types of variables:
+   - `variables`: A set of variables representing the different branches of the agent's state space, each containing a subset of the same type of variable
+The network topology is hierarchical and consists of 2 nodes representing the different branches of the agent's state space, each containing a subset of the same type of node. Each branch has a specific type of node:
+   - `nodes`: A set of nodes with an action-observation mapping
+   - `actions` (optional): A list of actions without any reward
 
-**Analysis:**
-
-1. **Graph Structure**:
-   - Number of variables: 3
-   - Variable types:
-    - Action type: Action (action_type)
-    - Observation type: Observation (observations)
-    - State type: StateType (state_type, state_value)
-    - Temporal type: TemporalType (temporal_type)
-
-2. **Variable Analysis**:
-   - State space dimensionality: 3
-   - Dependencies and conditional relationships:
-    - Actions are represented by actions in the reward context, with each action having a corresponding reward value. Each action has two types of transitions:
-      - Action type is represented as an action_type vector (action_type)
-      - Observation type is represented as an observation_type vector (observation_type).
-
-3. **Mathematical Structure**:
-   - Matrix dimensions and compatibility:
-    - State space dimensionality: 2x1 matrix
-    - Dependencies and conditional relationships:
-      - Actions are represented by actions in the reward context, with each action having a corresponding reward value. Each action has two types of transitions:
-        - Action type is represented as an action_type vector (action_type)
-        - Observation type is represented as an observation_type vector (observation_type).
-
-4. **Complexity Assessment**:
-   - Computational complexity indicators
-    - Model scalability considerations
-   
+5. **Complexity Assessment**: The graph structure reveals that there are two types of variables:
+   - `variables`: A set of variables representing the different branches of the agent's state space, each containing a subset of the same type of variable
+The network topology is hierarchical and consists of 2 nodes representing the different branches of the agent's state space, each containing

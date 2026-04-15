@@ -7,7 +7,7 @@
 **Parent Module**: `gui/` (Interactive GNN Constructors)
 **Category**: Interactive Visualization / Model Construction
 **Status**: ✅ Production Ready
-**Version**: 1.5.0
+**Version**: 1.6.0
 **Last Updated**: 2026-04-15
 
 ---

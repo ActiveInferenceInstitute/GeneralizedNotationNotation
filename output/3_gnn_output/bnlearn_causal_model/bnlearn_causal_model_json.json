@@ -36,7 +36,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-04-14T11:53:26.058378",
+  "created_at": "2026-04-15T12:25:54.021163",
   "equations": [],
   "extensions": {
     "footer": "Bnlearn Causal Discovery Model mapping POMDP structure to a Bayesian Network.",
@@ -44,7 +44,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Bnlearn Causal Model",
-  "modified_at": "2026-04-14T11:53:26.058381",
+  "modified_at": "2026-04-15T12:25:54.021165",
   "ontology_mappings": [
     {
       "description": null,

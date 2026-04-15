@@ -1,15 +1,28 @@
 # ANALYZE_STRUCTURE
 
-Based on the document, here are the key aspects of active inference in GNN:
+Based on the provided documentation, here are some key aspects of the Analysis:
 
-1. **Graph Structure**: The graph is represented as a directed acyclic graph (DAG) with 3 variables and 4 types of edges. Each variable has its own set of connections to other variables. The number of variables increases from 2 to 6, indicating the complexity of the model structure.
+1. **Graph Structure**: The analysis covers a wide range of graph structures and their properties. It includes various types of graphs (e.g., directed/undirected edges), connected components, and connections between variables.
 
-2. **Variable Analysis**: Variables are connected by directed edges that represent actions or decisions made by the agent. There is a connection between states and actions in each state variable. There are also connections between states and hidden states (actions). The number of connections increases from 3 to 6, indicating more complex relationships between variables.
+2. **Variable Analysis**: The analysis examines how variable relationships are structured across different domains or contexts. This can help identify patterns that reflect the domain being modeled.
 
-3. **Variable Analysis**: Variables have their own dependencies and conditional relationships with other variables. There are connections between states and actions that indicate the agent's preferences or decisions made by others in the network. There is also a connection between states and hidden states (actions). The number of connections increases from 6 to 12, indicating more complex relationships between variables.
+3. **Mathematical Structure**: The analysis explores various mathematical structures related to graph theory (e.g., directed graphs, weighted graphs). It also considers connections between variables and their properties.
 
-4. **Mathematical Structure**: Variables have their own set of dependencies and conditional relationships with other variables. There are connections between states and actions that indicate the agent's preferences or decisions made by others in the network. There is also a connection between states and hidden states (actions). The number of connections increases from 6 to 12, indicating more complex relationships between variables.
+4. **Complexity Assessment**: The analysis provides insights into how complex systems are represented using graph-based models. This can help identify potential bottlenecks or challenges in modeling specific domains.
 
-5. **Complexity Assessment**: The graph structure reflects the complexity of the model architecture. It shows that there are many interconnected nodes with many edges connecting them. This suggests that the network is not self-consistent and may be prone to errors or bottlenecks in computation.
+Some key findings from the Analysis:
 
-Overall, these structural features indicate a high degree of complexity and robustness within the GNN representation.
+* **Graph Structure**: The analysis examines various types of graphs (e.g., directed/undirected edges), connected components, and connections between variables. It identifies patterns that reflect domain-specific characteristics.
+
+**Variable Analysis:**
+
+1. **Number of Variables**: The analysis shows a wide range of variable structures across domains, including:
+   - Directed graphs with many vertices (e.g., directed trees)
+   - Weighted graphs with many edges and connections between variables
+   - Graphs with special properties like cycles or self-loops
+2. **Connection Patterns**: The analysis examines how connection patterns are structured across different domains/contexts, including:
+   - Directed graphs with many vertices (e.g., directed trees)
+   - Weighted graphs with many edges and connections between variables
+   - Graphs with special properties like cycles or self-loops
+3. **Mathematical Structure**: The analysis explores various mathematical structures related to graph theory (e.g., weighted graphs, directed graphs). It also considers connections between variables and their properties.
+4. **Complexity Assessment**: The analysis identifies potential bottlenecks in modeling specific domains/contexts based on the complexity of variable relationships. This can help identify areas where domain-specific models may not be well-suited for modeling or performance evaluation.

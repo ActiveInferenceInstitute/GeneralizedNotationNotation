@@ -1,62 +1,22 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN specification:
-```json
-{
-  "outputs": [
-    {
-      "name": "curiosity-driven active inference agent",
-      "type": "active inference",
-      "model_annotation": {
-        "labels": ["GNNVersionAndFlags"],
-        "annotations": [
-          {
-            "label": "gnn version and flags",
-            "value": "1.0"
-          },
-          {
-            "label": "generated alpha value",
-            "value": "5.0"
-          }
-        ]
-      },
-      ...
-    ],
-    "outputs_type": "json",
-    "model_annotations": [
-      {
-        "name": "gnn version and flags",
-        "labels": ["GNNVersionAndFlags"],
-        "values": [
-            {
-                "label": "1.0"
-            }
-          },
-          {
-            "label": "generated alpha value",
-            "value": "5.0"
-          }
-        ]
-      },
-      ...
-    ],
-  ]
-}
-```
-This summary includes:
+Here's a concise summary of the GNN specification:
 
-1. **Key Variables**:
-   - `GNNVersionAndFlags`: `{type="float"}` representing the version and flags of the model (e.g., 1 for version, 0 for flag).
-   - `generated alpha value`: `{type="float"}`, indicating that the algorithm generated an alpha value based on the previous actions.
+**Summary**
 
-2. **Critical Parameters**:
-   - `most important matrices` are lists with brief descriptions of what is included in each matrix (`A`) and what it represents (e.g., `hidden states`.).
-   - `key hyperparameters`: `1.0`, representing the number of hidden states, which can be used to initialize the model.
-   - `unique aspects`: `[list]` indicating that there are only two types of matrices (`A`) and their values represent distinct subsets (e.g., `hidden state belief`.).
+This is an active inference agent that uses GNN (Generalized Notation Notation) to analyze and optimize a set of actions in a navigation context, with explicit epistemic value (information gain), instrumental value (preference satisfaction), and hidden state information. The model consists of 5 interconnected components:
 
-3. **Notable Features**:
-   - `special properties or constraints`: `{type="float"}`, representing the special properties of this model, which can be used to initialize it.
-   - `unique aspects`: `[list]` indicating that there are only two types of matrices (`A`) and their values represent distinct subsets (e.g., `observation state belief`.).
-
-4. **Use Cases**:
-   - "Activation" is a list with brief descriptions for
+1. **G**: A probabilistic graphical model that represents the agent's decision-making process based on its knowledge of the environment.
+2. **A** - A set of actions representing the agent's goal states, which are represented as a probability distribution over possible actions in the navigation context.
+3. **B** - A set of transition matrices representing the agent's preferences and rewards for each action.
+4. **C** - A set of habit vectors representing the agent's preferences towards different actions.
+5. **D** - A set of policy distributions representing the agent's preferences over actions, which are represented as a probability distribution over possible actions in the navigation context.
+6. **E** - A set of action probabilities (i.e., the expected information gain) for each action and its corresponding reward.
+7. **G_epi**: A set of beliefs representing the agent's preferences towards different actions, which are represented as a probability distribution over possible actions in the navigation context.
+8. **E** - A set of action probabilities (i.e., the expected information gain) for each action and its corresponding reward.
+9. **G_ins**: A set of beliefs representing the agent's preferences towards different actions, which are represented as a probability distribution over possible actions in the navigation context.
+10. **γ** - A set of epistemic values (information gain) that represent the agent's expected information gain for each action and its corresponding reward.
+11. **F** - A set of preferences representing the agent's preferences towards different actions, which are represented as a probability distribution over possible actions in the navigation context.
+12. **E_Q** - A set of preferences representing the agent's preferences towards different actions, which are represented as a probability distribution over possible actions in the navigation context.
+13. **G_ins**: A set of beliefs representing the agent's preferences towards different actions, which are represented as a probability distribution over possible actions in the navigation context.
+14. **γ** - A set of epistemic values (information

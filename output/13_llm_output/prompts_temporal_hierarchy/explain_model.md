@@ -1,21 +1,24 @@
 # EXPLAIN_MODEL
 
-Here is a concise summary of the key points:
+Here is a detailed explanation of the GNN model:
 
-**Summary:**
-This document provides an overview of the `ActInfPomdp` algorithm and its components. It covers the following topics:
+**Model Purpose:** This document provides an overview of the GNN (Generalized Notation Notation) framework for active inference on to-go data. The model represents a hierarchical active inference agent with three temporal scales, each representing a different level of abstraction from the previous level.
 
-1. **Model Purpose**: The algorithm represents a probabilistic graphical model with three levels, each representing a different level of complexity in the system.
-   - `A`: A hierarchical active inference agent with four temporal scales (`level 0`, `level 1`) that maintain their own generative models and update them based on observed data.
-   - `B`: A probabilistic graphical model with two hidden states (`t`), one for each level, which can learn from the observations of the other levels to improve predictions.
-   - `C`: A probabilistic graphical model with actions (`o_m0`, `o_m1`) and control variables (`pi_c0`, `π_c0`, etc.) that update based on observed data.
+**Core Components:**
 
-2. **Core Components**:
-   - `A`: The hierarchical active inference agent with four temporal scales (`level 0`, `level 1`), each representing a different level of complexity in the system.
-   - `B`: A probabilistic graphical model with two hidden states (`t`) and actions (`o_m0`, `o_m1`) that update based on observed data.
+1. **Input**: A list of input files containing information about the GNN model and its components (ontology annotations). Each file contains one or more layers of data represented by matrices. The input is structured as follows:
+   - Input File: A list of input files, each representing a single layer in the GNN hierarchy. Each input file has two columns: `input_file` and `layer`.
+   - Layer: A list of layers containing information about the input data (e.g., `input_data`, `output_data`, etc.). Each layer contains one or more input files, each representing a single layer in the GNN hierarchy.
 
-3. **Model Dynamics**: The algorithm implements Active Inference principles by updating its own models based on observations of other levels to improve predictions. It learns from the actions of other levels using probabilistic graphical models, which are updated based on their own predictions and actions.
+2. **Output**: A list of output files containing information about the model outputs and actions/controls. Each output file has two columns: `outcome` and `action`.
+   - Output File: A list of output files, each representing one or more layers in the GNN hierarchy. Each output file contains one or more input files, each representing a single layer in the GNN hierarchy.
 
-4. **Active Inference Context**: The algorithm uses a hierarchical active inference agent with four temporal scales (`level 0`, `level 1`) that maintain their own generative models to improve predictions. It learns from the actions of other levels using probabilistic graphical models, which are updated based on their own predictions and actions.
+3. **Model Parameters**: A dictionary containing information about the model parameters (e.g., `input_data`, `output_data`, etc.). Each parameter is represented by a key-value pair. The keys are strings and the values are lists of input files, each representing one layer in the GNN hierarchy.
 
-5. **Practical Implications**: The algorithm can learn from observed data by updating its own models based on observations made by other levels. This enables it to make decisions that depend on what is learned from others. It also provides a framework for analyzing the behavior of agents in different levels, which can be useful in various applications such as agent-based modeling and decision-making systems.
+**Signature:** This document provides an overview of how the model evolves over time based on observations from the data. It describes what actions/controls (u_c0, π_c0) and beliefs (o_m0, o_m1, etc.) are available in the model at each level of abstraction.
+
+**Key Relationships:**
+
+1. **Input**: A list of input files containing information about the GNN model and its components. Each input file has two columns: `input` and `layer`.
+   - Input File: A list of input files, representing one or more layers in the GNN hierarchy. Each input file contains one or more input files, each representing a single layer in the GNN hierarchy.
+

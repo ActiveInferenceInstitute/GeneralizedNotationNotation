@@ -6,67 +6,49 @@ Prompt:
 
 Response:
 
-```python
-import json
-from typing import List, Dict
+A continuous-state Active Inference agent navigating a 2D environment:
+- Hidden states: 2D position (x, y) as Gaussian belief
+- Observations: noisy position measurements with Gaussian noise
+- Actions: 2D velocity commands (dx, dy)
+- Uses Laplace approximation for Gaussian belief updating
+- Generalized coordinates of motion for smooth trajectories
 
-class GNNModel:
-    def __init__(self):
-        self.state = {}
+GNN Model Annotation:
+Continuous State Navigation Agent v1 - GNN Representation.
+Uses Laplace approximation for Gaussian belief updating.
+Generalized coordinates enable smooth predictive control.
 
-    def add_observation(self, x):
-        if isinstance(x, (list, tuple)):
-            for item in x:
-                if type(item) == list or type(item) == tuple:
-                    item[0] = [item[1]]
-                else:
-                    raise TypeError("Input is not a list/tuple")
+Model Name: Continuous State Navigation Agent v1 - GNN Version: 1.0
+Model Annotation:
+A continuous-state Active Inference agent navigating a 2D environment:
+- Hidden states: 2D position (x, y) as Gaussian belief
+- Observations: noisy position measurements with Gaussian noise
+- Actions: 2D velocity commands (dx, dy)
+- Uses Laplace approximation for Gaussian belief updating.
+- Generalized coordinates enable smooth predictive control.
 
-    def add_observation_noise(self):
-        self.state["obs"] = []
+Model Annotation:
+Continuous State Navigation Agent v1 - GNN Version: 1.0
+Model Name: Continuous State Navigation Agent v1 - GNN Version: 1.0
+Model Annotation:
+A continuous-state Active Inference agent navigating a 2D environment:
+- Hidden states: 2D position (x, y) as Gaussian belief
+- Observations: noisy position measurements with Gaussian noise
+- Actions: 2D velocity commands (dx, dy)
+- Uses Laplace approximation for Gaussian belief updating.
+- Generalized coordinates enable smooth predictive control.
 
-    def add_action(self, x):
-        if isinstance(x, (list, tuple)):
-            for item in x:
-                if type(item) == list or type(item) == tuple:
-                    item[0] = [item[1]]
-                else:
-                    raise TypeError("Input is not a list/tuple")
+Model Annotation:
+Continuous State Navigation Agent v1 - GNN Version: 1.0
+Model Name: Continuous State Navigation Agent v1 - GNN Version: 1.0
+Model Annotation:
+A continuous-state Active Inference agent navigating a 2D environment:
+- Hidden states: 2D position (x, y) as Gaussian belief
+- Observations: noisy position measurements with Gaussian noise
+- Actions: 2D velocity commands (dx, dy)
+- Uses Laplace approximation for Gaussian belief updating.
+- Generalized coordinates enable smooth predictive control.
 
-    def add_action_noise(self):
-        self.state["actions"] = []
-
-    def add_observation_error(self, x):
-        if isinstance(x, (list, tuple)):
-            for item in x:
-                if type(item) == list or type(item) == tuple:
-                    item[0] = [item[1]]
-                else:
-                    raise TypeError("Input is not a list/tuple")
-
-    def add_action_error(self, x):
-        if isinstance(x, (list, tuple)):
-            for item in x:
-                if type(item) == list or type(item) == tuple:
-                    item[0] = [item[1]]
-                else:
-                    raise TypeError("Input is not a list/tuple")
-
-    def add_observation_error(self, x):
-        if isinstance(x, (list, tuple)):
-            for item in x:
-                if type(item) == list or type(item) == tuple:
-                    item[0] = [item[1]]
-                else:
-                    raise TypeError("Input is not a list/tuple")
-
-    def add_action_error(self, x):
-        if isinstance(x, (list, tuple)):
-            for item in x:
-                if type(item) == list or type(item) == tuple:
-                    item[0] = [item[1]]
-                else:
-                    raise TypeError("Input is not a list/tuple")
-
-    def add_observation_error(self, x):
-        if isinstance(x, (list
+Model Annotation:
+Continuous State Navigation Agent v1 - GNN Version: 1.0
+Model Name: Continuous State Navigation Agent v1 - GNN Version: 1.0

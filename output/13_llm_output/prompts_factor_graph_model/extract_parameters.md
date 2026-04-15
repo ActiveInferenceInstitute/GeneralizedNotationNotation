@@ -1,38 +1,56 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key components of the GNN Representation:
+Based on the document, here are the key components of the model:
 
 1. **Model Matrices**:
-   - A matrices: dimensions, structure, interpretation
-   - B matrices: dimensions, structure, interpretation
-   - C matrices: dimensions, structure, interpretation
+   - A matrices representing the matrix representations of the ActInfFactorGraph and GNN models.
+   - A matrix representing the ActInfFactorGraph matrix representation.
+   - A matrix representing the GNNMatrixRepresentation represented by the ActInfGnnNetwork.
+   - A matrix representing the GNNMatrixRepresentation represented by the ActInfGnnNetwork.
 
-   These represent the model's parameters and their roles in inference.
+2. **Initial Parameters**:
+   - Initial parameters for each factor:
+    - Number of observations (num_observations)
+    - Number of velocities (num_velocities)
+    - Number of visual observations (num_vis)
+    - Number of actions (num_actions)
+    - Number of timesteps (num_timesteps)
 
-2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles
-   - α (alpha): learning rates and adaptation parameters
-   - Other precision/confidence parameters
+3. **Initial Parameters**:
+   - Initial parameters for each modality:
+    - Number of observation nodes (num_observationnodes)
+    - Number of velocity nodes (num_velocitynodes)
+    - Number of visual observations (num_visnodes)
+    - Number of actions (num_actions)
+    - Number of timesteps (num_timesteps)
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
+4. **Initial Parameters**:
+   - Initial parameters for each modality:
+    - Number of observation nodes (num_observationnodes)
+    - Number of velocity nodes (num_velocitynodes)
+    - Number of visual observations (num_visnodes)
+    - Number of actions (num_actions)
+    - Number of timesteps (num_timesteps)
 
-   These represent the model's parameter values and their roles in inference.
+5. **Initial Parameters**:
+   - Initial parameters for each modality:
+    - Number of observation nodes (num_observationnodes)
+    - Number of velocity nodes (num_velocitynodes)
+    - Number of visual observations (num_visnodes)
+    - Number of actions (num_actions)
+    - Number of timesteps (num_timesteps)
 
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+6. **Initial Parameters**:
+   - Initial parameters for each modality:
+    - Number of observation nodes (num_observationnodes)
+    - Number of velocity nodes (num_velocitynodes)
+    - Number of visual observations (num_visnodes)
+    - Number of actions (num_actions)
+    - Number of timesteps (num_timesteps)
 
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
-
-   These represent the parameters that should be used to initialize the model, such as a prior belief or a set of initial parameters.
-
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+7. **Initial Parameters**:
+   - Initial parameters for each modality:
+    - Number of observation nodes (num_observationnodes)
+    - Number of velocity nodes (num_velocitynodes)
+    - Number of visual observations (num_visnodes)
+    - Number of actions

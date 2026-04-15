@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/bnlearn/Hidden Markov Model Baseline_bnlearn.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.986696,
-  "timestamp": "2026-04-14T11:54:21.347498",
+  "execution_time": 2.032037,
+  "timestamp": "2026-04-15T12:27:06.233949",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

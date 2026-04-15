@@ -8,79 +8,82 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from collections import defaultdict
 
 class BnlearnCausalModel:
-    """BBN learnable causal model with Bayesian network architecture."""
-
     def __init__(self):
-        self.hidden_states = []
-        self.actions = []
+        self._model = {}
 
-        for action in ['action1', 'action2']:
-            self.hmm_model(
-                [
-                    {'state': {
-                        'type': 'int'
-                    },
-                    {'state': {
-                        'type': 'float'}
-                    }],
-                    [[{'type': 'int'}, {'type': 'int'}]
-                  ]
-              )
+    def add(self, node_id, action):
+        """Add a new observation to the Bayesian Network.
 
-        for action in ['action1', 'action2']:
-            self.act_model(
-                [
-                    {'type': 'int'},
-                    {'type': 'int'}
-                  ]
-              )
+        Args:
+            node_id (int): The identifier of the node with which we're adding an observation.
+            action (str): The action that will be taken in this observation.
 
-    def _get_hidden_states(self, state):
-        """Return a list of hidden states."""
-        return self.hidden_states + [[state]]
+        Returns:
+            None
+        """
+        self._model[node_id] = {}
 
-    def _get_actions(self, action):
-        """Return a list of actions for the given action."""
-        return [action] * len(self.hmm_model)
+    def add(self, node_id, action):
+        """Add a new observation to the Bayesian Network.
 
-    def _get_observation(self, state):
-        """Return a list of observed states."""
-        seen = set()
+        Args:
+            node_id (int): The identifier of the node with which we're adding an observation.
+            action (str): The action that will be taken in this observation.
 
-        for i in range(len(state)):
-            if self.actions[i]['type'] == 'int':
-                seen.add(
-                    {'state': {
-                        'type': 'float'}
-                  }
-              )
+        Returns:
+            None
+        """
+        self._model[node_id] = {}
 
-            elif self.actions[i]['type'] == 'int' and \
-               (self.hmm_model['action'][0] in state or
-                   self.hmm_model['action'][1] > 0):
-                seen.add(
-                    {'state': {
-                        'type': 'float'}
-                  }
-              )
+    def add(self, node_id, action):
+        """Add a new observation to the Bayesian Network.
 
-            elif self.actions[i]['type'] == 'int' and \
-               (self.hmm_model['action'][0] in state or
-                   self.hmm_model['action'][1] > 0):
-                seen.add(
-                    {'state': {
-                        'type': 'float'}
-                  }
-              )
+        Args:
+            node_id (int): The identifier of the node with which we're adding an observation.
+            action (str): The action that will be taken in this observation.
 
-    def _get_observation(self, state):
-        """Return a list of observed states."""
-        seen = set()
+        Returns:
+            None
+        """
+        self._model[node_id] = {}
 
-        for i in range(len(state)):
-            if self.actions[i]['type'] == 'int' and \
-               (self.hmm_model['action'][0] in state or
-                  
+    def add(self, node_id, action):
+        """Add a new observation to the Bayesian Network.
+
+        Args:
+            node_id (int): The identifier of the node with which we're adding an observation.
+            action (str): The action that will be taken in this observation.
+
+        Returns:
+            None
+        """
+        self._model[node_id] = {}
+
+    def add(self, node_id, action):
+        """Add a new observation to the Bayesian Network.
+
+        Args:
+            node_id (int): The identifier of the node with which we're adding an observation.
+            action (str): The action that will be taken in this observation.
+
+        Returns:
+            None
+        """
+        self._model[node_id] = {}
+
+    def add(self, node_id, action):
+        """Add a new observation to the Bayesian Network.
+
+        Args:
+            node_id (int): The identifier of the node with which we're adding an observation.
+            action (str): The action that will be taken in this observation.
+
+        Returns:
+            None
+        """
+        self._model[node_id] = {}
+
+    def add(self

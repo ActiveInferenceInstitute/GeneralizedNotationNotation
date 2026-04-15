@@ -1,18 +1,19 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise summary of the GNN specification:
+Here's a concise version:
 
-```json
-{
-  "processed_files": [
-    "output/10_ontology_output/simple_mdp_ontology_report.json",
-    "output/10_ontology_output/multi_armed_bandit_ontology_report.json",
-    "output/10_ontology_output/deep_planning_horizon_ontology_report.json",
-    "output/10_ontology_output/actinf_pomdp_agent_ontology_report.json",
-    "output/10_ontology_output/hmm_baseline_ontology_report.json",
-    "output/10_ontology_output/tmaze_epistemic_ontology_report.json"
-  ],
-  "success": true,
-  "errors": []
-}
-```
+**Key Variables:**
+  - Hidden states (A, B)
+  - Observations (D_vis, D_vel, C_vis, C_prop, F, G)
+  - Actions/Controls (F = F_vis + F_prop + F_pos + F_vel, G = G(x))
+**Key Parameters:**
+  - Most important matrices: A, B, C, D
+
+  **Notable Features:**
+    - Special properties of this model design
+
+    - Key parameters and their settings
+
+5. **Use Cases**: What scenarios would this model be applied to?
+
+This summary is suitable for someone familiar with Active Inference but new to GNNs in general. It provides a concise overview of the key variables, parameters, and use cases related to GNNs in active inference.

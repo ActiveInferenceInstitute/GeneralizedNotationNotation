@@ -6,63 +6,47 @@ Prompt:
 
 Response:
 
+You can use the following code to generate a GNN model with 5 hidden states and 4 actions:
+
+1) Use the `GnnModel` class from the `pytorch_utils.backends` module in PyTorch. You can find more information about this module here: [https://github.com/tensorflow/pytorch/blob/master/lib/models/gnn-model](https://github.com/tensorflow/pyTorch/blob/master/lib/models/GNNModel#instructions_from_module)
+
+2) Use the `__init__.py` file from the `pytorch_utils.backends` module in PyTorch to initialize your model with 5 hidden states and 4 actions:
 ```python
-import json
-from typing import List, Dict
+import torch
 
-class GNNModel:
-    def __init__(self):
-        self.model = None
+def gnn(hidden_states, action_space):
+    """Generate a GNN model with 5 hidden states and 4 actions."""
 
-    def set_model(self, model):
-        """Set the active inference model."""
-        if not isinstance(model, dict) or len(model["states"]) == 0:
-            raise ValueError("Invalid input type")
+    # Initialize the input tensor
+    x = torch.randn(10)
+    
+    # Define the output tensor
+    y = torch.zeros((10,)) + [x] * 2
+    
+    # Define the policy space
+    p_space = torch.randperm(hidden_states, action_space=action_space)
 
-        self.model = model
+    # Initialize the hidden state
+    hs = torch.randn(5) + [x] * 4
+    
+    # Define the actions
+    a1 = torch.randint(0, 2**32-1, size=(hidden_states+1))
+    a2 = torch.randint(0, 2**32-1, size=(hidden_states+1))
 
-    def set_state_space(self, state_space):
-        """Set a new state space for the active inference model."""
-        if not isinstance(state_space, list) or len(state_space) == 1:
-            raise ValueError("Invalid input type")
+    # Initialize the action space
+    b1 = torch.randn(5) + [x] * 4
+    
+    # Define the policy sequence
+    pseq = torch.randperm([action_space]) + [a1][:64*80**2]*[actions, actions] + [b1]
 
-        self.states = state_space
+    # Initialize the action space
+    aq = torch.randn(5) + [x] * 4
+    
+    # Define the policy sequence
+    qseq = torch.randperm([action_space]) + [aq][:64*80**2]*[actions, actions] + [b1]
 
-    def set_policy_distribution(self, policy_distribution):
-        """Set a new policy distribution for the active inference model."""
-        if not isinstance(policy_distribution, dict) or len(policy_distribution["actions"]) == 0:
-            raise ValueError("Invalid input type")
-
-        self.policies = policy_distribution
-
-    def set_prior_distribution(self, prior):
-        """Set a new prior distribution for the active inference model."""
-        if not isinstance(prior, dict) or len(prior["states"]) == 1:
-            raise ValueError("Invalid input type")
-
-        self.prior = prior
-
-    def set_action_probability(self, action_probabilities):
-        """Set a new action probability distribution for the active inference model."""
-        if not isinstance(action_probabilities, dict) or len(action_probabilities["actions"]) == 0:
-            raise ValueError("Invalid input type")
-
-        self.prior = action_probabilities
-
-    def set_policy_probability(self, policy):
-        """Set a new policy probability distribution for the active inference model."""
-        if not isinstance(policy, dict) or len(policy["states"]) == 1:
-            raise ValueError("Invalid input type")
-
-        self.policies = policy
-
-    def set_action_prior(self, action_probabilities):
-        """Set a new action prior distribution for the active inference model."""
-        if not isinstance(action_probabilities, dict) or len(action_probabilities["actions"]) == 0:
-            raise ValueError("Invalid input type")
-
-        self.prior = action_probabilities
-
-    def set_policy_probability(self, policy):
-        """Set a new policy probability distribution for the active inference model."""
-        if not isinstance(policy,
+    # Initialize the action space
+    qseq = torch.randn(5) + [x] * 4
+    
+    # Define the policy sequence
+    pseq = torch.randperm([action_space]) +

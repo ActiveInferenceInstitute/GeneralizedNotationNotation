@@ -6,61 +6,44 @@ Prompt:
 
 Response:
 
+Here is the complete code for the GNN model:
 ```python
-import json
-from collections import Counter
+import numpy as np
+from scipy import stats
 
-def compute_inference(state):
-    # TODO: Implement inference logic for this example
+# Initialize state space and observation matrices
+state = np.array([
+    (0., 0., 0.),
+    (1, 2., 3.)])
+observation = np.array([[(1/64**5), (1/64)**7], [[(1/64**8)], [(-1/64)**9]])
+actions = np.array([
+    0.0, -np.sqrt((1 + np.random.rand()) / 2) * 3,
+    np.sqrt((-1 + np.random.rand()) / 2),
+    np.sqrt(1 + np.random.rand() ** 2/64**5)
+])
 
-    return {'type': 'int', 'value': state['action']}
+# Initialize the GNN model with initial parameters
+G = np.zeros((num_hidden_states, num_actions))
+for i in range(num_hidden_states):
+  for j in range(num_actions):
+    G[i][j] = (1 / 64**5) * np.random.rand() + (1/64)**7
 
+  # Initialize the epistemic value component
+  γ = stats.exp(-np.sum((G[:, i].flatten()) ** 2)/num_actions
+# Initialize the instrumental value component
+F = stats.exp(-np.sum(G[i][j] * G[:, j])**2/64)
 
-def generate_input_and_output_files():
-    """Generate input and output files with the following structure.
+  # Initialize the probability of action A
+  PAC = np.zeros([len(state), len(observation)])
+  for i in range(num_actions):
+    PAC[i, 0:3] = (1 / num_hidden_states - G[:, i].flatten()) * np.random.rand()
 
-    Input file:
-        input/10_ontology_output/simple_mdp_ontology_report.json
+  # Initialize the probability of action B
+  PBS = np.zeros([len(state), len(observation)])
+  for i in range(num_actions):
+    PBS[i, 0:3] = (1 / num_hidden_states - G[:, i].flatten()) * np.random.rand()
 
-        This is a JSON file containing a list of dictionaries representing
-        actions, states, and histories for an action-action pair. Each
-        dictionary represents a single action in the input data set. For example,
-        `actions = [{'type': 'int', 'value': 1}, {'type': 'int',
-            'value': 2}]` represents the actions of the first two actions.
-    """
-
-    # Generate input files with the following structure:
-    inputs_file = f"input/10_ontology_output/{state['action']}"
-    outputs_file = f"outputs/{state['action']}."
-    output_files += [f"{inputs_file}|{outputs_file}.json", ".".join(
-        ["type"] * len(state["actions"]), sep="\n"])
-
-    return inputs_file, outputs_file
-
-
-def generate_output_and_input_files():
-    """Generate and save output files with the following structure.
-
-    Output file:
-        input/10_ontology_output/{state['action']}
-
-        This is a JSON file containing a list of dictionaries representing
-        actions, states, and histories for an action-action pair. Each
-        dictionary represents a single action in the output data set. For example,
-        `actions = [{'type': 'int', 'value': 1}, {'type':
-            'int', 'value': 2}]` represents the actions of the first two actions.
-    """
-
-    # Generate output files with the following structure:
-    outputs_file = f"outputs/{state['action']}."
-    inputs_file = f"{inputs_file}|{outputs_file}.json".join(
-        ["type"] * len(state["actions"]), sep="\n"])
-
-    return outputs_file, inputs_file
-
-
-def generate_input_and_output_files():
-    """Generate and save input files with the following structure.
-
-    Input file:
-        input/10_ontology_output/{state['action']}
+  # Initialize the probability of action C
+  PCC = np.zeros([len(state), len(observation)])
+  for i in range(num_actions):
+    PCC[i, 0:3] = (1 / num_

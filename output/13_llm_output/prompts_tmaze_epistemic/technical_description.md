@@ -8,38 +8,58 @@ Response:
 
 ```python
 import json
-from typing import List
+from typing import List, Dict, Tuple
 
-def gnn(input: List[List[float]], output: List[Dict[str, float]]) -> List[Dict[str, float]]:
-    """GNN implementation for the T-Maze Epistemic Foraging Agent.
+class TmazeEpistemicForagingAgent:
+    """Class for T-Maze Epistemic Foragers.
 
-    Args:
-        input (list): A list of locations to explore and reward/cue observations.
-        output (list): A list of probabilities that indicate whether agent visited a location or not.
-
-    Returns:
-        List[Dict]: A dictionary containing the GNN inference results for each location
+    Attributes:
+        state_space(list[Dict[str, float]]): A list of 4 locations representing the agent's current location and reward/reward pair.
+            Each location is represented by a dictionary with keys "center", "left" and "right". The values are floats.
+            Each value represents the probability that the agent will visit the given arm if it has not already visited it before,
+            or to explore the next arm based on its current state space.
     """
-    # Initialize state matrices
-    s_loc = [[0] * 4 for _ in range(num_locations)]
-    o_loc = [[0] * num_locations + 1 for _ in range(num_contexts)]
 
-    # Initialize transition matrices
-    B_loc = [[[]] * num_location_obs + 2 for _ in range(num_location_obs)]
-    C_loc = [[[[]] * num_location_obs] + [0.5] * num_locations + 1 for _ in range(num_contexts)]
+    def __init__(self):
+        self._state_space = list(range(10))  # Initialize with a random location and reward pair
 
-    # Initialize action matrices
-    D_loc = [[[]] * num_action_states + 2 for _ in range(num_actions)]
-    G_epi = [[[[]] * num_location_obs] + [0.5] * num_locations + 1 for _ in range(num_contexts)]
+        self._actions = []  # List of actions for each arm
 
-    # Initialize reward matrices
-    F_loc = [[[]] * num_reward_states + 2 for _ in range(num_actions)]
-    G_ins = [[[[]] * num_location_obs] + [0.5] * num_locations + 1 for _ in range(num_contexts)]
+        self._reward_map = {}  # Map reward to the corresponding action in the agent's state space
 
-    # Initialize action matrices
-    D_curr = [[[]] * num_action_states + 2 for _ in range(num_actions)]
-    G_ins = [[[[]] * num_location_obs] + [0.5] * num_locations + 1 for _ in range(num_contexts)]
+    def _get_location(self, x):
+        """Return the next location from the agent's current position."""
+        if x == "center":
+            return (x, 1.0)
+        elif x == "left":
+            return (x - 1, 1.0)
+        else:
+            raise ValueError("Invalid action")
 
-    # Initialize reward matrices
-    F_curr = [[[]] * num_reward_states + 2 for _ in range(num_actions)]
-    G_ins = [[[[]] * num_location_obs] + [0.5] * num_locations + 1 for _ in
+    def _get_reward(self):
+        """Return the reward from the agent's current actions."""
+        if self._actions[0] is not None and self._actions[0].get_value() == "left":
+            return (self._reward_map.get(self._actions[1], 0))
+
+    def _update_state_space(self):
+        """Update the state space of the agent."""
+
+        if len(self._actions) > 3:
+            raise ValueError("Agent cannot visit more than three actions")
+
+        self._action = self._get_location()
+        self.move_to_next_arm()
+
+    def _move_to_next_arm(self):
+        """Move the agent to a new arm."""
+
+        if len(self._actions) > 3:
+            raise ValueError("Agent cannot visit more than three actions")
+
+        for action in range(len(self._actions)):
+            self.move_to_new_arm()
+
+    def _get_reward_next_arm(self):
+        """Return the reward from the agent's next arm."""
+
+        if len(self

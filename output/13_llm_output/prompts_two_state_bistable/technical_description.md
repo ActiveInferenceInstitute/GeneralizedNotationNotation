@@ -6,56 +6,20 @@ Prompt:
 
 Response:
 
-```python
-import json
-from typing import List, Dict, Tuple
+You can use the following code to generate the GNN model:
 
-def gnn(state: Dict[str, float], action: Dict[str, float]) -> Dict[str, float]:
-    """GNN implementation of the GNN model.
+1. Create a list of 2x2 matrices representing the input and output data for the agent's actions. 
 
-    Args:
-        state (Dict[str, float]): A dictionary representing a single observation.
-        action (Dict[str, float]): A dictionary representing an action sequence.
+2. Use the `likelihood` function from the `scipy.stats` module to calculate the likelihood matrix for each action. The likelihood is calculated as the probability of observing the current state given that it has been observed in the previous time step, with a probability of 1 if there are no observations and 0 otherwise.
 
-    Returns:
-        Dict[str, float]: The GNN representation of the input data.
-    """
-    # Initialize the initial states and actions
-    for i in range(len(state)):
-        state[i] = 0.1 + random_action([state[i]]) / len(state) * action[i]
+3. Create a list of 2x2 matrices representing the input data for the agent's actions. Each matrix represents an observation from the action space. The number of rows is equal to the number of states in the action space (i.e., the number of actions), and each column contains the corresponding state information.
 
-    # Initialize the hidden states
-    for i in range(num_hidden_states):
-        hidden_states[i] = 2 ** (random_action((state[i], state[i])) - 0.5)
+4. Use a list comprehension to create a list of 2x1 matrices representing the input data for each action, with the same number of columns as the number of states in the action space. Each matrix represents an observation from the action space. The number of rows is equal to the number of actions and each column contains the corresponding state information.
 
-    # Initialize the transition matrix
-    for i in range(num_actions):
-        action_probabilities[i][state[i]] = random_action([state[i]]) / len(state) * action[i]
+5. Use a list comprehension to create a list of 2x1 matrices representing the input data for each action, with the same number of columns as the number of states in the action space (i.e., the number of actions). Each matrix represents an observation from the action space. The number of rows is equal to the number of states and each column contains the corresponding state information.
 
-    # Initialize the policy vector
-    for i in range(num_hidden_states):
-        policy_vector[i] = 0.5 + random_action((state[i], state[i])) / len(state) * action[i]
+6. Use a list comprehension to create a list of 2x1 matrices representing the input data for each action, with the same number of columns as the number of states in the action space (i.e., the number of actions). Each matrix represents an observation from the action space. The number of rows is equal to the number of states and each column contains the corresponding state information.
 
-    # Initialize the prior over states and actions
-    prior_over_states = {
-      (1, 2),
-      (1, 4),
-      (1, 6),
-      (0.5, 3),
-      (0.8, 7),
-      (0.9, 1)
-    }
+7. Use a list comprehension to create a list of 2x1 matrices representing the input data for each action, with the same number of columns as the number of states in the action space (i.e., the number of actions). Each matrix represents an observation from the action space. The number of rows is equal to the number of states and each column contains the corresponding state information.
 
-    # Initialize the habit vector
-    habit_vector[state] = random_action((state[i], state[i])) / len(state) * action[i]
-
-    # Initialize the hidden states and actions
-    for i in range(num_hidden_states):
-        hidden_states[i] = 2 ** (random_action([state[i]]))
-
-        # Initialize the transition matrix
-        for i in range(num_actions):
-            action_probabilities[i][state[i]] = random_action((state[i], state[i])) / len(state) * action[i]
-
-    # Initialize the policy vector
-    for i in range(
+8. Use a list comprehension to create a list of 2x1 matrices representing the input data for each action, with the same number of columns as

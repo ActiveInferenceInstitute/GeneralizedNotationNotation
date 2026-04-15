@@ -10,59 +10,28 @@ Response:
 import json
 from collections import Counter
 
-def gnn(input):
-    """GNN implementation for the Stigmergic Swarm Active Inference (SFAI) model."""
+def gnn(input_data):
+    """GNN implementation of the Stigmergic Swarm Inference algorithm."""
 
-    # Define input data
-    input_data = {
-        "position": {"x": 0.1, "y": 0.2},
-        "observation": {"x": 0.3, "y": 0.4},
-        "action": {"x": 0.5, "y": 0.6}
+    # Initialize state space and set up inference logic
+    state = {
+        "state": {"x": [0.1, 0.2],
+            "y": [0.3]}
     }
-
-    # Define input data for the agent agents
-    input_data = {
-        "position": {"x": 1.2, "y": 1.3},
-        "observation": {"x": 1.4, "y": 1.5}}
-
-    # Define input data for the agent agents and their actions
-    input_data = {
-        "action": {"x": 0.6, "y": 0.7}
-    }
-
-    # Define input data for the environment
-    input_data = {
-        "position": {"x": 1.2, "y": 1.3},
-        "observation": {"x": 1.4, "y": 1.5}}
-
-    # Define input data for the agent agents and their actions
-    input_data = {
-        "action": {"x": 0.6, "y": 0.7}
-    }
-
-    # Define input data for the environment
-    input_data = {
-        "position": {"x": 1.2, "y": 1.3},
-        "observation": {"x": 1.4, "y": 1.5}}
-
-    # Define input data for the agent agents and their actions
-    input_data = {
-        "action": {"x": 0.6, "y": 0.7}
-    }
-
-    # Define output data
-    output_data = {
-        "position": {"x": 2.1},
-        "observation": {"x": 2.3}}
-
-    # Define output data for the agent agents and their actions
-    output_data = {
-        "action": {"x": 0.6, "y": 0.7}
-    }
-
-    # Define output data for the environment
-    input_data = {
-        "position": {"x": 2.1},
-        "observation": {"x": 2.3}}
-
-   
+    
+    # Set up inference logic
+    for action in input_data:
+        if action == "A" or action == "B":
+            # Initialize the agent's likelihood matrix
+            agent = {
+                "state": {"x": [action[1]],
+                "y": [action[2]]},
+                "actions": ["", ""]
+            }
+            
+            # Set up the transition matrix
+            for i in range(len(input_data)):
+                if action == "A" or action == "B":
+                    agent["state"][i] = input_data[action][0] + input_data[action][1]
+    return {"states": state, "actions": ["", ""]}
+```

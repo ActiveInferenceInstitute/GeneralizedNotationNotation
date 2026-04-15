@@ -1,26 +1,28 @@
 # EXPLAIN_MODEL
 
-Here is a concise summary of the GNN Section:
+Here's a concise summary of the key points:
 
-**GNNSection:**
-A standard discrete Hidden Markov Model (HMM) with 4 hidden states and 6 observation symbols has been implemented for comparison to Active Inference POMDP variants, including the HMM Baseline. The model consists of four hidden states, two action-based states, and a single observable state. The input data are represented as sparse matrices representing the observed and predicted outcomes from the model.
+**Model Purpose:** This is an active inference model that represents a simple Markov chain with 4 hidden states and 6 observation symbols. It encodes the probability distribution over possible actions (actions = [action1, action2]) based on past observations (observations) and future predictions (forward and backward). The goal is to estimate the next state of the system using forward and backward updates in time.
 
-**GNNVersionAndFlags:**
-The GNN version v1 is implemented for comparison to Active Inference POMDP variants with HMM Baseline. The model consists of four hidden states, two action-based states, and a single observable state. The input data are represented as sparse matrices representing the observed outcomes from the model.
+**Core Components:**
 
-**ModelAnnotation:**
-A standard discrete Hidden Markov Model (HMM) with 4 hidden states and 6 observation symbols has been implemented for comparison to Active Inference POMDP variants with HMM Baseline. The model consists of four hidden states, two action-based states, and a single observable state. The input data are represented as sparse matrices representing the observed outcomes from the model.
+1. **Hidden states**: 4 hidden states with Markovian dynamics:
+   - `s_f0`: Initial state
+   - `s_f1`: Forward history (observation)
+   - `o_m0`: Forward history (action)
+   - `u_c0`: Forward history (belief)
 
-**StateSpaceBlock:**
-The GNN specification has 4 hidden states, 6 observation symbols, and fixed transition matrix (no action dependence). The initial state distribution is specified to be a random state with probability of 1/256 for each hidden state. The next hidden state is specified to have the same probability as the previous one but now it represents the current state instead of the previous state. The last hidden state has no observable and is fixed in its value at time t = 0, which corresponds to the initial state.
-
-**InferenceQuantities:**
-The GNN inference quantities are specified for each hidden state and action-based states:
-
-1. **Forward Algorithm:**
-   - Alpha_t(s) = sum_{s'} P(o_t|s) * P(s|s')
-   - Beta_t(s) = sum_{s'} P(o_{t+1}|s') * B(s'|s)
-
-2. **Backward Algorithm:**
-   - Alpha_b(s) = sum_{s'} P(o_b|s') * B(s'|s)
-   - Beta_b(s) = sum_{s'} P(o_{t
+2. **Observations**: 6 observation symbols with fixed transition and emission matrices:
+   - `a` for action A, etc.,
+   - `b` for action B, etc.,
+   - `d` for action D
+3. **Forward History**: A stochastic initial state distribution (P(o_t|s) = P(o_{t+1}|s') * P(s|s', s'')) with probabilities of each observation:
+   - `p_a`: Probability of action A, etc.,
+   - `p_b`: Probability of action B, etc.
+4. **Forward History**: A stochastic forward history (P(o_{t+1}|s') = P(o_{t+1}|s', s'')) with probabilities of each observation:
+   - `p_a` and `p_b`: Probability of action A or B, respectively
+5. **Backward History**: A stochastic backward history (P(o_{t-1}|s') = P(o_{t-1}|s', s')) with probabilities of each observation:
+   - `p_a` and `p_b`: Probability of action A or B, respectively
+6. **Forward and Backward Belief**: A belief distribution (B) that updates the beliefs based on past predictions (`u_c0`) and actions (`π_c0`, etc.) for each state:
+   - `P(o_{t+1}|s')` and `P(o_{t-1}|s')`: Probability of action A or B, respectively
+7. **Forward and Backward Belief**: A

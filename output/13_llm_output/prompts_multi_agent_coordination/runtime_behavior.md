@@ -8,29 +8,91 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from typing import List
 
-def gnn(model: str) -> Dict[str, int]:
-    """GNN implementation for multi-agent cooperative active inference.
+def gnn(model: str = "Multi-Agent Cooperative Active Inference", num_agents=10) -> list[List[str]]:
+    """GNN implementation for multi agent cooperative active inference."""
 
-    Args:
-        model (str): The name of the GNN model to use.
+    # Initialize the model with default parameters
+    model.update({
+        "num_hidden_states": 4,
+        "num_actions": 3,
+        "num_timesteps": 20,
+        "model_type": "Multi-Agent Cooperative Active Inference",
+        "input_shape": [[16, 4], [4, 4]]
+    })
 
-    Returns:
-        Dict[str, int]: A dictionary containing the predicted actions and their corresponding probabilities.
-    """
-    # Load the data from JSON files
-    with open("data/input_10_ontology_output/simple_mdp_ontology_report.json", "r") as f:
-        json_data = json.load(f)
+    # Initialize the model with default parameters
+    model.update({
+        "input_shape": [[16, 4] + [[4, 4]], [32, 4]]
+    })
 
-    # Load the data into a list of dictionaries
-    predicted_actions, actions_probabilities = [], []
-
-    for action in json_data["predictedActions"]:
-        if isinstance(action, str):
-            predicted_actions.append(json_data[action])
-
-        elif isinstance(action, int):
-            actions_probabilities.append(eval(json_data[action]))
-    return {"predictions": predicted_actions}, actions_probabilities
-```
+    # Initialize the input data
+    input = []
+    for i in range(num_agents):
+        input.append([
+            (
+                ("",
+                    {"type":"float"},
+                    {"value":
+                        {"x":
+                            {"x":
+                                {"x":
+                                    {"x":
+                                        {"x":
+                                            {"x":
+                                                {"x":
+                                                    {"x":
+                                                        {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x":
+                                                       {"x

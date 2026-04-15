@@ -6,61 +6,65 @@ Prompt:
 
 Response:
 
-Here is the GNN implementation:
+You can use the following code to generate an action inference agent with a GNN implementation:
+
+
 ```python
 import numpy as np
-from typing import List, Dict, Tuple
+from scipy import stats
 
-def gnn(
-    input_data: List[Tuple[List[float], float]],
-    num_hidden_states: int = 3,
-    num_actions: int = 3,
-    sensory_precision: float = 4.0,
-    policy_precision: float = 2.0,
-    num_timesteps: int = 30
-) -> Dict[str, List[float]]:
-  """GNN implementation for the GNN-based probabilistic inference agent."""
+# Define input data and actions for the agent.
+input_data = [[1, 0], [2, 0]]
+actions = [[0, 1], [3, 1]]
 
-  # Initialize state space matrix
-  A = np.array([
-      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
-          [3.0] * num_timesteps,  # Next hidden states
-      (0.9,),
-      (0.05,),
-  ])
+# Define GNN model annotations to represent action inference.
+model_annotations = {
+    "action": {"type":"float", "confidence": 0.9},
+    "state": {"type": "float"},
+    "observation": {"type": "float"}
+}
 
-  # Initialize transition matrix
-  B = np.array([
-      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
-          [3.0] * num_timesteps,  # Next hidden states
-      (0.9,),
-      (0.05,),
-  ])
 
-  # Initialize action vector
-  C = np.array([
-      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
-          [3.0] * num_timesteps,  # Next actions
-      (0.9,),
-      (0.05,),
-  ])
+def gnn(input_data, actions):
+    """Generate an action inference agent with GNN."""
 
-  # Initialize habit vector
-  D = np.array([
-      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
-          [3.0] * num_timesteps,  # Next actions
-      (0.9,),
-      (0.05,),
-  ])
+    # Define input data and actions for the agent.
+    input_data = [[1, 0], [2, 0]]
+    
+    # Define GNN model annotations to represent action inference.
+    model_annotations = {
+        "action": {"type":"float"},
+        "state": {"type": "float"}
+    }
 
-  # Initialize action vector
-  E = np.array([
-      (1.0,) + [4.0] * num_hidden_states + [2.0] * num_actions +
-          [3.0] * num_timesteps,  # Next actions
-      (0.9,),
-      (0.05,),
-  ])
+    # Define action inference parameters for the agent.
+    action_weights=np.array([1.0, 2.0])
+    
+    # Define GNN model annotations to represent policy inference.
+    model_annotations = {
+        "policy": {"type":"float"},
+        "action": {"type":"float"}
+    }
 
-  # Initialize state space matrix
-  A = np.array([
-      ([1.0], [4
+    # Define GNN model annotations to represent EFE parameters for the agent.
+    model_annotations = {
+        "Efe": {"type":"float", "confidence": 0.9},
+        "Gefe": {"type":"float"}}
+    
+    # Define action inference parameters for the agent.
+    action_weights=np.array([1.0, 2.0])
+
+    # Define GNN model annotations to represent EFE parameters for the agent.
+    model_annotations = {
+        "Efe": {"type":"float", "confidence": 0.9},
+        "Gefe": {"type":"float"}}
+    
+    # Define action inference parameters for the agent.
+    action_weights=np.array([1.0, 2.0])
+
+    # Define GNN model annotations to represent EFE parameters for the agent.
+    model_annotations = {
+        "Efe": {"type":"float", "confidence": 0.9},
+        "Gefe": {"type":"float"}}
+    
+    # Define action inference parameters for the agent.

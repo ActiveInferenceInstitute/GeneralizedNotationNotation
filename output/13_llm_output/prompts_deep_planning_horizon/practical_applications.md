@@ -1,15 +1,20 @@
 # PRACTICAL_APPLICATIONS
 
-You've covered the general aspects of GNN, including its applications, use cases, and practical considerations for a GNN model. However, you're missing some key areas to expand upon:
+Here are some key points about the GNN Model:
 
-1. **Model Complexity**: The complexity of the model can impact its performance, reliability, and scalability. You mentioned that the model is based on Generative models with 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
-
-2. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
-
-3. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
-
-4. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
-
-5. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
-
-6. **Model Complexity**: The complexity of the model can impact its accuracy and reliability, especially in real-world applications where data quality is critical. You mentioned that the model has 4 hidden states (Likelihood Matrix), but this might not be sufficient for a general-purpose GNN model. A more comprehensive approach would include additional layers or features to improve performance.
+1. **Model Name**: "Deep Planning Horizon POMDP"
+2. **ModelAnnotation**: "Generative model"
+3. **GNNVersionAndFlags**: 1.0
+4. **POMDP with T=5 planning horizon for multi-step policy evaluation**.
+5. **Active Inference concepts:
+   - **Generalized Notation Notation (GNN)**: A mathematical framework that allows for the representation of complex models in a concise and expressive way, allowing for easy identification of patterns and relationships within data.
+   - **Bayesian inference**: A probabilistic graphical model used to analyze uncertain data based on prior probabilities and likelihoods.
+   - **GNN Syntax**: A formal syntax for expressing GNN operations using mathematical notation.
+6. **ModelAnnotation**: "Generative model"
+7. **GNNVersionAndFlags**: 1.0
+8. **POMDP with T=5 planning horizon for multi-step policy evaluation**.
+9. **Active Inference concepts:
+   - **Generalized Notation Notation (GNN)**: A mathematical framework that allows for the representation of complex models in a concise and expressive way, allowing for easy identification of patterns and relationships within data.
+   - **Bayesian inference**: A probabilistic graphical model used to analyze uncertain data based on prior probabilities and likelihoods.
+   - **GNN Syntax**: A formal syntax for expressing GNN operations using mathematical notation.
+10. **ModelAnnotation**: "Generative model"

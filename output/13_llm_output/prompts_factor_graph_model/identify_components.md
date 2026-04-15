@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Here is a systematic breakdown of the information in the document:
+Here is a systematic breakdown of the GNN model:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -29,5 +29,38 @@ Here is a systematic breakdown of the information in the document:
    - Fixed vs. learnable parameters
 
 6. **Temporal Structure**:
+   - Time horizons and temporal dependencies
+   - Dynamic vs. static components
+
+This is a detailed breakdown of the GNN model, covering all the relevant concepts:
+- **State Variables (Hidden States)**:
+  - Variable names and dimensions
+  - What each state represents conceptually
+  - State space structure (discrete/continuous, finite/infinite)
+
+2. **Observation Variables**:
+  - Observation modalities and their meanings
+  - Sensor/measurement interpretations
+  - Noise models or uncertainty characterization
+
+This is a detailed breakdown of the GNN model, covering all the relevant concepts:
+- **Action/Control Variables**:
+  - Available actions and their effects
+  - Control policies and decision variables
+  - Action space properties
+
+3. **Model Matrices**:
+  - A matrices: Observation models P(o|s)
+   - B matrices: Transition dynamics P(s'|s,u)
+   - C matrices: Preferences/goals
+   - D matrices: Prior beliefs over initial states
+
+This is a detailed breakdown of the GNN model, covering all the relevant concepts:
+- **Parameters and Hyperparameters**:
+  - Precision parameters (γ, α, etc.)
+  - Learning rates and adaptation parameters
+  - Fixed vs. learnable parameters
+
+4. **Temporal Structure**:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components

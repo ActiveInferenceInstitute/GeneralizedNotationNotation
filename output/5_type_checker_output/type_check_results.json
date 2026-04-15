@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T11:53:34.460976",
+  "timestamp": "2026-04-15T12:26:00.737352",
   "processed_files": 2,
   "success": true,
   "errors": [],
@@ -9,7 +9,7 @@
       "file_name": "predictive_coding_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: precision, parameters, belief, level, error"
+        "Duplicate variable names: belief, error, level, precision, parameters"
       ],
       "warnings": [
         "Type issue: Unknown type 'Predictive' for variable 'Example'",
@@ -204,7 +204,7 @@
           "type": "perception"
         }
       ],
-      "validation_timestamp": "2026-04-14T11:53:34.461874",
+      "validation_timestamp": "2026-04-15T12:26:00.737483",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -517,7 +517,7 @@
           "type": "float"
         }
       ],
-      "validation_timestamp": "2026-04-14T11:53:34.466576",
+      "validation_timestamp": "2026-04-15T12:26:00.739641",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -821,7 +821,7 @@
         "float": 16
       },
       "total_variables": 44,
-      "analysis_timestamp": "2026-04-14T11:53:34.466345"
+      "analysis_timestamp": "2026-04-15T12:26:00.739616"
     },
     {
       "file_path": "input/gnn_files/continuous/continuous_navigation.md",
@@ -1035,7 +1035,7 @@
         "float": 20
       },
       "total_variables": 38,
-      "analysis_timestamp": "2026-04-14T11:53:34.469820"
+      "analysis_timestamp": "2026-04-15T12:26:00.741397"
     }
   ]
 }

@@ -179,7 +179,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-04-14T11:53:24.863410",
+  "created_at": "2026-04-15T12:25:52.777002",
   "equations": [],
   "extensions": {
     "footer": "Hierarchical Active Inference POMDP v1 - GNN Representation.\nLevel 2 updates every 5 Level 1 timesteps (timescale_ratio=5).\nDemonstrates context-dependent behavior modulation.",
@@ -187,7 +187,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Hierarchical Active Inference POMDP",
-  "modified_at": "2026-04-14T11:53:24.863412",
+  "modified_at": "2026-04-15T12:25:52.777003",
   "ontology_mappings": [
     {
       "description": null,

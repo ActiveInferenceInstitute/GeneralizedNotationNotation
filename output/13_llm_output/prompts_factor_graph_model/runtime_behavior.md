@@ -8,22 +8,17 @@ Response:
 
 ```python
 import json
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
-class GNNModel:
-    def __init__(self):
-        self.input = {}
+def gnn(input: str) -> Dict[str, List[Dict[str, float]]]:
+    """GNN implementation of the GNN model.
 
-    def add(self, input_data: dict) -> None:
-        """Add a new observation to the graph."""
-        if isinstance(input_data, dict):
-            for key in input_data["observation"]:
-                if isinstance(key, str):
-                    input[key] = input_data.get(key)
+    Args:
+        input (str): Input data in the form of a list of strings representing observations and predictions.
 
-    def add_observations(self, observations: List[Tuple[str, int]]) -> None:
-        """Add a new observation to the graph."""
-        if isinstance(observations, list):
-            for observation in observations:
-                self._add_observation(tuple(observation))
+    Returns:
+        A dictionary containing the predicted values for each observation and prediction.
+    """
+    # TODO(david) Implement the implementation using a dictionary to store the predictions
+    return {input[0]: [input[1], input[2]]}
 ```

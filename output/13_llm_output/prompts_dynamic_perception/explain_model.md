@@ -1,27 +1,18 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+This document provides a comprehensive explanation of the Active Inference (AI) framework used to generate predictions based on observed data. The document covers:
 
-1. **Model Purpose**: This is a representation of an active inference system that aims to capture real-world phenomena and make predictions based on observed data. It represents a probabilistic graphical model with hidden states (s_f0, s_f1), observations (o_m0, o_m1), actions/controls (u_c0, π_c0) and beliefs (F).
+1. **Model Purpose**: This section explains what the AI model represents and how it can be applied in real-world scenarios. It also describes the core components involved, including hidden states, observations, actions/controls, and beliefs.
 
-2. **Core Components**:
-   - **Saved Observations**: These are the data points that have been saved for analysis purposes. They represent a sequence of events or observations from which predictions can be made based on future observations.
-   - **StateSpace**: This is a collection of states representing all possible actions/controls available to the agent at each timestep. It captures the current state and its associated beliefs (F).
+2. **Core Components**: The document provides a detailed description of each component:
+   - **hidden state** (p1): Represents the current observation or data point being processed by the AI model. This is represented as a 2D array containing values from a predefined set of states.
+   - **observation** (s0, s1): Represents an observed observation that can be either positive (i.e., it has a value) or negative (i.e., it does not have a value). It represents the current state being processed by the AI model.
+   - **belief** (b0, b2): Represents the current belief of the agent based on its actions/controls and observations. This is represented as a 1D array containing values from a predefined set of beliefs.
 
-3. **Model Dynamics**: The model evolves over time by updating its parameters based on observed data. It represents a probabilistic graphical model with hidden states, observations, actions/controls, and beliefs.
+3. **Model Dynamics**: The document describes how the AI model evolves over time:
+   - **Initialization**: The AI model starts with a state (p0) representing an observation, which can be either positive or negative based on its actions/controls and observations. It then updates the state using a sequence of actions/actions-based transitions to generate new states. This process continues until the agent reaches a stopping criterion (e.g., reaching a certain number of timesteps).
+   - **Initialization**: The AI model starts with an initial state, which represents its current observation or data point. It then updates the state using a sequence of actions/actions-based transitions to generate new states based on the observed observations and actions. This process continues until the agent reaches a stopping criterion (e.g., reaching a certain number of timesteps).
 
-4. **Active Inference Context**: This is how it implements Active Inference principles:
-   - **Initial Parameters**: These are the initial state-action relationships that define the behavior of the agent at each timestep. They represent a sequence of events or observations from which predictions can be made based on future observations.
-   - **Model Parameters**: These are the parameters representing the learned beliefs and actions for each observation/state pair. They capture the current belief about the state, its associated action, and its corresponding belief in the next state.
-
-5. **Practical Implications**: This model makes predictions based on observed data by updating its parameters based on new information from future observations. It can make decisions based on available actions or control inputs to guide a decision-making process.
-
-Please provide clear explanations that cover:
-
-1. **Model Purpose**: What real-world phenomenon or problem does this represent?
-
-2. **Core Components**: 
-   - **Saved Observations**: These are the data points that have been saved for analysis purposes. They represent a sequence of events or observations from which predictions can be made based on future observations.
-   - **StateSpace**: This is a collection of states representing all possible actions/controls available to the agent at each timestep. It captures the current state and its associated beliefs (F).
-
-3. **Model Dynamics**: The model evolves over time by updating its parameters based on observed data. It represents
+4. **Active Inference**: The document describes how the AI model implements Active Inference principles:
+   - **Initialization**: The AI model starts with an initial state, which represents its current observation or data point. It then updates the state using a sequence of actions/actions-based transitions to generate new states based on the observed observations and actions. This process continues until the agent reaches a stopping criterion (e.g., reaching a certain number of timesteps).
+  

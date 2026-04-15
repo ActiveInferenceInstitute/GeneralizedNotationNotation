@@ -1,13 +1,51 @@
 # ANALYZE_STRUCTURE
 
-Based on the document, here are some key aspects of the analysis:
+Here is a detailed structural analysis of the GNN implementation:
 
-1. **Graph Structure**: The document mentions that there are 4 variables and their types (identity A, B, C, D), which is a total of 8 variables in total for the entire graph structure. This includes all possible combinations of states and actions. 
+**Graph Structure:**
 
-2. **Variable Analysis**: The document discusses how to analyze each variable separately based on its type, dependence relationships, temporal dependencies, conditional relationships, etc. It also mentions that there are connections between variables (directed edges) and a hierarchical organization of the graph structure.
+1. **Number of variables and types**: There are 4 variables (A, B, C, D) with different types (identity A, identity B, identity C). Each variable has a type (identity), and each type is connected to other variables in the graph structure. The connections between variables can be either directed or undirected.
 
-3. **Mathematical Structure**: The document provides examples of mathematical structures such as matrices, graphs, and networks to illustrate how they relate to each other. For instance, it describes how matrix dimensions can be used for modeling specific types of relationships or dependencies between variables.
+2. **Connection patterns**: There are 4 edges connecting variables:
+   - Identity A -> Identity B
+   - Identity B -> Identity C
+   - Identity C -> Identity D
+   - Identity D -> Identity C
+   - Identity C -> Identity D
 
-4. **Complexity Assessment**: The document highlights potential bottlenecks in the analysis process that could impact model performance or scalability. This includes issues related to computational complexity indicators (e.g., number of steps required) and system scalability considerations (i.e., how models can handle large datasets).
+**Variable Analysis:**
 
-Overall, the analysis provides a comprehensive overview of the structure and mathematical relationships involved in modeling the graph structure for the simple MDP agent. It highlights key concepts such as matrix dimensions, connections between variables, hierarchical organization, and computational complexity indicators to provide a clear understanding of the underlying mechanisms driving model performance.
+1. **State space dimensionality**: There is a single state (identity) with 4 states and 2 hidden states, each of which has 3 actions. Each hidden state can be connected to any other hidden state in the graph structure. The connections between hidden states are directed edges.
+
+2. **Dependencies and conditional relationships**: There are 5 dependencies:
+   - Identity A -> Identity B (directed edge)
+   - Identity B -> Identity C (directed edge)
+   - Identity C -> Identity D (directed edge)
+   - Identity D -> Identity C (directed edge)
+   - Identity C -> Identity D
+
+**Mathematical Structure:**
+
+1. **Matrix dimensions**: There are 4 matrices with different types:
+   - Identity matrix A
+   - Identity matrix B
+   - Identity matrix C
+   - Identity matrix D
+
+**Complexity Assessment:**
+
+1. **Computational complexity indicators**: There is a computational complexity indicator for each variable, which can be calculated using the following formula:
+    - Computationally complex variables (variables with higher order terms) have higher computational complexities. This indicates that these variables are more computationally expensive to compute.
+
+    **Example:**
+   - Identity A -> Identity B has lower computational complexity than Identity A -> Identity C because it is a directed edge, which requires more computation and therefore slower.
+    - Identity B -> Identity C has lower computational complexity than Identity B -> Identity D because it is a directed edge, but the connection between Identity B and Identity C is not as direct (it can be traversed in two steps).
+
+2. **Model scalability considerations**: There are 3 models with different types:
+   - Simple MDP agent
+   - Multi-armed bandit agent
+   - Deep planing agent
+
+**Design Patterns:**
+
+1. **What

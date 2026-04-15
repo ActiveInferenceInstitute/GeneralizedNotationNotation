@@ -1,33 +1,79 @@
 # EXTRACT_PARAMETERS
 
-Based on the provided information, here are the key parameters for the GNN implementation:
+Here is a systematic parameter breakdown of the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the model matrix and its structure (e.g., Lambda, Policy, EFE).
-   - B matrices representing the transition matrix and action vector representations of actions.
-   - C matrices representing the habit distribution over observations.
-   - D matrices representing the habit distribution over actions.
+    - A matrices: dimensions, structure, interpretation
+    - B matrices: dimensions, structure, interpretation  
+    - C matrices: dimensions, structure, interpretation
 
-2. **Precision Parameters**:
-   - γ: learning rate parameter for each modality (e.g., α, β)
-   - α: learning rate parameters for each modality (e.g., δ)
-   - Other precision/confidence parameters
+    This includes the following components:
+    1. **Initial Parameters**:
+      - Initial parameters (initialization strategies)
+       - Random initialization of initial parameter values and biases for each dimension
+       - Random initialization of initial state space dimensions and observation spaces
 
-3. **Dimensional Parameters**:
-   - State space dimensions of the model matrices and their interpretation (dimensions, structure).
-   - Observation space dimensions of the state matrix and its interpretation (dimensionality).
-   - Action space dimensions of the action vector representation of actions (dimensionality).
-   - Action space dimensionality for each modality
+2. **Dimensional Parameters**:
+    - State space matrices (variables):
+      - Initial states, actions, observations, action probabilities, etc.
 
-4. **Temporal Parameters**:
-   - Time horizons (t)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+      This includes the following components:
+    1. **Initial parameters**:
+        - Initial parameter values
 
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+        This is a list of initial parameters that are initialized for each dimension in the model matrix.
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations for each model matrix, state space matrices, action vectors, and observation spaces (dimensions).
+3. **Temporal Parameters**:
+    - Temporal dependencies and windows
+      - Initialization of temporal dependencies (e.g., prior beliefs)
+
+      This includes the following components:
+    1. **Initialization strategies**:
+        - Random initialization of initial parameter values
+
+        This is a list of initial parameters that are initialized for each dimension in the model matrix.
+
+4. **Configuration Summary**:
+    - Parameter file format recommendations
+      - The input data files contain information about the training and validation sets, including:
+          - Initial state space dimensions (dimensions)
+          - Observation space dimensions (dimensions)
+          - Action space dimensions (dimensions)
+
+         - Input Data Files:
+           - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+             - Input Dataset File:
+            

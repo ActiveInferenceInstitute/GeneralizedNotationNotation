@@ -6,87 +6,12 @@ Prompt:
 
 Response:
 
-```python
-import json
-from typing import List, Dict
+You can use the following code to implement an active inference model on a graph:
 
-def factorize(input: str) -> Dict[str, float]:
-    """Factorizes a string into a dictionary of boolean values.
-
-    Args:
-        input (str): The input text to be factorized.
-
-    Returns:
-        A dictionary containing the factorization results from the given input.
-    """
-    factors = {}
-    for char in input:
-        if char == "." or char == "$":
-            continue
-
-        # Check if character is a digit
-        if ord(char) < 10 and ord(char) > 9:
-            continue
-
-        # Check if character is alphabetic
-        elif ord(char) <= 26:
-            continue
-
-        # Check if character is numeric
-        elif ord(char) == "." or ord(char):
-            continue
-
-        # Check if character is a digit
-        elif ord(char) < 10 and ord(char) > 9:
-            continue
-
-        # Check if character is alphabetic
-        elif ord(char) <= 26:
-            continue
-
-        # Check if character is numeric
-        elif ord(char) == "." or ord(char):
-            continue
-
-        # Check if character is a digit
-        elif ord(char) < 10 and ord(char) > 9:
-            continue
-
-        # Check if character is alphabetic
-        elif ord(char) <= 26:
-            continue
-
-        # Check if character is numeric
-        elif ord(char) == "." or ord(char):
-            continue
-
-        # Check if character is a digit
-        elif ord(char) < 10 and ord(char) > 9:
-            continue
-
-        # Check if character is alphabetic
-        elif ord(char) <= 26:
-            continue
-
-        # Check if character is numeric
-        elif ord(char) == "." or ord(char):
-            continue
-
-        # Check if character is a digit
-        elif ord(char) < 10 and ord(char) > 9:
-            continue
-
-        # Check if character is alphabetic
-        elif ord(char) <= 26:
-            continue
-
-        # Check if character is numeric
-        elif ord(char) == "." or ord(char):
-            continue
-
-        # Check if character is a digit
-        elif ord(char) < 10 and ord(char) > 9:
-            continue
-
-        # Check if character is alphabetic
-        elif ord(char) <= 26:
+1. Create a graph with two observation modalities (visual and proprioceptive) using `FactorGraph`.
+2. Use the `GNN` algorithm from the `actinf_gnn` module to generate a GNN representation of your data. The GNN is implemented in `factorgraph`, which can be used for inference on graphs.
+3. Use the `gnn_model` function to create an active inference model on your graph and use it as input to `actinf_gnn`.
+4. Use the `GNNModelAnnotation` class from `actinf_gnn` to annotate the GNN representation with annotations for each observation modality (visual, proprioceptive, etc.).
+5. Use the `gnn_model` function again to generate an inference model on your graph and use it as input to `actinf_gnn`.
+6. Use the `GNNModelAnnotation` class from `actinf_gnn` to annotate the GNN representation with annotations for each observation modality (visual, proprioceptive, etc.).
+7. Use the `gnn_model` function again to generate an inference model on your graph and use it as input to `actinf_gnn`.

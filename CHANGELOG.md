@@ -6,17 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ---
 
-## [Unreleased]
+## [1.6.0] — 2026-04-15
 
-### Notes
-- **`src/sapf` shim**: Re-exports `audio.sapf` for legacy `import sapf`; track remaining callers and remove the shim after imports migrate to `audio.sapf`.
+### Fixed
+- **Testing Constraints**: Entirely removed dependency on internal `hypothesis.internal.conjecture.optimiser` arrays mitigating python 3.13 crashes, transitioning to native parameterized fuzzers.
+- **HTML Assertion Accuracy**: Relaxed legacy `test_report_functional` strings to mathematically accept dynamic semantic UI tags (`<html lang="en">` instead of `<html>`).
 
 ### Added
+- **Global Documentation Guardrails**: Enforced 100% adherence to zero-mock documentation mandates. Provisioned `AGENTS.md`, `README.md`, and `SPEC.md` components natively within transient boundaries (`output/`, `.benchmarks/`, `scripts/`) and defined the master environment `SPEC.md` at root.
 - **Type checker visual dashboards**: Baseball-card style model summary PNGs (dark neon theme), validity mosaics, issue distribution charts, and type category pie charts generated in `output/5_type_checker_output/visualizations/`
 - **Resource estimation integration**: `estimate_file_resources()` now delegates to `estimation_strategies.py` for real FLOPS, memory, and complexity scoring instead of naive heuristics
 - **Documentation hub sync**: Automated `doc/gnn/modules/[00-24].md` reconciliation from `src/*/AGENTS.md` source-of-truth
 
 ### Changed
+- **Zero-Mock Policy Enforcement**: Systematically excised all mentions and framework hooks relating to `pytest-mock` allowing completely isolated functional testing constraints natively.
 - **Type checker consolidation**: Deleted redundant `src/type_checker/checker.py`; all logic unified in `processor.py` (`GNNTypeChecker`)
 - **Test suite alignment**: `test_type_checker_overall.py` rewired to target production `processor.py` orchestrator (zero-mock)
 - **Deprecated marker removed**: `safe_to_fail` marker replaced with standard `xfail` in `pyproject.toml` and `pytest.ini`

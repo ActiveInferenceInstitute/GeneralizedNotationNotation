@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-04-14T12:03:25.228843",
+  "timestamp": "2026-04-15T12:38:25.498784",
   "execution_results_dir": "output/12_execute_output/bnlearn_causal_model",
   "framework_results": {
     "bnlearn": {
@@ -40,83 +40,8 @@
     },
     "pymdp": {
       "framework": "pymdp",
-      "result_count": 3,
+      "result_count": 2,
       "analyses": [
-        {
-          "framework": "pymdp",
-          "model_name": "Bnlearn Causal Model",
-          "free_energy_count": 15,
-          "free_energy_values": [
-            [
-              0.9629285335540771,
-              0.7069286108016968
-            ],
-            [
-              0.7433731555938721,
-              0.9498248100280762
-            ],
-            [
-              0.9684712886810303,
-              0.6878295540809631
-            ],
-            [
-              0.969908595085144,
-              0.6823522448539734
-            ],
-            [
-              0.9700316190719604,
-              0.6818714141845703
-            ],
-            [
-              0.7495371103286743,
-              0.94724440574646
-            ],
-            [
-              0.7332926988601685,
-              0.9538070559501648
-            ],
-            [
-              0.9687612056732178,
-              0.6867442727088928
-            ],
-            [
-              0.9699331521987915,
-              0.6822561621665955
-            ],
-            [
-              0.7494409084320068,
-              0.9472854733467102
-            ],
-            [
-              0.7333149909973145,
-              0.9537986516952515
-            ],
-            [
-              0.96876060962677,
-              0.6867466568946838
-            ],
-            [
-              0.969933032989502,
-              0.6822563409805298
-            ],
-            [
-              0.9700337648391724,
-              0.6818630695343018
-            ],
-            [
-              0.9700424671173096,
-              0.6818289160728455
-            ]
-          ],
-          "mean_free_energy": 0.8336800257364909,
-          "std_free_energy": 0.009120708333710035,
-          "min_free_energy": 0.8259356915950775,
-          "max_free_energy": 0.8483907580375671,
-          "free_energy_trend": -0.0005547636321612827,
-          "free_energy_decreasing": "True",
-          "convergence_variance": 5.204036510362028e-09,
-          "converged": true
-        },
         {
           "framework": "pymdp",
           "model_name": "Bnlearn Causal Model",
@@ -343,18 +268,18 @@
         "mean_fe": 0.10025
       },
       "execution_time": {
-        "bnlearn": 2.011961,
-        "discopy": 0.244699,
-        "jax": 0.655794,
-        "pytorch": 0.473095,
-        "pymdp": 2.91357,
-        "activeinference_jl": 14.192798,
-        "numpyro": 0.635329,
-        "rxinfer": 13.543188
+        "bnlearn": 2.044106,
+        "discopy": 0.240514,
+        "jax": 0.653587,
+        "pytorch": 0.479807,
+        "pymdp": 2.681435,
+        "activeinference_jl": 14.139118,
+        "numpyro": 0.622191,
+        "rxinfer": 13.658078
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.244699
+        "time": 0.240514
       },
       "success_rates": {
         "bnlearn": true,

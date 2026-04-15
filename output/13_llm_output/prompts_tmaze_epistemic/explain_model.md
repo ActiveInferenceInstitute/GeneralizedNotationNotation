@@ -1,11 +1,21 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
-1. **Model Purpose**: This is a comprehensive overview of Active Inference, covering what real-world phenomena are represented and how they relate to the model's purpose.
-2. **Core Components**: The model consists of three main components:
-   - **Hidden states (s_f0, s_f1)**: Represented by the locations in the graph matrix
-   - **Observations (o_m0, o_m1, etc.)**: Represented as a set of 4-dimensional vectors representing location and reward/cue information. These are used to update beliefs about the agent's behavior based on their actions.
-   - **Actions/Controls (u)**: Represented by a set of 2-dimensional vectors representing actions taken in response to specific rewards or cues.
-3. **Model Dynamics**: The model evolves over time through interactions between hidden states and observations, updating beliefs about the agent's behavior based on these interactions. It also updates the belief that the agent is exploring different regions of the map (the "action" component).
-4. **Active Inference Context**: This context represents all possible actions available to the agent at a given time step. It includes both the current state and any actions taken in response to it, as well as the reward/cue information that has been learned from previous steps. The goal of Active Inference is to learn how to explore different regions of the map based on the beliefs about exploration direction (the "belief" component).
-5. **Practical Implications**: This model can inform decisions by providing insights into what actions would be most likely to lead to specific outcomes, such as exploring a particular region or exploiting an unexplored area. It also provides information about how the agent's behavior changes based on new rewards and cues that are learned from previous steps.
+This document provides a comprehensive explanation of the GNN (Generalized Notation Notation) framework used to analyze and generate active inference models for various problems. The document covers:
+
+1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
+   - "The classic T-maze task from Active Inference literature" is a well-known example of an active inference problem.
+
+2. **Core Components**:
+   - "Hidden states (s_f0, s_f1, etc.) and what they represent" are explained in the document.
+   - "Observations (o_m0, o_m1, etc.) and what do they capture" is also discussed.
+
+3. **Model Dynamics**: How does this model evolve over time? What actions/controls exist and how?
+   - "Key relationships" are explained in the document.
+
+4. **Active Inference Context**: How does this model implement Active Inference principles? What beliefs are being updated and what do they represent?
+   - The document provides a clear explanation of how these components evolve over time, including key relationships between them.
+
+5. **Practical Implications**: What can you learn or predict using this model? What decisions can it inform?
+   - The document highlights the importance of understanding the underlying mechanisms driving the model's evolution and predictions.
+
+Please provide a concise summary in clear language while maintaining scientific accuracy, focusing on key concepts and relationships between components.

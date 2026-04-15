@@ -10,8 +10,8 @@
 - Action minimizes expected free energy by changing sensory input
 - Uses generalized coordinates of motion (position, velocity, acceleration)
 - Demonstrates the core predictive processing framework underlying Active Inference</annotation>
-    <created_at>2026-04-14T11:53:27.702719</created_at>
-    <modified_at>2026-04-14T11:53:27.702722</modified_at>
+    <created_at>2026-04-15T12:25:55.466370</created_at>
+    <modified_at>2026-04-15T12:25:55.466370</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="1" name="F" type="hidden_state" description="Variational Free Energy (scalar)"/>

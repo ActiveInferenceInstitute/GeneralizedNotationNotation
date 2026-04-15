@@ -8,73 +8,96 @@ Response:
 
 ```python
 import json
-from collections import Counter
+from typing import List
 
-class SimpleMarkovChain:
+class SimpleMDP:
     def __init__(self):
-        self.states = {}
-        self.observations = {}
+        self._states = {}
 
-    def add_observation(self, observation):
-        if isinstance(observation, (int, float)):
-            if not self.states[observation]:
-                raise ValueError("Invalid observation")
+    def add(self, state1, state2):
+        """Add a new state to the system."""
+        if not isinstance(state1, (list, tuple)):
+            raise TypeError("State must be of type list or tuple")
 
-        self.states[observation] += 1
+        self.add_transition(state1)
+        self.add_transition(state2)
 
-    def add_state(self, state):
-        if not self.states:
-            raise ValueError("No states yet")
+    def add_transition(self, state):
+        """Add a transition from one state to another."""
+        if not isinstance(state, (list, tuple)):
+            raise TypeError("State must be of type list or tuple")
 
-        for key in self.states:
-            if isinstance(key, (int, float)):
-                if not self.states[key]:
-                    raise ValueError("Invalid state")
+        for i in range(len(state)):
+            self.add_transition([
+                [
+                    [
+                        [
+                            [
+                                [
+                                    [
+                                        [
+                                            [
+                                                [
+                                                    # Add a transition from state1 to state2.
+                                      # This is not allowed, as it would create an action-based transition
+                      ],
+                      ]],
+                     []]
+                  ]]
+              ]
+            ):
 
-            self.states[key] += 1
+    def add_transition(self, state):
+        """Add a transition from one state to another."""
+        if not isinstance(state, (list, tuple)):
+            raise TypeError("State must be of type list or tuple")
 
-    def add_observation(self):
-        if not self.states:
-            raise ValueError("No states yet")
+        for i in range(len(state)):
+            self.add_transition([
+                [
+                    [
+                      [
+                        [
+                            [
+                              # Add an action-based transition from state1 to state2
+                          ]],
+                     []]
+                  ]]
 
-        for key in self.states:
-            if isinstance(key, (int, float)):
-                if not self.states[key]:
-                    raise ValueError("Invalid observation")
+            )
 
-            self.states[key] += 1
+    def add_action(self, state):
+        """Add a transition from one state to another."""
+        if not isinstance(state, (list, tuple)):
+            raise TypeError("State must be of type list or tuple")
 
-    def add_observation_history(self):
-        if not self.states:
-            raise ValueError("No states yet")
+        for i in range(len(state)):
+            self.add_transition([
+                [
+                    [
+                      [
+                        [
+                            # Add an action-based transition from state1 to state2
+                          ]],
+                     []]
+                  ]]
 
-        for state in range(len(self.states) - 2):
-            nextstate = self.states[(state + 1)]
-            prevstate = self.states[nextstate]
+            )
 
-            if isinstance(prevstate, (int, float)):
-                if not self.states:
-                    raise ValueError("Invalid observation")
+    def add_action(self, state):
+        """Add a transition from one state to another."""
+        if not isinstance(state, (list, tuple)):
+            raise TypeError("State must be of type list or tuple")
 
-                for i in range(len(self.states) - 2):
-                    nextstate_history = self.states[(i + 1)]
+        for i in range(len(state)):
+            self.add_transition([
+                [
+                    [
+                      [
+                        [
+                            # Add an action-based transition from state1 to state2
+                          ]],
+                     []]
+                  ]]
 
-                    prevstate_history = self.states[nextstate_history]
-
-                    if isinstance(prevstate_history, (int, float)):
-                        if not self.states:
-                            raise ValueError("Invalid observation")
-
-                        for i in range(len(self.states) - 2):
-                            nextstate_history_history = self.states[(i + 1)]
-
-                            prevstate_history_history = self.states[nextstate_history]
-
-                            if isinstance(prevstate_history, (int, float)):
-                                if not self.states:
-                                    raise ValueError("Invalid observation")
-
-                            for i in range(len(self.states) - 2):
-                                nextstate_history_history = self.states[(i + 1)]
-
-                                prevstate_history_history = self
+            )

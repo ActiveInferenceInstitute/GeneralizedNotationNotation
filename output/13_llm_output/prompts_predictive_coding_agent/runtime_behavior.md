@@ -10,21 +10,15 @@ Response:
 import json
 from typing import List, Dict
 
-def predict(input: Dict[str, float], output: Dict[str, float]) -> dict:
-    """
-    Predicts a binary classification outcome based on input data.
+def predict(input: List[Dict[str, float]], prediction: Dict[str, float]) -> Dict[str, float]:
+    """Predicts a sequence of actions based on predictions.
 
     Args:
-        input (list): A list of input data points.
-        output (dict): A dictionary containing predicted outcomes for each input.
+        input (List[Dict[str, float]]): A list of predictions for each action.
+        prediction (Dict[str, float]): A dictionary containing the predicted action and its corresponding prediction error.
 
     Returns:
-        dict: A dictionary with the predicted outcomes as keys and values
+        Dict[str, float]: The predicted actions as a dictionary with keys 'action' and values 'error'.
     """
-    predictions = {}
-    for input_data in input["input"]:
-        prediction = predict(input, input)
-        if prediction is not None:
-            predictions[prediction] = {"label": "success"}
-    return predictions
+    # TODO(david) Implement this function to handle predictions in case of errors or incorrect input data.
 ```

@@ -8,66 +8,74 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from typing import List
 
 class BnlearnCausalModel:
-    """BBN learn model with Bayesian network and Causal Discovery mechanism."""
+    """BBN learn model with Bayesian network for causal discovery."""
 
     def __init__(self):
         self.s = {}
 
-        # Initialize hidden state
+        # Initialize the hidden state
         self.a = {}
-
-        # Initialize action map
         self.b = {}
-
-        # Initialization of actions
         self.c = {}
-
-        # Initialization of transitions
         self.d = {}
-
-        # Initialization of preferences
         self.e = {}
+        self.f = {}
+        self.g = {}
+        self.h = {}
 
-    def __init__(self):
-        """Initialize the Bayesian network."""
-        self._initialize_network()
+    def set_hidden(self, name: str):
+        """Set hidden state."""
 
-    def _initialize_network(self):
-        """Initialize the Bayesian network."""
-        for i in range(len(self.s)):
-            if isinstance(self.s[i], str) and len(str(self.s[i])) > 0:
-                self.s[i] = json.dumps(
-                    [json.loads("{}{}".format(x))
-                      for x in self.s[i]]
-                  )
+        if isinstance(name, str) and len(name) > 0:
+            self.__dict__.update({
+                "state": name[1:]
+            })
 
-            elif isinstance(self.a[i], str):
-                self.a[i] = json.dumps(
-                    [json.dumps({})
-                     for j in range(len(str(self.a[i])))]
-                   )
-            else:
-                self.b[i][0] = json.loads("{}{}".format(x))
+            # Set the action to be a transition from the previous state.
+            self._set_transition("action", name[2:])
 
-        # Initialize the action map
-        for i in range(len(self.s)):
-            if isinstance(self.s[i], str) and len(str(self.s[i])) > 0:
-                self.s[i].append(json.dumps({})).indent(' ')
+    def set_hidden_states(self, names):
+        """Set hidden states."""
 
-            elif isinstance(self.a[i], str):
-                self.b[i][1] = json.loads("{}{}".format(x))
+        for name in names:
+            if isinstance(name, str) and len(name) > 0:
+                self.__dict__.update({
+                    "state": name[1:]
+                })
 
-        # Initialize the preferences
-        for i in range(len(self.s)):
-            if isinstance(self.s[i], str) and len(str(self.s[i])) > 0:
-                self.d[i].append(json.dumps({})).indent(' ')
+            # Set the action to be a transition from the previous state.
+            self._set_transition("action", name[2:])
 
-            elif isinstance(self.a[i], str):
-                self.e[i][1] = json.loads("{}{}".format(x))
+    def set_hidden_states_with_actions(self, actions):
+        """Set hidden states with actions."""
 
-        # Initialize the transition map
-        for i in range(len(self.s)):
-            if isinstance(self.b[i], str) and len(str
+        for name in actions:
+            if isinstance(name, str) and len(name) > 0:
+                self.__dict__.update({
+                    "state": name[1:]
+                })
+
+            # Set the action to be a transition from the previous state.
+            self._set_transition("action", name[2:])
+
+    def set_hidden_states_with_actions_and_prior(self, actions):
+        """Set hidden states with actions and prior."""
+
+        for name in actions:
+            if isinstance(name, str) and len(name) > 0:
+                self.__dict__.update({
+                    "state": name[1:]
+                })
+
+            # Set the action to be a transition from the previous state.
+            self._set_transition("action", name[2:])
+
+    def set_hidden_states_with_actions_and_prior(self, actions):
+        """Set hidden states with actions and prior."""
+
+        for name in actions:
+            if isinstance(name, str) and len(name) > 0:
+                self.__dict__.update({

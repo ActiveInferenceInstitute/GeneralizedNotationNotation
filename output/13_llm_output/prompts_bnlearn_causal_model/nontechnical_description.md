@@ -10,67 +10,18 @@ Response:
 import json
 from typing import List, Dict
 
-def gnn(input: str) -> Dict[str, float]:
-    """GNN model implementation."""
+def generate_bio(node: dict) -> List[Dict]:
+    """Generate BioInfo object from a graph."""
 
-    # Create a Bayesian Network (BN) from the input data.
-    bn = bnlearn_network()
-    
-    # Create a GNN object with the given parameters
-    gnn_model = bn.create_gnn(input=input)
-    
-    # Initialize an initial parameterization and initialize all nodes in the network
-    for node, action in bn.get_actions():
-        # Set the initial state to the current observation
-        if isinstance(node, str):
-            node['action'] = 'Action'
-        
-        # Set the transition operator to be a transition operator with probability 0.9
-        # (i.e., the first time it is applied)
-        if isinstance(node, str):
-            node_probabilities = {
-                's': [
-                    {'state': input[0], 'action': action},
-                    {'state': input[1], 'action': action} 
-                ] 
-            }
-        
-        else:
-            # Set the initial state to the current observation
-            if isinstance(node, str):
-                node['state'] = input[0]
-            
-            # Set the transition operator to be a transition operator with probability 0.9
-            # (i.e., the first time it is applied)
-            if isinstance(node, str):
-                node_probabilities = {
-                    's': [
-                        {'state': input[1], 'action': action} 
-                    ] 
-                }
-        
-        for key in node['actions']:
-            # Set the initial state to the current observation
-            if isinstance(key, str):
-                key.append('S')
-            
-            # Set the transition operator to be a transition operator with probability 0.9
-            # (i.e., the first time it is applied)
-            if isinstance(key, str):
-                node_probabilities[
-                    {'state': input[1], 'action': action} 
-                ] = {
-                    's': [
-                        {'state': input[2], 'action': action} 
-                    ] 
-                }
-        
-        # Set the initial state to the current observation
-        if isinstance(node['actions'], list):
-            for key in node['actions']:
-                # Set the initial state to the current observation
-                if isinstance(key, str):
-                    key.append('S')
-            
-            # Set the transition operator to be a transition operator with probability 0.9
-            #
+    bio = {}
+    for node in node.keys():
+        if isinstance(node, dict):
+            bio += generate_bio([dict(node)] + [generate_bio([{}])for _ in range(len(node))])
+
+        elif isinstance(node, list) and len(node) > 0:
+            bio = generate_bio([{
+                node[key]: generate_bio([{}] for _ in range(len(node))] + [generate_bio([{}])for _ in range(len(node)))
+            })
+
+    return bio
+```

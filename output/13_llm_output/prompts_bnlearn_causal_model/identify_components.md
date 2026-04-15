@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Here is a systematic breakdown of the information in the document:
+Based on the provided information, here is a systematic breakdown of the active inference mechanism:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions
@@ -30,4 +30,4 @@ Here is a systematic breakdown of the information in the document:
 
 6. **Temporal Structure**:
    - Time horizons and temporal dependencies
-   - Dynamic versus static components
+   - Dynamic vs. static components

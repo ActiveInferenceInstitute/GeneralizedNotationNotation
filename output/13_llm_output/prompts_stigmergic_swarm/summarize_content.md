@@ -1,7 +1,5 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise overview of the GNN specification:
-
 ```json
 {
   "processed_files": [

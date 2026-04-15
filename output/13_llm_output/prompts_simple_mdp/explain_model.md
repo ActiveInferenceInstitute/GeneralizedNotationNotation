@@ -1,27 +1,31 @@
 # EXPLAIN_MODEL
 
-You've already covered the key points:
+This document provides a comprehensive explanation of the GNN (Generalized Notation Notation) specification and its application to a simple MDP agent. It covers:
 
-1. **Model Purpose**: This is a simple MDP agent that represents a fully observable Markov Decision Process (MDP). It's designed to test the performance of an active inference model on a specific problem domain, which is the case here with the Simple MDP Agent.
+1. **Model Purpose**: The model represents a fully observable Markov Decision Process (MDP).
 
 2. **Core Components**:
-   - **hidden states** represent the grid positions where the agent can move and observe its own state.
-   - **observations** are identical to the current state in the MDP.
-   - **actions** are actions taken by the agent based on their policy.
-   - **preferences** are preferences for each action, which are used to update beliefs about future states.
+   - **Hidden states** represent each state in the MDP, which are represented by 4 matrices (`A`, `B`) and `C`. These represent the actions of the agent.
+   - **Observable states** represent each observation in the MDP (e.g., the current state).
+   - **Actions** represent the policy of the agent that takes a specific action, which is represented by 4 matrices (`π`, `G`) and `D` respectively.
+   - **Initialization**: The model initializes itself with identity matrix values for each hidden state and actions.
 
-3. **Model Dynamics**: The model evolves over time using a Markov Decision Process (MDP) framework. It updates its belief in order to predict the next state and actions of the agent based on their policy. This process is described by the following equations:
-   - **log(G)** = log(ln(A[o,:]) + log(ln(B[s_prev] @ pi))
-   - **log(π)** = log(ln(C[θ]) + log(ln(D[θ])) + log(1/n) * log(g(pi)))
+3. **Model Dynamics**: The model evolves over time based on its beliefs about the current state and observations of the agent's actions. It updates these beliefs using a policy vector (`A`) and an action vector (`B`).
 
-4. **Active Inference Context**: The agent learns from its own beliefs and actions based on the policy it uses to make decisions in the MDP. This context is described by the following equations:
-   - **log(G)** = log(ln(A[o,:]) + log(ln(B[s_prev] @ pi))
+4. **Active Inference**: The model performs active inference, updating its beliefs based on the observed data to make predictions about future states and actions.
 
-   - **log(π)** = log(ln(C[θ]) + log(ln(D[θ])) + log(1/n) * log(g(pi)))
+5. **Practical Implications**: The GNN agent can learn from past observations of the MDP's state-action relationships, making decisions in uncertain environments. It also predicts future outcomes based on current knowledge and policy updates.
 
-5. **Practical Implications**: The model can learn to predict the next state and actions of the agent based on its beliefs about future states, which is described by the following equations:
-   - **log(G)** = log(ln(A[o,:]) + log(ln(B[s_prev] @ pi))
+Please provide clear explanations that cover:
 
-   - **log(π)** = log(ln(C[θ]) + log(ln(D[θ])) + log(1/n) * log(g(pi)))
+1. **Model Purpose**: What real-world phenomenon or problem does this model represent?
 
-6. **Decision-Making**: The agent can make decisions based on its policy and actions, which are
+2. **Core Components**: 
+   - **Hidden states** represent each state in the MDP, which are represented by 4 matrices (`A`, `B`) and `C`. These represent the actions of the agent.
+   - **Observable states** represent each observation in the MDP (e.g., the current state).
+   - **Actions** represent the policy of the agent that takes a specific action, which is represented by 4 matrices (`π`, `G`) and `D` respectively.
+   - **Initialization**: The model initializes itself with identity matrix values for each hidden state and actions.
+
+3. **Model Dynamics**: The model evolves over time based on its beliefs about the current state and observations of the agent's actions. It updates these beliefs using a policy vector (`A`) and an action vector (`B`).
+
+4

@@ -1,14 +1,14 @@
 # GNN Script Execution Report
 
-**Generated:** 2026-04-14T11:53:48.813243
+**Generated:** 2026-04-15T12:26:36.160707
 **Target Directory:** input/gnn_files/discrete
 **Output Directory:** output/12_execute_output
 
 ## Summary
 
 - **Total Scripts Found:** 72
-- **Successful Executions:** 54
-- **Failed Executions:** 18
+- **Successful Executions:** 72
+- **Failed Executions:** 0
 
 ## Execution Details
 
@@ -18,7 +18,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/markov_chain/numpyro/Simple Markov Chain_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 1.19 seconds
+- **Execution Time:** 0.72 seconds
 - **Detailed Output:** output/12_execute_output/markov_chain/numpyro/execution_logs/Simple Markov Chain_numpyro.py_execution.log
 
 ### Simple Markov Chain_pymdp.py - ✅ SUCCESS
@@ -27,7 +27,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 3.07 seconds
+- **Execution Time:** 2.72 seconds
 - **Detailed Output:** output/12_execute_output/markov_chain/pymdp/execution_logs/Simple Markov Chain_pymdp.py_execution.log
 
 ### Simple Markov Chain_pytorch.py - ✅ SUCCESS
@@ -45,7 +45,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/markov_chain/jax/Simple Markov Chain_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 0.70 seconds
+- **Execution Time:** 0.67 seconds
 - **Detailed Output:** output/12_execute_output/markov_chain/jax/execution_logs/Simple Markov Chain_jax.py_execution.log
 
 ### Simple Markov Chain_discopy.py - ✅ SUCCESS
@@ -54,7 +54,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.26 seconds
+- **Execution Time:** 0.24 seconds
 - **Detailed Output:** output/12_execute_output/markov_chain/discopy/execution_logs/Simple Markov Chain_discopy.py_execution.log
 
 ### Simple Markov Chain_bnlearn.py - ✅ SUCCESS
@@ -63,7 +63,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/markov_chain/bnlearn/Simple Markov Chain_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 2.29 seconds
+- **Execution Time:** 2.08 seconds
 - **Detailed Output:** output/12_execute_output/markov_chain/bnlearn/execution_logs/Simple Markov Chain_bnlearn.py_execution.log
 
 ### Deep Planning Horizon POMDP_numpyro.py - ✅ SUCCESS
@@ -72,7 +72,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/deep_planning_horizon/numpyro/Deep Planning Horizon POMDP_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.75 seconds
+- **Execution Time:** 0.72 seconds
 - **Detailed Output:** output/12_execute_output/deep_planning_horizon/numpyro/execution_logs/Deep Planning Horizon POMDP_numpyro.py_execution.log
 
 ### Deep Planning Horizon POMDP_pymdp.py - ✅ SUCCESS
@@ -81,7 +81,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.90 seconds
+- **Execution Time:** 2.71 seconds
 - **Detailed Output:** output/12_execute_output/deep_planning_horizon/pymdp/execution_logs/Deep Planning Horizon POMDP_pymdp.py_execution.log
 
 ### Deep Planning Horizon POMDP_pytorch.py - ✅ SUCCESS
@@ -90,7 +90,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py`
 - **Return Code:** 0
-- **Execution Time:** 0.51 seconds
+- **Execution Time:** 0.46 seconds
 - **Detailed Output:** output/12_execute_output/deep_planning_horizon/pytorch/execution_logs/Deep Planning Horizon POMDP_pytorch.py_execution.log
 
 ### Deep Planning Horizon POMDP_jax.py - ✅ SUCCESS
@@ -99,7 +99,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/deep_planning_horizon/jax/Deep Planning Horizon POMDP_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 0.74 seconds
+- **Execution Time:** 0.69 seconds
 - **Detailed Output:** output/12_execute_output/deep_planning_horizon/jax/execution_logs/Deep Planning Horizon POMDP_jax.py_execution.log
 
 ### Deep Planning Horizon POMDP_discopy.py - ✅ SUCCESS
@@ -108,7 +108,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.25 seconds
+- **Execution Time:** 0.24 seconds
 - **Detailed Output:** output/12_execute_output/deep_planning_horizon/discopy/execution_logs/Deep Planning Horizon POMDP_discopy.py_execution.log
 
 ### Deep Planning Horizon POMDP_bnlearn.py - ✅ SUCCESS
@@ -117,7 +117,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/deep_planning_horizon/bnlearn/Deep Planning Horizon POMDP_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 2.04 seconds
+- **Execution Time:** 2.01 seconds
 - **Detailed Output:** output/12_execute_output/deep_planning_horizon/bnlearn/execution_logs/Deep Planning Horizon POMDP_bnlearn.py_execution.log
 
 ### Hidden Markov Model Baseline_numpyro.py - ✅ SUCCESS
@@ -126,7 +126,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.87 seconds
+- **Execution Time:** 0.81 seconds
 - **Detailed Output:** output/12_execute_output/hmm_baseline/numpyro/execution_logs/Hidden Markov Model Baseline_numpyro.py_execution.log
 
 ### Hidden Markov Model Baseline_pymdp.py - ✅ SUCCESS
@@ -135,7 +135,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 3.23 seconds
+- **Execution Time:** 3.04 seconds
 - **Detailed Output:** output/12_execute_output/hmm_baseline/pymdp/execution_logs/Hidden Markov Model Baseline_pymdp.py_execution.log
 
 ### Hidden Markov Model Baseline_pytorch.py - ✅ SUCCESS
@@ -153,7 +153,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 0.80 seconds
+- **Execution Time:** 0.79 seconds
 - **Detailed Output:** output/12_execute_output/hmm_baseline/jax/execution_logs/Hidden Markov Model Baseline_jax.py_execution.log
 
 ### Hidden Markov Model Baseline_discopy.py - ✅ SUCCESS
@@ -162,7 +162,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.24 seconds
+- **Execution Time:** 0.25 seconds
 - **Detailed Output:** output/12_execute_output/hmm_baseline/discopy/execution_logs/Hidden Markov Model Baseline_discopy.py_execution.log
 
 ### Hidden Markov Model Baseline_bnlearn.py - ✅ SUCCESS
@@ -171,7 +171,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/hmm_baseline/bnlearn/Hidden Markov Model Baseline_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 1.99 seconds
+- **Execution Time:** 2.03 seconds
 - **Detailed Output:** output/12_execute_output/hmm_baseline/bnlearn/execution_logs/Hidden Markov Model Baseline_bnlearn.py_execution.log
 
 ### Active Inference POMDP Agent_numpyro.py - ✅ SUCCESS
@@ -180,7 +180,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.72 seconds
+- **Execution Time:** 0.74 seconds
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/numpyro/execution_logs/Active Inference POMDP Agent_numpyro.py_execution.log
 
 ### Active Inference POMDP Agent_pymdp.py - ✅ SUCCESS
@@ -189,7 +189,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.80 seconds
+- **Execution Time:** 3.17 seconds
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log
 
 ### Active Inference POMDP Agent_pytorch.py - ✅ SUCCESS
@@ -225,7 +225,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/actinf_pomdp_agent/bnlearn/Active Inference POMDP Agent_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 2.08 seconds
+- **Execution Time:** 2.04 seconds
 - **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/bnlearn/execution_logs/Active Inference POMDP Agent_bnlearn.py_execution.log
 
 ### Multi Armed Bandit Agent_numpyro.py - ✅ SUCCESS
@@ -234,7 +234,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.73 seconds
+- **Execution Time:** 0.71 seconds
 - **Detailed Output:** output/12_execute_output/multi_armed_bandit/numpyro/execution_logs/Multi Armed Bandit Agent_numpyro.py_execution.log
 
 ### Multi Armed Bandit Agent_pymdp.py - ✅ SUCCESS
@@ -243,7 +243,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.87 seconds
+- **Execution Time:** 2.82 seconds
 - **Detailed Output:** output/12_execute_output/multi_armed_bandit/pymdp/execution_logs/Multi Armed Bandit Agent_pymdp.py_execution.log
 
 ### Multi Armed Bandit Agent_pytorch.py - ✅ SUCCESS
@@ -252,7 +252,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py`
 - **Return Code:** 0
-- **Execution Time:** 0.50 seconds
+- **Execution Time:** 0.49 seconds
 - **Detailed Output:** output/12_execute_output/multi_armed_bandit/pytorch/execution_logs/Multi Armed Bandit Agent_pytorch.py_execution.log
 
 ### Multi Armed Bandit Agent_jax.py - ✅ SUCCESS
@@ -261,7 +261,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/multi_armed_bandit/jax/Multi Armed Bandit Agent_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 0.69 seconds
+- **Execution Time:** 0.73 seconds
 - **Detailed Output:** output/12_execute_output/multi_armed_bandit/jax/execution_logs/Multi Armed Bandit Agent_jax.py_execution.log
 
 ### Multi Armed Bandit Agent_discopy.py - ✅ SUCCESS
@@ -279,7 +279,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/multi_armed_bandit/bnlearn/Multi Armed Bandit Agent_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 1.97 seconds
+- **Execution Time:** 2.03 seconds
 - **Detailed Output:** output/12_execute_output/multi_armed_bandit/bnlearn/execution_logs/Multi Armed Bandit Agent_bnlearn.py_execution.log
 
 ### T-Maze Epistemic Foraging Agent_numpyro.py - ✅ SUCCESS
@@ -288,7 +288,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/tmaze_epistemic/numpyro/T-Maze Epistemic Foraging Agent_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.73 seconds
+- **Execution Time:** 0.74 seconds
 - **Detailed Output:** output/12_execute_output/tmaze_epistemic/numpyro/execution_logs/T-Maze Epistemic Foraging Agent_numpyro.py_execution.log
 
 ### T-Maze Epistemic Foraging Agent_pymdp.py - ✅ SUCCESS
@@ -297,7 +297,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/tmaze_epistemic/pymdp/T-Maze Epistemic Foraging Agent_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.86 seconds
+- **Execution Time:** 2.76 seconds
 - **Detailed Output:** output/12_execute_output/tmaze_epistemic/pymdp/execution_logs/T-Maze Epistemic Foraging Agent_pymdp.py_execution.log
 
 ### T-Maze Epistemic Foraging Agent_pytorch.py - ✅ SUCCESS
@@ -306,7 +306,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/tmaze_epistemic/pytorch/T-Maze Epistemic Foraging Agent_pytorch.py`
 - **Return Code:** 0
-- **Execution Time:** 0.46 seconds
+- **Execution Time:** 0.47 seconds
 - **Detailed Output:** output/12_execute_output/tmaze_epistemic/pytorch/execution_logs/T-Maze Epistemic Foraging Agent_pytorch.py_execution.log
 
 ### T-Maze Epistemic Foraging Agent_jax.py - ✅ SUCCESS
@@ -333,7 +333,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/tmaze_epistemic/bnlearn/T-Maze Epistemic Foraging Agent_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 1.98 seconds
+- **Execution Time:** 2.05 seconds
 - **Detailed Output:** output/12_execute_output/tmaze_epistemic/bnlearn/execution_logs/T-Maze Epistemic Foraging Agent_bnlearn.py_execution.log
 
 ### Bnlearn Causal Model_numpyro.py - ✅ SUCCESS
@@ -342,7 +342,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/bnlearn_causal_model/numpyro/Bnlearn Causal Model_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.64 seconds
+- **Execution Time:** 0.62 seconds
 - **Detailed Output:** output/12_execute_output/bnlearn_causal_model/numpyro/execution_logs/Bnlearn Causal Model_numpyro.py_execution.log
 
 ### Bnlearn Causal Model_pymdp.py - ✅ SUCCESS
@@ -351,7 +351,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/bnlearn_causal_model/pymdp/Bnlearn Causal Model_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.91 seconds
+- **Execution Time:** 2.68 seconds
 - **Detailed Output:** output/12_execute_output/bnlearn_causal_model/pymdp/execution_logs/Bnlearn Causal Model_pymdp.py_execution.log
 
 ### Bnlearn Causal Model_pytorch.py - ✅ SUCCESS
@@ -360,7 +360,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/bnlearn_causal_model/pytorch/Bnlearn Causal Model_pytorch.py`
 - **Return Code:** 0
-- **Execution Time:** 0.47 seconds
+- **Execution Time:** 0.48 seconds
 - **Detailed Output:** output/12_execute_output/bnlearn_causal_model/pytorch/execution_logs/Bnlearn Causal Model_pytorch.py_execution.log
 
 ### Bnlearn Causal Model_jax.py - ✅ SUCCESS
@@ -369,7 +369,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/bnlearn_causal_model/jax/Bnlearn Causal Model_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 0.66 seconds
+- **Execution Time:** 0.65 seconds
 - **Detailed Output:** output/12_execute_output/bnlearn_causal_model/jax/execution_logs/Bnlearn Causal Model_jax.py_execution.log
 
 ### Bnlearn Causal Model_discopy.py - ✅ SUCCESS
@@ -387,7 +387,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/bnlearn_causal_model/bnlearn/Bnlearn Causal Model_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 2.01 seconds
+- **Execution Time:** 2.04 seconds
 - **Detailed Output:** output/12_execute_output/bnlearn_causal_model/bnlearn/execution_logs/Bnlearn Causal Model_bnlearn.py_execution.log
 
 ### Two State Bistable POMDP_numpyro.py - ✅ SUCCESS
@@ -396,7 +396,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/two_state_bistable/numpyro/Two State Bistable POMDP_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.63 seconds
+- **Execution Time:** 0.62 seconds
 - **Detailed Output:** output/12_execute_output/two_state_bistable/numpyro/execution_logs/Two State Bistable POMDP_numpyro.py_execution.log
 
 ### Two State Bistable POMDP_pymdp.py - ✅ SUCCESS
@@ -405,7 +405,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.80 seconds
+- **Execution Time:** 2.59 seconds
 - **Detailed Output:** output/12_execute_output/two_state_bistable/pymdp/execution_logs/Two State Bistable POMDP_pymdp.py_execution.log
 
 ### Two State Bistable POMDP_pytorch.py - ✅ SUCCESS
@@ -423,7 +423,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/two_state_bistable/jax/Two State Bistable POMDP_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 0.66 seconds
+- **Execution Time:** 0.68 seconds
 - **Detailed Output:** output/12_execute_output/two_state_bistable/jax/execution_logs/Two State Bistable POMDP_jax.py_execution.log
 
 ### Two State Bistable POMDP_discopy.py - ✅ SUCCESS
@@ -432,7 +432,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.25 seconds
+- **Execution Time:** 0.24 seconds
 - **Detailed Output:** output/12_execute_output/two_state_bistable/discopy/execution_logs/Two State Bistable POMDP_discopy.py_execution.log
 
 ### Two State Bistable POMDP_bnlearn.py - ✅ SUCCESS
@@ -441,7 +441,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/two_state_bistable/bnlearn/Two State Bistable POMDP_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 2.00 seconds
+- **Execution Time:** 1.96 seconds
 - **Detailed Output:** output/12_execute_output/two_state_bistable/bnlearn/execution_logs/Two State Bistable POMDP_bnlearn.py_execution.log
 
 ### Simple MDP Agent_numpyro.py - ✅ SUCCESS
@@ -450,7 +450,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py`
 - **Return Code:** 0
-- **Execution Time:** 0.72 seconds
+- **Execution Time:** 0.81 seconds
 - **Detailed Output:** output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log
 
 ### Simple MDP Agent_pymdp.py - ✅ SUCCESS
@@ -459,7 +459,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.77 seconds
+- **Execution Time:** 2.73 seconds
 - **Detailed Output:** output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple MDP Agent_pymdp.py_execution.log
 
 ### Simple MDP Agent_pytorch.py - ✅ SUCCESS
@@ -468,7 +468,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py`
 - **Return Code:** 0
-- **Execution Time:** 0.49 seconds
+- **Execution Time:** 0.46 seconds
 - **Detailed Output:** output/12_execute_output/simple_mdp/pytorch/execution_logs/Simple MDP Agent_pytorch.py_execution.log
 
 ### Simple MDP Agent_jax.py - ✅ SUCCESS
@@ -486,7 +486,7 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 0.25 seconds
+- **Execution Time:** 0.24 seconds
 - **Detailed Output:** output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_execution.log
 
 ### Simple MDP Agent_bnlearn.py - ✅ SUCCESS
@@ -495,175 +495,172 @@
 - **Executor:** /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/simple_mdp/bnlearn/Simple MDP Agent_bnlearn.py`
 - **Return Code:** 0
-- **Execution Time:** 1.99 seconds
+- **Execution Time:** 1.97 seconds
 - **Detailed Output:** output/12_execute_output/simple_mdp/bnlearn/execution_logs/Simple MDP Agent_bnlearn.py_execution.log
 
-### Simple Markov Chain_rxinfer.jl - ❌ FAILED
+### Simple Markov Chain_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 70.84 seconds
+- **Detailed Output:** output/12_execute_output/markov_chain/rxinfer/execution_logs/Simple Markov Chain_rxinfer.jl_execution.log
 
-### Simple Markov Chain_activeinference.jl - ❌ FAILED
+### Simple Markov Chain_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/markov_chain/activeinference_jl/Simple Markov Chain_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.18 seconds
+- **Detailed Output:** output/12_execute_output/markov_chain/activeinference_jl/execution_logs/Simple Markov Chain_activeinference.jl_execution.log
 
-### Deep Planning Horizon POMDP_rxinfer.jl - ❌ FAILED
+### Deep Planning Horizon POMDP_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.56 seconds
+- **Detailed Output:** output/12_execute_output/deep_planning_horizon/rxinfer/execution_logs/Deep Planning Horizon POMDP_rxinfer.jl_execution.log
 
-### Deep Planning Horizon POMDP_activeinference.jl - ❌ FAILED
+### Deep Planning Horizon POMDP_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/deep_planning_horizon/activeinference_jl/Deep Planning Horizon POMDP_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 14.01 seconds
+- **Detailed Output:** output/12_execute_output/deep_planning_horizon/activeinference_jl/execution_logs/Deep Planning Horizon POMDP_activeinference.jl_execution.log
 
-### Hidden Markov Model Baseline_rxinfer.jl - ❌ FAILED
+### Hidden Markov Model Baseline_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.82 seconds
+- **Detailed Output:** output/12_execute_output/hmm_baseline/rxinfer/execution_logs/Hidden Markov Model Baseline_rxinfer.jl_execution.log
 
-### Hidden Markov Model Baseline_activeinference.jl - ❌ FAILED
+### Hidden Markov Model Baseline_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/hmm_baseline/activeinference_jl/Hidden Markov Model Baseline_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 10.67 seconds
+- **Detailed Output:** output/12_execute_output/hmm_baseline/activeinference_jl/execution_logs/Hidden Markov Model Baseline_activeinference.jl_execution.log
 
-### Active Inference POMDP Agent_rxinfer.jl - ❌ FAILED
+### Active Inference POMDP Agent_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.66 seconds
+- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log
 
-### Active Inference POMDP Agent_activeinference.jl - ❌ FAILED
+### Active Inference POMDP Agent_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 14.17 seconds
+- **Detailed Output:** output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log
 
-### Multi Armed Bandit Agent_rxinfer.jl - ❌ FAILED
+### Multi Armed Bandit Agent_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/multi_armed_bandit/rxinfer/Multi Armed Bandit Agent_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.89 seconds
+- **Detailed Output:** output/12_execute_output/multi_armed_bandit/rxinfer/execution_logs/Multi Armed Bandit Agent_rxinfer.jl_execution.log
 
-### Multi Armed Bandit Agent_activeinference.jl - ❌ FAILED
+### Multi Armed Bandit Agent_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/multi_armed_bandit/activeinference_jl/Multi Armed Bandit Agent_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 14.43 seconds
+- **Detailed Output:** output/12_execute_output/multi_armed_bandit/activeinference_jl/execution_logs/Multi Armed Bandit Agent_activeinference.jl_execution.log
 
-### T-Maze Epistemic Foraging Agent_rxinfer.jl - ❌ FAILED
+### T-Maze Epistemic Foraging Agent_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/tmaze_epistemic/rxinfer/T-Maze Epistemic Foraging Agent_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.57 seconds
+- **Detailed Output:** output/12_execute_output/tmaze_epistemic/rxinfer/execution_logs/T-Maze Epistemic Foraging Agent_rxinfer.jl_execution.log
 
-### T-Maze Epistemic Foraging Agent_activeinference.jl - ❌ FAILED
+### T-Maze Epistemic Foraging Agent_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/tmaze_epistemic/activeinference_jl/T-Maze Epistemic Foraging Agent_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 10.43 seconds
+- **Detailed Output:** output/12_execute_output/tmaze_epistemic/activeinference_jl/execution_logs/T-Maze Epistemic Foraging Agent_activeinference.jl_execution.log
 
-### Bnlearn Causal Model_rxinfer.jl - ❌ FAILED
+### Bnlearn Causal Model_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/bnlearn_causal_model/rxinfer/Bnlearn Causal Model_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.66 seconds
+- **Detailed Output:** output/12_execute_output/bnlearn_causal_model/rxinfer/execution_logs/Bnlearn Causal Model_rxinfer.jl_execution.log
 
-### Bnlearn Causal Model_activeinference.jl - ❌ FAILED
+### Bnlearn Causal Model_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/bnlearn_causal_model/activeinference_jl/Bnlearn Causal Model_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 14.14 seconds
+- **Detailed Output:** output/12_execute_output/bnlearn_causal_model/activeinference_jl/execution_logs/Bnlearn Causal Model_activeinference.jl_execution.log
 
-### Two State Bistable POMDP_rxinfer.jl - ❌ FAILED
+### Two State Bistable POMDP_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.96 seconds
+- **Detailed Output:** output/12_execute_output/two_state_bistable/rxinfer/execution_logs/Two State Bistable POMDP_rxinfer.jl_execution.log
 
-### Two State Bistable POMDP_activeinference.jl - ❌ FAILED
+### Two State Bistable POMDP_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/two_state_bistable/activeinference_jl/Two State Bistable POMDP_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 14.34 seconds
+- **Detailed Output:** output/12_execute_output/two_state_bistable/activeinference_jl/execution_logs/Two State Bistable POMDP_activeinference.jl_execution.log
 
-### Simple MDP Agent_rxinfer.jl - ❌ FAILED
+### Simple MDP Agent_rxinfer.jl - ✅ SUCCESS
 
 - **Framework:** rxinfer
 - **Executor:** julia
 - **Path:** `output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 13.76 seconds
+- **Detailed Output:** output/12_execute_output/simple_mdp/rxinfer/execution_logs/Simple MDP Agent_rxinfer.jl_execution.log
 
-### Simple MDP Agent_activeinference.jl - ❌ FAILED
+### Simple MDP Agent_activeinference.jl - ✅ SUCCESS
 
 - **Framework:** activeinference_jl
 - **Executor:** julia
 - **Path:** `output/11_render_output/simple_mdp/activeinference_jl/Simple MDP Agent_activeinference.jl`
-- **Return Code:** None
-- **Execution Time:** 0.00 seconds
-- **Error:** Executor 'julia' is not available or not working: [Errno 2] No such file or directory: 'julia'
+- **Return Code:** 0
+- **Execution Time:** 14.06 seconds
+- **Detailed Output:** output/12_execute_output/simple_mdp/activeinference_jl/execution_logs/Simple MDP Agent_activeinference.jl_execution.log
 
 ## Next Steps
 
-1. Review failed executions above
-2. Check individual output files for detailed error information
-3. Ensure required dependencies are installed
-4. Verify script syntax and functionality
+All scripts executed successfully! Check individual output files for results.
 

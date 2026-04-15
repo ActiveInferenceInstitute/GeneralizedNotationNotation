@@ -1,53 +1,84 @@
 # EXTRACT_PARAMETERS
 
-Based on the information provided, here are the key parameters for the GNN implementation:
+Based on the provided documentation, here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices with dimensions of 4x3 and shape (6, 2)
-   - B matrices with dimensions of 4x4 and shape (6, 2)
-   - C matrices with dimensions of 4x4 and shape (6, 2)
-   - D matrices with dimensions of 4x4 and shape (6, 2)
+   - A matrices representing the model matrix and its structure (e.g., 4x4)
+   - B matrices representing the transition matrix and its structure (e.g., 6x6)
+   - C matrices representing the action matrix and its structure (e.g., 10x10)
 
 2. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.37
+   - γ: precision parameters for each factor
+   - α: learning rates and adaptation parameters
    - Other precision/confidence parameters
 
-Here are the parameter breakdowns:
+3. **Dimensional Parameters**:
+   - State space dimensions for each modality
+   - Observation space dimensions for each control variable
+   - Action space dimensions for each control variable
 
-1. **Model Matrices**:
-   - A matrices with dimensions of 4x3 and shape (6, 2)
-   - B matrices with dimensions of 4x4 and shape (6, 2)
-   - C matrices with dimensions of 4x4 and shape (6, 2)
-   - D matrices with dimensions of 4x4 and shape (6, 2)
+4. **Temporal Parameters**:
+   - Time horizons (T)
+   - Temporal dependencies and windows
+   - Update frequencies and timescales
 
-2. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.37
-   - Other precision/confidence parameters
+5. **Initial Conditions**:
+   - Prior beliefs over initial states
+   - Initial parameter values
+   - Initialization strategies
 
-Here are the parameter breakdowns:
+6. **Configuration Summary**:
+   - Parameter file format recommendations for each parameter type:
+     - Initial conditions
+     - Initial parameters (initializations)
+     - Configuration summary
 
-1. **Model Matrices**:
-   - A matrices with dimensions of 4x3 and shape (6, 2)
-   - B matrices with dimensions of 4x4 and shape (6, 2)
-   - C matrices with dimensions of 4x4 and shape (6, 2)
-   - D matrices with dimensions of 4x4 and shape (6, 2)
-
-2. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.37
-   - Other precision/confidence parameters
-
-Here are the parameter breakdowns:
-
-1. **Model Matrices**:
-   - A matrices with dimensions of 4x3 and shape (6, 2)
-   - B matrices with dimensions of 4x4 and shape (6, 2)
-   - C matrices with dimensions of 4x4 and shape (6, 2)
-   - D matrices with dimensions of 4x4 and shape (6, 2)
-
-2. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.37
-   - Other precision/confidence parameters
+Here are the key parameters and their corresponding descriptions in JSON format:
+```json
+{
+  "model_matrices": {
+    "A": [
+      {
+        "name": "statespace",
+        "dimensions": 4,
+        "structure": 6,
+        "interpretation": "states"
+      },
+      {
+        "name": "observation",
+        "dimensions": 10,
+        "structure": 32,
+        "interpretation": "observations"
+      }
+    ],
+    "gamma": [
+      {
+        "name": "precision_parameters",
+        "dimension": 4,
+        "shape": (6,)
+      },
+      {
+        "name": "bias_parameters",
+        "dimension": 10,
+        "shape": (32,)
+      }
+    ]
+  },
+  "precision_params": [
+    {
+      "name": "precision_parameters",
+      "dimensions": 4,
+      "structure": 6,
+      "interpretation": "prior"
+    },
+    {
+      "name": "bias_parameters",
+      "dimension": 10,
+      "shape": (32,)
+    }
+  ],
+  "confidence_params": [
+    {
+      "name": "confidence_parameters",
+      "dimensions": 4,
+     

@@ -1,20 +1,32 @@
 # EXPLAIN_MODEL
 
-This is a comprehensive outline of the GNN (Generalized Notation Notation) specification and its application to a simple neural network model. The document provides an overview of the key components, core concepts, and practical implications for active inference on top of this model.
+This GNN implementation represents a minimal 2x2x2 POMDP with no bias towards one side of the action space and no habit biases. It performs Bayesian inference on the observed data to update beliefs about the actions taken by the agent. The model is composed of two main components:
 
-**Model Purpose**: This section describes what the model represents: A 2x2x2 POMDP with no noise or bias. It also explains how it learns from data and updates beliefs based on actions and control inputs. The document provides a clear explanation of the key relationships between hidden states, observations, actions, and control variables.
+1. **hidden states**: "left" and "right". These represent the current state-of-the-world (SOTW) for each observation.
 
-**Core Components**: 
-1. **Hidden States (s_f0, s_f1)**: These represent the current state of the network, which can be thought of as a set of possible outcomes for each observation. The `hidden_states` are represented by a 2x2 matrix called `A`.
+2. **actions**: Push_left/Push_right, which are actions that move from one side to the other.
 
-2. **Observations (o_m0, o_m1)**: These represent the actions and control inputs to the network. The `observations` are represented as a set of possible outcomes for each observation.
+The model updates its beliefs based on a Bayesian inference of the observed data and action sequences. The policy is chosen based on the current state-of-the-world (SOTW) for each observation. The agent prefers observation 1 ("left") over observation 0 ("right").
 
-3. **Actions**: These represent the policy updates made by the network based on its current state beliefs. The `actions` are represented as a 2x2 matrix called `B`.
+1. **Initialization**: The model initializes the hidden states with a random value, which represents the current state of the POMDP.
 
-4. **Habit**: This represents the action-dependent transitions from one observation to another. It is represented as a set of possible actions for each observation, and it can be thought of as a sequence of actions that move the network towards its goal state.
+2. **Action selection**: The policy is chosen based on the current SOTW for each observation. This action sequence is then applied to all observations in order to update their beliefs about the actions taken by the agent.
 
-**Model Dynamics**: The model learns from data by updating beliefs based on actions and control inputs. This process involves learning a mapping between hidden states and observable outcomes, which allows the network to learn patterns in the data. The model also updates beliefs based on predictions made by the network, allowing it to make decisions about what actions are available for each observation.
+The model performs Bayesian inference and updates its beliefs using a probabilistic graphical model (PGM). The POMDP consists of two main components:
 
-**Active Inference Context**: The model implements Active Inference principles by updating its belief using a sequence of actions and control inputs. This process involves learning a mapping between hidden states and observable outcomes, which allows the network to learn patterns in the data. The model also updates beliefs based on predictions made by the network, allowing it to make decisions about what actions are available for each observation.
+1. **hidden states**: "left" and "right". These represent the current state-of-the-world (SOTW) for each observation.
 
-**Practical Implications**: The model can be used to inform decisions that depend on uncertain or noisy data. For example, it can help identify optimal
+2. **actions**: Push_left/Push_right, which are actions that move from one side to the other.
+
+The model updates its beliefs based on a Bayesian inference of the observed data and action sequences. The policy is chosen based on the current SOTW for each observation in order to update their beliefs about the actions taken by the agent.
+
+Key relationships:
+
+1. **Initialization**: The hidden states are initialized with random values, representing the current state-of-the-world (SOTW).
+
+2. **Action selection**: The policy is chosen based on the current SOTW for each observation in order to update their beliefs about the actions taken by the agent.
+
+Practical implications:
+
+1. **Bayesian inference**: The model performs Bayesian inference and updates its beliefs using a probabilistic graphical model (PGM). This allows the model to learn from data, making predictions based on past behavior.
+

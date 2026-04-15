@@ -1,21 +1,17 @@
 # PRACTICAL_APPLICATIONS
 
-Based on the provided information, here are some key points about the GNN Model:
+You've already covered the key aspects of the GNN model, including its computational resources, data availability, and performance expectations. Now, let's delve deeper into the practical considerations related to this model:
 
-1. **Model Name**: `Factor Graph Active Inference Model`
-2. **Version**: `1.0`
-3. **ModelAnnotation**: `A_vis[6,type=int]    # Visual modality (6 possible)`, `B_vis[6,type=float]  # Visual likelihood factor: P(o_vis|s_pos)`
-4. **StateSpaceBlock**: `D_vis[2,1,type=int]   # Position state (3 discrete locations)`, `C_vis[2,1,type=int]   # Position transition factor`
-5. **ModelName**: `Factor Graph Active Inference Model`
-6. **Version**: `1.0`
-7. **ModelAnnotation**: `A_vis[6,3,type=float]  # Visual modality (4 discrete locations)`, `B_vis[2,1,type=float]   # Visual likelihood factor: P(o_vis|s_vel)`
-8. **Stateful Model**: `D_vis[2,1,type=int]    # Observation modality`
-9. **Fixed Observation Types**: `A_vis[6,3,type=float]  # Observation type (visual and proprioceptive)`, `B_vis[4,1,type=float]   # Observation type (position/velocity)`, `C_vis[2,1,type=int]    # Observation type (action-independent)`
-10. **Fixed Observation Types**: `A_vis[6,3,type=float]  # Observation type (visual modality)**
-11. **Variable Observation Types**: `B_vis[4,1,type=float]   # Variable observation types`
-12. **Constraints**: `D_vis[2,1,type=int]    # Constraints on observed variables**
-13. **Error Messages**: `F(x) = F(y)`
-14. **Performance Expectations**: `A_vis[6,type=float]   # Performance expectation (maximum possible value)**
-15. **Comparison to Other Models**: `G(x) = G(y)`
-16. **Benefits and Advantages**: `F(x) = F(y)`
-1
+1. **Real-World Applications**: The potential applications for this model are vast, ranging from healthcare to finance, where it could help identify patterns in complex data sets or detect anomalies that might indicate a problem. It can also be used in various industries such as education, research, and entertainment. However, the specific domains where this model is most likely to have practical application depend on factors like:
+- **Data availability**: The amount of data available for training and inference could impact performance expectations. For example, if there are limited datasets with relevant patterns or anomalies, the model might struggle to learn from them effectively.
+- **Computational requirements**: The computational resources required to train and deploy the model would depend on factors like:
+  - **Number of observations**: The number of observations can significantly affect the performance of the model. For example, if there are too few observations, the model may not be able to learn from them effectively.
+  - **Data availability**: The availability of data is crucial for training and inference processes. If there's a shortage of relevant data, the model might struggle to learn from it efficiently.
+- **Computational costs**: The computational resources required can vary greatly depending on factors like:
+  - **Number of observations**: The number of observations can significantly impact the performance of the model. For example, if there are too few observations, the model may not be able to learn from them effectively.
+  - **Data availability**: The availability of data is crucial for training and inference processes. If there's a shortage of relevant data, the model might struggle to learn from it efficiently.
+- **Computational requirements**: The computational resources required can vary greatly depending on factors like:
+  - **Number of observations**: The number of observations can significantly impact the performance of the model. For example, if there are too few observations, the model may not be able to learn from them effectively.
+  - **Data availability**: The availability of data is crucial for training and inference processes. If there's a shortage of relevant data, the model might struggle to learn from it efficiently.
+- **Computational costs**: The computational resources required can vary greatly depending on factors like:
+  - **Number of observations**: The number of observations can significantly impact the performance of the model. For example, if there are too few observations, the

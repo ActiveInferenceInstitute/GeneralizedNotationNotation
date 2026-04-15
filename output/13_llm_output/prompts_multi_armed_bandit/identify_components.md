@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Based on the document, here are the steps to generate a signature for an active inference ontology:
+Here is a systematic breakdown of the GNN representation:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

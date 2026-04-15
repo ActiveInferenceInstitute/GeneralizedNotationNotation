@@ -1,32 +1,48 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Here are the key parameters for the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices: dimensions, structure, interpretation
-   - B matrices: dimensions, structure, interpretation
-   - C matrices: dimensions, structure, interpretation
-   - D matrices: dimensions, structure, interpretation
+   - A matrices representing the model structure and inference operations (e.g., Likelihood, Transition, Action).
+   - B matrices representing the action-dependent transitions between states (e.g., Policy, Action).
+   - C matrices representing the action selection policy (e.g., HMM, Bayesian).
+   - D matrices representing the decision boundaries and actions for each modality (e.g., ActInf, BiPat).
+
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters and their roles
-   - α (alpha): learning rates and adaptation parameters
-   - Other precision/confidence parameters
+   - γ: precision parameters and their roles.
+   - α: learning rates and adaptation parameters.
+   - Other precision/confidence parameters.
 
-3. **Dimensional Parameters**:
-   - State space dimensions for each factor
-   - Observation space dimensions for each modality
-   - Action space dimensions for each control factor
-4. **Temporal Parameters**:
-   - Time horizons (T)
-   - Temporal dependencies and windows
-   - Update frequencies and timescales
+Here's a systematic parameter breakdown of the GNN implementation:
 
-5. **Initial Conditions**:
-   - Prior beliefs over initial states
-   - Initial parameter values
-   - Initialization strategies
+1. **Model Matrices**:
+   - A matrices representing the model structure and inference operations (e.g., Likelihood, Transition).
+   - B matrices representing the action-dependent transitions between states (e.g., Policy, Action).
+   - C matrices representing the action selection policy (e.g., HMM, Bayesian).
+   - D matrices representing the decision boundaries and actions for each modality (e.g., ActInf, BiPat).
 
-6. **Configuration Summary**:
-   - Parameter file format recommendations
-   - Tunable vs. fixed parameters
-   - Sensitivity analysis priorities
+2. **Precision Parameters**:
+   - γ: precision parameters and their roles.
+   - α: learning rates and adaptation parameters.
+   - Other precision/confidence parameters.
+
+Here's a systematic parameter breakdown of the GNN implementation:
+
+1. **Model Matrices**:
+   - A matrices representing the model structure and inference operations (e.g., Likelihood, Transition).
+   - B matrices representing the action-dependent transitions between states (e.g., Policy, Action).
+   - C matrices representing the action selection policy (e.g., HMM, Bayesian).
+   - D matrices representing the decision boundaries and actions for each modality (e.g., ActInf, BiPat).
+
+2. **Precision Parameters**:
+   - γ: precision parameters and their roles.
+   - α: learning rates and adaptation parameters.
+   - Other precision/confidence parameters.
+
+Here's a systematic parameter breakdown of the GNN implementation:
+
+1. **Model Matrices**:
+   - A matrices representing the model structure and inference operations (e.g., Likelihood, Transition).
+   - B matrices representing the action-dependent transitions between states (e.g., Policy, Action).
+   - C matrices representing the action selection policy (e.g., HMM, Bayesian).
+  

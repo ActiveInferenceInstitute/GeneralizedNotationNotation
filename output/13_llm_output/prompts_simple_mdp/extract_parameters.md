@@ -1,16 +1,22 @@
 # EXTRACT_PARAMETERS
 
-Based on the provided information, here are the key parameters for Active Inference (AI) in GNN:
+Based on the document, here is a systematic parameter breakdown of the GNN implementation:
 
 1. **Model Matrices**:
-   - A matrices representing the MDP agent's state space and action distribution.
-   - B matrices representing the MDP agent's policy and action distributions.
-   - C matrices representing the MDP agent's hidden states, observation probabilities, and action distributions.
-   - D matrices representing the MDP agent's hidden states, observation probabilities, and action distributions.
-
+    - A matrices: dimensions, structure, interpretation
+    - B matrices: dimensions, structure, interpretation
+    - C matrices: dimensions, structure, interpretation
+    - D matrices: dimensions, structure, interpretation
 2. **Precision Parameters**:
-   - γ (gamma): precision parameters for each element in A matrix
-   - α (alpha): learning rate parameter for each element in B matrix
-   - Other precision/confidence parameters:
-   - Initialization strategies:
-   - Sensitivity analysis priorities
+    - γ (gamma): precision parameters and their roles
+    - α (alpha): learning rates and adaptation parameters
+    - Other precision/confidence parameters
+
+3. **Dimensional Parameters**:
+    - State space dimensions for each factor
+    - Observation space dimensions for each modality
+    - Action space dimensions for each control factor
+4. **Temporal Parameters**:
+    - Time horizons (T)
+    - Temporal dependencies and windows
+    - Update frequencies and timescales

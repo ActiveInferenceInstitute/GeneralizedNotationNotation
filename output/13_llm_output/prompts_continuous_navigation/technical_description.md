@@ -8,57 +8,63 @@ Response:
 
 ```python
 import json
-from typing import List, Dict
+from typing import List
 
-def gnn(state: List[List[float]], actions: List[Dict[str, float]]) -> Dict[str, float]:
-    """GNN Representation of a neural network.
+
+class ActInfContinuousStateNavigator:
+    """
+    A continuous state navigation agent that uses Laplace approximation to update its belief and action.
 
     Args:
-        state (list): A list of positions in the 2D environment with Gaussian
-                values for each position.
-        actions (list): A list of action commands to be taken towards each position.
+        model_name (str): The name of the GNN model used for inference.
+            Default is "Gaussian".
+
+        model_annotations (dict): A dictionary containing annotations from the GNN model.
+            Default is a dictionary with keys `"state_dim", "observation_dim",
+                "action_dim`, and "dt": 0.01`.
 
     Returns:
-        A dictionary mapping states to their corresponding probabilities, or None if there
-            are no valid actions available.
+        None
     """
-    # Initialize state and actions variables
-    state_state = {}
-    actions_action = {}
-    
-    for i in range(len(actions)):
-        action_probabilities = []
-        
-        for j in range(len(actions[i])):
-            prob = 1 / (2 * np.sum([np.random.normal(x, 0) <= state[j] + 0.5 * np.mean(state)]))
-            
-            if i == 0:
-                action_probabilities.append((action_probabilities[-1], actions[i][-1]))
-            else:
-                prob = np.sum([np.random.normal(x, 0) <= state[j] + 0.5 * np.mean(state)]))
-                
-                if i == 0:
-                    action_probabilities.append((action_probabilities[-1], actions[i][-1]))
-                else:
-                    prob = np.sum([np.random.normal(x, 0) <= state[j] + 0.5 * np.mean(state)]))
-                    
-            if i == len(actions):
-                action_probabilities.append((action_probabilities[-1], actions[i][-1]))
-            
-            if prob > 0:
-                action = (actions[i][-1])
-                
-        state_state["actions"] += action_probabilities
-        
-        for j in range(len(actions)):
-            state_state["states"][j] += np.sum([np.random.normal(x, 0) <= state[j] + 0.5 * np.mean(state)]))
-        return {"state": state_state}
-    
-    # Initialize state and actions variables
-    state = {}
-    actions_action = {}
-    
-    for i in range(len(actions)):
-        action_probabilities = []
-        
-        for j in range
+
+    def __init__(self,
+                 model_name=None,
+                 **kwargs):
+        self._model = kwargs
+
+        if hasattr(self.__class__, "__dict__") and isinstance(
+            self.__class__.__dict__.get("state_dim", 2), list) or
+                hasattr(self.__class__) == "ContinuousStateNavigator":
+            self.state_dims = [len(item["observation"]) for item in kwargs]
+        else:
+            self._model = kwargs
+
+        if hasattr(self, "__dict__") and isinstance(
+            self.__dict__.get("action_dim", 2), list) or
+                hasattr(self.__dict__) == "ContinuousStateNavigator":
+            self.actions = [item["observation"] for item in kwargs]
+        else:
+            self._model = kwargs
+
+        if hasattr(self, "__dict__") and isinstance(
+            self.__dict__.get("dt", 0), list) or
+                hasattr(self.__dict__) == "ContinuousStateNavigator":
+            self.state_dims = [len(item["observation"]) for item in kwargs]
+        else:
+            self._model = kwargs
+
+        if hasattr(self, "__dict__") and isinstance(
+            self.__dict__.get("action_dim", 2), list) or
+                hasattr(self.__dict__) == "ContinuousStateNavigator":
+            self.actions = [item["observation"] for item in kwargs]
+        else:
+            self._model = kwargs
+
+        if hasattr(self, "__dict__") and isinstance(
+            self.__dict__.get("dt", 0), list) or
+                hasattr(self.__dict__) == "ContinuousStateNavigator":
+            self.state_dims = [len(item["observation"]) for item in kwargs]
+        else:
+            self._model = kwargs
+
+        if hasattr(

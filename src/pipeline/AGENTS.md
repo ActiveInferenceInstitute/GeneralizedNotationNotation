@@ -10,7 +10,7 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.5.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-04-15
 
@@ -505,7 +505,7 @@ def get_pipeline_config_tool():
 **Last Updated**: 2026-04-15
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.5.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

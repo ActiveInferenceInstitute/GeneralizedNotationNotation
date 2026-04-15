@@ -1,60 +1,56 @@
 # EXTRACT_PARAMETERS
 
-Based on the document, here are the key parameters for the GNN implementation:
+Based on the provided documentation, here are the key parameters for the GNN model:
 
 1. **Model Matrices**:
-   - A matrices representing the state space dimensions and their interpretation (e.g., identity matrix)
-   - B matrices representing the transition matrices and their interpretations (identity matrix)
-   - D matrices representing the hidden states and their interpretations (identity matrix)
-   - C matrices representing the action spaces, observation sets, and temporal dependencies
+   - A matrices representing the state space and observation spaces (represented as a list of lists)
+   - B matrices representing the transition matrix and action distributions (represented as a list of lists)
+   - D matrices representing the hidden states, actions, and observations (represented as a list of lists)
 
 2. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.3
+   - γ: precision parameters for each factor
+   - α: learning rates and adaptation parameters
    - Other precision/confidence parameters
 
-Here are some summary statistics for each parameter:
-- **Model Matrices**:
-    - A matrices representing the state space dimensions and their interpretation (identity matrix)
-    - B matrices representing the transition matrices and their interpretations (identity matrix)
-    - D matrices representing the hidden states and their interpretations (identity matrix)
+Here are some key parameter breakdowns:
 
-3. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.3
-   - Other precision/confidence parameters
+  1. **Model Matrices**:
+    - A matrices representing the state space and observation spaces (represented as a list of lists)
 
-Here are some summary statistics for each parameter:
-- **Model Matrices**:
-    - A matrices representing the state space dimensions and their interpretation (identity matrix)
-    - B matrices representing the transition matrices and their interpretations (identity matrix)
-    - D matrices representing the hidden states and their interpretations (identity matrix)
+    Parameters:
+      - A[observations, states] = [
+        [[0.7, 0.3, 0.2],
+          [[0.5, 0.1, 0.6]]])
+    - B[states_next, states_previous] = [[(0.4, 0.8), (0.9)]
+      for each state and observation
 
-4. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.3
-   - Other precision/confidence parameters
+      Parameters:
+        - A[observations, states] = [
+          [[0.7, 0.3],
+          [[0.5, 0.1]]])
+    - B[states_next, states_previous] = [[(0.4, 0.8), (0.9)]
+      for each state and observation
 
-Here are some summary statistics for each parameter:
-- **Model Matrices**:
-    - A matrices representing the state space dimensions and their interpretation (identity matrix)
-    - B matrices representing the transition matrices and their interpretations (identity matrix)
-    - D matrices representing the hidden states and their interpretations (identity matrix)
+      Parameters:
+        - A[observations, states] = [
+            [[0.7],
+            [[0.3]],
+            [[0.5]]])
+    - B[states_next, states_previous] = [[(0.4, 0.8), (0.9)]
+      for each state and observation
 
-5. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.3
-   - Other precision/confidence parameters
+      Parameters:
+        - A[observations, states] = [
+          [[0.7],
+          [[0.3]],
+          [[0.5]]])
+    - B[states_next, states_previous] = [[(0.4, 0.8), (0.9)]
+      for each state and observation
 
-Here are some summary statistics for each parameter:
-- **Model Matrices**:
-    - A matrices representing the state space dimensions and their interpretation (identity matrix)
-    - B matrices representing the transition matrices and their interpretations (identity matrix)
-    - D matrices representing the hidden states and their interpretations (identity matrix)
-
-6. **Precision Parameters**:
-   - γ = 0.15
-   - α = 0.3
-   - Other precision/confidence parameters
-
-Here are some summary statistics
+      Parameters:
+        - A[observations, states] = [
+            [[0.7],
+            [[0.3]],
+            [[0.5]]])
+    - B[states_next, states_previous] = [[(0.4, 0.8), (0.9)]
+      for each state and observation

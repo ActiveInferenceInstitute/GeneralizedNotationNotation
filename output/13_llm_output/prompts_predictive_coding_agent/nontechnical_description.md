@@ -10,14 +10,33 @@ Response:
 import json
 from typing import List, Dict, Tuple
 
-def predict(input: List[Dict[str, float]]) -> Dict[str, float]:
-    """Predicts a binary classification based on input data.
+class GNNModel:
+    """GNN model implementation in Python."""
 
-    Args:
-        input (List[Dict[str, float]]): A list of dictionaries representing the input data.
+    def __init__(self):
+        self._model = None
 
-    Returns:
-        Dict[str, float]: A dictionary containing predictions for each input.
-    """
-    # TODO(david) Implement prediction logic here
+        # Initialize the model with a single input layer
+        self.input_layer = None
+        self.output_layer = None
+        self.bias_initializer = None
+        self.weight_decay_learning_rate = 0.15
+        self.optimizer = None
+
+    def forward(self, x):
+        """Forward pass through the model."""
+
+        # Initialize the input layer with a single input layer
+        self._input_layer = self._model.forward(x)
+
+        # Initialize the output layer with the weighted sum of inputs from all layers
+        self._output_layer = self._model.backward()
+
+    def _input_layer(self):
+        """Input layer initialization."""
+        return self._input_layer
+
+    def _output_layer(self, x):
+        """Output layer initialization."""
+        return self._output_layer(x)
 ```

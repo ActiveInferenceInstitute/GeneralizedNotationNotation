@@ -1,6 +1,6 @@
 # IDENTIFY_COMPONENTS
 
-Here is a systematic breakdown of the GNN specification:
+Here is a systematic breakdown of the information flow in the GNN specification:
 
 1. **State Variables (Hidden States)**:
    - Variable names and dimensions

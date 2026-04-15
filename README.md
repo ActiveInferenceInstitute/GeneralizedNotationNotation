@@ -49,7 +49,7 @@
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
 **Last Updated**: 2026-04-14  
-**Version**: 1.5.0  
+**Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
 **Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-14). Pipeline completely Zero-Mock compliant.
 **Features (v1.5.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, Autonomous Execution Recovery Heuristics, Fallback Circuit Breakers.

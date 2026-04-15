@@ -6,13 +6,34 @@ Prompt:
 
 Response:
 
-You can use the following code to implement an active inference agent for a discrete POMDP:
+```python
+import json
+from collections import Counter
 
-1. Create an instance of the Active Inference Agent class with the specified parameters and annotations.
-2. Use the `action_selection` method to select actions from the policy posterior, which is used as the initial policy prior in the agent's decision-making process. The action selection algorithm uses a greedy approach to find the best action based on the available choices of actions.
-3. Use the `belief_update` method to update the belief distribution over the observed observations and the hidden states for each observation. This involves updating the probability of observing a specific observation based on the previous state, followed by updating the probability of observing that observation based on the next state. The goal is to minimize the difference between the current belief distribution and the prior distribution.
-4. Use the `belief_update` method to update the policy posterior using the action selection algorithm. This involves updating the probability of observing a specific action based on the previous state, followed by updating the probability of observing that action based on the next state. The goal is to minimize the difference between the current belief distribution and the prior distribution.
-5. Use the `belief_update` method to update the policy posterior using the action selection algorithm. This involves updating the probability of observing a specific action based on the previous state, followed by updating the probability of observing that action based on the next state. The goal is to minimize the difference between the current belief distribution and the prior distribution.
-6. Use the `belief_update` method to update the policy posterior using the action selection algorithm. This involves updating the probability of observing a specific observation based on the previous state, followed by updating the probability of observing that observation based on the next state. The goal is to minimize the difference between the current belief distribution and the prior distribution.
-7. Use the `belief_update` method to update the policy posterior using the action selection algorithm. This involves updating the probability of observing a specific action based on the previous state, followed by updating the probability of observing that action based on the next state. The goal is to minimize the difference between the current belief distribution and the prior distribution.
-8. Use the `belief_update` method to update the policy posterior using the action selection algorithm. This involves updating the probability of observing a specific observation based on the previous state, followed by updating the probability of observing that observation based on the next state. The goal is to minimize the difference
+def generate_inference_model(num_hidden_states):
+    """Generate an Inference Model for a GNN-based POMDP agent.
+
+    Args:
+        num_hidden_states (int): Number of hidden states in the inference model.
+
+    Returns:
+        Inference Model object representing the inference model.
+
+    Raises:
+        ValueError: If num_hidden_states is less than 0 or greater than 16,
+    """
+    # Initialize Inference Model with default parameters
+    inf_model = {}
+    
+    for _ in range(num_hidden_states):
+        inf_model[str](
+            {
+                "state": str("", ""),
+                "actions": ["", ""],
+                "observation": [
+                    {"x": 0, "y": 1},
+                    {"x": 1, "y": 2}],
+                )
+            }
+    return inf_model
+```

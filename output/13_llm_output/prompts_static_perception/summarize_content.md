@@ -1,10 +1,9 @@
 # SUMMARIZE_CONTENT
 
-Here is a concise summary of the GNN implementation:
-
 ```json
 {
-  "processed_files": [
+  "processed_files": 9,
+  "reports": [
     "output/10_ontology_output/simple_mdp_ontology_report.json",
     "output/10_ontology_output/multi_armed_bandit_ontology_report.json",
     "output/10_ontology_output/deep_planning_horizon_ontology_report.json",

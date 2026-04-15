@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.720683,
-  "timestamp": "2026-04-14T11:54:23.656940",
+  "execution_time": 0.735062,
+  "timestamp": "2026-04-15T12:27:08.541721",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -46,7 +46,7 @@
       0
     ],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.445s\nResults saved to: output/12_execute_output/actinf_pomdp_agent/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.450s\nResults saved to: output/12_execute_output/actinf_pomdp_agent/numpyro/simulation_data/simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": "",
     "beliefs": [
       [
@@ -136,7 +136,7 @@
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/actinf_pomdp_agent/numpyro/simulation_data/simulation_data_simulation_results.json"
+      "output/12_execute_output/actinf_pomdp_agent/numpyro/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

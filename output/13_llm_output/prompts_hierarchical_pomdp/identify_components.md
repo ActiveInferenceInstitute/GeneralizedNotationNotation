@@ -1,33 +1,66 @@
 # IDENTIFY_COMPONENTS
 
-Based on the provided information, here is a systematic breakdown of the key components in the GNN specification:
+Based on the provided documentation, here is a systematic breakdown of the key components in the GNN specification:
 
-1. **State Variables (Hidden States)**:
-   - Variable names and dimensions
-   - What each state represents conceptually
-   - State space structure (discrete/continuous, finite/infinite)
+**State Variables (Hidden States)**
+- **Observation variables**:
+  - Variable names and dimensions
+  - What each observation represents conceptually
+  - Observation modalities and their meanings
 
-2. **Observation Variables**:
-   - Observation modalities and their meanings
-   - Sensor/measurement interpretations
-   - Noise models or uncertainty characterization
+1. **Variable names and dimensions**:
+   - Observation types, such as "observation", "action", etc.
+   - Observation modality: e.g., "observations" or "actions".
+2. **Observation variables**
+    - Variable name(s)
+    - Dimension of the observation
+    - What each observation represents conceptually
 
-3. **Action/Control Variables**:
-   - Available actions and their effects
-   - Control policies and decision variables
-   - Action space properties
+3. **Action/Control variables**:
+  - **Variable names and dimensions**
+    - Action modalities (e.g., "action", "policy")
+    - Action space properties
+4. **Model matrices**
+    - **Matrix(s) for action models**
+      - Observation types, e.g., "observations" or "actions".
+      - Observation modality: e.g., "observations" or "actions".
+  - **Matrix(s) for model parameters**
+    - Observation modalities (e.g., "observation", "action")
+    - Observation space properties
+5. **Parameters and hyperparameters**:
+   - **Parameter(s) for action models**
+      - **Variable name(s)**
+        - Variable names/dimensions of the parameter matrix
 
-4. **Model Matrices**:
-   - A matrices: Observation models P(o|s)
-   - B matrices: Transition dynamics P(s'|s,u)
-   - C matrices: Preferences/goals
-   - D matrices: Prior beliefs over initial states
-
-5. **Parameters and Hyperparameters**:
-   - Precision parameters (γ, α, etc.)
-   - Learning rates and adaptation parameters
-   - Fixed vs. learnable parameters
-
-6. **Temporal Structure**:
-   - Time horizons and temporal dependencies
-   - Dynamic vs. static components
+    - **Hyperparameter(s)**
+       - **Initialization parameters**
+           - Initial value of each variable
+         - **Learning rate**
+    - **Prediction hyperparameters**
+       - **Model parameters**
+            - **Initialization parameters**
+                - Initial value of each variable
+                
+          - **Learning rate**
+        - **Fixed vs. learnable parameter(s)**
+             - **Initialization parameters**
+              - **Initial value of each variable
+6. **Temporal structure**:
+   - **Time horizons and temporal dependencies**
+    - **Dynamic components**
+      - **Prediction hyperparameters**
+           - **Model parameters**
+                - **Initialization parameters**
+                  - Initial value of each variable
+                
+          - **Learning rate**
+        - **Fixed vs. learnable parameter(s)**
+             - **Initialization parameters**
+              - **Initial value of each variable
+7. **State variables**:
+   - **Variable names and dimensions**
+    - **Observation modalities**
+      - **Action modality**
+         - **Actions/actions**
+           - **Prediction hyperparameters**
+               - **Model
