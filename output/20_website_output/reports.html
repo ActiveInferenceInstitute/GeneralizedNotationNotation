@@ -341,7 +341,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-04-15 12:39</p>
+      <p>Generated 2026-04-16 10:09</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -362,9 +362,80 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     
 <div class="page-header">
   <h1>📋 Reports</h1>
-  <p class="subtitle">57 report artifacts collected from pipeline output</p>
+  <p class="subtitle">71 report artifacts collected from pipeline output</p>
 </div>
 <div class="section">
+<details>
+  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 382047 bytes</span></summary>
+  <div class="details-body"><pre>{
+    "run_hash": "3ad3a6ea722f",
+    "file_hashes": {
+        "basics/dynamic_perception.md": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c",
+        "basics/static_perception.md": "5bdf61e8d8c20a935957c41900b40d9edb19e8eac8b237b85e604b158c0c8d70",
+        "continuous/continuous_navigation.md": "bb6eaaf3114149fd8d77ccf5ca79f165aadf094be77ad6a66d76d7613551fea0",
+        "continuous/predictive_coding_agent.md": "447738f0a679abdeab23770fb3307128e32c4d688cdcb98123f748d2740025b7",
+        "discrete/actinf_pomdp_agent.md": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
+        "discrete/bnlearn_causal_model.md": "d108293a713435c668aec0bea48bb880f760ed5bd803e61347911e02fc36d067",
+        "discrete/deep_planning_horizon.md": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
+        "discrete/hmm_baseline.md": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265",
+        "discrete/markov_chain.md": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb",
+        "discrete/multi_armed_bandit.md": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a",
+        "discrete/simple_mdp.md": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c",
+        "discrete/tmaze_epistemic.md": "6c7270ac428fcb9e92de8b9e798e65869334247e8b4f115ed705bf23d71bcd0c",
+        "discrete/two_state_bistable.md": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361",
+        "hierarchical/hier</pre></div>
+</details>
+<details>
+  <summary>index.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 3914 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "3ad3a6ea722f": {
+    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
+    "config": {
+      "args": {
+        "target_dir": "input/gnn_files",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": false,
+        "log_format": "human",
+        "enable_round_trip": false,
+        "enable_cross_format": false,
+        "skip_steps": null,
+        "only_steps": null,
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": null,
+        "llm_timeout": null,
+        "website_html_filename": null,
+        "recreate_venv": false,
+        "dev": true,
+        "setup_core_only": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "render_output_dir": null,
+        "distributed": false,
+        "backend": "ray",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": true,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "skip_llm": false,
+        "install_all_extras": false,
+        "performance_mode": "low",
+        "timesteps": 15,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "advanced_stats": false
+      },
+      "pipeline": {
+        "enabled": true,
+        "steps": [],
+        "skip_steps": [],
+        "fast_only": true,</pre></div>
+</details>
 <details>
   <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 374 bytes</span></summary>
   <div class="details-body"><pre>{
@@ -1718,6 +1789,508 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "arrow": "1.4.0",
       "astroid": "4.0.3",
   </pre></div>
+</details>
+<details>
+  <summary>website_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">20_website_output · 37 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "success": true,
+  "pages_created": 7
+}</pre></div>
+</details>
+<details>
+  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 883 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-15T12:39:15.061975",
+  "target_dir": "input/gnn_files/discrete",
+  "output_dir": "output/21_mcp_output",
+  "processing_status": "completed",
+  "mcp_version": "1.1.3",
+  "tools_registered": 133,
+  "registered_modules_count": 31,
+  "registered_modules": [
+    "research",
+    "ml_integration",
+    "pipeline",
+    "intelligent_analysis",
+    "model_registry",
+    "security",
+    "integration",
+    "website",
+    "setup",
+    "tests",
+    "template",
+    "render",
+    "utils",
+    "mcp",
+    "cli",
+    "ontology",
+    "gnn",
+    "audio",
+    "analysis",
+    "type_checker",
+    "api",
+    "report",
+    "sapf",
+    "visualization",
+    "export",
+    "validation",
+    "advanced_visualization",
+    "llm",
+    "execute",
+    "gui",
+    "sympy_mcp"
+  ],
+  "resources_count": 1,
+  "message": "MCP processing completed - 133 tools registered from 31 modules"
+}</pre></div>
+</details>
+<details>
+  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 28694 bytes</span></summary>
+  <div class="details-body"><pre>[
+  {
+    "name": "analyze_audio_characteristics",
+    "description": "Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.).",
+    "module": "src.audio",
+    "category": "audio",
+    "version": "1.0.0"
+  },
+  {
+    "name": "analyze_gnn_with_llm",
+    "description": "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
+    "module": "src.llm",
+    "category": "llm",
+    "version": "1.0.0"
+  },
+  {
+    "name": "build_website_from_pipeline_output",
+    "description": "Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories.",
+    "module": "src.website",
+    "category": "website",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_audio_backends",
+    "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.",
+    "module": "src.sapf",
+    "category": "audio",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_execute_dependencies",
+    "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
+    "module": "src.execute",
+    "category": "execute",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_integration_dependencies",
+    "description": "Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed.",
+    "module": "src.integration",
+    "category": "integration",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_ml_frameworks",
+   </pre></div>
+</details>
+<details>
+  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 31607 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-15T12:39:15.061119",
+  "mcp_version": "1.1.3",
+  "tools_count": 133,
+  "resources_count": 1,
+  "tools": [
+    {
+      "name": "analyze_audio_characteristics",
+      "description": "Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.).",
+      "module": "src.audio",
+      "category": "audio",
+      "version": "1.0.0"
+    },
+    {
+      "name": "analyze_gnn_with_llm",
+      "description": "Run LLM-based analysis on a single GNN model file: summary, complexity, connections.",
+      "module": "src.llm",
+      "category": "llm",
+      "version": "1.0.0"
+    },
+    {
+      "name": "build_website_from_pipeline_output",
+      "description": "Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories.",
+      "module": "src.website",
+      "category": "website",
+      "version": "1.0.0"
+    },
+    {
+      "name": "check_audio_backends",
+      "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.",
+      "module": "src.sapf",
+      "category": "audio",
+      "version": "1.0.0"
+    },
+    {
+      "name": "check_execute_dependencies",
+      "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
+      "module": "src.execute",
+      "category": "execute",
+      "version": "1.0.0"
+    },
+    {
+      "name": "check_integration_dependencies",
+      "description": "Check which third-pa</pre></div>
+</details>
+<details>
+  <summary>gui_status.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 473 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "backend": "gradio",
+  "launched": false,
+  "export_file": "output/22_gui_output/visual_model_gui2.md",
+  "gui_type": "visual_matrix_editor",
+  "status": "headless_mode",
+  "visual_data_file": "output/22_gui_output/visual_matrices.json",
+  "features": [
+    "Visual matrix editing",
+    "Drag-and-drop interface",
+    "Real-time GNN generation",
+    "POMDP template-based"
+  ],
+  "recommendations": [
+    "Run with --interactive to launch GUI server on port 7861"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>gui_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 1052 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "mode": "headless",
+  "gui_types": [
+    "gui_1",
+    "gui_2"
+  ],
+  "results": {
+    "gui_1": {
+      "gui_type": "gui_1",
+      "description": "Form-based Interactive GNN Constructor",
+      "success": true,
+      "output_file": "output/22_gui_output/constructed_model_gui1.md",
+      "backend": "headless",
+      "features": [
+        "Component management via forms",
+        "State space editing",
+        "Live markdown synchronization",
+        "Two-pane interface"
+      ]
+    },
+    "gui_2": {
+      "gui_type": "gui_2",
+      "description": "Visual Matrix Editor for GNN Models",
+      "success": true,
+      "output_file": "output/22_gui_output/visual_model_gui2.md",
+      "backend": "headless",
+      "features": [
+        "Visual matrix representation and editing",
+        "Drag-and-drop state space modification",
+        "Real-time GNN markdown generation",
+        "POMDP template-based initialization",
+        "Interactive heatmaps and plots",
+        "Matrix dimension validation"
+      ]
+    }
+  },
+  "overall_success": true
+}</pre></div>
+</details>
+<details>
+  <summary>visual_matrices.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 2431 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "visual_matrices": {
+    "A": {
+      "type": "matrix",
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "description": "Likelihood matrix",
+      "editable": true
+    },
+    "B": {
+      "type": "tensor",
+      "depth": 3,
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "description": "Transition matrices",
+      "editable": true,
+      "current_slice": 0
+    },
+    "C": {
+      "type": "vector",
+      "size": 3,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "description": "Preference vector",
+      </pre></div>
+</details>
+<details>
+  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 288840 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "report_generation_time": "2026-04-15T12:39:16.730136",
+  "pipeline_output_directory": "output",
+  "steps": {
+    "0_template_output": {
+      "directory": "output/0_template_output",
+      "exists": true,
+      "file_count": 41,
+      "total_size_mb": 0.08,
+      "file_types": {
+        ".json": {
+          "count": 21,
+          "total_size_mb": 0.007513999938964844
+        },
+        ".md": {
+          "count": 20,
+          "total_size_mb": 0.07439136505126953
+        }
+      },
+      "last_modified": "2026-04-15T12:24:33.762541",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "template_processing_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "1_setup_output": {
+      "directory": "output/1_setup_output",
+      "exists": true,
+      "file_count": 2,
+      "total_size_mb": 0.01,
+      "file_types": {
+        ".json": {
+          "count": 2,
+          "total_size_mb": 0.014599800109863281
+        }
+      },
+      "last_modified": "2026-04-15T12:24:38.153605",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": []
+    },
+    "2_tests_output": {
+      "directory": "output/2_tests_output",
+      "exists": true,
+      "file_count": 6,
+      "total_size_mb": 6.97,
+      "file_types": {
+        ".log": {
+          "count": 1,
+          "total_size_mb": 6.522748947143555
+        },
+        ".t</pre></div>
+</details>
+<details>
+  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 525 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "report_generation_summary": {
+    "generation_time": "2026-04-15T12:39:16.889619",
+    "pipeline_directory": "output",
+    "report_directory": "output/23_report_output",
+    "health_score": 95.0,
+    "generated_files": [
+      "comprehensive_analysis_report.html",
+      "comprehensive_analysis_report.md",
+      "report_summary.json"
+    ],
+    "pipeline_summary": {
+      "total_steps": 24,
+      "successful_steps": 24,
+      "total_files": 2213,
+      "total_size_mb": 168.63,
+      "success_rate": 100.0
+    }
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 631 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-15T12:39:16.961231",
+  "target_dir": "input/gnn_files/discrete",
+  "output_dir": "output/23_report_output",
+  "pipeline_output_dir": "output",
+  "processing_status": "completed",
+  "report_format": "comprehensive",
+  "reports_generated": [
+    "comprehensive_analysis_report.html",
+    "comprehensive_analysis_report.md",
+    "report_summary.json",
+    "PIPELINE_REPORT.md"
+  ],
+  "report_count": 4,
+  "visualizations_discovered": 146,
+  "html_reports_generated": 1,
+  "html_validation_status": "valid",
+  "html_validation_errors": [],
+  "formats_generated": [
+    "html",
+    "markdown",
+    "json"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>intelligent_analysis_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 442 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-15T12:39:21.313818",
+  "overall_status": "SUCCESS",
+  "health_score": 100,
+  "failure_count": 0,
+  "red_flag_count": 0,
+  "yellow_flag_count": 3,
+  "bottleneck_count": 3,
+  "recommendation_count": 6,
+  "recovery_plan_length": 0,
+  "recovery_plan": [],
+  "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
+  "data_file": "output/24_intelligent_analysis_output/analysis_data.json"
+}</pre></div>
+</details>
+<details>
+  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 9972 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-04-15T12:39:21.312906",
+  "analysis": {
+    "overall_status": "SUCCESS",
+    "total_duration": 883.513594,
+    "step_count": 24,
+    "failures": [],
+    "warnings": [],
+    "performance_metrics": {
+      "peak_memory_mb": 37.859375,
+      "successful_steps": 24,
+      "failed_steps": 0,
+      "warning_count": 0
+    },
+    "health_score": 100
+  },
+  "step_analyses": [
+    {
+      "step_number": 1,
+      "script_name": "0_template.py",
+      "description": "Template initialization",
+      "status": "SUCCESS",
+      "duration_seconds": 0.34012818336486816,
+      "memory_mb": 37.796875,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.34s"
+    },
+    {
+      "step_number": 2,
+      "script_name": "1_setup.py",
+      "description": "Environment setup",
+      "status": "SUCCESS",
+      "duration_seconds": 4.3923020362854,
+      "memory_mb": 37.859375,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 4.39s"
+    },
+    {
+      "step_number": 3,
+      "script_name": "2_tests.py",
+      "description": "Test suite execution",
+      "status": "SUCCESS",
+      "duration_seconds": 74.03351902961731,
+      "memory_mb": 29.5,
+      "exit_code": 0,
+      "flags": [
+        "Slow: 74.0s (&gt;60.0s threshold)"
+      ],
+      "flag_type": "yellow",
+      "summary": "Completed with 1 flag(s) in 74.03s"
+    },
+    {
+      "step_number": 4,
+      "scrip</pre></div>
 </details>
 <details>
   <summary>test_execution_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 704 bytes</span></summary>

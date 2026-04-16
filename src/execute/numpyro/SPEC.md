@@ -1,31 +1,23 @@
-# NumPyro Execute Backend Specification
+# NumPyro Execution — Technical Specification
 
-## Overview
+**Version**: 1.6.0
 
-The NumPyro execute backend runs NumPyro-generated Python scripts and persists execution logs and outputs.
+## Execution Model
 
-## Public API
+- Subprocess execution via `python -c` or script file
+- Pre-flight: syntax check + dependency validation
+- Timeout: inherits from Step 12 timeout (default 1800s)
 
-The module must export:
+## Input
 
-- `is_numpyro_available() -> bool`
-- `find_numpyro_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List[Path]`
-- `execute_numpyro_script(script_path: Path, verbose: bool = False, output_dir: Optional[Path] = None, timeout: int = 300) -> bool`
-- `run_numpyro_scripts(rendered_simulators_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False) -> bool`
+- NumPyro scripts from `output/11_render_output/numpyro/`
 
-## Script discovery
+## Output
 
-`run_numpyro_scripts` searches under:
+- `simulation_results.json` — MCMC samples and inference results
+- Execution logs (stdout/stderr)
+- Timing data
 
-- `<rendered_simulators_dir>/numpyro/`
+## Dependencies
 
-and matches either folder name `numpyro` or file name containing `numpyro`.
-
-## Environment contract
-
-When `output_dir` is provided, the runner sets:
-
-- `NUMPYRO_OUTPUT_DIR=<output_dir>`
-
-so that generated scripts write `simulation_results.json` into the execution tree.
-
+- `numpyro >= 0.12.0`, `jax >= 0.4.0`

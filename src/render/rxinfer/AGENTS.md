@@ -412,9 +412,12 @@ GNN Model → RxInfer.jl Conversion → Template Application → Julia Code Gene
 - `src/tests/test_render_integration.py` - Integration tests
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_rxinfer*.py \
+    --cov=src/render/rxinfer --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. RxInfer.jl code generation from various GNN models
 2. Generated Julia code syntax validation
@@ -512,7 +515,7 @@ result = generate_rxinfer_code(model_data, debug=True, verbose=True)
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete RxInfer.jl code generation pipeline

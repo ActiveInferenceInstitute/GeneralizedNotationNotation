@@ -5,7 +5,7 @@ This module provides comprehensive validation capabilities for GNN models,
 including semantic validation, performance profiling, and consistency checking.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "semantic_validation": True,
     "performance_profiling": True,
@@ -257,3 +257,13 @@ __all__ = [
     'check_consistency',
     'process_validation'
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "validation",
+        "version": __version__,
+        "description": "Advanced validation and consistency checking",
+        "features": FEATURES,
+    }

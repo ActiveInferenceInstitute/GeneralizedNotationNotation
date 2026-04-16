@@ -6,7 +6,7 @@ This module provides comprehensive analysis and statistical processing for GNN m
 
 from typing import Any, Dict
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "statistical_analysis": True,
     "framework_comparison": True,
@@ -163,3 +163,13 @@ __all__ = [
     'plot_belief_evolution',
     'animate_belief_evolution'
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "analysis",
+        "version": __version__,
+        "description": "Statistical analysis and result aggregation for GNN pipeline outputs",
+        "features": FEATURES,
+    }

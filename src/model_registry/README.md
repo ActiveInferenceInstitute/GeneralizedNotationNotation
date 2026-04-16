@@ -9,7 +9,6 @@ src/model_registry/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
-├── PAI.md                         # PAI context documentation
 ├── SPEC.md                        # Module specification
 ├── mcp.py                         # Model Context Protocol integration
 └── registry.py                    # Core registry functionality

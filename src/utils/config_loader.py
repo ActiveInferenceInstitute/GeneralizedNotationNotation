@@ -54,7 +54,7 @@ class PipelineConfig:
         if isinstance(self.pipeline_summary_file, str):
             self.pipeline_summary_file = Path(self.pipeline_summary_file)
         elif self.pipeline_summary_file is None:
-            self.pipeline_summary_file = self.output_dir / "pipeline_execution_summary.json"
+            self.pipeline_summary_file = self.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
 
 @dataclass
 class TypeCheckerConfig:

@@ -1,8 +1,25 @@
-# Specification: Discopy Translator Module
+# DisCoPy Translator — Technical Specification
 
-## Design Requirements
-This module (`discopy_translator_module`) maps structural logic to the overall execution graph.
-It ensures that `Discopy Translator Module` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Translation Pipeline
+
+1. Parse DisCoPy diagram structure
+2. Map categorical morphisms to JAX tensor operations
+3. Execute JAX computation
+4. Visualize results within categorical framework
+
+## Input
+
+- DisCoPy diagram objects or serialized representations
+- JAX computation outputs (numpy arrays)
+
+## Output
+
+- Translated tensor network representations
+- Visualization images (PNG/SVG)
+
+## Constraints
+
+- Preserves functorial structure during translation
+- Supports monoidal and traced categories

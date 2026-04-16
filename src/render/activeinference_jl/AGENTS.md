@@ -445,9 +445,12 @@ GNN Model → ActiveInference.jl Conversion → Template Application → Julia C
 - `src/tests/test_render_integration.py` - Integration tests
 
 ### Test Coverage
-- **Current**: 74%
-- **Target**: 80%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_activeinference_jl*.py \
+    --cov=src/render/activeinference_jl --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. ActiveInference.jl code generation from various GNN models
 2. Generated Julia code syntax and import validation
@@ -545,7 +548,7 @@ result = generate_activeinference_jl_code(model_data, debug=True, verbose=True)
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete ActiveInference.jl code generation pipeline

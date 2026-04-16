@@ -445,9 +445,12 @@ Configuration → Logging Setup → Resource Monitoring → Error Handling → P
 - `src/tests/test_new_utils.py` - Additional utils tests
 
 ### Test Coverage
-- **Current**: 93%
-- **Target**: 95%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_utils*.py \
+    --cov=src/utils --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Logging and diagnostic utilities
 2. Configuration and argument parsing
@@ -501,7 +504,7 @@ def get_system_info_tool():
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Centralized logging system

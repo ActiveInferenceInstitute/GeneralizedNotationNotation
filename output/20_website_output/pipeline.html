@@ -341,7 +341,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-04-15 12:39</p>
+      <p>Generated 2026-04-16 10:09</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -369,153 +369,153 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     <thead><tr><th>#</th><th>Step</th><th>Description</th><th>Status</th><th>Script</th></tr></thead>
     <tbody><tr>
   <td><code>00</code></td>
-  <td>Setup</td>
-  <td>Environment setup, dependency checking</td>
+  <td>Template</td>
+  <td>Pipeline template and initialization</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">0_setup.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">0_template.py</code></td>
 </tr><tr>
   <td><code>01</code></td>
-  <td>GNN File Discovery</td>
-  <td>Discover and index all GNN source files</td>
+  <td>Setup</td>
+  <td>Environment setup and dependency install</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">1_gnn_file_discovery.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">1_setup.py</code></td>
 </tr><tr>
   <td><code>02</code></td>
-  <td>File Listing</td>
-  <td>List and catalog GNN files for processing</td>
+  <td>Tests</td>
+  <td>Test suite execution (pytest)</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">2_file_listing.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">2_tests.py</code></td>
 </tr><tr>
   <td><code>03</code></td>
-  <td>GNN Parsing</td>
-  <td>Parse GNN files into structured models</td>
+  <td>GNN Processing</td>
+  <td>GNN file discovery, parsing, and multi-format serialization</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">3_gnn_parsing.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">3_gnn_processing.py</code></td>
 </tr><tr>
   <td><code>04</code></td>
-  <td>MCP Parsing</td>
-  <td>Parse MCP-format specifications</td>
+  <td>Model Registry</td>
+  <td>Model versioning and registry management</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">4_mcp_parsing.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">4_model_registry.py</code></td>
 </tr><tr>
   <td><code>05</code></td>
   <td>Type Checking</td>
-  <td>Validate types and dimensions in GNN models</td>
+  <td>GNN type validation and resource estimation</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">5_type_checking.py</code></td>
 </tr><tr>
   <td><code>06</code></td>
   <td>Validation</td>
-  <td>Schema and semantic validation of GNN content</td>
+  <td>Consistency and semantic quality checking</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">6_validation.py</code></td>
 </tr><tr>
   <td><code>07</code></td>
   <td>Export</td>
-  <td>Export GNN to Julia, Python, and other formats</td>
+  <td>Multi-format export (JSON, XML, GraphML, GEXF, Pickle)</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">7_export.py</code></td>
 </tr><tr>
   <td><code>08</code></td>
   <td>Visualization</td>
-  <td>Generate static visualizations and plots</td>
+  <td>Graph and matrix visualization generation</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">8_visualization.py</code></td>
 </tr><tr>
   <td><code>09</code></td>
-  <td>Advanced Visualization</td>
-  <td>Interactive HTML plots and dashboards</td>
+  <td>Advanced Viz</td>
+  <td>Interactive and advanced visualization (Plotly, D3)</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">9_advanced_visualization.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">9_advanced_viz.py</code></td>
 </tr><tr>
   <td><code>10</code></td>
-  <td>Ontology Processing</td>
-  <td>Map variables to Active Inference ontology</td>
+  <td>Ontology</td>
+  <td>Active Inference ontology processing and validation</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">10_ontology_processing.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">10_ontology.py</code></td>
 </tr><tr>
   <td><code>11</code></td>
   <td>Rendering</td>
-  <td>Render GNN models to target code</td>
+  <td>Code generation for simulation frameworks</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">11_rendering.py</code></td>
 </tr><tr>
   <td><code>12</code></td>
   <td>Execution</td>
-  <td>Execute rendered GNN simulations</td>
+  <td>Execute rendered simulation scripts</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">12_execution.py</code></td>
 </tr><tr>
   <td><code>13</code></td>
-  <td>LLM Integration</td>
-  <td>LLM-assisted annotation and analysis</td>
+  <td>LLM</td>
+  <td>LLM-enhanced analysis and model interpretation</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">13_llm_integration.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">13_llm.py</code></td>
 </tr><tr>
   <td><code>14</code></td>
   <td>ML Integration</td>
-  <td>Machine learning model integration</td>
+  <td>Machine learning integration and model training</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">14_ml_integration.py</code></td>
 </tr><tr>
   <td><code>15</code></td>
-  <td>Audio Generation</td>
-  <td>SAPF audio synthesis from GNN models</td>
+  <td>Audio</td>
+  <td>Audio sonification generation (SAPF)</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">15_audio_generation.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">15_audio.py</code></td>
 </tr><tr>
   <td><code>16</code></td>
   <td>Analysis</td>
-  <td>Statistical and complexity analysis</td>
+  <td>Statistical analysis and cross-simulation aggregation</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">16_analysis.py</code></td>
 </tr><tr>
   <td><code>17</code></td>
   <td>Integration</td>
-  <td>Third-party system integration</td>
+  <td>System integration and cross-module coordination</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">17_integration.py</code></td>
 </tr><tr>
   <td><code>18</code></td>
   <td>Security</td>
-  <td>Security scanning and compliance checks</td>
+  <td>Security validation and generated code scanning</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">18_security.py</code></td>
 </tr><tr>
   <td><code>19</code></td>
   <td>Research</td>
-  <td>Research query and literature processing</td>
+  <td>Research tools and literature references</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">19_research.py</code></td>
 </tr><tr>
   <td><code>20</code></td>
-  <td>Website Generation</td>
-  <td>Static website from pipeline artifacts</td>
+  <td>Website</td>
+  <td>Static HTML website generation from pipeline artifacts</td>
   <td><span class="step-badge badge-ok">Complete</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">20_website_generation.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">20_website.py</code></td>
 </tr><tr>
   <td><code>21</code></td>
   <td>MCP Processing</td>
-  <td>Model Context Protocol server setup</td>
-  <td><span class="step-badge badge-pending">Pending</span></td>
+  <td>Model Context Protocol processing and tool registration</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">21_mcp_processing.py</code></td>
 </tr><tr>
   <td><code>22</code></td>
   <td>GUI</td>
-  <td>Interactive GUI interfaces</td>
-  <td><span class="step-badge badge-pending">Pending</span></td>
+  <td>Interactive GNN constructor GUI</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">22_gui.py</code></td>
 </tr><tr>
   <td><code>23</code></td>
-  <td>Report Generation</td>
-  <td>Comprehensive PDF/HTML report creation</td>
-  <td><span class="step-badge badge-pending">Pending</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">23_report_generation.py</code></td>
+  <td>Report</td>
+  <td>Comprehensive analysis report generation</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">23_report.py</code></td>
 </tr><tr>
   <td><code>24</code></td>
   <td>Intelligent Analysis</td>
-  <td>LLM-powered pipeline executive summary</td>
-  <td><span class="step-badge badge-pending">Pending</span></td>
+  <td>AI-powered pipeline analysis and executive reports</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
   <td><code style="font-size:11px;color:var(--text-3)">24_intelligent_analysis.py</code></td>
 </tr></tbody>
   </table>

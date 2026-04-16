@@ -1,8 +1,19 @@
-# Specification: Infrastructure
+# Test Infrastructure — Technical Specification
 
-## Design Requirements
-This module (`infrastructure`) maps structural logic to the overall execution graph.
-It ensures that `Infrastructure` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: ResourceMonitor, TestExecutionConfig, TestExecutionResult, TestRunner
+## Test Runner
+
+- Custom pytest runner (`test_runner.py`)
+- Progress tracking with visual indicators
+- Resource monitoring (memory, CPU) via `resource_monitor.py`
+- HTML + JSON report generation via `report_generator.py`
+
+## Test Configuration
+
+- `test_config.py` detects: GPU availability, Ollama presence, network connectivity
+- Auto-applies pytest markers: `@pytest.mark.gpu`, `@pytest.mark.llm`, `@pytest.mark.network`
+
+## Utility Functions
+
+- `utils.py` (365 lines) — Timer utilities, path helpers, assertion wrappers

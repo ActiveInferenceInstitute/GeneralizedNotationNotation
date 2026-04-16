@@ -27,7 +27,7 @@ from .execution import (
 from .health_check import EnhancedHealthChecker, run_enhanced_health_check
 
 # Module metadata
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 __author__ = "Active Inference Institute"
 __description__ = "GNN pipeline orchestration and execution"
 
@@ -71,6 +71,7 @@ class PipelineStep:
         return True
 
 def get_module_info() -> dict:
+    """Return pipeline module metadata for composability and MCP discovery."""
     return {
         "version": __version__,
         "description": "GNN pipeline orchestration and execution",
@@ -80,9 +81,11 @@ def get_module_info() -> dict:
     }
 
 def validate_pipeline_step(step_name: str) -> bool:
+    """Validate that a pipeline step configuration is well-formed."""
     return step_name in STEP_METADATA
 
 def discover_pipeline_steps() -> list[str]:
+    """Discover all available pipeline step modules in the src directory."""
     return list(STEP_METADATA.keys())
 
 # Main API functions

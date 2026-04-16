@@ -423,21 +423,19 @@ output/9_advanced_viz_output/
 
 ### Test Coverage
 
-- **Current**: 95%+ ✅
-- **Test Categories**:
-  - ✅ Unit Tests: Module imports, instantiation, basic functionality
-  - ✅ Integration Tests: Data extraction, visualization generation
-  - ✅ Error Handling: Invalid content, missing dependencies
-  - ✅ Performance Tests: Execution time and resource usage
-  - ✅ Pipeline Integration: End-to-end workflow testing
+Measure on demand:
 
-### Test Results (Latest Run)
+```bash
+uv run pytest src/tests/test_advanced_visualization*.py \
+    --cov=src/advanced_visualization --cov-report=term-missing
+```
 
-- **Total Tests**: 17
-- **Passed**: 16 ✅
-- **Skipped**: 1 (MCP integration - optional)
-- **Failed**: 0 ✅
-- **Coverage**: All major functionality tested and verified
+### Test Categories
+
+- Unit: module imports, instantiation, basic API surface
+- Integration: data extraction, end-to-end visualization generation
+- Error handling: missing dependencies, malformed content, degraded paths
+- Performance: execution time / resource usage smoke tests
 
 ---
 
@@ -522,7 +520,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 

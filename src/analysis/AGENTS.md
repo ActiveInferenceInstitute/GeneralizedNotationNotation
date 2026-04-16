@@ -263,9 +263,12 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 - `src/tests/test_analysis_extraction.py` - Result extraction tests
 
 ### Test Coverage
-- **Current**: 80%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_analysis*.py \
+    --cov=src/analysis --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Statistical analysis with various model sizes
 2. Complexity metric calculation accuracy
@@ -325,7 +328,7 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Statistical analysis

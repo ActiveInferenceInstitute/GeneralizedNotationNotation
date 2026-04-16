@@ -81,7 +81,7 @@ This index maps relationships between frameworks, theory pages, and tooling. For
 - **Primary**: [DisCoPy Guide](discopy/gnn_discopy.md)
 - **Templates**: [Hierarchical Template](templates/hierarchical_template.md)
 - **Theory**: [Advanced Patterns - Compositional Modeling](gnn/advanced/advanced_modeling_patterns.md)
-- **Pipeline**: DisCoPy backends participate in **Step 11 (render)** and **Step 12 (execute)** ([CLAUDE.md](../CLAUDE.md)); see [execute/discopy](../../src/execute/discopy/README.md) and [render/discopy](../../src/render/discopy/README.md)
+- **Pipeline**: DisCoPy backends participate in **Step 11 (render)** and **Step 12 (execute)** ([CLAUDE.md](../CLAUDE.md)); see [execute/discopy](../../src/execute/discopy_translator_module/README.md) and [render/discopy](../../src/render/discopy/README.md)
 - **Examples**: [Simple DisCoPy Test](archive/gnn_simple_discopy_test.md)
 
 ### LLM Integrations

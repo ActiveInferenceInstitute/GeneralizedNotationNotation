@@ -235,9 +235,12 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 - `src/tests/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
-- **Current**: 82%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_validation*.py \
+    --cov=src/validation --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Model structure validation
 2. Semantic consistency checking

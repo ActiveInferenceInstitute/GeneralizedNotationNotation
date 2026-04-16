@@ -432,7 +432,6 @@ output/3_gnn_output/
 │   ├── model_name.scala
 │   ├── model_name.lean
 │   ├── model_name.coq
-│   ├── model_name.py
 │   ├── ... (additional serializer outputs)
 ├── gnn_processing_results.json
 └── gnn_processing_summary.json

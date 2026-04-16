@@ -16,7 +16,7 @@ Public API:
 - get_available_guis: list all available GUI implementations
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "form_based_constructor": True,
     "visual_matrix_editor": True,
@@ -82,3 +82,13 @@ __all__ = [
     "update_state_space_entry",
     "remove_state_space_entry",
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "gui",
+        "version": __version__,
+        "description": "Interactive GUI for GNN model construction",
+        "features": FEATURES,
+    }

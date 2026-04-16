@@ -154,7 +154,7 @@ class PipelineArguments:
             self.ontology_terms_file = Path(self.ontology_terms_file)
 
         if self.pipeline_summary_file is None:
-            self.pipeline_summary_file = self.output_dir / "pipeline_execution_summary.json"
+            self.pipeline_summary_file = self.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
         elif isinstance(self.pipeline_summary_file, str):
             self.pipeline_summary_file = Path(self.pipeline_summary_file)
 

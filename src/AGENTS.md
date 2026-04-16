@@ -178,16 +178,21 @@ graph TD
 - MCP integration and documentation coverage are tracked by repository audits.
 - Use step outputs and tests as the ground-truth status indicators.
 
-### Recent Validation (March 2026)
+### Defaults worth knowing
 
-- **MCP Deadlock Resolved**: Fixed a multithreading deadlock in `discover_modules` that caused silent timeouts, restoring full pipeline summaries with 131 tools registered perfectly within 5 seconds.
-- **LLM Glob Fixed**: Resolved recursive path issues during LLM processing logic.
-- **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
-- **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
-- **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests (local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-12). Re-include those modules when `ollama` is installed and responsive.
-- **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; configurable).
-- **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
+- **LLM default model**: `smollm2:135m-instruct-q4_K_S` via Ollama
+  (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with the `OLLAMA_MODEL` env var or
+  `input/config.yaml`).
+- **MCP registration**: `discover_modules` walks `src/*/mcp.py` on startup; see
+  `src/mcp/processor.py` for the worker pool configuration.
+- **Tests command of record**: `uv sync --extra dev && uv run pytest src/tests/ -q
+  --tb=no --ignore=src/tests/test_llm_ollama.py
+  --ignore=src/tests/test_llm_ollama_integration.py`. Re-include the two Ollama files
+  when `ollama` is installed and reachable.
+
+Per-step timings, tool counts, and pass totals live in `output/` and
+`src/tests/TEST_SUITE_SUMMARY.md` — treat those artifacts as the source of truth rather
+than numbers quoted in documentation.
 
 ---
 

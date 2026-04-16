@@ -202,7 +202,7 @@ class PipelineContext:
 
     def save_summary(self, path: Optional[Path] = None) -> Path:
         """Write summary to JSON file."""
-        path = path or self.output_dir / "pipeline_execution_summary.json"
+        path = path or self.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w") as f:
             json.dump(self.summary(), f, indent=2)

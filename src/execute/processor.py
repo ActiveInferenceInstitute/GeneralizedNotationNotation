@@ -299,6 +299,7 @@ def process_execute(
                     dispatcher = Dispatcher(backend=backend)
                     
                     def ray_script_runner(info, **kws):
+                        """Execute a rendered simulation script using Ray for distributed processing."""
                         # Re-instantiate logger to avoid pickle issues
                         import logging
                         local_logger = logging.getLogger("execute.worker")

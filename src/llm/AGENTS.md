@@ -290,9 +290,12 @@ if result.returncode == 0:
 - `src/tests/test_llm_ollama_integration.py` - Ollama integration tests
 
 ### Test Coverage
-- **Current**: 76%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_llm*.py \
+    --cov=src/llm --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Ollama detection and availability check
 2. Model selection and prioritization
@@ -633,7 +636,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Multi-provider LLM support (OpenAI, Anthropic, Ollama)

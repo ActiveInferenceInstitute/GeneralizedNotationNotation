@@ -24,7 +24,8 @@ CI uses a narrower marker (`-m "not pipeline and not mcp"`); see [.github/workfl
 
 ### Test Organization (illustrative)
 ```
-src/tests/
+# Reference structure (actual test files are in src/tests/)
+
 ├── unit/                    # Unit tests for individual components (conceptual; see flat test_*.py)
 │   ├── test_gnn_parser.py
 │   ├── test_type_checker.py

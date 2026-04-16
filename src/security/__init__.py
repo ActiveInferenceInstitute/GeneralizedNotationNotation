@@ -4,7 +4,7 @@ Security module for GNN Processing Pipeline.
 This module provides security validation and access control for GNN models.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "vulnerability_detection": True,
     "security_scoring": True,
@@ -33,3 +33,13 @@ __all__ = [
     'FEATURES',
     '__version__'
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "security",
+        "version": __version__,
+        "description": "Security validation, vulnerability scanning, and access control",
+        "features": FEATURES,
+    }

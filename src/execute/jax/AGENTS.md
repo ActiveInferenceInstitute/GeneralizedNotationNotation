@@ -466,9 +466,12 @@ JAX Code Generation → Device Selection → Hardware Validation → JIT Compila
 - `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
-- **Current**: 82%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_jax*.py \
+    --cov=src/execute/jax --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Device detection and selection across different hardware
 2. Script execution with various JAX features (JIT, vmap, grad)
@@ -578,7 +581,7 @@ results = execute_jax_script(
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete JAX execution pipeline with hardware acceleration

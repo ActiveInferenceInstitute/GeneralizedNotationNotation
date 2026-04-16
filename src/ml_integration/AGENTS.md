@@ -269,9 +269,12 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 - `src/tests/test_ml_integration_overall.py` - Module-level tests
 
 ### Test Coverage
-- **Current**: 72%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_ml_integration*.py \
+    --cov=src/ml_integration --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Framework detection and selection
 2. Model generation and training across frameworks

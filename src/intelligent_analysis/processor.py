@@ -114,13 +114,14 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
     avg_duration = sum(durations) / len(durations) if durations else 0
 
     memories = [s.get("peak_memory_mb", 0) for s in steps if s.get("peak_memory_mb")]
-    sum(memories) / len(memories) if memories else 0
+    avg_memory = sum(memories) / len(memories) if memories else 0
 
     # Thresholds for flags
     SLOW_THRESHOLD = 60.0  # seconds
     VERY_SLOW_THRESHOLD = 120.0  # seconds
     HIGH_MEMORY_THRESHOLD = 500.0  # MB
     CRITICAL_MEMORY_THRESHOLD = 1000.0  # MB
+    AVG_MEMORY_MULTIPLIER = 3  # flag if memory > avg * this
 
     flags_by_type = {"red": [], "yellow": [], "green": []}
 
@@ -154,7 +155,13 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
             if flag_type != "red":
                 flag_type = "yellow"
 
-        # Memory flags
+        # Memory flags (absolute thresholds + relative to average)
+        if avg_memory > 0 and memory > avg_memory * AVG_MEMORY_MULTIPLIER:
+            flags.append(f"Memory above average: {memory:.0f}MB ({memory/avg_memory:.1f}x avg)")
+            if flag_type not in ("red", "yellow"):
+                flag_type = "yellow"
+
+        # Memory absolute flags
         if memory > CRITICAL_MEMORY_THRESHOLD:
             flags.append(f"Critical memory: {memory:.0f}MB (>{CRITICAL_MEMORY_THRESHOLD}MB)")
             if flag_type != "red":

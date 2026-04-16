@@ -51,7 +51,7 @@ from .server_core import create_mcp_server, start_mcp_server
 MCPServer = MCP
 
 # Module metadata
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 __author__ = "Active Inference Institute"
 __description__ = "Enhanced Model Context Protocol implementation for GNN"
 
@@ -121,3 +121,13 @@ __all__ = [
     'FEATURES',
     '__version__'
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "mcp",
+        "version": __version__,
+        "description": "Model Context Protocol tool registration and discovery",
+        "features": FEATURES,
+    }

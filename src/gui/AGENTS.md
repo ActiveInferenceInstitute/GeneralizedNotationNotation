@@ -397,9 +397,12 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 - `src/tests/test_oxdraw_integration.py` - oxdraw integration tests
 
 ### Test Coverage
-- **Current**: 68%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_gui*.py \
+    --cov=src/gui --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. GUI startup and shutdown in headless mode
 2. Component creation and editing workflows
@@ -518,7 +521,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)

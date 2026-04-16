@@ -282,6 +282,26 @@ __all__ = [
 ]
 
 # Module metadata
-__version__ = "1.1.4"
+__version__ = "1.6.0"
+
+FEATURES = {
+    "pytest_integration": True,
+    "test_discovery": True,
+    "fixture_management": True,
+    "coverage_tracking": True,
+    "mcp_integration": True,
+}
+
 __author__ = "Active Inference Institute"
 __description__ = "Comprehensive testing for GNN Processing Pipeline"
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "tests",
+        "version": __version__,
+        "description": "Comprehensive test suite infrastructure and execution",
+        "features": FEATURES,
+    }
+

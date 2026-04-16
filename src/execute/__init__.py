@@ -5,7 +5,7 @@ This module provides execute capabilities with comprehensive safety patterns,
 validation, monitoring, and error recovery systems.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "pymdp_execution": True,
     "rxinfer_execution": True,
@@ -166,3 +166,13 @@ __all__ = [
     'check_file_permissions',
     'check_network_connectivity',
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "execute",
+        "version": __version__,
+        "description": "Multi-framework execution of rendered simulation scripts",
+        "features": FEATURES,
+    }

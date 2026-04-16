@@ -891,7 +891,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 

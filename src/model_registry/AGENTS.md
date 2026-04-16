@@ -276,9 +276,12 @@ output/4_model_registry_output/
 
 ### Test Coverage
 
-- **Current**: 80%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_model_registry*.py \
+    --cov=src/model_registry --cov-report=term-missing
+```
 ---
 
 

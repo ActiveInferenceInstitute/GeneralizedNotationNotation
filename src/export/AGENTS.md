@@ -266,9 +266,12 @@ output/7_export_output/
 
 ### Test Coverage
 
-- **Current**: 86%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_export*.py \
+    --cov=src/export --cov-report=term-missing
+```
 ### Key Test Scenarios
 
 1. Multi-format export generation
@@ -349,7 +352,7 @@ python src/7_export.py --target-dir input/ --verbose
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current Version: 1.6.0
 
 **Features**:
 

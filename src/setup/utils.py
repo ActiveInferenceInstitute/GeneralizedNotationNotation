@@ -9,6 +9,11 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List
 
+try:
+    from setup import __version__
+except ImportError:
+    __version__ = "1.6.0"
+
 logger = logging.getLogger(__name__)
 
 def ensure_directory(directory_path: Path) -> Path:
@@ -77,7 +82,7 @@ def get_module_info() -> Dict[str, Any]:
         Dictionary with module information
     """
     return {
-        'version': "2.0.0",
+        'version': __version__,
         'description': "GNN environment setup and management with UV",
         'features': {
             'uv_environment_setup': True,

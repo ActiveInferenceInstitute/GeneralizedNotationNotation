@@ -35,6 +35,10 @@ SKIP_PARTS = frozenset(
         "dist",
         "build",
         ".eggs",
+        # Pipeline-generated artifacts — not maintained documentation.
+        # LLM output, render output, execute output, etc. may contain code-like
+        # fragments that the link regex would otherwise mis-parse.
+        "output",
     }
 )
 
@@ -94,9 +98,26 @@ LINK_RE = re.compile(r"\[[^\]]*\]\(([^)#\s]+)(?:#[^)]*)?\)")
 # [text](url) — full href including fragment (for anchor checks)
 FULL_LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 
+# Fenced code blocks (``` … ``` or ~~~ … ~~~), non-greedy, DOTALL so fences can span lines.
+FENCED_CODE_RE = re.compile(r"(?ms)^([ \t]*)(```|~~~)[^\n]*\n.*?^\1\2[ \t]*$")
+
+# Inline code spans: `…` or ``…`` (shortest match wins within a line).
+INLINE_CODE_RE = re.compile(r"(`+)(?:(?!\1).)+\1")
+
+
+def _strip_code(md: str) -> str:
+    """Remove fenced code blocks and inline code spans so link regexes don't match
+    Python / shell snippets that happen to contain ``[ident](expr)``."""
+    no_blocks = FENCED_CODE_RE.sub(
+        lambda m: "\n".join("" for _ in m.group(0).splitlines()), md
+    )
+    return INLINE_CODE_RE.sub(
+        lambda m: " " * len(m.group(0)), no_blocks
+    )
+
 
 def extract_links(md: str) -> list[str]:
-    return [m.group(1).strip() for m in LINK_RE.finditer(md)]
+    return [m.group(1).strip() for m in LINK_RE.finditer(_strip_code(md))]
 
 
 def _gfm_heading_slug(heading_line: str) -> str:
@@ -128,7 +149,8 @@ def audit_bad_markdown_anchors(files: list[Path]) -> list[tuple[Path, int, str, 
             rel_src = src.relative_to(REPO_ROOT)
         except ValueError:
             continue
-        lines = src.read_text(encoding="utf-8", errors="replace").splitlines()
+        raw = src.read_text(encoding="utf-8", errors="replace")
+        lines = _strip_code(raw).splitlines()
         for i, line in enumerate(lines, start=1):
             for m in FULL_LINK_RE.finditer(line):
                 href = m.group(1).strip()
@@ -193,7 +215,7 @@ def audit_broken_links(files: list[Path]) -> list[tuple[Path, int, str, str]]:
     issues: list[tuple[Path, int, str, str]] = []
     for path in files:
         text = path.read_text(encoding="utf-8", errors="replace")
-        lines = text.splitlines()
+        lines = _strip_code(text).splitlines()
         for i, line in enumerate(lines, start=1):
             for href in extract_links(line):
                 if href.startswith("`"):

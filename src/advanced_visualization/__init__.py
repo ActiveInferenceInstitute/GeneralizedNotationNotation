@@ -4,7 +4,7 @@ Advanced visualization package for GNN Processing Pipeline.
 Exports real advanced visualization components including D2 diagram generation.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "d2_diagrams": True,
     "interactive_dashboards": True,
@@ -71,3 +71,13 @@ __all__ = [
     'process_gnn_file_with_d2',  # Process GNN files with D2
     'D2_AVAILABLE',  # D2 availability flag
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "advanced_visualization",
+        "version": __version__,
+        "description": "Advanced 3D visualization and interactive dashboards for GNN models",
+        "features": FEATURES,
+    }

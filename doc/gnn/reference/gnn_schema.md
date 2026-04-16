@@ -206,7 +206,6 @@ src/5_type_checker.py (thin orchestrator)
     │   ├── analyze_variable_types() (line 13)
     │   ├── analyze_connections() 
     │   └── estimate_computational_complexity()
-    ├── checker.py 
     │   └── GNNTypeChecker (line 174-268)
     │       ├── check_file() (line 232)
     │       ├── _check_required_sections()

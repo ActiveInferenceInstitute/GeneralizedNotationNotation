@@ -1,8 +1,24 @@
-# Specification: Rxinfer
+# RxInfer Analysis — Technical Specification
 
-## Design Requirements
-This module (`rxinfer`) maps structural logic to the overall execution graph.
-It ensures that `Rxinfer` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Input
+
+- `simulation_results.json` from RxInfer (Julia) execution step
+- Message-passing inference results
+
+## Output
+
+- Belief trajectory plots (PNG)
+- Message flow analysis (PNG)
+- Convergence diagnostics (JSON)
+
+## Framework
+
+- Julia RxInfer reactive inference results
+- Matplotlib visualization
+
+## Error Handling
+
+- Missing Julia results → graceful skip
+- Non-convergent inference → diagnostic warning

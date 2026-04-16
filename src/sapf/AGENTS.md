@@ -232,9 +232,12 @@ GNN Content → SAPF Conversion → Audio Generation → Audio Analysis → Outp
 - `src/tests/test_audio_sapf.py` - SAPF audio backend tests
 
 ### Test Coverage
-- **Current**: 75%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_sapf*.py \
+    --cov=src/sapf --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Audio generation with various GNN models
 2. SAPF conversion and validation

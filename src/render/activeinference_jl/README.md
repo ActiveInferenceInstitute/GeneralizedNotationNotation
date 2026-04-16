@@ -14,8 +14,6 @@ src/render/activeinference_jl/
 ├── README.md                           # This documentation
 ├── AGENTS.md                           # Detailed agent scaffolding
 ├── activeinference_renderer.py         # Main renderer
-├── activeinference_renderer_fixed.py   # Fixed renderer version
-└── activeinference_renderer_simple.py  # Simplified renderer
 ```
 
 ## Core Components
@@ -30,7 +28,6 @@ src/render/activeinference_jl/
 - `render_hierarchical_structure()` - Hierarchical planning support
 - `generate_inference_loop()` - Inference loop generation
 
-### Simplified Renderer (`activeinference_renderer_simple.py`)
 
 **Purpose**: Provide simpler rendering for basic models
 

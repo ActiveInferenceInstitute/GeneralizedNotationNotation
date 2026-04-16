@@ -276,9 +276,12 @@ output/10_ontology_output/
 - `src/tests/test_ontology_overall.py`
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_ontology*.py \
+    --cov=src/ontology --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Ontology term extraction
 2. Ontology compliance validation
@@ -342,7 +345,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Ontology term extraction

@@ -400,8 +400,14 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 
 ### Test Coverage
 
-- **Current**: New module (comprehensive tests included)
-- **Target**: 90%+
+Measure on demand:
+
+```bash
+uv run pytest src/tests/test_oxdraw_integration.py \
+    src/tests/test_mermaid_converter.py \
+    src/tests/test_mermaid_parser.py \
+    --cov=src/gui/oxdraw --cov-report=term-missing
+```
 
 ### Key Test Scenarios
 
@@ -509,7 +515,7 @@ for error in errors:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 

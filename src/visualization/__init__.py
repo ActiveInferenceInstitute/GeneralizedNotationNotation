@@ -86,16 +86,19 @@ from .processor import (
     process_visualization,
 )
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 
 def get_module_info() -> dict:
+    """Return visualization module metadata for composability and MCP discovery."""
     return {
         "version": __version__,
         "description": "Visualization utilities for matrices, graphs, and ontology.",
+        "features": FEATURES,
         "visualization_types": ["matrix", "graph", "ontology"]
     }
 
 def get_visualization_options() -> dict:
+    """Return available visualization configuration options."""
     return {
         "matrix_types": ["heatmap", "statistics", "tensor", "pomdp_analysis"],
         "graph_types": ["connections", "bipartite", "combined"],

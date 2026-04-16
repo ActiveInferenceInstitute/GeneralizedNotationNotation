@@ -8,6 +8,16 @@ Provides:
 
 Requires `pygls` package. Falls back gracefully when not installed.
 """
+__version__ = "1.6.0"
+
+FEATURES = {
+    "diagnostics": True,
+    "hover_info": True,
+    "completion": True,
+    "gnn_language_support": True,
+}
+
+
 
 import logging
 import re
@@ -223,3 +233,14 @@ def start_server():
         server.start_io()
     else:
         logger.error("LSP server could not be created (missing pygls)")
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "lsp",
+        "version": __version__,
+        "description": "Language Server Protocol support for GNN files",
+        "features": FEATURES,
+    }
+

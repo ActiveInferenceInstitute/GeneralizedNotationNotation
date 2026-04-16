@@ -1,23 +1,20 @@
-# Cognitive Phenomena - Agent Scaffolding
+# Cognitive Phenomena Documentation
 
-## Module Overview
+## Overview
 
-**Purpose**: Responsible for `Cognitive Phenomena` operations within the GNN pipeline architecture.
-**Category**: Generated Pipeline Component
-**Status**: Development
+Documentation subtree exploring cognitive phenomena relevant to Active Inference generative models. Covers cognitive effort, memory, attention, and related concepts that inform GNN model design.
 
----
+## Subdirectories
 
-## Core Functionality
+- `effort/` — Cognitive effort and resource allocation models
+- `memory/` — Memory systems and temporal dynamics
 
-### Primary Responsibilities
-Handles internal processing and logical orchestration for this namespace.
+## Purpose
 
-### Extracted Code Entities
+Provides theoretical background and references for GNN model designers working with cognitively-grounded Active Inference models.
 
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Parent Module
 
-## Implementation Details
+See [doc/AGENTS.md](../AGENTS.md) for the overall documentation architecture.
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+**Version**: 1.6.0

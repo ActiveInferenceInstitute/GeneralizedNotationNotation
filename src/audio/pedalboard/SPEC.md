@@ -1,8 +1,25 @@
-# Specification: Pedalboard
+# Pedalboard Audio Processing — Technical Specification
 
-## Design Requirements
-This module (`pedalboard`) maps structural logic to the overall execution graph.
-It ensures that `Pedalboard` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Purpose
+
+Audio effects processing using Spotify's Pedalboard library for post-processing generated audio.
+
+## Effects Pipeline
+
+- Reverb, delay, compression, EQ
+- Configurable effect chains per model type
+
+## Input
+
+- WAV audio files from SAPF generation
+
+## Output
+
+- Processed WAV files with applied effects
+- Effects metadata (JSON)
+
+## Dependencies
+
+- `pedalboard >= 0.7.0` (optional, graceful skip)

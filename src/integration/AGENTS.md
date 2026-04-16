@@ -206,9 +206,12 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 - `src/tests/test_integration_processor.py` - Processor-level integration tests
 
 ### Test Coverage
-- **Current**: 83%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_integration*.py \
+    --cov=src/integration --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Cross-module coordination with various step combinations
 2. Recovery mode operation when dependencies unavailable
@@ -262,7 +265,7 @@ def get_integration_status():
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Cross-module coordination

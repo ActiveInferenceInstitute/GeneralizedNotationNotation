@@ -1,572 +1,232 @@
-# Setup Module
+# Setup Module (Step 1)
 
-This module provides comprehensive environment setup and dependency management capabilities for the GNN pipeline using **UV** (modern Python package manager), including UV environment management, package installation, and system configuration.
+Environment setup and dependency management for the GNN pipeline. Delegates all package
+operations to [uv](https://docs.astral.sh/uv/) and reads dependencies from
+`pyproject.toml` / `uv.lock`.
 
-## Module Structure
+The thin orchestrator [`src/1_setup.py`](../1_setup.py) calls functions exported here.
+
+## Module Layout
 
 ```
 src/setup/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
-├── mcp.py                         # Model Context Protocol integration
-├── setup.py                       # Core setup functionality
-└── utils.py                       # Setup utilities
+├── __init__.py           # Public API (see __all__)
+├── constants.py          # Paths, minimum Python version, OPTIONAL_GROUPS table
+├── setup.py              # `perform_full_setup` — three-phase orchestration
+├── uv_management.py      # Env creation, uv sync, probes, health checks
+├── uv_package_ops.py     # `uv add` / `uv remove` / `uv sync` / `uv lock`
+├── dependency_setup.py   # JAX stack probe, optional group install, project init
+├── utils.py              # Directory helpers, module info, output paths
+├── validator.py          # System / environment / uv status reports
+├── mcp.py                # MCP tool registrations
+├── AGENTS.md             # Agentic overview (API signatures)
+├── SPEC.md               # Component breakdown
+└── SKILL.md              # Capability card for LLM consumers
 ```
 
-### Setup Workflow
+## Setup Workflow
 
 ```mermaid
-flowchart TD
-    Start[Init Setup] --> SystemCheck{System Met?}
-    SystemCheck -->|No| Fail[Error]
-    SystemCheck -->|Yes| UVCheck{UV Installed?}
-    UVCheck -->|No| InstallUV[Install UV]
-    UVCheck -->|Yes| CreateEnv[Create venv]
-    InstallUV --> CreateEnv
-    CreateEnv --> InstallDeps[Install Deps]
-    InstallDeps --> Config[Configure Env]
-    Config --> Done[Setup Complete]
-    
-    subgraph "UV Management"
-    InstallUV
-    CreateEnv
-    InstallDeps
-    Config
-    end
+flowchart LR
+    CLI[1_setup.py] --> Orch[setup_orchestrator]
+    Orch -->|default| Sync[setup_uv_environment]
+    Orch -->|--install-optional| Full[setup_complete_environment]
+    Sync --> Phase1[check_system_requirements]
+    Phase1 --> Phase2[create_uv_environment]
+    Phase2 --> Phase3[install_uv_dependencies]
+    Phase3 --> Probe[run_jax_stack_probe_subprocess]
+    Full --> Sync
+    Full --> Extras[install_optional_package_group*]
 ```
 
-## Core Components
+## Public API
 
-### Setup Functions
+The sections below list what is exported via `src/setup/__init__.py`. Every signature below
+matches the implementation. Prefer importing from the package root (`from setup import …`)
+rather than submodules.
 
-#### `process_setup(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
-Main function for processing setup-related tasks.
+### Environment setup
 
-**Features:**
-- UV environment setup and configuration
-- UV dependency management and installation
-- UV virtual environment creation
-- System requirements validation
-- Setup documentation
+| Function | Defined in | Summary |
+|----------|-----------|---------|
+| `setup_uv_environment(verbose=False, recreate=False, dev=False, extras=None, install_all_extras=False, skip_jax_test=False, output_dir=None)` | `uv_management` | End-to-end env creation + `uv sync` + optional JAX probe |
+| `install_uv_dependencies(verbose=False, dev=False, extras=None, install_all_extras=False)` | `uv_management` | `uv sync` with selected `--extra`/`--all-extras` flags |
+| `validate_uv_setup()` | `uv_management` | Structured dict of venv/python/uv status |
+| `cleanup_uv_setup(verbose=False)` | `uv_management` | Best-effort removal of `.venv` |
+| `get_uv_setup_info()` | `uv_management` | Current uv version, lock hash, platform metadata |
+| `check_system_requirements(verbose=False) -> bool` | `uv_management` | Minimum Python, memory, disk checks |
+| `check_uv_availability() -> bool` | `uv_management` | Whether `uv` is on `PATH` |
+| `check_environment_health()` | `uv_management` | Aggregate venv health report |
+| `log_system_info(verbose=False)` | `uv_management` | Emits platform and interpreter info |
+| `get_installed_package_versions()` | `uv_management` | Dict of installed package → version |
 
-**Returns:**
-- `bool`: Success status of setup operations
-
-### UV Environment Management Functions
-
-#### `create_uv_environment(env_path: Path, python_version: str = "3.9") -> bool`
-Creates a UV environment for the project.
-
-**Features:**
-- UV environment creation using `uv init`
-- Python version specification
-- Environment isolation
-- Path configuration
-- Activation scripts
-
-#### `install_uv_dependencies(requirements_file: Path, env_path: Path = None) -> bool`
-Installs project dependencies using UV.
-
-**Installation Features:**
-- Package installation via `uv sync`
-- Version management via `uv.lock`
-- Dependency resolution
-- Conflict resolution
-- Installation verification
-
-#### `validate_system_requirements() -> Dict[str, Any]`
-Validates system requirements for the pipeline.
-
-**Validation Features:**
-- Python version checking
-- UV availability checking
-- System resource validation
-- Package availability checking
-- Hardware requirements
-
-### UV Configuration Management Functions
-
-#### `configure_uv_environment(config: Dict[str, Any]) -> bool`
-Configures the UV environment with specified settings.
-
-**Configuration Features:**
-- Environment variables
-- Path configuration
-- System settings
-- Package configurations
-- Runtime options
-
-#### `setup_uv_project_structure(base_path: Path) -> bool`
-Sets up the project directory structure with UV.
-
-**Structure Features:**
-- Directory creation
-- File organization
-- Template setup
-- Configuration files
-- Documentation structure
-
-### UV Dependency Management Functions
-
-#### `manage_uv_dependencies(action: str, packages: List[str] = None) -> bool`
-Manages project dependencies using UV.
-
-**Actions:**
-- **install**: Install specified packages via `uv add`
-- **update**: Update existing packages via `uv sync`
-- **remove**: Remove specified packages via `uv remove`
-- **list**: List installed packages
-- **check**: Check package status
-
-#### `resolve_uv_dependency_conflicts(dependencies: Dict[str, str]) -> Dict[str, str]`
-Resolves dependency conflicts using UV.
-
-**Resolution Features:**
-- Version conflict resolution
-- Compatibility checking
-- Alternative package suggestions
-- Conflict reporting
-- Resolution strategies
-
-## Usage Examples
-
-### Basic Setup Processing
+### Native uv operations (`uv_package_ops`)
 
 ```python
-from setup import process_setup
-
-# Process setup-related tasks
-success = process_setup(
-    target_dir=Path("project/"),
-    output_dir=Path("setup_output/"),
-    verbose=True
-)
-
-if success:
-    print("Setup processing completed successfully")
-else:
-    print("Setup processing failed")
+add_uv_dependency(package: str, dev: bool = False, verbose: bool = False) -> bool
+remove_uv_dependency(package: str, verbose: bool = False) -> bool
+update_uv_dependencies(verbose: bool = False, upgrade: bool = False) -> bool
+lock_uv_dependencies(verbose: bool = False) -> bool
 ```
 
-### UV Environment Creation
+### Optional dependency groups (`dependency_setup`)
 
 ```python
-from setup import create_uv_environment
-
-# Create UV environment
-success = create_uv_environment(
-    env_path=Path(".venv/"),
-    python_version="3.9"
-)
-
-if success:
-    print("UV environment created successfully")
-else:
-    print("UV environment creation failed")
+install_optional_dependencies(verbose: bool = False) -> bool
+install_optional_package_group(group_name: str, verbose: bool = False) -> bool
+install_all_optional_packages(verbose: bool = False) -> bool
+setup_complete_environment(verbose=False, recreate=False, install_optional=False,
+                           optional_groups: list[str] | None = None,
+                           output_dir: Path | None = None) -> bool
+setup_gnn_project(project_name: str, base_dir: Path, verbose: bool = False) -> bool
+create_project_structure(project_root: Path, verbose: bool = False) -> bool
+install_jax_and_test(verbose: bool = False) -> bool
 ```
 
-### UV Dependency Installation
+Valid group names are defined in `OPTIONAL_GROUPS` (`constants.py`):
+`dev`, `active-inference`, `ml-ai`, `llm`, `visualization`, `inference`, `audio`, `gui`,
+`graphs`, `research`, `scaling`, `database`, `probabilistic-programming`,
+`execution-frameworks`, `all`.
+
+Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy) are already in `[project.dependencies]`,
+so `uv sync` installs them without any extra. The `execution-frameworks` group simply
+duplicates those pins so a user can request them explicitly.
+
+### Validators (`validator`)
 
 ```python
-from setup import install_uv_dependencies
-
-# Install project dependencies using UV
-success = install_uv_dependencies(
-    requirements_file=Path("pyproject.toml"),
-    env_path=Path(".venv/")
-)
-
-if success:
-    print("Dependencies installed successfully via UV")
-else:
-    print("UV dependency installation failed")
+validate_system() -> dict        # {"success": bool, "message"|"error": str}
+get_environment_info() -> dict   # uv + package versions
+get_uv_status() -> dict          # uv availability and setup info
 ```
 
-### System Requirements Validation
+### Helpers (`utils`)
 
 ```python
-from setup import validate_system_requirements
-
-# Validate system requirements
-validation_results = validate_system_requirements()
-
-print(f"Python version: {validation_results['python_version']}")
-print(f"UV available: {validation_results['uv_available']}")
-print(f"System memory: {validation_results['memory_gb']}GB")
-print(f"Available packages: {len(validation_results['available_packages'])}")
-print(f"Missing packages: {len(validation_results['missing_packages'])}")
+ensure_directory(path: Path) -> Path
+find_gnn_files(directory: Path, recursive: bool = True) -> list[Path]
+get_output_paths(base_output_dir: Path) -> dict[str, Path]
+get_module_info() -> dict
+get_setup_options() -> dict
+setup_environment(verbose=False, **kwargs) -> bool     # thin wrapper around uv_management
+install_dependencies(verbose=False, **kwargs) -> bool  # thin wrapper around uv_management
 ```
 
-### UV Environment Configuration
+### Orchestration
+
+`perform_full_setup(verbose=False, recreate_venv=False, dev=False, extras=None,
+skip_jax_test=False) -> int` in `setup.py` runs the three-phase flow
+(requirements → env → dependencies → optional JAX probe) and returns a shell exit code.
+The thin orchestrator `src/1_setup.py` defines `setup_orchestrator(target_dir, output_dir,
+logger, **kwargs)` which wraps `perform_full_setup` / `setup_complete_environment`.
+
+### Package metadata
+
+- `__version__` — currently `"1.6.0"`
+- `FEATURES` — dict of capability flags (see `__init__.py`)
+- `OPTIONAL_GROUPS` — name → description map used by Step 1 CLI help
+- `EnvironmentManager`, `VirtualEnvironment` — thin classes kept for test shims
+- `validate_environment()`, `check_python_version()` — small helpers used by tests
+
+## Usage
+
+### From the command line
+
+```bash
+# Default: uv sync core dependencies (Step 12 backends already included).
+python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
+
+# Skip JAX/Optax/Flax/pymdp self-test
+python src/1_setup.py --setup-core-only --verbose
+
+# Development tools (pytest, ruff, mypy, …)
+python src/1_setup.py --dev --verbose
+
+# Every optional group
+python src/1_setup.py --install-all-extras --verbose
+
+# Specific groups
+python src/1_setup.py --install-optional --optional-groups "llm,visualization" --verbose
+```
+
+### Programmatic
 
 ```python
-from setup import configure_uv_environment
+from setup import setup_uv_environment, install_optional_package_group
 
-# Configure UV environment
-config = {
-    "python_path": "/usr/bin/python3.9",
-    "uv_path": "/usr/local/bin/uv",
-    "environment_variables": {
-        "PYTHONPATH": "/path/to/project",
-        "GNN_HOME": "/path/to/gnn"
-    }
-}
-
-success = configure_uv_environment(config)
-
-if success:
-    print("UV environment configured successfully")
-else:
-    print("UV environment configuration failed")
+setup_uv_environment(verbose=True, dev=True)
+install_optional_package_group("visualization", verbose=True)
 ```
 
-### UV Project Structure Setup
+### `uv` directly
 
-```python
-from setup import setup_uv_project_structure
-
-# Setup UV project structure
-success = setup_uv_project_structure(Path("project/"))
-
-if success:
-    print("UV project structure created successfully")
-else:
-    print("UV project structure setup failed")
+```bash
+uv sync                     # Core (JAX, NumPyro, PyTorch, DisCoPy, pymdp, …)
+uv sync --extra dev         # Add dev tools
+uv sync --extra visualization
+uv sync --all-extras        # Everything
 ```
 
-### UV Dependency Management
+## Output
 
-```python
-from setup import manage_uv_dependencies
+Step 1 writes artifacts under `output/1_setup_output/`:
 
-# Install specific packages via UV
-success = manage_uv_dependencies(
-    action="install",
-    packages=["numpy", "pandas", "matplotlib"]
-)
-
-# Sync all dependencies via UV
-success = manage_uv_dependencies(action="update")
-
-# Check package status
-success = manage_uv_dependencies(action="check")
-```
-
-## UV Setup Pipeline
-
-### 1. System Validation
-```python
-# Validate system requirements
-system_validation = validate_system_requirements()
-if not system_validation['valid']:
-    raise SystemError("System requirements not met")
-```
-
-### 2. UV Environment Creation
-```python
-# Create UV environment
-env_created = create_uv_environment(env_path)
-if not env_created:
-    raise EnvironmentError("Failed to create UV environment")
-```
-
-### 3. UV Dependency Installation
-```python
-# Install dependencies via UV
-deps_installed = install_uv_dependencies(pyproject_toml, env_path)
-if not deps_installed:
-    raise InstallationError("Failed to install dependencies via UV")
-```
-
-### 4. UV Configuration Setup
-```python
-# Configure UV environment
-config_applied = configure_uv_environment(environment_config)
-if not config_applied:
-    raise ConfigurationError("Failed to configure UV environment")
-```
-
-### 5. UV Project Structure
-```python
-# Setup UV project structure
-structure_created = setup_uv_project_structure(project_path)
-if not structure_created:
-    raise StructureError("Failed to create UV project structure")
-```
-
-## Integration with Pipeline
-
-### Pipeline Step 1: UV Environment Setup
-```python
-# Called from 1_setup.py
-def process_setup(target_dir, output_dir, verbose=False, **kwargs):
-    # Setup UV environment and dependencies
-    setup_results = setup_uv_environment_and_dependencies(target_dir, verbose)
-    
-    # Generate setup reports
-    setup_reports = generate_setup_reports(setup_results)
-    
-    # Create setup documentation
-    setup_docs = create_setup_documentation(setup_results)
-    
-    return True
-```
-
-### Output Structure
 ```
 output/1_setup_output/
-├── uv_environment_info.json        # UV environment information
-├── uv_dependency_status.json       # UV dependency status
-├── system_requirements.json        # System requirements
-├── uv_setup_configuration.json    # UV setup configuration
-├── uv_installation_log.json       # UV installation log
-├── setup_summary.md               # Setup summary
-└── setup_report.md                # Comprehensive setup report
+├── setup_summary.json        # High-level result and timings
+├── environment_info.json     # Python + uv + platform info
+├── dependency_status.json    # Installed packages and versions
+└── setup_log.txt             # Emitted logger output
 ```
 
-## UV Setup Features
+The root `uv.lock` file is updated by `uv` itself when any sync operation runs.
 
-### UV Environment Management
-- **UV Environments**: Python virtual environment creation via `uv init`
-- **Environment Isolation**: Isolated development environments
-- **Version Management**: Python version specification
-- **Path Configuration**: Environment path setup
-- **Activation Scripts**: Environment activation utilities
+## Error Handling
 
-### UV Dependency Management
-- **Package Installation**: Automated package installation via `uv sync`
-- **Version Control**: Package version management via `uv.lock`
-- **Conflict Resolution**: Dependency conflict resolution
-- **Update Management**: Package update automation via `uv sync`
-- **Status Monitoring**: Package status monitoring
+- Missing `uv` → `check_uv_availability()` returns `False`; callers log a clear error and
+  point at <https://docs.astral.sh/uv/>.
+- `uv sync` failure → surfaced via `subprocess.CompletedProcess.returncode`; logs include
+  captured stdout/stderr and return `False`.
+- JAX probe failure → a single `uv sync` retry with `SETUP_DEFAULT_PIPELINE_EXTRAS`, then
+  a final warning; Step 1 still returns success so the pipeline continues.
+- Lock file conflicts → regenerate with `uv lock` (`lock_uv_dependencies`).
 
-### UV System Configuration
-- **Requirements Validation**: System requirements checking
-- **UV Availability**: UV installation and availability checking
-- **Resource Monitoring**: System resource validation
-- **Network Configuration**: Network connectivity setup
-- **Hardware Validation**: Hardware requirements checking
+## Testing
 
-### UV Project Structure
-- **Directory Creation**: Automated directory structure
-- **File Organization**: Project file organization
-- **Template Setup**: Project template creation
-- **Configuration Files**: Configuration file generation
-- **Documentation Setup**: Documentation structure creation
-
-## UV Configuration Options
-
-### UV Setup Settings
-```python
-# UV setup configuration
-config = {
-    'python_version': '3.9',        # Python version
-    'uv_environment': True,          # Enable UV environment
-    'auto_install_deps': True,       # Auto-install dependencies via UV
-    'validate_requirements': True,    # Validate system requirements
-    'create_structure': True,        # Create project structure
-    'backup_existing': True          # Backup existing files
-}
+```bash
+uv run pytest src/tests/test_setup_overall.py -v
+uv run pytest src/tests/test_uv_environment.py -v
+uv run pytest src/tests/test_environment_overall.py -v
 ```
 
-### UV Environment Settings
-```python
-# UV environment configuration
-uv_config = {
-    'env_name': 'gnn_env',           # Environment name
-    'python_path': '/usr/bin/python3.9',
-    'uv_path': '/usr/local/bin/uv',
-    'environment_variables': {
-        'PYTHONPATH': '/path/to/project',
-        'GNN_HOME': '/path/to/gnn'
-    }
-}
-```
+The tests cover: environment creation, `uv sync` invocation, optional-group installation,
+system requirement validation, and the JAX stack probe.
 
-## UV Error Handling
+## MCP Integration
 
-### UV Setup Failures
-```python
-# Handle UV setup failures gracefully
-try:
-    results = process_setup(target_dir, output_dir)
-except UVSetupError as e:
-    logger.error(f"UV setup processing failed: {e}")
-    # Provide recovery setup or error reporting
-```
+`mcp.py` registers the following tools with the GNN MCP server:
 
-### UV Environment Issues
-```python
-# Handle UV environment issues gracefully
-try:
-    env_created = create_uv_environment(env_path)
-except UVEnvironmentError as e:
-    logger.warning(f"UV environment creation failed: {e}")
-    # Provide recovery environment or error reporting
-```
-
-### UV Dependency Issues
-```python
-# Handle UV dependency issues gracefully
-try:
-    deps_installed = install_uv_dependencies(pyproject_toml)
-except UVDependencyError as e:
-    logger.error(f"UV dependency installation failed: {e}")
-    # Provide recovery installation or error reporting
-```
-
-## UV Performance Optimization
-
-### UV Setup Optimization
-- **Caching**: Cache UV setup results
-- **Parallel Processing**: Parallel UV setup operations
-- **Incremental Setup**: Incremental UV setup updates
-- **Optimized Algorithms**: Optimize UV setup algorithms
-
-### UV Installation Optimization
-- **Package Caching**: Cache UV package downloads
-- **Parallel Installation**: Parallel UV package installation
-- **Dependency Resolution**: Optimize UV dependency resolution
-- **Installation Verification**: Optimize UV installation verification
-
-### UV Configuration Optimization
-- **Configuration Caching**: Cache UV configuration results
-- **Parallel Configuration**: Parallel UV configuration operations
-- **Incremental Configuration**: Incremental UV configuration updates
-- **Optimized Validation**: Optimize UV configuration validation
-
-## UV Testing and Validation
-
-### Unit Tests
-```python
-# Test individual UV setup functions
-def test_uv_environment_creation():
-    success = create_uv_environment(test_env_path)
-    assert success
-    assert test_env_path.exists()
-```
-
-### Integration Tests
-```python
-# Test complete UV setup pipeline
-def test_uv_setup_pipeline():
-    success = process_setup(test_dir, output_dir)
-    assert success
-    # Verify UV setup outputs
-    setup_files = list(output_dir.glob("**/*"))
-    assert len(setup_files) > 0
-```
-
-### Validation Tests
-```python
-# Test UV system requirements validation
-def test_uv_system_requirements():
-    validation = validate_system_requirements()
-    assert 'python_version' in validation
-    assert 'uv_available' in validation
-    assert 'memory_gb' in validation
-    assert 'available_packages' in validation
-```
-
-## UV Dependencies
-
-### Required Dependencies
-- **pathlib**: Path handling
-- **subprocess**: Process management
-- **json**: JSON data handling
-- **logging**: Logging functionality
-- **uv**: Modern Python package manager
-
-### Optional Dependencies
-- **virtualenv**: Previous virtual environment management
-- **pip**: Previous package installation
-- **conda**: Conda environment management
-- **docker**: Container environment management
-
-## UV Performance Metrics
-
-### UV Setup Times
-- **Basic Setup** (< 10 packages): < 30 seconds
-- **Medium Setup** (10-50 packages): 30-300 seconds
-- **Large Setup** (> 50 packages): 300-1800 seconds
-
-### UV Memory Usage
-- **Base Memory**: ~20MB
-- **Per Package**: ~5-20MB depending on complexity
-- **Peak Memory**: 2-3x base usage during installation
-
-### UV Success Rates
-- **UV Environment Creation**: 95-99% success rate
-- **UV Dependency Installation**: 90-95% success rate
-- **UV Configuration Setup**: 95-99% success rate
-- **UV Structure Creation**: 99-100% success rate
-
-## UV Troubleshooting
-
-### Common UV Issues
-
-#### 1. UV Setup Failures
-```
-Error: UV setup processing failed - insufficient permissions
-Solution: Check file permissions and user privileges
-```
-
-#### 2. UV Environment Issues
-```
-Error: UV environment creation failed - UV not found
-Solution: Ensure UV is installed and in PATH
-```
-
-#### 3. UV Dependency Issues
-```
-Error: UV dependency installation failed - network timeout
-Solution: Check network connectivity or use offline mode
-```
-
-#### 4. UV Configuration Issues
-```
-Error: UV configuration setup failed - invalid settings
-Solution: Validate UV configuration parameters and file paths
-```
-
-### UV Debug Mode
-```python
-# Enable debug mode for detailed UV setup information
-results = process_setup(target_dir, output_dir, debug=True, verbose=True)
-```
-
-## UV Future Enhancements
-
-### Planned UV Features
-- **Container Support**: Docker and container environment support
-- **Cloud Integration**: Cloud environment setup and management
-- **Automated Testing**: Automated UV setup testing and validation
-- **Multi-Platform Support**: Cross-platform UV setup and configuration
-
-### UV Performance Improvements
-- **Advanced Caching**: Advanced UV caching strategies
-- **Parallel Processing**: Parallel UV setup processing
-- **Incremental Updates**: Incremental UV setup updates
-- **Machine Learning**: ML-based UV setup optimization
-
-## Summary
-
-The Setup module provides comprehensive environment setup and dependency management capabilities for the GNN pipeline using **UV** (modern Python package manager), including UV environment management, package installation, and system configuration. The module ensures reliable UV environment setup, proper UV dependency management, and optimal UV system configuration to support Active Inference research and development.
-
-## License and Citation
-
-This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+- `setup.check_environment`
+- `setup.create_environment`
+- `setup.install_dependencies`
+- `setup.validate_setup`
+- `setup.add_dependency`
+- `setup.remove_dependency`
+- `setup.update_dependencies`
+- `setup.lock_dependencies`
 
 ## References
 
-- Project overview: ../../README.md
-- Comprehensive docs: ../../DOCS.md
-- Architecture guide: ../../ARCHITECTURE.md
-- Pipeline details: ../../doc/pipeline/README.md
+- [`src/1_setup.py`](../1_setup.py) — thin orchestrator
+- [`pyproject.toml`](../../pyproject.toml) — dependency declarations and extras
+- [`SETUP_GUIDE.md`](../../SETUP_GUIDE.md) — end-to-end install walkthrough
+- [`doc/gnn/modules/01_setup.md`](../../doc/gnn/modules/01_setup.md) — module documentation
 
 ---
+
 ## Documentation
-- **[README](README.md)**: Module Overview
-- **[AGENTS](AGENTS.md)**: Agentic Workflows
-- **[SPEC](SPEC.md)**: Architectural Specification
-- **[SKILL](SKILL.md)**: Capability API
+
+- **[README](README.md)** — this file
+- **[AGENTS](AGENTS.md)** — agent-facing overview
+- **[SPEC](SPEC.md)** — component breakdown
+- **[SKILL](SKILL.md)** — capability card

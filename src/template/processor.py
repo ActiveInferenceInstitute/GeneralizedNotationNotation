@@ -27,8 +27,11 @@ except ImportError:
 
     class _MinimalPerformanceTracker:
         def track_operation(self, name, metadata=None):
+            """Track a named operation for performance monitoring."""
             return _NoOpContext()
-        def get_summary(self): return {}
+        def get_summary(self):
+            """Return a summary of all tracked operations and their timings."""
+            return {}
 
     performance_tracker = _MinimalPerformanceTracker()
 

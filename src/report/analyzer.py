@@ -42,9 +42,17 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
         "step_dependencies": {}
     }
 
-    # Check for pipeline execution summary
-    pipeline_summary_file = pipeline_output_dir / "pipeline_execution_summary.json"
-    if pipeline_summary_file.exists():
+    # Check for pipeline execution summary (main.py writes to 00_pipeline_summary/ subdir)
+    pipeline_summary_candidates = [
+        pipeline_output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json",
+        pipeline_output_dir / "pipeline_execution_summary.json",
+    ]
+    pipeline_summary_file = None
+    for candidate in pipeline_summary_candidates:
+        if candidate.exists():
+            pipeline_summary_file = candidate
+            break
+    if pipeline_summary_file is not None:
         try:
             with open(pipeline_summary_file, 'r', encoding='utf-8') as f:
                 pipeline_data["pipeline_summary"] = json.load(f)

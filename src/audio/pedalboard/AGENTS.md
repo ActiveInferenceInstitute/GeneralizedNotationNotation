@@ -434,9 +434,12 @@ GNN Model → Effects Mapping → Chain Creation → Audio Processing → Output
 - `src/tests/test_audio_integration.py` - Pipeline integration tests for audio outputs
 
 ### Test Coverage
-- **Current**: 80%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_pedalboard*.py \
+    --cov=src/audio/pedalboard --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Effects chain creation and validation
 2. Audio processing accuracy and quality
@@ -535,7 +538,7 @@ result = process_pedalboard_audio(audio_data, effects_chain, debug=True, verbose
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete Pedalboard effects integration

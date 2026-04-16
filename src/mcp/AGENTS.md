@@ -323,9 +323,12 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 - `src/tests/test_mcp_tools.py` - Tool registration tests
 
 ### Test Coverage
-- **Current**: 82%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_mcp*.py \
+    --cov=src/mcp --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Tool registration and discovery across modules
 2. JSON-RPC protocol compliance
@@ -379,7 +382,7 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Tool registration and discovery

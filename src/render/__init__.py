@@ -147,7 +147,7 @@ __all__ = [
 
 
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "pymdp_rendering": True,
     "rxinfer_rendering": True,

@@ -110,12 +110,43 @@ def generate_llm_documentation_mcp(
         Dictionary with success flag and generated documentation string.
     """
     try:
-        result = generate_documentation(
-            gnn_file=Path(gnn_file_path),
-            output_path=Path(output_path) if output_path else None,
-            format=format,
-        )
+        # Read the GNN file and build a lightweight analysis dict
+        # that matches the signature of generate_documentation(file_analysis).
+        gnn_path = Path(gnn_file_path)
+        content = gnn_path.read_text(encoding="utf-8", errors="replace") if gnn_path.exists() else ""
+
+        # Build a minimal file_analysis structure expected by generate_documentation
+        file_analysis: Dict[str, Any] = {
+            "file_path": str(gnn_path),
+            "file_name": gnn_path.name,
+            "variables": [],
+            "connections": [],
+            "complexity_metrics": {},
+            "patterns": {},
+        }
+
+        # If the analyzer module is available, extract richer data
+        try:
+            from .analyzer import extract_variables, extract_connections, identify_patterns, calculate_complexity_metrics
+            file_analysis["variables"] = extract_variables(content)
+            file_analysis["connections"] = extract_connections(content)
+            file_analysis["patterns"] = identify_patterns(content, file_analysis["variables"], file_analysis["connections"])
+            file_analysis["complexity_metrics"] = calculate_complexity_metrics(content, file_analysis["variables"], file_analysis["connections"])
+        except Exception:
+            logger.debug("LLM analyzer not available for documentation generation; using lightweight analysis")
+
+        result = generate_documentation(file_analysis)
+
         if isinstance(result, dict):
+            # Optionally write to disk if output_path was provided
+            if output_path:
+                out = Path(output_path)
+                out.parent.mkdir(parents=True, exist_ok=True)
+                if format == "text":
+                    out.write_text(result.get("model_overview", str(result)), encoding="utf-8")
+                else:
+                    import json as _json
+                    out.write_text(_json.dumps(result, indent=2, default=str), encoding="utf-8")
             return {"success": True, **result}
         return {"success": True, "documentation": str(result)}
     except Exception as e:

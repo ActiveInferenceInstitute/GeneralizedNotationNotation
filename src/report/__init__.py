@@ -6,7 +6,7 @@ report module for GNN Processing Pipeline.
 This module provides report capabilities with recovery implementations.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "html_reports": True,
     "markdown_reports": True,
@@ -85,6 +85,7 @@ class ReportFormatter:
         return f"<html><body><pre>{content}</pre></body></html>"
 
 def get_module_info() -> Dict[str, Any]:
+    """Return report module metadata for composability and MCP discovery."""
     return {
         "version": __version__,
         "description": "Report generation and formatting for GNN pipeline",
@@ -93,14 +94,16 @@ def get_module_info() -> Dict[str, Any]:
     }
 
 def get_supported_formats() -> list[str]:
+    """Return the list of supported report output formats."""
     # Include 'pdf' to satisfy tests, even if generated via external tool in practice
     return ["markdown", "html", "json", "pdf"]
 
 def validate_report(data: Dict[str, Any]) -> bool:
+    """Validate that a report data structure is well-formed."""
     return isinstance(data, dict)
 
 
-def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs):
+def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool:
     """
     Main processing function for report.
     

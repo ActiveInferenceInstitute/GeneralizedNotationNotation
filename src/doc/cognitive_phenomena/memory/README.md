@@ -1,11 +1,13 @@
-# Memory
+# Cognitive Memory Documentation
 
-## Overview
-This module handles `Memory` components.
+Theoretical documentation on temporal memory dynamics in Active Inference models.
 
-## Available Members
-- **Classes**: No specific classes exported.
-- **Functions**: No specific public functions exported.
+## Topics
 
-## Usage
-Import necessary members directly to orchestrate tasks related to Memory.
+- Working memory as Bayesian state estimation
+- Temporal Markov blankets
+- Hierarchical temporal models
+
+## See Also
+
+- [Parent: cognitive_phenomena/README.md](../README.md)

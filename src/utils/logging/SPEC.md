@@ -1,20 +1,22 @@
-# Logging Utilities Specification
+# Logging Utilities — Technical Specification
 
-## Overview
+**Version**: 1.6.0
 
-`utils.logging` provides shared logging configuration utilities used throughout the pipeline.
+## Logging Architecture
 
-## Scope
+- **Handler hierarchy**: Console (colored) → File (plain text) → Structured (JSON)
+- **Log levels**: DEBUG, INFO, WARNING, ERROR, CRITICAL (standard Python)
+- **Correlation IDs**: UUID-based tracking across pipeline steps
 
-- standardized logger setup for step scripts and modules
-- consistent formatting and handler configuration (console + file)
+## Visual Output
 
-## Public API
+- Step progress: `[3/25] ⚙️ GNN Processing...`
+- Success: green checkmarks with timing
+- Warnings: yellow with context
+- Errors: red with traceback
 
-The public API is defined by `src/utils/logging/__init__.py` and `logging_utils.py`.
+## Configuration
 
-## Non-goals
-
-- implementing a custom logging framework
-- embedding runtime metrics that are not directly observed by the pipeline
-
+- Verbose mode: `--verbose` flag enables DEBUG level
+- Structured mode: `--structured-logging` outputs JSON lines
+- Accessible mode: `--accessible` disables emojis for screen readers

@@ -1,8 +1,24 @@
-# Specification: Discopy
+# DisCoPy Analysis — Technical Specification
 
-## Design Requirements
-This module (`discopy`) maps structural logic to the overall execution graph.
-It ensures that `Discopy` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Input
+
+- DisCoPy execution results from Step 12
+- Categorical diagram properties and composition data
+
+## Output
+
+- Diagram structure analysis plots (PNG)
+- Categorical property reports (JSON)
+- Functor composition visualizations
+
+## Framework
+
+- DisCoPy categorical semantics
+- Matplotlib for visualization
+
+## Error Handling
+
+- Missing `discopy` → graceful skip
+- Invalid diagram data → detailed error report

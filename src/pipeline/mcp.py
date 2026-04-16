@@ -70,18 +70,25 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
         config = get_pipeline_config()
         output_dir = Path(config.get("output_dir", "output"))
 
-        # Check for pipeline execution summary
-        summary_file = output_dir / "pipeline_execution_summary.json"
-        if summary_file.exists():
-            with open(summary_file, 'r') as f:
-                summary = json.load(f)
-        else:
-            summary = {
-                "last_execution": None,
-                "total_executions": 0,
-                "successful_executions": 0,
-                "failed_executions": 0
-            }
+        # Check for pipeline execution summary (main.py writes to 00_pipeline_summary/ subdir)
+        summary_candidates = [
+            output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json",
+            output_dir / "pipeline_execution_summary.json",
+        ]
+        summary = {
+            "last_execution": None,
+            "total_executions": 0,
+            "successful_executions": 0,
+            "failed_executions": 0,
+        }
+        for summary_file in summary_candidates:
+            if summary_file.exists():
+                try:
+                    with open(summary_file, 'r') as f:
+                        summary = json.load(f)
+                    break
+                except (json.JSONDecodeError, OSError) as e:
+                    logger.warning(f"Could not load summary from {summary_file}: {e}")
 
         # Check for recent logs
         logs_dir = output_dir / "logs"

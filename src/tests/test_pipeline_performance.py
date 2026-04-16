@@ -218,26 +218,52 @@ class TestMemoryUsagePatterns:
     """Test suite for memory usage patterns."""
 
     def test_memory_cleanup(self, isolated_environment, create_model_file):
-        """Test memory cleanup after processing."""
+        """Python-level allocation delta for `process_gnn_directory` must be bounded.
+
+        Uses ``tracemalloc`` rather than process RSS: RSS is dominated by the state of
+        every preceding test in the same pytest worker (LLM caches, matplotlib figure
+        managers, JAX kernels, …), so an RSS-based assertion is order-dependent and
+        gives no information about *this* function's allocations.
+        """
+        import gc
+        import tracemalloc
+
         from src.gnn import process_gnn_directory
 
         model_file = create_model_file("large")
-        initial_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
 
-        result = process_gnn_directory(
-            model_file,
-            isolated_environment / "output"
-        )
+        # Quiesce the allocator before taking the baseline; retry a few times since
+        # cyclic collection sometimes runs in stages.
+        for _ in range(3):
+            gc.collect()
 
-        # Force garbage collection
-        import gc
-        gc.collect()
-
-        final_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
-        memory_diff = abs(final_memory - initial_memory)
+        tracemalloc.start()
+        try:
+            baseline_current, _ = tracemalloc.get_traced_memory()
+            result = process_gnn_directory(
+                model_file,
+                isolated_environment / "output",
+            )
+            # Force collection so short-lived objects allocated inside the call drop
+            # out before measuring residual retention.
+            for _ in range(3):
+                gc.collect()
+            final_current, peak = tracemalloc.get_traced_memory()
+        finally:
+            tracemalloc.stop()
 
         assert result["status"] == "SUCCESS"
-        assert memory_diff < 300  # Should not leak more than 300MB (realistic for pipeline operations with LLM, visualization, etc.)
+
+        retained_mb = max(0.0, (final_current - baseline_current) / (1024 * 1024))
+        peak_mb = peak / (1024 * 1024)
+
+        # Retention of Python-managed memory after GC should be modest; the generous
+        # bound is deliberately above observed values (typically < 25 MB) so ordinary
+        # caching changes do not flake CI.
+        assert retained_mb < 75, (
+            f"Python allocator retained {retained_mb:.1f} MB after "
+            f"process_gnn_directory (peak during call: {peak_mb:.1f} MB)"
+        )
 
     def test_peak_memory_tracking(self, isolated_environment, create_model_file):
         """Test peak memory usage tracking."""

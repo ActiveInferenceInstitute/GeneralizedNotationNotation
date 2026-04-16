@@ -6,7 +6,7 @@ including failure analysis, performance bottleneck identification, per-step anal
 with yellow/red flag detection, and executive report generation using LLM infrastructure.
 """
 
-__version__ = "2.0.0"
+__version__ = "1.6.0"
 FEATURES = {
     "pipeline_analysis": True,
     "failure_root_cause": True,

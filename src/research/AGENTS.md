@@ -238,9 +238,12 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 - `src/tests/test_research_functional.py` - Functional tests
 
 ### Test Coverage
-- **Current**: 70%
-- **Target**: 80%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_research*.py \
+    --cov=src/research --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Research analysis with various data types
 2. Report generation and formatting
@@ -296,7 +299,7 @@ def analyze_research_data_tool(data, analysis_type="comprehensive"):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Rule-based hypothesis generation

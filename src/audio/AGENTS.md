@@ -231,9 +231,12 @@ output/15_audio_output/
 - `src/tests/test_audio_sapf.py`
 
 ### Test Coverage
-- **Current**: 74%
-- **Target**: 80%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_audio*.py \
+    --cov=src/audio --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Audio generation from GNN models
 2. SAPF code generation
@@ -294,7 +297,7 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - SAPF code generation

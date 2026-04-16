@@ -287,9 +287,12 @@ output/12_execute_output/
 - `src/tests/test_execute_pymdp_package.py`
 
 ### Test Coverage
-- **Current**: 79%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_execute*.py \
+    --cov=src/execute --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Multi-framework execution
 2. Error handling and recovery
@@ -363,7 +366,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Multi-framework execution support

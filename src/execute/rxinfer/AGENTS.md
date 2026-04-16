@@ -446,9 +446,12 @@ RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation →
 - `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
-- **Current**: 75%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_rxinfer*.py \
+    --cov=src/execute/rxinfer --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Julia environment validation and setup
 2. RxInfer.jl model compilation and execution
@@ -552,7 +555,7 @@ results = execute_rxinfer_simulation(script_path, config, debug=True, verbose=Tr
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete RxInfer.jl simulation execution pipeline

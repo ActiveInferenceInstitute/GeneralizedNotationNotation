@@ -38,27 +38,33 @@
 
 ## API Reference
 
-### Public Functions
+### Orchestrator Entry Point
 
-#### `setup_orchestrator(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main setup orchestrator function called by orchestrator (1_setup.py). This function coordinates setup operations based on provided arguments.
+The thin orchestrator `src/1_setup.py` defines:
 
-**Parameters**:
-- `target_dir` (Path): Target directory (used for context)
-- `output_dir` (Path): Output directory for setup logs
-- `logger` (Logger): Logger instance
-- `**kwargs`: Additional setup options:
-  - `verbose` (bool): Enable verbose output
-  - `recreate_venv` (bool): Recreate virtual environment
-  - `dev` (bool): If true, `uv sync --extra dev` (pytest stack, linters, etc.)
-  - `install_all_extras` (bool): If true, `uv sync --all-extras` (every optional group in pyproject)
-  - `setup_core_only` (bool): If true, skips the post-install JAX/Optax/Flax/pymdp functional probe (`utils.jax_stack_validation`; Step 12 backends remain core deps)
-  - `install_optional` (bool): Install optional dependencies
-  - `optional_groups` (str): Comma-separated list of optional groups
+```python
+setup_orchestrator(target_dir, output_dir, logger, **kwargs) -> bool
+```
 
-**Returns**: `True` if setup succeeded
+It wraps `setup_uv_environment` (default path) or `setup_complete_environment` (when
+optional groups are requested). `**kwargs` accepts:
 
-**Note**: Default path runs `uv sync` for core dependencies, which include Step 12 backends (JAX, NumPyro, PyTorch, DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and the bnlearn backend. `SETUP_DEFAULT_PIPELINE_EXTRAS` is usually empty; the optional `execution-frameworks` extra duplicates those pins for explicit `uv sync --extra execution-frameworks`. Optional `visualization` / `inference` groups mirror the same pins for explicit `uv sync --extra …`. Step 22 (GUI) needs Gradio: `uv sync --extra gui` (otherwise the GUI step runs headless and emits recovery artifacts only).
+- `verbose` (bool) — verbose logging
+- `recreate_venv` (bool) — recreate `.venv`
+- `dev` (bool) — `uv sync --extra dev`
+- `install_all_extras` (bool) — `uv sync --all-extras` (supersedes `dev`)
+- `setup_core_only` (bool) — skip the JAX/Optax/Flax/pymdp probe
+- `install_optional` (bool) — install optional groups
+- `optional_groups` (str) — comma-separated group names (see `OPTIONAL_GROUPS`)
+
+Default path: `uv sync` for core deps. Step 12 backends (JAX, NumPyro, PyTorch,
+DisCoPy), interactive visualization (pandas, plotly, seaborn, h5py), and the bnlearn
+backend are in `[project.dependencies]` and therefore installed without any `--extra`.
+`SETUP_DEFAULT_PIPELINE_EXTRAS` is empty by default; the `execution-frameworks` /
+`visualization` / `inference` extras duplicate those pins for explicit sync. Step 22
+(GUI) additionally needs `uv sync --extra gui` to pull Gradio.
+
+### Module-level Public Functions
 
 #### `setup_uv_environment(verbose=False, recreate=False, dev=False, extras=None, install_all_extras=False, skip_jax_test=False, output_dir=None) -> bool`
 **Description**: Set up UV virtual environment with dependencies using native UV sync
@@ -176,63 +182,29 @@ SYSTEM_REQUIREMENTS = {
 
 ## Usage Examples
 
-### Basic Environment Setup
-```python
-from setup.setup import setup_uv_environment
+All setup helpers are exported from the package root. Prefer `from setup import …`.
 
-success = setup_uv_environment(
-    verbose=True,
-    dev=True,
-    extras=["llm", "visualization", "audio"]
+```python
+from setup import (
+    setup_uv_environment,
+    add_uv_dependency,
+    remove_uv_dependency,
+    update_uv_dependencies,
+    lock_uv_dependencies,
+    check_system_requirements,
 )
-```
 
-### Add New Dependency
-```python
-from setup.setup import add_uv_dependency
+setup_uv_environment(verbose=True, dev=True, extras=["llm", "visualization", "audio"])
 
-# Add production dependency
-success = add_uv_dependency("requests>=2.28.0", dev=False, verbose=True)
+add_uv_dependency("requests>=2.28.0", dev=False, verbose=True)
+add_uv_dependency("pytest>=7.0.0", dev=True, verbose=True)
+remove_uv_dependency("old-package", verbose=True)
+update_uv_dependencies(verbose=True, upgrade=False)
+update_uv_dependencies(verbose=True, upgrade=True)
+lock_uv_dependencies(verbose=True)
 
-# Add development dependency
-success = add_uv_dependency("pytest>=7.0.0", dev=True, verbose=True)
-```
-
-### Remove Dependency
-```python
-from setup.setup import remove_uv_dependency
-
-success = remove_uv_dependency("old-package", verbose=True)
-```
-
-### Update Dependencies
-```python
-from setup.setup import update_uv_dependencies
-
-# Sync with lock file
-success = update_uv_dependencies(verbose=True, upgrade=False)
-
-# Upgrade to latest compatible versions
-success = update_uv_dependencies(verbose=True, upgrade=True)
-```
-
-### Lock Dependencies
-```python
-from setup.setup import lock_uv_dependencies
-
-# Update uv.lock file
-success = lock_uv_dependencies(verbose=True)
-```
-
-### System Requirements Check
-```python
-from setup.setup import check_system_requirements
-
-requirements_met = check_system_requirements(verbose=True)
-if requirements_met:
-    print("System requirements satisfied")
-else:
-    print("System requirements not met")
+if not check_system_requirements(verbose=True):
+    raise SystemExit("System requirements not met")
 ```
 
 ---
@@ -323,8 +295,12 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 - `src/tests/test_environment_overall.py` - Environment-related integration checks
 
 ### Test Coverage
-- **Current**: 90%
-- **Target**: 95%+
+
+Measure on demand — this file does not pin a number:
+
+```bash
+uv run pytest src/tests/test_setup*.py --cov=src/setup --cov-report=term-missing
+```
 
 ### Key Test Scenarios
 1. Environment creation and setup

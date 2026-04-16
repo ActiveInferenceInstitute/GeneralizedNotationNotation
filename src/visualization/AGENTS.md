@@ -431,7 +431,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current Version: 1.6.0
 
 **Features**:
 - Graph visualization generation

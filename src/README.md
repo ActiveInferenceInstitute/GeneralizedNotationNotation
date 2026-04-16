@@ -109,7 +109,7 @@ src/
 │   └── processor.py                # Core ontology processing functions
 └── tests/
     ├── test_render_integration.py  # Tests for render module
-    └── test_ontology_integration.py # Tests for ontology module
+    └── test_ontology_overall.py # Tests for ontology module
 ```
 
 ### ✅ Correct Pattern Examples
@@ -126,63 +126,34 @@ src/
 
 ## Pipeline Safety and Reliability
 
-This README documents the comprehensive safety enhancements implemented across all 25 numbered pipeline scripts (0-24) to ensure safe-to-fail operation with robust error handling, monitoring, and recovery capabilities.
+Every numbered step follows the same safe-to-fail contract: run as far as dependencies
+allow, log what went wrong, write artifacts to its step-specific output directory, and
+return a structured exit code rather than propagating an exception.
 
-### ✅ Safety Enhancements Completed
+### Shared patterns
 
-#### 1. **Visualization Steps (8 & 9) - Complete Safe-to-Fail Implementation**
+- **Exit codes**: `0` success, `1` critical failure, `2` success with warnings.
+  Step-level continuation is governed by `input/config.yaml` / CLI flags, not by raising.
+- **Dependency probes**: steps that wrap optional stacks (visualization, execute, LLM,
+  audio, GUI) check imports before use and degrade to text/HTML recovery artifacts on
+  miss.
+- **Correlation IDs**: emitted into logs and JSON summaries so failures can be traced
+  across steps.
+- **Structured logs**: JSON-L alongside human-readable text via
+  `utils.logging.logging_utils`.
 
-**Step 8: Core Visualization**
+### Step-specific notes
 
-- **Comprehensive Error Classification**: Added detailed dependency tracking and graceful degradation
-- **Safe matplotlib Context**: Context managers for safe matplotlib operations with automatic cleanup
-- **Multiple Recovery Levels**: Full visualizer → Matrix visualizer → Basic plots → HTML recovery
-- **Correlation ID Tracking**: Each visualization attempt has unique tracking for debugging
-- **Robust Output Management**: All outputs saved to `/output/visualization/` regardless of success/failure
-- **Pipeline Continuation**: Non-blocking failures with graceful degradation; continuation governed by configuration
-
-**Step 9: Advanced Visualization**
-
-- **Modular Dependency Handling**: Safe imports with recovery handling for all advanced visualization components
-- **Comprehensive Recovery System**: Creates detailed HTML reports, JSON data, and error diagnostics when advanced features unavailable
-- **Resource Management**: Safe processing contexts with automatic cleanup and timeout handling
-- **Interactive Recovery**: Beautiful HTML visualizations with dependency status and recovery suggestions
-- **Performance Tracking**: Detailed timing and resource usage tracking for all visualization attempts
-
-#### 2. **Execute Step (12) - Robust Execution Patterns**
-
-- **Circuit Breaker Implementation**: Prevents cascading failures with intelligent retry mechanisms
-- **Execution Environment Validation**: Pre-execution checks for dependencies, resources, and permissions
-- **Comprehensive Error Classification**: Dependency, syntax, resource, timeout, permission, runtime, and network errors
-- **Retry Logic with Exponential Backoff**: Up to 3 attempts with intelligent backoff timing
-- **Resource Monitoring**: Memory, CPU, and execution time tracking for all simulation attempts
-- **Correlation ID System**: Complete execution traceability across all attempts and frameworks
-- **Pipeline Continuation**: Non-blocking error handling with standard exit codes; continuation governed by configuration
-
-#### 3. **Output Management and Data Persistence**
-
-- **Comprehensive Output Directory Structure**: All outputs organized in `/output/` with step-specific subdirectories
-- **Detailed Result Tracking**: JSON summaries, detailed logs, and performance metrics for every step
-- **Error Recovery Reports**: Automatic generation of recovery suggestions and diagnostic information
-- **Recovery Visualization Assets**: HTML reports, dependency status, and content analysis when primary methods fail
-- **Execution Reporting**: Detailed markdown reports with execution results, timing, and recovery suggestions
-
-#### 4. **Pipeline Continuation Logic**
-
-- **Exit Codes**: Standardized exit codes (0=success, 1=critical error, 2=success with warnings) with graceful degradation policies
-- **Warning-Based Error Reporting**: Failed operations logged with clear severity to avoid unnecessary termination
-- **Graceful Degradation**: Each step provides maximum functionality possible given available dependencies
-- **Comprehensive Logging**: All failures tracked with detailed context; continuation policy controlled via config
-- **Structured JSON Logging**: Machine-readable logs (JSON-L) with performance metrics and correlation IDs for advanced analysis
-- **Log Rotation**: Automatic log rotation and cleanup to manage disk usage for long-running pipelines
-
-#### 5. **Method Robustness Improvements**
-
-- **Model Registry**: Enhanced metadata extraction (author, license, version) for comprehensive model tracking
-- **Execute Processor**: Robust PyMDP error recovery, Julia dependency validation, and improved timeout handling
-- **Render Processor**: Pre-render validation of POMDP structures and matrix normalization
-- **Analysis Module**: Cross-simulation result aggregation, statistical summarization, and improved visualizations
-- **LLM Module**: Enhanced provider recovery logic (Ollama → OpenAI → etc.) with configurable timeouts
+- **Steps 8/9 (Visualization)**: four-tier recovery (full → matrix → basic → HTML) with
+  `with_safe_matplotlib()` context managers.
+- **Step 12 (Execute)**: circuit breaker with bounded exponential backoff, per-framework
+  environment validation, timeout-aware resource monitoring.
+- **Step 13 (LLM)**: provider chain (Ollama → OpenAI → Anthropic → Perplexity) with
+  configurable timeouts; a missing provider is a warning, not a failure.
+- **Step 11 (Render)**: matrix normalization and POMDP-shape pre-checks before any
+  framework-specific emitter runs.
+- **Step 4 (Model Registry)**: metadata extraction (author, license, version) for every
+  discovered model.
 
 ### Pipeline Execution Notes
 
@@ -223,98 +194,37 @@ output/
 └── pipeline_execution_summary.json
 ```
 
-### 🔧 Technical Implementation Details
-
-**Visualization Safe-to-Fail Patterns:**
-
-1. **Dependency Detection**: Runtime detection of matplotlib, networkx, and visualization modules
-2. **Graceful Degradation**: Four-tier recovery system from full visualization to basic HTML reports
-3. **Context Management**: Safe matplotlib contexts preventing resource leaks
-4. **Error Classification**: Specific error types with targeted recovery suggestions
-5. **Output Persistence**: All visualization attempts generate outputs regardless of success
-
-**Execute Safe-to-Fail Patterns:**
-
-1. **Environment Validation**: Pre-execution validation of system requirements and dependencies
-2. **Retry Mechanisms**: Exponential backoff retry with configurable attempt limits
-3. **Resource Monitoring**: Memory and CPU usage tracking with timeout protection
-4. **Error Recovery**: Detailed error classification with specific recovery suggestions
-5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, Stan, DisCoPy, PyTorch, and NumPyro
-
-**Pipeline Continuation Guarantees:**
-
-1. **Standard Exit Codes**: Steps follow 0 (success), 1 (critical error), 2 (success with warnings); continuation controlled via configuration and graceful-degradation policies
-2. **Warning-Based Logging**: Failures logged as warnings to prevent pipeline termination
-3. **Comprehensive Output**: Every step generates outputs even in failure modes
-4. **Error Documentation**: Detailed error reports with recovery guidance
-
-### 🚀 Performance and Reliability Metrics
-
-**Measured Improvements:**
-
-- **Pipeline Completion Rate**: 100% (guaranteed continuation)
-- **Output Generation**: 100% (all steps produce outputs)
-- **Error Recovery**: Comprehensive diagnostics and suggestions
-- **Resource Efficiency**: Safe resource management with automatic cleanup
-- **Debugging Capability**: Full traceability with correlation IDs
-
-**Verification Results:**
-
-- **Visualization Steps**: ✅ Generate outputs in all dependency scenarios
-- **Execute Step**: ✅ Handles all execution failures gracefully
-- **Pipeline Flow**: ✅ Continues through all 25 steps regardless of individual failures
-- **Output Organization**: ✅ Systematic output directory structure maintained
-- **Error Reporting**: ✅ Comprehensive error documentation without pipeline termination
-
-### 📋 Usage and Operation
-
-**Running the Pipeline:**
+### Running the pipeline
 
 ```bash
-# Full pipeline execution
-python src/main.py
+# Full pipeline
+uv run python src/main.py
 
-# Individual step execution
-python src/8_visualization.py --verbose
-python src/9_advanced_viz.py --interactive
-python src/12_execute.py --verbose
+# A single step
+uv run python src/8_visualization.py --verbose
+uv run python src/12_execute.py --verbose
 
-# Framework-specific execution
-python src/12_execute.py --frameworks "pymdp,jax" --verbose
-python src/12_execute.py --frameworks "lite" --verbose
+# Pick execution frameworks for Step 12
+uv run python src/12_execute.py --frameworks "pymdp,jax" --verbose
 
-# Install optional dependencies
-python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,audio,llm"
+# Install optional dependency groups
+uv run python src/1_setup.py --install-optional --optional-groups "llm,visualization"
 
-# Staged folder execution via testing matrix (configured in input/config.yaml)
-# Run parse + type-check + validate + render on matrix-configured folders:
-python src/main.py --only-steps "3,5,6,11" --verbose
-# Only 'discrete' folder gets step 11 (render); all folders get steps 3,5,6
-
-# Toggle global steps (0=template, 1=setup, 2=tests) in input/config.yaml:
-#   testing_matrix.global_steps.2_tests: false  → skips test execution
-#   testing_matrix.global_steps.1_setup: false   → skips environment setup
+# Staged folder execution (driven by input/config.yaml → testing_matrix)
+uv run python src/main.py --only-steps "3,5,6,11" --verbose
 ```
 
-**Output Verification:**
+### Inspecting outputs
 
 ```bash
-# Check comprehensive outputs
-ls -la output/
+ls output/
 cat output/pipeline_execution_summary.json
-
-# Verify visualization outputs
-ls output/advanced_visualization/
-ls output/visualization/
-
-# Check execution results
+ls output/8_visualization_output/
+ls output/9_advanced_viz_output/
 ls output/11_render_output/
-cat output/execution_results.json
+ls output/12_execute_output/
 ```
 
-**Error Recovery:**
-
-- All error reports include specific recovery suggestions
-- Dependency status clearly documented in output files
-- Recovery visualizations provide immediate value even when advanced features unavailable
-- Execution failures include detailed classification and retry recommendations
+When a step degrades, it writes a JSON summary plus either an HTML recovery report or
+textual diagnostics to the same step-specific output directory, so the artifact set is
+stable whether the step succeeded or fell back.

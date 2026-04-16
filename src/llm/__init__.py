@@ -6,7 +6,7 @@ It avoids importing heavy optional dependencies at import time; functions
 are provided as thin wrappers that import implementations on first use.
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 
 from .defaults import DEFAULT_OLLAMA_MODEL
 
@@ -26,7 +26,8 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
-def process_llm(*args: Any, **kwargs: Any) -> Any:
+def process_llm(*args: Any, **kwargs: Any) -> bool:
+    """Delegate to processor.process_llm — returns True on success."""
     from .processor import process_llm as _impl
     return _impl(*args, **kwargs)
 
@@ -134,7 +135,7 @@ try:
 except (ImportError, AttributeError):
     def generate_model_insights(*_: Any, **__: Any) -> Dict[str, Any]: return {}
     def generate_code_suggestions(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def generate_documentation(*_: Any, **__: Any) -> str: return ""
+    def generate_documentation(*_: Any, **__: Any) -> Dict[str, Any]: return {}
     def generate_llm_summary(*_: Any, **__: Any) -> str: return ""
 
 
@@ -182,6 +183,7 @@ def get_module_info() -> Dict[str, Any]:
     return {
         "version": __version__,
         "description": "LLM-enhanced analysis utilities for GNN",
+        "features": FEATURES,
         "providers": get_available_providers(),
     }
 
@@ -200,6 +202,7 @@ def analyze_gnn_model(model_content: Union[str, Dict[str, Any]]) -> Dict[str, An
 
 
 def generate_model_description(content: str) -> str:
+    """Generate a natural language description of a GNN model from its content."""
     proc = LLMProcessor()
     return proc.generate_description(content)
 

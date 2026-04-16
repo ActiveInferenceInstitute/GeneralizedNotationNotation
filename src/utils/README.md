@@ -15,13 +15,11 @@ src/utils/
 ├── logging_utils.py                 # Unified logging utilities (1071 lines)
 ├── structured_logging.py            # Structured JSON logging (459 lines)
 ├── visual_logging.py                # Visual log formatting (431 lines)
-├── step_logging.py                  # Step-level logging helpers
 ├── diagnostic_logging.py            # Diagnostic logging utilities
 │
 ├── # Configuration & Arguments
 ├── argument_utils.py                # Enhanced argument parsing (1225 lines)
 ├── config_loader.py                 # YAML/JSON config loading
-├── configuration.py                 # Configuration management (520 lines)
 │
 ├── # Pipeline Infrastructure
 ├── pipeline.py                      # Pipeline utilities
@@ -40,7 +38,6 @@ src/utils/
 ├── # Error Handling & Recovery
 ├── error_handling.py                # Error handling framework
 ├── error_recovery.py                # Error recovery strategies
-├── standardized_error_handling.py   # Standard error patterns
 ├── recovery.py                      # Recovery implementations
 │
 ├── # Resource & Performance
@@ -52,7 +49,6 @@ src/utils/
 ├── # Testing & Validation
 ├── test_utils.py                    # Test utilities (1121 lines)
 ├── script_validator.py              # Script validation (523 lines)
-├── verify_function_signatures.py    # Signature verification
 │
 ├── # Utilities
 ├── base_processor.py                # Base processor class
@@ -60,7 +56,6 @@ src/utils/
 ├── io_utils.py                      # I/O utilities
 ├── network_utils.py                 # Network utilities
 ├── path_utils.py                    # Path utilities
-├── shared_functions.py              # Shared helper functions
 ├── system_utils.py                  # System utilities
 ├── venv_utils.py                    # Virtual environment helpers
 │

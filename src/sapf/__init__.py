@@ -39,7 +39,7 @@ try:
 except Exception:
     _audio_sapf = None
 
-__version__ = getattr(_audio_sapf, '__version__', '1.1.1')
+__version__ = "1.6.0"
 FEATURES = getattr(_audio_sapf, 'FEATURES', {
     'convert_gnn_to_sapf': True,
     'generate_audio_from_sapf': True,

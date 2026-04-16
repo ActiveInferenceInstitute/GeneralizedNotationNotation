@@ -210,7 +210,7 @@ print(f"Estimated time: {plan['estimated_duration']}s")
 
 #### `run_enhanced_health_check() -> Dict[str, Any]`
 
-**Description**: Run comprehensive pipeline health check
+**Description**: Run the pipeline health check (components, dependencies, step discovery, config sanity). Returns a status dict instead of raising.
 
 **Returns**: `Dict[str, Any]` - Health check results with:
 
@@ -232,7 +232,7 @@ print(f"Estimated time: {plan['estimated_duration']}s")
 ### Internal Dependencies
 
 - `utils.argument_utils` - Argument parsing utilities
-- `utils.logging_utils` - Enhanced logging utilities
+- `utils.logging_utils` - Structured (JSON-L + text) logging helpers
 - `utils.pipeline_template` - Pipeline template utilities
 
 ---
@@ -377,7 +377,7 @@ output/
 ### Imports From
 
 - `utils.argument_utils` - Argument parsing
-- `utils.logging_utils` - Enhanced logging
+- `utils.logging_utils` - Structured logging
 - `utils.pipeline_template` - Template utilities
 
 ### Imported By
@@ -404,8 +404,11 @@ Configuration → Step Discovery → Dependency Validation → Execution Plannin
 
 ### Test Coverage
 
-- **Current**: 90%
-- **Target**: 95%+
+Measure on demand — no static number is kept in this file:
+
+```bash
+uv run pytest src/tests/test_pipeline_*.py --cov=src/pipeline --cov-report=term-missing
+```
 
 ### Key Test Scenarios
 
@@ -467,7 +470,7 @@ def get_pipeline_config_tool():
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 
@@ -483,8 +486,8 @@ def get_pipeline_config_tool():
 
 ### Roadmap
 
-- **Next Version**: Enhanced dependency analysis
-- **Future**: Real-time pipeline monitoring
+- Candidate: DAG-based parallel execution for independent step clusters
+- Candidate: per-step streaming metrics published via MCP
 
 ---
 

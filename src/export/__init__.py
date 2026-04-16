@@ -28,7 +28,7 @@ from .processor import (
 from .utils import get_module_info
 from .utils import get_supported_formats as _get_supported_formats_dict
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {"json_export": True, "xml_export": True, "graphml_export": True, "gexf_export": True, "pickle_export": True, "mcp_integration": True}
 HAS_NETWORKX = True
 

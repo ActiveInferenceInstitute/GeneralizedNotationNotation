@@ -615,7 +615,7 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ## Version History
 
-### Current Version: 1.1.3
+### Current Version: 1.6.0
 
 **Features**:
 

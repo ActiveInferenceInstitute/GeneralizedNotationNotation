@@ -221,8 +221,17 @@ class PipelineValidator:
             test_results["errors_count"] = combined_output.lower().count("error")
 
             # Parse individual step results if summary file exists
-            summary_file = Path("output/pipeline_execution_summary.json")
-            if summary_file.exists():
+            # (main.py writes to 00_pipeline_summary/ subdir; check both locations)
+            summary_candidates = [
+                Path("output/00_pipeline_summary/pipeline_execution_summary.json"),
+                Path("output/pipeline_execution_summary.json"),
+            ]
+            summary_file = None
+            for candidate in summary_candidates:
+                if candidate.exists():
+                    summary_file = candidate
+                    break
+            if summary_file is not None:
                 try:
                     with open(summary_file) as f:
                         summary_data = json.load(f)

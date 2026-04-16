@@ -10,7 +10,6 @@ src/validation/
 ├── README.md                      # This documentation
 ├── AGENTS.md                      # Agent scaffolding documentation
 ├── SPEC.md                        # Module specification
-├── PAI.md                         # Pipeline integration documentation
 ├── consistency_checker.py         # Consistency checking (naming, style, structure, references)
 ├── semantic_validator.py          # Semantic validation (structure, state space, connections, math)
 ├── performance_profiler.py        # Performance profiling (complexity, memory, parallelization)

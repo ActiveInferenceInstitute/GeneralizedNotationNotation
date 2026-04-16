@@ -360,9 +360,12 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 - `src/tests/test_render_performance.py` - Performance tests
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_render*.py \
+    --cov=src/render --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Multi-framework code generation
 2. Framework-specific optimizations

@@ -257,9 +257,12 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 - `src/tests/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
-- **Current**: 79%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_website*.py \
+    --cov=src/website --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Website generation from pipeline artifacts
 2. HTML report creation and formatting
@@ -315,7 +318,7 @@ def generate_website_tool(artifacts_dir, output_dir):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Static HTML website generation

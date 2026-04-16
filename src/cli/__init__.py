@@ -14,6 +14,18 @@ Provides:
   gnn serve      — Start Pipeline-as-a-Service API
   gnn lsp        — Launch Language Server
 """
+__version__ = "1.6.0"
+
+FEATURES = {
+    "subcommands": True,
+    "pipeline_execution": True,
+    "file_validation": True,
+    "file_parsing": True,
+    "render_dispatch": True,
+    "lsp_launch": True,
+}
+
+
 
 import argparse
 import json
@@ -411,3 +423,14 @@ def _cmd_graph(args):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "cli",
+        "version": __version__,
+        "description": "Unified command-line interface with subcommands",
+        "features": FEATURES,
+    }
+

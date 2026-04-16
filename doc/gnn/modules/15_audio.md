@@ -20,7 +20,6 @@ src/audio/
 │   └── [pedalboard components]
 └── sapf/                          # SAPF audio framework
     ├── __init__.py               # SAPF module initialization
-    ├── audio_generators.py       # Audio generation components
 
 ## Agent Identity & Capabilities
 
@@ -166,7 +165,6 @@ audio_file = generate_audio_from_gnn(model, duration=60.0)
 ```
 output/15_audio_output/
 ├── model_name_sonification.wav
-├── model_name_sapf.py
 └── audio_processing_summary.json
 ```
 

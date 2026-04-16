@@ -291,6 +291,7 @@ def process_mcp(
         return False
 
 def get_available_tools() -> list:
+    """Return a list of all registered MCP tools."""
     try:
         from .mcp import mcp_instance
         return mcp_instance.list_available_tools()

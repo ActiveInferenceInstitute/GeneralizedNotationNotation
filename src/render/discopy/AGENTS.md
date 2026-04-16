@@ -399,9 +399,12 @@ GNN Model → DisCoPy Conversion → Type Assignment → Diagram Composition →
 - `src/tests/test_render_integration.py` - Integration tests
 
 ### Test Coverage
-- **Current**: 78%
-- **Target**: 85%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_discopy*.py \
+    --cov=src/render/discopy --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. DisCoPy code generation from various GNN models
 2. Generated Python code syntax validation
@@ -499,7 +502,7 @@ result = generate_discopy_code(model_data, debug=True, verbose=True)
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Complete DisCoPy code generation pipeline

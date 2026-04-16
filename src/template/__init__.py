@@ -17,7 +17,7 @@ For complete documentation of this architectural pattern, see:
 - src/main.py: Main pipeline orchestrator
 """
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 __author__ = "GNN Pipeline Team"
 __description__ = "Standardized template for GNN pipeline steps"
 
@@ -60,3 +60,13 @@ __all__ = [
     'get_version_info',
     'VERSION_INFO'
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "template",
+        "version": __version__,
+        "description": "Pipeline template initialization and configuration",
+        "features": FEATURES,
+    }

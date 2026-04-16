@@ -314,9 +314,12 @@ File Input → Security Validation → Threat Detection → Access Control → S
 - `src/tests/test_security_functional.py` - Functional tests
 
 ### Test Coverage
-- **Current**: 87%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_security*.py \
+    --cov=src/security --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Security validation with various threat types
 2. Access control enforcement
@@ -374,7 +377,7 @@ def validate_model_security_tool(file_path, security_level="standard"):
 
 ## Version History
 
-### Current Version: 1.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Security validation

@@ -13,6 +13,8 @@ Usage:
     # or via pipeline:
     python src/main.py --only-steps 21  # MCP step also registers API tools
 """
+__version__ = "1.6.0"
+
 
 from pathlib import Path
 
@@ -35,3 +37,13 @@ FEATURES = {
 }
 
 __all__ = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "api",
+        "version": __version__,
+        "description": "REST API (FastAPI) for pipeline-as-a-service",
+        "features": FEATURES,
+    }

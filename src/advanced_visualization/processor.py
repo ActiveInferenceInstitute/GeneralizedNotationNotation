@@ -51,9 +51,11 @@ except ImportError:
                 self.timings = {}
 
             def start_timing(self, name: str):
+                """Start a timing measurement for the current operation."""
                 self.timings[name] = time.time()
 
             def stop_timing(self, name: str) -> float:
+                """Stop the current timing measurement and record the duration."""
                 if name in self.timings:
                     duration = time.time() - self.timings[name]
                     del self.timings[name]

@@ -30,7 +30,7 @@ from .processor import (
 # Canonical domain types live in types.py
 from .types import ParsedGNN, ValidationLevel
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 # Ensure tests see MCP feature presence consistently
 FEATURES = {
     "file_discovery": True,

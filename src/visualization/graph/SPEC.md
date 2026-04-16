@@ -1,8 +1,24 @@
-# Specification: Graph
+# Graph Visualization — Technical Specification
 
-## Design Requirements
-This module (`graph`) maps structural logic to the overall execution graph.
-It ensures that `Graph` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Graph Types
+
+- **Network topology** — Full model connectivity (states, observations, actions)
+- **Bipartite layout** — Separated hidden states and observations
+
+## Layout Algorithm
+
+- Spring layout (default) for network graphs
+- Bipartite layout for two-set separation
+
+## Edge Semantics
+
+- Solid arrows: deterministic transitions
+- Dashed arrows: probabilistic transitions
+- Edge width: proportional to transition probability
+
+## Dependencies
+
+- `networkx >= 3.0` (required)
+- `matplotlib >= 3.5` (required for rendering)

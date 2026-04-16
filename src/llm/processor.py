@@ -23,6 +23,7 @@ try:
     from pipeline.config import get_pipeline_config
 except ImportError:
     def get_pipeline_config() -> Dict[str, Any]:
+        """Load and return the pipeline configuration for LLM processing."""
         return {}
 
 def _get_llm_config() -> dict:

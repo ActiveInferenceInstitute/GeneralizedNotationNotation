@@ -1,8 +1,18 @@
-# Specification: Sdk
+# MCP SDK Shim — Technical Specification
 
-## Design Requirements
-This module (`sdk`) maps structural logic to the overall execution graph.
-It ensures that `Sdk` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Purpose
+
+Compatibility shim for `MCPSDKStatus` health check. No independent logic.
+
+## Delegation Pattern
+
+All exports forward to `mcp.mcp.MCP` and related parent module classes.
+
+## Health Check Contract
+
+`MCPSDKStatus` checks:
+1. `sdk/` directory exists
+2. `sdk/client.py`, `sdk/server.py`, `sdk/mcp.py` are importable
+3. Core exports (`MCP`, `get_mcp_instance`) are accessible

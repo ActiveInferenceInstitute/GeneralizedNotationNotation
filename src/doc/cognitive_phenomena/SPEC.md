@@ -1,8 +1,17 @@
-# Specification: Cognitive Phenomena
+# Cognitive Phenomena Documentation — Technical Specification
 
-## Design Requirements
-This module (`cognitive_phenomena`) maps structural logic to the overall execution graph.
-It ensures that `Cognitive Phenomena` tasks resolve without runtime dependency loops.
+**Version**: 1.6.0
 
-## Components
-Expected available types: No specific classes exported.
+## Purpose
+
+Theoretical documentation on cognitive phenomena relevant to Active Inference model design.
+
+## Topics
+
+- **Effort** — Cognitive effort allocation, expected free energy as effort proxy
+- **Memory** — Temporal memory models, Markov blankets, state estimation
+
+## Format
+
+- Markdown documentation with LaTeX equations
+- Cross-references to GNN model examples

@@ -5,7 +5,7 @@ This module provides machine learning model integration capabilities.
 """
 from typing import Any, Dict
 
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 FEATURES = {
     "model_training": True,
     "model_inference": True,
@@ -81,3 +81,13 @@ __all__ = [
     'FEATURES',
     '__version__'
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "ml_integration",
+        "version": __version__,
+        "description": "Machine learning model training and evaluation",
+        "features": FEATURES,
+    }

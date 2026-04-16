@@ -138,7 +138,7 @@ class TestIntelligentAnalysisModuleComprehensive:
         """Test module version is set correctly."""
         try:
             import intelligent_analysis
-            assert intelligent_analysis.__version__ == "2.0.0"
+            assert intelligent_analysis.__version__ == "1.6.0"
         except ImportError:
             pytest.skip("intelligent_analysis module not available")
 

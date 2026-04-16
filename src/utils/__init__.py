@@ -31,6 +31,18 @@ Source modules:
 - structured_logging: Structured log emission with correlation context
 - dependency_audit: Dependency auditing and optimization utilities
 """
+__version__ = "1.6.0"
+
+FEATURES = {
+    "argument_parsing": True,
+    "logging": True,
+    "error_handling": True,
+    "pipeline_monitoring": True,
+    "dependency_management": True,
+    "path_utilities": True,
+}
+
+
 
 import logging
 from pathlib import Path
@@ -366,3 +378,14 @@ __all__ = [
     # Pipeline template utilities (most-imported submodule, exposed here to avoid bypass)
     'create_standardized_pipeline_script',
 ]
+
+
+def get_module_info() -> dict:
+    """Return module metadata for composability and MCP discovery."""
+    return {
+        "name": "utils",
+        "version": __version__,
+        "description": "Shared utilities, logging, and helper functions",
+        "features": FEATURES,
+    }
+

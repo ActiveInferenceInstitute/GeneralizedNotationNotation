@@ -31,7 +31,7 @@ def generate_pipeline_report(
         Markdown string for PIPELINE_REPORT.md.
     """
     output_dir = Path(output_dir)
-    summary_path = summary_path or output_dir / "pipeline_execution_summary.json"
+    summary_path = summary_path or output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
 
     # Load summary if available
     summary = _load_summary(summary_path)

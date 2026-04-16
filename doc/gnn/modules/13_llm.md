@@ -15,7 +15,6 @@ src/llm/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
 ├── analyzer.py                    # LLM analysis system
-├── demo_enhanced_llm.py          # Enhanced LLM demonstration
 ├── llm_operations.py             # Core LLM operations
 ├── llm_processor.py              # LLM processing system
 ├── mcp.py                        # Model Context Protocol integration

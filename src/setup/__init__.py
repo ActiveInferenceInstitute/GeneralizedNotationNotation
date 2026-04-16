@@ -50,7 +50,7 @@ from .uv_package_ops import (
 from .validator import get_environment_info, get_uv_status, validate_system
 
 # Module metadata and lightweight API expected by tests
-__version__ = "1.1.3"
+__version__ = "1.6.0"
 __author__ = "Active Inference Institute"
 __description__ = "GNN environment setup and management with UV"
 
@@ -124,6 +124,7 @@ class EnvironmentManager:
     def setup_environment(self, *args: Any, **kwargs: Any) -> bool:
         return True
     def validate_environment(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
+        """Validate the current Python environment meets pipeline requirements."""
         try:
             from .uv_management import validate_uv_setup
             return validate_uv_setup()
@@ -154,11 +155,13 @@ def validate_environment() -> dict:
         }
 
 def check_python_version() -> bool:
+    """Check that the current Python version meets minimum requirements."""
     import sys
     return sys.version_info.major >= 3
 
 # Ensure get_module_info exposes environment_types key as tests expect
 def get_module_info() -> Dict[str, Any]:
+    """Return setup module metadata by delegating to setup.utils."""
     from .utils import get_module_info as _gm
     info = _gm()
     # Provide a top-level shorthand for environment types expected in tests

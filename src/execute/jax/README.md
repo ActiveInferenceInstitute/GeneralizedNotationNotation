@@ -66,7 +66,6 @@ from src.execute.jax.jax_runner import execute_jax_script
 from pathlib import Path
 
 # Execute single JAX script
-script_path = Path("output/11_render_output/jax/pomdp_solver.py")
 success = execute_jax_script(script_path, verbose=True, device="cpu")
 ```
 
@@ -114,7 +113,6 @@ logging.basicConfig(level=logging.INFO)
 
 # Performance metrics are automatically logged
 # Look for messages like:
-# "Script executed successfully: pomdp_solver.py (2.3s, 512MB)"
 ```
 
 ## Integration with Pipeline
@@ -142,9 +140,6 @@ def execute_jax_step(pipeline_output_dir, verbose=False):
 output/
 ├── gnn_rendered_simulators/
 │   └── jax/
-│       ├── pomdp_solver.py
-│       ├── general_model.py
-│       └── combined_model.py
 └── execution_results/
     └── jax/
         ├── pomdp_solver_results.json

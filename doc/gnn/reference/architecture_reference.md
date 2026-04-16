@@ -146,13 +146,11 @@ src/8_visualization.py:
 Code generation to execution transfer:
 
 src/11_render.py → output/11_render_output/
-├── actinf_pomdp_agent_pymdp.py      (Generated PyMDP code)
 ├── actinf_pomdp_agent_rxinfer.jl    (Generated RxInfer code) 
 └── render_summary.json              (Generation metadata)
 
 src/12_execute.py:
 ├── Discovers generated files in output/11_render_output/
-├── Executes: subprocess.run(["python", "actinf_pomdp_agent_pymdp.py"])
 └── Captures: execution results, timing, memory usage
 ```
 
@@ -190,7 +188,6 @@ src/type_checker/
 │   ├── analyze_variable_types() → Dict[str, Any]
 │   ├── analyze_connections() → Dict[str, Any]
 │   └── estimate_computational_complexity() → Dict[str, Any]
-├── checker.py                         # GNNTypeChecker (line 174)
 │   ├── check_file() → Tuple[bool, List[str], List[str], Dict[str, Any]]
 │   ├── _check_required_sections()
 │   └── _collect_variable_analysis()

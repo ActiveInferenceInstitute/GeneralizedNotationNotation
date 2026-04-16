@@ -276,9 +276,12 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 - `src/tests/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
 
 ### Test Coverage
-- **Current**: 85%
-- **Target**: 90%+
+Measure on demand:
 
+```bash
+uv run pytest src/tests/test_template*.py \
+    --cov=src/template --cov-report=term-missing
+```
 ### Key Test Scenarios
 1. Template processing and generation
 2. Pattern demonstration and validation
