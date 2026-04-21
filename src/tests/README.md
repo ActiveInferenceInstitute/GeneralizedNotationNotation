@@ -1,38 +1,75 @@
 # Test Infrastructure
 
-This directory contains the comprehensive test suite for the GNN Processing Pipeline. The test infrastructure has been completely refactored to follow a modular, organized structure that provides comprehensive coverage for all modules.
+Test suite for the GNN Processing Pipeline. As of Phase 7, tests mirror the
+`src/` module layout: `src/tests/<module>/test_*.py` contains tests for
+`src/<module>/`. Cross-module and infrastructure tests live at the top level
+under `src/tests/`.
 
 ## Quick Start
 
-### Run Fast Tests (Default - Pipeline Mode)
+### Run full test suite via the pipeline orchestrator
 
 ```bash
-python src/2_tests.py --fast-only --verbose
+python src/2_tests.py --fast-only --verbose       # quick validation
+python src/2_tests.py --comprehensive --verbose   # full suite
 ```
 
-### Run Comprehensive Test Suite
+### Run tests for a single module
 
 ```bash
-python src/2_tests.py --comprehensive --verbose
+PYTHONPATH=src pytest src/tests/gnn/ -v
+PYTHONPATH=src pytest src/tests/render/ -v
+PYTHONPATH=src pytest src/tests/execute/ -v
 ```
 
-### Run Specific Test Category
+### Run by marker
 
 ```bash
-pytest src/tests/test_gnn_overall.py -v
-pytest src/tests/test_render_overall.py -v
-pytest -m fast  # Run only fast tests
-pytest -m integration  # Run only integration tests
+pytest -m unit          # unit tests only
+pytest -m integration   # integration tests only
+pytest -m fast          # fast tests only
+pytest -m slow          # slow/performance tests only
 ```
 
 ## Test Statistics
 
-- **Total Test Files**: 91
-- **Total Test Functions**: 734+
-- **Test Categories**: 24
-- **Test Markers**: 25+
-- **Fast Test Duration**: 1-3 minutes
-- **Comprehensive Test Duration**: 5-15 minutes
+- **Total test files**: 158 (136 in module subdirs + 21 at root)
+- **Test functions collected**: ~2,155
+- **Passing baseline**: 2,071 pass, 80 skipped (CI-equivalent env; excludes
+  local-only `test_llm_ollama*.py` + env-dependent `test_uv_environment.py`)
+- **Fast-test duration**: 1-3 minutes
+- **Full-suite duration**: 2-3 minutes
+
+## Directory Layout (Phase 7)
+
+```
+src/tests/
+├── conftest.py            # pytest fixtures + marker registration
+├── categories.py          # category definitions for the modular runner
+├── runner.py              # Step-2 orchestrator (TestRunner class)
+├── mcp.py                 # MCP tool registrations for test execution
+├── __init__.py            # public API surface (performance_tracker etc.)
+├── helpers/               # shared test helpers (render_recovery)
+├── infrastructure/        # TestRunner backend (ResourceMonitor, TestConfig)
+├── test_data/             # on-disk fixtures consumed by tests
+│
+├── <module>/test_*.py     # per-module tests mirroring src/<module>/
+│   (30 subdirectories: gnn, render, execute, mcp, llm, visualization,
+│   audio, analysis, pipeline, export, ontology, utils, …)
+│
+└── test_*.py              # cross-cutting / meta-tests at root
+    (coverage assessments, environment probes, runner self-tests,
+    test_core_modules, test_fast_suite, etc.)
+```
+
+### What lives where
+
+| Location                         | Contains                                         |
+|----------------------------------|--------------------------------------------------|
+| `src/tests/<module>/`            | Tests for a single `src/<module>/` package       |
+| `src/tests/pipeline/`            | Cross-module integration tests (main orchestrator, render→execute→analyze chains, step11↔step12 handshakes) |
+| `src/tests/utils/`               | Tests for `src/utils/` helpers + shared contracts (exit codes, validation schemas, framework availability) |
+| `src/tests/` (root)              | Environment probes, coverage audits, test-runner self-tests, cross-module smoke tests |
 
 ## Architecture
 

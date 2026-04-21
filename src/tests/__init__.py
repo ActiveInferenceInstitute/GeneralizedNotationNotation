@@ -219,7 +219,6 @@ except ImportError:
         "performance": "Performance and resource usage tests",
         "slow": "Tests that take significant time to complete",
         "fast": "Quick tests for rapid feedback",
-        "safe_to_fail": "Tests safe to run without side effects",
         "destructive": "Tests that may modify system state",
         "external": "Tests requiring external dependencies",
         "core": "Core module tests",

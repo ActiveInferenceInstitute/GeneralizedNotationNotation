@@ -1,36 +1,43 @@
 """
-Test configuration and fixtures for GNN Processing Pipeline.
+Test configuration and fixtures for the GNN Processing Pipeline.
 
-This module provides pytest fixtures and configuration for testing the GNN pipeline.
+Phase 7: conftest was reduced from 545 lines to a focused set of project-
+specific fixtures. Removed:
+  - pathlib._local PurePosixPath patch (unused, speculative)
+  - safe_to_fail marker auto-apply (Phase 7.1)
+  - Unused fixtures: full_pipeline_environment, simulate_failures,
+    capture_logs, pipeline_arguments
+  - RealRenderModule recovery fallback (in-tree imports always succeed)
 """
+
+from __future__ import annotations
 
 import sys
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, Generator, List
+from typing import Any, Dict, Generator
 
-# Mocks removed - using real implementations per testing policy
-# Import pytest
 import pytest
 
-# Ensure top-level 'tests' alias exists for imports like 'from tests.conftest import *'
-try:
-    import types as _types
-    _pkg = _types.ModuleType('tests')
-    _pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
-    sys.modules.setdefault('tests', _pkg)
-    sys.modules['tests.conftest'] = sys.modules.get(__name__)
-except Exception:
-    pass
+# Make "tests.*" an importable alias for the src/tests/ directory so that
+# tests which do `from tests.conftest import X` continue to resolve.
+import types as _types
+_pkg = _types.ModuleType("tests")
+_pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
+sys.modules.setdefault("tests", _pkg)
+sys.modules["tests.conftest"] = sys.modules.get(__name__)
 
-# Test configuration and markers
-PYTEST_MARKERS = {
+
+# -----------------------------------------------------------------------------
+# Marker configuration
+# -----------------------------------------------------------------------------
+
+PYTEST_MARKERS: Dict[str, str] = {
     "unit": "Unit tests for individual components",
     "integration": "Integration tests for component interactions",
     "performance": "Performance and resource usage tests",
     "slow": "Tests that take significant time to complete",
     "fast": "Quick tests for rapid feedback",
-    "safe_to_fail": "Tests safe to run without side effects",
     "destructive": "Tests that may modify system state",
     "external": "Tests requiring external dependencies",
     "core": "Core module tests",
@@ -45,186 +52,89 @@ PYTEST_MARKERS = {
     "type_checking": "Type checking tests",
     "mcp": "Model Context Protocol tests",
     "sapf": "SAPF audio generation tests",
-    "visualization": "Visualization tests"
+    "visualization": "Visualization tests",
 }
 
-# Configure pytest markers
+
 def pytest_configure(config: Any) -> None:
-    """Configure pytest with custom markers and safety checks."""
-    # Register all markers
-    for marker_name, marker_description in PYTEST_MARKERS.items():
-        config.addinivalue_line(
-            "markers", f"{marker_name}: {marker_description}"
-        )
+    """Register project-specific pytest markers."""
+    for name, description in PYTEST_MARKERS.items():
+        config.addinivalue_line("markers", f"{name}: {description}")
 
-    # Expose commonly used classes directly for wildcard imports in migrated tests.
-    # Do a guarded import because visualization may require optional deps (networkx, seaborn)
-    # which should not break test collection.
-    try:
-        from visualization.ontology_visualizer import (
-            OntologyVisualizer as _OntologyVisualizer,  # type: ignore
-        )
-        globals()['OntologyVisualizer'] = _OntologyVisualizer
-    except Exception:
-        globals()['OntologyVisualizer'] = None
 
-def pytest_unconfigure(config: Any) -> None:
-    """Clean up test environment after all tests complete."""
-    pass
-
-# Ensure certain optional attributes exist for compatibility with patches used in tests
-def pytest_sessionstart(session: Any) -> None:
-    """Session start hook to prepare environment quirks required by tests."""
-    # NOTE: Avoid pre-importing `numpy.typing` here. Some recovery tests patch
-    # `numpy.typing` to raise RecursionError during import; pre-importing it
-    # prevents those tests from exercising the failure modes. We therefore
-    # deliberately do NOT import `numpy.typing` here to allow tests to patch it.
-
-    # Apply a safe pathlib recursion guard for Python 3.13+ that can interfere
-    # with pytest's assertion rewriting. This mirrors the per-script patch but
-    # is applied once at session start to reduce import-time recursion issues.
-    try:
-        import pathlib
-        # Import internal local pathlib implementation to patch PurePosixPath
-        try:
-            import importlib
-            _local = importlib.import_module('pathlib._local')
-        except Exception:
-            _local = None
-
-        # Prefer guarding PurePosixPath if available
-        PurePosix = getattr(pathlib, 'PurePosixPath', None)
-        if PurePosix is not None and _local is not None and hasattr(_local, 'PurePosixPath'):
-            try:
-                original_parse = getattr(_local.PurePosixPath, '_parse_path', None)
-
-                def _patched_tail(self: Any) -> Any:
-                    try:
-                        if not hasattr(self, '_tail_cached'):
-                            try:
-                                # try to use internal parse if available
-                                if original_parse is not None:
-                                    parts = original_parse(getattr(self, '_raw_path', ''))
-                                    # parts may be tuple (drv, root, tail)
-                                    self._tail_cached = parts[2] if isinstance(parts, tuple) and len(parts) > 2 else ''
-                                else:
-                                    self._tail_cached = ''
-                            except (AttributeError, RecursionError, TypeError):
-                                self._tail_cached = ''
-                        return self._tail_cached
-                    except (AttributeError, RecursionError, TypeError):
-                        return ''
-
-                try:
-                    _local.PurePosixPath._tail = property(_patched_tail)
-                except Exception:
-                    # Best-effort; ignore if we cannot patch
-                    pass
-            except Exception:
-                pass
-    except Exception:
-        # Do not fail session startup if patching fails
-        pass
-
-    # Prepare essential pipeline artifacts when running directly after setup
-    # Note: Removed automatic execution of main.py during conftest setup. 
-    # Generating pipeline artifacts should be done manually or via a separate script 
-    # before running tests to prevent deadlocks and silent failures.
-
-    # Do not install a jax/jaxlib shim: a stub module breaks `import jax.numpy`
-    # (pymdp 1.0, execute tests). Use `pytest.importorskip` / skipUnless on tests
-    # that need JAX when the active interpreter has no JAX.
-    # NOTE: Do not pre-install a placeholder for `numpy.typing` here; tests in
-    # `test_pipeline_recovery` rely on patching `numpy.typing` to simulate
-    # RecursionError during import. Installing a placeholder prevents those
-    # patches from exercising the intended failure modes.
-
-def pytest_collection_modifyitems(config: Any, items: List[Any]) -> None:
-    """Modify test collection to add automatic markers and safety checks."""
+def pytest_collection_modifyitems(config: Any, items: list) -> None:
+    """Tag slow tests with the performance marker for dashboarding."""
     for item in items:
-        # Applied to all non-destructive tests by default — allows optional dependencies
-        # to fail without blocking CI. Tests are skipped or reported as warnings when
-        # the environment lacks optional deps (e.g. JAX, discopy, gradio).
-        if not any(marker.name == "destructive" for marker in item.iter_markers()):
-            item.add_marker(pytest.mark.safe_to_fail)
-
-        # Add performance tracking to slow tests
-        if any(marker.name == "slow" for marker in item.iter_markers()):
+        if any(m.name == "slow" for m in item.iter_markers()):
             item.add_marker(pytest.mark.performance)
 
-# =============================================================================
-# Session-level fixtures (run once per test session)
-# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Session-level fixtures
+# -----------------------------------------------------------------------------
 
 @pytest.fixture(scope="session")
 def test_config() -> Dict[str, Any]:
-    """
-    Provide test configuration for the entire test session.
-    """
+    """Session-wide test configuration."""
     return {
         "test_mode": True,
         "safe_mode": True,
         "temp_dir": tempfile.mkdtemp(),
         "max_test_duration": 300,
-        "memory_limit_mb": 1024
+        "memory_limit_mb": 1024,
     }
+
 
 @pytest.fixture(scope="session")
 def project_root() -> Path:
-    """Get the project root directory."""
+    """Absolute path to the project root."""
     return Path(__file__).parent.parent.parent
+
 
 @pytest.fixture(scope="session")
 def src_dir() -> Path:
-    """Get the src directory."""
+    """Absolute path to the src/ directory."""
     return Path(__file__).parent.parent
+
 
 @pytest.fixture(scope="session")
 def test_dir() -> Path:
-    """Get the test directory."""
+    """Absolute path to the src/tests/ directory."""
     return Path(__file__).parent
 
-# =============================================================================
-# Function-level fixtures (run once per test function)
-# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Filesystem fixtures
+# -----------------------------------------------------------------------------
 
 @pytest.fixture
 def safe_filesystem() -> Generator[Any, None, None]:
-    """Provide a safe filesystem for testing."""
+    """A scratch filesystem under a fresh tempdir that cleans itself up."""
     temp_dir = Path(tempfile.mkdtemp())
 
     class SafeFileSystem:
-        def __init__(self, temp_dir: Path):
-            self.temp_dir = temp_dir
-            self.created_files = []
-            self.created_dirs = []
+        def __init__(self, base: Path) -> None:
+            self.temp_dir = base
+            self.created_files: list[Path] = []
+            self.created_dirs: list[Path] = []
 
-        def create_file(self, path: Path, content: str = "") -> Path:
-            full_path = self.temp_dir / path
-            full_path.parent.mkdir(parents=True, exist_ok=True)
-            full_path.write_text(content)
-            self.created_files.append(full_path)
-            return full_path
+        def create_file(self, path: Any, content: str = "") -> Path:
+            full = self.temp_dir / path
+            full.parent.mkdir(parents=True, exist_ok=True)
+            full.write_text(content)
+            self.created_files.append(full)
+            return full
 
-        def create_dir(self, path: Path) -> Path:
-            full_path = self.temp_dir / path
-            full_path.mkdir(parents=True, exist_ok=True)
-            self.created_dirs.append(full_path)
-            return full_path
+        def create_dir(self, path: Any) -> Path:
+            full = self.temp_dir / path
+            full.mkdir(parents=True, exist_ok=True)
+            self.created_dirs.append(full)
+            return full
 
         def cleanup(self) -> None:
-            for file_path in self.created_files:
-                if file_path.exists():
-                    file_path.unlink()
-            for dir_path in reversed(self.created_dirs):
-                if dir_path.exists():
-                    try:
-                        dir_path.rmdir()
-                    except OSError:
-                        pass
+            import shutil
             if self.temp_dir.exists():
                 try:
-                    import shutil
                     shutil.rmtree(self.temp_dir)
                 except OSError:
                     pass
@@ -233,59 +143,52 @@ def safe_filesystem() -> Generator[Any, None, None]:
     yield fs
     fs.cleanup()
 
-"""
-NOTE: Mocking is disallowed. Previous simulated fixtures have been entirely removed.
-"""
 
 @pytest.fixture
-def full_pipeline_environment(tmp_path) -> Dict[str, Any]:
-    """Provide a basic environment dict used by some integration tests."""
-    return {
-        "project_root": tmp_path,
-        "input_dir": tmp_path / "input",
-        "output_dir": tmp_path / "output",
-        "temp_dir": tmp_path,
-        "env": {"PYTHONUNBUFFERED": "1"},
-    }
+def isolated_temp_dir() -> Generator[Path, None, None]:
+    """A throwaway temp directory with automatic cleanup."""
+    temp_dir = Path(tempfile.mkdtemp())
+    try:
+        yield temp_dir
+    finally:
+        import shutil
+        shutil.rmtree(temp_dir, ignore_errors=True)
+
 
 @pytest.fixture
-def temp_directories(tmp_path) -> Dict[str, Path]:
-    """Provide temporary directories for testing with auto-cleanup."""
+def temp_directories(tmp_path: Path) -> Dict[str, Path]:
+    """Standard input/output/temp directory set anchored under tmp_path."""
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"
     temp_dir = tmp_path / "temp"
-
-    # Create directories
-    input_dir.mkdir(parents=True, exist_ok=True)
-    output_dir.mkdir(parents=True, exist_ok=True)
-    temp_dir.mkdir(parents=True, exist_ok=True)
-
+    for d in (input_dir, output_dir, temp_dir):
+        d.mkdir(parents=True, exist_ok=True)
     return {
         "input_dir": input_dir,
         "output_dir": output_dir,
         "temp_dir": temp_dir,
-        "root": tmp_path
+        "root": tmp_path,
     }
 
-@pytest.fixture
-def simulate_failures() -> Dict[str, Any]:
-    """Fixture to simulate step failures in pipeline tests."""
-    return {"simulate": True, "failed_steps": ["render", "execute"]}
 
 @pytest.fixture
-def capture_logs(caplog: Any) -> Any:
-    """Alias fixture to expose pytest's caplog as capture_logs expected by some tests."""
-    return caplog
+def temp_output_dir() -> Generator[Path, None, None]:
+    """Temporary output directory for visualization tests."""
+    base = Path(tempfile.mkdtemp())
+    directory = base / "viz_output"
+    directory.mkdir(parents=True, exist_ok=True)
+    try:
+        yield directory
+    finally:
+        import shutil
+        shutil.rmtree(base, ignore_errors=True)
 
 
+# -----------------------------------------------------------------------------
+# GNN sample content fixtures
+# -----------------------------------------------------------------------------
 
-@pytest.fixture
-def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
-    """Provide sample GNN files for testing."""
-    files = {}
-
-    # Minimal coherent 3-state / 3-obs POMDP slice (avoids parser + PyMDP render warnings)
-    content_simple = """
+_SAMPLE_GNN_CONTENT = """
 # Test GNN Model
 
 ## ModelName
@@ -305,227 +208,84 @@ C = [0.0, 0.0, 1.0]
 D = [0.34, 0.33, 0.33]
 """
 
-    content_second = """
-# Second test model
 
-## ModelName
-second_model
-
-## StateSpaceBlock
-s[3,1,type=int]
-o[3,1,type=int]
-
-## Connections
-s -> o
-
-## InitialParameterization
-A = [[0.7, 0.2, 0.1], [0.2, 0.7, 0.1], [0.1, 0.2, 0.7]]
-B = [[[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]]
-C = [0.0, 0.0, 1.0]
-D = [0.34, 0.33, 0.33]
-"""
-
-    files["simple"] = safe_filesystem.create_file("simple.gnn", content_simple)
-    files["second"] = safe_filesystem.create_file("second.gnn", content_second)
+@pytest.fixture
+def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
+    """Pair of on-disk GNN files sharing a minimal coherent POMDP schema."""
+    files = {
+        "simple": safe_filesystem.create_file("simple.gnn", _SAMPLE_GNN_CONTENT),
+        "second": safe_filesystem.create_file(
+            "second.gnn", _SAMPLE_GNN_CONTENT.replace("test_model", "second_model"),
+        ),
+    }
     return files
 
-@pytest.fixture
-def isolated_temp_dir() -> Generator[Path, None, None]:
-    """Provide an isolated temporary directory for testing."""
-    temp_dir = Path(tempfile.mkdtemp())
-    yield temp_dir
-
-    # Cleanup
-    try:
-        import shutil
-        shutil.rmtree(temp_dir)
-    except OSError:
-        pass
-
-@pytest.fixture
-def pipeline_arguments() -> Dict[str, Any]:
-    """Provide pipeline arguments for testing."""
-    return {
-        "target_dir": Path("input/gnn_files"),
-        "output_dir": Path("output"),
-        "verbose": True,
-        "recursive": True,
-        "only_steps": None,
-        "skip_steps": None
-    }
-
-@pytest.fixture
-def comprehensive_test_data(isolated_temp_dir) -> Dict[str, Any]:
-    """Provide comprehensive test data."""
-    return {
-        "temp_dir": isolated_temp_dir,
-        "gnn_files": {
-            "simple": isolated_temp_dir / "simple.gnn",
-            "complex": isolated_temp_dir / "complex.gnn"
-        },
-        "output_dir": isolated_temp_dir / "output",
-        "config": {
-            "test_mode": True,
-            "safe_mode": True
-        }
-    }
-
-# =============================================================================
-# Additional fixtures expected by migrated tests
-# =============================================================================
-
-@pytest.fixture
-def temp_output_dir() -> Generator[Path, None, None]:
-    """Temporary output directory for visualization tests."""
-    directory = Path(tempfile.mkdtemp()) / "viz_output"
-    directory.mkdir(parents=True, exist_ok=True)
-    yield directory
-    try:
-        import shutil
-        shutil.rmtree(directory.parent)
-    except Exception:
-        pass
 
 def _write_sample_gnn_markdown(target: Path) -> None:
-    """Write a sample GNN markdown with ontology annotations to target path."""
-    content = """
-# Active Inference Model
-
-## ActInfOntologyAnnotation
-s = HiddenState
-s_prime = NextHiddenState
-o = Observation
-π = PolicyVector
-u = Action
-t = Time
-A = LikelihoodMatrix
-B = TransitionMatrix
-C = LogPreferenceVector
-D = PriorOverHiddenStates
-E = Habit
-F = VariationalFreeEnergy
-G = ExpectedFreeEnergy
-
-## Connections
-s -> o
-""".strip()
+    """Write a minimal GNN markdown with ontology annotations to ``target``."""
+    content = (
+        "# Active Inference Model\n\n"
+        "## ActInfOntologyAnnotation\n"
+        "s = HiddenState\n"
+        "s_prime = NextHiddenState\n"
+        "o = Observation\n"
+        "π = PolicyVector\n"
+        "u = Action\n"
+        "t = Time\n"
+        "A = LikelihoodMatrix\n"
+        "B = TransitionMatrix\n"
+        "C = LogPreferenceVector\n"
+        "D = PriorOverHiddenStates\n"
+        "E = Habit\n"
+        "F = VariationalFreeEnergy\n"
+        "G = ExpectedFreeEnergy\n\n"
+        "## Connections\n"
+        "s -> o\n"
+    )
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(content)
 
+
 @pytest.fixture
 def test_data_dir() -> Generator[Path, None, None]:
-    """Directory containing sample GNN files for directory-based tests."""
+    """Directory containing a sample GNN file at samples/actinf_pomdp_agent.md."""
     base = Path(tempfile.mkdtemp())
     sample = base / "samples" / "actinf_pomdp_agent.md"
     _write_sample_gnn_markdown(sample)
-    yield sample.parent
     try:
+        yield sample.parent
+    finally:
         import shutil
-        shutil.rmtree(base)
-    except Exception:
-        pass
+        shutil.rmtree(base, ignore_errors=True)
+
 
 @pytest.fixture
 def sample_gnn_file() -> Generator[Path, None, None]:
-    """Path to a sample GNN markdown file used in tests."""
+    """Path to a single on-disk sample GNN markdown file."""
     tmp = Path(tempfile.mkdtemp())
     path = tmp / "actinf_pomdp_agent.md"
     _write_sample_gnn_markdown(path)
-    yield path
     try:
+        yield path
+    finally:
         import shutil
-        shutil.rmtree(tmp)
-    except Exception:
-        pass
+        shutil.rmtree(tmp, ignore_errors=True)
+
 
 @pytest.fixture
 def sample_gnn_spec() -> Dict[str, Any]:
-    """Minimal in-memory GNN spec object for render tests."""
+    """In-memory GNN spec dict used by render tests."""
     return {
         "name": "actinf_pomdp_agent",
         "states": ["s"],
         "observations": ["o"],
-        "parameters": {"A": [[0.5, 0.5]]}
+        "parameters": {"A": [[0.5, 0.5]]},
     }
 
-class RealRenderModule:
-    """Real render module for testing - avoids mocking."""
-    def render_gnn_spec(self, spec: Any, target: str, outdir: Any) -> Any:
-        """Render GNN spec to target format using real processor."""
-        # Import real render function inside method to avoid circular imports
-        try:
-            from render.processor import render_gnn_spec
-            return render_gnn_spec(spec, target, outdir)
-        except ImportError:
-            # Recovery if module path issue
-            try:
-                from src.render.processor import render_gnn_spec
-                return render_gnn_spec(spec, target, outdir)
-            except ImportError:
-                 # Last resort recovery for safe mode if real code unavailable
-                 outdir = Path(outdir)
-                 outdir.mkdir(parents=True, exist_ok=True)
-                 artifact_name = f"{target}_artifact.txt"
-                 (outdir / artifact_name).write_text("ok")
-                 return True, "Recovery Success", [artifact_name]
 
-@pytest.fixture
-def test_render_module() -> 'RealRenderModule':
-    """Real render module exposing render_gnn_spec(spec, target, outdir)."""
-    return RealRenderModule()
-
-@pytest.fixture
-def test_mcp_tools() -> Any:
-    """Simple MCP tools registry used by MCP tests.
-
-    Supports both positional and keyword-based registration styles used across modules
-    (func/function), and basic resource registration expected by tests.
-    """
-    class _MCPTools:
-        def __init__(self):
-            self.tools: Dict[str, Any] = {}
-            self.resources: Dict[str, Any] = {}
-
-        # Accept both previous (name, func, schema, description) and modern keyword style
-        def register_tool(self, name: str, *args: Any, **kwargs: Any) -> None:
-            # Parse inputs
-            function = kwargs.get("function")
-            schema = kwargs.get("schema")
-            description = kwargs.get("description", "")
-
-            if function is None:
-                # Positional style: register_tool(name, func, schema=None, description="")
-                if len(args) >= 1:
-                    function = args[0]
-                if len(args) >= 2 and schema is None:
-                    schema = args[1]
-                if len(args) >= 3 and not description:
-                    description = args[2]
-
-            self.tools[name] = {
-                "function": function,
-                "func": function,
-                "schema": schema or {},
-                "description": description,
-            }
-
-        def register_resource(self, pattern: str, handler: Any, description: str = "") -> None:
-            self.resources[pattern] = {
-                "handler": handler,
-                "description": description,
-            }
-
-        def execute_tool(self, name: str, **kwargs: Any) -> Any:
-            if name not in self.tools:
-                return {"error": "tool_not_found", "name": name}
-            func = self.tools[name].get("function") or self.tools[name].get("func")
-            return func(**kwargs)
-
-    return _MCPTools()
-
-# Parser sample inputs used in tests expecting fixtures
 @pytest.fixture
 def sample_markdown() -> str:
+    """Minimal GNN markdown source for parser tests."""
     return (
         "# TestModel\n\n"
         "## ModelName\nTestModel\n\n"
@@ -534,8 +294,10 @@ def sample_markdown() -> str:
         "## InitialParameterization\nA={(1,0),(0,1)}\n"
     )
 
+
 @pytest.fixture
 def sample_scala() -> str:
+    """Minimal Scala source snippet for parser tests."""
     return (
         "object MyModel {\n"
         "  val a_m: Matrix(Fin 2, Fin 3) = ???\n"
@@ -543,3 +305,74 @@ def sample_scala() -> str:
         "  // EFE = G + F\n"
         "}\n"
     )
+
+
+@pytest.fixture
+def comprehensive_test_data(isolated_temp_dir: Path) -> Dict[str, Any]:
+    """Consolidated test-data bundle used by integration tests."""
+    return {
+        "temp_dir": isolated_temp_dir,
+        "gnn_files": {
+            "simple": isolated_temp_dir / "simple.gnn",
+            "complex": isolated_temp_dir / "complex.gnn",
+        },
+        "output_dir": isolated_temp_dir / "output",
+        "config": {"test_mode": True, "safe_mode": True},
+    }
+
+
+# -----------------------------------------------------------------------------
+# Render + MCP test helpers
+# -----------------------------------------------------------------------------
+
+class _RealRenderModule:
+    """Thin adapter used by render integration tests — delegates to
+    ``render.processor.render_gnn_spec``. Phase 7: fallback chain removed."""
+
+    def render_gnn_spec(self, spec: Any, target: str, outdir: Any) -> Any:
+        from render.processor import render_gnn_spec
+        return render_gnn_spec(spec, target, outdir)
+
+
+@pytest.fixture
+def test_render_module() -> _RealRenderModule:
+    return _RealRenderModule()
+
+
+class _MCPTools:
+    """Lightweight in-memory MCP registry used by MCP wiring tests."""
+
+    def __init__(self) -> None:
+        self.tools: Dict[str, Any] = {}
+        self.resources: Dict[str, Any] = {}
+
+    def register_tool(self, name: str, *args: Any, **kwargs: Any) -> None:
+        function = kwargs.get("function")
+        schema = kwargs.get("schema")
+        description = kwargs.get("description", "")
+        if function is None and args:
+            function = args[0]
+            if len(args) >= 2 and schema is None:
+                schema = args[1]
+            if len(args) >= 3 and not description:
+                description = args[2]
+        self.tools[name] = {
+            "function": function,
+            "func": function,
+            "schema": schema or {},
+            "description": description,
+        }
+
+    def register_resource(self, pattern: str, handler: Any, description: str = "") -> None:
+        self.resources[pattern] = {"handler": handler, "description": description}
+
+    def execute_tool(self, name: str, **kwargs: Any) -> Any:
+        if name not in self.tools:
+            return {"error": "tool_not_found", "name": name}
+        func = self.tools[name].get("function") or self.tools[name].get("func")
+        return func(**kwargs)
+
+
+@pytest.fixture
+def test_mcp_tools() -> _MCPTools:
+    return _MCPTools()
