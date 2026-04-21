@@ -31,112 +31,48 @@ def process_llm(*args: Any, **kwargs: Any) -> bool:
     from .processor import process_llm as _impl
     return _impl(*args, **kwargs)
 
-try:
-    from .llm_processor import (
-        AnalysisType,
-        create_processor_from_env,
-        get_default_provider_configs,
-        get_preferred_providers_from_env,
-        initialize_global_processor,
-        load_api_keys_from_env,
-    )
-    from .llm_processor import (
-        LLMProcessor as UnifiedLLMProcessor,
-    )
-    from .llm_processor import (
-        get_processor as get_global_processor,
-    )
-except (ImportError, AttributeError):
-    # Provide minimal shims during test collection if heavy deps are missing
-    class AnalysisType:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
-        SUMMARY = type("E", (), {"value": "summary"})()
-    class UnifiedLLMProcessor:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
-        pass
-    def load_api_keys_from_env() -> Dict[str, str]: return {}
-    async def initialize_global_processor(*_: Any, **__: Any) -> None: return None
-    def get_global_processor() -> Optional[UnifiedLLMProcessor]: return None
-    async def create_processor_from_env() -> Optional[UnifiedLLMProcessor]: return None
-    def get_default_provider_configs() -> Dict[str, Any]: return {}
-    def get_preferred_providers_from_env() -> List[str]: return []
+# Phase 6: llm submodules are in-tree; fallback shims removed as dead code.
+# If any import here fails, it's a real bug that must surface in CI — not be
+# silently papered over.
+from .llm_processor import (
+    AnalysisType,
+    create_processor_from_env,
+    get_default_provider_configs,
+    get_preferred_providers_from_env,
+    initialize_global_processor,
+    load_api_keys_from_env,
+)
+from .llm_processor import (
+    LLMProcessor as UnifiedLLMProcessor,
+)
+from .llm_processor import (
+    get_processor as get_global_processor,
+)
 
-try:
-    from .providers import (
-        BaseLLMProvider,
-        LLMConfig,
-        LLMMessage,
-        LLMResponse,
-        ProviderType,
-    )
-except (ImportError, AttributeError):
-    class ProviderType:  # type: ignore[no-redef]  # fallback shim when providers unavailable
-        OPENAI = type("E", (), {"value": "openai"})()
-    class LLMConfig: pass  # type: ignore[no-redef]  # fallback shim
-    class LLMMessage: pass  # type: ignore[no-redef]  # fallback shim
-    class LLMResponse: pass  # type: ignore[no-redef]  # fallback shim
-    class BaseLLMProvider: pass  # type: ignore[no-redef]  # fallback shim
+from .providers import (
+    BaseLLMProvider,
+    LLMConfig,
+    LLMMessage,
+    LLMResponse,
+    ProviderType,
+)
 
-try:
-    from .analyzer import (
-        analyze_gnn_file_with_llm,
-        calculate_complexity_metrics,
-        extract_connections,
-        extract_sections,
-        extract_variables,
-        identify_patterns,
-        perform_semantic_analysis,
-    )
-except (ImportError, AttributeError):
-    # Provide real, direct implementations where possible instead of empty shims.
-    # These implementations are lightweight and synchronous where tests expect sync behavior.
-    async def analyze_gnn_file_with_llm(content: str, **kwargs: Any) -> Dict[str, Any]:
-        # Basic analysis pipeline using available extractors
-        vars_ = extract_variables(content) if 'extract_variables' in globals() else []
-        conns = extract_connections(content) if 'extract_connections' in globals() else []
-        sections = extract_sections(content) if 'extract_sections' in globals() else []
-        return {
-            "success": True,
-            "variables": vars_,
-            "connections": conns,
-            "sections": sections
-        }
+from .analyzer import (
+    analyze_gnn_file_with_llm,
+    calculate_complexity_metrics,
+    extract_connections,
+    extract_sections,
+    extract_variables,
+    identify_patterns,
+    perform_semantic_analysis,
+)
 
-    def extract_variables(content: str) -> List[Dict[str, Any]]:
-        # Very small heuristic: look for lines with ':' or '[' indicating variables
-        out = []
-        for i, line in enumerate(str(content).splitlines()):
-            if '[' in line or ':' in line:
-                out.append({'name': f'var_{i}', 'line': line.strip()})
-        return out
-
-    def extract_connections(content: str) -> List[Dict[str, Any]]:
-        out = []
-        for i, line in enumerate(str(content).splitlines()):
-            if '>' in line or '-' in line:
-                out.append({'source': f'src_{i}', 'target': f'tgt_{i}'})
-        return out
-
-    def extract_sections(content: str) -> List[str]:
-        # Sections identified by '##' headings
-        return [ln.strip().lstrip('#').strip() for ln in str(content).splitlines() if ln.strip().startswith('##')]
-
-    def perform_semantic_analysis(content: str, vars_: Any, conns: Any) -> Dict[str, Any]:
-        return {"variables_count": len(vars_), "connections_count": len(conns)}
-
-    def calculate_complexity_metrics(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def identify_patterns(*_: Any, **__: Any) -> List[Any]: return []
-
-try:
-    from .generator import (
-        generate_code_suggestions,
-        generate_documentation,
-        generate_llm_summary,
-        generate_model_insights,
-    )
-except (ImportError, AttributeError):
-    def generate_model_insights(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def generate_code_suggestions(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def generate_documentation(*_: Any, **__: Any) -> Dict[str, Any]: return {}
-    def generate_llm_summary(*_: Any, **__: Any) -> str: return ""
+from .generator import (
+    generate_code_suggestions,
+    generate_documentation,
+    generate_llm_summary,
+    generate_model_insights,
+)
 
 
 class LLMProcessor:

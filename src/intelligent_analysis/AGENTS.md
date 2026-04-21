@@ -12,7 +12,7 @@
 
 **Version**: 1.6.0
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -927,7 +927,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 
 ---
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-04-16
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 1.6.0

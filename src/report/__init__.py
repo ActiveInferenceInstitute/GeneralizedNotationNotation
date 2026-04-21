@@ -3,7 +3,8 @@ from __future__ import annotations
 """
 report module for GNN Processing Pipeline.
 
-This module provides report capabilities with recovery implementations.
+Consolidates pipeline outputs (per-step artifacts, logs, metrics) into HTML
+and Markdown reports consumed by Step 23.
 """
 
 __version__ = "1.6.0"
@@ -43,10 +44,11 @@ from .processor import (
 )
 
 
-# Back-compat API expected by tests
 def analyze_pipeline_data(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Minimal shim to satisfy tests importing analyze_pipeline_data from report.
-    Performs basic structure checks and returns a summary.
+    """Summarize pipeline-run metadata: extract key inventory and error presence.
+
+    Consumed by the report generator to produce the "Pipeline Summary" section
+    of the HTML/Markdown output.
     """
     try:
         summary = {

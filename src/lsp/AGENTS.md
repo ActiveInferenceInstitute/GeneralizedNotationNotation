@@ -7,7 +7,7 @@
 **Category**: Infrastructure / Development Tools
 **Status**: ✅ Production Ready
 **Version**: 1.6.0
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-04-16
 
 The LSP module implements a GNN Language Server using the Language Server Protocol. It provides real-time diagnostics and hover information for GNN model files in any LSP-compatible editor.
 

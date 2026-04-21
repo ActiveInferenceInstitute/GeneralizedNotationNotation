@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
 Infrastructure Coverage Gap Tests
-Addresses modules with 0% coverage: recovery, timeout_manager, simulation_monitor, 
-simulation_utils, visualization_optimizer.
+
+Addresses modules that historically had 0% coverage: timeout_manager,
+simulation_monitor, simulation_utils, visualization_optimizer. The
+``utils/recovery.py`` fallback was removed in Phase 6 as dead code —
+``setup_step_logging`` is covered in place via ``utils/logging/logging_utils``.
 """
 
 import asyncio
@@ -10,7 +13,6 @@ import logging
 from pathlib import Path
 
 # Import targets
-from utils.recovery import RecoveryArgumentParser, setup_step_logging
 from utils.simulation_monitor import SimulationMonitor
 from utils.simulation_utils import DiagramAnalyzer, SimulationTracker
 from utils.timeout_manager import (
@@ -26,21 +28,7 @@ from utils.visualization_optimizer import (
 )
 
 
-# 1. Tests for utils/recovery.py
-class TestRecoveryUtils:
-    def test_recovery_argument_parser(self):
-        args = RecoveryArgumentParser.parse_step_arguments("test_step")
-        assert args.step_name == "test_step"
-        assert args.verbose is False
-        assert isinstance(args.output_dir, Path)
-
-    def test_setup_step_logging(self):
-        logger = setup_step_logging("test_recovery", verbose=True)
-        assert logger.level == logging.DEBUG
-        logger = setup_step_logging("test_recovery_info", verbose=False)
-        assert logger.level == logging.INFO
-
-# 2. Tests for utils/timeout_manager.py
+# 1. Tests for utils/timeout_manager.py
 class TestTimeoutManager:
     def test_sync_timeout_success(self):
         manager = TimeoutManager()

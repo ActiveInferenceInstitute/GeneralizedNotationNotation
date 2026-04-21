@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Phase 2.1 regression: execute stubs must return structured envelopes.
+"""Execute module public-API sanity checks.
 
-Pre-Phase-2.1 stubs returned bare ``{}`` / ``[]`` / ``{"valid": False, ...}``,
-making it impossible for callers to distinguish "validator unavailable" from
-"validator ran cleanly". The new envelopes expose ``available: False`` so
-code can branch explicitly.
+Phase 6: recovery.py fallback stubs were removed as dead code. The execute
+submodules are all in-tree — their imports must succeed unconditionally in
+any working install. This file verifies the promoted contract: real
+validators return structured dicts with documented keys, and public symbols
+are actually callable (no stale aliases hanging around).
 """
 
 import sys
@@ -18,100 +19,68 @@ from execute import (  # noqa: E402
     check_dependencies,
     check_file_permissions,
     check_network_connectivity,
+    check_python_environment,
     check_system_resources,
+    execute_gnn_model,
+    execute_script_safely,
     execute_simulation_from_gnn,
-    get_pymdp_health_status,
+    GNNExecutor,
+    process_execute,
     run_simulation,
+    validate_execution_environment,
     validate_pymdp_environment,
-    VALIDATION_AVAILABLE,
 )
 
 
-def _is_stub(result) -> bool:
-    """True when the returned envelope marks itself unavailable."""
-    if isinstance(result, dict):
-        return result.get("available") is False
-    return False
+def test_public_symbols_are_callable_or_class():
+    """Every public name in the module must be a live callable or class."""
+    for sym in (
+        check_dependencies,
+        check_file_permissions,
+        check_network_connectivity,
+        check_python_environment,
+        check_system_resources,
+        execute_gnn_model,
+        execute_script_safely,
+        execute_simulation_from_gnn,
+        process_execute,
+        run_simulation,
+        validate_execution_environment,
+        validate_pymdp_environment,
+    ):
+        assert callable(sym), f"{sym!r} is not callable"
+    assert isinstance(GNNExecutor, type), "GNNExecutor should be a class"
 
 
-def test_execute_stubs_only_engage_when_validation_unavailable():
-    """When the main import path succeeds, stubs must NOT engage. The
-    VALIDATION_AVAILABLE module flag is the discriminator.
-
-    The real ``validate_pymdp_environment`` returns either a dict OR a
-    ValidationResult dataclass (depending on the concrete implementation),
-    so we check by attribute/key rather than by type alone.
-    """
+def test_validate_pymdp_environment_returns_structured_dict():
+    """Real validator exposes at least one status field per its contract."""
     result = validate_pymdp_environment()
-    if VALIDATION_AVAILABLE:
-        # Real path — result is a dict (or dataclass) exposing SOME signal
-        # about whether PyMDP is usable. Accepted signals:
-        #   - "valid" (stub form)
-        #   - "available" (new envelope)
-        #   - "pymdp_available" (real validator)
-        #   - "overall_health" (real validator)
-        #   - "status" attribute (ValidationResult dataclass)
-        candidates = {"valid", "available", "pymdp_available", "overall_health"}
-        has_key = isinstance(result, dict) and bool(candidates & set(result.keys()))
-        has_attr = hasattr(result, "status") or hasattr(result, "valid")
-        assert has_key or has_attr, f"Real validator returned unrecognized shape: {result!r}"
-    else:
-        assert _is_stub(result), f"Stub envelope expected when VALIDATION_AVAILABLE=False; got {result!r}"
+    assert isinstance(result, dict), f"expected dict, got {type(result).__name__}"
+    candidates = {"valid", "pymdp_available", "overall_health", "status"}
+    assert candidates & set(result.keys()), (
+        f"validate_pymdp_environment missing status key; got keys: {list(result.keys())}"
+    )
 
 
-def test_check_system_resources_envelope_shape():
-    """check_system_resources must always return a shape callers can
-    introspect without crashing — either a list OR a structured dict."""
-    result = check_system_resources()
-    # Real path returns list; stub path returns dict with available=False.
-    assert isinstance(result, (list, dict))
-    if isinstance(result, dict):
-        assert result.get("available") is False
-        assert "reason" in result
-
-
-def test_check_dependencies_envelope_shape():
-    result = check_dependencies()
-    assert isinstance(result, (list, dict))
-    if isinstance(result, dict):
-        assert result.get("available") is False
-
-
-def test_check_file_permissions_envelope_shape():
-    result = check_file_permissions()
-    assert isinstance(result, (list, dict))
-
-
-def test_check_network_connectivity_has_status_field():
+def test_check_network_connectivity_has_status():
     result = check_network_connectivity()
-    # Real path returns a ValidationResult dataclass; stub path returns a dict.
-    # Both expose a "status" signal — via attribute or key respectively.
+    # Real validator returns a ValidationResult dataclass exposing .status.
     if isinstance(result, dict):
         assert "status" in result
     else:
-        assert hasattr(result, "status"), f"Expected status field on {type(result).__name__}"
+        assert hasattr(result, "status")
 
 
-def test_run_simulation_failure_is_distinguishable():
-    """When run_simulation falls through to the stub, the returned dict
-    must carry error_type='NotAvailable' so callers can branch on it."""
-    if VALIDATION_AVAILABLE:
-        # Real path — we don't invoke with a real cfg here; just verify the
-        # symbol is callable and returns a dict.
-        try:
-            out = run_simulation({})
-            assert isinstance(out, dict)
-        except Exception:
-            pass  # real runners may raise; that's out of scope
-    else:
-        out = run_simulation({})
-        assert out.get("success") is False
-        assert out.get("error_type") == "NotAvailable"
+def test_validate_execution_environment_returns_dict():
+    result = validate_execution_environment()
+    assert isinstance(result, dict)
+    # Real validator reports python_version + dependencies per its API.
+    assert any(k in result for k in ("python_version", "dependencies", "overall_status"))
 
 
-def test_execute_simulation_from_gnn_stub_envelope():
-    """If the module engaged the stub path, its envelope is structured."""
-    # The symbol always exists; its shape depends on availability flag.
-    # This test just verifies callability + dict-return without raising.
-    # (A full execution would need a real GNN file, which is tested elsewhere.)
-    assert callable(execute_simulation_from_gnn)
+def test_gnnexecutor_is_instantiable():
+    engine = GNNExecutor()
+    assert engine is not None
+    # Basic interface checks — the class must expose the public execution
+    # method callers depend on.
+    assert hasattr(engine, "run_simulation") or hasattr(engine, "execute")

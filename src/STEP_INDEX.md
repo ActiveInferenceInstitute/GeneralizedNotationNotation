@@ -1,6 +1,6 @@
 # GNN Pipeline Step Index
 
-**Version**: 1.6.0 · **Last Updated**: 2026-04-15 · **Total Steps**: 25 (0–24)
+**Version**: 1.6.0 · **Last Updated**: 2026-04-16 · **Total Steps**: 25 (0–24)
 
 ---
 

@@ -13,40 +13,17 @@ import numpy as np
 
 from utils.logging.logging_utils import log_step_error, log_step_start, log_step_success
 
-# Phase 1.2: soft-import analyzer. Step 16 is NOT a hard-import step, so if
-# framework-specific analyzers can't be imported (missing optional deps like
-# pymdp, jax, pytorch, etc.) the module must degrade gracefully rather than
-# crash at import time. ANALYZER_AVAILABLE is checked at call sites further
-# down; when False, those sites emit a warning and skip.
-try:
-    from .analyzer import (
-        calculate_complexity_metrics,
-        generate_analysis_summary,
-        generate_matrix_visualizations,
-        perform_model_comparisons,
-        perform_statistical_analysis,
-        run_performance_benchmarks,
-        visualize_simulation_results,
-    )
-    ANALYZER_AVAILABLE = True
-except ImportError as _analyzer_import_error:  # pragma: no cover - exercised via test_analysis_soft_import
-    ANALYZER_AVAILABLE = False
-    _ANALYZER_IMPORT_ERROR = str(_analyzer_import_error)
-
-    def _unavailable_stub(*_args: Any, **_kwargs: Any) -> Dict[str, Any]:
-        """Recovery stub for any analyzer function when the module is unavailable."""
-        return {}
-
-    def _unavailable_list_stub(*_args: Any, **_kwargs: Any) -> List[Any]:
-        return []
-
-    calculate_complexity_metrics = _unavailable_stub  # type: ignore[assignment]
-    generate_analysis_summary = _unavailable_stub  # type: ignore[assignment]
-    generate_matrix_visualizations = _unavailable_list_stub  # type: ignore[assignment]
-    perform_model_comparisons = _unavailable_stub  # type: ignore[assignment]
-    perform_statistical_analysis = _unavailable_stub  # type: ignore[assignment]
-    run_performance_benchmarks = _unavailable_stub  # type: ignore[assignment]
-    visualize_simulation_results = _unavailable_list_stub  # type: ignore[assignment]
+# Phase 6: analyzer submodule is in-tree with core-only dependencies.
+# Unconditional import — any ImportError is a real bug, not a soft-dep miss.
+from .analyzer import (
+    calculate_complexity_metrics,
+    generate_analysis_summary,
+    generate_matrix_visualizations,
+    perform_model_comparisons,
+    perform_statistical_analysis,
+    run_performance_benchmarks,
+    visualize_simulation_results,
+)
 
 
 def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str, Any]:

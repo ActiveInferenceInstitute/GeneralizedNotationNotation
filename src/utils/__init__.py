@@ -209,9 +209,10 @@ try:
     from .venv_utils import get_venv_python
 
 except ImportError as e:
-    # Import recovery functions when modules are not available
-    logging.warning(f"Some utils modules not available: {e}")
-    from .recovery import RecoveryArgumentParser, setup_step_logging
+    # utils/ submodules are in-tree; any ImportError is a real bug that must
+    # surface, not be silently fallen back from. Re-raise with the original
+    # traceback so CI catches it.
+    raise
 
 # Export all utilities
 __all__ = [

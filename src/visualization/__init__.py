@@ -17,65 +17,21 @@ FEATURES = {
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-# Import numpy for type annotations
-try:
-    import numpy as np
-    NUMPY_AVAILABLE = True
-except ImportError:
-    np = None
-    NUMPY_AVAILABLE = False
+# Phase 6: numpy and visualization submodules are required core deps per
+# pyproject.toml. Unconditional imports — any failure is a real bug.
+import numpy as np
 
-# Import main classes with guarded optional-dependency handling
-try:
-    from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
-except Exception:
-    MatrixVisualizer = None
-    process_matrix_visualization = None
+from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
+from .visualizer import (
+    GNNVisualizer,
+    generate_graph_visualization,
+    generate_matrix_visualization,
+    generate_visualizations,
+)
+from .ontology_visualizer import OntologyVisualizer
 
-try:
-    from .visualizer import (
-        GNNVisualizer,
-        generate_graph_visualization,
-        generate_matrix_visualization,
-        generate_visualizations,
-    )
-except Exception:
-    # Recovery for tests
-
-    class GNNVisualizer:
-        def __init__(self, *args, config: Optional[dict] = None, output_dir: Optional[Union[str, Path]] = None, **kwargs):
-            self.available = False
-            self.config = config or {}
-            self.output_dir = Path(output_dir) if output_dir is not None else None
-
-        def generate(self, *a, **k) -> bool:
-            return False
-
-        def generate_graph_visualization(self, graph_data: dict) -> list:
-            return []
-
-        def generate_matrix_visualization(self, matrix_data: dict) -> list:
-            return []
-
-    def generate_graph_visualization(graph_data: dict, output_dir: Optional[Union[str, Path]] = None) -> list:
-        gv = GNNVisualizer(output_dir=output_dir)
-        return gv.generate_graph_visualization(graph_data)
-
-    def generate_matrix_visualization(matrix_data: dict, output_dir: Optional[Union[str, Path]] = None) -> list:
-        mv = GNNVisualizer(output_dir=output_dir)
-        return mv.generate_matrix_visualization(matrix_data)
-
-    def generate_visualizations(logger, target_dir, output_dir, **kwargs) -> bool:
-        """Recovery for generate_visualizations."""
-        return True
-
-# Basic GraphVisualizer alias for tests
+# GraphVisualizer is a historical alias — GNNVisualizer is the canonical class.
 GraphVisualizer = GNNVisualizer
-
-try:
-    from .ontology_visualizer import OntologyVisualizer
-except Exception:
-    OntologyVisualizer = None
 
 # Import processor functions
 from .processor import (

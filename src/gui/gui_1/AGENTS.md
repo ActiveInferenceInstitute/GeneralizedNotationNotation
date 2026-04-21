@@ -102,5 +102,5 @@ open_browser = True
 2. Register the Gradio inputs in `ui.py`.
 3. Add to the `__all__` exported registry in `__init__.py`.
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-04-16
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

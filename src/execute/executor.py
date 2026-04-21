@@ -345,10 +345,6 @@ class GNNExecutor:
         return self.run_simulation(sim_cfg)
 
 
-# Deprecated alias — use GNNExecutor directly
-ExecutionEngine = GNNExecutor
-
-
 def execute_gnn_model(
     model_path: str,
     execution_type: Union[str, Path] = "pymdp",

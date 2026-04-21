@@ -6,79 +6,38 @@ This module provides rendering capabilities for GNN specifications to various
 target languages and simulation environments.
 """
 
+# Phase 6: render submodules are in-tree; unconditional imports.
 from .processor import (
     get_available_renderers,
     get_module_info,
     process_render,
     render_gnn_spec,
 )
-
-# Import POMDP processing capabilities if available
-try:
-    from .pomdp_processor import POMDPRenderProcessor, process_pomdp_for_frameworks
-    POMDP_PROCESSING_AVAILABLE = True
-except ImportError:
-    POMDP_PROCESSING_AVAILABLE = False
-
+from .pomdp_processor import POMDPRenderProcessor, process_pomdp_for_frameworks
 from .generators import (
     generate_activeinference_jl_code,
     generate_discopy_code,
     generate_pymdp_code,
     generate_rxinfer_code,
 )
-
-# Import specific renderers (used by tests)
-try:
-    from .pymdp import render_gnn_to_pymdp
-except ImportError:
-    render_gnn_to_pymdp = None
-
-try:
-    from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
-except ImportError:
-    render_gnn_to_rxinfer = None
-    render_gnn_to_rxinfer_toml = None
-
-try:
-    from .discopy import render_gnn_to_discopy
-except ImportError:
-    render_gnn_to_discopy = None
-
-try:
-    from .activeinference_jl import render_gnn_to_activeinference_jl
-except ImportError:
-    render_gnn_to_activeinference_jl = None
-
-try:
-    from .pytorch import render_gnn_to_pytorch
-except ImportError:
-    render_gnn_to_pytorch = None
-
-try:
-    from .numpyro import render_gnn_to_numpyro
-except ImportError:
-    render_gnn_to_numpyro = None
-
-# Import renderer classes for tests
-try:
-    from .pymdp.pymdp_renderer import PyMDPRenderer
-except ImportError:
-    # Provide a minimal placeholder for tests
-    from typing import Any as _Any
-    class PyMDPRenderer:  # type: ignore[no-redef]
-        """Recovery PyMDPRenderer when module unavailable."""
-        def render(self, spec: _Any) -> str:
-            return ""
-
-# JAXRenderer: jax_renderer.py provides functions only (render_gnn_to_jax, etc.),
-# not a class. Provide a minimal fallback for tests that reference JAXRenderer by name.
-from typing import Any as _Any
+from .pymdp import render_gnn_to_pymdp
+from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
+from .discopy import render_gnn_to_discopy
+from .activeinference_jl import render_gnn_to_activeinference_jl
+from .pytorch import render_gnn_to_pytorch
+from .numpyro import render_gnn_to_numpyro
+from .pymdp.pymdp_renderer import PyMDPRenderer
 
 
 class JAXRenderer:
-    """Minimal JAXRenderer fallback; JAX rendering uses render_gnn_to_jax() functions."""
-    def render(self, spec: _Any) -> str:
-        return ""
+    """Facade over ``render_gnn_to_jax`` exposed as a class for callers that
+    want polymorphic dispatch. The real rendering work is in
+    ``render/jax/jax_renderer.py`` — this class forwards ``render`` to it."""
+
+    def render(self, spec) -> str:
+        from .jax.jax_renderer import render_gnn_to_jax
+        result = render_gnn_to_jax(spec)
+        return result if isinstance(result, str) else str(result)
 
 
 def get_supported_frameworks():
@@ -123,26 +82,27 @@ __all__ = [
     'generate_activeinference_jl_code',
     'generate_discopy_code',
 
-    # Specific renderer functions (only included if submodule is available)
-    *[name for name in (
-        'render_gnn_to_pymdp',
-        'render_gnn_to_rxinfer',
-        'render_gnn_to_rxinfer_toml',
-        'render_gnn_to_discopy',
-        'render_gnn_to_activeinference_jl',
-        'render_gnn_to_pytorch',
-        'render_gnn_to_numpyro',
-    ) if globals().get(name) is not None],
+    # Specific renderer functions
+    'render_gnn_to_pymdp',
+    'render_gnn_to_rxinfer',
+    'render_gnn_to_rxinfer_toml',
+    'render_gnn_to_discopy',
+    'render_gnn_to_activeinference_jl',
+    'render_gnn_to_pytorch',
+    'render_gnn_to_numpyro',
 
     # Renderer classes
     'PyMDPRenderer',
     'JAXRenderer',
 
+    # POMDP processing
+    'POMDPRenderProcessor',
+    'process_pomdp_for_frameworks',
+
     # Utility functions
     'get_supported_frameworks',
     'validate_render',
-] + (['POMDPRenderProcessor', 'process_pomdp_for_frameworks'] if POMDP_PROCESSING_AVAILABLE else [])
-
+]
 
 
 __version__ = "1.6.0"
@@ -155,9 +115,9 @@ FEATURES = {
     "pytorch_rendering": True,
     "numpyro_rendering": True,
     "mcp_integration": True,
-    "pomdp_processing": POMDP_PROCESSING_AVAILABLE,
-    "state_space_extraction": POMDP_PROCESSING_AVAILABLE,
-    "modular_injection": POMDP_PROCESSING_AVAILABLE,
+    "pomdp_processing": True,
+    "state_space_extraction": True,
+    "modular_injection": True,
     "framework_specific_outputs": True,
     "structured_documentation": True
 }

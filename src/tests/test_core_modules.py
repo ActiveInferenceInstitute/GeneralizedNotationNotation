@@ -237,13 +237,13 @@ class TestExecuteModuleComprehensive:
 		"""Test that execute module can be imported and has expected functions."""
 		try:
 			from src.execute import (
-				ExecutionEngine,
+				GNNExecutor,
 				PyMDPSimulation,
 				process_execute,
 				validate_execution_environment,
 			)
 			# Test that classes and functions are available
-			assert ExecutionEngine is not None, "ExecutionEngine should be available"
+			assert GNNExecutor is not None, "GNNExecutor should be available"
 			assert PyMDPSimulation is not None, "PyMDPSimulation should be available"
 			assert callable(process_execute), "process_execute should be callable"
 			assert callable(validate_execution_environment), "validate_execution_environment should be callable"
@@ -274,15 +274,15 @@ class TestExecuteModuleComprehensive:
 	def test_safe_script_execution(self, isolated_temp_dir):
 		"""Test safe script execution functionality."""
 		try:
-			from src.execute import ExecutionEngine
+			from src.execute import GNNExecutor
 
 			# Create a simple test script
 			test_script = isolated_temp_dir / "test_script.py"
 			test_script.write_text("print('Hello from test script!')")
 
 			# Test execution engine
-			engine = ExecutionEngine()
-			assert engine is not None, "ExecutionEngine should be instantiable"
+			engine = GNNExecutor()
+			assert engine is not None, "GNNExecutor should be instantiable"
 
 		except ImportError as e:
 			pytest.skip(f"Execute functionality not available: {e}")

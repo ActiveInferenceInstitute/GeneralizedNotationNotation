@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.6.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.5.0"`  
-**Last Updated**: 2026-04-15  
+**Version**: 1.6.0 (Specification) — Pipeline Package Version: `src/__init__.py::__version__ == "1.6.0"`  
+**Last Updated**: 2026-04-16  
 **Status**: Maintained
 
 ---
@@ -260,6 +260,16 @@ def module_operation(input: str, output_path: str) -> dict:
 ## Performance Targets
 
 Performance and reliability targets should be validated by current benchmark/test runs in CI or local execution, rather than fixed values in static docs.
+
+---
+
+## Versioning
+
+> **Dual Versioning Policy**: This repository uses two version numbers:
+> - **Pipeline version** (src/): Corresponds to `src/__init__.py::__version__` (currently v1.6.0)
+> - **MCP version** (mcp/): Independent MCP subsystem versioning (currently v1.7.0)
+>
+> MCP (Model Context Protocol) has its own version because it represents an extended protocol implementation that evolved beyond the main pipeline versioning.
 
 ---
 

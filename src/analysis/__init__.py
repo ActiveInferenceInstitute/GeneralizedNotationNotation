@@ -18,148 +18,66 @@ FEATURES = {
     "mcp_integration": True
 }
 
-# Phase 1.2: soft-import analyzer and post_simulation. Step 16 is not a
-# hard-import step, so missing optional deps (pymdp/jax/pytorch analyzers,
-# matplotlib, etc.) must degrade gracefully rather than crash at package load.
-# When imports fail, _unavailable() returns a callable stub so downstream code
-# can call any of these names without AttributeError.
-import logging as _logging
+# Phase 6: analysis submodules are in-tree; all deps (numpy, matplotlib) are
+# core per pyproject.toml. Unconditional imports; any ImportError is a real
+# bug that must surface in CI rather than be papered over with stubs.
+from .analyzer import (
+    analyze_distributions,
+    analyze_framework_outputs,
+    build_connectivity_matrix,
+    calculate_cognitive_complexity,
+    calculate_complexity_metrics,
+    calculate_connection_statistics,
+    calculate_correlations,
+    calculate_cyclomatic_complexity,
+    calculate_maintainability_index,
+    calculate_section_statistics,
+    calculate_structural_complexity,
+    calculate_technical_debt,
+    calculate_variable_statistics,
+    count_type_distribution,
+    extract_connections,
+    extract_sections,
+    extract_variables,
+    generate_analysis_summary,
+    generate_framework_comparison_report,
+    perform_model_comparisons,
+    perform_statistical_analysis,
+    run_performance_benchmarks,
+    visualize_cross_framework_metrics,
+)
 
-_ANALYSIS_IMPORT_ERROR: str | None = None
+from .post_simulation import (
+    analyze_active_inference_metrics,
+    analyze_execution_results,
+    analyze_free_energy,
+    analyze_policy_convergence,
+    analyze_simulation_traces,
+    analyze_state_distributions,
+    animate_belief_evolution,
+    compare_framework_results,
+    compute_expected_free_energy,
+    compute_information_gain,
+    compute_kl_divergence,
+    # Active Inference-specific statistical methods
+    compute_shannon_entropy,
+    compute_variational_free_energy,
+    extract_activeinference_jl_data,
+    extract_discopy_data,
+    extract_jax_data,
+    extract_pymdp_data,
+    extract_rxinfer_data,
+    generate_action_analysis,
+    generate_belief_heatmaps,
+    generate_cross_framework_comparison,
+    generate_free_energy_plots,
+    generate_observation_analysis,
+    plot_belief_evolution,
+    # Comprehensive visualization functions
+    visualize_all_framework_outputs,
+)
 
-
-def _unavailable(name: str):
-    """Return a callable stub that logs a warning and returns None.
-
-    Used for every symbol we couldn't import. Keeps the module's public API
-    surface intact for __all__ while signaling degradation via logs.
-    """
-    def _stub(*_args, **_kwargs):  # pragma: no cover - exercised via test_analysis_soft_import
-        _logging.getLogger("analysis").warning(
-            f"analysis.{name} unavailable (analyzer import failed): {_ANALYSIS_IMPORT_ERROR}"
-        )
-        return None
-    _stub.__name__ = name
-    return _stub
-
-
-try:
-    from .analyzer import (
-        analyze_distributions,
-        analyze_framework_outputs,
-        build_connectivity_matrix,
-        calculate_cognitive_complexity,
-        calculate_complexity_metrics,
-        calculate_connection_statistics,
-        calculate_correlations,
-        calculate_cyclomatic_complexity,
-        calculate_maintainability_index,
-        calculate_section_statistics,
-        calculate_structural_complexity,
-        calculate_technical_debt,
-        calculate_variable_statistics,
-        count_type_distribution,
-        extract_connections,
-        extract_sections,
-        extract_variables,
-        generate_analysis_summary,
-        generate_framework_comparison_report,
-        perform_model_comparisons,
-        perform_statistical_analysis,
-        run_performance_benchmarks,
-        visualize_cross_framework_metrics,
-    )
-    _ANALYZER_IMPORTED = True
-except ImportError as _err:  # pragma: no cover - exercised via test_analysis_soft_import
-    _ANALYSIS_IMPORT_ERROR = str(_err)
-    _ANALYZER_IMPORTED = False
-    for _n in [
-        "analyze_distributions", "analyze_framework_outputs", "build_connectivity_matrix",
-        "calculate_cognitive_complexity", "calculate_complexity_metrics",
-        "calculate_connection_statistics", "calculate_correlations",
-        "calculate_cyclomatic_complexity", "calculate_maintainability_index",
-        "calculate_section_statistics", "calculate_structural_complexity",
-        "calculate_technical_debt", "calculate_variable_statistics",
-        "count_type_distribution", "extract_connections", "extract_sections",
-        "extract_variables", "generate_analysis_summary",
-        "generate_framework_comparison_report", "perform_model_comparisons",
-        "perform_statistical_analysis", "run_performance_benchmarks",
-        "visualize_cross_framework_metrics",
-    ]:
-        globals()[_n] = _unavailable(_n)
-
-try:
-    from .post_simulation import (
-        analyze_active_inference_metrics,
-        analyze_execution_results,
-        analyze_free_energy,
-        analyze_policy_convergence,
-        analyze_simulation_traces,
-        analyze_state_distributions,
-        animate_belief_evolution,
-        compare_framework_results,
-        compute_expected_free_energy,
-        compute_information_gain,
-        compute_kl_divergence,
-        # Active Inference-specific statistical methods
-        compute_shannon_entropy,
-        compute_variational_free_energy,
-        extract_activeinference_jl_data,
-        extract_discopy_data,
-        extract_jax_data,
-        extract_pymdp_data,
-        extract_rxinfer_data,
-        generate_action_analysis,
-        generate_belief_heatmaps,
-        generate_cross_framework_comparison,
-        generate_free_energy_plots,
-        generate_observation_analysis,
-        plot_belief_evolution,
-        # Comprehensive visualization functions
-        visualize_all_framework_outputs,
-    )
-    _POST_SIM_IMPORTED = True
-except ImportError as _err:  # pragma: no cover
-    if _ANALYSIS_IMPORT_ERROR is None:
-        _ANALYSIS_IMPORT_ERROR = str(_err)
-    _POST_SIM_IMPORTED = False
-    for _n in [
-        "analyze_active_inference_metrics", "analyze_execution_results",
-        "analyze_free_energy", "analyze_policy_convergence",
-        "analyze_simulation_traces", "analyze_state_distributions",
-        "animate_belief_evolution", "compare_framework_results",
-        "compute_expected_free_energy", "compute_information_gain",
-        "compute_kl_divergence", "compute_shannon_entropy",
-        "compute_variational_free_energy", "extract_activeinference_jl_data",
-        "extract_discopy_data", "extract_jax_data", "extract_pymdp_data",
-        "extract_rxinfer_data", "generate_action_analysis",
-        "generate_belief_heatmaps", "generate_cross_framework_comparison",
-        "generate_free_energy_plots", "generate_observation_analysis",
-        "plot_belief_evolution", "visualize_all_framework_outputs",
-    ]:
-        globals()[_n] = _unavailable(_n)
-
-try:
-    from .processor import convert_numpy_types, process_analysis
-    _PROCESSOR_IMPORTED = True
-except ImportError as _err:  # pragma: no cover
-    if _ANALYSIS_IMPORT_ERROR is None:
-        _ANALYSIS_IMPORT_ERROR = str(_err)
-    _PROCESSOR_IMPORTED = False
-
-    def convert_numpy_types(*_a, **_k):  # type: ignore[misc]
-        return None
-
-    def process_analysis(*_a, **_k) -> int:  # type: ignore[misc]
-        _logging.getLogger("analysis").warning(
-            f"analysis.process_analysis unavailable: {_ANALYSIS_IMPORT_ERROR}"
-        )
-        return 2
-
-# Reflect load success in FEATURES so callers can probe availability.
-FEATURES["analyzer_available"] = _ANALYZER_IMPORTED
-FEATURES["post_simulation_available"] = _POST_SIM_IMPORTED
-FEATURES["processor_available"] = _PROCESSOR_IMPORTED
+from .processor import convert_numpy_types, process_analysis
 
 # Note: framework-specific analyzers live in ``src/analysis/<framework>/analyzer.py``
 # and are discovered by ``processor.process_analysis`` via ``importlib`` — no
