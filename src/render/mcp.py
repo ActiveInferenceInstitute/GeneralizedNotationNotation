@@ -28,49 +28,76 @@ def process_render_mcp(target_directory: str, output_directory: str,
         Dictionary with success status and render summary.
     """
     try:
-        success = process_render(
+        raw = process_render(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose,
         )
+        # Phase 1.1 contract: process_render may return bool OR int (0/1/2).
+        # Coerce to MCP bool envelope; surface "skipped" separately.
+        if isinstance(raw, bool):
+            success = raw
+            skipped = False
+        else:  # int
+            success = raw in (0, 2)
+            skipped = raw == 2
+        if skipped:
+            message = "Render skipped (no GNN files found)"
+        else:
+            message = f"Render {'completed successfully' if success else 'completed with issues'}"
         return {
             "success": success,
+            "skipped": skipped,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"Render {'completed successfully' if success else 'completed with issues'}",
+            "message": message,
         }
     except Exception as e:
         logger.error(f"process_render_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
 
 
+# Canonical framework descriptions used by both branches of
+# ``list_render_frameworks_mcp`` so success/fallback share one shape.
+_FRAMEWORK_DESCRIPTIONS: Dict[str, str] = {
+    "pymdp":              "PyMDP Active Inference simulation (Python)",
+    "rxinfer":            "RxInfer.jl probabilistic programming (Julia)",
+    "activeinference_jl": "ActiveInference.jl simulation (Julia)",
+    "jax":                "JAX/XLA accelerated computation (Python)",
+    "discopy":            "DisCoPy string diagrams (Python)",
+    "pytorch":            "PyTorch neural integration (Python)",
+    "numpyro":            "NumPyro probabilistic programming (Python)",
+    "stan":               "Stan probabilistic programming (Stan)",
+}
+
+
 def list_render_frameworks_mcp() -> Dict[str, Any]:
     """
     Return all supported rendering frameworks and their availability status.
 
-    Returns:
-        Dictionary with framework names, descriptions, and availability flags.
+    Shape:
+        ``{"success": bool, "frameworks": {name: {"available": bool, "description": str}, ...}}``
+
+    The fallback branch preserves this shape and sets every framework to
+    ``available: False`` so consumers never need to branch on the result type.
     """
+    frameworks: Dict[str, Dict[str, Any]] = {
+        name: {"available": False, "description": desc}
+        for name, desc in _FRAMEWORK_DESCRIPTIONS.items()
+    }
     try:
         from . import get_supported_frameworks
-        frameworks = get_supported_frameworks()
+        for name in get_supported_frameworks():
+            entry = frameworks.setdefault(
+                name, {"available": False, "description": name}
+            )
+            entry["available"] = True
         return {"success": True, "frameworks": frameworks}
     except Exception as e:
-        # Return a static list when the dynamic query fails.
-        # NOTE: Keys here follow *render framework names* (not language buckets).
         return {
-            "success": True,
-            "frameworks": {
-                "pymdp":              {"available": False, "description": "PyMDP Active Inference simulation (Python)"},
-                "rxinfer":            {"available": False, "description": "RxInfer.jl probabilistic programming (Julia)"},
-                "activeinference_jl": {"available": False, "description": "ActiveInference.jl simulation (Julia)"},
-                "jax":                {"available": False, "description": "JAX/XLA accelerated computation (Python)"},
-                "discopy":            {"available": False, "description": "DisCoPy string diagrams (Python)"},
-                "pytorch":            {"available": False, "description": "PyTorch neural integration (Python)"},
-                "numpyro":            {"available": False, "description": "NumPyro probabilistic programming (Python)"},
-                "stan":               {"available": False, "description": "Stan probabilistic programming (Stan)"},
-            },
-            "note": str(e) if e else "",
+            "success": False,
+            "frameworks": frameworks,
+            "error": str(e),
         }
 
 
@@ -201,4 +228,4 @@ def register_tools(mcp_instance) -> None:
         module=__package__, category="render",
     )
 
-    logger.info("render module MCP tools registered (5 tools).")
+    logger.info("render module MCP tools registered (4 tools).")

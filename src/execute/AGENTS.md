@@ -94,6 +94,23 @@ success = process_execute(
 - `duration` (float): Execution duration in seconds
 - `output_files` (List[Path]): Generated output files
 
+#### `execute_script_safely(script_path: Union[str, Path], timeout: int = 60, capture_output: bool = True, cwd: Optional[Union[str, Path]] = None, env: Optional[Dict[str, str]] = None) -> Dict[str, Any]`
+**Description**: Run a single Python script via ``subprocess.run`` and return a uniform envelope. Rejects non-``.py`` paths up front and converts every failure mode (missing file, timeout, non-zero exit, unknown exception) into a dict so callers never need to differentiate.
+
+**Returns**: `Dict[str, Any]` with keys:
+- `success` (bool), `script_path` (str), `return_code` (int), `stdout` (str), `stderr` (str), `duration_seconds` (float), and `error`/`error_type` on failure.
+
+**Example**:
+```python
+from execute import execute_script_safely
+result = execute_script_safely("output/11_render_output/.../model_pymdp.py", timeout=120)
+if not result["success"]:
+    print(f"{result['error_type']}: {result.get('error') or result['stderr']}")
+```
+
+#### `execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
+**Description**: Iterate over every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
+
 #### `get_execution_health_status() -> Dict[str, Any]`
 **Description**: Get health status of execution environment and framework availability.
 
@@ -103,6 +120,8 @@ success = process_execute(
 - `activeinference_jl_available` (bool): ActiveInference.jl availability
 - `jax_available` (bool): JAX availability
 - `discopy_available` (bool): DisCoPy availability
+- `numpyro_available` (bool): NumPyro availability
+- `pytorch_available` (bool): PyTorch availability
 - `julia_available` (bool): Julia installation status
 - `python_version` (str): Python version
 - `julia_version` (Optional[str]): Julia version if available

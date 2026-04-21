@@ -27,8 +27,6 @@ src/execute/
 ├── recovery.py              # Recovery execution strategies
 ├── data_extractors.py       # Result data extraction
 ├── julia_setup.py           # Julia environment setup
-├── install_dependencies.py  # Dependency management
-├── test_execution.py        # Execution tests
 ├── pymdp/                   # PyMDP execution
 │   └── simple_simulation.py # PyMDP simulation runner
 ├── rxinfer/                 # RxInfer.jl execution

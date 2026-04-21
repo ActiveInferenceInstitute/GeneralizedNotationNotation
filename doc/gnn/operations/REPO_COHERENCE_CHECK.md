@@ -1,6 +1,6 @@
 # GNN Repo Coherence Check
 
-**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-15  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backends (see [../implementations/README.md](../implementations/README.md)) · **Tests**: see [../../../README.md](../../../README.md)  
@@ -1461,7 +1461,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 ---
 
 **Status**: Production Ready
-**Version**: v1.5.0 Engine (Bundle v2.0.0)
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
 **Coverage**: 25 pipeline steps, 29 modules, 41 AGENTS.md files
 
 ---

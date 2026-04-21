@@ -5,11 +5,31 @@ Fixed Render generators module for GNN code generation with enhanced visualizati
 
 import re
 from pathlib import Path
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 
-def generate_bnlearn_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
+def _validate_or_return_empty(model_data: Any, context: str) -> Optional[Dict[str, Any]]:
+    """Phase 1.3 shared guard for every generate_* entry point.
+
+    Returns the validated dict, or None if validation failed (caller returns "").
+    Rejects None and non-dict input only. Per-key requirements are intentionally
+    NOT enforced here: every generator falls back on sensible defaults via
+    ``.get('model_name', 'GNN Model')`` etc., so requiring specific keys would
+    break callers that supply GNN-spec-shaped dicts using the ``ModelName`` key
+    variant (capitalized) instead of ``model_name``.
+    """
+    try:
+        from utils.validation_schemas import validate_model_data
+        # Pass required_keys=() to defer to the generator's own .get() defaults.
+        return validate_model_data(model_data, required_keys=(), context=context)
+    except ValueError:
+        return None
+
+
+def generate_bnlearn_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate bnlearn python script for Bayesian Network causal discovery and Inference."""
+    if _validate_or_return_empty(model_data, "generate_bnlearn_code") is None:
+        return ""
     try:
         model_name = model_data.get('model_name', 'GNN Model')
         gnn_file = model_data.get('source_file', 'unknown.md')
@@ -191,6 +211,8 @@ def _matrix_to_julia(matrix_data) -> str:
 
 def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate Enhanced PyMDP simulation code with comprehensive visualizations."""
+    if _validate_or_return_empty(model_data, "generate_pymdp_code") is None:
+        return ""
     try:
         # Import the template
         from .pymdp_template import PYMDP_TEMPLATE
@@ -238,6 +260,8 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
 
 def generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate ActiveInference.jl simulation code with enhanced features."""
+    if _validate_or_return_empty(model_data, "generate_activeinference_jl_code") is None:
+        return ""
     try:
         model_name = model_data.get('model_name', 'GNN Model')
         model_pascal = _to_pascal_case(model_name)
@@ -649,6 +673,8 @@ end
 
 def generate_discopy_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate DisCoPy categorical analysis code with enhanced features."""
+    if _validate_or_return_empty(model_data, "generate_discopy_code") is None:
+        return ""
     try:
         model_name = model_data.get('model_name', 'GNN Model')
         gnn_file = model_data.get('source_file', 'unknown.md')
@@ -1023,6 +1049,8 @@ if __name__ == "__main__":
 
 def generate_rxinfer_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate RxInfer.jl Bayesian inference code with enhanced features."""
+    if _validate_or_return_empty(model_data, "generate_rxinfer_code") is None:
+        return ""
     try:
         model_name = model_data.get('model_name', 'GNN Model')
         model_snake = _sanitize_identifier(model_name, lowercase=True)
@@ -1450,22 +1478,8 @@ end
         print(f"Error generating RxInfer code: {e}")
         return ""
 
-def create_active_inference_diagram(model_data: Dict) -> str:
-    """Create Active Inference diagram for visualization."""
-    model_name = model_data.get('model_name', 'GNN Model')
-    return f"""
-# Active Inference Diagram for {model_name}
-# This represents the categorical structure of the POMDP model
-# Generated from GNN specification
-
-State Space: S = {{S1, S2, S3}}
-Observation Space: O = {{O1, O2, O3, O4}}  
-Action Space: A = {{A1, A2}}
-
-Morphisms:
-- T: S ⊗ A → S  (Transition dynamics)
-- H: S → O      (Observation model)
-- Policy: S → A  (Action selection)
-
-Full POMDP: (S ⊗ A) → S → O
-"""
+# NOTE: ``create_active_inference_diagram`` was removed in 2026-04 because the
+# placeholder output contained hard-coded "S1, S2, S3" / "O1..O4" / "A1, A2"
+# instead of reflecting the parsed GNN spec. Use
+# ``render.discopy.render_gnn_to_discopy`` (Step 11) for a real categorical
+# diagram derived from the model.

@@ -1,6 +1,6 @@
 # GNN Framework Integration Guide
 
-**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: Maintained  
 
@@ -797,6 +797,6 @@ class IntegrationTestSuite:
 
 ---
 
-**Integration Guide Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Integration Guide Version**: v1.6.0 Engine (Bundle v2.0.0)  
 **Framework Coverage**: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan  
 **Status**: Maintained

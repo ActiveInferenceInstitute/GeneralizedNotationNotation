@@ -1,6 +1,6 @@
 # GNN Implementations Documentation
 
-**Version**: v1.5.0 Engine (Bundle v2.0.0)  
+**Version**: v1.6.0 Engine (Bundle v2.0.0)  
 **Last Updated**: 2026-04-14  
 **Status**: ✅ Production Ready  
 **Modules**: 38+ · **Pipeline steps**: 25 · **Renderers**: 9 backend guides in this directory · **Tests**: see [../../../README.md](../../../README.md)  

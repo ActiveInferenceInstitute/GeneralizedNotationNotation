@@ -44,11 +44,14 @@ from .processor import (
     process_mcp,
     register_module_tools,
 )
-from .server import MCPServer
-from .server_core import create_mcp_server, start_mcp_server
+from .server import MCPServer as _JSONRPCServer
+from .server_core import create_mcp_server, register_tools, start_mcp_server
 
-# Backward-compatible alias expected by legacy tests/import sites.
+# Historical ``mcp.MCPServer`` was aliased to ``MCP`` (the core registry); tests
+# and legacy code import it that way, so keep that contract explicit. The
+# JSON-RPC request handler is available as ``create_mcp_server()``.
 MCPServer = MCP
+JSONRPCServer = _JSONRPCServer
 
 # Module metadata
 __version__ = "1.6.0"
@@ -84,10 +87,14 @@ __all__ = [
     'initialize',
     'MCP',
     'MCPServer',
+    'JSONRPCServer',
     'MCPTool',
     'MCPResource',
     'MCPError',
     'get_mcp_instance',
+    'create_mcp_server',
+    'start_mcp_server',
+    'register_tools',
 
     # Processor functions
     'register_module_tools',

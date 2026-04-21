@@ -28,7 +28,7 @@ from advanced_visualization import (
     create_timeline_visualization, create_heatmap_visualization,
     DashboardGenerator, generate_dashboard,
     VisualizationDataExtractor, extract_visualization_data,
-    process_advanced_viz_standardized_impl
+    process_advanced_viz,
 )
 
 # Create visualizations

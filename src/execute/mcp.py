@@ -44,16 +44,29 @@ def process_execute_mcp(
         Dictionary with success flag and processing summary.
     """
     try:
-        success = process_execute(
+        raw = process_execute(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose,
         )
+        # Phase 1.1 contract: process_execute may return bool OR int (0/1/2).
+        # Coerce to MCP bool envelope, surfacing the "skipped" case separately.
+        if isinstance(raw, bool):
+            success = raw
+            skipped = False
+        else:  # int
+            success = raw in (0, 2)  # 2 = skipped/warnings = not an error
+            skipped = raw == 2
+        if skipped:
+            message = "Execute processing skipped (no work found)"
+        else:
+            message = "Execute processing completed" if success else "Execute processing failed"
         return {
             "success": success,
+            "skipped": skipped,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": "Execute processing completed" if success else "Execute processing failed",
+            "message": message,
         }
     except Exception as e:
         logger.error(f"process_execute_mcp error: {e}", exc_info=True)

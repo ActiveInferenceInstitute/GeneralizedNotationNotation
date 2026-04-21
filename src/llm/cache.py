@@ -22,15 +22,34 @@ logger = logging.getLogger(__name__)
 class LLMCache:
     """Content-addressed cache for LLM prompt responses."""
 
-    def __init__(self, cache_dir: Optional[Path] = None):
+    def __init__(self, cache_dir: Optional[Path] = None,
+                 base_output_dir: Optional[Path] = None):
         """
         Initialize cache.
-        
+
         Args:
-            cache_dir: Directory to store cached responses.
-                       Defaults to output/13_llm_output/.cache/
+            cache_dir: Explicit directory to store cached responses. Takes
+                precedence over ``base_output_dir``.
+            base_output_dir: If provided (and ``cache_dir`` is None), the
+                cache root is resolved via
+                ``pipeline.config.get_output_dir_for_script("13_llm.py",
+                base_output_dir) / ".cache"``. This allows multi-workspace /
+                multi-pipeline runs to avoid sharing one on-disk cache.
+                When both are None, falls back to the legacy hardcoded
+                location ``output/13_llm_output/.cache`` relative to CWD.
         """
-        self.cache_dir = cache_dir or Path("output/13_llm_output/.cache")
+        if cache_dir is not None:
+            self.cache_dir = Path(cache_dir)
+        elif base_output_dir is not None:
+            try:
+                from pipeline.config import get_output_dir_for_script
+                self.cache_dir = get_output_dir_for_script(
+                    "13_llm.py", Path(base_output_dir)
+                ) / ".cache"
+            except ImportError:
+                self.cache_dir = Path(base_output_dir) / "13_llm_output" / ".cache"
+        else:
+            self.cache_dir = Path("output/13_llm_output/.cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.hits = 0
         self.misses = 0

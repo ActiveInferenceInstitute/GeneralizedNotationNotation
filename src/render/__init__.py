@@ -21,7 +21,6 @@ except ImportError:
     POMDP_PROCESSING_AVAILABLE = False
 
 from .generators import (
-    create_active_inference_diagram,
     generate_activeinference_jl_code,
     generate_discopy_code,
     generate_pymdp_code,
@@ -123,7 +122,6 @@ __all__ = [
     'generate_rxinfer_code',
     'generate_activeinference_jl_code',
     'generate_discopy_code',
-    'create_active_inference_diagram',
 
     # Specific renderer functions (only included if submodule is available)
     *[name for name in (

@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.6.0
+**Version**: 1.7.0
 
-**Last Updated**: 2026-04-15
+**Last Updated**: 2026-04-16
 
 ---
 
@@ -73,18 +73,24 @@ success = process_mcp(
 )
 ```
 
-#### `register_module_tools(module_name: str, tools: List[Dict[str, Any]]) -> bool`
-**Description**: Register tools from a specific module in the MCP system.
+#### `register_module_tools(module_name: Optional[str] = None) -> bool`
+**Description**: Discover one (or all) pipeline modules and call their
+`register_tools(mcp_instance)` function against the global singleton. Each
+target module owns its tool definitions via `src/<module>/mcp.py`.
 
 **Parameters**:
-- `module_name` (str): Name of the module registering tools
-- `tools` (List[Dict[str, Any]]): List of tool definitions with:
-  - `name` (str): Tool name
-  - `func` (Callable): Tool function
-  - `schema` (Dict): JSON schema for parameters
-  - `description` (str): Tool description
+- `module_name` (Optional[str]): Single module to register (e.g. `"gnn"`).
+  `None` triggers full discovery via `MCP.discover_modules()`.
 
-**Returns**: `bool` - True if registration succeeded, False otherwise
+**Returns**: `bool` — True when registration succeeds.
+
+#### `register_tools(mcp: Optional[MCP] = None) -> bool`
+**Description**: Module-level helper equivalent to
+`mcp.discover_modules()`. Registers every module's tools against the supplied
+`MCP` instance (default: the global singleton). Exposed from
+`mcp.server_core` and re-exported from the package.
+
+**Returns**: `bool` — True when discovery runs to completion.
 
 #### `get_available_tools() -> List[Dict[str, Any]]`
 **Description**: Get list of all available MCP tools across all modules.
@@ -141,11 +147,6 @@ success = process_mcp(
 - **Use Case**: Remote tool access and web integration
 - **Implementation**: `mcp.server_http`
 
-#### WebSocket Transport
-- **Purpose**: Real-time bidirectional communication
-- **Use Case**: Live tool execution and streaming results
-- **Implementation**: `mcp.server_websocket`
-
 ---
 
 ## Dependencies
@@ -179,28 +180,23 @@ success = process_mcp(
 - `mcp_config.yaml` - MCP server and tool configuration
 
 ### Default Settings
-```python
-DEFAULT_MCP_SETTINGS = {
-    'server': {
-        'port': 8080,
-        'host': 'localhost',
-        'transport': 'stdio',
-        'timeout': 30,
-        'max_concurrent_requests': 10
-    },
-    'tools': {
-        'auto_register': True,
-        'validate_schemas': True,
-        'cache_results': True,
-        'rate_limiting': True
-    },
-    'logging': {
-        'level': 'INFO',
-        'format': 'json',
-        'include_request_id': True
-    }
-}
-```
+
+The live defaults are embedded in `mcp.mcp.MCP.__init__` and exposed via
+`initialize(...)`. Authoritative table:
+
+| Knob | Default | CLI flag (step 21) |
+|------|---------|---------------------|
+| `performance_mode` | `"low"` | `--performance-mode {low,medium,high}` |
+| `strict_validation` | `False` (from mode) | `--mcp-strict-validation` |
+| `enable_caching` | `False` (from mode) | — |
+| `enable_rate_limiting` | `False` (from mode) | — |
+| `cache_ttl` | `300.0` s | `--mcp-cache-ttl <seconds>` |
+| `per_module_timeout` | `30.0` s | `--mcp-per-module-timeout <seconds>` |
+| `overall_timeout` | `120.0` s | `--mcp-overall-timeout <seconds>` |
+| `modules_allowlist` | `None` (all modules) | `--mcp-modules-allowlist a,b,c` |
+
+See `src/mcp/MCP_DOCUMENTATION.md` → *Configuration* for the complete surface
+and `src/mcp/SKILL.md` for the capabilities-API summary.
 
 ---
 

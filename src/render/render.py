@@ -28,38 +28,28 @@ except ImportError as e:
     RXINFER_AVAILABLE = False
 
 try:
-    from .discopy import render_gnn_to_discopy, render_gnn_to_discopy_jax
+    from .discopy import render_gnn_to_discopy
     DISCOPY_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"DisCoPy renderer not available: {e}")
     render_gnn_to_discopy = None
-    render_gnn_to_discopy_jax = None
     DISCOPY_AVAILABLE = False
 
 try:
-    from .activeinference_jl import (
-        render_gnn_to_activeinference_combined,
-        render_gnn_to_activeinference_jl,
-    )
+    from .activeinference_jl import render_gnn_to_activeinference_jl
     ACTIVEINFERENCE_JL_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"ActiveInference.jl renderer not available: {e}")
     render_gnn_to_activeinference_jl = None
-    render_gnn_to_activeinference_combined = None
     ACTIVEINFERENCE_JL_AVAILABLE = False
 
 try:
-    from .jax import (
-        render_gnn_to_jax,
-        render_gnn_to_jax_combined,
-        render_gnn_to_jax_pomdp,
-    )
+    from .jax import render_gnn_to_jax, render_gnn_to_jax_pomdp
     JAX_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"JAX renderer not available: {e}")
     render_gnn_to_jax = None
     render_gnn_to_jax_pomdp = None
-    render_gnn_to_jax_combined = None
     JAX_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
@@ -72,11 +62,25 @@ def main(cli_args=None):
     parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
-    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined", "jax", "jax_pomdp"],
-                       default="pymdp", help="Target platform")
+    parser.add_argument(
+        "target",
+        # Only targets that ``render_gnn_spec`` actually dispatches.
+        choices=[
+            "pymdp",
+            "rxinfer",
+            "rxinfer_toml",
+            "activeinference_jl",
+            "discopy",
+            "discopy_combined",
+            "bnlearn",
+            "jax",
+            "jax_pomdp",
+        ],
+        default="pymdp",
+        help="Target platform",
+    )
     parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
     parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")
-    parser.add_argument("--jax-seed", type=int, default=0, help="Seed for JAX PRNG (for discopy_jax targets)")
 
     args = parser.parse_args(cli_args)
 
@@ -89,7 +93,7 @@ def main(cli_args=None):
         return 1
 
     try:
-        from gnn.parser import parse_gnn_file
+        from gnn import parse_gnn_file
         gnn_spec = parse_gnn_file(gnn_file_path)
         logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
     except (ImportError, ModuleNotFoundError) as e:

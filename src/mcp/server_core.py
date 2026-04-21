@@ -65,17 +65,23 @@ class MCPServer:
     def register_tool(self, name: str, func: Callable, schema: Dict[str, Any], description: str) -> bool:
         """
         Register a tool with the server.
-        
+
         Args:
             name: Name of the tool
             func: Function to execute
             schema: JSON schema for arguments
             description: Description of the tool
-            
+
         Returns:
-            True if registration succeeded
+            True if the tool is present in the registry after the call,
+            False if registration raised an exception.
         """
-        return self.mcp.register_tool(name, func, schema, description)
+        try:
+            self.mcp.register_tool(name, func, schema, description)
+        except Exception as e:
+            logger.error(f"register_tool failed for {name}: {e}")
+            return False
+        return name in self.mcp.tools
 
     def stop(self) -> bool:
         """Stop the MCP server."""
@@ -220,16 +226,20 @@ def start_mcp_server(mcp_instance: Optional[MCP] = None) -> bool:
 
 def register_tools(mcp: Optional[MCP] = None) -> bool:
     """
-    Register tools with the MCP instance.
-    
-    Args:
-        mcp: Optional MCP instance. If None, uses the global instance.
-        
-    Returns:
-        True if registration succeeded
+    Discover all pipeline modules' ``mcp.py`` files and call their
+    ``register_tools`` hooks against the supplied MCP instance (or the global
+    singleton). Returns True only when every discovered module registered
+    without error.
+
+    This is a thin wrapper around :meth:`MCP.discover_modules` that is
+    convenient for tests and scripts that already hold an MCP instance they
+    want to populate. Prior to 2026-04 this function was a no-op stub that
+    silently returned ``True`` regardless of whether any tools were actually
+    registered.
     """
     try:
-        return True
+        target = mcp if mcp is not None else get_mcp_instance()
+        return bool(target.discover_modules())
     except Exception as e:
         logger.error(f"Failed to register tools: {e}")
         return False

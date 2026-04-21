@@ -1,6 +1,6 @@
 # About GNN
 
-**Version**: v1.5.0 Engine (Bundle v2.0.0)
+**Version**: v1.6.0 Engine (Bundle v2.0.0)
 **Last Updated**: 2026-04-14
 **Status**: Maintained
 **Pipeline Steps**: 25

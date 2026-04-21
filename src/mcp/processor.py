@@ -215,6 +215,29 @@ def process_mcp(
             init_kw["per_module_timeout"] = float(pm_timeout)
         if ov_timeout is not None:
             init_kw["overall_timeout"] = float(ov_timeout)
+        # Fine-grained overrides: only propagate when the caller set them,
+        # so the performance_mode default is respected otherwise.
+        # Map both snake-case MCP-prefixed arg names (from the pipeline CLI)
+        # and bare names (direct callers) to initialize() kwargs.
+        alias_map = {
+            "enable_caching": ("enable_caching",),
+            "enable_rate_limiting": ("enable_rate_limiting",),
+            "strict_validation": ("strict_validation", "mcp_strict_validation"),
+            "cache_ttl": ("cache_ttl", "mcp_cache_ttl"),
+            "force_refresh": ("force_refresh",),
+        }
+        for init_key, sources in alias_map.items():
+            for src_key in sources:
+                if src_key in kwargs and kwargs[src_key] is not None:
+                    init_kw[init_key] = kwargs[src_key]
+                    break
+        allowlist = kwargs.get("modules_allowlist")
+        if allowlist is None:
+            raw = kwargs.get("mcp_modules_allowlist")
+            if isinstance(raw, str) and raw.strip():
+                allowlist = [m.strip() for m in raw.split(",") if m.strip()]
+        if allowlist:
+            init_kw["modules_allowlist"] = list(allowlist)
         initialize(**init_kw)
 
         # Modules are already discovered by initialize(); just retrieve for reporting

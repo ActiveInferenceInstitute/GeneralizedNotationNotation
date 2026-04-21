@@ -12,7 +12,7 @@ import subprocess  # nosec B404 -- subprocess calls with controlled/trusted inpu
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from utils.logging.logging_utils import (
     log_step_error,
@@ -100,31 +100,24 @@ def determine_script_framework(script_path: Path, render_output_dir: Path, frame
         return "unknown"
 
 
-# Optional Python modules required per framework (for pre-flight skip when missing)
-_FRAMEWORK_IMPORT_CHECK = {
-    "jax": ("jax", "uv sync --extra active-inference"),
-    "numpyro": ("numpyro", "uv sync --extra probabilistic-programming"),
-    "pytorch": ("torch", "uv sync --extra ml-ai"),
-    "discopy": ("discopy", "uv sync --extra graphs"),
-    "bnlearn": ("bnlearn", "uv sync"),
-}
+# Phase 2.3: framework-availability helpers moved to utils.framework_availability
+# so execute and render stay in sync. The import-check dict and predicate are
+# re-exported here via thin aliases to preserve any external callers that
+# previously imported them from execute.processor.
+from utils.framework_availability import (  # noqa: E402
+    FRAMEWORK_IMPORT_CHECK as _FRAMEWORK_IMPORT_CHECK,
+    is_framework_available as _is_framework_available_by_name,
+)
 
 
 def _is_python_framework_dependency_available(framework: str, executor: str, logger) -> bool:
-    """Return True if the framework's required Python module is importable (skip run if False)."""
-    if framework not in _FRAMEWORK_IMPORT_CHECK:
-        return True
-    module_name, _ = _FRAMEWORK_IMPORT_CHECK[framework]
-    try:
-        r = subprocess.run(
-            [executor, "-c", f"import {module_name}"],
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        return r.returncode == 0
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        return False
+    """Return True if the framework's required Python module is importable.
+
+    Delegates to ``utils.framework_availability.is_framework_available``, passing
+    ``executor`` so the check targets the subprocess-invoked interpreter rather
+    than the caller's. Preserves the pre-Phase-2.3 call-site signature.
+    """
+    return _is_framework_available_by_name(framework, executor=executor, logger=logger)
 
 
 def _make_skipped_result(script_info: Dict[str, Any], framework: str, model_name: str, executor: str, logger) -> Dict[str, Any]:
@@ -220,8 +213,8 @@ def process_execute(
     output_dir: Path,
     verbose: bool = False,
     frameworks: str = "all",
-    **kwargs
-) -> bool:
+    **kwargs: Any,
+) -> Union[bool, int]:
     """
     Execute rendered implementations from 11_render_output directory.
     
@@ -241,6 +234,15 @@ def process_execute(
 
     try:
         log_step_start(logger, "Processing execute - searching for rendered implementations")
+
+        # Phase 1.3: validate frameworks arg before parsing. Rejects non-string
+        # input and fully-unknown framework lists early with a clear error.
+        try:
+            from utils.validation_schemas import validate_frameworks_arg
+            frameworks = validate_frameworks_arg(frameworks, context="process_execute")
+        except ValueError as _verr:
+            log_step_error(logger, f"Invalid frameworks argument: {_verr}")
+            return False
 
         # Parse frameworks parameter
         requested_frameworks = parse_frameworks_parameter(frameworks, logger)
@@ -273,7 +275,8 @@ def process_execute(
 
         if not render_output_dir or not render_output_dir.exists():
             log_step_warning(logger, f"Render output directory not found: {render_output_dir}")
-            execution_results["success"] = True  # Not an error, just no files to execute
+            execution_results["success"] = True  # Not a hard error
+            execution_results["skipped_reason"] = "no_render_output"
             execution_results["message"] = "No rendered implementations found"
         else:
             # Find executable scripts, filtered by requested frameworks
@@ -285,6 +288,7 @@ def process_execute(
                 log_step_warning(logger, "No executable scripts found in render output")
                 execution_results["message"] = "No executable scripts found"
                 execution_results["success"] = True
+                execution_results["skipped_reason"] = "no_executable_scripts"
             else:
                 logger.info(f"Found {len(executable_scripts)} executable scripts to run")
 
@@ -374,7 +378,9 @@ def process_execute(
 
         if total_scripts == 0:
             log_step_warning(logger, "No executable scripts found to run")
-            return True
+            # Exit-code 2: step completed without doing work. Distinguishes
+            # "nothing to do" from "did work successfully".
+            return 2
         elif failed_scripts == 0:
             if skipped_scripts:
                 log_step_success(logger, f"Execute completed: {execution_results['successful_executions']} succeeded, {skipped_scripts} skipped (dependency not installed)")

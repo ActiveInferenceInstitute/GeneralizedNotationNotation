@@ -136,6 +136,63 @@ class MCPPerformanceError(MCPError):
     """Raised when performance thresholds are exceeded."""
 ```
 
+## Configuration
+
+All runtime knobs live on the singleton :class:`mcp.MCP` instance and are
+settable through ``initialize(...)`` or the pipeline step ``process_mcp(**kwargs)``.
+The table below is the authoritative list — any additional configuration must
+be added to :func:`mcp.mcp.initialize`.
+
+| Knob | Type | Default | Effect |
+|------|------|---------|--------|
+| `performance_mode` | `"low"` \| `"medium"` \| `"high"` | `"low"` | Bulk toggle — sets the four booleans below to sensible preset values |
+| `enable_caching` | `bool` | mode-derived | Toggle result-cache for tool invocations |
+| `enable_rate_limiting` | `bool` | mode-derived | Enforce per-tool RPS limits |
+| `strict_validation` | `bool` | mode-derived | Validate every call against its JSON schema |
+| `cache_ttl` | `float` (s) | `300.0` | Result-cache TTL |
+| `modules_allowlist` | `list[str]` \| `None` | `None` | Restrict discovery to the named modules under `src/` |
+| `per_module_timeout` | `float` (s) | `30.0` | Max wall-clock per module during discovery |
+| `overall_timeout` | `float` (s) | `120.0` | Max wall-clock for parallel discovery |
+| `force_refresh` | `bool` | `False` | Re-run discovery even if modules are already loaded |
+
+### CLI flags (pipeline step 21)
+
+```bash
+python src/21_mcp.py \
+    --performance-mode high \
+    --mcp-strict-validation \
+    --mcp-cache-ttl 120 \
+    --mcp-modules-allowlist gnn,execute,render \
+    --mcp-per-module-timeout 15 \
+    --mcp-overall-timeout 60
+```
+
+### Registered tool inventory (snapshot)
+
+The MCP auto-discovers every module under `src/` that exposes `mcp.py`. A live
+run currently registers **133 tools** and **1 resource** across **31 modules**.
+Use the audit script for an up-to-date, ground-truth list:
+
+```bash
+PYTHONPATH=src uv run python src/mcp/validate_tools.py
+```
+
+Per-module tool counts at last inventory (2026-04-16):
+
+| Module | Tools | Module | Tools |
+|--------|-------|--------|-------|
+| advanced_visualization | 4 | api | 5 |
+| analysis | 4 | audio | 5 |
+| execute | 5 | export | 4 |
+| gnn (+ sympy + meta) | 47 | gui | 3 |
+| integration | 4 | intelligent_analysis | 3 |
+| llm | 5 | ml_integration | 4 |
+| ontology | 4 | render | 4 |
+| report | 5 | research | 4 |
+| sapf | 4 | security | 4 |
+| validation | 4 | visualization | 4 |
+| website | 5 | cli | 2 |
+
 ## Installation and Setup
 
 ### Prerequisites

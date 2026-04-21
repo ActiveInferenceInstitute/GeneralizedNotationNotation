@@ -57,14 +57,19 @@ Dynamic
             pytest.fail(f"Analysis processing failed: {e}")
 
     def test_process_analysis_no_files(self, safe_filesystem: Any) -> None:
-        """Test behavior with no files."""
+        """Test behavior with no files.
+
+        Phase 1.1 contract: "no input" is a warning (exit-code 2), NOT a hard
+        error. Previously this returned False, which the pipeline template then
+        translated to exit-code 1 (error). Now it returns 2 so operators see
+        "nothing to do" as a distinct signal from "ran and failed".
+        """
         empty_dir = safe_filesystem.create_dir("empty")
         output_dir = safe_filesystem.create_dir("output")
 
-        success = process_analysis(empty_dir, output_dir)
+        result = process_analysis(empty_dir, output_dir)
 
-        # Processor returns False if no files found (based on source: results["success"] = False)
-        assert success is False
+        assert result == 2, f"expected exit-code 2 for no-input, got {result!r}"
 
 
 class TestPostSimulationVisualization:

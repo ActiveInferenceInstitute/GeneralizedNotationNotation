@@ -85,25 +85,51 @@ except ImportError as e:
         log_validation_results,
         validate_execution_environment,
     )
-    # Stubs for missing items
+    # Phase 2.1: structured stubs. The pre-Phase-2.1 stubs returned bare
+    # ``{}`` / ``[]`` / ``{"valid": False, ...}``, making it impossible for
+    # callers to distinguish "validator not available" from "validator ran
+    # and found no issues". The shape below gives every stub the same
+    # envelope so callers can branch on ``result.get("available")`` rather
+    # than empty-collection heuristics.
     execute_gnn_model = execute_simulation_from_gnn
     GNNExecutor = ExecutionEngine
     PyMDPSimulation = PyMdpExecutor  # deprecated alias; PyMdpExecutor is canonical in recovery path
     execute_pymdp_simulation = execute_pymdp_simulation_from_gnn
+
+    def _unavailable(name: str, reason: str = "dependency missing") -> dict:
+        """Structured 'not available' envelope used by every stub below.
+
+        Shape:
+            available: False (constant — signals "stub engaged")
+            reason:    human-readable cause
+            name:      which capability was requested
+            data:      None (so callers expecting data can detect absence)
+        """
+        return {"available": False, "reason": reason, "name": name, "data": None}
+
     def validate_pymdp_environment():
-        return {"valid": False, "issues": ["PyMDP validation not available"]}
+        return {**_unavailable("validate_pymdp_environment", "PyMDP module not importable"),
+                "valid": False, "issues": ["PyMDP validation not available"]}
+
     def get_pymdp_health_status():
-        return {"status": "unknown"}
+        return {**_unavailable("get_pymdp_health_status"), "status": "unknown"}
+
     def check_system_resources():
-        return []
+        return _unavailable("check_system_resources", "resource probe unavailable")
+
     def check_dependencies():
-        return []
+        return _unavailable("check_dependencies", "dependency probe unavailable")
+
     def check_file_permissions():
-        return []
+        return _unavailable("check_file_permissions", "permission probe unavailable")
+
     def check_network_connectivity():
-        return {"status": "unknown"}
+        return {**_unavailable("check_network_connectivity"), "status": "unknown"}
+
     def run_simulation(cfg):
-        return {"success": False, "error": "run_simulation not available"}
+        return {"success": False, "available": False,
+                "reason": "run_simulation not available (recovery path engaged)",
+                "error_type": "NotAvailable", "error": "run_simulation not available"}
     VALIDATION_AVAILABLE = False
     ERROR_RECOVERY_AVAILABLE = False
 
@@ -112,12 +138,8 @@ from .processor import (
     process_execute,
 )
 
-# Provide execute_script_safely export for tests (validate_execution_environment already imported above)
-try:
-    from .executor import execute_script_safely
-except Exception:
-    def execute_script_safely(*args, **kwargs):
-        return {"success": False, "error": "execute_script_safely not available"}
+# Public helper for safe subprocess execution of rendered scripts.
+from .executor import execute_script_safely
 
 # Ensure execute_simulation_from_gnn is exported from top-level module
 try:
@@ -129,7 +151,17 @@ except Exception:
         from .executor import execute_gnn_model as execute_simulation_from_gnn
     except Exception:
         def execute_simulation_from_gnn(*a, **k):
-            return {"success": False, "error": "execute_simulation_from_gnn not available"}
+            # Phase 2.1: structured not-available envelope. Callers branching
+            # on error_type="NotAvailable" can distinguish this from real
+            # runtime failures, which carry error_type set to the exception
+            # class name.
+            return {
+                "success": False,
+                "available": False,
+                "reason": "no executor implementations importable",
+                "error_type": "NotAvailable",
+                "error": "execute_simulation_from_gnn not available",
+            }
 
 # Add to __all__ for proper exports
 __all__ = [

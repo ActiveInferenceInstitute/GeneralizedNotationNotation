@@ -174,7 +174,7 @@
       "fn": "execute_gnn_model_mcp",
       "is_real": true,
       "documented": true,
-      "description": "Execute a single GNN model file: parse, construct POMDP, run N inference steps."
+      "description": "Execute a single GNN model file via GNNExecutor (PyMDP default); timesteps come from the model's Time section."
     },
     {
       "name": "execute_pymdp_simulation",
@@ -183,7 +183,7 @@
       "fn": "execute_pymdp_simulation_mcp",
       "is_real": true,
       "documented": true,
-      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices \u2192 Agent \u2192 perception-action loop)."
+      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices -> Agent -> perception-action loop)."
     },
     {
       "name": "export_single_gnn_file",

@@ -7,21 +7,46 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 import numpy as np
 
 from utils.logging.logging_utils import log_step_error, log_step_start, log_step_success
 
-from .analyzer import (
-    calculate_complexity_metrics,
-    generate_analysis_summary,
-    generate_matrix_visualizations,
-    perform_model_comparisons,
-    perform_statistical_analysis,
-    run_performance_benchmarks,
-    visualize_simulation_results,
-)
+# Phase 1.2: soft-import analyzer. Step 16 is NOT a hard-import step, so if
+# framework-specific analyzers can't be imported (missing optional deps like
+# pymdp, jax, pytorch, etc.) the module must degrade gracefully rather than
+# crash at import time. ANALYZER_AVAILABLE is checked at call sites further
+# down; when False, those sites emit a warning and skip.
+try:
+    from .analyzer import (
+        calculate_complexity_metrics,
+        generate_analysis_summary,
+        generate_matrix_visualizations,
+        perform_model_comparisons,
+        perform_statistical_analysis,
+        run_performance_benchmarks,
+        visualize_simulation_results,
+    )
+    ANALYZER_AVAILABLE = True
+except ImportError as _analyzer_import_error:  # pragma: no cover - exercised via test_analysis_soft_import
+    ANALYZER_AVAILABLE = False
+    _ANALYZER_IMPORT_ERROR = str(_analyzer_import_error)
+
+    def _unavailable_stub(*_args: Any, **_kwargs: Any) -> Dict[str, Any]:
+        """Recovery stub for any analyzer function when the module is unavailable."""
+        return {}
+
+    def _unavailable_list_stub(*_args: Any, **_kwargs: Any) -> List[Any]:
+        return []
+
+    calculate_complexity_metrics = _unavailable_stub  # type: ignore[assignment]
+    generate_analysis_summary = _unavailable_stub  # type: ignore[assignment]
+    generate_matrix_visualizations = _unavailable_list_stub  # type: ignore[assignment]
+    perform_model_comparisons = _unavailable_stub  # type: ignore[assignment]
+    perform_statistical_analysis = _unavailable_stub  # type: ignore[assignment]
+    run_performance_benchmarks = _unavailable_stub  # type: ignore[assignment]
+    visualize_simulation_results = _unavailable_list_stub  # type: ignore[assignment]
 
 
 def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -98,8 +123,8 @@ def process_analysis(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
-    **kwargs
-) -> bool:
+    **kwargs: Any,
+) -> Union[bool, int]:
     """
     Process GNN files with comprehensive analysis.
     
@@ -117,6 +142,11 @@ def process_analysis(
     try:
         log_step_start(logger, "Processing analysis")
         logging.getLogger("matplotlib.category").setLevel(logging.WARNING)
+
+        # Validate target_dir exists up-front (Phase 1.3 — Phase 0.3 utility).
+        if not target_dir.exists():
+            logger.warning(f"Target directory does not exist: {target_dir}")
+            return 2
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
@@ -144,8 +174,10 @@ def process_analysis(
         gnn_files = list(target_dir.rglob("*.md"))
         if not gnn_files:
             logger.warning("No GNN files found for analysis")
-            results["success"] = False
-            results["errors"].append("No GNN files found")
+            # Exit-code 2: no input is a warning, not an error. Per CLAUDE.md
+            # "exit codes: 0=success, 1=error, 2=warnings" taxonomy, a missing
+            # input dir is "nothing to do" — not a real failure.
+            return 2
         else:
             results["processed_files"] = len(gnn_files)
 
@@ -252,7 +284,9 @@ def process_analysis(
                     import traceback
                     logger.debug(traceback.format_exc())
 
-                # 2.5-2.11: Generate per-framework visualizations from execution logs
+                # 2.5-2.11: Generate per-framework visualizations from execution logs.
+                # Only frameworks with a corresponding ``src/analysis/<framework>/analyzer.py``
+                # are listed here; bnlearn is rendered and executed but has no analyzer.
                 _FRAMEWORK_ANALYZERS = [
                     ("pymdp",              "pymdp",              "PyMDP"),
                     ("activeinference_jl", "activeinference_jl", "ActiveInference.jl"),
@@ -261,7 +295,6 @@ def process_analysis(
                     ("rxinfer",            "rxinfer",            "RxInfer"),
                     ("pytorch",            "pytorch",            "PyTorch"),
                     ("numpyro",            "numpyro",            "NumPyro"),
-                    ("bnlearn",            "bnlearn",            "bnlearn"),
                 ]
                 import importlib
                 for module_key, dir_name, display_name in _FRAMEWORK_ANALYZERS:

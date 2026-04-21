@@ -25,11 +25,14 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         help='Path to a GNN file or directory containing GNN files (e.g., input/gnn_files)'
     )
 
-    # Output directory
+    # Output directory — resolve lazily so importing this module doesn't
+    # touch pipeline.config. Phase 2.2: replaces the fragile '../output'
+    # relative default that broke when cwd differed from the CLI invocation
+    # directory.
     parser.add_argument(
         '-o', '--output-dir',
-        help='Directory to save visualizations. If not provided, creates a timestamped directory in ../output.',
-        default='../output'  # Defaults to output folder in the parent of current scripts (e.g. project_root/output)
+        help='Directory to save visualizations. If not provided, uses the pipeline-standard output dir for step 8.',
+        default=None,
     )
 
     # Visualization options
@@ -46,12 +49,25 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
+def _resolve_output_dir(explicit: Optional[str]) -> str:
+    """Resolve the CLI output directory, defaulting to the pipeline-standard
+    step-8 location when no explicit value is given."""
+    if explicit:
+        return explicit
+    try:
+        from pipeline.config import get_output_dir_for_script
+        return str(get_output_dir_for_script("8_visualization.py", Path("output")))
+    except Exception:
+        return "output/8_visualization_output"
+
+
 def main(args: Optional[List[str]] = None) -> int:
     """Main entry point for GNN visualization CLI."""
     parsed_args = parse_args(args)
+    output_dir = _resolve_output_dir(parsed_args.output_dir)
 
     # Create visualizer
-    visualizer = GNNVisualizer(output_dir=parsed_args.output_dir, project_root=parsed_args.project_root)
+    visualizer = GNNVisualizer(output_dir=output_dir, project_root=parsed_args.project_root)
 
     # Get input path
     input_path = Path(parsed_args.input)

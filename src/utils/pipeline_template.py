@@ -78,6 +78,66 @@ def _create_fallback_parser(description: str, additional_arguments: Optional[Dic
 
 
 
+def _preload_step_imports(step_specific_imports: Optional[List[str]]) -> None:
+    """Eagerly import step-specific modules; log (don't raise) on ImportError."""
+    if not step_specific_imports:
+        return
+    for import_name in step_specific_imports:
+        try:
+            __import__(import_name)
+        except ImportError as e:
+            logging.warning(f"Failed to import {import_name}: {e}")
+
+
+def _parse_step_args(step_name: str, fallback_parser_description: str,
+                     additional_arguments: Optional[Dict[str, Any]]) -> argparse.Namespace:
+    """Try the enhanced argument parser; fall back to the recovery parser on any failure."""
+    try:
+        from utils import ArgumentParser
+        return ArgumentParser.parse_step_arguments(step_name)
+    except Exception as e:
+        logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
+        return _create_fallback_parser(fallback_parser_description, additional_arguments or {}).parse_args()
+
+
+def _resolve_dirs(parsed_args: argparse.Namespace, step_name: str,
+                  default_target_dir: Optional[str]) -> tuple[Path, Path]:
+    """Resolve target_dir and the per-step output_dir from parsed args."""
+    target_dir_raw = getattr(parsed_args, 'target_dir', None)
+    if target_dir_raw is None:
+        target_dir = Path(default_target_dir) if default_target_dir else Path('input/gnn_files')
+    else:
+        target_dir = Path(target_dir_raw)
+
+    output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
+    output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
+
+    try:
+        normalized_step = step_name if not step_name.endswith('.py') else step_name[:-3]
+        step_output_dir = get_output_dir_for_script(normalized_step, output_dir)
+    except Exception:
+        step_output_dir = output_dir
+
+    return target_dir, step_output_dir
+
+
+def _coerce_exit_code(result: Any, step_name: str, logger: logging.Logger) -> int:
+    """Coerce module_function return value to an exit code.
+
+    Contract: module_function may return bool or int.
+      bool: True→0 (success), False→1 (error)
+      int: passthrough (0=success, 1=error, 2=warnings/skipped)
+    Other truthy/falsy types are coerced via bool() for backward compatibility.
+    """
+    if isinstance(result, bool):
+        return 0 if result else 1
+    if isinstance(result, int):
+        if result == 2:
+            log_step_warning(logger, f"{step_name} completed with warnings (exit 2)")
+        return result
+    return 0 if bool(result) else 1
+
+
 def create_standardized_pipeline_script(
     step_name: str,
     module_function: Callable,
@@ -87,78 +147,29 @@ def create_standardized_pipeline_script(
     default_target_dir: Optional[str] = None,
     default_recursive: bool = False,
 ) -> Callable:
-    """
-    Create a standardized pipeline script with consistent argument parsing and error handling.
+    """Create a standardized pipeline script with consistent arg parsing and error handling.
 
-    Args:
-        step_name: Name of the step (e.g., "1_gnn", "5_export")
-        module_function: The main function to call for processing
-        fallback_parser_description: Description for recovery argument parser
-        additional_arguments: Additional arguments to add to the parser
-        step_specific_imports: Additional imports needed for the step
-        default_target_dir: Default target directory when none is provided on CLI
-        default_recursive: Default recursive flag value
-
-    Returns:
-        Function that can be called to run the standardized script
+    The returned callable, when invoked, parses CLI args, sets up logging, resolves the
+    per-step output directory, calls ``module_function``, and returns the coerced exit
+    code. See ``_coerce_exit_code`` for the return-value contract.
     """
     def run_standardized_script():
-        """Standardized script execution function."""
         try:
-            # Import step-specific modules if provided
-            if step_specific_imports:
-                for import_name in step_specific_imports:
-                    try:
-                        __import__(import_name)
-                    except ImportError as e:
-                        logging.warning(f"Failed to import {import_name}: {e}")
-
-            # Parse arguments - try enhanced first, fall back gracefully
-            try:
-                # Import enhanced parser locally to avoid import issues
-                from utils import ArgumentParser
-                parsed_args = ArgumentParser.parse_step_arguments(step_name)
-            except Exception as e:
-                # Create recovery parser with step-specific arguments
-                fallback_additional_args = additional_arguments or {}
-
-                logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
-                parsed_args = _create_fallback_parser(fallback_parser_description, fallback_additional_args).parse_args()
-
-            # Set up logging
+            _preload_step_imports(step_specific_imports)
+            parsed_args = _parse_step_args(step_name, fallback_parser_description, additional_arguments)
             logger = setup_step_logging(step_name, getattr(parsed_args, 'verbose', False))
+            target_dir, step_output_dir = _resolve_dirs(parsed_args, step_name, default_target_dir)
 
-            # Convert paths with proper handling for None values
-            target_dir_raw = getattr(parsed_args, 'target_dir', None)
-            if target_dir_raw is None:
-                target_dir = Path(default_target_dir) if default_target_dir else Path('input/gnn_files')
-            else:
-                target_dir = Path(target_dir_raw)
-
-            output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
-            output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
-
-            recursive_default = default_recursive
-
-            # Normalize the output directory to the standardized numbered step folder
-            try:
-                normalized_step = step_name if not step_name.endswith('.py') else step_name[:-3]
-                step_output_dir = get_output_dir_for_script(normalized_step, output_dir)
-            except Exception:
-                step_output_dir = output_dir
-
-            # Call the module function with the standardized step output dir
-            success = module_function(
+            result = module_function(
                 target_dir=target_dir,
                 output_dir=step_output_dir,
                 logger=logger,
-                recursive=getattr(parsed_args, 'recursive', recursive_default),
+                recursive=getattr(parsed_args, 'recursive', default_recursive),
                 verbose=getattr(parsed_args, 'verbose', False),
                 **{k: v for k, v in vars(parsed_args).items()
                    if k not in ['target_dir', 'output_dir', 'recursive', 'verbose']}
             )
-
-            return 0 if success else 1
+            return _coerce_exit_code(result, step_name, logger)
 
         except Exception as e:
             logging.error(f"Script execution failed: {e}")

@@ -163,7 +163,7 @@ def process_render(
     frameworks: Optional[List[str]] = None,
     strict_validation: bool = True,
     **kwargs: Any,
-) -> bool:
+) -> Union[bool, int]:
     """
     Process render for GNN specifications with POMDP-aware processing.
 
@@ -214,7 +214,9 @@ def process_render(
 
         if not gnn_files:
             logger.warning(f"No GNN files found in {target_dir}")
-            return True
+            # Exit-code 2: no input. Distinguishes "nothing to render" from
+            # "rendered successfully".
+            return 2
 
         logger.info(f"Found {len(gnn_files)} GNN files to process")
 
@@ -367,8 +369,13 @@ def process_render(
         if pomdp_available and total_framework_attempts > 0:
             framework_success_rate = (total_framework_successes / total_framework_attempts) * 100
             return framework_success_rate >= 80.0 or success_count > 0
-        else:
-            return success_count == len(gnn_files)
+        # Non-POMDP path: guard against trivially-"successful" zero-file runs
+        # (len(gnn_files) == 0 and success_count == 0 satisfies == but is a skip,
+        # not a success). Phase 1.1 flags this as exit-code 2 upstream, but keep
+        # the defense here in case the caller bypasses the earlier check.
+        if len(gnn_files) == 0:
+            return 2
+        return success_count == len(gnn_files)
 
     except Exception as e:
         logger.error(f"Render processing failed: {e}")
@@ -567,8 +574,6 @@ def render_gnn_spec(
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        pass
-
         # Generator-based renderers: target → (generator_name, file_suffix)
         _GENERATOR_TARGETS = {
             "pymdp": ("generate_pymdp_code", "_pymdp.py"),
@@ -633,10 +638,16 @@ def render_gnn_spec(
 
 
 def get_module_info() -> Dict[str, Any]:
-    """Get information about the enhanced render module."""
+    """Get information about the render module."""
+    # Import here (not at module top) to avoid circular init when this module is
+    # imported before ``render/__init__.py`` finishes loading.
+    try:
+        from . import __version__ as _version
+    except Exception:  # noqa: BLE001
+        _version = "unknown"
     return {
-        "name": "Enhanced Render Module",
-        "version": "2.0.0",
+        "name": "Render Module",
+        "version": _version,
         "description": "POMDP-aware code generation for GNN specifications",
         "supported_targets": ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "bnlearn"],
         "available_targets": ["pymdp", "rxinfer", "activeinference_jl", "discopy", "bnlearn"],

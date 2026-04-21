@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 
-def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = True) -> Dict[str, Any]:
+def process_gnn_directory_lightweight(target_dir: Path, output_dir: Optional[Path] = None, recursive: bool = True) -> Dict[str, Any]:
     """
     Lightweight GNN directory processing without heavy dependencies.
     
@@ -319,10 +319,31 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
 
     Returns:
         Dictionary containing:
-            - status: "SUCCESS" if processing completed
+            - status: "SUCCESS" / "FAILED" / "ERROR"
             - files: List of discovered file paths
             - processed_files: List of successfully processed file paths
+            - error: Present on "ERROR" / "FAILED" status with diagnostic message
     """
+    # Phase 1.3: validate input path exists before glob-walking. Previously the
+    # function silently returned status=SUCCESS/files=[] for missing paths,
+    # masking pipeline configuration errors. We accept both directories AND
+    # single .md files because callers (tests, ad-hoc scripts) legitimately
+    # use both — ``discover_gnn_files`` downstream handles each case.
+    if directory is None:
+        return {
+            "status": "FAILED",
+            "files": [],
+            "processed_files": [],
+            "error": "directory argument is None",
+        }
+    _dir_path = Path(directory)
+    if not _dir_path.exists():
+        return {
+            "status": "FAILED",
+            "files": [],
+            "processed_files": [],
+            "error": f"path does not exist: {_dir_path}",
+        }
     # Use lightweight processing and wrap into status dict expected by tests
     lightweight_result = process_gnn_directory_lightweight(directory, recursive=recursive)
     # Extract actual file paths from parsed file results

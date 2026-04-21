@@ -49,6 +49,20 @@ except ImportError:
     JAX_AVAILABLE = False
     run_jax_scripts = None
 
+try:
+    from .numpyro.numpyro_runner import run_numpyro_scripts
+    NUMPYRO_AVAILABLE = True
+except ImportError:
+    NUMPYRO_AVAILABLE = False
+    run_numpyro_scripts = None
+
+try:
+    from .pytorch.pytorch_runner import run_pytorch_scripts
+    PYTORCH_AVAILABLE = True
+except ImportError:
+    PYTORCH_AVAILABLE = False
+    run_pytorch_scripts = None
+
 from utils.logging.logging_utils import (
     log_step_error,
     log_step_start,
@@ -435,7 +449,9 @@ def execute_rendered_simulators(
         "rxinfer": execution_output_dir / "rxinfer",
         "discopy": execution_output_dir / "discopy",
         "activeinference_jl": execution_output_dir / "activeinference_jl",
-        "jax": execution_output_dir / "jax"
+        "jax": execution_output_dir / "jax",
+        "numpyro": execution_output_dir / "numpyro",
+        "pytorch": execution_output_dir / "pytorch",
     }
 
     for _, framework_dir in framework_dirs.items():
@@ -452,6 +468,8 @@ def execute_rendered_simulators(
             "discopy_executions": [],
             "activeinference_executions": [],
             "jax_executions": [],
+            "numpyro_executions": [],
+            "pytorch_executions": [],
             "total_successes": 0,
             "total_failures": 0,
             "dependency_issues": [],
@@ -723,6 +741,96 @@ def execute_rendered_simulators(
                 "output_dir": str(framework_dirs["jax"])
             })
 
+        # Execute NumPyro scripts if available
+        if NUMPYRO_AVAILABLE and run_numpyro_scripts:
+            try:
+                with performance_tracker.track_operation("execute_numpyro_scripts"):
+                    logger.info("🚀 Executing NumPyro scripts...")
+                    numpyro_success = run_numpyro_scripts(
+                        rendered_simulators_dir=target_dir,
+                        execution_output_dir=framework_dirs["numpyro"],
+                        recursive_search=recursive,
+                        verbose=verbose,
+                    )
+                    if numpyro_success:
+                        execution_results["total_successes"] += 1
+                        execution_results["numpyro_executions"].append({
+                            "status": "SUCCESS",
+                            "message": "NumPyro scripts executed successfully",
+                            "output_dir": str(framework_dirs["numpyro"]),
+                        })
+                    else:
+                        execution_results["total_failures"] += 1
+                        execution_results["numpyro_executions"].append({
+                            "status": "FAILED",
+                            "message": "NumPyro script execution failed",
+                            "output_dir": str(framework_dirs["numpyro"]),
+                        })
+                log_step_success(logger, "NumPyro script execution completed")
+            except Exception as e:
+                execution_results["total_failures"] += 1
+                execution_results["numpyro_executions"].append({
+                    "status": "ERROR",
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["numpyro"]),
+                })
+                log_step_warning(logger, f"NumPyro script execution failed: {e}")
+        else:
+            logger.info(
+                "ℹ️ NumPyro framework not available - skipping NumPyro execution "
+                "(install with: uv pip install numpyro jax jaxlib)"
+            )
+            execution_results["numpyro_executions"].append({
+                "status": "SKIPPED",
+                "message": "NumPyro framework not installed (optional dependency)",
+                "output_dir": str(framework_dirs["numpyro"]),
+            })
+
+        # Execute PyTorch scripts if available
+        if PYTORCH_AVAILABLE and run_pytorch_scripts:
+            try:
+                with performance_tracker.track_operation("execute_pytorch_scripts"):
+                    logger.info("🚀 Executing PyTorch scripts...")
+                    pytorch_success = run_pytorch_scripts(
+                        rendered_simulators_dir=target_dir,
+                        execution_output_dir=framework_dirs["pytorch"],
+                        recursive_search=recursive,
+                        verbose=verbose,
+                    )
+                    if pytorch_success:
+                        execution_results["total_successes"] += 1
+                        execution_results["pytorch_executions"].append({
+                            "status": "SUCCESS",
+                            "message": "PyTorch scripts executed successfully",
+                            "output_dir": str(framework_dirs["pytorch"]),
+                        })
+                    else:
+                        execution_results["total_failures"] += 1
+                        execution_results["pytorch_executions"].append({
+                            "status": "FAILED",
+                            "message": "PyTorch script execution failed",
+                            "output_dir": str(framework_dirs["pytorch"]),
+                        })
+                log_step_success(logger, "PyTorch script execution completed")
+            except Exception as e:
+                execution_results["total_failures"] += 1
+                execution_results["pytorch_executions"].append({
+                    "status": "ERROR",
+                    "message": str(e),
+                    "output_dir": str(framework_dirs["pytorch"]),
+                })
+                log_step_warning(logger, f"PyTorch script execution failed: {e}")
+        else:
+            logger.info(
+                "ℹ️ PyTorch framework not available - skipping PyTorch execution "
+                "(install with: uv pip install torch)"
+            )
+            execution_results["pytorch_executions"].append({
+                "status": "SKIPPED",
+                "message": "PyTorch framework not installed (optional dependency)",
+                "output_dir": str(framework_dirs["pytorch"]),
+            })
+
         # Save execution summary with enhanced details
         summaries_dir = execution_output_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)
@@ -806,6 +914,24 @@ def execute_rendered_simulators(
                     f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
 
+            if execution_results["numpyro_executions"]:
+                f.write("## NumPyro Executions\n\n")
+                for exec_info in execution_results["numpyro_executions"]:
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'NumPyro Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                f.write("\n")
+
+            if execution_results["pytorch_executions"]:
+                f.write("## PyTorch Executions\n\n")
+                for exec_info in execution_results["pytorch_executions"]:
+                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
+                    f.write(f"- {status_icon} **{exec_info.get('script', 'PyTorch Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    f.write(f"  - {exec_info.get('message', 'No message')}\n")
+                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                f.write("\n")
+
             # Recommendations section
             f.write("## Recommendations\n\n")
             if execution_results["dependency_issues"]:
@@ -828,7 +954,9 @@ def execute_rendered_simulators(
                           len(execution_results["rxinfer_executions"]) +
                           len(execution_results["discopy_executions"]) +
                           len(execution_results["activeinference_executions"]) +
-                          len(execution_results["jax_executions"]))
+                          len(execution_results["jax_executions"]) +
+                          len(execution_results["numpyro_executions"]) +
+                          len(execution_results["pytorch_executions"]))
 
         if total_executions > 0:
             success_rate = execution_results["total_successes"] / total_executions * 100
@@ -848,3 +976,92 @@ def execute_rendered_simulators(
     except Exception as e:
         log_step_error(logger, f"Execution failed: {e}")
         return False
+
+
+def execute_script_safely(
+    script_path: Union[str, Path],
+    timeout: int = 60,
+    capture_output: bool = True,
+    cwd: Optional[Union[str, Path]] = None,
+    env: Optional[Dict[str, str]] = None,
+) -> Dict[str, Any]:
+    """Execute a Python script via ``subprocess.run`` with a structured envelope.
+
+    Returns a uniform dict regardless of the failure mode so callers never have
+    to distinguish between a missing file, a dependency error, a timeout, and a
+    non-zero exit code.
+
+    Args:
+        script_path:    Path to the ``.py`` script to execute.
+        timeout:        Wall-clock timeout in seconds (default ``60``).
+        capture_output: If True, capture stdout/stderr; otherwise stream to the
+                        parent process.
+        cwd:            Working directory for the subprocess.
+        env:            Environment variables override (merged into ``os.environ``).
+
+    Returns:
+        Dict with keys:
+            - ``success`` (bool): True iff the script exited with return code 0.
+            - ``script_path`` (str): Resolved script path.
+            - ``return_code`` (int): Subprocess exit code (``-1`` if not started).
+            - ``stdout`` (str): Captured stdout (empty if ``capture_output`` is False).
+            - ``stderr`` (str): Captured stderr (empty if ``capture_output`` is False).
+            - ``duration_seconds`` (float): Wall-clock execution time.
+            - ``error`` (str, optional): Populated on failure.
+            - ``error_type`` (str, optional): Exception class name on failure.
+    """
+    script = Path(script_path)
+    envelope: Dict[str, Any] = {
+        "success": False,
+        "script_path": str(script),
+        "return_code": -1,
+        "stdout": "",
+        "stderr": "",
+        "duration_seconds": 0.0,
+    }
+
+    if not script.exists():
+        envelope["error"] = f"Script not found: {script}"
+        envelope["error_type"] = "FileNotFoundError"
+        return envelope
+    if script.suffix.lower() != ".py":
+        envelope["error"] = (
+            f"execute_script_safely only runs Python scripts; got suffix "
+            f"{script.suffix!r}"
+        )
+        envelope["error_type"] = "ValueError"
+        return envelope
+
+    merged_env: Optional[Dict[str, str]] = None
+    if env is not None:
+        import os
+        merged_env = dict(os.environ)
+        merged_env.update(env)
+
+    start = time.time()
+    try:
+        completed = subprocess.run(  # nosec B603 -- controlled script path
+            [sys.executable, str(script)],
+            capture_output=capture_output,
+            text=True,
+            timeout=timeout,
+            cwd=str(cwd) if cwd is not None else None,
+            env=merged_env,
+            check=False,
+        )
+        envelope["return_code"] = completed.returncode
+        envelope["success"] = completed.returncode == 0
+        envelope["stdout"] = completed.stdout or ""
+        envelope["stderr"] = completed.stderr or ""
+    except subprocess.TimeoutExpired as exc:
+        envelope["error"] = f"Execution timed out after {timeout}s"
+        envelope["error_type"] = "TimeoutExpired"
+        envelope["stdout"] = exc.stdout or "" if capture_output else ""
+        envelope["stderr"] = exc.stderr or "" if capture_output else ""
+    except Exception as exc:  # noqa: BLE001 — convert any failure to envelope
+        envelope["error"] = str(exc)
+        envelope["error_type"] = type(exc).__name__
+    finally:
+        envelope["duration_seconds"] = time.time() - start
+
+    return envelope

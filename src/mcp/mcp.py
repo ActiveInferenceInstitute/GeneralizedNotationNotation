@@ -1310,8 +1310,12 @@ class MCP:
         """
         logger.info("Shutting down MCP server...")
 
-        # Shutdown thread pool
-        self._executor.shutdown(wait=True)
+        # Shutdown thread pool (may be None if construction failed at init time)
+        if self._executor is not None:
+            try:
+                self._executor.shutdown(wait=True)
+            except Exception as e:
+                logger.warning(f"Thread pool shutdown failed: {e}")
 
         # Clear caches
         cache_stats = self.clear_cache()
@@ -1347,32 +1351,64 @@ _mcp_instance: Optional["MCP"] = None
 
 
 class _LazyMCP:
-    """Proxy that creates the real MCP singleton on first attribute access."""
-    def __getattr__(self, name: str):
+    """Proxy that creates the real MCP singleton on first attribute access.
+
+    Forwards both reads and writes to the underlying :class:`MCP` instance so
+    call sites can safely do e.g. ``mcp_instance._enable_caching = False``
+    without silently shadowing the attribute on the proxy itself.
+    """
+
+    _PROXY_ONLY = frozenset()  # reserved for internal proxy state
+
+    def _target(self) -> "MCP":
         global _mcp_instance
         if _mcp_instance is None:
             _mcp_instance = MCP()
-        return getattr(_mcp_instance, name)
+        return _mcp_instance
+
+    def __getattr__(self, name: str):
+        return getattr(self._target(), name)
+
+    def __setattr__(self, name: str, value) -> None:
+        if name in self._PROXY_ONLY:
+            object.__setattr__(self, name, value)
+            return
+        setattr(self._target(), name, value)
 
 
-mcp_instance: "MCP" = _LazyMCP()  # type: ignore[assignment]  # _LazyMCP proxies all MCP attributes via __getattr__
+mcp_instance: "MCP" = _LazyMCP()  # type: ignore[assignment]  # _LazyMCP proxies all MCP attributes via __getattr__/__setattr__
 
 # --- Initialization Function ---
 def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False,
                performance_mode: str = "low",
                modules_allowlist: Optional[List[str]] = None,
                per_module_timeout: float = 30.0,
-               overall_timeout: float = 120.0) -> Tuple[MCP, bool, bool]:
+               overall_timeout: float = 120.0,
+               enable_caching: Optional[bool] = None,
+               enable_rate_limiting: Optional[bool] = None,
+               strict_validation: Optional[bool] = None,
+               cache_ttl: Optional[float] = None,
+               force_refresh: bool = False) -> Tuple[MCP, bool, bool]:
     """
     Initialize the MCP by discovering modules and checking SDK status.
 
     Args:
-        halt_on_missing_sdk: If True, raises MCPSDKNotFoundError if SDK is missing
-        force_proceed_flag: If True, proceeds even if SDK is missing
-        performance_mode: Passed to set_performance_mode ("low" or "high")
-        modules_allowlist: If set, only load these package names under src/
-        per_module_timeout: Max seconds to wait per module during parallel discovery
-        overall_timeout: Wall-clock budget for the parallel wait loop (see discover_modules)
+        halt_on_missing_sdk: If True, raises MCPSDKNotFoundError if SDK is missing.
+        force_proceed_flag: If True, proceeds even if SDK is missing.
+        performance_mode: ``"low"``, ``"medium"`` (unused; treated as low), or
+            ``"high"``. Applied via :meth:`MCP.set_performance_mode` before any
+            fine-grained overrides below.
+        modules_allowlist: If set, only load these package names under ``src/``.
+        per_module_timeout: Max seconds to wait per module during parallel
+            discovery (see :meth:`MCP.discover_modules`).
+        overall_timeout: Wall-clock budget for the parallel wait loop.
+        enable_caching: Optional override for result-cache enablement. When
+            None the value chosen by ``performance_mode`` is preserved.
+        enable_rate_limiting: Optional override for rate-limiting enablement.
+        strict_validation: Optional override for strict schema validation.
+        cache_ttl: Optional override for result-cache TTL (seconds).
+        force_refresh: If True, force re-discovery even if the singleton has
+            already loaded modules in this process.
 
     Returns:
         Tuple of (mcp_instance, sdk_found, all_modules_loaded)
@@ -1401,8 +1437,19 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     except (AttributeError, TypeError):
         logger.debug("Performance mode setting not supported on this MCP instance")
 
+    # Fine-grained overrides applied after performance_mode so callers can
+    # opt into, e.g., high performance with strict_validation disabled.
+    if enable_caching is not None:
+        mcp_instance._enable_caching = bool(enable_caching)
+    if enable_rate_limiting is not None:
+        mcp_instance._enable_rate_limiting = bool(enable_rate_limiting)
+    if strict_validation is not None:
+        mcp_instance._strict_validation = bool(strict_validation)
+    if cache_ttl is not None:
+        mcp_instance._cache_ttl = float(cache_ttl)
+
     all_modules_loaded = mcp_instance.discover_modules(
-        force_refresh=False,
+        force_refresh=force_refresh,
         modules_allowlist=modules_allowlist,
         per_module_timeout=per_module_timeout,
         overall_timeout=overall_timeout

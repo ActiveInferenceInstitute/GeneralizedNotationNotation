@@ -222,7 +222,9 @@ print(json.dumps({"status": "ok"}))
                 timeout=5,
                 render_output_dir=render_out,
             )
-            assert isinstance(success, bool)
+            # Phase 1.1 contract: process_execute returns bool OR int
+            # (2 = skipped/warnings, 0/1 = standard exit codes).
+            assert isinstance(success, (bool, int))
 
             # Check that the execution summary was created
             summary_file = output_dir / "summaries" / "execution_summary.json"
@@ -253,7 +255,9 @@ print(json.dumps({"status": "ok"}))
                 timeout=5,
                 render_output_dir=sample_render_output["base"],
             )
-            assert isinstance(success, bool)
+            # Phase 1.1 contract: process_execute returns bool OR int
+            # (2 = skipped/warnings, 0/1 = standard exit codes).
+            assert isinstance(success, (bool, int))
 
             # Check summary was created
             summary_file = output_dir / "summaries" / "execution_summary.json"
@@ -414,7 +418,9 @@ print(json.dumps({"status": "ok"}))
                 timeout=5,
                 render_output_dir=render_out,
             )
-            assert isinstance(success, bool)
+            # Phase 1.1 contract: process_execute returns bool OR int
+            # (2 = skipped/warnings, 0/1 = standard exit codes).
+            assert isinstance(success, (bool, int))
         except Exception as e:
             # Even if execution fails, we want to ensure no crashes
             pytest.fail(f"Execute integration crashed: {e}")
@@ -589,7 +595,9 @@ print("JAX Active Inference model test successful!")
                 verbose=True,
                 frameworks="jax"
             )
-            assert isinstance(success, bool)
+            # Phase 1.1 contract: process_execute returns bool OR int
+            # (2 = skipped/warnings, 0/1 = standard exit codes).
+            assert isinstance(success, (bool, int))
 
             # Check summary was created
             summary_file = output_dir / "execution_summary.json"

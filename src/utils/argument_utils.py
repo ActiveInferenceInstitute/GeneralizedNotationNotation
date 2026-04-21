@@ -130,8 +130,13 @@ class PipelineArguments:
     # Step 1: uv sync --all-extras (optional heavy install)
     install_all_extras: bool = False
 
-    # MCP/performance mode (used by step 22)
+    # MCP/performance mode (used by step 21) and fine-grained overrides
     performance_mode: str = "low"
+    mcp_strict_validation: Optional[bool] = None
+    mcp_cache_ttl: Optional[float] = None
+    mcp_per_module_timeout: Optional[float] = None
+    mcp_overall_timeout: Optional[float] = None
+    mcp_modules_allowlist: Optional[str] = None
 
     # Custom pipeline step configs
     timesteps: int = 15
@@ -307,6 +312,31 @@ class ArgumentParser:
             help_text='Performance mode for applicable steps (low, medium, high)',
             choices=['low', 'medium', 'high']
         ),
+        'mcp_strict_validation': ArgumentDefinition(
+            flag='--mcp-strict-validation',
+            action='store_true',
+            help_text='MCP (step 21): enforce JSON-schema validation on every tool call'
+        ),
+        'mcp_cache_ttl': ArgumentDefinition(
+            flag='--mcp-cache-ttl',
+            arg_type=float,
+            help_text='MCP (step 21): result-cache TTL in seconds (default 300)'
+        ),
+        'mcp_per_module_timeout': ArgumentDefinition(
+            flag='--mcp-per-module-timeout',
+            arg_type=float,
+            help_text='MCP (step 21): max seconds to wait per module during discovery (default 30)'
+        ),
+        'mcp_overall_timeout': ArgumentDefinition(
+            flag='--mcp-overall-timeout',
+            arg_type=float,
+            help_text='MCP (step 21): overall wall-clock budget for parallel discovery (default 120)'
+        ),
+        'mcp_modules_allowlist': ArgumentDefinition(
+            flag='--mcp-modules-allowlist',
+            arg_type=str,
+            help_text='MCP (step 21): comma-separated module names to restrict discovery to'
+        ),
         'frameworks': ArgumentDefinition(
             flag='--frameworks',
             arg_type=str,
@@ -452,7 +482,15 @@ class ArgumentParser:
         "18_security.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "19_research.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "20_website.py": ["target_dir", "output_dir", "recursive", "verbose", "website_html_filename"],
-        "21_mcp.py": ["target_dir", "output_dir", "recursive", "verbose", "performance_mode"],
+        "21_mcp.py": [
+            "target_dir", "output_dir", "recursive", "verbose",
+            "performance_mode",
+            "mcp_strict_validation",
+            "mcp_cache_ttl",
+            "mcp_per_module_timeout",
+            "mcp_overall_timeout",
+            "mcp_modules_allowlist",
+        ],
         "22_gui.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "24_intelligent_analysis.py": ["target_dir", "output_dir", "verbose"],
