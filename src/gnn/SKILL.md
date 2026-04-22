@@ -78,6 +78,26 @@ is_valid, errors = validate_gnn(content_string)
 - `GNNParsingSystem`, `GNNFormat` — registry-backed multi-format I/O
 - `GNNFormalParser`, `ParsedGNN`, `ParsedGNNFormal` — formal parser types
 
+## Recommended Workflow
+
+```python
+# 1. Discover files
+files = discover_gnn_files("input/gnn_files/")
+
+# 2. Parse each file
+for f in files:
+    model = parse_gnn_file(f)
+
+    # 3. Validate — check for structural/syntax errors before downstream use
+    is_valid, errors = validate_gnn(open(f).read())
+    if not is_valid:
+        print(f"Validation failed for {f}: {errors}")
+        continue  # skip invalid files rather than propagating bad data
+
+    # 4. Proceed with valid models
+    # ...
+```
+
 ## Output
 
 Parsed models are consumed by downstream steps:
@@ -85,7 +105,6 @@ Parsed models are consumed by downstream steps:
 - **Step 5** (Type Check): validates matrix dimensions
 - **Steps 7–8** (Export/Viz): generates outputs
 - **Step 11** (Render): generates simulation code
-
 
 ## MCP Tools
 
@@ -105,9 +124,3 @@ This module registers tools with the GNN MCP server (see `mcp.py`):
 - [../../doc/gnn/tutorials/gnn_examples_doc.md](../../doc/gnn/tutorials/gnn_examples_doc.md) — Example models
 
 
----
-## Documentation
-- **[README](README.md)**: Module Overview
-- **[AGENTS](AGENTS.md)**: Agentic Workflows
-- **[SPEC](SPEC.md)**: Architectural Specification
-- **[SKILL](SKILL.md)**: Capability API
