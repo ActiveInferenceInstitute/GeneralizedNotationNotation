@@ -1,6 +1,6 @@
 ---
 name: gnn-mcp-protocol
-description: GNN Model Context Protocol processing and tool registration. Use when registering GNN operations as MCP tools, building MCP server configurations, or integrating GNN capabilities with LLM tool-use workflows.
+description: "GNN Model Context Protocol server and tool registration. Use when registering GNN pipeline operations as MCP tools, starting the MCP JSON-RPC server, configuring tool discovery, or exposing GNN capabilities to LLM agents via tool-use."
 ---
 
 # GNN MCP Protocol (Step 21)
@@ -90,6 +90,25 @@ The `MCP` singleton honours these knobs, all propagated through
 | `overall_timeout` | `float` | `120.0` | Wall-clock budget for parallel discovery |
 | `force_refresh` | `bool` | `False` | Re-discover modules even if already loaded |
 
+## Recommended Workflow
+
+```python
+from mcp import initialize, register_tools, get_available_tools, create_mcp_server
+
+# 1. Initialize the MCP registry
+initialize(performance_mode="high", strict_validation=True)
+
+# 2. Discover and register all pipeline module tools
+register_tools()
+
+# 3. Verify tools registered correctly
+tools = get_available_tools()
+assert len(tools) > 0, "No tools registered — check module discovery"
+
+# 4. Start the JSON-RPC server
+server = create_mcp_server()
+```
+
 ## Output
 
 - MCP configuration in `output/21_mcp_output/`
@@ -102,11 +121,3 @@ The `MCP` singleton honours these knobs, all propagated through
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Module specification
 - [MCP Protocol Spec](https://modelcontextprotocol.io/)
-
-
----
-## Documentation
-- **[README](README.md)**: Module Overview
-- **[AGENTS](AGENTS.md)**: Agentic Workflows
-- **[SPEC](SPEC.md)**: Architectural Specification
-- **[SKILL](SKILL.md)**: Capability API

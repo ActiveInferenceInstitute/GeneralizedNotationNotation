@@ -5,16 +5,6 @@ description: Generalized Notation Notation (GNN) processing pipeline for Active 
 
 # GNN Pipeline Skill
 
-GNN (Generalized Notation Notation) is a text-based specification language for Active Inference generative models. This repository implements a **25-step processing pipeline** (steps 0–24) that transforms GNN specifications into executable simulations, visualizations, analysis reports, and more.
-
-## When to Use This Skill
-
-- Parsing or authoring `.md` GNN model files
-- Running the full pipeline or individual steps
-- Generating simulation code (PyMDP, RxInfer.jl, JAX, DisCoPy, ActiveInference.jl, PyTorch, NumPyro)
-- Creating visualizations, exports, or reports from GNN models
-- Working with Active Inference ontology annotations
-
 ## Quick Start
 
 ```bash
@@ -97,6 +87,28 @@ python src/12_execute.py --frameworks "lite" --verbose
 
 # All frameworks (default)
 python src/12_execute.py --frameworks "all" --verbose
+```
+
+## Validation Checkpoints
+
+After running groups of steps, verify outputs before proceeding:
+
+```bash
+# After Core steps (0-9): confirm parsed models exist
+ls output/03_gnn_output/parsed/
+
+# After Simulation steps (10-16): confirm generated code and execution results
+ls output/11_render_output/ output/12_execute_output/
+
+# After Output steps (17-24): confirm reports and deliverables
+ls output/23_report_output/
+```
+
+If a step fails, inspect its log and re-run from that point:
+
+```bash
+# Re-run from a specific step after fixing an issue
+python src/main.py --only-steps "11,12" --verbose
 ```
 
 ## Module Skills
