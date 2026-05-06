@@ -1,9 +1,0 @@
-Matrix: A_loc
-"Shape: (4, 4)"
-Data type: float64
-
-Col 0,Col 1,Col 2,Col 3
-Row 0,1.0,0.0,0.0,0.0
-Row 1,0.0,1.0,0.0,0.0
-Row 2,0.0,0.0,1.0,0.0
-Row 3,0.0,0.0,0.0,1.0

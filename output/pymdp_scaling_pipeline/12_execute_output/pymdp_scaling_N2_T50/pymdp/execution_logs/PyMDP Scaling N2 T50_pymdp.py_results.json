@@ -1,0 +1,345 @@
+{
+  "framework": "pymdp",
+  "model_name": "pymdp_scaling_N2_T50",
+  "script_name": "PyMDP Scaling N2 T50_pymdp.py",
+  "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50/pymdp/PyMDP Scaling N2 T50_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 7.789588,
+  "timestamp": "2026-05-06T07:05:11.652913",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      1,
+      0,
+      1,
+      1,
+      1,
+      0,
+      0,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      1,
+      1,
+      1
+    ],
+    "actions": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "policy": [],
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-05-06 07:05:13,468 - __main__ - INFO - Running pymdp 1.0.0 rollout for PyMDP Scaling N2 T50\n2026-05-06 07:05:13,468 - __main__ - INFO - Output directory: output/pymdp_simulations/PyMDP Scaling N2 T50\n2026-05-06 07:05:13,469 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-05-06 07:05:13,470 - src.execute.pymdp.simple_simulation - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-05-06 07:05:13,470 - src.execute.pymdp.simple_simulation - INFO - Dimensions: No=2, Ns=2, Nu=2 | T=50, batch=1, policy_len=1\n2026-05-06 07:05:13,476 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-05-06 07:05:13,904 - src.execute.pymdp.simple_simulation - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-05-06 07:05:15,043 - src.execute.pymdp.simple_simulation - INFO - t=00 obs=1 belief=[0.05, 0.95] action=1 next_state=0\n2026-05-06 07:05:15,102 - src.execute.pymdp.simple_simulation - INFO - t=01 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:15,184 - src.execute.pymdp.simple_simulation - INFO - t=02 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,260 - src.execute.pymdp.simple_simulation - INFO - t=03 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,320 - src.execute.pymdp.simple_simulation - INFO - t=04 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,395 - src.execute.pymdp.simple_simulation - INFO - t=05 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:15,480 - src.execute.pymdp.simple_simulation - INFO - t=06 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:15,543 - src.execute.pymdp.simple_simulation - INFO - t=07 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,616 - src.execute.pymdp.simple_simulation - INFO - t=08 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,680 - src.execute.pymdp.simple_simulation - INFO - t=09 obs=1 belief=[0.006, 0.994] action=1 next_state=0\n2026-05-06 07:05:15,758 - src.execute.pymdp.simple_simulation - INFO - t=10 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:15,822 - src.execute.pymdp.simple_simulation - INFO - t=11 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,887 - src.execute.pymdp.simple_simulation - INFO - t=12 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:15,959 - src.execute.pymdp.simple_simulation - INFO - t=13 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,018 - src.execute.pymdp.simple_simulation - INFO - t=14 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,103 - src.execute.pymdp.simple_simulation - INFO - t=15 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,173 - src.execute.pymdp.simple_simulation - INFO - t=16 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,253 - src.execute.pymdp.simple_simulation - INFO - t=17 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,320 - src.execute.pymdp.simple_simulation - INFO - t=18 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,383 - src.execute.pymdp.simple_simulation - INFO - t=19 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,482 - src.execute.pymdp.simple_simulation - INFO - t=20 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,570 - src.execute.pymdp.simple_simulation - INFO - t=21 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,649 - src.execute.pymdp.simple_simulation - INFO - t=22 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,724 - src.execute.pymdp.simple_simulation - INFO - t=23 obs=1 belief=[0.006, 0.994] action=1 next_state=0\n2026-05-06 07:05:16,809 - src.execute.pymdp.simple_simulation - INFO - t=24 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:16,890 - src.execute.pymdp.simple_simulation - INFO - t=25 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:16,968 - src.execute.pymdp.simple_simulation - INFO - t=26 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,048 - src.execute.pymdp.simple_simulation - INFO - t=27 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,123 - src.execute.pymdp.simple_simulation - INFO - t=28 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,191 - src.execute.pymdp.simple_simulation - INFO - t=29 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,264 - src.execute.pymdp.simple_simulation - INFO - t=30 obs=1 belief=[0.006, 0.994] action=1 next_state=0\n2026-05-06 07:05:17,345 - src.execute.pymdp.simple_simulation - INFO - t=31 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:17,409 - src.execute.pymdp.simple_simulation - INFO - t=32 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,483 - src.execute.pymdp.simple_simulation - INFO - t=33 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,576 - src.execute.pymdp.simple_simulation - INFO - t=34 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,659 - src.execute.pymdp.simple_simulation - INFO - t=35 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,748 - src.execute.pymdp.simple_simulation - INFO - t=36 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,827 - src.execute.pymdp.simple_simulation - INFO - t=37 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:17,895 - src.execute.pymdp.simple_simulation - INFO - t=38 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,000 - src.execute.pymdp.simple_simulation - INFO - t=39 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,112 - src.execute.pymdp.simple_simulation - INFO - t=40 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,223 - src.execute.pymdp.simple_simulation - INFO - t=41 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,307 - src.execute.pymdp.simple_simulation - INFO - t=42 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,390 - src.execute.pymdp.simple_simulation - INFO - t=43 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,482 - src.execute.pymdp.simple_simulation - INFO - t=44 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,579 - src.execute.pymdp.simple_simulation - INFO - t=45 obs=1 belief=[0.006, 0.994] action=1 next_state=0\n2026-05-06 07:05:18,659 - src.execute.pymdp.simple_simulation - INFO - t=46 obs=0 belief=[0.679, 0.321] action=1 next_state=1\n2026-05-06 07:05:18,746 - src.execute.pymdp.simple_simulation - INFO - t=47 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,804 - src.execute.pymdp.simple_simulation - INFO - t=48 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,886 - src.execute.pymdp.simple_simulation - INFO - t=49 obs=1 belief=[0.006, 0.994] action=1 next_state=1\n2026-05-06 07:05:18,888 - src.execute.pymdp.simple_simulation - INFO - Saved simulation results to output/pymdp_simulations/PyMDP Scaling N2 T50/simulation_results.json\n2026-05-06 07:05:18,888 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-05-06 07:05:18,888 - __main__ - INFO - Simulation completed successfully\n2026-05-06 07:05:18,888 - __main__ - INFO -   framework:    PyMDP\n2026-05-06 07:05:18,888 - __main__ - INFO -   pymdp ver:    1.0.0\n2026-05-06 07:05:18,888 - __main__ - INFO -   backend:      jax\n2026-05-06 07:05:18,888 - __main__ - INFO -   num_timesteps:50\n",
+    "beliefs": [
+      [
+        0.04999999701976776,
+        0.949999988079071
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.6785714030265808,
+        0.3214285671710968
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ],
+      [
+        0.0058139534667134285,
+        0.9941860437393188
+      ]
+    ],
+    "num_timesteps": 50
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 7932,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T50/pymdp"
+  },
+  "execution_time_mean": 7.789588,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    7.789588
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T50/pymdp/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

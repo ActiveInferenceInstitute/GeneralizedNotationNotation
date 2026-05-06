@@ -14,18 +14,17 @@ import pytest
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-try:
-    from execute.processor import (
-        _normalize_and_deduplicate_paths,
-        collect_execution_outputs,
-    )
-    PATH_COLLECTION_AVAILABLE = True
-except ImportError as e:
-    PATH_COLLECTION_AVAILABLE = False
-    IMPORT_ERROR = str(e)
+# Phase 7: path collection helpers were moved from execute.processor to
+# execute.data_extractors and made public (underscore prefix dropped).
+from execute.data_extractors import (
+    collect_execution_outputs,
+    normalize_and_deduplicate_paths,
+)
+
+# Backwards-compatible alias for the test body.
+_normalize_and_deduplicate_paths = normalize_and_deduplicate_paths
 
 
-@pytest.mark.skipif(not PATH_COLLECTION_AVAILABLE, reason="Path collection not available")
 class TestPathDeduplication:
     """Test path normalization and deduplication."""
 
@@ -87,7 +86,6 @@ class TestPathDeduplication:
         assert parent_file in result
 
 
-@pytest.mark.skipif(not PATH_COLLECTION_AVAILABLE, reason="Path collection not available")
 class TestPathCollection:
     """Test execution output collection."""
 
@@ -126,7 +124,6 @@ class TestPathCollection:
         assert all(isinstance(result[key], list) for key in result.keys())
 
 
-@pytest.mark.skipif(not PATH_COLLECTION_AVAILABLE, reason="Path collection not available")
 class TestActiveInferencePathCollection:
     """Test ActiveInference.jl specific path collection."""
 
@@ -170,7 +167,6 @@ class TestActiveInferencePathCollection:
         assert len(result["visualizations"]) >= 0  # May be 0 if pattern doesn't match
 
 
-@pytest.mark.skipif(not PATH_COLLECTION_AVAILABLE, reason="Path collection not available")
 class TestPathCollectionDeduplication:
     """Test that path collection properly deduplicates files."""
 

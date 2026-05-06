@@ -327,65 +327,79 @@ def install_uv_dependencies(
 
 def get_installed_package_versions(verbose: bool = False) -> dict:
     """
-    Get a list of all installed packages and their versions using UV.
+    Get installed package versions by inspecting the venv's site-packages directly.
+
+    Uses ``importlib.metadata`` rather than shelling out to ``uv pip list`` — the
+    latter is the legacy interface that newer uv releases (and toolchain shims)
+    reject. This is faster, shim-independent, and works against any Python
+    distribution installed in ``VENV_PATH``.
 
     Args:
         verbose: If True, logs the full package list.
 
     Returns:
-        A dictionary of package names and their versions.
+        A dictionary mapping package names to version strings.
     """
-    logger.info("📋 Getting list of installed packages using UV...")
+    logger.info("📋 Getting list of installed packages from venv site-packages...")
     sys.stdout.flush()
 
     try:
-        uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
-        list_cmd = [uv_bin, "pip", "list", "--python", str(VENV_PYTHON), "--format=json"]
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            list_cmd,
+        # Query the venv's interpreter directly via importlib.metadata so we
+        # see the packages installed in THAT environment, not the one running
+        # this function.
+        probe = (
+            "import json, sys\n"
+            "try:\n"
+            "    from importlib.metadata import distributions\n"
+            "except ImportError:\n"
+            "    from importlib_metadata import distributions\n"
+            "out = {}\n"
+            "for d in distributions():\n"
+            "    name = d.metadata['Name']\n"
+            "    if name:\n"
+            "        out[name] = d.version\n"
+            "json.dump(out, sys.stdout)\n"
+        )
+        result = subprocess.run(  # nosec B603 -- VENV_PYTHON is a resolved path we control
+            [str(VENV_PYTHON), "-c", probe],
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
             check=False,
             timeout=60,
         )
-
         if result.returncode != 0:
-            logger.warning(f"⚠️ Failed to get package list (exit code: {result.returncode})")
+            logger.warning(f"⚠️ Failed to enumerate packages (exit code: {result.returncode})")
             if verbose:
-                logger.warning(f"Error: {result.stderr.strip()}")
+                logger.warning(f"stderr: {result.stderr.strip()}")
             return {}
 
         try:
-            packages = json.loads(result.stdout)
-            package_dict = {pkg["name"]: pkg["version"] for pkg in packages}
-
-            package_count = len(package_dict)
-            logger.info(f"📦 Found {package_count} installed packages using UV")
-
-            if verbose:
-                logger.info("📋 Installed packages:")
-                for name, version in sorted(package_dict.items()):
-                    logger.info(f"  - {name}: {version}")
-            else:
-                key_packages = ["pip", "pytest", "numpy", "matplotlib", "scipy", "psutil"]
-                logger.info("📋 Key installed packages:")
-                for pkg in key_packages:
-                    if pkg in package_dict:
-                        logger.info(f"  - {pkg}: {package_dict[pkg]}")
-
-            package_list_file = VENV_PATH / "installed_packages_uv.json"
-            with open(package_list_file, 'w') as f:
-                json.dump(package_dict, f, indent=2, sort_keys=True)
-            logger.info(f"📄 Full package list saved to: {package_list_file}")
-
-            return package_dict
-
+            package_dict: Dict[str, str] = json.loads(result.stdout)
         except json.JSONDecodeError:
-            logger.warning("⚠️ Failed to parse package list JSON")
+            logger.warning("⚠️ Failed to parse package inventory JSON")
             if verbose:
-                logger.warning(f"Output: {result.stdout}")
+                logger.warning(f"stdout: {result.stdout[:500]}")
             return {}
+
+        logger.info(f"📦 Found {len(package_dict)} installed packages")
+
+        if verbose:
+            logger.info("📋 Installed packages:")
+            for name, version in sorted(package_dict.items()):
+                logger.info(f"  - {name}: {version}")
+        else:
+            key_packages = ["pip", "pytest", "numpy", "matplotlib", "scipy", "psutil"]
+            logger.info("📋 Key installed packages:")
+            for pkg in key_packages:
+                if pkg in package_dict:
+                    logger.info(f"  - {pkg}: {package_dict[pkg]}")
+
+        package_list_file = VENV_PATH / "installed_packages_uv.json"
+        with open(package_list_file, 'w') as f:
+            json.dump(package_dict, f, indent=2, sort_keys=True)
+        logger.info(f"📄 Full package list saved to: {package_list_file}")
+        return package_dict
 
     except Exception as e:
         logger.error(f"❌ Error while getting package versions: {e}")

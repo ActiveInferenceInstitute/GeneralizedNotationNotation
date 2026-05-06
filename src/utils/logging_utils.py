@@ -1,118 +1,90 @@
 #!/usr/bin/env python3
 """
-Logging Utilities Compatibility Module for GNN Processing Pipeline.
+Logging Utilities Compatibility Shim for GNN Processing Pipeline.
 
-This module provides the standard logging interface expected by pipeline modules.
-It serves as the central import point for logging functionality.
+This module provides the legacy logging interface but delegates all operations
+to the modern, structured logging system in `utils.logging.logging_utils`.
 """
 
 import logging
-import sys
-import threading
-from pathlib import Path
+import warnings
 from typing import Any, Dict, Optional
+from pathlib import Path
 
-# Import PerformanceTracker from the dedicated module
-from .performance_tracker import PerformanceTracker, performance_tracker
+# Import everything from the new system
+from .logging.logging_utils import (
+    PipelineLogger as NewPipelineLogger,
+    setup_step_logging as new_setup_step_logging,
+    setup_main_logging as new_setup_main_logging,
+    log_step_start as new_log_step_start,
+    log_step_success as new_log_step_success,
+    log_step_warning as new_log_step_warning,
+    log_step_error as new_log_step_error,
+    log_section_header as new_log_section_header,
+    setup_correlation_context as new_setup_correlation_context,
+)
 
-# Thread-local storage for correlation context
-_correlation_context = threading.local()
-
-
-def setup_correlation_context(correlation_id: Optional[str] = None, step_name: Optional[str] = None):
-    """Set up correlation context for logging."""
-    if correlation_id:
-        _correlation_context.correlation_id = correlation_id
-    if step_name:
-        _correlation_context.step_name = step_name
-
+# Re-export performance tracker
+try:
+    from .performance_tracker import PerformanceTracker, performance_tracker
+except ImportError:
+    # Minimal stub if not available
+    class PerformanceTracker:
+        def __init__(self): pass
+        def get_summary(self): return {}
+    performance_tracker = PerformanceTracker()
 
 class PipelineLogger:
-    """Centralized logger for the GNN pipeline with correlation support."""
-
-    _initialized = False
-    _loggers: Dict[str, logging.Logger] = {}  # intentionally mutable class-level cache
-
+    """Legacy wrapper for PipelineLogger."""
+    
     @classmethod
     def get_logger(cls, name: str, level: int = logging.INFO) -> logging.Logger:
-        """Get or create a logger for the given name."""
-        if name not in cls._loggers:
-            logger = logging.getLogger(name)
-            logger.setLevel(level)
-
-            if not logger.handlers:
-                handler = logging.StreamHandler(sys.stdout)
-                handler.setLevel(level)
-                formatter = logging.Formatter(
-                    '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-                )
-                handler.setFormatter(formatter)
-                logger.addHandler(handler)
-
-            cls._loggers[name] = logger
-
-        return cls._loggers[name]
+        """Get a logger, ensuring the new system is initialized."""
+        return NewPipelineLogger.get_logger(name)
 
     @classmethod
     def setup(cls, log_dir: Path = None, verbose: bool = False):
-        """Set up the pipeline logging system."""
-        level = logging.DEBUG if verbose else logging.INFO
-        logging.basicConfig(
-            level=level,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
-        cls._initialized = True
-
+        """Setup the logging system via the new implementation."""
+        NewPipelineLogger.initialize(log_dir=log_dir)
+        NewPipelineLogger.set_verbosity(verbose)
 
 def setup_step_logging(step_name: str, verbose: bool = False) -> logging.Logger:
-    """Set up logging for a pipeline step."""
-    level = logging.DEBUG if verbose else logging.INFO
-    logger = PipelineLogger.get_logger(step_name, level)
-    setup_correlation_context(step_name=step_name)
-    return logger
-
+    """Setup logging for a pipeline step."""
+    return new_setup_step_logging(step_name, verbose)
 
 def setup_main_logging(verbose: bool = False) -> logging.Logger:
-    """Set up main pipeline logging."""
-    PipelineLogger.setup(verbose=verbose)
-    return PipelineLogger.get_logger('pipeline')
-
+    """Setup main pipeline logging."""
+    return new_setup_main_logging(verbose=verbose)
 
 def log_step_start(logger: logging.Logger, message: str):
     """Log the start of a step."""
-    logger.info(f"🚀 {message}")
-
+    new_log_step_start(logger, message)
 
 def log_step_success(logger: logging.Logger, message: str):
     """Log a successful step completion."""
-    logger.info(f"✅ {message}")
-
+    new_log_step_success(logger, message)
 
 def log_step_warning(logger: logging.Logger, message: str):
     """Log a warning during step execution."""
-    logger.warning(f"⚠️ {message}")
-
+    new_log_step_warning(logger, message)
 
 def log_step_error(logger: logging.Logger, message: str):
     """Log an error during step execution."""
-    logger.error(f"❌ {message}")
-
+    new_log_step_error(logger, message)
 
 def log_section_header(logger: logging.Logger, title: str, char: str = "="):
     """Log a section header."""
-    width = max(60, len(title) + 4)
-    border = char * width
-    logger.info(border)
-    logger.info(f"  {title}")
-    logger.info(border)
-
+    new_log_section_header(logger, title, char)
 
 def get_performance_summary() -> Dict[str, Any]:
     """Get a summary of performance metrics."""
     return performance_tracker.get_summary()
 
+def setup_correlation_context(correlation_id: Optional[str] = None, step_name: Optional[str] = None):
+    """Set up correlation context for logging."""
+    new_setup_correlation_context(step_name or "unknown", correlation_id)
 
-# Export all public symbols
+# Export all public symbols for compatibility
 __all__ = [
     'PipelineLogger',
     'setup_step_logging',

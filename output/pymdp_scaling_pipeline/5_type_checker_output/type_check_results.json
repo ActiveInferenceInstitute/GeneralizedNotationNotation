@@ -1,0 +1,4873 @@
+{
+  "timestamp": "2026-05-06T07:04:12.288154",
+  "processed_files": 21,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T50.md",
+      "file_name": "pymdp_scaling_N32_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '32' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '32' for variable 'num_obs'",
+        "Type issue: Unknown type '32' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable B with dimensions [32, 32, 32] has 32768 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.288718",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable B with dimensions [32, 32, 32] has 32768 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            32,
+            1
+          ],
+          "o": [
+            32,
+            1
+          ],
+          "A": [
+            32,
+            32
+          ],
+          "B": [
+            32,
+            32,
+            32
+          ],
+          "C": [
+            32
+          ],
+          "D": [
+            32
+          ],
+          "pi": [
+            32
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 135820,
+        "total_parameters": 33955,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 4090.2657845070303,
+        "complexity_score": 8.180531569014061
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T50.md",
+      "file_name": "pymdp_scaling_N16_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '16' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '16' for variable 'num_obs'",
+        "Type issue: Unknown type '16' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.365633",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            16,
+            1
+          ],
+          "o": [
+            16,
+            1
+          ],
+          "A": [
+            16,
+            16
+          ],
+          "B": [
+            16,
+            16,
+            16
+          ],
+          "C": [
+            16
+          ],
+          "D": [
+            16
+          ],
+          "pi": [
+            16
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 17740,
+        "total_parameters": 4435,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 3270.5696058948997,
+        "complexity_score": 6.541139211789799
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T10.md",
+      "file_name": "pymdp_scaling_N8_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '8' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '8' for variable 'num_obs'",
+        "Type issue: Unknown type '8' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.376510",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            8,
+            1
+          ],
+          "o": [
+            8,
+            1
+          ],
+          "A": [
+            8,
+            8
+          ],
+          "B": [
+            8,
+            8,
+            8
+          ],
+          "C": [
+            8
+          ],
+          "D": [
+            8
+          ],
+          "pi": [
+            8
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 2476,
+        "total_parameters": 619,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 2518.033611557693,
+        "complexity_score": 5.036067223115386
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '8' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '8' for variable 'num_obs'",
+        "Type issue: Unknown type '8' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.378553",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            8,
+            1
+          ],
+          "o": [
+            8,
+            1
+          ],
+          "A": [
+            8,
+            8
+          ],
+          "B": [
+            8,
+            8,
+            8
+          ],
+          "C": [
+            8
+          ],
+          "D": [
+            8
+          ],
+          "pi": [
+            8
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 2476,
+        "total_parameters": 619,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 2518.3903297503207,
+        "complexity_score": 5.036780659500641
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T10.md",
+      "file_name": "pymdp_scaling_N4_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '4' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '4' for variable 'num_obs'",
+        "Type issue: Unknown type '4' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.380501",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            4,
+            1
+          ],
+          "o": [
+            4,
+            1
+          ],
+          "A": [
+            4,
+            4
+          ],
+          "B": [
+            4,
+            4,
+            4
+          ],
+          "C": [
+            4
+          ],
+          "D": [
+            4
+          ],
+          "pi": [
+            4
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 412,
+        "total_parameters": 103,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 1852.7093482167368,
+        "complexity_score": 3.7054186964334734
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
+      "file_name": "pymdp_scaling_N16_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '16' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '16' for variable 'num_obs'",
+        "Type issue: Unknown type '16' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.381818",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            16,
+            1
+          ],
+          "o": [
+            16,
+            1
+          ],
+          "A": [
+            16,
+            16
+          ],
+          "B": [
+            16,
+            16,
+            16
+          ],
+          "C": [
+            16
+          ],
+          "D": [
+            16
+          ],
+          "pi": [
+            16
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 17740,
+        "total_parameters": 4435,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 3270.926324087527,
+        "complexity_score": 6.5418526481750545
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T100.md",
+      "file_name": "pymdp_scaling_N64_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '64' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '64' for variable 'num_obs'",
+        "Type issue: Unknown type '64' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable B with dimensions [64, 64, 64] has 262144 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.393659",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable B with dimensions [64, 64, 64] has 262144 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            64,
+            1
+          ],
+          "o": [
+            64,
+            1
+          ],
+          "A": [
+            64,
+            64
+          ],
+          "B": [
+            64,
+            64,
+            64
+          ],
+          "C": [
+            64
+          ],
+          "D": [
+            64
+          ],
+          "pi": [
+            64
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 1066252,
+        "total_parameters": 266563,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T100.md",
+      "file_name": "pymdp_scaling_N128_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '128' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '128' for variable 'num_obs'",
+        "Type issue: Unknown type '128' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable A with dimensions [128, 128] has 16384 total elements. Consider dimensionality reduction for tractable inference.",
+        "Variable B with dimensions [128, 128, 128] has 2097152 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:12.931833",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable A with dimensions [128, 128] has 16384 total elements. Consider dimensionality reduction for tractable inference.",
+          "Variable B with dimensions [128, 128, 128] has 2097152 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            128,
+            1
+          ],
+          "o": [
+            128,
+            1
+          ],
+          "A": [
+            128,
+            128
+          ],
+          "B": [
+            128,
+            128,
+            128
+          ],
+          "C": [
+            128
+          ],
+          "D": [
+            128
+          ],
+          "pi": [
+            128
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 8456716,
+        "total_parameters": 2114179,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T50.md",
+      "file_name": "pymdp_scaling_N4_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '4' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '4' for variable 'num_obs'",
+        "Type issue: Unknown type '4' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.112377",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            4,
+            1
+          ],
+          "o": [
+            4,
+            1
+          ],
+          "A": [
+            4,
+            4
+          ],
+          "B": [
+            4,
+            4,
+            4
+          ],
+          "C": [
+            4
+          ],
+          "D": [
+            4
+          ],
+          "pi": [
+            4
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 412,
+        "total_parameters": 103,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 1852.7093482167368,
+        "complexity_score": 3.7054186964334734
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md",
+      "file_name": "pymdp_scaling_N8_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '8' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '8' for variable 'num_obs'",
+        "Type issue: Unknown type '8' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '8' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "8"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.113292",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            8,
+            1
+          ],
+          "o": [
+            8,
+            1
+          ],
+          "A": [
+            8,
+            8
+          ],
+          "B": [
+            8,
+            8,
+            8
+          ],
+          "C": [
+            8
+          ],
+          "D": [
+            8
+          ],
+          "pi": [
+            8
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 2476,
+        "total_parameters": 619,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 2518.033611557693,
+        "complexity_score": 5.036067223115386
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T10.md",
+      "file_name": "pymdp_scaling_N16_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '16' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '16' for variable 'num_obs'",
+        "Type issue: Unknown type '16' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '16' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "16"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.115127",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            16,
+            1
+          ],
+          "o": [
+            16,
+            1
+          ],
+          "A": [
+            16,
+            16
+          ],
+          "B": [
+            16,
+            16,
+            16
+          ],
+          "C": [
+            16
+          ],
+          "D": [
+            16
+          ],
+          "pi": [
+            16
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "medium",
+        "estimated_memory_bytes": 17740,
+        "total_parameters": 4435,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 3270.5696058948997,
+        "complexity_score": 6.541139211789799
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T10.md",
+      "file_name": "pymdp_scaling_N32_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '32' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '32' for variable 'num_obs'",
+        "Type issue: Unknown type '32' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable B with dimensions [32, 32, 32] has 32768 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.124639",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable B with dimensions [32, 32, 32] has 32768 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            32,
+            1
+          ],
+          "o": [
+            32,
+            1
+          ],
+          "A": [
+            32,
+            32
+          ],
+          "B": [
+            32,
+            32,
+            32
+          ],
+          "C": [
+            32
+          ],
+          "D": [
+            32
+          ],
+          "pi": [
+            32
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 135820,
+        "total_parameters": 33955,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 4090.2657845070303,
+        "complexity_score": 8.180531569014061
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T100.md",
+      "file_name": "pymdp_scaling_N2_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '2' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '2' for variable 'num_obs'",
+        "Type issue: Unknown type '2' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.192440",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            2,
+            1
+          ],
+          "o": [
+            2,
+            1
+          ],
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2,
+            2
+          ],
+          "C": [
+            2
+          ],
+          "D": [
+            2
+          ],
+          "pi": [
+            2
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 100,
+        "total_parameters": 25,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 1342.3645206305298,
+        "complexity_score": 2.6847290412610594
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T10.md",
+      "file_name": "pymdp_scaling_N2_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '2' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '2' for variable 'num_obs'",
+        "Type issue: Unknown type '2' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.193186",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            2,
+            1
+          ],
+          "o": [
+            2,
+            1
+          ],
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2,
+            2
+          ],
+          "C": [
+            2
+          ],
+          "D": [
+            2
+          ],
+          "pi": [
+            2
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 100,
+        "total_parameters": 25,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 1342.007802437902,
+        "complexity_score": 2.684015604875804
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T100.md",
+      "file_name": "pymdp_scaling_N32_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '32' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '32' for variable 'num_obs'",
+        "Type issue: Unknown type '32' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable B with dimensions [32, 32, 32] has 32768 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '32' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "32"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.193996",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable B with dimensions [32, 32, 32] has 32768 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            32,
+            1
+          ],
+          "o": [
+            32,
+            1
+          ],
+          "A": [
+            32,
+            32
+          ],
+          "B": [
+            32,
+            32,
+            32
+          ],
+          "C": [
+            32
+          ],
+          "D": [
+            32
+          ],
+          "pi": [
+            32
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 135820,
+        "total_parameters": 33955,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 4090.6225026996585,
+        "complexity_score": 8.181245005399317
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T50.md",
+      "file_name": "pymdp_scaling_N2_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '2' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '2' for variable 'num_obs'",
+        "Type issue: Unknown type '2' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '2' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "2"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.261480",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            2,
+            1
+          ],
+          "o": [
+            2,
+            1
+          ],
+          "A": [
+            2,
+            2
+          ],
+          "B": [
+            2,
+            2,
+            2
+          ],
+          "C": [
+            2
+          ],
+          "D": [
+            2
+          ],
+          "pi": [
+            2
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 100,
+        "total_parameters": 25,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 1342.007802437902,
+        "complexity_score": 2.684015604875804
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T10.md",
+      "file_name": "pymdp_scaling_N64_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '64' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '64' for variable 'num_obs'",
+        "Type issue: Unknown type '64' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable B with dimensions [64, 64, 64] has 262144 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.263309",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable B with dimensions [64, 64, 64] has 262144 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            64,
+            1
+          ],
+          "o": [
+            64,
+            1
+          ],
+          "A": [
+            64,
+            64
+          ],
+          "B": [
+            64,
+            64,
+            64
+          ],
+          "C": [
+            64
+          ],
+          "D": [
+            64
+          ],
+          "pi": [
+            64
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 1066252,
+        "total_parameters": 266563,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T50.md",
+      "file_name": "pymdp_scaling_N64_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '64' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '64' for variable 'num_obs'",
+        "Type issue: Unknown type '64' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable B with dimensions [64, 64, 64] has 262144 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '64' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "64"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:17.813249",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable B with dimensions [64, 64, 64] has 262144 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            64,
+            1
+          ],
+          "o": [
+            64,
+            1
+          ],
+          "A": [
+            64,
+            64
+          ],
+          "B": [
+            64,
+            64,
+            64
+          ],
+          "C": [
+            64
+          ],
+          "D": [
+            64
+          ],
+          "pi": [
+            64
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 1066252,
+        "total_parameters": 266563,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T10.md",
+      "file_name": "pymdp_scaling_N128_T10.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '128' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '128' for variable 'num_obs'",
+        "Type issue: Unknown type '128' for variable 'num_actions'",
+        "Type issue: Unknown type '10' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable A with dimensions [128, 128] has 16384 total elements. Consider dimensionality reduction for tractable inference.",
+        "Variable B with dimensions [128, 128, 128] has 2097152 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '10' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "10"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:18.341035",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable A with dimensions [128, 128] has 16384 total elements. Consider dimensionality reduction for tractable inference.",
+          "Variable B with dimensions [128, 128, 128] has 2097152 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            128,
+            1
+          ],
+          "o": [
+            128,
+            1
+          ],
+          "A": [
+            128,
+            128
+          ],
+          "B": [
+            128,
+            128,
+            128
+          ],
+          "C": [
+            128
+          ],
+          "D": [
+            128
+          ],
+          "pi": [
+            128
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 8456716,
+        "total_parameters": 2114179,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '4' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '4' for variable 'num_obs'",
+        "Type issue: Unknown type '4' for variable 'num_actions'",
+        "Type issue: Unknown type '100' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'"
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '4' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "4"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '100' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "100"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:22.512841",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            4,
+            1
+          ],
+          "o": [
+            4,
+            1
+          ],
+          "A": [
+            4,
+            4
+          ],
+          "B": [
+            4,
+            4,
+            4
+          ],
+          "C": [
+            4
+          ],
+          "D": [
+            4
+          ],
+          "pi": [
+            4
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "small",
+        "estimated_memory_bytes": 412,
+        "total_parameters": 103,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 1853.0660664093646,
+        "complexity_score": 3.706132132818729
+      }
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T50.md",
+      "file_name": "pymdp_scaling_N128_T50.md",
+      "valid": true,
+      "errors": [],
+      "warnings": [
+        "Type issue: Unknown type 'PyMDP' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type '128' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '128' for variable 'num_obs'",
+        "Type issue: Unknown type '128' for variable 'num_actions'",
+        "Type issue: Unknown type '50' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'A_signal' for variable 'noisy'",
+        "Variable A with dimensions [128, 128] has 16384 total elements. Consider dimensionality reduction for tractable inference.",
+        "Variable B with dimensions [128, 128, 128] has 2097152 total elements. Consider dimensionality reduction for tractable inference."
+      ],
+      "type_issues": [
+        {
+          "valid": false,
+          "message": "Unknown type 'PyMDP' for variable 'Example'",
+          "variable": "Example",
+          "type": "PyMDP"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '1' for variable 'Version'",
+          "variable": "Version",
+          "type": "1"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_hidden_states'",
+          "variable": "num_hidden_states",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_obs'",
+          "variable": "num_obs",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '128' for variable 'num_actions'",
+          "variable": "num_actions",
+          "type": "128"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '50' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "50"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type 'A_signal' for variable 'noisy'",
+          "variable": "noisy",
+          "type": "A_signal"
+        }
+      ],
+      "validation_timestamp": "2026-05-06T07:04:22.517410",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [
+          "Variable A with dimensions [128, 128] has 16384 total elements. Consider dimensionality reduction for tractable inference.",
+          "Variable B with dimensions [128, 128, 128] has 2097152 total elements. Consider dimensionality reduction for tractable inference."
+        ],
+        "variables_checked": [
+          "s",
+          "o",
+          "A",
+          "B",
+          "C",
+          "D",
+          "pi",
+          "u",
+          "F",
+          "t"
+        ],
+        "dimension_map": {
+          "s": [
+            128,
+            1
+          ],
+          "o": [
+            128,
+            1
+          ],
+          "A": [
+            128,
+            128
+          ],
+          "B": [
+            128,
+            128,
+            128
+          ],
+          "C": [
+            128
+          ],
+          "D": [
+            128
+          ],
+          "pi": [
+            128
+          ],
+          "u": [
+            1
+          ],
+          "F": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      },
+      "resource_estimation": {
+        "complexity_tier": "large",
+        "estimated_memory_bytes": 8456716,
+        "total_parameters": 2114179,
+        "variables": 10,
+        "connections": 10,
+        "flops_estimate": 5000.0,
+        "complexity_score": 10
+      }
+    }
+  ],
+  "type_analysis": [
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T50.md",
+      "file_name": "pymdp_scaling_N32_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "32",
+          "line": 138
+        },
+        {
+          "name": "num_obs",
+          "type": "32",
+          "line": 139
+        },
+        {
+          "name": "num_actions",
+          "type": "32",
+          "line": 140
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 141
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 145
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "32": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.364666"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T50.md",
+      "file_name": "pymdp_scaling_N16_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "16",
+          "line": 106
+        },
+        {
+          "name": "num_obs",
+          "type": "16",
+          "line": 107
+        },
+        {
+          "name": "num_actions",
+          "type": "16",
+          "line": 108
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 109
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 113
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "16": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.376195"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T10.md",
+      "file_name": "pymdp_scaling_N8_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "8",
+          "line": 90
+        },
+        {
+          "name": "num_obs",
+          "type": "8",
+          "line": 91
+        },
+        {
+          "name": "num_actions",
+          "type": "8",
+          "line": 92
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 93
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 97
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "8": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.378343"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md",
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "8",
+          "line": 90
+        },
+        {
+          "name": "num_obs",
+          "type": "8",
+          "line": 91
+        },
+        {
+          "name": "num_actions",
+          "type": "8",
+          "line": 92
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 93
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 97
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "8": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.380317"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T10.md",
+      "file_name": "pymdp_scaling_N4_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "4",
+          "line": 82
+        },
+        {
+          "name": "num_obs",
+          "type": "4",
+          "line": 83
+        },
+        {
+          "name": "num_actions",
+          "type": "4",
+          "line": 84
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 85
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 89
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "4": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.381588"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
+      "file_name": "pymdp_scaling_N16_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "16",
+          "line": 106
+        },
+        {
+          "name": "num_obs",
+          "type": "16",
+          "line": 107
+        },
+        {
+          "name": "num_actions",
+          "type": "16",
+          "line": 108
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 109
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 113
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "16": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.392186"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T100.md",
+      "file_name": "pymdp_scaling_N64_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "64",
+          "line": 202
+        },
+        {
+          "name": "num_obs",
+          "type": "64",
+          "line": 203
+        },
+        {
+          "name": "num_actions",
+          "type": "64",
+          "line": 204
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 205
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 209
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "64": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:12.922573"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T100.md",
+      "file_name": "pymdp_scaling_N128_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "128",
+          "line": 330
+        },
+        {
+          "name": "num_obs",
+          "type": "128",
+          "line": 331
+        },
+        {
+          "name": "num_actions",
+          "type": "128",
+          "line": 332
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 333
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 337
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "128": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.111439"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T50.md",
+      "file_name": "pymdp_scaling_N4_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "4",
+          "line": 82
+        },
+        {
+          "name": "num_obs",
+          "type": "4",
+          "line": 83
+        },
+        {
+          "name": "num_actions",
+          "type": "4",
+          "line": 84
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 85
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 89
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "4": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.113088"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md",
+      "file_name": "pymdp_scaling_N8_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "8",
+          "line": 90
+        },
+        {
+          "name": "num_obs",
+          "type": "8",
+          "line": 91
+        },
+        {
+          "name": "num_actions",
+          "type": "8",
+          "line": 92
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 93
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 97
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "8": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.114901"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T10.md",
+      "file_name": "pymdp_scaling_N16_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "16",
+          "line": 106
+        },
+        {
+          "name": "num_obs",
+          "type": "16",
+          "line": 107
+        },
+        {
+          "name": "num_actions",
+          "type": "16",
+          "line": 108
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 109
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 113
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "16": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.124275"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T10.md",
+      "file_name": "pymdp_scaling_N32_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "32",
+          "line": 138
+        },
+        {
+          "name": "num_obs",
+          "type": "32",
+          "line": 139
+        },
+        {
+          "name": "num_actions",
+          "type": "32",
+          "line": 140
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 141
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 145
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "32": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.191710"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T100.md",
+      "file_name": "pymdp_scaling_N2_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "2",
+          "line": 78
+        },
+        {
+          "name": "num_obs",
+          "type": "2",
+          "line": 79
+        },
+        {
+          "name": "num_actions",
+          "type": "2",
+          "line": 80
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 81
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 85
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "2": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.192957"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T10.md",
+      "file_name": "pymdp_scaling_N2_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "2",
+          "line": 78
+        },
+        {
+          "name": "num_obs",
+          "type": "2",
+          "line": 79
+        },
+        {
+          "name": "num_actions",
+          "type": "2",
+          "line": 80
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 81
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 85
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "2": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.193662"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T100.md",
+      "file_name": "pymdp_scaling_N32_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "32",
+          "line": 138
+        },
+        {
+          "name": "num_obs",
+          "type": "32",
+          "line": 139
+        },
+        {
+          "name": "num_actions",
+          "type": "32",
+          "line": 140
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 141
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 145
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "32": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.261214"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T50.md",
+      "file_name": "pymdp_scaling_N2_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "2",
+          "line": 78
+        },
+        {
+          "name": "num_obs",
+          "type": "2",
+          "line": 79
+        },
+        {
+          "name": "num_actions",
+          "type": "2",
+          "line": 80
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 81
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 85
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "2": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.261990"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T10.md",
+      "file_name": "pymdp_scaling_N64_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "64",
+          "line": 202
+        },
+        {
+          "name": "num_obs",
+          "type": "64",
+          "line": 203
+        },
+        {
+          "name": "num_actions",
+          "type": "64",
+          "line": 204
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 205
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 209
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "64": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:17.811496"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T50.md",
+      "file_name": "pymdp_scaling_N64_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "64",
+          "line": 202
+        },
+        {
+          "name": "num_obs",
+          "type": "64",
+          "line": 203
+        },
+        {
+          "name": "num_actions",
+          "type": "64",
+          "line": 204
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 205
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 209
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "64": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:18.332902"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T10.md",
+      "file_name": "pymdp_scaling_N128_T10.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "128",
+          "line": 330
+        },
+        {
+          "name": "num_obs",
+          "type": "128",
+          "line": 331
+        },
+        {
+          "name": "num_actions",
+          "type": "128",
+          "line": 332
+        },
+        {
+          "name": "num_timesteps",
+          "type": "10",
+          "line": 333
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 337
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "128": 3,
+        "10": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:22.512733"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T100.md",
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "4",
+          "line": 82
+        },
+        {
+          "name": "num_obs",
+          "type": "4",
+          "line": 83
+        },
+        {
+          "name": "num_actions",
+          "type": "4",
+          "line": 84
+        },
+        {
+          "name": "num_timesteps",
+          "type": "100",
+          "line": 85
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 89
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "4": 3,
+        "100": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:22.513546"
+    },
+    {
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T50.md",
+      "file_name": "pymdp_scaling_N128_T50.md",
+      "types_found": [
+        {
+          "name": "Example",
+          "type": "PyMDP",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "type": "1",
+          "line": 2
+        },
+        {
+          "name": "num_hidden_states",
+          "type": "128",
+          "line": 330
+        },
+        {
+          "name": "num_obs",
+          "type": "128",
+          "line": 331
+        },
+        {
+          "name": "num_actions",
+          "type": "128",
+          "line": 332
+        },
+        {
+          "name": "num_timesteps",
+          "type": "50",
+          "line": 333
+        },
+        {
+          "name": "noisy",
+          "type": "A_signal",
+          "line": 337
+        },
+        {
+          "name": "s",
+          "type": "float",
+          "line": 17
+        },
+        {
+          "name": "o",
+          "type": "int",
+          "line": 18
+        },
+        {
+          "name": "A",
+          "type": "float",
+          "line": 19
+        },
+        {
+          "name": "B",
+          "type": "float",
+          "line": 20
+        },
+        {
+          "name": "C",
+          "type": "float",
+          "line": 21
+        },
+        {
+          "name": "D",
+          "type": "float",
+          "line": 22
+        },
+        {
+          "name": "pi",
+          "type": "float",
+          "line": 23
+        },
+        {
+          "name": "u",
+          "type": "int",
+          "line": 24
+        },
+        {
+          "name": "G",
+          "type": "float",
+          "line": 25
+        },
+        {
+          "name": "F",
+          "type": "float",
+          "line": 26
+        },
+        {
+          "name": "t",
+          "type": "int",
+          "line": 27
+        }
+      ],
+      "type_distribution": {
+        "PyMDP": 1,
+        "1": 1,
+        "128": 3,
+        "50": 1,
+        "A_signal": 1,
+        "float": 8,
+        "int": 3
+      },
+      "total_variables": 18,
+      "analysis_timestamp": "2026-05-06T07:04:26.727091"
+    }
+  ]
+}

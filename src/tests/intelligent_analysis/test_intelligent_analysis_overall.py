@@ -345,20 +345,16 @@ class TestIntelligentAnalysisMCP:
         assert 'success' in result or 'error' in result
 
     def test_get_module_info_mcp(self):
-        try:
-            from intelligent_analysis.mcp import get_module_info_mcp
-            result = get_module_info_mcp()
-            assert isinstance(result, dict)
-        except (ImportError, AttributeError):
-            pytest.skip('get_module_info_mcp not available')
+        """Real function is get_intelligent_analysis_module_info_mcp."""
+        from intelligent_analysis.mcp import get_intelligent_analysis_module_info_mcp
+        result = get_intelligent_analysis_module_info_mcp()
+        assert isinstance(result, dict)
 
-    def test_get_supported_analysis_types_mcp(self):
-        try:
-            from intelligent_analysis.mcp import get_supported_analysis_types_mcp
-            result = get_supported_analysis_types_mcp()
-            assert isinstance(result, dict)
-        except (ImportError, AttributeError):
-            pytest.skip('get_supported_analysis_types_mcp not available')
+    def test_get_analysis_capabilities_mcp(self):
+        """Real API: get_analysis_capabilities_mcp (not get_supported_analysis_types_mcp)."""
+        from intelligent_analysis.mcp import get_analysis_capabilities_mcp
+        result = get_analysis_capabilities_mcp()
+        assert isinstance(result, dict)
 
 class TestIntelligentAnalysisAnalyzer:
 

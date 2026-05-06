@@ -81,9 +81,12 @@ uv sync --extra audio
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_audio`
+- `analyze_audio_characteristics`
 - `check_audio_backends`
 - `get_audio_generation_options`
+- `get_audio_module_info`
+- `process_audio`
+- `validate_audio_content`
 
 ## References
 

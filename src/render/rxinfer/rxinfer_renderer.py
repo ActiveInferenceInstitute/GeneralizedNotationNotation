@@ -129,7 +129,7 @@ class RxInferRenderer:
             )
 
             # Extract num_timesteps from model parameters (default 20 for backward compat)
-            num_timesteps = model_params.get('num_timesteps', 20)
+            num_timesteps = model_params.get('num_timesteps', gnn_spec.get('initialparameterization', {}).get('num_timesteps', 20))
 
             # Validate parameters
             if not isinstance(num_states, int) or num_states < 1:

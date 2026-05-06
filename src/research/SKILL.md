@@ -49,8 +49,9 @@ result = process_research(target_dir, output_dir, verbose=True)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_research`
+- `get_research_module_info`
 - `list_research_topics`
+- `process_research`
 - `read_research_results`
 
 ## References

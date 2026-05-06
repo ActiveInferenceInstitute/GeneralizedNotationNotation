@@ -91,9 +91,11 @@ uv sync
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_llm`
 - `analyze_gnn_with_llm`
 - `generate_llm_documentation`
+- `get_llm_module_info`
+- `get_llm_providers`
+- `process_llm`
 
 ## References
 

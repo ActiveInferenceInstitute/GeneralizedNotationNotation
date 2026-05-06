@@ -6,6 +6,7 @@ Exercises the envelope contract: the function must always return a dict with
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -123,3 +124,38 @@ def test_process_execute_returns_2_when_no_render_output(tmp_path: Path, monkeyp
     assert result == 2, (
         f"Expected exit-code 2 for empty render output; got {result!r}"
     )
+
+
+def test_process_execute_records_local_worker_configuration(tmp_path: Path) -> None:
+    """Step 12 should expose bounded local script-level concurrency."""
+    from execute.processor import process_execute
+
+    render_out = tmp_path / "render" / "11_render_output"
+    for model_name in ("model_a", "model_b"):
+        script_dir = render_out / model_name / "pymdp"
+        script_dir.mkdir(parents=True)
+        (script_dir / f"{model_name}_pymdp.py").write_text(
+            "print('worker-ok')\n",
+            encoding="utf-8",
+        )
+
+    output_dir = tmp_path / "execute_output"
+    result = process_execute(
+        target_dir=tmp_path / "input",
+        output_dir=output_dir,
+        verbose=False,
+        frameworks="pymdp",
+        timeout=10,
+        render_output_dir=render_out,
+        execution_workers=2,
+    )
+
+    assert result is True
+    summary = json.loads(
+        (output_dir / "summaries" / "execution_summary.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert summary["execution_mode"] == "local"
+    assert summary["execution_workers"] == 2
+    assert summary["total_scripts_found"] == 2

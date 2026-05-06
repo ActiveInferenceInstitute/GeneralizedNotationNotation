@@ -1,0 +1,160 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║         PyMDP GNN Scaling Analysis — Parameter Sweep Configuration           ║
+# ║                            Version: 1.2.0                                   ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+#
+# This file drives the end-to-end PyMDP scaling study orchestrated by
+#   scripts/run_pymdp_gnn_scaling_analysis.py
+#
+# What happens when you run the sweep:
+#   1. GENERATE — For every (N, T) pair below, a stochastic GNN specification
+#      file is created with N hidden states, N observations, and T timesteps.
+#      Each spec embeds dense A (likelihood, N×N) and B (transition, N×N×N)
+#      matrices with configurable signal/noise.
+#   2. PIPELINE — The GNN pipeline (steps 3→11→12→17) parses, renders PyMDP
+#      Python code, executes active inference, and runs integration analysis.
+#   3. META-ANALYSIS — Step 17 collects runtime, accuracy, entropy, and LOC
+#      metrics across the full grid, producing 19 publication-grade plots,
+#      CSV exports, and a comprehensive dashboard.
+#
+# ── Estimated per-N file sizes (B tensor is O(N³) text) ──────────────────────
+#   N=2: ~0.01 MiB  |  N=4: ~0.01 MiB  |  N=8: ~0.02 MiB  |  N=16: ~0.1 MiB
+#   N=32: ~0.8 MiB  |  N=64: ~6 MiB    |  N=128: ~48 MiB  |  N=256: ~385 MiB
+#   N=512 is not in the default grid below; at ~3 GiB per spec it is excluded by file caps.
+#
+# ── With default grid (7 N × 3 T) and max_file_size_mb: 400 ────────────────────
+#   Planned specs: 21 when every (N,T) passes max_n / max_file_size_mb filters.
+#   No N=512 cells in this grid.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Sweep Grid
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# N — number of hidden states (and observations).
+#   Default grid doubles from 2 through 128. Larger N means denser matrices
+#   (A is N×N, B is N×N×N) and longer inference loops.
+#   ⚠ N ≥ 256 produces files on the order of hundreds of MiB; raise caps only with disk headroom.
+n_values:
+  - 2       # Trivial model — baseline latency                     (~0.01 MiB)
+  - 4       # Small model — minimal combinatorics                  (~0.01 MiB)
+  - 8       # Moderate model — starts to exercise matrix ops       (~0.02 MiB)
+  - 16      # Mid-range — first visible runtime cost               (~0.11 MiB)
+  - 32      # Larger model — B tensor becomes substantial          (~0.78 MiB)
+  - 64      # Complex model — 262 K entries in B                   (~6.1  MiB)
+  - 128     # High-complexity — 2 M entries in B                   (~48   MiB)
+
+# T — number of simulation timesteps per model.
+#   Controls inference duration: each timestep runs one belief-update cycle.
+#   More timesteps → better accuracy convergence but proportionally more compute.
+t_values:
+  - 10      # Short horizon — tests startup overhead & JIT warmup
+  - 50      # Medium horizon — accuracy converges for small N
+  - 100     # Long horizon — full convergence for most N values
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Signal Parameters
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Control the signal-to-noise ratio in generated stochastic matrices.
+# Higher values → more informative observations / more deterministic transitions.
+# Lower values  → noisier inference, slower convergence, harder problem.
+a_signal: 0.9  # A matrix: P(correct observation | true state) — [0, 1]
+b_signal: 0.8  # B tensor: P(intended transition | action)     — [0, 1]
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Safety & Resource Bounds
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# These guardrails prevent the sweep from filling your disk or running forever.
+# The orchestrator checks every (N,T) pair *before* writing; pairs that exceed
+# any bound are logged as ⚠ [SKIP] and excluded from the run.
+
+# Hard cap on N.  Any n_values entry > max_n is silently dropped.
+max_n: 600
+
+# Per-file estimated size cap (MiB). The B tensor dominates (~O(N³) text).
+max_file_size_mb: 400
+
+# Minimum free disk space (MiB) required before generating files.
+# If free space drops below this, the sweep aborts immediately.
+min_free_disk_mb: 200
+
+# Timeout heuristic: skip (N, T) pairs where N ≥ skip_timeout_bounds_n AND
+# T ≥ skip_timeout_bounds_t.  These would exceed the per-model timeout below.
+# Currently inactive because no T value reaches 3000.
+skip_timeout_bounds_n: 16
+skip_timeout_bounds_t: 3000
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Pipeline Execution
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Steps invoked from src/main.py for each generated spec file:
+#   3  — GNN:         Parse .md spec → internal model representation
+#   11 — Render:      Generate PyMDP Python script from model
+#   12 — Execute:     Run the rendered script, collect metrics
+#   17 — Integration: Aggregate results, run meta-analysis, generate plots
+pipeline_steps: "3,11,12,17"
+
+# Per-model wall-clock timeout (seconds).  If any single model's execution
+# exceeds this, it is killed and marked as timed-out.  20 min handles N=256.
+timeout: 1200
+
+# Target framework.  Only "pymdp" is supported for this scaling study.
+# The pipeline renders framework-specific code; other options (rxinfer, jax)
+# are available in the main pipeline but not benchmarked here.
+frameworks: "pymdp"
+
+# If true, child pipeline processes see MPLBACKEND=Agg (no interactive GUI / AppKit).
+matplotlib_headless: true
+
+# Step 3 serializer preset: "minimal" keeps Markdown + JSON + Python only (faster I/O);
+# "full" writes every serializer format (default for normal pipeline runs).
+gnn_serialize_preset: minimal
+
+# Step 12: run each rendered script this many times sequentially per worker; timing uses
+# median duration with population std across repeats when >1 (linear wall-clock cost).
+execution_benchmark_repeats: 1
+
+# Number of parallel worker processes for Step 12 (execution).
+# Set ≤ CPU core count.  Higher = faster sweep but more memory pressure.
+execution_workers: 6
+
+# If true, the pipeline aborts when *any* render/execution step fails.
+# If false, failures are logged and the sweep continues with remaining models.
+strict_framework_success: true
+
+# If true, Step 17 meta-analysis runs even when some models failed.
+# Useful for partial results; set false for strict all-or-nothing runs.
+run_integration_on_failure: false
+
+# Run Step 5 (type checker + resource estimator) before execution.
+# Produces per-model resource estimates and validates matrix dimensions.
+type_check: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Output Management
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Where generated .md spec files are written (input to the pipeline).
+output_dir: "input/gnn_files/pymdp_scaling_study"
+
+# Where pipeline artifacts, logs, plots, and reports are written.
+pipeline_output_dir: "output/pymdp_scaling_pipeline"
+
+# If true, both output_dir and pipeline_output_dir are wiped before each run.
+# Ensures reproducibility; set false to accumulate results across runs.
+clear_outputs_before_run: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Spec Generator
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# The spec generator (scripts/pymdp_spec_generator.py) creates stochastic GNN
+# .md files.  Disable to supply your own pre-written specs in output_dir.
+spec_generator:
+  enabled: true
+
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Advanced / Distributed Execution
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# Enable distributed execution across a Ray or Dask cluster.
+# When false (default), all execution is local via multiprocessing.
+distributed: false
+# Backend for distributed mode.  "ray" or "dask".
+backend: "ray"

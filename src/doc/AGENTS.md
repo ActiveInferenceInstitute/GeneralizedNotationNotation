@@ -22,3 +22,10 @@ Defines scope for files under `src/doc/`.
 ## Exclusions
 
 Generated outputs, caches, and temporary files are out of scope for folder doc coverage policy.
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

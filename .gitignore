@@ -99,6 +99,8 @@ src/tests/htmlcov/
 pytest.ini.local
 # Local Bandit JSON from CI-parity runs (see .github/workflows/ci.yml artifact name)
 bandit-results.json
+# PyMDP scaling preflight (last resource_gate payload)
+scripts/pymdp_scaling_last_resource_gate.json
 
 # ============================================================================
 # DOCUMENTATION BUILD ARTIFACTS

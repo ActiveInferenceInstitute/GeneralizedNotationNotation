@@ -36,6 +36,31 @@ if str(_project_root) not in sys.path:
 
 logger = logging.getLogger(__name__)
 
+
+def _render_succeeded(
+    *,
+    success_count: int,
+    total_files: int,
+    total_framework_successes: int,
+    total_framework_attempts: int,
+    strict_framework_success: bool = False,
+) -> bool | int:
+    """Evaluate render success while preserving partial success for normal pipelines."""
+    if total_files == 0:
+        return 2
+    if total_framework_attempts > 0:
+        if strict_framework_success:
+            return (
+                success_count == total_files
+                and total_framework_successes == total_framework_attempts
+            )
+        framework_success_rate = (
+            total_framework_successes / total_framework_attempts
+        ) * 100
+        return framework_success_rate >= 80.0 or success_count > 0
+    return success_count == total_files
+
+
 def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
     """
     Validate POMDP space for rendering requirements.
@@ -162,6 +187,7 @@ def process_render(
     verbose: bool = False,
     frameworks: Optional[List[str]] = None,
     strict_validation: bool = True,
+    strict_framework_success: bool = False,
     **kwargs: Any,
 ) -> Union[bool, int]:
     """
@@ -222,15 +248,24 @@ def process_render(
 
         # Processing configuration — frameworks=None means all frameworks
 
+        if frameworks is not None and isinstance(frameworks, str):
+            if frameworks.lower() == "all":
+                frameworks = None
+            elif frameworks.lower() == "lite":
+                frameworks = ["pymdp", "jax", "discopy", "bnlearn"]
+            else:
+                frameworks = [f.strip() for f in frameworks.split(",")]
+        
         if frameworks:
             logger.info(f"Target frameworks: {frameworks}")
         else:
             logger.info("Target frameworks: all available")
-
+            
         results = {}
         success_count = 0
         total_framework_successes = 0
         total_framework_attempts = 0
+        failed_framework_renderings: list[dict[str, str]] = []
 
         if pomdp_available:
             # Use POMDP-aware processing
@@ -297,10 +332,18 @@ def process_render(
                         logger.error(f"Failed to process {gnn_file.name}")
 
                     # Count framework-level successes
-                    for _, result in processing_result['framework_results'].items():
+                    for framework_name, result in processing_result['framework_results'].items():
                         total_framework_attempts += 1
                         if result['success']:
                             total_framework_successes += 1
+                        else:
+                            failed_framework_renderings.append(
+                                {
+                                    "file": str(gnn_file),
+                                    "framework": framework_name,
+                                    "message": str(result.get("message", "")),
+                                }
+                            )
 
                 except Exception as e:
                     error_msg = f"Error processing {gnn_file}: {e}"
@@ -344,9 +387,11 @@ def process_render(
             'configuration': {
                 'frameworks': frameworks or 'all',
                 'strict_validation': strict_validation,
+                'strict_framework_success': strict_framework_success,
                 'verbose': verbose,
                 'pomdp_processing_available': pomdp_available
             },
+            'failed_framework_renderings': failed_framework_renderings,
             'file_results': results
         }
 
@@ -361,21 +406,28 @@ def process_render(
         logger.info(f"Files: {success_count}/{len(gnn_files)} successful")
         if pomdp_available:
             logger.info(f"Framework renderings: {total_framework_successes}/{total_framework_attempts} successful ({summary['framework_success_rate']:.1f}%)")
+            if failed_framework_renderings:
+                logger.warning(
+                    "Framework render failures: %s",
+                    "; ".join(
+                        f"{Path(item['file']).name}:{item['framework']}"
+                        for item in failed_framework_renderings[:10]
+                    ),
+                )
+                if len(failed_framework_renderings) > 10:
+                    logger.warning(
+                        "Additional framework render failures omitted from log: %d",
+                        len(failed_framework_renderings) - 10,
+                    )
         logger.info(f"Summary saved to: {summary_file}")
 
-        # Consider rendering successful if:
-        # 1. At least one file was processed successfully, OR
-        # 2. At least 80% of framework renderings succeeded
-        if pomdp_available and total_framework_attempts > 0:
-            framework_success_rate = (total_framework_successes / total_framework_attempts) * 100
-            return framework_success_rate >= 80.0 or success_count > 0
-        # Non-POMDP path: guard against trivially-"successful" zero-file runs
-        # (len(gnn_files) == 0 and success_count == 0 satisfies == but is a skip,
-        # not a success). Phase 1.1 flags this as exit-code 2 upstream, but keep
-        # the defense here in case the caller bypasses the earlier check.
-        if len(gnn_files) == 0:
-            return 2
-        return success_count == len(gnn_files)
+        return _render_succeeded(
+            success_count=success_count,
+            total_files=len(gnn_files),
+            total_framework_successes=total_framework_successes,
+            total_framework_attempts=total_framework_attempts,
+            strict_framework_success=strict_framework_success,
+        )
 
     except Exception as e:
         logger.error(f"Render processing failed: {e}")

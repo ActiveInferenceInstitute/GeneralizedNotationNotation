@@ -15,7 +15,7 @@ from pathlib import Path
 # All type checking outputs must go under a subdirectory named 'type_check' (e.g., output/type_check/)
 # The CLI will refuse to run if --output-dir is set to 'output', 'output/artifacts', or any directory not ending in 'type_check',
 # unless the environment variable GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR is set (for test/dev only).
-from .checker import GNNTypeChecker
+from .processor import GNNTypeChecker
 from .output_utils import (
     complexity_analysis_csv,
     connections_table_csv,

@@ -1,0 +1,89 @@
+"""
+GNN Model: PyMDP Scaling N4 T10
+PyMDP runtime scaling sweep with noisy observation and stochastic transitions.
+Generated: 2026-05-06T07:03:47.145406
+"""
+
+import numpy as np
+from typing import Dict, List, Any
+
+class PyMDPScalingN4T10Model:
+    """GNN Model: PyMDP Scaling N4 T10"""
+
+    def __init__(self):
+        self.model_name = "PyMDP Scaling N4 T10"
+        self.version = "1.0"
+        self.annotation = "PyMDP runtime scaling sweep with noisy observation and stochastic transitions."
+
+        # Variables
+        self.variables = {
+            "A": {
+                "type": "likelihood_matrix",
+                "data_type": "float",
+                "dimensions": [4, 4],
+            },
+            "B": {
+                "type": "transition_matrix",
+                "data_type": "float",
+                "dimensions": [4, 4, 4],
+            },
+            "C": {
+                "type": "preference_vector",
+                "data_type": "float",
+                "dimensions": [4],
+            },
+            "D": {
+                "type": "prior_vector",
+                "data_type": "float",
+                "dimensions": [4],
+            },
+            "F": {
+                "type": "hidden_state",
+                "data_type": "float",
+                "dimensions": [1],
+            },
+            "G": {
+                "type": "policy",
+                "data_type": "float",
+                "dimensions": [1],
+            },
+            "o": {
+                "type": "observation",
+                "data_type": "integer",
+                "dimensions": [4, 1],
+            },
+            "s": {
+                "type": "hidden_state",
+                "data_type": "float",
+                "dimensions": [4, 1],
+            },
+            "t": {
+                "type": "hidden_state",
+                "data_type": "integer",
+                "dimensions": [1],
+            },
+            "u": {
+                "type": "action",
+                "data_type": "integer",
+                "dimensions": [1],
+            },
+            "π": {
+                "type": "policy",
+                "data_type": "float",
+                "dimensions": [4],
+            },
+        }
+
+        # Parameters
+        self.parameters = {
+            "A": [[0.925, 0.025, 0.025, 0.025], [0.025, 0.925, 0.025, 0.025], [0.025, 0.025, 0.925, 0.025], [0.025, 0.025, 0.025, 0.925]],
+            "B": [[[0.85, 0.05, 0.05, 0.05], [0.85, 0.05, 0.05, 0.05], [0.85, 0.05, 0.05, 0.05], [0.85, 0.05, 0.05, 0.05]], [[0.05, 0.85, 0.05, 0.05], [0.05, 0.85, 0.05, 0.05], [0.05, 0.85, 0.05, 0.05], [0.05, 0.85, 0.05, 0.05]], [[0.05, 0.05, 0.85, 0.05], [0.05, 0.05, 0.85, 0.05], [0.05, 0.05, 0.85, 0.05], [0.05, 0.05, 0.85, 0.05]], [[0.05, 0.05, 0.05, 0.85], [0.05, 0.05, 0.05, 0.85], [0.05, 0.05, 0.05, 0.85], [0.05, 0.05, 0.05, 0.85]]],
+            "C": [[0.0, 0.0, 0.0, 3.0]],
+            "D": [[0.25, 0.25, 0.25, 0.25]],
+            "num_actions": 4,
+            "num_hidden_states": 4,
+            "num_obs": 4,
+            "num_timesteps": 10,
+        }
+
+# MODEL_DATA: {"model_name":"PyMDP Scaling N4 T10","annotation":"PyMDP runtime scaling sweep with noisy observation and stochastic transitions.","variables":[{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[4,4]},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[4,4,4]},{"name":"C","var_type":"preference_vector","data_type":"float","dimensions":[4]},{"name":"D","var_type":"prior_vector","data_type":"float","dimensions":[4]},{"name":"\u03c0","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G","var_type":"policy","data_type":"float","dimensions":[1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["A"],"connection_type":"undirected"},{"source_variables":["A"],"target_variables":["o"],"connection_type":"undirected"},{"source_variables":["s"],"target_variables":["B"],"connection_type":"undirected"},{"source_variables":["C"],"target_variables":["G"],"connection_type":"directed"},{"source_variables":["G"],"target_variables":["\u03c0"],"connection_type":"directed"},{"source_variables":["\u03c0"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["B"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["o"],"target_variables":["F"],"connection_type":"undirected"}],"parameters":[{"name":"A","value":[[0.925,0.025,0.025,0.025],[0.025,0.925,0.025,0.025],[0.025,0.025,0.925,0.025],[0.025,0.025,0.025,0.925]],"param_type":"constant"},{"name":"B","value":[[[0.85,0.05,0.05,0.05],[0.85,0.05,0.05,0.05],[0.85,0.05,0.05,0.05],[0.85,0.05,0.05,0.05]],[[0.05,0.85,0.05,0.05],[0.05,0.85,0.05,0.05],[0.05,0.85,0.05,0.05],[0.05,0.85,0.05,0.05]],[[0.05,0.05,0.85,0.05],[0.05,0.05,0.85,0.05],[0.05,0.05,0.85,0.05],[0.05,0.05,0.85,0.05]],[[0.05,0.05,0.05,0.85],[0.05,0.05,0.05,0.85],[0.05,0.05,0.05,0.85],[0.05,0.05,0.05,0.85]]],"param_type":"constant"},{"name":"C","value":[[0.0,0.0,0.0,3.0]],"param_type":"constant"},{"name":"D","value":[[0.25,0.25,0.25,0.25]],"param_type":"constant"},{"name":"num_hidden_states","value":4,"param_type":"constant"},{"name":"num_obs","value":4,"param_type":"constant"},{"name":"num_actions","value":4,"param_type":"constant"},{"name":"num_timesteps","value":10,"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":10,"step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"LikelihoodMatrix","description":null},{"variable_name":"B","ontology_term":"TransitionMatrix","description":null},{"variable_name":"C","ontology_term":"LogPreferenceVector","description":null},{"variable_name":"D","ontology_term":"PriorOverHiddenStates","description":null},{"variable_name":"G","ontology_term":"ExpectedFreeEnergy","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"\u03c0","ontology_term":"PolicyVector","description":null},{"variable_name":"u","ontology_term":"Action","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]}

@@ -46,7 +46,7 @@ run_script = create_standardized_pipeline_script(
         "timesteps": {
             "flag": "--timesteps",
             "type": int,
-            "default": 15,
+            "default": None,
             "help": "Number of timesteps for generated Active Inference simulations"
         },
         "simulation_params": {
@@ -54,6 +54,17 @@ run_script = create_standardized_pipeline_script(
             "type": str,
             "default": "{}",
             "help": "JSON string containing additional simulation parameters"
+        },
+        "frameworks": {
+            "flag": "--frameworks",
+            "type": str,
+            "default": "all",
+            "help": "Frameworks to render (all, lite, or comma-separated list)"
+        },
+        "strict_framework_success": {
+            "flag": "--strict-framework-success",
+            "action": "store_true",
+            "help": "Fail the render step when any requested framework render fails"
         }
     },
     default_target_dir="input/gnn_files",

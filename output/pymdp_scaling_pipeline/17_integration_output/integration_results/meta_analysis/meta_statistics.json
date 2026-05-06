@@ -1,0 +1,163 @@
+{
+  "schema_version": "1.0",
+  "per_framework": {
+    "pymdp": {
+      "records_total": 21,
+      "successful_runs": 21,
+      "success_rate": 1.0,
+      "runtime_median_s": 10.006631,
+      "runtime_mean_s": 11.745874095238095,
+      "runtime_min_s": 3.942211,
+      "runtime_max_s": 24.493257,
+      "sum_median_proxy_s": 246.663356
+    }
+  },
+  "per_cell_best_framework": [
+    {
+      "num_states": 2,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 4.43571
+    },
+    {
+      "num_states": 2,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 7.789588
+    },
+    {
+      "num_states": 2,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 12.156599
+    },
+    {
+      "num_states": 4,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 3.942211
+    },
+    {
+      "num_states": 4,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 7.65066
+    },
+    {
+      "num_states": 4,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 9.674031
+    },
+    {
+      "num_states": 8,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 5.244513
+    },
+    {
+      "num_states": 8,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 8.389394
+    },
+    {
+      "num_states": 8,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 10.006631
+    },
+    {
+      "num_states": 16,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 6.418839
+    },
+    {
+      "num_states": 16,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 12.460326
+    },
+    {
+      "num_states": 16,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 19.900066
+    },
+    {
+      "num_states": 32,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 6.997631
+    },
+    {
+      "num_states": 32,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 15.337056
+    },
+    {
+      "num_states": 32,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 24.493257
+    },
+    {
+      "num_states": 64,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 7.545182
+    },
+    {
+      "num_states": 64,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 13.137103
+    },
+    {
+      "num_states": 64,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 17.775305
+    },
+    {
+      "num_states": 128,
+      "num_timesteps": 10,
+      "framework": "pymdp",
+      "execution_time_s": 16.134166
+    },
+    {
+      "num_states": 128,
+      "num_timesteps": 50,
+      "framework": "pymdp",
+      "execution_time_s": 19.305926
+    },
+    {
+      "num_states": 128,
+      "num_timesteps": 100,
+      "framework": "pymdp",
+      "execution_time_s": 17.869162
+    }
+  ],
+  "loglog_runtime_vs_n_by_T": {
+    "10": {
+      "slope": 0.2813501908642995,
+      "intercept": 1.094970074717961,
+      "r_squared": 0.82140370046097,
+      "n_points": 7
+    },
+    "50": {
+      "slope": 0.22709427314458544,
+      "intercept": 1.7993927405146364,
+      "r_squared": 0.8765167335135853,
+      "n_points": 7
+    },
+    "100": {
+      "slope": 0.1683569901249912,
+      "intercept": 2.2504399755572324,
+      "r_squared": 0.4890880037941596,
+      "n_points": 7
+    }
+  }
+}

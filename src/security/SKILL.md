@@ -63,9 +63,10 @@ recs = generate_security_recommendations(security_results)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
+- `get_security_report`
+- `list_security_checks`
 - `process_security`
 - `scan_gnn_file`
-- `get_security_report`
 
 ## References
 

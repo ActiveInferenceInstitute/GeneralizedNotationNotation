@@ -73,9 +73,10 @@ efe = compute_expected_free_energy(policy, beliefs)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_analysis`
-- `get_analysis_results`
 - `compute_complexity_metrics`
+- `get_analysis_results`
+- `list_analysis_tools`
+- `process_analysis`
 
 ## References
 

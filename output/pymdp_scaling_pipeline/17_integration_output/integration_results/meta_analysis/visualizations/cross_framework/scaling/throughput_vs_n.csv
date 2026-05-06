@@ -1,0 +1,8 @@
+Framework,N,Avg_Throughput_timesteps_per_s
+pymdp,2,5.63
+pymdp,4,6.47
+pymdp,8,5.95
+pymdp,16,3.53
+pymdp,32,2.92
+pymdp,64,3.59
+pymdp,128,2.94

@@ -84,6 +84,32 @@ class CrossFormatValidator:
             # Use debug level to avoid excessive warnings
             logger.debug(f"Could not initialize parsing system: {e}")
 
+    def configure(self, output_dir: Optional[Path] = None, **kwargs):
+        """Configure the validator."""
+        self.output_dir = output_dir
+
+    def validate(self, files: List[Path]) -> Dict[str, Any]:
+        """Validate a list of files."""
+        results = {}
+        success = True
+        for f in files:
+            try:
+                content = f.read_text(encoding="utf-8")
+                res = self.validate_cross_format_consistency(content)
+                results[str(f)] = res
+                if not res.is_consistent:
+                    success = False
+            except Exception as e:
+                logger.error(f"Cross-format validation failed for {f}: {e}")
+                success = False
+
+        return {
+            'success': success,
+            'files_validated': len(files),
+            'results': results
+        }
+
+
     def _initialize_validators(self):
         """Initialize enhanced validators for different schema formats."""
         # Import here to avoid circular imports

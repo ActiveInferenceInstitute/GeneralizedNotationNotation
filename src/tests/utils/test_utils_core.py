@@ -46,7 +46,10 @@ def test_setup_step_logging():
     """Test step-specific logging setup."""
     logger = setup_step_logging("3_gnn", verbose=True)
     assert logger.name == "3_gnn"
-    assert logger.level == logging.DEBUG
+    # The pipeline logging architecture uses root-level propagation:
+    # PipelineLogger sets verbosity on the root handler, so individual
+    # loggers stay at NOTSET and inherit the effective level.
+    assert logger.getEffectiveLevel() == logging.DEBUG
 
 def test_gnn_pipeline_config_defaults():
     """Test GNNPipelineConfig default values."""

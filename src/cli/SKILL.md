@@ -47,3 +47,11 @@ from cli import main
 - **Live Development**: File monitoring with 250ms debounce via `gnn watch`
 - **Dependency Graphs**: Mermaid/text graph output via `gnn graph`
 - **API \& LSP Servers**: FastAPI server (`gnn serve`) and Language Server (`gnn lsp`)
+
+
+## MCP Tools
+
+This module registers tools with the GNN MCP server (see `mcp.py`):
+
+- `cli.health`
+- `cli.preflight`

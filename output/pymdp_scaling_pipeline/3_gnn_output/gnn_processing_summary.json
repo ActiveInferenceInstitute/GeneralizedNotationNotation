@@ -1,0 +1,29 @@
+{
+  "total_files": 21,
+  "successful_parses": 21,
+  "failed_parses": 0,
+  "total_formats_generated": 63,
+  "formats_per_file": {
+    "pymdp_scaling_N32_T50.md": 3,
+    "pymdp_scaling_N16_T50.md": 3,
+    "pymdp_scaling_N8_T10.md": 3,
+    "pymdp_scaling_N8_T100.md": 3,
+    "pymdp_scaling_N4_T10.md": 3,
+    "pymdp_scaling_N16_T100.md": 3,
+    "pymdp_scaling_N64_T100.md": 3,
+    "pymdp_scaling_N128_T100.md": 3,
+    "pymdp_scaling_N4_T50.md": 3,
+    "pymdp_scaling_N8_T50.md": 3,
+    "pymdp_scaling_N16_T10.md": 3,
+    "pymdp_scaling_N32_T10.md": 3,
+    "pymdp_scaling_N2_T100.md": 3,
+    "pymdp_scaling_N2_T10.md": 3,
+    "pymdp_scaling_N32_T100.md": 3,
+    "pymdp_scaling_N2_T50.md": 3,
+    "pymdp_scaling_N64_T10.md": 3,
+    "pymdp_scaling_N64_T50.md": 3,
+    "pymdp_scaling_N128_T10.md": 3,
+    "pymdp_scaling_N4_T100.md": 3,
+    "pymdp_scaling_N128_T50.md": 3
+  }
+}

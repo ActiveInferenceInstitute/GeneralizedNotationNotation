@@ -107,8 +107,9 @@ uv sync --extra graphs
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_render`
+- `get_render_module_info`
 - `list_render_frameworks`
+- `process_render`
 - `render_gnn_to_format`
 
 ## References

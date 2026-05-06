@@ -480,6 +480,20 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
+## Learned User Preferences
+
+- When implementing an attached plan, do not edit the plan file itself; use the existing to-do items and complete them without recreating them.
+- Documentation fixes should verify file paths, commands, and signposts against the current repository rather than preserving stale examples.
+- Prefer measured verification outputs over estimates when reporting test, pipeline, or scaling behavior.
+
+## Learned Workspace Facts
+
+- Pipeline `--target-dir` arguments must point to directories; single `.md` file paths are not discovered by the current `Path.rglob`-based flow.
+- The PyMDP scaling study expands dense `B` tensors as O(n^3) text, so large `N` values require explicit file-size and disk-space guardrails.
+- Step 12 execution runs rendered `.py` and `.jl` scripts via the execute processor; auxiliary per-framework helper scripts are not the primary pipeline path.
+
+---
+
 ## References
 
 - **Main Documentation**: [README.md](README.md)

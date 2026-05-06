@@ -347,7 +347,7 @@ class GNNInternalRepresentation:
             else:
                 return obj
 
-        return {
+        result = {
             'model_name': self.model_name,
             'version': self.version,
             'annotation': self.annotation,
@@ -364,6 +364,14 @@ class GNNInternalRepresentation:
             'extensions': self.extensions,
             'raw_sections': self.raw_sections
         }
+        
+        # Backwards compatibility for renderers
+        if self.parameters:
+            merged = {str(p.name).strip(): p.value for p in self.parameters if p.name}
+            result['initialparameterization'] = merged
+            result['model_parameters'] = merged
+            
+        return result
 
 # ================================
 # VISITOR PATTERN

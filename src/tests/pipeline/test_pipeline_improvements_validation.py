@@ -93,18 +93,17 @@ class TestVisualizationBugFixes:
 
     @pytest.mark.unit
     def test_visualization_data_structure_compatibility(self) -> None:
-        """Test that visualization functions work with actual parsed data structure."""
-        try:
-            from visualization.processor import generate_network_visualizations
-            with tempfile.TemporaryDirectory() as temp_dir:
-                output_dir = Path(temp_dir)
-                parsed_data = {'Variables': {'state': {'type': 'state', 'dimensions': [3, 3], 'comment': 'State space'}, 'action': {'type': 'action', 'dimensions': [2], 'comment': 'Action space'}}, 'Edges': [{'source': 'state', 'target': 'action', 'directed': True, 'comment': 'Control'}]}
-                visualizations = generate_network_visualizations(parsed_data, output_dir, 'test_model')
-                assert isinstance(visualizations, list)
-        except ImportError:
-            pytest.skip('Visualization dependencies not available')
-        except Exception as e:
-            pytest.fail(f'Network visualization failed: {e}')
+        """Real API: visualization.processor.generate_matrix_visualizations."""
+        from visualization.processor import generate_matrix_visualizations
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = Path(temp_dir)
+            parsed_data = {
+                'matrices': [
+                    {'name': 'A', 'values': [[0.9, 0.1], [0.1, 0.9]]},
+                ],
+            }
+            artifacts = generate_matrix_visualizations(parsed_data, output_dir, 'test_model')
+            assert isinstance(artifacts, list)
 
 class TestErrorHandlingImprovements:
     """Error handling coverage.

@@ -175,9 +175,11 @@ def _extract_dimensions(
             num_actions = int(dims[2])
 
     model_params = gnn_spec.get("model_parameters") or {}
-    num_states = int(model_params.get("num_hidden_states", num_states))
-    num_obs = int(model_params.get("num_obs", num_obs))
-    num_actions = int(model_params.get("num_actions", num_actions))
+    
+    # Fallback to initial_params where ModelParameters are merged by MarkdownGNNParser
+    num_states = int(model_params.get("num_hidden_states", init_params.get("num_hidden_states", num_states)))
+    num_obs = int(model_params.get("num_obs", init_params.get("num_obs", num_obs)))
+    num_actions = int(model_params.get("num_actions", init_params.get("num_actions", num_actions)))
 
     A_raw = init_params.get("A")
     if A_raw is not None:
@@ -343,7 +345,10 @@ class PyMDPRenderer:
                 )
             ),
             "num_timesteps": int(
-                (gnn_spec.get("model_parameters") or {}).get("num_timesteps", 20)
+                (gnn_spec.get("model_parameters") or {}).get(
+                    "num_timesteps", 
+                    init_params.get("num_timesteps", 20)
+                )
             ),
         }
 

@@ -47,36 +47,32 @@ class TestGNNModuleComprehensive:
 
     @pytest.mark.unit
     def test_gnn_file_parsing(self, sample_gnn_files):
-        """Test GNN file parsing functionality."""
+        """parse_gnn_file returns a structured dict for every sample fixture.
+
+        Shape (see src/gnn/processor.py): success, file_path, file_name,
+        file_size, sections (list), variables (list), structure_info (dict),
+        parse_timestamp.
+        """
         from src.gnn import parse_gnn_file
         for file_path in sample_gnn_files.values():
-            try:
-                parsed_data = parse_gnn_file(file_path)
-                assert isinstance(parsed_data, dict), 'Parsed data should be a dictionary'
-                assert 'ModelName' in parsed_data, 'Parsed data should contain ModelName'
-                assert isinstance(parsed_data.get('StateSpaceBlock', {}), dict), 'StateSpaceBlock should be a dictionary'
-                assert isinstance(parsed_data.get('Connections', []), list), 'Connections should be a list'
-                logging.info(f'Successfully parsed {file_path.name}')
-            except Exception as e:
-                logging.warning(f'Failed to parse {file_path.name}: {e}')
+            parsed = parse_gnn_file(file_path)
+            assert isinstance(parsed, dict), f'{file_path.name}: expected dict'
+            assert parsed['success'] is True, f'{file_path.name}: parse unsuccessful'
+            assert 'ModelName' in parsed['sections']
+            assert isinstance(parsed['structure_info'], dict)
+            assert isinstance(parsed['variables'], list)
 
     @pytest.mark.unit
     def test_gnn_validation(self, sample_gnn_files):
-        """Test GNN structure validation (simplified for speed)."""
+        """Lightweight GNN structure validation against the sample fixtures."""
         for file_path in sample_gnn_files.values():
-            try:
-                with open(file_path, 'r') as f:
-                    content = f.read()
-                has_model_name = '## ModelName' in content
-                has_gnn_version = '## GNNVersionAndFlags' in content
-                has_structure = has_model_name or has_gnn_version
-                assert isinstance(has_structure, bool), 'Validation should return boolean'
-                if file_path.name != 'invalid.md':
-                    assert has_structure, f'Valid GNN file should have basic structure: {file_path.name}'
-                logging.info(f'Validation result for {file_path.name}: {has_structure}')
-            except Exception as e:
-                logging.warning(f'Validation check failed for {file_path.name}: {e}')
-                pytest.skip(f'Validation test skipped due to: {e}')
+            content = file_path.read_text()
+            has_model_name = '## ModelName' in content
+            has_gnn_version = '## GNNVersionAndFlags' in content
+            if file_path.name != 'invalid.md':
+                assert has_model_name or has_gnn_version, (
+                    f'{file_path.name}: valid GNN file must have ModelName or GNNVersionAndFlags'
+                )
 
 class TestRenderModuleComprehensive:
     """Comprehensive tests for the render module."""
@@ -93,43 +89,26 @@ class TestRenderModuleComprehensive:
         logging.info('Render module imports validated')
 
     @pytest.mark.unit
-    def test_pymdp_rendering(self, sample_gnn_files, isolated_temp_dir):
-        """Test PyMDP code rendering."""
+    def test_pymdp_rendering_callable(self):
+        """render_gnn_to_pymdp resolves to a real callable.
+
+        Full pipeline-level rendering (parsed GNN spec → PyMDP script on
+        disk) is exercised in src/tests/render/test_render_cli_targets.py.
+        Passing a dict-of-Path sample_gnn_files through this legacy API
+        produces opaque errors; assert only the public-symbol contract.
+        """
         from src.render import render_gnn_to_pymdp
-        output_path = isolated_temp_dir / 'test_pymdp.py'
-        try:
-            render_gnn_to_pymdp(sample_gnn_files, output_path)
-            assert output_path.exists(), 'PyMDP output file should be created'
-            content = output_path.read_text()
-            assert len(content) > 0, 'PyMDP output should not be empty'
-            assert 'import' in content, 'PyMDP output should contain imports'
-            logging.info('PyMDP rendering validated')
-        except Exception as e:
-            logging.warning(f'PyMDP rendering failed: {e}')
+        assert callable(render_gnn_to_pymdp)
 
     @pytest.mark.unit
-    def test_rxinfer_rendering(self, sample_gnn_files, isolated_temp_dir):
-        """Test RxInfer code rendering with POMDP structure validation."""
+    def test_rxinfer_rendering_callable(self):
+        """render_gnn_to_rxinfer is callable; POMDP content validated elsewhere.
+
+        src/tests/render/test_render_cli_targets.py parametrizes every
+        backend target against the real sample corpus, including RxInfer.
+        """
         from src.render import render_gnn_to_rxinfer
-        output_path = isolated_temp_dir / 'test_rxinfer.jl'
-        try:
-            render_gnn_to_rxinfer(sample_gnn_files, output_path)
-            assert output_path.exists(), 'RxInfer output file should be created'
-            content = output_path.read_text()
-            assert len(content) > 0, 'RxInfer output should not be empty'
-            assert 'NUM_STATES' in content, 'RxInfer should define NUM_STATES'
-            assert 'NUM_OBSERVATIONS' in content, 'RxInfer should define NUM_OBSERVATIONS'
-            assert 'NUM_ACTIONS' in content, 'RxInfer should define NUM_ACTIONS for POMDP'
-            import re
-            actions_match = re.search('NUM_ACTIONS\\s*=\\s*(\\d+)', content)
-            if actions_match:
-                num_actions = int(actions_match.group(1))
-                assert num_actions >= 1, f'NUM_ACTIONS should be >= 1, got {num_actions}'
-                logging.info(f'RxInfer POMDP validated: {num_actions} actions')
-            assert 'B_matrix' in content or 'B' in content, 'RxInfer should define B matrix'
-            logging.info('RxInfer POMDP rendering validated')
-        except Exception as e:
-            logging.warning(f'RxInfer rendering failed: {e}')
+        assert callable(render_gnn_to_rxinfer)
 
     @pytest.mark.unit
     def test_discopy_rendering(self, sample_gnn_files):
@@ -159,16 +138,12 @@ class TestExecuteModuleComprehensive:
 
     @pytest.mark.unit
     def test_execution_environment_validation(self):
-        """Test execution environment validation."""
+        """validate_execution_environment returns a structured status dict."""
         from src.execute import validate_execution_environment
-        try:
-            env_status = validate_execution_environment()
-            assert isinstance(env_status, dict), 'Environment status should be a dictionary'
-            assert 'python_version' in env_status, 'Status should contain python_version'
-            assert 'dependencies' in env_status, 'Status should contain dependencies'
-            logging.info('Execution environment validation completed')
-        except Exception as e:
-            logging.warning(f'Execution environment validation failed: {e}')
+        env_status = validate_execution_environment()
+        assert isinstance(env_status, dict)
+        assert 'python_version' in env_status
+        assert 'dependencies' in env_status
 
     @pytest.mark.unit
     def test_safe_script_execution(self, isolated_temp_dir):
@@ -227,31 +202,23 @@ class TestMCPModuleComprehensive:
 
     @pytest.mark.unit
     def test_mcp_tool_registration(self):
-        """Test MCP tool registration."""
+        """register_module_tools() returns a non-empty list + get_available_tools is a list."""
         from src.mcp import get_available_tools
         from src.mcp import register_module_tools as register_tools
-        try:
-            tools = register_tools()
-            assert isinstance(tools, list), 'Tools should be a list'
-            assert len(tools) > 0, 'Should register at least one tool'
-            available_tools = get_available_tools()
-            assert isinstance(available_tools, list), 'Available tools should be a list'
-            logging.info('MCP tool registration validated')
-        except Exception as e:
-            logging.warning(f'MCP tool registration failed: {e}')
+        tools = register_tools()
+        assert isinstance(tools, list), f'register_module_tools() should return list, got {type(tools).__name__}'
+        assert len(tools) > 0, 'Expected at least one registered MCP tool'
+        available_tools = get_available_tools()
+        assert isinstance(available_tools, list)
 
     @pytest.mark.unit
     def test_mcp_request_handling(self):
-        """Test MCP request handling."""
+        """handle_mcp_request returns a dict with the request id echoed back."""
         from src.mcp import handle_mcp_request
         sample_request = {'method': 'tools/list', 'params': {}, 'id': 1}
-        try:
-            response = handle_mcp_request(sample_request)
-            assert isinstance(response, dict), 'Response should be a dictionary'
-            assert 'id' in response, 'Response should contain id'
-            logging.info('MCP request handling validated')
-        except Exception as e:
-            logging.warning(f'MCP request handling failed: {e}')
+        response = handle_mcp_request(sample_request)
+        assert isinstance(response, dict)
+        assert 'id' in response
 
 class TestOntologyModuleComprehensive:
     """Comprehensive tests for the ontology module."""
@@ -332,86 +299,61 @@ class TestSAPFModuleComprehensive:
 
     @pytest.mark.unit
     def test_gnn_to_sapf_conversion(self):
-        """Test GNN to SAPF conversion functionality."""
-        sample_gnn_files = '\n## ModelName\nTestActiveInferenceModel\n\n## StateSpaceBlock\ns1: State\ns2: State\ns3: State\n\n## Connections\ns1 -> s2: Transition\ns2 -> s3: Transition\ns3 -> s1: Transition\n\n## InitialParameterization\nA: [0.8, 0.2; 0.3, 0.7]\nB: [0.9, 0.1; 0.2, 0.8]\nC: [0.7, 0.3; 0.4, 0.6]\n'
-        try:
-            from src.audio.sapf import convert_gnn_to_sapf
-        except ImportError:
-            pytest.skip('SAPF module not available')
-        try:
-            sapf_code = convert_gnn_to_sapf(sample_gnn_files, model_name='TestActiveInferenceModel')
-            assert isinstance(sapf_code, str), 'SAPF code should be a string'
-            assert len(sapf_code) > 0, 'SAPF code should not be empty'
-            logging.info('GNN to SAPF conversion validated')
-        except Exception as e:
-            logging.warning(f'GNN to SAPF conversion failed: {e}')
-            pytest.skip(f'SAPF conversion not available: {e}')
+        """convert_gnn_to_sapf turns a GNN markdown string into SAPF code."""
+        from src.audio.sapf import convert_gnn_to_sapf
+        sample_gnn = (
+            '\n## ModelName\nTestActiveInferenceModel\n\n'
+            '## StateSpaceBlock\ns1: State\ns2: State\ns3: State\n\n'
+            '## Connections\ns1 -> s2: Transition\ns2 -> s3: Transition\ns3 -> s1: Transition\n\n'
+            '## InitialParameterization\nA: [0.8, 0.2; 0.3, 0.7]\nB: [0.9, 0.1; 0.2, 0.8]\nC: [0.7, 0.3; 0.4, 0.6]\n'
+        )
+        sapf_code = convert_gnn_to_sapf(sample_gnn, model_name='TestActiveInferenceModel')
+        assert isinstance(sapf_code, str)
+        assert len(sapf_code) > 0, 'convert_gnn_to_sapf produced empty output'
 
     @pytest.mark.unit
     def test_sapf_validation(self):
-        """Test SAPF code validation functionality."""
-        sample_sapf_code = '\n; Test SAPF code\n261.63 = base_freq\nbase_freq 0 sinosc 0.3 * = osc1\n10 sec 0.1 1 0.8 0.2 env = envelope\nosc1 envelope * = final_audio\nfinal_audio play\n'
-        try:
-            from src.audio.sapf import validate_sapf_code
-        except ImportError:
-            pytest.skip('SAPF validation not available')
-        try:
-            is_valid, issues = validate_sapf_code(sample_sapf_code)
-            assert isinstance(is_valid, bool), 'Validation should return boolean'
-            assert isinstance(issues, list), 'Issues should be a list'
-            logging.info('SAPF validation functionality confirmed')
-        except Exception as e:
-            logging.warning(f'SAPF validation failed: {e}')
-            pytest.skip(f'SAPF validation not available: {e}')
+        """validate_sapf_code returns (bool, list) for any input string."""
+        from src.audio.sapf import validate_sapf_code
+        sample_sapf_code = (
+            '\n; Test SAPF code\n261.63 = base_freq\nbase_freq 0 sinosc 0.3 * = osc1\n'
+            '10 sec 0.1 1 0.8 0.2 env = envelope\nosc1 envelope * = final_audio\nfinal_audio play\n'
+        )
+        is_valid, issues = validate_sapf_code(sample_sapf_code)
+        assert isinstance(is_valid, bool)
+        assert isinstance(issues, list)
 
     @pytest.mark.unit
-    def test_sapf_audio_generation(self):
-        """Test SAPF audio generation functionality."""
-        try:
-            from src.audio.sapf import generate_sapf_audio
-        except ImportError:
-            pytest.skip('SAPF audio generation not available')
-        try:
-            assert callable(generate_sapf_audio), 'generate_sapf_audio should be callable'
-            logging.info('SAPF audio generation functionality confirmed')
-        except Exception as e:
-            logging.warning(f'SAPF audio generation test failed: {e}')
-            pytest.skip(f'SAPF audio generation not available: {e}')
+    def test_sapf_audio_generation_callable(self):
+        """generate_sapf_audio resolves to a real callable.
+
+        Full audio synthesis exercised in src/tests/audio/. Here we guard the
+        public surface — that the symbol is exported and callable.
+        """
+        from src.audio.sapf import generate_sapf_audio
+        assert callable(generate_sapf_audio)
 
 class TestCoreModuleIntegration:
     """Integration tests for core module coordination."""
 
     @pytest.mark.integration
-    def test_module_coordination(self, sample_gnn_files, isolated_temp_dir):
-        """Test coordination between core modules."""
-        try:
-            from src.execute import execute_gnn_model
-            from src.gnn import parse_gnn_file
-            from src.render import render_gnn_to_pymdp
-            gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
-            pymdp_path = isolated_temp_dir / 'test_pymdp.py'
-            render_gnn_to_pymdp({list(sample_gnn_files.values())[0]: gnn_data}, pymdp_path)
-            result = execute_gnn_model(f'python {pymdp_path}', timeout=10)
-            assert isinstance(result, dict), 'Execution result should be a dictionary'
-            logging.info('Core module coordination validated')
-        except Exception as e:
-            logging.warning(f'Core module coordination failed: {e}')
+    def test_cross_module_public_surface(self):
+        """Cross-module public APIs are importable together without circular-import issues.
 
-    @pytest.mark.integration
-    def test_module_data_flow(self, sample_gnn_files, isolated_temp_dir):
-        """Test data flow between modules."""
-        try:
-            from src.gnn import parse_gnn_file
-            from src.llm import analyze_gnn_model
-            from src.website import generate_html_report
-            gnn_data = parse_gnn_file(list(sample_gnn_files.values())[0])
-            analysis = analyze_gnn_model(gnn_data)
-            report_path = isolated_temp_dir / 'test_report.html'
-            generate_html_report(analysis, report_path)
-            assert report_path.exists(), 'Report should be created'
-            logging.info('Module data flow validated')
-        except Exception as e:
-            logging.warning(f'Module data flow failed: {e}')
+        Full end-to-end flow (parse → render → execute → report) is covered by
+        src/tests/pipeline/test_pipeline_render_execute_analyze.py. Here we
+        only assert that the combined import does not break — a common
+        regression when modules add reciprocal imports.
+        """
+        from src.execute import execute_gnn_model
+        from src.gnn import parse_gnn_file
+        from src.llm import LLMProcessor
+        from src.render import render_gnn_to_pymdp
+        from src.website import generate_html_report
+        for sym in (execute_gnn_model, parse_gnn_file, render_gnn_to_pymdp,
+                    generate_html_report):
+            assert callable(sym)
+        assert isinstance(LLMProcessor, type)
 
 def test_core_module_completeness():
     """Test that all core modules are complete and functional."""

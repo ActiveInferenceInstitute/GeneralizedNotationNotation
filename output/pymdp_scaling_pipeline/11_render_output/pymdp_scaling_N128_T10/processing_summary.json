@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-06T07:04:39.077615",
+  "source_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T10.md",
+  "model_name": "PyMDP Scaling N128 T10",
+  "pomdp_dimensions": {
+    "num_states": 128,
+    "num_observations": 128,
+    "num_actions": 128
+  },
+  "frameworks_requested": [
+    "pymdp"
+  ],
+  "frameworks_processed": [
+    "pymdp"
+  ],
+  "frameworks_failed": []
+}

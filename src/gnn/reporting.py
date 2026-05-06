@@ -26,7 +26,7 @@ class ReportGenerator:
     def __init__(self):
         self.report_formats = ['json', 'markdown', 'html']
 
-    def generate(self, context, output_dir: Path) -> Dict[str, Any]:
+    def generate_processing_report(self, context, output_dir: Path) -> Dict[str, Any]:
         """
         Generate comprehensive processing report.
         

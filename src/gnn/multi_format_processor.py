@@ -12,9 +12,21 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Sequence, Tuple
 
 from utils import log_step_error, log_step_start, log_step_success
+
+
+def _formats_for_serialize_preset(preset: str, supported_formats: Sequence[Any]) -> Tuple[List[Any], str]:
+    """Return filtered formats list and normalized preset label."""
+    label = (preset or "full").strip().lower()
+    if label not in {"full", "minimal"}:
+        label = "full"
+    if label == "minimal":
+        minimal_allow = {"markdown", "json", "python"}
+        filtered = [f for f in supported_formats if getattr(f, "value", str(f)).lower() in minimal_allow]
+        return filtered, label
+    return list(supported_formats), label
 
 
 def process_gnn_multi_format(
@@ -54,10 +66,19 @@ def process_gnn_multi_format(
     try:
         parsing_system = GNNParsingSystem(strict_validation=True)  # type: ignore[arg-type]
         supported_formats = parsing_system.get_supported_formats()
+        preset_raw = str(kwargs.get("serialize_preset") or "full")
+        raw_norm = preset_raw.strip().lower()
+        formats_to_emit, preset_norm = _formats_for_serialize_preset(preset_raw, supported_formats)
+        if raw_norm not in {"full", "minimal"}:
+            logger.warning(
+                "Unknown serialize_preset %r; using full-format serialization",
+                preset_raw,
+            )
         available_serializers = parsing_system.get_available_serializers()
 
         logger.info(
-            f"Initialized GNN parsing system with {len(supported_formats)} supported formats"
+            f"Initialized GNN parsing system with {len(supported_formats)} supported formats "
+            f"({preset_norm} preset emits {len(formats_to_emit)} serializers)"
         )
         logger.info(f"Available serializers: {list(available_serializers.keys())}")
 
@@ -109,7 +130,9 @@ def process_gnn_multi_format(
             "processing_config": {
                 "recursive": recursive,
                 "verbose": verbose,
+                "serialize_preset": preset_norm,
                 "supported_formats": [fmt.value for fmt in supported_formats],
+                "serialized_formats": [fmt.value for fmt in formats_to_emit],
                 "available_serializers": {
                     fmt.value: name for fmt, name in available_serializers.items()
                 },
@@ -206,7 +229,7 @@ def process_gnn_multi_format(
 
                 formats_generated = 0
 
-                for format_enum in supported_formats:
+                for format_enum in formats_to_emit:
                     try:
                         ext = extension_map.get(format_enum, f".{format_enum.value}")
                         out_file = file_output_dir / f"{file_path.stem}_{format_enum.value}{ext}"
@@ -292,7 +315,8 @@ def process_gnn_multi_format(
             log_step_success(
                 logger,
                 f"Processed {processing_results['summary']['successful_parses']} files, "
-                f"generated {total_formats} format instances across {len(supported_formats)} formats",
+                f"generated {total_formats} format instances across {len(formats_to_emit)} formats "
+                f"(preset={preset_norm})",
             )
         else:
             log_step_error(logger, "No files were successfully processed")

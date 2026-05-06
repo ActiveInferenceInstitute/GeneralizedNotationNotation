@@ -255,11 +255,63 @@ def process_integration(
             except Exception as e:
                 logger.warning(f"Failed to verify references in {gnn_file.name}: {e}")
 
+        # ── Meta-Analysis: Runtime & Simulation Sweep Analysis ──────────────
+        meta_analysis_results = None
+        try:
+            from .meta_analysis import run_meta_analysis
+
+            # Locate execution output directory (sibling to our output_dir)
+            execute_output_dir = output_dir.parent / "12_execute_output"
+            if not execute_output_dir.exists():
+                # Also try within the same output root
+                for candidate in [
+                    output_dir / ".." / "12_execute_output",
+                    Path("output") / "12_execute_output",
+                ]:
+                    if candidate.resolve().exists():
+                        execute_output_dir = candidate.resolve()
+                        break
+
+            if execute_output_dir.exists():
+                meta_output = results_dir / "meta_analysis"
+                
+                # Also find render output dir
+                render_output_dir = output_dir.parent / "11_render_output"
+                if not render_output_dir.exists():
+                    for candidate in [
+                        output_dir / ".." / "11_render_output",
+                        Path("output") / "11_render_output",
+                    ]:
+                        if candidate.resolve().exists():
+                            render_output_dir = candidate.resolve()
+                            break
+
+                meta_analysis_results = run_meta_analysis(
+                    execute_output_dir=execute_output_dir,
+                    output_dir=meta_output,
+                    render_output_dir=render_output_dir if render_output_dir.exists() else None,
+                    logger=logger,
+                    verbose=verbose,
+                )
+                if meta_analysis_results:
+                    results["meta_analysis"] = meta_analysis_results
+                    val_json = meta_analysis_results.get("validation_json")
+                    stats_json = meta_analysis_results.get("statistics_json")
+                    logger.info(
+                        f"Meta-analysis: {meta_analysis_results['records']} records, "
+                        f"{len(meta_analysis_results['plots'])} plots; "
+                        f"validation={val_json}; statistics={stats_json}"
+                    )
+            else:
+                logger.info("No execution outputs found — skipping meta-analysis")
+        except Exception as e:
+            logger.warning(f"Meta-analysis failed (non-fatal): {e}")
+
         # Save results
         import json
         results_file = results_dir / "integration_results.json"
         with open(results_file, 'w') as f:
-            json.dump(results, f, indent=2)
+            json.dump(results, f, indent=2, default=str)
 
         # Generate summary
         node_count = results['system_graph_stats'].get('nodes', 0)
@@ -279,6 +331,19 @@ def process_integration(
         else:
             summary += "\nNo issues detected.\n"
 
+        # Append meta-analysis summary
+        if meta_analysis_results:
+            summary += f"\n## Meta-Analysis\n\n"
+            summary += f"- **Sweep Records**: {meta_analysis_results['records']}\n"
+            summary += f"- **Visualizations**: {len(meta_analysis_results['plots'])}\n"
+            summary += f"- **Report**: [{Path(meta_analysis_results['report']).name}]({meta_analysis_results['report']})\n"
+            vj = meta_analysis_results.get("validation_json")
+            sj = meta_analysis_results.get("statistics_json")
+            if vj:
+                summary += f"- **Validation JSON**: [{Path(vj).name}]({vj})\n"
+            if sj:
+                summary += f"- **Aggregate statistics JSON**: [{Path(sj).name}]({sj})\n"
+
         summary_path = results_dir / "integration_summary.md"
         with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=summary_path.parent, delete=False) as tmp_f:
             tmp_f.write(summary)
@@ -294,3 +359,4 @@ def process_integration(
     except Exception as e:
         log_step_error(logger, "integration processing failed", {"error": str(e)})
         return False
+

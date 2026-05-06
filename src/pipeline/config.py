@@ -53,7 +53,7 @@ class StepConfig:
     def __init__(self, step_name: str, **kwargs):
         self.step_name = step_name
         self.enabled = kwargs.get('enabled', True)
-        self.timeout = kwargs.get('timeout', 300)
+        self.timeout = kwargs.get('timeout', 3600)
         self.retries = kwargs.get('retries', 3)
         self.dependencies = kwargs.get('dependencies', [])
         self.parameters = kwargs.get('parameters', {})
@@ -114,7 +114,7 @@ def get_pipeline_config() -> dict:
     if 'steps' not in data:
         data['steps'] = list(STEP_METADATA.keys())
     if 'timeout' not in data:
-        data['timeout'] = 300
+        data['timeout'] = 3600
     if 'parallel' not in data:
         data['parallel'] = True
     return data

@@ -76,8 +76,9 @@ process_export(target_dir, output_dir, verbose=True)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_export`
+- `export_single_gnn_file`
 - `list_export_formats`
+- `process_export`
 - `validate_export_format`
 
 ## References

@@ -1,0 +1,8 @@
+Framework,N,Mean Belief Entropy (nats)
+pymdp,2,0.0949
+pymdp,4,0.1842
+pymdp,8,0.1987
+pymdp,16,0.2407
+pymdp,32,0.2524
+pymdp,64,0.3005
+pymdp,128,0.3138

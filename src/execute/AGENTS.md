@@ -12,7 +12,7 @@
 
 **Version**: 1.6.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-05-05
 
 ---
 
@@ -34,6 +34,10 @@
 - Comprehensive error logging
 - Result capture and validation
 - Execution timeout handling
+- **`summaries/execution_summary.json`** (slim aggregate): Per-script rows omit bulk fields (`stdout`/`stderr` bodies, `simulation_data`); lengths and pointers remain. Consumers needing legacy payloads pass **`execution_summary_detail=True`** / **`--execution-summary-detail`** to also write **`summaries/execution_summary_detail.json`**.
+- **`PipelineArguments` / main orchestrator**: Step 12 subprocess commands omit **`--backend`** unless **`distributed`** is true, and omit **`--execution-benchmark-repeats`** when the value is 1 (avoids implying benchmarking when repeats are disabled).
+- **PyMDP subprocess environment**: Defaults `TF_CPP_MIN_LOG_LEVEL=3` for the child process when unset (quieter captured stderr). Set **`GNN_JAX_PLATFORM`** (e.g. `cpu`) on the host to pin JAX device selection for PyMDP runs; when unset, JAX uses normal platform discovery.
+- Configurable script-level concurrency: local process workers by default, or Ray/Dask when `distributed=True`
 
 ---
 
@@ -41,25 +45,25 @@
 
 ### Public Functions
 
-#### `process_execute(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+#### `process_execute(target_dir: Path, output_dir: Path, verbose: bool = False, frameworks: str = "all", **kwargs) -> Union[bool, int]`
 **Description**: Main execution function called by orchestrator (12_execute.py). Executes rendered simulation scripts across multiple frameworks.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing rendered scripts (typically output from Step 11)
 - `output_dir` (Path): Output directory for execution results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Optional[logging.Logger]): Logger instance (default: None)
 - `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
-  - `"all"`: Execute all available frameworks
-  - `"lite"`: Execute only PyMDP, JAX, DisCoPy (no Julia)
+  - `"all"`: Execute all configured frameworks
+  - `"lite"`: Execute PyMDP, JAX, DisCoPy, and BNLearn
   - Comma-separated: `"pymdp,jax"` for specific frameworks
-- `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
-- `validate_only` (bool): Only validate scripts, don't execute (default: False)
-- `timeout` (int): Execution timeout per script in seconds (default: 300)
-- `parallel` (bool): Execute scripts in parallel (default: False)
+- `timeout` (int): Execution timeout per script in seconds (default: 3600)
+- `render_output_dir` (Optional[Path]): Explicit Step 11 output directory to search. This is the safest way to keep Step 12 scoped to an isolated pipeline run.
+- `execution_workers` (int): Number of rendered scripts to execute concurrently. `1` preserves serial execution; values above `1` use local process workers unless `distributed=True`.
+- `distributed` (bool): Execute scripts through the distributed dispatcher when enabled (default: False)
+- `backend` (str): Distributed execution backend, default `ray`
 - `**kwargs`: Additional framework-specific options
 
-**Returns**: `bool` - True if execution succeeded, False otherwise
+**Returns**: `Union[bool, int]` - True when execution succeeds or there is nothing to execute, False on execution failure, and integer exit-style values where the caller uses them.
 
 **Example**:
 ```python
@@ -73,7 +77,9 @@ success = process_execute(
     output_dir=Path("output/12_execute_output"),
     verbose=True,
     frameworks="pymdp,jax",
-    timeout=600
+    timeout=600,
+    render_output_dir=Path("output/11_render_output"),
+    execution_workers=2,
 )
 ```
 
@@ -94,7 +100,7 @@ success = process_execute(
 - `duration` (float): Execution duration in seconds
 - `output_files` (List[Path]): Generated output files
 
-#### `execute_script_safely(script_path: Union[str, Path], timeout: int = 60, capture_output: bool = True, cwd: Optional[Union[str, Path]] = None, env: Optional[Dict[str, str]] = None) -> Dict[str, Any]`
+#### `execute_script_safely(script_path: Union[str, Path], timeout: int = 3600, capture_output: bool = True, cwd: Optional[Union[str, Path]] = None, env: Optional[Dict[str, str]] = None) -> Dict[str, Any]`
 **Description**: Run a single Python script via ``subprocess.run`` and return a uniform envelope. Rejects non-``.py`` paths up front and converts every failure mode (missing file, timeout, non-zero exit, unknown exception) into a dict so callers never need to differentiate.
 
 **Returns**: `Dict[str, Any]` with keys:
@@ -164,10 +170,12 @@ elif not detection.get("correct_package"):
   - `"discopy"`: Use DisCoPy for categorical diagrams
 
 #### Execution Parameters
-- `timeout` (int): Execution timeout in seconds (default: `60`)
-- `validate_only` (bool): Only validate scripts, don't execute (default: `False`)
+- `timeout` (int): Execution timeout in seconds (default: `3600`)
 - `capture_output` (bool): Capture stdout/stderr (default: `True`)
-- `parallel_execution` (bool): Execute scripts in parallel (default: `False`)
+- `render_output_dir` (Path): Render output directory to search before fallback discovery
+- `execution_workers` (int): Number of rendered scripts to execute concurrently. This parallelizes model/script runs, not timesteps within a single simulation.
+- `distributed` (bool): Route scripts through the distributed dispatcher instead of the local process pool
+- `backend` (str): Dispatcher backend, default `ray`
 
 #### Framework-Specific Configuration
 - `julia_path` (str): Path to Julia executable (default: auto-detect)
@@ -204,6 +212,21 @@ success = process_execute(
 )
 ```
 
+### Scoped Execution From Isolated Render Output
+```bash
+uv run python src/12_execute.py \
+    --target-dir input/gnn_files/pymdp_scaling_study \
+    --output-dir output/pymdp_scaling_pipeline \
+    --frameworks pymdp \
+    --timeout 1200 \
+    --render-output-dir output/pymdp_scaling_pipeline/11_render_output \
+    --execution-workers 2
+```
+
+When `--render-output-dir` is provided, Step 12 searches that directory for executable scripts and still filters by `--frameworks`. This prevents execution from reading stale artifacts in the default `output/11_render_output` directory.
+
+Use `--distributed --backend ray` or `--distributed --backend dask` only when Ray/Dask is installed and the run should use that dispatcher. Without `--distributed`, Step 12 uses local process workers when `--execution-workers` is greater than `1`.
+
 ---
 
 ## Output Specification
@@ -233,11 +256,7 @@ output/12_execute_output/
 ## Performance Characteristics
 
 ### Latest Execution
-- **Duration**: 32.5s
-- **Memory**: Peak 19.26 MB, Final 13.96 MB
-- **Status**: SUCCESS_WITH_WARNINGS
-- **Scripts Found**: 5
-- **Scripts Failed**: 5 (dependency issues)
+Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` and Step 12 summaries for exact timing, memory, and pass/fail counts. Do not treat stale benchmark numbers in documentation as current measurements.
 
 ### Framework Execution Times
 - **PyMDP**: ~1-5 seconds
@@ -255,7 +274,7 @@ output/12_execute_output/
 - **Julia unavailable**: Log warning, skip Julia scripts
 - **JAX unavailable**: Log warning, skip JAX scripts
 - **Script errors**: Capture stderr, continue with other scripts
-- **Timeout**: 60s per script (configurable)
+- **Timeout**: configurable per script, defaulting to 3600s in `process_execute`
 
 ### Error Categories
 1. **Dependency Errors**: Framework not installed
@@ -270,7 +289,7 @@ output/12_execute_output/
 ### Pipeline Integration
 - **Input**: Receives rendered simulation scripts from Step 11 (render)
 - **Output**: Generates execution results for Step 13 (llm analysis), Step 16 (analysis), and Step 23 (report generation)
-- **Dependencies**: Requires rendered code from `11_render.py` output
+- **Dependencies**: Requires rendered code from `11_render.py` output. Use `--render-output-dir` for isolated pipeline runs.
 
 ### Module Dependencies
 - **render/**: Consumes rendered simulation scripts
@@ -288,7 +307,7 @@ output/12_execute_output/
 ```
 11_render.py (Code generation)
   ↓
-12_execute.py (Script execution)
+12_execute.py (Script execution; optional explicit render_output_dir)
   ↓
   ├→ 13_llm.py (LLM analysis of results)
   ├→ 16_analysis.py (Statistical analysis)
@@ -376,7 +395,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Symptom**: Scripts timeout before completion  
 **Cause**: Simulation too complex or timeout too short  
 **Solution**:
-- Increase timeout: `--timeout 600` (10 minutes)
+- Increase timeout: `--timeout 3600` (1 hour)
 - Simplify model complexity
 - Use faster frameworks (JAX) for large models
 - Process models individually instead of batch
@@ -398,7 +417,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 - None currently
 
 ### Roadmap
-- **Next Version**: Enhanced parallel execution
+- **Next Version**: Broader distributed execution coverage
 - **Future**: Real-time execution monitoring
 
 ---
@@ -419,7 +438,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-05-05
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.6.0

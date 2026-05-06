@@ -271,6 +271,7 @@ To work with GNN, several tools and approaches can be used:
 - **Visualization**: Graph visualization libraries can render GNN connections
 - **Simulation**: The model structure can be translated to executable code
 - **Verification**: GNN files can be validated against the specification
+- **Performance Benchmarking**: Automate model scaling studies using the [PyMDP Scaling Orchestrator](../../scripts/run_pymdp_gnn_scaling_analysis.py)
 - **GNN Repository**: Access examples and tools at the [GNN GitHub repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 - **Active Inference Ontology**: Map variables to standardized terms using the [Active Inference Ontology](https://doi.org/10.5281/zenodo.7430333)
 

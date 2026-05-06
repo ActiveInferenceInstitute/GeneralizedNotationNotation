@@ -73,9 +73,9 @@ uv sync --extra gui
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_gui`
-- `list_available_guis`
 - `get_gui_module_info`
+- `list_available_guis`
+- `process_gui`
 
 ## References
 

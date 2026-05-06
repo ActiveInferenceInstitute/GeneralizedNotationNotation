@@ -16,6 +16,9 @@ Test Coverage:
 - Executor initialization (test_executor_initialization)
 
 No mocking is used - all tests validate real function execution.
+
+Rendered Python/Julia script **filenames** must not contain the substring ``test_``, or
+``find_executable_scripts`` skips them as test helpers (use names like ``fixture_model_pymdp.py``).
 """
 import json
 import logging
@@ -57,7 +60,7 @@ class TestExecuteOverall:
         # Create pymdp directory with sample script
         safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
         pymdp_script = safe_filesystem.create_file(
-            "output/11_render_output/test_model/pymdp/test_model_pymdp.py",
+            "output/11_render_output/test_model/pymdp/fixture_model_pymdp.py",
             """#!/usr/bin/env python3
 # Test PyMDP script
 import json
@@ -68,7 +71,7 @@ print(json.dumps({"status": "success", "framework": "pymdp"}))
         # Create rxinfer directory with sample script
         safe_filesystem.create_dir("output/11_render_output/test_model/rxinfer")
         rxinfer_script = safe_filesystem.create_file(
-            "output/11_render_output/test_model/rxinfer/test_model_rxinfer.jl",
+            "output/11_render_output/test_model/rxinfer/fixture_model_rxinfer.jl",
             """# Test RxInfer script
 println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
 """
@@ -207,7 +210,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             render_out = safe_filesystem.create_dir("render/11_render_output")
             safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
             safe_filesystem.create_file(
-                "render/11_render_output/test_model/pymdp/test_model_pymdp.py",
+                "render/11_render_output/test_model/pymdp/fixture_model_pymdp.py",
                 """#!/usr/bin/env python3
 import json
 print(json.dumps({"status": "ok"}))
@@ -404,7 +407,7 @@ print(json.dumps({"status": "executed", "model": "actinf_model"}))
             render_out = safe_filesystem.create_dir("render/11_render_output")
             safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
             safe_filesystem.create_file(
-                "render/11_render_output/test_model/pymdp/test_model_pymdp.py",
+                "render/11_render_output/test_model/pymdp/fixture_model_pymdp.py",
                 """#!/usr/bin/env python3
 import json
 print(json.dumps({"status": "ok"}))
@@ -436,7 +439,7 @@ print(json.dumps({"status": "ok"}))
         render_out = safe_filesystem.create_dir("render/11_render_output")
         safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
         safe_filesystem.create_file(
-            "render/11_render_output/test_model/pymdp/test_model_pymdp.py",
+            "render/11_render_output/test_model/pymdp/fixture_model_pymdp.py",
             """#!/usr/bin/env python3
 import json
 print(json.dumps({"status": "ok"}))
@@ -452,17 +455,82 @@ print(json.dumps({"status": "ok"}))
         )
 
         summary_file = output_dir / "summaries" / "execution_summary.json"
-        if summary_file.exists():
-            with open(summary_file) as f:
-                summary = json.load(f)
+        assert summary_file.is_file()
+        summary = json.loads(summary_file.read_text(encoding="utf-8"))
+        assert isinstance(summary, dict)
+        assert summary.get("execution_summary_format") == "slim_v1"
+        for field in ("timestamp", "success"):
+            assert field in summary
+            assert summary[field] is not None
 
-            # Verify expected fields
-            assert isinstance(summary, dict)
-            # Common fields in execution summaries
-            expected_fields = ["timestamp", "success"]
-            for field in expected_fields:
-                if field in summary:
-                    assert summary[field] is not None
+    @pytest.mark.integration
+    @pytest.mark.slow
+    def test_execution_summary_aggregate_is_slim_v1(self, safe_filesystem: Any) -> None:
+        input_dir = safe_filesystem.create_dir("input")
+        output_dir = safe_filesystem.create_dir("output")
+        render_out = safe_filesystem.create_dir("render/11_render_output")
+        safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
+        safe_filesystem.create_file(
+            "render/11_render_output/test_model/pymdp/fixture_model_pymdp.py",
+            """#!/usr/bin/env python3
+import json
+print(json.dumps({"status": "ok"}))
+""",
+        )
+        process_execute(
+            input_dir,
+            output_dir,
+            verbose=True,
+            frameworks="pymdp",
+            timeout=5,
+            render_output_dir=render_out,
+        )
+        summary_file = output_dir / "summaries" / "execution_summary.json"
+        assert summary_file.is_file()
+        summary = json.loads(summary_file.read_text(encoding="utf-8"))
+        assert summary.get("execution_summary_format") == "slim_v1"
+        assert summary.get("execution_summary_detail") is False
+        for det in summary.get("execution_details") or []:
+            assert "stdout" not in det
+            assert "stderr" not in det
+            assert "simulation_data" not in det
+            if "stdout_length" in det:
+                assert isinstance(det["stdout_length"], int)
+
+    @pytest.mark.integration
+    @pytest.mark.slow
+    def test_execution_summary_detail_file_optional(self, safe_filesystem: Any) -> None:
+        input_dir = safe_filesystem.create_dir("input")
+        output_dir = safe_filesystem.create_dir("output")
+        render_out = safe_filesystem.create_dir("render/11_render_output")
+        safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
+        safe_filesystem.create_file(
+            "render/11_render_output/test_model/pymdp/fixture_model_pymdp.py",
+            """#!/usr/bin/env python3
+import json
+print(json.dumps({"status": "ok"}))
+""",
+        )
+        process_execute(
+            input_dir,
+            output_dir,
+            verbose=True,
+            frameworks="pymdp",
+            timeout=5,
+            render_output_dir=render_out,
+            execution_summary_detail=True,
+        )
+        slim_path = output_dir / "summaries" / "execution_summary.json"
+        detail_path = output_dir / "summaries" / "execution_summary_detail.json"
+        assert slim_path.is_file()
+        assert detail_path.is_file()
+        slim = json.loads(slim_path.read_text(encoding="utf-8"))
+        detail = json.loads(detail_path.read_text(encoding="utf-8"))
+        assert slim.get("execution_summary_format") == "slim_v1"
+        assert slim.get("execution_summary_detail") is True
+        assert detail.get("execution_summary_format") == "detail_legacy_v1"
+        assert detail.get("execution_details")
+        assert isinstance(detail["execution_details"][0].get("stdout"), str)
 
 
 class TestJAXExecute:

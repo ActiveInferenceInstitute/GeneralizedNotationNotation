@@ -1,0 +1,23 @@
+Model                               Framework               N        T      Runtime    ms/step   Accuracy    Entropy
+===================================================================================================================
+pymdp_scaling_N2_T10                pymdp                   2       10         4.4s     443.57      0.800     0.0357
+pymdp_scaling_N2_T50                pymdp                   2       50         7.8s     155.79      0.960     0.1542
+pymdp_scaling_N2_T100               pymdp                   2      100        12.2s     121.57      0.960     0.0949
+pymdp_scaling_N4_T10                pymdp                   4       10         3.9s     394.22      0.800     0.0353
+pymdp_scaling_N4_T50                pymdp                   4       50         7.7s     153.01      0.920     0.3330
+pymdp_scaling_N4_T100               pymdp                   4      100         9.7s      96.74      0.910     0.1842
+pymdp_scaling_N8_T10                pymdp                   8       10         5.2s     524.45      0.800     0.0255
+pymdp_scaling_N8_T50                pymdp                   8       50         8.4s     167.79      0.920     0.3720
+pymdp_scaling_N8_T100               pymdp                   8      100        10.0s     100.07      0.910     0.1987
+pymdp_scaling_N16_T10               pymdp                  16       10         6.4s     641.88      0.700     0.0161
+pymdp_scaling_N16_T50               pymdp                  16       50        12.5s     249.21      0.900     0.4012
+pymdp_scaling_N16_T100              pymdp                  16      100        19.9s     199.00      0.890     0.3049
+pymdp_scaling_N32_T10               pymdp                  32       10         7.0s     699.76      0.700     0.0096
+pymdp_scaling_N32_T50               pymdp                  32       50        15.3s     306.74      0.900     0.4258
+pymdp_scaling_N32_T100              pymdp                  32      100        24.5s     244.93      0.890     0.3217
+pymdp_scaling_N64_T10               pymdp                  64       10         7.5s     754.52      0.700     0.0055
+pymdp_scaling_N64_T50               pymdp                  64       50        13.1s     262.74      0.900     0.4480
+pymdp_scaling_N64_T100              pymdp                  64      100        17.8s     177.75      0.890     0.4480
+pymdp_scaling_N128_T10              pymdp                 128       10        16.1s    1613.42      0.700     0.0031
+pymdp_scaling_N128_T50              pymdp                 128       50        19.3s     386.12      0.900     0.4692
+pymdp_scaling_N128_T100             pymdp                 128      100        17.9s     178.69      0.890     0.4692

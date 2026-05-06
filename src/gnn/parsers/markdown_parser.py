@@ -11,6 +11,10 @@ License: MIT
 
 import logging
 import re
+
+if not hasattr(logging, "TRACE"):
+    logging.TRACE = 5  # noqa: SIM113 — align with utils.logging.logging_utils
+    logging.addLevelName(logging.TRACE, "TRACE")
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -204,7 +208,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                     variable = self._parse_variable_definition(line)
                     if variable:
                         model.variables.append(variable)
-                        logger.debug(f"Parsed variable: {variable.name} with dimensions {variable.dimensions}")
+                        logger.log(logging.TRACE, "Parsed variable: %s with dimensions %s", variable.name, variable.dimensions)
 
     def _parse_variable_definition(self, line: str) -> Optional[Variable]:
         """Parse a single variable definition line."""
@@ -238,7 +242,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             var_type = infer_variable_type(name)
             data_type = self._parse_data_type(type_spec) if type_spec else DataType.FLOAT
 
-            logger.debug(f"Parsed variable '{name}' with dimensions {dimensions}, type={type_spec}")
+            logger.log(logging.TRACE, "Parsed variable '%s' with dimensions %s, type=%s", name, dimensions, type_spec)
 
             return Variable(
                 name=normalize_variable_name(name),
@@ -279,7 +283,12 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                 connection = self._parse_connection_definition(line)
                 if connection:
                     model.connections.append(connection)
-                    logger.debug(f"Parsed connection: {connection.source_variables} -> {connection.target_variables}")
+                    logger.log(
+                        logging.TRACE,
+                        "Parsed connection: %s -> %s",
+                        connection.source_variables,
+                        connection.target_variables,
+                    )
 
     def _parse_connection_definition(self, line: str) -> Optional[Connection]:
         """Parse a single connection definition line."""
@@ -356,8 +365,9 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             line = line.strip()
 
             if line and not line.startswith('#'):
-                # Check if this is a new parameter definition (contains '=' and not inside a matrix)
-                if '=' in line and not in_matrix and not line.startswith('#'):
+                # Check if this is a new parameter definition (contains '=' or ':' and not inside a matrix)
+                has_assignment = '=' in line or ':' in line
+                if has_assignment and not in_matrix and not line.startswith('#'):
                     # Save previous parameter if exists
                     if current_parameter and current_value_lines:
                         value_str = '\n'.join(current_value_lines)
@@ -366,7 +376,10 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                             model.parameters.append(parameter)
 
                     # Start new parameter
-                    name, value = line.split('=', 1)
+                    if '=' in line:
+                        name, value = line.split('=', 1)
+                    else:
+                        name, value = line.split(':', 1)
                     current_parameter = name.strip()
                     current_value_lines = [value.strip()]
 

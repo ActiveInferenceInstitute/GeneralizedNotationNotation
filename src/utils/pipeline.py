@@ -27,7 +27,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) ->
 def setup_step_logging(step_name: str, verbose: bool = False):
     """Set up logging for a pipeline step, delegating to logging_utils."""
     try:
-        from .logging_utils import setup_step_logging as _setup_step_logging
+        from .logging.logging_utils import setup_step_logging as _setup_step_logging
         return _setup_step_logging(step_name, verbose)
     except ImportError:
         # Recovery logging setup
@@ -71,7 +71,7 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
     try:
         # Try to import actual utilities
         from .argument_utils import ArgumentParser
-        from .logging_utils import setup_step_logging
+        from .logging.logging_utils import setup_step_logging
 
         logger = setup_step_logging(step_name, verbose)
         parser = ArgumentParser
@@ -140,7 +140,7 @@ def execute_pipeline_step_template(
         logger = setup_step_logging(step_name, verbose=True)
 
         # Log step start
-        from .logging_utils import log_step_start
+        from .logging.logging_utils import log_step_start
         log_step_start(logger, step_description)
 
         # Import dependencies if specified
@@ -156,13 +156,13 @@ def execute_pipeline_step_template(
         result = main_function()
 
         # Log step completion
-        from .logging_utils import log_step_success
+        from .logging.logging_utils import log_step_success
         log_step_success(logger, f"{step_description} completed successfully")
 
         return result
 
     except Exception as e:
         # Log step error
-        from .logging_utils import log_step_error
+        from .logging.logging_utils import log_step_error
         log_step_error(logger, f"{step_description} failed: {e}")
         raise

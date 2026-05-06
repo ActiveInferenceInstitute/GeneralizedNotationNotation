@@ -80,9 +80,9 @@ This is the **final step** (Step 24). It has access to all outputs from Steps 0â
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_intelligent_analysis`
 - `get_analysis_capabilities`
 - `get_intelligent_analysis_module_info`
+- `process_intelligent_analysis`
 
 ## References
 

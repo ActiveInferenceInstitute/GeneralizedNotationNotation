@@ -1,0 +1,806 @@
+{
+  "timestamp": "2026-05-06T07:04:50.227862",
+  "target_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study",
+  "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output",
+  "total_scripts_found": 21,
+  "successful_executions": 21,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10/pymdp/PyMDP Scaling N8 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N8 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N8_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 5.244513,
+      "timestamp": "2026-05-06T07:04:51.679178",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 5.244513,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        5.244513
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T10/pymdp/execution_logs/PyMDP Scaling N8 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T10/pymdp/execution_logs/PyMDP Scaling N8 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 3230,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100/pymdp/PyMDP Scaling N16 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N16 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N16_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 19.900066,
+      "timestamp": "2026-05-06T07:04:51.701952",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 19.900066,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        19.900066
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T100/pymdp/execution_logs/PyMDP Scaling N16 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T100/pymdp/execution_logs/PyMDP Scaling N16 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 22069,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50/pymdp/PyMDP Scaling N64 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N64 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N64_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 13.137103,
+      "timestamp": "2026-05-06T07:04:51.700533",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 13.137103,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        13.137103
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T50/pymdp/execution_logs/PyMDP Scaling N64 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T50/pymdp/execution_logs/PyMDP Scaling N64 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 25049,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10/pymdp/PyMDP Scaling N16 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N16 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N16_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 6.418839,
+      "timestamp": "2026-05-06T07:04:51.738324",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 6.418839,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        6.418839
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T10/pymdp/execution_logs/PyMDP Scaling N16 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T10/pymdp/execution_logs/PyMDP Scaling N16 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 3722,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10/pymdp/PyMDP Scaling N128 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N128 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N128_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 16.134166,
+      "timestamp": "2026-05-06T07:04:51.746634",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 16.134166,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        16.134166
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T10/pymdp/execution_logs/PyMDP Scaling N128 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T10/pymdp/execution_logs/PyMDP Scaling N128 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 10243,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50/pymdp/PyMDP Scaling N128 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N128 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N128_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 19.305926,
+      "timestamp": "2026-05-06T07:04:51.798393",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 19.305926,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        19.305926
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T50/pymdp/execution_logs/PyMDP Scaling N128 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T50/pymdp/execution_logs/PyMDP Scaling N128 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 42850,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50/pymdp/PyMDP Scaling N16 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N16 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N16_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 12.460326,
+      "timestamp": "2026-05-06T07:04:56.992871",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 12.460326,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        12.460326
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T50/pymdp/execution_logs/PyMDP Scaling N16 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T50/pymdp/execution_logs/PyMDP Scaling N16 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N16_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 11852,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10/pymdp/PyMDP Scaling N64 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N64 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N64_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 7.545182,
+      "timestamp": "2026-05-06T07:04:58.210464",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 7.545182,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        7.545182
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T10/pymdp/execution_logs/PyMDP Scaling N64 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T10/pymdp/execution_logs/PyMDP Scaling N64 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 6500,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50/pymdp/PyMDP Scaling N8 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N8 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N8_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 8.389394,
+      "timestamp": "2026-05-06T07:05:04.896370",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 8.389394,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        8.389394
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T50/pymdp/execution_logs/PyMDP Scaling N8 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T50/pymdp/execution_logs/PyMDP Scaling N8 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 9516,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50/pymdp/PyMDP Scaling N4 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N4 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N4_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 7.65066,
+      "timestamp": "2026-05-06T07:05:05.856691",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 7.65066,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        7.65066
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T50/pymdp/execution_logs/PyMDP Scaling N4 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T50/pymdp/execution_logs/PyMDP Scaling N4 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 8634,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100/pymdp/PyMDP Scaling N64 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N64 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N64_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 17.775305,
+      "timestamp": "2026-05-06T07:05:07.933502",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 17.775305,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        17.775305
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T100/pymdp/execution_logs/PyMDP Scaling N64 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T100/pymdp/execution_logs/PyMDP Scaling N64 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N64_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 48592,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100/pymdp/PyMDP Scaling N32 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N32 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N32_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 24.493257,
+      "timestamp": "2026-05-06T07:05:09.498194",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 24.493257,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        24.493257
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T100/pymdp/execution_logs/PyMDP Scaling N32 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T100/pymdp/execution_logs/PyMDP Scaling N32 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 30940,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50/pymdp/PyMDP Scaling N32 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N32 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N32_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 15.337056,
+      "timestamp": "2026-05-06T07:05:11.165922",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 15.337056,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        15.337056
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T50/pymdp/execution_logs/PyMDP Scaling N32 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T50/pymdp/execution_logs/PyMDP Scaling N32 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 16289,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50/pymdp/PyMDP Scaling N2 T50_pymdp.py",
+      "script_name": "PyMDP Scaling N2 T50_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N2_T50",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 7.789588,
+      "timestamp": "2026-05-06T07:05:11.652913",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 7.789588,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        7.789588
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T50/pymdp/execution_logs/PyMDP Scaling N2 T50_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T50/pymdp/execution_logs/PyMDP Scaling N2 T50_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T50/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 7932,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100/pymdp/PyMDP Scaling N2 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N2 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N2_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 12.156599,
+      "timestamp": "2026-05-06T07:05:13.322786",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 12.156599,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        12.156599
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T100/pymdp/execution_logs/PyMDP Scaling N2 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T100/pymdp/execution_logs/PyMDP Scaling N2 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 14237,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10/pymdp/PyMDP Scaling N2 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N2 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N2_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 4.43571,
+      "timestamp": "2026-05-06T07:05:13.547117",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 4.43571,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        4.43571
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T10/pymdp/execution_logs/PyMDP Scaling N2 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T10/pymdp/execution_logs/PyMDP Scaling N2 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N2_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 2892,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100/pymdp/PyMDP Scaling N128 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N128 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N128_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 17.869162,
+      "timestamp": "2026-05-06T07:05:18.016579",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 17.869162,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        17.869162
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T100/pymdp/execution_logs/PyMDP Scaling N128 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T100/pymdp/execution_logs/PyMDP Scaling N128 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N128_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 84316,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10/pymdp/PyMDP Scaling N32 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N32 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N32_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 6.997631,
+      "timestamp": "2026-05-06T07:05:19.477323",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 6.997631,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        6.997631
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T10/pymdp/execution_logs/PyMDP Scaling N32 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T10/pymdp/execution_logs/PyMDP Scaling N32 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N32_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 4654,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10/pymdp/PyMDP Scaling N4 T10_pymdp.py",
+      "script_name": "PyMDP Scaling N4 T10_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N4_T10",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 3.942211,
+      "timestamp": "2026-05-06T07:05:25.515613",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 3.942211,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        3.942211
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T10/pymdp/execution_logs/PyMDP Scaling N4 T10_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T10/pymdp/execution_logs/PyMDP Scaling N4 T10_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T10/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 3034,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP Scaling N4 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N4 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N4_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 9.674031,
+      "timestamp": "2026-05-06T07:05:25.783685",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 9.674031,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        9.674031
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T100/pymdp/execution_logs/PyMDP Scaling N4 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T100/pymdp/execution_logs/PyMDP Scaling N4 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 15639,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    },
+    {
+      "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP Scaling N8 T100_pymdp.py",
+      "script_name": "PyMDP Scaling N8 T100_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "pymdp_scaling_N8_T100",
+      "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+      "success": true,
+      "skipped": false,
+      "return_code": 0,
+      "execution_time": 10.006631,
+      "timestamp": "2026-05-06T07:05:26.511065",
+      "execution_benchmark_repeats": 1,
+      "execution_time_mean": 10.006631,
+      "execution_time_std": 0.0,
+      "execution_time_samples": [
+        10.006631
+      ],
+      "structured_result_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T100/pymdp/execution_logs/PyMDP Scaling N8 T100_pymdp.py_results.json",
+      "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T100/pymdp/execution_logs/PyMDP Scaling N8 T100_pymdp.py_execution.log",
+      "implementation_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N8_T100/pymdp",
+      "stdout_length": 41,
+      "stderr_length": 17389,
+      "collected_outputs_summary": {
+        "visualizations": {
+          "count": 0
+        },
+        "simulation_data": {
+          "count": 1
+        },
+        "traces": {
+          "count": 0
+        },
+        "other": {
+          "count": 0
+        }
+      }
+    }
+  ],
+  "framework_status": {
+    "pymdp": {
+      "status": "success",
+      "executions": 21
+    }
+  },
+  "execution_mode": "local",
+  "execution_workers": 6,
+  "backend": null,
+  "execution_benchmark_repeats": 1,
+  "execution_summary_detail": false,
+  "success": true,
+  "requested_frameworks": [
+    "pymdp"
+  ],
+  "total_scripts": 21,
+  "success_rate": 100.0,
+  "execution_summary_format": "slim_v1"
+}

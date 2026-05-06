@@ -1,0 +1,125 @@
+{
+  "framework": "pymdp",
+  "model_name": "pymdp_scaling_N4_T10",
+  "script_name": "PyMDP Scaling N4 T10_pymdp.py",
+  "script_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10/pymdp/PyMDP Scaling N4 T10_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 3.942211,
+  "timestamp": "2026-05-06T07:05:25.515613",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      2,
+      0,
+      3,
+      3,
+      3,
+      0,
+      1,
+      3,
+      3,
+      3
+    ],
+    "actions": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "policy": [],
+    "raw_output": "PyMDP 1.0.0+ detected (JAX-first Agent).\n",
+    "raw_error": "2026-05-06 07:05:27,135 - __main__ - INFO - Running pymdp 1.0.0 rollout for PyMDP Scaling N4 T10\n2026-05-06 07:05:27,136 - __main__ - INFO - Output directory: output/pymdp_simulations/PyMDP Scaling N4 T10\n2026-05-06 07:05:27,136 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-05-06 07:05:27,136 - src.execute.pymdp.simple_simulation - INFO - Starting pymdp 1.0.0 rollout (JAX backend)\n2026-05-06 07:05:27,137 - src.execute.pymdp.simple_simulation - INFO - Dimensions: No=4, Ns=4, Nu=4 | T=10, batch=1, policy_len=1\n2026-05-06 07:05:27,143 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)\n2026-05-06 07:05:27,458 - src.execute.pymdp.simple_simulation - INFO - pymdp 1.0.0 Agent built (batch_size=1)\n2026-05-06 07:05:28,425 - src.execute.pymdp.simple_simulation - INFO - t=00 obs=2 belief=[0.025, 0.025, 0.925, 0.025] action=3 next_state=0\n2026-05-06 07:05:28,484 - src.execute.pymdp.simple_simulation - INFO - t=01 obs=0 belief=[0.661, 0.018, 0.018, 0.304] action=3 next_state=3\n2026-05-06 07:05:28,553 - src.execute.pymdp.simple_simulation - INFO - t=02 obs=3 belief=[0.002, 0.002, 0.002, 0.995] action=3 next_state=3\n2026-05-06 07:05:28,612 - src.execute.pymdp.simple_simulation - INFO - t=03 obs=3 belief=[0.002, 0.002, 0.002, 0.995] action=3 next_state=3\n2026-05-06 07:05:28,675 - src.execute.pymdp.simple_simulation - INFO - t=04 obs=3 belief=[0.002, 0.002, 0.002, 0.995] action=3 next_state=3\n2026-05-06 07:05:28,745 - src.execute.pymdp.simple_simulation - INFO - t=05 obs=0 belief=[0.661, 0.018, 0.018, 0.304] action=3 next_state=3\n2026-05-06 07:05:28,809 - src.execute.pymdp.simple_simulation - INFO - t=06 obs=1 belief=[0.018, 0.661, 0.018, 0.304] action=3 next_state=3\n2026-05-06 07:05:28,874 - src.execute.pymdp.simple_simulation - INFO - t=07 obs=3 belief=[0.002, 0.002, 0.002, 0.995] action=3 next_state=3\n2026-05-06 07:05:28,942 - src.execute.pymdp.simple_simulation - INFO - t=08 obs=3 belief=[0.002, 0.002, 0.002, 0.995] action=3 next_state=3\n2026-05-06 07:05:29,004 - src.execute.pymdp.simple_simulation - INFO - t=09 obs=3 belief=[0.002, 0.002, 0.002, 0.995] action=3 next_state=0\n2026-05-06 07:05:29,005 - src.execute.pymdp.simple_simulation - INFO - Saved simulation results to output/pymdp_simulations/PyMDP Scaling N4 T10/simulation_results.json\n2026-05-06 07:05:29,005 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-05-06 07:05:29,005 - __main__ - INFO - Simulation completed successfully\n2026-05-06 07:05:29,005 - __main__ - INFO -   framework:    PyMDP\n2026-05-06 07:05:29,005 - __main__ - INFO -   pymdp ver:    1.0.0\n2026-05-06 07:05:29,005 - __main__ - INFO -   backend:      jax\n2026-05-06 07:05:29,005 - __main__ - INFO -   num_timesteps:10\n",
+    "beliefs": [
+      [
+        0.02499999850988388,
+        0.02499999850988388,
+        0.925000011920929,
+        0.02499999850988388
+      ],
+      [
+        0.660714328289032,
+        0.0178571417927742,
+        0.0178571417927742,
+        0.3035714030265808
+      ],
+      [
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.9952532052993774
+      ],
+      [
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.9952532052993774
+      ],
+      [
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.9952532052993774
+      ],
+      [
+        0.660714328289032,
+        0.0178571455180645,
+        0.0178571455180645,
+        0.3035714030265808
+      ],
+      [
+        0.017857147380709648,
+        0.6607143878936768,
+        0.017857147380709648,
+        0.30357134342193604
+      ],
+      [
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.9952532052993774
+      ],
+      [
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.9952532052993774
+      ],
+      [
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.0015822791028767824,
+        0.9952532052993774
+      ]
+    ],
+    "num_timesteps": 10
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 41,
+    "stderr_length": 3034,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T10/pymdp"
+  },
+  "execution_time_mean": 3.942211,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    3.942211
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output/pymdp_scaling_N4_T10/pymdp/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

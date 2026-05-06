@@ -56,8 +56,9 @@ The registry automatically extracts:
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `model_registry.register_model`
 - `model_registry.get_model`
+- `model_registry.list_models`
+- `model_registry.register_model`
 - `model_registry.search_models`
 
 ## References

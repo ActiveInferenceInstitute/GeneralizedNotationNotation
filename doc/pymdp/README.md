@@ -15,12 +15,12 @@ does **not** consume.
 
 - [`gnn_pymdp.md`](gnn_pymdp.md) — GNN → pymdp 1.0.0 integration contract
   (matrix shapes, rollout loop, embedded code samples).
+- [`pymdp_performance_guide.md`](pymdp_performance_guide.md) — performance
+  notes (JAX/JIT, batching, memory) and **Systematic Scaling Studies**.
+- [`run_pymdp_gnn_scaling_analysis.py`](../../scripts/run_pymdp_gnn_scaling_analysis.py) —
+  The automated orchestrator for PyMDP performance sweeps.
 - [`pymdp_1_0_0_alignment_matrix.md`](pymdp_1_0_0_alignment_matrix.md) —
   upstream 1.0.0 claim mapping and local status.
-- [`pymdp_advanced_tutorials.md`](pymdp_advanced_tutorials.md) — extended
-  examples (aspirational; not all are pipeline contracts).
-- [`pymdp_performance_guide.md`](pymdp_performance_guide.md) — performance
-  notes (JAX/JIT, batching, memory).
 - [`pymdp_pomdp/README.md`](pymdp_pomdp/README.md) — reference scripts under
   `doc/pymdp/pymdp_pomdp/` and their boundaries.
 

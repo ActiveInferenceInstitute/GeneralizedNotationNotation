@@ -96,6 +96,12 @@ The `MCP` singleton honours these knobs, all propagated through
 - Tool registration manifests
 - Server configuration files
 
+## MCP Tools
+
+This module registers tools with the GNN MCP server (see `mcp.py`):
+
+- None
+
 ## References
 
 - [AGENTS.md](AGENTS.md) — Module documentation

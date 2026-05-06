@@ -1,0 +1,8 @@
+Framework,N,Median Time per Step (ms)
+pymdp,2,155.7918
+pymdp,4,153.0132
+pymdp,8,167.7879
+pymdp,16,249.2065
+pymdp,32,306.7411
+pymdp,64,262.7421
+pymdp,128,386.1185

@@ -10,9 +10,11 @@ import logging
 import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
+import copy
+from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 from utils.logging.logging_utils import (
     log_step_error,
@@ -144,6 +146,71 @@ def _make_skipped_result(script_info: Dict[str, Any], framework: str, model_name
     }
 
 
+def _coerce_execution_workers(value: Any) -> int:
+    """Normalize the configured local/distributed worker count."""
+    try:
+        workers = int(value)
+    except (TypeError, ValueError):
+        workers = 1
+    return max(1, workers)
+
+
+def _execute_script_worker(bundle: Tuple[Dict[str, Any], Path, bool, int, int]) -> Dict[str, Any]:
+    """Process-pool entry point for a single rendered script."""
+    script_info, results_dir, verbose, timeout, repeats = bundle
+    worker_logger = logging.getLogger("execute.worker")
+    worker_logger.setLevel(logging.INFO)
+    result = execute_single_script(
+        script_info,
+        results_dir,
+        verbose,
+        worker_logger,
+        timeout,
+        execution_benchmark_repeats=repeats,
+    )
+    result.setdefault("skipped", False)
+    return result
+
+
+def _run_scripts_with_local_workers(
+    executable_scripts: List[Dict[str, Any]],
+    results_dir: Path,
+    verbose: bool,
+    logger: logging.Logger,
+    timeout: int,
+    execution_workers: int,
+    execution_benchmark_repeats: int,
+) -> List[Dict[str, Any]]:
+    """Execute rendered scripts locally, using multiple processes when requested."""
+    repeats = max(1, int(execution_benchmark_repeats))
+    if execution_workers <= 1 or len(executable_scripts) <= 1:
+        details = []
+        for script_info in executable_scripts:
+            exec_result = execute_single_script(
+                script_info,
+                results_dir,
+                verbose,
+                logger,
+                timeout,
+                execution_benchmark_repeats=repeats,
+            )
+            exec_result.setdefault("skipped", False)
+            details.append(exec_result)
+        return details
+
+    bounded_workers = min(execution_workers, len(executable_scripts))
+    logger.info(
+        "Dispatching %s executable scripts with %s local workers",
+        len(executable_scripts),
+        bounded_workers,
+    )
+    bundles = [
+        (info, results_dir, verbose, timeout, repeats) for info in executable_scripts
+    ]
+    with ProcessPoolExecutor(max_workers=bounded_workers) as pool:
+        return list(pool.map(_execute_script_worker, bundles))
+
+
 def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
     """
     Parse the frameworks parameter into a list of framework names.
@@ -175,25 +242,48 @@ def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
     return valid_list if valid_list else ["pymdp"]  # Default to pymdp if nothing valid
 
 
-def _resolve_render_output_dir(target_dir: Path, kwargs: dict) -> Optional[Path]:
+def _resolve_render_output_dir(
+    target_dir: Path,
+    kwargs: dict,
+    output_dir: Optional[Path] = None,
+) -> Optional[Path]:
     """Resolve the render output directory from kwargs and filesystem heuristics.
 
     Resolution priority:
     1. Explicit ``--render-output-dir`` kwarg.
-    2. target_dir itself if it looks like a render output directory.
-    3. Common pipeline and test output locations (searched in order).
+    2. Sibling of the current step's output dir: when ``output_dir`` is
+       ``<base>/12_execute_output``, use ``<base>/11_render_output`` (and nested layout).
+    3. target_dir itself if it looks like a render output directory.
+    4. Common pipeline and test output locations (searched in order).
 
     Returns the first existing, non-empty directory found, or None.
     """
+    def _if_nonempty(p: Path) -> Optional[Path]:
+        if p.exists() and any(p.rglob("*")):
+            return p
+        return None
+
     # Priority 1: explicit kwarg
-    if kwargs.get('render_output_dir'):
-        return Path(kwargs['render_output_dir'])
+    if kwargs.get("render_output_dir"):
+        p = Path(kwargs["render_output_dir"])
+        return _if_nonempty(p) or p
 
-    # Priority 2: target_dir is already the render output
+    # Priority 2: same pipeline base as step 12 (target often remains GNN input dir)
+    if output_dir is not None:
+        base = output_dir.parent
+        for rel in (
+            "11_render_output/11_render_output",
+            "11_render_output",
+        ):
+            found = _if_nonempty(base / rel)
+            if found is not None:
+                return found
+
+    # Priority 3: target_dir is already the render output
     if "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
-        return target_dir
+        return _if_nonempty(target_dir) or target_dir
 
-    # Priority 3: search common locations
+    # Priority 4: search common locations (cwd-relative and legacy test paths)
     candidates: List[Path] = [
         target_dir.parent / "output" / "11_render_output",
         target_dir / "11_render_output",
@@ -203,9 +293,65 @@ def _resolve_render_output_dir(target_dir: Path, kwargs: dict) -> Optional[Path]
         *list(Path("output").glob("**/11_render_output")),
     ]
     for candidate in candidates:
-        if candidate.exists() and any(candidate.rglob("*")):
-            return candidate
+        found = _if_nonempty(candidate)
+        if found is not None:
+            return found
     return None
+
+
+def _summarize_collected_outputs(coll: Any) -> Any:
+    """Replace bulky collected_outputs with counts safe for aggregate JSON."""
+    if coll is None:
+        return None
+    if isinstance(coll, dict):
+        out: Dict[str, Any] = {}
+        for k, v in coll.items():
+            if isinstance(v, list):
+                out[str(k)] = {"count": len(v)}
+            elif isinstance(v, dict):
+                out[str(k)] = {"n_keys": len(v)}
+            else:
+                out[str(k)] = v
+        return out
+    if isinstance(coll, list):
+        return {"count": len(coll)}
+    return coll
+
+
+def _slim_execution_detail(detail: Dict[str, Any]) -> Dict[str, Any]:
+    """Strip heavy fields from a per-script execution result for aggregate summaries."""
+    keys_keep = (
+        "script_path",
+        "script_name",
+        "framework",
+        "model_name",
+        "executor",
+        "success",
+        "skipped",
+        "return_code",
+        "error",
+        "error_type",
+        "execution_time",
+        "timestamp",
+        "execution_benchmark_repeats",
+        "execution_time_mean",
+        "execution_time_std",
+        "execution_time_samples",
+        "structured_result_file",
+        "output_file",
+        "implementation_directory",
+    )
+    slim: Dict[str, Any] = {}
+    for k in keys_keep:
+        if k in detail:
+            slim[k] = detail[k]
+    if isinstance(detail.get("stdout"), str):
+        slim["stdout_length"] = len(detail["stdout"])
+    if isinstance(detail.get("stderr"), str):
+        slim["stderr_length"] = len(detail["stderr"])
+    if "collected_outputs" in detail:
+        slim["collected_outputs_summary"] = _summarize_collected_outputs(detail["collected_outputs"])
+    return slim
 
 
 def process_execute(
@@ -251,6 +397,9 @@ def process_execute(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
+        execution_benchmark_repeats = max(1, int(kwargs.get("execution_benchmark_repeats", 1)))
+        execution_summary_detail = bool(kwargs.get("execution_summary_detail", False))
+
         # Initialize execution results
         execution_results = {
             "timestamp": datetime.now().isoformat(),
@@ -262,11 +411,18 @@ def process_execute(
             "skipped_executions": 0,
             "execution_details": [],
             "framework_status": {},
+            "execution_mode": "local",
+            "execution_workers": 1,
+            "backend": None,
+            "execution_benchmark_repeats": execution_benchmark_repeats,
+            "execution_summary_detail": execution_summary_detail,
             "success": True
         }
 
         # Look for rendered implementations from render output
-        render_output_dir = _resolve_render_output_dir(target_dir, kwargs)
+        render_output_dir = _resolve_render_output_dir(
+            target_dir, kwargs, output_dir=results_dir
+        )
         if render_output_dir is not None and render_output_dir != target_dir:
             logger.info(f"Found render output directory: {render_output_dir}")
 
@@ -293,36 +449,53 @@ def process_execute(
                 logger.info(f"Found {len(executable_scripts)} executable scripts to run")
 
                 # Extract args
-                timeout = kwargs.get('timeout', 300)
+                timeout = kwargs.get('timeout', 3600)
                 is_distributed = kwargs.get('distributed', False)
+                execution_workers = _coerce_execution_workers(
+                    kwargs.get("execution_workers", 1)
+                )
+                execution_results["execution_mode"] = "distributed" if is_distributed else "local"
+                execution_results["execution_workers"] = execution_workers
+                execution_results["backend"] = kwargs.get("backend", "ray") if is_distributed else None
                 details = []
 
                 if is_distributed:
                     from .distributed import Dispatcher
                     backend = kwargs.get('backend', 'ray')
-                    dispatcher = Dispatcher(backend=backend)
+                    dispatcher = Dispatcher(backend=backend, num_cpus=execution_workers)
                     
                     def ray_script_runner(info, **kws):
                         """Execute a rendered simulation script using Ray for distributed processing."""
-                        # Re-instantiate logger to avoid pickle issues
                         import logging
                         local_logger = logging.getLogger("execute.worker")
                         local_logger.setLevel(logging.INFO)
-                        return execute_single_script(info, kws["results_dir"], kws["verbose"], local_logger, kws["timeout"])
-                        
+                        return execute_single_script(
+                            info,
+                            kws["results_dir"],
+                            kws["verbose"],
+                            local_logger,
+                            kws["timeout"],
+                            execution_benchmark_repeats=kws.get("execution_benchmark_repeats", 1),
+                        )
+
                     details = dispatcher.run_scripts_parallel(
-                        executable_scripts, 
-                        ray_script_runner, 
-                        results_dir=results_dir, 
-                        verbose=verbose, 
-                        timeout=timeout
+                        executable_scripts,
+                        ray_script_runner,
+                        results_dir=results_dir,
+                        verbose=verbose,
+                        timeout=timeout,
+                        execution_benchmark_repeats=execution_benchmark_repeats,
                     )
                 else:
-                    # Execute each script sequentially (execute_single_script skips when optional dep missing)
-                    for script_info in executable_scripts:
-                        exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
-                        exec_result.setdefault("skipped", False)
-                        details.append(exec_result)
+                    details = _run_scripts_with_local_workers(
+                        executable_scripts,
+                        results_dir,
+                        verbose,
+                        logger,
+                        timeout,
+                        execution_workers,
+                        execution_benchmark_repeats,
+                    )
 
                 # Update aggregated results
                 for exec_result in details:
@@ -360,15 +533,33 @@ def process_execute(
             round(successful / attempted * 100, 2) if attempted > 0 else 100.0
         )
 
-        # Save detailed results to summaries subfolder
+        # Save detailed results to summaries subfolder (slim aggregate + optional full detail file)
         summaries_dir = results_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)
         results_file = summaries_dir / "execution_summary.json"
+
+        full_details_snapshot = copy.deepcopy(execution_results["execution_details"])
+        execution_results["execution_details"] = [
+            _slim_execution_detail(d) for d in full_details_snapshot
+        ]
+        execution_results["execution_summary_format"] = "slim_v1"
+
         with open(results_file, 'w') as f:
             json.dump(execution_results, f, indent=2, default=str)
 
-        # Generate execution report
+        if execution_summary_detail:
+            detail_path = summaries_dir / "execution_summary_detail.json"
+            detail_payload = dict(execution_results)
+            detail_payload["execution_details"] = full_details_snapshot
+            detail_payload["execution_summary_format"] = "detail_legacy_v1"
+            with open(detail_path, 'w') as f:
+                json.dump(detail_payload, f, indent=2, default=str)
+
+        # Generate execution report (uses slim execution_details)
         generate_execution_report(execution_results, results_dir, logger)
+
+        # Restore full details in-memory for any downstream callers of this function
+        execution_results["execution_details"] = full_details_snapshot
 
         # Determine overall success: only count real failures (not skipped) toward critical threshold
         total_scripts = execution_results["total_scripts_found"]
@@ -481,7 +672,32 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
     return executable_scripts
 
 
-def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbose: bool, logger, timeout: int = 300) -> Dict[str, Any]:
+def _aggregate_benchmark_samples(samples: List[float]) -> Dict[str, Any]:
+    """Aggregate repeated execution durations (median + population std)."""
+    import statistics
+
+    if not samples:
+        return {}
+    med = float(statistics.median(samples))
+    mean = float(statistics.mean(samples))
+    std = float(statistics.pstdev(samples)) if len(samples) > 1 else 0.0
+    return {
+        "execution_time": med,
+        "execution_time_mean": mean,
+        "execution_time_std": std,
+        "execution_time_samples": list(samples),
+    }
+
+
+def execute_single_script(
+    script_info: Dict[str, Any],
+    results_dir: Path,
+    verbose: bool,
+    logger,
+    timeout: int = 3600,
+    *,
+    execution_benchmark_repeats: int = 1,
+) -> Dict[str, Any]:
     """
     Execute a single script using subprocess.
     
@@ -530,8 +746,6 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
 
         if verbose:
             logger.info(f"Executing {script_info['framework']} script: {script_info['name']}")
-
-        start_time = datetime.now()
 
         # Check if the executor is available
         try:
@@ -586,24 +800,30 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         script_name = script_path.name
         result = None
 
-        # Error result class for consistent interface when subprocess fails
         class ErrorResult:
             def __init__(self, returncode: int, stdout: str, stderr: str):
                 self.returncode = returncode
                 self.stdout = stdout
                 self.stderr = stderr
 
+        K = max(1, int(execution_benchmark_repeats))
+        exec_result["execution_benchmark_repeats"] = K
+
+        durations_success: List[float] = []
+        broke_early = False
+
         try:
-            # Set environment variables if needed
             env = os.environ.copy()
             if framework == "pymdp":
                 env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
-                # Generated PyMDP scripts import src.execute.pymdp; subprocess cwd is often under output/
                 _proc = Path(__file__).resolve()
-                _repo_root = _proc.parent.parent.parent  # src/execute/processor.py -> src -> repo root
+                _repo_root = _proc.parent.parent.parent  # src/execute/processor.py -> repo root
                 env["GNN_PROJECT_ROOT"] = str(_repo_root)
+                env.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
+                jax_plat = os.environ.get("GNN_JAX_PLATFORM")
+                if jax_plat and str(jax_plat).strip():
+                    env["JAX_PLATFORM_NAME"] = str(jax_plat).strip()
 
-            # Direct JAX/NumPyro/PyTorch output into execute output dir for collection/analysis
             impl_output_dir = results_dir / model_name / framework
             sim_data_dir = impl_output_dir / "simulation_data"
             if framework == "jax":
@@ -616,60 +836,91 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 sim_data_dir.mkdir(parents=True, exist_ok=True)
                 env["PYTORCH_OUTPUT_DIR"] = str(sim_data_dir)
 
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-                [executor, script_name],
-                capture_output=True,
-                text=True,
-                timeout=timeout,
-                cwd=script_path.parent,  # Run in the script's directory
-                env=env
-            )
+            for rep in range(K):
+                rep_start = datetime.now()
+                try:
+                    run_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                        [executor, script_name],
+                        capture_output=True,
+                        text=True,
+                        timeout=timeout,
+                        cwd=script_path.parent,
+                        env=env,
+                    )
+                except subprocess.TimeoutExpired:
+                    exec_result["execution_time"] = (datetime.now() - rep_start).total_seconds()
+                    exec_result["error"] = f"Script execution timed out after {timeout} seconds"
+                    exec_result["return_code"] = -1
+                    exec_result["stdout"] = ""
+                    exec_result["stderr"] = "Timeout"
+                    logger.warning(
+                        f"⏰ Script {script_info['name']} timed out after {timeout} seconds "
+                        f"(rep {rep + 1}/{K})"
+                    )
+                    result = ErrorResult(-1, "", "Timeout")
+                    broke_early = True
+                    break
 
-            end_time = datetime.now()
-            exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['return_code'] = result.returncode
-            exec_result['stdout'] = result.stdout
-            exec_result['stderr'] = result.stderr
+                elapsed_rep = (datetime.now() - rep_start).total_seconds()
 
-            if result.returncode == 0:
-                exec_result['success'] = True
-                logger.info(f"✅ Successfully executed {script_info['name']}")
-                if verbose and result.stdout:
-                    logger.info(f"Script output: {result.stdout[:200]}...")  # Show first 200 chars
-            else:
-                exec_result['error'] = f"Script failed with return code {result.returncode}"
+                if run_result.returncode != 0:
+                    exec_result["execution_time"] = elapsed_rep
+                    exec_result["return_code"] = run_result.returncode
+                    exec_result["stdout"] = run_result.stdout
+                    exec_result["stderr"] = run_result.stderr
+                    exec_result["error"] = f"Script failed with return code {run_result.returncode}"
 
-                # Analyze stderr for common errors
-                if "ModuleNotFoundError" in result.stderr:
-                    exec_result['error_type'] = "DependencyError"
-                    logger.error(f"Missing dependency in {script_info['name']}: {result.stderr.splitlines()[-1]}")
-                elif "SyntaxError" in result.stderr:
-                    exec_result['error_type'] = "SyntaxError"
-                    logger.error(f"Syntax error in {script_info['name']}")
+                    if "ModuleNotFoundError" in run_result.stderr:
+                        exec_result["error_type"] = "DependencyError"
+                        logger.error(
+                            f"Missing dependency in {script_info['name']}: "
+                            f"{run_result.stderr.splitlines()[-1]}"
+                        )
+                    elif "SyntaxError" in run_result.stderr:
+                        exec_result["error_type"] = "SyntaxError"
+                        logger.error(f"Syntax error in {script_info['name']}")
+                    else:
+                        exec_result["error_type"] = "RuntimeError"
+
+                    logger.warning(
+                        f"⚠️ Script {script_info['name']} failed with return code "
+                        f"{run_result.returncode} (rep {rep + 1}/{K})"
+                    )
+                    if run_result.stderr:
+                        logger.warning(f"Error output: {run_result.stderr[:500]}...")
+                    result = run_result
+                    broke_early = True
+                    break
+
+                durations_success.append(elapsed_rep)
+                result = run_result
+                if verbose and K > 1:
+                    logger.info(
+                        f"Benchmark rep {rep + 1}/{K} for {script_info['name']}: {elapsed_rep:.3f}s"
+                    )
+
+            if not broke_early and result is not None and len(durations_success) == K:
+                agg = _aggregate_benchmark_samples(durations_success)
+                exec_result.update(agg)
+                exec_result["success"] = True
+                exec_result["return_code"] = result.returncode
+                exec_result["stdout"] = result.stdout
+                exec_result["stderr"] = result.stderr
+                if K == 1:
+                    logger.info(f"✅ Successfully executed {script_info['name']}")
                 else:
-                    exec_result['error_type'] = "RuntimeError"
-
-                logger.warning(f"⚠️ Script {script_info['name']} failed with return code {result.returncode}")
-                if result.stderr:
-                    logger.warning(f"Error output: {result.stderr[:500]}...")  # Show first 500 chars
-
-        except subprocess.TimeoutExpired:
-            end_time = datetime.now()
-            exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['error'] = f"Script execution timed out after {timeout} seconds"
-            exec_result['return_code'] = -1
-            exec_result['stdout'] = ""
-            exec_result['stderr'] = "Timeout"
-            logger.warning(f"⏰ Script {script_info['name']} timed out after {timeout} seconds")
-            result = ErrorResult(-1, "", "Timeout")
-
+                    logger.info(
+                        f"✅ Successfully executed {script_info['name']} "
+                        f"({K} reps, median {exec_result['execution_time']:.3f}s)"
+                    )
+                if verbose and result.stdout:
+                    logger.info(f"Script output: {result.stdout[:200]}...")
         except Exception as e:
-            end_time = datetime.now()
-            exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['error'] = f"Script execution failed: {e}"
-            exec_result['return_code'] = -2
-            exec_result['stdout'] = ""
-            exec_result['stderr'] = str(e)
+            exec_result["execution_time"] = exec_result.get("execution_time", 0)
+            exec_result["error"] = f"Script execution failed: {e}"
+            exec_result["return_code"] = -2
+            exec_result["stdout"] = ""
+            exec_result["stderr"] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
             result = ErrorResult(-2, "", str(e))
 
@@ -702,6 +953,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             "execution_time": exec_result.get('execution_time', 0),
             "timestamp": exec_result['timestamp'],
             "simulation_data": simulation_data,
+            "execution_benchmark_repeats": exec_result.get("execution_benchmark_repeats", 1),
             "execution_metadata": {
                 "executor": executor,
                 "stdout_length": len(result.stdout),
@@ -709,6 +961,9 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 "output_directory": str(impl_specific_dir.parent)
             }
         }
+        for bench_key in ("execution_time_mean", "execution_time_std", "execution_time_samples"):
+            if bench_key in exec_result:
+                structured_result[bench_key] = exec_result[bench_key]
 
         # Save structured JSON result
         json_output_file = impl_specific_dir / f"{script_info['name']}_results.json"
@@ -723,7 +978,13 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             f.write(f"Execution Results for {script_info['name']}\n")
             f.write(f"Timestamp: {exec_result['timestamp']}\n")
             f.write(f"Return Code: {result.returncode}\n")
-            f.write(f"Execution Time: {exec_result['execution_time']:.2f} seconds\n")
+            f.write(f"Benchmark repeats: {exec_result.get('execution_benchmark_repeats', 1)}\n")
+            f.write(f"Execution Time (median wall-clock): {exec_result['execution_time']:.2f} seconds\n")
+            if exec_result.get("execution_time_samples"):
+                f.write(f"Sample durations (s): {exec_result['execution_time_samples']}\n")
+            if exec_result.get("execution_time_std") is not None:
+                f.write(f"Duration mean/std (s): {exec_result.get('execution_time_mean', 0):.4f} / "
+                        f"{exec_result.get('execution_time_std', 0):.4f}\n")
             f.write(f"Model: {model_name}\n")
             f.write(f"Framework: {framework}\n")
             f.write(f"Output Directory: {impl_specific_dir.parent}\n\n")

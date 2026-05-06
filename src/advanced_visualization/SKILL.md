@@ -79,9 +79,10 @@ uv sync --extra visualization
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_advanced_visualization`
 - `check_visualization_capabilities`
+- `get_advanced_visualization_module_info`
 - `list_d2_visualization_types`
+- `process_advanced_visualization`
 
 ## References
 

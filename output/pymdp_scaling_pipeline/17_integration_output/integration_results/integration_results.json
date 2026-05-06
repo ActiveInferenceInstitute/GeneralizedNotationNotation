@@ -1,0 +1,43 @@
+{
+  "processed_files": 21,
+  "success": true,
+  "errors": [],
+  "system_graph_stats": {
+    "nodes": 11,
+    "edges": 15,
+    "cycles": 7,
+    "isolated_nodes": 1,
+    "components": 2
+  },
+  "issues": [
+    "Isolated components (no connections): ['t']"
+  ],
+  "meta_analysis": {
+    "records": 21,
+    "plots": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/data/sweep_data.csv",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/pymdp/heatmaps/runtime_heatmap_pymdp.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/scaling/runtime_scaling_curves.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/framework_runtime_comparison.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/time_per_step.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/accuracy_comparison.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/entropy_vs_states.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/pymdp/heatmaps/accuracy_heatmap_pymdp.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/pymdp/heatmaps/entropy_heatmap_pymdp.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/pymdp/surfaces/runtime_surface_3d_pymdp.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/compute_efficiency.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/scaling/resource_scaling_loc.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/accuracy_entropy_correlation.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/scaling/throughput_vs_n.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/runtime_distribution.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/scaling/scaling_exponent_summary.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/scaling/code_efficiency.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comprehensive_dashboard.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/cross_framework/comparisons/accuracy_vs_timesteps.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/visualizations/data/gnn_serialization_footprint.png"
+    ],
+    "report": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/meta_analysis_report.md",
+    "validation_json": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/sweep_validation.json",
+    "statistics_json": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/meta_statistics.json"
+  }
+}

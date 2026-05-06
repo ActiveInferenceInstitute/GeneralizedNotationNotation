@@ -129,7 +129,8 @@ class BasicPipelineLogger:
     def set_correlation_context(cls, step_name: str, correlation_id: Optional[str] = None) -> str:
         """Set correlation context for current thread."""
         if correlation_id is None:
-            correlation_id = str(uuid.uuid4())[:8]
+            # Try to inherit from existing context if available
+            correlation_id = getattr(_correlation_context, 'correlation_id', str(uuid.uuid4())[:8])
 
         _correlation_context.correlation_id = correlation_id
         _correlation_context.step_name = step_name
@@ -211,6 +212,9 @@ def log_section_header(logger: logging.Logger, title: str, char: str = '=', leng
     logger.info("")
 
 # Enhanced logging functionality
+logging.TRACE = 5  # Finer than DEBUG for high-volume parse/trace lines
+logging.addLevelName(logging.TRACE, "TRACE")
+
 logging.STEP = 25  # Custom log level between INFO and WARNING
 logging.addLevelName(logging.STEP, "STEP")
 
@@ -327,15 +331,20 @@ class PipelineLogger(BasicPipelineLogger):
 
     @classmethod
     def initialize(cls, log_dir: Optional[Path] = None, console_level: int = logging.INFO,
-                  file_level: int = logging.DEBUG, enable_structured: bool = True, log_format: str = "human") -> None:
+                  file_level: int = logging.DEBUG, enable_structured: bool = True, log_format: str = "human",
+                  force: bool = False) -> None:
         """Initialize logging with structured data support."""
-        if cls._initialized:
+        if cls._initialized and not force:
             return
 
         # Setup root logger
         root_logger = logging.getLogger()
         root_logger.setLevel(logging.DEBUG)
-        root_logger.handlers.clear()
+        
+        # Clear existing handlers to avoid duplicates, but only if we're initializing
+        # the root logger for the first time or forcing a reset.
+        if not cls._initialized or force:
+            root_logger.handlers.clear()
 
         # Choose formatter based on structured logging preference
         if enable_structured:
@@ -360,29 +369,38 @@ class PipelineLogger(BasicPipelineLogger):
                 '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
             )
 
-        # Console handler
-        console_handler = logging.StreamHandler(sys.stdout)
-        console_handler.setLevel(console_level)
-        console_handler.setFormatter(console_formatter)
-        root_logger.addHandler(console_handler)
+        # Add console handler if not already present
+        has_console = any(isinstance(h, logging.StreamHandler) and h.stream == sys.stdout for h in root_logger.handlers)
+        if not has_console:
+            console_handler = logging.StreamHandler(sys.stdout)
+            console_handler.setLevel(console_level)
+            console_handler.setFormatter(console_formatter)
+            root_logger.addHandler(console_handler)
 
         # File handler
         if log_dir:
             try:
                 log_dir.mkdir(parents=True, exist_ok=True)
                 log_file = log_dir / "pipeline.log"
-                cls._log_file_handler = logging.FileHandler(log_file, mode='w')
-                cls._log_file_handler.setLevel(file_level)
-                cls._log_file_handler.setFormatter(file_formatter)
-                root_logger.addHandler(cls._log_file_handler)
+                
+                # Check for existing file handler to same path
+                has_file = any(isinstance(h, logging.FileHandler) and h.baseFilename == str(log_file.absolute()) for h in root_logger.handlers)
+                
+                if not has_file:
+                    cls._log_file_handler = logging.FileHandler(log_file, mode='w')
+                    cls._log_file_handler.setLevel(file_level)
+                    cls._log_file_handler.setFormatter(file_formatter)
+                    root_logger.addHandler(cls._log_file_handler)
             except Exception as e:
-                console_handler.emit(logging.LogRecord(
+                # If console handler exists, emit error
+                record = logging.LogRecord(
                     name="PipelineLogger", level=logging.ERROR, pathname="", lineno=0,
                     msg=f"Failed to setup file logging: {e}", args=(), exc_info=None
-                ))
+                )
+                root_logger.handle(record)
 
         # Silence noisy libraries
-        for noisy_lib in ['PIL', 'matplotlib', 'urllib3', 'requests', 'werkzeug']:
+        for noisy_lib in ['PIL', 'matplotlib', 'urllib3', 'requests', 'werkzeug', 'ray']:
             logging.getLogger(noisy_lib).setLevel(logging.WARNING)
 
         cls._initialized = True

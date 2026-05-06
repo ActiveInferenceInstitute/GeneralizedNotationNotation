@@ -51,9 +51,10 @@ result = process_integration(target_dir, output_dir, verbose=True)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_integration`
-- `list_supported_integrations`
+- `check_integration_dependencies`
 - `get_integration_status`
+- `list_supported_integrations`
+- `process_integration`
 
 ## References
 

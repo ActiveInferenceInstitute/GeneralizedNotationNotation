@@ -64,8 +64,8 @@ src/tests/
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
 - `run_all_tests`
-- `run_unit_tests`
 - `run_integration_tests`
+- `run_unit_tests`
 
 ## References
 

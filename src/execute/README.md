@@ -45,8 +45,11 @@ graph TD
     Step12 --> Discovery[Discover Rendered Scripts]
     Discovery --> List[Script List]
     
-    List --> Loop{For Each Script}
-    Loop --> Detect[Detect Framework]
+    List --> Dispatch{Execution Mode}
+    Dispatch --> Local[Local Process Workers]
+    Dispatch --> Distributed[Ray or Dask Dispatcher]
+    Local --> Detect[Detect Framework]
+    Distributed --> Detect
     Detect --> Setup[Environment Setup]
     Setup --> Run[Subprocess Execution]
     Run --> Capture[Capture Output]
@@ -78,8 +81,10 @@ Orchestrates multi-framework execution:
 
 1. Discovers all rendered scripts in `output/11_render_output/`
 2. Detects framework by file extension and naming pattern
-3. Executes each script in appropriate runtime environment
+3. Executes each script in the appropriate runtime environment, serially by default or with bounded script-level workers
 4. Aggregates results into `output/12_execute_output/summaries/`
+
+`--execution-workers N` parallelizes across rendered scripts, for example separate scaling-study `(N,T)` runs. It does not split the timesteps inside one rendered PyMDP/JAX script. `--distributed --backend ray|dask` uses the distributed dispatcher; otherwise worker counts above `1` use local processes.
 
 ### `pymdp/simple_simulation.py`
 
@@ -122,6 +127,9 @@ python src/main.py
 
 # Run only render + execute steps  
 python src/main.py --only-steps "11,12"
+
+# Execute rendered scripts with two local workers
+python src/main.py --only-steps "11,12" --execution-workers 2
 ```
 
 ### Standalone

@@ -57,6 +57,49 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         ],
         "optional_variables": ["C", "D"],
     },
+    "pytorch": {
+        "required_imports": ["torch"],
+        "required_variables": ["A", "B"],
+        "matrix_patterns": [
+            r"torch\.(tensor|zeros|ones|eye)",
+        ],
+        "optional_variables": ["C", "D"],
+    },
+    "numpyro": {
+        "required_imports": ["numpyro", "jax"],
+        "required_variables": [],
+        "matrix_patterns": [
+            r"numpyro\.sample",
+            r"numpyro\.distributions",
+        ],
+        "optional_variables": [],
+    },
+    "stan": {
+        "required_imports": [],
+        "required_variables": [],
+        "matrix_patterns": [
+            r"data\s*\{",
+            r"model\s*\{",
+        ],
+        "optional_variables": [],
+    },
+    "activeinference_jl": {
+        "required_imports": ["ActiveInference"],
+        "required_variables": [],
+        "matrix_patterns": [
+            r"using\s+ActiveInference",
+            r"Agent\(",
+        ],
+        "optional_variables": [],
+    },
+    "discopy": {
+        "required_imports": ["discopy"],
+        "required_variables": [],
+        "matrix_patterns": [
+            r"(Ty|Box)\(",
+        ],
+        "optional_variables": [],
+    },
 }
 
 

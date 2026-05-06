@@ -47,3 +47,10 @@ lsp/
 
 - [README.md](README.md) — Usage guide
 - [SPEC.md](SPEC.md) — Specification
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

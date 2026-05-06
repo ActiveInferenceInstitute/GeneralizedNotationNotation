@@ -4,8 +4,8 @@
 
 ## Example Flow
 ```python
-# The main dispatcher triggers `processor.py` internally tracking directory integrity
-from type_checker.processor import GNNTypeChecker
+# The main dispatcher triggers the core checker tracking directory integrity
+from type_checker.checking import GNNTypeChecker
 from pathlib import Path
 
 # Spin up analyzer mapping
@@ -20,3 +20,11 @@ print("Completed successfully:", success)
 - **Visual Synthesis**: Constructs isolated Model Baseball Cards tracking matrices, parameters, FLOPS and validity using Matplotlib abstractions directly embedded into the generated output markdown.
 - **Resource Analytics**: Estimates accurate floating point requirements linking straight into `estimation_strategies.py` natively.
 - **Strict Parsing Evaluation**: Prevents ambiguous mathematical strings from triggering false type checks.
+
+
+## MCP Tools
+
+This module registers tools with the GNN MCP server (see `mcp.py`):
+
+- `validate_gnn_files`
+- `validate_single_gnn_file`

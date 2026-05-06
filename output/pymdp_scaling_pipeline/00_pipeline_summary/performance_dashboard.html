@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GNN Pipeline Performance Dashboard</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #3b82f6;
+  --success: #22c55e; --warning: #f59e0b; --danger: #ef4444;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding: 32px; }
+.header { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+.header h1 { font-size: 28px; font-weight: 700; color: #fff; }
+.header p { color: var(--muted); margin-top: 8px; }
+
+.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 40px; }
+.metric-card { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+.metric-value { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.metric-label { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+
+.charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px; }
+.chart-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); }
+.chart-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+
+.gantt-container { background: var(--surface); padding: 24px; border-radius: 12px; border: 1px solid var(--border); overflow-x: auto; margin-bottom: 40px; }
+.gantt-container h2 { font-size: 18px; margin-bottom: 16px; color: #fff; }
+#gantt-chart { min-width: 800px; height: 400px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GNN Pipeline Performance</h1>
+  <p id="dashboard-meta">Loading execution metrics...</p>
+</div>
+
+<div class="metrics-grid">
+  <div class="metric-card">
+    <div class="metric-value" id="val-health" style="color: var(--success)">--</div>
+    <div class="metric-label">Overall Health Score</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-duration" style="color: var(--accent)">--</div>
+    <div class="metric-label">Total Duration (s)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-memory" style="color: var(--warning)">--</div>
+    <div class="metric-label">Peak Memory (MB)</div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-value" id="val-errors" style="color: var(--danger)">--</div>
+    <div class="metric-label">Total Errors</div>
+  </div>
+</div>
+
+<div class="charts-grid">
+  <div class="chart-container">
+    <h2>Step Duration Distribution</h2>
+    <canvas id="durationChart"></canvas>
+  </div>
+  <div class="chart-container">
+    <h2>Memory Usage Profile</h2>
+    <canvas id="memoryChart"></canvas>
+  </div>
+</div>
+
+<div class="gantt-container">
+  <h2>Execution Gantt Chart (D3.js)</h2>
+  <div id="gantt-chart"></div>
+</div>
+
+<script>
+// JSON placeholder replaced by standard python formatting
+const rawData = {"run_hash": "e6f16ec4caef", "file_hashes": {"pymdp_scaling_N128_T10.md": "511b86f52e28a2ea58c9bd3daf357e6f84c344d5ccdb619f5443e03d4a9c2c1b", "pymdp_scaling_N128_T100.md": "64e0f6fe463c5803461e2e6ff16f5ae0175bae66e12f02cf90b65092c9210edc", "pymdp_scaling_N128_T50.md": "14f13108e5283a414402e96f5fb722e877a497f7460985aec6aebb99a3826a67", "pymdp_scaling_N16_T10.md": "53782ae01259c5f2892b04b9a2bd917bd03ae0c187996e3d9f7e1adb7763c8db", "pymdp_scaling_N16_T100.md": "f3b11cf873105c9374728bc59c3f48d786844fac64d812dc8f65854f7b5dae0a", "pymdp_scaling_N16_T50.md": "339c99d479508f2ff703ff65849792cd1e15c0a7db375af6f06896b3213be182", "pymdp_scaling_N2_T10.md": "0724e85dc708ca735c9f133f66289990f8a5664a7198f6cb59e1b9578b72db2a", "pymdp_scaling_N2_T100.md": "e55db1feff61132b58d035c74ac4b33d701dc43b1aa72cad0673f9f071789c00", "pymdp_scaling_N2_T50.md": "e005a69e9304acc016fded788fae889d021f7d9adc6953cdc01a78998c025581", "pymdp_scaling_N32_T10.md": "9cc1acc504686f5d27921de49b8d1f90b6d308ab1776e61c9e293e5645d13f12", "pymdp_scaling_N32_T100.md": "1a7d49404bd8823cfa236d130bf94e118d08492b50d7c3bda87c7ff63307e76c", "pymdp_scaling_N32_T50.md": "5022ac2f65ad6f9a14817b9b182bfdd58b6d18f5fcf23a0920ec485b10b7d602", "pymdp_scaling_N4_T10.md": "76d6e17bcc7537f42594fef21cfd770bfb24a150daa5a38413b4a1505c4f5d2e", "pymdp_scaling_N4_T100.md": "c69d3a17b52841440c6a8f294cb93d041b98327e3633b03a6a6a08354157c8e0", "pymdp_scaling_N4_T50.md": "2d8ffb4ee2dda2774dc14b33e4dd696979565ffaf940001d81e1e83f59ce7c19", "pymdp_scaling_N64_T10.md": "9f2c13b127db27c519b81a715874a72bcd9ff2a7364d3b051be5f452a3995d18", "pymdp_scaling_N64_T100.md": "6503beefdf1c3a3fc7973d1c50296c5d5a7846c7a19b54097d8deb76be0e91c9", "pymdp_scaling_N64_T50.md": "233356b31458a888ab505ab386f32961ccb84887bad5a27d9bcf2aaa7d8e0793", "pymdp_scaling_N8_T10.md": "ccd055232958fd46c255d03866caf2ba4967d008632addd07b8f12dcd5dee626", "pymdp_scaling_N8_T100.md": "e91d4365da8267a0c36c03644d175d2bbd24203c9ce970fb949ae3c7ef9bf792", "pymdp_scaling_N8_T50.md": "53769aa826b88d975b029e6544644c588f0fad514a1dd3a14251095c7a2eb3f4"}, "start_time": "2026-05-06T07:05:38.550016", "arguments": {"target_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study", "output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline", "recursive": true, "verbose": true, "log_format": "human", "enable_round_trip": false, "enable_cross_format": false, "skip_steps": null, "only_steps": "17", "strict": false, "estimate_resources": false, "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json", "pipeline_summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/00_pipeline_summary/pipeline_execution_summary.json", "llm_tasks": null, "llm_timeout": null, "website_html_filename": null, "recreate_venv": false, "dev": true, "setup_core_only": false, "install_optional": null, "frameworks": "pymdp", "strict_framework_success": true, "render_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output", "distributed": false, "execution_workers": 6, "backend": "ray", "serialize_preset": "minimal", "execution_benchmark_repeats": 1, "execution_summary_detail": false, "duration": 30.0, "audio_backend": "auto", "fast_only": true, "include_slow": false, "include_performance": false, "comprehensive": false, "skip_llm": false, "install_all_extras": false, "performance_mode": "low", "mcp_strict_validation": false, "mcp_cache_ttl": null, "mcp_per_module_timeout": null, "mcp_overall_timeout": null, "mcp_modules_allowlist": null, "timesteps": null, "simulation_params": "{}", "timeout": 1200, "advanced_stats": false}, "steps": [{"status": "SUCCESS", "stdout": "2026-05-06 07:05:38,745 [0f6a4046:17_integration] integration - INFO - \ud83d\ude80 Starting step: Processing integration\n2026-05-06 07:05:38,780 [0f6a4046:17_integration] integration - DEBUG - Processing 21 GNN files for integration analysis\n2026-05-06 07:05:38,781 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N32_T50.md: found 11 components\n2026-05-06 07:05:38,781 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N16_T50.md: found 11 components\n2026-05-06 07:05:38,782 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N8_T10.md: found 11 components\n2026-05-06 07:05:38,782 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N8_T100.md: found 11 components\n2026-05-06 07:05:38,782 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N4_T10.md: found 11 components\n2026-05-06 07:05:38,782 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N16_T100.md: found 11 components\n2026-05-06 07:05:38,790 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N64_T100.md: found 11 components\n2026-05-06 07:05:38,856 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N128_T100.md: found 11 components\n2026-05-06 07:05:38,856 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N4_T50.md: found 11 components\n2026-05-06 07:05:38,856 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N8_T50.md: found 11 components\n2026-05-06 07:05:38,856 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N16_T10.md: found 11 components\n2026-05-06 07:05:38,857 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N32_T10.md: found 11 components\n2026-05-06 07:05:38,857 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N2_T100.md: found 11 components\n2026-05-06 07:05:38,857 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N2_T10.md: found 11 components\n2026-05-06 07:05:38,858 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N32_T100.md: found 11 components\n2026-05-06 07:05:38,858 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N2_T50.md: found 11 components\n2026-05-06 07:05:38,867 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N64_T10.md: found 11 components\n2026-05-06 07:05:38,875 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N64_T50.md: found 11 components\n2026-05-06 07:05:38,939 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N128_T10.md: found 11 components\n2026-05-06 07:05:38,939 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N4_T100.md: found 11 components\n2026-05-06 07:05:39,003 [0f6a4046:17_integration] integration - DEBUG - Parsed pymdp_scaling_N128_T50.md: found 11 components\n2026-05-06 07:05:39,003 [0f6a4046:17_integration] integration - INFO - System graph: 11 nodes, 15 edges, 7 intra-model cycles (structural), 1 isolated\n2026-05-06 07:05:39,076 [0f6a4046:17_integration] integration - INFO - Collected 21 records (21 models, 1 frameworks)\n2026-05-06 07:05:39,076 [0f6a4046:17_integration] integration - INFO - Collected 21 sweep records from execution outputs\n2026-05-06 07:05:39,099 [0f6a4046:17_integration] integration - INFO - Exported plaintext data: sweep_data.csv, sweep_data.txt\n2026-05-06 07:05:39,231 [0f6a4046:17_integration] integration - INFO - Generated runtime heatmap: runtime_heatmap_pymdp.png and runtime_heatmap_pymdp.csv\n2026-05-06 07:05:39,523 [0f6a4046:17_integration] integration - INFO - Generated scaling curves: runtime_scaling_curves.png and runtime_scaling_curves.csv\n2026-05-06 07:05:39,687 [0f6a4046:17_integration] integration - INFO - Generated framework comparison: framework_runtime_comparison.png and framework_runtime_comparison.csv\n2026-05-06 07:05:39,787 [0f6a4046:17_integration] integration - INFO - Generated time-per-step: time_per_step.png and time_per_step.csv\n2026-05-06 07:05:39,880 [0f6a4046:17_integration] integration - INFO - Generated accuracy comparison: accuracy_comparison.png and accuracy_comparison.csv\n2026-05-06 07:05:39,948 [0f6a4046:17_integration] integration - INFO - Generated entropy comparison: entropy_vs_states.png and entropy_vs_states.csv\n2026-05-06 07:05:40,057 [0f6a4046:17_integration] integration - INFO - Generated accuracy heatmap: accuracy_heatmap_pymdp.png and accuracy_heatmap_pymdp.csv\n2026-05-06 07:05:40,165 [0f6a4046:17_integration] integration - INFO - Generated entropy heatmap: entropy_heatmap_pymdp.png and entropy_heatmap_pymdp.csv\n2026-05-06 07:05:40,769 [0f6a4046:17_integration] integration - INFO - Generated throughput plot: throughput_vs_n.png\n2026-05-06 07:05:40,886 [0f6a4046:17_integration] integration - INFO - Generated runtime distribution: runtime_distribution.png\n2026-05-06 07:05:40,973 [0f6a4046:17_integration] integration - INFO - Generated scaling exponent summary: scaling_exponent_summary.png\n2026-05-06 07:05:41,066 [0f6a4046:17_integration] integration - INFO - Generated code efficiency: code_efficiency.png\n2026-05-06 07:05:41,491 [0f6a4046:17_integration] integration - INFO - Generated comprehensive dashboard: comprehensive_dashboard.png\n2026-05-06 07:05:41,585 [0f6a4046:17_integration] integration - INFO - Generated accuracy vs timesteps: accuracy_vs_timesteps.png\n2026-05-06 07:05:41,626 [0f6a4046:17_integration] integration - INFO - Generated GNN serialization footprint: gnn_serialization_footprint.png\n2026-05-06 07:05:41,626 [0f6a4046:17_integration] integration - INFO - Generated 20 meta-analysis visualizations\n2026-05-06 07:05:41,628 [0f6a4046:17_integration] integration - INFO - Generated meta-analysis report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/meta_analysis_report.md\n2026-05-06 07:05:41,628 [0f6a4046:17_integration] integration - INFO - Meta-analysis: 21 records, 20 plots; validation=/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/sweep_validation.json; statistics=/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output/integration_results/meta_analysis/meta_statistics.json\n2026-05-06 07:05:41,628 [0f6a4046:17_integration] integration - INFO - \u2705 Integration processing completed: 11 nodes, 15 edges\n", "stderr": "", "memory_usage_mb": 378.046875, "peak_memory_mb": 378.046875, "memory_delta_mb": 0.078125, "exit_code": 0, "retry_count": 0, "prerequisite_check": true, "dependency_warnings": [], "recoverable": false, "step_number": 1, "script_name": "17_integration.py", "description": "Integration", "start_time": "2026-05-06T07:05:38.553864", "end_time": "2026-05-06T07:05:41.698567", "duration_seconds": 3.1447019577026367}], "end_time": "2026-05-06T07:05:41.699629", "overall_status": "SUCCESS", "total_duration_seconds": 3.149613, "environment_info": {"python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]", "platform": "darwin", "cpu_count": 10, "working_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation", "user": "mini", "memory_total_gb": "16.0", "disk_free_gb": "8.5"}, "performance_summary": {"peak_memory_mb": 378.046875, "total_steps": 1, "failed_steps": 0, "critical_failures": 0, "successful_steps": 1, "warnings": 0}};
+
+document.addEventListener("DOMContentLoaded", () => {
+    try {
+        if (!rawData || !rawData.steps) {
+            document.getElementById('dashboard-meta').innerText = 'No valid execution data found.';
+            return;
+        }
+
+        // 1. Populate Header & Metrics
+        document.getElementById('dashboard-meta').innerText = `Execution ID: ${rawData.process_id || 'Unknown'} | Timestamp: ${rawData.timestamp || ''}`;
+        
+        // Mock health score if not exactly provided, though Step 24 generates one
+        const health = rawData.health_score || (100 - (rawData.failures ? rawData.failures.length : 0) * 10);
+        document.getElementById('val-health').innerText = `${health}/100`;
+        // Color code health
+        document.getElementById('val-health').style.color = health > 80 ? 'var(--success)' : health > 50 ? 'var(--warning)' : 'var(--danger)';
+
+        document.getElementById('val-duration').innerText = (rawData.total_duration_seconds || rawData.total_duration || 0).toFixed(2);
+        
+        // Find Peak Memory
+        const maxMem = Math.max(...rawData.steps.map(s => s.memory_mb || 0).filter(v => v));
+        document.getElementById('val-memory').innerText = maxMem > 0 ? maxMem.toFixed(1) : 'N/A';
+        
+        const errs = rawData.failures ? rawData.failures.length : 0;
+        document.getElementById('val-errors').innerText = errs;
+
+
+        // 2. Prepare Chart Data
+        const labels = rawData.steps.map(s => s.name);
+        const durations = rawData.steps.map(s => Math.max(0, s.duration_seconds || 0));
+        const memories = rawData.steps.map(s => Math.max(0, s.memory_mb || 0));
+
+        // 3. Duration Chart (Chart.js)
+        new Chart(document.getElementById('durationChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Duration (seconds)',
+                    data: durations,
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 4. Memory Chart (Chart.js)
+        new Chart(document.getElementById('memoryChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Memory (MB)',
+                    data: memories,
+                    borderColor: 'rgba(245, 158, 11, 0.8)',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+                    x: { ticks: { maxRotation: 45, minRotation: 45 }, grid: { display: false } }
+                }
+            }
+        });
+
+        // 5. Build D3 Gantt Chart
+        const ganttDiv = d3.select("#gantt-chart");
+        const width = 800;
+        const height = rawData.steps.length * 30 + 50;
+
+        const svg = ganttDiv.append("svg")
+            .attr("width", "100%")
+            .attr("height", height)
+            .style("background", "var(--surface)");
+
+        // We build cumulative start times
+        let currentStart = 0;
+        const ganttData = rawData.steps.map(s => {
+            const dur = Math.max(0.1, s.duration_seconds || 0); // min 0.1s for visibility
+            const item = {
+                name: s.name,
+                status: s.status,
+                start: currentStart,
+                duration: dur,
+                end: currentStart + dur
+            };
+            currentStart += dur;
+            return item;
+        });
+
+        const xScale = d3.scaleLinear()
+            .domain([0, currentStart])
+            .range([200, width - 40]);
+
+        const yScale = d3.scaleBand()
+            .domain(ganttData.map(d => d.name))
+            .range([0, height - 30])
+            .padding(0.2);
+
+        // Name Labels
+        svg.selectAll(".gantt-label")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", 190)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("text-anchor", "end")
+            .attr("fill", "#94a3b8")
+            .attr("font-size", "12px")
+            .text(d => d.name.length > 25 ? d.name.substring(0,25)+'...' : d.name);
+
+        // Bars
+        svg.selectAll(".gantt-bar")
+            .data(ganttData)
+            .enter().append("rect")
+            .attr("x", d => xScale(d.start))
+            .attr("y", d => yScale(d.name))
+            .attr("width", d => Math.max(2, xScale(d.end) - xScale(d.start))) // Min 2px width
+            .attr("height", yScale.bandwidth())
+            .attr("rx", 4)
+            .attr("fill", d => {
+                const s = String(d.status).toLowerCase();
+                if (s.includes("success") || s.includes("passed")) return "#22c55e";
+                if (s.includes("warn")) return "#f59e0b";
+                if (s.includes("fail") || s.includes("error")) return "#ef4444";
+                return "#3b82f6";
+            })
+            .style("opacity", 0.9);
+
+        // Duration overlay inside/next to bar
+        svg.selectAll(".gantt-dur")
+            .data(ganttData)
+            .enter().append("text")
+            .attr("x", d => xScale(d.end) + 5)
+            .attr("y", d => yScale(d.name) + yScale.bandwidth() / 2 + 4)
+            .attr("fill", "#64748b")
+            .attr("font-size", "10px")
+            .text(d => d.duration.toFixed(2) + "s");
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('dashboard-meta').innerText = 'Error initializing dashboard visuals.';
+    }
+});
+</script>
+</body>
+</html>

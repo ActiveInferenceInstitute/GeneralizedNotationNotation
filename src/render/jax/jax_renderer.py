@@ -850,7 +850,8 @@ def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
 
         # Extract num_timesteps from model_parameters (default 20 for backward compat)
         model_params = gnn_spec.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 20)
+        init_params = gnn_spec.get('initialparameterization', {})
+        num_timesteps = model_params.get('num_timesteps', init_params.get('num_timesteps', 20))
 
         # Convert matrices to lists for f-string insertion
         A_list = A_matrix.tolist()

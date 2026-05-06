@@ -80,6 +80,98 @@ def test_build_step_command_includes_install_all_extras() -> None:
     assert "--install-all-extras" in cmd
 
 
+def test_build_step_command_forwards_serialize_preset() -> None:
+    from pathlib import Path
+
+    args = PipelineArguments()
+    args.serialize_preset = "minimal"
+    cmd = build_step_command_args(
+        "3_gnn.py",
+        args,
+        "python",
+        Path("src/3_gnn.py"),
+    )
+    assert "--serialize-preset" in cmd
+    assert cmd[cmd.index("--serialize-preset") + 1] == "minimal"
+
+
+def test_build_step_command_forwards_execution_benchmark_repeats() -> None:
+    from pathlib import Path
+
+    args = PipelineArguments()
+    args.execution_benchmark_repeats = 4
+    cmd = build_step_command_args(
+        "12_execute.py",
+        args,
+        "python",
+        Path("src/12_execute.py"),
+    )
+    assert "--execution-benchmark-repeats" in cmd
+    assert cmd[cmd.index("--execution-benchmark-repeats") + 1] == "4"
+
+
+def test_build_step_command_step12_omits_benchmark_repeats_when_one() -> None:
+    from pathlib import Path
+
+    args = PipelineArguments()
+    args.execution_benchmark_repeats = 1
+    cmd = build_step_command_args(
+        "12_execute.py",
+        args,
+        "python",
+        Path("src/12_execute.py"),
+    )
+    assert "--execution-benchmark-repeats" not in cmd
+
+
+def test_build_step_command_step12_backend_only_when_distributed() -> None:
+    from pathlib import Path
+
+    args = PipelineArguments()
+    args.distributed = False
+    args.backend = "dask"
+    cmd = build_step_command_args(
+        "12_execute.py",
+        args,
+        "python",
+        Path("src/12_execute.py"),
+    )
+    assert "--backend" not in cmd
+
+    args.distributed = True
+    cmd2 = build_step_command_args(
+        "12_execute.py",
+        args,
+        "python",
+        Path("src/12_execute.py"),
+    )
+    assert "--backend" in cmd2
+    assert cmd2[cmd2.index("--backend") + 1] == "dask"
+
+
+def test_build_step_command_step12_execution_summary_detail_only_when_true() -> None:
+    from pathlib import Path
+
+    args = PipelineArguments()
+    args.execution_summary_detail = False
+    cmd = build_step_command_args(
+        "12_execute.py",
+        args,
+        "python",
+        Path("src/12_execute.py"),
+    )
+    assert "--execution-summary-detail" not in cmd
+
+    args.execution_summary_detail = True
+    cmd_on = build_step_command_args(
+        "12_execute.py",
+        args,
+        "python",
+        Path("src/12_execute.py"),
+    )
+    assert "--execution-summary-detail" in cmd_on
+
+
 @pytest.mark.parametrize(
     "kwargs, expect_all_extras, expect_extra_dev",
     [

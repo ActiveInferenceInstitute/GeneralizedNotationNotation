@@ -32,3 +32,10 @@ This directory holds **reference copies** of pipeline output structures used by 
 ## Implementation Details
 
 This directory is governed by test hygiene policy. Contents may be overwritten during test runs. It follows the Zero-Mock testing policy — all fixture data is produced by real pipeline execution.
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

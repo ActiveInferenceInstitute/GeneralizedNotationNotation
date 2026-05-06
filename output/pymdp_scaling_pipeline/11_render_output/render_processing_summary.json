@@ -1,0 +1,511 @@
+{
+  "timestamp": "2026-05-06T07:04:47.303074",
+  "processing_type": "POMDP-aware rendering",
+  "total_files": 21,
+  "successful_files": 21,
+  "failed_files": 0,
+  "total_framework_attempts": 21,
+  "successful_framework_renderings": 21,
+  "framework_success_rate": 100.0,
+  "configuration": {
+    "frameworks": [
+      "pymdp"
+    ],
+    "strict_validation": true,
+    "strict_framework_success": true,
+    "verbose": true,
+    "pomdp_processing_available": true
+  },
+  "failed_framework_renderings": [],
+  "file_results": {
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50/pymdp/PyMDP Scaling N32 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50/pymdp/PyMDP Scaling N32 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 36272,
+            "total_lines": 36305,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T50"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50/pymdp/PyMDP Scaling N16 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50/pymdp/PyMDP Scaling N16 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 5200,
+            "total_lines": 5233,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T50"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10/pymdp/PyMDP Scaling N8 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10/pymdp/PyMDP Scaling N8 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 992,
+            "total_lines": 1025,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP Scaling N8 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100/pymdp/PyMDP Scaling N8 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 992,
+            "total_lines": 1025,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10/pymdp/PyMDP Scaling N4 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10/pymdp/PyMDP Scaling N4 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 376,
+            "total_lines": 409,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100/pymdp/PyMDP Scaling N16 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100/pymdp/PyMDP Scaling N16 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 5200,
+            "total_lines": 5233,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100/pymdp/PyMDP Scaling N64 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100/pymdp/PyMDP Scaling N64 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 275056,
+            "total_lines": 275089,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100/pymdp/PyMDP Scaling N128 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100/pymdp/PyMDP Scaling N128 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100/pymdp",
+          "warnings": [
+            "Large state spaces may cause performance issues"
+          ],
+          "code_metrics": {
+            "lines_of_code": 2147312,
+            "total_lines": 2147345,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50/pymdp/PyMDP Scaling N4 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50/pymdp/PyMDP Scaling N4 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 376,
+            "total_lines": 409,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T50"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50/pymdp/PyMDP Scaling N8 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50/pymdp/PyMDP Scaling N8 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 992,
+            "total_lines": 1025,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N8_T50"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10/pymdp/PyMDP Scaling N16 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10/pymdp/PyMDP Scaling N16 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 5200,
+            "total_lines": 5233,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N16_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10/pymdp/PyMDP Scaling N32 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10/pymdp/PyMDP Scaling N32 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 36272,
+            "total_lines": 36305,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100/pymdp/PyMDP Scaling N2 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100/pymdp/PyMDP Scaling N2 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 272,
+            "total_lines": 305,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10/pymdp/PyMDP Scaling N2 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10/pymdp/PyMDP Scaling N2 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 272,
+            "total_lines": 305,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100/pymdp/PyMDP Scaling N32 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100/pymdp/PyMDP Scaling N32 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 36272,
+            "total_lines": 36305,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N32_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50/pymdp/PyMDP Scaling N2 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50/pymdp/PyMDP Scaling N2 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 272,
+            "total_lines": 305,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N2_T50"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10/pymdp/PyMDP Scaling N64 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10/pymdp/PyMDP Scaling N64 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 275056,
+            "total_lines": 275089,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50/pymdp/PyMDP Scaling N64 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50/pymdp/PyMDP Scaling N64 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 275056,
+            "total_lines": 275089,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N64_T50"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T10.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10/pymdp/PyMDP Scaling N128 T10_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10/pymdp/PyMDP Scaling N128 T10_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10/pymdp",
+          "warnings": [
+            "Large state spaces may cause performance issues"
+          ],
+          "code_metrics": {
+            "lines_of_code": 2147312,
+            "total_lines": 2147345,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T10"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T100.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP Scaling N4 T100_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100/pymdp/PyMDP Scaling N4 T100_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 376,
+            "total_lines": 409,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N4_T100"
+    },
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T50.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated pymdp 1.0.0 runner: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50/pymdp/PyMDP Scaling N128 T50_pymdp.py",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50/pymdp/PyMDP Scaling N128 T50_pymdp.py"
+          ],
+          "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50/pymdp",
+          "warnings": [
+            "Large state spaces may cause performance issues"
+          ],
+          "code_metrics": {
+            "lines_of_code": 2147312,
+            "total_lines": 2147345,
+            "functions": 1,
+            "classes": 0
+          }
+        }
+      },
+      "summary_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50/processing_summary.json",
+      "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50",
+      "base_output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output/pymdp_scaling_N128_T50"
+    }
+  }
+}

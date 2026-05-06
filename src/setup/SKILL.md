@@ -64,9 +64,14 @@ These groups match `[project.optional-dependencies]` in `pyproject.toml`:
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
+- `check_uv_project_status`
 - `ensure_directory_exists`
 - `find_project_gnn_files`
 - `get_standard_output_paths`
+- `get_uv_environment_info`
+- `install_uv_dependency`
+- `setup_uv_project_structure`
+- `sync_uv_dependencies`
 
 ## References
 

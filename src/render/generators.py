@@ -34,7 +34,8 @@ def generate_bnlearn_code(model_data: Dict[str, Any], output_path: Optional[Unio
         model_name = model_data.get('model_name', 'GNN Model')
         gnn_file = model_data.get('source_file', 'unknown.md')
         model_params = model_data.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 15)
+        init_params = model_data.get('initialparameterization', {})
+        num_timesteps = model_params.get('num_timesteps', init_params.get('num_timesteps', 15))
 
         code = f'''#!/usr/bin/env python3
 """
@@ -227,7 +228,8 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
 
         # Extract config parameters
         model_params = model_data.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 15)
+        init_params = model_data.get('initialparameterization', {})
+        num_timesteps = model_params.get('num_timesteps', init_params.get('num_timesteps', 15))
 
         # Format matrices for template (with fallbacks)
         a_matrix = state_space.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9], [0.33, 0.33, 0.33]])
@@ -269,7 +271,8 @@ def generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Uni
 
         # Extract parameters and state space information
         model_params = model_data.get('model_parameters', {})
-        num_timesteps = model_params.get('num_timesteps', 15)
+        init_params = model_data.get('initialparameterization', {})
+        num_timesteps = model_params.get('num_timesteps', init_params.get('num_timesteps', 15))
 
         state_space = model_data.get('state_space', {})
         a_matrix = state_space.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9], [0.33, 0.33, 0.33]])

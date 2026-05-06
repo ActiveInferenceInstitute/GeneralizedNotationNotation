@@ -31,3 +31,11 @@ start_server()
 - **Error Extraction**: Maps parse errors to line numbers for inline display in editors
 - **Graceful Fallback**: Works without `pygls` by providing a clear installation message
 - **VS Code Integration**: Compatible with any LSP client via stdio transport
+
+
+## MCP Tools
+
+This module registers tools with the GNN MCP server (see `mcp.py`):
+
+- None
+

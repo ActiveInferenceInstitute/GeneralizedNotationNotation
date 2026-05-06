@@ -160,6 +160,14 @@ POMDP-shaped models use the same `Agent` surface; see [Core Mapping](#core-mappi
 
 Multi-factor and multi-control setups follow the factorial `A`/`B` list layout in [Matrix Shape Convention (pymdp 1.0.0)](#matrix-shape-convention-pymdp-100).
 
+## Performance and Scaling
+
+Systematic performance analysis is supported via the **Scaling Orchestrator**. This tool allows for empirical complexity sweeps across state-space dimensions (N) and time horizons (T).
+
+- **Orchestrator**: [`scripts/run_pymdp_gnn_scaling_analysis.py`](../../scripts/run_pymdp_gnn_scaling_analysis.py)
+- **Configuration**: [`scripts/pymdp_scaling_config.yaml`](../../scripts/pymdp_scaling_config.yaml)
+- **Performance Guide**: See [pymdp_performance_guide.md](pymdp_performance_guide.md) for O(n³) scaling details and safety guardrails.
+
 ## Security considerations
 
 Treat generated runners like any code that executes on your machine: use trusted GNN sources, avoid pasting secrets into model files, and review `output/` artifacts before sharing.

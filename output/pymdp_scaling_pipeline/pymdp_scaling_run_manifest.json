@@ -1,0 +1,139 @@
+{
+  "status": "success",
+  "updated_at": "2026-05-06T14:05:41.927229+00:00",
+  "configuration": {
+    "n_values": "2,4,8,16,32,64,128",
+    "t_values": "10,50,100",
+    "a_signal": 0.9,
+    "b_signal": 0.8,
+    "output_dir": "input/gnn_files/pymdp_scaling_study",
+    "pipeline_output_dir": "output/pymdp_scaling_pipeline",
+    "timeout": 1200,
+    "frameworks": "pymdp",
+    "execution_workers": 6,
+    "distributed": false,
+    "backend": "ray",
+    "strict_framework_success": true,
+    "pipeline_steps": "3,5,11,12,17",
+    "run_integration_on_failure": false,
+    "clear": true,
+    "skip_pipeline": false,
+    "max_n": 600,
+    "max_file_size_mb": 400,
+    "min_free_disk_mb": 200,
+    "type_check": true,
+    "matplotlib_headless": true,
+    "gnn_serialize_preset": "minimal",
+    "execution_benchmark_repeats": 1
+  },
+  "paths": {
+    "generated_specs": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study",
+    "pipeline_output": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline",
+    "render_output": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/11_render_output",
+    "execution_output": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/12_execute_output",
+    "integration_output": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/17_integration_output"
+  },
+  "grid_pairs": 21,
+  "planned_count": 21,
+  "planned_pairs": [
+    [
+      2,
+      10
+    ],
+    [
+      2,
+      50
+    ],
+    [
+      2,
+      100
+    ],
+    [
+      4,
+      10
+    ],
+    [
+      4,
+      50
+    ],
+    [
+      4,
+      100
+    ],
+    [
+      8,
+      10
+    ],
+    [
+      8,
+      50
+    ],
+    [
+      8,
+      100
+    ],
+    [
+      16,
+      10
+    ],
+    [
+      16,
+      50
+    ],
+    [
+      16,
+      100
+    ],
+    [
+      32,
+      10
+    ],
+    [
+      32,
+      50
+    ],
+    [
+      32,
+      100
+    ],
+    [
+      64,
+      10
+    ],
+    [
+      64,
+      50
+    ],
+    [
+      64,
+      100
+    ],
+    [
+      128,
+      10
+    ],
+    [
+      128,
+      50
+    ],
+    [
+      128,
+      100
+    ]
+  ],
+  "skip_lines": [],
+  "estimated_spec_bytes": 174259468,
+  "estimated_spec_mib": 166.187,
+  "phases": [
+    {
+      "label": "main",
+      "status": "success",
+      "exit_code": 0
+    },
+    {
+      "label": "integration",
+      "status": "success",
+      "exit_code": 0
+    }
+  ]
+}

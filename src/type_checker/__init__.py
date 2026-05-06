@@ -12,7 +12,7 @@ FEATURES = {
     "mcp_integration": True
 }
 
-from .processor import GNNTypeChecker, estimate_file_resources
+from .checking import GNNTypeChecker, estimate_file_resources
 
 __all__ = [
     '__version__',

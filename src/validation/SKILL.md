@@ -63,9 +63,10 @@ result = profile_performance(parsed_model)
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
+- `check_schema_compliance`
+- `get_validation_report`
 - `process_validation`
 - `validate_gnn_file`
-- `get_validation_report`
 
 ## References
 

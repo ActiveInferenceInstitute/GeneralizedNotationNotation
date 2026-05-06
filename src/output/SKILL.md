@@ -19,3 +19,11 @@ This directory holds reference copies of pipeline output structures used for tes
 - Primary pipeline output target is `output/` at repository root
 - Contents may be overwritten by test runs
 - Not subject to standard module SKILL documentation expectations
+
+
+## MCP Tools
+
+This module registers tools with the GNN MCP server (see `mcp.py`):
+
+- None
+

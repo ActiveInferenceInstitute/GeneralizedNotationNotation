@@ -11,9 +11,18 @@ Step 5 — Static type analysis and resource estimation for parsed GNN models.
 ```
 type_checker/
 ├── __init__.py              # Package exports
-├── processor.py             # Core type checking logic (571 lines)
-├── resource_estimator.py    # Resource estimation engine (1068 lines)
-├── type_rules.py            # Type inference rules
+├── checking/                # Core validation subpackage
+│   ├── core.py              # Orchestrator
+│   ├── dimensions.py        # Shape analysis
+│   └── rules.py             # Type rule engine
+├── estimation/              # Resource estimation subpackage
+│   ├── estimator.py         # Hardware projections
+│   ├── strategies.py        # Math utilities
+│   ├── report_html.py       # HTML reporting
+│   └── report_markdown.py   # Text reporting
+├── processor.py             # Legacy compat orchestrator (thin delegation)
+├── resource_estimator.py    # Legacy compat estimator (thin delegation)
+├── estimation_strategies.py # Legacy compat strategies (thin delegation)
 └── mcp.py                   # MCP tool registration
 ```
 

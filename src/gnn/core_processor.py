@@ -56,7 +56,7 @@ class ProcessingContext:
     start_time: float = field(default_factory=time.time)
     phase_times: Dict[ProcessingPhase, float] = field(default_factory=dict)
 
-    def log_phase(self, phase: ProcessingPhase, message: str):
+    def log_phase(self, phase: ProcessingPhase, message: str) -> None:
         """Log processing phase details."""
         self.phase_logs[phase] = message
         if phase not in self.phase_times:
@@ -88,7 +88,7 @@ class GNNProcessor:
         self.discovery_strategy = FileDiscoveryStrategy()
         self.validation_strategy = ValidationStrategy()
         # Initialize round trip strategy lazily to avoid circular imports
-        self.round_trip_strategy = None
+        self.round_trip_strategy: Optional[Any] = None
         self.cross_format_strategy = CrossFormatValidator()
         self.report_generator = ReportGenerator()
 
@@ -216,7 +216,7 @@ class GNNProcessor:
             self.logger.error(f"Cross-format validation failed: {e}")
             return False
 
-    def _execute_reporting_phase(self, context: ProcessingContext):
+    def _execute_reporting_phase(self, context: ProcessingContext) -> None:
         """Execute reporting phase."""
         context.log_phase(ProcessingPhase.REPORTING, "Generating comprehensive report")
         self.logger.info("Phase 5: Report generation")

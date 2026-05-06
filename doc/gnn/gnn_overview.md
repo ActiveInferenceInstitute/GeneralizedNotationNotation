@@ -94,6 +94,7 @@ GNN aims to:
 4. **Ensure reproducibility** of computational cognitive models
 5. **Standardize documentation** for model implementations
 6. **Facilitate knowledge transfer** between researchers at different expertise levels
+7. **Enable systematic performance benchmarking** through automated parametric scaling studies
 
 ## The Triple Play Approach
 

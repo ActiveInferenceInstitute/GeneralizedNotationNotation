@@ -30,8 +30,10 @@ The PyMDP Framework documentation system is part of the broader GNN (Generalized
 
 - **gnn_pymdp.md**: GNN → PyMDP integration contract
 - **pymdp_1_0_0_alignment_matrix.md**: upstream 1.0.0 vs local wiring
-- **pymdp_advanced_tutorials.md**, **pymdp_performance_guide.md**: supplementary notes
-- **pymdp_pomdp/**: reference scripts and README (see [pymdp_pomdp/README.md](pymdp_pomdp/README.md))
+- **pymdp_performance_guide.md**: performance notes and **Systematic Scaling Studies**
+- **run_pymdp_gnn_scaling_analysis.py**: automated study orchestrator agent
+- **pymdp_advanced_tutorials.md**: supplementary notes
+- **pymdp_pomdp/**: reference scripts and README
 
 **Last Updated**: 2026-04-14
 

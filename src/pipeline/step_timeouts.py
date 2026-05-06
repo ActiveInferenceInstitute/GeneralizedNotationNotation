@@ -14,7 +14,7 @@ STEP_TIMEOUTS = {
     "17_integration.py": 300,  # Dependency graph + system checks
     "22_gui.py": 600,
     "11_render.py": 300,
-    "12_execute.py": 600,
+    "12_execute.py": 3600,
 }
 
 DEFAULT_TIMEOUT = 180

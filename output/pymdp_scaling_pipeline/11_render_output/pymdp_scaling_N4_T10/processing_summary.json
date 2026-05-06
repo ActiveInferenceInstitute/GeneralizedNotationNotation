@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-06T07:04:28.173916",
+  "source_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T10.md",
+  "model_name": "PyMDP Scaling N4 T10",
+  "pomdp_dimensions": {
+    "num_states": 4,
+    "num_observations": 4,
+    "num_actions": 4
+  },
+  "frameworks_requested": [
+    "pymdp"
+  ],
+  "frameworks_processed": [
+    "pymdp"
+  ],
+  "frameworks_failed": []
+}

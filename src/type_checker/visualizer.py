@@ -13,6 +13,9 @@ logger = logging.getLogger(__name__)
 
 MATPLOTLIB_AVAILABLE = False
 try:
+    from utils.matplotlib_setup import apply_env_backend_if_set
+
+    apply_env_backend_if_set()
     import matplotlib.pyplot as plt
     import numpy as np
     MATPLOTLIB_AVAILABLE = True

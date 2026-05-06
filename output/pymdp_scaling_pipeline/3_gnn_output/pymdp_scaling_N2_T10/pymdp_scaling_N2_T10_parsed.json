@@ -1,0 +1,676 @@
+{
+  "model_name": "PyMDP Scaling N2 T10",
+  "version": "1.0",
+  "annotation": "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3e3206f7-98ca-4d04-943f-a92ff54b3eca",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "465497c9-e868-4913-9b09-a8a7e90c3331",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0a2200b1-c11f-4c00-a9e3-2f03469d941f",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f01f3dfa-597e-4272-8c60-5d9670c10d1f",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        2,
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d032acab-4c46-45b0-8e3d-e8ca81e17a4d",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d682962-a3fd-4807-ad2d-ce9d9b400d93",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8668a0ce-417d-4bac-bd64-b44f49ee6c49",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7a330985-6d4d-469f-bc7f-33dfb96a30fd",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "dee0a79e-fbcb-4b67-8750-b01ead7d82e0",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "af3efaa6-1b17-41dc-99fe-bb159038f5c3",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": null,
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "255deeb7-f199-40cf-abe6-c82ae95b3dfe",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e31603ec-f13d-4010-97f9-b9afb36afdee",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e42eaabe-1f07-4363-a8d4-5d9a8006169f",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "94a8b194-d888-4d05-ac1d-8fd3c1056e17",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "35b31f4d-f150-4b1a-be12-ec8deda7d9d9",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0be56b58-d130-45da-8a28-e080d9c2c9d4",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "48f7f083-93b3-4283-bfd8-2227f2d3e052",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b7fd2b9a-a55e-41da-b806-7dadf3a7befe",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c9c300e-5cd1-4b4e-bd83-7cfc4231ca53",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "19b81073-b57e-42fa-8bbf-e9ea9bfd42dd",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "dac88278-d72b-4f60-b459-df98792dd379",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8928a57a-7dfe-4e58-be3a-8adef05c9c4c",
+      "name": "A",
+      "value": [
+        [
+          0.95,
+          0.05
+        ],
+        [
+          0.05,
+          0.95
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f570706c-825a-42ea-8424-49c1ad9058bc",
+      "name": "B",
+      "value": [
+        [
+          [
+            0.9,
+            0.1
+          ],
+          [
+            0.9,
+            0.1
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.9
+          ],
+          [
+            0.1,
+            0.9
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7f6b37ab-4085-40b4-839c-86de514c31ff",
+      "name": "C",
+      "value": [
+        [
+          0.0,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8ad6f0e7-e2c6-4110-b37c-5c7f18e0aaf8",
+      "name": "D",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "631f4441-952a-49a8-a77a-6d1ae1e96942",
+      "name": "num_hidden_states",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "731e7a42-e0bd-4a00-94d8-4fec4ac39a68",
+      "name": "num_obs",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a11eb334-a2df-458e-b78d-ac8c0b5ffd74",
+      "name": "num_actions",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1acdc94d-04b6-4e79-b83a-230243eccf5c",
+      "name": "num_timesteps",
+      "value": 10,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "9d8cb387-aa28-4e8a-8d04-e2d171cf9c32",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 10,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "901f7508-77f5-49c8-8a44-ad1a969a61a1",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a888dea4-7c4b-45cc-9262-4863b7a1fcd2",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec80dc07-c2e8-4d02-981c-989ac5e60e7b",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "de4126b5-337b-401c-a508-4d5b43ad50ce",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3fbd2a93-6639-4873-bf14-3837868adce6",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "63f4b272-9e60-4b79-a6e0-f26ea0775ab9",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "acdc6a96-192a-4052-830e-8734075c23ad",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "25ec58d9-8fc2-4fc9-9027-4077fa5e3cf4",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1c6ffc4-045e-4970-ae55-f344f078a715",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3286a856-cd8e-42a4-a3c4-4dffc0ab879d",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "09ba875d-b08b-463f-95d9-69fb0b2e8246",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-06T07:03:55.250868",
+  "modified_at": "2026-05-06T07:03:55.250868",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Generated by PyMDP Scaling Suite (noisy: A_signal=0.9, B_signal=0.8).",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "PyMDP Scaling N2 T10",
+    "ModelAnnotation": "PyMDP runtime scaling sweep with noisy observation and stochastic transitions.",
+    "StateSpaceBlock": "s[2,1,type=float]\no[2,1,type=int]\nA[2,2,type=float]\nB[2,2,2,type=float]\nC[2,type=float]\nD[2,type=float]\npi[2,type=float]\nu[1,type=int]\nG[pi,type=float]\nF[1,type=float]\nt[1,type=int]",
+    "Connections": "D>s\ns-A\nA-o\ns-B\nC>G\nG>pi\npi>u\nB>u\ns-F\no-F",
+    "InitialParameterization": "A={\n  (0.950000, 0.050000),\n  (0.050000, 0.950000)\n}\n\nB={\n  ( (0.900000, 0.100000), (0.900000, 0.100000) ),\n  ( (0.100000, 0.900000), (0.100000, 0.900000) )\n}\n\nC={(0.0, 3.0)}\n\nD={(0.500000, 0.500000)}",
+    "Equations": "# Standard Active Inference update equations",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=10",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nG=ExpectedFreeEnergy\nF=VariationalFreeEnergy\ns=HiddenState\no=Observation\npi=PolicyVector\nu=Action\nt=Time",
+    "ModelParameters": "num_hidden_states: 2\nnum_obs: 2\nnum_actions: 2\nnum_timesteps: 10",
+    "Footer": "Generated by PyMDP Scaling Suite (noisy: A_signal=0.9, B_signal=0.8).",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.95,
+        0.05
+      ],
+      [
+        0.05,
+        0.95
+      ]
+    ],
+    "B": [
+      [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.9,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.9
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states": 2,
+    "num_obs": 2,
+    "num_actions": 2,
+    "num_timesteps": 10
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.95,
+        0.05
+      ],
+      [
+        0.05,
+        0.95
+      ]
+    ],
+    "B": [
+      [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.9,
+          0.1
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.9
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        3.0
+      ]
+    ],
+    "D": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states": 2,
+    "num_obs": 2,
+    "num_actions": 2,
+    "num_timesteps": 10
+  }
+}

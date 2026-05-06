@@ -26,29 +26,13 @@ from typing import Any, Dict
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-# Import modules with recovery handling
-try:
-    from render.processor import process_render, render_gnn_spec
-    RENDER_AVAILABLE = True
-except ImportError:
-    RENDER_AVAILABLE = False
-
-try:
-    from execute.processor import process_execute
-    EXECUTE_AVAILABLE = True
-except ImportError:
-    EXECUTE_AVAILABLE = False
-
-try:
-    from analysis.processor import process_analysis
-    ANALYSIS_AVAILABLE = True
-except ImportError:
-    ANALYSIS_AVAILABLE = False
-
-ALL_MODULES_AVAILABLE = RENDER_AVAILABLE and EXECUTE_AVAILABLE and ANALYSIS_AVAILABLE
+# Phase 6: all render/execute/analysis modules are in-tree and guaranteed
+# importable. Import unconditionally — any ImportError here is a real bug.
+from analysis.processor import process_analysis
+from execute.processor import process_execute
+from render.processor import process_render, render_gnn_spec
 
 
-@pytest.mark.skipif(not ALL_MODULES_AVAILABLE, reason="Not all pipeline modules available")
 class TestPipelineIntegration:
     """End-to-end pipeline integration tests."""
 
@@ -104,92 +88,68 @@ D = [0.33, 0.33, 0.34]
     @pytest.mark.integration
     @pytest.mark.slow
     def test_render_execute_analyze_flow(self, pipeline_directories: Dict[str, Any]) -> None:
-        """Test full render -> execute -> analyze pipeline flow."""
+        """Full render → execute → analyze flow completes with structured exit codes.
+
+        Each step's return value must be bool OR int (Phase 1.1 widened contract:
+        0=success, 1=error, 2=skipped/warnings). Exceptions are real failures.
+        """
         dirs = pipeline_directories
 
-        # Step 1: Run render
-        try:
-            render_success = process_render(
-                dirs["input_dir"],
-                dirs["base_output"],
-                verbose=True
-            )
-            assert isinstance(render_success, bool)
-        except Exception as e:
-            pytest.skip(f"Render step failed (acceptable): {e}")
+        # Step 1: Render
+        render_result = process_render(dirs["input_dir"], dirs["base_output"], verbose=True)
+        assert isinstance(render_result, (bool, int)), (
+            f"process_render returned {type(render_result).__name__}; expected bool|int"
+        )
 
-        # Step 2: Run execute (uses render output)
-        try:
-            execute_success = process_execute(
-                dirs["input_dir"],
-                dirs["base_output"],
-                verbose=True,
-                frameworks="pymdp"  # Limit to pymdp for speed
-            )
-            assert isinstance(execute_success, bool)
-        except Exception as e:
-            pytest.skip(f"Execute step failed (acceptable): {e}")
+        # Step 2: Execute (constrained to pymdp for speed)
+        execute_result = process_execute(
+            dirs["input_dir"],
+            dirs["base_output"],
+            verbose=True,
+            frameworks="pymdp",
+            timeout=10,
+            render_output_dir=dirs["base_output"] / "11_render_output",
+        )
+        assert isinstance(execute_result, (bool, int))
 
-        # Step 3: Run analysis (uses execute output)
-        try:
-            analysis_success = process_analysis(
-                dirs["input_dir"],
-                dirs["base_output"],
-                verbose=True
-            )
-            assert isinstance(analysis_success, bool)
-        except Exception as e:
-            pytest.skip(f"Analysis step failed (acceptable): {e}")
-
-        # If we got here, the full flow completed without crashes
+        # Step 3: Analyze
+        analysis_result = process_analysis(dirs["input_dir"], dirs["base_output"], verbose=True)
+        assert isinstance(analysis_result, (bool, int))
 
     @pytest.mark.integration
     @pytest.mark.slow
     def test_step_output_handoffs(self, pipeline_directories: Dict[str, Any]) -> None:
-        """Test that each step's output structure is correct for next step."""
+        """Render and execute each produce on-disk output under the base output dir.
+
+        Programmatic ``process_render(target, output_dir)`` writes directly to
+        ``output_dir`` (render_processing_summary.json + per-model-per-framework
+        subdirs). The pipeline step wrapper routes through ``11_render_output/``
+        but the underlying processor is schema-flat.
+        """
         dirs = pipeline_directories
 
-        # Create expected structures for validation
+        process_render(dirs["input_dir"], dirs["base_output"], verbose=True)
+        summary = dirs["base_output"] / "render_processing_summary.json"
+        assert summary.exists(), f"Render did not produce summary at {summary}"
+        # At least one model subdir with at least one framework artifact.
+        model_subdirs = [p for p in dirs["base_output"].iterdir() if p.is_dir()]
+        assert model_subdirs, "Render produced no per-model output directories"
+        framework_artifacts = list(dirs["base_output"].rglob("*.py"))
+        assert framework_artifacts, "Render produced no framework artifacts"
+
+        process_execute(
+            dirs["input_dir"],
+            dirs["base_output"],
+            verbose=True,
+            frameworks="pymdp",
+            timeout=10,
+            render_output_dir=dirs["base_output"],
+        )
+        # process_execute writes execution_summary under output_dir/summaries/
+        exec_summary = dirs["base_output"] / "summaries" / "execution_summary.json"
+        assert exec_summary.exists(), f"Execute did not produce {exec_summary}"
 
 
-        # Run render and check output structure
-        try:
-            process_render(dirs["input_dir"], dirs["base_output"], verbose=True)
-
-            # Verify render output structure exists
-            render_dir = dirs["base_output"] / "11_render_output"
-            if render_dir.exists():
-                # Should have model subdirectories
-                list(render_dir.iterdir())
-                # Render should create some output
-
-        except Exception:
-            pass
-
-        # Run execute and check output structure
-        try:
-            # Constrain execution to avoid running every framework in repo-level outputs.
-            process_execute(
-                dirs["input_dir"],
-                dirs["base_output"],
-                verbose=True,
-                frameworks="pymdp",
-                timeout=10,
-                render_output_dir=dirs["base_output"] / "11_render_output",
-            )
-
-            # Verify execute output structure
-            execute_dir = dirs["base_output"] / "12_execute_output"
-            if execute_dir.exists():
-                # Should have execution summary
-                execute_dir / "summaries" / "execution_summary.json"
-                # Summary might be at root level instead
-
-        except Exception:
-            pass
-
-
-@pytest.mark.skipif(not EXECUTE_AVAILABLE, reason="Execute module not available")
 class TestExecuteAnalyzeIntegration:
     """Tests for execute to analysis handoff."""
 
@@ -236,29 +196,14 @@ class TestExecuteAnalyzeIntegration:
 
     @pytest.mark.integration
     def test_execution_results_analyzable(self, simulated_execute_output: Any, safe_filesystem: Any) -> None:
-        """Test that execution results can be analyzed."""
-        if not ANALYSIS_AVAILABLE:
-            pytest.skip("Analysis module not available")
-
+        """process_analysis runs against simulated execute output without crashing."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.temp_dir / "output"
-
-        try:
-            success = process_analysis(input_dir, output_dir, verbose=True)
-            assert isinstance(success, bool)
-
-            # Check that analysis output was created
-            analysis_dir = output_dir / "16_analysis_output"
-            if analysis_dir.exists():
-                # Should have some analysis output
-                list(analysis_dir.rglob("*"))
-                # Analysis creates output files
-
-        except Exception as e:
-            pytest.skip(f"Analysis failed (acceptable in isolation): {e}")
+        result = process_analysis(input_dir, output_dir, verbose=True)
+        # Per Phase 1.1 contract: no input → exit-code 2; completed analysis → True/0.
+        assert isinstance(result, (bool, int))
 
 
-@pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
 class TestRenderExecuteIntegration:
     """Tests for render to execute handoff."""
 

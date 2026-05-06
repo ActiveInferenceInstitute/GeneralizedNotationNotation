@@ -66,9 +66,11 @@ types = get_supported_file_types()
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `process_website`
-- `build_from_pipeline_output`
+- `build_website_from_pipeline_output`
+- `get_website_module_info`
 - `get_website_status`
+- `list_generated_website_pages`
+- `process_website`
 
 ## References
 

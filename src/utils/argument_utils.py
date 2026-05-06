@@ -110,9 +110,14 @@ class PipelineArguments:
 
     # Execution options
     frameworks: str = "all"
+    strict_framework_success: bool = False
     render_output_dir: Optional[Path] = None
     distributed: bool = False
+    execution_workers: int = 1
     backend: str = "ray"
+    serialize_preset: str = "full"
+    execution_benchmark_repeats: int = 1
+    execution_summary_detail: bool = False
 
     # Audio generation options
     duration: float = 30.0
@@ -139,7 +144,7 @@ class PipelineArguments:
     mcp_modules_allowlist: Optional[str] = None
 
     # Custom pipeline step configs
-    timesteps: int = 15
+    timesteps: Optional[int] = None
     simulation_params: str = "{}"
     timeout: int = 300
     advanced_stats: bool = False
@@ -197,6 +202,15 @@ class PipelineArguments:
                 [s.strip() for s in self.only_steps.split(',')]
             except Exception:
                 errors.append(f"Invalid only_steps format: {self.only_steps}")
+
+        if self.execution_benchmark_repeats < 1:
+            errors.append(
+                f"execution_benchmark_repeats must be >= 1: {self.execution_benchmark_repeats}"
+            )
+
+        sp = (self.serialize_preset or "full").strip().lower()
+        if sp not in {"full", "minimal"}:
+            errors.append(f"serialize_preset must be 'full' or 'minimal': {self.serialize_preset!r}")
 
         return errors
 
@@ -343,6 +357,11 @@ class ArgumentParser:
             default='all',
             help_text='Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl)'
         ),
+        'strict_framework_success': ArgumentDefinition(
+            flag='--strict-framework-success',
+            action='store_true',
+            help_text='Render step: fail if any requested framework render fails'
+        ),
         'render_output_dir': ArgumentDefinition(
             flag='--render-output-dir',
             arg_type=Path,
@@ -355,12 +374,37 @@ class ArgumentParser:
             default=False,
             help_text='Enable distributed execution for step 12 (if supported)'
         ),
+        'execution_workers': ArgumentDefinition(
+            flag='--execution-workers',
+            arg_type=int,
+            default=1,
+            help_text='Number of local or distributed workers for step 12 execution'
+        ),
         'backend': ArgumentDefinition(
             flag='--backend',
             arg_type=str,
             default='ray',
             choices=['ray', 'dask'],
             help_text='Distributed backend for step 12 (ray or dask)'
+        ),
+        'serialize_preset': ArgumentDefinition(
+            flag='--serialize-preset',
+            arg_type=str,
+            default='full',
+            choices=['full', 'minimal'],
+            help_text='Step 3: serialization preset (full=all formats; minimal=markdown+json+python)'
+        ),
+        'execution_benchmark_repeats': ArgumentDefinition(
+            flag='--execution-benchmark-repeats',
+            arg_type=int,
+            default=1,
+            help_text='Step 12: sequential benchmark repeats per script; median runtime when >1'
+        ),
+        'execution_summary_detail': ArgumentDefinition(
+            flag='--execution-summary-detail',
+            action=argparse.BooleanOptionalAction,
+            default=False,
+            help_text='Step 12: also write execution_summary_detail.json with full per-script payloads',
         ),
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-uv-env',
@@ -427,7 +471,7 @@ class ArgumentParser:
         'timesteps': ArgumentDefinition(
             flag='--timesteps',
             arg_type=int,
-            default=15,
+            default=None,
             help_text='Number of timesteps for simulation'
         ),
         'simulation_params': ArgumentDefinition(
@@ -464,7 +508,15 @@ class ArgumentParser:
             "install_optional",
         ],
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_slow", "include_performance", "comprehensive"],
-        "3_gnn.py": ["target_dir", "output_dir", "recursive", "verbose", "enable_round_trip", "enable_cross_format"],
+        "3_gnn.py": [
+            "target_dir",
+            "output_dir",
+            "recursive",
+            "verbose",
+            "enable_round_trip",
+            "enable_cross_format",
+            "serialize_preset",
+        ],
         "4_model_registry.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "5_type_checker.py": ["target_dir", "output_dir", "recursive", "verbose", "strict", "estimate_resources"],
         "6_validation.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -472,8 +524,21 @@ class ArgumentParser:
         "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "9_advanced_viz.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
-        "11_render.py": ["target_dir", "output_dir", "recursive", "verbose", "timesteps", "simulation_params"],
-        "12_execute.py": ["target_dir", "output_dir", "recursive", "verbose", "frameworks", "timeout", "render_output_dir", "distributed", "backend"],
+        "11_render.py": ["target_dir", "output_dir", "recursive", "verbose", "timesteps", "simulation_params", "frameworks", "strict_framework_success"],
+        "12_execute.py": [
+            "target_dir",
+            "output_dir",
+            "recursive",
+            "verbose",
+            "frameworks",
+            "timeout",
+            "render_output_dir",
+            "distributed",
+            "execution_workers",
+            "backend",
+            "execution_benchmark_repeats",
+            "execution_summary_detail",
+        ],
         "13_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
         "14_ml_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "15_audio.py": ["target_dir", "output_dir", "recursive", "verbose", "duration", "audio_backend"],
@@ -593,11 +658,19 @@ class ArgumentParser:
                     elif arg_name == 'duration':
                         setattr(parsed_args, arg_name, 30.0)
                     elif arg_name == 'timesteps':
-                        setattr(parsed_args, arg_name, 15)
+                        setattr(parsed_args, arg_name, None)
                     elif arg_name == 'simulation_params':
                         setattr(parsed_args, arg_name, "{}")
                     elif arg_name == 'timeout':
                         setattr(parsed_args, arg_name, 300)
+                    elif arg_name == 'serialize_preset':
+                        setattr(parsed_args, arg_name, "full")
+                    elif arg_name == 'execution_benchmark_repeats':
+                        setattr(parsed_args, arg_name, 1)
+                    elif arg_name == 'execution_summary_detail':
+                        setattr(parsed_args, arg_name, False)
+                    elif arg_name == 'execution_workers':
+                        setattr(parsed_args, arg_name, 1)
                     elif arg_name == 'advanced_stats':
                         setattr(parsed_args, arg_name, False)
                     else:
@@ -631,6 +704,8 @@ class ArgumentParser:
                     setattr(fallback_args, arg_name, 360)
                 elif arg_name == 'llm_tasks':
                     setattr(fallback_args, arg_name, "all")
+                elif arg_name == 'execution_workers':
+                    setattr(fallback_args, arg_name, 1)
                 elif arg_name == 'website_html_filename':
                     setattr(fallback_args, arg_name, "gnn_pipeline_summary_website.html")
                 elif arg_name in ['recreate_venv', 'dev', 'setup_core_only', 'install_all_extras']:
@@ -641,68 +716,18 @@ class ArgumentParser:
                     setattr(fallback_args, arg_name, False)
                 elif arg_name == 'duration':
                     setattr(fallback_args, arg_name, 30.0)
+                elif arg_name == 'timeout':
+                    setattr(fallback_args, arg_name, 300)
+                elif arg_name == 'serialize_preset':
+                    setattr(fallback_args, arg_name, "full")
+                elif arg_name == 'execution_benchmark_repeats':
+                    setattr(fallback_args, arg_name, 1)
+                elif arg_name == 'execution_summary_detail':
+                    setattr(fallback_args, arg_name, False)
                 else:
                     setattr(fallback_args, arg_name, None)
 
             return fallback_args
-
-def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
-                           python_executable: str, script_path: Path) -> List[str]:
-    """
-    Build command line arguments for a pipeline step.
-    
-    Args:
-        step_name: Name of the step (e.g., "1_gnn")
-        pipeline_args: Main pipeline arguments
-        python_executable: Path to Python executable
-        script_path: Path to the step script
-        
-    Returns:
-        List of command line arguments
-    """
-    cmd = [python_executable, str(script_path)]
-
-    # Get supported arguments for this step
-    # Try both with and without .py extension
-    supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_name, [])
-    if not supported_args and not step_name.endswith('.py'):
-        supported_args = ArgumentParser.STEP_ARGUMENTS.get(f"{step_name}.py", [])
-    elif not supported_args and step_name.endswith('.py'):
-        supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_name[:-3], [])
-
-    # Special handling for 2_tests.py - only pass test-specific arguments
-    if step_name in ['2_tests', '2_tests.py']:
-        # Filter to only test-relevant arguments that the test script can handle
-        test_args = ['target_dir', 'output_dir', 'verbose', 'fast_only', 'include_slow', 'include_performance', 'comprehensive']
-        supported_args = [arg for arg in supported_args if arg in test_args]
-
-    # Build arguments
-    for arg_name in supported_args:
-        if not hasattr(pipeline_args, arg_name):
-            continue
-
-        value = getattr(pipeline_args, arg_name)
-        if value is None:
-            continue
-
-        arg_def = ArgumentParser.ARGUMENT_DEFINITIONS.get(arg_name)
-        if not arg_def:
-            continue
-
-        # Handle different argument types
-        if arg_def.action == 'store_true':
-            if value:
-                cmd.append(arg_def.flag)
-            continue
-        elif arg_def.action == argparse.BooleanOptionalAction:
-            # Only pass the flag if True; omit if False (don't pass --no-flag)
-            # This ensures compatibility with steps that may not support --no-flag
-            if value:
-                cmd.append(arg_def.flag)
-        else:
-            cmd.extend([arg_def.flag, str(value)])
-
-    return cmd
 
 
 # Add enhanced validation and step configuration
@@ -745,8 +770,8 @@ class StepConfiguration:
         },
         "3_gnn": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose", "enable_round_trip", "enable_cross_format"],
-            "defaults": {"recursive": True, "verbose": False, "enable_round_trip": True, "enable_cross_format": True},
+            "optional_args": ["recursive", "verbose", "enable_round_trip", "enable_cross_format", "serialize_preset"],
+            "defaults": {"recursive": True, "verbose": False, "enable_round_trip": True, "enable_cross_format": True, "serialize_preset": "full"},
             "description": "GNN Discovery & Basic Parse"
         },
         "4_model_registry": {
@@ -793,14 +818,30 @@ class StepConfiguration:
         },
         "11_render": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
+            "optional_args": ["recursive", "verbose", "timesteps", "simulation_params", "frameworks", "strict_framework_success"],
             "defaults": {"recursive": True, "verbose": False},
             "description": "Simulator Code Generation"
         },
         "12_execute": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": True, "verbose": False},
+            "optional_args": [
+                "recursive",
+                "verbose",
+                "frameworks",
+                "timeout",
+                "render_output_dir",
+                "distributed",
+                "execution_workers",
+                "backend",
+                "execution_benchmark_repeats",
+                "execution_summary_detail",
+            ],
+            "defaults": {
+                "recursive": True,
+                "verbose": False,
+                "execution_benchmark_repeats": 1,
+                "execution_summary_detail": False,
+            },
             "description": "Simulator Execution"
         },
         "13_llm": {
@@ -1076,6 +1117,17 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
     for arg_name in all_supported_args:
         if hasattr(pipeline_args, arg_name):
             arg_value = getattr(pipeline_args, arg_name)
+
+            # Step 12: omit misleading defaults when unused
+            if step_key == "12_execute.py":
+                if arg_name == "backend" and not getattr(pipeline_args, "distributed", False):
+                    continue
+                if arg_name == "execution_benchmark_repeats":
+                    try:
+                        if int(arg_value) <= 1:
+                            continue
+                    except (TypeError, ValueError):
+                        continue
 
             # Skip None values for optional arguments
             if arg_value is None and arg_name not in config.get("required_args", []):

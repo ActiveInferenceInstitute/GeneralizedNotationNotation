@@ -23,3 +23,11 @@ This module is a **static documentation directory** — it does not export runti
 - Does not define runtime pipeline behavior
 - Complements top-level `doc/` content for implementation-near material
 - Generated outputs, caches, and transient artifacts are excluded from coverage expectations
+
+
+## MCP Tools
+
+This module registers tools with the GNN MCP server (see `mcp.py`):
+
+- None
+

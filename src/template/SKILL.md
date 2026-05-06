@@ -68,9 +68,9 @@ run_script = create_standardized_pipeline_script("N_module.py", process_func, "D
 
 This module registers tools with the GNN MCP server (see `mcp.py`):
 
-- `template.process_file`
-- `template.process_directory`
 - `template.get_info`
+- `template.process_directory`
+- `template.process_file`
 
 ## References
 

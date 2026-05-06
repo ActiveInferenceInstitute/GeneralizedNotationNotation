@@ -1,0 +1,808 @@
+{
+  "timestamp": "2026-05-06T07:03:47.000978",
+  "source_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study",
+  "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": true,
+    "serialize_preset": "minimal",
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "serialized_formats": [
+      "markdown",
+      "python",
+      "json"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "pymdp_scaling_N32_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T50/pymdp_scaling_N32_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N32 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T50/pymdp_scaling_N32_T50_markdown.md",
+          "file_size": 308638,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T50/pymdp_scaling_N32_T50_python.py",
+          "file_size": 587434,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T50/pymdp_scaling_N32_T50_json.json",
+          "file_size": 742190,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N16_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T50/pymdp_scaling_N16_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N16 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T50/pymdp_scaling_N16_T50_markdown.md",
+          "file_size": 36718,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T50/pymdp_scaling_N16_T50_python.py",
+          "file_size": 73066,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T50/pymdp_scaling_N16_T50_json.json",
+          "file_size": 100734,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N8_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T10/pymdp_scaling_N8_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N8 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T10/pymdp_scaling_N8_T10_markdown.md",
+          "file_size": 5200,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T10/pymdp_scaling_N8_T10_python.py",
+          "file_size": 13819,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T10/pymdp_scaling_N8_T10_json.json",
+          "file_size": 19616,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N8_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N8 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_markdown.md",
+          "file_size": 5203,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_python.py",
+          "file_size": 13827,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T100/pymdp_scaling_N8_T100_json.json",
+          "file_size": 19619,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N4_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T10/pymdp_scaling_N4_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N4 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T10/pymdp_scaling_N4_T10_markdown.md",
+          "file_size": 1436,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T10/pymdp_scaling_N4_T10_python.py",
+          "file_size": 6795,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T10/pymdp_scaling_N4_T10_json.json",
+          "file_size": 8716,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N16_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N16 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_markdown.md",
+          "file_size": 36721,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_python.py",
+          "file_size": 73074,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T100/pymdp_scaling_N16_T100_json.json",
+          "file_size": 100737,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N64_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T100/pymdp_scaling_N64_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N64 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T100/pymdp_scaling_N64_T100_markdown.md",
+          "file_size": 2672673,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T100/pymdp_scaling_N64_T100_python.py",
+          "file_size": 5082994,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T100/pymdp_scaling_N64_T100_json.json",
+          "file_size": 5958833,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N128_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T100/pymdp_scaling_N128_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N128 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T100/pymdp_scaling_N128_T100_markdown.md",
+          "file_size": 21171439,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T100/pymdp_scaling_N128_T100_python.py",
+          "file_size": 40233105,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T100/pymdp_scaling_N128_T100_json.json",
+          "file_size": 46874495,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N4_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T50/pymdp_scaling_N4_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N4 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T50/pymdp_scaling_N4_T50_markdown.md",
+          "file_size": 1436,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T50/pymdp_scaling_N4_T50_python.py",
+          "file_size": 6795,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T50/pymdp_scaling_N4_T50_json.json",
+          "file_size": 8716,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N8_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N8_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T50/pymdp_scaling_N8_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N8 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T50/pymdp_scaling_N8_T50_markdown.md",
+          "file_size": 5200,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T50/pymdp_scaling_N8_T50_python.py",
+          "file_size": 13819,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N8_T50/pymdp_scaling_N8_T50_json.json",
+          "file_size": 19616,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N16_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N16_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T10/pymdp_scaling_N16_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N16 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T10/pymdp_scaling_N16_T10_markdown.md",
+          "file_size": 36718,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T10/pymdp_scaling_N16_T10_python.py",
+          "file_size": 73066,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N16_T10/pymdp_scaling_N16_T10_json.json",
+          "file_size": 100734,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N32_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T10/pymdp_scaling_N32_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N32 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T10/pymdp_scaling_N32_T10_markdown.md",
+          "file_size": 308638,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T10/pymdp_scaling_N32_T10_python.py",
+          "file_size": 587434,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T10/pymdp_scaling_N32_T10_json.json",
+          "file_size": 742190,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N2_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T100/pymdp_scaling_N2_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N2 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T100/pymdp_scaling_N2_T100_markdown.md",
+          "file_size": 951,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T100/pymdp_scaling_N2_T100_python.py",
+          "file_size": 5899,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T100/pymdp_scaling_N2_T100_json.json",
+          "file_size": 7063,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N2_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T10/pymdp_scaling_N2_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N2 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T10/pymdp_scaling_N2_T10_markdown.md",
+          "file_size": 948,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T10/pymdp_scaling_N2_T10_python.py",
+          "file_size": 5891,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T10/pymdp_scaling_N2_T10_json.json",
+          "file_size": 7060,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N32_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N32_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T100/pymdp_scaling_N32_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N32 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T100/pymdp_scaling_N32_T100_markdown.md",
+          "file_size": 308641,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T100/pymdp_scaling_N32_T100_python.py",
+          "file_size": 587442,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N32_T100/pymdp_scaling_N32_T100_json.json",
+          "file_size": 742193,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N2_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N2_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T50/pymdp_scaling_N2_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N2 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T50/pymdp_scaling_N2_T50_markdown.md",
+          "file_size": 948,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T50/pymdp_scaling_N2_T50_python.py",
+          "file_size": 5891,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N2_T50/pymdp_scaling_N2_T50_json.json",
+          "file_size": 7060,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N64_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T10/pymdp_scaling_N64_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N64 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T10/pymdp_scaling_N64_T10_markdown.md",
+          "file_size": 2672670,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T10/pymdp_scaling_N64_T10_python.py",
+          "file_size": 5082986,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T10/pymdp_scaling_N64_T10_json.json",
+          "file_size": 5958830,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N64_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N64_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T50/pymdp_scaling_N64_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N64 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T50/pymdp_scaling_N64_T50_markdown.md",
+          "file_size": 2672670,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T50/pymdp_scaling_N64_T50_python.py",
+          "file_size": 5082986,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N64_T50/pymdp_scaling_N64_T50_json.json",
+          "file_size": 5958830,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N128_T10.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T10.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T10/pymdp_scaling_N128_T10_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N128 T10",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T10/pymdp_scaling_N128_T10_markdown.md",
+          "file_size": 21171436,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T10/pymdp_scaling_N128_T10_python.py",
+          "file_size": 40233097,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T10/pymdp_scaling_N128_T10_json.json",
+          "file_size": 46874492,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N4_T100.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N4_T100.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N4 T100",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_markdown.md",
+          "file_size": 1439,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_python.py",
+          "file_size": 6803,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N4_T100/pymdp_scaling_N4_T100_json.json",
+          "file_size": 8719,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "file_name": "pymdp_scaling_N128_T50.md",
+      "file_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/pymdp_scaling_study/pymdp_scaling_N128_T50.md",
+      "parse_success": true,
+      "parsed_model_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T50/pymdp_scaling_N128_T50_parsed.json",
+      "source_format": null,
+      "model_info": {
+        "name": "PyMDP Scaling N128 T50",
+        "version": "1.0",
+        "variables_count": 11,
+        "connections_count": 10,
+        "parameters_count": 8,
+        "equations_count": 0
+      },
+      "generated_formats": {
+        "markdown": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T50/pymdp_scaling_N128_T50_markdown.md",
+          "file_size": 21171436,
+          "success": true
+        },
+        "python": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T50/pymdp_scaling_N128_T50_python.py",
+          "file_size": 40233097,
+          "success": true
+        },
+        "json": {
+          "output_file": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/pymdp_scaling_pipeline/3_gnn_output/pymdp_scaling_N128_T50/pymdp_scaling_N128_T50_json.json",
+          "file_size": 46874492,
+          "success": true
+        }
+      },
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "summary": {
+    "total_files": 21,
+    "successful_parses": 21,
+    "failed_parses": 0,
+    "total_formats_generated": 63,
+    "formats_per_file": {
+      "pymdp_scaling_N32_T50.md": 3,
+      "pymdp_scaling_N16_T50.md": 3,
+      "pymdp_scaling_N8_T10.md": 3,
+      "pymdp_scaling_N8_T100.md": 3,
+      "pymdp_scaling_N4_T10.md": 3,
+      "pymdp_scaling_N16_T100.md": 3,
+      "pymdp_scaling_N64_T100.md": 3,
+      "pymdp_scaling_N128_T100.md": 3,
+      "pymdp_scaling_N4_T50.md": 3,
+      "pymdp_scaling_N8_T50.md": 3,
+      "pymdp_scaling_N16_T10.md": 3,
+      "pymdp_scaling_N32_T10.md": 3,
+      "pymdp_scaling_N2_T100.md": 3,
+      "pymdp_scaling_N2_T10.md": 3,
+      "pymdp_scaling_N32_T100.md": 3,
+      "pymdp_scaling_N2_T50.md": 3,
+      "pymdp_scaling_N64_T10.md": 3,
+      "pymdp_scaling_N64_T50.md": 3,
+      "pymdp_scaling_N128_T10.md": 3,
+      "pymdp_scaling_N4_T100.md": 3,
+      "pymdp_scaling_N128_T50.md": 3
+    }
+  }
+}

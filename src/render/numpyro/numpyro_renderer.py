@@ -47,6 +47,15 @@ def render_gnn_to_numpyro(
         if not valid:
             logger.warning(f"Shape validation warning: {msg}")
 
+        # Ensure options has num_timesteps if available in gnn_spec
+        options = options or {}
+        model_params = gnn_spec.get('model_parameters', {})
+        init_params = gnn_spec.get('initialparameterization', {})
+        if 'num_timesteps' not in options:
+            extracted_t = model_params.get('num_timesteps', init_params.get('num_timesteps'))
+            if extracted_t is not None:
+                options['num_timesteps'] = extracted_t
+
         code = _generate_numpyro_code(model_name, A, B, C, D, options)
 
         output_path = Path(output_path)
@@ -138,7 +147,7 @@ def _generate_numpyro_code(
     options: Optional[Dict[str, Any]] = None,
 ) -> str:
     """Generate standalone NumPyro POMDP simulation script."""
-    num_timesteps = (options or {}).get("num_timesteps", 10)
+    num_timesteps = (options or {}).get("num_timesteps", 15)
     num_states = A.shape[1] if A.ndim == 2 else 2
     num_obs = A.shape[0] if A.ndim == 2 else num_states
     num_actions = B.shape[2] if B.ndim == 3 else 2

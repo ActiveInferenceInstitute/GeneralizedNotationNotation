@@ -46,7 +46,14 @@ def render_gnn_to_pytorch(
             logger.warning(f"Shape validation warning: {msg}")
 
         # Generate code
-        code = _generate_pytorch_code(model_name, A, B, C, D, options)
+        code = _generate_pytorch_code(
+            model_name,
+            A,
+            B,
+            C,
+            D,
+            _extract_num_timesteps(gnn_spec, options),
+        )
 
         # Write output
         output_path = Path(output_path)
@@ -116,6 +123,21 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
     return A, B, C, D
 
 
+def _extract_num_timesteps(
+    gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]] = None
+) -> int:
+    """Extract simulation horizon from render options or parsed GNN metadata."""
+    options = options or {}
+    model_params = gnn_spec.get("model_parameters", {})
+    init_params = gnn_spec.get("initialparameterization", {})
+    return int(
+        options.get(
+            "num_timesteps",
+            model_params.get("num_timesteps", init_params.get("num_timesteps", 10)),
+        )
+    )
+
+
 def _format_tensor(arr: np.ndarray, indent: int = 4) -> str:
     """Format a numpy array as a torch.tensor() literal."""
     prefix = " " * indent
@@ -139,10 +161,9 @@ def _generate_pytorch_code(
     B: np.ndarray,
     C: np.ndarray,
     D: np.ndarray,
-    options: Optional[Dict[str, Any]] = None
+    num_timesteps: int = 10,
 ) -> str:
     """Generate standalone PyTorch POMDP simulation script."""
-    num_timesteps = (options or {}).get("num_timesteps", 10)
     num_states = A.shape[1] if A.ndim == 2 else 2
     num_obs = A.shape[0] if A.ndim == 2 else num_states
     num_actions = B.shape[2] if B.ndim == 3 else 2

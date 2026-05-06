@@ -121,10 +121,9 @@ class TestStep12ExecutionHandshake:
         assert pymdp_exec is not None
 
     def test_executor_with_missing_file_returns_failure(self):
-        """Executor returns a failure result for a non-existent artifact."""
-        try:
-            from execute.executor import execute_file
-        except ImportError:
-            pytest.skip('execute.executor not available')
-        result = execute_file(Path('/nonexistent/artifact.py'), framework='pymdp')
-        assert result is not None
+        """execute_script_safely returns a structured failure dict for a missing artifact."""
+        from execute.executor import execute_script_safely
+        result = execute_script_safely(Path('/nonexistent/artifact.py'), timeout=5)
+        assert isinstance(result, dict)
+        assert result['success'] is False
+        assert result['error_type'] == 'FileNotFoundError'
