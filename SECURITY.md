@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Policy | **Audience**: All Users | **Complexity**: Intermediate  
-> **Last Updated**: March 2026 | **Status**: Production-Ready  
+> **Last Updated**: May 2026 | **Status**: Production-Ready  
 > **Cross-References**: [Comprehensive Security Guide](doc/security/README.md) | [Deployment Security](doc/deployment/README.md) | [MCP Security](doc/mcp/README.md)
 
 ## 🔒 Comprehensive Security Framework
@@ -17,10 +17,10 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 
 | Version | Supported | Security Coverage |
 | ------- | ------------------ | ----------------- |
-| 1.1.x   | ✅ Full support | Complete security framework |
-| 1.0.x   | ✅ LTS support | Backported security fixes |
-| 0.1.x   | ⚠️ Legacy support | Critical fixes only |
-| < 0.1.0 | ❌ Unsupported | No security support |
+| 1.6.x   | ✅ Full support | Complete security framework |
+| 1.1.x   | ✅ LTS support | Backported security fixes |
+| 1.0.x   | ⚠️ Legacy support | Critical fixes only |
+| < 1.0.0 | ❌ Unsupported | No security support |
 
 > **🔄 Version Updates**: This table is updated with each release. See [Changelog](#) for version history.
 
@@ -35,11 +35,18 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | 2026-03-05 | CVE-2025-14009 | nltk | Upgraded 3.9.2 → 3.9.3 (Zip Slip RCE fix) |
 | 2026-03-05 | CVE-2026-28802 | authlib | Upgraded 1.6.6 → 1.6.9 (alg:none signature bypass fix) |
 | 2026-03-22 | GHSA-rf74-v2fm-23pw, CVE-2026-33230, CVE-2026-33231 | nltk | Removed `safety` dev tool (sole lockfile consumer); PyPI has no release newer than 3.9.3 yet — monitor [nltk](https://pypi.org/project/nltk/) |
+| 2026-05-07 | CVE-2026-4539 | pygments | Replaced third-party git fork override with official PyPI release ≥ 2.20.0 (AdlLexer ReDoS fix) |
+| 2026-05-07 | CVE-2026-40192 | Pillow | Verified locked at 12.2.0 (FITS decompression bomb fix) |
+| 2026-05-07 | CVE-2026-25990 | Pillow | Verified locked at 12.2.0 (PSD out-of-bounds write fix; patched in 12.1.1) |
+| 2026-05-07 | CVE-2026-22815 | aiohttp | Verified locked at 3.13.5; tightened floor to ≥ 3.13.4 (header/trailer DoS) |
+| 2026-05-07 | CVE-2026-21441 | urllib3 | Verified locked at 2.6.3 (decompression bomb bypass fix) |
+| 2026-05-07 | CVE-2026-24049 | setuptools/wheel | Accepted risk — `wheel.unpack` path traversal not reachable in GNN workflows (see below) |
 
 > **ℹ️ Known Accepted Risks**: The following vulnerabilities are documented and accepted:
 >
-> - **CVE-2024-39236** (gradio): Disputed - self-attack scenario only
-> - **CVE-2022-42969** / **PYSEC-2022-42969** (`py` 1.11.0): ReDoS in Subversion-related paths; disputed/no fixed PyPI release — transitive via **`inferactively-pymdp`** (see `uv.lock`). Mitigation: do not point pymdp tooling at untrusted SVN remotes.
+> - **CVE-2024-39236** (gradio): Disputed — self-attack scenario only.
+> - **CVE-2026-24049** (setuptools / bundled wheel): Path traversal in `wheel.unpack()`. `setuptools` 81.0.0 vendors wheel code that may be affected. Mitigation: GNN never calls `wheel unpack` or processes untrusted `.whl` archives at runtime; this is a build-tool-only surface. Monitor for a setuptools release that bundles `wheel >= 0.46.2`.
+> - ~~**CVE-2022-42969** / **PYSEC-2022-42969** (`py` 1.11.0)~~: Resolved — `py` package is no longer present in the dependency graph (removed from `uv.lock` as of 2026-05-07).
 
 ## Dependency automation and local audits
 

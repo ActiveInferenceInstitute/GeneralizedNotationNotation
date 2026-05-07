@@ -13,9 +13,6 @@ resolution-markers = [
     "python_full_version < '3.12' and sys_platform != 'emscripten' and sys_platform != 'win32'",
 ]
 
-[manifest]
-overrides = [{ name = "pygments", git = "https://github.com/zsbahtiar/pygments.git?rev=2be805d86471efb8efd51886d4d11a33fa22a928" }]
-
 [[package]]
 name = "absl-py"
 version = "2.4.0"
@@ -1397,6 +1394,7 @@ dependencies = [
     { name = "pandas" },
     { name = "plotly" },
     { name = "psutil" },
+    { name = "pygments" },
     { name = "python-dotenv" },
     { name = "pyyaml" },
     { name = "seaborn" },
@@ -1550,10 +1548,10 @@ visualization = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiohttp", specifier = ">=3.9.0" },
-    { name = "aiohttp", marker = "extra == 'all'", specifier = ">=3.9.0" },
-    { name = "aiohttp", marker = "extra == 'dev'", specifier = ">=3.9.0" },
-    { name = "aiohttp", marker = "extra == 'llm'", specifier = ">=3.9.0" },
+    { name = "aiohttp", specifier = ">=3.13.4" },
+    { name = "aiohttp", marker = "extra == 'all'", specifier = ">=3.13.4" },
+    { name = "aiohttp", marker = "extra == 'dev'", specifier = ">=3.13.4" },
+    { name = "aiohttp", marker = "extra == 'llm'", specifier = ">=3.13.4" },
     { name = "bandit", marker = "extra == 'dev'", specifier = ">=1.7.0" },
     { name = "bandit-sarif-formatter", marker = "extra == 'dev'", specifier = ">=1.1.1" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=26.3.1" },
@@ -1646,6 +1644,7 @@ requires-dist = [
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=3.0.0" },
     { name = "psutil", specifier = ">=5.8.0" },
     { name = "py-spy", marker = "extra == 'dev'", specifier = ">=0.3.0" },
+    { name = "pygments", specifier = ">=2.20.0" },
     { name = "pylint", marker = "extra == 'dev'", specifier = ">=3.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=6.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.0" },
@@ -1987,7 +1986,7 @@ name = "importlib-metadata"
 version = "9.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "zipp" },
+    { name = "zipp", marker = "python_full_version < '3.12'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a9/01/15bb152d77b21318514a96f43af312635eb2500c96b55398d020c93d86ea/importlib_metadata-9.0.0.tar.gz", hash = "sha256:a4f57ab599e6a2e3016d7595cfd72eb4661a5106e787a95bcc90c7105b831efc", size = 56405, upload-time = "2026-03-20T06:42:56.999Z" }
 wheels = [
@@ -4450,8 +4449,12 @@ wheels = [
 
 [[package]]
 name = "pygments"
-version = "2.19.2"
-source = { git = "https://github.com/zsbahtiar/pygments.git?rev=2be805d86471efb8efd51886d4d11a33fa22a928#2be805d86471efb8efd51886d4d11a33fa22a928" }
+version = "2.20.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c3/b2/bc9c9196916376152d655522fdcebac55e66de6603a76a02bca1b6414f6c/pygments-2.20.0.tar.gz", hash = "sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f", size = 4955991, upload-time = "2026-03-29T13:29:33.898Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f4/7e/a72dd26f3b0f4f2bf1dd8923c85f7ceb43172af56d63c7383eb62b332364/pygments-2.20.0-py3-none-any.whl", hash = "sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176", size = 1231151, upload-time = "2026-03-29T13:29:30.038Z" },
+]
 
 [[package]]
 name = "pylint"
