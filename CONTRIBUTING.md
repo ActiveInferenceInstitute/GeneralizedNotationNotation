@@ -18,7 +18,10 @@ git clone https://github.com/<your-username>/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
 # Install dependencies
-uv sync
+uv sync --extra dev
+
+# Install pre-commit hooks
+uv run pre-commit install
 
 # Run the test suite to verify your setup
 uv run pytest src/tests/ -v
@@ -114,6 +117,12 @@ Pull requests against `main` run the workflows described in [.github/README.md](
 Before opening a PR, align locally where possible:
 
 ```bash
+# Using just (recommended)
+just lint                  # Ruff lint check
+just test                  # Fast test suite
+just test-mod MODULE       # Test specific module
+
+# Or manually
 uv sync --frozen --extra dev
 uv run pytest -m "not pipeline and not mcp" --tb=short -q
 uv run ruff check src/

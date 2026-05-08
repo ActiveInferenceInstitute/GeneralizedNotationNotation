@@ -44,7 +44,7 @@ uv run pytest src/tests/test_audio*.py src/tests/test_gui*.py
 > **Scope**: Standardizing GNN as the definitive orchestration language with developer-grade tooling and reusable template packages.
 
 - [ ] **GNN Template Library Engine** — Enable package-manager style downloads for specialized active-inference setups directly using `gnn pull [template_name]` via CLI (Step `src/cli/`).
-- [ ] **Pre-commit Ecosystem** — Ship `.pre-commit-config.yaml`, `Justfile`, `.devcontainer/`, lint matrices, and auto-formatters to make repository contributions frictionless.
+- [x] **Pre-commit Ecosystem** — Ship `.pre-commit-config.yaml`, `justfile` (21 recipes), `.devcontainer/` (Dockerfile + devcontainer.json), Ruff lint/format hooks, and secret detection to make repository contributions frictionless.
 - [ ] **MCP Remote Orchestration** — Extend MCP server from local tool discovery to remote CI/CD agent manipulation with authenticated HTTP transport and rate limiting.
 
 ### Acceptance

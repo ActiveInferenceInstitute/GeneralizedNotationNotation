@@ -6,6 +6,26 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Developer tooling**: `justfile` (21 recipes), `.pre-commit-config.yaml` (Ruff, file hygiene hooks), `.devcontainer/` (Python 3.11 + uv + just for GitHub Codespaces)
+- **NumPyro/Stan E2E tests**: 15-test suite (`test_render_numpyro_stan.py`) validating render success, Python compilation, AST parsing, import correctness, type mapping, and empty-input handling
+- **Renderer health verification**: All 8/8 backends confirmed operational (PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy)
+
+### Changed
+- Test suite expanded to 2,200 passed, 70 skipped (from 1,906/30)
+- Documentation version synchronized to 1.6.0 across 35 files (resolved v1.3.0/v1.5.0 drift)
+- TO-DO.md rewritten with verified completed items and restructured roadmap
+- Pre-commit detect-secrets hook removed (not in project deps; CI uses GitGuardian)
+
+### Fixed
+- 4 broken Mermaid diagram blocks in `doc/gnn/modules/` (00_template, 01_setup, 11_render, 21_mcp)
+- Stale line-count claims for orchestrator scripts (11_render.py, 12_execute.py, main.py)
+- Root `AGENTS.md` version (1.5.0 → 1.6.0) and `README.md` feature attribution (v1.5.0 → v1.6.0)
+
+---
+
 ## [1.6.0] — 2026-04-15
 
 ### Fixed
@@ -25,6 +45,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - **Deprecated marker removed**: `safe_to_fail` marker replaced with standard `xfail` in `pyproject.toml` and `pytest.ini`
 - **Default local LLM**: Ollama default tag is `smollm2:135m-instruct-q4_K_S` (`llm.defaults.DEFAULT_OLLAMA_MODEL`); override with `OLLAMA_MODEL` or `input/config.yaml` `llm.model`.
 - **Core dependencies**: `openai`, `ollama`, `python-dotenv`, and `aiohttp` are installed with the base package (LLM step and OpenRouter/Perplexity providers work without `uv sync --extra llm`).
+
+---
 
 ## [1.3.0] — 2026-03-05
 
@@ -101,7 +123,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/) and [Semantic Ver
 - pytest test suite with comprehensive coverage
 - MCP tool registration framework
 
-[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.3.0...v1.6.0
 [1.3.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/compare/v1.0.0...v1.1.0
