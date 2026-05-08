@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/12_execute.py` (86 lines)
+**Orchestrator**: `src/12_execute.py` (108 lines)
 **Implementation Layer**: `src/execute/`
 
 ## Module Description
@@ -36,7 +36,7 @@ JAX, NumPyro, PyTorch, and DisCoPy are **core** dependencies (`uv sync`). If the
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 
@@ -426,7 +426,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -21,6 +21,12 @@ The GNN MCP implementation provides:
 
 
 ```mermaid
+graph TD
+    Pipeline[21_mcp.py] --> Processor[process_mcp]
+    Processor --> Discovery[Tool Discovery]
+    Processor --> Registration[Tool Registration]
+    Processor --> Server[MCP Server]
+```
 
 ## Agent Identity & Capabilities
 
@@ -36,7 +42,7 @@ The GNN MCP implementation provides:
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 
@@ -405,7 +411,7 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 
 ## Version History
 
-### Current Version: 2.0.0
+### Current Version: 1.6.0
 
 **Features**:
 - Tool registration and discovery
@@ -440,7 +446,7 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 2.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

@@ -21,6 +21,13 @@ flowchart TD
     Main[main.py<br/>Pipeline Orchestrator] -->| Executes| Step0[0_template.py<br/>Thin Orchestrator]
     
     subgraph "src/template/ Module"
+        Init[__init__.py<br/>Public API]
+        Proc[processor.py<br/>Core Logic]
+    end
+
+    Step0 --> Init
+    Init --> Proc
+```
 
 ## Agent Identity & Capabilities
 
@@ -36,7 +43,7 @@ flowchart TD
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 

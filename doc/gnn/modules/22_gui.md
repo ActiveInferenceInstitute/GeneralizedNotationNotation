@@ -36,7 +36,7 @@ The GUI module provides **three distinct interactive interfaces** for constructi
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 
@@ -577,7 +577,7 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

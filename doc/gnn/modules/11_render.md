@@ -2,7 +2,7 @@
 
 ## Architectural Mapping
 
-**Orchestrator**: `src/11_render.py` (68 lines)
+**Orchestrator**: `src/11_render.py` (79 lines)
 **Implementation Layer**: `src/render/`
 
 ## Module Description
@@ -20,6 +20,10 @@ This module provides **POMDP-aware code generation** for GNN models. It translat
 graph TD
     GNN[GNN File] --> Extract[POMDP Extraction]
     Extract --> Check{Framework<br/>Compatible?}
+    Check -->|Yes| Render[Code Generation]
+    Check -->|No| Skip[Skip Framework]
+    Render --> Output[Generated Scripts]
+```
 
 ## Agent Identity & Capabilities
 
@@ -35,7 +39,7 @@ graph TD
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
 **Last Updated**: 2026-04-15
 

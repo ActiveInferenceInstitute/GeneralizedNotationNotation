@@ -36,7 +36,7 @@ Main function for processing machine learning integration tasks.
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 

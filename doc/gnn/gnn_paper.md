@@ -195,7 +195,7 @@ implements the particular generative model in question.
 
 ### 4.5 Neurosymbolic Context Analysis
 
-As of GNN v1.5.0, the Triple Play formulation is heavily augmented by localized Neurosymbolic Analysis. The integration operates via:
+As of GNN v1.6.0, the Triple Play formulation is heavily augmented by localized Neurosymbolic Analysis. The integration operates via:
 1. **Structural Semantic Extraction:** Mapping matrix nodes into Active Inference ontological databases.
 2. **LLM Synthesis:** Translating complex categorical topologies into heuristically approachable natural language streams, generating self-documenting executable architectures.
 3. **Execution Fallback Heuristics:** Automatically triggering heuristic code recovery when downstream solvers fail, driving a continuous reinforcement iteration loop without explicit mock environments.

@@ -35,7 +35,7 @@ Main function for processing system integration tasks.
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 
@@ -320,7 +320,7 @@ def get_integration_status():
 **Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
-**Version**: 1.0.0
+**Version**: 1.6.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 

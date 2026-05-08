@@ -36,7 +36,7 @@ For the reference model used in tests, those **21** formats achieve **100%** rou
 
 **Status**: ✅ Production Ready
 
-**Version**: 1.1.3
+**Version**: 1.6.0
 
 **Last Updated**: 2026-04-12
 

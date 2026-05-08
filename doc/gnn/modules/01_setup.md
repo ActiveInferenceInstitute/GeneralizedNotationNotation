@@ -21,6 +21,12 @@ src/setup/
 
 
 ```mermaid
+graph TD
+    Pipeline[1_setup.py] --> Orchestrator[setup_orchestrator]
+    Orchestrator --> EnvSetup[setup_uv_environment]
+    Orchestrator --> SysCheck[check_system_requirements]
+    EnvSetup --> UVSync[uv sync]
+```
 
 ## Agent Identity & Capabilities
 
@@ -36,7 +42,7 @@ src/setup/
 
 **Status**: ✅ Production Ready
 
-**Version**: 2.0.0
+**Version**: 1.6.0
 
 **Last Updated**: 2026-01-21
 

@@ -57,7 +57,7 @@ def register_tools(server: Any) -> None:
         """Return <module> module version and capabilities."""
         return {
             "module": "<module>",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "capabilities": ["feature_a", "feature_b"],
         }
 

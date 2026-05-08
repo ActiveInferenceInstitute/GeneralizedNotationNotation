@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-04-14
+**Last Updated**: 2026-05-08
 
 <div align="center">
 
@@ -48,11 +48,11 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-04-14  
+**Last Updated**: 2026-05-08  
 **Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
 **Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 1,922 passed, 29 skipped (2026-04-14). Pipeline completely Zero-Mock compliant.
-**Features (v1.5.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, Autonomous Execution Recovery Heuristics, Fallback Circuit Breakers.
+**Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, Autonomous Execution Recovery Heuristics, Fallback Circuit Breakers, NumPyro/Stan Renderers, PyMDP Scaling Study, MCP Full Module Exposure (131 tools).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
