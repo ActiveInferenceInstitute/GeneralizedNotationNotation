@@ -2,24 +2,38 @@
 
 ## Overview
 
-Shared plotting utilities used across all visualization sub-modules. Provides consistent styling, color palettes, and common matplotlib configuration.
+Shared plotting utilities used across all visualization sub-modules. Provides safe matplotlib save routines with DPI fallbacks and warning-suppressed tight layout.
 
 ## Architecture
 
 ```
 plotting/
-├── __init__.py     # Plotting exports and configuration (19 lines)
-└── utils.py        # Shared plotting utilities (73 lines)
+├── __init__.py     # Package exports and configuration
+└── utils.py        # Shared plotting utilities
 ```
 
 ## Key Functions
 
-- **`setup_plot_style()`** — Configures matplotlib rcParams for consistent GNN pipeline styling.
-- **`get_color_palette(n)`** — Returns a harmonious color palette of `n` colors for multi-series plots.
-- **`save_figure(fig, output_path, formats)`** — Saves figures in multiple formats (PNG, SVG, PDF) with consistent DPI settings.
+- **`save_plot_safely(plot_path, dpi=300, **savefig_kwargs) -> bool`** — Save current figure with automatic DPI fallback chain (user → rcParams → no-DPI). Returns `True` on success.
+- **`safe_tight_layout() -> None`** — Apply `plt.tight_layout()` with `UserWarning` suppression. Silently skips on `ValueError` / `RuntimeError`.
+
+### Backward Compatibility
+
+- `_save_plot_safely` — Alias for `save_plot_safely` (used by legacy processor shims).
+- `_safe_tight_layout` — Alias for `safe_tight_layout`.
+
+## Usage
+
+```python
+from visualization.plotting.utils import save_plot_safely, safe_tight_layout
+
+safe_tight_layout()
+save_plot_safely(output_path, dpi=300, bbox_inches="tight")
+```
 
 ## Parent Module
 
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
 **Version**: 1.6.0
+**Last Updated**: 2026-05-12

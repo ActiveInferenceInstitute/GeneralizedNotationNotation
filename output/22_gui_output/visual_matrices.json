@@ -1,0 +1,129 @@
+{
+  "visual_matrices": {
+    "A": {
+      "type": "matrix",
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "description": "Likelihood matrix",
+      "editable": true
+    },
+    "B": {
+      "type": "tensor",
+      "depth": 3,
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "description": "Transition matrices",
+      "editable": true,
+      "current_slice": 0
+    },
+    "C": {
+      "type": "vector",
+      "size": 3,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "description": "Preference vector",
+      "editable": true
+    },
+    "D": {
+      "type": "vector",
+      "size": 3,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "description": "Prior vector",
+      "editable": true
+    }
+  },
+  "connections": [
+    "D>s",
+    "s-A",
+    "s>s_prime",
+    "A-o",
+    "s-B",
+    "C>G",
+    "E>\u03c0",
+    "G>\u03c0",
+    "\u03c0>u",
+    "B>u",
+    "u>s_prime"
+  ],
+  "metadata": {
+    "model_name": "Active Inference POMDP Agent",
+    "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions."
+  }
+}

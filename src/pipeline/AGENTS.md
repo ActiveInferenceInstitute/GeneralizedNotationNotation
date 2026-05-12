@@ -91,75 +91,53 @@ from pathlib import Path
 output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 ```
 
-### Validation Functions
+### Step Validation and DAG Functions
 
-#### `validate_step_prerequisites(script_name: str, args: argparse.Namespace, logger: logging.Logger) -> Dict[str, Any]`
+#### `validate_pipeline_step(step_name: str) -> bool`
 
-**Description**: Validate prerequisites for a pipeline step (input files, dependencies, etc.)
+**Description**: Validate that a step name is known to the pipeline.
 
 **Parameters**:
 
-- `script_name` (str): Name of the script to validate (e.g., "3_gnn.py")
-- `args` (argparse.Namespace): Command line arguments
-- `logger` (logging.Logger): Logger instance
+- `step_name` (str): Name of the step to validate (e.g., `"gnn"`, `"render"`)
 
-**Returns**: `Dict[str, Any]` - Validation results with:
+**Returns**: `bool` — `True` if the step is recognized.
 
-- `passed` (bool): Whether validation passed
-- `warnings` (List[str]): List of warnings
-- `errors` (List[str]): List of errors
-- `missing_dependencies` (List[str]): Missing dependencies
+**Location**: `src/pipeline/__init__.py`
+
+#### `discover_pipeline_steps() -> list[str]`
+
+**Description**: Discover all available pipeline step names by scanning `src/` for `N_module.py` scripts.
+
+**Returns**: `list[str]` — Ordered list of step names.
+
+**Location**: `src/pipeline/__init__.py`
+
+#### `resolve_execution_order(step_names: List[str], ...) -> List[str]`
+
+**Description**: Topological sort of step names using the pipeline's dependency DAG.
+
+**Location**: `src/pipeline/dag.py`
+
+#### `visualize_dag(step_names: List[str], output_path: Path) -> bool`
+
+**Description**: Generate a Mermaid or DOT visualization of the step dependency DAG.
+
+**Location**: `src/pipeline/dag.py`
+
+> **Note**: The functions `validate_step_prerequisites`, `validate_pipeline_step_sequence`, and `generate_execution_plan` referenced in earlier documentation versions do not exist as standalone functions. Prerequisite checking is handled by `pipeline/pipeline_validator.py` (an E2E runtime tester) and dependency ordering is in `pipeline/dag.py`.
+
+### Execution Planning
+
+**Execution planning** is handled inline by `main.py` using `PipelineContext` and `StepRecord` dataclasses from `pipeline/context.py`, not via a separate `pipeline_planner.py` module.
 
 **Example**:
 
 ```python
-from pipeline.pipeline_validator import validate_step_prerequisites
-result = validate_step_prerequisites("3_gnn.py", args, logger)
-if not result["passed"]:
-    print(f"Validation failed: {result['errors']}")
-```
+from pipeline.config import get_output_dir_for_script
+from pipeline.dag import resolve_execution_order
 
-#### `validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger: logging.Logger) -> Dict[str, Any]`
-
-**Description**: Validate the execution sequence of pipeline steps (dependency order, circular dependencies)
-
-**Parameters**:
-
-- `steps_to_execute` (List[tuple]): List of step tuples (step_name, step_function)
-- `logger` (logging.Logger): Logger instance
-
-**Returns**: `Dict[str, Any]` - Sequence validation results with:
-
-- `valid` (bool): Whether sequence is valid
-- `dependency_errors` (List[str]): Dependency violations
-- `circular_dependencies` (List[str]): Detected circular dependencies
-- `recommended_order` (List[str]): Recommended execution order
-
-### Execution Planning Functions
-
-#### `generate_execution_plan(steps_to_execute: List[tuple], args: argparse.Namespace, logger: logging.Logger) -> Dict[str, Any]`
-
-**Description**: Generate execution plan for pipeline steps with resource estimates
-
-**Parameters**:
-
-- `steps_to_execute` (List[tuple]): List of steps to execute
-- `args` (argparse.Namespace): Pipeline arguments
-- `logger` (logging.Logger): Logger instance
-
-**Returns**: `Dict[str, Any]` - Execution plan with:
-
-- `estimated_duration` (float): Estimated total duration in seconds
-- `resource_requirements` (Dict[str, Any]): Memory, CPU, disk requirements
-- `step_estimates` (List[Dict]): Per-step estimates
-- `parallelization_opportunities` (List[str]): Steps that can run in parallel
-
-**Example**:
-
-```python
-from pipeline.pipeline_planner import generate_execution_plan
-plan = generate_execution_plan(steps_to_execute, args, logger)
-print(f"Estimated time: {plan['estimated_duration']}s")
+output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 ```
 
 ### Execution Functions
@@ -281,28 +259,26 @@ output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
 print(f"GNN output directory: {output_dir}")
 ```
 
-### Pipeline Validation
+### Step Validation
 
 ```python
-from pipeline.pipeline_validator import validate_step_prerequisites
+from pipeline import validate_pipeline_step, discover_pipeline_steps
 
-# Validate step prerequisites
-validation = validate_step_prerequisites("3_gnn.py", args, logger)
-if not validation["passed"]:
-    print("Prerequisites not met:")
-    for warning in validation["warnings"]:
-        print(f"  - {warning}")
+# Verify a step is known
+assert validate_pipeline_step("gnn")
+
+# List all steps
+for step in discover_pipeline_steps():
+    print(step)
 ```
 
-### Execution Planning
+### DAG-Based Ordering
 
 ```python
-from pipeline.pipeline_planner import generate_execution_plan
+from pipeline.dag import resolve_execution_order
 
-# Generate execution plan
-plan = generate_execution_plan(steps_to_execute, args, logger)
-print(f"Estimated execution time: {plan['estimated_duration']}s")
-print(f"Resource requirements: {plan['resource_requirements']}")
+order = resolve_execution_order(["render", "gnn", "execute"])
+print(f"Resolved order: {order}")
 ```
 
 ---

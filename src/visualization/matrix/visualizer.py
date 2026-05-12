@@ -220,13 +220,15 @@ class MatrixVisualizer:
             plt.xlabel('Column Index')
             plt.ylabel('Row Index')
 
-            # Add text annotations for matrix values
-            for i in range(matrix.shape[0]):
-                for j in range(matrix.shape[1]):
-                    value = float(matrix[i, j])
-                    plt.text(j, i, f'{value:.3f}',
-                                  ha="center", va="center", color="white" if value < 0.5 else "black",
-                                  fontsize=8, fontweight='bold')
+            # Add text annotations for matrix values (skip for large matrices)
+            total_cells = matrix.shape[0] * matrix.shape[1]
+            if total_cells <= self._ANNOTATION_CELL_LIMIT:
+                for i in range(matrix.shape[0]):
+                    for j in range(matrix.shape[1]):
+                        value = float(matrix[i, j])
+                        plt.text(j, i, f'{value:.3f}',
+                                      ha="center", va="center", color="white" if value < 0.5 else "black",
+                                      fontsize=8, fontweight='bold')
 
             # Set axis ticks
             plt.xticks(range(matrix.shape[1]))

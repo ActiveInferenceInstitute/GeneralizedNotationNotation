@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/discrete/time_varying_dynamics.md",
+  "output_file": "output/0_template_output/time_varying_dynamics/time_varying_dynamics_processed.md",
+  "timestamp": "2026-05-12T07:23:48.394201",
+  "file_size_bytes": 2863,
+  "file_size_lines": 137,
+  "processing_options": {
+    "verbose": true,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

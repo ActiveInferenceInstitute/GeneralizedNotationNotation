@@ -1,0 +1,704 @@
+{
+  "model_name": "Stochastic Continuous Dynamics Agent",
+  "version": "1.0",
+  "annotation": "A continuous-state Active Inference agent whose dynamics include\nexplicit process and observation noise. This sample exercises the\ncontinuous-time path of the language: Time=Continuous, state as a\nmulti-dimensional vector, and Equations containing noise terms ε_state\nand ε_obs that downstream renderers must handle.\n\n- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)\n- 2-dimensional continuous observation (noisy position readout)\n- Linear Gaussian dynamics: ẋ = Fx + Gu + ε_state\n- Linear Gaussian observation: o = Hx + ε_obs\n- Precision parameters γ_state (process) and γ_obs (observation)\n\nUsed to validate that downstream backends either generate SDE solvers\n(Stan via latent-variable sampling, NumPyro) or raise a clean\n\"unsupported feature\" warning (PyMDP, which is discrete-only).",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d69aeb16-a1dc-4fd2-bbb5-3dccc22e6a64",
+      "name": "x",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous hidden state vector",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ee0afb8a-fe63-482c-b471-5ba01132996f",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous observation vector",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0719d977-a66d-4391-947f-170b76b86260",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous control input",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c1558c26-3184-4e79-821a-0673ebe64a12",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "State transition matrix (drift)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b2260c29-5d84-4613-8e7c-50eb97c9053d",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        4,
+        2
+      ],
+      "data_type": "float",
+      "description": "Control gain matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8d8c409a-b248-4cee-a103-51be5a5da89a",
+      "name": "H",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        4
+      ],
+      "data_type": "float",
+      "description": "Observation matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "30c0ecd6-895b-46df-a5a9-363d083e5912",
+      "name": "gamma_state",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Process noise precision",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c7c0c970-18ba-4609-99a8-c0957b311e10",
+      "name": "gamma_obs",
+      "var_type": "observation",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Observation noise precision",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7230961c-09de-41bb-aedb-810a7546f0bc",
+      "name": "epsilon_state",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Process noise ε ~ N(0, γ_state^-1 * I)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "882c3661-c9d4-4c2d-9d38-1948fea2297e",
+      "name": "epsilon_obs",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Observation noise ε ~ N(0, γ_obs^-1 * I)",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9e23cb45-8b22-4eb5-91c0-5f5b5a745a3a",
+      "source_variables": [
+        "x",
+        "u",
+        "epsilon_state"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d2900a4b-9ae8-4abe-91bd-97bf7d2981d7",
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "x"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "2aeeaf7e-53fb-4f2f-8409-49878c54b58b",
+      "source_variables": [
+        "x",
+        "epsilon_obs"
+      ],
+      "target_variables": [
+        "H"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ddeba19c-94a6-4c8e-81cb-ec28daa04a25",
+      "source_variables": [
+        "H"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c76bac8f-f374-4062-a22c-acf00ef844a3",
+      "source_variables": [
+        "gamma_state"
+      ],
+      "target_variables": [
+        "epsilon_state"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "97cef069-936e-4f71-ac57-a88180887a4d",
+      "source_variables": [
+        "gamma_obs"
+      ],
+      "target_variables": [
+        "epsilon_obs"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "34c85372-f6c3-492d-8e14-e6b55adadcc0",
+      "name": "F",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.1,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.1
+        ],
+        [
+          0.0,
+          0.0,
+          0.95,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.95
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "dc28083e-f45d-4633-b3f8-d81bdf4afa7b",
+      "name": "G",
+      "value": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "397acb29-b8e6-4584-bd28-e5038981d453",
+      "name": "H",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a14d497a-628e-483f-9d1e-54f02ad60d15",
+      "name": "gamma_state",
+      "value": [
+        [
+          10.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "6d20e140-bb9f-4b97-8535-d7fbeec7d252",
+      "name": "gamma_obs",
+      "value": [
+        [
+          5.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8c0cbcf7-1584-4423-ba5e-ce29ce77a75b",
+      "name": "state_dim",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "d1175226-0f3a-4d36-bd8b-771433d4e6ac",
+      "name": "obs_dim",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f6932d65-4e64-4b09-ab21-baee0a502f0b",
+      "name": "control_dim",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7e53f6eb-77cd-4d9a-8704-2cde458ad04c",
+      "name": "num_timesteps",
+      "value": 50,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a0c37fb1-7210-4303-b873-8a3e57775288",
+      "name": "time_horizon",
+      "value": 5.0,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e5ba2580-1d5d-4926-a36e-7fb6f14d4e35",
+      "name": "integration_step",
+      "value": 0.1,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "5e4d5d63-ae36-4486-8d73-bbfbf36706dc",
+    "time_type": "Static",
+    "discretization": "ContinuousTime",
+    "horizon": "5.0",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8f81085e-eaef-44b0-8aa5-7e1b476de094",
+      "variable_name": "x",
+      "ontology_term": "ContinuousHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1f9b7e65-70b6-48c3-a7b1-0a0f3e059ed1",
+      "variable_name": "o",
+      "ontology_term": "ContinuousObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ada964b-c143-4458-9173-158d025fa03d",
+      "variable_name": "u",
+      "ontology_term": "ContinuousAction",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "37b89a04-d613-4db6-9468-f1f081876501",
+      "variable_name": "F",
+      "ontology_term": "DriftMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e66a08ee-51fb-444d-ac88-e21829163a27",
+      "variable_name": "G",
+      "ontology_term": "ControlMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9dd1e8fa-4ed1-404a-847c-23ed46bf3b7d",
+      "variable_name": "H",
+      "ontology_term": "ObservationMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4fd2ed87-d552-41c9-9ff6-2f4e778d4254",
+      "variable_name": "gamma_state",
+      "ontology_term": "ProcessNoisePrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "dc4fa378-6a9a-4717-b78c-71b2cd2dcccf",
+      "variable_name": "gamma_obs",
+      "ontology_term": "ObservationNoisePrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ff807a10-a561-49de-b303-e46ff62c775b",
+      "variable_name": "epsilon_state",
+      "ontology_term": "ProcessNoise",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "75d23765-6cb7-459d-b127-2c0531a430a8",
+      "variable_name": "epsilon_obs",
+      "ontology_term": "ObservationNoise",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-12T07:28:02.451469",
+  "modified_at": "2026-05-12T07:28:02.451470",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfContinuous",
+    "footer": "Stochastic Continuous Dynamics Agent v1.0 — linear Gaussian SDE-style\nmodel with explicit process and observation noise. Tests continuous-time\n+ noise-term handling across backends.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfContinuous",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Stochastic Continuous Dynamics Agent",
+    "ModelAnnotation": "A continuous-state Active Inference agent whose dynamics include\nexplicit process and observation noise. This sample exercises the\ncontinuous-time path of the language: Time=Continuous, state as a\nmulti-dimensional vector, and Equations containing noise terms ε_state\nand ε_obs that downstream renderers must handle.\n\n- 4-dimensional continuous hidden state (e.g., position + velocity in 2D)\n- 2-dimensional continuous observation (noisy position readout)\n- Linear Gaussian dynamics: ẋ = Fx + Gu + ε_state\n- Linear Gaussian observation: o = Hx + ε_obs\n- Precision parameters γ_state (process) and γ_obs (observation)\n\nUsed to validate that downstream backends either generate SDE solvers\n(Stan via latent-variable sampling, NumPyro) or raise a clean\n\"unsupported feature\" warning (PyMDP, which is discrete-only).",
+    "StateSpaceBlock": "# Continuous 4-D hidden state (e.g., [x, y, ẋ, ẏ])\n\nx[4,1,type=float]         # Continuous hidden state vector\no[2,1,type=float]         # Continuous observation vector\nu[2,1,type=float]         # Continuous control input\n\n# Linear dynamics parameters\n\nF[4,4,type=float]         # State transition matrix (drift)\nG[4,2,type=float]         # Control gain matrix\nH[2,4,type=float]         # Observation matrix\n\n# Noise / precision parameters (scalars)\n\ngamma_state[1,type=float] # Process noise precision\ngamma_obs[1,type=float]   # Observation noise precision\n\n# Explicit noise terms (zero-mean Gaussian)\n\nepsilon_state[4,1,type=float]  # Process noise ε ~ N(0, γ_state^-1 * I)\nepsilon_obs[2,1,type=float]    # Observation noise ε ~ N(0, γ_obs^-1 * I)",
+    "Connections": "# Dynamics: next state depends on current state, control, and noise\n(x, u, epsilon_state)>F\nF>x\n\n# Observation: current state + noise\n(x, epsilon_obs)>H\nH>o\n\n# Precisions gate the noise distributions\ngamma_state-epsilon_state\ngamma_obs-epsilon_obs",
+    "InitialParameterization": "# F: near-identity drift with small velocity coupling\n# (represents x_{t+1} = x_t + dt * [ẋ, ẏ, 0, 0])\n\nF={\n  (1.0, 0.0, 0.1, 0.0),\n  (0.0, 1.0, 0.0, 0.1),\n  (0.0, 0.0, 0.95, 0.0),\n  (0.0, 0.0, 0.0, 0.95)\n}\n\n# G: control directly affects velocity\n\nG={\n  (0.0, 0.0),\n  (0.0, 0.0),\n  (1.0, 0.0),\n  (0.0, 1.0)\n}\n\n# H: observe position only\n\nH={\n  (1.0, 0.0, 0.0, 0.0),\n  (0.0, 1.0, 0.0, 0.0)\n}\n\n# Precisions (high precision = low noise)\n\ngamma_state={(10.0)}\ngamma_obs={(5.0)}",
+    "Equations": "# State evolution (SDE form):\n# dx/dt = F * x + G * u + ε_state\n# ε_state ~ N(0, γ_state^-1 * I_4)\n#\n# Observation model:\n# o = H * x + ε_obs\n# ε_obs ~ N(0, γ_obs^-1 * I_2)\n#\n# Variational free energy (Gaussian):\n# F = 0.5 * γ_state * ||x_{t+1} - F*x_t - G*u_t||^2\n#   + 0.5 * γ_obs * ||o - H*x||^2\n#   - 0.5 * ln(γ_state) - 0.5 * ln(γ_obs)\n#\n# Expected free energy for policy π:\n# G(π) = E_Q[0.5 * γ_obs * ||o - H*x||^2] + H[Q(x|π)]",
+    "Time": "Continuous\nContinuousTime=τ\nModelTimeHorizon=5.0",
+    "ActInfOntologyAnnotation": "x=ContinuousHiddenState\no=ContinuousObservation\nu=ContinuousAction\nF=DriftMatrix\nG=ControlMatrix\nH=ObservationMatrix\ngamma_state=ProcessNoisePrecision\ngamma_obs=ObservationNoisePrecision\nepsilon_state=ProcessNoise\nepsilon_obs=ObservationNoise",
+    "ModelParameters": "state_dim: 4\nobs_dim: 2\ncontrol_dim: 2\nnum_timesteps: 50\ntime_horizon: 5.0\nintegration_step: 0.1",
+    "Footer": "Stochastic Continuous Dynamics Agent v1.0 — linear Gaussian SDE-style\nmodel with explicit process and observation noise. Tests continuous-time\n+ noise-term handling across backends.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "F": [
+      [
+        1.0,
+        0.0,
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.1
+      ],
+      [
+        0.0,
+        0.0,
+        0.95,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.95
+      ]
+    ],
+    "G": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "H": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "gamma_state": [
+      [
+        10.0
+      ]
+    ],
+    "gamma_obs": [
+      [
+        5.0
+      ]
+    ],
+    "state_dim": 4,
+    "obs_dim": 2,
+    "control_dim": 2,
+    "num_timesteps": 50,
+    "time_horizon": 5.0,
+    "integration_step": 0.1
+  },
+  "model_parameters": {
+    "F": [
+      [
+        1.0,
+        0.0,
+        0.1,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.1
+      ],
+      [
+        0.0,
+        0.0,
+        0.95,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.95
+      ]
+    ],
+    "G": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "H": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "gamma_state": [
+      [
+        10.0
+      ]
+    ],
+    "gamma_obs": [
+      [
+        5.0
+      ]
+    ],
+    "state_dim": 4,
+    "obs_dim": 2,
+    "control_dim": 2,
+    "num_timesteps": 50,
+    "time_horizon": 5.0,
+    "integration_step": 0.1
+  }
+}

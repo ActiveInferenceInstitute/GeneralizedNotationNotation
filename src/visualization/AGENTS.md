@@ -12,7 +12,7 @@
 
 **Version**: 1.6.0
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-05-12
 
 ---
 
@@ -88,6 +88,10 @@ success = process_visualization(
 ---
 
 ## Dependencies
+
+### Shared Modules
+- `theme.py` — Centralised color palette, figure defaults, edge styles (new: 2026-05-12)
+- `compat/viz_compat.py` — Safe matplotlib/numpy/seaborn imports + `viz_var_type()` helper
 
 ### Required Dependencies
 - `matplotlib` - Plotting and visualization
@@ -465,7 +469,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-04-16
+**Last Updated**: 2026-05-12
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.6.0

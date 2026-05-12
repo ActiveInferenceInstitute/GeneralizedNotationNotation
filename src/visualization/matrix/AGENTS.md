@@ -2,27 +2,44 @@
 
 ## Overview
 
-Matrix visualization module for GNN model parameters. Generates heatmaps, statistics, and analysis plots for transition matrices, observation matrices, and 3D POMDP tensors.
+Matrix visualization module for GNN model parameters. Generates heatmaps, statistics, correlation plots, and POMDP tensor analysis from the `MatrixVisualizer` class.
 
 ## Architecture
 
 ```
 matrix/
-├── __init__.py       # Package exports (9 lines)
-├── visualizer.py     # Matrix heatmap and statistics engine (1338 lines)
-├── extract.py        # Matrix extraction from parsed models (60 lines)
-└── compat.py         # Backward compatibility helpers (40 lines)
+├── __init__.py       # Package exports
+├── visualizer.py     # MatrixVisualizer class (1339 lines)
+├── extract.py        # Matrix extraction from parsed models
+└── compat.py         # Backward compatibility helpers
 ```
 
-## Key Functions
+## Key Class: `MatrixVisualizer`
 
-- **`visualize_matrices(model, output_dir)`** — Main entry point; extracts and visualizes all matrices from a parsed GNN model.
-- **Heatmap generation** — Produces annotated heatmaps with value labels, colorbars, and statistical summaries.
-- **3D tensor handling** — Specialized support for POMDP transition tensors with per-slice visualization.
-- **CSV export** — Exports matrix data alongside visualizations for downstream analysis.
+### Core Methods
+
+- **`generate_matrix_heatmap(matrix_name, matrix, output_path, **kwargs) -> bool`** — Annotated heatmap with auto-suppressed annotations beyond `_ANNOTATION_CELL_LIMIT` (25 cells).
+- **`generate_3d_tensor_visualization(tensor_name, tensor, output_path, **kwargs) -> bool`** — Per-action-slice POMDP transition tensor visualization with stochasticity validation.
+- **`generate_pomdp_transition_analysis(tensor, output_path) -> bool`** — Comprehensive POMDP B-matrix analysis with entropy, stochasticity checks, and state dominance.
+- **`generate_matrix_analysis(parameters, output_path) -> bool`** — Multi-panel matrix analysis from raw parameter lists.
+- **`generate_matrix_statistics(parameters, output_path) -> bool`** — Statistical summary panels (distributions, ranges, sparsity).
+- **`generate_combined_matrix_overview(matrices, output_path) -> bool`** — Side-by-side comparison of all matrices in a model.
+
+### Extraction Methods
+
+- **`extract_matrix_data_from_parameters(parameters) -> Dict[str, ndarray]`** — Extracts named matrices (A, B, C, D, E) from parameter lists.
+- **`extract_from_parsed_gnn(parsed_data) -> Dict[str, ndarray]`** — Extracts matrices from parsed GNN model dict.
+
+### Safety Features
+
+- `_ANNOTATION_CELL_LIMIT = 25` — Skip per-cell text annotation on large matrices.
+- `_MAX_FIGURE_DIMENSION = 200` — Prevent matplotlib RendererAgg pixel overflow.
+- `_safe_figsize(requested)` — Clamp figure dimensions to prevent rendering crashes.
+- CSV export alongside every heatmap for downstream accessibility.
 
 ## Parent Module
 
 See [visualization/AGENTS.md](../AGENTS.md) for the overall visualization architecture.
 
 **Version**: 1.6.0
+**Last Updated**: 2026-05-12

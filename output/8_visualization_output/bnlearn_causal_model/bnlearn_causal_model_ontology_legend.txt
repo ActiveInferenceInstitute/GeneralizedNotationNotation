@@ -1,0 +1,7 @@
+variable	ontology_term
+A	ObservationModel
+B	TransitionModel
+a	Action
+o	Observation
+s	HiddenState
+s_prev	PreviousState

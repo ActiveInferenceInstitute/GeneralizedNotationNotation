@@ -38,3 +38,17 @@ try:
     sns = _sns
 except ImportError as e:
     logger.debug("seaborn not available: %s", e)
+
+
+def viz_var_type(var_info: "dict") -> str:
+    """Extract the variable type from a parsed variable dict.
+
+    Checks ``var_type``, ``type``, and ``node_type`` keys in order,
+    returning ``"unknown"`` when none are present.
+    """
+    if not isinstance(var_info, dict):
+        return "unknown"
+    return str(
+        var_info.get("var_type", var_info.get("type", var_info.get("node_type", "unknown")))
+    )
+

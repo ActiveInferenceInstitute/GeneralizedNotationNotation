@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/discrete/two_state_bistable.md",
+  "output_file": "output/0_template_output/two_state_bistable/two_state_bistable_processed.md",
+  "timestamp": "2026-05-12T07:23:48.394412",
+  "file_size_bytes": 2742,
+  "file_size_lines": 160,
+  "processing_options": {
+    "verbose": true,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

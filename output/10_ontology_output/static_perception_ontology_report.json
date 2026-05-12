@@ -1,0 +1,73 @@
+{
+  "file_path": "input/gnn_files/basics/static_perception.md",
+  "file_name": "static_perception.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": [
+      "A=RecognitionMatrix",
+      "D=Prior",
+      "s=HiddenState",
+      "o=Observation"
+    ]
+  },
+  "validation_result": {
+    "valid_annotations": [
+      "A=RecognitionMatrix",
+      "D=Prior",
+      "s=HiddenState",
+      "o=Observation"
+    ],
+    "invalid_annotations": [],
+    "matched_terms": {
+      "A": {
+        "annotation": "A=RecognitionMatrix",
+        "term_name": "RecognitionMatrix",
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix), representing the likelihood of observations given hidden states.",
+        "uri": "obo:TEMP_000016",
+        "key": "A",
+        "value": "RecognitionMatrix",
+        "comment": null
+      },
+      "D": {
+        "annotation": "D=Prior",
+        "term_name": "Prior",
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000017",
+        "key": "D",
+        "value": "Prior",
+        "comment": null
+      },
+      "s": {
+        "annotation": "s=HiddenState",
+        "term_name": "HiddenState",
+        "description": "A state of the environment or agent that is not directly observable.",
+        "uri": "obo:ACTO_000001",
+        "key": "s",
+        "value": "HiddenState",
+        "comment": null
+      },
+      "o": {
+        "annotation": "o=Observation",
+        "term_name": "Observation",
+        "description": "Data received from the environment through sensory input.",
+        "uri": "obo:ACTO_000003",
+        "key": "o",
+        "value": "Observation",
+        "comment": null
+      }
+    },
+    "suggestions": [],
+    "coverage_score": 1.0
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 4,
+    "valid_annotations": 4,
+    "invalid_annotations": 0,
+    "coverage_score": 1.0
+  }
+}

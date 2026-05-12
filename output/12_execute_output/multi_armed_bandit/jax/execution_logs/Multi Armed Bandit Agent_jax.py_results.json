@@ -1,0 +1,257 @@
+{
+  "framework": "jax",
+  "model_name": "multi_armed_bandit",
+  "script_name": "Multi Armed Bandit Agent_jax.py",
+  "script_path": "output/11_render_output/multi_armed_bandit/jax/Multi Armed Bandit Agent_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 0.826901,
+  "timestamp": "2026-05-12T07:29:57.848066",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.0986
+    ],
+    "states": [],
+    "observations": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1,
+      2,
+      2,
+      1,
+      2,
+      1,
+      2,
+      2,
+      2,
+      0
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (3, 3)\n   B matrix shape: (3, 3, 3)\n   C vector shape: (3,)\n   D vector shape: (3,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 3\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.33333 0.33333 0.33333]\n   Updated belief: [0.09090909 0.45454544 0.45454544]\n   Selected action: 0\n   Expected free energy: 0.0986\n   EFE for all actions: [0.09856028 0.09856028 0.09856028]\n\n\ud83d\udd04 Running 30-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [0.52104884 0.21424136 0.26470983]\n   Average EFE: -0.0582\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/multi_armed_bandit/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.09090908616781235,
+        0.45454543828964233,
+        0.45454543828964233
+      ],
+      [
+        0.028340082615613937,
+        0.4858299493789673,
+        0.4858299493789673
+      ],
+      [
+        0.015751421451568604,
+        0.4921243190765381,
+        0.4921243190765381
+      ],
+      [
+        0.013354985974729061,
+        0.4933225214481354,
+        0.4933225214481354
+      ],
+      [
+        0.012903677299618721,
+        0.49354812502861023,
+        0.49354812502861023
+      ],
+      [
+        0.01281885989010334,
+        0.4935905635356903,
+        0.4935905635356903
+      ],
+      [
+        0.012802924029529095,
+        0.4935985505580902,
+        0.4935985505580902
+      ],
+      [
+        0.012799931690096855,
+        0.493600070476532,
+        0.493600070476532
+      ],
+      [
+        0.012799368239939213,
+        0.4936003088951111,
+        0.4936003088951111
+      ],
+      [
+        0.012799263000488281,
+        0.49360039830207825,
+        0.49360036849975586
+      ],
+      [
+        0.012799243442714214,
+        0.49360039830207825,
+        0.49360036849975586
+      ],
+      [
+        0.05264011770486832,
+        0.5413485169410706,
+        0.4060113728046417
+      ],
+      [
+        0.020502837374806404,
+        0.5519840717315674,
+        0.42751312255859375
+      ],
+      [
+        0.05747983232140541,
+        0.5901209712028503,
+        0.35239920020103455
+      ],
+      [
+        0.021469516679644585,
+        0.5989734530448914,
+        0.3795570731163025
+      ],
+      [
+        0.014438129030168056,
+        0.591418445110321,
+        0.3941434323787689
+      ],
+      [
+        0.05258449539542198,
+        0.6222926378250122,
+        0.3251228332519531
+      ],
+      [
+        0.020491767674684525,
+        0.6264035105705261,
+        0.35310474038124084
+      ],
+      [
+        0.014252289198338985,
+        0.615647554397583,
+        0.37010014057159424
+      ],
+      [
+        0.013072479516267776,
+        0.6032782196998596,
+        0.38364920020103455
+      ],
+      [
+        0.051458269357681274,
+        0.6318498253822327,
+        0.31669187545776367
+      ],
+      [
+        0.3145822584629059,
+        0.3283611834049225,
+        0.35705646872520447
+      ],
+      [
+        0.6476406455039978,
+        0.11192315071821213,
+        0.2404361516237259
+      ],
+      [
+        0.5727843046188354,
+        0.18458311259746552,
+        0.24263262748718262
+      ],
+      [
+        0.8174449801445007,
+        0.052503976970911026,
+        0.13005106151103973
+      ],
+      [
+        0.7220526337623596,
+        0.12231305241584778,
+        0.15563423931598663
+      ],
+      [
+        0.8847938179969788,
+        0.03420699015259743,
+        0.08099914342164993
+      ],
+      [
+        0.9382412433624268,
+        0.015416747890412807,
+        0.04634201526641846
+      ],
+      [
+        0.9545918703079224,
+        0.011846298351883888,
+        0.03356190025806427
+      ],
+      [
+        0.554175078868866,
+        0.19322510063648224,
+        0.2525997757911682
+      ]
+    ],
+    "num_timesteps": 30
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 1399,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/multi_armed_bandit/jax"
+  },
+  "execution_time_mean": 0.826901,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    0.826901
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/multi_armed_bandit/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

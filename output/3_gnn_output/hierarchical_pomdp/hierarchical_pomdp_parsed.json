@@ -1,0 +1,1355 @@
+{
+  "model_name": "Hierarchical Active Inference POMDP",
+  "version": "1.0",
+  "annotation": "A two-level hierarchical POMDP where:\n- Level 1 (fast): 4 observations, 4 hidden states, 3 actions\n- Level 2 (slow): 2 contextual states that modulate Level 1 likelihood\n- Higher-level beliefs are updated at a slower timescale\n- Top-down predictions constrain bottom-up inference at Level 1",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c3cb7648-b92b-486a-baed-70bb0242d402",
+      "name": "A1",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Level 1 likelihood: observations x hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "de6628b2-281e-48e5-bf6f-3c4afac5eac5",
+      "name": "B1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "data_type": "float",
+      "description": "Level 1 transitions: next x prev x actions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4fe29a14-2c0e-40c3-b1da-cbb9e0ef40c3",
+      "name": "C1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Level 1 preferences over observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1b318501-adce-4d56-a7f7-358cbc22aa65",
+      "name": "D1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Level 1 prior over hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cabeca8f-4226-49cb-9f55-1806a51395e3",
+      "name": "s1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 1 hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d617e3e-ae14-41d0-80c8-9886602d4670",
+      "name": "s1_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 1 next hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8d553d32-2d04-472a-b015-9443a99ce3bc",
+      "name": "o1",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Level 1 observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0306cda8-6e29-46a7-83e2-d58b1fe1f52a",
+      "name": "\u03c01",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Level 1 policy (actions)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6534bbe1-abc9-40e8-ba36-2a1be1bdbe4f",
+      "name": "u1",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Level 1 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f791ce59-00cc-45ff-ba5d-6d1d8b29e397",
+      "name": "G1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 1 Expected Free Energy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e3ec98b9-c051-4f78-adfd-3e91b8d4c3af",
+      "name": "A2",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        2
+      ],
+      "data_type": "float",
+      "description": "Level 2 likelihood: maps context to Level 1 hidden state prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e2c73d08-d587-4ad8-9066-86b713e95c55",
+      "name": "B2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 2 transitions (context switches)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e1d00747-bb29-4543-8e32-3726be848090",
+      "name": "C2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Level 2 preferences over context",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "83c4e140-1901-4e97-8a4b-6862b2efb6a4",
+      "name": "D2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Level 2 prior over contextual states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "061979a1-437f-4321-bf9f-c6e49b139971",
+      "name": "s2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 2 contextual hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d61d8a4-d7d6-4da4-8717-b72981fc798d",
+      "name": "o2",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 2 observation (= Level 1 hidden state distribution)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b5657442-2839-4a4c-8a89-3bb036889384",
+      "name": "G2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Level 2 Expected Free Energy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a20fba1a-8d93-458f-b64b-7197f2942f44",
+      "name": "t1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Fast timescale counter",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "401fc988-6dd0-4313-bb22-291df94dab89",
+      "name": "t2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Slow timescale counter",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "068fcead-f4c7-4d93-aef6-54c523f59848",
+      "source_variables": [
+        "D1"
+      ],
+      "target_variables": [
+        "s1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e1eda3e9-34dc-4693-8a0c-08bb56a8927d",
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "A1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "02ba8107-089a-4557-8304-673c8762360e",
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "s1_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d95e19f3-31b9-4070-9efc-5781c0b96594",
+      "source_variables": [
+        "A1"
+      ],
+      "target_variables": [
+        "o1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7ee3516-17aa-40a5-9a61-4ca6d9da632c",
+      "source_variables": [
+        "C1"
+      ],
+      "target_variables": [
+        "G1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "99ca531f-1893-4f45-ac76-29743c19a1c1",
+      "source_variables": [
+        "G1"
+      ],
+      "target_variables": [
+        "\u03c01"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b6909b30-d4a4-4e6d-b6a1-8a631f2fb0fd",
+      "source_variables": [
+        "\u03c01"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9a946e58-1816-4398-9aff-b1aedd88d106",
+      "source_variables": [
+        "B1"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c170cc13-cb3a-4cd8-a05e-a9b7c74e6cbd",
+      "source_variables": [
+        "u1"
+      ],
+      "target_variables": [
+        "s1_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "15def5e7-a9cc-49d0-85b9-a237d1cf0e18",
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "o2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "18b072f1-359a-413a-a791-71fe77b736d8",
+      "source_variables": [
+        "D2"
+      ],
+      "target_variables": [
+        "s2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ab5c21c3-5e03-41c6-a2e5-53d78f56fb1d",
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "A2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "323a4aec-d768-4750-a41f-fac9242f1126",
+      "source_variables": [
+        "A2"
+      ],
+      "target_variables": [
+        "D1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9e3e855d-d6c5-423b-b8e1-b03262662b3a",
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "B2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f1636287-1ab8-4053-9df5-8b6adeeac9a3",
+      "source_variables": [
+        "C2"
+      ],
+      "target_variables": [
+        "G2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fa51f91c-1f61-4584-8473-697838a53e0f",
+      "source_variables": [
+        "G2"
+      ],
+      "target_variables": [
+        "s2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2cf7ea95-a9f1-4494-b574-064a6d205fc9",
+      "name": "A1",
+      "value": [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0bfd3ec7-4273-4d8f-babb-683481831a1a",
+      "name": "B1",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3a607202-4549-4eea-9fa9-e0f32897aab1",
+      "name": "C1",
+      "value": [
+        [
+          0.1,
+          0.1,
+          0.1,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "355ff685-e71e-4601-911c-77d529e10537",
+      "name": "D1",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c8e150ef-8787-4db7-8dca-1fc3699049b4",
+      "name": "A2",
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.0,
+          0.0
+        ],
+        [
+          0.1,
+          0.9,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.9,
+          0.1
+        ],
+        [
+          0.0,
+          0.0,
+          0.1,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c6925502-79c7-4b2b-a8af-750c40ab4bcd",
+      "name": "B2",
+      "value": [
+        [
+          [
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.9
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "170fc609-aa0f-41a9-9f73-4658cc7a830a",
+      "name": "C2",
+      "value": [
+        [
+          0.1,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "6465bb56-35fd-4300-a5ab-3e5c362a42e8",
+      "name": "D2",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5f7ed512-8e4d-46af-bd19-280fd7653a05",
+      "name": "num_hidden_states_l1",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "eef8f386-647f-4254-9b1e-4cdc41c6fabe",
+      "name": "num_obs_l1",
+      "value": 4,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "0470bba3-8f92-4735-9fb5-ed035ed4688c",
+      "name": "num_actions_l1",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "78084972-247c-430d-8803-5e1deaddd3f2",
+      "name": "num_context_states_l2",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "09738568-e9b8-416b-a624-af93aea29ab1",
+      "name": "num_timesteps",
+      "value": 20,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "69f0b4e3-1fee-4d7d-962a-c32f9f5e5525",
+      "name": "timescale_ratio",
+      "value": 5,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "5d14aad2-ad99-4d3c-b60b-9d8bd842b804",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "daa76364-9849-408e-b2f6-d24734fce167",
+      "variable_name": "A1",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5fa2664a-b39f-4e6f-a529-e6be56c39b67",
+      "variable_name": "B1",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e95ffd9e-9be2-45ee-aa2e-97615f2fd415",
+      "variable_name": "C1",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e6625e5f-78f2-4d9c-ae69-934845913611",
+      "variable_name": "D1",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c41b4280-d581-4b4c-b9b1-a48d41939f25",
+      "variable_name": "s1",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "0d4665f2-9a1f-4c34-96ca-ab82cd26eb0b",
+      "variable_name": "o1",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "42875d15-9463-467a-b964-e099aee53272",
+      "variable_name": "\u03c01",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f51470a3-079c-43a1-bab1-1c4f637f6c21",
+      "variable_name": "u1",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "efb8722e-738f-4ed6-87b7-51d05680ae09",
+      "variable_name": "G1",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e18b41d7-1685-4f98-9d30-33a1545b003d",
+      "variable_name": "A2",
+      "ontology_term": "HigherLevelLikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f1f0e8d-528e-4725-b486-2fde378d6629",
+      "variable_name": "B2",
+      "ontology_term": "ContextTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cc72f20e-5fdb-4c9f-b4db-0259cf55e9fc",
+      "variable_name": "s2",
+      "ontology_term": "ContextualHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1512df8d-4a1c-4c82-8a3f-2efb5aaa6b84",
+      "variable_name": "o2",
+      "ontology_term": "HigherLevelObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e118011f-68ba-4781-ac1a-8700ed484c52",
+      "variable_name": "G2",
+      "ontology_term": "HigherLevelExpectedFreeEnergy",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-12T07:26:44.397400",
+  "modified_at": "2026-05-12T07:26:44.397401",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP_Hierarchical",
+    "footer": "Hierarchical Active Inference POMDP v1 - GNN Representation.\nLevel 2 updates every 5 Level 1 timesteps (timescale_ratio=5).\nDemonstrates context-dependent behavior modulation.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP_Hierarchical",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Hierarchical Active Inference POMDP",
+    "ModelAnnotation": "A two-level hierarchical POMDP where:\n- Level 1 (fast): 4 observations, 4 hidden states, 3 actions\n- Level 2 (slow): 2 contextual states that modulate Level 1 likelihood\n- Higher-level beliefs are updated at a slower timescale\n- Top-down predictions constrain bottom-up inference at Level 1",
+    "StateSpaceBlock": "# Level 1 (fast dynamics)\nA1[4,4,type=float]     # Level 1 likelihood: observations x hidden states\nB1[4,4,3,type=float]   # Level 1 transitions: next x prev x actions\nC1[4,type=float]       # Level 1 preferences over observations\nD1[4,type=float]       # Level 1 prior over hidden states\ns1[4,1,type=float]     # Level 1 hidden state distribution\ns1_prime[4,1,type=float] # Level 1 next hidden state\no1[4,1,type=int]       # Level 1 observations\n\u03c01[3,type=float]       # Level 1 policy (actions)\nu1[1,type=int]         # Level 1 action\nG1[\u03c01,type=float]      # Level 1 Expected Free Energy\n\n# Level 2 (slow dynamics)\nA2[4,2,type=float]     # Level 2 likelihood: maps context to Level 1 hidden state prior\nB2[2,2,1,type=float]   # Level 2 transitions (context switches)\nC2[2,type=float]       # Level 2 preferences over context\nD2[2,type=float]       # Level 2 prior over contextual states\ns2[2,1,type=float]     # Level 2 contextual hidden state\no2[4,1,type=float]     # Level 2 observation (= Level 1 hidden state distribution)\nG2[1,type=float]       # Level 2 Expected Free Energy\n\n# Time\nt1[1,type=int]         # Fast timescale counter\nt2[1,type=int]         # Slow timescale counter",
+    "Connections": "D1>s1\ns1-A1\ns1>s1_prime\nA1-o1\nC1>G1\nG1>\u03c01\n\u03c01>u1\nB1>u1\nu1>s1_prime\ns1>o2\nD2>s2\ns2-A2\nA2>D1\ns2-B2\nC2>G2\nG2>s2",
+    "InitialParameterization": "A1={\n  (0.85, 0.05, 0.05, 0.05),\n  (0.05, 0.85, 0.05, 0.05),\n  (0.05, 0.05, 0.85, 0.05),\n  (0.05, 0.05, 0.05, 0.85)\n}\n\nB1={\n  ( (1.0,0.0,0.0,0.0), (0.0,1.0,0.0,0.0), (0.0,0.0,1.0,0.0), (0.0,0.0,0.0,1.0) ),\n  ( (0.0,1.0,0.0,0.0), (1.0,0.0,0.0,0.0), (0.0,0.0,0.0,1.0), (0.0,0.0,1.0,0.0) ),\n  ( (0.0,0.0,1.0,0.0), (0.0,0.0,0.0,1.0), (1.0,0.0,0.0,0.0), (0.0,1.0,0.0,0.0) )\n}\n\nC1={(0.1, 0.1, 0.1, 1.0)}\nD1={(0.25, 0.25, 0.25, 0.25)}\n\nA2={\n  (0.9, 0.1, 0.0, 0.0),\n  (0.1, 0.9, 0.0, 0.0),\n  (0.0, 0.0, 0.9, 0.1),\n  (0.0, 0.0, 0.1, 0.9)\n}\n\nB2={\n  ( (0.9, 0.1), (0.1, 0.9) )\n}\n\nC2={(0.1, 1.0)}\nD2={(0.5, 0.5)}",
+    "Equations": "# Level 1: Standard Active Inference POMDP update equations\n# Level 2: Slower Bayesian context inference\n# Cross-level: A2 maps context s2 to modulated prior D1\n# Hierarchical message passing: top-down (s2\u2192D1), bottom-up (s1\u2192o2)",
+    "Time": "Time=t1\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded",
+    "ActInfOntologyAnnotation": "A1=LikelihoodMatrix\nB1=TransitionMatrix\nC1=LogPreferenceVector\nD1=PriorOverHiddenStates\ns1=HiddenState\no1=Observation\n\u03c01=PolicyVector\nu1=Action\nG1=ExpectedFreeEnergy\nA2=HigherLevelLikelihoodMatrix\nB2=ContextTransitionMatrix\ns2=ContextualHiddenState\no2=HigherLevelObservation\nG2=HigherLevelExpectedFreeEnergy",
+    "ModelParameters": "num_hidden_states_l1: 4\nnum_obs_l1: 4\nnum_actions_l1: 3\nnum_context_states_l2: 2\nnum_timesteps: 20\ntimescale_ratio: 5",
+    "Footer": "Hierarchical Active Inference POMDP v1 - GNN Representation.\nLevel 2 updates every 5 Level 1 timesteps (timescale_ratio=5).\nDemonstrates context-dependent behavior modulation.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A1": [
+      [
+        0.85,
+        0.05,
+        0.05,
+        0.05
+      ],
+      [
+        0.05,
+        0.85,
+        0.05,
+        0.05
+      ],
+      [
+        0.05,
+        0.05,
+        0.85,
+        0.05
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.85
+      ]
+    ],
+    "B1": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ]
+    ],
+    "C1": [
+      [
+        0.1,
+        0.1,
+        0.1,
+        1.0
+      ]
+    ],
+    "D1": [
+      [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    ],
+    "A2": [
+      [
+        0.9,
+        0.1,
+        0.0,
+        0.0
+      ],
+      [
+        0.1,
+        0.9,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.9,
+        0.1
+      ],
+      [
+        0.0,
+        0.0,
+        0.1,
+        0.9
+      ]
+    ],
+    "B2": [
+      [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    ],
+    "C2": [
+      [
+        0.1,
+        1.0
+      ]
+    ],
+    "D2": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states_l1": 4,
+    "num_obs_l1": 4,
+    "num_actions_l1": 3,
+    "num_context_states_l2": 2,
+    "num_timesteps": 20,
+    "timescale_ratio": 5
+  },
+  "model_parameters": {
+    "A1": [
+      [
+        0.85,
+        0.05,
+        0.05,
+        0.05
+      ],
+      [
+        0.05,
+        0.85,
+        0.05,
+        0.05
+      ],
+      [
+        0.05,
+        0.05,
+        0.85,
+        0.05
+      ],
+      [
+        0.05,
+        0.05,
+        0.05,
+        0.85
+      ]
+    ],
+    "B1": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ]
+    ],
+    "C1": [
+      [
+        0.1,
+        0.1,
+        0.1,
+        1.0
+      ]
+    ],
+    "D1": [
+      [
+        0.25,
+        0.25,
+        0.25,
+        0.25
+      ]
+    ],
+    "A2": [
+      [
+        0.9,
+        0.1,
+        0.0,
+        0.0
+      ],
+      [
+        0.1,
+        0.9,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.9,
+        0.1
+      ],
+      [
+        0.0,
+        0.0,
+        0.1,
+        0.9
+      ]
+    ],
+    "B2": [
+      [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ]
+      ]
+    ],
+    "C2": [
+      [
+        0.1,
+        1.0
+      ]
+    ],
+    "D2": [
+      [
+        0.5,
+        0.5
+      ]
+    ],
+    "num_hidden_states_l1": 4,
+    "num_obs_l1": 4,
+    "num_actions_l1": 3,
+    "num_context_states_l2": 2,
+    "num_timesteps": 20,
+    "timescale_ratio": 5
+  }
+}

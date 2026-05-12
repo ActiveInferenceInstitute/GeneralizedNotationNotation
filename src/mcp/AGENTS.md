@@ -115,7 +115,7 @@ target module owns its tool definitions via `src/<module>/mcp.py`.
 - `initialize()` - Initialize MCP server
 - `register_tools()` - Register available tools
 - `handle_request()` - Process incoming requests
-- `list_tools()` - List available tools
+- `list_available_tools()` - List available tools
 
 #### `MCPTool` - Tool Definition Class
 **Description**: Represents a registered MCP tool

@@ -1,0 +1,118 @@
+{
+  "framework": "jax",
+  "model_name": "time_varying_dynamics",
+  "script_name": "Time-Varying Transition Dynamics Agent_jax.py",
+  "script_path": "output/11_render_output/time_varying_dynamics/jax/Time-Varying Transition Dynamics Agent_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 0.721558,
+  "timestamp": "2026-05-12T07:29:48.006602",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.3254,
+      0.641
+    ],
+    "states": [],
+    "observations": [
+      1,
+      1,
+      0,
+      2,
+      2,
+      2,
+      2,
+      2,
+      1,
+      1
+    ],
+    "actions": [
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (3, 3)\n   B matrix shape: (3, 3, 2)\n   C vector shape: (3,)\n   D vector shape: (3,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 2\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- choose_action(): Choose action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.33 0.33 0.34]\n   Updated belief: [0.8487141  0.09984872 0.05143722]\n   Selected action: 1\n   Expected free energy: 0.3254\n   EFE for all actions: [0.85508704 0.32537636]\n\n\ud83d\udd04 Running 10-step simulation...\n   Actions taken: [1 1 1 0 0 0 0 0 0 1]\n   Final belief: [0.17741448 0.5203347  0.30225074]\n   Average EFE: 0.6410\n\n\ud83d\udcbe Saved simulation results to: output/12_execute_output/time_varying_dynamics/jax/simulation_data/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.09969788789749146,
+        0.7975831031799316,
+        0.1027190312743187
+      ],
+      [
+        0.036921676248311996,
+        0.8923495411872864,
+        0.07072869688272476
+      ],
+      [
+        0.6407638192176819,
+        0.28251731395721436,
+        0.07671883702278137
+      ],
+      [
+        0.014033544808626175,
+        0.0468570850789547,
+        0.9391094446182251
+      ],
+      [
+        0.008787821978330612,
+        0.01906263642013073,
+        0.9721495509147644
+      ],
+      [
+        0.007956728339195251,
+        0.016366776078939438,
+        0.9756764769554138
+      ],
+      [
+        0.007864556275308132,
+        0.016099127009510994,
+        0.9760363101959229
+      ],
+      [
+        0.007855018600821495,
+        0.01607222855091095,
+        0.9760727286338806
+      ],
+      [
+        0.06062637269496918,
+        0.496170312166214,
+        0.44320324063301086
+      ],
+      [
+        0.06518500298261642,
+        0.8183175921440125,
+        0.11649734526872635
+      ]
+    ],
+    "num_timesteps": 10
+  },
+  "execution_benchmark_repeats": 1,
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 1341,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/time_varying_dynamics/jax"
+  },
+  "execution_time_mean": 0.721558,
+  "execution_time_std": 0.0,
+  "execution_time_samples": [
+    0.721558
+  ],
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/time_varying_dynamics/jax/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

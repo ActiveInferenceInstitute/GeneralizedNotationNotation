@@ -738,13 +738,13 @@ class StepConfiguration:
     STEP_CONFIGS = MappingProxyType({
         "0_template": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose"],
-            "defaults": {"verbose": False},
+            "optional_args": ["recursive", "verbose"],
+            "defaults": {"recursive": True, "verbose": False},
             "description": "Standardized pipeline step template"
         },
         "1_setup": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose", "recreate_venv", "dev", "install_all_extras", "setup_core_only"],
+            "optional_args": ["recursive", "verbose", "recreate_venv", "dev", "install_all_extras", "setup_core_only", "install_optional"],
             "defaults": {
                 "verbose": False,
                 "recreate_venv": False,
@@ -864,8 +864,8 @@ class StepConfiguration:
         },
         "16_analysis": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose"],
-            "defaults": {"recursive": True, "verbose": False},
+            "optional_args": ["recursive", "verbose", "advanced_stats"],
+            "defaults": {"recursive": True, "verbose": False, "advanced_stats": False},
             "description": "Advanced Analysis & Reporting"
         },
         "17_integration": {
@@ -894,7 +894,12 @@ class StepConfiguration:
         },
         "21_mcp": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["recursive", "verbose", "performance_mode"],
+            "optional_args": [
+                "recursive", "verbose", "performance_mode",
+                "mcp_strict_validation", "mcp_cache_ttl",
+                "mcp_per_module_timeout", "mcp_overall_timeout",
+                "mcp_modules_allowlist",
+            ],
             "defaults": {"recursive": True, "verbose": False, "performance_mode": "low"},
             "description": "Model Context Protocol Processing"
         },

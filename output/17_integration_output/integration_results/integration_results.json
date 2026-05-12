@@ -1,0 +1,22 @@
+{
+  "processed_files": 10,
+  "success": true,
+  "errors": [],
+  "system_graph_stats": {
+    "nodes": 46,
+    "edges": 96,
+    "cycles": 85,
+    "isolated_nodes": 3,
+    "components": 4
+  },
+  "issues": [
+    "Isolated components (no connections): ['t', 'u_t', 'C_loc']"
+  ],
+  "meta_analysis": {
+    "records": 80,
+    "plots": [],
+    "report": "output/17_integration_output/integration_results/meta_analysis/meta_analysis_report.md",
+    "validation_json": "output/17_integration_output/integration_results/meta_analysis/sweep_validation.json",
+    "statistics_json": "output/17_integration_output/integration_results/meta_analysis/meta_statistics.json"
+  }
+}

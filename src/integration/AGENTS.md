@@ -70,14 +70,12 @@ success = process_integration(
 )
 ```
 
-#### `coordinate_pipeline_modules() -> Dict[str, Any]`
-**Description**: Coordinates all pipeline modules for integrated operation using dependency graph analysis.
+#### Module Coordination (via `process_integration`)
 
-**Returns**: `Dict[str, Any]` - Coordination results with:
-- `modules` (List[str]): List of coordinated modules
+Module coordination (dependency graph construction, cycle detection, cross-reference validation) is performed internally by `process_integration()`. The integration report JSON includes:
+- `modules` (List[str]): List of discovered modules
 - `dependency_graph` (Dict): Module dependency graph
-- `cycles_detected` (List[List[str]]): Detected circular dependencies
-- `status` (str): Coordination status ("success", "partial", "failed")
+- `cycles_detected` (List[List[str]]): Circular dependency cycles
 - `statistics` (Dict[str, Any]): Graph statistics (nodes, edges, density)
 
 ---

@@ -1,0 +1,30 @@
+{
+  "model_name": "time_varying_dynamics",
+  "viz_meta": {
+    "source": "parsed_json",
+    "json_path": "output/3_gnn_output/time_varying_dynamics/time_varying_dynamics_parsed.json",
+    "json_stale": false
+  },
+  "artifact_count": 15,
+  "artifacts": [
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_network_graph.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_network_stats.json",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_ontology_legend.txt",
+    "True",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_variable_parameter_bipartite.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_A_heatmap.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_B_t_tensor.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_B_t_analysis.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_C_heatmap.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_D_heatmap.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_combined_analysis.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_matrix_size_distribution.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_section_content_length.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_variable_type_distribution.png",
+    "output/8_visualization_output/time_varying_dynamics/time_varying_dynamics_generative_model.png"
+  ],
+  "variable_count": 8,
+  "connection_count": 6,
+  "parameter_count": 8,
+  "ontology_label_count": 7
+}

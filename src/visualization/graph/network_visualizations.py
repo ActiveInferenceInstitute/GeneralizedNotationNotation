@@ -67,9 +67,10 @@ logger = logging.getLogger(__name__)
 
 
 def _var_type(var_info: Dict[str, Any]) -> str:
-    return str(
-        var_info.get("var_type", var_info.get("type", var_info.get("node_type", "unknown")))
-    )
+    """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
+    from visualization.compat.viz_compat import viz_var_type
+    return viz_var_type(var_info)
+
 
 
 def _connection_is_undirected(conn_info: Dict[str, Any]) -> bool:
@@ -164,15 +165,15 @@ def generate_network_visualizations(
         node_types = [G_layout.nodes[node].get("type", "unknown") for node in G_layout.nodes()]
 
         type_colors = {
-            "hidden_state": "skyblue",
-            "observation": "lightgreen",
-            "policy": "lightcoral",
-            "action": "gold",
-            "prior_vector": "plum",
-            "likelihood_matrix": "orange",
-            "transition_matrix": "pink",
-            "preference_vector": "lightblue",
-            "unknown": "gray",
+            "hidden_state": "#5B9BD5",
+            "observation": "#70C1B3",
+            "policy": "#E07A5F",
+            "action": "#F2C14E",
+            "prior_vector": "#A78BCA",
+            "likelihood_matrix": "#F4845F",
+            "transition_matrix": "#48BFE3",
+            "preference_vector": "#81B29A",
+            "unknown": "#B0B0B0",
         }
 
         node_colors = [type_colors.get(node_type, "gray") for node_type in node_types]
@@ -339,17 +340,17 @@ def _determine_connection_type(
 
 def _get_edge_style(connection_type: str) -> Dict[str, Any]:
     style_map = {
-        "state_transition": {"color": "blue", "width": 3, "alpha": 0.8, "style": "solid"},
-        "observation_generation": {"color": "green", "width": 2, "alpha": 0.7, "style": "dashed"},
-        "state_action_influence": {"color": "orange", "width": 2, "alpha": 0.7, "style": "dotted"},
-        "action_effect": {"color": "red", "width": 3, "alpha": 0.8, "style": "solid"},
-        "policy_selection": {"color": "purple", "width": 2, "alpha": 0.7, "style": "solid"},
-        "prior_influence": {"color": "cyan", "width": 2, "alpha": 0.6, "style": "dashed"},
-        "likelihood_influence": {"color": "magenta", "width": 2, "alpha": 0.6, "style": "dotted"},
-        "energy_flow": {"color": "yellow", "width": 1, "alpha": 0.5, "style": "dashed"},
-        "preference_energy": {"color": "lime", "width": 2, "alpha": 0.7, "style": "solid"},
-        "habit_policy": {"color": "pink", "width": 2, "alpha": 0.7, "style": "solid"},
-        "generic_causal": {"color": "gray", "width": 1, "alpha": 0.5, "style": "solid"},
+        "state_transition":       {"color": "#3B5998", "width": 3,   "alpha": 0.8, "style": "solid"},
+        "observation_generation": {"color": "#70C1B3", "width": 2,   "alpha": 0.7, "style": "dashed"},
+        "state_action_influence":  {"color": "#F2C14E", "width": 2,   "alpha": 0.7, "style": "dotted"},
+        "action_effect":           {"color": "#E07A5F", "width": 3,   "alpha": 0.8, "style": "solid"},
+        "policy_selection":        {"color": "#A78BCA", "width": 2,   "alpha": 0.7, "style": "solid"},
+        "prior_influence":         {"color": "#48BFE3", "width": 2,   "alpha": 0.6, "style": "dashed"},
+        "likelihood_influence":    {"color": "#F4845F", "width": 2,   "alpha": 0.6, "style": "dotted"},
+        "energy_flow":             {"color": "#D4A5A5", "width": 1.5, "alpha": 0.5, "style": "dashed"},
+        "preference_energy":       {"color": "#81B29A", "width": 2,   "alpha": 0.7, "style": "solid"},
+        "habit_policy":            {"color": "#FFB6C1", "width": 2,   "alpha": 0.7, "style": "solid"},
+        "generic_causal":          {"color": "#999999", "width": 1,   "alpha": 0.5, "style": "solid"},
     }
     return style_map.get(connection_type, style_map["generic_causal"])
 

@@ -1,0 +1,11 @@
+# EXTRACT_PARAMETERS
+
+Based on the provided specification, here are some key steps to generate a structured annotation pipeline:
+
+1. **Generate a set of annotated models and annotations**: Use the `generate_annotation` function to generate a set of annotated models and annotations for each input feature type. The generated annotations can be used as inputs for other annotations pipelines or fed into other pipelines.
+2. **Create a list of annotation types**: Use the `create_annotations` function to create a list of annotated model types, which are represented by lists of `ModelType`. This allows you to reuse existing models and annotations across different input features types.
+3. **Generate a set of parameter files**: Use the `generate_parameter_files` function to generate a set of parameter file formats for each input feature type. These format files can be used as inputs for other annotation pipelines or fed into other pipelines.
+4. **Create a list of initial parameters**: Use the `create_initial_parameters` function to create a list of initial parameters, which are represented by lists of `InitialParameterType`. This allows you to reuse existing parameter types across different input features types.
+5. **Generate a set of training data**: Use the `generate_training_data` function to generate a set of training data for each input feature type. These data can be used as inputs for other annotation pipelines or fed into other annotations pipelines.
+6. **Create a list of validation data**: Use the `create_validation_data` function to create a list of validation data for each input feature type. These data can be used as inputs for other annotation pipelines or fed into other annotations pipelines.
+7. **Generate a set of training and validation data formats**: Use the `generate_training_and_validation_formats` function to generate a set of format files representing both training and validation data. These format files can be used as inputs for other annotation pipelines or fed into other annotations pipelines.

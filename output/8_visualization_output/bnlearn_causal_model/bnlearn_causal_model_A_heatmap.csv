@@ -1,0 +1,7 @@
+Matrix: A
+"Shape: (2, 2)"
+Data type: float64
+
+Col 0,Col 1
+Row 0,0.9,0.1
+Row 1,0.1,0.9

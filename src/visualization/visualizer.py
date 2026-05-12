@@ -285,11 +285,27 @@ class GNNVisualizer:
     def generate_graph_visualization(self, graph_data: Dict[str, Any] | None = None) -> Dict[str, Any]:
         output_dir = self.output_dir / "graph"
         output_dir.mkdir(parents=True, exist_ok=True)
-        # Create a minimal placeholder PNG so tests have an output artifact
         if MATPLOTLIB_AVAILABLE:
-            plt.figure(figsize=(4, 3))
-            plt.title("Graph Visualization")
-            plt.savefig(output_dir / "graph.png", dpi=72)
+            variables = (graph_data or {}).get("variables", [])
+            connections = (graph_data or {}).get("connections", [])
+            plt.figure(figsize=(10, 8))
+            if variables:
+                # Render variables as labeled nodes in a grid
+                n = len(variables)
+                cols = max(1, int(n ** 0.5) + 1)
+                for idx, var in enumerate(variables):
+                    name = var.get("name", f"v{idx}") if isinstance(var, dict) else str(var)
+                    x, y = idx % cols, -(idx // cols)
+                    plt.scatter(x, y, s=400, zorder=3, color="#5B9BD5", edgecolors="black")
+                    plt.annotate(name, (x, y), ha="center", va="center", fontsize=8, fontweight="bold")
+                plt.title(f"Graph Visualization ({n} variables, {len(connections)} connections)")
+            else:
+                plt.text(0.5, 0.5, "No graph data provided", ha="center", va="center",
+                         transform=plt.gca().transAxes, fontsize=12)
+                plt.title("Graph Visualization (empty)")
+            plt.axis("off")
+            plt.tight_layout()
+            plt.savefig(output_dir / "graph.png", dpi=150, bbox_inches="tight")
             plt.close()
         return {"status": "SUCCESS", "output_dir": str(output_dir)}
 
@@ -311,11 +327,11 @@ class GNNVisualizer:
 
         # Create a simple text report
         with open(output_dir / 'file_content.md', 'w') as f:
-            f.write(f"# GNN File: {display_file_path}\\n\\n")
-            f.write("## Raw File Content\\n\\n")
-            f.write("```\\n")
+            f.write(f"# GNN File: {display_file_path}\n\n")
+            f.write("## Raw File Content\n\n")
+            f.write("```\n")
             f.write(raw_file_content)
-            f.write("\\n```\\n\\n")
+            f.write("\n```\n\n")
 
             # Add parsed sections if available
             if parsed_data:

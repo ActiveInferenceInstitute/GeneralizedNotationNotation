@@ -1,0 +1,612 @@
+{
+  "model_name": "Time-Varying Transition Dynamics Agent",
+  "version": "1.0",
+  "annotation": "A POMDP agent operating in a non-stationary environment. The key feature\nis that the transition matrix `B` is indexed by time (`B_t`), capturing\ndynamics that evolve across the planning horizon \u2014 e.g., shifting wind\npatterns for a sailing agent, or changing opponent strategy in a\nsequential game.\n\n- 3 hidden states, 3 observations, 2 actions\n- B_t: 3D transition tensor per timestep (shape: next_state \u00d7 current_state \u00d7 action)\n- Agent must adapt belief updates each step to the current B_t\n- Exercises time-varying matrix handling in renderers\n\nThis sample pushes the language extensions around time-indexed tensors\nand tests downstream code generation when matrix literals are\ntimestep-dependent.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b350176a-cbb0-430f-9428-ea9c3f4f4140",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Observation model (time-invariant)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7a6480e9-f1ea-49e3-a09e-f989debdbff4",
+      "name": "B_t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        3,
+        2
+      ],
+      "data_type": "float",
+      "description": "Transition model, indexed by time t",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0171a968-59bf-424e-8ff7-0455e141e930",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Preference vector",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0756cbec-1729-41ce-8b74-1f74beeb2b5d",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Initial state prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d2b9652e-d571-406f-9d7e-9af7b88e7ac5",
+      "name": "s_t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state at time t",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "89af2ec5-d795-4100-916e-60947c7fc19e",
+      "name": "s_t+1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state at time t+1",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "fab70756-8fb5-4a83-bd3e-e5dd529935b6",
+      "name": "o_t",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Observation at time t",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4c502e78-67ba-4c5c-a2a2-fd2f51c44569",
+      "name": "u_t",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Action at time t",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "14387cbb-f659-431b-8f5c-833a069bc2d0",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s_t"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "13c4ac1a-532d-43f7-ae97-29d85c5fb6b1",
+      "source_variables": [
+        "s_t",
+        "u_t"
+      ],
+      "target_variables": [
+        "B_t"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fb765a37-6cd2-454b-a591-3bbf48abc3e0",
+      "source_variables": [
+        "B_t"
+      ],
+      "target_variables": [
+        "s_t+1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a2d81459-76ea-4b4b-acbf-9a4a16817f46",
+      "source_variables": [
+        "s_t"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d83a89c5-8089-459a-8bb9-7942f3081c96",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o_t"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f46f5231-5714-46ca-bad0-628aaf490615",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "o_t"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f6418b84-d9b3-47fc-8dd4-ba9be1e7f891",
+      "name": "A",
+      "value": [
+        [
+          0.85,
+          0.1,
+          0.05
+        ],
+        [
+          0.1,
+          0.8,
+          0.1
+        ],
+        [
+          0.05,
+          0.1,
+          0.85
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "9ced449c-8aa0-450f-b4a4-8f7ea83c34b8",
+      "name": "B_t",
+      "value": [
+        [
+          [
+            0.6,
+            0.3,
+            0.1
+          ],
+          [
+            0.3,
+            0.6,
+            0.1
+          ],
+          [
+            0.1,
+            0.1,
+            0.8
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.1,
+            0.8
+          ],
+          [
+            0.1,
+            0.6,
+            0.3
+          ],
+          [
+            0.8,
+            0.3,
+            0.1
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "903dcd23-1b44-4c6f-9ade-613ee8215681",
+      "name": "C",
+      "value": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fa79580c-325b-4b4d-83e7-a0577e2a73ac",
+      "name": "D",
+      "value": [
+        [
+          0.33,
+          0.33,
+          0.34
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "2faa53f5-5346-4be4-89da-3136f356d279",
+      "name": "num_hidden_states",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "cdba9662-af89-4604-a3ed-d964858014d0",
+      "name": "num_obs",
+      "value": 3,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b97ed9c4-93b6-4dba-b8c2-d18fa381886b",
+      "name": "num_actions",
+      "value": 2,
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "aaeed79b-25f7-41a1-a433-2dab3af9ac9b",
+      "name": "num_timesteps",
+      "value": 10,
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "a63cf07f-93a9-4afa-8cc9-bb1de99b9e21",
+    "time_type": "Dynamic",
+    "discretization": "DiscreteTime",
+    "horizon": 10,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ce23d517-ab4c-4cdb-8e92-526e9a507eaa",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6f41a41a-4e85-4352-b8d9-fd24b1c39b24",
+      "variable_name": "B_t",
+      "ontology_term": "TimeVaryingTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "687eec65-1185-463a-8889-f67e404f11d6",
+      "variable_name": "C",
+      "ontology_term": "PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c93bdbad-5a8b-4aaf-a009-bed3013046e4",
+      "variable_name": "D",
+      "ontology_term": "Prior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "804818fd-2c22-4bb0-95b4-edb53f3646cb",
+      "variable_name": "s_t",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e8ee7844-7b2f-4322-b5bf-86f02cf70df0",
+      "variable_name": "o_t",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "576856e9-b62b-4ba7-abfd-ee2fff1d51cf",
+      "variable_name": "u_t",
+      "ontology_term": "Action",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-05-12T07:28:01.566465",
+  "modified_at": "2026-05-12T07:28:01.566466",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Time-Varying Transition Dynamics Agent v1.0 \u2014 demonstrates non-stationary\nB_t tensor in a 3-state POMDP. Tests time-indexed matrix handling.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Time-Varying Transition Dynamics Agent",
+    "ModelAnnotation": "A POMDP agent operating in a non-stationary environment. The key feature\nis that the transition matrix `B` is indexed by time (`B_t`), capturing\ndynamics that evolve across the planning horizon \u2014 e.g., shifting wind\npatterns for a sailing agent, or changing opponent strategy in a\nsequential game.\n\n- 3 hidden states, 3 observations, 2 actions\n- B_t: 3D transition tensor per timestep (shape: next_state \u00d7 current_state \u00d7 action)\n- Agent must adapt belief updates each step to the current B_t\n- Exercises time-varying matrix handling in renderers\n\nThis sample pushes the language extensions around time-indexed tensors\nand tests downstream code generation when matrix literals are\ntimestep-dependent.",
+    "StateSpaceBlock": "# Generative model with time-varying dynamics\n\nA[3,3,type=float]         # Observation model (time-invariant)\nB_t[3,3,2,type=float]     # Transition model, indexed by time t\nC[3,1,type=float]         # Preference vector\nD[3,1,type=float]         # Initial state prior\n\n# Hidden state trajectory\n\ns_t[3,1,type=float]       # Hidden state at time t\ns_t+1[3,1,type=float]     # Hidden state at time t+1\n\n# Observation and action\n\no_t[3,1,type=int]         # Observation at time t\nu_t[2,1,type=int]         # Action at time t",
+    "Connections": "D>s_t\n(s_t, u_t)>B_t\nB_t>s_t+1\ns_t-A\nA-o_t\nC-o_t",
+    "InitialParameterization": "# Time-invariant observation model (identity-like, mild noise)\n\nA={\n  (0.85, 0.10, 0.05),\n  (0.10, 0.80, 0.10),\n  (0.05, 0.10, 0.85)\n}\n\n# B_t for t=0: exploration-biased dynamics\n\nB_t={\n  (\n    (0.6, 0.3, 0.1),\n    (0.3, 0.6, 0.1),\n    (0.1, 0.1, 0.8)\n  ),\n  (\n    (0.1, 0.1, 0.8),\n    (0.1, 0.6, 0.3),\n    (0.8, 0.3, 0.1)\n  )\n}\n\n# Preferences: goal state is state 2\n\nC={(0.0, 0.0, 1.0)}\n\n# Uniform prior\n\nD={(0.33, 0.33, 0.34)}",
+    "Equations": "# Belief update under time-varying dynamics:\n# Q(s_{t+1}) = softmax(ln(B_t[:, :, u_t] * Q(s_t)) + ln(A^T * o_{t+1}))\n#\n# Policy posterior accounts for B_t's evolution:\n# Q(\u03c0) = softmax(-G(\u03c0))\n# G(\u03c0) = \u03a3_t [KL(Q(s_t|\u03c0) || P(s_t|B_{t-1})) - E[ln(P(o_t|C))]]",
+    "Time": "Dynamic\nDiscreteTime=t\nModelTimeHorizon=10",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB_t=TimeVaryingTransitionMatrix\nC=PreferenceVector\nD=Prior\ns_t=HiddenState\no_t=Observation\nu_t=Action",
+    "ModelParameters": "num_hidden_states: 3\nnum_obs: 3\nnum_actions: 2\nnum_timesteps: 10",
+    "Footer": "Time-Varying Transition Dynamics Agent v1.0 \u2014 demonstrates non-stationary\nB_t tensor in a 3-state POMDP. Tests time-indexed matrix handling.",
+    "Signature": "Cryptographic signature goes here"
+  },
+  "initialparameterization": {
+    "A": [
+      [
+        0.85,
+        0.1,
+        0.05
+      ],
+      [
+        0.1,
+        0.8,
+        0.1
+      ],
+      [
+        0.05,
+        0.1,
+        0.85
+      ]
+    ],
+    "B_t": [
+      [
+        [
+          0.6,
+          0.3,
+          0.1
+        ],
+        [
+          0.3,
+          0.6,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.8
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.1,
+          0.8
+        ],
+        [
+          0.1,
+          0.6,
+          0.3
+        ],
+        [
+          0.8,
+          0.3,
+          0.1
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "D": [
+      [
+        0.33,
+        0.33,
+        0.34
+      ]
+    ],
+    "num_hidden_states": 3,
+    "num_obs": 3,
+    "num_actions": 2,
+    "num_timesteps": 10
+  },
+  "model_parameters": {
+    "A": [
+      [
+        0.85,
+        0.1,
+        0.05
+      ],
+      [
+        0.1,
+        0.8,
+        0.1
+      ],
+      [
+        0.05,
+        0.1,
+        0.85
+      ]
+    ],
+    "B_t": [
+      [
+        [
+          0.6,
+          0.3,
+          0.1
+        ],
+        [
+          0.3,
+          0.6,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.8
+        ]
+      ],
+      [
+        [
+          0.1,
+          0.1,
+          0.8
+        ],
+        [
+          0.1,
+          0.6,
+          0.3
+        ],
+        [
+          0.8,
+          0.3,
+          0.1
+        ]
+      ]
+    ],
+    "C": [
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "D": [
+      [
+        0.33,
+        0.33,
+        0.34
+      ]
+    ],
+    "num_hidden_states": 3,
+    "num_obs": 3,
+    "num_actions": 2,
+    "num_timesteps": 10
+  }
+}

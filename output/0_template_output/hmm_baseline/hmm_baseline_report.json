@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/discrete/hmm_baseline.md",
+  "output_file": "output/0_template_output/hmm_baseline/hmm_baseline_processed.md",
+  "timestamp": "2026-05-12T07:23:48.393811",
+  "file_size_bytes": 2511,
+  "file_size_lines": 111,
+  "processing_options": {
+    "verbose": true,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

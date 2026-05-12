@@ -1,0 +1,520 @@
+{
+  "annotation": "A mean-field factorized POMDP agent. The joint posterior over two\nindependent state factors `s_1` (location) and `s_2` (goal identity) is\napproximated as the product of marginals Q(s_1, s_2) = Q(s_1) * Q(s_2).\nThis is the canonical simplification used in variational inference when\nexact joint posteriors are computationally intractable.\n\n- Two state factors: location (4 states), goal (2 states)\n- Two observation modalities: visual (3 obs), proprioceptive (2 obs)\n- Separate transition matrices B_1 (location × action) and B_2 (goal is static)\n- Explicit factorization declared in ## Equations\n- Tests multi-factor / multi-modality handling in the parser",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D_f0"
+      ],
+      "target_variables": [
+        "s_f0"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D_f1"
+      ],
+      "target_variables": [
+        "s_f1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_f0",
+        "u"
+      ],
+      "target_variables": [
+        "B_f0"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B_f0"
+      ],
+      "target_variables": [
+        "s_f0"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_f1"
+      ],
+      "target_variables": [
+        "B_f1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B_f1"
+      ],
+      "target_variables": [
+        "s_f1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_f0",
+        "s_f1"
+      ],
+      "target_variables": [
+        "A_m0"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "A_m0"
+      ],
+      "target_variables": [
+        "o_m0"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_f0"
+      ],
+      "target_variables": [
+        "A_m1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "A_m1"
+      ],
+      "target_variables": [
+        "o_m1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "C_m0"
+      ],
+      "target_variables": [
+        "o_m0"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "C_m1"
+      ],
+      "target_variables": [
+        "o_m1"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-05-12T07:28:01.834706",
+  "equations": [],
+  "extensions": {
+    "footer": "Factorized Posterior Agent v1.0 — explicit mean-field Q(s) = Q(s_0) Q(s_1)\nfactorization. Two state factors × two observation modalities.",
+    "gnn_section": "ActInfFactorized",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Factorized Posterior Agent",
+  "modified_at": "2026-05-12T07:28:01.834707",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "HiddenStateFactor0",
+      "variable_name": "s_f0"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenStateFactor1",
+      "variable_name": "s_f1"
+    },
+    {
+      "description": null,
+      "ontology_term": "ObservationModality0",
+      "variable_name": "o_m0"
+    },
+    {
+      "description": null,
+      "ontology_term": "ObservationModality1",
+      "variable_name": "o_m1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Action",
+      "variable_name": "u"
+    },
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrixModality0",
+      "variable_name": "A_m0"
+    },
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrixModality1",
+      "variable_name": "A_m1"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrixFactor0",
+      "variable_name": "B_f0"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrixFactor1",
+      "variable_name": "B_f1"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorFactor0",
+      "variable_name": "D_f0"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorFactor1",
+      "variable_name": "D_f1"
+    },
+    {
+      "description": null,
+      "ontology_term": "PreferenceModality0",
+      "variable_name": "C_m0"
+    },
+    {
+      "description": null,
+      "ontology_term": "PreferenceModality1",
+      "variable_name": "C_m1"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A_m0",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            0.7,
+            0.1,
+            0.1,
+            0.1
+          ],
+          [
+            0.1,
+            0.7,
+            0.1,
+            0.1
+          ],
+          [
+            0.2,
+            0.2,
+            0.8,
+            0.8
+          ]
+        ],
+        [
+          [
+            0.1,
+            0.7,
+            0.1,
+            0.1
+          ],
+          [
+            0.7,
+            0.1,
+            0.1,
+            0.1
+          ],
+          [
+            0.2,
+            0.2,
+            0.8,
+            0.8
+          ]
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A_m1",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.9,
+          0.9,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_f0",
+      "type_hint": null,
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D_f1",
+      "type_hint": null,
+      "value": [
+        [
+          0.6,
+          0.4
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_m0",
+      "type_hint": null,
+      "value": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C_m1",
+      "type_hint": null,
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "num_hidden_states_factor0",
+      "type_hint": null,
+      "value": 4
+    },
+    {
+      "description": null,
+      "name": "num_hidden_states_factor1",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_obs_modality0",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "num_obs_modality1",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_actions",
+      "type_hint": null,
+      "value": 3
+    },
+    {
+      "description": null,
+      "name": "num_factors",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_modalities",
+      "type_hint": null,
+      "value": 2
+    },
+    {
+      "description": null,
+      "name": "num_timesteps",
+      "type_hint": null,
+      "value": 15
+    }
+  ],
+  "time_specification": {
+    "discretization": "DiscreteTime",
+    "horizon": 15,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Factor 0: agent location (4 possible positions)",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_f0",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Factor 1: goal identity (2 possible goals)",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s_f1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Modality 0: visual observation (3 visual cues)",
+      "dimensions": [
+        3,
+        1
+      ],
+      "name": "o_m0",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "integer",
+      "description": "Modality 1: proprioceptive observation (2 body states)",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "o_m1",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "integer",
+      "description": "3 possible actions: stay, forward, backward",
+      "dimensions": [
+        3,
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Visual likelihood: depends on both factors",
+      "dimensions": [
+        3,
+        4,
+        2
+      ],
+      "name": "A_m0",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Proprioceptive likelihood: depends only on location",
+      "dimensions": [
+        2,
+        4
+      ],
+      "name": "A_m1",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Location transitions (depends on action)",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "name": "B_f0",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Goal transitions (typically identity — goal is static)",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "B_f1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Prior over locations (uniform)",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "D_f0",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Prior over goals",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "D_f1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Visual preferences",
+      "dimensions": [
+        3,
+        1
+      ],
+      "name": "C_m0",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Proprioceptive preferences",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "C_m1",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

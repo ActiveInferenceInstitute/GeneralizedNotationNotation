@@ -117,20 +117,13 @@ if not result["success"]:
 #### `execute_rendered_simulators(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
 **Description**: Iterate over every supported framework runner (PyMDP, RxInfer.jl, DisCoPy, ActiveInference.jl, JAX, NumPyro, PyTorch) and write a summary JSON + markdown report under ``output_dir / "12_execute_output" / "summaries" /``. Missing optional dependencies are recorded as ``"SKIPPED"`` instead of failures.
 
-#### `get_execution_health_status() -> Dict[str, Any]`
-**Description**: Get health status of execution environment and framework availability.
+#### Framework Health Checking
 
-**Returns**: `Dict[str, Any]` - Health status dictionary with:
-- `pymdp_available` (bool): PyMDP availability
-- `rxinfer_available` (bool): RxInfer.jl availability
-- `activeinference_jl_available` (bool): ActiveInference.jl availability
-- `jax_available` (bool): JAX availability
-- `discopy_available` (bool): DisCoPy availability
-- `numpyro_available` (bool): NumPyro availability
-- `pytorch_available` (bool): PyTorch availability
-- `julia_available` (bool): Julia installation status
-- `python_version` (str): Python version
-- `julia_version` (Optional[str]): Julia version if available
+Framework availability is assessed at execution time by the processor rather than a single standalone function. Key detection utilities:
+
+- **`execute.pymdp.package_detector.detect_pymdp_installation()`** — Detect which PyMDP package variant is installed.
+- **`execute.pymdp.package_detector.validate_pymdp_for_execution()`** — Validate PyMDP is ready for execution.
+- **MCP tool**: `execute.get_health_status` — Exposes framework availability via MCP (see `execute/mcp.py`).
 
 #### PyMDP Package Detection Functions
 **Module**: `execute.pymdp.package_detector`

@@ -68,27 +68,25 @@ success = process_research(
 )
 ```
 
-#### `perform_research_analysis(data: Dict[str, Any], analysis_type: str = "comprehensive") -> Dict[str, Any]`
-**Description**: Perform advanced research analysis using rule-based expert system.
+#### `generate_rule_based_hypotheses(content: str, model_name: str, output_dir: Path, logger: logging.Logger) -> Tuple[List[Dict], str]`
+**Description**: Core rule-based hypothesis generation engine. Analyzes GNN model content, detects complexity patterns, structural diagnostics, and generates evidence-backed hypotheses.
 
 **Parameters**:
-- `data` (Dict[str, Any]): Research data to analyze (parsed GNN models)
-- `analysis_type` (str): Type of analysis ("comprehensive", "statistical", "experimental")
+- `content` (str): Raw GNN file content
+- `model_name` (str): Name of the model being analyzed
+- `output_dir` (Path): Output directory for reports
+- `logger` (logging.Logger): Logger instance
 
-**Returns**: `Dict[str, Any]` - Research analysis results with:
-- `hypotheses` (List[Dict]): Generated research hypotheses
-- `complexity_analysis` (Dict): Complexity metrics and diagnostics
-- `structural_diagnostics` (Dict): Structural analysis results
-- `recommendations` (List[str]): Research recommendations
+**Returns**: `Tuple[List[Dict], str]` - (hypotheses list, markdown report)
 
-#### `generate_research_report(analysis_results: Dict[str, Any], output_format: str = "markdown") -> str`
-**Description**: Generate research report from analysis results with evidence-based justifications.
+#### `detect_model_family(content: str) -> str`
+**Description**: Detect the model family (e.g., POMDP, MDP, continuous, mixed) from GNN content.
 
-**Parameters**:
-- `analysis_results` (Dict[str, Any]): Results from research analysis
-- `output_format` (str): Output format ("markdown", "html", "json")
+#### `extract_state_space_dims(content: str) -> Dict[str, List[int]]`
+**Description**: Extract state space dimensions from variables in GNN content.
 
-**Returns**: `str` - Research report as formatted string with evidence and justifications
+#### `count_connections(content: str) -> Dict[str, int]`
+**Description**: Count connections by type (directed, undirected) in GNN content.
 
 ---
 
@@ -139,22 +137,22 @@ success = process_research(
 
 ### Advanced Research Analysis
 ```python
-from research.analyzer import perform_research_analysis
+from research.processor import generate_rule_based_hypotheses
 
-results = perform_research_analysis(
-    data=experimental_data,
-    analysis_type="experimental"
+hypotheses, report = generate_rule_based_hypotheses(
+    content=gnn_content,
+    model_name="my_model",
+    output_dir=Path("output/19_research_output"),
+    logger=logger
 )
 ```
 
-### Research Report Generation
+### Model Family Detection
 ```python
-from research.generator import generate_research_report
+from research.processor import detect_model_family
 
-report = generate_research_report(
-    analysis_results=results,
-    output_format="markdown"
-)
+family = detect_model_family(gnn_content)
+print(f"Model family: {family}")  # e.g., "POMDP"
 ```
 
 ---

@@ -31,11 +31,10 @@ _safe_tight_layout = safe_tight_layout
 
 
 def _viz_var_type(var_info: Dict[str, Any]) -> str:
-    if not isinstance(var_info, dict):
-        return "unknown"
-    return str(
-        var_info.get("var_type", var_info.get("type", var_info.get("node_type", "unknown")))
-    )
+    """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
+    from visualization.compat.viz_compat import viz_var_type
+    return viz_var_type(var_info)
+
 
 
 def generate_combined_analysis(

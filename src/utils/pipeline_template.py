@@ -244,7 +244,7 @@ STEP_ADDITIONAL_ARGUMENTS = {
         "dev": {"type": bool, "help": "Install development dependencies (uv sync --extra dev)"},
         "install_all_extras": {"type": bool, "help": "Install all optional groups (uv sync --all-extras)"},
     },
-    "21_mcp.py": {
+    "21_mcp": {
         "performance-mode": {
             "type": str,
             "default": "low",

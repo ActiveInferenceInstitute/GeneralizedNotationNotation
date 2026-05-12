@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/discrete/tmaze_epistemic.md",
+  "output_file": "output/0_template_output/tmaze_epistemic/tmaze_epistemic_processed.md",
+  "timestamp": "2026-05-12T07:23:48.394823",
+  "file_size_bytes": 5621,
+  "file_size_lines": 218,
+  "processing_options": {
+    "verbose": true,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}
