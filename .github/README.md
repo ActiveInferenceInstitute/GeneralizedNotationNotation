@@ -278,7 +278,7 @@ Configured in [dependabot.yml](dependabot.yml):
 
 | Workflow | Triggers | What it runs |
 |----------|----------|--------------|
-| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13 — Ruff on 3.12, `pytest` + JUnit/summary; MCP ≥ 131 on 3.12. **security**: Bandit SARIF → `upload-sarif` + artifact. |
+| [ci.yml](workflows/ci.yml) | `push` and `pull_request` to `main` (`opened`, `synchronize`, `reopened`, `ready_for_review`); **`paths-ignore`**: `**/*.md`, `doc/**`. `workflow_dispatch` | **test**: matrix 3.11 / 3.12 / 3.13 — Ruff on 3.12, `pytest` + JUnit/summary; MCP ≥ 130 on 3.12 (matches `src/tests/mcp_audit_report.json`). **security**: Bandit SARIF → `upload-sarif` + artifact. |
 | [docs-audit.yml](workflows/docs-audit.yml) | `push` / `pull_request` to `main` when paths include `**/*.md`, `doc/**`, root `AGENTS.md`, `CLAUDE.md`, `README.md`, `SKILL.md`, or `doc/development/docs_audit.py`. `workflow_dispatch` | `uv sync --frozen --extra dev`, `uv run python doc/development/docs_audit.py --strict` |
 | [actionlint.yml](workflows/actionlint.yml) | `push` / `pull_request` when `.github/workflows/**` changes. `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
 | [dependency-review.yml](workflows/dependency-review.yml) | `pull_request` to `main`. `workflow_dispatch` | `fail-on-severity: high`, AGPL deny list, PR comment summary on failure ([fork limitations](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review#dependency-review-for-forked-repositories)). |

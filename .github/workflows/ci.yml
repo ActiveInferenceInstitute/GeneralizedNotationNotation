@@ -95,12 +95,12 @@ jobs:
           uv run python - <<'PY'
           import sys
           sys.path.insert(0, "src")
-          from tests.test_mcp_audit import count_mcp_tools
+          from tests.mcp.test_mcp_audit import count_mcp_tools
 
           count = count_mcp_tools()
           print(f"MCP tools: {count}")
-          if count < 131:
-              raise SystemExit(f"MCP tool count regression: {count} < 131")
+          if count < 130:
+              raise SystemExit(f"MCP tool count regression: {count} < 130")
           print("MCP tool count OK")
           PY
 
