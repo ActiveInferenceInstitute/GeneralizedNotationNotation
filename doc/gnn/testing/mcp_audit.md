@@ -1,9 +1,9 @@
 # GNN MCP Audit Framework
 
-How `src/tests/test_mcp_audit.py` validates the MCP tool registry.
+How `src/tests/mcp/test_mcp_audit.py` validates the MCP tool registry.
 
 **Last Updated**: 2026-04-15  
-**Source**: [`src/tests/test_mcp_audit.py`](../../../src/tests/test_mcp_audit.py)
+**Source**: [`src/tests/mcp/test_mcp_audit.py`](../../../src/tests/mcp/test_mcp_audit.py)
 
 ## Fixture Design
 

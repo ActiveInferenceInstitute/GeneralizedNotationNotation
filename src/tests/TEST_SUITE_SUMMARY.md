@@ -1,6 +1,6 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-01-21  
+**Last Updated**: 2026-05-13  
 **Status**: ✅ Production Ready  
 **Test Infrastructure Version**: 2.0.1
 
@@ -8,17 +8,16 @@
 
 ## Executive Summary
 
-The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and 28 specialized modules. All tests follow strict quality standards with no simulated usage, real data processing, and comprehensive error handling.
+The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and the maintained source modules under `src/`. Tests prioritize real code paths, representative data, and explicit skip behavior for unavailable optional services.
 
 ### Key Metrics
 
-- **Total Test Files**: 91
-- **Total Test Functions**: 734+
-- **Test Categories**: 24
-- **Test Markers**: 25+
-- **Assertions**: 1,250+ across test files
-- **Success Rate**: 100% (348/348 fast tests passed in latest run, 734 total collected)
-- **Execution Time**: Fast (1-2 min) | Comprehensive (3-5 min)
+- **Total Test Files**: 166 `test_*.py` files
+- **Directory Layout**: 33 first-level directories under `src/tests/`; 31 contain direct test files
+- **Root-Level Tests**: 28 `test_*.py` files at `src/tests/`
+- **Subdirectory Tests**: 138 `test_*.py` files under module/helper directories
+- **Collected Tests**: 2,271 with `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` (2026-05-13)
+- **Execution Time**: depends on optional backends and selected markers; use current run output for pass/skip counts
 
 ---
 
@@ -28,13 +27,14 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 
 ```
 src/tests/
-├── 2_tests.py              # Thin orchestrator (CLI entry point)
+├── ../2_tests.py           # Thin orchestrator (CLI entry point)
 ├── runner.py               # Core test execution logic
 ├── conftest.py             # Pytest fixtures and configuration
 ├── __init__.py             # Module exports and utilities
 ├── README.md               # Comprehensive documentation
 ├── AGENTS.md               # Technical API documentation
-└── test_*.py               # 54 test files organized by module
+├── <module>/test_*.py      # 138 module/helper test files
+└── test_*.py               # 28 cross-cutting root test files
 ```
 
 ### Execution Modes
@@ -58,17 +58,16 @@ src/tests/
 
 ## Test Quality Standards
 
-### ✅ No Simulated Usage Policy
+### No Simulated Usage Policy
 
 All tests follow strict "no mocks" policy:
-- ✅ No `unittest.simulated` imports or usage
-- ✅ No monkeypatching of functions or classes
-- ✅ Real code paths executed in all tests
-- ✅ Real data used throughout (no synthetic/placeholder data)
-- ✅ Real dependencies (skip if unavailable, never simulated)
-- ✅ File-based assertions on real artifacts
+- No `unittest.mock`-style replacement of production behavior for core paths
+- Real code paths executed in module and integration tests
+- Real data or representative fixtures used throughout
+- Real dependencies are used when available; optional integrations skip cleanly when unavailable
+- File-based assertions on real artifacts
 
-### ✅ Real Implementation Testing
+### Real Implementation Testing
 
 - **Real Methods**: All tests execute actual module functions
 - **Real Data**: Tests use representative GNN files and data structures
@@ -76,7 +75,7 @@ All tests follow strict "no mocks" policy:
 - **Real File I/O**: Tests assert on real file outputs in `output/` directories
 - **Real Subprocesses**: Pipeline tests run actual numbered scripts via subprocess
 
-### ✅ Comprehensive Error Handling
+### Comprehensive Error Handling
 
 - **Error Scenarios**: Tests cover all error conditions with real failure modes
 - **Graceful Degradation**: Tests validate recovery behavior when dependencies unavailable
@@ -85,32 +84,9 @@ All tests follow strict "no mocks" policy:
 
 ---
 
-## Module Coverage Matrix
+## Coverage Layout
 
-| Module | Test Files | Test Functions | Status | Coverage |
-|--------|------------|----------------|--------|----------|
-| **GNN** | 5 | ~80 | ✅ Complete | High |
-| **Render** | 2 | ~30 | ✅ Complete | High |
-| **MCP** | 5 | ~50 | ✅ Complete | High |
-| **Audio** | 4 | ~40 | ✅ Complete | High |
-| **Visualization** | 4 | ~50 | ✅ Complete | High |
-| **Pipeline** | 8 | ~100 | ✅ Complete | High |
-| **Export** | 1 | ~12 | ✅ Complete | Medium |
-| **Execute** | Integrated | ~20 | ✅ Complete | Medium |
-| **LLM** | 3 | ~30 | ✅ Complete | High |
-| **Ontology** | 1 | ~12 | ✅ Complete | Medium |
-| **Website** | 1 | ~12 | ✅ Complete | Medium |
-| **Report** | 4 | ~40 | ✅ Complete | High |
-| **Environment** | 3 | ~30 | ✅ Complete | High |
-| **GUI** | 2 | ~20 | ✅ Complete | Medium |
-| **Advanced Viz** | 1 | ~17 | ✅ Complete | High |
-| **Core Modules** | 1 | ~30 | ✅ Complete | High |
-| **Fast Suite** | 1 | ~22 | ✅ Complete | High |
-| **Coverage** | 2 | ~10 | ✅ Complete | Medium |
-| **Performance** | 2 | ~20 | ✅ Complete | Medium |
-| **Integration** | 1 | ~8 | ✅ Complete | Medium |
-| **Error Recovery** | 1 | ~13 | ✅ Complete | Medium |
-| **Total** | **91** | **734+** | **✅ Complete** | **High** |
+The suite mirrors the source tree: module-focused tests live in `src/tests/<module>/`, while root-level `src/tests/test_*.py` files cover cross-cutting environment, coverage, and runner behavior. Mechanical AGENTS/README coverage for maintained test subdirectories is enforced by `doc/development/docs_audit.py --strict`.
 
 ---
 
@@ -307,13 +283,11 @@ output/2_tests_output/
 
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
-✅ **1,522+ tests functions** across **91 test files**  
-✅ **100% no-simulated policy compliance**  
-✅ **Real data and real implementations** throughout  
-✅ **Comprehensive error handling** and recovery testing  
-✅ **Complete module coverage** for all 25 pipeline steps  
-✅ **Well-documented** with clear examples and best practices  
-✅ **Production-ready** with 100% success rate in latest execution
+- 166 test files across root and module-specific directories
+- 2,271 collected tests in the current command-of-record collect pass with Ollama integration tests ignored
+- Real data and real implementations throughout core paths
+- Comprehensive error handling and recovery testing
+- Module coverage for all 25 pipeline steps
+- AGENTS/README documentation coverage for maintained test subdirectories
 
 The test infrastructure is mature, comprehensive, and ready for production use.
-

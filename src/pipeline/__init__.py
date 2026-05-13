@@ -4,8 +4,6 @@ from __future__ import annotations
 """
 Pipeline module for centralized configuration and utilities.
 """
-from typing import Literal
-
 from .config import (
     STEP_METADATA,
     PipelineConfig,
@@ -41,34 +39,80 @@ FEATURES = {
     'dependency_validation': True
 }
 
-# Minimal placeholder classes — interface expected by tests; not a real pipeline runner.
-# Use execute_pipeline() or run_pipeline() from pipeline.execution for actual execution.
 class PipelineOrchestrator:
-    def __init__(self):
-        self.steps = []
-    def run(self) -> Literal[True]:
-        """Placeholder — always returns True. Use execute_pipeline() for actual pipeline execution."""
-        return True
+    """Small programmatic adapter over the real ``main.py`` orchestrator."""
+
+    def __init__(
+        self,
+        target_dir: str = "input/gnn_files",
+        output_dir: str = "output",
+        steps: list[str] | str | None = None,
+        verbose: bool = False,
+    ):
+        self.target_dir = target_dir
+        self.output_dir = output_dir
+        self.steps = steps
+        self.verbose = verbose
+
+    def run(self) -> bool:
+        """Execute configured steps through ``pipeline.execution.run_pipeline``."""
+        result = run_pipeline(
+            target_dir=self.target_dir,
+            output_dir=self.output_dir,
+            steps=self.steps,
+            verbose=self.verbose,
+        )
+        return bool(result.get("success"))
+
     def get_pipeline_steps(self) -> list[str]:
         cfg = get_pipeline_config()
         steps = cfg.get('steps') if isinstance(cfg, dict) else None
         if steps is None:
             steps = list(STEP_METADATA.keys())
         return list(steps)
+
     def execute_pipeline(self, pipeline_data: dict | None = None) -> dict:
-        steps = self.get_pipeline_steps()
-        return {"status": "SUCCESS", "steps": steps, "executed": len(steps)}
+        data = pipeline_data or {}
+        result = run_pipeline(
+            pipeline_data=data,
+            target_dir=data.get("target_dir") or data.get("input_dir") or data.get("temp_dir") or self.target_dir,
+            output_dir=data.get("output_dir") or self.output_dir,
+            steps=data.get("steps", self.steps),
+            verbose=bool(data.get("verbose", self.verbose)),
+        )
+        result.setdefault("status", "SUCCESS" if result.get("success") else "FAILED")
+        result.setdefault("executed", len(result.get("steps_executed", [])))
+        return result
 
 class PipelineStep:
-    """Placeholder step class — always returns True. Not wired to actual step execution."""
-    def __init__(self, name: str):
+    """Programmatic adapter for executing one registered pipeline step."""
+
+    def __init__(
+        self,
+        name: str,
+        target_dir: str = "input/gnn_files",
+        output_dir: str = "output",
+        verbose: bool = False,
+    ):
         self.name = name
-    def execute(self) -> Literal[True]:
-        """Placeholder — always returns True."""
-        return True
-    def validate(self) -> Literal[True]:
-        """Placeholder — always returns True."""
-        return True
+        self.target_dir = target_dir
+        self.output_dir = output_dir
+        self.verbose = verbose
+
+    def execute(self) -> bool:
+        """Execute this step through the same subprocess path used by ``main.py``."""
+        result = execute_pipeline_step(
+            self.name,
+            {"verbose": self.verbose},
+            {"target_dir": self.target_dir, "output_dir": self.output_dir},
+        )
+        return bool(result.success)
+
+    def validate(self) -> bool:
+        """Return whether this step name resolves to the registered step metadata."""
+        return validate_pipeline_step(self.name) or any(
+            self.name == key.split("_", 1)[-1] for key in STEP_METADATA
+        )
 
 def get_module_info() -> dict:
     """Return pipeline module metadata for composability and MCP discovery."""
@@ -111,6 +155,8 @@ __all__ = [
     'execute_pipeline_step',
     'execute_pipeline_steps',
     'StepExecutionResult',
+    'PipelineOrchestrator',
+    'PipelineStep',
 
     # Metadata
     'FEATURES',

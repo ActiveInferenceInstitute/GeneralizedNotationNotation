@@ -147,4 +147,4 @@ sample corpus rather than MagicMock fixtures.
 - Processor: [src/type_checker/processor.py](../../../src/type_checker/processor.py)
 - Estimation: [src/type_checker/estimation_strategies.py](../../../src/type_checker/estimation_strategies.py)
 - Visualizer: [src/type_checker/visualizer.py](../../../src/type_checker/visualizer.py)
-- Tests: [src/tests/test_type_checker_overall.py](../../../src/tests/test_type_checker_overall.py)
+- Tests: [src/tests/type_checker/test_type_checker_overall.py](../../../src/tests/type_checker/test_type_checker_overall.py)

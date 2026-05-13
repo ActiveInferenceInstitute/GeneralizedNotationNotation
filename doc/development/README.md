@@ -12,7 +12,7 @@ This guide provides information for developers contributing to the GNN project, 
 From the repository root:
 
 ```bash
-# Scan Markdown for broken relative links (includes tracked output/ when present)
+# Scan maintained Markdown for broken relative links (generated output/ is skipped)
 uv run python doc/development/docs_audit.py
 # Fail the shell if any issues (for CI / pre-commit)
 uv run python doc/development/docs_audit.py --strict
@@ -76,55 +76,45 @@ git push origin feature/my-new-feature
 ```
 src/
 ├── main.py                    # Pipeline orchestrator
-├── pipeline/                  # Pipeline configuration
-│   ├── config.py             # Step configuration, timeouts
-│   └── dependency_validator.py # Dependency checking
+├── pipeline/                  # Pipeline configuration, execution adapters, DAG/context helpers
+│   ├── config.py             # Step metadata and output directory mapping
+│   ├── execution.py          # Programmatic API delegating to main.py/numbered steps
+│   └── step_timeouts.py      # Per-step timeout policy
 ├── gnn/                      # Core GNN processing
-│   ├── parser.py             # GNN file parsing
-│   ├── validator.py          # Syntax validation  
-│   └── examples/             # Example GNN files
+│   ├── processor.py          # Directory processing helpers
+│   ├── schema.py             # Core schema parsing/validation
+│   └── parsers/              # Format-specific parsers
 ├── export/                   # Multi-format export
-│   ├── format_exporters.py  # Export implementations
-│   └── mcp.py               # Export MCP tools
+│   ├── processor.py          # Export orchestration
+│   └── format_exporters.py   # Export implementations
 ├── visualization/            # Model visualization
-│   ├── visualize_gnn.py     # Main visualization logic
-│   ├── diagram_generators.py # Specific diagram types
-│   └── mcp.py               # Visualization MCP tools
+│   ├── core/                 # Core visualization processing
+│   ├── graph/                # Graph visualizers
+│   └── matrix/               # Matrix visualizers
 ├── render/                   # Code generation
-│   ├── pymdp/               # PyMDP code generation
-│   ├── rxinfer/             # RxInfer.jl generation
-│   └── render.py            # Main rendering interface
+│   ├── processor.py          # Main rendering processor
+│   ├── pymdp/                # PyMDP code generation
+│   ├── rxinfer/              # RxInfer.jl generation
+│   └── stan/                 # Stan rendering support
 ├── execute/                  # Simulator execution
-│   ├── pymdp_runner.py      # PyMDP execution
-│   └── rxinfer_runner.py    # RxInfer.jl execution
+│   ├── processor.py          # Execute orchestration
+│   ├── pymdp/                # PyMDP execution
+│   └── rxinfer/              # RxInfer.jl execution
 ├── llm/                     # LLM integration
 │   ├── providers/           # LLM provider implementations
-│   ├── tasks/               # Specific LLM tasks
-│   └── mcp.py              # LLM MCP tools
+│   ├── processor.py         # Step 13 processing
+│   └── mcp.py               # LLM MCP tools
 ├── mcp/                     # Model Context Protocol
-│   ├── mcp.py              # Core MCP instance
-│   ├── server_http.py      # HTTP server
-│   ├── server_stdio.py     # STDIO server
-│   └── cli.py              # Command-line interface
+│   ├── mcp.py               # Core MCP instance
+│   ├── server_stdio.py      # STDIO server
+│   └── processor.py         # Step 21 processing
 ├── ontology/                # Ontology processing
-│   ├── ontology_processor.py # Core processing
-│   ├── act_inf_ontology_terms.json # Ontology data
-│   └── mcp.py              # Ontology MCP tools
-├── discopy_translator_module/ # Category theory
-│   ├── translator.py       # GNN to DisCoPy translation
-│   └── visualize_jax_output.py # JAX visualization
+│   ├── processor.py         # Core processing
+│   └── act_inf_ontology_terms.json # Ontology data
 ├── utils/                   # Shared utilities
-│   ├── logging_utils.py    # Logging configuration
-│   └── file_utils.py       # File operations
-├── setup/                   # Environment setup
-│   ├── setup.py           # Main setup logic
-│   └── utils.py           # Setup utilities
-├── tests/                   # Test suite
-│   ├── unit/              # Unit tests
-│   ├── integration/       # Integration tests
-│   └── fixtures/          # Test data
-└── site/                   # Site generation
-    └── site_generator.py  # HTML generation
+│   ├── argument_utils.py    # CLI/pipeline argument model
+│   └── pipeline_template.py # Thin orchestrator wrapper
+└── tests/                   # 166 pytest files, mirrored by module
 ```
 
 ### Design Patterns

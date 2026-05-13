@@ -227,7 +227,7 @@ graph TD
 - **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
 - **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests**: `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` — 2,200 passed, 70 skipped (2026-05-08); re-enable `test_llm_ollama*.py` when `ollama` is available.
+- **Tests**: command of record is `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`; current inventory (2026-05-13) is 166 test files and 2,271 collected tests with the same Ollama ignores. Re-enable `test_llm_ollama*.py` when `ollama` is available.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderers**: All 8/8 backends operational (PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy). E2E validation via `test_render_numpyro_stan.py` (15 tests).
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
@@ -518,7 +518,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-05-08
+**Last Updated**: 2026-05-13
 **Pipeline Version**: 1.6.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

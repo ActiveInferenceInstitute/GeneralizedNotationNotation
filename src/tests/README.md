@@ -33,10 +33,11 @@ pytest -m slow          # slow/performance tests only
 
 ## Test Statistics
 
-- **Total test files**: 158 (136 in module subdirs + 21 at root)
-- **Test functions collected**: ~2,155
-- **Passing baseline**: 2,071 pass, 80 skipped (CI-equivalent env; excludes
-  local-only `test_llm_ollama*.py` + env-dependent `test_uv_environment.py`)
+- **Total test files**: 166 (138 in subdirectories + 28 at root)
+- **Test collection baseline**: 2,271 collected with the command-of-record
+  collect pass and the two local Ollama integration files ignored
+- **Pass/skip baseline**: use the latest full-suite run output; optional
+  backends and local services affect skips
 - **Fast-test duration**: 1-3 minutes
 - **Full-suite duration**: 2-3 minutes
 
@@ -54,8 +55,7 @@ src/tests/
 ├── test_data/             # on-disk fixtures consumed by tests
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/<module>/
-│   (30 subdirectories: gnn, render, execute, mcp, llm, visualization,
-│   audio, analysis, pipeline, export, ontology, utils, …)
+│   (33 first-level subdirectories; 31 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,
@@ -644,7 +644,8 @@ If issues persist:
 
 ### Test Coverage
 
-- **1,522+ tests functions** across **54 test files**
+- **166 test files** across root and module-specific directories
+- **2,271 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
 - **Integration tests** for cross-module functionality
@@ -654,11 +655,10 @@ If issues persist:
 ### Test Execution Statistics
 
 - **Fast Tests**: ~1-3 minutes (default for pipeline)
-- **Comprehensive Tests**: ~3 minutes (all tests including slow/performance)
-- **Test Categories**: 24 organized categories
-- **Test Markers**: 25+ markers for selective execution
-- **Success Rate**: 100% (516/516 passed, 0 failed, 0 skipped)
-- **Latest Execution**: 1,522+ tests run, 0 failures, ~92 seconds duration
+- **Comprehensive Tests**: runtime depends on optional backends and selected markers
+- **Test Categories**: managed by `src/tests/categories.py`
+- **Test Markers**: registered in `pytest.ini` and `pyproject.toml`
+- **Latest Execution**: use current full-suite output for pass, skip, and duration counts
 
 ### Test Quality Metrics
 
@@ -676,43 +676,17 @@ If issues persist:
 
 ### Module Coverage
 
-| Module | Test Files | Test Functions | Status |
-|--------|------------|----------------|--------|
-| GNN | 5 files | ~80 functions | ✅ Complete |
-| Render | 2 files | ~30 functions | ✅ Complete |
-| MCP | 5 files | ~50 functions | ✅ Complete |
-| Audio | 4 files | ~40 functions | ✅ Complete |
-| Visualization | 4 files | ~50 functions | ✅ Complete |
-| Pipeline | 8 files | ~100 functions | ✅ Complete |
-| Export | 1 file | ~12 functions | ✅ Complete |
-| Execute | Integrated | ~20 functions | ✅ Complete |
-| LLM | 3 files | ~30 functions | ✅ Complete |
-| Ontology | 1 file | ~12 functions | ✅ Complete |
-| Website | 1 file | ~12 functions | ✅ Complete |
-| Report | 4 files | ~40 functions | ✅ Complete |
-| Environment | 3 files | ~30 functions | ✅ Complete |
-| GUI | 2 files | ~20 functions | ✅ Complete |
-| Infrastructure | 1 file | ~4 functions | ✅ Complete |
-| **Total** | **91 files** | **656+ functions** | **✅ Complete** |
+Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g 'test_*.py'` for the current file inventory and `uv run pytest src/tests/ --collect-only -q` for the current collected-test count.
 
 ## Test Execution Results
 
-### Latest Execution (2026-01-09)
+Do not treat old pass totals in documentation as authoritative. Re-run the command of record for current pass/skip/fail counts:
 
-- **Test Suite**: Comprehensive mode
-- **Execution Mode**: Parallel (10 workers)
-- **Test Categories**: 24 categories executed
-- **Status**: 516/1,522+ tests passed with SUCCESS
-- **Infrastructure**: ✅ Working correctly
-
-### Test Infrastructure Status
-
-- ✅ **ModularTestRunner**: Category-based execution working
-- ✅ **Parallel Execution**: 10 workers active
-- ✅ **Resource Monitoring**: Memory and CPU tracking active
-- ✅ **Timeout Handling**: Per-category timeouts configured
-- ✅ **Error Recovery**: Comprehensive error handling active
-- ✅ **Test Discovery**: All 91 test files discovered correctly
+```bash
+uv run pytest src/tests/ -q --tb=no \
+  --ignore=src/tests/test_llm_ollama.py \
+  --ignore=src/tests/test_llm_ollama_integration.py
+```
 
 ## Future Enhancements
 

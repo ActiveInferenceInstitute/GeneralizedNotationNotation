@@ -189,9 +189,11 @@ graph TD
   --tb=no --ignore=src/tests/test_llm_ollama.py
   --ignore=src/tests/test_llm_ollama_integration.py`. Re-include the two Ollama files
   when `ollama` is installed and reachable.
-- **Latest validation (2026-05-12)**: 2,200 passed, 70 skipped, 0 failed (504.66s).
-  All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
-  100% module documentation coverage (AGENTS.md, README.md, SPEC.md in all 31 directories).
+- **Current test inventory (2026-05-13)**: 166 `test_*.py` files under `src/tests/`;
+  the command-of-record collect pass with Ollama integration tests ignored collected 2,271 tests.
+  Use current full-suite output for pass/skip counts.
+- All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
+- Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
 
 Per-step timings, tool counts, and pass totals live in `output/` and
 `src/tests/TEST_SUITE_SUMMARY.md` — treat those artifacts as the source of truth rather

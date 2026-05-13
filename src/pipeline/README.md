@@ -351,7 +351,7 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 9. **8_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
 10. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots
 11. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
-12. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl simulation environments
+12. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl, JAX, PyTorch, NumPyro, DisCoPy, bnlearn, and Stan-supported render paths
 13. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
 14. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
 15. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training

@@ -191,7 +191,8 @@ output/
 ├── 22_gui_output/
 ├── 23_report_output/
 ├── 24_intelligent_analysis_output/
-└── pipeline_execution_summary.json
+└── 00_pipeline_summary/
+    └── pipeline_execution_summary.json
 ```
 
 ### Running the pipeline

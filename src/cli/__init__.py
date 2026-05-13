@@ -31,6 +31,7 @@ import argparse
 import json
 import logging
 import os
+import shutil
 import sys
 import tempfile
 from pathlib import Path
@@ -71,7 +72,17 @@ def main(argv: Optional[List[str]] = None) -> int:
     render_p = subparsers.add_parser("render", help="Render a GNN file to framework code")
     render_p.add_argument("file", type=Path, help="GNN file to render")
     render_p.add_argument("--framework", "-f", default="pymdp",
-                          choices=["pymdp", "rxinfer", "jax", "numpyro", "stan", "pytorch"],
+                          choices=[
+                              "pymdp",
+                              "rxinfer",
+                              "activeinference_jl",
+                              "jax",
+                              "numpyro",
+                              "stan",
+                              "pytorch",
+                              "discopy",
+                              "bnlearn",
+                          ],
                           help="Target framework")
     render_p.add_argument("--output", "-o", type=Path, help="Output file path")
 
@@ -270,10 +281,93 @@ def _cmd_parse(args):
 
 def _cmd_render(args):
     """Render a GNN file to framework code."""
-    print(f"Rendering {args.file} → {args.framework}")
-    print("(Render via CLI delegates to src/render/processor.py)")
-    # Placeholder — full implementation would import render.processor
-    return 0
+    if not args.file.exists():
+        logger.error(f"File not found: {args.file}")
+        return 1
+
+    from render import process_render
+
+    framework = str(args.framework)
+    with tempfile.TemporaryDirectory(prefix="gnn-render-") as td:
+        tmp_root = Path(td)
+        input_dir = tmp_root / "input"
+        input_dir.mkdir()
+        shutil.copy2(args.file, input_dir / args.file.name)
+
+        render_dir = (
+            tmp_root / "render_output"
+            if args.output
+            else Path("output") / "11_render_output" / args.file.stem
+        )
+        ok = process_render(
+            target_dir=input_dir,
+            output_dir=render_dir,
+            verbose=getattr(args, "verbose", False),
+            frameworks=[framework],
+            strict_validation=False,
+            strict_framework_success=True,
+        )
+
+        if ok not in (True, 0):
+            logger.error(f"Render failed for {args.file} using framework {framework}")
+            return 1
+
+        if not args.output:
+            print(f"Rendered {args.file} → {framework}: {render_dir}")
+            return 0
+
+        artifact = _find_render_artifact(render_dir, framework)
+        if artifact is None:
+            logger.error(f"Render completed but no {framework} artifact was found in {render_dir}")
+            return 1
+
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(artifact, args.output)
+        print(f"Rendered {args.file} → {framework}: {args.output}")
+        return 0
+
+
+def _find_render_artifact(render_dir: Path, framework: str) -> Path | None:
+    """Find the primary artifact for a single-framework render invocation."""
+    suffixes = {
+        "pymdp": {".py"},
+        "jax": {".py"},
+        "numpyro": {".py"},
+        "pytorch": {".py"},
+        "discopy": {".py"},
+        "bnlearn": {".py"},
+        "rxinfer": {".jl", ".toml"},
+        "activeinference_jl": {".jl"},
+        "stan": {".stan"},
+    }.get(framework, set())
+
+    def is_candidate(path: Path) -> bool:
+        return path.is_file() and (
+            not suffixes or path.suffix in suffixes
+        ) and path.name not in {"README.md", "processing_summary.json", "render_processing_summary.json"}
+
+    summary_path = render_dir / "render_processing_summary.json"
+    if summary_path.exists():
+        try:
+            summary = json.loads(summary_path.read_text(encoding="utf-8"))
+            for result in summary.get("file_results", {}).values():
+                framework_result = result.get("framework_results", {}).get(framework)
+                if framework_result:
+                    for item in framework_result.get("output_files", []):
+                        candidate = Path(item)
+                        if candidate.exists() and is_candidate(candidate):
+                            return candidate
+                for item in result.get("generated_files", []):
+                    candidate = Path(item)
+                    if candidate.exists() and framework in str(candidate) and is_candidate(candidate):
+                        return candidate
+        except (json.JSONDecodeError, OSError, TypeError):
+            logger.debug("Could not parse render summary at %s", summary_path)
+
+    candidates = sorted(
+        p for p in render_dir.rglob("*") if framework in str(p.parent) and is_candidate(p)
+    )
+    return candidates[0] if candidates else None
 
 
 def _cmd_report(args):
@@ -433,4 +527,3 @@ def get_module_info() -> dict:
         "description": "Unified command-line interface with subcommands",
         "features": FEATURES,
     }
-

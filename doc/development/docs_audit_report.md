@@ -8,7 +8,7 @@ None found (scoped scan).
 
 ## Suspicious markdown anchors (optional --check-anchors)
 
-Not run (pass `--check-anchors` to validate `#fragments` against heading slugs).
+None found.
 
 ## AGENTS.md referencing sibling SPEC.md
 

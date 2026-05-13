@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-05-08
+**Last Updated**: 2026-05-13
 
 <div align="center">
 
@@ -48,10 +48,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-05-08  
+**Last Updated**: 2026-05-13  
 **Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite (latest local `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`)**: 2,200 passed, 70 skipped (2026-05-08). Pipeline completely Zero-Mock compliant.
+**Test Suite Inventory (measured 2026-05-13)**: 166 `test_*.py` files under `src/tests/`; `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` collected 2,271 tests. Use a current full run for pass/skip counts.
 **Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, Autonomous Execution Recovery Heuristics, Fallback Circuit Breakers, NumPyro/Stan Renderers, PyMDP Scaling Study, MCP Full Module Exposure (131 tools).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -94,12 +94,12 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 31 modules
+├── 📁 src/                    # 25-step pipeline + 33 top-level source/doc dirs
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # ~450 Markdown files under doc/ (plus assets; see doc/README.md)
+├── 📁 doc/                    # 612 Markdown files under doc/ (plus assets; see doc/README.md)
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
