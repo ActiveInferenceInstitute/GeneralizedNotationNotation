@@ -23,8 +23,7 @@ from pathlib import Path
 
 import psutil
 
-# Import test utilities
-from tests import performance_tracker
+from utils.test_utils import performance_tracker
 
 # Test markers
 pytestmark = [pytest.mark.performance]
