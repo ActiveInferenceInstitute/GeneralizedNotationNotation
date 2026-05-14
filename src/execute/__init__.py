@@ -42,6 +42,7 @@ from .executor import (
     execute_script_safely,
     run_simulation,
 )
+from .processor import process_execute
 from .pymdp import (
     PyMDPSimulation,
     execute_pymdp_simulation,
@@ -58,7 +59,6 @@ from .validator import (
     log_validation_results,
     validate_execution_environment,
 )
-from .processor import process_execute
 
 # ``execute_simulation_from_gnn`` is the canonical name exported from the
 # processor (if defined there) or the executor — checked in that order.

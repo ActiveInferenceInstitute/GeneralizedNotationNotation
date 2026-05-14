@@ -97,7 +97,6 @@ def build_pytest_command(
     verbose: bool = False,
     generate_coverage: bool = True,
     fast_only: bool = False,
-    include_slow: bool = False
 ) -> List[str]:
     """
     Build pytest command with appropriate options.
@@ -114,7 +113,6 @@ def build_pytest_command(
         verbose: Enable verbose output (default: False)
         generate_coverage: Generate coverage reports (default: True)
         fast_only: Run only fast tests, exclude slow tests (default: False)
-        include_slow: Include slow tests (default: False)
     
     Returns:
         List of command arguments for subprocess.run()
@@ -247,7 +245,7 @@ def parse_test_statistics(pytest_output: str) -> Dict[str, int]:
     """Parse pytest output to extract test statistics.
 
     Returns keys used by pipeline reporting and modular runner: ``total``, ``passed``,
-    ``failed``, ``skipped``, ``errors``. Legacy ``tests_*`` keys are included for
+    ``failed``, ``skipped``, ``errors``. Additional ``tests_*`` keys are included for
     callers that still expect them.
     """
     passed = failed = skipped = errors = total = 0
@@ -359,7 +357,7 @@ def parse_coverage_statistics(
         return {"error": str(e)}
 
 
-# Backward-compatible aliases (underscore-prefixed versions)
+# Underscore-prefixed exports used by test runner internals.
 _extract_collection_errors = extract_collection_errors
 _parse_test_statistics = parse_test_statistics
 _parse_coverage_statistics = parse_coverage_statistics

@@ -2,7 +2,7 @@
 """
 Regression tests for pymdp 1.0.0 (JAX-first) as used by this repository.
 
-These tests call the **installed** ``inferactively-pymdp`` wheel, not mocks.
+These tests call the installed ``inferactively-pymdp`` wheel directly.
 They lock the exact API surface that ``execute/pymdp/simple_simulation`` and
 ``execute/pymdp/pymdp_simulation`` depend on:
 
@@ -52,7 +52,7 @@ def _require_pymdp_1_0_0() -> Tuple[Any, Any, Any, Any, str]:
 
     if not hasattr(Agent, "update_empirical_prior"):
         pytest.skip(
-            "installed inferactively-pymdp is <1.0.0 (legacy NumPy API) — "
+            "installed inferactively-pymdp is <1.0.0 and lacks the required JAX API; "
             "upgrade with `uv pip install --upgrade 'inferactively-pymdp>=1.0.0'`"
         )
 
@@ -222,15 +222,3 @@ def test_control_and_inference_submodules_importable() -> None:
     import pymdp.control  # noqa: F401
     import pymdp.inference  # noqa: F401
 
-
-def test_pymdp_legacy_namespace_still_shipped() -> None:
-    """
-    pymdp 1.0.0 ships a ``pymdp.legacy`` namespace holding the 0.x NumPy API
-    for migration. This repository does not consume it, but we assert it is
-    importable so the migration doc stays accurate.
-    """
-    _require_pymdp_1_0_0()
-    try:
-        import pymdp.legacy  # noqa: F401
-    except ImportError:
-        pytest.skip("pymdp.legacy not shipped in this build")

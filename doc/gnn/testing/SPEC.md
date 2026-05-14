@@ -6,7 +6,7 @@ Complements `src/tests/` which holds the actual test suite.
 
 ## Coverage Gates
 - Minimum coverage: **40%** (gate fails below 31%)
-- Zero-mock policy: **no `MagicMock`, no `assert True`** — tests use real
+- Real-implementation policy: tests use real
   dependencies or skip-with-guard when deps are unavailable
 - Test naming: `src/tests/test_{module}_*.py`
 - Baseline at v1.6.0: 2,000+ passing, ≤85 skipped, 0 failures
@@ -25,8 +25,8 @@ Complements `src/tests/` which holds the actual test suite.
 ```bash
 uv sync --extra dev
 uv run pytest src/tests/ -q --tb=no \
-  --ignore=src/tests/test_llm_ollama.py \
-  --ignore=src/tests/test_llm_ollama_integration.py
+  --ignore=src/tests/llm/test_llm_ollama.py \
+  --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
 ## Status

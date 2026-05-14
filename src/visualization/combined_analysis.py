@@ -1,6 +1,6 @@
-"""Shim: combined analysis lives in visualization.analysis."""
+"""Facade: combined analysis lives in visualization.analysis."""
 
-from visualization.analysis import (
+from .analysis import (
     generate_combined_analysis,
     generate_combined_visualizations,
 )

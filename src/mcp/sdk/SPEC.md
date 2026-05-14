@@ -1,10 +1,10 @@
-# MCP SDK Shim — Technical Specification
+# MCP SDK Facade — Technical Specification
 
 **Version**: 1.6.0
 
 ## Purpose
 
-Compatibility shim for `MCPSDKStatus` health check. No independent logic.
+Delegation facade for `MCPSDKStatus` health check. No independent logic.
 
 ## Delegation Pattern
 

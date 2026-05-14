@@ -7,14 +7,14 @@ import logging
 from pathlib import Path
 from typing import Any, Dict
 
-from visualization.parse.markdown import parse_gnn_content
+from ..parse.markdown import parse_gnn_content
 
 logger = logging.getLogger(__name__)
 
 
 def resolve_gnn_step3_output_dir(results_dir: Path) -> Path:
     """Directory where step 3 writes `{model}/{model}_parsed.json`."""
-    from pipeline.config import get_output_dir_for_script
+    from src.pipeline.config import get_output_dir_for_script
 
     parent = results_dir.parent if results_dir.name.endswith("_output") else results_dir
     return Path(get_output_dir_for_script("3_gnn.py", parent))

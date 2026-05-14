@@ -10,6 +10,7 @@ import logging
 import sys
 from contextlib import contextmanager
 from pathlib import Path
+from typing import Any
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent.parent
@@ -132,9 +133,9 @@ DiscreteTime: True
 ModelTimeHorizon: 50
 """
 
-def demo_backward_compatibility() -> None:
-    """Demonstrate that existing code still works with enhanced system."""
-    print("Testing Backward Compatibility...")
+def demo_convenience_functions() -> None:
+    """Demonstrate the public convenience functions."""
+    print("Testing Convenience Functions...")
 
     with _demo_section("Testing convenience functions"):
         summary = summarize_gnn(SAMPLE_GNN_CONTENT, max_length=200)
@@ -231,8 +232,8 @@ def demo_error_handling() -> None:
         print(f"Result with no keys: {result[:100]}...")
 
     with _demo_section("Testing recovery"):
-        legacy_ops = LLMOperations()
-        result = legacy_ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
+        ops = LLMOperations()
+        result = ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result: {result[:100]}...")
 
 def main() -> None:
@@ -241,7 +242,7 @@ def main() -> None:
     print("=" * 50)
 
     # Run all demonstration scenarios
-    demo_backward_compatibility()
+    demo_convenience_functions()
     demo_enhanced_capabilities()
     demo_processor_modes()
     demo_real_world_usage()
@@ -251,7 +252,7 @@ def main() -> None:
     print("✅ Demonstration completed!")
     print("\nKey improvements:")
     print("• Multi-provider support (OpenAI, OpenRouter, Perplexity)")
-    print("• Backward compatibility with existing code")
+    print("• Public convenience functions for common analysis tasks")
     print("• Enhanced analysis capabilities (enhancement, validation)")
     print("• Robust error handling and recovery mechanisms")
     print("• Async support with sync wrappers")

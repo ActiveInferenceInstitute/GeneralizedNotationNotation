@@ -1,9 +1,14 @@
 """Tests for the ``sapf`` top-level re-export package.
 
-Phase 6: the shim was simplified to unconditionally delegate to
+Phase 6: the public entry point was simplified to unconditionally delegate to
 ``audio.sapf``. FEATURES and get_module_info now pass through the real
 module's shape directly — these tests verify the delegation is wired up.
 """
+
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 import sapf
 
@@ -25,7 +30,7 @@ def test_sapf_metadata() -> None:
 
 
 def test_sapf_exported_functions() -> None:
-    """The shim re-exports every public function from audio.sapf."""
+    """The public entry point re-exports every public function from audio.sapf."""
     expected_funcs = [
         "convert_gnn_to_sapf",
         "generate_sapf_audio",
@@ -52,8 +57,8 @@ def test_sapf_get_module_info() -> None:
 
 
 def test_sapf_delegates_to_audio_sapf_for_metadata() -> None:
-    """Phase 6: verify the shim keeps a live reference to audio.sapf rather
+    """Phase 6: verify the public entry point keeps a live reference to audio.sapf rather
     than maintaining its own duplicate metadata."""
     from audio import sapf as audio_sapf_direct
-    # The shim's FEATURES must be the same object as audio.sapf's.
+    # The exported FEATURES must be the same object as audio.sapf's.
     assert sapf.FEATURES is audio_sapf_direct.FEATURES

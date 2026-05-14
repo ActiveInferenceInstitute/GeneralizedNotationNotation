@@ -125,11 +125,10 @@ class PipelineArguments:
 
     # Test options (fast pipeline suite is default for step 2 subprocess)
     fast_only: bool = True
-    include_slow: bool = False
     include_performance: bool = False
     comprehensive: bool = False
 
-    # Convenience: maps to merging 13 into skip_steps
+    # Skip LLM-powered processing where supported.
     skip_llm: bool = False
 
     # Step 1: uv sync --all-extras (optional heavy install)
@@ -175,12 +174,12 @@ class PipelineArguments:
         """Validate argument values and return list of errors."""
         errors = []
 
-        # Check that target directory exists if not a special placeholder
+        # Check that target directory exists when it is a real filesystem path.
         if not str(self.target_dir).startswith("<"):
             if not self.target_dir.exists():
                 errors.append(f"Target directory does not exist: {self.target_dir}")
 
-        # Check that ontology terms file exists if specified and not placeholder
+        # Check that ontology terms file exists when specified as a real path.
         if (self.ontology_terms_file and
             not str(self.ontology_terms_file).startswith("<") and
             not self.ontology_terms_file.exists()):
@@ -283,7 +282,7 @@ class ArgumentParser:
         'skip_llm': ArgumentDefinition(
             flag='--skip-llm',
             action='store_true',
-            help_text='Skip LLM processing step (alias for --skip-steps 13)',
+            help_text='Skip LLM-powered processing where supported',
         ),
         'strict': ArgumentDefinition(
             flag='--strict',
@@ -448,11 +447,6 @@ class ArgumentParser:
             use_suppress=True,
             help_text='Run only fast tests, skip slow and performance tests'
         ),
-        'include_slow': ArgumentDefinition(
-            flag='--include-slow',
-            action='store_true',
-            help_text='Include slow test categories'
-        ),
         'include_performance': ArgumentDefinition(
             flag='--include-performance',
             action='store_true',
@@ -507,7 +501,7 @@ class ArgumentParser:
             "setup_core_only",
             "install_optional",
         ],
-        "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_slow", "include_performance", "comprehensive"],
+        "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_performance", "comprehensive"],
         "3_gnn.py": [
             "target_dir",
             "output_dir",
@@ -558,7 +552,7 @@ class ArgumentParser:
         ],
         "22_gui.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "24_intelligent_analysis.py": ["target_dir", "output_dir", "verbose"],
+        "24_intelligent_analysis.py": ["target_dir", "output_dir", "verbose", "skip_llm"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys()),
     })
 
@@ -761,11 +755,10 @@ class StepConfiguration:
                 "output_dir",
                 "verbose",
                 "fast_only",
-                "include_slow",
                 "include_performance",
                 "comprehensive"
             ],
-            "defaults": {"verbose": False, "fast_only": True, "include_slow": False, "include_performance": False, "comprehensive": False},
+            "defaults": {"verbose": False, "fast_only": True, "include_performance": False, "comprehensive": False},
             "description": "Test Execution & Validation"
         },
         "3_gnn": {
@@ -917,7 +910,7 @@ class StepConfiguration:
         },
         "24_intelligent_analysis": {
             "required_args": ["target_dir", "output_dir"],
-            "optional_args": ["verbose"],
+            "optional_args": ["verbose", "skip_llm"],
             "defaults": {"verbose": False},
             "description": "AI-powered Pipeline Analysis and Optimization Recommendations"
         }
@@ -1411,7 +1404,7 @@ def validate_and_convert_paths(args: PipelineArguments, logger: logging.Logger):
                 if arg_name in ['output_dir', 'target_dir']:
                     msg = f"Critical path argument --{arg_name.replace('_', '-')} could not be converted to Path."
                     logger.critical(msg)
-                    raise ValueError(msg)
+                    raise ValueError(msg) from e
         elif arg_value is None and arg_name in ['output_dir', 'target_dir']:
              msg = (
                 f"Critical path argument --{arg_name.replace('_', '-')} is None after parsing. "

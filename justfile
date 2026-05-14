@@ -19,8 +19,8 @@ test:
 # Run full test suite (with Ollama ignores)
 test-full:
     uv run pytest src/tests/ -q --tb=no \
-        --ignore=src/tests/test_llm_ollama.py \
-        --ignore=src/tests/test_llm_ollama_integration.py
+        --ignore=src/tests/llm/test_llm_ollama.py \
+        --ignore=src/tests/llm/test_llm_ollama_integration.py
 
 # Run tests for a specific module (e.g., just test-mod render)
 test-mod MODULE:
@@ -29,8 +29,8 @@ test-mod MODULE:
 # Run tests with coverage report
 test-cov:
     uv run pytest src/tests/ --cov=src --cov-report=term-missing \
-        --ignore=src/tests/test_llm_ollama.py \
-        --ignore=src/tests/test_llm_ollama_integration.py
+        --ignore=src/tests/llm/test_llm_ollama.py \
+        --ignore=src/tests/llm/test_llm_ollama_integration.py
 
 # ─────────────────────────────────────────────
 # Linting & Formatting
@@ -97,9 +97,13 @@ render-exec FRAMEWORKS:
 # Documentation & Audit
 # ─────────────────────────────────────────────
 
-# Run documentation audit
+# Run documentation audit without mutating reports
 audit:
-    uv run python doc/development/docs_audit.py
+    uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
+
+# Run maintained-tree terminology audit
+terminology:
+    uv run python scripts/check_repo_terminology.py --strict
 
 # Count test files and items
 test-count:

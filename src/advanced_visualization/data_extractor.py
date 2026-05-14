@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 # Import the GNN parsing system
-from gnn.parsers import GNNFormat, GNNParsingSystem
+from src.gnn.parsers import GNNFormat, GNNParsingSystem
 
 logger = logging.getLogger(__name__)
 

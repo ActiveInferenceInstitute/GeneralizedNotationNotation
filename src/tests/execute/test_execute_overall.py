@@ -15,7 +15,7 @@ Test Coverage:
 - Full processing flow (test_process_execution_flow)
 - Executor initialization (test_executor_initialization)
 
-No mocking is used - all tests validate real function execution.
+All tests validate real function execution.
 
 Rendered Python/Julia script **filenames** must not contain the substring ``test_``, or
 ``find_executable_scripts`` skips them as test helpers (use names like ``fixture_model_pymdp.py``).
@@ -528,7 +528,7 @@ print(json.dumps({"status": "ok"}))
         detail = json.loads(detail_path.read_text(encoding="utf-8"))
         assert slim.get("execution_summary_format") == "slim_v1"
         assert slim.get("execution_summary_detail") is True
-        assert detail.get("execution_summary_format") == "detail_legacy_v1"
+        assert detail.get("execution_summary_format") == "detail_v1"
         assert detail.get("execution_details")
         assert isinstance(detail["execution_details"][0].get("stdout"), str)
 
@@ -538,7 +538,7 @@ class TestJAXExecute:
     
     These tests verify that the execute module correctly discovers,
     identifies, and runs JAX scripts. All tests use real execution
-    functions with actual scripts — no mocking.
+    functions with actual scripts.
     """
 
     @pytest.fixture

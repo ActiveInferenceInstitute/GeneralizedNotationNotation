@@ -172,12 +172,12 @@ def _require_pymdp_1():
             "pymdp 1.0.0 (JAX-first) is required. Install with:\n"
             "    uv pip install 'inferactively-pymdp>=1.0.0'\n"
             f"(original error: {e})"
-        )
+        ) from e
 
     # pymdp 1.0.0 has Agent.update_empirical_prior; 0.x does not.
     if not hasattr(Agent, "update_empirical_prior"):
         raise ImportError(
-            "Detected legacy pymdp (<1.0.0). This module requires pymdp 1.0.0. "
+            "Detected unsupported pymdp (<1.0.0). This module requires pymdp 1.0.0. "
             "Upgrade with: uv pip install --upgrade 'inferactively-pymdp>=1.0.0'"
         )
     return Agent, pymdp_utils, jnp, jr
@@ -276,7 +276,7 @@ def run_simple_pymdp_simulation(
     Returns
     -------
     (success, results) : (bool, dict)
-        On success, ``results`` matches the legacy schema consumed by
+        On success, ``results`` matches the schema consumed by
         ``src/analysis/pymdp/framework_extractors``:
         keys include ``observations``, ``actions``, ``beliefs``,
         ``true_states``, ``simulation_trace``, ``validation``, ``metrics``,

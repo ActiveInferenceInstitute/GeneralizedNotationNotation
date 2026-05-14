@@ -108,9 +108,8 @@ def list_capabilities(args):
             for category, category_tools in tools_by_category.items():
                 logger.info(f"\n  📂 {category} ({len(category_tools)} tools):")
                 for tool in sorted(category_tools, key=lambda t: t['name']):
-                    deprecated = " ⚠️ DEPRECATED" if tool.get('deprecated') else ""
                     experimental = " 🧪 EXPERIMENTAL" if tool.get('experimental') else ""
-                    logger.info(f"    • {tool['name']}{deprecated}{experimental}")
+                    logger.info(f"    • {tool['name']}{experimental}")
                     if args.verbose:
                         logger.info(f"      Description: {tool.get('description', 'No description')}")
                         logger.info(f"      Module: {tool.get('module', 'Unknown')}")
@@ -299,7 +298,6 @@ def get_tool_info(args):
                 "module": tool_info.module,
                 "category": tool_info.category,
                 "version": tool_info.version,
-                "deprecated": tool_info.deprecated,
                 "experimental": tool_info.experimental,
             }
 
@@ -330,8 +328,6 @@ def get_tool_info(args):
             logger.info(f"  Rate Limit: {detailed_info.get('rate_limit', 'None')} req/s")
             logger.info(f"  Cache TTL: {detailed_info.get('cache_ttl', 'None')}s")
 
-            if detailed_info.get('deprecated'):
-                logger.info("\n⚠️  Status: DEPRECATED")
             if detailed_info.get('experimental'):
                 logger.info("\n🧪 Status: EXPERIMENTAL")
 

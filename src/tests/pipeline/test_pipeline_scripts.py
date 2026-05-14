@@ -13,7 +13,7 @@ to ensure 100% functionality and coverage. Each test validates:
 7. Integration with pipeline infrastructure
 
 All tests execute real scripts via subprocess with isolated temp directories
-and assert on real artifacts. No mocking is used.
+and assert on real artifacts.
 """
 import logging
 import re
@@ -23,7 +23,9 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Any
+
 import pytest
+
 pytestmark = [pytest.mark.pipeline]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / 'src'
@@ -251,7 +253,10 @@ class TestStep6VisualizationComprehensive:
     @pytest.mark.unit
     def test_step6_visualization_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """generate_graph_visualization + generate_matrix_visualization return bools."""
-        from src.visualization import generate_graph_visualization, generate_matrix_visualization
+        from src.visualization import (
+            generate_graph_visualization,
+            generate_matrix_visualization,
+        )
         graph_ok = generate_graph_visualization(
             {'nodes': [], 'edges': []}, str(isolated_temp_dir / 'graph.png'),
         )
@@ -288,7 +293,7 @@ class TestStep8OntologyComprehensive:
         terms = load_defined_ontology_terms()
         assert isinstance(terms, dict), 'load_defined_ontology_terms should return a dict'
         assert len(terms) > 0, 'Active Inference ontology must ship with terms'
-        # Parsing a stub annotation section returns the structured dict.
+        # Parsing an annotation section returns the structured dict.
         parsed = parse_gnn_ontology_section('## ActInfOntologyAnnotation\ns=HiddenState\n')
         assert isinstance(parsed, dict)
 
@@ -359,7 +364,10 @@ class TestStep15AudioComprehensive:
     def test_step15_audio_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test SAPF audio generation."""
         try:
-            from src.audio.sapf.audio_generators import SyntheticAudioGenerator, generate_oscillator_audio
+            from src.audio.sapf.audio_generators import (
+                SyntheticAudioGenerator,
+                generate_oscillator_audio,
+            )
             audio_data = generate_oscillator_audio(440.0, 0.5, 1.0)
             assert len(audio_data) > 0
             generator = SyntheticAudioGenerator()

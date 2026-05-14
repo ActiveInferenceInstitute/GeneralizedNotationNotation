@@ -84,7 +84,7 @@ class PipelineScriptValidator:
                     script_found = True
 
             if not script_found:
-                # Create a placeholder result for missing script
+                # Create an explicit missing-script result.
                 results[f"{i}_missing.py"] = ScriptValidationResult(
                     script_name=f"{i}_missing.py",
                     script_path=self.src_dir / f"{i}_missing.py",
@@ -457,9 +457,7 @@ class PipelineScriptValidator:
                         if len(parts) >= 2:
                             function_name = parts[1]
                             module_name = issue.message.split(" in ")[-1] if " in " in issue.message else "unknown"
-                            script_fixes.append(
-                                f"Add function placeholder: def {function_name}(*args, **kwargs): pass"
-                            )
+                            script_fixes.append(f"Implement required function: {function_name}")
 
                 if script_fixes:
                     fixes[script_name] = script_fixes

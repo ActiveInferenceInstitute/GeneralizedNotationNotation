@@ -3,7 +3,7 @@
 Real pymdp 1.0.0 (JAX-first) execution tests for the GNN pipeline.
 
 This module exercises the actual installed ``inferactively-pymdp`` wheel with
-no mocks. Tests skip cleanly if pymdp is not installed or if the installed
+Tests skip cleanly if pymdp is not installed or if the installed
 wheel predates 1.0.0.
 
 Upstream: https://github.com/infer-actively/pymdp

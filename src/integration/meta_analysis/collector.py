@@ -255,8 +255,8 @@ class SweepDataCollector:
     ) -> None:
         """Walk the output tree for *simulation_results.json files.
 
-        Matches both the legacy exact name ``simulation_results.json`` and the
-        newer prefixed variant ``<ModelName>_simulation_results.json`` that the
+        Matches both the exact name ``simulation_results.json`` and the
+        prefixed variant ``<ModelName>_simulation_results.json`` that the
         execute step may produce when multiple results coexist.
         """
         for sim_file in self.execute_output_dir.rglob("*simulation_results.json"):

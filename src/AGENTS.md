@@ -69,7 +69,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 - **[api/](api/AGENTS.md)** - REST API server (FastAPI)
 - **[cli/](cli/AGENTS.md)** - CLI entry point
 - **[lsp/](lsp/AGENTS.md)** - Language Server Protocol support
-- **[sapf/](sapf/AGENTS.md)** - SAPF compatibility shim (re-exports from `audio/sapf/`)
+- **[sapf/](sapf/AGENTS.md)** - SAPF public entry point (re-exports from `audio/sapf/`)
 - **[doc/](doc/AGENTS.md)** - In-repo technical documentation subtree (`src/doc/`)
 
 ---
@@ -186,18 +186,18 @@ graph TD
 - **MCP registration**: `discover_modules` walks `src/*/mcp.py` on startup; see
   `src/mcp/processor.py` for the worker pool configuration.
 - **Tests command of record**: `uv sync --extra dev && uv run pytest src/tests/ -q
-  --tb=no --ignore=src/tests/test_llm_ollama.py
-  --ignore=src/tests/test_llm_ollama_integration.py`. Re-include the two Ollama files
+  --tb=no --ignore=src/tests/llm/test_llm_ollama.py
+  --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
   when `ollama` is installed and reachable.
 - **Current test inventory (2026-05-13)**: 166 `test_*.py` files under `src/tests/`;
-  the command-of-record collect pass with Ollama integration tests ignored collected 2,271 tests.
-  Use current full-suite output for pass/skip counts.
+  the command-of-record collect pass with Ollama integration tests ignored collected 2,245 tests.
+  Latest measured full-suite output: 2,176 passed, 68 skipped, 1 xpassed in 694.24s.
 - All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
 - Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
 
-Per-step timings, tool counts, and pass totals live in `output/` and
-`src/tests/TEST_SUITE_SUMMARY.md` — treat those artifacts as the source of truth rather
-than numbers quoted in documentation.
+Per-step timings and tool counts are generated under `output/`; current test inventory
+lives in `src/tests/TEST_SUITE_SUMMARY.md`. Regenerate pipeline artifacts locally when
+you need fresh run evidence rather than committing them as maintained documentation.
 
 ---
 

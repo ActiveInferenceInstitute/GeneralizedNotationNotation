@@ -7,14 +7,22 @@ import logging
 import tempfile
 from pathlib import Path
 from typing import Any
+
 import pytest
+
 
 class TestStepLogging:
     """Tests for step_logging module."""
 
     def test_step_logging_imports(self) -> None:
         """Test that step_logging module imports correctly."""
-        from utils.logging.logging_utils import log_step_error, log_step_start, log_step_success, log_step_warning, setup_step_logging
+        from utils.logging.logging_utils import (
+            log_step_error,
+            log_step_start,
+            log_step_success,
+            log_step_warning,
+            setup_step_logging,
+        )
         assert callable(log_step_start)
         assert callable(log_step_success)
         assert callable(log_step_warning)
@@ -36,7 +44,13 @@ class TestStepLogging:
 
     def test_log_step_functions_no_exception(self) -> None:
         """Test that log functions don't raise exceptions."""
-        from utils.logging.logging_utils import log_step_error, log_step_start, log_step_success, log_step_warning, setup_step_logging
+        from utils.logging.logging_utils import (
+            log_step_error,
+            log_step_start,
+            log_step_success,
+            log_step_warning,
+            setup_step_logging,
+        )
         logger = setup_step_logging('test_funcs')
         log_step_start(logger, 'Starting test')
         log_step_success(logger, 'Success message')
@@ -48,7 +62,11 @@ class TestBaseProcessor:
 
     def test_base_processor_imports(self) -> None:
         """Test that base_processor module imports correctly."""
-        from utils.base_processor import BaseProcessor, ProcessingResult, create_processor
+        from utils.base_processor import (
+            BaseProcessor,
+            ProcessingResult,
+            create_processor,
+        )
         assert BaseProcessor is not None
         assert ProcessingResult is not None
         assert callable(create_processor)
@@ -76,6 +94,7 @@ class TestBaseProcessor:
     def test_processing_result_save_to_json(self) -> None:
         """Test ProcessingResult save_to_json method."""
         import json
+
         from utils.base_processor import ProcessingResult
         result = ProcessingResult(success=True, files_processed=3)
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:

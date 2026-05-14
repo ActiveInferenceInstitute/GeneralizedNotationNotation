@@ -200,7 +200,7 @@ class TestPyMDPVisualizer:
         assert len(saved_files) > 0, "save_all_visualizations should create files"
 
 
-# Standalone test functions for backward compatibility
+# Standalone test functions
 def test_visualizer_creation():
     """Test PyMDP visualizer creation."""
     with tempfile.TemporaryDirectory() as temp_dir:

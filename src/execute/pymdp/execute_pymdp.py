@@ -2,12 +2,7 @@
 """
 Thin pipeline entry point for PyMDP simulations (pymdp 1.0.0 / JAX).
 
-This module used to contain a second, shadowed ``execute_pymdp_simulation``
-definition with a different signature from the one exported by
-``src/execute/pymdp/__init__.py`` (via ``executor.py``). That duplicate
-led to subtle bugs whenever a caller imported this file directly.
-
-It is now a small shim that re-exports the canonical entry points and
+This module re-exports the canonical PyMDP execution entry points and
 provides two convenience helpers that operate on GNN files and batches.
 The actual simulation work is done by ``simple_simulation`` + ``pymdp_simulation``,
 both of which call real pymdp 1.0.0.

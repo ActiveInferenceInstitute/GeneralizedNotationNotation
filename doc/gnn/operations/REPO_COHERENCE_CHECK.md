@@ -561,7 +561,7 @@ graph LR
 
 - [ ] **mcp.py Exists**: Module has `mcp.py` file (where applicable)
 - [ ] **Tool Registration**: Tools properly registered
-- [ ] **Tool Implementation**: Tools have real implementations (no placeholders)
+- [ ] **Tool Implementation**: Tools have real implementations
 - [ ] **Tool Documentation**: Tools documented in AGENTS.md
 
 #### MCP Integration Pattern
@@ -783,7 +783,7 @@ def test_processing():
 
 ### 5.2 Real Data Processing
 
-**Requirement**: Tests must use real, representative data - no synthetic or placeholder datasets.
+**Requirement**: Tests must use real, representative data.
 
 #### P5.2 Scalability validation checklist
 

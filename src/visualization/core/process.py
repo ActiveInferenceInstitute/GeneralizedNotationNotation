@@ -7,22 +7,23 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
-from advanced_visualization._shared import normalize_connection_format
-from utils.logging.logging_utils import (
+from src.advanced_visualization._shared import normalize_connection_format
+from src.utils.logging.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,
     log_step_warning,
 )
-from visualization.analysis.combined_analysis import (
+
+from ..analysis.combined_analysis import (
     generate_combined_analysis,
     generate_combined_visualizations,
 )
-from visualization.core.parsed_model import (
+from ..core.parsed_model import (
     load_visualization_model,
     write_stale_json_note_if_needed,
 )
-from visualization.graph import (
+from ..graph import (
     generate_network_visualizations,
     generate_variable_parameter_bipartite,
 )
@@ -110,7 +111,7 @@ def process_visualization(
 def process_single_gnn_file(
     gnn_file: Path, results_dir: Path, verbose: bool = False
 ) -> List[str]:
-    from visualization.matrix.visualizer import MatrixVisualizer
+    from ..matrix.visualizer import MatrixVisualizer
 
     with open(gnn_file, encoding="utf-8") as f:
         content = f.read()

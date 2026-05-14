@@ -181,7 +181,7 @@ def run_gnn_round_trip_tests(
         logger: Logger instance.
         reference_file: Optional path to a single reference file to test.
         test_subset: Optional list of format names to test (e.g. ["json", "yaml"]).
-        enable_parallel: Placeholder — parallel execution not yet implemented.
+        enable_parallel: Reserved for future parallel execution support.
         **kwargs: Additional options (forwarded where applicable).
 
     Returns:

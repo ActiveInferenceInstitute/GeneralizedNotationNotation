@@ -130,7 +130,7 @@ Key coverage areas:
 - `test_type_checker_strict_mode_promotes_warnings` — same corpus with
   `--strict` exits non-zero when any warning is present.
 
-Per CLAUDE.md zero-mock policy, tests use real parsed GNN models from the
+Per CLAUDE.md real-implementation policy, tests use real parsed GNN models from the
 sample corpus rather than MagicMock fixtures.
 
 ## Troubleshooting

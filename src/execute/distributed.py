@@ -122,6 +122,3 @@ class Dispatcher:
         elif self.backend == "dask":
             futures = [self.client.submit(model_fn, **p) for p in param_grid]
             return self.client.gather(futures)
-
-# Backward compatibility alias
-RayDispatcher = Dispatcher

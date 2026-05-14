@@ -333,7 +333,7 @@ def process_integration(
 
         # Append meta-analysis summary
         if meta_analysis_results:
-            summary += f"\n## Meta-Analysis\n\n"
+            summary += "\n## Meta-Analysis\n\n"
             summary += f"- **Sweep Records**: {meta_analysis_results['records']}\n"
             summary += f"- **Visualizations**: {len(meta_analysis_results['plots'])}\n"
             summary += f"- **Report**: [{Path(meta_analysis_results['report']).name}]({meta_analysis_results['report']})\n"

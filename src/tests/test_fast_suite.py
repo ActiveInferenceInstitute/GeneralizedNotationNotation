@@ -8,15 +8,25 @@ provide basic validation of core components.
 Key Features:
 - Fast execution (< 30 seconds total)
 - Essential functionality coverage
-- Minimal mocking overhead
+- Minimal harness overhead
 - Focus on core pipeline components
 - Safe-to-fail design
 """
 import logging
 import sys
+
 import pytest
+
 pytestmark = [pytest.mark.fast]
-from . import PROJECT_ROOT, SRC_DIR, TEST_CONFIG, TEST_DIR, create_sample_gnn_content, is_safe_mode
+from . import (
+    PROJECT_ROOT,
+    SRC_DIR,
+    TEST_CONFIG,
+    TEST_DIR,
+    create_sample_gnn_content,
+    is_safe_mode,
+)
+
 
 class TestFastEnvironment:
     """Fast environment validation tests."""

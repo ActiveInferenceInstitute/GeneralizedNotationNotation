@@ -5,7 +5,9 @@ This file contains comprehensive tests for the LLM module functionality.
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestLLMModuleComprehensive:
@@ -121,6 +123,7 @@ def test_llm_module_completeness():
 def test_llm_module_performance():
     """Test LLM module performance characteristics."""
     import time
+
     from llm import LLMProcessor
     processor = LLMProcessor()
     start_time = time.time()

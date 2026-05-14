@@ -21,7 +21,7 @@ from execute.data_extractors import (
     normalize_and_deduplicate_paths,
 )
 
-# Backwards-compatible alias for the test body.
+# Public alias for the test body.
 _normalize_and_deduplicate_paths = normalize_and_deduplicate_paths
 
 
@@ -196,5 +196,4 @@ class TestPathCollectionDeduplication:
         copied_files = list(dest_dir.rglob("data.json"))
         # Should have at most one copy
         assert len(copied_files) <= 1
-
 

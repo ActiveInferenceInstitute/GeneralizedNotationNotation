@@ -298,7 +298,7 @@ def process_ml_integration(
             _train_models(all_features, ml_results, output_dir, verbose)
         elif not has_sklearn:
             logger.info("sklearn not available -- skipping ML training")
-            # Add per-file structural analysis entries (backward compatibility)
+            # Add per-file structural analysis entries.
             for feats in all_features:
                 ml_results["models_trained"].append({
                     "source": feats["file_name"],
@@ -312,7 +312,7 @@ def process_ml_integration(
                 })
         else:
             logger.info(f"Only {len(all_features)} files -- need >=2 for ML training")
-            # Add per-file structural analysis entries (backward compatibility)
+            # Add per-file structural analysis entries.
             for feats in all_features:
                 ml_results["models_trained"].append({
                     "source": feats["file_name"],

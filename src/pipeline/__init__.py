@@ -46,7 +46,7 @@ class PipelineOrchestrator:
         self,
         target_dir: str = "input/gnn_files",
         output_dir: str = "output",
-        steps: list[str] | str | None = None,
+        steps: list[str] | str | None = "all",
         verbose: bool = False,
     ):
         self.target_dir = target_dir

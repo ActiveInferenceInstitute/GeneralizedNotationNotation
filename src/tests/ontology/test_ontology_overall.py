@@ -5,7 +5,9 @@ This file contains comprehensive tests for the ontology module functionality.
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestOntologyModuleComprehensive:
@@ -119,6 +121,7 @@ def test_ontology_module_completeness():
 def test_ontology_module_performance():
     """Test ontology module performance characteristics."""
     import time
+
     from ontology import OntologyProcessor
     processor = OntologyProcessor()
     start_time = time.time()

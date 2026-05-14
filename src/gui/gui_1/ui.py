@@ -62,7 +62,6 @@ def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Lo
                     component_name = gr.Textbox(
                         label="Component name",
                         value="example_component",
-                        placeholder="Enter unique component name..."
                     )
                     component_type = gr.Dropdown(
                         ["observation", "hidden", "action", "policy"],
@@ -71,7 +70,6 @@ def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Lo
                     )
                     state_list = gr.Textbox(
                         label="States (comma-separated)",
-                        placeholder="s1, s2, s3..."
                     )
                     add_button = gr.Button("➕ Add Component", variant="primary")
                     replace_states_button = gr.Button("🔄 Replace States")
@@ -88,22 +86,18 @@ def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Lo
                     st_name = gr.Textbox(
                         label="Name",
                         value=init_name_val,
-                        placeholder="Enter state name..."
                     )
                     st_dims = gr.Textbox(
                         label="Dimensions (comma-separated)",
                         value=init_dims_val,
-                        placeholder="e.g., 3, 4, 2"
                     )
                     st_type = gr.Textbox(
                         label="Type (optional)",
                         value=init_type_val,
-                        placeholder="e.g., continuous, discrete"
                     )
                     st_comment = gr.Textbox(
                         label="Comment (optional)",
                         value=init_comment_val,
-                        placeholder="Description or notes..."
                     )
                     with gr.Row():
                         st_refresh = gr.Button("🔄 Refresh State List")
@@ -266,5 +260,4 @@ def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Lo
         st_comment.change(update_state_live, inputs=[markdown_editor, state_entries, st_name, st_dims, st_type, st_comment], outputs=[markdown_editor, state_entries])
 
     return demo
-
 

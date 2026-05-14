@@ -5,7 +5,9 @@ This file contains comprehensive tests for the website module functionality.
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestWebsiteModuleComprehensive:
@@ -122,6 +124,7 @@ def test_website_module_completeness():
 def test_website_module_performance():
     """Test website module performance characteristics."""
     import time
+
     from website import WebsiteGenerator
     generator = WebsiteGenerator()
     start_time = time.time()

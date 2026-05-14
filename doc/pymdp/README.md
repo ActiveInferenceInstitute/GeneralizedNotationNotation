@@ -6,10 +6,9 @@ This folder documents how this repository integrates
 [pymdp 1.0.0](https://github.com/infer-actively/pymdp) in the render/execute/
 analysis pipeline (Steps 11, 12, 16).
 
-pymdp 1.0.0 is the **JAX-first rewrite** of the library. The legacy NumPy API
-(`utils.obj_array`, `Agent.infer_states(obs)` with no `empirical_prior`, etc.)
-is only reachable through the `pymdp.legacy` namespace, which this repository
-does **not** consume.
+pymdp 1.0.0 is the **JAX-first rewrite** of the library. This repository
+uses the JAX-first API only (`Agent.infer_states(obs, empirical_prior=...)`,
+JAX arrays, and explicit PRNG keys).
 
 ## Start Here
 
@@ -67,15 +66,15 @@ upstream context only.
 
 ## Upstream Agent API regression tests
 
-- `src/tests/test_pymdp_1_0_0_upstream_api.py` — asserts the installed wheel's
+- `src/tests/execute/test_pymdp_1_0_0_upstream_api.py` — asserts the installed wheel's
   `Agent` / `utils` behaviour used by `execute/pymdp/simple_simulation.py`
-  (no mocks). Covers:
+  through direct package calls. Covers:
     - Metadata version ≥ 1.0.0
     - `Agent.update_empirical_prior` presence
     - Single-step `infer_states` → `infer_policies` → `sample_action`
     - `empirical_prior` carry-through via `update_empirical_prior`
     - Optional `E` habit vector matches policy count
-- `src/tests/test_pymdp_contracts.py` — exercises the full GNN
+- `src/tests/execute/test_pymdp_contracts.py` — exercises the full GNN
   render → execute → analysis path against real pymdp 1.0.0.
-- `src/tests/test_execute_pymdp_integration.py` — exercises the JAX-first
+- `src/tests/execute/test_execute_pymdp_integration.py` — exercises the JAX-first
   Agent directly and the pipeline's `run_simple_pymdp_simulation`.

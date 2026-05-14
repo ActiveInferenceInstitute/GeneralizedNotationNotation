@@ -104,6 +104,6 @@ The MCP server registers modules synchronously but reverts to background threads
 
 ## See Also
 
-- [mcp/tool_development_guide.md](../mcp/tool_development_guide.md) — No-placeholder policy, canonical mcp.py pattern
+- [mcp/tool_development_guide.md](../mcp/tool_development_guide.md) — Real-tool policy, canonical mcp.py pattern
 - [mcp/tool_reference.md](../mcp/tool_reference.md) — full DOMAIN_TOOLS list in table form
 - [testing/test_patterns.md](test_patterns.md) — general test patterns and fixtures

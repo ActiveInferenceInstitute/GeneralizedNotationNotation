@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for api (REST module).
 
-Zero-mock per CLAUDE.md: uses real FastAPI TestClient when available,
+Uses real FastAPI TestClient when available,
 skips cleanly when optional deps absent.
 """
 

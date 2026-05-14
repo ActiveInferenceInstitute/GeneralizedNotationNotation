@@ -8,7 +8,7 @@ This folder hosts the explicit, stateless developer workflow validation agents r
 
 The primary agents deployed in this module are:
 
-- `check_gnn_doc_patterns.py` (Pattern Validation Agent): Recursively scans `.md` files to eradicate obsolete architectural references to staled imports (e.g., `gnn.parser`), legacy routing, and deprecated file syntax. Operates defensively via CI implementations `--strict` enforcing non-zero process exits.
+- `check_gnn_doc_patterns.py` (Pattern Validation Agent): Recursively scans `.md` files to eradicate obsolete architectural references to staled imports (e.g., `gnn.parser`), retired routing, and retired file syntax. Operates defensively via CI implementations `--strict` enforcing non-zero process exits.
 - `run_pymdp_gnn_scaling_analysis.py` (Study Orchestrator Agent v1.1.0): A thin orchestrator that programmatically generates configured GNN matrices (N×T parameter grids with controlled noise) and invokes the main `src/main.py` pipeline to conduct scientific scaling analysis. It features a **Visual Logger** for real-time progress tracking and a **preflight resource gate** to protect against O(n³) disk expansion.
 
 ## PyMDP Scaling Contract (v1.2.0)
@@ -24,7 +24,7 @@ The primary agents deployed in this module are:
 
 ## Operational Standards
 
-- Strict adherence to Pythonic PEP validation and Zero-Mock principles.
+- Strict adherence to Pythonic PEP validation and real-implementation testing principles.
 - All scripts must contain structured `argparse` implementations mapped for headless CI.
 - Orchestrators must implement explicit safety guardrails for resource-intensive operations.
 - Automated manifest generation is required for all batch processing studies.

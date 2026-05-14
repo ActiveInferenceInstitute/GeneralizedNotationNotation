@@ -21,18 +21,15 @@ except (ImportError, RecursionError):
     plt = None
     MATPLOTLIB_AVAILABLE = False
 
-from visualization.core.parsed_model import load_visualization_model
-from visualization.plotting.utils import safe_tight_layout, save_plot_safely
+from ..core.parsed_model import load_visualization_model
+from ..plotting.utils import safe_tight_layout, save_plot_safely
 
 logger = logging.getLogger(__name__)
-
-_save_plot_safely = save_plot_safely
-_safe_tight_layout = safe_tight_layout
 
 
 def _viz_var_type(var_info: Dict[str, Any]) -> str:
     """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
-    from visualization.compat.viz_compat import viz_var_type
+    from ..compat.viz_compat import viz_var_type
     return viz_var_type(var_info)
 
 
@@ -384,7 +381,7 @@ def generate_combined_visualizations(
         return visualizations
 
     try:
-        from visualization.parser import GNNParser
+        from ..parser import GNNParser
 
         all_variables: List[Dict[str, Any]] = []
         all_connections: List[Dict[str, Any]] = []

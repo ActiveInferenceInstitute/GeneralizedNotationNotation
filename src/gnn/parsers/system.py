@@ -134,8 +134,6 @@ class GNNParsingSystem:
         """
         self.strict_validation = strict_validation
         self.parsers: Dict[GNNFormat, GNNParser] = {}
-        # Maintain previous alias for older callers/tests that expect `_parsers`
-        self._parsers = self.parsers
         self.serializers: Dict[GNNFormat, Any] = {}
         self.converter = FormatConverter()
         self.validator = GNNValidator()

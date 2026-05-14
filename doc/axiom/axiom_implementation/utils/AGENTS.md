@@ -28,4 +28,4 @@ Institution: VER
 
 ## Implementation Details
 
-This module follows the Thin Orchestrator Pattern. It is governed by the Zero-Mock testing policy.
+This module follows the Thin Orchestrator Pattern. It is governed by the real-implementation testing policy.

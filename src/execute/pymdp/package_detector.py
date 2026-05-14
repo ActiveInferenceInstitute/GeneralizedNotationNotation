@@ -61,9 +61,9 @@ def detect_pymdp_installation() -> Dict[str, Any]:
             # Check if pymdp.agent submodule has Agent class
             try:
                 from pymdp.agent import Agent
+                agent_found = Agent is not None
                 result["has_agent"] = True
                 result["correct_package"] = True
-                agent_found = True
                 logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule")
             except ImportError as e:
                 logger.debug("pymdp.agent not available: %s", e)
@@ -153,8 +153,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
     No previous pip recovery is used.
     
     Args:
-        use_uv: Deprecated parameter, kept for backwards compatibility.
-                UV is always used regardless of this value.
+        use_uv: Ignored; UV is always used.
     
     Returns:
         Tuple of (success: bool, message: str)
@@ -239,5 +238,3 @@ def validate_pymdp_for_execution() -> Dict[str, Any]:
         result["can_auto_install"] = False
 
     return result
-
-

@@ -10,7 +10,6 @@ from __future__ import annotations
 import re
 from typing import Any, Dict
 
-
 # Canonical valid GNN types (Active Inference domain)
 VALID_TYPES: list[str] = [
     "int", "float", "double", "string", "bool", "array", "matrix",

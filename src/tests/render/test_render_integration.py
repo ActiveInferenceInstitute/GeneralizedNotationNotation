@@ -11,7 +11,7 @@ Test Coverage:
 - Multi-framework rendering (test_render_all_frameworks)
 - Render-to-execute handoff (test_render_to_execute_handoff)
 
-No mocking is used - all tests validate real function execution.
+All tests validate real function execution.
 """
 
 # Add src to path for imports

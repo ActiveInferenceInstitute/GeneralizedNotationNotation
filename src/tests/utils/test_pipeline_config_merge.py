@@ -16,7 +16,7 @@ def test_apply_yaml_sets_dev_when_cli_omits_flag() -> None:
     assert args.dev is True
 
 
-def test_apply_yaml_legacy_uv_sync_dev() -> None:
+def test_apply_yaml_uv_sync_dev() -> None:
     args = PipelineArguments()
     parsed = argparse.Namespace()
     full = {"uv": {"sync": {"dev": True}}}
@@ -172,6 +172,19 @@ def test_build_step_command_step12_execution_summary_detail_only_when_true() -> 
     assert "--execution-summary-detail" in cmd_on
 
 
+def test_build_step_command_forwards_skip_llm_to_step24() -> None:
+    from pathlib import Path
+
+    args = PipelineArguments(skip_llm=True)
+    cmd = build_step_command_args(
+        "24_intelligent_analysis.py",
+        args,
+        "python",
+        Path("src/24_intelligent_analysis.py"),
+    )
+    assert "--skip-llm" in cmd
+
+
 @pytest.mark.parametrize(
     "kwargs, expect_all_extras, expect_extra_dev",
     [
@@ -185,7 +198,7 @@ def test_install_uv_dependencies_sync_flags(kwargs, expect_all_extras, expect_ex
 
     captured: list[list[str]] = []
 
-    def fake_run(cmd, **kw):  # noqa: ANN001
+    def captured_run(cmd, **kw):  # noqa: ANN001
         captured.append(list(cmd))
         class R:
             returncode = 0
@@ -193,7 +206,7 @@ def test_install_uv_dependencies_sync_flags(kwargs, expect_all_extras, expect_ex
             stderr = ""
         return R()
 
-    monkeypatch.setattr(uv_management.subprocess, "run", fake_run)
+    monkeypatch.setattr(uv_management.subprocess, "run", captured_run)
     monkeypatch.setattr(uv_management, "get_installed_package_versions", lambda verbose=False: {})
 
     uv_management.install_uv_dependencies(verbose=False, **kwargs)

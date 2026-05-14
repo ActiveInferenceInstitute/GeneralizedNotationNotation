@@ -59,7 +59,7 @@ Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 w
   from pymdp import utils as pymdp_utils
   ```
 - Each generated script sanity-checks for ``Agent.update_empirical_prior`` at
-  runtime and exits fast with a clear message if a legacy wheel is present.
+  runtime and exits fast with a clear message if an unsupported wheel is present.
 
 ## Render Modes
 

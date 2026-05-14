@@ -75,7 +75,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
 </div>
 
 <script>
-// JSON placeholder replaced by standard python formatting
+// SUMMARY_JSON is injected by the dashboard renderer.
 const rawData = {SUMMARY_JSON};
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // 1. Populate Header & Metrics
         document.getElementById('dashboard-meta').innerText = `Execution ID: ${rawData.process_id || 'Unknown'} | Timestamp: ${rawData.timestamp || ''}`;
         
-        // Mock health score if not exactly provided, though Step 24 generates one
+        // Derive a health score when Step 24 has not produced one yet.
         const health = rawData.health_score || (100 - (rawData.failures ? rawData.failures.length : 0) * 10);
         document.getElementById('val-health').innerText = `${health}/100`;
         // Color code health

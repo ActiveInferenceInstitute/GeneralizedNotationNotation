@@ -558,7 +558,7 @@ git commit -m "Experiment: Add hierarchical planning layers"
 
 1. **Semantic versioning**: Use version numbers in model names
 2. **Change logs**: Document model modifications
-3. **Backward compatibility**: Maintain compatibility with older versions
+3. **Migration behavior**: Document changes for older versions
 4. **Branching strategy**: Separate branches for different model variants
 
 ### How do I automate GNN workflows?
@@ -723,7 +723,7 @@ s_f0_y[10,1,type=int]  # Y coordinate
 
 **Migration checklist:**
 
-1. **Syntax updates**: Check for deprecated section names
+1. **Syntax updates**: Check for retired section names
 2. **Variable naming**: Ensure compliance with current naming conventions
 3. **Matrix specifications**: Verify dimension specifications
 4. **Validation**: Run updated type checker on old models
@@ -821,7 +821,7 @@ Actual: Validation fails with error X
 - [ ] **Tests added**: Unit tests for new functionality
 - [ ] **Documentation updated**: User guides and API docs
 - [ ] **Examples provided**: Working examples demonstrating feature
-- [ ] **Backward compatibility**: Doesn't break existing models
+- [ ] **Migration behavior**: Documents model updates required by the change
 - [ ] **Performance tested**: No significant performance regression
 
 ### How do I request new functionality?

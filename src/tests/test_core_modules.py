@@ -11,11 +11,13 @@ to ensure 100% functionality and coverage. Each test validates:
 5. Performance characteristics
 6. Documentation and API consistency
 
-All tests execute real methods and file operations without mocking; tests may skip if optional backends are unavailable.
+All tests execute real methods and file operations; tests may skip if optional backends are unavailable.
 """
 import logging
 from pathlib import Path
+
 import pytest
+
 pytestmark = [pytest.mark.core, pytest.mark.fast]
 
 class TestGNNModuleComprehensive:
@@ -24,7 +26,13 @@ class TestGNNModuleComprehensive:
     @pytest.mark.unit
     def test_gnn_module_imports(self):
         """Test that GNN module can be imported and has expected structure."""
-        from src.gnn import discover_gnn_files, generate_gnn_report, parse_gnn_file, process_gnn_directory, validate_gnn_structure
+        from src.gnn import (
+            discover_gnn_files,
+            generate_gnn_report,
+            parse_gnn_file,
+            process_gnn_directory,
+            validate_gnn_structure,
+        )
         assert callable(discover_gnn_files), 'discover_gnn_files should be callable'
         assert callable(parse_gnn_file), 'parse_gnn_file should be callable'
         assert callable(validate_gnn_structure), 'validate_gnn_structure should be callable'
@@ -80,7 +88,13 @@ class TestRenderModuleComprehensive:
     @pytest.mark.unit
     def test_render_module_imports(self):
         """Test that render module can be imported and has expected structure."""
-        from src.render import process_render, render_gnn_to_activeinference_jl, render_gnn_to_discopy, render_gnn_to_pymdp, render_gnn_to_rxinfer
+        from src.render import (
+            process_render,
+            render_gnn_to_activeinference_jl,
+            render_gnn_to_discopy,
+            render_gnn_to_pymdp,
+            render_gnn_to_rxinfer,
+        )
         assert callable(render_gnn_to_pymdp), 'render_gnn_to_pymdp should be callable'
         assert callable(render_gnn_to_rxinfer), 'render_gnn_to_rxinfer should be callable'
         assert callable(render_gnn_to_discopy), 'render_gnn_to_discopy should be callable'
@@ -94,7 +108,7 @@ class TestRenderModuleComprehensive:
 
         Full pipeline-level rendering (parsed GNN spec → PyMDP script on
         disk) is exercised in src/tests/render/test_render_cli_targets.py.
-        Passing a dict-of-Path sample_gnn_files through this legacy API
+        Passing a dict-of-Path sample_gnn_files through this public API
         produces opaque errors; assert only the public-symbol contract.
         """
         from src.render import render_gnn_to_pymdp
@@ -130,7 +144,12 @@ class TestExecuteModuleComprehensive:
     @pytest.mark.unit
     def test_execute_module_imports(self):
         """Test that execute module can be imported and has expected functions."""
-        from src.execute import GNNExecutor, PyMDPSimulation, process_execute, validate_execution_environment
+        from src.execute import (
+            GNNExecutor,
+            PyMDPSimulation,
+            process_execute,
+            validate_execution_environment,
+        )
         assert GNNExecutor is not None, 'GNNExecutor should be available'
         assert PyMDPSimulation is not None, 'PyMDPSimulation should be available'
         assert callable(process_execute), 'process_execute should be callable'
@@ -160,7 +179,12 @@ class TestLLMModuleComprehensive:
     @pytest.mark.unit
     def test_llm_module_imports(self):
         """Test that LLM module can be imported and has expected functions."""
-        from src.llm import analyze_gnn_file_with_llm, generate_code_suggestions, generate_model_insights, process_llm
+        from src.llm import (
+            analyze_gnn_file_with_llm,
+            generate_code_suggestions,
+            generate_model_insights,
+            process_llm,
+        )
         assert callable(process_llm), 'process_llm should be callable'
         assert callable(analyze_gnn_file_with_llm), 'analyze_gnn_file_with_llm should be callable'
         assert callable(generate_model_insights), 'generate_model_insights should be callable'
@@ -291,7 +315,13 @@ class TestSAPFModuleComprehensive:
     @pytest.mark.unit
     def test_sapf_module_imports(self):
         """Test that SAPF module can be imported and has expected structure."""
-        from src.audio.sapf import convert_gnn_to_sapf, create_sapf_visualization, generate_sapf_audio, generate_sapf_report, validate_sapf_code
+        from src.audio.sapf import (
+            convert_gnn_to_sapf,
+            create_sapf_visualization,
+            generate_sapf_audio,
+            generate_sapf_report,
+            validate_sapf_code,
+        )
         assert callable(convert_gnn_to_sapf), 'convert_gnn_to_sapf should be callable'
         assert callable(generate_sapf_audio), 'generate_sapf_audio should be callable'
         assert callable(validate_sapf_code), 'validate_sapf_code should be callable'

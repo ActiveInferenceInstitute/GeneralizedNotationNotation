@@ -15,7 +15,7 @@ import subprocess  # nosec B404 -- subprocess calls with controlled/trusted inpu
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from gnn.processor import discover_gnn_files
+from src.gnn.processor import discover_gnn_files
 
 from .mermaid_converter import convert_gnn_file_to_mermaid
 from .mermaid_parser import convert_mermaid_file_to_gnn
@@ -322,4 +322,3 @@ def _get_timestamp() -> str:
     """Get ISO 8601 timestamp."""
     from datetime import datetime
     return datetime.now().isoformat()
-

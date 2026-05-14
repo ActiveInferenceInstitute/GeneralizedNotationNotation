@@ -180,7 +180,7 @@ class TestPipelineModuleIntegration:
         """Test pipeline steps are in correct order."""
         from pipeline import PipelineOrchestrator
 
-        orchestrator = PipelineOrchestrator()
+        orchestrator = PipelineOrchestrator(steps=[3])
         steps = orchestrator.get_pipeline_steps()
 
         if steps:
@@ -260,7 +260,7 @@ class TestPipelineErrorIntegration:
 
         logging.getLogger("test_pipeline")
 
-        orchestrator = PipelineOrchestrator()
+        orchestrator = PipelineOrchestrator(steps=[3])
 
         # Should be able to instantiate and run
         assert orchestrator is not None

@@ -51,7 +51,7 @@
 **Last Updated**: 2026-05-13  
 **Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite Inventory (measured 2026-05-13)**: 166 `test_*.py` files under `src/tests/`; `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` collected 2,271 tests. Use a current full run for pass/skip counts.
+**Test Suite Inventory (measured 2026-05-13)**: 166 `test_*.py` files under `src/tests/`; `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,245 tests. The corresponding full run completed with 2,176 passed, 68 skipped, and 1 xpassed in 694.24s.
 **Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, Autonomous Execution Recovery Heuristics, Fallback Circuit Breakers, NumPyro/Stan Renderers, PyMDP Scaling Study, MCP Full Module Exposure (131 tools).
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
@@ -105,9 +105,13 @@ GeneralizedNotationNotation/
 │   └── cognitive_phenomena/  # Example cognitive models
 ├── 📁 input/                  # Input GNN files and configuration
 │   └── gnn_files/            # Sample GNN model files
-├── 📁 output/                 # Pipeline outputs (tracked; see .gitignore for temp/audio/cache)
+├── 📁 output/                 # Local generated pipeline outputs (ignored except .gitkeep)
 └── 📄 pyproject.toml, pytest.ini  # Configuration files
 ```
+
+Generated run artifacts belong under `output/` or a step-specific output directory.
+Those files are intentionally not maintained source; regenerate them with `src/main.py`
+or the individual numbered step commands when you need fresh evidence.
 
 ---
 

@@ -22,16 +22,7 @@ from typing import Any, Dict, List, Optional, Union
 import numpy as np
 
 from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
-from .visualizer import (
-    GNNVisualizer,
-    generate_graph_visualization,
-    generate_matrix_visualization,
-    generate_visualizations,
-)
 from .ontology_visualizer import OntologyVisualizer
-
-# GraphVisualizer is a historical alias — GNNVisualizer is the canonical class.
-GraphVisualizer = GNNVisualizer
 
 # Import processor functions
 from .processor import (
@@ -40,6 +31,12 @@ from .processor import (
     parse_matrix_data,
     process_single_gnn_file,
     process_visualization,
+)
+from .visualizer import (
+    GNNVisualizer,
+    generate_graph_visualization,
+    generate_matrix_visualization,
+    generate_visualizations,
 )
 
 __version__ = "1.6.0"
@@ -98,7 +95,7 @@ def _generate_network_statistics(variables: Dict[str, Any], connections: List[Di
         return stats
 
 __all__ = [
-    'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
+    'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer',
     'process_matrix_visualization', 'process_visualization',
     'generate_graph_visualization', 'generate_matrix_visualization', 'generate_visualizations',
     '__version__'

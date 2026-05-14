@@ -14,20 +14,38 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Dict, Optional, Union
 
-from .strategies import (
-    calculate_complexity as _calc_complexity,
-    detailed_memory_breakdown as _est_memory_breakdown,
-    estimate_batched_inference as _est_batched_inference,
-    estimate_flops as _est_flops,
-    estimate_inference as _est_inference,
-    estimate_inference_time as _est_inference_time,
-    estimate_matrix_operation_costs as _est_matrix_ops,
-    estimate_memory as _est_memory,
-    estimate_model_overhead as _est_model_overhead,
-    estimate_storage as _est_storage,
-)
 from .report_html import generate_html_report
 from .report_markdown import generate_markdown_report
+from .strategies import (
+    calculate_complexity as _calc_complexity,
+)
+from .strategies import (
+    detailed_memory_breakdown as _est_memory_breakdown,
+)
+from .strategies import (
+    estimate_batched_inference as _est_batched_inference,
+)
+from .strategies import (
+    estimate_flops as _est_flops,
+)
+from .strategies import (
+    estimate_inference as _est_inference,
+)
+from .strategies import (
+    estimate_inference_time as _est_inference_time,
+)
+from .strategies import (
+    estimate_matrix_operation_costs as _est_matrix_ops,
+)
+from .strategies import (
+    estimate_memory as _est_memory,
+)
+from .strategies import (
+    estimate_model_overhead as _est_model_overhead,
+)
+from .strategies import (
+    estimate_storage as _est_storage,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -110,13 +128,13 @@ class GNNResourceEstimator:
         Returns:
             Dictionary with resource estimates
         """
-        from type_checker.checking import extract_gnn_dimensions
+        from ..checking import extract_gnn_dimensions
         
         try:
             with open(file_path, 'r') as f:
                 content_str = f.read()
             
-            # For backward compatibility, simulate parser dictionary
+            # Build the parser-style dictionary consumed by estimation strategies.
             variables_with_dims = extract_gnn_dimensions(content_str)
             vars_map = {}
             for k, v in variables_with_dims.items():

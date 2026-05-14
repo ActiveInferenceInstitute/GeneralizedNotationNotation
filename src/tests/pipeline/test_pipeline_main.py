@@ -3,7 +3,7 @@
 Integration tests for pipeline main execution.
 
 These tests verify that the pipeline actually runs steps and produces expected outputs.
-No mocks - real subprocess execution with real artifacts.
+Real subprocess execution with real artifacts.
 """
 
 import shutil
@@ -198,4 +198,3 @@ D: 0.6 0.4
             assert "3_gnn.py" in step_names, "GNN processing step not found"
             assert "7_export.py" in step_names, "Export step not found"
             assert "8_visualization.py" in step_names, "Visualization step not found"
-

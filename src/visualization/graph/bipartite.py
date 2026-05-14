@@ -24,7 +24,7 @@ except (ImportError, RecursionError, AttributeError, ValueError):
     nx = None
     NETWORKX_AVAILABLE = False
 
-from visualization.plotting.utils import safe_tight_layout, save_plot_safely
+from ..plotting.utils import safe_tight_layout, save_plot_safely
 
 logger = logging.getLogger(__name__)
 
@@ -120,6 +120,6 @@ def generate_variable_parameter_bipartite(
         logger.debug("Bipartite plot skipped: %s", e)
         try:
             plt.close()
-        except Exception:
-            pass
+        except Exception as close_error:
+            logger.debug("Matplotlib close after bipartite failure also failed: %s", close_error)
     return out

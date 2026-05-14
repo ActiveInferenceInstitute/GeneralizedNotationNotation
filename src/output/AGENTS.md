@@ -31,7 +31,7 @@ This directory holds **reference copies** of pipeline output structures used by 
 
 ## Implementation Details
 
-This directory is governed by test hygiene policy. Contents may be overwritten during test runs. It follows the Zero-Mock testing policy — all fixture data is produced by real pipeline execution.
+This directory is governed by test hygiene policy. Contents may be overwritten during test runs. All fixture data is produced by real pipeline execution.
 
 ---
 ## Documentation

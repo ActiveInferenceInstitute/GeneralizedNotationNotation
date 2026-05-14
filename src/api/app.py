@@ -354,13 +354,11 @@ if FASTAPI_AVAILABLE:
     app = create_app()
 
 else:
-    # Placeholder when FastAPI is not installed
     app = None
 
-    def create_stub_app():
-        """Create a minimal placeholder when FastAPI is unavailable."""
-        logger.warning("FastAPI not installed — API unavailable")
-        return None
+    def create_app():
+        """Report that the API server requires FastAPI."""
+        raise RuntimeError("FastAPI is required to create the API application")
 
 
 def start_server(host: str = "127.0.0.1", port: int = 8000):

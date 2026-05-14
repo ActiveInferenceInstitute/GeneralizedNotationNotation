@@ -14,14 +14,15 @@ from __future__ import annotations
 
 import sys
 import tempfile
+
+# Make "tests.*" an importable alias for the src/tests/ directory so that
+# tests which do `from tests.conftest import X` continue to resolve.
+import types as _types
 from pathlib import Path
 from typing import Any, Dict, Generator
 
 import pytest
 
-# Make "tests.*" an importable alias for the src/tests/ directory so that
-# tests which do `from tests.conftest import X` continue to resolve.
-import types as _types
 _pkg = _types.ModuleType("tests")
 _pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
 sys.modules.setdefault("tests", _pkg)

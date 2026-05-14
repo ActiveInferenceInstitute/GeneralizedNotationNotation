@@ -5,7 +5,9 @@ This file contains comprehensive tests for the visualization module functionalit
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestVisualizationModuleComprehensive:
@@ -17,7 +19,7 @@ class TestVisualizationModuleComprehensive:
         import visualization
         assert hasattr(visualization, '__version__')
         assert hasattr(visualization, 'MatrixVisualizer')
-        assert hasattr(visualization, 'GraphVisualizer')
+        assert hasattr(visualization, 'GNNVisualizer')
         assert hasattr(visualization, 'OntologyVisualizer')
 
     @pytest.mark.unit
@@ -30,10 +32,10 @@ class TestVisualizationModuleComprehensive:
         assert hasattr(visualizer, 'create_heatmap')
 
     @pytest.mark.unit
-    def test_graph_visualizer_instantiation(self):
-        """Test GraphVisualizer class instantiation."""
-        from visualization import GraphVisualizer
-        visualizer = GraphVisualizer()
+    def test_gnn_visualizer_instantiation(self):
+        """Test GNNVisualizer class instantiation."""
+        from visualization import GNNVisualizer
+        visualizer = GNNVisualizer()
         assert visualizer is not None
         assert hasattr(visualizer, 'generate_graph_visualization')
         assert hasattr(visualizer, 'create_network_diagram')
@@ -82,8 +84,8 @@ class TestVisualizationFunctionality:
     @pytest.mark.unit
     def test_graph_visualization(self, comprehensive_test_data):
         """Test graph visualization functionality."""
-        from visualization import GraphVisualizer
-        visualizer = GraphVisualizer()
+        from visualization import GNNVisualizer
+        visualizer = GNNVisualizer()
         graph_data = comprehensive_test_data.get('graph_data', {'nodes': [], 'edges': []})
         result = visualizer.generate_graph_visualization(graph_data)
         assert result is not None
@@ -119,7 +121,7 @@ class TestVisualizationIntegration:
 
 def test_visualization_module_completeness():
     """Test that visualization module has all required components."""
-    required_components = ['MatrixVisualizer', 'GraphVisualizer', 'OntologyVisualizer', 'get_module_info', 'get_visualization_options']
+    required_components = ['MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'get_module_info', 'get_visualization_options']
     try:
         import visualization
         for component in required_components:
@@ -131,6 +133,7 @@ def test_visualization_module_completeness():
 def test_visualization_module_performance():
     """Test visualization module performance characteristics."""
     import time
+
     from visualization import MatrixVisualizer
     visualizer = MatrixVisualizer()
     start_time = time.time()

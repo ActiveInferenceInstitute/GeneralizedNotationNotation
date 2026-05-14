@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for the export module (Step 7).
 
-Uses real GNN samples from ``input/gnn_files/`` — zero-mock per CLAUDE.md.
+Uses real GNN samples from ``input/gnn_files/``.
 Tests focus on:
   - JSON roundtrip preserves structural facts
   - Supported-format registry includes the canonical set

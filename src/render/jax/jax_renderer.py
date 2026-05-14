@@ -848,7 +848,7 @@ def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
             num_observations = 1
             num_actions = 1
 
-        # Extract num_timesteps from model_parameters (default 20 for backward compat)
+        # Extract num_timesteps from model_parameters.
         model_params = gnn_spec.get('model_parameters', {})
         init_params = gnn_spec.get('initialparameterization', {})
         num_timesteps = model_params.get('num_timesteps', init_params.get('num_timesteps', 20))
@@ -1669,7 +1669,7 @@ class {model_name}Combined(nn.Module):
         self.hierarchical_weights = []
         for level in range(self.num_hierarchical_levels):
             level_weight = self.param(
-                f"hierarchical_{level}",
+                f"hierarchical_{{level}}",
                 nn.initializers.normal(0.1),
                 (self.num_agents, self.num_agents),
             )

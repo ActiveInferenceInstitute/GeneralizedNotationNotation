@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for intelligent_analysis (Step 24, hard import).
 
-Zero-mock per CLAUDE.md — uses realistic pipeline-summary shapes as fixtures
-rather than MagicMock.
+Uses realistic pipeline-summary shapes as fixtures.
 """
 
 import sys
@@ -104,8 +103,9 @@ def test_generate_optimization_suggestions_returns_list():
 
 def test_suggest_fix_accepts_violation_object():
     """suggest_fix expects a violation object exposing .framework and .field
-    (a simple namespace-style object is enough for testing — no mock needed)."""
+    (a simple namespace-style object is enough for testing)."""
     from types import SimpleNamespace
+
     from intelligent_analysis.remediation import suggest_fix
     violation = SimpleNamespace(framework="pymdp", field="matrix_dims", message="mismatch")
     result = suggest_fix(violation)
@@ -119,6 +119,7 @@ def test_suggest_fix_raises_on_dict_violation():
     — we test this so that future API changes toward dict acceptance are
     captured as an intentional change, not a silent regression."""
     import pytest as _pytest
+
     from intelligent_analysis.remediation import suggest_fix
     with _pytest.raises(AttributeError):
         suggest_fix({"type": "unknown", "message": "x"})  # type: ignore[arg-type]

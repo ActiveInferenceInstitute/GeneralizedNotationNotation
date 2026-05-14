@@ -126,7 +126,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     n_states = model_params.get("num_hidden_states")
     n_obs = model_params.get("num_obs")
     n_actions = model_params.get("num_actions")
-    n_timesteps = model_params.get("num_timesteps", 20)  # Default 20 for backward compat
+    n_timesteps = model_params.get("num_timesteps", 20)
     model_info["n_timesteps"] = n_timesteps
 
     # --- Recovery 1: from original statespaceblock format ---

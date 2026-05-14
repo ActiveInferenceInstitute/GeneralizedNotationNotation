@@ -329,7 +329,7 @@ def run_simulation(agent):
     }
     
     for t in range(NUM_TIMESTEPS):
-        # Get observation (placeholder - would be environment-specific)
+        # Get observation from the target environment
         obs = generate_observation(t)
         
         # Update beliefs
@@ -356,7 +356,7 @@ def generate_observation(timestep):
     # {{ observation_generation_logic }}
     {% if model.observation_variables %}
     {% set first_obs = model.observation_variables.values() | first %}
-    # Placeholder observation for {{ first_obs.name }}
+    # Example observation for {{ first_obs.name }}
     return np.random.randint(0, {{ first_obs.dimensions[0] }})
     {% else %}
     return 0

@@ -66,8 +66,3 @@ def safe_tight_layout() -> None:
             plt.tight_layout()
     except (ValueError, RuntimeError):
         logger.debug("tight_layout skipped (non-critical)")
-
-
-# Backward-compatible names for tests / processor shims
-_save_plot_safely = save_plot_safely
-_safe_tight_layout = safe_tight_layout

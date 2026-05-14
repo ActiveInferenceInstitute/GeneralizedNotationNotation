@@ -497,7 +497,12 @@ if __name__ == "__main__":
     print(f"Summary: {results['summary']}")
 
     for result in results["results"]:
-        status_emoji = {"pass": "✅", "warn": "⚠️", "fail": "❌"}[result["status"]]
+        if result["status"] == "pass":
+            status_emoji = "✅"
+        elif result["status"] == "warn":
+            status_emoji = "⚠️"
+        else:
+            status_emoji = "❌"
         print(f"{status_emoji} {result['component']}: {result['message']}")
         if result.get("suggestion"):
             print(f"   💡 {result['suggestion']}")

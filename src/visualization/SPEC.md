@@ -34,7 +34,7 @@ Step-8 visualization: graphs, matrices, combined analysis. Prefers step-3 `{mode
 
 ```python
 from visualization import process_visualization, MatrixVisualizer
-from visualization.processor import parse_gnn_content, _save_plot_safely
+from visualization.processor import parse_gnn_content, save_plot_safely
 from visualization.parse import GNNParser, parse_gnn_content
 ```
 

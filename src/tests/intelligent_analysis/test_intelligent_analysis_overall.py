@@ -5,7 +5,9 @@ This file contains comprehensive tests for the intelligent_analysis module funct
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 SAMPLE_PIPELINE_SUMMARY = {'start_time': '2024-01-23T10:00:00', 'end_time': '2024-01-23T10:05:30', 'total_duration_seconds': 330.5, 'overall_status': 'SUCCESS_WITH_WARNINGS', 'steps': [{'step_number': 1, 'script_name': '0_template.py', 'description': 'Template initialization', 'status': 'SUCCESS', 'duration_seconds': 2.5, 'exit_code': 0, 'peak_memory_mb': 150.0}, {'step_number': 2, 'script_name': '1_setup.py', 'description': 'Environment setup', 'status': 'SUCCESS', 'duration_seconds': 15.3, 'exit_code': 0, 'peak_memory_mb': 200.0}, {'step_number': 3, 'script_name': '2_tests.py', 'description': 'Test execution', 'status': 'SUCCESS_WITH_WARNINGS', 'duration_seconds': 120.0, 'exit_code': 0, 'peak_memory_mb': 512.0, 'stdout': 'WARNING: Some tests skipped'}, {'step_number': 4, 'script_name': '3_gnn.py', 'description': 'GNN processing', 'status': 'SUCCESS', 'duration_seconds': 45.2, 'exit_code': 0, 'peak_memory_mb': 350.0}], 'performance_summary': {'peak_memory_mb': 512.0, 'successful_steps': 4, 'failed_steps': 0, 'warnings': 1, 'total_steps': 4}, 'environment_info': {'python_version': '3.12.0', 'platform': 'darwin'}}
 SAMPLE_FAILED_SUMMARY = {'start_time': '2024-01-23T10:00:00', 'end_time': '2024-01-23T10:02:30', 'total_duration_seconds': 150.0, 'overall_status': 'FAILED', 'steps': [{'step_number': 1, 'script_name': '0_template.py', 'status': 'SUCCESS', 'duration_seconds': 2.0, 'exit_code': 0, 'peak_memory_mb': 100.0}, {'step_number': 2, 'script_name': '1_setup.py', 'status': 'FAILED', 'duration_seconds': 30.0, 'exit_code': 1, 'peak_memory_mb': 200.0, 'stderr': "ModuleNotFoundError: No module named 'missing_dependency'"}, {'step_number': 3, 'script_name': '2_tests.py', 'status': 'FAILED', 'duration_seconds': 5.0, 'exit_code': 1, 'peak_memory_mb': 150.0, 'stderr': 'Error: Prerequisite step failed'}], 'performance_summary': {'peak_memory_mb': 200.0, 'successful_steps': 1, 'failed_steps': 2, 'warnings': 0, 'total_steps': 3}}
@@ -123,7 +125,12 @@ class TestProcessorFunctions:
     @pytest.mark.unit
     def test_generate_recommendations(self):
         """Test recommendation generation."""
-        from intelligent_analysis.processor import analyze_individual_steps, analyze_pipeline_summary, generate_recommendations, identify_bottlenecks
+        from intelligent_analysis.processor import (
+            analyze_individual_steps,
+            analyze_pipeline_summary,
+            generate_recommendations,
+            identify_bottlenecks,
+        )
         analysis = analyze_pipeline_summary(SAMPLE_FAILED_SUMMARY)
         bottlenecks = identify_bottlenecks(SAMPLE_FAILED_SUMMARY)
         step_analyses, flags_by_type = analyze_individual_steps(SAMPLE_FAILED_SUMMARY)
@@ -135,7 +142,14 @@ class TestProcessorFunctions:
     @pytest.mark.unit
     def test_generate_executive_report(self):
         """Test executive report generation."""
-        from intelligent_analysis.processor import analyze_individual_steps, analyze_pipeline_summary, extract_failure_context, generate_executive_report, generate_recommendations, identify_bottlenecks
+        from intelligent_analysis.processor import (
+            analyze_individual_steps,
+            analyze_pipeline_summary,
+            extract_failure_context,
+            generate_executive_report,
+            generate_recommendations,
+            identify_bottlenecks,
+        )
         analysis = analyze_pipeline_summary(SAMPLE_PIPELINE_SUMMARY)
         bottlenecks = identify_bottlenecks(SAMPLE_PIPELINE_SUMMARY)
         failures = extract_failure_context(SAMPLE_PIPELINE_SUMMARY)
@@ -282,7 +296,14 @@ class TestIntegration:
     @pytest.mark.integration
     def test_full_analysis_workflow(self, isolated_temp_dir):
         """Test complete analysis workflow."""
-        from intelligent_analysis.processor import analyze_individual_steps, analyze_pipeline_summary, extract_failure_context, generate_executive_report, generate_recommendations, identify_bottlenecks
+        from intelligent_analysis.processor import (
+            analyze_individual_steps,
+            analyze_pipeline_summary,
+            extract_failure_context,
+            generate_executive_report,
+            generate_recommendations,
+            identify_bottlenecks,
+        )
         analysis = analyze_pipeline_summary(SAMPLE_FAILED_SUMMARY)
         step_analyses, flags_by_type = analyze_individual_steps(SAMPLE_FAILED_SUMMARY)
         bottlenecks = identify_bottlenecks(SAMPLE_FAILED_SUMMARY)
@@ -295,6 +316,33 @@ class TestIntegration:
         assert report_path.exists()
         assert report_path.stat().st_size > 0
         assert 'Red Flags' in report or 'Yellow Flags' in report or 'Per-Step' in report
+
+    @pytest.mark.integration
+    def test_process_skip_llm_uses_rule_based_summary(self, isolated_temp_dir, monkeypatch):
+        """Skip-LLM mode must avoid external provider calls."""
+        import json
+        import logging
+
+        from intelligent_analysis import processor
+
+        output_dir = isolated_temp_dir / "output"
+        summary_dir = output_dir / "00_pipeline_summary"
+        summary_dir.mkdir(parents=True)
+        with open(summary_dir / "pipeline_execution_summary.json", "w") as f:
+            json.dump(SAMPLE_PIPELINE_SUMMARY, f)
+
+        async def fail_on_llm_call(*args, **kwargs):
+            raise AssertionError("LLM analysis should not run when skip_llm is true")
+
+        monkeypatch.setattr(processor, "_run_llm_analysis", fail_on_llm_call)
+
+        assert processor.process_intelligent_analysis(
+            isolated_temp_dir / "input",
+            output_dir,
+            logging.getLogger("test_intelligent_analysis_skip_llm"),
+            skip_llm=True,
+        )
+        assert (output_dir / "24_intelligent_analysis_output" / "intelligent_analysis_report.md").exists()
 
     @pytest.mark.integration
     def test_check_analysis_tools(self):
@@ -319,6 +367,7 @@ def test_module_completeness():
 def test_module_performance():
     """Test intelligent_analysis module performance characteristics."""
     import time
+
     from intelligent_analysis.processor import analyze_pipeline_summary
     start_time = time.time()
     for _ in range(10):

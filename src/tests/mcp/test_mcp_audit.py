@@ -34,7 +34,7 @@ def count_mcp_tools() -> int:
     """
     from mcp import initialize, mcp_instance
 
-    initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+    initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
     prev_count = -1
     for _ in range(25):
         current = len(mcp_instance.tools)
@@ -59,7 +59,7 @@ def mcp_initialized() -> Any:
     stabilise, then return the instance.
     """
     from mcp import initialize, mcp_instance
-    initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
+    initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
 
     # Wait for recovery registration threads to complete.
     # Poll until tool count stops growing (max 5 s).
@@ -161,14 +161,14 @@ class TestMCPToolRealness:
         )
 
     def test_no_lambda_tools(self, all_tools: Dict[str, Any]) -> None:
-        """No tool may be backed by an anonymous lambda (indicates placeholder)."""
+        """No tool may be backed by an anonymous lambda."""
         lambdas = []
         for name, tool in all_tools.items():
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
             fn   = getattr(func, "__name__", "") if func else ""
             if fn == "<lambda>":
                 lambdas.append(name)
-        assert lambdas == [], f"Tools backed by lambdas (placeholders): {lambdas}"
+        assert lambdas == [], f"Tools backed by lambdas: {lambdas}"
 
     def test_all_tools_have_named_functions(self, all_tools: Dict[str, Any]) -> None:
         """Every tool's backing function must have a proper __name__ attribute."""
@@ -200,7 +200,7 @@ class TestMCPToolRealness:
 class TestMCPDomainTools:
     """
     Verify that each module registers expected domain-specific tools.
-    These are real callable functions — not generic wrappers or stubs.
+    These are real callable functions.
     """
 
     DOMAIN_TOOLS = (

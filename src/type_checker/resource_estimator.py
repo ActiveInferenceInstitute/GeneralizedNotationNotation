@@ -2,16 +2,15 @@
 """
 GNN Resource Estimator
 
-NOTE: This module is maintained for backward compatibility.
-The actual implementation has been moved to the `estimation` subpackage.
+Command-line facade for the `estimation` subpackage.
 """
 
-import sys
 import argparse
 import os
+import sys
 from pathlib import Path
 
-# Re-export from the estimation subpackage
+# Re-export from the estimation subpackage.
 from .estimation.estimator import GNNResourceEstimator
 
 __all__ = ["GNNResourceEstimator"]

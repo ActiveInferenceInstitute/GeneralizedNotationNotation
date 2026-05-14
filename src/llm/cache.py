@@ -35,14 +35,14 @@ class LLMCache:
                 ``pipeline.config.get_output_dir_for_script("13_llm.py",
                 base_output_dir) / ".cache"``. This allows multi-workspace /
                 multi-pipeline runs to avoid sharing one on-disk cache.
-                When both are None, falls back to the legacy hardcoded
-                location ``output/13_llm_output/.cache`` relative to CWD.
+                When both are None, uses ``output/13_llm_output/.cache``
+                relative to CWD.
         """
         if cache_dir is not None:
             self.cache_dir = Path(cache_dir)
         elif base_output_dir is not None:
             try:
-                from pipeline.config import get_output_dir_for_script
+                from src.pipeline.config import get_output_dir_for_script
                 self.cache_dir = get_output_dir_for_script(
                     "13_llm.py", Path(base_output_dir)
                 ) / ".cache"

@@ -22,10 +22,10 @@ Architecture:
 """
 
 from .collector import SweepDataCollector, SweepRecord
+from .reporter import SweepReporter
 from .statistics import compute_meta_statistics
 from .validator import validate_sweep_records
 from .visualizer import SweepVisualizer
-from .reporter import SweepReporter
 
 __all__ = [
     "SweepDataCollector",

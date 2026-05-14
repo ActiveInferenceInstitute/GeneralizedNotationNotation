@@ -20,7 +20,7 @@ except ImportError:  # PyYAML is a project dependency; keep processor import-saf
 _logger = logging.getLogger(__name__)
 
 try:
-    from pipeline.config import get_pipeline_config
+    from src.pipeline.config import get_pipeline_config
 except ImportError:
     def get_pipeline_config() -> Dict[str, Any]:
         """Load and return the pipeline configuration for LLM processing."""
@@ -718,4 +718,3 @@ async def _process_llm_async(
         # Close processor connections
         if processor:
             await processor.close()
-

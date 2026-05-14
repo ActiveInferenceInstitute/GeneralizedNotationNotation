@@ -1,16 +1,16 @@
-# MCP SDK Shim
+# MCP SDK Facade
 
 ## Overview
 
-Provides a thin SDK compatibility layer that delegates to the parent `mcp` module implementation. Present so that `MCPSDKStatus` health checks find a complete SDK surface under `src/mcp/sdk/`.
+Provides a thin SDK facade that delegates to the parent `mcp` module implementation. Present so that `MCPSDKStatus` health checks find a complete SDK surface under `src/mcp/sdk/`.
 
 ## Architecture
 
 ```
 sdk/
-├── client.py     # Client-side MCP SDK shim (16 lines)
+├── client.py     # Client-side MCP SDK facade (16 lines)
 ├── mcp.py        # Core SDK re-exports from parent mcp module (39 lines)
-└── server.py     # Server-side MCP SDK shim (16 lines)
+└── server.py     # Server-side MCP SDK facade (16 lines)
 ```
 
 ## Purpose

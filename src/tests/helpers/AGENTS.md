@@ -14,7 +14,7 @@ helpers/
 
 ## Key Exports
 
-- **Test fixtures** — Common `pytest` fixtures for temporary directories, mock GNN files, and pipeline context.
+- **Test fixtures** — Common `pytest` fixtures for temporary directories, sample GNN files, and pipeline context.
 - **`render_recovery`** — Utilities to safely recover from render step failures during integration testing, preventing cascading test failures.
 
 ## Usage

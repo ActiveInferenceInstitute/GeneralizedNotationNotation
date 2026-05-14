@@ -49,7 +49,6 @@ from .simple_simulation import (
     _canonicalise_C,
     _canonicalise_D,
     _canonicalise_E,
-    _is_version_ge,
     _normalise_prob_vector,
     _require_pymdp_1,
 )
@@ -59,9 +58,8 @@ class PyMDPSimulation:
     """
     GNN-configured active inference simulation using real pymdp 1.0.0.
 
-    Unlike the legacy wrapper this class no longer carries a fallback /
-    "recovery" path; it calls the real JAX-backed ``pymdp.agent.Agent``. If
-    pymdp 1.0.0 is not installed, construction raises ``ImportError``.
+    This class calls the real JAX-backed ``pymdp.agent.Agent``. If pymdp
+    1.0.0 is not installed, construction raises ``ImportError``.
     """
 
     _DEFAULT_POLICY_LEN: int = 1  # pymdp 1.0.0 default; tunable via gnn_config
@@ -99,7 +97,7 @@ class PyMDPSimulation:
 
         self._initialize_parameters()
 
-        # Placeholders filled by create_pymdp_model(...)
+        # Model fields filled by create_pymdp_model(...)
         self.agent: Any = None
         self.A: List[np.ndarray] = []
         self.B: List[np.ndarray] = []
@@ -341,7 +339,7 @@ class PyMDPSimulation:
         )
 
     # ------------------------------------------------------------------
-    # Legacy compatibility entry points used by older callers / tests
+    # Model construction entry points
     # ------------------------------------------------------------------
     def create_pymdp_model(self) -> Tuple[Any, Dict[str, np.ndarray]]:
         """Re-build the default model and return ``(agent, matrices)``."""
@@ -573,7 +571,7 @@ class PyMDPSimulation:
 
 
 def create_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any]) -> PyMDPSimulation:
-    """Factory helper retained for backwards compatibility."""
+    """Create a PyMDP simulation from parsed GNN configuration."""
     return PyMDPSimulation(gnn_config=gnn_config)
 
 

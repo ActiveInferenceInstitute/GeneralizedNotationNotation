@@ -157,20 +157,18 @@ numpy_safe = NumpySafeOperations()
 
 from .pymdp_templates import (
     generate_conversion_summary,
+    generate_default_matrices,
     generate_example_usage_template,
     generate_file_header,
-    generate_placeholder_matrices,
 )
 from .pymdp_utils import _numpy_array_to_string, generate_pymdp_agent_instantiation
 
 logger = logging.getLogger(__name__)
 
 # Optional import of pymdp for validation if available.
-# pymdp 1.0.0 (JAX-first) is the supported version. ``pymdp.maths`` exists in
-# both 0.x and 1.0.0, but the legacy ``utils.obj_array`` / ``utils.softmax``
-# surface used by earlier converter templates is gone in 1.0.0. This file no
-# longer emits code that depends on that surface; it only probes imports for
-# availability flags consumed by tests.
+# pymdp 1.0.0 (JAX-first) is the supported version. This file emits code for
+# the current JAX-first API and probes imports for availability flags consumed
+# by tests.
 _PYMDP_AVAILABLE = False
 _PYMDP_IS_1_0_0_PLUS = False
 try:
@@ -343,13 +341,13 @@ class GnnToPyMdpConverter:
         """Extract relevant data from the GNN specification."""
         self._add_log("Starting GNN data extraction.")
 
-        # Handle parsed GNN data structure (new format)
+        # Handle parsed GNN data structure.
         if "variables" in self.gnn_spec:
             self._add_log(f"Found parsed GNN data with {len(self.gnn_spec['variables'])} variables.")
             self._parse_variables_from_gnn_data()
         else:
-            # Handle older raw text format
-            self._extract_gnn_data_legacy()
+            # Handle raw text-style exported structures.
+            self._extract_gnn_data_raw()
 
         # Handle ModelParameters
         if "model_parameters" in self.gnn_spec:
@@ -468,9 +466,9 @@ class GnnToPyMdpConverter:
         if not obs_modalities and not state_factors:
             self._add_log("No observation modalities or state factors found in variables", "WARNING")
 
-    def _extract_gnn_data_legacy(self):
-        """Method for extracting data from older raw text GNN format."""
-        # Handle both old and new JSON export formats
+    def _extract_gnn_data_raw(self):
+        """Extract data from raw text-style GNN structures."""
+        # Handle supported JSON export formats.
         statespace_key = None
         if "StateSpaceBlock" in self.gnn_spec:
             statespace_key = "StateSpaceBlock"
@@ -675,9 +673,9 @@ class GnnToPyMdpConverter:
         if "parameters" in self.gnn_spec:
             self._parse_parameters_from_gnn_data()
         else:
-            # Older raw text format — dimension inference falls through to
+            # Raw text format: dimension inference falls through to
             # _extract_initial_parameterization_matrices() below.
-            self._add_log("No 'parameters' key found; skipping legacy parameterization inference.")
+            self._add_log("No 'parameters' key found; skipping parameter inference.")
 
         # NEW: Extract InitialParameterization matrices if available
         self._extract_initial_parameterization_matrices()
@@ -1485,18 +1483,17 @@ class GnnToPyMdpConverter:
             "\n".join(self.script_parts["matrix_definitions"]),
         ]
 
-        # Add the placeholder matrices section for missing data
+        # Add default matrices when model dimensions are absent.
         if (not self.num_modalities or not self.num_factors):
-            placeholder_matrices_dict = generate_placeholder_matrices(
+            default_matrices_dict = generate_default_matrices(
                 num_modalities=self.num_modalities,
                 num_states=self.num_states
             )
-            # Convert the dictionary to a string representation
-            placeholder_lines = []
-            for _, lines in placeholder_matrices_dict.items():
-                placeholder_lines.extend(lines)
-            placeholder_matrices = "\n".join(placeholder_lines)
-            script_sections.append(placeholder_matrices)
+            default_lines = []
+            for _, lines in default_matrices_dict.items():
+                default_lines.extend(lines)
+            default_matrices = "\n".join(default_lines)
+            script_sections.append(default_matrices)
 
         # Add the agent instantiation code
         script_sections.append("\n".join(self.script_parts["agent_instantiation"]))

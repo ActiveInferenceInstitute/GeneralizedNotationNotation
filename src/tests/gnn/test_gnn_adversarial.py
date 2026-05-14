@@ -2,7 +2,7 @@
 """
 Adversarial tests for the GNN Parser.
 Ensures resilience against broken, non-standard, and adversarial notation formatting.
-Refactored to zero-mock pytest parametrizations replacing deprecated Hypothesis routines.
+Uses pytest parametrizations for deterministic adversarial coverage.
 """
 
 from pathlib import Path
@@ -54,8 +54,8 @@ def test_extract_variables_lightweight_resilience(content: str):
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
 def test_parse_gnn_file_resilience(content: str):
     """Ensure full GNN parsing never crashes on pseudo-valid/chaotic content."""
-    dummy_file = Path("dummy.gnn")
-    result = parse_gnn_file(dummy_file, content=content)
+    sample_file = Path("sample.gnn")
+    result = parse_gnn_file(sample_file, content=content)
     
     assert isinstance(result, dict)
     assert "success" in result
@@ -75,8 +75,8 @@ def test_parse_gnn_file_resilience(content: str):
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
 def test_validate_gnn_structure_resilience(content: str):
     """Ensure validation logic handles adversarial brackets and missing properties cleanly."""
-    dummy_file = Path("dummy.gnn")
-    result = validate_gnn_structure(dummy_file, content=content)
+    sample_file = Path("sample.gnn")
+    result = validate_gnn_structure(sample_file, content=content)
     
     assert isinstance(result, dict)
     assert "file_path" in result

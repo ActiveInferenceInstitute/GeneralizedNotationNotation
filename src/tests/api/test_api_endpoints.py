@@ -68,7 +68,7 @@ def test_api_submit_run_success():
     orig_hasher = getattr(pipeline.hasher, "compute_run_hash", None)
     orig_execute = getattr(api_app, "_execute_pipeline", None)
     
-    # We must not use mock/patch; manually replace the reference instead
+    # Replace the reference directly for this endpoint wiring test.
     pipeline.hasher.compute_run_hash = lambda *args, **kwargs: "test_hash_123"
     api_app._execute_pipeline = lambda *args, **kwargs: None
     

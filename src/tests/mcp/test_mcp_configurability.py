@@ -2,9 +2,9 @@
 Validate the MCP server's configurable surface end-to-end.
 
 Covers contracts introduced after 2026-04-16:
-  * ``register_tools(mcp)`` actually populates the registry (was a no-op stub).
+  * ``register_tools(mcp)`` populates the registry.
   * ``JSONRPCServer.register_tool`` returns a truthful bool.
-  * ``MCPServer`` remains an alias of :class:`mcp.MCP`.
+  * ``MCPServer`` is the JSON-RPC request handler.
   * Fine-grained overrides (``strict_validation``, ``cache_ttl``,
     ``modules_allowlist``, …) propagate from ``process_mcp`` → ``initialize`` →
     the lazy singleton attribute storage.
@@ -44,10 +44,10 @@ class TestMCPExportsContract:
         missing = [s for s in _mcp.__all__ if not hasattr(_mcp, s)]
         assert missing == [], f"mcp.__all__ lists symbols not on the module: {missing}"
 
-    def test_mcp_server_is_core_alias(self) -> None:
-        from mcp import MCP, MCPServer
+    def test_mcp_server_is_request_handler(self) -> None:
+        from mcp import JSONRPCServer, MCPServer
 
-        assert MCPServer is MCP
+        assert MCPServer is JSONRPCServer
 
     def test_jsonrpc_server_is_request_handler(self) -> None:
         from mcp import JSONRPCServer

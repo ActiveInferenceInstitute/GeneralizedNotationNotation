@@ -6,7 +6,7 @@ import ast
 import logging
 from typing import Any, Dict, List
 
-from visualization.matrix.compat import parse_matrix_data
+from ..matrix.compat import parse_matrix_data
 
 logger = logging.getLogger(__name__)
 

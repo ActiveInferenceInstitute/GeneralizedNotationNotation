@@ -6,7 +6,7 @@ This directory serves as a dynamically synchronized documentation index for the 
 **Status**: Synced to Python Source
 
 ## Reconciled Agent Maps
-Every document located inside this folder (`00_template.md` through `24_intelligent_analysis.md`) is accurately aligned with its respective `src/module/AGENTS.md` counterpart ensuring LLM Context layers never learn out-of-date or "Mock" parameters.
+Every document located inside this folder (`00_template.md` through `24_intelligent_analysis.md`) is accurately aligned with its respective `src/module/AGENTS.md` counterpart ensuring LLM Context layers learn current module parameters.
 
 ## Contained Indices
 
@@ -39,4 +39,4 @@ Every document located inside this folder (`00_template.md` through `24_intellig
 | 24 | [24_intelligent_analysis.md](24_intelligent_analysis.md) | `src/intelligent_analysis/` | LLM-assisted remediation (hard import) |
 
 ## External Usage
-Model Context Protocol servers routing to this directory instantly pull the entire zero-mock capability dictionary natively defined inside the core testing frameworks.
+Model Context Protocol servers routing to this directory pull the real-implementation capability dictionary defined inside the core testing frameworks.

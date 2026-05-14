@@ -164,6 +164,9 @@ return a structured exit code rather than propagating an exception.
 
 **Complete Output Directory Organization (25 Steps):**
 
+`output/` is a generated local run tree and is ignored by Git except for its directory
+marker. Keep curated fixtures and hand-maintained examples outside this tree.
+
 ```
 output/
 ├── 0_template_output/

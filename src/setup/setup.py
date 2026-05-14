@@ -15,7 +15,7 @@ import sys
 import time
 from typing import List, Optional
 
-# --- Re-export everything from sub-modules for backward compatibility ---
+# --- Public exports from setup sub-modules ---
 from .constants import VENV_DIR
 from .dependency_setup import (
     install_jax_and_test,

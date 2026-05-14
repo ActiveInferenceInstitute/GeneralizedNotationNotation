@@ -102,16 +102,7 @@ A > B
     # Clean up
     test_file.unlink(missing_ok=True)
 
-    # Test 5: Verify no placeholder classes exist
-    logger.info("=== Testing No Placeholder Classes ===")
-    try:
-        from translator import BoxPlaceholder, DimPlaceholder, PlaceholderBase
-        logger.error("✗ Placeholder classes still exist - they should have been removed")
-        return False
-    except ImportError:
-        logger.info("✓ Placeholder classes successfully removed")
-
-    # Test 6: Check global variables
+    # Test 5: Check global variables
     logger.info("=== Testing Global Variables ===")
     from translator import Box, Dim, jax
 

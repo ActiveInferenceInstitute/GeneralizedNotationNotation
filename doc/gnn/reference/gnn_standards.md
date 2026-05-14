@@ -58,7 +58,7 @@ src/<module_name>/
 
 ### Real-Implementation Policy
 
-All tests must use real implementations. **No substitute objects, simulated methods, or placeholder functions** are permitted.
+All tests must use real implementations and representative data.
 
 ```python
 # ❌ PROHIBITED

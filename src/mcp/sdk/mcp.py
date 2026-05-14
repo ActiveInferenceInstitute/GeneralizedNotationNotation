@@ -1,5 +1,5 @@
 """
-MCP SDK shim: delegates to the parent mcp module implementation.
+MCP SDK facade: delegates to the parent mcp module implementation.
 Present so MCPSDKStatus health check finds a complete SDK under src/mcp/sdk/.
 """
 from __future__ import annotations

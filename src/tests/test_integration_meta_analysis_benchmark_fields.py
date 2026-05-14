@@ -1,7 +1,7 @@
 """Integration meta-analysis collector: benchmark timing fields.
 
 ``SweepDataCollector`` reads ``summaries/execution_summary.json`` whether the
-aggregate uses ``execution_summary_format: slim_v1`` or legacy rows; timing and
+aggregate uses ``execution_summary_format: slim_v1`` or detail rows; timing and
 benchmark keys on each detail dict must remain present (see also
 ``test_collect_slim_execution_summary_preserves_timing_for_collector``).
 """

@@ -16,8 +16,8 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 - **Directory Layout**: 33 first-level directories under `src/tests/`; 31 contain direct test files
 - **Root-Level Tests**: 28 `test_*.py` files at `src/tests/`
 - **Subdirectory Tests**: 138 `test_*.py` files under module/helper directories
-- **Collected Tests**: 2,271 with `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py` (2026-05-13)
-- **Execution Time**: depends on optional backends and selected markers; use current run output for pass/skip counts
+- **Collected Tests**: 2,245 with `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-05-13)
+- **Latest Full Run**: 2,176 passed, 68 skipped, 1 xpassed in 694.24s with the same Ollama ignores (2026-05-13)
 
 ---
 
@@ -58,10 +58,10 @@ src/tests/
 
 ## Test Quality Standards
 
-### No Simulated Usage Policy
+### Real Usage Policy
 
-All tests follow strict "no mocks" policy:
-- No `unittest.mock`-style replacement of production behavior for core paths
+All tests follow strict real-implementation policy:
+- No replacement of production behavior for core paths
 - Real code paths executed in module and integration tests
 - Real data or representative fixtures used throughout
 - Real dependencies are used when available; optional integrations skip cleanly when unavailable
@@ -208,7 +208,7 @@ output/2_tests_output/
 
 ### Writing Tests
 
-1. **No Mocks**: Always use real implementations
+1. **Real Implementations**: Always use real code paths
 2. **Real Data**: Use representative test data
 3. **Comprehensive Assertions**: Test both success and failure cases
 4. **Error Handling**: Wrap optional dependencies in try/except

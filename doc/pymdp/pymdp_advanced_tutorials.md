@@ -136,7 +136,7 @@ for t in range(T):
     action = agent.sample_action(q_pi, rng_key=action_keys[1:])
 ```
 
-The pipeline additionally seeds the numpy generator used for fake-environment
+The pipeline additionally seeds the numpy generator used for simulated-environment
 transitions from `gnn_spec["model_parameters"]["random_seed"]`, so a single
 seed reproduces both the agent's samples and the environment transitions
 (see `test_pymdp_seeded_reproducibility_contract`).

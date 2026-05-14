@@ -2,7 +2,7 @@
 
 Pytest coverage for `src/sapf/`.
 
-This folder contains module-focused tests for the SAPF compatibility shim and processor behavior.
+This folder contains module-focused tests for the SAPF public entry point and processor behavior.
 
 Run:
 

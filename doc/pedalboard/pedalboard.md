@@ -289,7 +289,7 @@ Spotify's public milestones include[2]:
 
 ## Conclusion
 
-Pedalboard democratizes high-quality audio processing in Python by fusing JUCE-level DSP with a Pythonic API and first-class plugin hosting. It excels in ML data augmentation, batch rendering, and CPU-parallel offline jobs, delivering dramatic speed gains over legacy wrappers like pySoX. With over 4,000 GitHub stars and widespread adoption across academia and industry, Pedalboard has established itself as the de facto standard for professional audio processing in Python. While GPL licensing and occasional plugin crashes demand caution, Pedalboard remains the most feature-rich and performant option for Python developers needing DAW-grade effects in code. As WebAssembly support and enhanced sandboxing mature, Pedalboard is poised to expand into browser-based audio applications and collaborative workflows.
+Pedalboard democratizes high-quality audio processing in Python by fusing JUCE-level DSP with a Pythonic API and first-class plugin hosting. It excels in ML data augmentation, batch rendering, and CPU-parallel offline jobs, delivering dramatic speed gains over older wrappers like pySoX. With over 4,000 GitHub stars and widespread adoption across academia and industry, Pedalboard has established itself as the de facto standard for professional audio processing in Python. While GPL licensing and occasional plugin crashes demand caution, Pedalboard remains the most feature-rich and performant option for Python developers needing DAW-grade effects in code. As WebAssembly support and enhanced sandboxing mature, Pedalboard is poised to expand into browser-based audio applications and collaborative workflows.
 
 ### Acknowledgments
 

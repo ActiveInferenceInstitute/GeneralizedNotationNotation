@@ -458,7 +458,7 @@ def extract_activeinference_jl_data_from_files(output_dir: Path, logger: logging
                 data["visualization_count"] = len(viz_files)
                 data["visualization_files"] = [f.name for f in viz_files]
 
-        # Also check traditional locations for backwards compatibility
+        # Also check the shared simulation_data location.
         data_dir = output_dir / "simulation_data"
         if data_dir.exists():
             json_files = list(data_dir.glob("*.json"))
@@ -693,7 +693,7 @@ def extract_activeinference_jl_data(stdout: str, stderr: str) -> Dict[str, Any]:
 
 
 # JAX scripts emit the same structured output as PyMDP (JSON lines with
-# beliefs/actions/observations) — intentional alias, not a placeholder.
+# beliefs/actions/observations).
 extract_jax_data = extract_pymdp_data
 
 

@@ -86,7 +86,7 @@ dev = [
     "pytest-timeout>=2.1.0",
     "pytest-xdist>=3.0.0",
 
-    # Security scanning (dev-only tools; pip-audit via uv tool / CI — avoids legacy safety→nltk chain)
+    # Security scanning (dev-only tools; pip-audit via uv tool / CI avoids the retired safety->nltk chain)
     "bandit>=1.7.0",
     "bandit-sarif-formatter>=1.1.1",
 
@@ -387,7 +387,6 @@ exclude_lines = [
     "if self.debug:",
     "if settings.DEBUG",
     "raise AssertionError",
-    "raise NotImplementedError",
     "if 0:",
     "if __name__ == .__main__.:",
     "class .*\\bProtocol\\):",
@@ -417,8 +416,8 @@ ignore = [
     "E402",  # module import not at top (sys.path bootstrap in orchestrators)
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
-    "B905",  # zip without strict= — large legacy surface
-    # Style / legacy patterns (ruff 0.14+); tighten incrementally
+    "B905",  # zip without strict= across a large existing surface
+    # Style patterns (ruff 0.14+); tighten incrementally
     "E701",  # multiple statements on one line (colon)
     "E702",  # multiple statements on one line (semicolon)
     "E721",  # type comparison

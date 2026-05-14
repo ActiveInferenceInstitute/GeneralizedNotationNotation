@@ -5,7 +5,9 @@ This file contains comprehensive tests for the audio module functionality.
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestAudioModuleComprehensive:
@@ -17,8 +19,7 @@ class TestAudioModuleComprehensive:
         import audio
         assert hasattr(audio, '__version__')
         assert hasattr(audio, 'AudioGenerator')
-        assert hasattr(audio, 'SAPFProcessor')
-        assert hasattr(audio, 'PedalboardProcessor')
+        assert hasattr(audio, 'SAPFGNNProcessor')
 
     @pytest.mark.unit
     def test_audio_generator_instantiation(self):
@@ -30,22 +31,13 @@ class TestAudioModuleComprehensive:
         assert hasattr(generator, 'process_gnn_to_audio')
 
     @pytest.mark.unit
-    def test_sapf_processor_instantiation(self):
-        """Test SAPFProcessor class instantiation."""
-        from audio import SAPFProcessor
-        processor = SAPFProcessor()
+    def test_sapf_gnn_processor_instantiation(self):
+        """Test SAPFGNNProcessor class instantiation."""
+        from audio import SAPFGNNProcessor
+        processor = SAPFGNNProcessor()
         assert processor is not None
         assert hasattr(processor, 'convert_gnn_to_sapf')
         assert hasattr(processor, 'generate_audio')
-
-    @pytest.mark.unit
-    def test_pedalboard_processor_instantiation(self):
-        """Test PedalboardProcessor class instantiation."""
-        from audio import PedalboardProcessor
-        processor = PedalboardProcessor()
-        assert processor is not None
-        assert hasattr(processor, 'process_audio')
-        assert hasattr(processor, 'apply_effects')
 
     @pytest.mark.unit
     def test_audio_module_info(self):
@@ -117,7 +109,7 @@ class TestAudioIntegration:
 
 def test_audio_module_completeness():
     """Test that audio module has all required components."""
-    required_components = ['AudioGenerator', 'SAPFProcessor', 'PedalboardProcessor', 'get_module_info', 'get_audio_generation_options']
+    required_components = ['AudioGenerator', 'SAPFGNNProcessor', 'get_module_info', 'get_audio_generation_options']
     try:
         import audio
         for component in required_components:
@@ -129,6 +121,7 @@ def test_audio_module_completeness():
 def test_audio_module_performance():
     """Test audio module performance characteristics."""
     import time
+
     from audio import AudioGenerator
     generator = AudioGenerator()
     start_time = time.time()

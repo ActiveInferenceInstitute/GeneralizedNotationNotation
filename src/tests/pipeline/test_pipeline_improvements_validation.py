@@ -5,12 +5,15 @@ This module validates that the specific improvements made to the pipeline
 (DisCoPy module creation, visualization fixes, error handling, etc.) work correctly.
 """
 from typing import Any
+
 import pytest
+
 pytestmark = pytest.mark.pipeline
 import json
 import sys
 import tempfile
 from pathlib import Path
+
 pytestmark = [pytest.mark.integration]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / 'src'
@@ -22,7 +25,12 @@ class TestDiScoPyModuleCreation:
     @pytest.mark.unit
     def test_discopy_translator_module_import(self) -> None:
         """Test that the DisCoPy translator module can be imported."""
-        from execute.discopy_translator_module.translator import JAX_FULLY_OPERATIONAL, MATPLOTLIB_AVAILABLE, gnn_file_to_discopy_diagram, gnn_file_to_discopy_matrix_diagram
+        from execute.discopy_translator_module.translator import (
+            JAX_FULLY_OPERATIONAL,
+            MATPLOTLIB_AVAILABLE,
+            gnn_file_to_discopy_diagram,
+            gnn_file_to_discopy_matrix_diagram,
+        )
         assert callable(gnn_file_to_discopy_diagram)
         assert callable(gnn_file_to_discopy_matrix_diagram)
         assert isinstance(JAX_FULLY_OPERATIONAL, bool)
@@ -32,7 +40,9 @@ class TestDiScoPyModuleCreation:
     def test_discopy_diagram_creation_graceful_degradation(self) -> None:
         """Test DisCoPy diagram creation with graceful degradation."""
         try:
-            from execute.discopy_translator_module.translator import gnn_file_to_discopy_diagram
+            from execute.discopy_translator_module.translator import (
+                gnn_file_to_discopy_diagram,
+            )
             test_gnn_data = {'Variables': {'state': {'type': 'state', 'dimensions': [3, 3], 'comment': 'State space'}, 'action': {'type': 'action', 'dimensions': [2], 'comment': 'Action space'}}, 'Edges': [{'source': 'state', 'target': 'action', 'directed': True}]}
             success, message, diagram = gnn_file_to_discopy_diagram(test_gnn_data)
             assert isinstance(success, bool)
@@ -47,7 +57,11 @@ class TestDiScoPyModuleCreation:
     @pytest.mark.unit
     def test_visualize_jax_output_module_import(self) -> None:
         """Test that the JAX visualization module can be imported."""
-        from execute.discopy_translator_module.visualize_jax_output import create_summary_visualization, plot_multiple_tensor_outputs, plot_tensor_output
+        from execute.discopy_translator_module.visualize_jax_output import (
+            create_summary_visualization,
+            plot_multiple_tensor_outputs,
+            plot_tensor_output,
+        )
         assert callable(plot_tensor_output)
         assert callable(plot_multiple_tensor_outputs)
         assert callable(create_summary_visualization)
@@ -77,14 +91,15 @@ class TestVisualizationBugFixes:
     def test_matplotlib_dpi_corruption_fix(self) -> None:
         """Test that matplotlib DPI corruption is handled safely."""
         import matplotlib.pyplot as plt
-        from visualization.processor import _save_plot_safely
+
+        from visualization.processor import save_plot_safely
         with tempfile.TemporaryDirectory() as temp_dir:
             test_path = Path(temp_dir) / 'test_plot.png'
             plt.figure()
             plt.plot([1, 2, 3], [1, 4, 9])
             corrupted_dpi_values = [28421050826, -1, 0, float('inf'), 'invalid']
             for bad_dpi in corrupted_dpi_values:
-                result = _save_plot_safely(test_path, dpi=bad_dpi)
+                result = save_plot_safely(test_path, dpi=bad_dpi)
                 assert isinstance(result, bool)
                 if result:
                     assert test_path.exists()
@@ -182,6 +197,7 @@ class TestLoggingImprovements:
     @pytest.mark.unit
     def test_setup_step_logging_returns_logger(self) -> None:
         import logging as _logging
+
         from utils.logging.logging_utils import setup_step_logging
         logger = setup_step_logging('test_step', verbose=False)
         assert isinstance(logger, _logging.Logger)

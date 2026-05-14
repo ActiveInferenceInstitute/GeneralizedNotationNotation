@@ -102,15 +102,15 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
         except json.JSONDecodeError as e:
             logger.debug(f"Failed to parse GNN metadata JSON (multi-line format): {e}")
 
-    # Try previous single-line format
-    legacy_pattern = r'%%\s*GNN_METADATA:\s*(\{.*?\})'
-    match = re.search(legacy_pattern, mermaid_content, re.DOTALL)
+    # Try single-line metadata format.
+    single_line_pattern = r'%%\s*GNN_METADATA:\s*(\{.*?\})'
+    match = re.search(single_line_pattern, mermaid_content, re.DOTALL)
 
     if match:
         try:
             return json.loads(match.group(1))
         except json.JSONDecodeError as e:
-            logger.debug(f"Failed to parse GNN metadata JSON (legacy format): {e}")
+            logger.debug(f"Failed to parse GNN metadata JSON (single-line format): {e}")
 
     return {}
 
@@ -423,4 +423,3 @@ def _gnn_model_to_markdown(gnn_model: Dict[str, Any]) -> str:
         lines.append("")
 
     return "\n".join(lines)
-

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for model_registry (Step 4).
 
-Zero-mock: uses real sample GNN files and real filesystem fixtures.
+Uses real sample GNN files and real filesystem fixtures.
 """
 
 import sys

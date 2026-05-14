@@ -246,7 +246,7 @@ These are assembled by `analyze_active_inference_metrics()` which takes complete
 
 ### Framework-Specific Data Extraction
 
-Each framework has a dedicated extraction function in `analysis/framework_extractors.py` (re-exported from `post_simulation.py` for backward compatibility):
+Each framework has a dedicated extraction function in `analysis/framework_extractors.py` (re-exported from `post_simulation.py`):
 
 - `extract_pymdp_data()` — beliefs, actions, free energy, observations from PyMDP output
 - `extract_rxinfer_data()` — posterior distributions from RxInfer JSON/CSV output  
@@ -409,7 +409,7 @@ def initialize_variables(state_space_text):
                 elif 'type=' in dim:  # Type specification, ignore for now
                     continue
                 else:  # Symbolic dimension (e.g., len(π))
-                    # For now, we'll use a placeholder value
+                    # Use an explicit default value when the data source is absent
                     dims.append(2)  # Default to 2 for symbolic dimensions
             
             # Create the variable with zeros

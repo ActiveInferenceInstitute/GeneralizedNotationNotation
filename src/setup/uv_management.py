@@ -329,9 +329,8 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
     """
     Get installed package versions by inspecting the venv's site-packages directly.
 
-    Uses ``importlib.metadata`` rather than shelling out to ``uv pip list`` — the
-    latter is the legacy interface that newer uv releases (and toolchain shims)
-    reject. This is faster, shim-independent, and works against any Python
+    Uses ``importlib.metadata`` rather than shelling out to ``uv pip list``.
+    This is faster, facade-independent, and works against any Python
     distribution installed in ``VENV_PATH``.
 
     Args:

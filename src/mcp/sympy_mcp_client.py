@@ -16,16 +16,8 @@ try:
     import httpx
     HTTPX_AVAILABLE = True
 except ImportError:
+    httpx = None  # type: ignore[assignment]
     HTTPX_AVAILABLE = False
-    # Create a fallback httpx module for type checking
-    class _FallbackHttpx:
-        class AsyncClient:
-            def __init__(self, **kwargs): pass
-            async def get(self, url: str): raise NotImplementedError()
-            async def post(self, url: str, **kwargs): raise NotImplementedError()
-            async def aclose(self): pass
-        class RequestError(Exception): pass
-    httpx = _FallbackHttpx()
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +48,7 @@ class SymPyMCPClient:
         self.auto_start_server = auto_start_server
         self.server_process: Optional[subprocess.Popen[str]] = None
         self.session_id = None
-        self._client: Optional[httpx.AsyncClient] = None
+        self._client: Optional[Any] = None
 
         if not HTTPX_AVAILABLE:
             logger.warning("httpx not available, SymPy MCP client will have limited functionality")

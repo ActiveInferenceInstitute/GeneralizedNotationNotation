@@ -79,8 +79,8 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                 )
 
                 with gr.Row():
-                    gr.Textbox(label="Variable", placeholder="A")
-                    gr.Textbox(label="Ontology Term", placeholder="LikelihoodMatrix")
+                    gr.Textbox(label="Variable", value="A")
+                    gr.Textbox(label="Ontology Term", value="LikelihoodMatrix")
                     gr.Button("Add Mapping", variant="primary")
 
             # Tab 3: Connections

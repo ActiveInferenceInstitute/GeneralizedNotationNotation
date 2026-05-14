@@ -82,7 +82,7 @@ All pipeline modules follow the **thin orchestrator pattern**:
 
 - **Type hints** for all public functions
 - **Exit codes**: 0 = success, 1 = error, 2 = warnings
-- **No mocks** in tests — all tests must exercise real code paths
+- Tests exercise real code paths and real data dependencies
 - Follow existing patterns — read neighboring modules before writing new ones
 
 ### Module Structure

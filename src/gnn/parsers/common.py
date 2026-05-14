@@ -15,7 +15,20 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Protocol, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Protocol,
+    Type,
+    TypeVar,
+    Union,
+)
+
+if TYPE_CHECKING:
+    from gnn.types import ValidationResult
 
 logger = logging.getLogger(__name__)
 
@@ -365,7 +378,7 @@ class GNNInternalRepresentation:
             'raw_sections': self.raw_sections
         }
         
-        # Backwards compatibility for renderers
+        # Renderer-facing parameter views.
         if self.parameters:
             merged = {str(p.name).strip(): p.value for p in self.parameters if p.name}
             result['initialparameterization'] = merged

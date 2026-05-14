@@ -109,8 +109,8 @@ def get_performance_tracker() -> "PerformanceTracker":
     return _performance_tracker_instance
 
 
-# Module-level alias for backwards compatibility.  No longer allocated at import
-# time — first access triggers lazy construction via get_performance_tracker().
+# Module-level lazy proxy. First access triggers construction via
+# get_performance_tracker().
 class _LazyPerformanceTracker:
     """Proxy that defers PerformanceTracker construction to first attribute access."""
     def __getattr__(self, name: str):

@@ -6,7 +6,9 @@ This file contains comprehensive tests for the report module functionality.
 import sys
 from pathlib import Path
 from typing import Any
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestReportModuleComprehensive:
@@ -123,6 +125,7 @@ def test_report_module_completeness() -> None:
 def test_report_module_performance() -> None:
     """Test report module performance characteristics."""
     import time
+
     from report import ReportGenerator
     generator = ReportGenerator()
     start_time = time.time()

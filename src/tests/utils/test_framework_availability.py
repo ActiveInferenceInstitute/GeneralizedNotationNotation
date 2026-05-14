@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Tests for src/utils/framework_availability.py.
 
-Zero-mock: every check is verified against the real interpreter's
-``importlib.util.find_spec`` results, not mocked-out stubs.
+Every check is verified against the real interpreter's
+``importlib.util.find_spec`` results.
 """
 
 import importlib.util
@@ -31,7 +31,7 @@ def test_is_framework_available_matches_find_spec(framework):
 
 
 def test_unknown_framework_returns_true():
-    # Legacy fall-through semantics from execute/processor.py:115-116
+    # Unknown frameworks stay available so callers do not over-skip.
     assert is_framework_available("definitely-not-a-framework") is True
 
 

@@ -346,12 +346,6 @@ def get_mcp_diagnostics(mcp_instance_ref) -> Dict[str, Any]:
         diagnostics["issues"].append(f"Failed to load modules: {failed_modules}")
         diagnostics["recommendations"].append("Check module dependencies and installation")
 
-    # Check for deprecated tools
-    deprecated_tools = [name for name, tool in mcp_instance_ref.tools.items() if tool.deprecated]
-    if deprecated_tools:
-        diagnostics["warnings"].append(f"Deprecated tools found: {deprecated_tools}")
-        diagnostics["recommendations"].append("Consider updating or removing deprecated tools")
-
     # Check for experimental tools
     experimental_tools = [name for name, tool in mcp_instance_ref.tools.items() if tool.experimental]
     if experimental_tools:

@@ -10,7 +10,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Coroutine, Dict, List, Optional, Union
 
-from analysis.analyzer import extract_sections
+from src.analysis.analyzer import extract_sections
 
 from .llm_operations import LLMOperations
 from .providers.openai_provider import OpenAIProvider  # for patching in tests

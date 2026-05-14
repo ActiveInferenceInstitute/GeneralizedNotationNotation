@@ -5,11 +5,13 @@ This module tests the pipeline's behavior under various error conditions,
 dependency failures, and edge cases to ensure robust operation.
 """
 import pytest
+
 pytestmark = pytest.mark.pipeline
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
 pytestmark = [pytest.mark.integration]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / 'src'
@@ -30,6 +32,7 @@ class TestDependencyErrorScenarios:
         if importlib.util.find_spec('pymdp') is None or importlib.util.find_spec('jax') is None:
             pytest.skip('pymdp + jax required for PyMDPSimulation instantiation')
         import logging
+
         from execute.pymdp.pymdp_simulation import PyMDPSimulation
         logger = logging.getLogger('test_pymdp')
         simulator = PyMDPSimulation()
@@ -43,7 +46,11 @@ class TestDependencyErrorScenarios:
     @pytest.mark.unit
     def test_missing_discopy_graceful_degradation(self):
         """Test that missing DisCoPy is handled gracefully."""
-        from execute.discopy_translator_module.translator import DISCOPY_AVAILABLE, JAX_FULLY_OPERATIONAL, gnn_file_to_discopy_diagram
+        from execute.discopy_translator_module.translator import (
+            DISCOPY_AVAILABLE,
+            JAX_FULLY_OPERATIONAL,
+            gnn_file_to_discopy_diagram,
+        )
         test_gnn_data = {'Variables': {'test_var': {'type': 'state', 'dimensions': [3]}}}
         success, message, diagram = gnn_file_to_discopy_diagram(test_gnn_data)
         if not DISCOPY_AVAILABLE:
@@ -58,12 +65,13 @@ class TestDependencyErrorScenarios:
     def test_matplotlib_rendering_fallbacks(self):
         """Test visualization fallbacks when matplotlib has issues."""
         import matplotlib.pyplot as plt
-        from visualization.processor import _save_plot_safely
+
+        from visualization.processor import save_plot_safely
         with tempfile.TemporaryDirectory() as temp_dir:
             test_plot_path = Path(temp_dir) / 'test_plot.png'
             plt.figure()
             plt.plot([1, 2, 3], [1, 4, 9])
-            assert _save_plot_safely(test_plot_path, dpi=999999)
+            assert save_plot_safely(test_plot_path, dpi=999999)
             assert test_plot_path.exists()
             plt.close()
 

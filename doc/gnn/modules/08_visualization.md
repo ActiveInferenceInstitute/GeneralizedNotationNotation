@@ -13,7 +13,7 @@ This module provides comprehensive visualization capabilities for GNN models, in
 ```
 src/visualization/
 ├── __init__.py                 # Public exports (MatrixVisualizer, process_visualization, …)
-├── processor.py                # Shim: core + parse + plotting re-exports
+├── processor.py                # Facade: core + parse + plotting re-exports
 ├── core/                       # process.py, parsed_model.py (JSON-first loader); [README](../../../src/visualization/core/README.md)
 ├── parse/                      # markdown.py, gnn_file_parser.py (GNNParser); [README](../../../src/visualization/parse/README.md)
 ├── plotting/                   # utils.py (Agg, save_plot_safely); [README](../../../src/visualization/plotting/README.md)

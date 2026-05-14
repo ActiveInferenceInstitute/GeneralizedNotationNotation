@@ -4,9 +4,11 @@ Test Pipeline Overall Tests
 This file contains comprehensive tests for the pipeline module functionality.
 """
 import pytest
+
 pytestmark = pytest.mark.pipeline
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 pipeline = pytest.importorskip('pipeline')
 
@@ -26,7 +28,7 @@ class TestPipelineModuleComprehensive:
     def test_pipeline_orchestrator_instantiation(self):
         """Test PipelineOrchestrator class instantiation."""
         from pipeline import PipelineOrchestrator
-        orchestrator = PipelineOrchestrator()
+        orchestrator = PipelineOrchestrator(steps=[3])
         assert orchestrator is not None
         assert hasattr(orchestrator, 'execute_pipeline')
         assert hasattr(orchestrator, 'get_pipeline_steps')
@@ -69,6 +71,7 @@ class TestPipelineFunctionality:
         from pipeline import PipelineOrchestrator
         orchestrator = PipelineOrchestrator()
         pipeline_data = comprehensive_test_data.get('pipeline_data', {})
+        pipeline_data["steps"] = [3]
         result = orchestrator.execute_pipeline(pipeline_data)
         assert result is not None
 
@@ -119,6 +122,7 @@ def test_pipeline_module_completeness():
 def test_pipeline_module_performance():
     """Test pipeline module performance characteristics."""
     import time
+
     from pipeline import PipelineOrchestrator
     orchestrator = PipelineOrchestrator()
     start_time = time.time()

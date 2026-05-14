@@ -5,12 +5,12 @@ Execute Processor module for GNN Processing Pipeline.
 This module provides execute processing capabilities for rendered implementations.
 """
 
+import copy
 import json
 import logging
 import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
-import copy
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from pathlib import Path
@@ -108,6 +108,8 @@ def determine_script_framework(script_path: Path, render_output_dir: Path, frame
 # previously imported them from execute.processor.
 from utils.framework_availability import (  # noqa: E402
     FRAMEWORK_IMPORT_CHECK as _FRAMEWORK_IMPORT_CHECK,
+)
+from utils.framework_availability import (
     is_framework_available as _is_framework_available_by_name,
 )
 
@@ -283,7 +285,7 @@ def _resolve_render_output_dir(
     if "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
         return _if_nonempty(target_dir) or target_dir
 
-    # Priority 4: search common locations (cwd-relative and legacy test paths)
+    # Priority 4: search common cwd-relative locations.
     candidates: List[Path] = [
         target_dir.parent / "output" / "11_render_output",
         target_dir / "11_render_output",
@@ -522,10 +524,9 @@ def process_execute(
                         if "error" in exec_result:
                             execution_results["framework_status"][framework]["error"] = exec_result["error"]
 
-        # Populate backward-compatible keys before saving
+        # Populate summary counters before saving.
         total_found = execution_results["total_scripts_found"]
         successful = execution_results["successful_executions"]
-        failed = execution_results["failed_executions"]
         skipped = execution_results.get("skipped_executions", 0)
         attempted = total_found - skipped
         execution_results["total_scripts"] = total_found
@@ -551,7 +552,7 @@ def process_execute(
             detail_path = summaries_dir / "execution_summary_detail.json"
             detail_payload = dict(execution_results)
             detail_payload["execution_details"] = full_details_snapshot
-            detail_payload["execution_summary_format"] = "detail_legacy_v1"
+            detail_payload["execution_summary_format"] = "detail_v1"
             with open(detail_path, 'w') as f:
                 json.dump(detail_payload, f, indent=2, default=str)
 
@@ -1076,7 +1077,7 @@ def execute_single_script(
     return exec_result
 
 
-# --- Re-export everything from sub-modules for backward compatibility ---
+# --- Public exports from sub-modules ---
 from .data_extractors import (
     collect_execution_outputs,
 )

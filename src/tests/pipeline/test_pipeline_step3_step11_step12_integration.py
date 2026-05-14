@@ -12,7 +12,9 @@ This tests the hand-off contracts between pipeline stages, not internal logic.
 import sys
 import tempfile
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 MINIMAL_GNN_CONTENT = '## GNNSection\nActInfPOMDP\n\n## ModelName\nIntegrationTestModel\n\n## StateSpaceBlock\nA[2,2,type=float]\nB[2,2,2,type=float]\ns[2,1,type=float]\no[2,1,type=int]\nu[2,1,type=int]\n\n## Connections\nA>s\nB>s\ns-o\n\n## InitialParameterization\nA={(0.9,0.1),(0.1,0.9)}\nB={(0.9,0.1,0.9,0.1),(0.1,0.9,0.1,0.9)}\n\n## Time\nDynamic, DiscreteTime, ModelTimeHorizon=10\n\n## Footer\nVersion: 1.0\n'
 GNN_FILE_PATH = Path(__file__).parent.parent.parent.parent / 'input' / 'gnn_files' / 'basics' / 'static_perception.md'

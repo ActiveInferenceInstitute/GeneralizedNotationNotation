@@ -23,23 +23,11 @@ from typing import Any, Dict, Optional
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
 
-# Import performance tracking from dedicated module
+# Import performance tracking from dedicated module.
 try:
-    from utils.performance_tracker import PerformanceTracker, performance_tracker
+    from utils.performance_tracker import performance_tracker
 except ImportError:
-    try:
-        from ..performance_tracker import PerformanceTracker, performance_tracker
-    except ImportError:
-        # Recovery: define minimal stubs for graceful degradation
-        class PerformanceTracker:
-            """Recovery performance tracker when module unavailable."""
-            def __init__(self): pass
-            @contextmanager
-            def track_operation(self, name: str, metadata: dict = None):
-                yield
-            def get_summary(self) -> dict:
-                return {"status": "recovery", "operations": []}
-        performance_tracker = PerformanceTracker()
+    from ..performance_tracker import performance_tracker
 
 class CorrelationFormatter(logging.Formatter):
     """Formatter that includes correlation IDs for tracing across pipeline steps."""

@@ -277,8 +277,8 @@ class SweepReporter:
                         f"- **T={t:,}**: Runtime scales as **O(N^{exponent:.2f})** ($R^2$={r2:.3f}, RMSE={rmse:.3f}) "
                         f"(N={n_vals[0]}→{n_vals[-1]}: {rt_vals[0]:.1f}s → {rt_vals[-1]:.1f}s)"
                     )
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug("Skipped N scaling fit for T=%s: %s", t, e)
 
         # Group by N, fit T scaling
         n_values = sorted({r.num_states for r in pymdp_recs})
@@ -311,8 +311,8 @@ class SweepReporter:
                         f"- **N={n}**: Runtime scales as **O(T^{exponent:.2f})** ($R^2$={r2:.3f}, RMSE={rmse:.3f}) "
                         f"(T={t_vals_dim[0]:,}→{t_vals_dim[-1]:,}: {runtime_vals[0]:.1f}s → {runtime_vals[-1]:.1f}s)"
                     )
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug("Skipped T scaling fit for N=%s: %s", n, e)
 
         unc = [
             r for r in pymdp_recs

@@ -48,7 +48,7 @@ src/tests/
 ## Writing New Tests
 
 - Place tests in `src/tests/test_{module}_*.py`
-- Use real methods only — **no mocks in production code**
+- Use real methods only in production code
 - Follow existing patterns: fixtures, parametrize, clear assertions
 - Target >80% coverage per module
 

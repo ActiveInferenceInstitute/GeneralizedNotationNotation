@@ -676,17 +676,11 @@ def test_detect_cascading_failure_pattern():
     assert any(p["type"] == "cascading_failure" for p in patterns)
 ```
 
-### Mocking LLM Calls
+### LLM Unavailable Handling
 
 ```python
-from unittest.simulated import patch, AsyncMock
-
-@patch("intelligent_analysis.processor._run_llm_analysis")
-def test_process_with_llm_failure(mock_llm, sample_summary_data, tmp_path):
-    """Test that LLM failure falls back to rule-based analysis."""
-    mock_llm.side_effect = Exception("LLM unavailable")
-
-    # The processor should still succeed with rule-based recovery
+def test_process_without_provider_config(sample_summary_data, tmp_path):
+    """Test that provider unavailability still yields rule-based analysis."""
     import logging
     logger = logging.getLogger("test")
 

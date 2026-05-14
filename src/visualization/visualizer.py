@@ -16,7 +16,7 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-from pipeline.config import get_output_dir_for_script
+from src.pipeline.config import get_output_dir_for_script
 
 # Safe imports with fallbacks
 try:
@@ -44,21 +44,21 @@ except ImportError:
 
 # Safe imports of local modules
 try:
-    from visualization.parse.gnn_file_parser import GNNParser
+    from .parse.gnn_file_parser import GNNParser
     PARSER_AVAILABLE = True
 except ImportError:
     GNNParser = None
     PARSER_AVAILABLE = False
 
 try:
-    from visualization.matrix import MatrixVisualizer
+    from .matrix import MatrixVisualizer
     MATRIX_VISUALIZER_AVAILABLE = True
 except ImportError:
     MatrixVisualizer = None
     MATRIX_VISUALIZER_AVAILABLE = False
 
 try:
-    from visualization.ontology import OntologyVisualizer
+    from .ontology import OntologyVisualizer
     ONTOLOGY_VISUALIZER_AVAILABLE = True
 except ImportError:
     OntologyVisualizer = None
@@ -281,7 +281,6 @@ class GNNVisualizer:
 
         return str(self.output_dir)
 
-    # Methods expected by tests when using GraphVisualizer alias
     def generate_graph_visualization(self, graph_data: Dict[str, Any] | None = None) -> Dict[str, Any]:
         output_dir = self.output_dir / "graph"
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -815,7 +814,7 @@ def generate_visualizations(
         log_step_warning,
     )
     try:
-        from pipeline import get_output_dir_for_script
+        from src.pipeline import get_output_dir_for_script
         from utils import performance_tracker
     except ImportError:
         def get_output_dir_for_script(script: str, output_dir: Path) -> Path: return output_dir / "visualization"

@@ -28,14 +28,11 @@ from ._shared import (
 )
 
 try:
-    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+    from src.visualization.matrix_visualizer import (
+        MatrixVisualizer as _MatrixVisualizer,
+    )
 except ImportError:
-    try:
-        from src.visualization.matrix_visualizer import (
-            MatrixVisualizer as _MatrixVisualizer,
-        )
-    except ImportError:
-        _MatrixVisualizer = None
+    _MatrixVisualizer = None
 
 
 def _generate_3d_visualization(

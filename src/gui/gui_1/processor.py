@@ -43,7 +43,7 @@ def run_gui(
     try:
         # Normalize output directory to the pipeline standard (nest under step output) when available
         try:
-            from pipeline.config import get_output_dir_for_script
+            from src.pipeline.config import get_output_dir_for_script
             output_root = get_output_dir_for_script("22_gui.py", output_dir)
         except Exception:
             output_root = output_dir
@@ -171,5 +171,4 @@ def _load_first_markdown(target_dir: Path) -> Optional[str]:
     except Exception:
         return None
     return None
-
 

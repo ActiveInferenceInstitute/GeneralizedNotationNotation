@@ -69,7 +69,7 @@ def generate_type_validity_mosaic(results: Dict[str, Any], output_dir: Path) -> 
         cmap = plt.cm.get_cmap('RdYlGn_r', 3)  # Red(2), Yellow(1), Green(0)
         cmap.set_bad(color='white')
         
-        im = ax.imshow(status_grid, cmap=cmap, vmin=0, vmax=2)
+        ax.imshow(status_grid, cmap=cmap, vmin=0, vmax=2)
         
         # Grid lines and labels
         ax.set_xticks(np.arange(-0.5, cols, 1), minor=True)
@@ -134,8 +134,8 @@ def generate_issue_distribution_chart(results: Dict[str, Any], output_dir: Path)
         width = 0.35
 
         fig, ax = plt.subplots(figsize=(max(8, len(names) * 0.5), 6))
-        rects1 = ax.bar(x - width/2, warnings, width, label='Warnings / Unknown Types', color='gold', alpha=0.8)
-        rects2 = ax.bar(x + width/2, errors, width, label='Errors / Consistency Faults', color='crimson', alpha=0.8)
+        ax.bar(x - width/2, warnings, width, label='Warnings / Unknown Types', color='gold', alpha=0.8)
+        ax.bar(x + width/2, errors, width, label='Errors / Consistency Faults', color='crimson', alpha=0.8)
 
         ax.set_ylabel('Issue Count')
         ax.set_title('Type Issue Distribution Across Models')
@@ -317,9 +317,6 @@ def generate_model_cards(results: Dict[str, Any], output_dir: Path) -> List[Path
             params = resources.get('total_parameters', 0)
             flops = resources.get('flops_estimate', 0)
 
-            # Typing traits extractions
-            types = v.get('type_issues', [])
-            
             # Dark Theme Configuration
             fig, ax = plt.subplots(figsize=(5.5, 8.25)) # Trading card ratio
             

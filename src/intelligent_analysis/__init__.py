@@ -127,7 +127,7 @@ def check_intelligent_analysis_tools() -> Dict[str, Dict[str, Any]]:
 
 
 def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
-    """Backward-compatible alias used by MCP integration."""
+    """Return intelligent-analysis tool availability for MCP integration."""
     return check_intelligent_analysis_tools()
 
 

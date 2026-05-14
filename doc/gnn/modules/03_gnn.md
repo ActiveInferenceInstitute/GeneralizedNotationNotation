@@ -109,7 +109,7 @@ success = process_gnn_multi_format(
 - `directory` (Union[str, Path]): Directory to process
 - `output_dir` (Union[str, Path, None]): Optional output directory for results (default: None)
 - `recursive` (bool): Whether to process subdirectories (default: True)
-- `parallel` (bool): Whether to use parallel processing (not implemented, default: False)
+- `parallel` (bool): Whether to process discovered files concurrently (default: False)
 
 **Returns**: `Dict[str, Any]` - Dictionary with processing results containing:
 
@@ -231,7 +231,7 @@ success = process_gnn_multi_format(
 
 #### `process_gnn(*args, **kwargs) -> Dict[str, Any]`
 
-**Description**: Alias for `process_gnn_directory`. Provides backward compatibility.
+**Description**: Alias for `process_gnn_directory`.
 
 **Parameters**: Same as `process_gnn_directory`
 

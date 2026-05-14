@@ -62,14 +62,13 @@ python src/2_tests.py --comprehensive --verbose
 
 ### Public Functions
 
-#### `run_tests(logger, output_dir, verbose=False, include_slow=False, fast_only=True, comprehensive=False, generate_coverage=False, auto_fallback=True) -> bool`
+#### `run_tests(logger, output_dir, verbose=False, fast_only=True, comprehensive=False, generate_coverage=False, auto_fallback=True) -> bool`
 **Description**: Main test execution function called by orchestrator (2_tests.py). Routes to appropriate test execution mode based on parameters.
 
 **Parameters**:
 - `logger` (logging.Logger): Logger instance for progress reporting
 - `output_dir` (Path): Output directory for test results
 - `verbose` (bool): Enable verbose output (default: False)
-- `include_slow` (bool): Include slow tests (deprecated, use comprehensive instead) (default: False)
 - `fast_only` (bool): Run only fast tests (default: True)
 - `comprehensive` (bool): Run comprehensive test suite - all tests (default: False)
 - `generate_coverage` (bool): Generate coverage reports (default: False)
@@ -523,7 +522,7 @@ def test_new_module_complex():
 
 ### Test Quality Standards
 - **No Simulated Usage**: All tests use real implementations per testing policy
-- **Real Data**: All tests use real, representative data (no synthetic/placeholder data)
+- **Real Data**: All tests use real, representative data
 - **Real Dependencies**: Tests use real dependencies (skip if unavailable, never simulated)
 - **File-Based Assertions**: Tests assert on real file outputs and artifacts
 - **Error Recovery**: Tests validate error handling with real failure modes

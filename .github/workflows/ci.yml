@@ -61,6 +61,10 @@ jobs:
         if: matrix.python-version == '3.12'
         run: uv run ruff check src/
 
+      - name: Repository terminology audit
+        if: matrix.python-version == '3.12'
+        run: uv run python scripts/check_repo_terminology.py --strict
+
       - name: Run unit and integration tests (skip pipeline & MCP)
         id: pytest
         run: |

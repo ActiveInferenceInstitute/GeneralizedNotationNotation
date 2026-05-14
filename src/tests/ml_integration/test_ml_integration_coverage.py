@@ -2,7 +2,7 @@
 """Phase 4.2 regression tests for ml_integration (Step 14).
 
 Exercises the PyTorch/JAX/NumPyro availability detection and module metadata.
-Zero-mock per CLAUDE.md — uses real importlib probes.
+Uses real importlib probes.
 """
 
 import importlib.util

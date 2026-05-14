@@ -1,12 +1,12 @@
-# MCP SDK Shim
+# MCP SDK Facade
 
-Thin compatibility layer delegating to the parent `mcp` module. Exists for `MCPSDKStatus` health check compliance.
+Thin delegation layer forwarding to the parent `mcp` module. Exists for `MCPSDKStatus` health check compliance.
 
 ## Files
 
-- `client.py` — Client-side shim (re-exports)
+- `client.py` — Client-side facade (re-exports)
 - `mcp.py` — Core API re-exports from `mcp.mcp`
-- `server.py` — Server-side shim (re-exports)
+- `server.py` — Server-side facade (re-exports)
 
 ## Note
 

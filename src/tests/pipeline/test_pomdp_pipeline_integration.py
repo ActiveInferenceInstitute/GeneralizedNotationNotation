@@ -23,7 +23,6 @@ from execute.pymdp.pymdp_utils import safe_json_dump
 from render.processor import render_gnn_spec
 from utils.jax_stack_validation import jax_pymdp_stack_ok
 
-
 _skip_no_pymdp = pytest.mark.skipif(
     not jax_pymdp_stack_ok(),
     reason="JAX + inferactively-pymdp>=1.0 required (uv sync --extra dev)",

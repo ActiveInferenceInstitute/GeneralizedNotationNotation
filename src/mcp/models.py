@@ -32,7 +32,6 @@ class MCPTool:
     version: str = "1.0.0"
     tags: List[str] = field(default_factory=list)
     examples: List[Dict[str, Any]] = field(default_factory=list)
-    deprecated: bool = False
     experimental: bool = False
     timeout: Optional[float] = None
     max_concurrent: int = 1

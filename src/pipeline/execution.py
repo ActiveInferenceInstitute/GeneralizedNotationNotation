@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-"""Pipeline execution adapters.
+"""Programmatic pipeline execution adapters.
 
-The main orchestration engine lives in :mod:`main`.  This module keeps the
-historical programmatic API while delegating actual work to the numbered step
+The main orchestration engine lives in :mod:`main`. This module provides a
+small importable surface that delegates actual work to the numbered step
 scripts through ``main.py``.
 """
 
@@ -45,16 +45,11 @@ def _main_module() -> Any:
 
 
 def _coerce_steps(steps: Any, pipeline_data: dict | None = None) -> list[int]:
-    """Normalize step inputs while keeping the API lightweight by default."""
+    """Normalize step inputs to registered numeric step identifiers."""
     if steps is None and pipeline_data:
         steps = pipeline_data.get("steps") or pipeline_data.get("only_steps")
 
-    if steps in (None, "", "pipeline"):
-        # Historical tests call run_pipeline() as a smoke helper.  Run the real
-        # parser step by default; callers that need the full 25-step run can pass
-        # steps="all" or list(range(25)).
-        return [3]
-    if steps == "all":
+    if steps in (None, "", "pipeline", "all"):
         return list(_STEP_SCRIPT_BY_NUM)
     if isinstance(steps, (str, int)):
         steps = [steps]
@@ -118,7 +113,7 @@ def run_pipeline(
     *,
     target_dir: Path | str | None = None,
     output_dir: Path | str | None = None,
-    steps: List[str] | str | None = None,
+    steps: List[str] | str | None = "all",
     verbose: bool = False,
 ) -> dict:
     """Execute pipeline steps through ``main.py`` and return a compact summary."""
@@ -298,7 +293,7 @@ def execute_pipeline_steps(steps: List[str], pipeline_data: dict) -> List[StepEx
     """Execute multiple pipeline steps."""
     results = []
     for step_name in steps:
-        step_config = {}  # Simplified
+        step_config: dict[str, Any] = {}
         result = execute_pipeline_step(step_name, step_config, pipeline_data)
         results.append(result)
     return results

@@ -2,7 +2,7 @@
 Shared matplotlib/numpy/seaborn imports for visualization and analysis.
 
 Both visualization (step 8) and analysis (step 16) import from the package-root
-`visualization._viz_compat` shim, which re-exports this module.
+`visualization._viz_compat` facade, which re-exports this module.
 """
 
 import logging
@@ -51,4 +51,3 @@ def viz_var_type(var_info: "dict") -> str:
     return str(
         var_info.get("var_type", var_info.get("type", var_info.get("node_type", "unknown")))
     )
-

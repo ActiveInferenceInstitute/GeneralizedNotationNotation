@@ -4,7 +4,7 @@
 The `scripts/` directory is the repository's hub for standalone maintenance, linting, and developer acceleration utilities. These tools operate externally to the core `src/` orchestrator pipeline, actively protecting codebase integrity over time.
 
 ## Key Files
-- `check_gnn_doc_patterns.py`: A strict RegEx-enforced documentation linter that audits `doc/` and `src/gnn/` against deprecated path aliases and import references.
+- `check_gnn_doc_patterns.py`: A strict RegEx-enforced documentation linter that audits `doc/` and `src/gnn/` against retired path aliases and import references.
 - `run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator (v1.1.0) that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It utilizes `pymdp_scaling_config.yaml` for central configuration.
 
 ## Execution

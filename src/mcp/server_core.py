@@ -231,11 +231,8 @@ def register_tools(mcp: Optional[MCP] = None) -> bool:
     singleton). Returns True only when every discovered module registered
     without error.
 
-    This is a thin wrapper around :meth:`MCP.discover_modules` that is
-    convenient for tests and scripts that already hold an MCP instance they
-    want to populate. Prior to 2026-04 this function was a no-op stub that
-    silently returned ``True`` regardless of whether any tools were actually
-    registered.
+    This is a thin wrapper around :meth:`MCP.discover_modules` for tests and
+    scripts that already hold an MCP instance they want to populate.
     """
     try:
         target = mcp if mcp is not None else get_mcp_instance()

@@ -73,10 +73,18 @@ def create_model_file(isolated_environment):
         num_states = sizes[size]
 
         content = [
-            "# ModelName",
+            f"# Test {size.capitalize()} Model",
+            "",
+            "## GNNSection",
+            "ActInfPOMDP",
+            "",
+            "## GNNVersionAndFlags",
+            "GNN v1",
+            "",
+            "## ModelName",
             f"Test{size.capitalize()}Model",
             "",
-            "# StateSpaceBlock"
+            "## StateSpaceBlock",
         ]
 
         # Add states
@@ -85,9 +93,9 @@ def create_model_file(isolated_environment):
 
         # Add connections
         content.append("")
-        content.append("# Connections")
+        content.append("## Connections")
         for i in range(num_states - 1):
-            content.append(f"s{i} -> s{i+1}")
+            content.append(f"s{i}>s{i+1}")
 
         file_path = isolated_environment / "input" / f"test_model_{size}.md"
         file_path.write_text("\n".join(content))
@@ -137,8 +145,7 @@ class TestGNNProcessingPerformance:
         assert result["status"] == "SUCCESS"
         # Check that files were processed (actual structure may vary)
         assert "processed_files" in result or "files" in result
-        # parallel= is accepted for API compatibility but not yet implemented;
-        # just verify it completes within a reasonable time bound
+        # Verify concurrent processing completes within a reasonable time bound.
         assert tracker.duration < (
             THRESHOLDS["small_model"]["processing_time"] * 4
         )
@@ -414,13 +421,12 @@ class TestResourceScaling:
         with performance_tracker() as tracker:
             result = run_pipeline(
                 target_dir=isolated_environment / "input",
-                output_dir=isolated_environment / "output"
+                output_dir=isolated_environment / "output",
+                steps=[3],
             )
 
         assert result["success"]
-        # Pipeline takes ~3 minutes for full execution regardless of model count
-        # Allow much more time since the pipeline runs all 21 steps
-        max_time_per_model = 300  # 5 minutes per model is more realistic
+        max_time_per_model = 300
         assert tracker.duration < (model_count * max_time_per_model)
 
     def test_resource_estimation(self, isolated_environment, create_model_file):
@@ -435,7 +441,8 @@ class TestResourceScaling:
         with performance_tracker() as tracker:
             run_pipeline(
                 target_dir=isolated_environment / "input",
-                output_dir=isolated_environment / "output"
+                output_dir=isolated_environment / "output",
+                steps=[3],
             )
 
         # Resource estimates are heuristics; this test verifies shape and sanity

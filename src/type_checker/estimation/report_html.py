@@ -9,9 +9,10 @@ from utils.matplotlib_setup import apply_env_backend_if_set
 
 apply_env_backend_if_set()
 
-import matplotlib.pyplot as plt
-from typing import Any, Dict, List
 from pathlib import Path
+from typing import Any, Dict, List
+
+import matplotlib.pyplot as plt
 
 
 def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, Any], output_dir: str) -> str:
@@ -30,7 +31,7 @@ def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, An
         
     html_report_path = output_path / "resource_report_detailed.html"
     
-    html_content = f"""
+    html_content = """
     <!DOCTYPE html>
     <html lang="en">
     <head>
@@ -38,23 +39,23 @@ def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, An
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>GNN Resource Estimation Report</title>
         <style>
-            body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; }}
-            h1, h2, h3 {{ color: #2c3e50; }}
-            h1 {{ border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
-            .summary-cards {{ display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }}
-            .card {{ background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 250px; border-left: 5px solid #3498db; }}
-            .card-title {{ font-size: 0.9em; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }}
-            .card-value {{ font-size: 1.8em; font-weight: bold; color: #2c3e50; }}
-            .visualizations {{ display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }}
-            .viz-container {{ background: white; border-radius: 8px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 300px; text-align: center; }}
-            .viz-container img {{ max-width: 100%; height: auto; border-radius: 4px; }}
-            .model-section {{ background: white; border-radius: 8px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
-            table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
-            th, td {{ padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }}
-            th {{ background-color: #f2f2f2; font-weight: 600; color: #333; }}
-            tr:hover {{ background-color: #f5f5f5; }}
-            .metric-definition {{ background: #e8f4f8; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #3498db; }}
-            .error-message {{ color: #e74c3c; font-weight: bold; padding: 10px; background: #fadbd8; border-radius: 5px; }}
+            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #f8f9fa; }
+            h1, h2, h3 { color: #2c3e50; }
+            h1 { border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+            .summary-cards { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+            .card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 250px; border-left: 5px solid #3498db; }
+            .card-title { font-size: 0.9em; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+            .card-value { font-size: 1.8em; font-weight: bold; color: #2c3e50; }
+            .visualizations { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+            .viz-container { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 300px; text-align: center; }
+            .viz-container img { max-width: 100%; height: auto; border-radius: 4px; }
+            .model-section { background: white; border-radius: 8px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+            th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+            th { background-color: #f2f2f2; font-weight: 600; color: #333; }
+            tr:hover { background-color: #f5f5f5; }
+            .metric-definition { background: #e8f4f8; padding: 15px; border-radius: 5px; margin-bottom: 20px; border-left: 4px solid #3498db; }
+            .error-message { color: #e74c3c; font-weight: bold; padding: 10px; background: #fadbd8; border-radius: 5px; }
         </style>
     </head>
     <body>

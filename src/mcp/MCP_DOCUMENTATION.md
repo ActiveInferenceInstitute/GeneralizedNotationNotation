@@ -59,7 +59,6 @@ class MCPTool:
     version: str = "1.0.0"      # Tool version
     tags: List[str] = field(default_factory=list)  # Tags for categorization
     examples: List[Dict[str, Any]] = field(default_factory=list)  # Usage examples
-    deprecated: bool = False    # Deprecation flag
     experimental: bool = False  # Experimental flag
     timeout: Optional[float] = None  # Execution timeout
     max_concurrent: int = 1     # Max concurrent executions

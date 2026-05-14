@@ -6,13 +6,39 @@ GNN processor module for GNN pipeline.
 import json
 import logging
 import re
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from fnmatch import fnmatch
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 
-def process_gnn_directory_lightweight(target_dir: Path, output_dir: Optional[Path] = None, recursive: bool = True) -> Dict[str, Any]:
+def _process_single_gnn_file(file_path: Path) -> Dict[str, Any]:
+    try:
+        content = file_path.read_text(encoding="utf-8")
+        return {
+            "parsed_result": parse_gnn_file(file_path, content=content),
+            "validation_result": validate_gnn_structure(file_path, content=content),
+            "error": None,
+        }
+    except Exception as e:
+        return {
+            "parsed_result": None,
+            "validation_result": None,
+            "error": {
+                "file": str(file_path),
+                "error": str(e),
+                "error_type": type(e).__name__,
+            },
+        }
+
+
+def process_gnn_directory_lightweight(
+    target_dir: Path,
+    output_dir: Optional[Path] = None,
+    recursive: bool = True,
+    parallel: bool = False,
+) -> Dict[str, Any]:
     """
     Lightweight GNN directory processing without heavy dependencies.
     
@@ -20,6 +46,7 @@ def process_gnn_directory_lightweight(target_dir: Path, output_dir: Optional[Pat
         target_dir: Directory containing GNN files
         output_dir: Directory to save results (optional)
         recursive: Whether to process subdirectories
+        parallel: Whether to process discovered files concurrently
         
     Returns:
         Dictionary with processing results
@@ -39,27 +66,28 @@ def process_gnn_directory_lightweight(target_dir: Path, output_dir: Optional[Pat
             "validation_results": []
         }
 
-        # Process each file — read once, share content between parse and validate
-        for file_path in gnn_files:
-            try:
-                with open(file_path, 'r') as fh:
-                    content = fh.read()
+        def record_file_result(file_result: Dict[str, Any]) -> None:
+            error_info = file_result.get("error")
+            if error_info:
+                results["errors"].append(error_info)
+                return
 
-                parsed_result = parse_gnn_file(file_path, content=content)
-                if parsed_result:
-                    results["parsed_files"].append(parsed_result)
-                    results["files_processed"] += 1
+            parsed_result = file_result.get("parsed_result")
+            if parsed_result:
+                results["parsed_files"].append(parsed_result)
+                results["files_processed"] += 1
 
-                validation_result = validate_gnn_structure(file_path, content=content)
+            validation_result = file_result.get("validation_result")
+            if validation_result:
                 results["validation_results"].append(validation_result)
 
-            except Exception as e:
-                error_info = {
-                    "file": str(file_path),
-                    "error": str(e),
-                    "error_type": type(e).__name__
-                }
-                results["errors"].append(error_info)
+        if parallel and len(gnn_files) > 1:
+            with ThreadPoolExecutor() as executor:
+                for file_result in executor.map(_process_single_gnn_file, gnn_files):
+                    record_file_result(file_result)
+        else:
+            for file_path in gnn_files:
+                record_file_result(_process_single_gnn_file(file_path))
 
         # Save results if output directory provided
         if output_dir:
@@ -315,7 +343,7 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         output_dir: Optional directory to save processing results as JSON.
             If provided, creates 'gnn_processing_results.json' in this location.
         recursive: Whether to search subdirectories for GNN files.
-        parallel: Accepted for API compatibility but not used; processing is always sequential.
+        parallel: Whether to process discovered files concurrently.
 
     Returns:
         Dictionary containing:
@@ -345,7 +373,11 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
             "error": f"path does not exist: {_dir_path}",
         }
     # Use lightweight processing and wrap into status dict expected by tests
-    lightweight_result = process_gnn_directory_lightweight(directory, recursive=recursive)
+    lightweight_result = process_gnn_directory_lightweight(
+        directory,
+        recursive=recursive,
+        parallel=parallel,
+    )
     # Extract actual file paths from parsed file results
     parsed_files = lightweight_result.get("parsed_files", [])
     file_paths = [pf.get("file_path", "") for pf in parsed_files if isinstance(pf, dict)]

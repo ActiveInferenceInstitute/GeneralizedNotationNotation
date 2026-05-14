@@ -11,7 +11,7 @@ Test Coverage:
 - DisCoPy categorical diagram rendering (test_render_to_discopy, test_render_to_discopy_combined)
 - Multiple language/framework rendering (test_render_to_activeinference_jl, test_render_to_jax, test_render_to_jax_pomdp)
 
-No mocking is used - all tests validate real render function execution.
+All tests validate real render function execution.
 """
 
 import sys

@@ -36,14 +36,11 @@ except ImportError:
     SEABORN_AVAILABLE = False
 
 try:
-    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+    from src.visualization.matrix_visualizer import (
+        MatrixVisualizer as _MatrixVisualizer,
+    )
 except ImportError:
-    try:
-        from src.visualization.matrix_visualizer import (
-            MatrixVisualizer as _MatrixVisualizer,
-        )
-    except ImportError:
-        _MatrixVisualizer = None  # type: ignore[assignment,misc]
+    _MatrixVisualizer = None  # type: ignore[assignment,misc]
 
 
 @dataclass

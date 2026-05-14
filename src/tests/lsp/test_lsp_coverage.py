@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for lsp (Step 22 support).
 
-Zero-mock per CLAUDE.md. Uses real GNN syntax to exercise completion,
+Uses real GNN syntax to exercise completion,
 diagnostic, and hover paths. Skips cleanly when pygls / LSP deps absent.
 """
 
@@ -47,8 +47,9 @@ def test_word_at_position_whitespace_returns_none_or_empty():
 
 
 def test_extract_line_from_attribute_error():
-    from lsp import _extract_line
     from types import SimpleNamespace
+
+    from lsp import _extract_line
     # _extract_line first checks for an .line attribute on the error.
     err = SimpleNamespace(line=5)
     assert _extract_line(err) == 5
@@ -69,7 +70,7 @@ def test_extract_line_defaults_to_1_when_nothing_matches():
 
 
 def test_create_server_without_pygls_returns_something_or_skips():
-    """If pygls is unavailable, create_server either returns None/stub or
+    """If pygls is unavailable, create_server either returns None or
     raises a clean ImportError. A TypeError or uncaught exception would be
     a regression."""
     import lsp
@@ -80,4 +81,4 @@ def test_create_server_without_pygls_returns_something_or_skips():
     except Exception as e:
         pytest.fail(f"create_server() raised unexpected {type(e).__name__}: {e}")
     # Any non-exception return is acceptable.
-    assert server is not None or True  # allow None-return when pygls stubbed
+    assert server is not None or True  # allow None return when pygls is unavailable

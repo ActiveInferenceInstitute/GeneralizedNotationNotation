@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for template (Step 0).
 
-Zero-mock per CLAUDE.md — uses real filesystem tempdirs.
+Uses real filesystem tempdirs.
 """
 
 import sys
@@ -26,6 +26,7 @@ def test_process_template_standardized_accepts_standard_signature(tmp_path):
     (target_dir, output_dir, logger, ...) keyword contract. Regression
     guard: process_template_standardized must honor this without raising."""
     import logging
+
     from template.processor import process_template_standardized
     logger = logging.getLogger("test_template")
     # Create a minimal input dir so the processor has something to walk.

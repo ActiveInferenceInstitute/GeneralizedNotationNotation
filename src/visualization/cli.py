@@ -55,7 +55,7 @@ def _resolve_output_dir(explicit: Optional[str]) -> str:
     if explicit:
         return explicit
     try:
-        from pipeline.config import get_output_dir_for_script
+        from src.pipeline.config import get_output_dir_for_script
         return str(get_output_dir_for_script("8_visualization.py", Path("output")))
     except Exception:
         return "output/8_visualization_output"

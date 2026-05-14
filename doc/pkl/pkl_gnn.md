@@ -490,7 +490,7 @@ class MathematicalExpression {
 }
 ```
 
-### 2. **Backward compatibility (migration)**
+### 2. **Migration behavior**
 
 **Challenge**: Existing GNN markdown files need migration path.
 
@@ -526,7 +526,7 @@ The integration of Apple's Pkl configuration language with GNN presents a transf
 
 1. **Proof of Concept**: Implement a simple Active Inference model using Pkl to validate the approach
 2. **Community Engagement**: Present the proposal to the GNN community for feedback and refinement
-3. **Gradual Migration**: Develop migration tools and maintain backward compatibility during transition
+3. **Gradual Migration**: Develop migration tools and document breaking changes during transition
 4. **Performance Benchmarking**: Compare Pkl-based pipeline performance against current implementation
 5. **Ecosystem Development**: Create GNN-specific Pkl packages and templates for common Active Inference patterns
 

@@ -237,7 +237,7 @@ RXINFER_CONFIG = {
 }
 ```
 
-Configuration is primarily controlled by the Step 11 orchestrator (`src/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not implemented in code.
+Configuration is primarily controlled by the Step 11 orchestrator (`src/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not backed by code.
 
 Step 11 CLI options relevant to framework scoping:
 

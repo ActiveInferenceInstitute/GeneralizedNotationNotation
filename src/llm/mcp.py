@@ -127,7 +127,12 @@ def generate_llm_documentation_mcp(
 
         # If the analyzer module is available, extract richer data
         try:
-            from .analyzer import extract_variables, extract_connections, identify_patterns, calculate_complexity_metrics
+            from .analyzer import (
+                calculate_complexity_metrics,
+                extract_connections,
+                extract_variables,
+                identify_patterns,
+            )
             file_analysis["variables"] = extract_variables(content)
             file_analysis["connections"] = extract_connections(content)
             file_analysis["patterns"] = identify_patterns(content, file_analysis["variables"], file_analysis["connections"])

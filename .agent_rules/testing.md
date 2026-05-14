@@ -114,7 +114,7 @@ def test_optional_functionality(self):
 
 ## Key Testing Rules
 
-1. **No mocks**: Use real implementations; skip when deps are absent
+1. **Real implementations**: Use production code paths; skip when deps are absent
 2. **Path setup**: Always `sys.path.insert(0, str(Path(__file__).parent.parent))`
 3. **Conftest**: Star-import `from tests.conftest import *` for shared fixtures
 4. **Import errors**: Always wrap in `try/except ImportError → pytest.skip()`

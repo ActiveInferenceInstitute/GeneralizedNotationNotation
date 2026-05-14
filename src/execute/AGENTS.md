@@ -34,7 +34,7 @@
 - Comprehensive error logging
 - Result capture and validation
 - Execution timeout handling
-- **`summaries/execution_summary.json`** (slim aggregate): Per-script rows omit bulk fields (`stdout`/`stderr` bodies, `simulation_data`); lengths and pointers remain. Consumers needing legacy payloads pass **`execution_summary_detail=True`** / **`--execution-summary-detail`** to also write **`summaries/execution_summary_detail.json`**.
+- **`summaries/execution_summary.json`** (slim aggregate): Per-script rows omit bulk fields (`stdout`/`stderr` bodies, `simulation_data`); lengths and pointers remain. Consumers needing full detail pass **`execution_summary_detail=True`** / **`--execution-summary-detail`** to also write **`summaries/execution_summary_detail.json`**.
 - **`PipelineArguments` / main orchestrator**: Step 12 subprocess commands omit **`--backend`** unless **`distributed`** is true, and omit **`--execution-benchmark-repeats`** when the value is 1 (avoids implying benchmarking when repeats are disabled).
 - **PyMDP subprocess environment**: Defaults `TF_CPP_MIN_LOG_LEVEL=3` for the child process when unset (quieter captured stderr). Set **`GNN_JAX_PLATFORM`** (e.g. `cpu`) on the host to pin JAX device selection for PyMDP runs; when unset, JAX uses normal platform discovery.
 - Configurable script-level concurrency: local process workers by default, or Ray/Dask when `distributed=True`

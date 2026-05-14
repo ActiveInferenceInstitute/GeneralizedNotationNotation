@@ -70,7 +70,7 @@ distribution: categorical, dirichlet, gaussian, beta
 | Markdown | `.md` | Primary, human-readable |
 | JSON | `.json` | Structured data exchange |
 | YAML | `.yaml` | Config-friendly |
-| XML | `.xml` | Legacy systems |
+| XML | `.xml` | XML-based integrations |
 | Pickle | `.pkl` | Python serialization |
 | Protobuf | `.pb` | High-performance binary |
 | GraphML | `.graphml` | Graph analysis tools |

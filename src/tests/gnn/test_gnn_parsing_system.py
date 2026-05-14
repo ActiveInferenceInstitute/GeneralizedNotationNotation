@@ -3,8 +3,7 @@ Tests for gnn/parsers/system.py — GNNParsingSystem.
 
 Covers: initialization, parser/serializer registries, parse_string,
 _detect_format, _detect_format_from_content, get_supported_formats,
-get_available_parsers, get_available_serializers, parse_file error paths,
-_parsers backward-compat alias.
+get_available_parsers, get_available_serializers, parse_file error paths.
 """
 import sys
 import tempfile
@@ -37,11 +36,6 @@ class TestGNNParsingSystemInit:
     def test_serializers_populated(self):
         ps = GNNParsingSystem(strict_validation=False)
         assert len(ps.serializers) > 0
-
-    def test_parsers_alias_is_same_object(self):
-        """_parsers is a backward-compat alias for parsers."""
-        ps = GNNParsingSystem(strict_validation=False)
-        assert ps._parsers is ps.parsers
 
     def test_markdown_parser_registered(self):
         ps = GNNParsingSystem(strict_validation=False)

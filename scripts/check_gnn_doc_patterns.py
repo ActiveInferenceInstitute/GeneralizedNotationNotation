@@ -25,7 +25,7 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"from gnn\.parsing import"), "gnn.parsing is not the public package layout"),
     (re.compile(r"parsers/serializers\.py"), "serializers live in parsers/*_serializer.py"),
     (re.compile(r"lark_parser\.py"), "stale filename unless reintroduced"),
-    (re.compile(r"- Python 3\.12\+"), "use Python >= 3.11 to match pyproject.toml in SPEC stubs"),
+    (re.compile(r"- Python 3\.12\+"), "use Python >= 3.11 to match pyproject.toml in SPEC examples"),
     # Stale doc paths (canonical: doc/gnn/reference/gnn_file_structure_doc.md; punctuation: src/gnn/documentation/punctuation.md)
     (re.compile(r"doc/gnn/gnn_file_structure\.md"), "use doc/gnn/reference/gnn_file_structure_doc.md"),
     (re.compile(r"doc/gnn/gnn_punctuation\.md"), "use src/gnn/documentation/punctuation.md or doc/gnn/gnn_syntax.md"),

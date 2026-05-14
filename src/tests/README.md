@@ -555,7 +555,7 @@ def test_new_module_integration():
 
 ### Test Writing
 
-1. **No Mocks**: Do not use mocking frameworks or monkeypatches to simulate behavior. Execute real methods and code paths.
+1. **Real Implementations**: Execute real methods and code paths.
 2. **Import Error Handling**: Wrap imports in try/except blocks; skip if optional deps missing.
 3. **Comprehensive Assertions**: Test both success and failure cases against real artifacts.
 4. **Performance Monitoring**: Use performance tracking for slow operations
@@ -680,12 +680,12 @@ Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g
 
 ## Test Execution Results
 
-Do not treat old pass totals in documentation as authoritative. Re-run the command of record for current pass/skip/fail counts:
+Latest measured command-of-record result (2026-05-13): 2,176 passed, 68 skipped, 1 xpassed in 694.24s. Re-run the command for current pass/skip/fail counts:
 
 ```bash
 uv run pytest src/tests/ -q --tb=no \
-  --ignore=src/tests/test_llm_ollama.py \
-  --ignore=src/tests/test_llm_ollama_integration.py
+  --ignore=src/tests/llm/test_llm_ollama.py \
+  --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
 ## Future Enhancements

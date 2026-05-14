@@ -5,7 +5,9 @@ Tests verification and management of Python package dependencies.
 """
 import sys
 from pathlib import Path
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 class TestCoreDependencies:
@@ -140,6 +142,7 @@ class TestDependencyConflicts:
         import json
         import logging
         from pathlib import Path
+
         import numpy as np
         assert json.dumps({'test': 1}) == '{"test": 1}'
         assert logging.getLogger('test') is not None

@@ -330,7 +330,7 @@ output/4_model_registry_output/
 
 ### Lifecycle Management
 
-- **Model States**: Active, deprecated, archived, deleted
+- **Model States**: Active, retired, archived, deleted
 - **State Transitions**: Controlled state transitions
 - **Audit Trail**: Complete audit trail for all changes
 - **Cleanup Procedures**: Automated cleanup procedures

@@ -51,12 +51,12 @@ _FIX_TEMPLATES = {
         "confidence": 0.9,
     },
     ("jax", "variable_A"): {
-        "code": "A = jnp.eye(num_states)  # Likelihood matrix placeholder",
+        "code": "A = jnp.eye(num_states)  # Default likelihood matrix",
         "point": "after_imports",
         "confidence": 0.6,
     },
     ("jax", "variable_B"): {
-        "code": "B = jnp.zeros((num_states, num_states, num_actions))  # Transition matrix placeholder",
+        "code": "B = jnp.zeros((num_states, num_states, num_actions))  # Default transition matrix",
         "point": "after_imports",
         "confidence": 0.6,
     },

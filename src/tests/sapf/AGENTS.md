@@ -4,7 +4,7 @@
 This directory owns pytest coverage for `src/sapf/`.
 
 ## Purpose
-- Validate real SAPF compatibility-shim behavior and audio processor wiring.
+- Validate real SAPF public-entry behavior and audio processor wiring.
 - Keep tests aligned with `src/sapf/AGENTS.md` and `README.md`.
 - Do not place production implementation logic here.
 

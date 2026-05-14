@@ -2,9 +2,8 @@
 """
 DisCoPy Translator for GNN Processing Pipeline
 
-This module provides translation from GNN specifications to DisCoPy categorical diagrams
-with optional JAX evaluation capabilities. Provides graceful degradation when 
-dependencies are not available.
+This module provides translation from GNN specifications to DisCoPy categorical
+diagrams with optional JAX evaluation capabilities.
 """
 
 import logging
@@ -23,7 +22,6 @@ try:
 except ImportError as e:
     logger.debug(f"DisCoPy not available: {e}")
     DISCOPY_AVAILABLE = False
-    # Placeholder classes for graceful degradation
     Diagram = Word = Cap = Cup = None
     Ket = Bra = X = Z = H = None
 

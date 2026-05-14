@@ -837,7 +837,7 @@ def process_gnn_file_with_d2(
     # Recovery: parse GNN file directly
     if model_data is None:
         try:
-            from gnn.parser import parse_gnn_file
+            from src.gnn.parser import parse_gnn_file
             model_data = parse_gnn_file(gnn_file)
             logger.info(f"Parsed GNN file directly: {gnn_file}")
         except Exception as e:
@@ -857,4 +857,3 @@ def process_gnn_file_with_d2(
     )
 
     return results
-

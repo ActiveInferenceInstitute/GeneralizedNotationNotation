@@ -17,11 +17,6 @@ plotting/
 - **`save_plot_safely(plot_path, dpi=300, **savefig_kwargs) -> bool`** — Save current figure with automatic DPI fallback chain (user → rcParams → no-DPI). Returns `True` on success.
 - **`safe_tight_layout() -> None`** — Apply `plt.tight_layout()` with `UserWarning` suppression. Silently skips on `ValueError` / `RuntimeError`.
 
-### Backward Compatibility
-
-- `_save_plot_safely` — Alias for `save_plot_safely` (used by legacy processor shims).
-- `_safe_tight_layout` — Alias for `safe_tight_layout`.
-
 ## Usage
 
 ```python

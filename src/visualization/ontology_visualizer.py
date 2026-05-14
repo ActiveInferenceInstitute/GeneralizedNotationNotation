@@ -1,5 +1,5 @@
-"""Shim: ontology visualizer lives in visualization.ontology."""
+"""Facade: ontology visualizer lives in visualization.ontology."""
 
-from visualization.ontology import OntologyVisualizer
+from .ontology import OntologyVisualizer
 
 __all__ = ["OntologyVisualizer"]

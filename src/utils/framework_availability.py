@@ -54,12 +54,11 @@ def is_framework_available(framework: str,
                            logger: Optional[logging.Logger] = None) -> bool:
     """Return True if the framework's required Python module is importable.
 
-    Unknown frameworks return True (the legacy fall-through semantics from
-    ``execute/processor.py`` — callers rely on this to not over-skip).
+    Unknown frameworks return True so callers do not over-skip external tools.
 
     When ``executor`` is None (default), checks via ``importlib.util.find_spec`` —
-    cheap, in-process. When ``executor`` is a Python interpreter path (legacy
-    behavior from execute/processor.py), shells out so the check reflects the
+    cheap, in-process. When ``executor`` is a Python interpreter path, shells
+    out so the check reflects the
     target interpreter's environment rather than the caller's.
     """
     if framework not in FRAMEWORK_IMPORT_CHECK:

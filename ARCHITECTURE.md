@@ -19,9 +19,9 @@ This guide details the architecture of the Generalized Notation Notation (GNN) s
 
 ### Quality Assurance Principles
 
-- **No Mock Testing**: All tests use real code paths and actual data dependencies
+- **Real Implementation Testing**: All tests use real code paths and actual data dependencies
 - **Comprehensive Coverage**: >95% test coverage with performance and integration validation
-- **Real Data Processing**: No synthetic or placeholder data in tests or examples
+- **Real Data Processing**: Tests and examples use explicit, runnable data
 - **Performance Standards**: Sub-30-minute execution time, <2GB memory usage for standard workloads
 - **Error Rate Targets**: <1% critical failure rate, >99% step completion success rate
 

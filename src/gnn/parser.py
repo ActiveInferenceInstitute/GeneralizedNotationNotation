@@ -185,20 +185,75 @@ class GNNFormatSpec:
         self.mime_types = ["text/gnn", "text/markdown"]
 
 class GNNFormalParser:
-    """Placeholder class for when Lark is not available."""
-    def __init__(self): pass
-    def parse_file(self, file_path): return None
-    def parse_content(self, content, source_name="<string>"): return None
-    def validate_syntax(self, content): return False, ["Lark not available"]
-    def visualize_parse_tree(self, content): return "Lark not available"
+    """Section-oriented formal parser backed by the built-in GNN parser."""
 
-class ParsedGNNFormal:
-    """Placeholder class for when Lark is not available."""
-    def __init__(self): pass
+    def __init__(self):
+        self._system = GNNParsingSystem()
 
-def parse_gnn_formal(file_path: Union[str, Any]) -> None: return None
-def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]: return False, ["Lark not available"]
-def get_parse_tree_visualization(content: str) -> str: return "Lark not available"
+    def parse_file(self, file_path: Union[str, Path]) -> Optional[_GNNParseAccumulator]:
+        """Parse a GNN file into the formal accumulator representation."""
+        return self._system.parse_file(file_path)
+
+    def parse_content(self, content: str, source_name: str = "<string>") -> _GNNParseAccumulator:
+        """Parse GNN content into the formal accumulator representation."""
+        parsed = ParsedGNNFormal(source_name)
+        parsed.content = content
+
+        import re
+
+        for match in re.finditer(r'^#+\s+(.+)$', content, re.MULTILINE):
+            parsed.add_section(match.group(1).strip())
+
+        for pattern in (r'(\w+)\s*:\s*(\w+)', r'(\w+)\s*=\s*([^;\n]+)'):
+            for match in re.finditer(pattern, content):
+                parsed.add_variable(match.group(1), "", match.group(2))
+
+        for pattern in (r'(\w+)\s*->\s*(\w+)', r'(\w+)\s*→\s*(\w+)'):
+            for match in re.finditer(pattern, content):
+                parsed.add_connection(match.group(1), match.group(2))
+
+        return parsed
+
+    def validate_syntax(self, content: str) -> Tuple[bool, List[str]]:
+        """Validate GNN content with the built-in structural checks."""
+        return validate_gnn(content, ValidationLevel.STANDARD)
+
+    def visualize_parse_tree(self, content: str) -> str:
+        """Return a readable outline of parsed sections, variables, and connections."""
+        parsed = self.parse_content(content)
+        lines = ["GNN parse outline"]
+        lines.append(f"Sections: {len(parsed.sections)}")
+        lines.extend(f"  - {section['name']}" for section in parsed.sections)
+        lines.append(f"Variables: {len(parsed.variables)}")
+        lines.extend(f"  - {variable['name']}: {variable['value']}" for variable in parsed.variables)
+        lines.append(f"Connections: {len(parsed.connections)}")
+        lines.extend(
+            f"  - {connection['source']} -> {connection['target']}"
+            for connection in parsed.connections
+        )
+        return "\n".join(lines)
+
+
+class ParsedGNNFormal(_GNNParseAccumulator):
+    """Formal parse result using the same accumulator shape as file parsing."""
+
+    def __init__(self, file_path: Union[str, Path] = "<string>"):
+        super().__init__(file_path)
+
+
+def parse_gnn_formal(file_path: Union[str, Any]) -> Optional[_GNNParseAccumulator]:
+    """Parse a GNN file using the formal parser facade."""
+    return GNNFormalParser().parse_file(file_path)
+
+
+def validate_gnn_syntax_formal(content: str) -> Tuple[bool, List[str]]:
+    """Validate GNN syntax using the formal parser facade."""
+    return GNNFormalParser().validate_syntax(content)
+
+
+def get_parse_tree_visualization(content: str) -> str:
+    """Return the formal parser's text outline for GNN content."""
+    return GNNFormalParser().visualize_parse_tree(content)
 
 
 

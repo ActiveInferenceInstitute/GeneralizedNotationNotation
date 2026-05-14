@@ -12,7 +12,7 @@ Tests verify that:
 5. The get_output_dir_for_script function prevents unintended directory nesting
 
 All tests use real implementations of validate_step_prerequisites() and 
-get_output_dir_for_script() - no mocking of these functions or filesystem operations.
+get_output_dir_for_script() using real functions and filesystem operations.
 Tests use temporary directories for isolation and automatic cleanup.
 """
 
@@ -204,7 +204,7 @@ class TestPipelineWarningsFix:
 
         # Should pass without warnings since all prerequisites exist
         assert result["passed"], "Prerequisite validation should pass"
-        # Note: If checking for transitive dependencies is not implemented,
+    # Note: If checking for transitive dependencies is outside scope,
         # there may still be a warning about 3_gnn.py not being a direct prerequisite
 
     def test_get_output_dir_with_path_object(self, tmp_path: Any) -> None:
@@ -231,7 +231,5 @@ class TestPipelineWarningsFix:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-
-
 
 

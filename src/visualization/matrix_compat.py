@@ -1,6 +1,6 @@
-"""Shim: matrix helpers live in visualization.matrix.compat."""
+"""Facade: matrix helpers live in visualization.matrix.compat."""
 
-from visualization.matrix.compat import (
+from .matrix.compat import (
     generate_matrix_visualizations,
     parse_matrix_data,
 )

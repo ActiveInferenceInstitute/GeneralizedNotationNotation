@@ -10,18 +10,17 @@ including:
 # Import processor functions - single source of truth
 from .processor import process_integration
 
-# Meta-analysis submodule (lazy import to avoid hard dependency on matplotlib)
+# Meta-analysis submodule.
 try:
-    from .meta_analysis import run_meta_analysis, SweepDataCollector, SweepRecord
+    from .meta_analysis import SweepDataCollector, SweepRecord, run_meta_analysis
     _META_ANALYSIS_AVAILABLE = True
-except ImportError:
+except ImportError as exc:
     _META_ANALYSIS_AVAILABLE = False
+    _META_ANALYSIS_IMPORT_ERROR = exc
 
     def run_meta_analysis(*args, **kwargs):
-        """Stub when meta_analysis dependencies are unavailable."""
-        import logging
-        logging.getLogger(__name__).warning("meta_analysis submodule unavailable")
-        return None
+        """Raise a clear dependency error when meta-analysis cannot load."""
+        raise RuntimeError("integration.meta_analysis is unavailable") from _META_ANALYSIS_IMPORT_ERROR
 
 # Module metadata
 __version__ = "1.6.0"
@@ -31,7 +30,6 @@ __description__ = "integration processing for GNN Processing Pipeline"
 # Feature availability flags
 FEATURES = {
     'basic_processing': True,
-    'fallback_mode': True,
     'meta_analysis': _META_ANALYSIS_AVAILABLE,
 }
 

@@ -11,7 +11,7 @@ Test Coverage:
 - Execution results analyzability (test_execution_results_analyzable)
 - Pipeline step handoffs (test_step_output_handoffs)
 
-No mocking is used - all tests validate real function execution.
+All tests validate real function execution.
 """
 
 import pytest

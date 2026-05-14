@@ -24,7 +24,7 @@ except ImportError:
     SCIPY_AVAILABLE = False
     stats = None
 
-from analysis.viz_base import MATPLOTLIB_AVAILABLE, plt
+from .viz_base import MATPLOTLIB_AVAILABLE, plt
 
 try:
     import seaborn as sns
@@ -602,7 +602,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                     data = json.load(f)
 
                 # Local Helper for attaching robust context
-                def apply_chart_metadata() -> None:
+                def apply_chart_metadata(framework: str = framework, data: dict = data) -> None:
                     try:
                         meta_parts = [
                             f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
@@ -896,7 +896,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                 continue
 
         # Search for simulation data files: canonical simulation_data/*.json first,
-        # then execution_logs/*_results.json (often sparse stubs). Order matters for
+        # then execution_logs/*_results.json (often sparse summaries). Order matters for
         # RxInfer/Julia backends that write full traces under simulation_data/.
         candidate_files: List[Path] = []
 

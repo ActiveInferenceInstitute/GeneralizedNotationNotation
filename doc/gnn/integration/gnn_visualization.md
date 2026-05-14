@@ -206,7 +206,7 @@ success = process_advanced_visualization(
 
 ## Analysis Visualization (Step 16)
 
-Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py` for backward compatibility) that generate framework-specific and cross-framework visualizations from execution results.
+Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py`) that generate framework-specific and cross-framework visualizations from execution results.
 
 ### Per-Framework Visualization Functions
 

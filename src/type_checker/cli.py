@@ -11,11 +11,6 @@ import os  # Added for os.environ
 import sys
 from pathlib import Path
 
-# --- Output Directory Policy ---
-# All type checking outputs must go under a subdirectory named 'type_check' (e.g., output/type_check/)
-# The CLI will refuse to run if --output-dir is set to 'output', 'output/artifacts', or any directory not ending in 'type_check',
-# unless the environment variable GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR is set (for test/dev only).
-from .processor import GNNTypeChecker
 from .output_utils import (
     complexity_analysis_csv,
     connections_table_csv,
@@ -30,6 +25,12 @@ from .output_utils import (
     write_json,
     write_markdown,
 )
+
+# --- Output Directory Policy ---
+# All type checking outputs must go under a subdirectory named 'type_check' (e.g., output/type_check/)
+# The CLI will refuse to run if --output-dir is set to 'output', 'output/artifacts', or any directory not ending in 'type_check',
+# unless the environment variable GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR is set (for test/dev only).
+from .processor import GNNTypeChecker
 from .resource_estimator import GNNResourceEstimator
 
 logger = logging.getLogger(__name__)

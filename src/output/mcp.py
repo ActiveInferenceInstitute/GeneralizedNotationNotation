@@ -1,11 +1,4 @@
-"""
-MCP Tools for Output Integration.
-
-This module is an intentional structural stub — the ``src/output/`` directory
-holds pipeline artifacts at runtime and has no callable tools to expose.
-``register_tools`` exists to satisfy the MCP auto-discovery contract (every
-top-level ``src/<module>/`` is expected to expose an ``mcp.py`` entry point).
-"""
+"""MCP tools for output fixture inspection."""
 
 import logging
 from typing import Any
@@ -14,10 +7,20 @@ logger = logging.getLogger(__name__)
 
 
 def register_tools(mcp_instance: Any) -> None:
-    """Register output-module tools with the MCP server (no-op).
+    """Register output fixture inspection tools with the MCP server."""
 
-    The output module has no tools to register — it's a pure artifact
-    directory. We log the no-op registration so the MCP audit log can
-    confirm every module was discovered.
-    """
-    logger.info("output.mcp: no tools to register (structural stub)")
+    def describe_output_fixtures() -> dict[str, Any]:
+        return {
+            "module": "output",
+            "purpose": "Reference pipeline artifact fixtures used by integration tests",
+            "live_output_dir": "output/",
+            "fixture_dir": "src/output/",
+        }
+
+    mcp_instance.register_tool(
+        name="output.describe_fixtures",
+        func=describe_output_fixtures,
+        schema={},
+        description="Describe the source-controlled output fixture directory.",
+    )
+    logger.info("output.mcp: registered fixture description tool")

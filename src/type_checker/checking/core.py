@@ -13,20 +13,20 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
+
+# We need to import the estimator lazily or through the standard pipeline
+# to avoid circular dependencies if we refactor heavily, but for now we'll 
+# import it directly from the estimation package.
+from ..estimation.strategies import (
+    calculate_complexity,
+    estimate_memory,
+)
 from .dimensions import extract_gnn_dimensions, validate_dimension_compatibility
 from .rules import (
     check_type_consistency,
     extract_types_from_content,
     get_validation_rules,
     validate_type,
-)
-
-# We need to import the estimator lazily or through the standard pipeline
-# to avoid circular dependencies if we refactor heavily, but for now we'll 
-# import it directly from the estimation package.
-from type_checker.estimation.strategies import (
-    calculate_complexity,
-    estimate_memory,
 )
 
 _module_logger = logging.getLogger(__name__)
@@ -39,7 +39,8 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
     for generation of Baseball Cards during the standard validation pass.
     """
     import math
-    from type_checker.estimation.estimator import GNNResourceEstimator
+
+    from ..estimation.estimator import GNNResourceEstimator
 
     try:
         # Extract structured dimensions
@@ -171,7 +172,7 @@ class GNNTypeChecker:
                 json.dump(results, f, indent=2)
 
             # Generate visualizations natively from results matrix
-            from type_checker.visualizer import generate_all_visualizations
+            from ..visualizer import generate_all_visualizations
             visual_embeddings = generate_all_visualizations(results, output_dir)
             if visual_embeddings:
                 results["visual_embeddings"] = visual_embeddings

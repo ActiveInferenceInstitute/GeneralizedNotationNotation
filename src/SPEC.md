@@ -60,7 +60,7 @@ Accepted alternatives for core processing file organization:
 
 - `setup/`, `tests/`, `validation/`: processing logic in `__init__.py`
 - `model_registry/`: processing logic in `registry.py`
-- `website/`: processing logic split across `renderer.py` and `generator.py` (`processor.py` remains a thin shim)
+- `website/`: processing logic split across `renderer.py` and `generator.py` (`processor.py` remains a thin facade)
 
 ### Exit Code Standards
 
@@ -127,7 +127,7 @@ Accepted alternatives for core processing file organization:
 | `lsp/` | Language Server Protocol support |
 | `doc/` | In-repo technical documentation subtree |
 | `tests/` | Test suite |
-| `sapf/` | SAPF compatibility shim (`audio/sapf/`) |
+| `sapf/` | SAPF public entry point (`audio/sapf/`) |
 
 Pipeline artifacts are written to the repository-level `output/` directory by default (`io.output_dir` in `input/config.yaml`). That tree is **tracked in git** (with selective ignores for volatile paths under `.gitignore`). The `src/output/` directory is not a Python package; see [`output/README.md`](output/README.md) for fixture copies vs root `output/`.
 

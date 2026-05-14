@@ -202,9 +202,9 @@ class TestDependencyManagement:
     def test_uv_tree_works(self):
         """``uv tree`` is the modern replacement for ``uv pip list``.
 
-        The legacy ``uv pip`` interface is rejected by newer uv releases and
+        The ``uv pip`` interface is rejected by newer uv releases and
         by toolchain shims (e.g. trailofbits modern-python). ``uv tree``
-        prints the project's dependency tree and is the shim-compatible
+    prints the project's dependency tree and is the facade-compatible
         way to verify uv is functional against the current project.
         """
         result = subprocess.run(  # nosec B607 B603 -- fixed-arg invocation

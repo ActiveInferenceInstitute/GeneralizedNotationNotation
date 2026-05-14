@@ -37,24 +37,15 @@ try:
         ParseResult,
     )
     from ...gnn.parsers.markdown_parser import MarkdownGNNParser
-except ImportError:  # pragma: no cover - fallback when used standalone
+except ImportError:  # pragma: no cover - import path when used standalone
     try:
         from gnn.parsers.common import (  # noqa: F401
             GNNInternalRepresentation,
             ParseResult,
         )
         from gnn.parsers.markdown_parser import MarkdownGNNParser
-    except ImportError:
-        logging.warning("GNN parsers not available, using simplified parsing stubs")
-
-        class ParseResult:  # type: ignore[no-redef]
-            def __init__(self, success: bool, data: Any) -> None:
-                self.success = success
-                self.data = data
-
-        class MarkdownGNNParser:  # type: ignore[no-redef]
-            def parse_string(self, content: str) -> ParseResult:
-                return ParseResult(True, {"model_name": "RecoveryModel"})
+    except ImportError as exc:
+        raise ImportError("PyMDP rendering requires the GNN parser modules") from exc
 
 
 logger = logging.getLogger(__name__)

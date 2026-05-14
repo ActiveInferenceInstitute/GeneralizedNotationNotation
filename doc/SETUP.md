@@ -161,7 +161,7 @@ export GNN_CACHE_DIR="/path/to/cache"
 
 The following dependencies are included in `requirements-dev.txt`:
 
-- **Testing**: pytest-cov, pytest-mock
+- **Testing**: pytest-cov and repository pytest helpers
 - **Code Quality**: flake8, mypy, black, isort
 - **Documentation**: sphinx, sphinx-rtd-theme
 - **Debugging**: ipython, ipdb

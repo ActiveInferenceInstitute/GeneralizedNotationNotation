@@ -7,14 +7,14 @@
 This comprehensive reference documents programmatic integration with the GeneralizedNotationNotation (GNN) system.
 
 > **Accuracy**  
-> **Authoritative `gnn` exports:** [`src/gnn/__init__.py`](../../src/gnn/__init__.py). **Format counts / registries:** [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md). **Symbol index:** [`api_index.json`](api_index.json) (regenerate with `python src/generate_api_index.py`).  
-> Sections **below this box** that show modules such as `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` are **illustrative sketches** unless you confirm the same names in `src/` or `api_index.json`.
+> **Authoritative `gnn` exports:** [`src/gnn/__init__.py`](../../src/gnn/__init__.py). **Format counts / registries:** [`src/gnn/SPEC.md`](../../src/gnn/SPEC.md).  
+> Sections **below this box** that show modules such as `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` are **illustrative sketches** unless you confirm the same names in `src/`.
 
 ## API map
 
 1. **Package `gnn` (Step 3)** — file discovery, parsing, validation, multi-format serialization under [`src/gnn/`](../../src/gnn/).
 2. **Pipeline CLI** — `python src/main.py`, numbered `src/N_*.py` scripts.
-3. **Render / execute / viz / LLM / MCP** — see `api_index.json` and [`src/AGENTS.md`](../../src/AGENTS.md).
+3. **Render / execute / viz / LLM / MCP** — see [`src/AGENTS.md`](../../src/AGENTS.md) and module-level `AGENTS.md` files under `src/`.
 
 ### Quick start (current `gnn` exports)
 
@@ -56,7 +56,7 @@ ok, errors = validate_gnn(Path("input/gnn_files/model.md").read_text(encoding="u
 
 ## Illustrative reference (verify in `src/`)
 
-The remainder of this file retains older narrative examples. **Do not import** `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` unless listed in [`src/gnn/__init__.py`](../../src/gnn/__init__.py) or `api_index.json`.
+The remainder of this file retains older narrative examples. **Do not import** `gnn.parsing.GNNParser`, `GNNModel`, `Pipeline`, or `Visualizer` unless listed in [`src/gnn/__init__.py`](../../src/gnn/__init__.py) or the relevant `src/` module.
 
 ### **📊 GNNModel Class**
 
@@ -547,8 +547,14 @@ server = MCPServer()
 @server.tool("parse_gnn_model")
 def parse_gnn_model(filepath: str) -> dict:
     """Parse GNN model and return structured representation."""
-    # Illustrative — use gnn.GNNParsingSystem().parse_file(...) or gnn.mcp.parse_gnn_content in practice.
-    raise NotImplementedError("Wire to gnn.GNNParsingSystem or MCP parse_gnn_content")
+    result = GNNParsingSystem(strict_validation=False).parse_file(filepath)
+    return {
+        "success": result.success,
+        "source_file": result.source_file,
+        "errors": result.errors,
+        "warnings": result.warnings,
+        "model_name": getattr(result.model, "model_name", None),
+    }
 
 @server.tool("visualize_model")
 def visualize_model(model_data: dict, viz_type: str) -> str:

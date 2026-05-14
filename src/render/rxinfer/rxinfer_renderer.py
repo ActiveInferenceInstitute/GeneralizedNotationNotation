@@ -128,7 +128,7 @@ class RxInferRenderer:
                 3  # Default to 3 for proper POMDP
             )
 
-            # Extract num_timesteps from model parameters (default 20 for backward compat)
+            # Extract num_timesteps from model parameters.
             num_timesteps = model_params.get('num_timesteps', gnn_spec.get('initialparameterization', {}).get('num_timesteps', 20))
 
             # Validate parameters
@@ -141,7 +141,7 @@ class RxInferRenderer:
             if not isinstance(num_timesteps, int) or num_timesteps < 1:
                 num_timesteps = 20
 
-            # Read the minimal working template (no deprecated APIs)
+    # Read the minimal working template with current APIs.
             template_path = Path(__file__).parent / 'minimal_template.jl'
             if not template_path.exists():
                 raise FileNotFoundError(f"Template file not found: {template_path}")
@@ -149,8 +149,8 @@ class RxInferRenderer:
             with open(template_path, 'r', encoding='utf-8') as f:
                 template = f.read()
 
-            # Fill in the template - use careful formatting to avoid Julia syntax conflicts
-            # Replace placeholders one at a time to avoid issues with curly braces
+            # Fill in the template carefully to avoid Julia syntax conflicts.
+            # Replace template markers one at a time to avoid issues with curly braces.
             code = template
             code = code.replace('{model_name}', model_display_name)
             code = code.replace('{timestamp}', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -201,7 +201,7 @@ class RxInferRenderer:
             3  # Default to 3 for proper POMDP simulation
         )
 
-        # Extract num_timesteps from model parameters (default 20 for backward compat)
+        # Extract num_timesteps from model parameters.
         num_timesteps = model_params.get('num_timesteps', 20)
 
         # Extract action_precision from GNN ModelParameters (RX-3: was hardcoded 4.0)

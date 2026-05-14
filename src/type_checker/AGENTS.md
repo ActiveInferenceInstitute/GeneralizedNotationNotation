@@ -21,8 +21,8 @@ The Type Checker agent provides a rigorously unified structural mapping layer en
 *   **`estimation/estimator.py`**: A specialized computational layer (`GNNResourceEstimator`) evaluating edge densities and variable bounds simulating raw hardware execution strains.
 *   **`visualizer.py`**: Natively generates `[model_name]_card.png` files rendering trading cards, dropping previews directly into `type_check_summary.md` via inline images to ensure highly legible output execution states.
 
-## Zero-Mock Status
-The unit testing infrastructure (`src/tests/type_checker/`) strictly tests the real active classes inside the `checking/` and `estimation/` subpackages directly, simulating pipeline orchestration flows without isolated duplicate boundaries, retaining robust stability scores globally.
+## Verification Status
+The unit testing infrastructure (`src/tests/type_checker/`) tests the real active classes inside the `checking/` and `estimation/` subpackages directly, including pipeline orchestration flows and stability metrics.
 
 ---
 ## Documentation

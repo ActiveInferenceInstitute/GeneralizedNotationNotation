@@ -130,7 +130,7 @@ Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInf
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (`uv sync --extra dev` then `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`: 2,200 passed, 70 skipped, 2026-05-08; enable those files when local `ollama` is available) |
+| `src/tests/` | Test suite (`uv sync --extra dev` then `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; use current run output for pass/skip counts; enable those files when local `ollama` is available) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/reference/gnn_syntax.md` | Complete GNN syntax specification |

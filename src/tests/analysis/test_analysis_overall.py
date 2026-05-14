@@ -1,7 +1,10 @@
 import json
 from typing import Any
+
 import pytest
+
 from analysis.processor import process_analysis
+
 
 class TestAnalysisOverall:
     """Test suite for Analysis module."""
@@ -139,7 +142,16 @@ class TestAnalysisModuleImports:
 
     def test_visualization_function_exports(self) -> None:
         """Test that new visualization functions are exported from analysis module."""
-        from analysis import animate_belief_evolution, generate_action_analysis, generate_belief_heatmaps, generate_cross_framework_comparison, generate_free_energy_plots, generate_observation_analysis, plot_belief_evolution, visualize_all_framework_outputs
+        from analysis import (
+            animate_belief_evolution,
+            generate_action_analysis,
+            generate_belief_heatmaps,
+            generate_cross_framework_comparison,
+            generate_free_energy_plots,
+            generate_observation_analysis,
+            plot_belief_evolution,
+            visualize_all_framework_outputs,
+        )
         assert callable(visualize_all_framework_outputs)
         assert callable(generate_belief_heatmaps)
         assert callable(generate_action_analysis)
@@ -256,6 +268,7 @@ class TestAnalyzerSimulationMetrics:
     def test_extract_simulation_metrics_reads_json(self, tmp_path):
         """_extract_simulation_metrics loads simulation_results.json when present."""
         import json
+
         from analysis.analyzer import _extract_simulation_metrics
         sim_dir = tmp_path / 'sim_data'
         sim_dir.mkdir()
@@ -281,6 +294,7 @@ class TestAnalyzerSimulationMetrics:
     def test_extract_simulation_metrics_bnlearn_execution_logs(self, tmp_path):
         """bnlearn writes execution_logs/*_results.json; metrics should still record completion."""
         import json
+
         from analysis.analyzer import _extract_simulation_metrics
         impl = tmp_path / 'markov_chain' / 'bnlearn'
         el = impl / 'execution_logs'
@@ -297,6 +311,7 @@ class TestAnalyzerSimulationMetrics:
     def test_extract_simulation_metrics_rxinfer_prefers_simulation_data(self, tmp_path):
         """simulation_data/simulation_results.json must win over sparse execution_logs."""
         import json
+
         from analysis.analyzer import _extract_simulation_metrics
         impl = tmp_path / 'rx' / 'rxinfer'
         el = impl / 'execution_logs'
@@ -317,14 +332,15 @@ class TestAnalyzerSimulationMetrics:
     def test_extract_simulation_metrics_discopy_supplements_circuit_info(self, tmp_path):
         """DisCoPy: execution log plus circuit_info.json yields circuit metrics (no empty extract)."""
         import json
+
         from analysis.analyzer import _extract_simulation_metrics
         impl = tmp_path / 'm' / 'discopy'
         el = impl / 'execution_logs'
         sd = impl / 'simulation_data'
         el.mkdir(parents=True)
         sd.mkdir(parents=True)
-        stub = {'framework': 'discopy', 'model_name': 'markov_chain', 'success': True, 'simulation_data': {'traces': [], 'beliefs': [], 'actions': [], 'observations': []}}
-        (el / 'Model_discopy.py_results.json').write_text(json.dumps(stub))
+        result_summary = {'framework': 'discopy', 'model_name': 'markov_chain', 'success': True, 'simulation_data': {'traces': [], 'beliefs': [], 'actions': [], 'observations': []}}
+        (el / 'Model_discopy.py_results.json').write_text(json.dumps(result_summary))
         circuit_data = {'model_name': 'markov_chain', 'components': ['A_matrix', 'B_matrix'], 'analysis': {'num_components': 8}, 'parameters': {'num_states': 3, 'num_observations': 3, 'num_actions': 1}}
         (sd / 'circuit_info.json').write_text(json.dumps(circuit_data))
         detail = {'implementation_directory': str(impl), 'execution_time': 0.5}

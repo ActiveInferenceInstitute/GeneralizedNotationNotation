@@ -27,7 +27,7 @@ uv run python src/main.py --target-dir input/gnn_files --verbose
 The snippets below are **not** maintained or verified by this repository; use only if you trust the source.
 
 ```bash
-# Example placeholders — replace with your own environment if used
+# Example commands — replace with your own trusted environment if used
 # curl -s https://example.com/quick-demo | bash
 # docker run --rm -it <image>:<tag>
 ```
@@ -495,7 +495,7 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 
 ### Customize Templates
 
-1. Replace placeholder values with your specifics
+1. Replace bracketed values with your specifics
 2. Modify state spaces for your domain
 3. Adjust matrices for your dynamics
 4. Update preferences for your objectives

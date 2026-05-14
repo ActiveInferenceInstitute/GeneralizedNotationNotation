@@ -107,7 +107,7 @@ REFERENCE_CONFIG = {
 }
 
 # =============================================================================
-# ENHANCED TEST CONFIGURATION - Real functionality without mocks
+# ENHANCED TEST CONFIGURATION - Real functionality
 # =============================================================================
 
 ENHANCED_TEST_CONFIG = {
@@ -674,10 +674,10 @@ class GNNRoundTripTester:
             working_formats = [GNNFormat.MARKDOWN]  # Always include markdown
 
             # Check if any parsers/serializers are available
-            available_parsers = getattr(self.parsing_system, '_parsers', {})
-            available_serializers = getattr(self.parsing_system, '_serializers', {})
+            available_parsers = self.parsing_system.parsers
+            available_serializers = self.parsing_system.serializers
 
-            # If no parsers/serializers are available, fall back to individual serializer mode
+            # If no parsers/serializers are available, use individual serializer mode
             if not available_parsers and not available_serializers:
                 if LOGGING_CONFIG['enable_debug']:
                     logger.debug("No parsers/serializers in parsing system, using individual serializers")
@@ -1051,9 +1051,11 @@ class GNNRoundTripTester:
                         # Recovery to individual serializer when parsing system fails
                         converted_content = self._serialize_with_individual_serializer(reference_model, target_format)
                         if not converted_content:
-                            raise ValueError(f"Both parsing system and individual serializer failed for {target_format.value}")
+                            raise ValueError(
+                                f"Both parsing system and individual serializer failed for {target_format.value}"
+                            ) from e
                     else:
-                        raise e
+                        raise
             else:
                 # Recovery to direct serializer access with comprehensive serializer map
                 converted_content = self._serialize_with_individual_serializer(reference_model, target_format)
@@ -1103,7 +1105,6 @@ class GNNRoundTripTester:
                     print(f"         ✓ Saved to {temp_file.name}")
             else:
                 # Create temporary file in memory for parsing
-                import tempfile
                 with tempfile.NamedTemporaryFile(mode='w', suffix=f'.{self._get_file_extension(target_format)}', delete=False) as tf:
                     tf.write(converted_content)
                     temp_file = Path(tf.name)
@@ -1115,7 +1116,7 @@ class GNNRoundTripTester:
             if self.parsing_system:
                 try:
                     # Use enum value for comparison to handle different enum instances
-                    available_parsers = self.parsing_system._parsers
+                    available_parsers = self.parsing_system.parsers
                     parser_found = any(p.value == target_format.value for p in available_parsers)
 
                     if parser_found:

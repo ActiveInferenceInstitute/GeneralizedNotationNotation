@@ -1,6 +1,6 @@
 {
   "generated_at": "2026-02-24T06:51:00",
-  "modules_total": 34,
+  "modules_total": 33,
   "modules_loaded": 33,
   "modules_errored": 0,
   "modules_loaded_names": [
@@ -39,9 +39,9 @@
     "website"
   ],
   "modules_errored_names": [],
-  "tools_total": 130,
-  "tools_real": 130,
-  "tools_documented": 130,
+  "tools_total": 133,
+  "tools_real": 133,
+  "tools_documented": 133,
   "tools": [
     {
       "name": "analyze_audio_characteristics",
@@ -719,6 +719,24 @@
       "description": "List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory."
     },
     {
+      "name": "mcp.list_available_resources",
+      "module": "",
+      "category": "",
+      "fn": "list_core_resources",
+      "is_real": true,
+      "documented": true,
+      "description": "List all resources currently registered with the MCP registry."
+    },
+    {
+      "name": "mcp.list_available_tools",
+      "module": "",
+      "category": "",
+      "fn": "list_core_tools",
+      "is_real": true,
+      "documented": true,
+      "description": "List all tools currently registered with the MCP registry."
+    },
+    {
       "name": "model_registry.get_model",
       "module": "",
       "category": "",
@@ -753,6 +771,15 @@
       "is_real": true,
       "documented": true,
       "description": "Search models in the registry by name, description, or tags"
+    },
+    {
+      "name": "output.describe_fixtures",
+      "module": "",
+      "category": "",
+      "fn": "describe_output_fixtures",
+      "is_real": true,
+      "documented": true,
+      "description": "Describe the source-controlled output fixture directory."
     },
     {
       "name": "parse_gnn_content",

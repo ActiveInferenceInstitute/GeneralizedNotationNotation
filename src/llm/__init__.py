@@ -34,6 +34,21 @@ def process_llm(*args: Any, **kwargs: Any) -> bool:
 # Phase 6: llm submodules are in-tree; fallback shims removed as dead code.
 # If any import here fails, it's a real bug that must surface in CI — not be
 # silently papered over.
+from .analyzer import (
+    analyze_gnn_file_with_llm,
+    calculate_complexity_metrics,
+    extract_connections,
+    extract_sections,
+    extract_variables,
+    identify_patterns,
+    perform_semantic_analysis,
+)
+from .generator import (
+    generate_code_suggestions,
+    generate_documentation,
+    generate_llm_summary,
+    generate_model_insights,
+)
 from .llm_processor import (
     AnalysisType,
     create_processor_from_env,
@@ -48,30 +63,12 @@ from .llm_processor import (
 from .llm_processor import (
     get_processor as get_global_processor,
 )
-
 from .providers import (
     BaseLLMProvider,
     LLMConfig,
     LLMMessage,
     LLMResponse,
     ProviderType,
-)
-
-from .analyzer import (
-    analyze_gnn_file_with_llm,
-    calculate_complexity_metrics,
-    extract_connections,
-    extract_sections,
-    extract_variables,
-    identify_patterns,
-    perform_semantic_analysis,
-)
-
-from .generator import (
-    generate_code_suggestions,
-    generate_documentation,
-    generate_llm_summary,
-    generate_model_insights,
 )
 
 

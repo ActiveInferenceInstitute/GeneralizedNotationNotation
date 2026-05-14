@@ -17,7 +17,7 @@ Test Categories:
 Architecture:
 - Modular test organization by component
 - Comprehensive fixtures and utilities
-- Real implementations (no mocks)
+- Real implementations and real artifacts
 - Performance regression testing
 - MCP integration testing
 - Pipeline orchestration testing
@@ -158,7 +158,7 @@ except Exception:
             with open(p, 'r') as f:
                 json.load(f)
         except json.JSONDecodeError as e:
-            raise AssertionError(msg or f"Invalid JSON in {path}: {e}")
+            raise AssertionError(msg or f"Invalid JSON in {path}: {e}") from e
 
     def assert_directory_structure(base_path: Any, expected_structure: List[str], msg: Optional[str] = None) -> None:
         """Assert that a directory contains expected structure.
@@ -303,4 +303,3 @@ def get_module_info() -> dict:
         "description": "Comprehensive test suite infrastructure and execution",
         "features": FEATURES,
     }
-

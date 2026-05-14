@@ -31,9 +31,8 @@ from ..viz_base import MATPLOTLIB_AVAILABLE, np, plt
 class PyMDPVisualizer:
     """Visualization utilities for PyMDP simulation
 
-    Backwards-compatible initializer: tests and callers may pass either
-    positional `grid_size` or an `output_dir`/`save_dir` along with
-    `show_plots` flag. This constructor accepts both styles and normalizes them.
+    Callers may pass either positional `grid_size` or an `output_dir`/`save_dir`
+    along with `show_plots` flag. This constructor normalizes both forms.
     """
     def __init__(self, *args, grid_size: Optional[int] = None,
                  figsize: Tuple[int, int] = (10, 8),
@@ -51,7 +50,7 @@ class PyMDPVisualizer:
             style: Matplotlib style to use
             save_dir: Directory to save visualizations
         """
-        # Normalize previous calling conventions
+        # Normalize accepted calling conventions.
         # If first positional arg provided and is a Path -> treat as output_dir
         if args:
             first = args[0]
@@ -63,7 +62,7 @@ class PyMDPVisualizer:
         self.grid_size = grid_size
         self.figsize = figsize
         self.style = style
-        # Allow passing config dict as alias for previous callers
+        # Allow passing config dict for explicit visualizer configuration.
         if config:
             save_dir = save_dir or config.get('save_dir') or config.get('output_dir')
             grid_size = grid_size or config.get('grid_size')
@@ -91,7 +90,7 @@ class PyMDPVisualizer:
         self.figures = {}
         self.plot_count = 0
 
-    # Backwards-compatible wrappers expected by tests
+    # Public wrappers around the concrete plotting methods.
     def plot_discrete_states(self, state_sequence: List[int], num_states: int, title: str = "Discrete State Sequence", save_path: Optional[Union[Path, str]] = None) -> Any:
         fig = self.visualize_discrete_states(state_sequence, num_states, title)
         if fig and save_path:

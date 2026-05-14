@@ -18,19 +18,13 @@ from typing import Any, List, Optional, Union
 logger = logging.getLogger(__name__)
 
 def initialize_jax_devices() -> List[Any]:
-    """Initialize and return available JAX devices, falling back to CPU on errors.
-
-    This matches tests expecting a callable that always returns at least one device-like object.
-    """
+    """Initialize and return real JAX devices."""
     try:
         import jax
-        try:
-            return jax.devices()
-        except Exception:
-            # Recovery to CPU-like placeholder
-            return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore[return-value]  # dynamic placeholder class cannot satisfy jax.Device protocol
-    except Exception:
-        return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore[return-value]  # dynamic placeholder class cannot satisfy jax.Device protocol
+        return list(jax.devices())
+    except Exception as exc:
+        logger.warning("JAX devices unavailable: %s", exc)
+        return []
 
 def is_jax_available() -> bool:
     """Check if JAX is importable and print device info."""

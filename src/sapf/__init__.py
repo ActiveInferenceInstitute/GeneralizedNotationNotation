@@ -2,8 +2,8 @@
 Top-level ``sapf`` package — re-exports the SAPF implementation from
 ``audio.sapf`` so ``import sapf`` works at the top level.
 
-This is documented in CLAUDE.md as an intentional composition shim, not a
-fallback: SAPF lives under ``src/audio/sapf/`` because it's one modality of
+This is documented in CLAUDE.md as an intentional composition facade: SAPF
+lives under ``src/audio/sapf/`` because it's one modality of
 the audio subsystem, but external callers and tests that reference it as a
 peer module see it here.
 

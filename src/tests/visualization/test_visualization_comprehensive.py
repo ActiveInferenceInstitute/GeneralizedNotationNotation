@@ -10,11 +10,14 @@ import sys
 import tempfile
 from pathlib import Path
 from typing import Any
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from visualization import process_visualization
 from visualization.combined_analysis import generate_combined_analysis
 from visualization.network_visualizations import generate_network_visualizations
+
 
 class TestMatplotlibBackendConfiguration:
     """Test matplotlib backend configuration for headless environments."""
@@ -86,6 +89,7 @@ class TestVisualizationProcessing:
     def test_matrix_visualizer_with_real_parameters(self) -> None:
         """Test MatrixVisualizer with real parameter data."""
         import numpy as np
+
         from visualization.matrix_visualizer import MatrixVisualizer
         mv = MatrixVisualizer()
         parameters = [{'name': 'A', 'shape': [3, 3], 'value': np.eye(3).tolist()}, {'name': 'B', 'shape': [2, 2], 'value': [[1, 2], [3, 4]]}]

@@ -69,6 +69,7 @@ class MCP:
         self._request_count = 0
         self._error_count = 0
         self._lock = threading.RLock()
+        self._module_import_lock = threading.RLock()
 
         self._performance_metrics = MCPPerformanceMetrics()
         self._tool_execution_times: Dict[str, List[float]] = defaultdict(list)
@@ -201,6 +202,7 @@ class MCP:
             self._modules_discovered = True
 
         root_dir = Path(__file__).parent.parent
+        self._configure_local_imports(root_dir)
         logger.info(f"Discovering MCP modules in {root_dir}")
         all_modules_loaded_successfully = True
 
@@ -216,8 +218,14 @@ class MCP:
                 self._discovery_cache.clear()
 
         # Get list of directories to scan
-        directories = [d for d in root_dir.iterdir()
-                      if d.is_dir() and not d.name.startswith('_')]
+        discovery_excluded_dirs = {"tests"}
+        directories = [
+            d
+            for d in root_dir.iterdir()
+            if d.is_dir()
+            and not d.name.startswith("_")
+            and d.name not in discovery_excluded_dirs
+        ]
         if modules_allowlist:
             allow = set(modules_allowlist)
             directories = [d for d in directories if d.name in allow or d.name == 'mcp']
@@ -334,16 +342,21 @@ class MCP:
             module_name = directory.name
 
         module_start = time.time()
+        full_module_name = f"src.{module_name}.mcp"
 
         try:
-            # Add parent directory to path if needed
-            root_dir = Path(__file__).parent.parent
-            if str(root_dir.parent) not in sys.path:
-                sys.path.append(str(root_dir.parent))
+            with self._module_import_lock:
+                # Add parent directory to path if needed
+                root_dir = Path(__file__).parent.parent
+                if str(root_dir.parent) not in sys.path:
+                    sys.path.insert(0, str(root_dir.parent))
+                if str(root_dir) not in sys.path:
+                    sys.path.insert(0, str(root_dir))
 
-            # Import the module
-            full_module_name = f"src.{module_name}.mcp"
-            module = importlib.import_module(full_module_name)
+                # Import the module. Imports are serialized because several
+                # modules expose both `src.<module>` and top-level package
+                # paths, and Python's import cache is process-global.
+                module = importlib.import_module(full_module_name)
             import_time = time.time() - module_start
 
             logger.debug(f"Loaded MCP module: {full_module_name} (import: {import_time:.3f}s)")
@@ -418,14 +431,58 @@ class MCP:
             )
             return False
 
+    @staticmethod
+    def _configure_local_imports(root_dir: Path) -> None:
+        """Keep local source packages ahead of same-named installed packages."""
+        if str(root_dir.parent) not in sys.path:
+            sys.path.insert(0, str(root_dir.parent))
+        if str(root_dir) not in sys.path:
+            sys.path.insert(0, str(root_dir))
+
+        local_names = {
+            name
+            for name in (
+                "advanced_visualization",
+                "analysis",
+                "gnn",
+                "gui",
+                "intelligent_analysis",
+                "llm",
+                "pipeline",
+                "type_checker",
+                "visualization",
+            )
+            if (root_dir / name).is_dir()
+        }
+        if not local_names:
+            return
+
+        root_resolved = root_dir.resolve()
+        for loaded_name in list(sys.modules):
+            top_level_name = loaded_name.split(".", 1)[0]
+            if top_level_name not in local_names:
+                continue
+
+            module = sys.modules.get(loaded_name)
+            module_file = getattr(module, "__file__", None)
+            if not module_file:
+                sys.modules.pop(loaded_name, None)
+                continue
+
+            try:
+                module_path = Path(module_file).resolve()
+                module_path.relative_to(root_resolved / top_level_name)
+            except (OSError, ValueError):
+                sys.modules.pop(loaded_name, None)
+
     def register_tool(self, name: str, func: Optional[Callable] = None, schema: Optional[Dict[str, Any]] = None, description: str = "",
                      module: str = "", category: str = "", version: str = "1.0.0",
                      tags: Optional[List[str]] = None, examples: Optional[List[Dict[str, Any]]] = None,
-                     deprecated: bool = False, experimental: bool = False,
+                     experimental: bool = False,
                      timeout: Optional[float] = None, max_concurrent: int = 1, requires_auth: bool = False,
                       rate_limit: Optional[float] = None, cache_ttl: Optional[float] = None,
                       input_validation: bool = True, output_validation: bool = True,
-                      # Compatibility keywords accepted by some module mcp files
+                      # Alternate metadata keywords accepted by module mcp files.
                       function: Optional[Callable] = None,
                       parameters: Optional[List[Dict[str, Any]]] = None,
                       returns: Optional[Dict[str, Any]] = None) -> None:
@@ -442,7 +499,6 @@ class MCP:
             version: Tool version
             tags: List of tags for categorization
             examples: List of example parameter sets
-            deprecated: Whether the tool is deprecated
             experimental: Whether the tool is experimental
             timeout: Optional timeout for the tool in seconds
             max_concurrent: Maximum number of concurrent executions
@@ -519,7 +575,6 @@ class MCP:
                 version=version,
                 tags=tags or [],
                 examples=examples or [],
-                deprecated=deprecated,
                 experimental=experimental,
                 timeout=timeout,
                 max_concurrent=max_concurrent,
@@ -720,7 +775,6 @@ class MCP:
                     "version": tool.version,
                     "tags": tool.tags,
                     "examples": tool.examples,
-                    "deprecated": tool.deprecated,
                     "experimental": tool.experimental,
                     "timeout": tool.timeout,
                     "max_concurrent": tool.max_concurrent,
@@ -858,7 +912,6 @@ class MCP:
                 "version": tool.version,
                 "tags": tool.tags,
                 "examples": tool.examples,
-                "deprecated": tool.deprecated,
                 "experimental": tool.experimental,
                 "usage_count": self._performance_metrics.tool_usage_stats.get(tool_name, 0),
                 "average_execution_time": avg_execution_time,
@@ -1115,7 +1168,7 @@ class MCP:
 
             for template_part, uri_part in zip(template_parts, uri_parts):
                 if template_part.startswith("{") and template_part.endswith("}"):
-                    continue  # Parameter placeholder
+                    continue
                 if template_part != uri_part:
                     return False
 
@@ -1497,14 +1550,24 @@ def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
         }
     return None
 
-# Re-export server components from server_core sub-module for backward compatibility
-
-
 def register_tools(server):
-    """No-op: this module IS the MCP server, not a plugin.
+    """Register core MCP introspection tools."""
 
-    The auto-discovery loop imports ``src.mcp.mcp`` and looks for
-    ``register_tools``.  Providing this placeholder avoids the warning
-    "Module src.mcp.mcp found but has no register_tools function."
-    """
-    pass
+    def list_core_tools() -> List[Dict[str, Any]]:
+        return list_available_tools()
+
+    def list_core_resources() -> List[Dict[str, Any]]:
+        return list_available_resources()
+
+    server.register_tool(
+        name="mcp.list_available_tools",
+        func=list_core_tools,
+        schema={},
+        description="List all tools currently registered with the MCP registry.",
+    )
+    server.register_tool(
+        name="mcp.list_available_resources",
+        func=list_core_resources,
+        schema={},
+        description="List all resources currently registered with the MCP registry.",
+    )

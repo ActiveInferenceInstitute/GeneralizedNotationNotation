@@ -5,8 +5,8 @@ LLM Operations Module for GNN Pipeline
 This module provides Large Language Model operations for analyzing
 and processing GNN files, including summarization, analysis, and enhancement.
 
-Updated to leverage the multi-provider LLM system while maintaining
-backward compatibility with existing code.
+Uses the multi-provider LLM system for provider selection, request handling,
+and analysis.
 """
 
 import asyncio
@@ -34,8 +34,7 @@ class LLMOperations:
     """
     Main class for LLM operations on GNN content.
     
-    This class now uses the multi-provider LLM system internally but maintains
-    the same interface for backward compatibility.
+    This class uses the multi-provider LLM system internally.
     """
 
     def __init__(self, api_key: Optional[str] = None):
@@ -374,7 +373,7 @@ def _get_llm_ops() -> "LLMOperations":
     return _llm_ops
 
 
-# Convenience functions for backward compatibility
+# Convenience functions.
 def construct_prompt(content_parts: List[str], task_description: str) -> str:
     """Convenience function for prompt construction."""
     return _get_llm_ops().construct_prompt(content_parts, task_description)

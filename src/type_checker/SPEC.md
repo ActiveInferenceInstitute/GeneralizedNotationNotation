@@ -20,9 +20,9 @@ type_checker/
 │   ├── strategies.py        # Math utilities
 │   ├── report_html.py       # HTML reporting
 │   └── report_markdown.py   # Text reporting
-├── processor.py             # Legacy compat orchestrator (thin delegation)
-├── resource_estimator.py    # Legacy compat estimator (thin delegation)
-├── estimation_strategies.py # Legacy compat strategies (thin delegation)
+├── processor.py             # Public checking facade
+├── resource_estimator.py    # Resource estimator CLI facade
+├── estimation_strategies.py # Public strategy exports
 └── mcp.py                   # MCP tool registration
 ```
 

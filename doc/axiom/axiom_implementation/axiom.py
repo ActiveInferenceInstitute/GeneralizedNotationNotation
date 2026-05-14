@@ -330,7 +330,7 @@ class AxiomAgent:
                 f_continuous[k, 8:10] = self.history['rewards'][-2:]
             
             # Discrete features
-            d_discrete[k, 0] = k  # Slot identity (placeholder for iMM output)
+            d_discrete[k, 0] = k  # Slot identity for iMM output
             d_discrete[k, 1] = self.u_action  # Previous action
             d_discrete[k, 2] = np.sign(self.r_reward) + 1  # Reward sign (0, 1, 2)
             d_discrete[k, 3] = int(self.z_slot_moving[k])  # Movement indicator
@@ -651,7 +651,7 @@ if __name__ == "__main__":
     # Create agent
     agent = create_axiom_agent(config)
     
-    # Test with dummy environment
+    # Test with sample environment
     class DummyEnvironment:
         def __init__(self):
             self.step_count = 0

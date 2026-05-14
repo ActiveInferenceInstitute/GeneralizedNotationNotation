@@ -28,7 +28,7 @@ How to run:
   
   # Alternative: Use uv directly for specific extras
   uv sync                          # Core includes openai, ollama, python-dotenv, aiohttp
-  uv sync --extra llm              # Compatibility alias (same LLM stack)
+  uv sync --extra openai           # Optional OpenAI-backed LLM stack
   uv sync --extra visualization    # Install visualization packages
   uv sync --extra all              # Install all optional packages
 

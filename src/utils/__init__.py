@@ -26,7 +26,7 @@ Source modules:
 - venv_utils: Virtual environment path helpers
 - system_utils: System information gathering
 - test_utils: Test runner, categories, stages, and coverage targets
-- pipeline: Previous utilities re-exported for backwards compatibility
+- pipeline: Pipeline utility exports
 - error_handling: Structured error handler, categories, and recovery strategies
 - structured_logging: Structured log emission with correlation context
 - dependency_audit: Dependency auditing and optimization utilities
@@ -208,7 +208,7 @@ try:
     )
     from .venv_utils import get_venv_python
 
-except ImportError as e:
+except ImportError:
     # utils/ submodules are in-tree; any ImportError is a real bug that must
     # surface, not be silently fallen back from. Re-raise with the original
     # traceback so CI catches it.
@@ -389,4 +389,3 @@ def get_module_info() -> dict:
         "description": "Shared utilities, logging, and helper functions",
         "features": FEATURES,
     }
-

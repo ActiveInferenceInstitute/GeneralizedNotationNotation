@@ -17,7 +17,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 
 ## Contents
 
-**Files**: `README.md`, `AGENTS.md`, `comprehensive_api_reference.md`, `api_index.json` | **Subdirectories**: none
+**Files**: `README.md`, `AGENTS.md`, `comprehensive_api_reference.md` | **Subdirectories**: none
 
 ## Quick Navigation
 

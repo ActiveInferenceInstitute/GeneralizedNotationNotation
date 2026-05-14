@@ -18,7 +18,7 @@ Tests cover:
 10. Configuration consistency validation
 11. End-to-end integration scenarios
 
-All tests execute real methods and subprocesses; no mocking is used.
+All tests execute real methods and subprocesses.
 """
 
 import pytest
@@ -90,7 +90,7 @@ class TestMainOrchestratorImport:
         logging.info(f"All {len(components)} main orchestrator components available")
 
 class TestArgumentParsing:
-    """Smoke-check argument parser via main --help only (no mocks)."""
+    """Smoke-check argument parser via main --help only."""
     @pytest.mark.unit
     def test_help(self) -> None:
         main_py = SRC_DIR / "main.py"

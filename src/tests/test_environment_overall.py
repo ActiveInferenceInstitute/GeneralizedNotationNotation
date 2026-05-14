@@ -6,7 +6,9 @@ This file contains comprehensive tests for the environment module functionality.
 import sys
 from pathlib import Path
 from typing import Any
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 class TestEnvironmentModuleComprehensive:
@@ -116,6 +118,7 @@ def test_environment_module_completeness() -> None:
 def test_environment_module_performance() -> None:
     """Test environment module performance characteristics."""
     import time
+
     from setup import EnvironmentManager
     manager = EnvironmentManager()
     start_time = time.time()

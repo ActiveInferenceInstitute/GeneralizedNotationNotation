@@ -23,7 +23,7 @@ python src/main.py --only-steps 21 --verbose
 
 ```python
 from mcp import (
-    MCP, MCPServer, JSONRPCServer, MCPTool, MCPResource,
+    MCP, MCPRegistry, MCPServer, JSONRPCServer, MCPTool, MCPResource,
     create_mcp_server, start_mcp_server,
     register_tools, register_module_tools,
     get_available_tools, list_available_tools,
@@ -58,7 +58,8 @@ resources = list_available_resources()
 ## Key Exports
 
 - `MCP` — core registry (tools, resources, modules, performance metrics).
-- `MCPServer` — alias of `MCP` (legacy; the registry itself, not a network server).
+- `MCPRegistry` — alias of `MCP`, the core registry.
+- `MCPServer` — JSON-RPC 2.0 request handler bound to an `MCP` instance.
 - `JSONRPCServer` — JSON-RPC 2.0 request handler bound to an `MCP` instance.
 - `MCPTool` / `MCPResource` — dataclasses backing the registry.
 - `create_mcp_server` / `start_mcp_server` — construct and start a JSON-RPC server.

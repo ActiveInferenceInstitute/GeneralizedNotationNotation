@@ -2,7 +2,7 @@
 """Phase 4.2 regression tests for the ontology module (Step 10).
 
 Exercises the Active Inference ontology term registry and annotation parsing
-via real sample data. Zero-mock per CLAUDE.md.
+via real sample data.
 """
 
 import json

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests for src/utils/validation_schemas.py. Zero-mock, uses real tempdirs."""
+"""Tests for src/utils/validation_schemas.py using real tempdirs."""
 
 import sys
 from pathlib import Path
@@ -19,7 +19,6 @@ from utils.validation_schemas import (  # noqa: E402
     validate_model_data,
     validate_target_dir,
 )
-
 
 # --- validate_model_data -------------------------------------------------
 

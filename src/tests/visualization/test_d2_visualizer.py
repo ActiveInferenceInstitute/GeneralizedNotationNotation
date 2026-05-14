@@ -19,7 +19,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-# Mocks removed - using real implementations per testing policy
+# Uses real implementations per testing policy.
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -455,4 +455,3 @@ def run_tests() -> bool:
 if __name__ == "__main__":
     success = run_tests()
     sys.exit(0 if success else 1)
-

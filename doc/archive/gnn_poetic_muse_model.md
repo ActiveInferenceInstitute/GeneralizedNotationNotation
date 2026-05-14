@@ -145,12 +145,12 @@ B_v5={ # P(s_v5 | s_v1) - Illustrative
   ((0.2, 0.3, 0.5, 0.3))  # s_v5 = 2 (Closed_I)
 }
 
-# Other B_vX matrices (CPTs) would be defined similarly. For brevity, they are placeholder here.
-B_v6={ # P(s_v6 | s_v3, s_v2) Placeholder
+# Other B_vX matrices (CPTs) would be defined similarly. For brevity, these entries are omitted here.
+B_v6={ # P(s_v6 | s_v3, s_v2)
      }
-B_v7={ # P(s_v7 | s_v4, s_v5) Placeholder
+B_v7={ # P(s_v7 | s_v4, s_v5)
      }
-B_v8={ # P(s_v8 | s_v6, s_v7, s_v3) Placeholder
+B_v8={ # P(s_v8 | s_v6, s_v7, s_v3)
      }
 
 # Likelihood A_m0: P(o_m0 | s_v8)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import logging
 import io
+import logging
 import sys
 from pathlib import Path
 
@@ -20,7 +20,7 @@ def verify_duplication():
     
     try:
         # Import old logging utils
-        from utils.logging_utils import setup_step_logging, PipelineLogger
+        from utils.logging_utils import PipelineLogger, setup_step_logging
         
         # Simulate main logging setup
         PipelineLogger.setup()

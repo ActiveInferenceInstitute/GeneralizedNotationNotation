@@ -1,7 +1,7 @@
 # Specification: Workflows
 
 ## Design Requirements
-The `workflows` directory serves as the execution layer for the GNN repository's Continuous Integration and Continuous Deployment (CI/CD) pipeline. Its primary design requirement is to enforce 100% Zero-Mock compliance, maintain repository stability, and ensure code quality via automated execution graphs triggered by GitHub events.
+The `workflows` directory serves as the execution layer for the GNN repository's Continuous Integration and Continuous Deployment (CI/CD) pipeline. Its primary design requirement is to enforce real-implementation test coverage, maintain repository stability, and ensure code quality via automated execution graphs triggered by GitHub events.
 
 The workflow system must:
 1. Support deterministic isolation of testing environments utilizing `uv`.
@@ -12,7 +12,7 @@ The workflow system must:
 ## Components
 The module defines strict automation routines via YAML configuration:
 
-1. **`ci.yml`**: The primary test matrix (Python 3.11, 3.12, 3.13) that executes the Zero-Mock Pytest suite, Ruff linting, MCP tool count assertions, and Bandit security scans, halting on critical code health violations.
+1. **`ci.yml`**: The primary test matrix (Python 3.11, 3.12, 3.13) that executes the Pytest suite, Ruff linting, MCP tool count assertions, and Bandit security scans, halting on critical code health violations.
 2. **`actionlint.yml`**: Safeguards workflow logic by running static analysis on the YAML files themselves before integration.
 3. **`codeql.yml`**: Triggers GitHub's advanced CodeQL semantic scanning engine for deep security auditing.
 4. **`dependency-review.yml`**: A supply chain guardrail enforcing license compliance (denying AGPL) and halting high-severity CVE introductions on Pull Requests.

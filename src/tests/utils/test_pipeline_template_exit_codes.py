@@ -56,7 +56,7 @@ def test_int_three_passes_through(logger):
 
 
 def test_none_coerces_to_one(logger):
-    # None is falsy, so it maps to exit-code 1 for backward compatibility.
+    # None is falsy, so it maps to exit-code 1.
     assert _coerce_exit_code(None, "test_step", logger) == 1
 
 

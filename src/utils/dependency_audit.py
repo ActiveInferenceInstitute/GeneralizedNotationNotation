@@ -471,9 +471,8 @@ class DependencyOptimizer:
             if dry_run:
                 cmd.append('--dry-run')
 
-            # Would need to identify which packages to update
-            # For now, return placeholder
-            result["message"] = "Dependency update simulation completed"
+            result["success"] = False
+            result["message"] = "Automatic dependency updates require an explicit package selection"
 
         except Exception as e:
             result["error"] = str(e)

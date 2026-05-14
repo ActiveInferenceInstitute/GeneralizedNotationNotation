@@ -30,7 +30,7 @@ Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGE
 uv run python doc/development/rewrite_gnn_doc_links.py
 ```
 
-Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py). Stub tracking narrative: [../STUBS_TO_IMPROVE.md](../STUBS_TO_IMPROVE.md).
+Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py). Documentation improvement tracker: [../DOCS_TO_IMPROVE.md](../DOCS_TO_IMPROVE.md).
 
 ## Quick Start for Developers
 

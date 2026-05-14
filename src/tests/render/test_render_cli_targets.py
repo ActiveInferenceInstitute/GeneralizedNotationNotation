@@ -22,9 +22,8 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from render.render import main as render_cli_main
 from render.processor import render_gnn_spec
-
+from render.render import main as render_cli_main
 
 SAMPLE_GNN = (
     Path(__file__).parent.parent.parent.parent

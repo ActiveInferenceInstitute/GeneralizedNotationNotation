@@ -6,7 +6,7 @@
 
 ## Overview
 
-This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py); a machine-readable index is [`api_index.json`](api_index.json). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) includes illustrative narrative below the accuracy box—confirm symbol names in `src/` and `api_index.json` before importing.
+This directory contains API-oriented documentation for the GNN (Generalized Notation Notation) codebase. **Authoritative Python exports** for the `gnn` package are in [`src/gnn/__init__.py`](../../src/gnn/__init__.py). [`comprehensive_api_reference.md`](comprehensive_api_reference.md) includes illustrative narrative below the accuracy box—confirm symbol names in `src/` before importing.
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0
@@ -39,7 +39,7 @@ API surfaces follow normal Python packaging and process boundaries: validate inp
 
 ## Contents
 
-**Files**: 4 (`README.md`, `AGENTS.md`, `comprehensive_api_reference.md`, `api_index.json`) | **Subdirectories**: 0
+**Files**: 3 (`README.md`, `AGENTS.md`, `comprehensive_api_reference.md`) | **Subdirectories**: 0
 
 ### Core Files
 
@@ -52,12 +52,6 @@ API surfaces follow normal Python packaging and process boundaries: validate inp
   - LLM Integration API: AI-enhanced model analysis
   - MCP API: Model Context Protocol integration
   - Performance API: Monitoring and optimization interfaces
-
-- **`api_index.json`**: Machine-readable API index
-  - Generated map of modules, functions, and classes under `src/`
-  - Created by `src/generate_api_index.py`
-  - AST-derived with file paths, module names, function signatures, class bases, and docstrings
-  - Excludes tests and output directories
 
 - **`AGENTS.md`**: Technical documentation and agent scaffolding
   - Complete documentation structure
@@ -107,22 +101,6 @@ API surfaces follow normal Python packaging and process boundaries: validate inp
 - **Performance Monitoring**: Operation timing and metrics
 - **Resource Tracking**: Memory and CPU usage
 - **Optimization Interfaces**: Performance tuning capabilities
-
-## Generating the API Index
-
-The `api_index.json` file is automatically generated from the codebase:
-
-```bash
-# Generate API index
-python src/generate_api_index.py
-```
-
-### Index Generation Details
-
-- **Source**: All Python files under `src/` directory
-- **Exclusions**: Tests and output directories are excluded
-- **Method**: AST-based parsing for accurate extraction
-- **Content**: File paths, module names, function signatures, class bases, and docstrings
 
 ## Integration with Pipeline
 

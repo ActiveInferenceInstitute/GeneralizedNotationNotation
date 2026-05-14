@@ -19,9 +19,9 @@ logging/
 
 ## Hardening Achievements (v1.6.0)
 
-- **Remediated Duplication**: Fixed a legacy collision between root and step-level handlers that caused duplicate terminal output.
+- **Remediated Duplication**: Fixed a handler collision between root and step-level handlers that caused duplicate terminal output.
 - **Unified Tracing**: Established a single-source-of-truth for correlation IDs, ensuring logs from subprocesses are correctly tagged and formatted.
-- **Compatibility Shim**: Provided a transparent shim in `src/utils/logging_utils.py` to upgrade legacy modules to the modern structured system automatically.
+- **Logging Facade**: `src/utils/logging_utils.py` delegates to the structured logging system.
 
 ## Key Capabilities
 

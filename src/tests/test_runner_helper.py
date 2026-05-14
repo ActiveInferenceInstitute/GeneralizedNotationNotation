@@ -39,7 +39,7 @@ def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files"
             "expected_duration": "5-10 minutes"
         },
         "full": {
-            "args": ["--include-slow"],
+            "args": ["--comprehensive"],
             "description": "Run all tests including slow integration tests",
             "expected_duration": "15-25 minutes"
         },

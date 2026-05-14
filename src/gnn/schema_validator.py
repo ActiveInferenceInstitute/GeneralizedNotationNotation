@@ -84,12 +84,7 @@ class GNNParser:
             self.schema = {}
 
     def validate_file(self, file_path: Union[str, Path], validation_level: Optional[ValidationLevel] = None) -> 'ValidationResult':
-        """Compatibility shim: allow GNNParser to act as a validator for tests that
-        historically constructed a `GNNParser()` and called `validate_file()` on it.
-
-        Delegates to the richer `GNNValidator` implementation while keeping the
-        class API backward-compatible.
-        """
+        """Validate a GNN file via the full ``GNNValidator`` implementation."""
         validator = GNNValidator()
         return validator.validate_file(file_path, validation_level=validation_level)
 

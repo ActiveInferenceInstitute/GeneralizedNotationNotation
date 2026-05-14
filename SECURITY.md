@@ -19,7 +19,7 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | ------- | ------------------ | ----------------- |
 | 1.6.x   | ✅ Full support | Complete security framework |
 | 1.1.x   | ✅ LTS support | Backported security fixes |
-| 1.0.x   | ⚠️ Legacy support | Critical fixes only |
+| 1.0.x   | ⚠️ Maintenance support | Critical fixes only |
 | < 1.0.0 | ❌ Unsupported | No security support |
 
 > **🔄 Version Updates**: This table is updated with each release. See [Changelog](#) for version history.

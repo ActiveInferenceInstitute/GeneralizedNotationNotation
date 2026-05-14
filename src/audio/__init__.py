@@ -44,10 +44,6 @@ from .processor import (
     write_basic_wav,
 )
 
-# Backwards-compatible aliases expected by tests
-SAPFProcessor = SAPFGNNProcessor
-PedalboardProcessor = SAPFGNNProcessor
-
 # Module metadata
 __version__ = "1.6.0"
 __author__ = "Active Inference Institute"

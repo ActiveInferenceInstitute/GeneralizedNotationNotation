@@ -49,7 +49,7 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step syst
 - **[api/](src/api/AGENTS.md)** - REST API (FastAPI)
 - **[cli/](src/cli/AGENTS.md)** - `gnn` CLI entry point
 - **[lsp/](src/lsp/AGENTS.md)** - Language Server Protocol support
-- **[sapf/](src/sapf/AGENTS.md)** - SAPF compatibility shim (implementation in `src/audio/sapf/`)
+- **[sapf/](src/sapf/AGENTS.md)** - SAPF public entry point (implementation in `src/audio/sapf/`)
 - **[doc/](src/doc/AGENTS.md)** - In-repo technical documentation subtree
 
 ### Documentation Agents
@@ -227,7 +227,7 @@ graph TD
 - **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
 - **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests**: command of record is `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py`; current inventory (2026-05-13) is 166 test files and 2,271 collected tests with the same Ollama ignores. Re-enable `test_llm_ollama*.py` when `ollama` is available.
+- **Tests**: command of record is `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current inventory (2026-05-13) is 166 test files and 2,245 collected tests with the same Ollama ignores. Latest measured full run: 2,176 passed, 68 skipped, 1 xpassed in 694.24s. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
 - **Renderers**: All 8/8 backends operational (PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy). E2E validation via `test_render_numpyro_stan.py` (15 tests).
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
@@ -411,7 +411,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 ### 🚀 **Execute Agent** - Simulation Runner
 
 - **ActiveInferenceAgent**: Primary full-fidelity execution engine
-- **FallbackAgent**: Robust recovery mechanism (non-mock safe degradation)
+- **FallbackAgent**: Robust recovery mechanism using real execution paths
 - Multi-environment execution (PyMDP, RxInfer, JAX, PyTorch, NumPyro)
 - Resource monitoring and optimization
 - Error recovery and retry logic

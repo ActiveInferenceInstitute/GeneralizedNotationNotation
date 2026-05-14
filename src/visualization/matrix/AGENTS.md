@@ -11,7 +11,7 @@ matrix/
 ├── __init__.py       # Package exports
 ├── visualizer.py     # MatrixVisualizer class (1339 lines)
 ├── extract.py        # Matrix extraction from parsed models
-└── compat.py         # Backward compatibility helpers
+└── compat.py         # Shared helper exports
 ```
 
 ## Key Class: `MatrixVisualizer`

@@ -5,7 +5,7 @@
 ## Execution Model
 
 - Primary engine: `ActiveInferenceAgent` for full-fidelity POMDP execution
-- Fallback: `FallbackAgent` for robust degraded execution (non-mock)
+- Fallback: `FallbackAgent` for robust degraded execution through real execution paths
 - Package detection: auto-detects `pymdp` version (0.x vs 1.0.0+ API)
 - Timeout: inherits from Step 12 timeout (1800s default)
 

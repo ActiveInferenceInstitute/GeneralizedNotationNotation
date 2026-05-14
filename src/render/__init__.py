@@ -7,26 +7,26 @@ target languages and simulation environments.
 """
 
 # Phase 6: render submodules are in-tree; unconditional imports.
-from .processor import (
-    get_available_renderers,
-    get_module_info,
-    process_render,
-    render_gnn_spec,
-)
-from .pomdp_processor import POMDPRenderProcessor, process_pomdp_for_frameworks
+from .activeinference_jl import render_gnn_to_activeinference_jl
+from .discopy import render_gnn_to_discopy
 from .generators import (
     generate_activeinference_jl_code,
     generate_discopy_code,
     generate_pymdp_code,
     generate_rxinfer_code,
 )
-from .pymdp import render_gnn_to_pymdp
-from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
-from .discopy import render_gnn_to_discopy
-from .activeinference_jl import render_gnn_to_activeinference_jl
-from .pytorch import render_gnn_to_pytorch
 from .numpyro import render_gnn_to_numpyro
+from .pomdp_processor import POMDPRenderProcessor, process_pomdp_for_frameworks
+from .processor import (
+    get_available_renderers,
+    get_module_info,
+    process_render,
+    render_gnn_spec,
+)
+from .pymdp import render_gnn_to_pymdp
 from .pymdp.pymdp_renderer import PyMDPRenderer
+from .pytorch import render_gnn_to_pytorch
+from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
 
 
 class JAXRenderer:

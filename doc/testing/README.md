@@ -13,7 +13,7 @@ Pass/skip totals are **not** fixed in this file. Run and read the terminal outpu
 
 ```bash
 uv sync --extra dev
-uv run pytest src/tests/ -q --tb=no --ignore=src/tests/test_llm_ollama.py --ignore=src/tests/test_llm_ollama_integration.py
+uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py
 ```
 
 CI uses a narrower marker (`-m "not pipeline and not mcp"`); see [.github/workflows/ci.yml](../../.github/workflows/ci.yml) and [CLAUDE.md](../../CLAUDE.md) for parity notes. Enable `test_llm_ollama*.py` when local Ollama is available.
@@ -454,7 +454,7 @@ def sample_gnn_model():
 
 @pytest.fixture
 def mock_llm_service():
-    """Mock LLM service for testing"""
+    """Deterministic LLM service for testing"""
     class MockLLMService:
         def analyze_model(self, model):
             return {"analysis": "test analysis"}
@@ -665,7 +665,7 @@ src/tests/fixtures/
 - **Clear**: Test names and assertions should be descriptive
 
 ## Testing Philosophy
-- **No Mocks Policy**: We use real data and real code paths.
+- **Real Implementation Policy**: We use real data and real code paths.
 - **Integration Tests**: Focus on end-to-end flows.
 
 ### 2. Coverage Goals

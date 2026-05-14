@@ -309,10 +309,8 @@ Minimize free energy while maintaining preferred states.
         import logging
         caplog.set_level(logging.INFO)
 
-        # Skip this test if we cannot test Ollama unavailability without mocking
-        # Real Ollama availability should be tested via integration tests
-        # This test would require monkeypatching which violates our no-mocks policy
-        pytest.skip("Ollama unavailability testing requires monkeypatch - use real Ollama state for integration tests")
+        # Real Ollama availability is covered by integration tests.
+        pytest.skip("Ollama unavailability testing requires controlling external service state")
 
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
@@ -480,4 +478,3 @@ class TestOllamaIntegrationEnd2End:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
-

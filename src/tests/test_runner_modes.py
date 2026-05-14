@@ -67,8 +67,8 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
 
     cmd.extend([
         "-m", "not slow",
-        "--ignore=src/tests/test_llm_ollama.py",
-        "--ignore=src/tests/test_llm_ollama_integration.py",
+        "--ignore=src/tests/llm/test_llm_ollama.py",
+        "--ignore=src/tests/llm/test_llm_ollama_integration.py",
         "--ignore=src/tests/test_pipeline_performance.py",
         "--ignore=src/tests/test_pipeline_recovery.py",
         "--ignore=src/tests/test_report_integration.py",

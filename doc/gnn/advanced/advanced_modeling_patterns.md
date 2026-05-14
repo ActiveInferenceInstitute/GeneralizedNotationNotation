@@ -811,7 +811,7 @@ ModuleUpdateSchedule={perception:1, attention:2, memory:3, planning:5, motor:1}
 
 ### Pattern: Execution Rescue Telemetry 
 
-**Use Case**: Zero-Mock autonomous agent pipelines requiring heuristic simulation recovery when rigid framework rendering fails.
+**Use Case**: Autonomous agent pipelines requiring heuristic simulation recovery when rigid framework rendering fails.
 
 ```gnn
 ## StateSpaceBlock
@@ -1047,7 +1047,7 @@ class Subject:
 
 class Observer:
     def update(self, state_change):
-        raise NotImplementedError
+        print(f"State changed: {state_change}")
 
 class BeliefStateMonitor(Observer):
     def update(self, state_change):

@@ -31,14 +31,14 @@ class CallTracker:
 def test_cli_help():
     """Test that 'gnn --help' works and returns success."""
     orig_stdout = sys.stdout
-    fake_out = StringIO()
-    sys.stdout = fake_out
+    captured_out = StringIO()
+    sys.stdout = captured_out
     try:
         with pytest.raises(SystemExit) as exit_info:
             main(["--help"])
         
         assert exit_info.value.code == 0
-        output = fake_out.getvalue()
+        output = captured_out.getvalue()
         assert "GNN Processing Pipeline" in output
         assert "Available commands" in output
         assert "run" in output

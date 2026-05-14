@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from gnn.processor import parse_gnn_file
+from src.gnn.processor import parse_gnn_file
 
 
 def gnn_to_mermaid(
@@ -365,4 +365,3 @@ def convert_gnn_file_to_mermaid(
         os.replace(tmp_f.name, str(output_path))
 
     return mermaid_content
-

@@ -70,7 +70,7 @@ from api.processor import create_job, execute_job_async
 
 When working with this module:
 1. The `processor.py` contains job lifecycle logic -- extend it for persistence needs
-2. The `models.py` is the API contract -- change carefully to preserve backwards compatibility
+2. The `models.py` is the API contract -- update schemas and tests together
 3. Add new endpoints in `server.py` following the existing pattern
 4. MCP tools in `mcp.py` should mirror significant REST endpoints
 

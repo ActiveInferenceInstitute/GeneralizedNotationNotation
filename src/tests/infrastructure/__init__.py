@@ -5,11 +5,11 @@ This module provides the core infrastructure for test execution in the GNN pipel
 All components are re-exported for convenient access.
 """
 
-# Re-export all public classes and functions for backward compatibility
+# Re-export public classes and functions for test infrastructure callers.
 from .report_generator import (
     _generate_error_report,
     _generate_fallback_report,
-    # Backward-compatible aliases
+    # Underscore-prefixed exports.
     _generate_markdown_report,
     _generate_timeout_report,
     generate_error_report,
@@ -21,7 +21,7 @@ from .resource_monitor import PSUTIL_AVAILABLE, ResourceMonitor
 from .test_config import TestExecutionConfig, TestExecutionResult
 from .test_runner import TestRunner
 from .utils import (
-    # Backward-compatible aliases
+    # Underscore-prefixed exports.
     _extract_collection_errors,
     _parse_coverage_statistics,
     _parse_test_statistics,

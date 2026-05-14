@@ -12,14 +12,14 @@ Specialized support for 3D tensors like POMDP transition matrices.
 import csv
 import logging
 
-from visualization.compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
-from visualization.matrix.extract import (
+from ..compat.viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
+from ..plotting.utils import safe_tight_layout
+from .extract import (
     convert_to_matrix,
 )
-from visualization.matrix.extract import (
+from .extract import (
     extract_matrix_data_from_parameters as extract_matrices_from_parameter_list,
 )
-from visualization.plotting.utils import safe_tight_layout
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,6 @@ SEABORN_AVAILABLE = sns is not None
 import ast
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
-
 
 # Maximum figure dimension (inches) to prevent RendererAgg pixel overflow.
 # At 300 DPI, 200 inches = 60,000 pixels — well within safe 32-bit limits.
@@ -844,7 +843,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             matrices = self.extract_matrix_data_from_parameters(parameters)
 
             if not matrices:
-                # Create placeholder if no matrices
+                # Render an explicit empty-data panel when no matrices are present.
                 plt.figure(figsize=(10, 6))
                 plt.text(0.5, 0.5, 'No matrix data found',
                         ha='center', va='center', transform=plt.gca().transAxes,

@@ -96,7 +96,7 @@ try:
     import pymdp  # noqa: F401
     from pymdp.agent import Agent  # noqa: F401
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
     print("PyMDP 1.0.0+ detected (JAX-first Agent).")
 except ImportError as e:
     print(
@@ -195,7 +195,7 @@ try:
     import jax.random as jr
     from pymdp.agent import Agent
     if not hasattr(Agent, "update_empirical_prior"):
-        raise ImportError("legacy pymdp (<1.0.0) detected")
+        raise ImportError("unsupported pymdp (<1.0.0) detected")
 except ImportError as e:
     print(
         "ERROR: pymdp 1.0.0 required. Install with: "
@@ -419,9 +419,7 @@ def generate_standalone_runner_script(ctx: Dict[str, Any]) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Legacy helper retained for backwards compatibility with test fixtures that
-# import symbols from this module directly. These helpers build string
-# fragments for the pymdp 1.0.0 JAX API (no more ``utils.obj_array``).
+# Helpers that build string fragments for the pymdp 1.0.0 JAX API.
 # ---------------------------------------------------------------------------
 def generate_file_header(model_name: str) -> str:
     """Return a short module docstring header for a generated script."""
@@ -451,10 +449,8 @@ def generate_example_usage_template(
     """
     Produce a minimal pymdp 1.0.0 rollout snippet as a list of code lines.
 
-    The legacy (pre-1.0.0) version of this helper generated code that called
-    ``agent.infer_states(o_current)`` / ``agent.sample_action()`` without
-    rng_key / empirical_prior arguments — that API is gone in 1.0.0. The new
-    lines below use the canonical JAX-first pattern.
+    The lines below use the canonical JAX-first pattern with rng_key and
+    empirical_prior arguments.
     """
     lines: List[str] = [
         "",
@@ -474,7 +470,7 @@ def generate_example_usage_template(
         "    empirical_prior = agent.D",
         "",
         "    for t in range(T):",
-        "        # Single-modality observation placeholder (replace with real env)",
+        "        # Single-modality observation sample for generated examples",
         "        obs = [jnp.array([0], dtype=jnp.int32) for _ in range(num_modalities)]",
         "        qs, info = agent.infer_states(obs, empirical_prior=empirical_prior, return_info=True)",
         "        q_pi, neg_efe = agent.infer_policies(qs)",
@@ -489,14 +485,13 @@ def generate_example_usage_template(
     return lines
 
 
-def generate_placeholder_matrices(
+def generate_default_matrices(
     num_modalities: int, num_states: List[int]
 ) -> Dict[str, List[str]]:
     """
-    Return placeholder matrix-construction code lines in pymdp 1.0.0 form.
+    Return default matrix-construction code lines in pymdp 1.0.0 form.
 
-    Unlike the legacy helper, this no longer emits ``utils.obj_array`` (gone
-    in 1.0.0). Instead it creates plain numpy arrays suitable for handing to
+    The helper creates plain numpy arrays suitable for handing to
     ``_to_batched_jax`` in the generated runner.
     """
     matrix_defs: Dict[str, List[str]] = {"A": [], "B": [], "C": [], "D": []}

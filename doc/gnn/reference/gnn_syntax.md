@@ -140,10 +140,10 @@ Simple POMDP Agent v1.0 — deterministic transition, partial observability.
 
 ### `## Signature`
 
-Provenance / cryptographic placeholder. Free-form single line — current
-convention is a literal placeholder string or a hex digest. Reserved for
+Provenance / cryptographic digest. Free-form single line — current
+convention is a literal `pending` string or a hex digest. Reserved for
 future provenance tooling (Step 18 security). Presence is required but the
-value may be a placeholder.
+value may be marked as `pending`.
 
 ```gnn
 ## Signature

@@ -52,7 +52,7 @@ def run_gui(
     try:
         # Setup output directory
         try:
-            from pipeline.config import get_output_dir_for_script
+            from src.pipeline.config import get_output_dir_for_script
             output_root = get_output_dir_for_script("22_gui.py", output_dir)
         except Exception:
             output_root = output_dir

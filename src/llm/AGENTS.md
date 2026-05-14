@@ -284,10 +284,10 @@ if result.returncode == 0:
 ## Testing
 
 ### Test Files
-- `src/tests/test_llm_overall.py` - Module-level tests
-- `src/tests/test_llm_functional.py` - Functional tests
-- `src/tests/test_llm_ollama.py` - Ollama-specific tests
-- `src/tests/test_llm_ollama_integration.py` - Ollama integration tests
+- `src/tests/llm/test_llm_overall.py` - Module-level tests
+- `src/tests/llm/test_llm_functional.py` - Functional tests
+- `src/tests/llm/test_llm_ollama.py` - Ollama-specific tests
+- `src/tests/llm/test_llm_ollama_integration.py` - Ollama integration tests
 
 ### Test Coverage
 Measure on demand:

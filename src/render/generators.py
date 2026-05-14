@@ -1482,7 +1482,7 @@ end
         return ""
 
 # NOTE: ``create_active_inference_diagram`` was removed in 2026-04 because the
-# placeholder output contained hard-coded "S1, S2, S3" / "O1..O4" / "A1, A2"
-# instead of reflecting the parsed GNN spec. Use
+# output contained hard-coded "S1, S2, S3" / "O1..O4" / "A1, A2" instead of
+# reflecting the parsed GNN spec. Use
 # ``render.discopy.render_gnn_to_discopy`` (Step 11) for a real categorical
 # diagram derived from the model.

@@ -74,7 +74,6 @@ from .infrastructure import (
     ResourceMonitor,
     TestExecutionConfig,
     TestExecutionResult,
-    TestRunner,
     check_test_dependencies,
 )
 
@@ -372,7 +371,6 @@ def run_tests(
     logger: logging.Logger,
     output_dir: Path,
     verbose: bool = False,
-    include_slow: bool = False,
     fast_only: bool = True,  # Default to fast tests for pipeline integration
     comprehensive: bool = False,
     generate_coverage: bool = False,  # Disable coverage by default for speed
@@ -385,7 +383,6 @@ def run_tests(
         logger: Logger instance
         output_dir: Output directory for test results
         verbose: Enable verbose output
-        include_slow: Include slow tests (deprecated, use comprehensive)
         fast_only: Run only fast tests
         comprehensive: Run comprehensive test suite (all tests)
         generate_coverage: Generate coverage report
@@ -442,11 +439,11 @@ def _check_zero_tests_collected(output_dir: Path, logger: logging.Logger) -> boo
         logger.debug(f"Could not check test count: {e}")
     return False
 
-# Re-export from test_runner_modes sub-module for backward compatibility
+# Re-export from test_runner_modes sub-module.
 from .test_runner_modes import (
     run_comprehensive_tests,
     run_fast_pipeline_tests,
     run_fast_reliable_tests,
 )
 
-# Re-export from test_runner_modular sub-module for backward compatibility
+# Re-export from test_runner_modular sub-module.

@@ -38,7 +38,7 @@ setup:
   recreate_venv: false
   # install_all_extras: false   # if true: uv sync --all-extras (every optional group; heavy)
 
-# Legacy / documentation only: main.py does not read uv.sync.* (use ``setup:`` above).
+# Documentation only: main.py does not read uv.sync.* (use ``setup:`` above).
 # For manual installs: uv sync --extra dev | uv sync --all-extras
 uv:
   recreate_uv_env: false

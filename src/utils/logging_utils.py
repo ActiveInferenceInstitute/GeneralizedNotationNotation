@@ -1,41 +1,43 @@
 #!/usr/bin/env python3
-"""
-Logging Utilities Compatibility Shim for GNN Processing Pipeline.
-
-This module provides the legacy logging interface but delegates all operations
-to the modern, structured logging system in `utils.logging.logging_utils`.
-"""
+"""Logging utilities facade for the GNN processing pipeline."""
 
 import logging
-import warnings
-from typing import Any, Dict, Optional
 from pathlib import Path
+from typing import Any, Dict, Optional
 
-# Import everything from the new system
+# Import the structured logging implementation.
 from .logging.logging_utils import (
     PipelineLogger as NewPipelineLogger,
-    setup_step_logging as new_setup_step_logging,
-    setup_main_logging as new_setup_main_logging,
-    log_step_start as new_log_step_start,
-    log_step_success as new_log_step_success,
-    log_step_warning as new_log_step_warning,
-    log_step_error as new_log_step_error,
+)
+from .logging.logging_utils import (
     log_section_header as new_log_section_header,
+)
+from .logging.logging_utils import (
+    log_step_error as new_log_step_error,
+)
+from .logging.logging_utils import (
+    log_step_start as new_log_step_start,
+)
+from .logging.logging_utils import (
+    log_step_success as new_log_step_success,
+)
+from .logging.logging_utils import (
+    log_step_warning as new_log_step_warning,
+)
+from .logging.logging_utils import (
     setup_correlation_context as new_setup_correlation_context,
 )
+from .logging.logging_utils import (
+    setup_main_logging as new_setup_main_logging,
+)
+from .logging.logging_utils import (
+    setup_step_logging as new_setup_step_logging,
+)
+from .performance_tracker import PerformanceTracker, performance_tracker
 
-# Re-export performance tracker
-try:
-    from .performance_tracker import PerformanceTracker, performance_tracker
-except ImportError:
-    # Minimal stub if not available
-    class PerformanceTracker:
-        def __init__(self): pass
-        def get_summary(self): return {}
-    performance_tracker = PerformanceTracker()
 
 class PipelineLogger:
-    """Legacy wrapper for PipelineLogger."""
+    """Facade for the structured pipeline logger."""
     
     @classmethod
     def get_logger(cls, name: str, level: int = logging.INFO) -> logging.Logger:

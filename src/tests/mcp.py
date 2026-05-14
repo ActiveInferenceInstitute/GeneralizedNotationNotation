@@ -87,7 +87,7 @@ def run_integration_tests_mcp(target_directory: str, output_directory: str, verb
         Dictionary with operation status and test results.
     """
     try:
-        # For backward compatibility, map to generic category runner
+        # Map to generic category runner.
         success = run_test_category("integration", target_dir=Path(target_directory), test_results_dir=Path(output_directory), verbose=verbose)
         return {
             "success": success,

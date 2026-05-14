@@ -21,7 +21,7 @@ from __future__ import annotations
 import csv
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple
 
 from .collector import SweepRecord
 
@@ -37,11 +37,11 @@ try:
 
     if not os.environ.get("MPLBACKEND"):
         matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
     import matplotlib.colors as mcolors
+    import matplotlib.pyplot as plt
     import matplotlib.ticker as mticker
-    from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
     import numpy as np
+    from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
     _MPL_AVAILABLE = True
 except ImportError:
     pass
@@ -525,8 +525,14 @@ class SweepVisualizer:
                             # Annotate exponent near the end of the line
                             ax.text(xs[-1], ys[-1], f" α={exponent:.2f}", 
                                     color=color, fontsize=_STYLE["tick_size"]-4, fontweight="bold", va="center")
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        self.logger.debug(
+                            "Skipped scaling fit for %s=%s in %s: %s",
+                            group_label,
+                            gval,
+                            fw,
+                            e,
+                        )
 
             ax.set_xlabel(x_label, color=_STYLE["text_color"], fontsize=_STYLE["label_size"], fontweight="bold")
             ax.set_ylabel("Wall-clock Runtime (s)", color=_STYLE["text_color"], fontsize=_STYLE["label_size"], fontweight="bold")
@@ -1064,7 +1070,7 @@ class SweepVisualizer:
         # Mask NaN for surface plot
         Zm = np.ma.masked_invalid(Z)
         
-        surf = ax.plot_surface(X, Y, Zm, cmap="viridis", edgecolor='black', linewidth=0.1, alpha=0.8)
+        ax.plot_surface(X, Y, Zm, cmap="viridis", edgecolor='black', linewidth=0.1, alpha=0.8)
         
         ax.set_xlabel("log10(Timesteps T)", color=_STYLE["text_color"], fontsize=_STYLE["label_size"], labelpad=10)
         ax.set_ylabel("log10(State Size N)", color=_STYLE["text_color"], fontsize=_STYLE["label_size"], labelpad=10)
@@ -1167,8 +1173,8 @@ class SweepVisualizer:
                     fit_vals = np.exp(coeffs[1]) * np.array(n_values, dtype=float)**exponent
                     ax.plot(n_values, fit_vals, "--", color=_get_color(fw), alpha=0.5, linewidth=1.5,
                             label=f"{fw} fit: O(N^{exponent:.2f})")
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug("Skipped LOC fit for %s: %s", fw, e)
 
         ax.set_xscale("log")
         ax.set_yscale("log")
@@ -1224,8 +1230,8 @@ class SweepVisualizer:
                     r_corr = np.corrcoef(ents, accs)[0, 1]
                     ax.text(max(ents), p(max(ents)), f" r={r_corr:.2f}", color=color, 
                             fontsize=_STYLE["tick_size"]-2, fontweight="bold")
-            except Exception:
-                pass
+            except Exception as e:
+                self.logger.debug("Skipped entropy/accuracy fit for %s: %s", fw, e)
 
         ax.set_xlabel("Mean Belief Entropy (nats)", color=_STYLE["text_color"], fontsize=_STYLE["label_size"], fontweight="bold")
         ax.set_ylabel("Final Accuracy", color=_STYLE["text_color"], fontsize=_STYLE["label_size"], fontweight="bold")
@@ -1358,7 +1364,8 @@ class SweepVisualizer:
                     ss_res = np.sum((ly - (c[0]*lx + c[1]))**2)
                     ss_tot = np.sum((ly - np.mean(ly))**2)
                     exponents.append((f"N-scaling\n(T={t})", c[0], 1 - ss_res/ss_tot if ss_tot > 0 else 0))
-                except Exception: pass
+                except Exception as e:
+                    self.logger.debug("Skipped N-scaling exponent for %s at T=%s: %s", fw, t, e)
             for n in n_values:
                 subset = sorted([r for r in fw_recs if r.num_states == n], key=lambda r: r.num_timesteps)
                 if len(subset) < 3: continue
@@ -1369,7 +1376,8 @@ class SweepVisualizer:
                     ss_res = np.sum((ly - (c[0]*lx + c[1]))**2)
                     ss_tot = np.sum((ly - np.mean(ly))**2)
                     exponents.append((f"T-scaling\n(N={n})", c[0], 1 - ss_res/ss_tot if ss_tot > 0 else 0))
-                except Exception: pass
+                except Exception as e:
+                    self.logger.debug("Skipped T-scaling exponent for %s at N=%s: %s", fw, n, e)
         if not exponents:
             return None
         fig, ax = plt.subplots(figsize=(max(14, len(exponents) * 1.2), 8))

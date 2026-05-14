@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Phase 4.2 regression tests for setup (Step 1).
 
-Zero-mock: uses real sys.version_info + real filesystem.
+Uses real sys.version_info and real filesystem.
 """
 
 import shutil

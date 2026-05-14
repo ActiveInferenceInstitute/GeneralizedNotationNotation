@@ -7,11 +7,13 @@ Run from repository root:
   uv run python doc/development/docs_audit.py
   uv run python doc/development/docs_audit.py --strict   # exit 1 if any issue
   uv run python doc/development/docs_audit.py --check-anchors  # verify #fragments in .md links (optional)
+  uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
 
 With ``--strict`` and any findings, a **full per-issue listing** is written to stderr by default
 (terminal-friendly fix loop). Use ``--quiet`` to print only counts and the one-line summary.
 
-Writes: doc/development/docs_audit_report.md
+Writes ``doc/development/docs_audit_report.md`` unless ``--no-write`` is passed or a
+custom ``--report-path`` is provided.
 """
 
 from __future__ import annotations
@@ -76,7 +78,21 @@ def should_skip(path: Path) -> bool:
         rel = path.relative_to(REPO_ROOT)
     except ValueError:
         return True
-    return any(p in SKIP_PARTS for p in rel.parts)
+    return any(p in SKIP_PARTS for p in rel.parts) or _path_is_generated_output(rel)
+
+
+def _path_is_generated_output(rel: Path) -> bool:
+    """Run outputs that are intentionally excluded from maintained-doc audits."""
+    parts = rel.parts
+    if not parts:
+        return False
+    if parts[0] == "output":
+        return True
+    if any(part.startswith("activeinference_outputs_") for part in parts):
+        return True
+    if any(part.endswith("_outputs") or "_outputs_" in part for part in parts):
+        return True
+    return "pomdp_gridworld_outputs" in parts
 
 
 def iter_markdown_files() -> list[Path]:
@@ -547,6 +563,17 @@ def main() -> int:
         action="store_true",
         help="Log extra diagnostics to stderr (e.g. markdown file count).",
     )
+    parser.add_argument(
+        "--no-write",
+        action="store_true",
+        help="Run checks without writing docs_audit_report.md.",
+    )
+    parser.add_argument(
+        "--report-path",
+        type=Path,
+        default=REPO_ROOT / "doc" / "development" / "docs_audit_report.md",
+        help="Optional report output path. Ignored when --no-write is set.",
+    )
     args = parser.parse_args()
 
     if not logging.root.handlers:
@@ -574,7 +601,9 @@ def main() -> int:
     readme_no_agents = audit_readme_without_agents()
     doc_agents_structure = audit_doc_agents_structure()
 
-    report_path = REPO_ROOT / "doc" / "development" / "docs_audit_report.md"
+    report_path = args.report_path
+    if not report_path.is_absolute():
+        report_path = REPO_ROOT / report_path
     lines = [
         "# Documentation audit report",
         "",
@@ -691,8 +720,16 @@ def main() -> int:
         for rel, msg in doc_agents_structure:
             lines.append(f"- `{rel}`: {msg}")
 
-    report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    print(f"Wrote {report_path.relative_to(REPO_ROOT)}")
+    if args.no_write:
+        print("Report not written (--no-write).")
+    else:
+        report_path.parent.mkdir(parents=True, exist_ok=True)
+        report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+        try:
+            display_path = report_path.relative_to(REPO_ROOT)
+        except ValueError:
+            display_path = report_path
+        print(f"Wrote {display_path}")
     print(f"Broken links: {len(link_issues)}")
     print(f"Bad markdown anchors: {len(anchor_issues)}")
     print(f"AGENTS/SPEC gaps: {len(spec_issues)}")

@@ -1,11 +1,8 @@
 """
 Pure computational strategies for estimating GNN resource requirements.
-
-NOTE: This module is maintained for backward compatibility.
-The actual implementation has been moved to the `estimation` subpackage.
 """
 
-# Re-export from the estimation subpackage
+# Re-export from the estimation subpackage.
 from .estimation.strategies import (
     calculate_complexity,
     detailed_memory_breakdown,

@@ -84,9 +84,6 @@ class ModularTestRunner:
         if category == "performance" and hasattr(self.args, 'include_performance') and not self.args.include_performance:
             return False
 
-        if category in ["specialized", "integration"] and hasattr(self.args, 'include_slow') and not self.args.include_slow:
-            return False
-
         return category not in ["performance", "specialized", "integration"]
 
     def _run_fallback_tests(self, category: str, test_files: List[str], python_executable: str, start_time: float) -> Dict[str, Any]:

@@ -16,7 +16,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
-from pipeline.context import StepStatus  # single authoritative definition
+from src.pipeline.context import StepStatus  # single authoritative definition
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 # Constrained type for step flag severity.
@@ -833,18 +833,17 @@ def process_intelligent_analysis(
         _time.sleep(2)
 
     if not summary_path.exists():
-        # Gracefully handle: generate a minimal report noting the summary was unavailable
+        # Generate a partial report noting the summary was unavailable.
         logger.warning(f"Pipeline summary not found at {summary_path} — this is expected when "
                        "running as part of the pipeline (summary is written after all steps complete). "
                        "Generating partial analysis from available outputs.")
-        # Create output directory and write a placeholder report
         if output_dir.name == "24_intelligent_analysis_output":
             analysis_output_dir = output_dir
         else:
             analysis_output_dir = output_dir / "24_intelligent_analysis_output"
         analysis_output_dir.mkdir(parents=True, exist_ok=True)
 
-        placeholder_report = (
+        partial_report = (
             "# Pipeline Intelligent Analysis Report\n\n"
             f"**Generated**: {datetime.now().isoformat()}\n\n"
             "## Note\n\n"
@@ -856,8 +855,8 @@ def process_intelligent_analysis(
         )
         report_path = analysis_output_dir / "intelligent_analysis_report.md"
         with open(report_path, 'w') as f:
-            f.write(placeholder_report)
-        logger.info(f"Placeholder report saved to {report_path}")
+            f.write(partial_report)
+        logger.info(f"Partial report saved to {report_path}")
         log_step_success(logger, "Intelligent analysis completed (partial — summary unavailable)")
         return True
 
@@ -897,20 +896,24 @@ def process_intelligent_analysis(
 
     # 7. Run LLM Analysis
     llm_analysis = None
-    try:
-        llm_analysis = asyncio.run(
-            _run_llm_analysis(
-                analysis,
-                step_analyses,
-                flags_by_type,
-                logger,
-                analysis_model=kwargs.get("analysis_model"),
-            )
-        )
-        logger.info("LLM analysis completed")
-    except Exception as e:
-        logger.warning(f"LLM analysis skipped: {e}")
+    if kwargs.get("skip_llm"):
+        logger.info("LLM analysis skipped by configuration; using rule-based summary")
         llm_analysis = _generate_rule_based_summary(analysis, step_analyses, flags_by_type)
+    else:
+        try:
+            llm_analysis = asyncio.run(
+                _run_llm_analysis(
+                    analysis,
+                    step_analyses,
+                    flags_by_type,
+                    logger,
+                    analysis_model=kwargs.get("analysis_model"),
+                )
+            )
+            logger.info("LLM analysis completed")
+        except Exception as e:
+            logger.warning(f"LLM analysis skipped: {e}")
+            llm_analysis = _generate_rule_based_summary(analysis, step_analyses, flags_by_type)
 
     # 8. Generate Executive Report
     report_content = generate_executive_report(

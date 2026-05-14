@@ -122,7 +122,7 @@ def generate_error_report(output_dir: Path, cmd: List[str], error_msg: str):
         logging.warning(f"Failed to generate error report: {e}")
 
 
-# Backward-compatible aliases (underscore-prefixed versions)
+# Underscore-prefixed exports used by test runner internals.
 _generate_markdown_report = generate_markdown_report
 _flatten_pipeline_test_summary = flatten_pipeline_test_summary
 _generate_fallback_report = generate_fallback_report

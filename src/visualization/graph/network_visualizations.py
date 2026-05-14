@@ -9,10 +9,10 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from advanced_visualization._shared import normalize_connection_format
+from src.advanced_visualization._shared import normalize_connection_format
 
 try:
-    from gnn.parsers.common import VariableType
+    from src.gnn.parsers.common import VariableType
 
     _HID = VariableType.HIDDEN_STATE.value
     _OBS = VariableType.OBSERVATION.value
@@ -61,14 +61,14 @@ except ImportError:
     go = None
     PLOTLY_AVAILABLE = False
 
-from visualization.plotting.utils import safe_tight_layout
+from ..plotting.utils import safe_tight_layout
 
 logger = logging.getLogger(__name__)
 
 
 def _var_type(var_info: Dict[str, Any]) -> str:
     """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
-    from visualization.compat.viz_compat import viz_var_type
+    from ..compat.viz_compat import viz_var_type
     return viz_var_type(var_info)
 
 

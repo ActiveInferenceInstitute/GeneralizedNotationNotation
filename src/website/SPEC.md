@@ -7,7 +7,7 @@ The `src/website/` module generates static HTML websites from pipeline artifacts
 ## Interface Mapping
 
 - `20_website.py`: Thin orchestrator binding `website.processor.process_website()`
-- `processor.py`: Thin shim delegating to `generator.py` and `renderer.py`
+- `processor.py`: Thin facade delegating to `generator.py` and `renderer.py`
 - `generator.py`: Core HTML/CSS generation engine producing multi-page sites
 - `renderer.py`: Template rendering with Jinja2 support
 - `dashboard.py`: Interactive dashboard generation with visualization embedding

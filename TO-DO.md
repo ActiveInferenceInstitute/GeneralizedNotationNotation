@@ -6,15 +6,15 @@
 
 ---
 
-## ✅ v1.6.0 — Zero-Mock Stabilization & Core Infrastructure (Released)
+## ✅ v1.6.0 — Real-Implementation Stabilization & Core Infrastructure (Released)
 
 > **Released**: 2026-04-15 (tag: `v1.6.0`)
 > **Scope**: Production hardening, MCP integration, renderer expansion, documentation integrity.
 
 - [x] **NumPyro/Stan Renderer Integration** — Complete end-to-end render pathway for NumPyro (322-line renderer) and Stan (100-line renderer) alongside existing PyMDP, RxInfer, JAX, DisCoPy, PyTorch, ActiveInference.jl backends. All 8 renderers operational via `--frameworks` flag on Steps 11/12.
-- [x] **MCP Full Module Exposure** — All 25 pipeline modules + infrastructure modules expose tools via 32 `mcp.py` files. 131 registered real tools (no placeholders) across 38+ domains. MCP deadlock in `discover_modules` resolved.
+- [x] **MCP Full Module Exposure** — All 25 pipeline modules + infrastructure modules expose tools via 32 `mcp.py` files. 131 registered real tools across 38+ domains. MCP deadlock in `discover_modules` resolved.
 - [x] **PyMDP Scaling Study** — Automated scaling analysis pipeline (`scripts/run_pymdp_gnn_scaling_analysis.py`) with configurable N=[2,256] grids, exponential state-space sweeps, and 19-artifact visualization suite.
-- [x] **Test Suite Hardening** — 1,906 tests passing, 30 skipped (Ollama-dependent). Zero-Mock compliance across all modules. Hypothesis tests refactored to deterministic parametric matrices.
+- [x] **Test Suite Hardening** — 1,906 tests passing, 30 skipped (Ollama-dependent). Real-implementation coverage across all modules. Hypothesis tests refactored to deterministic parametric matrices.
 - [x] **Documentation Integrity** — 105 `doc/gnn/` files, 34 `AGENTS.md` across `src/`, all version strings synchronized to `1.6.0`. Zero phantom file references.
 - [x] **Enhanced Visual Logging** — Progress bars, color-coded output, structured summaries, correlation ID tracking, screen reader support across all 25 pipeline steps.
 - [x] **LLM & ML Fixes** — LLM recursive glob fix, ML cross-validation fold logic hardened (`min(5, len(X), min_class_count)`).
@@ -27,7 +27,7 @@
 
 - [ ] **Multi-Agent Message Passing (RxInfer)** — Expand the `execute/` layer to handle clustered topologies (100+ agents) passing states asynchronously utilizing graph factorization in Julia via RxInfer.jl.
 - [ ] **Categorical Symmetries (DisCoPy)** — Sync matrix permutations natively to string diagrams, allowing visual topology validation before simulation generation.
-- [ ] **Reactive WebSocket GUI** — Overhaul the GUI stack (Step 22) into a WebSocket-powered frontend allowing users to adjust agent matrices on the fly without pipeline re-execution. Build on the oxdraw WebSocket architecture stub.
+- [ ] **Reactive WebSocket GUI** — Overhaul the GUI stack (Step 22) into a WebSocket-powered frontend allowing users to adjust agent matrices on the fly without pipeline re-execution. Build on the oxdraw WebSocket architecture.
 - [ ] **Audio Parameter Streaming** — Bridge Step 15 (Audio/Pedalboard/SAPF) to accept dynamic telemetry updates from long-running PyMDP agent simulations in real time. Extend the existing `process_realtime_chunk` pattern.
 - [ ] **3D Matrix Visualization** — Upgrade the Matrix Visualization module into interactive Three.js canvas structures for explorable generative model inspection.
 
@@ -74,5 +74,5 @@ uv run python src/main.py --autonomous --target-dir input/recursive_models/
 ## Conventions
 
 - Versions follow [SemVer](https://semver.org/) — `MAJOR.MINOR.PATCH`
-- All releases require 100% pipeline stability, Zero-Mock policy adherence, documentation integrity, and verifiable console acceptance metrics.
+- All releases require 100% pipeline stability, real-implementation test coverage, documentation integrity, and verifiable console acceptance metrics.
 - Items marked `[x]` are verified complete against the codebase, not estimated.

@@ -127,7 +127,7 @@ def _coerce_exit_code(result: Any, step_name: str, logger: logging.Logger) -> in
     Contract: module_function may return bool or int.
       bool: True→0 (success), False→1 (error)
       int: passthrough (0=success, 1=error, 2=warnings/skipped)
-    Other truthy/falsy types are coerced via bool() for backward compatibility.
+    Other truthy/falsy types are coerced via bool().
     """
     if isinstance(result, bool):
         return 0 if result else 1

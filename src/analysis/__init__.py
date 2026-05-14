@@ -20,7 +20,7 @@ FEATURES = {
 
 # Phase 6: analysis submodules are in-tree; all deps (numpy, matplotlib) are
 # core per pyproject.toml. Unconditional imports; any ImportError is a real
-# bug that must surface in CI rather than be papered over with stubs.
+# bug that must surface in CI rather than be hidden by substitute classes.
 from .analyzer import (
     analyze_distributions,
     analyze_framework_outputs,
@@ -46,7 +46,6 @@ from .analyzer import (
     run_performance_benchmarks,
     visualize_cross_framework_metrics,
 )
-
 from .post_simulation import (
     analyze_active_inference_metrics,
     analyze_execution_results,
@@ -76,7 +75,6 @@ from .post_simulation import (
     # Comprehensive visualization functions
     visualize_all_framework_outputs,
 )
-
 from .processor import convert_numpy_types, process_analysis
 
 # Note: framework-specific analyzers live in ``src/analysis/<framework>/analyzer.py``

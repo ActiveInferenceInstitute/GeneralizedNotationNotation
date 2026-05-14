@@ -32,8 +32,8 @@ Numbered scripts (`N_module.py`) are **thin orchestrators only**:
 - Scripts only: argument parsing, logging setup, output directory, exit codes
 - See: [architecture.md](architecture.md)
 
-### 2. No Mocks Policy ⚠️
-All tests use **real implementations** — no `unittest.mock` or monkeypatching.
+### 2. Real Implementation Testing ⚠️
+All tests use **real implementations** and real artifacts.
 - Skip gracefully when optional deps unavailable: `pytest.skip(...)`
 - See: [testing.md](testing.md)
 

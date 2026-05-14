@@ -1,9 +1,9 @@
 # Type Checker Module
 
-This module provides the rigorous, integrated validation layer powering the GNN zero-mock processing pipeline. It evaluates syntax structures, maps multidimensional parameters across generative mathematical bounds, performs full structural cross-validation, and renders executive dashboard trading cards evaluating physical resource estimations natively.
+This module provides the rigorous, integrated validation layer powering the GNN processing pipeline. It evaluates syntax structures, maps multidimensional parameters across generative mathematical bounds, performs full structural cross-validation, and renders executive dashboard trading cards evaluating physical resource estimations natively.
 
 ## Structural Hierarchy
-The Type Checker subsystem was structurally unified in Version 1.6.0, reorganizing the logic into clean subpackages for checking and resource estimation while maintaining backward compatibility through thin delegating modules.
+The Type Checker subsystem is organized into clean subpackages for checking and resource estimation, with top-level facade modules for pipeline and CLI entry points.
 
 ```mermaid
 graph TD
@@ -29,7 +29,7 @@ The core GNN validation subsystem.
 - **`report_html.py` / `report_markdown.py`**: Decoupled presentation formatting.
 
 ### `visualizer.py` (Executive Graphic Abstract Layer)
-A bespoke analytical graphic utility rendering four distinct, completely zero-mock visual abstractions straight from the GNN evaluation metrics:
+A bespoke analytical graphic utility rendering four distinct visual abstractions straight from the GNN evaluation metrics:
 1.  **Validity Mosaics**: Heat-mapped Grids classifying model warnings vs critical errors system-wide.
 2.  **Type Pie Trackers**: Aggregated representations showing overall percentage of active framework distributions (e.g., Categorical, Floats, Distributions).
 3.  **Dimensional Radars**: Measuring raw alignment maps between model matrix shapes globally.
@@ -47,6 +47,6 @@ python src/5_type_checker.py --target-dir input/gnn_files --output-dir output/5_
 python src/5_type_checker.py --estimate-resources
 ```
 
-## Legacy Deprecations
-> [!NOTE]
-> `processor.py`, `resource_estimator.py`, and `estimation_strategies.py` have been converted into thin delegation layers for backward compatibility. Import from the `.checking` and `.estimation` subpackages for new development.
+## Public Facades
+
+`processor.py`, `resource_estimator.py`, and `estimation_strategies.py` expose current public imports while delegating implementation to the `.checking` and `.estimation` subpackages.

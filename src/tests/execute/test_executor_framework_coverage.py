@@ -18,7 +18,6 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from execute.executor import execute_rendered_simulators  # noqa: E402
 
-
 EXPECTED_FRAMEWORK_KEYS = {
     "pymdp_executions",
     "rxinfer_executions",

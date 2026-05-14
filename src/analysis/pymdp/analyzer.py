@@ -16,7 +16,7 @@ from typing import List
 
 # Import the visualizer from its new home in analysis.pymdp
 try:
-    from analysis.pymdp.visualizer import PyMDPVisualizer, save_all_visualizations
+    from .visualizer import PyMDPVisualizer, save_all_visualizations
 except ImportError:
     # Recovery for relative imports
     try:
@@ -344,4 +344,3 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
 
     logger.info(f"PyMDP analysis complete: generated {len(generated_files)} visualization files")
     return generated_files
-

@@ -3,7 +3,7 @@
 Test Unit Overall Tests
 
 Real unit tests for core GNN utilities and helper functions.
-No mocks - tests real implementations.
+Tests real implementations.
 """
 
 import sys

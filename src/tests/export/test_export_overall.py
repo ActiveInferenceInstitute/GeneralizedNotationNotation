@@ -6,7 +6,9 @@ This file contains comprehensive tests for the export module functionality.
 import sys
 from pathlib import Path
 from typing import Any
+
 import pytest
+
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 class TestExportModuleComprehensive:
@@ -128,6 +130,7 @@ def test_export_module_completeness() -> None:
 def test_export_module_performance() -> None:
     """Test export module performance characteristics."""
     import time
+
     from export import Exporter
     exporter = Exporter()
     start_time = time.time()

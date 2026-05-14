@@ -183,6 +183,16 @@ def check_discopy_availability() -> Dict[str, bool]:
         from discopy.tensor import Id as Id_actual
         from discopy.tensor import Spider as Spider_actual
         from discopy.tensor import Swap as Swap_actual
+        _ = (
+            Matrix_actual,
+            Cap_actual,
+            Cup_actual,
+            Diagram_actual,
+            Functor_actual,
+            Id_actual,
+            Spider_actual,
+            Swap_actual,
+        )
 
         # Test basic functionality
         test_dim = Dim_actual(2)
@@ -215,6 +225,7 @@ def check_discopy_availability() -> Dict[str, bool]:
     try:
         import jax as jax_actual
         import jax.numpy as jnp_actual
+        _ = jax_actual
 
         # Test basic functionality
         test_array = jnp_actual.array([1, 2, 3])
@@ -689,8 +700,8 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, dims_map: dict[str, Dim
                 # Tensor product of Dim objects
                 try:
                     dom_dim = functools.reduce(lambda a, b: a @ b, [dims_map[v] for v in source_vars])
-                except TypeError: # If @ is not defined for PlaceholderBase or initial reduce object
-                    logger.error(f"Cannot compute tensor product for domain with vars {source_vars} due to placeholder Dim objects. Skipping connection.")
+                except TypeError:
+                    logger.error(f"Cannot compute tensor product for domain with vars {source_vars}. Skipping connection.")
                     continue
             else: # No source vars, use empty Dim (identity for tensor product, usually Dim(1))
                 dom_dim = Dim()
@@ -701,7 +712,7 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, dims_map: dict[str, Dim
                 try:
                     cod_dim = functools.reduce(lambda a, b: a @ b, [dims_map[v] for v in target_vars])
                 except TypeError:
-                    logger.error(f"Cannot compute tensor product for codomain with vars {target_vars} due to placeholder Dim objects. Skipping connection.")
+                    logger.error(f"Cannot compute tensor product for codomain with vars {target_vars}. Skipping connection.")
                     continue
             else: # No target vars, use empty Dim
                 cod_dim = Dim()
@@ -721,7 +732,6 @@ def gnn_connections_to_discopy_diagram(parsed_gnn: dict, dims_map: dict[str, Dim
             else:
                 # This indicates a more complex structure (e.g. parallel wires or new starting chain)
                 # For now, we will log a warning and try to append it as a new parallel component
-                # This is a placeholder for more sophisticated diagram construction.
                 logger.warning(f"Connection from \'{source_content}\' to \'{target_content}\' (Box dom={dom_dim}, cod={cod_dim}) does not directly chain with previous diagram codomain ({diagram.cod}). Appending in parallel (basic).")
                 # Attempting a parallel composition; this assumes variables are distinct flows if not chained.
                 # A more robust solution would analyze the full graph structure.
@@ -749,7 +759,7 @@ def gnn_connections_to_discopy_matrix_diagram(
     """
     Converts GNN Connections into a DisCoPy Diagram, where boxes are populated with Matrix objects
     (from discopy.matrix) containing JAX-backed Tensors if JAX is available.
-    If JAX is not available or tensor data is missing, boxes may be abstract or use placeholders.
+    If JAX is not available or tensor data is missing, boxes may be abstract.
     """
     if not JAX_AVAILABLE: # Check the overall JAX_AVAILABLE flag
         logger.error("JAX or essential DisCoPy components for matrix operations are not available. Cannot create a JAX-backed MatrixDiagram.")
@@ -833,12 +843,9 @@ def gnn_connections_to_discopy_matrix_diagram(
     if JAX_AVAILABLE and jnp and hasattr(jnp, default_dtype_str):
         jax_dtype = getattr(jnp, default_dtype_str)
     else:
-        # Recovery if JAX not available or dtype string not a jnp attribute
-        # Using the string name itself as a placeholder if actual jnp dtype can't be resolved.
-        # This might be okay if it's only used for numpy array creation later,
-        # or if the actual tensor_def provides a valid jax_array_data directly.
+        # Recovery if JAX not available or dtype string is not a jnp attribute.
         jax_dtype = default_dtype_str
-        logger.debug(f"JAX/jnp not fully available or '{default_dtype_str}' not in jnp. Using '{jax_dtype}' as jax_dtype placeholder.")
+        logger.debug(f"JAX/jnp not fully available or '{default_dtype_str}' not in jnp. Using dtype name '{jax_dtype}'.")
 
     for line_idx, line in enumerate(connections_lines):
         line = line.strip()
@@ -918,8 +925,8 @@ def gnn_connections_to_discopy_matrix_diagram(
             if JAX_AVAILABLE and jnp and hasattr(jnp, box_dtype_str):
                 current_jax_dtype = getattr(jnp, box_dtype_str)
             else:
-                current_jax_dtype = box_dtype_str # Recovery to string name
-                logger.debug(f"JAX/jnp not fully available or '{box_dtype_str}' not in jnp for box '{box_name_short}'. Using '{current_jax_dtype}' as current_jax_dtype placeholder.")
+                current_jax_dtype = box_dtype_str
+                logger.debug(f"JAX/jnp not fully available or '{box_dtype_str}' not in jnp for box '{box_name_short}'. Using dtype name '{current_jax_dtype}'.")
 
             initializer = tensor_def.get("initializer")
             jax_array_data = None
@@ -1023,8 +1030,7 @@ def gnn_connections_to_discopy_matrix_diagram(
             # Create a discopy.matrix.Matrix object to hold the JAX array
             # This Matrix IS a Box, so it can be directly used in the diagram.
             try:
-                # Ensure dom_dim.inside and cod_dim.inside are tuples for concatenation
-                # This was a previous source of error, Dim should handle .inside correctly if not placeholder
+                # Ensure dom_dim.inside and cod_dim.inside are tuples for concatenation.
                 box_shape_tuple = tuple(getattr(dom_dim, 'inside', ())) + tuple(getattr(cod_dim, 'inside', ()))
 
                 if not all(isinstance(d, int) for d in box_shape_tuple):
@@ -1050,7 +1056,7 @@ def gnn_connections_to_discopy_matrix_diagram(
                 logger.error(f"Error creating discopy.matrix.Matrix for box '{box_name_short}': {e_matrix_creation}. Dom: {dom_dim}, Cod: {cod_dim}, Data shape: {jax_array_data.shape if hasattr(jax_array_data, 'shape') else 'N/A'}")
                 continue
 
-            # Use box_name_short for logging as box.name might not be set if box is a placeholder or construction failed early
+            # Use box_name_short for logging because box.name may not be set when construction fails early.
             box_data_shape_log = getattr(box.data, 'shape', 'unknown') if hasattr(box, 'data') and box.data is not None else 'no data'
             logger.debug(f"Created JAX-backed Matrix: '{box_name_short}', dom={box.dom}, cod={box.cod}, data_shape={box_data_shape_log}")
 
@@ -1200,8 +1206,6 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
                     logger.info(f"  First box data (JAX array): {first_box_data}")
                 elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as recovery
                     logger.info(f"  First box data (NumPy array): {first_box_data}")
-                elif isinstance(first_box_data, PlaceholderBase):
-                    logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (data: {getattr(first_box_data, 'args', '')})")
                 else:
                     logger.info(f"  First box data type: {type(first_box_data)}")
 
@@ -1290,14 +1294,14 @@ def create_gnn_diagram():
     print(f"Connections: {{len(connections)}}")
     
     # Create basic diagram structure
-    # For demonstration, create a simple diagram with placeholder components
+    # Create a simple diagram with core components.
     
     # Define basic types
     state_type = Ty("State")
     obs_type = Ty("Observation") 
     action_type = Ty("Action")
     
-    # Create placeholder boxes
+    # Create core boxes.
     transition_box = Box("Transition", state_type, state_type)
     observation_box = Box("Observation", state_type, obs_type)
     action_box = Box("Action", state_type, action_type)
@@ -1529,7 +1533,6 @@ B > C
 
             # Try to draw if matplotlib is available
             try:
-                from matplotlib import pyplot as plt  # type: ignore
                 output_image_path = Path("__test_discopy_diagram.png")
                 diagram_test.draw(path=str(output_image_path), show_types=True, figsize=(8,4))
                 logger.info(f"Diagram drawn to {output_image_path}")
@@ -1636,9 +1639,9 @@ B > C
                         else:
                             logger.info(f"  First box data type: {type(first_box_data)}")
                     else:
-                        logger.info("MatrixDiagram has no boxes or first box has no data (or diagram is a placeholder).")
+                        logger.info("MatrixDiagram has no boxes or first box has no data.")
                 else:
-                    logger.info(f"MatrixDiagram is a placeholder: {type(matrix_diagram)}")
+                    logger.info(f"MatrixDiagram type: {type(matrix_diagram)}")
             else:
                 logger.error(f"Overall MatrixDiagram creation failed for {test_matrix_gnn_path}.")
 

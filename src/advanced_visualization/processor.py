@@ -14,7 +14,7 @@ Implementation is split across sub-modules for maintainability:
 - statistical_viz: Statistical plots, matrix correlations
 - interactive_viz: Plotly dashboard generation
 
-This file re-exports all public names for backward compatibility.
+This file is the public processing facade for the sub-modules listed above.
 """
 
 import importlib.util
@@ -37,32 +37,10 @@ except ImportError:
     plt = None
     np = None
 
-# Import performance tracker with recovery
-try:
-    from utils.performance_tracker import PerformanceTracker
-except ImportError:
-    try:
-        from utils import performance_tracker
-        PerformanceTracker = performance_tracker.PerformanceTracker
-    except (ImportError, AttributeError):
-        # Recovery: simple performance tracker
-        class PerformanceTracker:
-            def __init__(self):
-                self.timings = {}
+# Import performance tracker.
+from utils.performance_tracker import PerformanceTracker
 
-            def start_timing(self, name: str):
-                """Start a timing measurement for the current operation."""
-                self.timings[name] = time.time()
-
-            def stop_timing(self, name: str) -> float:
-                """Stop the current timing measurement and record the duration."""
-                if name in self.timings:
-                    duration = time.time() - self.timings[name]
-                    del self.timings[name]
-                    return duration
-                return 0.0
-
-# Re-export shared items for backward compatibility
+# Public shared result type.
 from ._shared import (
     AdvancedVisualizationResults,
 )
@@ -151,7 +129,7 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
 
 def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: Optional[Path] = None) -> Dict[str, Dict]:
     """Load GNN models from processing results"""
-    from pipeline.config import get_output_dir_for_script
+    from src.pipeline.config import get_output_dir_for_script
 
     # Get GNN output directory
     if base_output_dir is None:

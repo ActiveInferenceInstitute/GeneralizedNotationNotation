@@ -1,6 +1,6 @@
 # Code Quality Standards
 
-> **Principle**: Real implementations only. No mocks, no placeholders, no stubs.
+> **Principle**: Real implementations only. Avoid simulated replacements and incomplete surfaces.
 
 ## Type Safety
 
@@ -78,11 +78,11 @@ uv run mypy src/ --strict
 
 ## Implementation Quality Rules
 
-### No Mocks ⚠️
+### Real Implementations ⚠️
 ```python
 # ❌ WRONG
-from unittest.mock import MagicMock, patch
-mock_logger = MagicMock()
+class TestLogger:
+    def info(self, message): ...
 
 # ✅ CORRECT
 import logging
@@ -91,8 +91,8 @@ logger = logging.getLogger("test")
 
 ### Real Data Testing
 ```python
-# ❌ WRONG — hard-coded fake data
-model = {"name": "fake", "states": 2}
+# ❌ WRONG — hard-coded substitute data
+model = {"name": "example", "states": 2}
 
 # ✅ CORRECT — use actual GNN fixture files
 from tests.conftest import sample_gnn_files

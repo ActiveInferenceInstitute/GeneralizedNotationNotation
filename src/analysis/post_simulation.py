@@ -11,7 +11,7 @@ Implementation is split across sub-modules for maintainability:
 - math_utils: Active Inference statistical functions (entropy, KL, VFE, EFE)
 - visualizations: All plotting, animation, and dashboard generation
 
-This file re-exports all public names for backward compatibility.
+This file is the public facade for the analysis sub-modules listed above.
 """
 
 __all__ = [

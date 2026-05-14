@@ -252,13 +252,13 @@ Let's combine these ideas for a GNN tool. Imagine a function that renders a GNN 
 #     # In a real scenario, this would involve parsing the GNN, finding the
 #     # 'Equations' section (see gnn_dsl_manual.md), and formatting it.
 #     # time.sleep(1) # Simulate work
-#     # For this example, return a placeholder based on hash and section
+#     # For this example, return a deterministic value based on hash and section
 #     ctx = capture_render_context(gnn_file_path, section_name)
 #     if ctx.gnn_file_hash == "INVALID_HASH":
 #         return "Error: Could not render equations."
 #     return f"LaTeX_Output_for_{ctx.gnn_file_hash[:8]}_section_{section_name}"
 
-# # Dummy agent function that uses the GNN tool
+# # Sample agent function that uses the GNN tool
 # def my_gnn_pipeline_agent(gnn_file_to_process: str):
 #    print(f"--- Running GNN Pipeline for {gnn_file_to_process} ---")
 #    latex_output = render_gnn_equations_to_latex(gnn_file_to_process)
@@ -267,10 +267,10 @@ Let's combine these ideas for a GNN tool. Imagine a function that renders a GNN 
 
 # engine.set_agent(my_gnn_pipeline_agent)
 
-# # Create a dummy GNN file for testing
+# # Create a sample GNN file for testing
 # DUMMY_GNN_FILE = "dummy_model.gnn"
 # with open(DUMMY_GNN_FILE, "w") as f:
-#     f.write("## ModelName\nMy Dummy Model\n\n## Equations\ns_t = A * o_t + B * s_{t-1}")
+#     f.write("## ModelName\nMy Sample Model\n\n## Equations\ns_t = A * o_t + B * s_{t-1}")
 
 # # Run once - expect cache miss for render_gnn_equations_to_latex
 # print("\\nRunning pipeline first time:")
