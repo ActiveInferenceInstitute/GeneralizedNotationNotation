@@ -14,6 +14,9 @@ Exports are defined in `src/execute/pymdp/__init__.py`. Main entry points:
 
 - `execute_pymdp_simulation_from_gnn(...)`
 - `execute_pymdp_simulation(...)`
+- `run_pymdp_simulation(...)`
+- `PyMDPSimulation(...)` with explicit `initialparameterization`
+- `create_demo_pymdp_simulation(...)` for the named demo model
 - `validate_pymdp_environment(...)`
 - `get_pymdp_health_status(...)`
 - package detection helpers:
@@ -25,7 +28,7 @@ Exports are defined in `src/execute/pymdp/__init__.py`. Main entry points:
 
 - `executor.py`: execution orchestration from GNN spec / rendered scripts.
 - `pymdp_simulation.py`: simulation class and simulation run loop.
-- `simple_simulation.py`: lightweight simulation entry path used by tests/tools.
+- `simulation.py`: canonical `run_pymdp_simulation` implementation.
 - `pymdp_runner.py`: script execution utility and log capture.
 - `validator.py`: environment checks and health reporting.
 - `package_detector.py`: detect correct `inferactively-pymdp` installation.
@@ -53,7 +56,7 @@ explicitly deferred to Step 16 analysis.
 
 ## Upstream PyMDP ``Agent`` contract tests
 
-The simulation loop in `simple_simulation.py` calls pymdp 1.0.0's
+The simulation loop in `simulation.py` calls pymdp 1.0.0's
 JAX-first `Agent` with the canonical rollout pattern:
 
 ```python
@@ -67,8 +70,8 @@ Regression coverage:
 
 ```bash
 uv run pytest \
-    src/tests/test_pymdp_1_0_0_upstream_api.py \
-    src/tests/test_pymdp_contracts.py \
-    src/tests/test_execute_pymdp_integration.py \
+    src/tests/execute/test_pymdp_1_0_0_upstream_api.py \
+    src/tests/execute/test_pymdp_contracts.py \
+    src/tests/execute/test_execute_pymdp_integration.py \
     -v
 ```

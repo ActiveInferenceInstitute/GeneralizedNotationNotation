@@ -20,5 +20,5 @@ Multi-format I/O for GNN: **23** `GNNFormat` values, **23** parsers, **22** seri
 ## Tests
 
 ```bash
-uv run pytest src/tests/test_gnn_parsing.py src/tests/test_gnn_parsers_common.py -q
+uv run pytest src/tests/gnn/test_gnn_parsing.py src/tests/gnn/test_gnn_parsers_common.py -q
 ```

@@ -330,6 +330,7 @@ def process_analysis(
                     generate_unified_framework_dashboard,
                     visualize_all_framework_outputs,
                 )
+                from .visualizations import _pymdp_v1_visualization_data
 
                 # Use cross_framework folder for cross-implementation analysis
                 viz_output_dir = results_dir / "cross_framework"
@@ -358,6 +359,10 @@ def process_analysis(
                                     break
 
                             if framework != "unknown":
+                                if framework == "pymdp":
+                                    if sim_data.get("schema_version") != "pymdp_simulation_v1":
+                                        continue
+                                    sim_data = _pymdp_v1_visualization_data(sim_data)
                                 key = framework
                                 if key not in framework_data_for_dashboard:
                                     framework_data_for_dashboard[key] = {

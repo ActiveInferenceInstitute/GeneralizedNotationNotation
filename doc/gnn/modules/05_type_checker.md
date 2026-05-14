@@ -116,7 +116,7 @@ Per run, Step 5 produces in `output/5_type_checker_output/`:
 
 ## Testing
 
-Test file: `src/tests/test_type_checker_overall.py`
+Test file: `src/tests/type_checker/test_type_checker_overall.py`
 
 Key coverage areas:
 

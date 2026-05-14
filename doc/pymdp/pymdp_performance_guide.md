@@ -51,7 +51,8 @@ Rule of thumb:
 - `batch_size = 16`: ~6–10× throughput vs running 16 separate agents serially
 - `batch_size = 128`: saturates on a typical laptop CPU
 
-The pipeline's `run_simple_pymdp_simulation` defaults to `batch_size=1`
+The pipeline's `run_pymdp_simulation` uses `batch_size=1` unless the GNN spec
+sets another value
 because most GNN POMDPs are single-agent. Override via the GNN spec:
 
 ```json
@@ -157,7 +158,7 @@ The meta-analysis module (v1.7.0) generates **scientific-grade visualizations** 
 The repository ships a runnable smoke benchmark that you can adapt:
 
 ```bash
-uv run pytest src/tests/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
+uv run pytest src/tests/execute/test_pymdp_contracts.py::test_pymdp_seeded_reproducibility_contract \
     --durations=5 -v
 ```
 
@@ -167,7 +168,7 @@ and prints per-test wall times in the slowest-durations report.
 For a larger workload, use the ActInf POMDP end-to-end test:
 
 ```bash
-uv run pytest src/tests/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
+uv run pytest src/tests/execute/test_pymdp_contracts.py::test_actinf_pomdp_render_execute_analyze_e2e \
     --durations=5 -v -m "integration and slow"
 ```
 

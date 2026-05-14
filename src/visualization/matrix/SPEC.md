@@ -4,8 +4,8 @@
 
 ## Supported Matrix Types
 
-- 2D transition matrices (A)
-- 2D observation matrices (B)
+- 2-D likelihood matrices (`A`)
+- 2-D passive/single-action transition matrices (`B`)
 - 3D POMDP tensors (per-action slices)
 - Prior distributions (D vectors)
 
@@ -18,6 +18,9 @@
 ## 3D Tensor Handling
 
 Per-action slice visualization with shared colorbar and cross-slice statistics.
+For POMDP transition tensors, `B` shape is `(next_state, previous_state,
+action)`. Stochastic validation sums over `next_state` for each
+`previous_state`/`action` column. Every action slice is exported to CSV.
 
 ## Output Formats
 

@@ -6,16 +6,42 @@ This module provides specialized processing capabilities for injecting POMDP sta
 into various rendering implementations (PyMDP, RxInfer, ActiveInference.jl, etc.).
 """
 
+import itertools
 import json
 import logging
 from datetime import datetime
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
+import numpy as np
+
 if TYPE_CHECKING:
     from gnn.pomdp_extractor import POMDPStateSpace
 
 logger = logging.getLogger(__name__)
+
+
+def _normalise_prob_vector(values: np.ndarray) -> np.ndarray:
+    vector = np.asarray(values, dtype=np.float64).flatten()
+    total = float(vector.sum())
+    if not np.isfinite(total) or total <= 0:
+        return np.ones(max(vector.shape[0], 1), dtype=np.float64) / max(vector.shape[0], 1)
+    return vector / total
+
+
+def _normalise_columns(matrix: np.ndarray) -> np.ndarray:
+    out = np.asarray(matrix, dtype=np.float64).copy()
+    if out.ndim != 2:
+        raise ValueError(f"expected 2D matrix, got shape {out.shape}")
+    column_sums = out.sum(axis=0, keepdims=True)
+    zero_columns = column_sums <= 0
+    column_sums = np.where(zero_columns, 1.0, column_sums)
+    out = out / column_sums
+    if zero_columns.any():
+        rows = out.shape[0]
+        for column in np.where(zero_columns.flatten())[0]:
+            out[:, column] = 1.0 / rows
+    return out
 
 
 def count_code_metrics(file_path: Path) -> Dict[str, int]:
@@ -218,15 +244,18 @@ class POMDPRenderProcessor:
                 }
                 processing_summary['frameworks_failed'].append(framework)
 
-        # Determine overall success:
-        # Consider successful if at least 60% of frameworks succeeded OR at least one succeeded
         total_frameworks = len(frameworks)
         successful_frameworks = len(processing_summary['frameworks_processed'])
         success_rate = successful_frameworks / total_frameworks if total_frameworks > 0 else 0
-        overall_success = success_rate >= 0.6 or successful_frameworks > 0
+        overall_success = successful_frameworks == total_frameworks
 
         if not overall_success:
-            self.logger.warning(f"⚠️ Low framework success rate: {successful_frameworks}/{total_frameworks} ({success_rate*100:.1f}%)")
+            self.logger.warning(
+                "Framework rendering incomplete: %d/%d succeeded (%.1f%%)",
+                successful_frameworks,
+                total_frameworks,
+                success_rate * 100,
+            )
 
         # Save processing summary
         summary_file = self.base_output_dir / 'processing_summary.json'
@@ -344,11 +373,11 @@ class POMDPRenderProcessor:
         config = self.framework_configs[framework]
         warnings = []
 
-        # Check required matrices are present
+        # Check required matrices are present, allowing factored matrices when
+        # they can be composed into a canonical execution contract.
         missing_matrices = []
         for required_matrix in config['requires_matrices']:
-            matrix_attr = f"{required_matrix}_matrix" if required_matrix in ['A', 'B'] else f"{required_matrix}_vector"
-            if getattr(pomdp_space, matrix_attr, None) is None:
+            if not self._has_matrix_or_factored_matrix(pomdp_space, required_matrix):
                 missing_matrices.append(required_matrix)
 
         if missing_matrices:
@@ -357,6 +386,16 @@ class POMDPRenderProcessor:
                 'reason': f"Missing required matrices: {missing_matrices}",
                 'warnings': warnings
             }
+
+        if framework == 'pymdp':
+            try:
+                self._build_pymdp_initialparameterization(pomdp_space)
+            except ValueError as exc:
+                return {
+                    'compatible': False,
+                    'reason': str(exc),
+                    'warnings': warnings
+                }
 
         # Framework-specific checks
         if framework == 'rxinfer' and not config['supports_multi_modality']:
@@ -375,6 +414,286 @@ class POMDPRenderProcessor:
             'reason': None,
             'warnings': warnings
         }
+
+    def _has_matrix_or_factored_matrix(self, pomdp_space: 'POMDPStateSpace', matrix_name: str) -> bool:
+        matrices = getattr(pomdp_space, 'matrices', None) or {}
+        if matrix_name in matrices:
+            return True
+        if matrix_name == 'B' and self._time_indexed_transition_key(matrices):
+            return True
+        return any(key.startswith(f'{matrix_name}_') for key in matrices)
+
+    def _time_indexed_transition_key(self, matrices: Dict[str, Any]) -> Optional[str]:
+        """Return the single supported time-indexed transition tensor key."""
+        if 'B_t' in matrices:
+            return 'B_t'
+        time_keys = sorted(
+            key for key in matrices
+            if key.startswith('B_t') and key[3:].isdigit()
+        )
+        if len(time_keys) == 1:
+            return time_keys[0]
+        return None
+
+    def _build_pymdp_initialparameterization(
+        self,
+        pomdp_space: 'POMDPStateSpace',
+    ) -> tuple[Dict[str, Any], Dict[str, Dict[str, Any]]]:
+        """Build the strict canonical A/B/C/D/E contract used by PyMDP execution."""
+        matrices = getattr(pomdp_space, 'matrices', None) or {}
+        provenance = dict(getattr(pomdp_space, 'matrix_provenance', None) or {})
+        has_canonical = all(key in matrices for key in ('A', 'B', 'C', 'D'))
+
+        if has_canonical:
+            initial = {key: matrices[key] for key in ('A', 'B', 'C', 'D')}
+            if 'E' in matrices:
+                initial['E'] = matrices['E']
+            return initial, provenance
+
+        time_indexed_b = self._time_indexed_transition_key(matrices)
+        if time_indexed_b and all(key in matrices for key in ('A', 'C', 'D')):
+            b_tensor = self._canonicalise_time_indexed_B(
+                matrices[time_indexed_b],
+                max(1, int(getattr(pomdp_space, 'num_actions', 1))),
+            )
+            initial = {
+                'A': matrices['A'],
+                'B': b_tensor.tolist(),
+                'C': matrices['C'],
+                'D': matrices['D'],
+            }
+            if 'E' in matrices:
+                initial['E'] = matrices['E']
+            provenance['B'] = {
+                'source': 'time_indexed_transition_projection',
+                'source_key': time_indexed_b,
+                'shape': list(b_tensor.shape),
+                'derived': True,
+                'reason': 'PyMDP static transition contract uses the declared B_t tensor for execution',
+            }
+            return initial, provenance
+
+        joint, joint_provenance = self._compose_factored_pomdp(pomdp_space)
+        initial = {
+            'A': joint['A'],
+            'B': joint['B'],
+            'C': joint['C'],
+            'D': joint['D'],
+        }
+        if 'E' in matrices:
+            initial['E'] = matrices['E']
+        provenance.update(joint_provenance)
+        return initial, provenance
+
+    def _compose_factored_pomdp(self, pomdp_space: 'POMDPStateSpace') -> tuple[Dict[str, Any], Dict[str, Dict[str, Any]]]:
+        """Compose factored POMDP matrices into a joint PyMDP model without dropping factors."""
+        matrices = getattr(pomdp_space, 'matrices', None) or {}
+        state_factors = [factor for factor in (getattr(pomdp_space, 'state_factors', None) or []) if factor.get('size')]
+        obs_modalities = [
+            modality for modality in (getattr(pomdp_space, 'observation_modalities', None) or [])
+            if modality.get('size')
+        ]
+
+        if not state_factors:
+            raise ValueError('Factored POMDP is missing state factor metadata')
+        if not obs_modalities:
+            raise ValueError('Factored POMDP is missing observation modality metadata')
+
+        state_sizes = [int(factor['size']) for factor in state_factors]
+        obs_sizes = [int(modality['size']) for modality in obs_modalities]
+        state_tuples = list(itertools.product(*[range(size) for size in state_sizes]))
+        obs_tuples = list(itertools.product(*[range(size) for size in obs_sizes]))
+        num_states = len(state_tuples)
+        num_obs = len(obs_tuples)
+        num_actions = max(1, int(getattr(pomdp_space, 'num_actions', 1)))
+
+        a_keys = sorted(key for key in matrices if key.startswith('A_'))
+        b_keys = sorted(key for key in matrices if key.startswith('B_'))
+        c_keys = sorted(key for key in matrices if key.startswith('C_'))
+        d_keys = sorted(key for key in matrices if key.startswith('D_'))
+
+        if not a_keys:
+            raise ValueError('Factored POMDP is missing A_* likelihood matrices')
+        if not b_keys:
+            raise ValueError('Factored POMDP is missing B_* transition matrices')
+        if not d_keys:
+            raise ValueError('Factored POMDP is missing D_* prior vectors')
+
+        A_joint = np.ones((num_obs, num_states), dtype=np.float64)
+        for key in a_keys:
+            matrix = np.asarray(matrices[key], dtype=np.float64)
+            if matrix.ndim not in (2, 3):
+                raise ValueError(f'{key} must be 2D or 3D for PyMDP composition, got shape {matrix.shape}')
+            obs_index = self._match_descriptor_index(key, obs_modalities, matrix.shape[0])
+            state_indices = self._match_state_indices_for_matrix(key, state_factors, matrix.shape[1:])
+            for obs_flat, obs_tuple in enumerate(obs_tuples):
+                for state_flat, state_tuple in enumerate(state_tuples):
+                    matrix_index = [obs_tuple[obs_index]]
+                    matrix_index.extend(state_tuple[index] for index in state_indices)
+                    A_joint[obs_flat, state_flat] *= float(matrix[tuple(matrix_index)])
+        A_joint = _normalise_columns(A_joint)
+
+        B_joint = np.ones((num_states, num_states, num_actions), dtype=np.float64)
+        for key in b_keys:
+            factor_index = self._match_descriptor_index(key, state_factors)
+            factor_size = state_sizes[factor_index]
+            tensor = self._canonicalise_factored_B(matrices[key], factor_size, num_actions)
+            for action in range(num_actions):
+                source_action = action if tensor.shape[2] > 1 else 0
+                for prev_flat, prev_tuple in enumerate(state_tuples):
+                    for next_flat, next_tuple in enumerate(state_tuples):
+                        B_joint[next_flat, prev_flat, action] *= float(
+                            tensor[next_tuple[factor_index], prev_tuple[factor_index], source_action]
+                        )
+        for action in range(num_actions):
+            B_joint[:, :, action] = _normalise_columns(B_joint[:, :, action])
+
+        if c_keys:
+            C_joint = np.zeros(num_obs, dtype=np.float64)
+            for key in c_keys:
+                vector = np.asarray(matrices[key], dtype=np.float64).flatten()
+                obs_index = self._match_descriptor_index(key, obs_modalities, vector.shape[0])
+                for obs_flat, obs_tuple in enumerate(obs_tuples):
+                    C_joint[obs_flat] += float(vector[obs_tuple[obs_index]])
+        elif getattr(pomdp_space, 'passive_model', False):
+            C_joint = np.zeros(num_obs, dtype=np.float64)
+        else:
+            raise ValueError('Factored POMDP is missing C_* preference vectors')
+
+        D_joint = np.ones(num_states, dtype=np.float64)
+        for key in d_keys:
+            vector = _normalise_prob_vector(np.asarray(matrices[key], dtype=np.float64))
+            factor_index = self._match_descriptor_index(key, state_factors, vector.shape[0])
+            for state_flat, state_tuple in enumerate(state_tuples):
+                D_joint[state_flat] *= float(vector[state_tuple[factor_index]])
+        D_joint = _normalise_prob_vector(D_joint)
+
+        provenance = {
+            'A': {
+                'source': 'factored_joint_composition',
+                'source_keys': a_keys,
+                'shape': list(A_joint.shape),
+                'derived': True,
+            },
+            'B': {
+                'source': 'factored_joint_composition',
+                'source_keys': b_keys,
+                'shape': list(B_joint.shape),
+                'derived': True,
+            },
+            'C': {
+                'source': 'factored_joint_composition',
+                'source_keys': c_keys,
+                'shape': list(C_joint.shape),
+                'derived': True,
+            },
+            'D': {
+                'source': 'factored_joint_composition',
+                'source_keys': d_keys,
+                'shape': list(D_joint.shape),
+                'derived': True,
+            },
+        }
+
+        return (
+            {
+                'A': A_joint.tolist(),
+                'B': B_joint.tolist(),
+                'C': C_joint.tolist(),
+                'D': D_joint.tolist(),
+            },
+            provenance,
+        )
+
+    def _canonicalise_time_indexed_B(self, value: Any, num_actions: int) -> np.ndarray:
+        """Canonicalize B_t to (next_state, previous_state, action)."""
+        raw = np.asarray(value, dtype=np.float64)
+        if raw.ndim == 2:
+            tensor = raw[:, :, np.newaxis]
+        elif raw.ndim == 3:
+            if raw.shape[0] == num_actions and raw.shape[1] == raw.shape[2]:
+                tensor = raw.transpose(1, 2, 0)
+            elif raw.shape[0] == raw.shape[1] and raw.shape[2] in {1, num_actions}:
+                tensor = raw
+            else:
+                raise ValueError(
+                    f'B_t must be action-first or canonical 3D tensor, got shape {raw.shape}'
+                )
+        else:
+            raise ValueError(f'B_t must be 2D or 3D, got shape {raw.shape}')
+        for action in range(tensor.shape[2]):
+            tensor[:, :, action] = _normalise_columns(tensor[:, :, action])
+        return tensor
+
+    def _canonicalise_factored_B(self, value: Any, factor_size: int, num_actions: int) -> np.ndarray:
+        raw = np.asarray(value, dtype=np.float64)
+        if raw.ndim == 2:
+            tensor = raw[:, :, np.newaxis]
+        elif raw.ndim == 3:
+            if raw.shape[0] == num_actions and raw.shape[1] == raw.shape[2]:
+                tensor = raw.transpose(2, 1, 0)
+            elif raw.shape[0] == 1 and raw.shape[1] == raw.shape[2]:
+                tensor = raw.transpose(2, 1, 0)
+            elif raw.shape[-1] in {1, num_actions} and raw.shape[0] == raw.shape[1]:
+                tensor = raw
+            else:
+                tensor = raw
+        else:
+            raise ValueError(f'B factor must be 2D or 3D, got shape {raw.shape}')
+        if tensor.shape[0] != factor_size or tensor.shape[1] != factor_size:
+            raise ValueError(
+                f'B factor shape {tensor.shape} does not match state factor size {factor_size}'
+            )
+        for action in range(tensor.shape[2]):
+            tensor[:, :, action] = _normalise_columns(tensor[:, :, action])
+        return tensor
+
+    def _match_descriptor_index(
+        self,
+        matrix_key: str,
+        descriptors: List[Dict[str, Any]],
+        required_size: Optional[int] = None,
+    ) -> int:
+        suffix = matrix_key.split('_', 1)[1].lower() if '_' in matrix_key else matrix_key.lower()
+        matches = [
+            index for index, descriptor in enumerate(descriptors)
+            if suffix in str(descriptor.get('name', '')).lower()
+        ]
+        if required_size is not None:
+            matches = [
+                index for index in matches
+                if int(descriptors[index].get('size') or -1) == int(required_size)
+            ] or [
+                index for index, descriptor in enumerate(descriptors)
+                if int(descriptor.get('size') or -1) == int(required_size)
+            ]
+        if len(matches) == 1:
+            return matches[0]
+        if not matches and len(descriptors) == 1:
+            return 0
+        raise ValueError(f'Could not map {matrix_key} to descriptors {[d.get("name") for d in descriptors]}')
+
+    def _match_state_indices_for_matrix(
+        self,
+        matrix_key: str,
+        state_factors: List[Dict[str, Any]],
+        matrix_state_shape: tuple[int, ...],
+    ) -> List[int]:
+        if len(matrix_state_shape) == 1:
+            return [self._match_descriptor_index(matrix_key, state_factors, matrix_state_shape[0])]
+        indices: List[int] = []
+        used: set[int] = set()
+        for size in matrix_state_shape:
+            matches = [
+                index for index, factor in enumerate(state_factors)
+                if index not in used and int(factor.get('size') or -1) == int(size)
+            ]
+            if not matches:
+                raise ValueError(f'Could not map {matrix_key} state shape {matrix_state_shape} to state factors')
+            index = matches[0]
+            used.add(index)
+            indices.append(index)
+        return indices
 
     def _pomdp_to_gnn_spec(self, pomdp_space: 'POMDPStateSpace', **kwargs) -> Dict[str, Any]:
         """
@@ -399,6 +718,12 @@ class POMDPRenderProcessor:
             self.logger.warning(f"Invalid simulation_params string: {sim_params}. Using empty dict.")
             parsed_sim_params = {}
 
+        initial_parameterization, matrix_provenance = self._build_pymdp_initialparameterization(pomdp_space)
+        raw_model_parameters = getattr(pomdp_space, 'model_parameters', None) or {}
+        state_factors = getattr(pomdp_space, 'state_factors', None) or []
+        observation_modalities = getattr(pomdp_space, 'observation_modalities', None) or []
+        control_factors = getattr(pomdp_space, 'control_factors', None) or []
+
         gnn_spec = {
             'name': pomdp_space.model_name or 'POMDP_Model',
             'model_name': pomdp_space.model_name or 'POMDP_Model',
@@ -407,25 +732,29 @@ class POMDPRenderProcessor:
                 'num_hidden_states': pomdp_space.num_states,
                 'num_obs': pomdp_space.num_observations,
                 'num_actions': pomdp_space.num_actions,
+                'num_state_factors': len(state_factors) or raw_model_parameters.get('num_state_factors'),
+                'num_modalities': len(observation_modalities) or raw_model_parameters.get('num_modalities'),
+                'state_factors': state_factors,
+                'observation_modalities': observation_modalities,
+                'control_factors': control_factors,
+                'passive_model': getattr(pomdp_space, 'passive_model', False),
                 'simulation_params': parsed_sim_params,
+                **raw_model_parameters,
                 **(({'num_timesteps': timesteps} if timesteps else {}))
             },
-            'initialparameterization': {},
+            'initialparameterization': initial_parameterization,
+            'structured_pomdp': {
+                'matrices': getattr(pomdp_space, 'matrices', None) or {},
+                'matrix_provenance': matrix_provenance,
+                'state_factors': state_factors,
+                'observation_modalities': observation_modalities,
+                'control_factors': control_factors,
+                'adapter_notes': getattr(pomdp_space, 'adapter_notes', None) or [],
+            },
+            'matrix_provenance': matrix_provenance,
             'variables': [],
             'connections': []
         }
-
-        # Add matrices to initial parameterization
-        if pomdp_space.A_matrix:
-            gnn_spec['initialparameterization']['A'] = pomdp_space.A_matrix
-        if pomdp_space.B_matrix:
-            gnn_spec['initialparameterization']['B'] = pomdp_space.B_matrix
-        if pomdp_space.C_vector:
-            gnn_spec['initialparameterization']['C'] = pomdp_space.C_vector
-        if pomdp_space.D_vector:
-            gnn_spec['initialparameterization']['D'] = pomdp_space.D_vector
-        if pomdp_space.E_vector:
-            gnn_spec['initialparameterization']['E'] = pomdp_space.E_vector
 
         # Add variable definitions
         if pomdp_space.state_variables:

@@ -25,9 +25,13 @@ parse/
 - `_parse_parameter_value(value_str)` — Safely parse parameter value strings (JSON, lists, scalars).
 - `_save_parameter(parsed, param_name, param_lines)` — Accumulate multi-line parameter definitions.
 
-## Fallback Role
+## Raw Markdown Parser Role
 
-This module is the **fallback parser** for the visualization pipeline. The preferred path loads structured JSON from Step 3 via `core/parsed_model.py`. When Step 3 output is unavailable, `parse_gnn_content` provides degraded but functional model data for visualization.
+This module provides the explicit raw-Markdown parser for the visualization
+pipeline. The preferred path loads structured JSON from Step 3 via
+`core/parsed_model.py`. When Step 3 output is unavailable,
+`parse_gnn_content` provides reduced but functional model data for
+visualization.
 
 ## Parent Module
 

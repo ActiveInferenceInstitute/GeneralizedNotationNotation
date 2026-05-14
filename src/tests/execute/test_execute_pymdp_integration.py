@@ -7,7 +7,7 @@ Tests skip cleanly if pymdp is not installed or if the installed
 wheel predates 1.0.0.
 
 Upstream: https://github.com/infer-actively/pymdp
-Local contract: ``src/execute/pymdp/simple_simulation.py``
+Local contract: ``src/execute/pymdp/simulation.py``
 """
 
 from __future__ import annotations
@@ -41,7 +41,7 @@ try:
         is_correct_pymdp_package,
         validate_pymdp_for_execution,
     )
-    from execute.pymdp.simple_simulation import run_simple_pymdp_simulation
+    from execute.pymdp.simulation import run_pymdp_simulation
 
     EXECUTE_MODULE_AVAILABLE = True
 except ImportError as e:
@@ -111,13 +111,13 @@ class TestPyMDPRealExecution:
         assert isinstance(agent.D, (list, tuple))
         assert agent.D[0].shape == (1, 2)
 
-    def test_pymdp_simple_simulation_execution(self, tmp_path: Any) -> None:
+    def test_pymdp_simulation_execution(self, tmp_path: Any) -> None:
         """End-to-end rollout via the pipeline's real pymdp 1.0.0 runner."""
         gnn_spec = {
             "model_name": "test_pymdp_model",
             "initialparameterization": {
                 "A": [[0.9, 0.1], [0.1, 0.9]],
-                # GNN B in (action, prev, next) form; simple_simulation will
+                # GNN B in (action, prev, next) form; simulation will
                 # transpose to the pymdp (next, prev, action) convention.
                 "B": [[[0.8, 0.2], [0.2, 0.8]]],
                 "C": [0.0, 0.0],
@@ -128,7 +128,7 @@ class TestPyMDPRealExecution:
         output_dir = tmp_path / "pymdp_output"
         output_dir.mkdir()
 
-        success, results = run_simple_pymdp_simulation(gnn_spec, output_dir)
+        success, results = run_pymdp_simulation(gnn_spec, output_dir)
         assert success is True
         assert results["success"] is True
         assert results["framework"] == "PyMDP"

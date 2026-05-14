@@ -42,14 +42,38 @@ def check(name, fn):
         traceback.print_exc()
 
 
+def _with_matrices(cfg):
+    """Attach explicit POMDP matrices for PyMDPSimulation verification."""
+    states = cfg.get("states", cfg.get("num_states", 4))
+    observations = cfg.get("observations", cfg.get("num_observations", 4))
+    actions = cfg.get("actions", cfg.get("num_actions", 2))
+    num_states = states if isinstance(states, int) else len(states)
+    num_obs = observations if isinstance(observations, int) else len(observations)
+    num_actions = actions if isinstance(actions, int) else len(actions)
+    A = np.eye(num_obs, num_states).tolist()
+    B = np.stack([np.eye(num_states) for _ in range(max(num_actions, 1))], axis=0).tolist()
+    C = np.zeros(num_obs, dtype=float).tolist()
+    if num_obs:
+        C[-1] = 1.0
+    params = cfg.get("parameters", {}) or {}
+    if isinstance(params.get("preferences"), list) and len(params["preferences"]) == num_obs:
+        C = params["preferences"]
+    D = (np.ones(num_states, dtype=float) / max(num_states, 1)).tolist()
+    if isinstance(params.get("prior_beliefs"), list) and len(params["prior_beliefs"]) == num_states:
+        D = params["prior_beliefs"]
+    out = dict(cfg)
+    out["initialparameterization"] = {"A": A, "B": B, "C": C, "D": D}
+    return out
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # 1. PYMDP SIMULATION — Configurability
 # ─────────────────────────────────────────────────────────────────────────────
 
-def test_default_config():
-    """PyMDPSimulation with no config uses default gridworld."""
-    from execute.pymdp.pymdp_simulation import PyMDPSimulation
-    sim = PyMDPSimulation()
+def test_demo_config():
+    """Named demo constructor produces a runnable gridworld."""
+    from execute.pymdp.pymdp_simulation import create_demo_pymdp_simulation
+    sim = create_demo_pymdp_simulation()
     assert sim.num_states == 4, f"Expected 4 states, got {sim.num_states}"
     assert sim.num_actions == 5
     assert sim.num_observations == 4
@@ -66,7 +90,7 @@ def test_named_states_config():
         "actions": ["rest", "medicate", "exercise"],
         "model_name": "health_model"
     }
-    sim = PyMDPSimulation(gnn_config=cfg)
+    sim = PyMDPSimulation(gnn_config=_with_matrices(cfg))
     assert sim.num_states == 3
     assert sim.num_observations == 3
     assert sim.num_actions == 3
@@ -79,7 +103,7 @@ def test_integer_counts_config():
     """Config with integer counts instead of named lists."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     cfg = {"states": 6, "observations": 3, "actions": 4}
-    sim = PyMDPSimulation(gnn_config=cfg)
+    sim = PyMDPSimulation(gnn_config=_with_matrices(cfg))
     assert sim.num_states == 6
     assert sim.num_observations == 3
     assert sim.num_actions == 4
@@ -100,7 +124,7 @@ def test_custom_parameters():
             "num_timesteps": 25,
         }
     }
-    sim = PyMDPSimulation(gnn_config=cfg)
+    sim = PyMDPSimulation(gnn_config=_with_matrices(cfg))
     assert sim.learning_rate == 0.8
     assert sim.alpha == 32.0
     assert sim.gamma == 8.0
@@ -119,7 +143,7 @@ def test_custom_preferences_and_priors():
             "prior_beliefs": [0.7, 0.2, 0.1],
         }
     }
-    sim = PyMDPSimulation(gnn_config=cfg)
+    sim = PyMDPSimulation(gnn_config=_with_matrices(cfg))
     # C should reflect preferences
     C = sim.model_matrices["C"]
     assert C[0] == 2.0 and C[2] == -1.0
@@ -137,16 +161,19 @@ def test_gnn_matrix_injection():
         "observations": ["o0", "o1"],
         "actions": ["left", "right"],
     }
-    sim = PyMDPSimulation(gnn_config=cfg)
-    # Manually inject GNN matrices
-    sim.gnn_matrices = {
-        "A": np.array([[0.95, 0.05], [0.05, 0.95]]),
-        "B": np.zeros((2, 2, 2)),
+    cfg = _with_matrices(cfg)
+    B = np.zeros((2, 2, 2))
+    B[0, 0, 0] = 1.0  # left keeps in s0
+    B[1, 0, 1] = 1.0  # right moves to s1
+    B[0, 1, 0] = 1.0  # left moves to s0
+    B[1, 1, 1] = 1.0  # right keeps in s1
+    cfg["initialparameterization"] = {
+        "A": [[0.95, 0.05], [0.05, 0.95]],
+        "B": B.tolist(),
+        "C": [0.0, 1.0],
+        "D": [1.0, 0.0],
     }
-    sim.gnn_matrices["B"][0, 0, 0] = 1.0  # left keeps in s0
-    sim.gnn_matrices["B"][1, 0, 1] = 1.0  # right moves to s1
-    sim.gnn_matrices["B"][0, 1, 0] = 1.0  # left moves to s0
-    sim.gnn_matrices["B"][1, 1, 1] = 1.0  # right keeps in s1
+    sim = PyMDPSimulation(gnn_config=cfg)
     agent, matrices = sim.create_pymdp_model_from_gnn()
     assert agent is not None
     assert matrices["A"].shape == (2, 2)
@@ -157,11 +184,11 @@ def test_gnn_matrix_injection():
 def test_simulation_output_structure():
     """Verify simulation output contains all expected fields."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
-    sim = PyMDPSimulation(gnn_config={
+    sim = PyMDPSimulation(gnn_config=_with_matrices({
         "states": ["a", "b", "c"],
         "observations": ["x", "y", "z"],
         "actions": ["1", "2", "3"],
-    })
+    }))
     r = sim.run_simulation(num_timesteps=12)
     for key in ["observations", "actions", "beliefs", "performance", "trace"]:
         assert key in r, f"Missing key: {key}"
@@ -179,9 +206,9 @@ def test_serialization():
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import safe_json_dump
     with tempfile.TemporaryDirectory() as td:
-        sim = PyMDPSimulation(gnn_config={
+        sim = PyMDPSimulation(gnn_config=_with_matrices({
             "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go", "stay"]
-        })
+        }))
         r = sim.run_simulation(num_timesteps=5)
         out = Path(td) / "results.json"
         safe_json_dump(r, out)
@@ -196,7 +223,7 @@ def test_serialization():
 
 def test_render_pymdp():
     from render.processor import render_gnn_spec
-    spec = {"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]}
+    spec = _with_matrices({"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]})
     with tempfile.TemporaryDirectory() as td:
         ok, msg, arts = render_gnn_spec(spec, "pymdp", td)
         assert ok, f"PyMDP render failed: {msg}"
@@ -204,28 +231,28 @@ def test_render_pymdp():
 
 def test_render_rxinfer():
     from render.processor import render_gnn_spec
-    spec = {"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]}
+    spec = _with_matrices({"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]})
     with tempfile.TemporaryDirectory() as td:
         ok, msg, arts = render_gnn_spec(spec, "rxinfer", td)
         assert ok, f"RxInfer render failed: {msg}"
 
 def test_render_activeinference_jl():
     from render.processor import render_gnn_spec
-    spec = {"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]}
+    spec = _with_matrices({"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]})
     with tempfile.TemporaryDirectory() as td:
         ok, msg, arts = render_gnn_spec(spec, "activeinference_jl", td)
         assert ok, f"ActiveInference.jl render failed: {msg}"
 
 def test_render_discopy():
     from render.processor import render_gnn_spec
-    spec = {"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]}
+    spec = _with_matrices({"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]})
     with tempfile.TemporaryDirectory() as td:
         ok, msg, arts = render_gnn_spec(spec, "discopy", td)
         assert ok, f"DisCoPy render failed: {msg}"
 
 def test_render_jax():
     from render.processor import render_gnn_spec
-    spec = {"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]}
+    spec = _with_matrices({"model_name": "verify", "states": ["a", "b"], "observations": ["x", "y"], "actions": ["go"]})
     with tempfile.TemporaryDirectory() as td:
         ok, msg, arts = render_gnn_spec(spec, "jax", td)
         # JAX renderer may not be available — record accordingly
@@ -335,7 +362,7 @@ def test_visualization_creation():
             "observations": ["o0", "o1"],
             "actions": ["up", "down", "left", "right"],
         }
-        sim = PyMDPSimulation(gnn_config=cfg, output_dir=td)
+        sim = PyMDPSimulation(gnn_config=_with_matrices(cfg), output_dir=td)
         r = sim.run_simulation(num_timesteps=10)
         viz = PyMDPVisualizer(config=cfg, output_dir=td)
         viz.plot_belief_evolution(r["beliefs"])
@@ -382,6 +409,7 @@ def test_full_pipeline():
             "observations": ["o0", "o1", "o2"],
             "actions": ["left", "right", "stay"],
         }
+        spec = _with_matrices(spec)
         # 1. Render
         ok, msg, _ = render_gnn_spec(spec, "pymdp", td / "rendered")
         assert ok, f"Render: {msg}"
@@ -423,7 +451,7 @@ if __name__ == "__main__":
 
     # Execute
     checks = [
-        ("1a. Default config simulation", test_default_config),
+        ("1a. Demo config simulation", test_demo_config),
         ("1b. Named states config", test_named_states_config),
         ("1c. Integer counts config", test_integer_counts_config),
         ("1d. Custom parameters (lr/alpha/gamma/timesteps)", test_custom_parameters),

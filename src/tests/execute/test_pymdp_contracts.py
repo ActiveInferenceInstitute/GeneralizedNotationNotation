@@ -13,7 +13,7 @@ import numpy as np
 import pytest
 
 from analysis.framework_extractors import extract_pymdp_data
-from execute.pymdp.simple_simulation import run_simple_pymdp_simulation
+from execute.pymdp.simulation import run_pymdp_simulation
 from render.processor import render_gnn_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -50,7 +50,7 @@ def _minimal_gnn_spec() -> dict:
         "model_name": "contract_test_model",
         "initialparameterization": {
             "A": [[0.9, 0.1], [0.1, 0.9]],
-            # (action, prev, next) format expected by simple_simulation transpose logic
+            # (action, prev, next) format accepted by the canonical transpose logic
             "B": [[[0.8, 0.2], [0.2, 0.8]]],
             "C": [0.0, 1.0],
             "D": [0.5, 0.5],
@@ -72,12 +72,13 @@ def test_render_execute_contract_pymdp(tmp_path: Path) -> None:
 
     # Execute using the local PyMDP execution pathway.
     exec_dir = tmp_path / "execute"
-    exec_ok, results = run_simple_pymdp_simulation(gnn_spec, exec_dir)
+    exec_ok, results = run_pymdp_simulation(gnn_spec, exec_dir)
     if not exec_ok:
         pytest.skip(f"PyMDP unavailable for runtime contract check: {results.get('error')}")
 
     assert results.get("success") is True
     assert results.get("framework") == "PyMDP"
+    assert results.get("schema_version") == "pymdp_simulation_v1"
     assert isinstance(results.get("observations"), list)
     assert isinstance(results.get("actions"), list)
     assert isinstance(results.get("beliefs"), list)
@@ -91,7 +92,7 @@ def test_extract_pymdp_data_from_real_execution_payload(tmp_path: Path) -> None:
     """
     gnn_spec = _minimal_gnn_spec()
     run_dir = tmp_path / "run"
-    ok, results = run_simple_pymdp_simulation(gnn_spec, run_dir)
+    ok, results = run_pymdp_simulation(gnn_spec, run_dir)
     if not ok:
         pytest.skip(f"PyMDP unavailable for extractor contract check: {results.get('error')}")
 
@@ -123,12 +124,12 @@ def test_pymdp_seeded_reproducibility_contract(tmp_path: Path) -> None:
     gnn_spec = _minimal_gnn_spec()
 
     np.random.seed(123)
-    ok1, res1 = run_simple_pymdp_simulation(gnn_spec, tmp_path / "r1")
+    ok1, res1 = run_pymdp_simulation(gnn_spec, tmp_path / "r1")
     if not ok1:
         pytest.skip(f"PyMDP unavailable for reproducibility check: {res1.get('error')}")
 
     np.random.seed(123)
-    ok2, res2 = run_simple_pymdp_simulation(gnn_spec, tmp_path / "r2")
+    ok2, res2 = run_pymdp_simulation(gnn_spec, tmp_path / "r2")
     assert ok2
 
     assert res1["observations"] == res2["observations"]
@@ -138,7 +139,7 @@ def test_pymdp_seeded_reproducibility_contract(tmp_path: Path) -> None:
 @pytest.mark.integration
 def test_actinf_pomdp_golden_pymdp_simulation(tmp_path: Path) -> None:
     """
-    Canonical ActInfPOMDP fixture: parsed matrices must run under run_simple_pymdp_simulation
+    Canonical ActInfPOMDP fixture: parsed matrices must run under run_pymdp_simulation
     without NaNs and with internal validation flags true (B-axis / D rounding robustness).
     """
     if not ACTINF_POMDP_PATH.is_file():
@@ -148,7 +149,7 @@ def test_actinf_pomdp_golden_pymdp_simulation(tmp_path: Path) -> None:
 
     spec = _actinf_gnn_spec(timesteps=12)
     np.random.seed(42)
-    ok, results = run_simple_pymdp_simulation(spec, tmp_path / "actinf_run")
+    ok, results = run_pymdp_simulation(spec, tmp_path / "actinf_run")
     assert ok, f"golden ActInf POMDP simulation failed: {results.get('error')}"
     assert results.get("framework") == "PyMDP"
     val = results.get("validation") or {}
@@ -213,8 +214,9 @@ def test_actinf_pomdp_render_execute_analyze_e2e(tmp_path: Path) -> None:
 
     payload = json.loads(collected[0].read_text(encoding="utf-8"))
     assert payload.get("framework") == "PyMDP"
-    beliefs = payload.get("beliefs") or payload.get("simulation_trace", {}).get("beliefs")
-    obs = payload.get("observations") or payload.get("simulation_trace", {}).get("observations")
+    assert payload.get("schema_version") == "pymdp_simulation_v1"
+    beliefs = payload.get("beliefs_by_factor", {}).get("joint_state")
+    obs = payload.get("observations_by_modality", {}).get("joint_observation")
     assert beliefs and obs, "payload should include beliefs and observations"
 
     analysis_ok = process_analysis(in_dir, analysis_out, verbose=False)

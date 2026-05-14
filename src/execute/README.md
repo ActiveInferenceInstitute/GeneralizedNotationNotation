@@ -28,7 +28,7 @@ src/execute/
 ├── data_extractors.py       # Result data extraction
 ├── julia_setup.py           # Julia environment setup
 ├── pymdp/                   # PyMDP execution
-│   └── simple_simulation.py # PyMDP simulation runner
+│   └── simulation.py        # PyMDP simulation runner
 ├── rxinfer/                 # RxInfer.jl execution
 ├── activeinference_jl/      # ActiveInference.jl execution
 ├── jax/                     # JAX execution
@@ -86,13 +86,13 @@ Orchestrates multi-framework execution:
 
 `--execution-workers N` parallelizes across rendered scripts, for example separate scaling-study `(N,T)` runs. It does not split the timesteps inside one rendered PyMDP/JAX script. `--distributed --backend ray|dask` uses the distributed dispatcher; otherwise worker counts above `1` use local processes.
 
-### `pymdp/simple_simulation.py`
+### `pymdp/simulation.py`
 
-PyMDP simulation runner with support for:
+PyMDP simulation runner with:
 
 - 2D and 3D B matrices (passive models and action-conditioned)
 - Column normalization for stochastic matrices
-- Standardized `simulation_results.json` output
+- Strict `pymdp_simulation_v1` `simulation_results.json` output
 
 ### `julia_setup.py`
 

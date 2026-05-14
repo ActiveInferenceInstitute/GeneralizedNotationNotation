@@ -1230,7 +1230,7 @@ uv run python src/3_gnn.py --test-mode
 
 # Run specific test module
 
-pytest src/tests/test_validation.py -v
+pytest src/tests/validation/test_validation_overall.py -v
 
 ```
 
@@ -1474,12 +1474,12 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 **Affected Files**:
 
-- `src/tests/test_pipeline_warnings_fix.py`
-- `src/tests/test_pipeline_recovery.py`
-- `src/tests/test_pipeline_error_scenarios.py`
+- `src/tests/utils/test_pipeline_warnings_fix.py`
+- `src/tests/pipeline/test_pipeline_recovery.py`
+- `src/tests/pipeline/test_pipeline_error_scenarios.py`
 - `src/tests/test_fast_suite.py`
-- `src/tests/test_d2_visualizer.py`
-- `src/tests/test_advanced_visualization_overall.py`
+- `src/tests/visualization/test_d2_visualizer.py`
+- `src/tests/advanced_visualization/test_advanced_visualization_overall.py`
 - `src/tests/conftest.py`
 
 **Priority**: High

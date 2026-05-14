@@ -54,7 +54,7 @@ def execute_pymdp_simulation(
     correlation_id: str = ""
 ) -> Tuple[bool, Dict[str, Any]]:
     """
-    Execute PyMDP simulation using simple tutorial-based approach.
+    Execute PyMDP simulation using the canonical pymdp 1.0.0 runner.
     
     Args:
         gnn_spec: GNN specification dictionary
@@ -67,10 +67,9 @@ def execute_pymdp_simulation(
     try:
         logger.info(f"Executing PyMDP simulation (correlation_id: {correlation_id})")
 
-        # Use simple simulation based on official PyMDP tutorial
-        from .simple_simulation import run_simple_pymdp_simulation
+        from .simulation import run_pymdp_simulation
 
-        success, results = run_simple_pymdp_simulation(gnn_spec, output_dir)
+        success, results = run_pymdp_simulation(gnn_spec, output_dir)
 
         if success:
             logger.info("PyMDP simulation completed successfully")

@@ -232,8 +232,8 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 ## Testing
 
 ### Test Files
-- `src/tests/test_research_overall.py` - Module-level tests
-- `src/tests/test_research_functional.py` - Functional tests
+- `src/tests/research/test_research_overall.py` - Module-level tests
+- `src/tests/research/test_research_functional.py` - Functional tests
 
 ### Test Coverage
 Measure on demand:

@@ -37,6 +37,29 @@ except ImportError:
     from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
 
 
+def _explicit_three_state_config() -> dict:
+    return {
+        "states": 3,
+        "observations": 3,
+        "actions": 3,
+        "model_parameters": {"num_timesteps": 5},
+        "initialparameterization": {
+            "A": [
+                [0.85, 0.10, 0.05],
+                [0.10, 0.85, 0.10],
+                [0.05, 0.05, 0.85],
+            ],
+            "B": [
+                [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+                [[0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [1.0, 0.0, 0.0]],
+                [[0.0, 0.0, 1.0], [1.0, 0.0, 0.0], [0.0, 1.0, 0.0]],
+            ],
+            "C": [0.0, 0.5, 1.0],
+            "D": [1.0, 0.0, 0.0],
+        },
+    }
+
+
 @pytest.fixture
 def gnn_file():
     """Get the example GNN file for testing."""
@@ -87,12 +110,7 @@ class TestGNNPyMDPIntegration:
     )
     def test_pymdp_simulation_creation(self):
         """Test PyMDP simulation with GNN-derived parameters."""
-        config = {
-            'num_states': 3,
-            'num_observations': 3,
-            'num_actions': 3,
-            'num_timesteps': 5,
-        }
+        config = _explicit_three_state_config()
 
         simulation = PyMDPSimulation(config)
         assert simulation is not None
@@ -103,12 +121,7 @@ class TestGNNPyMDPIntegration:
     )
     def test_pymdp_simulation_run(self):
         """Test running a PyMDP simulation."""
-        config = {
-            'num_states': 3,
-            'num_observations': 3,
-            'num_actions': 3,
-            'num_timesteps': 5,
-        }
+        config = _explicit_three_state_config()
 
         simulation = PyMDPSimulation(config)
         # Create model first

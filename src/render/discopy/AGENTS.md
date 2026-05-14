@@ -129,7 +129,7 @@ Any exception raised during code generation is caught and returned as `(False, "
 
 ### Consumed by
 - `execute/discopy/` — runs the emitted script in Step 12.
-- `src/tests/test_render_cli_targets.py` — exercises the CLI dispatch.
+- `src/tests/render/test_render_cli_targets.py` — exercises the CLI dispatch.
 - `src/tests/test_render_discopy*.py` — focused unit tests.
 
 ### Data flow
@@ -142,7 +142,7 @@ GNN spec → render_gnn_to_discopy → <output>.py → execute.discopy runs scri
 ## Testing
 
 - `pytest src/tests/test_render_discopy*.py -v`
-- `pytest src/tests/test_render_cli_targets.py -v` — verifies the `discopy` target dispatches correctly.
+- `pytest src/tests/render/test_render_cli_targets.py -v` — verifies the `discopy` target dispatches correctly.
 
 ---
 

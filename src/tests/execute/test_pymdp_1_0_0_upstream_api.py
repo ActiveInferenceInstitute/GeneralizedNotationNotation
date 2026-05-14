@@ -3,7 +3,7 @@
 Regression tests for pymdp 1.0.0 (JAX-first) as used by this repository.
 
 These tests call the installed ``inferactively-pymdp`` wheel directly.
-They lock the exact API surface that ``execute/pymdp/simple_simulation`` and
+They lock the exact API surface that ``execute/pymdp/simulation`` and
 ``execute/pymdp/pymdp_simulation`` depend on:
 
 * List-of-``jax.Array`` models with leading batch dim
@@ -15,7 +15,7 @@ They lock the exact API surface that ``execute/pymdp/simple_simulation`` and
 
 See also:
   * doc/pymdp/pymdp_1_0_0_alignment_matrix.md — upstream mapping
-  * src/execute/pymdp/simple_simulation.py — the code under test
+  * src/execute/pymdp/simulation.py — the code under test
 """
 
 from __future__ import annotations
@@ -221,4 +221,3 @@ def test_control_and_inference_submodules_importable() -> None:
     _require_pymdp_1_0_0()
     import pymdp.control  # noqa: F401
     import pymdp.inference  # noqa: F401
-

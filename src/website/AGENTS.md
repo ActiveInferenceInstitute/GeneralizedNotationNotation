@@ -254,7 +254,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 ## Testing
 
 ### Test Files
-- `src/tests/test_website_overall.py` - Module-level tests
+- `src/tests/website/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
 Measure on demand:

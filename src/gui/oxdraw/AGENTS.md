@@ -394,18 +394,18 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 
 ### Test Files
 
-- `src/tests/test_oxdraw_integration.py` - Integration tests
-- `src/tests/test_mermaid_converter.py` - Converter unit tests
-- `src/tests/test_mermaid_parser.py` - Parser unit tests
+- `src/tests/gui/test_oxdraw_integration.py` - Integration tests
+- `src/tests/visualization/test_mermaid_converter.py` - Converter unit tests
+- `src/tests/visualization/test_mermaid_parser.py` - Parser unit tests
 
 ### Test Coverage
 
 Measure on demand:
 
 ```bash
-uv run pytest src/tests/test_oxdraw_integration.py \
-    src/tests/test_mermaid_converter.py \
-    src/tests/test_mermaid_parser.py \
+uv run pytest src/tests/gui/test_oxdraw_integration.py \
+    src/tests/visualization/test_mermaid_converter.py \
+    src/tests/visualization/test_mermaid_parser.py \
     --cov=src/gui/oxdraw --cov-report=term-missing
 ```
 

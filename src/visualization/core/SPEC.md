@@ -5,7 +5,7 @@
 ## Model Loading Priority
 
 1. `*_parsed.json` from Step 3 output (preferred)
-2. Raw GNN file parsing via `visualization/parse/` (fallback)
+2. Raw GNN file parsing via `visualization/parse/` when Step 3 JSON is unavailable
 
 ## Orchestration Flow
 

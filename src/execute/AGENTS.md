@@ -165,7 +165,7 @@ elif not detection.get("correct_package"):
 #### Execution Parameters
 - `timeout` (int): Execution timeout in seconds (default: `3600`)
 - `capture_output` (bool): Capture stdout/stderr (default: `True`)
-- `render_output_dir` (Path): Render output directory to search before fallback discovery
+- `render_output_dir` (Path): Render output directory to search before default discovery
 - `execution_workers` (int): Number of rendered scripts to execute concurrently. This parallelizes model/script runs, not timesteps within a single simulation.
 - `distributed` (bool): Route scripts through the distributed dispatcher instead of the local process pool
 - `backend` (str): Dispatcher backend, default `ray`
@@ -313,9 +313,9 @@ Use the current `output/*/00_pipeline_summary/pipeline_execution_summary.json` a
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_overall.py`
-- `src/tests/test_execute_pymdp_integration.py`
-- `src/tests/test_execute_pymdp_package.py`
+- `src/tests/execute/test_execute_overall.py`
+- `src/tests/execute/test_execute_pymdp_integration.py`
+- `src/tests/execute/test_execute_pymdp_package.py`
 
 ### Test Coverage
 Measure on demand:

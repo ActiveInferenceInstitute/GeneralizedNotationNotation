@@ -395,9 +395,9 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 
 ### Test Files
 
-- `src/tests/test_report_integration.py` - Integration tests
-- `src/tests/test_report_generation.py` - Generation tests
-- `src/tests/test_report_formats.py` - Format tests
+- `src/tests/report/test_report_integration.py` - Integration tests
+- `src/tests/report/test_report_generation.py` - Generation tests
+- `src/tests/report/test_report_formats.py` - Format tests
 
 ### Test Coverage
 

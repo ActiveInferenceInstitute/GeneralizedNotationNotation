@@ -717,7 +717,7 @@ s_f0_y[10,1,type=int]  # Y coordinate
 
 **Version compatibility:**
 
-- **GNN v1.0 → v1.1**: Fully backward compatible
+- **GNN v1.0 → v1.1**: Migration preserved the documented public syntax used by maintained examples
 - **Pre-v1.0 → v1.x**: May require syntax updates
 - **Framework versions**: PyMDP/RxInfer updates may affect rendering
 

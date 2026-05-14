@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract PyMDP-specific data from execution result.
-    Enhanced to read from collected files if available.
 
     Args:
         execution_result: Execution result dictionary
@@ -26,63 +25,23 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Extracted simulation data
     """
-    simulation_data = execution_result.get("simulation_data", {})
+    simulation_data: Dict[str, Any] = {}
+    payload = execution_result if execution_result.get("schema_version") == "pymdp_simulation_v1" else None
+    nested_payload = execution_result.get("simulation_data")
+    if payload is None and isinstance(nested_payload, dict) and nested_payload.get("schema_version") == "pymdp_simulation_v1":
+        payload = nested_payload
 
-    # Try to read from collected files if available
     implementation_dir = execution_result.get("implementation_directory")
-    if implementation_dir:
+    if payload is None and implementation_dir:
         try:
             impl_path = Path(implementation_dir)
-
-            # Read simulation_results.json if available
             sim_data_dir = impl_path / "simulation_data"
             if sim_data_dir.exists():
                 results_files = list(sim_data_dir.glob("*simulation_results.json"))
                 if results_files:
-                    try:
-                        logger.info(f"Reading PyMDP simulation data from {results_files[0].name}")
-                        with open(results_files[0], 'r') as f:
-                            file_data = json.load(f)
-
-                            # Extract from file data
-                            if "beliefs" in file_data:
-                                simulation_data["beliefs"] = file_data["beliefs"]
-                                logger.debug(f"Extracted {len(file_data['beliefs'])} belief states")
-                            if "actions" in file_data:
-                                simulation_data["actions"] = file_data["actions"]
-                                logger.debug(f"Extracted {len(file_data['actions'])} actions")
-                            if "observations" in file_data:
-                                simulation_data["observations"] = file_data["observations"]
-                                logger.debug(f"Extracted {len(file_data['observations'])} observations")
-
-                            # Extract EFE from known paths:
-                            # 1. metrics.expected_free_energy (PyMDP/JAX)
-                            # 2. simulation_trace.efe_history
-                            # 3. top-level efe_history
-                            efe = None
-                            metrics = file_data.get("metrics", {})
-                            if isinstance(metrics, dict) and metrics.get("expected_free_energy"):
-                                efe = metrics["expected_free_energy"]
-                            elif file_data.get("simulation_trace", {}).get("efe_history"):
-                                efe = file_data["simulation_trace"]["efe_history"]
-                            elif file_data.get("efe_history"):
-                                efe = file_data["efe_history"]
-                            if efe:
-                                simulation_data["free_energy"] = efe
-                                logger.debug(f"Extracted EFE with {len(efe)} entries")
-
-                            # Extract belief_confidence
-                            confidence = None
-                            if isinstance(metrics, dict) and metrics.get("belief_confidence"):
-                                confidence = metrics["belief_confidence"]
-                            elif file_data.get("simulation_trace", {}).get("belief_confidence"):
-                                confidence = file_data["simulation_trace"]["belief_confidence"]
-                            if confidence:
-                                simulation_data["belief_confidence"] = confidence
-
-                            logger.info(f"Enhanced PyMDP data from {results_files[0].name}")
-                    except Exception as e:
-                        logger.warning(f"Failed to read simulation_results.json: {e}")
+                    logger.info(f"Reading PyMDP simulation data from {results_files[0].name}")
+                    with open(results_files[0], 'r') as f:
+                        payload = json.load(f)
 
             # Count visualizations
             viz_dir = impl_path / "visualizations"
@@ -95,7 +54,29 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         except Exception as e:
             logger.warning(f"Error reading PyMDP files: {e}")
 
-    return {
+    if payload is None:
+        simulation_data["extraction_error"] = "No pymdp_simulation_v1 payload found"
+    elif payload.get("schema_version") != "pymdp_simulation_v1":
+        simulation_data["extraction_error"] = (
+            f"Unsupported PyMDP schema: {payload.get('schema_version')!r}"
+        )
+    else:
+        beliefs_by_factor = payload.get("beliefs_by_factor", {}) or {}
+        observations_by_modality = payload.get("observations_by_modality", {}) or {}
+        actions_by_control_factor = payload.get("actions_by_control_factor", {}) or {}
+        hidden_states_by_factor = payload.get("hidden_states_by_factor", {}) or {}
+        metrics = payload.get("metrics", {}) or {}
+
+        simulation_data["beliefs"] = beliefs_by_factor.get("joint_state", [])
+        simulation_data["observations"] = observations_by_modality.get("joint_observation", [])
+        simulation_data["actions"] = actions_by_control_factor.get("joint_action", [])
+        simulation_data["states"] = hidden_states_by_factor.get("joint_state", [])
+        simulation_data["free_energy"] = payload.get("expected_free_energy", [])
+        simulation_data["policy"] = payload.get("policy_posterior", [])
+        simulation_data["belief_confidence"] = metrics.get("belief_confidence", [])
+        simulation_data["traces"] = payload.get("simulation_trace", {})
+
+    result = {
         "traces": simulation_data.get("traces", []),
         "free_energy": simulation_data.get("free_energy", []),
         "states": simulation_data.get("states", []),
@@ -107,6 +88,9 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "visualization_count": simulation_data.get("visualization_count", 0),
         "visualization_files": simulation_data.get("visualization_files", [])
     }
+    if "extraction_error" in simulation_data:
+        result["extraction_error"] = simulation_data["extraction_error"]
+    return result
 
 
 def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:

@@ -129,10 +129,10 @@ def test_optional_functionality(self):
 python src/2_tests.py --verbose
 
 # Individual file
-PYTHONPATH=src pytest src/tests/test_gnn_overall.py -v
+PYTHONPATH=src pytest src/tests/gnn/test_gnn_overall.py -v
 
 # Specific class/method
-PYTHONPATH=src pytest src/tests/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
+PYTHONPATH=src pytest src/tests/gnn/test_gnn_overall.py::TestGNNComprehensive::test_imports -v
 
 # Fast tests only
 python src/2_tests.py --fast-only

@@ -305,8 +305,8 @@ Template Input → Processing → Pattern Demonstration → Validation → Docum
 ## Testing
 
 ### Test Files
-- `src/tests/test_template_overall.py` - Module-level tests (imports, outputs, and core behaviors)
-- `src/tests/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
+- `src/tests/template/test_template_overall.py` - Module-level tests (imports, outputs, and core behaviors)
+- `src/tests/pipeline/test_pipeline_scripts.py` - Orchestrator-level checks that include `0_template.py`
 
 ### Test Coverage
 - **Current**: 85%

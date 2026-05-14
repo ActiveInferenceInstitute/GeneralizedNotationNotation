@@ -98,7 +98,7 @@ graph TB
 
 - Contains all domain logic in `processor.py` and subdirectories
 - Provides public API via `__init__.py` exports
-- Implements error handling and fallbacks
+- Implements explicit error handling, skip statuses, and dependency diagnostics
 - Registers MCP tools in `mcp.py`
 
 ### Example Structure
@@ -220,16 +220,13 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Recent Validation (May 2026)
+### Current Validation (May 2026)
 
-- **MCP Deadlock Resolved**: Fixed a multithreading deadlock in `discover_modules` that caused silent timeouts, restoring full pipeline summaries with 131 tools registered perfectly within 5 seconds.
-- **LLM Glob Fixed**: Resolved recursive path issues during LLM processing logic.
-- **ML Class Warning Fixed**: Updated cross-validation fold logic `min(5, len(X), min_class_count)` to dynamically avoid target class sparsity warnings.
-- **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging.
-- **Performance**: All 25 steps complete rapidly with comprehensive progress tracking.
-- **Tests**: command of record is `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current inventory (2026-05-13) is 166 test files and 2,245 collected tests with the same Ollama ignores. Latest measured full run: 2,176 passed, 68 skipped, 1 xpassed in 694.24s. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
+- **Docs audit**: `uv run python doc/development/docs_audit.py --strict --check-anchors --no-write` reports no broken links, anchor gaps, or AGENTS/README coverage gaps.
+- **GNN doc patterns**: `uv run python scripts/check_gnn_doc_patterns.py --strict` reports no banned GNN documentation patterns.
+- **Tests**: command of record is `uv run pytest src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py`; current collect-only inventory (2026-05-14) is 166 test files and 2,256 collected tests with the same Ollama ignores. Re-enable `src/tests/llm/test_llm_ollama*.py` when `ollama` is available.
 - **LLM Default Model**: `smollm2:135m-instruct-q4_K_S` via Ollama (`llm.defaults.DEFAULT_OLLAMA_MODEL`; override with `OLLAMA_MODEL` / `input/config.yaml`).
-- **Renderers**: All 8/8 backends operational (PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, DisCoPy). E2E validation via `test_render_numpyro_stan.py` (15 tests).
+- **Renderer inventory**: PyMDP, RxInfer, JAX, NumPyro, Stan, PyTorch, ActiveInference.jl, and DisCoPy have maintained render paths; run focused backend tests before publishing operational pass counts.
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking.
 
 ---
@@ -294,7 +291,7 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 - Use type hints for all public functions
 - Document all classes and methods
 - Maintain >80% test coverage
-- Include error handling and fallbacks
+- Include explicit error handling, status reporting, and dependency diagnostics
 
 ---
 
@@ -411,10 +408,9 @@ Each module provides specialized agent capabilities for different aspects of Act
 ### 🚀 **Execute Agent** - Simulation Runner
 
 - **ActiveInferenceAgent**: Primary full-fidelity execution engine
-- **FallbackAgent**: Robust recovery mechanism using real execution paths
 - Multi-environment execution (PyMDP, RxInfer, JAX, PyTorch, NumPyro)
 - Resource monitoring and optimization
-- Error recovery and retry logic
+- Explicit failure, skip, and retry reporting
 - Cross-platform compatibility
 
 ### 🤖 **LLM Agent** - AI Enhancement
@@ -518,7 +514,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-05-13
+**Last Updated**: 2026-05-14
 **Pipeline Version**: 1.6.0
 **Total Steps**: 25 (0-24)
 **Status**: Maintained

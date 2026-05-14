@@ -441,8 +441,8 @@ Configuration → Logging Setup → Resource Monitoring → Error Handling → P
 ## Testing
 
 ### Test Files
-- `src/tests/test_utils_core.py` - Core utils tests
-- `src/tests/test_new_utils.py` - Additional utils tests
+- `src/tests/utils/test_utils_core.py` - Core utils tests
+- `src/tests/utils/test_new_utils.py` - Additional utils tests
 
 ### Test Coverage
 Measure on demand:

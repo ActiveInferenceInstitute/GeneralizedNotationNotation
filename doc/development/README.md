@@ -22,6 +22,8 @@ uv run python doc/development/docs_audit.py --strict -q
 uv run python doc/development/docs_audit.py --check-anchors
 # Optional: log markdown file count and other diagnostics to stderr
 uv run python doc/development/docs_audit.py --verbose
+# Check maintained docs for stale compatibility/placeholder/PyMDP terminology
+uv run python scripts/check_maintained_doc_terms.py --strict
 ```
 
 Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGENTS.md`→`SPEC.md` consistency, `src/` dirs with `.py` but no `AGENTS.md`, maintained `doc/` dirs missing `AGENTS.md` or `README.md`, `AGENTS.md`/`README.md` pairing under `src/`, `doc/`, `.github/`, and the repo root, and **`doc/**/AGENTS.md` orientation** (`## Overview`, `## Purpose`, or `## Directory Identity`; substantive `## Purpose` when present). Generated snapshots under `doc/` are excluded from pairing where noted. After moving files under `doc/gnn/`, run the rewriter (idempotent on already-fixed links):
@@ -30,7 +32,7 @@ Writes [docs_audit_report.md](docs_audit_report.md): broken relative links, `AGE
 uv run python doc/development/rewrite_gnn_doc_links.py
 ```
 
-Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py). Documentation improvement tracker: [../DOCS_TO_IMPROVE.md](../DOCS_TO_IMPROVE.md).
+Source: [docs_audit.py](docs_audit.py), [rewrite_gnn_doc_links.py](rewrite_gnn_doc_links.py), [../../scripts/check_maintained_doc_terms.py](../../scripts/check_maintained_doc_terms.py). Documentation improvement tracker: [../DOCS_TO_IMPROVE.md](../DOCS_TO_IMPROVE.md).
 
 ## Quick Start for Developers
 

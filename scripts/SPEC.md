@@ -8,7 +8,8 @@ Expected available types: Standalone `__main__` entry-pointed Python modules lev
 
 Core tools include:
 1. `check_gnn_doc_patterns.py`: Pattern matching validation engine for localized GNN standards.
-2. `run_pymdp_gnn_scaling_analysis.py`: End-to-end thin orchestrator executing parameterized PyMDP scaling studies through Steps 3, 11, 12, and 17 of `src/main.py`.
+2. `check_maintained_doc_terms.py`: Maintained-document terminology audit for stale compatibility, placeholder, and removed PyMDP surface references.
+3. `run_pymdp_gnn_scaling_analysis.py`: End-to-end thin orchestrator executing parameterized PyMDP scaling studies through Steps 3, 11, 12, and 17 of `src/main.py`.
 
 ## Technical Rules
 - Dependencies referenced across tools must rely natively on the unified project lockfile environment and the standard library, requiring no unique `requirements.txt` scope isolation.

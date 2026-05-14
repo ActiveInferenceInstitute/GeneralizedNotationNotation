@@ -146,7 +146,6 @@ src/render/
 ├── pymdp/                         # PyMDP code generation
 │   ├── __init__.py               # PyMDP module initialization
 │   ├── pymdp_renderer.py         # PyMDP renderer
-│   ├── pymdp_converter.py        # GNN to PyMDP converter
 │   ├── pymdp_templates.py        # PyMDP code templates
 │   └── pymdp_utils.py            # PyMDP utilities
 ├── rxinfer/                       # RxInfer.jl code generation
@@ -177,9 +176,10 @@ src/render/
 
 The pipeline calls:
 
-- `render.process_render(target_dir, output_dir, verbose=False, frameworks=None, strict_validation=True, **kwargs) -> bool`
+- `render.process_render(target_dir, output_dir, verbose=False, frameworks=None, strict_validation=True, strict_framework_success=False, **kwargs) -> bool | int`
 
 In POMDP-aware mode, `process_render` delegates per-model/per-framework rendering to `POMDPRenderProcessor` in `pomdp_processor.py`.
+Explicit framework selections such as `"pymdp"` or `"pymdp,jax"` require every requested renderer to succeed for every input file. Use `strict_framework_success=True` to apply that same policy to `"all"` or `"lite"` runs.
 
 ### Framework backends
 
@@ -206,6 +206,7 @@ success = process_render(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/11_render_output"),
     verbose=True,
+    frameworks="pymdp",
 )
 print("ok" if success else "render completed with issues")
 ```
@@ -310,13 +311,15 @@ The system automatically extracts Active Inference structures from GNN specifica
 from gnn.pomdp_extractor import extract_pomdp_from_file
 
 # Extract POMDP from GNN file
-pomdp_space = extract_pomdp_from_file("input/gnn_files/actinf_pomdp_agent.md")
+pomdp_space = extract_pomdp_from_file("input/gnn_files/discrete/actinf_pomdp_agent.md")
 
 print(f"Model: {pomdp_space.model_name}")
 print(f"States: {pomdp_space.num_states}")
-print(f"Observations: {pomdp_space.num_observations}")  
+print(f"Observations: {pomdp_space.num_observations}")
 print(f"Actions: {pomdp_space.num_actions}")
-print(f"A Matrix: {len(pomdp_space.A_matrix)} x {len(pomdp_space.A_matrix[0])}")
+print(f"State factors: {pomdp_space.state_factors}")
+print(f"Observation modalities: {pomdp_space.observation_modalities}")
+print(f"Matrix provenance: {pomdp_space.matrix_provenance}")
 ```
 
 ### Modular Injection System (`pomdp_processor.py`)

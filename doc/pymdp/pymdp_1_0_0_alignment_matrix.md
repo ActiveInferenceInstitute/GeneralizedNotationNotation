@@ -12,18 +12,18 @@ integration points in this repository.
     - `src/render/pymdp/`
     - `src/execute/pymdp/`
     - `doc/pymdp/`
-    - `src/tests/test_pymdp_*` / `src/tests/test_execute_pymdp_*`
+    - `src/tests/execute/test_pymdp_*` / `src/tests/execute/test_execute_pymdp_*`
 
 ## Matrix
 
 | Upstream 1.0.0 item | Local status | Action |
 |---|---|---|
-| **JAX-first Agent** (`equinox.Module`-based) | **Fully integrated** | `src/execute/pymdp/simple_simulation._build_pymdp_agent` builds a real JAX-first Agent from GNN matrices. Exercised by `test_pymdp_1_0_0_upstream_api.py` and `test_pymdp_contracts.py`. |
+| **JAX-first Agent** (`equinox.Module`-based) | **Fully integrated** | `src/execute/pymdp/simulation._build_pymdp_agent` builds a real JAX-first Agent from GNN matrices. Exercised by `test_pymdp_1_0_0_upstream_api.py` and `test_pymdp_contracts.py`. |
 | `Agent(A, B, C, D, E, num_controls, control_fac_idx, policy_len, batch_size, …)` | **Fully integrated** | Used verbatim by `_build_pymdp_agent`. Passive factors (num_controls[f] == 1) omit `control_fac_idx` as required by `Agent._validate`. |
-| `infer_states(observations, empirical_prior, *, return_info=False)` → `qs [, info]` | **Fully integrated** | `simple_simulation.run_simple_pymdp_simulation` always calls with `empirical_prior=…, return_info=True` and extracts `info["vfe"]`. |
+| `infer_states(observations, empirical_prior, *, return_info=False)` → `qs [, info]` | **Fully integrated** | `simulation.run_pymdp_simulation` always calls with `empirical_prior=…, return_info=True` and extracts `info["vfe"]`. |
 | `infer_policies(qs)` → `(q_pi, neg_efe)` | **Fully integrated** | The return tuple is unpacked as `(q_pi, neg_efe)` (upstream docstring calls the second value `G` = negative EFE per policy). |
 | `sample_action(q_pi, rng_key=…)` with JAX PRNG keys | **Fully integrated** | Actions are drawn with `jr.split(key, batch_size + 1)[1:]`, matching the upstream quickstart. |
-| `Agent.update_empirical_prior(action, qs)` — stateful rollout closure | **Fully integrated** | Called once per step in both `simple_simulation` and `PyMDPSimulation`. Presence of this method is how this repo detects pymdp 1.0.0+. |
+| `Agent.update_empirical_prior(action, qs)` — stateful rollout closure | **Fully integrated** | Called once per step in both `simulation` and `PyMDPSimulation`. Presence of this method is how this repo detects pymdp 1.0.0+. |
 | Batched list-of-array models (leading batch dim on A/B/C/D/E) | **Fully integrated** | `_to_jax_batched` prepends a batch axis of size 1 (or broadcasts for `batch_size>1`). |
 | `utils.random_A_array` / `random_B_array` / `list_array_uniform` | **Available, not used for GNN models** | GNN-provided numeric matrices take precedence over random generators. These utils are asserted present by `test_utils_public_surface_exists`. |
 | `utils.norm_dist` (JAX-array normalisation helper) | **Available (informational)** | Pipeline uses its own numpy-based `_normalise_columns` / `_normalise_prob_vector` because GNN matrices enter as numpy. |

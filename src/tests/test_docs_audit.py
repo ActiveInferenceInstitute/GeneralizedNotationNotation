@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import sys
 from pathlib import Path
 
 import pytest
@@ -15,6 +16,17 @@ def _load_docs_audit():
     spec = importlib.util.spec_from_file_location("docs_audit", path)
     assert spec and spec.loader
     mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _load_doc_terms():
+    path = REPO_ROOT / "scripts" / "check_maintained_doc_terms.py"
+    spec = importlib.util.spec_from_file_location("check_maintained_doc_terms", path)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)
     return mod
 
@@ -63,3 +75,29 @@ def test_format_strict_issue_detail_anchor_section_when_checked(
     )
     assert "Bad markdown anchors" in detail
     assert "doc/a.md:2" in detail
+
+
+def test_maintained_doc_terms_flags_stale_phrase(tmp_path: Path) -> None:
+    mod = _load_doc_terms()
+    readme = tmp_path / "README.md"
+    readme.write_text("This mentions FallbackAgent in maintained docs.\n", encoding="utf-8")
+
+    findings = mod.scan(tmp_path)
+
+    assert len(findings) == 1
+    assert findings[0].path == Path("README.md")
+    assert "stale PyMDP" in findings[0].description
+
+
+def test_maintained_doc_terms_skips_generated_and_archive_paths(tmp_path: Path) -> None:
+    mod = _load_doc_terms()
+    generated = tmp_path / "src" / "output"
+    archived = tmp_path / "doc" / "archive"
+    generated.mkdir(parents=True)
+    archived.mkdir(parents=True)
+    (generated / "README.md").write_text("FallbackAgent\n", encoding="utf-8")
+    (archived / "old.md").write_text("simple_simulation.py\n", encoding="utf-8")
+
+    findings = mod.scan(tmp_path)
+
+    assert findings == []

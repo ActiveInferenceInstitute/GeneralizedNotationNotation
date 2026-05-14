@@ -49,7 +49,7 @@
 
 **Returns**: `True` if at least one artifact was generated
 
-**Data loading**: [core/parsed_model.py](core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; fallback is [parse/markdown.py](parse/markdown.py) `parse_gnn_content`.
+**Data loading**: [core/parsed_model.py](core/parsed_model.py) `load_visualization_model` prefers `{model}_parsed.json` from step 3; when structured JSON is unavailable, [parse/markdown.py](parse/markdown.py) `parse_gnn_content` provides the explicit raw-Markdown parser path.
 
 **Example**:
 ```python
@@ -245,11 +245,11 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 ## Testing
 
 ### Test Files
-- `src/tests/test_visualization_matrices.py` - Matrix visualization tests
-- `src/tests/test_visualization_comprehensive.py` - Comprehensive real-data tests
-- `src/tests/test_visualization_overall.py` - Module-level tests
-- `src/tests/test_visualization_ontology.py` - Ontology visualization tests
-- `src/tests/test_visualization_artifacts.py` - Artifact / manifest tests
+- `src/tests/visualization/test_visualization_matrices.py` - Matrix visualization tests
+- `src/tests/visualization/test_visualization_comprehensive.py` - Comprehensive real-data tests
+- `src/tests/visualization/test_visualization_overall.py` - Module-level tests
+- `src/tests/visualization/test_visualization_ontology.py` - Ontology visualization tests
+- `src/tests/visualization/test_visualization_artifacts.py` - Artifact / manifest tests
 
 ### Test Coverage
 - **Measurement**: `uv run pytest src/tests/test_visualization_*.py --cov=src.visualization --cov-report=term-missing` (do not treat a fixed percentage in this file as canonical).

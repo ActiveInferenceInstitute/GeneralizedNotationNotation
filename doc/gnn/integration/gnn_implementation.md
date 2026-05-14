@@ -38,16 +38,16 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.m
 
 ## Step 11 — Render Module Deep Dive
 
-The render module (`src/render/`) transforms GNN specifications into executable code for five Active Inference frameworks. It follows a POMDP-aware processing pipeline.
+The render module (`src/render/`) transforms GNN specifications into executable code for maintained simulation frameworks. It follows a POMDP-aware processing pipeline.
 
 ### Processing Pipeline
 
 ```mermaid
 flowchart TD
     GNN[GNN Files<br>*.md, *.json, *.yaml] --> EXTRACT[POMDP Extraction<br>extract_pomdp_from_file]
-    EXTRACT -->|Success| VALIDATE[validate_pomdp_for_rendering<br>states, observations, actions]
-    EXTRACT -->|Failure| BASIC[_process_single_gnn_file_basic<br>basic code generation]
-    VALIDATE --> NORMALIZE[normalize_matrices<br>A matrix, B matrix]
+    EXTRACT -->|POMDP spec| VALIDATE[validate_pomdp_for_rendering<br>factors, modalities, controls]
+    EXTRACT -->|Non-POMDP spec| BASIC[_process_single_gnn_file_basic<br>generic render path]
+    VALIDATE --> NORMALIZE[normalize_matrices<br>A/B/C/D provenance]
     NORMALIZE --> RENDER[POMDPRenderProcessor<br>process_pomdp_for_all_frameworks]
     RENDER --> PYMDP[PyMDP .py]
     RENDER --> RXINFER[RxInfer .jl]
@@ -64,8 +64,8 @@ flowchart TD
 
 The core function `process_render()` in `src/render/processor.py` implements:
 
-1. **POMDP Extraction** — Extracts state space dimensions (`num_states`, `num_observations`, `num_actions`) and matrices (A, B, C, D) from GNN files via `gnn.pomdp_extractor.extract_pomdp_from_file()`
-2. **Validation** — `validate_pomdp_for_rendering()` checks that all required dimensions are positive and present
+1. **POMDP Extraction** — Extracts state factors, observation modalities, control factors, matrices (A, B, C, D/E), and matrix provenance from GNN files via `gnn.pomdp_extractor.extract_pomdp_from_file()`
+2. **Validation** — `validate_pomdp_for_rendering()` checks that required dimensions and matrices are present for the requested framework
 3. **Matrix Normalization** — `normalize_matrices()` ensures:
    - **A matrix** (observation model): columns sum to 1 over the observation dimension
    - **B matrix** (transition model): columns sum to 1 over the next-state dimension, per action

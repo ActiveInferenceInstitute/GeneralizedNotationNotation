@@ -374,9 +374,9 @@ Configuration → Step Discovery → Dependency Validation → Execution Plannin
 
 ### Test Files
 
-- `src/tests/test_pipeline_integration.py` - Integration tests
-- `src/tests/test_pipeline_functionality.py` - Functionality tests
-- `src/tests/test_pipeline_performance.py` - Performance tests
+- `src/tests/pipeline/test_pipeline_integration.py` - Integration tests
+- `src/tests/pipeline/test_pipeline_functionality.py` - Functionality tests
+- `src/tests/pipeline/test_pipeline_performance.py` - Performance tests
 
 ### Test Coverage
 

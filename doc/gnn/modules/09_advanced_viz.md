@@ -442,8 +442,8 @@ output/9_advanced_viz_output/
 
 ### Test Files
 
-- `src/tests/test_advanced_visualization_overall.py` ✅
-- `src/tests/test_comprehensive_api.py` (integration tests)
+- `src/tests/advanced_visualization/test_advanced_visualization_overall.py` ✅
+- `src/tests/api/test_comprehensive_api.py` (integration tests)
 
 ### Test Coverage
 

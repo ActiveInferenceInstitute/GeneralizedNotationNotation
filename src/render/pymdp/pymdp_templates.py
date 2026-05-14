@@ -13,7 +13,7 @@ new API exclusively:
 There are two generators:
 
 * ``generate_pipeline_runner_script`` — emits a thin runner that delegates to
-  ``src.execute.pymdp.run_simple_pymdp_simulation`` so the generated script
+  ``src.execute.pymdp.run_pymdp_simulation`` so the generated script
   shares the pipeline's tested rollout code.
 * ``generate_standalone_runner_script`` — emits a fully self-contained
   pymdp 1.0.0 script usable outside the GNN pipeline.
@@ -30,7 +30,7 @@ pymdp 1.0.0 runner for {model_display_name}
 This file was generated from a GNN specification by
 ``src/render/pymdp/pymdp_renderer.py``. It delegates the actual rollout
 to the GNN pipeline's tested execution module
-(``src.execute.pymdp.run_simple_pymdp_simulation``), which in turn calls
+(``src.execute.pymdp.run_pymdp_simulation``), which in turn calls
 real pymdp 1.0.0 (JAX-first) under the hood.
 
 Model:        {model_display_name}
@@ -267,41 +267,35 @@ def main() -> int:
     D_data = {D_literal}
     E_data = {E_literal}
 
-    num_obs_default = {num_obs}
-    num_states_default = {num_states}
     num_actions_default = {num_actions}
     num_timesteps = {num_timesteps}
 
     # Build canonical numpy matrices
     if A_data is None:
-        A_np = np.eye(num_obs_default, num_states_default) * 0.9 + 0.1 / max(num_obs_default, 1)
-    else:
-        A_np = np.asarray(A_data, dtype=np.float64)
+        raise ValueError("A matrix is required for pymdp execution")
+    A_np = np.asarray(A_data, dtype=np.float64)
     A_np = _norm_cols(A_np)
     num_obs, num_states = A_np.shape
 
     if B_data is None:
-        B_np = np.stack([np.eye(num_states) for _ in range(num_actions_default)], axis=-1)
-    else:
-        B_np = _canonical_B(np.asarray(B_data, dtype=np.float64), num_states, num_actions_default)
+        raise ValueError("B matrix is required for pymdp execution")
+    B_np = _canonical_B(np.asarray(B_data, dtype=np.float64), num_states, num_actions_default)
     num_actions = B_np.shape[2]
 
     if C_data is None:
-        C_np = np.zeros(num_obs, dtype=np.float64)
-    else:
-        c = np.asarray(C_data, dtype=np.float64).flatten()
-        C_np = np.zeros(num_obs, dtype=np.float64)
-        C_np[: min(num_obs, len(c))] = c[: min(num_obs, len(c))]
+        raise ValueError("C vector is required for pymdp execution")
+    c = np.asarray(C_data, dtype=np.float64).flatten()
+    C_np = np.zeros(num_obs, dtype=np.float64)
+    C_np[: min(num_obs, len(c))] = c[: min(num_obs, len(c))]
 
     if D_data is None:
-        D_np = np.ones(num_states, dtype=np.float64) / num_states
-    else:
-        D_np = _norm_vec(np.asarray(D_data, dtype=np.float64))
-        if D_np.shape[0] != num_states:
-            padded = np.ones(num_states, dtype=np.float64) / num_states
-            k = min(num_states, D_np.shape[0])
-            padded[:k] = D_np[:k]
-            D_np = _norm_vec(padded)
+        raise ValueError("D vector is required for pymdp execution")
+    D_np = _norm_vec(np.asarray(D_data, dtype=np.float64))
+    if D_np.shape[0] != num_states:
+        padded = np.ones(num_states, dtype=np.float64) / num_states
+        k = min(num_states, D_np.shape[0])
+        padded[:k] = D_np[:k]
+        D_np = _norm_vec(padded)
 
     E_np: Optional[np.ndarray] = None
     if E_data is not None:
@@ -367,6 +361,7 @@ def main() -> int:
         logger.info("t=%02d obs=%d action=%d belief=%s", t, obs_idx, a_idx, np.round(belief_vec, 3).tolist())
 
     results = {{
+        "schema_version": "pymdp_simulation_v1",
         "framework": "PyMDP",
         "pymdp_version": "1.0.0+",
         "backend": "jax",
@@ -484,39 +479,3 @@ def generate_example_usage_template(
     ]
     return lines
 
-
-def generate_default_matrices(
-    num_modalities: int, num_states: List[int]
-) -> Dict[str, List[str]]:
-    """
-    Return default matrix-construction code lines in pymdp 1.0.0 form.
-
-    The helper creates plain numpy arrays suitable for handing to
-    ``_to_batched_jax`` in the generated runner.
-    """
-    matrix_defs: Dict[str, List[str]] = {"A": [], "B": [], "C": [], "D": []}
-
-    Ns = num_states[0] if num_states else 2
-    Nm = max(num_modalities, 1)
-
-    matrix_defs["A"] = [
-        "# A: likelihood P(o|s) — column-normalised",
-        f"A_np = np.eye({Nm}, {Ns}) * 0.9 + 0.1 / max({Nm}, 1)",
-        "A_np = A_np / A_np.sum(axis=0, keepdims=True)",
-    ]
-    matrix_defs["B"] = [
-        "# B: transitions in (next_state, prev_state, action) shape",
-        f"B_np = np.stack([np.eye({Ns}), np.roll(np.eye({Ns}), 1, axis=1)], axis=-1)",
-        "for a in range(B_np.shape[2]):",
-        "    col_sums = B_np[:, :, a].sum(axis=0, keepdims=True)",
-        "    B_np[:, :, a] /= np.where(col_sums == 0, 1.0, col_sums)",
-    ]
-    matrix_defs["C"] = [
-        "# C: observation preferences",
-        f"C_np = np.zeros({Nm}, dtype=np.float64)",
-    ]
-    matrix_defs["D"] = [
-        "# D: uniform prior over hidden states",
-        f"D_np = np.ones({Ns}, dtype=np.float64) / {Ns}",
-    ]
-    return matrix_defs

@@ -86,5 +86,5 @@ Sorted alphabetically by domain. For full per-domain documentation see **[../mod
 | website | `list_generated_website_pages` | List all generated website pages |
 | website | `process_website` | Generate static HTML website from pipeline output |
 
-**Total: 131 tools across 38+ domains**  
-Verified by `src/tests/test_mcp_audit.py` as part of the full `src/tests/` suite (current pass/skip counts: repository [README.md](../../../README.md)).
+**Measured 2026-05-14: 133 tools and 1 resource in `src/tests/mcp/test_mcp_audit.py`**  
+Verified by `src/tests/mcp/test_mcp_audit.py` as part of the full `src/tests/` suite (current pass/skip counts: repository [README.md](../../../README.md)).

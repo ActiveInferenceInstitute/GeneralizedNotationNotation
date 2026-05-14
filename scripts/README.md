@@ -5,6 +5,7 @@ The `scripts/` directory is the repository's hub for standalone maintenance, lin
 
 ## Key Files
 - `check_gnn_doc_patterns.py`: A strict RegEx-enforced documentation linter that audits `doc/` and `src/gnn/` against retired path aliases and import references.
+- `check_maintained_doc_terms.py`: A maintained-document terminology audit that catches stale compatibility, placeholder, and removed PyMDP surface references while skipping generated and archive Markdown.
 - `run_pymdp_gnn_scaling_analysis.py`: A thin orchestrator (v1.1.0) that programmatically generates configured GNN specs and triggers the main pipeline to conduct a PyMDP scaling study. It utilizes `pymdp_scaling_config.yaml` for central configuration.
 
 ## Execution
@@ -13,6 +14,7 @@ Tools are designed to be executed via `uv run`:
 ```bash
 # Run documentation validation
 uv run python scripts/check_gnn_doc_patterns.py --strict
+uv run python scripts/check_maintained_doc_terms.py --strict
 
 # Execute a PyMDP scaling sweep using current config
 uv run python scripts/run_pymdp_gnn_scaling_analysis.py

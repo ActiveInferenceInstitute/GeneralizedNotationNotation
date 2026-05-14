@@ -517,7 +517,7 @@ MODULAR_TEST_CATEGORIES["new_module"] = {
 Example test file structure:
 
 ```python
-# src/tests/test_new_module_overall.py
+# src/tests/new_module/test_new_module_overall.py
 """Comprehensive tests for the new module."""
 
 import pytest
@@ -680,7 +680,7 @@ Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g
 
 ## Test Execution Results
 
-Latest measured command-of-record result (2026-05-13): 2,176 passed, 68 skipped, 1 xpassed in 694.24s. Re-run the command for current pass/skip/fail counts:
+Latest measured collect-only inventory (2026-05-14): 166 `test_*.py` files and 2,256 collected tests with the Ollama integration files excluded. Re-run the full command for current pass, skip, fail, and duration counts:
 
 ```bash
 uv run pytest src/tests/ -q --tb=no \

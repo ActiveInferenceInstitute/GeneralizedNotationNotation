@@ -370,14 +370,14 @@ for warning in result.warnings:
 
 ## Testing
 
-Comprehensive tests are provided in `src/tests/test_d2_visualizer.py`:
+Comprehensive tests are provided in `src/tests/visualization/test_d2_visualizer.py`:
 
 ```bash
 # Run D2 visualizer tests
-pytest src/tests/test_d2_visualizer.py -v
+pytest src/tests/visualization/test_d2_visualizer.py -v
 
 # Run with coverage
-pytest src/tests/test_d2_visualizer.py --cov=src/advanced_visualization/d2_visualizer
+pytest src/tests/visualization/test_d2_visualizer.py --cov=src/advanced_visualization/d2_visualizer
 ```
 
 **Test Coverage:**

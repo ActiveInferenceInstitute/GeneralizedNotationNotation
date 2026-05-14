@@ -272,7 +272,7 @@ output/4_model_registry_output/
 
 ### Test Files
 
-- `src/tests/test_model_registry_overall.py`
+- `src/tests/model_registry/test_model_registry_overall.py`
 
 ### Test Coverage
 

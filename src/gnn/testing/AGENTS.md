@@ -18,5 +18,5 @@ Round-trip **scope** vs **enum size** is documented in **[../SPEC.md](../SPEC.md
 
 ```bash
 uv run pytest src/gnn/testing/test_round_trip.py -q
-uv run pytest src/tests/test_gnn_overall.py -q
+uv run pytest src/tests/gnn/test_gnn_overall.py -q
 ```

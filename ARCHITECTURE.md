@@ -237,7 +237,7 @@ Adding new pipeline steps and modules follows a well-established pattern that en
 
 ### 4. **Add Comprehensive Testing**
 
-- Create integration tests in `src/tests/test_newstep_integration.py`
+- Create integration tests in `src/tests/newstep/test_newstep_integration.py`
 - Implement unit tests for all public functions
 - Add performance tests with timing and memory validation
 - Include error scenario testing with real failure modes

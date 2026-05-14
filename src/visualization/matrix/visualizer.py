@@ -112,13 +112,15 @@ class MatrixVisualizer:
                     for i, row in enumerate(matrix):
                         writer.writerow([f"Row {i}"] + row.tolist())
                 elif matrix.ndim == 3:
-                    # 3D tensor - export first slice
-                    writer.writerow([f"3D Tensor: {matrix_name} - First slice"])
-                    writer.writerow([f"Shape: {matrix.shape}"])
-                    writer.writerow([])
-                    writer.writerow([f"Col {j}" for j in range(matrix.shape[2])])
-                    for i in range(min(10, matrix.shape[0])):  # Limit rows for readability
-                        writer.writerow([f"Slice 0, Row {i}"] + matrix[0, i].tolist())
+                    # POMDP B tensors use (next_state, previous_state, action).
+                    for action in range(matrix.shape[2]):
+                        writer.writerow([f"Action slice {action}"])
+                        writer.writerow(["Next \\ Previous"] + [f"Previous {j}" for j in range(matrix.shape[1])])
+                        for next_state in range(matrix.shape[0]):
+                            writer.writerow(
+                                [f"Next {next_state}"] + matrix[next_state, :, action].tolist()
+                            )
+                        writer.writerow([])
 
             return True
 
@@ -295,8 +297,8 @@ class MatrixVisualizer:
             # Generate titles based on tensor type
             if tensor_type == "transition":
                 slice_titles = [f"Action {i}" for i in range(dim3)]
-                xlabel = "Next State"
-                ylabel = "Previous State"
+                xlabel = "Previous State"
+                ylabel = "Next State"
                 main_title = f"POMDP Transition Matrix {tensor_name} (P(s'|s,u))"
             else:
                 slice_titles = [f"Slice {i}" for i in range(dim3)]
@@ -383,15 +385,16 @@ class MatrixVisualizer:
 
         # Transition-specific statistics
         if tensor_type == "transition":
-            # Check if each slice is a valid transition matrix (rows sum to 1)
-            row_sums = np.sum(tensor, axis=1)  # Sum along next state dimension
-            valid_transitions = np.allclose(row_sums, 1.0, atol=1e-6)
+            # POMDP transition tensors use (next_state, previous_state, action).
+            # Each previous-state/action column must sum over next_state.
+            column_sums = np.sum(tensor, axis=0)
+            valid_transitions = np.allclose(column_sums, 1.0, atol=1e-6)
 
             # Calculate entropy of transitions
             # Add small epsilon to avoid log(0)
             epsilon = 1e-10
             log_probs = np.log(tensor + epsilon)
-            entropy = -np.sum(tensor * log_probs, axis=1)
+            entropy = -np.sum(tensor * log_probs, axis=0)
             mean_entropy = np.mean(entropy)
 
             stats = f"""Tensor {tensor_name} Statistics:
@@ -461,10 +464,10 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                                       fontsize=10, fontweight='bold')
 
                 ax.set_title(f'Action {i} Transition Matrix', fontweight='bold')
-                ax.set_xlabel('Next State')
-                ax.set_ylabel('Previous State')
-                ax.set_xticks(range(dim1))
-                ax.set_yticks(range(dim2))
+                ax.set_xlabel('Previous State')
+                ax.set_ylabel('Next State')
+                ax.set_xticks(range(dim2))
+                ax.set_yticks(range(dim1))
 
                 if i == 0:
                     cbar = plt.colorbar(im, ax=ax, shrink=0.8)
@@ -476,12 +479,13 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             # Calculate entropy for each action
             epsilon = 1e-10
             log_probs = np.log(tensor + epsilon)
-            entropy = -np.sum(tensor * log_probs, axis=1)  # Entropy per state-action pair
+            entropy = -np.sum(tensor * log_probs, axis=0)  # Entropy per previous-state/action pair
             mean_entropy_per_action = np.mean(entropy, axis=0)  # Average entropy per action
 
             actions = range(dim3)
+            entropy_colors = (['skyblue', 'lightcoral', 'lightgreen'] * ((dim3 // 3) + 1))[:dim3]
             bars = ax_entropy.bar(actions, mean_entropy_per_action,
-                                color=['skyblue', 'lightcoral', 'lightgreen'][:dim3],
+                                color=entropy_colors,
                                 alpha=0.7)
 
             # Add value labels on bars
@@ -498,12 +502,13 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             # 3. Determinism analysis (bottom left)
             ax_determinism = fig.add_subplot(3, 3, 7)
 
-            # Calculate determinism (max probability per row)
-            max_probs = np.max(tensor, axis=1)  # Max probability per state-action
+            # Calculate determinism (max next-state probability per previous-state/action).
+            max_probs = np.max(tensor, axis=0)
             mean_determinism_per_action = np.mean(max_probs, axis=0)  # Average determinism per action
 
+            determinism_colors = (['gold', 'orange', 'red'] * ((dim3 // 3) + 1))[:dim3]
             bars = ax_determinism.bar(actions, mean_determinism_per_action,
-                                    color=['gold', 'orange', 'red'][:dim3], alpha=0.7)
+                                    color=determinism_colors, alpha=0.7)
 
             for bar, value in zip(bars, mean_determinism_per_action):
                 ax_determinism.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
@@ -519,11 +524,12 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             ax_reachability = fig.add_subplot(3, 3, 8)
 
             # Calculate reachability (how many states can be reached from each state)
-            reachability = np.sum(tensor > 0.01, axis=1)  # Count non-zero transitions
+            reachability = np.sum(tensor > 0.01, axis=0)  # Count reachable next states
             mean_reachability_per_action = np.mean(reachability, axis=0)
 
+            reachability_colors = (['lightblue', 'lightgreen', 'lightyellow'] * ((dim3 // 3) + 1))[:dim3]
             bars = ax_reachability.bar(actions, mean_reachability_per_action,
-                                     color=['lightblue', 'lightgreen', 'lightyellow'][:dim3], alpha=0.7)
+                                     color=reachability_colors, alpha=0.7)
 
             for bar, value in zip(bars, mean_reachability_per_action):
                 ax_reachability.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
@@ -540,14 +546,14 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             ax_validation.axis('off')
 
             # Validation checks
-            row_sums = np.sum(tensor, axis=1)
-            valid_transitions = np.allclose(row_sums, 1.0, atol=1e-6)
-            max_deviation = np.max(np.abs(row_sums - 1.0))
+            column_sums = np.sum(tensor, axis=0)
+            valid_transitions = np.allclose(column_sums, 1.0, atol=1e-6)
+            max_deviation = np.max(np.abs(column_sums - 1.0))
 
             validation_text = f"""POMDP Transition Matrix Validation:
 ✓ Shape: {dim1}×{dim2}×{dim3}
 ✓ Valid Transition Matrices: {'Yes' if valid_transitions else 'No'}
-✓ Max Row Sum Deviation: {max_deviation:.6f}
+✓ Max Column Sum Deviation: {max_deviation:.6f}
 ✓ Probability Range: [{np.min(tensor):.3f}, {np.max(tensor):.3f}]
 ✓ Mean Entropy: {np.mean(entropy):.3f} bits
 ✓ Mean Determinism: {np.mean(max_probs):.3f}"""

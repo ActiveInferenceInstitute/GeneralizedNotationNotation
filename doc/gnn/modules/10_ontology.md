@@ -297,7 +297,7 @@ output/10_ontology_output/
 ## Testing
 
 ### Test Files
-- `src/tests/test_ontology_overall.py`
+- `src/tests/ontology/test_ontology_overall.py`
 
 ### Test Coverage
 - **Current**: 78%

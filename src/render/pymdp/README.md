@@ -22,6 +22,10 @@ No additional public function is exported by this package.
 ## Contract
 
 - Input is a parsed GNN dictionary expected by the render pipeline.
+- Required execution matrices are explicit: `A`, `B`, `C`, and `D`.
+  Factored models are composed into a joint PyMDP contract with matrix
+  provenance, and a declared `B_t` tensor is projected to canonical
+  `(next_state, previous_state, action)` `B` with provenance.
 - Output is a Python script file at the target `output_path`.
 - Return tuple structure is:
   - `success: bool`
@@ -66,7 +70,7 @@ Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 w
 `PyMDPRenderer` accepts `options={"mode": ...}`:
 
 - `"pipeline"` (default) — thin runner that delegates to
-  `src.execute.pymdp.run_simple_pymdp_simulation` (the canonical JAX rollout).
+  `src.execute.pymdp.run_pymdp_simulation` (the canonical JAX rollout).
 - `"standalone"` — fully self-contained pymdp 1.0.0 script with an inline
   rollout loop. Useful for sharing a runnable example that does not require
   this repository on `PYTHONPATH`.
@@ -76,4 +80,4 @@ Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 w
 Relevant tests live in `src/tests/`, including render+execute integration and
 PyMDP simulation pathway tests. Upstream ``Agent`` / ``utils`` methods used by
 generated runners are also asserted in
-`src/tests/test_pymdp_1_0_0_upstream_api.py`.
+`src/tests/execute/test_pymdp_1_0_0_upstream_api.py`.

@@ -104,10 +104,10 @@ def register_tools(server: Any) -> None:
 
 ```bash
 # Full MCP audit (part of src/tests/; suite counts in repository README.md)
-uv run pytest src/tests/test_mcp_audit.py -v
+uv run pytest src/tests/mcp/test_mcp_audit.py -v
 
 # Focus on your new module
-uv run pytest src/tests/test_mcp_audit.py -v -k "<module>"
+uv run pytest src/tests/mcp/test_mcp_audit.py -v -k "<module>"
 
 # Generate the tool inventory JSON
 uv run python src/mcp/validate_tools.py
@@ -119,7 +119,7 @@ uv run python src/mcp/validate_tools.py
 | Test Class | What It Checks |
 |------------|---------------|
 | `TestMCPModuleDiscovery` | 22 modules × 2: module registered + `register_tools` is callable |
-| `TestMCPDomainTools` | 131 tools × 2: tool callable + description not empty |
+| `TestMCPDomainTools` | Registered domain tools: tool callable + description not empty |
 | `TestMCPToolRealness` | No generic catch-all tools (`list_functions`, `call_function`) |
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
 | `TestMCPAuditReport` | JSON report generated with correct schema |
@@ -132,7 +132,7 @@ If you are adding a **brand-new** pipeline module (e.g., step 25+):
 
 1. Create `src/<module>/mcp.py` following the pattern above
 2. Register the module in `src/mcp/mcp_instance.py`'s `_discover_modules()` list
-3. Add a row to the `TestMCPModuleDiscovery` fixture in `src/tests/test_mcp_audit.py`
+3. Add a row to the `TestMCPModuleDiscovery` fixture in `src/tests/mcp/test_mcp_audit.py`
 4. Update `doc/gnn/mcp/tool_reference.md` with the new tools
 5. Create `doc/gnn/modules/NN_<module>.md` with an MCP Tools section
 

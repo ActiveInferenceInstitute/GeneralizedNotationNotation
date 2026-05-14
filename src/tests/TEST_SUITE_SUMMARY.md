@@ -1,6 +1,6 @@
 # GNN Pipeline Test Suite - Comprehensive Summary
 
-**Last Updated**: 2026-05-13  
+**Last Updated**: 2026-05-14  
 **Status**: ✅ Production Ready  
 **Test Infrastructure Version**: 2.0.1
 
@@ -16,8 +16,8 @@ The GNN Processing Pipeline test suite provides comprehensive coverage across al
 - **Directory Layout**: 33 first-level directories under `src/tests/`; 31 contain direct test files
 - **Root-Level Tests**: 28 `test_*.py` files at `src/tests/`
 - **Subdirectory Tests**: 138 `test_*.py` files under module/helper directories
-- **Collected Tests**: 2,245 with `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-05-13)
-- **Latest Full Run**: 2,176 passed, 68 skipped, 1 xpassed in 694.24s with the same Ollama ignores (2026-05-13)
+- **Collected Tests**: 2,256 with `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` (2026-05-14)
+- **Latest Full Run**: Re-run the command of record for current pass, skip, fail, and duration counts; do not reuse older totals as current status.
 
 ---
 
@@ -137,8 +137,8 @@ python src/2_tests.py --comprehensive --verbose
 
 ### Run Specific Module Tests
 ```bash
-pytest src/tests/test_gnn_overall.py -v
-pytest src/tests/test_render_overall.py -v
+pytest src/tests/gnn/test_gnn_overall.py -v
+pytest src/tests/render/test_render_overall.py -v
 ```
 
 ### Run by Marker

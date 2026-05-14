@@ -24,7 +24,7 @@ See **[SPEC.md](SPEC.md)** for the full layout table (`grammar_*`, `schema_*`, `
 ## Tests
 
 ```bash
-uv run pytest src/tests/test_gnn_parsing.py src/tests/test_gnn_parsers_common.py -q
+uv run pytest src/tests/gnn/test_gnn_parsing.py src/tests/gnn/test_gnn_parsers_common.py -q
 ```
 
 Agent-oriented detail: **[AGENTS.md](AGENTS.md)**.

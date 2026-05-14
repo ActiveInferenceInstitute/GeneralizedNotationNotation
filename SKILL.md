@@ -112,11 +112,11 @@ Each `src/module/` directory contains its own `SKILL.md` with module-specific in
 ## Testing
 
 ```bash
-# Full test suite (2,200+ tests)
+# Full test suite (2,256 collected tests with standard Ollama integration ignores on 2026-05-14)
 pytest src/tests/ -v
 
 # Test a specific module
-pytest src/tests/test_gnn.py -v
+pytest src/tests/gnn/test_gnn_overall.py -v
 
 # With coverage
 pytest src/tests/ --cov=src -v

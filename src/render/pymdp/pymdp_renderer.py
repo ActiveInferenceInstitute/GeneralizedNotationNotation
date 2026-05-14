@@ -6,7 +6,7 @@ Generates executable Python scripts that run real pymdp 1.0.0 simulations
 from GNN specifications. Two shapes of output are emitted (see
 ``pymdp_templates.py``):
 
-1. **Pipeline runner** — delegates to ``src.execute.pymdp.run_simple_pymdp_simulation``
+1. **Pipeline runner** — delegates to ``src.execute.pymdp.run_pymdp_simulation``
    so the script is a thin wrapper around the pipeline's tested rollout.
 2. **Standalone runner** — builds a pymdp 1.0.0 ``Agent`` directly and
    performs a rollout inline. Useful for sharing a self-contained script
@@ -187,6 +187,8 @@ def _extract_dimensions(
                 num_actions = int(arr.shape[2])
             else:
                 num_actions = int(arr.shape[0])
+        elif arr.ndim == 2:
+            num_actions = 1
 
     return int(num_obs), int(num_states), int(max(num_actions, 1))
 
@@ -200,7 +202,7 @@ class PyMDPRenderer:
     options
         * ``mode`` — ``"pipeline"`` (default) or ``"standalone"``.
           ``"pipeline"`` emits a thin runner that calls
-          ``src.execute.pymdp.run_simple_pymdp_simulation``.
+          ``src.execute.pymdp.run_pymdp_simulation``.
           ``"standalone"`` emits a self-contained pymdp 1.0.0 script.
     """
 
@@ -243,11 +245,6 @@ class PyMDPRenderer:
             output_path.write_text(code, encoding="utf-8")
 
             warnings: List[str] = []
-            if not (
-                gnn_spec.get("initialparameterization")
-                or gnn_spec.get("initial_parameterization")
-            ):
-                warnings.append("No initial parameterization found — using defaults")
             if not gnn_spec.get("model_parameters"):
                 warnings.append("No model parameters found — using inferred dimensions")
             return True, f"Generated pymdp 1.0.0 runner: {output_path}", warnings
@@ -312,10 +309,7 @@ class PyMDPRenderer:
             if val is None
         ]
         if missing:
-            self.logger.warning(
-                "Missing initial parameterization entries (defaults will be used at runtime): %s",
-                ",".join(missing),
-            )
+            raise ValueError(f"Missing required PyMDP initial parameterization entries: {missing}")
 
         context: Dict[str, Any] = {
             "model_name": model_name,

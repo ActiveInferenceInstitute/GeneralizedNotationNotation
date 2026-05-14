@@ -72,13 +72,13 @@ All 25 pipeline steps follow a consistent pattern:
 **Accepted `processor.py` alternatives** (5 modules use these patterns):
 - `setup/`, `tests/`, `validation/`: Logic lives directly in `__init__.py` — functionally equivalent
 - `model_registry/`: Uses `registry.py` as primary logic file — clearly named
-- `website/`: Uses `renderer.py` + `generator.py`; `processor.py` is a thin shim that re-exports from renderer
+- `website/`: Uses `renderer.py` + `generator.py`; `processor.py` is the public processing entry point and delegates to those helpers
 
-**Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. All other steps use soft imports with graceful degradation fallbacks.
+**Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. Other steps report dependency import problems through explicit warning/error statuses.
 
-**`src/sapf/` module**: This is a compatibility shim, not a numbered pipeline step. It re-exports functions from `audio.sapf` so that `import sapf` works without duplicating code. The actual SAPF implementation lives in `src/audio/sapf/`.
+**`src/sapf/` module**: This is a public SAPF entry point, not a numbered pipeline step. It exports functions from `audio.sapf` so that SAPF callers use one canonical implementation. The SAPF implementation lives in `src/audio/sapf/`.
 
-**Research module (Step 19)**: Uses rule-based static analysis (no external LLM required). The `FEATURES = {'fallback_mode': True}` flag in `__init__.py` indicates it operates without LLM dependencies, not that it is incomplete.
+**Research module (Step 19)**: Uses rule-based static analysis and does not require an external LLM. Its `FEATURES` metadata describes available capabilities rather than partial implementation status.
 
 ### 25-Step Pipeline (0-24)
 
@@ -177,12 +177,12 @@ s=HiddenState
 # Install specific optional groups using UV
 uv sync --extra dev                  # Development tools
 uv sync --extra api                  # REST API server (FastAPI + uvicorn)
-uv sync --extra llm                  # Redundant with core (kept for compatibility); base install already includes openai, ollama, dotenv, aiohttp
+uv sync --extra llm                  # Redundant with core; base install already includes openai, ollama, dotenv, aiohttp
 uv sync --extra visualization        # Same pins as core (pandas, plotly, seaborn, h5py); optional alias
 uv sync --extra inference            # bnlearn only; same pin as core; optional alias
 uv sync --extra audio                # Audio processing
 uv sync --extra gui                  # GUI interfaces
-uv sync --extra execution-frameworks # Same pins as core Step 12 stack (compatibility / explicit sync)
+uv sync --extra execution-frameworks # Same pins as core Step 12 stack for explicit sync
 uv sync --all-extras                 # Everything
 ```
 

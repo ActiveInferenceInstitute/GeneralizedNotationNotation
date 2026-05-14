@@ -22,12 +22,13 @@ Generates Python code for PyMDP POMDP simulation.
 ```
 pymdp/
 ├── __init__.py             # Package exports
-├── pymdp_converter.py      # GNN-to-PyMDP conversion (1512 lines)
-├── pymdp_templates.py      # Code templates (527 lines)
+├── pymdp_renderer.py       # Canonical renderer
+├── pymdp_templates.py      # Pipeline and standalone runner templates
 └── ...
 ```
 
-## API Compatibility
+## Runtime Contract
 
-- Supports PyMDP 0.x and 1.0.0+ API variants
-- Auto-detects target version via `execute/pymdp/package_detector.py`
+- Generated scripts target `inferactively-pymdp>=1.0.0`.
+- Required matrices are `A`, `B`, `C`, and `D`; factored POMDP specs are
+  composed by `render/pomdp_processor.py` before this renderer is called.

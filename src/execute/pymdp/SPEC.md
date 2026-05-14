@@ -4,9 +4,8 @@
 
 ## Execution Model
 
-- Primary engine: `ActiveInferenceAgent` for full-fidelity POMDP execution
-- Fallback: `FallbackAgent` for robust degraded execution through real execution paths
-- Package detection: auto-detects `pymdp` version (0.x vs 1.0.0+ API)
+- Primary engine: `run_pymdp_simulation(...)` backed by `inferactively-pymdp>=1.0.0`
+- Package detection: validates the JAX-first `pymdp` 1.0.0+ API
 - Timeout: inherits from Step 12 timeout (1800s default)
 
 ## Architecture
@@ -21,19 +20,23 @@ pymdp/
 ├── pymdp_runner.py         # Core simulation runner
 ├── pymdp_simulation.py     # Full POMDP simulation engine
 ├── pymdp_utils.py          # Shared utilities
-├── simple_simulation.py    # Simplified simulation fallback
+├── simulation.py           # Canonical simulation function
 └── validator.py            # Input validation
 ```
 
 ## Input
 
-- PyMDP scripts from `output/11_render_output/pymdp/`
+- PyMDP scripts from `output/11_render_output/<gnn_stem>/pymdp/`
+- Step 12 reads the latest `render_processing_summary.json` when present and
+  executes only scripts listed as successful for the requested framework.
 
 ## Output
 
-- `simulation_results.json` — Belief trajectories, action sequences, EFE values
+- `simulation_results.json` — `pymdp_simulation_v1` beliefs, observations,
+  hidden states, actions, EFE/VFE, policy posterior, validation, provenance,
+  and runtime metadata
 - Execution logs and timing data
 
 ## Dependencies
 
-- `pymdp >= 0.0.7` or `pymdp >= 1.0.0` (detected automatically)
+- `inferactively-pymdp>=1.0.0`

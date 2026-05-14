@@ -35,6 +35,9 @@ class POMDPStateSpace:
     state_variables: Optional[List[Dict[str, Any]]] = None
     observation_variables: Optional[List[Dict[str, Any]]] = None
     action_variables: Optional[List[Dict[str, Any]]] = None
+    state_factors: Optional[List[Dict[str, Any]]] = None
+    observation_modalities: Optional[List[Dict[str, Any]]] = None
+    control_factors: Optional[List[Dict[str, Any]]] = None
 
     # Connections/relationships
     connections: Optional[List[Tuple[str, str, str]]] = None  # (source, relation, target)
@@ -44,6 +47,11 @@ class POMDPStateSpace:
     model_annotation: Optional[str] = None
     ontology_mapping: Optional[Dict[str, str]] = None
     num_timesteps: Optional[int] = None  # Simulation timesteps (from ModelParameters)
+    model_parameters: Optional[Dict[str, Any]] = None
+    matrices: Optional[Dict[str, Any]] = None
+    matrix_provenance: Optional[Dict[str, Dict[str, Any]]] = None
+    passive_model: bool = False
+    adapter_notes: Optional[List[str]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
@@ -59,11 +67,19 @@ class POMDPStateSpace:
             'state_variables': self.state_variables,
             'observation_variables': self.observation_variables,
             'action_variables': self.action_variables,
+            'state_factors': self.state_factors,
+            'observation_modalities': self.observation_modalities,
+            'control_factors': self.control_factors,
             'connections': self.connections,
             'model_name': self.model_name,
             'model_annotation': self.model_annotation,
             'ontology_mapping': self.ontology_mapping,
-            'num_timesteps': self.num_timesteps
+            'num_timesteps': self.num_timesteps,
+            'model_parameters': self.model_parameters,
+            'matrices': self.matrices,
+            'matrix_provenance': self.matrix_provenance,
+            'passive_model': self.passive_model,
+            'adapter_notes': self.adapter_notes
         }
 
 
@@ -117,6 +133,7 @@ class POMDPExtractor:
 
             # Parse initial parameterization FIRST (needed for dimension inference)
             initial_params = self._parse_initial_parameterization(sections.get('InitialParameterization', ''))
+            model_parameters = self._parse_model_parameters(sections.get('ModelParameters', ''))
 
             # Extract dimensions (now with access to sections and initial_params for better inference)
             num_states, num_observations, num_actions, num_timesteps = self._extract_dimensions(
@@ -129,43 +146,37 @@ class POMDPExtractor:
             # Parse ontology mapping
             ontology_mapping = self._parse_ontology_annotations(sections.get('ActInfOntologyAnnotation', ''))
 
-            # Resolve multi-factor matrix names to standard A/B/C/D/E
-            # Supports models like T-maze which use A_loc, A_rew, B_loc, B_ctx, etc.
-            def _resolve_param(base_name, params):
-                """Look up a parameter by base name, falling back to factored variants."""
-                if params.get(base_name) is not None:
-                    return params[base_name]
-                # Look for factored variants (e.g., A_loc, A_rew for base A)
-                factored = {k: v for k, v in params.items()
-                           if k.startswith(base_name + '_') and v is not None}
-                if factored:
-                    # Take the first factor that has the right structure
-                    # Prefer non-context factors (A_loc over A_ctx, B_loc over B_ctx)
-                    for suffix in ['_loc', '_rew', '']:
-                        key = base_name + suffix
-                        if key in factored:
-                            self.logger.info(f"Using factored param '{key}' as primary '{base_name}' matrix")
-                            return factored[key]
-                    # Fall back to first available factor
-                    first_key = next(iter(factored))
-                    self.logger.info(f"Using factored param '{first_key}' as primary '{base_name}' matrix")
-                    return factored[first_key]
-                return None
+            matrices = self._collect_matrix_parameters(initial_params)
+            matrix_provenance = self._build_matrix_provenance(matrices)
+            state_factors = self._describe_variables(state_space_info.get('state_variables'), 'state_factor')
+            observation_modalities = self._describe_variables(
+                state_space_info.get('observation_variables'), 'observation_modality'
+            )
+            control_factors = self._describe_variables(state_space_info.get('action_variables'), 'control_factor')
+            passive_model = self._is_passive_model(
+                model_parameters=model_parameters,
+                initial_params=initial_params,
+                num_actions=num_actions,
+                connections=connections,
+            )
 
-            A_matrix = _resolve_param('A', initial_params)
-            B_matrix = _resolve_param('B', initial_params)
-            C_vector = _resolve_param('C', initial_params)
-            D_vector = _resolve_param('D', initial_params)
-            E_vector = _resolve_param('E', initial_params)
+            A_matrix = initial_params.get('A')
+            B_matrix = initial_params.get('B')
+            C_vector = initial_params.get('C')
+            D_vector = initial_params.get('D')
+            E_vector = initial_params.get('E')
+            adapter_notes = []
 
-            # For HMM / passive models without preferences (C) or policy prior (E),
-            # generate uniform fallbacks so renderers can still produce scripts
-            if C_vector is None and num_observations > 0:
-                self.logger.info(f"No C vector found — generating uniform preferences ({num_observations} observations)")
+            if C_vector is None and passive_model and num_observations > 0:
                 C_vector = [0.0] * num_observations
-            if D_vector is None and num_states > 0:
-                self.logger.info(f"No D vector found — generating uniform prior ({num_states} states)")
-                D_vector = [1.0 / num_states] * num_states
+                matrices['C'] = C_vector
+                matrix_provenance['C'] = {
+                    'source': 'passive_model_adapter',
+                    'shape': [num_observations],
+                    'derived': True,
+                    'reason': 'zero preferences for passive HMM/Markov model',
+                }
+                adapter_notes.append('passive_model_zero_preferences')
 
             # Create POMDP state space
             pomdp_space = POMDPStateSpace(
@@ -180,11 +191,19 @@ class POMDPExtractor:
                 state_variables=state_space_info.get('state_variables'),
                 observation_variables=state_space_info.get('observation_variables'),
                 action_variables=state_space_info.get('action_variables'),
+                state_factors=state_factors,
+                observation_modalities=observation_modalities,
+                control_factors=control_factors,
                 connections=connections,
                 model_name=model_name,
                 model_annotation=model_annotation,
                 ontology_mapping=ontology_mapping,
-                num_timesteps=num_timesteps
+                num_timesteps=num_timesteps,
+                model_parameters=model_parameters,
+                matrices=matrices,
+                matrix_provenance=matrix_provenance,
+                passive_model=passive_model,
+                adapter_notes=adapter_notes,
             )
 
             # Validate if strict validation enabled
@@ -311,7 +330,10 @@ class POMDPExtractor:
                     variables['action_variables'].append(var_info)
                 else:
                     # Default categorization based on typical Active Inference naming
-                    if var_name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
+                    if (
+                        var_name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+                        or any(var_name.startswith(f'{prefix}_') for prefix in ('A', 'B', 'C', 'D', 'E', 'F', 'G'))
+                    ):
                         # These are matrix/vector parameters, not state space variables
                         pass
                     else:
@@ -321,7 +343,7 @@ class POMDPExtractor:
 
     def _extract_dimensions(self, state_space_info: Dict[str, Any],
                             sections: Optional[Dict[str, str]] = None,
-                            initial_params: Optional[Dict[str, Any]] = None) -> Tuple[int, int, int]:
+                            initial_params: Optional[Dict[str, Any]] = None) -> Tuple[int, int, int, Optional[int]]:
         """
         Extract core dimensions from state space information.
         
@@ -338,32 +360,39 @@ class POMDPExtractor:
 
         # Priority 1: Check ModelParameters section
         if sections:
-            model_params_content = sections.get('ModelParameters', '')
-            for line in model_params_content.split('\n'):
-                line = line.strip()
-                if ':' in line:
-                    key, value = line.split(':', 1)
-                    key = key.strip().lower()
-                    try:
-                        value = int(value.strip().split('#')[0].strip())  # Remove comments
-                        if key in ['num_actions', 'num_controls', 'n_actions']:
-                            num_actions = value
-                        elif key in ['num_hidden_states', 'num_states', 'n_states', 'num_locations']:
-                            num_states = value
-                        elif key in ['num_obs', 'num_observations', 'n_obs', 'num_location_obs']:
-                            num_observations = value
-                        elif key in ['num_timesteps', 'n_timesteps', 'timesteps']:
-                            num_timesteps = value
-                    except (ValueError, IndexError):
-                        self.logger.debug("Could not parse POMDP parameter '%s' from metadata", key)
+            for key, value in self._parse_model_parameters(sections.get('ModelParameters', '')).items():
+                try:
+                    int_value = int(value)
+                except (ValueError, TypeError):
+                    continue
+                key_lower = key.lower()
+                if key_lower in ['num_actions', 'num_controls', 'n_actions']:
+                    num_actions = int_value
+                elif key_lower in ['num_hidden_states', 'num_states', 'n_states', 'num_locations']:
+                    num_states = int_value
+                elif key_lower in ['num_obs', 'num_observations', 'n_obs', 'num_location_obs']:
+                    num_observations = int_value
+                elif key_lower in ['num_timesteps', 'n_timesteps', 'timesteps']:
+                    num_timesteps = int_value
 
         # Priority 2: Infer from B matrix dimensions if still None
         if num_actions is None and initial_params:
-            B_matrix = initial_params.get('B')
-            if B_matrix and isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
-                # B is typically [action][next_state][prev_state] or [action][row][col]
-                num_actions = len(B_matrix)
-                self.logger.info(f"Inferred num_actions={num_actions} from B matrix dimensions")
+            action_candidates = []
+            for key, matrix in initial_params.items():
+                if key == 'B' or key.startswith('B_'):
+                    shape = self._nested_shape(matrix)
+                    if len(shape) == 2:
+                        action_candidates.append(1)
+                    elif len(shape) == 3:
+                        if shape[0] == shape[1]:
+                            action_candidates.append(shape[2])
+                        elif shape[1] == shape[2]:
+                            action_candidates.append(shape[0])
+                        else:
+                            action_candidates.append(shape[-1])
+            if action_candidates:
+                num_actions = max(action_candidates)
+                self.logger.info("Inferred num_actions=%d from B matrix dimensions", num_actions)
 
         # Priority 3: Try to extract from state variables
         for var in state_space_info.get('state_variables', []):
@@ -394,6 +423,113 @@ class POMDPExtractor:
             num_actions = 3
 
         return num_states, num_observations, num_actions, num_timesteps
+
+    def _parse_model_parameters(self, content: str) -> Dict[str, Any]:
+        """Parse the ModelParameters section into typed scalar values."""
+        params: Dict[str, Any] = {}
+        for line in content.split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#') or ':' not in line:
+                continue
+            key, value = line.split(':', 1)
+            clean_value = value.split('#', 1)[0].strip()
+            key = key.strip()
+            if not clean_value:
+                continue
+            try:
+                params[key] = int(clean_value)
+                continue
+            except ValueError:
+                pass
+            try:
+                params[key] = float(clean_value)
+                continue
+            except ValueError:
+                pass
+            if clean_value.lower() in {'true', 'false'}:
+                params[key] = clean_value.lower() == 'true'
+            else:
+                params[key] = clean_value
+        return params
+
+    def _collect_matrix_parameters(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        """Return all Active Inference matrices/vectors without collapsing factors."""
+        matrices: Dict[str, Any] = {}
+        for key, value in params.items():
+            if key in {'A', 'B', 'C', 'D', 'E'} or any(
+                key.startswith(f'{prefix}_') for prefix in ('A', 'B', 'C', 'D', 'E')
+            ):
+                matrices[key] = value
+        return matrices
+
+    def _build_matrix_provenance(self, matrices: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+        """Describe where each extracted matrix came from and what shape it has."""
+        return {
+            key: {
+                'source': 'InitialParameterization',
+                'shape': self._nested_shape(value),
+                'derived': False,
+            }
+            for key, value in matrices.items()
+        }
+
+    def _nested_shape(self, value: Any) -> List[int]:
+        """Return a best-effort shape for nested Python matrix data."""
+        shape = []
+        current = value
+        while isinstance(current, (list, tuple)):
+            shape.append(len(current))
+            if not current:
+                break
+            current = current[0]
+        return shape
+
+    def _describe_variables(
+        self,
+        variables: Optional[List[Dict[str, Any]]],
+        fallback_prefix: str,
+    ) -> List[Dict[str, Any]]:
+        """Create factor/modality/control descriptors from parsed variables."""
+        descriptors = []
+        for index, variable in enumerate(variables or []):
+            name = variable.get('name') or f'{fallback_prefix}_{index}'
+            name_lower = str(name).lower()
+            if fallback_prefix == 'state_factor' and not name_lower.startswith('s'):
+                continue
+            if fallback_prefix == 'observation_modality' and not name_lower.startswith('o'):
+                continue
+            if fallback_prefix == 'control_factor' and name_lower not in {'u', 'π', 'pi'} and not name_lower.startswith('pi'):
+                continue
+            dimensions = variable.get('dimensions') or []
+            size = next((dim for dim in dimensions if isinstance(dim, int)), None)
+            descriptors.append({
+                'name': name,
+                'size': size,
+                'dimensions': dimensions,
+                'type': variable.get('type'),
+                'comment': variable.get('comment'),
+                'index': index,
+            })
+        return descriptors
+
+    def _is_passive_model(
+        self,
+        *,
+        model_parameters: Dict[str, Any],
+        initial_params: Dict[str, Any],
+        num_actions: int,
+        connections: List[Tuple[str, str, str]],
+    ) -> bool:
+        """Detect passive HMM/Markov models that have no control-dependent choices."""
+        model_type = str(model_parameters.get('model_type', '')).lower()
+        if any(term in model_type for term in ('hmm', 'markov', 'passive')):
+            return True
+        if int(num_actions) == 1:
+            return True
+        b_matrix = initial_params.get('B')
+        if b_matrix is not None and len(self._nested_shape(b_matrix)) == 2:
+            return True
+        return False
 
     def _parse_initial_parameterization(self, content: str) -> Dict[str, Any]:
         """Parse InitialParameterization section."""

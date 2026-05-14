@@ -90,7 +90,7 @@
 - `verbose` (bool): Enable verbose logging (default: False)
 - `frameworks` (Optional[List[str] | str]): Restrict rendering to a subset of frameworks. Accepts `None`/`"all"` for all configured frameworks, `"lite"` for `pymdp`, `jax`, `discopy`, and `bnlearn`, or a comma-separated string such as `"pymdp,jax"`.
 - `strict_validation` (bool): Passed to POMDP extraction (`True` by default)
-- `strict_framework_success` (bool): When `True`, every requested framework render must succeed for every input file. When `False`, normal pipeline behavior permits partial framework success.
+- `strict_framework_success` (bool): When `True`, every requested framework render must succeed for every input file. Explicit framework requests such as `"pymdp"` or `"pymdp,jax"` are strict even when this flag is omitted; `"all"` and `"lite"` keep aggregate pipeline policy unless the flag is set.
 - `**kwargs`: Additional options forwarded to framework renderers (e.g. `timesteps`, `simulation_params`)
 
 **Returns**: `Union[bool, int]` - `True` when the render policy succeeds, `False` when it fails, or `2` when no input files are found.
@@ -249,7 +249,7 @@ uv run python src/11_render.py \
     --strict-framework-success
 ```
 
-`--strict-framework-success` is useful for focused studies because it turns any requested framework render failure into a failed Step 11 result. Normal pipeline runs can omit the flag to preserve partial-success behavior.
+Explicit `--frameworks` selections are strict by default. `--strict-framework-success` applies the same all-requested-frameworks policy to broader `"all"` or `"lite"` runs.
 
 ---
 
@@ -349,7 +349,7 @@ Performance is tracked by the pipeline execution summaries and render summary JS
 
 ### Recovery Strategies
 - **Framework Scope**: Use `--frameworks <name>` to isolate a backend while debugging.
-- **Strict Policy**: Use `--strict-framework-success` when partial framework success should fail the step.
+- **Strict Policy**: Use explicit `--frameworks` selections for focused strict runs; add `--strict-framework-success` when `"all"` or `"lite"` should also fail on any framework render failure.
 - **Partial Generation**: Omit strict framework success when exploratory runs should keep usable artifacts.
 - **Error Documentation**: Review `render_processing_summary.json`, including `failed_framework_renderings`.
 
@@ -379,9 +379,9 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 ## Testing
 
 ### Test Files
-- `src/tests/test_render_integration.py` - Integration tests
-- `src/tests/test_render_overall.py` - Overall functionality tests
-- `src/tests/test_render_performance.py` - Performance tests
+- `src/tests/render/test_render_integration.py` - Integration tests
+- `src/tests/render/test_render_overall.py` - Overall functionality tests
+- `src/tests/render/test_render_performance.py` - Performance tests
 
 ### Test Coverage
 Measure on demand:

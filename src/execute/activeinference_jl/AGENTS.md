@@ -425,7 +425,7 @@ ActiveInference.jl Code Generation → Julia Environment Setup → Model Compila
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
+- `src/tests/execute/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
 Measure on demand:

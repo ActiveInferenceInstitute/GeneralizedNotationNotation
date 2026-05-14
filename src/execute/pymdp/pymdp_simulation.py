@@ -42,7 +42,7 @@ from .pymdp_utils import (
     safe_json_dump,
     safe_pickle_dump,
 )
-from .simple_simulation import (
+from .simulation import (
     _build_pymdp_agent,
     _canonicalise_A,
     _canonicalise_B,
@@ -68,6 +68,7 @@ class PyMDPSimulation:
         self,
         gnn_config: Optional[Dict[str, Any]] = None,
         output_dir: Optional[Union[str, Path]] = None,
+        allow_demo_spec: bool = False,
     ) -> None:
         """
         Parameters
@@ -81,15 +82,18 @@ class PyMDPSimulation:
             * ``parameters`` — ``num_timesteps``, ``learning_rate``,
               ``gamma``, ``alpha``, ``policy_len``, ``preferences``,
               ``prior_beliefs``, ``transition_structure``, ``random_seed``
-            * ``initialparameterization`` — optional GNN-style A/B/C/D/E
-              matrices; used verbatim when present
-            * ``initial_matrices`` — alias accepted by ``configure_from_gnn``
+            * ``initialparameterization`` — required GNN-style A/B/C/D/E
+              matrices
 
         output_dir
             Directory for any future ``_save_results`` call.
+        allow_demo_spec
+            Enables the named demo constructor path. Public pipeline execution
+            should pass explicit matrices instead.
         """
         self.gnn_config = gnn_config or {}
         self.output_dir = Path(output_dir) if output_dir is not None else None
+        self.allow_demo_spec = allow_demo_spec
         self.logger = logging.getLogger(__name__)
 
         # Validate pymdp 1.0.0 up-front (fails fast with a clear message).
@@ -112,15 +116,18 @@ class PyMDPSimulation:
         self.simulation_trace: List[Dict[str, Any]] = []
         self.results: Dict[str, Any] = {}
 
-        # Prefer GNN-provided matrices when present; otherwise synthesise
-        # sensible defaults (gridworld-like) from the named states/actions.
         init_params = self.gnn_config.get("initialparameterization") or self.gnn_config.get(
             "initial_parameterization"
         )
         if init_params:
             self._build_model_from_initial_parameterization(init_params)
+        elif self.allow_demo_spec:
+            self._build_model_from_demo_spec()
         else:
-            self._build_model_from_defaults()
+            raise ValueError(
+                "PyMDPSimulation requires explicit initialparameterization matrices; "
+                "use create_demo_pymdp_simulation() for the demo model."
+            )
 
     # ------------------------------------------------------------------
     # Parameter extraction
@@ -145,7 +152,7 @@ class PyMDPSimulation:
             self.states = [f"location_{i}" for i in range(4)]
             self.actions = ["move_up", "move_down", "move_left", "move_right", "stay"]
             self.observations = [f"obs_location_{i}" for i in range(4)]
-            self.model_name = "Default_Gridworld"
+            self.model_name = "Demo_Gridworld"
 
         params = cfg.get("parameters", {}) or {}
         self.num_timesteps = int(params.get("num_timesteps", 20))
@@ -175,7 +182,7 @@ class PyMDPSimulation:
     # ------------------------------------------------------------------
     # Matrix construction
     # ------------------------------------------------------------------
-    def _default_observation_model(self) -> np.ndarray:
+    def _demo_observation_model(self) -> np.ndarray:
         """Noisy identity likelihood, column-normalised."""
         No = self.num_observations
         Ns = self.num_states
@@ -188,7 +195,7 @@ class PyMDPSimulation:
                         base[i, j] = noise
         return _canonicalise_A(base, (No, Ns))
 
-    def _default_transition_model(self) -> np.ndarray:
+    def _demo_transition_model(self) -> np.ndarray:
         """Gridworld or GNN-described transitions in (next, prev, action) shape."""
         Ns = self.num_states
         Na = max(self.num_actions, 1)
@@ -230,7 +237,7 @@ class PyMDPSimulation:
 
         return _canonicalise_B(B, Ns, Na)
 
-    def _default_preference_model(self) -> np.ndarray:
+    def _demo_preference_model(self) -> np.ndarray:
         params = self.gnn_config.get("parameters", {}) or {}
         prefs = params.get("preferences")
         if isinstance(prefs, (list, tuple, np.ndarray)):
@@ -244,7 +251,7 @@ class PyMDPSimulation:
                 C[-1] = 2.0
         return C
 
-    def _default_prior_beliefs(self) -> np.ndarray:
+    def _demo_prior_beliefs(self) -> np.ndarray:
         params = self.gnn_config.get("parameters", {}) or {}
         prior = params.get("prior_beliefs")
         if isinstance(prior, (list, tuple, np.ndarray)):
@@ -256,11 +263,11 @@ class PyMDPSimulation:
             D = _normalise_prob_vector(D)
         return D
 
-    def _build_model_from_defaults(self) -> None:
-        A_np = self._default_observation_model()
-        B_np = self._default_transition_model()
-        C_np = self._default_preference_model()
-        D_np = self._default_prior_beliefs()
+    def _build_model_from_demo_spec(self) -> None:
+        A_np = self._demo_observation_model()
+        B_np = self._demo_transition_model()
+        C_np = self._demo_preference_model()
+        D_np = self._demo_prior_beliefs()
         E_np = None  # habit vector optional; learned later if requested
 
         self._install_matrices(A_np, B_np, C_np, D_np, E_np)
@@ -342,8 +349,13 @@ class PyMDPSimulation:
     # Model construction entry points
     # ------------------------------------------------------------------
     def create_pymdp_model(self) -> Tuple[Any, Dict[str, np.ndarray]]:
-        """Re-build the default model and return ``(agent, matrices)``."""
-        self._build_model_from_defaults()
+        """Re-build the model from explicit GNN matrices and return ``(agent, matrices)``."""
+        init_params = self.gnn_config.get("initialparameterization") or self.gnn_config.get(
+            "initial_parameterization"
+        )
+        if not init_params:
+            raise ValueError("create_pymdp_model requires initialparameterization matrices")
+        self._build_model_from_initial_parameterization(init_params)
         return self.agent, self.model_matrices
 
     def create_pymdp_model_from_gnn(self) -> Tuple[Any, Dict[str, np.ndarray]]:
@@ -354,21 +366,22 @@ class PyMDPSimulation:
         if init_params:
             self._build_model_from_initial_parameterization(init_params)
         else:
-            self._build_model_from_defaults()
+            raise ValueError("create_pymdp_model_from_gnn requires initialparameterization matrices")
         return self.agent, self.model_matrices
 
     def configure_from_gnn(self, gnn_spec: Dict[str, Any]) -> None:
         """
-        Accept an upstream ``gnn_spec`` with ``initial_matrices`` or
-        ``initialparameterization`` keys and rebuild the agent.
+        Accept an upstream ``gnn_spec`` with ``initialparameterization`` keys
+        and rebuild the agent.
         """
         init = (
-            gnn_spec.get("initial_matrices")
-            or gnn_spec.get("initialparameterization")
+            gnn_spec.get("initialparameterization")
             or gnn_spec.get("initial_parameterization")
         )
         if init:
             self._build_model_from_initial_parameterization(init)
+        else:
+            raise ValueError("configure_from_gnn requires initialparameterization matrices")
 
     # ------------------------------------------------------------------
     # Rollout
@@ -478,12 +491,72 @@ class PyMDPSimulation:
 
         observations = [int(step["observation"]) for step in self.simulation_trace]
         actions = [int(step["action"]) for step in self.simulation_trace]
-        beliefs = [step["beliefs"] for step in self.simulation_trace]
+        beliefs = [
+            np.asarray(step["beliefs"], dtype=np.float64).flatten().tolist()
+            for step in self.simulation_trace
+        ]
+        true_states = (
+            [int(self.simulation_trace[0]["current_state"])]
+            + [int(step["next_state"]) for step in self.simulation_trace]
+            if self.simulation_trace
+            else []
+        )
+        efe_history = [
+            np.asarray(step["expected_free_energy"], dtype=np.float64).flatten().tolist()
+            for step in self.simulation_trace
+        ]
+        vfe_history = [
+            float(step["variational_free_energy"]) for step in self.simulation_trace
+        ]
+        policy_posterior = [
+            np.asarray(step["policy_probs"], dtype=np.float64).flatten().tolist()
+            for step in self.simulation_trace
+        ]
 
         results_out: Dict[str, Any] = {
+            "schema_version": "pymdp_simulation_v1",
+            "framework": "PyMDP",
+            "model_name": self.model_name,
             "observations": observations,
             "actions": actions,
             "beliefs": beliefs,
+            "true_states": true_states,
+            "observations_by_modality": {"joint_observation": observations},
+            "actions_by_control_factor": {"joint_action": actions},
+            "beliefs_by_factor": {"joint_state": beliefs},
+            "hidden_states_by_factor": {"joint_state": true_states},
+            "expected_free_energy": efe_history,
+            "variational_free_energy": vfe_history,
+            "policy_posterior": policy_posterior,
+            "simulation_trace": {
+                "observations": observations,
+                "actions": actions,
+                "beliefs": beliefs,
+                "true_states": true_states,
+                "efe_history": efe_history,
+                "vfe_history": vfe_history,
+                "policy_posterior": policy_posterior,
+                "belief_confidence": [float(max(b)) if b else 0.0 for b in beliefs],
+            },
+            "model_parameters": {
+                "A_shape": list(self.A_np.shape),
+                "B_shape": list(self.B_np.shape),
+                "C_shape": list(self.C_np.shape),
+                "D_shape": list(self.D_np.shape),
+                "num_states": int(self.num_states),
+                "num_observations": int(self.num_observations),
+                "num_actions": int(self.num_actions),
+                "policy_len": int(self.policy_len),
+                "gamma": float(self.gamma),
+                "alpha": float(self.alpha),
+            },
+            "metrics": {
+                "expected_free_energy": efe_history,
+                "variational_free_energy": vfe_history,
+                "policy_posterior": policy_posterior,
+                "belief_confidence": [float(max(b)) if b else 0.0 for b in beliefs],
+                "cumulative_preference": [float(self.C_np[obs]) for obs in observations],
+            },
             "performance": performance,
             "trace": self.simulation_trace,
             "success": True,
@@ -573,6 +646,13 @@ class PyMDPSimulation:
 def create_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any]) -> PyMDPSimulation:
     """Create a PyMDP simulation from parsed GNN configuration."""
     return PyMDPSimulation(gnn_config=gnn_config)
+
+
+def create_demo_pymdp_simulation(
+    output_dir: Optional[Union[str, Path]] = None,
+) -> PyMDPSimulation:
+    """Create the named demo PyMDP simulation used by examples and tests."""
+    return PyMDPSimulation(gnn_config={}, output_dir=output_dir, allow_demo_spec=True)
 
 
 def run_pymdp_simulation_from_gnn(

@@ -83,16 +83,19 @@ def determine_script_framework(script_path: Path, render_output_dir: Path, frame
         # Get relative path from render output directory
         relative_path = script_path.relative_to(render_output_dir)
 
-        # Check each part of the path for framework indicators
-        for part in relative_path.parts:
-            # Check if this part matches a known framework directory
+        # Render outputs use model/framework/script.ext. Match framework
+        # directories exactly so model names like "bnlearn_causal_model" do
+        # not override the actual framework directory.
+        for part in relative_path.parts[:-1]:
             if part.lower() in framework_dirs:
                 return framework_dirs[part.lower()]
 
-            # Check for framework names in the directory name
-            for framework_name in framework_dirs.values():
-                if framework_name.lower() in part.lower():
-                    return framework_name
+        script_name = relative_path.name.lower()
+        for framework_name in framework_dirs.values():
+            if script_name.endswith(f"_{framework_name}.py") or script_name.endswith(
+                f"_{framework_name}.jl"
+            ):
+                return framework_name
 
         # Default recovery
         return "unknown"
@@ -301,6 +304,55 @@ def _resolve_render_output_dir(
     return None
 
 
+def _load_render_summary_contract(
+    render_output_dir: Path,
+    requested_frameworks: List[str],
+    logger: logging.Logger,
+) -> Tuple[Optional[set[Path]], List[Dict[str, str]]]:
+    """Load the latest Step 11 render contract for script filtering and failures."""
+    summary_file = render_output_dir / "render_processing_summary.json"
+    if not summary_file.exists():
+        return None, []
+
+    try:
+        summary = json.loads(summary_file.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning("Could not read render summary %s: %s", summary_file, exc)
+        return None, []
+
+    requested = set(requested_frameworks)
+    allowed_scripts: set[Path] = set()
+    render_failures: List[Dict[str, str]] = []
+    file_results = summary.get("file_results")
+    if not isinstance(file_results, dict):
+        return None, []
+
+    for source_file, file_result in file_results.items():
+        framework_results = (
+            file_result.get("framework_results", {})
+            if isinstance(file_result, dict)
+            else {}
+        )
+        if not isinstance(framework_results, dict):
+            continue
+        for framework, framework_result in framework_results.items():
+            if framework not in requested or not isinstance(framework_result, dict):
+                continue
+            if framework_result.get("success"):
+                for output_file in framework_result.get("output_files") or []:
+                    allowed_scripts.add(Path(output_file).resolve())
+            else:
+                render_failures.append(
+                    {
+                        "file": Path(str(source_file)).name,
+                        "framework": str(framework),
+                        "message": str(framework_result.get("message", "")),
+                    }
+                )
+
+    return allowed_scripts, render_failures
+
+
 def _summarize_collected_outputs(coll: Any) -> Any:
     """Replace bulky collected_outputs with counts safe for aggregate JSON."""
     if coll is None:
@@ -394,6 +446,7 @@ def process_execute(
 
         # Parse frameworks parameter
         requested_frameworks = parse_frameworks_parameter(frameworks, logger)
+        strict_requested_frameworks = str(frameworks).lower() not in {"all", "lite"}
         logger.info(f"Requested frameworks: {requested_frameworks}")
 
         results_dir = output_dir
@@ -437,8 +490,40 @@ def process_execute(
             execution_results["skipped_reason"] = "no_render_output"
             execution_results["message"] = "No rendered implementations found"
         else:
+            allowed_render_scripts, render_failures = _load_render_summary_contract(
+                render_output_dir,
+                requested_frameworks,
+                logger,
+            )
+            execution_results["render_failures"] = render_failures
+
             # Find executable scripts, filtered by requested frameworks
             executable_scripts = find_executable_scripts(render_output_dir, verbose, logger, requested_frameworks)
+            if allowed_render_scripts is not None:
+                before_filter = len(executable_scripts)
+                executable_scripts = [
+                    script
+                    for script in executable_scripts
+                    if script["path"].resolve() in allowed_render_scripts
+                ]
+                found_allowed_scripts = {
+                    script["path"].resolve() for script in executable_scripts
+                }
+                missing_render_scripts = sorted(
+                    str(path) for path in allowed_render_scripts - found_allowed_scripts
+                )
+                execution_results["missing_render_scripts"] = missing_render_scripts
+                if missing_render_scripts:
+                    logger.error(
+                        "Latest render summary references %d requested scripts not discoverable for execution",
+                        len(missing_render_scripts),
+                    )
+                filtered_count = before_filter - len(executable_scripts)
+                if filtered_count:
+                    logger.warning(
+                        "Ignoring %d rendered scripts not present in the latest render summary",
+                        filtered_count,
+                    )
             execution_results["total_scripts_found"] = len(executable_scripts)
             execution_results["requested_frameworks"] = requested_frameworks
 
@@ -567,12 +652,38 @@ def process_execute(
         failed_scripts = execution_results["failed_executions"]
         skipped_scripts = execution_results.get("skipped_executions", 0)
         attempted_scripts = total_scripts - skipped_scripts
+        render_failures = execution_results.get("render_failures", [])
+        missing_render_scripts = execution_results.get("missing_render_scripts", [])
 
+        if strict_requested_frameworks and render_failures:
+            failure_preview = "; ".join(
+                f"{item['file']}:{item['framework']}" for item in render_failures[:5]
+            )
+            log_step_error(
+                logger,
+                f"Execute blocked by requested-framework render failures: {failure_preview}",
+            )
+            return False
+        if strict_requested_frameworks and missing_render_scripts:
+            log_step_error(
+                logger,
+                "Execute blocked because requested rendered scripts were not discoverable",
+            )
+            return False
         if total_scripts == 0:
             log_step_warning(logger, "No executable scripts found to run")
+            if strict_requested_frameworks:
+                return False
             # Exit-code 2: step completed without doing work. Distinguishes
             # "nothing to do" from "did work successfully".
             return 2
+        elif strict_requested_frameworks and (failed_scripts > 0 or skipped_scripts > 0):
+            log_step_error(
+                logger,
+                f"Execute failed for requested frameworks: {successful} succeeded, "
+                f"{failed_scripts} failed, {skipped_scripts} skipped",
+            )
+            return False
         elif failed_scripts == 0:
             if skipped_scripts:
                 log_step_success(logger, f"Execute completed: {execution_results['successful_executions']} succeeded, {skipped_scripts} skipped (dependency not installed)")
@@ -582,10 +693,9 @@ def process_execute(
             log_step_warning(logger, f"Execute completed with {failed_scripts}/{attempted_scripts} failures (partial success)" + (f", {skipped_scripts} skipped" if skipped_scripts else ""))
         elif attempted_scripts > 0:
             log_step_error(logger, f"Execute completed with {failed_scripts}/{attempted_scripts} failures (critical)" + (f", {skipped_scripts} skipped" if skipped_scripts else ""))
+            return False
 
-        # Return True if we found and attempted to run scripts (even if some failed)
-        # Return False only if there was a critical error preventing execution
-        return True
+        return failed_scripts == 0
 
     except Exception as e:
         log_step_error(logger, f"Execute processing failed: {e}")

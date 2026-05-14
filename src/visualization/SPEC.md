@@ -10,7 +10,7 @@ Step-8 visualization: graphs, matrices, combined analysis. Prefers step-3 `{mode
 |----------------|----------------|
 | `core/process.py` | Orchestration, per-file pipeline, sampling |
 | `core/parsed_model.py` | `load_visualization_model`, step-3 path resolution |
-| `parse/markdown.py` | `parse_gnn_content` fallback |
+| `parse/markdown.py` | `parse_gnn_content` explicit raw-Markdown parser |
 | `parse/gnn_file_parser.py` | `GNNParser` (file / CSV-oriented API) |
 | `plotting/utils.py` | Matplotlib Agg, save/tight_layout helpers |
 | `graph/network_visualizations.py` | Directed vs undirected edges, ontology labels |

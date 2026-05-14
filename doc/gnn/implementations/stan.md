@@ -170,7 +170,7 @@ toolchain. Integrate into your own CI when needed.
 ## Implementation Notes
 
 - Tests: `src/tests/test_render_stan_*.py` (unit) +
-  `src/tests/test_render_cli_targets.py::test_every_cli_target_dispatches[stan]`
+  `src/tests/render/test_render_cli_targets.py::test_every_cli_target_dispatches[stan]`
   (integration).
 - Backend status: **Active but structural-only**. Maintained as a bridge to
   Stan ecosystem tools; not a primary Active Inference target.

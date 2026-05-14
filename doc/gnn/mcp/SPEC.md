@@ -9,7 +9,7 @@ the executable server implementation.
 | File | Purpose |
 |------|---------|
 | `README.md` | MCP server overview + quick start |
-| `tool_reference.md` | Canonical registry of all 131 real tools |
+| `tool_reference.md` | Current measured registry and audit signpost |
 | `tool_development_guide.md` | How to add a new @mcp_tool |
 
 ## Tool Contract

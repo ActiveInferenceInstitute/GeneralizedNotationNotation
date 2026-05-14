@@ -89,7 +89,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 
 - Contains all domain logic
 - Provides public API for orchestrators
-- Implements error handling and fallbacks
+- Implements explicit error handling, skip statuses, and dependency diagnostics
 - Exports functions via `__init__.py`
 
 ### Example Structure
@@ -189,9 +189,9 @@ graph TD
   --tb=no --ignore=src/tests/llm/test_llm_ollama.py
   --ignore=src/tests/llm/test_llm_ollama_integration.py`. Re-include the two Ollama files
   when `ollama` is installed and reachable.
-- **Current test inventory (2026-05-13)**: 166 `test_*.py` files under `src/tests/`;
-  the command-of-record collect pass with Ollama integration tests ignored collected 2,245 tests.
-  Latest measured full-suite output: 2,176 passed, 68 skipped, 1 xpassed in 694.24s.
+- **Current test inventory (2026-05-14)**: 166 `test_*.py` files under `src/tests/`;
+  the command-of-record collect pass with Ollama integration tests ignored collected 2,256 tests.
+  Run the full suite locally for current pass, skip, fail, and duration counts.
 - All 25 orchestrator scripts comply with the <150 line thin orchestrator pattern.
 - Maintained source/test documentation coverage is enforced by `doc/development/docs_audit.py --strict`.
 
@@ -307,7 +307,7 @@ python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
 - Use type hints for all public functions
 - Document all classes and methods
 - Maintain >80% test coverage
-- Include error handling and fallbacks
+- Include explicit error handling, status reporting, and dependency diagnostics
 
 ---
 

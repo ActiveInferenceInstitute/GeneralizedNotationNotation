@@ -500,17 +500,17 @@ input/gnn_files/ (mixed extensions per multi_format_processor) → GNNParsingSys
 
 ### Test Files
 
-- `src/tests/test_gnn_overall.py` - Module-level coverage and smoke tests
-- `src/tests/test_gnn_parsing.py` - Parsing-focused tests
-- `src/tests/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
-- `src/tests/test_gnn_processing.py` - Directory processing tests
-- `src/tests/test_gnn_parsers_common.py` - Parser utilities tests
-- `src/tests/test_gnn_parsers_json.py` - JSON parser tests
-- `src/tests/test_gnn_parsers_base_serializer.py` - Serializer base tests
-- `src/tests/test_gnn_xml_parser.py` - XML parser tests
-- `src/tests/test_gnn_schema.py` - Schema validator tests
-- `src/tests/test_gnn_cross_format_validator.py` - Cross-format validation tests
-- `src/tests/test_gnn_validation.py` - Validation tests
+- `src/tests/gnn/test_gnn_overall.py` - Module-level coverage and smoke tests
+- `src/tests/gnn/test_gnn_parsing.py` - Parsing-focused tests
+- `src/tests/gnn/test_gnn_parsing_system.py` - `GNNParsingSystem` / registry tests
+- `src/tests/gnn/test_gnn_processing.py` - Directory processing tests
+- `src/tests/gnn/test_gnn_parsers_common.py` - Parser utilities tests
+- `src/tests/gnn/test_gnn_parsers_json.py` - JSON parser tests
+- `src/tests/gnn/test_gnn_parsers_base_serializer.py` - Serializer base tests
+- `src/tests/gnn/test_gnn_xml_parser.py` - XML parser tests
+- `src/tests/gnn/test_gnn_schema.py` - Schema validator tests
+- `src/tests/gnn/test_gnn_cross_format_validator.py` - Cross-format validation tests
+- `src/tests/gnn/test_gnn_validation.py` - Validation tests
 
 ### Test Coverage
 
@@ -534,7 +534,7 @@ pytest src/tests/test_gnn*.py -v
 pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing
 
 # Run only parser tests
-pytest src/tests/test_gnn_parsing.py -v
+pytest src/tests/gnn/test_gnn_parsing.py -v
 ```
 
 ---

@@ -78,7 +78,7 @@ python src/2_tests.py --comprehensive --verbose
 
 **Behavior**:
 - If `comprehensive=True`: Runs all tests via `run_comprehensive_tests()`
-- If `fast_only=True` and `comprehensive=False`: Runs fast tests via `run_fast_pipeline_tests()`. If that fails and `auto_fallback=True` and the execution report shows **zero tests collected**, falls back to `run_comprehensive_tests()`
+- If `fast_only=True` and `comprehensive=False`: Runs fast tests via `run_fast_pipeline_tests()`. If that fails and `auto_fallback=True` and the execution report shows **zero tests collected**, retries with `run_comprehensive_tests()`
 - Otherwise: Runs reliable fast tests via `run_fast_reliable_tests()`
 
 **Strict markers**: `pyproject.toml` enables `--strict-markers`. Unregistered markers (for example `anyio` without `pytest-anyio`) break collection. Prefer sync tests that call `asyncio.run()` for short async checks when the environment may omit dev extras; with `uv sync --extra dev`, `pytest-asyncio` and `@pytest.mark.asyncio` are available.
@@ -471,7 +471,7 @@ Follow the naming convention:
 
 Example:
 ```python
-# src/tests/test_template_overall.py
+# src/tests/template/test_template_overall.py
 import pytest
 from pathlib import Path
 
@@ -494,7 +494,7 @@ def test_new_module_complex():
 
 ### Test Files
 - **120+** `test_*.py` modules under `src/tests/` (exact count drifts; use `find src/tests -maxdepth 1 -name 'test_*.py' | wc -l`)
-- **~1,906** tests in a typical full run with standard Ollama ignores (see root `CLAUDE.md` / `README.md` for the exact `pytest` command)
+- **2,256** collected tests with standard Ollama integration ignores as measured by collect-only on 2026-05-14
 - **20+ test categories** for organized execution
 - **25+ test markers** for selective execution
 
@@ -509,7 +509,7 @@ def test_new_module_complex():
 ### Test Execution Modes
 1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation
 2. **Comprehensive Tests** (`--comprehensive`): 5-15 minutes, all tests including slow/performance
-3. **Reliable Tests** (recovery): Essential tests only, 90-second timeout
+3. **Reliable Tests**: Essential tests only, 90-second timeout
 
 ### Key Test Scenarios
 1. **Module Import Validation**: All modules can be imported and have expected structure

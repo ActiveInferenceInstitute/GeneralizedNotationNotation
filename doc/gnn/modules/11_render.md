@@ -384,9 +384,9 @@ GNN Parsing → Model Validation → Framework Selection → Code Generation →
 ## Testing
 
 ### Test Files
-- `src/tests/test_render_integration.py` - Integration tests
-- `src/tests/test_render_overall.py` - Overall functionality tests
-- `src/tests/test_render_performance.py` - Performance tests
+- `src/tests/render/test_render_integration.py` - Integration tests
+- `src/tests/render/test_render_overall.py` - Overall functionality tests
+- `src/tests/render/test_render_performance.py` - Performance tests
 
 ### Test Coverage
 - **Current**: 78%

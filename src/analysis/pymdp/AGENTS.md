@@ -1,65 +1,37 @@
-# PyMDP Analysis - Agent Scaffolding
+# PyMDP Analysis Agent Guide
 
-## Overview
+## Purpose
 
-Framework-specific analyzer for PyMDP simulation results. Part of the Analysis module (Step 16).
+Analyze PyMDP Step 12 results after execution has produced
+`pymdp_simulation_v1` JSON artifacts. This folder owns analysis and plotting
+only; it does not run PyMDP simulations.
 
-## Module Structure
+## Public Surface
 
-```
-analysis/pymdp/
-├── __init__.py      # Public API
-├── analyzer.py      # PyMDPAnalyzer class
-├── visualizer.py    # PyMDPVisualizer class
-├── README.md        # Human documentation
-└── AGENTS.md        # This file
-```
+Use `src/analysis/pymdp/__init__.py` as source of truth:
 
-## Key Classes
+- `generate_analysis_from_logs(execution_results_dir, output_dir, verbose=False)`
+- `PyMDPVisualizer`
+- `create_visualizer(...)`
+- `save_all_visualizations(...)`
 
-### PyMDPAnalyzer
+## Contract
 
-**Location:** `analyzer.py`
-
-**Purpose:** Parse and analyze PyMDP simulation traces
-
-**Key Methods:**
-- `generate_analysis_from_logs(execution_dir, output_dir, verbose)` - Main entry point
-- `_parse_trace_file(filepath)` - Load simulation trace
-- `_analyze_beliefs(trace)` - Extract belief dynamics
-- `_analyze_actions(trace)` - Action distribution analysis
-- `_calculate_metrics(trace)` - Compute statistical metrics
-
-### PyMDPVisualizer
-
-**Location:** `visualizer.py`
-
-**Purpose:** Generate plots from simulation data
-
-**Key Methods:**
-- `plot_beliefs(trace_data)` - Belief evolution plots
-- `plot_actions(trace_data)` - Action distribution plots
-- `plot_free_energy(trace_data)` - Free energy convergence
-- `save_all_visualizations(trace_data, output_dir)` - Batch save
-
-## Integration Points
-
-**Upstream:** Execute module (Step 12) produces simulation results
-**Downstream:** Report module (Step 23) consumes analysis outputs
-
-## Dependencies
-
-- numpy: Numerical operations
-- matplotlib: Visualization (optional)
-- pandas: Data manipulation (optional)
+- Input must be `simulation_results.json` with
+  `"schema_version": "pymdp_simulation_v1"`.
+- Analyzer discovery prefers Step 12 execution summaries and collected
+  `pymdp/simulation_data` outputs.
+- Unsupported PyMDP schemas are skipped with an error log.
+- Plots are written under `output/16_analysis_output/pymdp/<model_slug>/`.
 
 ## Testing
 
-- Pipeline handoff: `src/tests/test_pymdp_contracts.py`
-- Upstream `Agent` API used to produce `simulation_results.json`:
-  `src/tests/test_pymdp_1_0_0_upstream_api.py`
-
----
+- PyMDP analysis schema extraction:
+  `src/tests/analysis/test_analysis_post_simulation.py`
+- Pipeline analysis integration:
+  `src/tests/analysis/test_analysis_overall.py`
+- PyMDP execution contracts that produce the input schema:
+  `src/tests/execute/test_pymdp_contracts.py`
 
 **Version:** 1.6.0
-**Last Updated:** 2026-01-23
+**Last Updated:** 2026-05-14

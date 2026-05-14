@@ -9,15 +9,20 @@ against the **JAX-first pymdp 1.0.0** release
 - **Step 11 (render)** produces pymdp 1.0.0 runner scripts from parsed GNN
   model specs (`src/render/pymdp/pymdp_renderer.py`). Two templates ship:
     * **Pipeline runner** (default): a thin script that delegates to
-      `src.execute.pymdp.run_simple_pymdp_simulation`.
+      `src.execute.pymdp.run_pymdp_simulation`.
     * **Standalone runner** (`options={"mode": "standalone"}`): a fully
       self-contained pymdp 1.0.0 script — no GNN pipeline on PYTHONPATH.
 - **Step 12 (execute)** runs those scripts and stores JSON execution artifacts
   (`src/execute/pymdp/pymdp_runner.py`). The canonical rollout lives in
-  `src/execute/pymdp/simple_simulation.py`, which calls real pymdp 1.0.0.
+  `src/execute/pymdp/simulation.py`, which calls real pymdp 1.0.0.
 - **Step 16 (analysis)** reads execution artifacts from
   `output/12_execute_output/**/pymdp/simulation_data/simulation_results.json`
   and generates visualisations (`src/analysis/pymdp/`).
+- **POMDP extraction** preserves modalities, state factors, control factors,
+  matrix shapes, and `matrix_provenance`. Single-factor models expose
+  canonical `A`/`B`/`C`/`D`; factored models retain named source matrices such
+  as `A_loc`, `A_rew`, `B_loc`, `B_ctx`, and `D_ctx` before composing the PyMDP
+  execution contract.
 
 ## Core Mapping
 
@@ -46,14 +51,14 @@ default 1) and is a `jax.Array` inside a `list[...]`:
 | `E`    | `(1, num_policies)` (plain `Array`, not a list)  |
 
 GNN files typically emit **unbatched numpy** matrices. The pipeline converts
-them with `src/execute/pymdp/simple_simulation._to_jax_batched` — it just
+them with `src/execute/pymdp/simulation._to_jax_batched` — it just
 prepends a batch axis and casts to `jnp.float32`.
 
 ### GNN B layout conversion
 
-One older GNN convention stores `B` as `(action, prev_state, next_state)`.
-pymdp 1.0.0 uses `(next_state, prev_state, action)`. Canonicalisation happens
-inside `_canonicalise_B`:
+PyMDP 1.0.0 uses `(next_state, prev_state, action)` for 3-D `B`. A 2-D `B`
+matrix is passive/single-action dynamics, not a collection of actions.
+Canonicalisation happens inside `_canonicalise_B`:
 
 ```python
 if b_raw.shape[0] == num_actions and b_raw.shape[1] == b_raw.shape[2]:
@@ -124,9 +129,9 @@ Step 12 sets `GNN_PROJECT_ROOT` so the generated pipeline runner can
 
 ```bash
 uv run pytest \
-    src/tests/test_pymdp_1_0_0_upstream_api.py \
-    src/tests/test_pymdp_contracts.py \
-    src/tests/test_execute_pymdp_integration.py \
+    src/tests/execute/test_pymdp_1_0_0_upstream_api.py \
+    src/tests/execute/test_pymdp_contracts.py \
+    src/tests/execute/test_execute_pymdp_integration.py \
     -v
 ```
 
@@ -150,7 +155,7 @@ uv run pytest \
 
 ## Basic examples
 
-See [Minimal Local Example (JAX-first)](#minimal-local-example-jax-first) and pipeline tests under `src/tests/test_pymdp_*`.
+See [Minimal Local Example (JAX-first)](#minimal-local-example-jax-first) and pipeline tests under `src/tests/execute/test_pymdp_*`.
 
 ## POMDP examples
 

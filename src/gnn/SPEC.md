@@ -75,7 +75,7 @@ from gnn import (
 ## Testing
 
 ```bash
-uv run pytest src/tests/test_gnn_overall.py src/tests/test_gnn_validation.py src/tests/test_gnn_parsing.py src/tests/test_gnn_processing.py -v
+uv run pytest src/tests/gnn/test_gnn_overall.py src/tests/gnn/test_gnn_validation.py src/tests/gnn/test_gnn_parsing.py src/tests/gnn/test_gnn_processing.py -v
 ```
 
 

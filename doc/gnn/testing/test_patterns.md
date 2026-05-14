@@ -72,7 +72,7 @@ All shared fixtures live in `conftest.py` (601 lines). Standard fixtures:
 | `sample_gnn_file` | session | `input/gnn_files/actinf_pomdp_agent.md` |
 | `test_data_dir` | session | `src/tests/test_data/` |
 | `output_dir` | session | `output/2_tests_output/` |
-| `mcp_server_tools` | module | Live MCP server — all 131 tools registered |
+| `mcp_server_tools` | module | Live MCP server registered tool inventory from the current MCP audit |
 
 ## Resource Monitoring
 

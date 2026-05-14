@@ -300,7 +300,7 @@ output/21_mcp_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/test_mcp_overall.py` - MCP module tests
+- `src/tests/mcp/test_mcp_overall.py` - MCP module tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -313,10 +313,10 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 ## Testing
 
 ### Test Files
-- `src/tests/test_mcp_tools.py` - Tool registration tests
-- `src/tests/test_mcp_functional.py` - Functional tests
-- `src/tests/test_mcp_audit.py` - Audit tests
-- `src/tests/test_mcp_tools.py` - Tool registration tests
+- `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
+- `src/tests/mcp/test_mcp_functional.py` - Functional tests
+- `src/tests/mcp/test_mcp_audit.py` - Audit tests
+- `src/tests/mcp/test_mcp_tools.py` - Tool registration tests
 
 ### Test Coverage
 Measure on demand:

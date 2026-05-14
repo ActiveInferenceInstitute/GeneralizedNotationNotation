@@ -5,8 +5,8 @@
 ## Parsing Priority
 
 1. Step 3 JSON output (`*_parsed.json`) — preferred
-2. Raw GNN markdown format — fallback via `markdown.py`
-3. Raw GNN file — fallback via `gnn_file_parser.py`
+2. Raw GNN markdown format — explicit parser path via `markdown.py`
+3. Raw GNN file — explicit parser path via `gnn_file_parser.py`
 
 ## Extracted Fields
 

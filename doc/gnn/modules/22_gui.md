@@ -406,7 +406,7 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `src/tests/test_gui_overall.py` - GUI module tests
+- `src/tests/gui/test_gui_overall.py` - GUI module tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -419,8 +419,8 @@ GNN Files → GUI Construction → Visual Editing → Model Validation → GNN E
 ## Testing
 
 ### Test Files
-- `src/tests/test_gui_functionality.py` - GUI functionality tests
-- `src/tests/test_oxdraw_integration.py` - oxdraw integration tests
+- `src/tests/gui/test_gui_functionality.py` - GUI functionality tests
+- `src/tests/gui/test_oxdraw_integration.py` - oxdraw integration tests
 
 ### Test Coverage
 - **Current**: 68%

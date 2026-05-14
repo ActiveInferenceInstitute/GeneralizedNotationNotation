@@ -882,6 +882,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
     }
 
     for detail in details:
+        framework_key = framework.lower().replace(".", "_").replace(" ", "_")
         # Collect execution time from the detail record
         exec_time = detail.get("execution_time", 0)
         if exec_time:
@@ -895,52 +896,122 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                 logger.debug(f"  [{framework}] impl_dir not found: {impl_dir}")
                 continue
 
-        # Search for simulation data files: canonical simulation_data/*.json first,
-        # then execution_logs/*_results.json (often sparse summaries). Order matters for
-        # RxInfer/Julia backends that write full traces under simulation_data/.
+        # Search for simulation data files. PyMDP is schema-locked to
+        # pymdp_simulation_v1; other frameworks still have heterogeneous outputs.
         candidate_files: List[Path] = []
 
         def _add_unique(paths: List[Path], p: Path) -> None:
             if p not in paths:
                 paths.append(p)
 
-        for p in (
-            impl_dir / "simulation_data" / "simulation_results.json",
-            impl_dir / "simulation_results.json",
-            impl_dir / "results.json",
-            impl_dir / "output.json",
-            impl_dir / "traces.json",
-        ):
-            _add_unique(candidate_files, p)
+        if framework_key == "pymdp":
+            sr = detail.get("structured_result_file")
+            if sr:
+                sp = Path(sr)
+                if not sp.is_file():
+                    alt = execution_output_dir.parent.parent / sr
+                    if alt.is_file():
+                        sp = alt
+                if sp.is_file():
+                    try:
+                        with open(sp, "r", encoding="utf-8") as handle:
+                            structured = json.load(handle)
+                        for collected_path in (
+                            structured.get("collected_outputs", {})
+                            .get("simulation_data", [])
+                        ):
+                            cp = Path(collected_path)
+                            if not cp.is_file():
+                                alt = execution_output_dir.parent.parent / collected_path
+                                if alt.is_file():
+                                    cp = alt
+                            if cp.is_file():
+                                _add_unique(candidate_files, cp)
+                    except (json.JSONDecodeError, OSError) as exc:
+                        logger.debug("  [pymdp] Unable to inspect structured result %s: %s", sp, exc)
 
-        try:
-            for found_file in impl_dir.rglob("simulation_results.json"):
-                _add_unique(candidate_files, found_file)
-        except Exception as e:
-            logger.debug(f"Error during recursive search in {impl_dir}: {e}")
+            sim_dirs = [impl_dir / "simulation_data"]
+            if impl_dir.name == "simulation_data":
+                sim_dirs.append(impl_dir)
+            for sim_dir in sim_dirs:
+                if not sim_dir.exists():
+                    continue
+                for named_result in sorted(sim_dir.glob("*_simulation_results.json")):
+                    _add_unique(candidate_files, named_result)
+                bare_result = sim_dir / "simulation_results.json"
+                if bare_result.exists():
+                    _add_unique(candidate_files, bare_result)
+            direct_result = impl_dir / "simulation_results.json"
+            if direct_result.exists():
+                _add_unique(candidate_files, direct_result)
+        else:
+            for p in (
+                impl_dir / "simulation_data" / "simulation_results.json",
+                impl_dir / "simulation_results.json",
+                impl_dir / "results.json",
+                impl_dir / "output.json",
+                impl_dir / "traces.json",
+            ):
+                _add_unique(candidate_files, p)
 
-        sr = detail.get("structured_result_file")
-        if sr:
-            sp = Path(sr)
-            if not sp.is_file():
-                alt = execution_output_dir.parent.parent / sr
-                if alt.is_file():
-                    sp = alt
-            if sp.is_file():
-                _add_unique(candidate_files, sp)
-        exec_logs = impl_dir / "execution_logs"
-        if exec_logs.is_dir():
             try:
-                for rj in sorted(exec_logs.glob("*_results.json")):
-                    _add_unique(candidate_files, rj)
-            except OSError as e:
-                logger.debug(f"  [{framework}] execution_logs glob failed: {e}")
+                for found_file in impl_dir.rglob("simulation_results.json"):
+                    _add_unique(candidate_files, found_file)
+            except Exception as e:
+                logger.debug(f"Error during recursive search in {impl_dir}: {e}")
+
+            sr = detail.get("structured_result_file")
+            if sr:
+                sp = Path(sr)
+                if not sp.is_file():
+                    alt = execution_output_dir.parent.parent / sr
+                    if alt.is_file():
+                        sp = alt
+                if sp.is_file():
+                    _add_unique(candidate_files, sp)
+            exec_logs = impl_dir / "execution_logs"
+            if exec_logs.is_dir():
+                try:
+                    for rj in sorted(exec_logs.glob("*_results.json")):
+                        _add_unique(candidate_files, rj)
+                except OSError as e:
+                    logger.debug(f"  [{framework}] execution_logs glob failed: {e}")
 
         for output_file in candidate_files:
             if output_file.exists():
                 try:
                     with open(output_file, 'r') as f:
                         data = json.load(f)
+
+                    if framework_key == "pymdp":
+                        payload = data
+                        nested_payload = data.get("simulation_data")
+                        if payload.get("schema_version") != "pymdp_simulation_v1":
+                            payload = nested_payload if isinstance(nested_payload, dict) else {}
+                        if payload.get("schema_version") != "pymdp_simulation_v1":
+                            logger.debug("  [pymdp] Skipping non-v1 result: %s", output_file)
+                            continue
+
+                        metrics["data_source"] = str(output_file)
+                        logger.info(f"  [{framework}] Loaded pymdp_simulation_v1 data from: {output_file}")
+                        beliefs = (payload.get("beliefs_by_factor", {}) or {}).get("joint_state", [])
+                        actions = (payload.get("actions_by_control_factor", {}) or {}).get("joint_action", [])
+                        observations = (payload.get("observations_by_modality", {}) or {}).get("joint_observation", [])
+                        free_energy = payload.get("expected_free_energy", [])
+                        if not free_energy:
+                            free_energy = payload.get("variational_free_energy", [])
+
+                        metrics["beliefs"] = beliefs
+                        metrics["actions"] = actions
+                        metrics["observations"] = observations
+                        metrics["free_energy"] = free_energy
+                        metrics["num_timesteps"] = len(beliefs) if beliefs else None
+                        metrics["validation"] = payload.get("validation", {})
+                        metrics["model_parameters"] = payload.get("model_parameters", {})
+                        confidence = (payload.get("metrics", {}) or {}).get("belief_confidence", [])
+                        if confidence:
+                            metrics["belief_confidence"] = confidence
+                        break
 
                     metrics["data_source"] = str(output_file)
                     logger.info(f"  [{framework}] Loaded simulation data from: {output_file}")
@@ -1015,7 +1086,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     continue
 
         # Recovery: CSV simulation data (ActiveInference.jl outputs CSV, not JSON)
-        if not metrics["data_source"]:
+        if framework_key != "pymdp" and not metrics["data_source"]:
             csv_candidates = [
                 impl_dir / "simulation_data" / "simulation_results.csv",
             ]

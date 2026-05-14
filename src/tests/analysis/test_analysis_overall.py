@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import Any
 
 import pytest
@@ -231,6 +232,46 @@ class TestPyMDPAnalyzer:
         result = generate_analysis_from_logs(tmp_path, tmp_path / 'out')
         assert isinstance(result, list)
 
+    def test_generate_analysis_prefers_current_named_results(self, tmp_path, monkeypatch, caplog):
+        from analysis.pymdp import analyzer
+
+        exec_dir = tmp_path / 'execute'
+        sim_dir = exec_dir / 'model_a' / 'pymdp' / 'simulation_data'
+        sim_dir.mkdir(parents=True)
+        (sim_dir / 'simulation_results.json').write_text(
+            json.dumps({'framework': 'PyMDP', 'model_name': 'historical'}),
+            encoding='utf-8',
+        )
+        (sim_dir / 'Model A_simulation_results.json').write_text(
+            json.dumps(
+                {
+                    'schema_version': 'pymdp_simulation_v1',
+                    'framework': 'PyMDP',
+                    'model_name': 'Model A',
+                    'beliefs_by_factor': {'joint_state': [[0.7, 0.3], [0.2, 0.8]]},
+                    'hidden_states_by_factor': {'joint_state': [0, 1]},
+                    'observations_by_modality': {'joint_observation': [0, 1]},
+                    'actions_by_control_factor': {'joint_action': [0, 0]},
+                    'expected_free_energy': [0.1, 0.2],
+                    'variational_free_energy': [0.3, 0.4],
+                    'policy_posterior': [[1.0], [1.0]],
+                    'model_parameters': {'num_states': 2},
+                    'metrics': {'belief_confidence': [0.7, 0.8]},
+                }
+            ),
+            encoding='utf-8',
+        )
+
+        def _save_all_visualizations(**kwargs):
+            return {'beliefs': kwargs['output_dir'] / 'beliefs.png'}
+
+        monkeypatch.setattr(analyzer, 'save_all_visualizations', _save_all_visualizations)
+        with caplog.at_level(logging.ERROR, logger='analysis.pymdp'):
+            result = analyzer.generate_analysis_from_logs(exec_dir, tmp_path / 'out')
+
+        assert len(result) == 1
+        assert 'unsupported PyMDP schema' not in caplog.text
+
 class TestRxInferAnalyzer:
 
     def test_module_importable(self):
@@ -265,22 +306,44 @@ class TestAnalyzerSimulationMetrics:
         assert 'free_energy' in result
         assert 'execution_times' in result
 
-    def test_extract_simulation_metrics_reads_json(self, tmp_path):
-        """_extract_simulation_metrics loads simulation_results.json when present."""
+    def test_extract_simulation_metrics_reads_pymdp_v1_json(self, tmp_path):
+        """_extract_simulation_metrics loads current PyMDP schema when present."""
         import json
 
         from analysis.analyzer import _extract_simulation_metrics
         sim_dir = tmp_path / 'sim_data'
         sim_dir.mkdir()
-        sim_results = {'beliefs': [[0.9, 0.1], [0.8, 0.2]], 'actions': [0, 1], 'observations': [2, 3], 'free_energy': [-1.5, -1.3]}
+        sim_results = {
+            'schema_version': 'pymdp_simulation_v1',
+            'framework': 'PyMDP',
+            'beliefs_by_factor': {'joint_state': [[0.9, 0.1], [0.8, 0.2]]},
+            'actions_by_control_factor': {'joint_action': [0, 1]},
+            'observations_by_modality': {'joint_observation': [2, 3]},
+            'expected_free_energy': [-1.5, -1.3],
+        }
         (sim_dir / 'simulation_results.json').write_text(json.dumps(sim_results))
         detail = {'implementation_directory': str(sim_dir), 'execution_time': 0.5}
         logger = self._make_logger()
         result = _extract_simulation_metrics('pymdp', [detail], tmp_path, logger)
-        assert result['beliefs'] == sim_results['beliefs']
-        assert result['actions'] == sim_results['actions']
-        assert result['free_energy'] == sim_results['free_energy']
+        assert result['beliefs'] == sim_results['beliefs_by_factor']['joint_state']
+        assert result['actions'] == sim_results['actions_by_control_factor']['joint_action']
+        assert result['free_energy'] == sim_results['expected_free_energy']
         assert result['execution_times'] == [0.5]
+
+    def test_extract_simulation_metrics_rejects_non_v1_pymdp_json(self, tmp_path):
+        """PyMDP cross-framework metrics should not consume older JSON shapes."""
+        import json
+
+        from analysis.analyzer import _extract_simulation_metrics
+        sim_dir = tmp_path / 'sim_data'
+        sim_dir.mkdir()
+        (sim_dir / 'simulation_results.json').write_text(
+            json.dumps({'framework': 'PyMDP', 'beliefs': [[0.9, 0.1]]})
+        )
+        detail = {'implementation_directory': str(sim_dir), 'execution_time': 0.5}
+        result = _extract_simulation_metrics('pymdp', [detail], tmp_path, self._make_logger())
+        assert result['beliefs'] == []
+        assert result['data_source'] is None
 
     def test_extract_simulation_metrics_missing_dir(self, tmp_path):
         """_extract_simulation_metrics handles nonexistent impl_dir gracefully."""

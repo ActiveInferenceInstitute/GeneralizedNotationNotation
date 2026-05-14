@@ -27,6 +27,20 @@ MATPLOTLIB_AVAILABLE = True
 logger = logging.getLogger(__name__)
 
 
+def _pymdp_v1_visualization_data(data: Dict[str, Any]) -> Dict[str, Any]:
+    if data.get("schema_version") != "pymdp_simulation_v1":
+        return {}
+    return {
+        "beliefs": (data.get("beliefs_by_factor", {}) or {}).get("joint_state", []),
+        "actions": (data.get("actions_by_control_factor", {}) or {}).get("joint_action", []),
+        "observations": (data.get("observations_by_modality", {}) or {}).get("joint_observation", []),
+        "expected_free_energy": data.get("expected_free_energy", []),
+        "variational_free_energy": data.get("variational_free_energy", []),
+        "metrics": data.get("metrics", {}),
+        "model_parameters": data.get("model_parameters", {}),
+    }
+
+
 def plot_belief_evolution(
     beliefs: List[List[float]],
     output_path: Path,
@@ -161,6 +175,8 @@ def visualize_all_framework_outputs(
 
     # Search for execution result files
     for result_file in execution_dir.rglob("*_results.json"):
+        if "simulation_data" in result_file.parts:
+            continue
         try:
             with open(result_file, 'r') as f:
                 data = json.load(f)
@@ -168,6 +184,8 @@ def visualize_all_framework_outputs(
             # Normalize framework name to canonical form
             raw_framework = data.get("framework", "unknown")
             framework = _normalize_framework_name(raw_framework)
+            if framework == "pymdp" and data.get("schema_version") != "pymdp_simulation_v1":
+                continue
             model_name = data.get("model_name", result_file.parent.name)
 
             key = f"{framework}_{model_name}"
@@ -205,6 +223,8 @@ def visualize_all_framework_outputs(
 
             # Normalize framework name to canonical form
             framework = _normalize_framework_name(framework)
+            if framework == "pymdp" and data.get("schema_version") != "pymdp_simulation_v1":
+                continue
 
             # Derive model_name: walk up directory tree to find the first
             # ancestor that isn't a framework directory or a subdirectory like
@@ -251,7 +271,10 @@ def visualize_all_framework_outputs(
             if not sim_data and data.get("results"):
                 # Try to extract from first result
                 result = data["results"][0]
-                sim_data = result.get("simulation_data", {})
+                if framework == "pymdp":
+                    sim_data = _pymdp_v1_visualization_data(result)
+                else:
+                    sim_data = result.get("simulation_data", {})
 
                 # Also check implementation directory for files
                 impl_dir = result.get("implementation_directory")
@@ -264,9 +287,14 @@ def visualize_all_framework_outputs(
                                 with open(json_file, 'r') as f:
                                     file_data = json.load(f)
                                 if isinstance(file_data, dict):
-                                    sim_data.update(file_data)
+                                    if framework == "pymdp":
+                                        sim_data.update(_pymdp_v1_visualization_data(file_data))
+                                    else:
+                                        sim_data.update(file_data)
                             except (json.JSONDecodeError, OSError):
                                 pass  # nosec B110 -- intentional: skip malformed simulation data files
+            elif framework == "pymdp":
+                sim_data = _pymdp_v1_visualization_data(sim_data)
 
                 # For ActiveInference.jl: read CSV simulation data directly
                 if framework == "activeinference_jl" and not sim_data.get("beliefs"):

@@ -169,8 +169,14 @@ def analyze_execution_results(
                         else:
                             extracted = result.get("simulation_data", {}) or {}
 
-                        # Also try to read from collected files if extraction didn't find data
-                        if isinstance(extracted, dict) and not extracted.get("beliefs") and not extracted.get("observations"):
+                        # Non-PyMDP frameworks still have heterogeneous outputs.
+                        # PyMDP is strict and handled by extract_pymdp_data().
+                        if (
+                            framework != "pymdp"
+                            and isinstance(extracted, dict)
+                            and not extracted.get("beliefs")
+                            and not extracted.get("observations")
+                        ):
                             implementation_dir = result.get("implementation_directory")
                             if implementation_dir:
                                 try:
@@ -198,13 +204,7 @@ def analyze_execution_results(
                         model_name_for_analysis = result.get("model_name", "unknown")
 
                         if isinstance(extracted, dict):
-                            # Recovery: if extractors didn't find free_energy, try
-                            # pulling it directly from the loaded JSON result data.
-                            # The simulation_results.json files store EFE as:
-                            #   - efe_history (rxinfer, activeinference_jl)
-                            #   - metrics.expected_free_energy (pymdp, jax)
-                            #   - simulation_trace.efe_history (pymdp, jax)
-                            if not extracted.get("free_energy"):
+                            if framework != "pymdp" and not extracted.get("free_energy"):
                                 efe = None
                                 if result.get("efe_history"):
                                     efe = result["efe_history"]
@@ -216,18 +216,16 @@ def analyze_execution_results(
                                     extracted["free_energy"] = efe
                                     logger.debug(f"Recovery: extracted EFE for {framework} from result data ({len(efe)} entries)")
 
-                            # Also pull beliefs if missing
-                            if not extracted.get("beliefs"):
+                            if framework != "pymdp" and not extracted.get("beliefs"):
                                 beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
                                 if beliefs:
                                     extracted["beliefs"] = beliefs
 
-                            # Also pull actions/observations if missing
-                            if not extracted.get("actions"):
+                            if framework != "pymdp" and not extracted.get("actions"):
                                 actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
                                 if actions:
                                     extracted["actions"] = actions
-                            if not extracted.get("observations"):
+                            if framework != "pymdp" and not extracted.get("observations"):
                                 obs = result.get("observations") or result.get("simulation_trace", {}).get("observations")
                                 if obs:
                                     extracted["observations"] = obs

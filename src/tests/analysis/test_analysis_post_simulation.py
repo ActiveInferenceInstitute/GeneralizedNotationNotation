@@ -246,21 +246,23 @@ class TestExtractPymdpData:
 
     @pytest.mark.unit
     def test_with_simulation_data(self) -> None:
-        """Should extract simulation data when present."""
+        """Should extract current pymdp_simulation_v1 data when present."""
         result = {
             "simulation_data": {
-                "traces": [1, 2, 3],
-                "beliefs": [[0.5, 0.5], [0.6, 0.4]],
-                "actions": [0, 1],
-                "observations": [0, 1],
-                "free_energy": [1.2, 0.8],
+                "schema_version": "pymdp_simulation_v1",
+                "beliefs_by_factor": {"joint_state": [[0.5, 0.5], [0.6, 0.4]]},
+                "actions_by_control_factor": {"joint_action": [0, 1]},
+                "observations_by_modality": {"joint_observation": [0, 1]},
+                "hidden_states_by_factor": {"joint_state": [0, 1]},
+                "expected_free_energy": [1.2, 0.8],
+                "policy_posterior": [[0.5, 0.5], [0.2, 0.8]],
             }
         }
         data = extract_pymdp_data(result)
-        assert data["traces"] == [1, 2, 3]
         assert data["beliefs"] == [[0.5, 0.5], [0.6, 0.4]]
         assert data["actions"] == [0, 1]
         assert data["free_energy"] == [1.2, 0.8]
+        assert data["policy"] == [[0.5, 0.5], [0.2, 0.8]]
 
 
 class TestExtractRxinferData:

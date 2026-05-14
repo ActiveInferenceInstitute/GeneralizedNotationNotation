@@ -112,7 +112,7 @@ flowchart LR
 |--------|------|
 | `process_visualization` | Step-8 batch: all `*.md` / `*.gnn` in `target_dir` → per-model folder under `output_dir` |
 | `load_visualization_model` | [`core/parsed_model.py`](core/parsed_model.py): JSON-first from step 3, else markdown |
-| `parse_gnn_content` | [`parse/markdown.py`](parse/markdown.py): markdown fallback |
+| `parse_gnn_content` | [`parse/markdown.py`](parse/markdown.py): explicit raw-Markdown parser |
 | `GNNParser` | [`parse/gnn_file_parser.py`](parse/gnn_file_parser.py): file-oriented parse (e.g. multi-file combined chart) |
 | `MatrixVisualizer` | [`matrix/visualizer.py`](matrix/visualizer.py): heatmaps, 3D tensors, POMDP panels |
 | `generate_network_visualizations` | [`graph/network_visualizations.py`](graph/network_visualizations.py): graph PNG, stats JSON, optional Plotly HTML, ontology legend |

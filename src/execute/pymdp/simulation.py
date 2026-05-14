@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple PyMDP 1.0.0 simulation for GNN POMDP specifications.
+PyMDP 1.0.0 simulation for GNN POMDP specifications.
 
 pymdp 1.0.0 (https://github.com/infer-actively/pymdp) is a JAX-first rewrite.
 The Agent accepts batched ``list[jax.Array]`` models and the public loop is:
@@ -48,7 +48,7 @@ def _normalise_prob_vector(v: np.ndarray) -> np.ndarray:
 
 
 def _normalise_columns(mat: np.ndarray) -> np.ndarray:
-    """Normalise each column so it sums to 1 (fallback to uniform)."""
+    """Normalise each column so it sums to 1, repairing zero columns uniformly."""
     out = np.asarray(mat, dtype=np.float64).copy()
     if out.ndim != 2:
         raise ValueError(f"_normalise_columns expected 2D, got {out.ndim}D")
@@ -66,8 +66,7 @@ def _normalise_columns(mat: np.ndarray) -> np.ndarray:
 def _canonicalise_A(A_data: Any, fallback_shape: Tuple[int, int]) -> np.ndarray:
     """Return an A matrix of shape ``(num_obs, num_states)`` with columns summing to 1."""
     if A_data is None:
-        num_obs, num_states = fallback_shape
-        return _normalise_columns(np.eye(num_obs, num_states) * 0.9 + 0.1 / max(num_obs, 1))
+        raise ValueError("A matrix is required for PyMDP execution")
     mat = np.asarray(A_data, dtype=np.float64)
     if mat.ndim != 2:
         raise ValueError(f"A matrix must be 2D (num_obs, num_states); got shape {mat.shape}")
@@ -82,12 +81,10 @@ def _canonicalise_B(B_data: Any, num_states: int, num_actions: int) -> np.ndarra
       * 3-D ``(action, prev, next)`` — transposed to ``(next, prev, action)``
       * 3-D ``(next, prev, action)`` — kept as-is if shape matches
       * 2-D ``(next, prev)`` — promoted to single-action ``(next, prev, 1)``
-      * ``None`` — identity per action
     Each slice ``B[:, :, a]`` is column-normalised.
     """
     if B_data is None:
-        tensor = np.stack([np.eye(num_states) for _ in range(max(num_actions, 1))], axis=-1)
-        return tensor
+        raise ValueError("B matrix is required for PyMDP execution")
 
     raw = np.asarray(B_data, dtype=np.float64)
 
@@ -114,7 +111,7 @@ def _canonicalise_B(B_data: Any, num_states: int, num_actions: int) -> np.ndarra
 
 def _canonicalise_C(C_data: Any, num_obs: int) -> np.ndarray:
     if C_data is None:
-        return np.zeros(num_obs, dtype=np.float64)
+        raise ValueError("C vector is required for PyMDP execution")
     vec = np.asarray(C_data, dtype=np.float64).flatten()
     if vec.shape[0] != num_obs:
         padded = np.zeros(num_obs, dtype=np.float64)
@@ -126,7 +123,7 @@ def _canonicalise_C(C_data: Any, num_obs: int) -> np.ndarray:
 
 def _canonicalise_D(D_data: Any, num_states: int) -> np.ndarray:
     if D_data is None:
-        return np.ones(num_states, dtype=np.float64) / max(num_states, 1)
+        raise ValueError("D vector is required for PyMDP execution")
     return _normalise_probability_vector_safe(D_data, num_states)
 
 
@@ -255,7 +252,7 @@ def _build_pymdp_agent(
 # Rollout
 # ---------------------------------------------------------------------------
 
-def run_simple_pymdp_simulation(
+def run_pymdp_simulation(
     gnn_spec: Dict[str, Any],
     output_dir: Path,
 ) -> Tuple[bool, Dict[str, Any]]:
@@ -283,7 +280,7 @@ def run_simple_pymdp_simulation(
         ``model_parameters``, ``framework == "PyMDP"``.
     """
     try:
-        Agent, pymdp_utils, jnp, jr = _require_pymdp_1()
+        _, _, jnp, jr = _require_pymdp_1()
     except ImportError as e:
         logger.error(str(e))
         return False, {
@@ -305,22 +302,24 @@ def run_simple_pymdp_simulation(
         "initial_parameterization", {}
     )
     model_params = gnn_spec.get("model_parameters", {}) or {}
+    required_matrices = ["A", "B", "C", "D"]
+    missing_matrices = [name for name in required_matrices if name not in init_params]
+    if missing_matrices:
+        return False, {
+            "success": False,
+            "error": f"Missing required PyMDP matrices: {missing_matrices}",
+            "schema_version": "pymdp_simulation_v1",
+        }
 
-    # Determine fallback dims from A if present
     a_raw = init_params.get("A")
-    if a_raw is not None:
-        a_np_tmp = np.asarray(a_raw, dtype=np.float64)
-        if a_np_tmp.ndim != 2:
-            return False, {
-                "success": False,
-                "error": f"A matrix must be 2D; got shape {a_np_tmp.shape}",
-            }
-        fallback_shape = (int(a_np_tmp.shape[0]), int(a_np_tmp.shape[1]))
-    else:
-        fallback_shape = (
-            int(model_params.get("num_obs", 3)),
-            int(model_params.get("num_hidden_states", 3)),
-        )
+    a_np_tmp = np.asarray(a_raw, dtype=np.float64)
+    if a_np_tmp.ndim != 2:
+        return False, {
+            "success": False,
+            "error": f"A matrix must be 2D; got shape {a_np_tmp.shape}",
+            "schema_version": "pymdp_simulation_v1",
+        }
+    fallback_shape = (int(a_np_tmp.shape[0]), int(a_np_tmp.shape[1]))
 
     A_np = _canonicalise_A(a_raw, fallback_shape)
     num_obs, num_states = A_np.shape
@@ -393,6 +392,7 @@ def run_simple_pymdp_simulation(
     beliefs: List[List[float]] = []
     efe_history: List[List[float]] = []
     vfe_history: List[float] = []
+    policy_posterior_history: List[List[float]] = []
 
     empirical_prior = agent.D
 
@@ -422,6 +422,7 @@ def run_simple_pymdp_simulation(
 
         q_pi, neg_efe = agent.infer_policies(qs)
         # q_pi / neg_efe shape: (batch, num_policies)
+        policy_posterior_history.append(np.asarray(q_pi[0], dtype=np.float64).flatten().tolist())
         efe_history.append(np.asarray(neg_efe[0], dtype=np.float64).flatten().tolist())
 
         jax_key, subkey = jr.split(jax_key)
@@ -449,17 +450,25 @@ def run_simple_pymdp_simulation(
         )
 
     # ---------------------------------------------------------------------
-    # Assemble results (schema-compatible with analysis step)
+    # Assemble results (pymdp_simulation_v1 schema consumed by analysis).
     # ---------------------------------------------------------------------
     model_name = gnn_spec.get("model_name") or gnn_spec.get("name") or "pymdp_model"
 
     results: Dict[str, Any] = {
+        "schema_version": "pymdp_simulation_v1",
         "success": True,
         "framework": "PyMDP",
         "pymdp_version": pymdp_version,
         "backend": "jax",
         "model_name": model_name,
         "num_timesteps": num_timesteps,
+        "observations_by_modality": {"joint_observation": observations},
+        "hidden_states_by_factor": {"joint_state": true_states},
+        "actions_by_control_factor": {"joint_action": actions},
+        "beliefs_by_factor": {"joint_state": beliefs},
+        "expected_free_energy": efe_history,
+        "variational_free_energy": vfe_history,
+        "policy_posterior": policy_posterior_history,
         "simulation_trace": {
             "observations": observations,
             "true_states": true_states,
@@ -467,6 +476,7 @@ def run_simple_pymdp_simulation(
             "actions": actions,
             "efe_history": efe_history,
             "vfe_history": vfe_history,
+            "policy_posterior": policy_posterior_history,
             "belief_confidence": [float(max(b)) if b else 0.0 for b in beliefs],
         },
         "observations": observations,
@@ -486,9 +496,16 @@ def run_simple_pymdp_simulation(
             "gamma": gamma,
             "alpha": alpha,
         },
+        "matrix_provenance": gnn_spec.get("matrix_provenance", {}),
+        "runtime_metadata": {
+            "output_dir": str(output_dir),
+            "random_seed": seed,
+            "schema_version": "pymdp_simulation_v1",
+        },
         "metrics": {
             "expected_free_energy": efe_history,
             "variational_free_energy": vfe_history,
+            "policy_posterior": policy_posterior_history,
             "belief_confidence": [float(max(b)) if b else 0.0 for b in beliefs],
             "cumulative_preference": [float(C_np[obs]) for obs in observations],
         },

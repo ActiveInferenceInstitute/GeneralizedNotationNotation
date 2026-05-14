@@ -169,14 +169,15 @@ python src/21_mcp.py \
 ### Registered tool inventory (snapshot)
 
 The MCP auto-discovers every module under `src/` that exposes `mcp.py`. A live
-run currently registers **133 tools** and **1 resource** across **31 modules**.
+run currently registers **133 tools** and **1 resource** across **33 modules**.
 Use the audit script for an up-to-date, ground-truth list:
 
 ```bash
 PYTHONPATH=src uv run python src/mcp/validate_tools.py
 ```
 
-Per-module tool counts at last inventory (2026-04-16):
+Per-module tool counts below are a snapshot; use the audit command above for
+current counts:
 
 | Module | Tools | Module | Tools |
 |--------|-------|--------|-------|
@@ -703,14 +704,14 @@ module_info = mcp_instance.get_module_info("my_module")
 
 ```bash
 # All MCP tests
-pytest src/tests/test_mcp_overall.py src/tests/test_mcp_functional.py \
-       src/tests/test_mcp_tools.py src/tests/test_mcp_performance.py \
-       src/tests/test_mcp_audit.py -v
+pytest src/tests/mcp/test_mcp_overall.py src/tests/mcp/test_mcp_functional.py \
+       src/tests/mcp/test_mcp_tools.py src/tests/mcp/test_mcp_performance.py \
+       src/tests/mcp/test_mcp_audit.py -v
 
 # Narrower slices
-pytest src/tests/test_mcp_tools.py -v          # registration + dispatch
-pytest src/tests/test_mcp_performance.py -v    # load / latency
-pytest src/tests/test_mcp_audit.py -v          # spec / schema audit
+pytest src/tests/mcp/test_mcp_tools.py -v          # registration + dispatch
+pytest src/tests/mcp/test_mcp_performance.py -v    # load / latency
+pytest src/tests/mcp/test_mcp_audit.py -v          # spec / schema audit
 ```
 
 ### Test Categories

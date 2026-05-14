@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-05-13
+**Last Updated**: 2026-05-14
 
 <div align="center">
 
@@ -48,11 +48,11 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-05-13  
+**Last Updated**: 2026-05-14  
 **Version**: 1.6.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite Inventory (measured 2026-05-13)**: 166 `test_*.py` files under `src/tests/`; `uv run pytest src/tests/ --collect-only -q --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,245 tests. The corresponding full run completed with 2,176 passed, 68 skipped, and 1 xpassed in 694.24s.
-**Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, Autonomous Execution Recovery Heuristics, Fallback Circuit Breakers, NumPyro/Stan Renderers, PyMDP Scaling Study, MCP Full Module Exposure (131 tools).
+**Test Suite Inventory (measured 2026-05-14)**: 166 `test_*.py` files under `src/tests/`; `uv run pytest --collect-only src/tests/ -q --tb=no --ignore=src/tests/llm/test_llm_ollama.py --ignore=src/tests/llm/test_llm_ollama_integration.py` collected 2,256 tests. Run the full command of record locally for current pass/skip/fail counts.
+**Features (v1.6.0)**: Neurosymbolic LLM Context Injection, D3 Execution Dashboards, NumPyro/Stan Renderers, structured PyMDP 1.0 POMDP execution, PyMDP Scaling Study, MCP Full Module Exposure.
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 

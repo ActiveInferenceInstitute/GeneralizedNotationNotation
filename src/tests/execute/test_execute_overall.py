@@ -143,6 +143,30 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         assert framework == "pymdp"
 
     @pytest.mark.fast
+    def test_determine_script_framework_prefers_exact_framework_directory(
+        self,
+        safe_filesystem: Any,
+    ) -> None:
+        """Model names containing framework names must not mask the framework directory."""
+        base = safe_filesystem.create_dir("render_output")
+        pymdp_script = safe_filesystem.create_file(
+            "render_output/bnlearn_causal_model/pymdp/Bnlearn Causal Model_pymdp.py",
+            "# PyMDP script",
+        )
+
+        framework_dirs = {
+            "pymdp": "pymdp",
+            "rxinfer": "rxinfer",
+            "jax": "jax",
+            "discopy": "discopy",
+            "activeinference_jl": "activeinference_jl",
+            "bnlearn": "bnlearn",
+        }
+
+        framework = determine_script_framework(pymdp_script, base, framework_dirs)
+        assert framework == "pymdp"
+
+    @pytest.mark.fast
     def test_find_executable_scripts(self, sample_render_output: Any) -> None:
         """Test script discovery in render output directory."""
         logger = logging.getLogger("test")

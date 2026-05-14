@@ -31,17 +31,9 @@ class TestDependencyErrorScenarios:
         import importlib.util
         if importlib.util.find_spec('pymdp') is None or importlib.util.find_spec('jax') is None:
             pytest.skip('pymdp + jax required for PyMDPSimulation instantiation')
-        import logging
-
         from execute.pymdp.pymdp_simulation import PyMDPSimulation
-        logger = logging.getLogger('test_pymdp')
-        simulator = PyMDPSimulation()
-        assert simulator is not None
-        try:
-            result = simulator.create_model({}, logger=logger)
-            assert isinstance(result, (dict, type(None)))
-        except Exception as exc:
-            assert len(str(exc)) > 0
+        with pytest.raises(ValueError, match="requires explicit initialparameterization"):
+            PyMDPSimulation()
 
     @pytest.mark.unit
     def test_missing_discopy_graceful_degradation(self):

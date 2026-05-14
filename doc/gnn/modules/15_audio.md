@@ -251,8 +251,8 @@ output/15_audio_output/
 ## Testing
 
 ### Test Files
-- `src/tests/test_audio_integration.py`
-- `src/tests/test_audio_sapf.py`
+- `src/tests/audio/test_audio_integration.py`
+- `src/tests/audio/test_audio_sapf.py`
 
 ### Test Coverage
 - **Current**: 74%

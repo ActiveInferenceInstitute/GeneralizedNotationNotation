@@ -408,8 +408,8 @@ GNN Model → RxInfer.jl Conversion → Template Application → Julia Code Gene
 ## Testing
 
 ### Test Files
-- `src/tests/test_render_overall.py` - Render module tests (includes backend availability)
-- `src/tests/test_render_integration.py` - Integration tests
+- `src/tests/render/test_render_overall.py` - Render module tests (includes backend availability)
+- `src/tests/render/test_render_integration.py` - Integration tests
 
 ### Test Coverage
 Measure on demand:

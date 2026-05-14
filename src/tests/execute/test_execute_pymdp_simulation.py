@@ -85,6 +85,22 @@ class TestPyMDPSimulation(unittest.TestCase):
             "actions": 4,
             "model_type": "discrete_pomdp"
         }
+        self.initialparameterization = {
+            "A": [
+                [0.85, 0.15, 0.85, 0.15],
+                [0.15, 0.85, 0.15, 0.85],
+            ],
+            "B": [
+                [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]],
+                [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]],
+                [[0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0], [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]],
+                [[0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]],
+            ],
+            "C": [0.0, 1.0],
+            "D": [0.25, 0.25, 0.25, 0.25],
+        }
+        self.gnn_config["initialparameterization"] = self.initialparameterization
+        self.minimal_config["initialparameterization"] = self.initialparameterization
 
     def test_simulation_creation_with_gnn_config(self) -> None:
         """Test creating PyMDP simulation from GNN configuration."""
@@ -208,6 +224,7 @@ class TestPyMDPSimulation(unittest.TestCase):
             "observations": ["visible", "occluded"],
             "actions": ["move_north", "move_south", "move_east", "move_west"],
             "model_type": "discrete_pomdp",
+            "initialparameterization": self.initialparameterization,
             "preferences": {
                 "goal_reward": 5.0
             }

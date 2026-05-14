@@ -213,6 +213,12 @@ def process_render(
         logger.info(f"Processing GNN files in: {target_dir}")
         logger.info(f"Output directory: {output_dir}")
 
+        if isinstance(frameworks, str):
+            explicit_framework_request = frameworks.strip().lower() not in {"", "all", "lite"}
+        else:
+            explicit_framework_request = frameworks is not None
+        strict_framework_success = strict_framework_success or explicit_framework_request
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
 

@@ -429,9 +429,9 @@ GNN Model → Effects Mapping → Chain Creation → Audio Processing → Output
 ## Testing
 
 ### Test Files
-- `src/tests/test_audio_overall.py` - Audio module tests
-- `src/tests/test_audio_generation.py` - Audio generation tests
-- `src/tests/test_audio_integration.py` - Pipeline integration tests for audio outputs
+- `src/tests/audio/test_audio_overall.py` - Audio module tests
+- `src/tests/audio/test_audio_generation.py` - Audio generation tests
+- `src/tests/audio/test_audio_integration.py` - Pipeline integration tests for audio outputs
 
 ### Test Coverage
 Measure on demand:

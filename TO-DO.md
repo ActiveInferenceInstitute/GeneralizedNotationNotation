@@ -11,10 +11,10 @@
 > **Released**: 2026-04-15 (tag: `v1.6.0`)
 > **Scope**: Production hardening, MCP integration, renderer expansion, documentation integrity.
 
-- [x] **NumPyro/Stan Renderer Integration** — Complete end-to-end render pathway for NumPyro (322-line renderer) and Stan (100-line renderer) alongside existing PyMDP, RxInfer, JAX, DisCoPy, PyTorch, ActiveInference.jl backends. All 8 renderers operational via `--frameworks` flag on Steps 11/12.
-- [x] **MCP Full Module Exposure** — All 25 pipeline modules + infrastructure modules expose tools via 32 `mcp.py` files. 131 registered real tools across 38+ domains. MCP deadlock in `discover_modules` resolved.
+- [x] **NumPyro/Stan Renderer Integration** — Complete end-to-end render pathway for NumPyro and Stan alongside existing PyMDP, RxInfer, JAX, DisCoPy, PyTorch, ActiveInference.jl backends. Use current backend tests before publishing operational pass counts.
+- [x] **MCP Full Module Exposure** — All 25 pipeline modules + infrastructure modules expose tools via MCP files. Current audit coverage is tracked by `src/tests/mcp/test_mcp_audit.py`; the 2026-05-14 focused audit registered 133 tools and 1 resource.
 - [x] **PyMDP Scaling Study** — Automated scaling analysis pipeline (`scripts/run_pymdp_gnn_scaling_analysis.py`) with configurable N=[2,256] grids, exponential state-space sweeps, and 19-artifact visualization suite.
-- [x] **Test Suite Hardening** — 1,906 tests passing, 30 skipped (Ollama-dependent). Real-implementation coverage across all modules. Hypothesis tests refactored to deterministic parametric matrices.
+- [x] **Test Suite Hardening** — Real-implementation coverage across all modules. Current collect-only inventory is tracked in `src/tests/TEST_SUITE_SUMMARY.md`; Hypothesis tests were refactored to deterministic parametric matrices.
 - [x] **Documentation Integrity** — 105 `doc/gnn/` files, 34 `AGENTS.md` across `src/`, all version strings synchronized to `1.6.0`. Zero phantom file references.
 - [x] **Enhanced Visual Logging** — Progress bars, color-coded output, structured summaries, correlation ID tracking, screen reader support across all 25 pipeline steps.
 - [x] **LLM & ML Fixes** — LLM recursive glob fix, ML cross-validation fold logic hardened (`min(5, len(X), min_class_count)`).

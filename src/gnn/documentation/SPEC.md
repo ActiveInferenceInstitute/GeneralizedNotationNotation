@@ -20,4 +20,4 @@ This module follows the **static reference** pattern: it contains Markdown files
 
 ## Testing
 
-Documentation accuracy is verified indirectly through the parser tests in `src/tests/test_gnn_parsing.py`, which parse content using the section names defined here.
+Documentation accuracy is verified indirectly through the parser tests in `src/tests/gnn/test_gnn_parsing.py`, which parse content using the section names defined here.

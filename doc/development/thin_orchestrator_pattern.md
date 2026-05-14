@@ -33,7 +33,7 @@ src/
 │   ├── pymdp/                      # PyMDP-specific rendering
 │   │   ├── __init__.py
 │   │   ├── pymdp_renderer.py
-│   │   └── pymdp_converter.py
+│   │   └── pymdp_templates.py
 │   ├── rxinfer/                    # RxInfer.jl-specific rendering
 │   │   ├── __init__.py
 │   │   └── rxinfer_renderer.py
@@ -150,7 +150,7 @@ def process_complex_rendering_logic():
 
 ## 🧪 Testing Pattern
 
-### Test File (`src/tests/test_render_integration.py`)
+### Test File (`src/tests/render/test_render_integration.py`)
 
 ```python
 #!/usr/bin/env python3
@@ -198,7 +198,7 @@ class TestRenderIntegration:
 2. **Create the module directory** (e.g., `src/new_step/`): Organize core functionality
 3. **Create modular files** (e.g., `src/new_step/processor.py`): Implement core logic
 4. **Update module `__init__.py`**: Import and expose functions
-5. **Create tests** (e.g., `src/tests/test_new_step_integration.py`): Comprehensive testing
+5. **Create tests** (e.g., `src/tests/new_step/test_new_step_integration.py`): Comprehensive testing
 
 ### For Existing Steps
 

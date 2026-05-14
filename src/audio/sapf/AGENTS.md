@@ -365,8 +365,8 @@ GNN Model → Spectral Mapping → FFT Analysis → Effects Processing → IFFT 
 ## Testing
 
 ### Test Files
-- `src/tests/test_audio_sapf.py` - SAPF backend tests
-- `src/tests/test_audio_integration.py` - Pipeline integration tests for audio outputs
+- `src/tests/audio/test_audio_sapf.py` - SAPF backend tests
+- `src/tests/audio/test_audio_integration.py` - Pipeline integration tests for audio outputs
 
 ### Test Coverage
 Measure on demand:
