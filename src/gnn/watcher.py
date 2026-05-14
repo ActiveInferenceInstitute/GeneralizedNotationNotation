@@ -121,6 +121,7 @@ class GNNWatcher:
     def _default_callback(path: Path, content: str):
         """Default callback: run GNN validation."""
         import sys
+
         src_dir = str(Path(__file__).parent.parent)
         if src_dir not in sys.path:
             sys.path.insert(0, src_dir)

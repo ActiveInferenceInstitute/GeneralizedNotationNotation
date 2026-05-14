@@ -22,9 +22,11 @@ sys.setrecursionlimit(100)
 # Add src to path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
+
 @dataclass
 class SimpleTestResult:
     """Simple test result for round-trip testing."""
+
     success: bool = True
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
@@ -36,6 +38,7 @@ class SimpleTestResult:
 
     def add_warning(self, warning: str):
         self.warnings.append(warning)
+
 
 def test_json_round_trip():
     """Test JSON round-trip conversion with minimal dependencies."""
@@ -53,7 +56,7 @@ def test_json_round_trip():
 
     # Read the markdown file
     try:
-        with open(reference_file, 'r', encoding='utf-8') as f:
+        with open(reference_file, "r", encoding="utf-8") as f:
             markdown_content = f.read()
         print(f"✅ Read markdown content ({len(markdown_content)} characters)")
     except Exception as e:
@@ -71,8 +74,7 @@ def test_json_round_trip():
         # Create a simple model from markdown content
         # This is a simplified version that doesn't use the full parsing system
         model = GNNInternalRepresentation(
-            model_name="Test Model",
-            annotation="Test annotation"
+            model_name="Test Model", annotation="Test annotation"
         )
 
         # Add some basic content to the model
@@ -93,7 +95,7 @@ def test_json_round_trip():
         print(f"✅ Serialized to JSON ({len(json_content)} characters)")
 
         # Save to temporary file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as tf:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as tf:
             tf.write(json_content)
             temp_file = Path(tf.name)
 
@@ -121,8 +123,10 @@ def test_json_round_trip():
     except Exception as e:
         print(f"❌ JSON round-trip test failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
+
 
 def test_xml_round_trip():
     """Test XML round-trip conversion with minimal dependencies."""
@@ -146,8 +150,7 @@ def test_xml_round_trip():
 
         # Create a simple model from markdown content
         model = GNNInternalRepresentation(
-            model_name="Test Model",
-            annotation="Test annotation"
+            model_name="Test Model", annotation="Test annotation"
         )
 
         # Add some basic content to the model
@@ -168,7 +171,7 @@ def test_xml_round_trip():
         print(f"✅ Serialized to XML ({len(xml_content)} characters)")
 
         # Save to temporary file
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as tf:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".xml", delete=False) as tf:
             tf.write(xml_content)
             temp_file = Path(tf.name)
 
@@ -196,10 +199,12 @@ def test_xml_round_trip():
     except Exception as e:
         print(f"❌ XML round-trip test failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     print("=" * 60)
     print("SIMPLE ROUND-TRIP TEST (JSON + XML)")
     print("=" * 60)

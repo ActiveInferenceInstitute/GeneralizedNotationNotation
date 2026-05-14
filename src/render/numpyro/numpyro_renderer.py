@@ -9,6 +9,7 @@ within the standard Active Inference generative loop.
 @Web: https://num.pyro.ai/
 @Web: https://github.com/pyro-ppl/numpyro
 """
+
 import logging
 import os
 import tempfile
@@ -43,24 +44,29 @@ def render_gnn_to_numpyro(
 
         # Validate shapes
         from render.matrix_utils import validate_abcd_shapes
+
         valid, msg = validate_abcd_shapes(A, B, C, D)
         if not valid:
             logger.warning(f"Shape validation warning: {msg}")
 
         # Ensure options has num_timesteps if available in gnn_spec
         options = options or {}
-        model_params = gnn_spec.get('model_parameters', {})
-        init_params = gnn_spec.get('initialparameterization', {})
-        if 'num_timesteps' not in options:
-            extracted_t = model_params.get('num_timesteps', init_params.get('num_timesteps'))
+        model_params = gnn_spec.get("model_parameters", {})
+        init_params = gnn_spec.get("initialparameterization", {})
+        if "num_timesteps" not in options:
+            extracted_t = model_params.get(
+                "num_timesteps", init_params.get("num_timesteps")
+            )
             if extracted_t is not None:
-                options['num_timesteps'] = extracted_t
+                options["num_timesteps"] = extracted_t
 
         code = _generate_numpyro_code(model_name, A, B, C, D, options)
 
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as tmp_f:
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=output_path.parent, delete=False
+        ) as tmp_f:
             tmp_f.write(code)
         os.replace(tmp_f.name, str(output_path))
 
@@ -72,7 +78,9 @@ def render_gnn_to_numpyro(
         return False, f"NumPyro rendering failed: {e}", []
 
 
-def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _extract_matrices(
+    gnn_spec: Dict[str, Any],
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Extract A, B, C, D matrices from GNN spec."""
     params = gnn_spec.get("stateSpace", {}).get("parameters", {})
     if not params:
@@ -88,6 +96,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
         if isinstance(raw, str):
             try:
                 import ast
+
                 parsed = ast.literal_eval(raw)
                 return np.array(parsed, dtype=float)
             except Exception:
@@ -113,6 +122,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
     D = _parse_matrix(params.get("D"), default_D)
 
     from render.matrix_utils import normalize_columns
+
     A = normalize_columns(A)
     if B.ndim == 2:
         B = normalize_columns(B)
@@ -161,12 +171,16 @@ def _generate_numpyro_code(
     if B.ndim == 3:
         slices = []
         for a in range(B.shape[2]):
-            slices.append(f"    B_slices.append({_format_jnp_array(B[:, :, a], indent=4)})")
-        B_full_init = "\n    B_slices = []\n" + "\n".join(slices) + "\n    B = jnp.stack(B_slices, axis=2)"
-    else:
+            slices.append(
+                f"    B_slices.append({_format_jnp_array(B[:, :, a], indent=4)})"
+            )
         B_full_init = (
-            f"\n    B = jnp.tile({B_str}[:, :, None], (1, 1, {num_actions}))"
+            "\n    B_slices = []\n"
+            + "\n".join(slices)
+            + "\n    B = jnp.stack(B_slices, axis=2)"
         )
+    else:
+        B_full_init = f"\n    B = jnp.tile({B_str}[:, :, None], (1, 1, {num_actions}))"
 
     code = f'''\
 #!/usr/bin/env python3

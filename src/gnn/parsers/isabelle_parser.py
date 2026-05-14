@@ -35,20 +35,28 @@ class IsabelleParser(BaseGNNParser):
 
     def __init__(self):
         super().__init__()
-        self.theory_pattern = re.compile(r'theory\s+(\w+)\s+imports\s+([\w\s]+)\s+begin', re.IGNORECASE)
-        self.datatype_pattern = re.compile(r'datatype\s+(\w+)\s*=\s*(.+)', re.IGNORECASE)
-        self.definition_pattern = re.compile(r'definition\s+(\w+)\s*::\s*"([^"]+)"\s+where\s+"([^"]+)"', re.IGNORECASE)
+        self.theory_pattern = re.compile(
+            r"theory\s+(\w+)\s+imports\s+([\w\s]+)\s+begin", re.IGNORECASE
+        )
+        self.datatype_pattern = re.compile(
+            r"datatype\s+(\w+)\s*=\s*(.+)", re.IGNORECASE
+        )
+        self.definition_pattern = re.compile(
+            r'definition\s+(\w+)\s*::\s*"([^"]+)"\s+where\s+"([^"]+)"', re.IGNORECASE
+        )
         self.lemma_pattern = re.compile(r'lemma\s+(\w+)\s*:\s*"([^"]+)"', re.IGNORECASE)
-        self.theorem_pattern = re.compile(r'theorem\s+(\w+)\s*:\s*"([^"]+)"', re.IGNORECASE)
+        self.theorem_pattern = re.compile(
+            r'theorem\s+(\w+)\s*:\s*"([^"]+)"', re.IGNORECASE
+        )
 
     def get_supported_extensions(self) -> List[str]:
         """Get file extensions supported by this parser."""
-        return ['.thy']
+        return [".thy"]
 
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse an Isabelle/HOL file."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -85,7 +93,7 @@ class IsabelleParser(BaseGNNParser):
                     var_type=self._infer_variable_type(var_name),
                     dimensions=self._parse_datatype_dimensions(var_def),
                     data_type=self._infer_data_type(var_def),
-                    description=f"Isabelle datatype: {var_def}"
+                    description=f"Isabelle datatype: {var_def}",
                 )
                 result.model.variables.append(variable)
 
@@ -100,7 +108,7 @@ class IsabelleParser(BaseGNNParser):
                         name=def_name,
                         value=self._extract_parameter_value(def_body),
                         type_hint=def_type,
-                        description=f"Isabelle definition: {def_body}"
+                        description=f"Isabelle definition: {def_body}",
                     )
                     result.model.parameters.append(parameter)
                 else:
@@ -108,12 +116,15 @@ class IsabelleParser(BaseGNNParser):
                         label=def_name,
                         content=def_body,
                         format="isabelle",
-                        description=f"Type: {def_type}"
+                        description=f"Type: {def_type}",
                     )
                     result.model.equations.append(equation)
 
             # Parse lemmas and theorems as equations
-            for pattern, eq_type in [(self.lemma_pattern, "lemma"), (self.theorem_pattern, "theorem")]:
+            for pattern, eq_type in [
+                (self.lemma_pattern, "lemma"),
+                (self.theorem_pattern, "theorem"),
+            ]:
                 for match in pattern.finditer(content):
                     eq_name = match.group(1)
                     eq_content = match.group(2)
@@ -122,7 +133,7 @@ class IsabelleParser(BaseGNNParser):
                         label=eq_name,
                         content=eq_content,
                         format="isabelle",
-                        description=f"Isabelle {eq_type}"
+                        description=f"Isabelle {eq_type}",
                     )
                     result.model.equations.append(equation)
 
@@ -139,11 +150,16 @@ class IsabelleParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Isabelle comments."""
-        return extract_embedded_json_data(content, [
-            r'\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)',  # (* MODEL_DATA: {...} *)
-        ])
+        return extract_embedded_json_data(
+            content,
+            [
+                r"\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)",  # (* MODEL_DATA: {...} *)
+            ],
+        )
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import (
@@ -157,57 +173,59 @@ class IsabelleParser(BaseGNNParser):
 
             # Create model from embedded data
             model = GNNInternalRepresentation(
-                model_name=embedded_data.get('model_name', 'Unknown Model'),
-                annotation=embedded_data.get('annotation', ''),
+                model_name=embedded_data.get("model_name", "Unknown Model"),
+                annotation=embedded_data.get("annotation", ""),
             )
 
             # Parse variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data['var_type']),
-                    data_type=DataType(var_data['data_type']),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data["var_type"]),
+                    data_type=DataType(var_data["data_type"]),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 model.variables.append(var)
 
             # Parse connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data['source_variables'],
-                    target_variables=conn_data['target_variables'],
-                    connection_type=ConnectionType(conn_data['connection_type'])
+                    source_variables=conn_data["source_variables"],
+                    target_variables=conn_data["target_variables"],
+                    connection_type=ConnectionType(conn_data["connection_type"]),
                 )
                 model.connections.append(conn)
 
             # Parse parameters
-            for param_data in embedded_data.get('parameters', []):
+            for param_data in embedded_data.get("parameters", []):
                 param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    type_hint=param_data.get('param_type', 'constant')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    type_hint=param_data.get("param_type", "constant"),
                 )
                 model.parameters.append(param)
 
             # Set time specification if present
-            if embedded_data.get('time_specification'):
-                time_data = embedded_data['time_specification']
+            if embedded_data.get("time_specification"):
+                time_data = embedded_data["time_specification"]
                 from .common import TimeSpecification
+
                 model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Set ontology mappings if present
-            if embedded_data.get('ontology_mappings'):
+            if embedded_data.get("ontology_mappings"):
                 from .common import OntologyMapping
-                for mapping_data in embedded_data['ontology_mappings']:
+
+                for mapping_data in embedded_data["ontology_mappings"]:
                     mapping = OntologyMapping(
-                        variable_name=mapping_data['variable_name'],
-                        ontology_term=mapping_data['ontology_term'],
-                        description=mapping_data.get('description')
+                        variable_name=mapping_data["variable_name"],
+                        ontology_term=mapping_data["ontology_term"],
+                        description=mapping_data.get("description"),
                     )
                     model.ontology_mappings.append(mapping)
 
@@ -222,13 +240,13 @@ class IsabelleParser(BaseGNNParser):
     def _infer_variable_type(self, name: str) -> VariableType:
         """Infer variable type from name."""
         name_lower = name.lower()
-        if 'state' in name_lower or 's_' in name_lower:
+        if "state" in name_lower or "s_" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'obs' in name_lower or 'o_' in name_lower:
+        elif "obs" in name_lower or "o_" in name_lower:
             return VariableType.OBSERVATION
-        elif 'action' in name_lower or 'u_' in name_lower:
+        elif "action" in name_lower or "u_" in name_lower:
             return VariableType.ACTION
-        elif 'policy' in name_lower or 'pi_' in name_lower:
+        elif "policy" in name_lower or "pi_" in name_lower:
             return VariableType.POLICY
         else:
             return VariableType.HIDDEN_STATE
@@ -236,22 +254,22 @@ class IsabelleParser(BaseGNNParser):
     def _parse_datatype_dimensions(self, datatype_def: str) -> List[int]:
         """Parse dimensions from datatype definition."""
         # Simple heuristic for common patterns
-        if 'list' in datatype_def.lower():
+        if "list" in datatype_def.lower():
             return [1]  # Assume 1D list
-        elif '*' in datatype_def:
+        elif "*" in datatype_def:
             # Count product types
-            return [len(datatype_def.split('*'))]
+            return [len(datatype_def.split("*"))]
         else:
             return [1]
 
     def _infer_data_type(self, datatype_def: str) -> DataType:
         """Infer data type from datatype definition."""
         def_lower = datatype_def.lower()
-        if 'nat' in def_lower or 'int' in def_lower:
+        if "nat" in def_lower or "int" in def_lower:
             return DataType.INTEGER
-        elif 'real' in def_lower:
+        elif "real" in def_lower:
             return DataType.FLOAT
-        elif 'bool' in def_lower:
+        elif "bool" in def_lower:
             return DataType.BINARY
         else:
             return DataType.CATEGORICAL
@@ -260,16 +278,17 @@ class IsabelleParser(BaseGNNParser):
         """Check if definition body represents a parameter."""
         # Simple heuristics
         body_clean = body.strip()
-        return (body_clean.replace(' ', '').replace('.', '').replace(',', '').replace('_', '').isdigit() or
-                any(op in body_clean for op in ['=', '+', '-', '*', '/', '^']))
+        return body_clean.replace(" ", "").replace(".", "").replace(",", "").replace(
+            "_", ""
+        ).isdigit() or any(op in body_clean for op in ["=", "+", "-", "*", "/", "^"])
 
     def _extract_parameter_value(self, body: str) -> Any:
         """Extract parameter value from definition body."""
         body_clean = body.strip()
         try:
             # Try to extract numeric values
-            if body_clean.replace('.', '').isdigit():
-                return float(body_clean) if '.' in body_clean else int(body_clean)
+            if body_clean.replace(".", "").isdigit():
+                return float(body_clean) if "." in body_clean else int(body_clean)
             else:
                 return body_clean
         except (ValueError, ArithmeticError):
@@ -280,24 +299,24 @@ class IsabelleParser(BaseGNNParser):
         connections = []
 
         # Look for function application patterns that might indicate connections
-        app_pattern = re.compile(r'(\w+)\s+(\w+)', re.IGNORECASE)
+        app_pattern = re.compile(r"(\w+)\s+(\w+)", re.IGNORECASE)
 
         for match in app_pattern.finditer(content):
             func_name = match.group(1)
             arg_name = match.group(2)
 
             # Simple heuristic: if both are likely variable names
-            if (any(prefix in func_name.lower() for prefix in ['s_', 'o_', 'u_', 'pi_']) and
-                any(prefix in arg_name.lower() for prefix in ['s_', 'o_', 'u_', 'pi_'])):
-
+            if any(
+                prefix in func_name.lower() for prefix in ["s_", "o_", "u_", "pi_"]
+            ) and any(
+                prefix in arg_name.lower() for prefix in ["s_", "o_", "u_", "pi_"]
+            ):
                 connection = Connection(
                     source_variables=[arg_name],
                     target_variables=[func_name],
                     connection_type=ConnectionType.DIRECTED,
-                    description="Inferred from Isabelle function application"
+                    description="Inferred from Isabelle function application",
                 )
                 connections.append(connection)
 
         return connections
-
-

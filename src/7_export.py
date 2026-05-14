@@ -41,14 +41,14 @@ from utils.pipeline_template import create_standardized_pipeline_script
 
 # Create the standardized pipeline script
 run_script = create_standardized_pipeline_script(
-    "7_export.py",
-    process_export,
-    "Multi-format export generation"
+    "7_export.py", process_export, "Multi-format export generation"
 )
+
 
 def main() -> int:
     """Main entry point for the export step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -15,8 +15,15 @@ class ValidationLevel(Enum):
     RESEARCH = "research"
     ROUND_TRIP = "round_trip"
 
+
 class GNNSyntaxError(Exception):
-    def __init__(self, message: str, line: Optional[int] = None, column: Optional[int] = None, format_context: Optional[str] = None):
+    def __init__(
+        self,
+        message: str,
+        line: Optional[int] = None,
+        column: Optional[int] = None,
+        format_context: Optional[str] = None,
+    ):
         super().__init__(message)
         self.line = line
         self.column = column
@@ -33,6 +40,7 @@ class GNNSyntaxError(Exception):
             msg += f" in {self.format_context} format"
         return msg
 
+
 @dataclass
 class ValidationResult:
     is_valid: bool
@@ -42,12 +50,12 @@ class ValidationResult:
     metadata: Dict[str, Any] = field(default_factory=dict)
     validation_level: ValidationLevel = ValidationLevel.STANDARD
     format_tested: Optional[str] = None
-    round_trip_results: List['RoundTripResult'] = field(default_factory=list)
+    round_trip_results: List["RoundTripResult"] = field(default_factory=list)
     cross_format_consistent: Optional[bool] = None
     semantic_checksum: Optional[str] = None
     performance_metrics: Dict[str, float] = field(default_factory=dict)
 
-    def add_round_trip_result(self, result: 'RoundTripResult') -> None:
+    def add_round_trip_result(self, result: "RoundTripResult") -> None:
         self.round_trip_results.append(result)
         if not result.success:
             self.errors.extend(result.errors)
@@ -58,6 +66,7 @@ class ValidationResult:
             return 0.0
         successful = sum(1 for r in self.round_trip_results if r.success)
         return (successful / len(self.round_trip_results)) * 100
+
 
 @dataclass
 class GNNVariable:
@@ -70,6 +79,7 @@ class GNNVariable:
     ontology_mapping: Optional[str] = None
     format_specific_metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 @dataclass
 class GNNConnection:
     source: Union[str, List[str]]
@@ -80,6 +90,7 @@ class GNNConnection:
     line_number: Optional[int] = None
     weight: Optional[float] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+
 
 @dataclass
 class ParsedGNN:
@@ -124,6 +135,7 @@ class ParseResult:
     def add_warning(self, warning: str):
         self.warnings.append(warning)
 
+
 @dataclass
 class RoundTripResult:
     source_format: GNNFormat
@@ -150,9 +162,11 @@ class RoundTripResult:
         self.errors.append(error)
         self.success = False
 
+
 @dataclass
 class ComprehensiveTestReport:
     """Complete test report for all round-trip tests."""
+
     reference_file: str
     test_timestamp: datetime = field(default_factory=datetime.now)
     total_tests: int = 0
@@ -172,10 +186,16 @@ class ComprehensiveTestReport:
             self.failed_tests += 1
             self.semantic_differences.extend(result.differences)
             self.critical_errors.extend(result.errors)
-        self.format_matrix[(result.source_format, result.target_format)] = result.success
+        self.format_matrix[(result.source_format, result.target_format)] = (
+            result.success
+        )
 
     def get_success_rate(self) -> float:
-        return (self.successful_tests / self.total_tests) * 100 if self.total_tests > 0 else 0.0
+        return (
+            (self.successful_tests / self.total_tests) * 100
+            if self.total_tests > 0
+            else 0.0
+        )
 
     def get_format_summary(self) -> Dict[GNNFormat, Dict[str, int]]:
         format_summary = {}

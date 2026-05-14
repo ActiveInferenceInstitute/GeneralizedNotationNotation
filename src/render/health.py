@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RendererStatus:
     """Status of a single renderer."""
+
     name: str
     available: bool
     version: Optional[str] = None

@@ -38,13 +38,19 @@ run_script = create_standardized_pipeline_script(
     process_ontology,
     "Ontology processing and validation for GNN models",
     additional_arguments={
-        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file", "flag": "--ontology-terms-file"}
-    }
+        "ontology_terms_file": {
+            "type": Path,
+            "help": "Path to ontology terms JSON file",
+            "flag": "--ontology-terms-file",
+        }
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the ontology step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -35,7 +35,7 @@ StateSpaceBlock {
         results_file = output_dir / "ml_integration_results.json"
         assert results_file.exists()
 
-        with open(results_file, 'r') as f:
+        with open(results_file, "r") as f:
             data = json.load(f)
 
         assert data["status"] == "completed"
@@ -63,6 +63,6 @@ StateSpaceBlock {
 
         results_file = output_dir / "ml_integration_results.json"
         assert results_file.exists()
-        with open(results_file, 'r') as f:
+        with open(results_file, "r") as f:
             data = json.load(f)
         assert len(data["models_trained"]) == 0

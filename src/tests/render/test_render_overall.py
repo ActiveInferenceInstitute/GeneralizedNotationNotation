@@ -23,17 +23,16 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
-
 # Real-implementation render target tests
 class TestRenderTargets:
     """
     Test rendering to different target frameworks.
-    
+
     These tests verify that the GNN render module can successfully generate executable code
-    for various target frameworks including PyMDP, RxInfer, DisCoPy, ActiveInference.jl, 
-    and JAX. Each test uses real render function calls with actual GNN specifications 
+    for various target frameworks including PyMDP, RxInfer, DisCoPy, ActiveInference.jl,
+    and JAX. Each test uses real render function calls with actual GNN specifications
     and verifies output artifacts are created correctly.
-    
+
     Fixtures:
     - tmp_path: Temporary directory for artifact output
     - sample_gnn_spec: Basic GNN specification dict
@@ -44,7 +43,9 @@ class TestRenderTargets:
     def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to PyMDP format."""
         # Call real render function with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "pymdp", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "pymdp", tmp_path
+        )
 
         # Verify successful rendering
         assert ok is True, "PyMDP rendering should succeed"
@@ -57,10 +58,14 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
     @pytest.mark.unit
-    def test_render_to_rxinfer_toml(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_rxinfer_toml(
+        self, tmp_path, sample_gnn_spec, test_render_module
+    ):
         """Test rendering to RxInfer TOML format."""
         # Call real render function with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "rxinfer_toml", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "rxinfer_toml", tmp_path
+        )
 
         # Verify successful rendering
         assert ok is True, "RxInfer TOML rendering should succeed"
@@ -76,7 +81,9 @@ class TestRenderTargets:
     def test_render_to_discopy(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to DisCoPy format."""
         # Call real render function with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "discopy", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "discopy", tmp_path
+        )
 
         # Verify successful rendering
         assert ok is True, "DisCoPy rendering should succeed"
@@ -89,10 +96,14 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
     @pytest.mark.unit
-    def test_render_to_discopy_combined(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_discopy_combined(
+        self, tmp_path, sample_gnn_spec, test_render_module
+    ):
         """Test rendering to DisCoPy combined format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "discopy_combined", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "discopy_combined", tmp_path
+        )
 
         assert ok is True, "DisCoPy combined rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -105,10 +116,14 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
     @pytest.mark.unit
-    def test_render_to_activeinference_jl(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_activeinference_jl(
+        self, tmp_path, sample_gnn_spec, test_render_module
+    ):
         """Test rendering to ActiveInference.jl format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "activeinference_jl", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "activeinference_jl", tmp_path
+        )
 
         assert ok is True, "ActiveInference.jl rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -124,7 +139,9 @@ class TestRenderTargets:
     def test_render_to_jax(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to JAX format using real rendering with content validation."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "jax", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "jax", tmp_path
+        )
 
         assert ok is True, "JAX rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -137,21 +154,25 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
         # Content validation: verify generated code has Active Inference constructs
-        jax_artifacts = [a for a in artifacts if a.endswith('.py')]
+        jax_artifacts = [a for a in artifacts if a.endswith(".py")]
         if jax_artifacts:
             content = (tmp_path / jax_artifacts[0]).read_text()
-            assert 'import jax' in content or 'from jax' in content, \
+            assert "import jax" in content or "from jax" in content, (
                 "Generated JAX code should import jax"
-            assert 'create_params' in content or 'belief_update' in content, \
+            )
+            assert "create_params" in content or "belief_update" in content, (
                 "Generated JAX code should contain Active Inference functions"
+            )
             # Verify valid Python syntax
-            compile(content, jax_artifacts[0], 'exec')
+            compile(content, jax_artifacts[0], "exec")
 
     @pytest.mark.unit
     def test_render_to_jax_pomdp(self, tmp_path, sample_gnn_spec, test_render_module):
         """Test rendering to JAX POMDP format using real rendering."""
         # Use real rendering call with actual data
-        ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "jax_pomdp", tmp_path)
+        ok, msg, artifacts = test_render_module.render_gnn_spec(
+            sample_gnn_spec, "jax_pomdp", tmp_path
+        )
 
         assert ok is True, "JAX POMDP rendering should succeed"
         assert isinstance(msg, str), "Message should be string"
@@ -164,14 +185,13 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
 
-
-
 class TestRenderDisCoPyTranslator:
     """Smoke tests for render.discopy.translator sub-module."""
 
     def _import_translator(self):
         try:
             from render.discopy import translator
+
             return translator
         except Exception:
             pytest.skip("render.discopy.translator not importable")

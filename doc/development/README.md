@@ -22,7 +22,7 @@ uv run python doc/development/docs_audit.py --strict -q
 uv run python doc/development/docs_audit.py --check-anchors
 # Optional: log markdown file count and other diagnostics to stderr
 uv run python doc/development/docs_audit.py --verbose
-# Check maintained docs for stale compatibility/placeholder/PyMDP terminology
+# Check maintained docs for stale PyMDP and policy terminology
 uv run python scripts/check_maintained_doc_terms.py --strict
 ```
 

@@ -49,9 +49,11 @@ class FrameworkStatus:
     install_hint: Optional[str] = None
 
 
-def is_framework_available(framework: str,
-                           executor: Optional[str] = None,
-                           logger: Optional[logging.Logger] = None) -> bool:
+def is_framework_available(
+    framework: str,
+    executor: Optional[str] = None,
+    logger: Optional[logging.Logger] = None,
+) -> bool:
     """Return True if the framework's required Python module is importable.
 
     Unknown frameworks return True so callers do not over-skip external tools.
@@ -79,13 +81,17 @@ def is_framework_available(framework: str,
         return result.returncode == 0
     except (subprocess.TimeoutExpired, FileNotFoundError) as err:
         if logger is not None:
-            logger.debug(f"Availability check for {framework} via {executor} failed: {err}")
+            logger.debug(
+                f"Availability check for {framework} via {executor} failed: {err}"
+            )
         return False
 
 
-def check_framework(framework: str,
-                    executor: Optional[str] = None,
-                    logger: Optional[logging.Logger] = None) -> FrameworkStatus:
+def check_framework(
+    framework: str,
+    executor: Optional[str] = None,
+    logger: Optional[logging.Logger] = None,
+) -> FrameworkStatus:
     """Return a structured FrameworkStatus for the given framework."""
     if framework not in FRAMEWORK_IMPORT_CHECK:
         return FrameworkStatus(name=framework, available=True)

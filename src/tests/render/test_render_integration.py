@@ -29,6 +29,7 @@ try:
         process_render,
         render_gnn_spec,
     )
+
     RENDER_AVAILABLE = True
 except ImportError as e:
     RENDER_AVAILABLE = False
@@ -72,8 +73,8 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
             "observations": ["o"],
             "parameters": {
                 "A": [[0.8, 0.1, 0.1], [0.2, 0.7, 0.1]],
-                "B": [[0.9, 0.1], [0.1, 0.9]]
-            }
+                "B": [[0.9, 0.1], [0.1, 0.9]],
+            },
         }
 
     @pytest.mark.unit
@@ -108,7 +109,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
             if success:
                 output_files = list(output_dir.rglob("*"))
                 # Should create some output files
-                assert isinstance(output_files, list)  # May be empty if no renderers available
+                assert isinstance(
+                    output_files, list
+                )  # May be empty if no renderers available
 
         except Exception as e:
             pytest.fail(f"Render processing crashed: {e}")
@@ -130,13 +133,13 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
                     assert artifact_path.exists(), f"Artifact {artifact} should exist"
 
                     # If it's a Python file, verify it has valid Python syntax
-                    if artifact.endswith('.py'):
+                    if artifact.endswith(".py"):
                         content = artifact_path.read_text()
                         # Should have at least some Python code
                         assert len(content) > 0
                         # Verify it compiles
                         try:
-                            compile(content, artifact_path, 'exec')
+                            compile(content, artifact_path, "exec")
                         except SyntaxError as e:
                             pytest.fail(f"Generated Python has syntax error: {e}")
 
@@ -155,22 +158,26 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
             output_dir = safe_filesystem.create_dir(f"render_{renderer}")
 
             try:
-                ok, msg, artifacts = render_gnn_spec(sample_gnn_spec, renderer, output_dir)
+                ok, msg, artifacts = render_gnn_spec(
+                    sample_gnn_spec, renderer, output_dir
+                )
                 results[renderer] = {
                     "success": ok,
                     "message": msg,
-                    "artifacts_count": len(artifacts) if artifacts else 0
+                    "artifacts_count": len(artifacts) if artifacts else 0,
                 }
             except Exception as e:
                 results[renderer] = {
                     "success": False,
                     "message": str(e),
-                    "artifacts_count": 0
+                    "artifacts_count": 0,
                 }
 
         # At least one renderer should succeed
         successes = [r for r, v in results.items() if v["success"]]
-        assert len(successes) > 0 or len(results) == 0, f"No renderers succeeded: {results}"
+        assert len(successes) > 0 or len(results) == 0, (
+            f"No renderers succeeded: {results}"
+        )
 
     @pytest.mark.integration
     @pytest.mark.slow
@@ -178,7 +185,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
         """Test that render output can be used by execute step."""
         # Create output structure matching pipeline expectations
         safe_filesystem.create_dir("output/11_render_output")
-        model_output = safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
+        model_output = safe_filesystem.create_dir(
+            "output/11_render_output/test_model/pymdp"
+        )
 
         try:
             # Render to the expected location
@@ -196,7 +205,7 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 
                     # Script should be valid Python
                     try:
-                        compile(content, script, 'exec')
+                        compile(content, script, "exec")
                     except SyntaxError as e:
                         pytest.fail(f"Rendered script has syntax error: {e}")
 
@@ -216,7 +225,7 @@ class TestRenderOutputStructure:
             "name": "test_model",
             "states": ["s"],
             "observations": ["o"],
-            "parameters": {"A": [[0.5, 0.5]]}
+            "parameters": {"A": [[0.5, 0.5]]},
         }
 
     @pytest.mark.unit
@@ -232,8 +241,9 @@ class TestRenderOutputStructure:
                 for artifact in artifacts:
                     # Should have recognizable extensions
                     ext = Path(artifact).suffix
-                    assert ext in ['.py', '.jl', '.toml', '.json', '.md', '.txt', ''], \
+                    assert ext in [".py", ".jl", ".toml", ".json", ".md", ".txt", ""], (
                         f"Unexpected extension: {ext}"
+                    )
 
         except Exception as e:
             pytest.skip(f"Render dependencies not available: {e}")
@@ -248,7 +258,7 @@ class TestRenderOutputStructure:
 
             # Check for documentation files
             all_files = list(output_dir.rglob("*"))
-            [f for f in all_files if f.suffix == '.md']
+            [f for f in all_files if f.suffix == ".md"]
 
             # Documentation may or may not be generated depending on renderer
             # This is informational - not a failure if missing

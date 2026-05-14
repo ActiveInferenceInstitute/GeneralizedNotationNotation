@@ -32,6 +32,7 @@ from pathlib import Path
 # Test markers
 pytestmark = [pytest.mark.recovery]
 
+
 @pytest.fixture
 def test_environment():
     """Create an isolated environment for testing."""
@@ -41,6 +42,7 @@ def test_environment():
         (temp_path / "input").mkdir()
         (temp_path / "output").mkdir()
         yield temp_path
+
 
 @pytest.fixture
 def sample_gnn_file(test_environment):
@@ -58,6 +60,7 @@ def sample_gnn_file(test_environment):
     """)
     return file_path
 
+
 class TestRecursionErrorRecovery:
     """Test suite for NumPy recursion error recovery."""
 
@@ -74,7 +77,8 @@ class TestRecursionErrorRecovery:
             with pytest.raises(RecursionError):
                 # Force a recursion via a small function to simulate failure scenario
                 def _recur(n):
-                    return 1 if n == 0 else _recur(n-1) + _recur(n-1)
+                    return 1 if n == 0 else _recur(n - 1) + _recur(n - 1)
+
                 _recur(2000)
         finally:
             sys.setrecursionlimit(original_limit)
@@ -82,9 +86,10 @@ class TestRecursionErrorRecovery:
         # Should recover by increasing recursion limit
         sys.setrecursionlimit(3000)
         # Remove any cached failed import so retry occurs
-        sys.modules.pop('numpy.typing', None)
+        sys.modules.pop("numpy.typing", None)
         import numpy as np  # noqa: F401
-        assert 'numpy' in sys.modules
+
+        assert "numpy" in sys.modules
 
     def test_render_step_recovery(self, test_environment, sample_gnn_file):
         """Test render step recovery from recursion errors."""
@@ -93,11 +98,12 @@ class TestRecursionErrorRecovery:
         # Execute real render; recovery should be handled internally if needed
         result = render_gnn_files(
             target_dir=test_environment / "input",
-            output_dir=test_environment / "output"
+            output_dir=test_environment / "output",
         )
 
         assert result["status"] == "SUCCESS"
         assert isinstance(result["recovery_actions"], list)
+
 
 class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
@@ -108,10 +114,16 @@ class TestAsyncAwaitRecovery:
         from llm.analyzer import analyze_gnn_file_with_llm
 
         # Real call: skip if no local providers and no keys available
-        if not (os.getenv('OPENAI_API_KEY') or os.getenv('OLLAMA_DISABLED', '0') == '0'):
+        if not (
+            os.getenv("OPENAI_API_KEY") or os.getenv("OLLAMA_DISABLED", "0") == "0"
+        ):
             pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
         maybe_result = analyze_gnn_file_with_llm(sample_gnn_file)
-        result = asyncio.run(maybe_result) if inspect.isawaitable(maybe_result) else maybe_result
+        result = (
+            asyncio.run(maybe_result)
+            if inspect.isawaitable(maybe_result)
+            else maybe_result
+        )
 
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
@@ -122,12 +134,15 @@ class TestAsyncAwaitRecovery:
         from llm.analyzer import analyze_gnn_file_with_llm
 
         # Real call: skip if no local providers and no keys available
-        if not (os.getenv('OPENAI_API_KEY') or os.getenv('OLLAMA_DISABLED', '0') == '0'):
+        if not (
+            os.getenv("OPENAI_API_KEY") or os.getenv("OLLAMA_DISABLED", "0") == "0"
+        ):
             pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
         result = analyze_gnn_file_with_llm(sample_gnn_file)
 
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
+
 
 class TestLightweightProcessingRecovery:
     """Test suite for lightweight processing recovery."""
@@ -138,8 +153,7 @@ class TestLightweightProcessingRecovery:
 
         # Call real method; it should choose a mode based on availability
         result = process_gnn_directory(
-            test_environment / "input",
-            test_environment / "output"
+            test_environment / "input", test_environment / "output"
         )
 
         assert result["status"] == "SUCCESS"
@@ -156,6 +170,7 @@ class TestLightweightProcessingRecovery:
         assert result[str(sample_gnn_file)]["status"] == "processed"
         assert result[str(sample_gnn_file)]["format"] == "markdown"
         assert isinstance(result[str(sample_gnn_file)]["size"], int)
+
 
 class TestHardwareInitialization:
     """Test suite for hardware initialization."""
@@ -174,13 +189,11 @@ class TestHardwareInitialization:
         """Test execution with hardware recovery."""
         from execute.executor import execute_gnn_model
 
-        result = execute_gnn_model(
-            sample_gnn_file,
-            test_environment / "output"
-        )
+        result = execute_gnn_model(sample_gnn_file, test_environment / "output")
 
         assert result["status"] == "SUCCESS"
         assert result["execution_device"] == "cpu"
+
 
 class TestResourceManagementRecovery:
     """Test suite for resource management recovery."""
@@ -207,6 +220,7 @@ class TestResourceManagementRecovery:
             assert check_disk_space(test_environment, required_mb=1)
         except RuntimeError:
             pytest.skip("Insufficient disk space on test system")
+
 
 class TestErrorReportingRecovery:
     """Test suite for error reporting mechanisms."""
@@ -242,6 +256,7 @@ class TestErrorReportingRecovery:
         assert isinstance(result, dict)
         assert result["status"] == "ERROR"
         assert result["message"] == "Test error occurred"
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

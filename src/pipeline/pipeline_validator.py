@@ -44,7 +44,7 @@ class PipelineValidator:
         if not logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
@@ -59,7 +59,7 @@ class PipelineValidator:
             "pymdp_import_fix": False,
             "jax_flax_fix": False,
             "julia_matrix_fix": False,
-            "dependency_handling": False
+            "dependency_handling": False,
         }
 
         try:
@@ -86,7 +86,9 @@ class PipelineValidator:
                     self.logger.warning("⚠️ JAX Flax fix not applied")
 
             # Test Julia matrix formatting fix
-            julia_renderer_path = Path("src/render/activeinference_jl/activeinference_renderer.py")
+            julia_renderer_path = Path(
+                "src/render/activeinference_jl/activeinference_renderer.py"
+            )
             if julia_renderer_path.exists():
                 content = julia_renderer_path.read_text()
                 # Should have improved matrix conversion function
@@ -128,14 +130,14 @@ class PipelineValidator:
                     "optional_count": len(result["optional"]),
                     "fallbacks_available": len(result["fallbacks_available"]),
                     "warnings": len(result["warnings"]),
-                    "errors": len(result["errors"])
+                    "errors": len(result["errors"]),
                 }
 
                 status_emoji = {
                     "healthy": "✅",
                     "degraded": "⚠️",
                     "failed": "❌",
-                    "unknown": "❓"
+                    "unknown": "❓",
                 }.get(result["status"], "❓")
 
                 self.logger.info(
@@ -146,7 +148,7 @@ class PipelineValidator:
             return {
                 "validation_successful": True,
                 "step_results": step_results,
-                "overall_health": self._calculate_overall_health(step_results)
+                "overall_health": self._calculate_overall_health(step_results),
             }
 
         except Exception as e:
@@ -180,7 +182,7 @@ class PipelineValidator:
             "execution_time": 0,
             "memory_usage": 0,
             "warnings_count": 0,
-            "errors_count": 0
+            "errors_count": 0,
         }
 
         try:
@@ -188,11 +190,15 @@ class PipelineValidator:
 
             # Use main.py to execute pipeline steps
             cmd = [
-                sys.executable, "src/main.py",
-                "--target-dir", "input/gnn_files",
-                "--output-dir", "output",
-                "--only-steps", ",".join(steps),
-                "--verbose"
+                sys.executable,
+                "src/main.py",
+                "--target-dir",
+                "input/gnn_files",
+                "--output-dir",
+                "output",
+                "--only-steps",
+                ",".join(steps),
+                "--verbose",
             ]
 
             self.logger.info(f"Executing: {' '.join(cmd)}")
@@ -202,7 +208,7 @@ class PipelineValidator:
                 capture_output=True,
                 text=True,
                 timeout=300,  # 5 minute timeout
-                cwd=Path.cwd()
+                cwd=Path.cwd(),
             )
 
             end_time = datetime.now()
@@ -213,7 +219,9 @@ class PipelineValidator:
                 test_results["execution_successful"] = True
                 self.logger.info("✅ Pipeline execution completed successfully")
             else:
-                self.logger.error(f"❌ Pipeline execution failed with code {result.returncode}")
+                self.logger.error(
+                    f"❌ Pipeline execution failed with code {result.returncode}"
+                )
 
             # Count warnings and errors in output
             combined_output = result.stdout + result.stderr
@@ -242,7 +250,7 @@ class PipelineValidator:
                             "status": step_data.get("status", "unknown"),
                             "duration": step_data.get("duration_seconds", 0),
                             "exit_code": step_data.get("exit_code", -1),
-                            "memory_usage": step_data.get("memory_usage_mb", 0)
+                            "memory_usage": step_data.get("memory_usage_mb", 0),
                         }
                 except Exception as e:
                     self.logger.warning(f"Could not parse summary file: {e}")
@@ -259,7 +267,9 @@ class PipelineValidator:
 
         return test_results
 
-    def validate_success_status(self, execution_results: Dict[str, Any]) -> Dict[str, Any]:
+    def validate_success_status(
+        self, execution_results: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """Validate that pipeline steps achieve SUCCESS status instead of SUCCESS_WITH_WARNINGS."""
         self.logger.info("📊 Validating SUCCESS status achievement...")
 
@@ -267,11 +277,13 @@ class PipelineValidator:
             "success_rate_improved": False,
             "warnings_reduced": False,
             "no_critical_failures": False,
-            "step_analysis": {}
+            "step_analysis": {},
         }
 
         try:
-            if execution_results.get("execution_successful") and execution_results.get("step_results"):
+            if execution_results.get("execution_successful") and execution_results.get(
+                "step_results"
+            ):
                 step_results = execution_results["step_results"]
 
                 # Analyze step statuses
@@ -295,10 +307,14 @@ class PipelineValidator:
 
                 # Consider improvement if success rate is high
                 validation["success_rate_improved"] = success_rate >= 0.7
-                validation["warnings_reduced"] = success_with_warnings_count <= total_steps * 0.3
+                validation["warnings_reduced"] = (
+                    success_with_warnings_count <= total_steps * 0.3
+                )
                 validation["no_critical_failures"] = failed_count == 0
 
-                self.logger.info(f"📈 Success rate: {success_rate:.1%} ({success_count}/{total_steps})")
+                self.logger.info(
+                    f"📈 Success rate: {success_rate:.1%} ({success_count}/{total_steps})"
+                )
                 self.logger.info(f"⚠️ Warnings: {success_with_warnings_count}")
                 self.logger.info(f"❌ Failures: {failed_count}")
 
@@ -319,7 +335,7 @@ class PipelineValidator:
             "validator_version": "1.0.0",
             "improvements_validated": False,
             "pipeline_health": "unknown",
-            "recommendations": []
+            "recommendations": [],
         }
 
         try:
@@ -346,10 +362,10 @@ class PipelineValidator:
             success_status_improved = any(success_validation.values())
 
             report["improvements_validated"] = (
-                code_fixes_success and
-                dependency_success and
-                execution_success and
-                success_status_improved
+                code_fixes_success
+                and dependency_success
+                and execution_success
+                and success_status_improved
             )
 
             # 6. Calculate pipeline health
@@ -363,7 +379,9 @@ class PipelineValidator:
                     else:
                         health_scores.append(0.0)
 
-                avg_health = sum(health_scores) / len(health_scores) if health_scores else 0
+                avg_health = (
+                    sum(health_scores) / len(health_scores) if health_scores else 0
+                )
                 if avg_health >= 0.8:
                     report["pipeline_health"] = "excellent"
                 elif avg_health >= 0.6:
@@ -380,10 +398,14 @@ class PipelineValidator:
                 recommendations.append("Complete remaining code generation fixes")
 
             if execution_test.get("warnings_count", 0) > 0:
-                recommendations.append(f"Address {execution_test['warnings_count']} remaining warnings")
+                recommendations.append(
+                    f"Address {execution_test['warnings_count']} remaining warnings"
+                )
 
             if execution_test.get("errors_count", 0) > 0:
-                recommendations.append(f"Fix {execution_test['errors_count']} remaining errors")
+                recommendations.append(
+                    f"Fix {execution_test['errors_count']} remaining errors"
+                )
 
             if not success_status_improved:
                 recommendations.append("Continue improving SUCCESS status achievement")
@@ -399,11 +421,15 @@ class PipelineValidator:
                 "good": "✅",
                 "fair": "⚠️",
                 "poor": "❌",
-                "unknown": "❓"
+                "unknown": "❓",
             }.get(report["pipeline_health"], "❓")
 
-            self.logger.info(f"{status_emoji} Pipeline Health: {report['pipeline_health'].upper()}")
-            self.logger.info(f"🔧 Improvements Validated: {'YES' if report['improvements_validated'] else 'NO'}")
+            self.logger.info(
+                f"{status_emoji} Pipeline Health: {report['pipeline_health'].upper()}"
+            )
+            self.logger.info(
+                f"🔧 Improvements Validated: {'YES' if report['improvements_validated'] else 'NO'}"
+            )
 
         except Exception as e:
             self.logger.error(f"❌ Error generating report: {e}")
@@ -411,14 +437,16 @@ class PipelineValidator:
 
         return report
 
-    def save_validation_report(self, report: Dict[str, Any], output_path: Path = None) -> Path:
+    def save_validation_report(
+        self, report: Dict[str, Any], output_path: Path = None
+    ) -> Path:
         """Save validation report to file."""
         if output_path is None:
             output_path = Path("output/pipeline_validation_report.json")
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(report, f, indent=2, default=str)
 
         self.logger.info(f"📄 Validation report saved to: {output_path}")
@@ -443,7 +471,9 @@ def main() -> int:
     print("📊 VALIDATION SUMMARY")
     print("=" * 60)
     print(f"Pipeline Health: {report['pipeline_health'].upper()}")
-    print(f"Improvements Validated: {'✅ YES' if report['improvements_validated'] else '❌ NO'}")
+    print(
+        f"Improvements Validated: {'✅ YES' if report['improvements_validated'] else '❌ NO'}"
+    )
     print(f"Report saved to: {report_path}")
 
     if report.get("recommendations"):

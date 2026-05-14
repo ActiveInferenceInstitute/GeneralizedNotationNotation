@@ -10,7 +10,7 @@ FEATURES = {
     "model_versioning": True,
     "registry_management": True,
     "metadata_handling": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 from pathlib import Path
@@ -20,12 +20,7 @@ from typing import Any, Dict, List, Optional
 from .registry import ModelRegistry, process_model_registry
 
 # Re-export main classes and functions
-__all__ = [
-    '__version__',
-    'FEATURES',
-    'ModelRegistry',
-    'process_model_registry'
-]
+__all__ = ["__version__", "FEATURES", "ModelRegistry", "process_model_registry"]
 
 
 def get_module_info() -> dict:

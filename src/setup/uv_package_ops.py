@@ -15,8 +15,6 @@ from .constants import (
 logger = logging.getLogger(__name__)
 
 
-
-
 def add_uv_dependency(package: str, dev: bool = False, verbose: bool = False) -> bool:
     """
     Add a dependency to the project using UV add command.

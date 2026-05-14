@@ -132,8 +132,13 @@ class TestSecurityFunctional:
             data = json.load(f)
 
         required_keys = [
-            "timestamp", "processed_files", "success", "errors",
-            "security_checks", "vulnerabilities", "recommendations"
+            "timestamp",
+            "processed_files",
+            "success",
+            "errors",
+            "security_checks",
+            "vulnerabilities",
+            "recommendations",
         ]
         for key in required_keys:
             assert key in data, f"Missing required key: {key}"
@@ -161,7 +166,9 @@ class TestSecurityFunctional:
         patterns_found = [p["context"] for p in result["sensitive_patterns"]]
         assert len(result["sensitive_patterns"]) > 0, "Should detect sensitive patterns"
         # At least password or api_key should be found
-        assert any("password" in p.lower() or "api_key" in p.lower() for p in patterns_found)
+        assert any(
+            "password" in p.lower() or "api_key" in p.lower() for p in patterns_found
+        )
 
     # -- check_vulnerabilities() tests --
 
@@ -190,7 +197,9 @@ class TestSecurityFunctional:
         gnn_file = list(vuln_gnn_dir.glob("*.md"))[0]
         vulns = check_vulnerabilities(gnn_file, verbose=True)
 
-        cred_vulns = [v for v in vulns if v["vulnerability_type"] == "Hardcoded credentials"]
+        cred_vulns = [
+            v for v in vulns if v["vulnerability_type"] == "Hardcoded credentials"
+        ]
         assert len(cred_vulns) > 0, "Should detect hardcoded credentials"
 
     @pytest.mark.unit

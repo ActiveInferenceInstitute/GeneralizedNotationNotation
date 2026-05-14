@@ -9,8 +9,9 @@ orchestrator script for modularity and testing.
 from __future__ import annotations
 
 # Default noise parameters
-DEFAULT_A_SIGNAL = 0.85   # probability of correct observation
-DEFAULT_B_SIGNAL = 0.80   # probability of intended transition
+DEFAULT_A_SIGNAL = 0.85  # probability of correct observation
+DEFAULT_B_SIGNAL = 0.80  # probability of intended transition
+
 
 def _fmt_row(vals: list[float]) -> str:
     """Format a row of floats for GNN matrix notation."""

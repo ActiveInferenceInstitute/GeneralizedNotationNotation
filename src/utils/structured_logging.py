@@ -26,6 +26,7 @@ import psutil
 
 class LogLevel(Enum):
     """Structured log levels with numeric values."""
+
     DEBUG = 10
     INFO = 20
     WARNING = 30
@@ -35,6 +36,7 @@ class LogLevel(Enum):
 
 class LogFormat(Enum):
     """Supported log output formats."""
+
     JSON = "json"
     TEXT = "text"
     STRUCTURED = "structured"
@@ -43,12 +45,15 @@ class LogFormat(Enum):
 @dataclass
 class LogContext:
     """Context information for structured logging."""
+
     correlation_id: str
     step_name: Optional[str] = None
     operation: Optional[str] = None
     user_id: Optional[str] = None
     session_id: Optional[str] = None
-    environment: str = field(default_factory=lambda: os.getenv("ENVIRONMENT", "development"))
+    environment: str = field(
+        default_factory=lambda: os.getenv("ENVIRONMENT", "development")
+    )
     version: str = "1.1.3"
     timestamp: float = field(default_factory=time.time)
 
@@ -56,6 +61,7 @@ class LogContext:
 @dataclass
 class PerformanceMetrics:
     """Performance tracking metrics."""
+
     start_time: float
     end_time: Optional[float] = None
     memory_start_mb: float = 0.0
@@ -123,17 +129,20 @@ class StructuredLogger:
             "logger": self.name,
             "thread": threading.current_thread().name,
             "process": os.getpid(),
-            **extra_data
+            **extra_data,
         }
 
         # Add performance metrics if tracking an operation
-        if self.context.operation and self.context.operation in self.performance_metrics:
+        if (
+            self.context.operation
+            and self.context.operation in self.performance_metrics
+        ):
             metrics = self.performance_metrics[self.context.operation]
             log_data["performance"] = {
                 "duration_seconds": metrics.duration_seconds,
                 "memory_delta_mb": metrics.memory_delta_mb,
                 "operation_count": metrics.operation_count,
-                "error_count": metrics.error_count
+                "error_count": metrics.error_count,
             }
 
         # Choose log method based on level
@@ -145,7 +154,9 @@ class StructuredLogger:
             # For text/structured format, log the message and add structured data
             log_method(f"[{self.correlation_id}] {message}")
             if extra_data:
-                self.base_logger.debug(f"[{self.correlation_id}] Extra data: {extra_data}")
+                self.base_logger.debug(
+                    f"[{self.correlation_id}] Extra data: {extra_data}"
+                )
 
     def debug(self, message: str, **extra_data):
         """Log debug message."""
@@ -193,14 +204,16 @@ class StructuredLogger:
             metrics = PerformanceMetrics(
                 start_time=time.time(),
                 memory_start_mb=memory_info.rss / 1024 / 1024,
-                cpu_percent_start=process.cpu_percent()
+                cpu_percent_start=process.cpu_percent(),
             )
 
             self.performance_metrics[operation_name] = metrics
 
         except Exception as e:
             # If performance tracking fails, continue without it
-            self.base_logger.debug(f"Performance tracking start failed (non-fatal): {e}")
+            self.base_logger.debug(
+                f"Performance tracking start failed (non-fatal): {e}"
+            )
 
     def _end_performance_tracking(self, operation_name: str):
         """End tracking performance metrics for an operation."""
@@ -217,15 +230,19 @@ class StructuredLogger:
             metrics.cpu_percent_end = process.cpu_percent()
 
             # Log performance summary
-            self.info(f"Operation '{operation_name}' completed",
-                     duration_seconds=round(metrics.duration_seconds, 3),
-                     memory_delta_mb=round(metrics.memory_delta_mb, 2))
+            self.info(
+                f"Operation '{operation_name}' completed",
+                duration_seconds=round(metrics.duration_seconds, 3),
+                memory_delta_mb=round(metrics.memory_delta_mb, 2),
+            )
 
         except Exception as e:
             # If performance tracking fails, continue without it
             self.base_logger.debug(f"Performance tracking end failed (non-fatal): {e}")
 
-    def log_pipeline_step(self, step_name: str, status: str, duration: float = None, **extra_data):
+    def log_pipeline_step(
+        self, step_name: str, status: str, duration: float = None, **extra_data
+    ):
         """Log pipeline step completion with structured data."""
         self.set_context(step_name=step_name)
 
@@ -233,7 +250,7 @@ class StructuredLogger:
             "step_name": step_name,
             "status": status,
             "event_type": "pipeline_step",
-            **extra_data
+            **extra_data,
         }
 
         if duration is not None:
@@ -242,11 +259,16 @@ class StructuredLogger:
         if status == "SUCCESS":
             self.info(f"Pipeline step '{step_name}' completed successfully", **log_data)
         elif status == "SUCCESS_WITH_WARNINGS":
-            self.warning(f"Pipeline step '{step_name}' completed with warnings", **log_data)
+            self.warning(
+                f"Pipeline step '{step_name}' completed with warnings", **log_data
+            )
         elif status == "FAILED":
             self.error(f"Pipeline step '{step_name}' failed", **log_data)
         else:
-            self.info(f"Pipeline step '{step_name}' completed with status: {status}", **log_data)
+            self.info(
+                f"Pipeline step '{step_name}' completed with status: {status}",
+                **log_data,
+            )
 
     def log_error(self, error: Exception, step_name: Optional[str] = None, **context):
         """Log an error with full context and traceback."""
@@ -259,16 +281,18 @@ class StructuredLogger:
             "error_type": type(error).__name__,
             "error_message": str(error),
             "traceback": traceback.format_exc(),
-            "module": getattr(error, '__module__', 'unknown'),
+            "module": getattr(error, "__module__", "unknown"),
             "event_type": "error",
-            **context
+            **context,
         }
 
         self.error(f"Error in {step_name or 'unknown'}: {error}", **error_data)
 
-    def create_child_logger(self, child_name: str) -> 'StructuredLogger':
+    def create_child_logger(self, child_name: str) -> "StructuredLogger":
         """Create a child logger with the same correlation ID."""
-        child_logger = StructuredLogger(f"{self.name}.{child_name}", self.correlation_id)
+        child_logger = StructuredLogger(
+            f"{self.name}.{child_name}", self.correlation_id
+        )
         child_logger.context = self.context
         return child_logger
 
@@ -282,20 +306,22 @@ class StructuredFormatter(logging.Formatter):
 
     def format(self, record):
         # Add correlation ID to all log records
-        if not hasattr(record, 'correlation_id'):
+        if not hasattr(record, "correlation_id"):
             record.correlation_id = self.correlation_id
 
         # Format timestamp
         timestamp = datetime.fromtimestamp(record.created).isoformat()
 
         # Create structured message
-        if hasattr(record, 'correlation_id'):
+        if hasattr(record, "correlation_id"):
             message = f"[{record.correlation_id}] {timestamp} [{record.levelname}] {record.name}: {record.getMessage()}"
         else:
-            message = f"{timestamp} [{record.levelname}] {record.name}: {record.getMessage()}"
+            message = (
+                f"{timestamp} [{record.levelname}] {record.name}: {record.getMessage()}"
+            )
 
         # Add any extra data from the record
-        if hasattr(record, 'extra_data') and record.extra_data:
+        if hasattr(record, "extra_data") and record.extra_data:
             message += f" | {record.extra_data}"
 
         return message
@@ -319,7 +345,12 @@ class LogAggregator:
             duration = log_data.get("duration_seconds", 0)
 
             if step_name not in self.metrics:
-                self.metrics[step_name] = {"count": 0, "successes": 0, "failures": 0, "total_duration": 0}
+                self.metrics[step_name] = {
+                    "count": 0,
+                    "successes": 0,
+                    "failures": 0,
+                    "total_duration": 0,
+                }
 
             self.metrics[step_name]["count"] += 1
             self.metrics[step_name]["total_duration"] += duration
@@ -334,14 +365,16 @@ class LogAggregator:
         summary = {
             "total_logs": len(self.logs),
             "step_metrics": self.metrics,
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
 
         # Calculate success rates
         for _, metrics in self.metrics.items():
             if metrics["count"] > 0:
                 metrics["success_rate"] = metrics["successes"] / metrics["count"]
-                metrics["average_duration"] = metrics["total_duration"] / metrics["count"]
+                metrics["average_duration"] = (
+                    metrics["total_duration"] / metrics["count"]
+                )
 
         return summary
 
@@ -350,7 +383,7 @@ class LogAggregator:
         summary_file = output_dir / f"log_summary_{int(time.time())}.json"
         summary = self.generate_summary()
 
-        with open(summary_file, 'w') as f:
+        with open(summary_file, "w") as f:
             json.dump(summary, f, indent=2)
 
         return summary_file
@@ -363,7 +396,7 @@ _correlation_context = threading.local()
 
 def get_pipeline_logger(name: str) -> StructuredLogger:
     """Get a structured logger for pipeline use."""
-    correlation_id = getattr(_correlation_context, 'correlation_id', None)
+    correlation_id = getattr(_correlation_context, "correlation_id", None)
     return StructuredLogger(name, correlation_id)
 
 
@@ -379,7 +412,7 @@ def get_system_info() -> Dict[str, str]:
             "platform": platform.platform(),
             "python_version": sys.version.split()[0],
             "cpu_count": str(os.cpu_count()),
-            "hostname": platform.node()
+            "hostname": platform.node(),
         }
     except Exception:
         return {"error": "Could not retrieve system info"}
@@ -390,40 +423,49 @@ def log_pipeline_start(logger, pipeline_name: str, **context):
     """Log pipeline start event - compatible with both StructuredLogger and standard Logger."""
     if isinstance(logger, StructuredLogger):
         # StructuredLogger - can handle extra data
-        logger.info(f"Starting pipeline: {pipeline_name}",
-                   event_type="pipeline_start",
-                   pipeline_name=pipeline_name,
-                   system_info=get_system_info(),
-                   **context)
+        logger.info(
+            f"Starting pipeline: {pipeline_name}",
+            event_type="pipeline_start",
+            pipeline_name=pipeline_name,
+            system_info=get_system_info(),
+            **context,
+        )
     else:
         # Standard logger - just log the message (no extra kwargs)
         logger.info(f"🚀 Starting pipeline: {pipeline_name}")
 
 
-def log_pipeline_complete(logger, pipeline_name: str, status: str,
-                         total_duration: float, **context):
+def log_pipeline_complete(
+    logger, pipeline_name: str, status: str, total_duration: float, **context
+):
     """Log pipeline completion event - compatible with both StructuredLogger and standard Logger."""
     if isinstance(logger, StructuredLogger):
         # StructuredLogger - can handle extra data
-        logger.info(f"Pipeline {pipeline_name} completed with status: {status}",
-                   event_type="pipeline_complete",
-                   pipeline_name=pipeline_name,
-                   status=status,
-                   total_duration_seconds=round(total_duration, 3),
-                   **context)
+        logger.info(
+            f"Pipeline {pipeline_name} completed with status: {status}",
+            event_type="pipeline_complete",
+            pipeline_name=pipeline_name,
+            status=status,
+            total_duration_seconds=round(total_duration, 3),
+            **context,
+        )
     else:
         # Standard logger - just log the message (no extra kwargs)
-        logger.info(f"🏁 Pipeline {pipeline_name} completed with status: {status} in {total_duration:.2f}s")
+        logger.info(
+            f"🏁 Pipeline {pipeline_name} completed with status: {status} in {total_duration:.2f}s"
+        )
 
 
 def log_step_start(logger, step_name: str, **context):
     """Log step start event - compatible with both StructuredLogger and standard Logger."""
     if isinstance(logger, StructuredLogger):
         # StructuredLogger - can handle extra data
-        logger.info(f"Starting step: {step_name}",
-                   event_type="step_start",
-                   step_name=step_name,
-                   **context)
+        logger.info(
+            f"Starting step: {step_name}",
+            event_type="step_start",
+            step_name=step_name,
+            **context,
+        )
     else:
         # Standard logger - just log the message (no extra kwargs)
         logger.info(f"🚀 Starting step: {step_name}")
@@ -457,4 +499,3 @@ def log_step_warning(logger, message: str, **context):
     else:
         # Standard logger - just log the message (no extra kwargs)
         logger.warning(f"⚠️ {message}")
-

@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class PipelineDiagnosticEnhancer:
     """
     Enhanced diagnostic analyzer for pipeline execution summaries.
-    
+
     Provides detailed analysis of pipeline performance, failures, warnings,
     and actionable recommendations for improvements.
     """
@@ -28,37 +28,37 @@ class PipelineDiagnosticEnhancer:
             "gradio.*has no attribute.*Blocks": {
                 "category": "dependency_version",
                 "solution": "Upgrade Gradio to version 4.0+ using: uv add gradio",
-                "priority": "critical"
+                "priority": "critical",
             },
             "POMDP processing modules not available.*attempted relative import": {
                 "category": "import_error",
                 "solution": "Fix relative imports in render/processor.py",
-                "priority": "high"
+                "priority": "high",
             },
             "matplotlib.*incompatible constructor arguments": {
                 "category": "matplotlib_dpi",
                 "solution": "Fix matplotlib DPI calculation in visualization modules",
-                "priority": "medium"
+                "priority": "medium",
             },
             "PyMDP not available": {
                 "category": "optional_dependency",
                 "solution": "Install PyMDP for full simulation capabilities: uv add pymdp",
-                "priority": "low"
-            }
+                "priority": "low",
+            },
         }
 
     def enhance_summary(self, summary_path: Path) -> Dict[str, Any]:
         """
         Enhance an existing pipeline summary with diagnostic information.
-        
+
         Args:
             summary_path: Path to the pipeline execution summary JSON file
-            
+
         Returns:
             Enhanced summary dictionary with diagnostic insights
         """
         try:
-            with open(summary_path, 'r') as f:
+            with open(summary_path, "r") as f:
                 summary = json.load(f)
 
             # Add diagnostic analysis
@@ -75,7 +75,7 @@ class PipelineDiagnosticEnhancer:
 
             # Save enhanced summary
             enhanced_path = summary_path.parent / f"enhanced_{summary_path.name}"
-            with open(enhanced_path, 'w') as f:
+            with open(enhanced_path, "w") as f:
                 json.dump(summary, f, indent=2, default=str)
 
             logger.info(f"Enhanced pipeline summary saved to: {enhanced_path}")
@@ -92,7 +92,7 @@ class PipelineDiagnosticEnhancer:
             "performance_analysis": {},
             "error_analysis": {},
             "warning_analysis": {},
-            "dependency_analysis": {}
+            "dependency_analysis": {},
         }
 
         steps = summary.get("steps", [])
@@ -102,16 +102,24 @@ class PipelineDiagnosticEnhancer:
         # Execution analysis
         total_steps = len(steps)
         successful_steps = sum(1 for step in steps if step.get("status") == "SUCCESS")
-        warning_steps = sum(1 for step in steps if step.get("status") == "SUCCESS_WITH_WARNINGS")
-        failed_steps = sum(1 for step in steps if step.get("status", "").startswith("FAILED"))
+        warning_steps = sum(
+            1 for step in steps if step.get("status") == "SUCCESS_WITH_WARNINGS"
+        )
+        failed_steps = sum(
+            1 for step in steps if step.get("status", "").startswith("FAILED")
+        )
 
         diagnostics["execution_analysis"] = {
             "total_steps": total_steps,
             "successful_steps": successful_steps,
             "warning_steps": warning_steps,
             "failed_steps": failed_steps,
-            "success_rate": (successful_steps + warning_steps) / total_steps * 100 if total_steps > 0 else 0,
-            "critical_failure_rate": failed_steps / total_steps * 100 if total_steps > 0 else 0
+            "success_rate": (successful_steps + warning_steps) / total_steps * 100
+            if total_steps > 0
+            else 0,
+            "critical_failure_rate": failed_steps / total_steps * 100
+            if total_steps > 0
+            else 0,
         }
 
         # Performance analysis
@@ -122,7 +130,7 @@ class PipelineDiagnosticEnhancer:
                 "average_duration": sum(durations) / len(durations),
                 "median_duration": sorted(durations)[len(durations) // 2],
                 "slowest_step": max(steps, key=lambda s: s.get("duration_seconds", 0)),
-                "fastest_step": min(steps, key=lambda s: s.get("duration_seconds", 0))
+                "fastest_step": min(steps, key=lambda s: s.get("duration_seconds", 0)),
             }
 
         # Error and warning analysis
@@ -139,7 +147,7 @@ class PipelineDiagnosticEnhancer:
                     issue_info = {
                         "step": step.get("script_name", "unknown"),
                         "pattern": pattern,
-                        **info
+                        **info,
                     }
                     if info["priority"] in ["critical", "high"]:
                         all_errors.append(issue_info)
@@ -179,10 +187,12 @@ class PipelineDiagnosticEnhancer:
         return {
             "missing_dependencies": list(missing_deps),
             "optional_dependencies": list(optional_deps),
-            "version_issues": list(version_issues)
+            "version_issues": list(version_issues),
         }
 
-    def _generate_recommendations(self, summary: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_recommendations(
+        self, summary: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """Generate actionable recommendations based on analysis."""
         recommendations = []
         diagnostics = summary.get("diagnostics", {})
@@ -190,46 +200,54 @@ class PipelineDiagnosticEnhancer:
         # Check for critical failures
         execution = diagnostics.get("execution_analysis", {})
         if execution.get("failed_steps", 0) > 0:
-            recommendations.append({
-                "type": "critical",
-                "category": "execution",
-                "title": "Critical Step Failures Detected",
-                "description": f"Pipeline has {execution['failed_steps']} failed steps that need immediate attention",
-                "action": "Review failed step logs and resolve blocking issues before proceeding"
-            })
+            recommendations.append(
+                {
+                    "type": "critical",
+                    "category": "execution",
+                    "title": "Critical Step Failures Detected",
+                    "description": f"Pipeline has {execution['failed_steps']} failed steps that need immediate attention",
+                    "action": "Review failed step logs and resolve blocking issues before proceeding",
+                }
+            )
 
         # Performance recommendations
         performance = diagnostics.get("performance_analysis", {})
         if performance.get("average_duration", 0) > 5.0:
             slowest = performance.get("slowest_step", {})
-            recommendations.append({
-                "type": "optimization",
-                "category": "performance",
-                "title": "Performance Optimization Opportunity",
-                "description": f"Step {slowest.get('script_name', 'unknown')} takes {slowest.get('duration_seconds', 0):.2f}s",
-                "action": "Consider optimizing visualization or processing algorithms"
-            })
+            recommendations.append(
+                {
+                    "type": "optimization",
+                    "category": "performance",
+                    "title": "Performance Optimization Opportunity",
+                    "description": f"Step {slowest.get('script_name', 'unknown')} takes {slowest.get('duration_seconds', 0):.2f}s",
+                    "action": "Consider optimizing visualization or processing algorithms",
+                }
+            )
 
         # Dependency recommendations
         deps = diagnostics.get("dependency_analysis", {})
         if deps.get("missing_dependencies"):
-            recommendations.append({
-                "type": "dependency",
-                "category": "setup",
-                "title": "Missing Dependencies",
-                "description": f"Missing: {', '.join(deps['missing_dependencies'])}",
-                "action": f"Install missing dependencies: uv add {' '.join(deps['missing_dependencies'])}"
-            })
+            recommendations.append(
+                {
+                    "type": "dependency",
+                    "category": "setup",
+                    "title": "Missing Dependencies",
+                    "description": f"Missing: {', '.join(deps['missing_dependencies'])}",
+                    "action": f"Install missing dependencies: uv add {' '.join(deps['missing_dependencies'])}",
+                }
+            )
 
         # Error-specific recommendations
         for error in diagnostics.get("error_analysis", []):
-            recommendations.append({
-                "type": "error_fix",
-                "category": error["category"],
-                "title": f"Fix {error['step']} Issue",
-                "description": f"{error['category'].title()} issue in {error['step']}",
-                "action": error["solution"]
-            })
+            recommendations.append(
+                {
+                    "type": "error_fix",
+                    "category": error["category"],
+                    "title": f"Fix {error['step']} Issue",
+                    "description": f"{error['category'].title()} issue in {error['step']}",
+                    "action": error["solution"],
+                }
+            )
 
         return recommendations
 
@@ -247,7 +265,7 @@ class PipelineDiagnosticEnhancer:
 
         # Deduct for warnings
         warning_steps = execution.get("warning_steps", 0)
-        deductions += warning_steps * 5   # 5 points per warning
+        deductions += warning_steps * 5  # 5 points per warning
 
         # Deduct for performance issues
         performance = diagnostics.get("performance_analysis", {})
@@ -274,18 +292,20 @@ class PipelineDiagnosticEnhancer:
                 "base_score": base_score,
                 "failure_penalty": failed_steps * 25,
                 "warning_penalty": warning_steps * 5,
-                "performance_penalty": min(10, max(0, (performance.get("average_duration", 0) - 10) * 2))
-            }
+                "performance_penalty": min(
+                    10, max(0, (performance.get("average_duration", 0) - 10) * 2)
+                ),
+            },
         }
 
 
 def enhance_pipeline_summary(summary_path: Path) -> Dict[str, Any]:
     """
     Convenience function to enhance a pipeline summary.
-    
+
     Args:
         summary_path: Path to pipeline execution summary JSON
-        
+
     Returns:
         Enhanced summary with diagnostic information
     """
@@ -295,11 +315,14 @@ def enhance_pipeline_summary(summary_path: Path) -> Dict[str, Any]:
 
 if __name__ == "__main__":
     import sys
+
     if len(sys.argv) > 1:
         summary_path = Path(sys.argv[1])
         if summary_path.exists():
             enhanced = enhance_pipeline_summary(summary_path)
-            print(f"Enhanced summary with health score: {enhanced.get('health_score', {}).get('score', 0)}/100")
+            print(
+                f"Enhanced summary with health score: {enhanced.get('health_score', {}).get('score', 0)}/100"
+            )
         else:
             print(f"Summary file not found: {summary_path}")
     else:

@@ -31,10 +31,13 @@ try:
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import PlainTextResponse, StreamingResponse
     from pydantic import BaseModel, Field
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False
-    logger.debug("fastapi not installed — API unavailable. Install with: pip install fastapi uvicorn")
+    logger.debug(
+        "fastapi not installed — API unavailable. Install with: pip install fastapi uvicorn"
+    )
 
 # Add src to path
 _src_dir = str(Path(__file__).parent.parent)
@@ -53,6 +56,7 @@ if FASTAPI_AVAILABLE:
 
     class RunRequest(BaseModel):
         """Pipeline run request."""
+
         target_dir: str = "input/gnn_files"
         output_dir: str = "output"
         skip_steps: List[int] = Field(default_factory=list)
@@ -61,6 +65,7 @@ if FASTAPI_AVAILABLE:
 
     class RunStatus(BaseModel):
         """Pipeline run status response."""
+
         run_hash: str
         status: str  # queued, running, completed, failed
         started_at: Optional[str] = None
@@ -73,6 +78,7 @@ if FASTAPI_AVAILABLE:
 
     class HealthResponse(BaseModel):
         """API health check response."""
+
         status: str = "healthy"
         version: str = "2.0.0"
         pipeline_steps: int = 25
@@ -121,7 +127,9 @@ if FASTAPI_AVAILABLE:
             )
 
         @_app.post("/api/v1/run", response_model=RunStatus)
-        async def submit_run(request: RunRequest, background_tasks: BackgroundTasks) -> RunStatus:
+        async def submit_run(
+            request: RunRequest, background_tasks: BackgroundTasks
+        ) -> RunStatus:
             """Submit a pipeline run for background execution."""
             from pipeline.hasher import compute_run_hash
 
@@ -132,7 +140,7 @@ if FASTAPI_AVAILABLE:
             except ValueError as err:
                 raise HTTPException(
                     status_code=400,
-                    detail=f"Target directory must be within the repository root: {request.target_dir}"
+                    detail=f"Target directory must be within the repository root: {request.target_dir}",
                 ) from err
 
             run_hash = compute_run_hash(
@@ -158,7 +166,9 @@ if FASTAPI_AVAILABLE:
             }
             _runs[run_hash] = run_entry
             background_tasks.add_task(_execute_pipeline, run_hash, request)
-            return RunStatus(run_hash=run_hash, status="queued", started_at=run_entry["started_at"])
+            return RunStatus(
+                run_hash=run_hash, status="queued", started_at=run_entry["started_at"]
+            )
 
         @_app.get("/api/v1/runs/{run_hash}", response_model=RunStatus)
         async def get_run(run_hash: str) -> RunStatus:
@@ -183,7 +193,9 @@ if FASTAPI_AVAILABLE:
             report_path = output_dir / "PIPELINE_REPORT.md"
             if not report_path.exists():
                 raise HTTPException(status_code=404, detail="Report not yet generated")
-            return PlainTextResponse(report_path.read_text(encoding="utf-8"), media_type="text/markdown")
+            return PlainTextResponse(
+                report_path.read_text(encoding="utf-8"), media_type="text/markdown"
+            )
 
         @_app.get("/api/v1/runs/{run_hash}/stream")
         async def stream_events(run_hash: str) -> "StreamingResponse":
@@ -211,7 +223,10 @@ if FASTAPI_AVAILABLE:
         async def list_runs() -> Dict[str, Dict[str, Any]]:
             """List all known runs."""
             return {
-                hash_: {"status": entry["status"], "started_at": entry.get("started_at")}
+                hash_: {
+                    "status": entry["status"],
+                    "started_at": entry.get("started_at"),
+                }
                 for hash_, entry in _runs.items()
             }
 
@@ -227,39 +242,49 @@ if FASTAPI_AVAILABLE:
             self._run_hash = run_hash
 
         def emit_pipeline_start(self) -> None:
-            self._entry["events"].append({
-                "type": "pipeline_start",
-                "run_hash": self._run_hash,
-                "timestamp": datetime.now().isoformat(),
-            })
+            self._entry["events"].append(
+                {
+                    "type": "pipeline_start",
+                    "run_hash": self._run_hash,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
         def on_step_start(self, name: str, step_num: int) -> None:
             self._entry["current_step"] = name
-            self._entry["events"].append({
-                "type": "step_start",
-                "step_num": step_num,
-                "step_name": name,
-                "timestamp": datetime.now().isoformat(),
-            })
+            self._entry["events"].append(
+                {
+                    "type": "step_start",
+                    "step_num": step_num,
+                    "step_name": name,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
-        def on_step_complete(self, name: str, step_num: int, status: str, duration: float) -> None:
+        def on_step_complete(
+            self, name: str, step_num: int, status: str, duration: float
+        ) -> None:
             self._entry["steps_completed"] = self._entry.get("steps_completed", 0) + 1
-            self._entry["events"].append({
-                "type": "step_complete",
-                "step_num": step_num,
-                "step_name": name,
-                "status": status,
-                "duration": duration,
-                "timestamp": datetime.now().isoformat(),
-            })
+            self._entry["events"].append(
+                {
+                    "type": "step_complete",
+                    "step_num": step_num,
+                    "step_name": name,
+                    "status": status,
+                    "duration": duration,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
         def on_error(self, name: str, error_msg: str) -> None:
-            self._entry["events"].append({
-                "type": "error",
-                "step_name": name,
-                "error": error_msg,
-                "timestamp": datetime.now().isoformat(),
-            })
+            self._entry["events"].append(
+                {
+                    "type": "error",
+                    "step_name": name,
+                    "error": error_msg,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
         def mark_completed(self, start: float) -> None:
             self._entry["status"] = "completed"
@@ -295,6 +320,7 @@ if FASTAPI_AVAILABLE:
             tracker.emit_pipeline_start()
 
             from pipeline.step_registry import discover_steps
+
             steps = discover_steps()
 
             skip = set(request.skip_steps)
@@ -341,7 +367,16 @@ if FASTAPI_AVAILABLE:
     def _check_renderers() -> Dict[str, bool]:
         """Check which renderers are available."""
         renderers = {}
-        for name in ["pymdp", "rxinfer", "jax", "numpyro", "stan", "pytorch", "activeinference_jl", "discopy"]:
+        for name in [
+            "pymdp",
+            "rxinfer",
+            "jax",
+            "numpyro",
+            "stan",
+            "pytorch",
+            "activeinference_jl",
+            "discopy",
+        ]:
             try:
                 __import__(f"render.{name}", fromlist=["_"])
                 renderers[name] = True
@@ -368,6 +403,7 @@ def start_server(host: str = "127.0.0.1", port: int = 8000):
         return
 
     import uvicorn
+
     logger.info(f"Starting GNN API server on {host}:{port}")
     uvicorn.run(app, host=host, port=port)
 

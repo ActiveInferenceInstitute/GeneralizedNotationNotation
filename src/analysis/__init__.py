@@ -15,7 +15,7 @@ FEATURES = {
     "cross_framework_metrics": True,
     "pytorch_analysis": True,
     "numpyro_analysis": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 # Phase 6: analysis submodules are in-tree; all deps (numpy, matplotlib) are
@@ -81,75 +81,77 @@ from .processor import convert_numpy_types, process_analysis
 # and are discovered by ``processor.process_analysis`` via ``importlib`` — no
 # need to re-export per-framework aliases at the package level.
 
+
 def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools."""
     import importlib
+
     tools = {}
-    for pkg_name in ('numpy', 'pandas', 'scipy', 'matplotlib'):
+    for pkg_name in ("numpy", "pandas", "scipy", "matplotlib"):
         try:
             m = importlib.import_module(pkg_name)
-            tools[pkg_name] = {'available': True, 'version': m.__version__}
+            tools[pkg_name] = {"available": True, "version": m.__version__}
         except ImportError:
-            tools[pkg_name] = {'available': False, 'version': None}
+            tools[pkg_name] = {"available": False, "version": None}
     return tools
 
 
 __all__ = [
-    '__version__',
-    'FEATURES',
-    'process_analysis',
-    'convert_numpy_types',
-    'perform_statistical_analysis',
-    'extract_variables',
-    'extract_connections',
-    'extract_sections',
-    'calculate_variable_statistics',
-    'calculate_connection_statistics',
-    'calculate_section_statistics',
-    'count_type_distribution',
-    'build_connectivity_matrix',
-    'analyze_distributions',
-    'calculate_correlations',
-    'calculate_cyclomatic_complexity',
-    'calculate_cognitive_complexity',
-    'calculate_structural_complexity',
-    'calculate_complexity_metrics',
-    'calculate_maintainability_index',
-    'calculate_technical_debt',
-    'run_performance_benchmarks',
-    'perform_model_comparisons',
-    'generate_analysis_summary',
-    'analyze_framework_outputs',
-    'generate_framework_comparison_report',
-    'visualize_cross_framework_metrics',
+    "__version__",
+    "FEATURES",
+    "process_analysis",
+    "convert_numpy_types",
+    "perform_statistical_analysis",
+    "extract_variables",
+    "extract_connections",
+    "extract_sections",
+    "calculate_variable_statistics",
+    "calculate_connection_statistics",
+    "calculate_section_statistics",
+    "count_type_distribution",
+    "build_connectivity_matrix",
+    "analyze_distributions",
+    "calculate_correlations",
+    "calculate_cyclomatic_complexity",
+    "calculate_cognitive_complexity",
+    "calculate_structural_complexity",
+    "calculate_complexity_metrics",
+    "calculate_maintainability_index",
+    "calculate_technical_debt",
+    "run_performance_benchmarks",
+    "perform_model_comparisons",
+    "generate_analysis_summary",
+    "analyze_framework_outputs",
+    "generate_framework_comparison_report",
+    "visualize_cross_framework_metrics",
     # Post-simulation analysis functions
-    'analyze_simulation_traces',
-    'analyze_free_energy',
-    'analyze_policy_convergence',
-    'analyze_state_distributions',
-    'compare_framework_results',
-    'extract_pymdp_data',
-    'extract_rxinfer_data',
-    'extract_activeinference_jl_data',
-    'extract_jax_data',
-    'extract_discopy_data',
-    'analyze_execution_results',
+    "analyze_simulation_traces",
+    "analyze_free_energy",
+    "analyze_policy_convergence",
+    "analyze_state_distributions",
+    "compare_framework_results",
+    "extract_pymdp_data",
+    "extract_rxinfer_data",
+    "extract_activeinference_jl_data",
+    "extract_jax_data",
+    "extract_discopy_data",
+    "analyze_execution_results",
     # Active Inference-specific statistical methods
-    'compute_shannon_entropy',
-    'compute_kl_divergence',
-    'compute_variational_free_energy',
-    'compute_expected_free_energy',
-    'compute_information_gain',
-    'analyze_active_inference_metrics',
+    "compute_shannon_entropy",
+    "compute_kl_divergence",
+    "compute_variational_free_energy",
+    "compute_expected_free_energy",
+    "compute_information_gain",
+    "analyze_active_inference_metrics",
     # Comprehensive visualization functions
-    'visualize_all_framework_outputs',
-    'generate_belief_heatmaps',
-    'generate_action_analysis',
-    'generate_free_energy_plots',
-    'generate_observation_analysis',
-    'generate_cross_framework_comparison',
-    'plot_belief_evolution',
-    'animate_belief_evolution'
+    "visualize_all_framework_outputs",
+    "generate_belief_heatmaps",
+    "generate_action_analysis",
+    "generate_free_energy_plots",
+    "generate_observation_analysis",
+    "generate_cross_framework_comparison",
+    "plot_belief_evolution",
+    "animate_belief_evolution",
 ]
 
 

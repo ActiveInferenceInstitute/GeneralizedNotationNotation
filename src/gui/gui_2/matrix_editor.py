@@ -91,10 +91,10 @@ Visual Active Inference POMDP Agent - GUI 2 Visual Editor
 def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
     """
     Parse matrix information from GNN markdown for visual editing.
-    
+
     Args:
         gnn_text: GNN markdown content
-        
+
     Returns:
         Dictionary containing parsed matrix information
     """
@@ -102,7 +102,7 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
         "A": {"shape": [3, 3], "values": None, "description": "Likelihood matrix"},
         "B": {"shape": [3, 3, 3], "values": None, "description": "Transition matrices"},
         "C": {"shape": [3], "values": None, "description": "Preference vector"},
-        "D": {"shape": [3], "values": None, "description": "Prior vector"}
+        "D": {"shape": [3], "values": None, "description": "Prior vector"},
     }
 
     # Parse state space block
@@ -113,17 +113,17 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
         state_block = match.group(1)
 
         # Parse matrix dimensions
-        for line in state_block.split('\n'):
-            if '[' in line and ']' in line:
+        for line in state_block.split("\n"):
+            if "[" in line and "]" in line:
                 # Extract matrix name and dimensions
-                parts = line.split('[')
+                parts = line.split("[")
                 if len(parts) >= 2:
                     name = parts[0].strip()
                     if name in matrices:
                         # Extract dimensions
-                        dim_part = parts[1].split(']')[0]
+                        dim_part = parts[1].split("]")[0]
                         dims = []
-                        for d in dim_part.split(','):
+                        for d in dim_part.split(","):
                             d = d.strip()
                             if d.isdigit():
                                 dims.append(int(d))
@@ -150,7 +150,7 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
     return {
         "matrices": matrices,
         "connections": _parse_connections(gnn_text),
-        "metadata": _parse_metadata(gnn_text)
+        "metadata": _parse_metadata(gnn_text),
     }
 
 
@@ -175,7 +175,7 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
                 "size": shape[0],
                 "values": [0.0] * shape[0],
                 "description": description,
-                "editable": True
+                "editable": True,
             }
         elif len(shape) == 2:  # Matrix
             rows, cols = shape
@@ -185,7 +185,7 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
                 "cols": cols,
                 "values": [[0.0 for _ in range(cols)] for _ in range(rows)],
                 "description": description,
-                "editable": True
+                "editable": True,
             }
         elif len(shape) == 3:  # 3D Tensor
             depth, rows, cols = shape
@@ -194,27 +194,30 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
                 "depth": depth,
                 "rows": rows,
                 "cols": cols,
-                "values": [[[0.0 for _ in range(cols)] for _ in range(rows)] for _ in range(depth)],
+                "values": [
+                    [[0.0 for _ in range(cols)] for _ in range(rows)]
+                    for _ in range(depth)
+                ],
                 "description": description,
                 "editable": True,
-                "current_slice": 0
+                "current_slice": 0,
             }
 
     return {
         "visual_matrices": visual_matrices,
         "connections": parsed["connections"],
-        "metadata": parsed["metadata"]
+        "metadata": parsed["metadata"],
     }
 
 
 def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
     """
     Update GNN markdown from visual matrix edits.
-    
+
     Args:
         visual_data: Dictionary containing visual matrix data
         template: Base GNN template to update
-        
+
     Returns:
         Updated GNN markdown text
     """
@@ -224,11 +227,17 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
     state_space_updates = []
     for name, matrix in visual_data.get("visual_matrices", {}).items():
         if matrix["type"] == "vector":
-            state_space_updates.append(f"{name}[{matrix['size']},type=float]   # {matrix['description']}")
+            state_space_updates.append(
+                f"{name}[{matrix['size']},type=float]   # {matrix['description']}"
+            )
         elif matrix["type"] == "matrix":
-            state_space_updates.append(f"{name}[{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}")
+            state_space_updates.append(
+                f"{name}[{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}"
+            )
         elif matrix["type"] == "tensor":
-            state_space_updates.append(f"{name}[{matrix['depth']},{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}")
+            state_space_updates.append(
+                f"{name}[{matrix['depth']},{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}"
+            )
 
     # Update InitialParameterization with actual values
     param_updates = []
@@ -257,11 +266,16 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
 
     # Replace parameterization section
     if param_updates:
-        param_text = "## InitialParameterization\n# Updated via Visual Matrix Editor\n" + "\n".join(param_updates)
+        param_text = (
+            "## InitialParameterization\n# Updated via Visual Matrix Editor\n"
+            + "\n".join(param_updates)
+        )
 
         # Replace existing parameterization section
         param_pattern = r"## InitialParameterization.*?(?=##|\Z)"
-        updated_gnn = re.sub(param_pattern, param_text + "\n\n", updated_gnn, flags=re.DOTALL)
+        updated_gnn = re.sub(
+            param_pattern, param_text + "\n\n", updated_gnn, flags=re.DOTALL
+        )
 
     return updated_gnn
 
@@ -275,9 +289,9 @@ def _parse_connections(gnn_text: str) -> List[str]:
 
     if match:
         conn_block = match.group(1)
-        for line in conn_block.split('\n'):
+        for line in conn_block.split("\n"):
             line = line.strip()
-            if line and not line.startswith('#'):
+            if line and not line.startswith("#"):
                 connections.append(line)
 
     return connections
@@ -317,19 +331,29 @@ def validate_visual_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
         A = matrices["A"]
         s = matrices["s"]
         if A.get("type") == "matrix" and "rows" in A and "cols" in A:
-            n_states = s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+            n_states = (
+                s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+            )
             if n_states and A["cols"] != n_states:
-                errors.append(f"A matrix cols ({A['cols']}) must match s rows ({n_states})")
+                errors.append(
+                    f"A matrix cols ({A['cols']}) must match s rows ({n_states})"
+                )
 
     # Check B matrix dimensions: B should be [n_states, n_states, n_actions]
     if "B" in matrices and "s" in matrices:
         B = matrices["B"]
         s = matrices["s"]
         if B.get("type") == "tensor" and "rows" in B and "cols" in B:
-            n_states = s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+            n_states = (
+                s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+            )
             if n_states and B["rows"] != n_states:
-                errors.append(f"B matrix rows ({B['rows']}) must match s rows ({n_states})")
+                errors.append(
+                    f"B matrix rows ({B['rows']}) must match s rows ({n_states})"
+                )
             if n_states and B["cols"] != n_states:
-                errors.append(f"B matrix cols ({B['cols']}) must match s rows ({n_states})")
+                errors.append(
+                    f"B matrix cols ({B['cols']}) must match s rows ({n_states})"
+                )
 
     return errors

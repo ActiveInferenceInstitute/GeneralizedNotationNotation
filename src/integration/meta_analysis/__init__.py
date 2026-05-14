@@ -38,7 +38,9 @@ __all__ = [
 ]
 
 
-def run_meta_analysis(execute_output_dir, output_dir, render_output_dir=None, logger=None, verbose=False):
+def run_meta_analysis(
+    execute_output_dir, output_dir, render_output_dir=None, logger=None, verbose=False
+):
     """Run the full meta-analysis pipeline on execution outputs.
 
     Args:
@@ -66,7 +68,9 @@ def run_meta_analysis(execute_output_dir, output_dir, render_output_dir=None, lo
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # 1. Collect sweep data
-    collector = SweepDataCollector(execute_output_dir, render_output_dir=render_output_dir, logger=logger)
+    collector = SweepDataCollector(
+        execute_output_dir, render_output_dir=render_output_dir, logger=logger
+    )
     records = collector.collect()
 
     if not records:
@@ -80,17 +84,23 @@ def run_meta_analysis(execute_output_dir, output_dir, render_output_dir=None, lo
     gnn_format_statistics = None
     if gnn_stats_path.is_file():
         try:
-            gnn_format_statistics = json.loads(gnn_stats_path.read_text(encoding="utf-8"))
+            gnn_format_statistics = json.loads(
+                gnn_stats_path.read_text(encoding="utf-8")
+            )
         except (OSError, json.JSONDecodeError) as exc:
             logger.debug("Could not load format_statistics.json: %s", exc)
 
     validation_payload = validate_sweep_records(records)
     validation_path = output_dir / "sweep_validation.json"
-    validation_path.write_text(json.dumps(validation_payload, indent=2), encoding="utf-8")
+    validation_path.write_text(
+        json.dumps(validation_payload, indent=2), encoding="utf-8"
+    )
 
     statistics_payload = compute_meta_statistics(records)
     statistics_path = output_dir / "meta_statistics.json"
-    statistics_path.write_text(json.dumps(statistics_payload, indent=2), encoding="utf-8")
+    statistics_path.write_text(
+        json.dumps(statistics_payload, indent=2), encoding="utf-8"
+    )
 
     # 2. Generate visualizations
     viz_dir = output_dir / "visualizations"

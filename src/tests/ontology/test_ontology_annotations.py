@@ -31,7 +31,11 @@ def test_ontology_terms_file_loads_and_contains_core_concepts():
     if isinstance(data, dict):
         term_names = set(data.keys())
     elif isinstance(data, list):
-        term_names = {t.get("name") or t.get("term") or t.get("id") for t in data if isinstance(t, dict)}
+        term_names = {
+            t.get("name") or t.get("term") or t.get("id")
+            for t in data
+            if isinstance(t, dict)
+        }
     else:
         pytest.fail(f"Unexpected ontology file shape: {type(data).__name__}")
     # Core Active Inference concepts that MUST be present.
@@ -43,6 +47,7 @@ def test_ontology_terms_file_loads_and_contains_core_concepts():
 
 def test_load_defined_ontology_terms_returns_nonempty_dict():
     from ontology import load_defined_ontology_terms
+
     # API takes zero args — reads from the shipped act_inf_ontology_terms.json.
     terms = load_defined_ontology_terms()
     assert isinstance(terms, dict)
@@ -50,11 +55,14 @@ def test_load_defined_ontology_terms_returns_nonempty_dict():
     # At least one term should expose a description.
     first_key = next(iter(terms))
     first = terms[first_key]
-    assert isinstance(first, (dict, str)), f"Term value should be dict or str, got {type(first).__name__}"
+    assert isinstance(first, (dict, str)), (
+        f"Term value should be dict or str, got {type(first).__name__}"
+    )
 
 
 def test_parse_annotation_handles_valid_mapping():
     from ontology import parse_annotation
+
     # parse_annotation accepts a single annotation line like "s=HiddenState".
     result = parse_annotation("s=HiddenState")
     # API returns some representation that retains both sides of the mapping.
@@ -67,6 +75,7 @@ def test_parse_annotation_handles_valid_mapping():
 
 def test_parse_gnn_ontology_section_extracts_mappings():
     from ontology import parse_gnn_ontology_section
+
     # Parser recognizes mappings under the `## ActInfOntologyAnnotation` header
     # (also accepts `## Ontology`). Bare lines outside a header are ignored —
     # this behavior is intentional per processor.py:101-107.
@@ -79,8 +88,9 @@ def test_parse_gnn_ontology_section_extracts_mappings():
     result = parse_gnn_ontology_section(content)
     assert isinstance(result, dict)
     annotations = result.get("annotations", [])
-    assert any("s=HiddenState" in str(a) for a in annotations), \
+    assert any("s=HiddenState" in str(a) for a in annotations), (
         f"s=HiddenState not captured in annotations: {annotations!r}"
+    )
     assert any("o=Observation" in str(a) for a in annotations)
     assert any("A=RecognitionMatrix" in str(a) for a in annotations)
 
@@ -90,6 +100,7 @@ def test_parse_gnn_ontology_section_returns_empty_for_bare_content():
     Regression against a silent-None bug where callers would get AttributeError.
     """
     from ontology import parse_gnn_ontology_section
+
     result = parse_gnn_ontology_section("s=HiddenState\no=Observation\n")
     # Result is dict (possibly empty), not None — callers can safely .get().
     assert isinstance(result, dict)

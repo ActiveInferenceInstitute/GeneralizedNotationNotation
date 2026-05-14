@@ -27,6 +27,7 @@ from render.processor import normalize_matrices
 # Shannon Entropy Tests
 # =============================================================================
 
+
 class TestShannonEntropy:
     """Tests for compute_shannon_entropy."""
 
@@ -72,6 +73,7 @@ class TestShannonEntropy:
 # KL Divergence Tests
 # =============================================================================
 
+
 class TestKLDivergence:
     """Tests for compute_kl_divergence."""
 
@@ -113,6 +115,7 @@ class TestKLDivergence:
 # =============================================================================
 # Variational Free Energy Tests
 # =============================================================================
+
 
 class TestVariationalFreeEnergy:
     """Tests for compute_variational_free_energy."""
@@ -158,6 +161,7 @@ class TestVariationalFreeEnergy:
 # =============================================================================
 # Expected Free Energy Tests
 # =============================================================================
+
 
 class TestExpectedFreeEnergy:
     """Tests for compute_expected_free_energy."""
@@ -209,6 +213,7 @@ class TestExpectedFreeEnergy:
 # Information Gain Tests
 # =============================================================================
 
+
 class TestInformationGain:
     """Tests for compute_information_gain."""
 
@@ -238,6 +243,7 @@ class TestInformationGain:
 # Analyze Active Inference Metrics Tests
 # =============================================================================
 
+
 class TestAnalyzeActiveInferenceMetrics:
     """Tests for analyze_active_inference_metrics."""
 
@@ -249,10 +255,14 @@ class TestAnalyzeActiveInferenceMetrics:
         # Start uniform, converge to state 0
         for t in range(20):
             w = min(t / 15.0, 1.0)
-            b = np.array([(1 - w) * 0.25 + w * 0.9,
-                          (1 - w) * 0.25 + w * 0.05,
-                          (1 - w) * 0.25 + w * 0.03,
-                          (1 - w) * 0.25 + w * 0.02])
+            b = np.array(
+                [
+                    (1 - w) * 0.25 + w * 0.9,
+                    (1 - w) * 0.25 + w * 0.05,
+                    (1 - w) * 0.25 + w * 0.03,
+                    (1 - w) * 0.25 + w * 0.02,
+                ]
+            )
             b = b / b.sum()
             beliefs.append(b.tolist())
         free_energy = [5.0 - 0.2 * t + rng.normal(0, 0.05) for t in range(20)]
@@ -300,16 +310,20 @@ class TestAnalyzeActiveInferenceMetrics:
 # normalize_matrices Tests
 # =============================================================================
 
+
 class TestNormalizeMatrices:
     """Tests for normalize_matrices in render/processor.py."""
 
     def test_2d_a_matrix_normalization(self) -> None:
         """Columns of 2D A matrix should sum to 1 after normalization."""
         import logging
+
         log = logging.getLogger("test")
 
         A = np.array([[2.0, 1.0], [2.0, 3.0]])  # Columns sum to 4
-        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1, A_matrix=A)
+        pomdp = POMDPStateSpace(
+            num_states=2, num_observations=2, num_actions=1, A_matrix=A
+        )
         result = normalize_matrices(pomdp, log)
         col_sums = result.A_matrix.sum(axis=0)
         np.testing.assert_allclose(col_sums, [1.0, 1.0], atol=1e-10)
@@ -317,10 +331,13 @@ class TestNormalizeMatrices:
     def test_3d_b_matrix_normalization(self) -> None:
         """Columns of each action slice in 3D B should sum to 1."""
         import logging
+
         log = logging.getLogger("test")
 
         B = np.ones((3, 3, 2))  # (next_state, curr_state, action), all ones
-        pomdp = POMDPStateSpace(num_states=3, num_observations=3, num_actions=2, B_matrix=B)
+        pomdp = POMDPStateSpace(
+            num_states=3, num_observations=3, num_actions=2, B_matrix=B
+        )
         result = normalize_matrices(pomdp, log)
         for a in range(2):
             col_sums = result.B_matrix[:, :, a].sum(axis=0)
@@ -329,10 +346,13 @@ class TestNormalizeMatrices:
     def test_zero_column_uniform_fallback(self) -> None:
         """Zero-sum columns should be filled with uniform distribution."""
         import logging
+
         log = logging.getLogger("test")
 
         A = np.array([[0.0, 1.0], [0.0, 1.0]])  # Column 0 is all zeros
-        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1, A_matrix=A)
+        pomdp = POMDPStateSpace(
+            num_states=2, num_observations=2, num_actions=1, A_matrix=A
+        )
         result = normalize_matrices(pomdp, log)
         # Column 0 should now be uniform (0.5, 0.5)
         np.testing.assert_allclose(result.A_matrix[:, 0], [0.5, 0.5], atol=1e-10)
@@ -342,11 +362,16 @@ class TestNormalizeMatrices:
     def test_factorial_a_matrix(self) -> None:
         """Should handle list-of-arrays (factorial) A matrix."""
         import logging
+
         log = logging.getLogger("test")
 
-        A_list = [np.array([[3.0, 1.0], [1.0, 3.0]]),
-                  np.array([[2.0, 2.0], [2.0, 2.0]])]
-        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1, A_matrix=A_list)
+        A_list = [
+            np.array([[3.0, 1.0], [1.0, 3.0]]),
+            np.array([[2.0, 2.0], [2.0, 2.0]]),
+        ]
+        pomdp = POMDPStateSpace(
+            num_states=2, num_observations=2, num_actions=1, A_matrix=A_list
+        )
         result = normalize_matrices(pomdp, log)
         assert isinstance(result.A_matrix, list)
         for a in result.A_matrix:
@@ -356,6 +381,7 @@ class TestNormalizeMatrices:
     def test_passthrough_no_matrices(self) -> None:
         """Should handle POMDP with no matrices without error."""
         import logging
+
         log = logging.getLogger("test")
 
         pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1)

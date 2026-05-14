@@ -23,7 +23,13 @@ from typing import Any, Optional
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files", output_dir: str = "output", verbose: bool = False) -> bool:
+
+def run_test_configuration(
+    config_name: str,
+    target_dir: str = "input/gnn_files",
+    output_dir: str = "output",
+    verbose: bool = False,
+) -> bool:
     """Run a predefined test configuration."""
 
     # Define test configurations
@@ -31,38 +37,38 @@ def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files"
         "fast": {
             "args": ["--fast-only"],
             "description": "Run only fast tests (< 3 minutes) for quick validation",
-            "expected_duration": "2-3 minutes"
+            "expected_duration": "2-3 minutes",
         },
         "standard": {
             "args": [],
             "description": "Run fast and standard tests (recommended for development)",
-            "expected_duration": "5-10 minutes"
+            "expected_duration": "5-10 minutes",
         },
         "full": {
             "args": ["--comprehensive"],
             "description": "Run all tests including slow integration tests",
-            "expected_duration": "15-25 minutes"
+            "expected_duration": "15-25 minutes",
         },
         "performance": {
             "args": ["--include-performance"],
             "description": "Include performance benchmark tests",
-            "expected_duration": "20-30 minutes"
+            "expected_duration": "20-30 minutes",
         },
         "debug": {
             "args": ["--verbose"],
             "description": "Run with verbose output for debugging test issues",
-            "expected_duration": "5-15 minutes"
+            "expected_duration": "5-15 minutes",
         },
         "coverage": {
             "args": ["--verbose"],
             "description": "Run with detailed coverage reporting",
-            "expected_duration": "10-15 minutes"
+            "expected_duration": "10-15 minutes",
         },
         "minimal": {
             "args": ["--fast-only", "--no-coverage"],
             "description": "Minimal test run with no coverage for maximum speed",
-            "expected_duration": "1-2 minutes"
-        }
+            "expected_duration": "1-2 minutes",
+        },
     }
 
     if config_name not in configurations:
@@ -77,9 +83,12 @@ def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files"
     # Build command
     test_script = Path(__file__).parent.parent / "2_tests.py"
     cmd = [
-        sys.executable, str(test_script),
-        "--target-dir", target_dir,
-        "--output-dir", output_dir
+        sys.executable,
+        str(test_script),
+        "--target-dir",
+        target_dir,
+        "--output-dir",
+        output_dir,
     ]
 
     # Add configuration-specific args
@@ -102,9 +111,13 @@ def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files"
         duration = time.time() - start_time
 
         if result.returncode == 0:
-            print(f"✅ Test configuration '{config_name}' completed successfully in {duration:.1f}s")
+            print(
+                f"✅ Test configuration '{config_name}' completed successfully in {duration:.1f}s"
+            )
         else:
-            print(f"⚠️ Test configuration '{config_name}' completed with issues in {duration:.1f}s (exit code: {result.returncode})")
+            print(
+                f"⚠️ Test configuration '{config_name}' completed with issues in {duration:.1f}s (exit code: {result.returncode})"
+            )
 
         return result.returncode == 0
 
@@ -117,6 +130,7 @@ def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files"
         print(f"❌ Test execution failed after {duration:.1f}s: {e}")
         return False
 
+
 def list_configurations() -> None:
     """List all available test configurations."""
     configurations = {
@@ -126,7 +140,7 @@ def list_configurations() -> None:
         "performance": "Include performance benchmarks (20-30 minutes)",
         "debug": "Verbose output for debugging (5-15 minutes)",
         "coverage": "Detailed coverage reporting (10-15 minutes)",
-        "minimal": "Minimal run with no coverage (1-2 minutes)"
+        "minimal": "Minimal run with no coverage (1-2 minutes)",
     }
 
     print("Available test configurations:")
@@ -139,7 +153,10 @@ def list_configurations() -> None:
     print("  python src/tests/test_runner_helper.py full --verbose")
     print("  python src/tests/test_runner_helper.py debug --target-dir custom/path")
 
-def run_custom_tests(markers: Optional[str] = None, timeout: Optional[int] = None, **kwargs: Any) -> bool:
+
+def run_custom_tests(
+    markers: Optional[str] = None, timeout: Optional[int] = None, **kwargs: Any
+) -> bool:
     """Run tests with custom configuration."""
     test_script = Path(__file__).parent.parent / "2_tests.py"
     cmd = [sys.executable, str(test_script)]
@@ -147,7 +164,7 @@ def run_custom_tests(markers: Optional[str] = None, timeout: Optional[int] = Non
     # Add standard arguments
     for key, value in kwargs.items():
         if value is not None:
-            if key.replace('_', '-') in ['target-dir', 'output-dir']:
+            if key.replace("_", "-") in ["target-dir", "output-dir"]:
                 cmd.extend([f"--{key.replace('_', '-')}", str(value)])
             elif isinstance(value, bool) and value:
                 cmd.append(f"--{key.replace('_', '-')}")
@@ -168,6 +185,7 @@ def run_custom_tests(markers: Optional[str] = None, timeout: Optional[int] = Non
         print(f"❌ Custom test execution failed: {e}")
         return False
 
+
 def main() -> int:
     """Main entry point for test runner helper."""
     parser = argparse.ArgumentParser(
@@ -180,37 +198,32 @@ Examples:
   %(prog)s full                   # All tests including slow ones
   %(prog)s debug                  # Debug mode with verbose output
   %(prog)s list                   # List all available configurations
-        """
+        """,
     )
 
     parser.add_argument(
         "configuration",
         nargs="?",
-        help="Test configuration to run (fast, standard, full, performance, debug, coverage, minimal, list)"
+        help="Test configuration to run (fast, standard, full, performance, debug, coverage, minimal, list)",
     )
     parser.add_argument(
         "--target-dir",
         default="input/gnn_files",
-        help="Directory containing GNN files to test (default: input/gnn_files)"
+        help="Directory containing GNN files to test (default: input/gnn_files)",
     )
     parser.add_argument(
         "--output-dir",
         default="output",
-        help="Output directory for test results (default: output)"
+        help="Output directory for test results (default: output)",
     )
     parser.add_argument(
-        "--verbose", "-v",
-        action="store_true",
-        help="Enable verbose output"
+        "--verbose", "-v", action="store_true", help="Enable verbose output"
     )
     parser.add_argument(
-        "--custom-markers",
-        help="Custom pytest markers to use (advanced)"
+        "--custom-markers", help="Custom pytest markers to use (advanced)"
     )
     parser.add_argument(
-        "--custom-timeout",
-        type=int,
-        help="Custom timeout in seconds (advanced)"
+        "--custom-timeout", type=int, help="Custom timeout in seconds (advanced)"
     )
 
     args = parser.parse_args()
@@ -226,7 +239,7 @@ Examples:
             timeout=args.custom_timeout,
             target_dir=args.target_dir,
             output_dir=args.output_dir,
-            verbose=args.verbose
+            verbose=args.verbose,
         )
     else:
         # Handle predefined configurations
@@ -234,10 +247,11 @@ Examples:
             args.configuration,
             target_dir=args.target_dir,
             output_dir=args.output_dir,
-            verbose=args.verbose
+            verbose=args.verbose,
         )
 
     return 0 if success else 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

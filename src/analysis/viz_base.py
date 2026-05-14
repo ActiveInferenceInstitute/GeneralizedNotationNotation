@@ -16,11 +16,12 @@ from typing import Optional
 logger = logging.getLogger(__name__)
 
 # --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
-from src.visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
+from visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 
 patches = None
 try:
     import matplotlib.patches as _patches
+
     patches = _patches
 except (ImportError, AttributeError) as e:
     logger.debug("matplotlib.patches not available: %s", e)
@@ -29,8 +30,8 @@ except (ImportError, AttributeError) as e:
 def safe_savefig(
     output_path: Path,
     dpi: int = 300,
-    bbox_inches: str = 'tight',
-    log: Optional[logging.Logger] = None
+    bbox_inches: str = "tight",
+    log: Optional[logging.Logger] = None,
 ) -> Optional[str]:
     """
     Save the current matplotlib figure and close it.
@@ -69,10 +70,10 @@ def safe_savefig(
 
 
 __all__ = [
-    'plt',
-    'np',
-    'patches',
-    'sns',
-    'MATPLOTLIB_AVAILABLE',
-    'safe_savefig',
+    "plt",
+    "np",
+    "patches",
+    "sns",
+    "MATPLOTLIB_AVAILABLE",
+    "safe_savefig",
 ]

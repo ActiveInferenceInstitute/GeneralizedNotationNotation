@@ -34,14 +34,22 @@ class PKLSerializer(BaseGNNSerializer):
         if model.variables:
             lines.append("  variables: Mapping<String, Variable> = new Mapping {{")
             for var in sorted(model.variables, key=lambda v: v.name):
-                dims_str = f"List({', '.join(map(str, var.dimensions))})" if hasattr(var, 'dimensions') and var.dimensions else "List()"
-                var_type = var.var_type.value if hasattr(var, 'var_type') else 'hidden_state'
-                data_type = var.data_type.value if hasattr(var, 'data_type') else 'categorical'
+                dims_str = (
+                    f"List({', '.join(map(str, var.dimensions))})"
+                    if hasattr(var, "dimensions") and var.dimensions
+                    else "List()"
+                )
+                var_type = (
+                    var.var_type.value if hasattr(var, "var_type") else "hidden_state"
+                )
+                data_type = (
+                    var.data_type.value if hasattr(var, "data_type") else "categorical"
+                )
                 lines.append(f'    ["{var.name}"] = new Variable {{')
                 lines.append(f'      name = "{var.name}"')
                 lines.append(f'      varType = "{var_type}"')
                 lines.append(f'      dataType = "{data_type}"')
-                lines.append(f'      dimensions = {dims_str}')
+                lines.append(f"      dimensions = {dims_str}")
                 lines.append("    }}")
             lines.append("  }}")
             lines.append("")
@@ -50,18 +58,30 @@ class PKLSerializer(BaseGNNSerializer):
         if model.connections:
             lines.append("  connections: Mapping<String, Connection> = new Mapping {{")
             for i, conn in enumerate(model.connections):
-                sources = conn.source_variables if hasattr(conn, 'source_variables') else []
-                targets = conn.target_variables if hasattr(conn, 'target_variables') else []
-                conn_type = conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
+                sources = (
+                    conn.source_variables if hasattr(conn, "source_variables") else []
+                )
+                targets = (
+                    conn.target_variables if hasattr(conn, "target_variables") else []
+                )
+                conn_type = (
+                    conn.connection_type.value
+                    if hasattr(conn, "connection_type")
+                    else "directed"
+                )
 
                 quoted_sources = [f'"{s}"' for s in sources]
                 quoted_targets = [f'"{t}"' for t in targets]
-                sources_str = f"List({', '.join(quoted_sources)})" if sources else "List()"
-                targets_str = f"List({', '.join(quoted_targets)})" if targets else "List()"
+                sources_str = (
+                    f"List({', '.join(quoted_sources)})" if sources else "List()"
+                )
+                targets_str = (
+                    f"List({', '.join(quoted_targets)})" if targets else "List()"
+                )
 
                 lines.append(f'    ["connection_{i}"] = new Connection {{')
-                lines.append(f'      sourceVariables = {sources_str}')
-                lines.append(f'      targetVariables = {targets_str}')
+                lines.append(f"      sourceVariables = {sources_str}")
+                lines.append(f"      targetVariables = {targets_str}")
                 lines.append(f'      connectionType = "{conn_type}"')
                 lines.append("    }}")
             lines.append("  }}")
@@ -72,20 +92,20 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("  parameters: Mapping<String, Parameter> = new Mapping {{")
             for param in sorted(model.parameters, key=lambda p: p.name):
                 value_str = self._format_pkl_value(param.value)
-                param_type = getattr(param, 'param_type', 'constant')
+                param_type = getattr(param, "param_type", "constant")
                 lines.append(f'    ["{param.name}"] = new Parameter {{')
                 lines.append(f'      name = "{param.name}"')
-                lines.append(f'      value = {value_str}')
+                lines.append(f"      value = {value_str}")
                 lines.append(f'      paramType = "{param_type}"')
                 lines.append("    }}")
             lines.append("  }}")
             lines.append("")
 
         # Equations if present
-        if hasattr(model, 'equations') and model.equations:
+        if hasattr(model, "equations") and model.equations:
             lines.append("  equations: List<String> = new List {{")
             for eq in model.equations:
-                if isinstance(eq, dict) and 'equation' in eq:
+                if isinstance(eq, dict) and "equation" in eq:
                     lines.append(f'    "{eq["equation"]}"')
                 else:
                     lines.append(f'    "{str(eq)}"')
@@ -93,24 +113,26 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("")
 
         # Time specification if present
-        if hasattr(model, 'time_specification') and model.time_specification:
+        if hasattr(model, "time_specification") and model.time_specification:
             time_spec = model.time_specification
             if isinstance(time_spec, dict):
                 lines.append("  timeSpecification: TimeSpec = new TimeSpec {{")
-                lines.append(f'    timeType = "{time_spec.get("time_type", "discrete")}"')
-                lines.append(f'    steps = {time_spec.get("steps", 1)}')
-                if 'description' in time_spec:
+                lines.append(
+                    f'    timeType = "{time_spec.get("time_type", "discrete")}"'
+                )
+                lines.append(f"    steps = {time_spec.get('steps', 1)}")
+                if "description" in time_spec:
                     lines.append(f'    description = "{time_spec["description"]}"')
                 lines.append("  }}")
                 lines.append("")
 
         # Ontology mappings if present
-        if hasattr(model, 'ontology_mappings') and model.ontology_mappings:
+        if hasattr(model, "ontology_mappings") and model.ontology_mappings:
             lines.append("  ontologyMappings: List<OntologyMapping> = new List {{")
             for mapping in model.ontology_mappings:
                 if isinstance(mapping, dict):
-                    var_name = mapping.get('variable_name', 'unknown')
-                    ontology_term = mapping.get('ontology_term', 'unknown')
+                    var_name = mapping.get("variable_name", "unknown")
+                    ontology_term = mapping.get("ontology_term", "unknown")
                     lines.append("    new OntologyMapping {{")
                     lines.append(f'      variableName = "{var_name}"')
                     lines.append(f'      ontologyTerm = "{ontology_term}"')
@@ -147,7 +169,7 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("}}")
             lines.append("")
 
-        if hasattr(model, 'time_specification') and model.time_specification:
+        if hasattr(model, "time_specification") and model.time_specification:
             lines.append("class TimeSpec {{")
             lines.append("  timeType: String")
             lines.append("  steps: Int")
@@ -155,7 +177,7 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("}}")
             lines.append("")
 
-        if hasattr(model, 'ontology_mappings') and model.ontology_mappings:
+        if hasattr(model, "ontology_mappings") and model.ontology_mappings:
             lines.append("class OntologyMapping {{")
             lines.append("  variableName: String")
             lines.append("  ontologyTerm: String")
@@ -164,59 +186,94 @@ class PKLSerializer(BaseGNNSerializer):
 
         # Embed complete model data as JSON comment for round-trip fidelity
         model_data = {
-            'model_name': model.model_name,
-            'annotation': model.annotation,
-            'variables': [
+            "model_name": model.model_name,
+            "annotation": model.annotation,
+            "variables": [
                 {
-                    'name': var.name,
-                    'var_type': var.var_type.value if hasattr(var, 'var_type') else 'hidden_state',
-                    'data_type': var.data_type.value if hasattr(var, 'data_type') else 'categorical',
-                    'dimensions': var.dimensions if hasattr(var, 'dimensions') else []
+                    "name": var.name,
+                    "var_type": var.var_type.value
+                    if hasattr(var, "var_type")
+                    else "hidden_state",
+                    "data_type": var.data_type.value
+                    if hasattr(var, "data_type")
+                    else "categorical",
+                    "dimensions": var.dimensions if hasattr(var, "dimensions") else [],
                 }
                 for var in model.variables
             ],
-            'connections': [
+            "connections": [
                 {
-                    'source_variables': conn.source_variables if hasattr(conn, 'source_variables') else [],
-                    'target_variables': conn.target_variables if hasattr(conn, 'target_variables') else [],
-                    'connection_type': conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
+                    "source_variables": conn.source_variables
+                    if hasattr(conn, "source_variables")
+                    else [],
+                    "target_variables": conn.target_variables
+                    if hasattr(conn, "target_variables")
+                    else [],
+                    "connection_type": conn.connection_type.value
+                    if hasattr(conn, "connection_type")
+                    else "directed",
                 }
                 for conn in model.connections
             ],
-            'parameters': [
+            "parameters": [
                 {
-                    'name': param.name,
-                    'value': param.value,
-                    'param_type': getattr(param, 'param_type', 'constant')
+                    "name": param.name,
+                    "value": param.value,
+                    "param_type": getattr(param, "param_type", "constant"),
                 }
                 for param in model.parameters
             ],
-            'equations': [str(eq) for eq in (model.equations if hasattr(model, 'equations') else [])],
-            'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
-            'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
+            "equations": [
+                str(eq)
+                for eq in (model.equations if hasattr(model, "equations") else [])
+            ],
+            "time_specification": self._serialize_time_spec(model.time_specification)
+            if hasattr(model, "time_specification") and model.time_specification
+            else None,
+            "ontology_mappings": self._serialize_ontology_mappings(
+                model.ontology_mappings
+            )
+            if hasattr(model, "ontology_mappings")
+            else [],
         }
 
         # Add embedded JSON data as block comment
-        lines.append("/* MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')) + " */")
+        lines.append(
+            "/* MODEL_DATA: " + json.dumps(model_data, separators=(",", ":")) + " */"
+        )
         lines.append("")
 
         # Add parsing hints as comments
         lines.append("// Variables:")
         for var in model.variables:
-            lines.append(f"// Variable: {var.name} ({var.var_type.value if hasattr(var, 'var_type') else 'unknown'})")
+            lines.append(
+                f"// Variable: {var.name} ({var.var_type.value if hasattr(var, 'var_type') else 'unknown'})"
+            )
 
         lines.append("// Connections:")
         for conn in model.connections:
-            sources = ','.join(conn.source_variables) if hasattr(conn, 'source_variables') else 'unknown'
-            targets = ','.join(conn.target_variables) if hasattr(conn, 'target_variables') else 'unknown'
-            conn_type = conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
+            sources = (
+                ",".join(conn.source_variables)
+                if hasattr(conn, "source_variables")
+                else "unknown"
+            )
+            targets = (
+                ",".join(conn.target_variables)
+                if hasattr(conn, "target_variables")
+                else "unknown"
+            )
+            conn_type = (
+                conn.connection_type.value
+                if hasattr(conn, "connection_type")
+                else "directed"
+            )
             lines.append(f"// Connection: {sources} --{conn_type}--> {targets}")
 
         lines.append("// Parameters:")
         for param in model.parameters:
             lines.append(f"// Parameter: {param.name} = {param.value}")
 
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
     def _format_pkl_value(self, value) -> str:
         """Format a value for PKL syntax."""

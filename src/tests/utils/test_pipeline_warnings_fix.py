@@ -11,7 +11,7 @@ Tests verify that:
 4. Missing prerequisites generate appropriate warnings without failing execution
 5. The get_output_dir_for_script function prevents unintended directory nesting
 
-All tests use real implementations of validate_step_prerequisites() and 
+All tests use real implementations of validate_step_prerequisites() and
 get_output_dir_for_script() using real functions and filesystem operations.
 Tests use temporary directories for isolation and automatic cleanup.
 """
@@ -35,6 +35,7 @@ from utils.pipeline_validator import validate_step_prerequisites
 @dataclass
 class PipelineArgs:
     """Simulated-free replacement for pipeline arguments."""
+
     output_dir: Path
     target_dir: Path = None
     verbose: bool = False
@@ -73,9 +74,13 @@ class TestPipelineWarningsFix:
 
         # Should pass without warnings since 3_gnn_output exists with parsed files
         assert result["passed"], "Prerequisite validation should pass"
-        assert len(result["warnings"]) == 0, f"Should have no warnings, got: {result['warnings']}"
+        assert len(result["warnings"]) == 0, (
+            f"Should have no warnings, got: {result['warnings']}"
+        )
 
-    def test_prerequisite_validation_with_nested_directories(self, tmp_path: Any) -> None:
+    def test_prerequisite_validation_with_nested_directories(
+        self, tmp_path: Any
+    ) -> None:
         """Test that prerequisite validation detects and warns about nested directories."""
         # Setup
         output_dir = tmp_path / "output"
@@ -104,8 +109,9 @@ class TestPipelineWarningsFix:
         # Should pass with a warning about nested structure
         assert result["passed"], "Prerequisite validation should pass"
         assert len(result["warnings"]) > 0, "Should have warning about nested structure"
-        assert any("nested" in w.lower() for w in result["warnings"]), \
+        assert any("nested" in w.lower() for w in result["warnings"]), (
             f"Should warn about nested directory, got warnings: {result['warnings']}"
+        )
 
     def test_prerequisite_validation_missing_directory(self, tmp_path: Any) -> None:
         """Test that prerequisite validation warns about missing directories."""
@@ -125,9 +131,12 @@ class TestPipelineWarningsFix:
 
         # Should pass (validation doesn't fail) but with warning
         assert result["passed"], "Prerequisite validation should pass (non-blocking)"
-        assert len(result["warnings"]) > 0, "Should have warning about missing directory"
-        assert any("missing" in w.lower() for w in result["warnings"]), \
+        assert len(result["warnings"]) > 0, (
+            "Should have warning about missing directory"
+        )
+        assert any("missing" in w.lower() for w in result["warnings"]), (
             "Should warn about missing prerequisite directory"
+        )
 
     def test_get_output_dir_prevents_nesting(self, tmp_path: Any) -> None:
         """Test that get_output_dir_for_script prevents nested directories."""
@@ -142,7 +151,9 @@ class TestPipelineWarningsFix:
         # Second call with already-nested directory should NOT create double nesting
         result2 = get_output_dir_for_script("10_ontology.py", result1)
         # Should return the same directory, not result1 / "10_ontology_output"
-        assert result2 == expected, f"Should prevent nesting, expected {expected}, got {result2}"
+        assert result2 == expected, (
+            f"Should prevent nesting, expected {expected}, got {result2}"
+        )
 
     def test_get_output_dir_all_steps(self, tmp_path: Any) -> None:
         """Test that all pipeline steps get correct output directories."""
@@ -180,8 +191,9 @@ class TestPipelineWarningsFix:
         for script_name, expected_dir_name in steps:
             result = get_output_dir_for_script(script_name, base_output_dir)
             expected = base_output_dir / expected_dir_name
-            assert result == expected, \
+            assert result == expected, (
                 f"Script {script_name} should map to {expected_dir_name}, got {result.name}"
+            )
 
     def test_prerequisite_chain_validation(self, tmp_path: Any) -> None:
         """Test validation of prerequisite chains."""
@@ -204,8 +216,9 @@ class TestPipelineWarningsFix:
 
         # Should pass without warnings since all prerequisites exist
         assert result["passed"], "Prerequisite validation should pass"
+
     # Note: If checking for transitive dependencies is outside scope,
-        # there may still be a warning about 3_gnn.py not being a direct prerequisite
+    # there may still be a warning about 3_gnn.py not being a direct prerequisite
 
     def test_get_output_dir_with_path_object(self, tmp_path: Any) -> None:
         """Test get_output_dir_for_script with Path object."""
@@ -231,5 +244,3 @@ class TestPipelineWarningsFix:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
-
-

@@ -12,16 +12,12 @@ __author__ = "Active Inference Institute"
 __description__ = "research processing for GNN Processing Pipeline"
 
 FEATURES = {
-    'basic_processing': True,
-    'fallback_mode': True,  # Documented in CLAUDE.md: rule-based, no LLM required
+    "basic_processing": True,
+    "fallback_mode": True,  # Documented in CLAUDE.md: rule-based, no LLM required
 }
 
 
-__all__ = [
-    'process_research',
-    'FEATURES',
-    '__version__'
-]
+__all__ = ["process_research", "FEATURES", "__version__"]
 
 
 def get_module_info() -> dict:

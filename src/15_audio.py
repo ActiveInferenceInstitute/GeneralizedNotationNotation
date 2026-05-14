@@ -41,7 +41,10 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from audio import process_audio
 except ImportError as _import_err:
-    def process_audio(target_dir: str, output_dir: str, logger: object | None = None, **kwargs: object) -> bool:
+
+    def process_audio(
+        target_dir: str, output_dir: str, logger: object | None = None, **kwargs: object
+    ) -> bool:
         """Recovery audio processing when module unavailable."""
         import json
         import logging
@@ -57,27 +60,52 @@ except ImportError as _import_err:
             output_dir = Path(output_dir)
             output_dir.mkdir(parents=True, exist_ok=True)
             with open(output_dir / "audio_processing_skipped.json", "w") as f:
-                json.dump({"status": "skipped", "reason": str(_import_err)}, f, indent=2)
+                json.dump(
+                    {"status": "skipped", "reason": str(_import_err)}, f, indent=2
+                )
         except OSError as os_err:
-            log.debug(f"Could not write audio_processing_skipped.json (non-fatal): {os_err}")
+            log.debug(
+                f"Could not write audio_processing_skipped.json (non-fatal): {os_err}"
+            )
 
         return True
+
 
 run_script = create_standardized_pipeline_script(
     "15_audio.py",
     process_audio,
     "Audio processing for GNN models",
     additional_arguments={
-        "duration": {"type": float, "default": 30.0, "help": "Audio duration in seconds"},
-        "audio_backend": {"type": str, "default": "auto", "help": "Audio backend to use (auto, sapf, pedalboard)"},
-        "sonification": {"type": bool, "default": True, "help": "Generate sonification", "flag": "--sonification"},
-        "full_analysis": {"type": bool, "default": False, "help": "Run full audio analysis", "flag": "--full-analysis"}
-    }
+        "duration": {
+            "type": float,
+            "default": 30.0,
+            "help": "Audio duration in seconds",
+        },
+        "audio_backend": {
+            "type": str,
+            "default": "auto",
+            "help": "Audio backend to use (auto, sapf, pedalboard)",
+        },
+        "sonification": {
+            "type": bool,
+            "default": True,
+            "help": "Generate sonification",
+            "flag": "--sonification",
+        },
+        "full_analysis": {
+            "type": bool,
+            "default": False,
+            "help": "Run full audio analysis",
+            "flag": "--full-analysis",
+        },
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the audio step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

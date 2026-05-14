@@ -11,15 +11,18 @@ import sys
 from pathlib import Path
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
 
 def test_discopy_improvements():
     """Test the improved DisCoPy translator functionality."""
 
     # Import the translator module
     try:
-        from translator import (
+        from render.discopy.translator import (
             DISCOPY_MATRIX_MODULE_AVAILABLE,
             JAX_AVAILABLE,
             JAX_CORE_AVAILABLE,
@@ -30,6 +33,7 @@ def test_discopy_improvements():
             generate_setup_report,
             initialize_discopy_components,
         )
+
         logger.info("Successfully imported translator module")
     except ImportError as e:
         logger.error(f"Failed to import translator module: {e}")
@@ -70,31 +74,39 @@ A > B
 """
 
     test_file = Path("test_discopy_model.md")
-    with open(test_file, 'w') as f:
+    with open(test_file, "w") as f:
         f.write(test_gnn_content)
 
     try:
         # Test diagram creation (should fail gracefully)
-        from translator import gnn_file_to_discopy_diagram
+        from render.discopy.translator import gnn_file_to_discopy_diagram
 
         result = gnn_file_to_discopy_diagram(test_file, verbose=True)
         if result is None:
-            logger.info("✓ Diagram creation correctly returned None when dependencies unavailable")
+            logger.info(
+                "✓ Diagram creation correctly returned None when dependencies unavailable"
+            )
         else:
-            logger.warning("⚠ Diagram creation returned result when dependencies should be unavailable")
+            logger.warning(
+                "⚠ Diagram creation returned result when dependencies should be unavailable"
+            )
 
     except Exception as e:
         logger.error(f"✗ Diagram creation failed with exception: {e}")
 
     try:
         # Test matrix diagram creation (should fail gracefully)
-        from translator import gnn_file_to_discopy_matrix_diagram
+        from render.discopy.translator import gnn_file_to_discopy_matrix_diagram
 
         result = gnn_file_to_discopy_matrix_diagram(test_file, verbose=True)
         if result is None:
-            logger.info("✓ Matrix diagram creation correctly returned None when dependencies unavailable")
+            logger.info(
+                "✓ Matrix diagram creation correctly returned None when dependencies unavailable"
+            )
         else:
-            logger.warning("⚠ Matrix diagram creation returned result when dependencies should be unavailable")
+            logger.warning(
+                "⚠ Matrix diagram creation returned result when dependencies should be unavailable"
+            )
 
     except Exception as e:
         logger.error(f"✗ Matrix diagram creation failed with exception: {e}")
@@ -104,7 +116,7 @@ A > B
 
     # Test 5: Check global variables
     logger.info("=== Testing Global Variables ===")
-    from translator import Box, Dim, jax
+    from render.discopy.translator import Box, Dim, jax
 
     # These should be None when dependencies are not available
     if Dim is None:
@@ -130,6 +142,7 @@ A > B
     logger.info(f"JAX_AVAILABLE: {JAX_AVAILABLE}")
 
     return True
+
 
 if __name__ == "__main__":
     success = test_discopy_improvements()

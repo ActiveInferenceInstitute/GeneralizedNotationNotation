@@ -38,6 +38,7 @@ FORMAL_PARSER_AVAILABLE = False
 # Try to import round-trip testing capabilities
 try:
     from .parsers import GNNParsingSystem
+
     ROUND_TRIP_AVAILABLE = True
 except ImportError:
     ROUND_TRIP_AVAILABLE = False
@@ -52,21 +53,29 @@ class GNNParser:
     """Enhanced parser for GNN file format with multi-format support."""
 
     # Regular expressions for GNN syntax elements (enhanced)
-    SECTION_PATTERN = re.compile(r'^## (.+)$')
-    VARIABLE_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')
-    CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
+    SECTION_PATTERN = re.compile(r"^## (.+)$")
+    VARIABLE_PATTERN = re.compile(
+        r"^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$"
+    )
+    CONNECTION_PATTERN = re.compile(r"^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$")
     # Accept both '=' and ':' as assignment separators to support previous files
-    PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$')
-    ONTOLOGY_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$')
-    COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')
+    PARAMETER_PATTERN = re.compile(
+        r"^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$"
+    )
+    ONTOLOGY_PATTERN = re.compile(
+        r"^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$"
+    )
+    COMMENT_PATTERN = re.compile(r"^\s*#\s*(.*)$")
 
     # Enhanced format detection patterns
-    FORMAT_SIGNATURES = MappingProxyType({
-        'json': (r'^\s*\{', r'"model_name":', r'"variables":'),
-        'xml': (r'^\s*<\?xml', r'<gnn.*>', r'<model'),
-        'yaml': (r'^---', r'model_name:', r'variables:'),
-        'binary': (b'\x80\x03', b'pickle', b'\x00\x00\x00'),  # Pickle signatures
-    })
+    FORMAT_SIGNATURES = MappingProxyType(
+        {
+            "json": (r"^\s*\{", r'"model_name":', r'"variables":'),
+            "xml": (r"^\s*<\?xml", r"<gnn.*>", r"<model"),
+            "yaml": (r"^---", r"model_name:", r"variables:"),
+            "binary": (b"\x80\x03", b"pickle", b"\x00\x00\x00"),  # Pickle signatures
+        }
+    )
 
     def __init__(self, enhanced_validation: bool = True):
         self.enhanced_validation = enhanced_validation
@@ -78,18 +87,25 @@ class GNNParser:
             logger.info("Basic GNN parser initialized")
         # Expose basic schema metadata expected by tests and previous callers
         try:
-            self.schema = self.parsing_system.validator.schema if self.parsing_system else {}
+            self.schema = (
+                self.parsing_system.validator.schema if self.parsing_system else {}
+            )
         except Exception as e:
             logger.debug(f"Could not load schema from parsing system: {e}")
             self.schema = {}
 
-    def validate_file(self, file_path: Union[str, Path], validation_level: Optional[ValidationLevel] = None) -> 'ValidationResult':
+    def validate_file(
+        self,
+        file_path: Union[str, Path],
+        validation_level: Optional[ValidationLevel] = None,
+    ) -> "ValidationResult":
         """Validate a GNN file via the full ``GNNValidator`` implementation."""
         validator = GNNValidator()
         return validator.validate_file(file_path, validation_level=validation_level)
 
-    def parse_file(self, file_path: Union[str, Path],
-                   format_hint: Optional[str] = None) -> ParsedGNN:
+    def parse_file(
+        self, file_path: Union[str, Path], format_hint: Optional[str] = None
+    ) -> ParsedGNN:
         """Enhanced file parsing with format detection and validation."""
         file_path = Path(file_path)
 
@@ -100,12 +116,12 @@ class GNNParser:
         detected_format = format_hint or self._detect_file_format(file_path)
 
         # Handle different formats
-        if detected_format == 'binary':
+        if detected_format == "binary":
             return self._parse_binary_file(file_path)
         else:
             # Read as text
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
             except UnicodeDecodeError:
                 # Try as binary if UTF-8 fails
@@ -118,22 +134,22 @@ class GNNParser:
         # First try extension-based detection
         extension = file_path.suffix.lower()
         extension_map = {
-            '.md': 'markdown',
-            '.json': 'json',
-            '.xml': 'xml',
-            '.yaml': 'yaml',
-            '.yml': 'yaml',
-            '.pkl': 'binary',
-            '.pickle': 'binary'
+            ".md": "markdown",
+            ".json": "json",
+            ".xml": "xml",
+            ".yaml": "yaml",
+            ".yml": "yaml",
+            ".pkl": "binary",
+            ".pickle": "binary",
         }
 
         if extension in extension_map:
             detected = extension_map[extension]
 
             # Verify with content analysis for ambiguous cases
-            if extension in ['.md', '.txt'] and file_path.exists():
+            if extension in [".md", ".txt"] and file_path.exists():
                 content_format = self._detect_format_from_content(file_path)
-                if content_format != 'markdown':
+                if content_format != "markdown":
                     return content_format
 
             return detected
@@ -145,37 +161,42 @@ class GNNParser:
         """Detect format from file content analysis."""
         try:
             # Try reading as text first
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                 content = f.read(2000)  # Read first 2KB
 
             content.lower()
 
             # Check format signatures
             for fmt, patterns in self.FORMAT_SIGNATURES.items():
-                if fmt == 'binary':
+                if fmt == "binary":
                     continue  # Skip binary patterns for text content
 
-                if any(re.search(pattern, content, re.IGNORECASE) for pattern in patterns):
+                if any(
+                    re.search(pattern, content, re.IGNORECASE) for pattern in patterns
+                ):
                     return fmt
 
             # Check for GNN markdown indicators
-            if ('##' in content and
-                any(section in content for section in ['GNNSection', 'ModelName', 'StateSpaceBlock'])):
-                return 'markdown'
+            if "##" in content and any(
+                section in content
+                for section in ["GNNSection", "ModelName", "StateSpaceBlock"]
+            ):
+                return "markdown"
 
-            return 'markdown'  # Default recovery
+            return "markdown"  # Default recovery
 
         except UnicodeDecodeError:
-            return 'binary'
+            return "binary"
         except Exception as e:
             logger.debug(f"Format detection failed for file: {e}")
-            return 'unknown'
+            return "unknown"
 
     def _parse_binary_file(self, file_path: Path) -> ParsedGNN:
         """Parse binary files (pickle format)."""
         try:
             import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
-            with open(file_path, 'rb') as f:
+
+            with open(file_path, "rb") as f:
                 data = pickle.load(f)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
 
             # Convert pickle data to ParsedGNN format
@@ -196,7 +217,7 @@ class GNNParser:
                 ontology_mappings={},
                 model_parameters={},
                 footer="",
-                metadata={"parse_error": str(e), "source_format": "binary"}
+                metadata={"parse_error": str(e), "source_format": "binary"},
             )
 
     def _convert_pickle_to_parsed_gnn(self, data: Any) -> ParsedGNN:
@@ -205,19 +226,19 @@ class GNNParser:
         # This is a simplified version
         if isinstance(data, dict):
             return ParsedGNN(
-                gnn_section=data.get('gnn_section', 'PickleGNN'),
-                version=data.get('version', '1.0'),
-                model_name=data.get('model_name', 'PickleModel'),
-                model_annotation=data.get('annotation', ''),
-                variables=data.get('variables', {}),
-                connections=data.get('connections', []),
-                parameters=data.get('parameters', {}),
-                equations=data.get('equations', []),
-                time_config=data.get('time_config', {}),
-                ontology_mappings=data.get('ontology_mappings', {}),
-                model_parameters=data.get('model_parameters', {}),
-                footer=data.get('footer', ''),
-                source_format='pickle'
+                gnn_section=data.get("gnn_section", "PickleGNN"),
+                version=data.get("version", "1.0"),
+                model_name=data.get("model_name", "PickleModel"),
+                model_annotation=data.get("annotation", ""),
+                variables=data.get("variables", {}),
+                connections=data.get("connections", []),
+                parameters=data.get("parameters", {}),
+                equations=data.get("equations", []),
+                time_config=data.get("time_config", {}),
+                ontology_mappings=data.get("ontology_mappings", {}),
+                model_parameters=data.get("model_parameters", {}),
+                footer=data.get("footer", ""),
+                source_format="pickle",
             )
         else:
             # Create minimal representation for non-dict pickle data
@@ -234,11 +255,12 @@ class GNNParser:
                 ontology_mappings={},
                 model_parameters={},
                 footer="",
-                source_format='pickle'
+                source_format="pickle",
             )
 
-    def parse_content(self, content: str, source_name: str = "<string>",
-                     format_hint: str = "markdown") -> ParsedGNN:
+    def parse_content(
+        self, content: str, source_name: str = "<string>", format_hint: str = "markdown"
+    ) -> ParsedGNN:
         """Enhanced content parsing with format-specific handling."""
         # Use multi-format parsing system if available
         if self.parsing_system and format_hint != "markdown":
@@ -253,7 +275,9 @@ class GNNParser:
         # Recovery to markdown parsing
         return self._parse_markdown_content(content, source_name)
 
-    def _convert_parse_result_to_parsed_gnn(self, result, source_format: str) -> ParsedGNN:
+    def _convert_parse_result_to_parsed_gnn(
+        self, result, source_format: str
+    ) -> ParsedGNN:
         """Convert ParseResult to ParsedGNN format."""
         model = result.model
 
@@ -262,22 +286,26 @@ class GNNParser:
         for var in model.variables:
             variables[var.name] = GNNVariable(
                 name=var.name,
-                dimensions=getattr(var, 'dimensions', []),
-                data_type=str(getattr(var, 'data_type', 'categorical')),
-                description=getattr(var, 'description', ''),
-                ontology_mapping=getattr(var, 'ontology_mapping', None)
+                dimensions=getattr(var, "dimensions", []),
+                data_type=str(getattr(var, "data_type", "categorical")),
+                description=getattr(var, "description", ""),
+                ontology_mapping=getattr(var, "ontology_mapping", None),
             )
 
         # Convert connections
         connections = []
         for conn in model.connections:
-            connections.append(GNNConnection(
-                source=getattr(conn, 'source_variables', []),
-                target=getattr(conn, 'target_variables', []),
-                connection_type=str(getattr(conn, 'connection_type', 'directed')),
-                symbol=self._infer_symbol_from_type(str(getattr(conn, 'connection_type', 'directed'))),
-                description=getattr(conn, 'description', '')
-            ))
+            connections.append(
+                GNNConnection(
+                    source=getattr(conn, "source_variables", []),
+                    target=getattr(conn, "target_variables", []),
+                    connection_type=str(getattr(conn, "connection_type", "directed")),
+                    symbol=self._infer_symbol_from_type(
+                        str(getattr(conn, "connection_type", "directed"))
+                    ),
+                    description=getattr(conn, "description", ""),
+                )
+            )
 
         # Convert parameters
         parameters = {}
@@ -285,40 +313,40 @@ class GNNParser:
             parameters[param.name] = param.value
 
         return ParsedGNN(
-            gnn_section=getattr(model, 'gnn_section', f"{source_format.upper()}GNN"),
-            version=getattr(model, 'version', '1.0'),
+            gnn_section=getattr(model, "gnn_section", f"{source_format.upper()}GNN"),
+            version=getattr(model, "version", "1.0"),
             model_name=model.model_name,
             model_annotation=model.annotation,
             variables=variables,
             connections=connections,
             parameters=parameters,
-            equations=getattr(model, 'equations', []),
-            time_config=getattr(model, 'time_config', {}),
-            ontology_mappings=getattr(model, 'ontology_mappings', {}),
-            model_parameters=getattr(model, 'model_parameters', {}),
-            footer=getattr(model, 'footer', ''),
+            equations=getattr(model, "equations", []),
+            time_config=getattr(model, "time_config", {}),
+            ontology_mappings=getattr(model, "ontology_mappings", {}),
+            model_parameters=getattr(model, "model_parameters", {}),
+            footer=getattr(model, "footer", ""),
             source_format=source_format,
-            semantic_checksum=self._compute_semantic_checksum(model)
+            semantic_checksum=self._compute_semantic_checksum(model),
         )
 
     def _infer_symbol_from_type(self, connection_type: str) -> str:
         """Infer connection symbol from type."""
         symbol_map = {
-            'directed': '>',
-            'undirected': '-',
-            'conditional': '|',
-            'bidirectional': '<->'
+            "directed": ">",
+            "undirected": "-",
+            "conditional": "|",
+            "bidirectional": "<->",
         }
-        return symbol_map.get(connection_type, '>')
+        return symbol_map.get(connection_type, ">")
 
     def _compute_semantic_checksum(self, model) -> str:
         """Compute semantic checksum for model."""
         # Create normalized representation
         checksum_data = {
-            'model_name': model.model_name,
-            'variables': sorted([var.name for var in model.variables]),
-            'connections_count': len(model.connections),
-            'parameters_count': len(model.parameters)
+            "model_name": model.model_name,
+            "variables": sorted([var.name for var in model.variables]),
+            "connections_count": len(model.connections),
+            "parameters_count": len(model.parameters),
         }
 
         checksum_str = json.dumps(checksum_data, sort_keys=True)
@@ -330,7 +358,7 @@ class GNNParser:
         Side effects: resets self.line_number to 0 and self.current_section to None
         at the start of each call, then mutates both as parsing progresses.
         """
-        lines = content.split('\n')
+        lines = content.split("\n")
         self.line_number = 0
         self.current_section = None
 
@@ -347,7 +375,7 @@ class GNNParser:
             time_config={},
             ontology_mappings={},
             model_parameters={},
-            footer=""
+            footer="",
         )
 
         current_content = []
@@ -361,7 +389,9 @@ class GNNParser:
             if section_match:
                 # Process previous section content
                 if self.current_section and current_content:
-                    self._process_section_content(parsed, self.current_section, current_content)
+                    self._process_section_content(
+                        parsed, self.current_section, current_content
+                    )
 
                 # Start new section
                 self.current_section = section_match.group(1)
@@ -380,9 +410,11 @@ class GNNParser:
 
         return parsed
 
-    def _process_section_content(self, parsed: ParsedGNN, section: str, content: List[str]):
+    def _process_section_content(
+        self, parsed: ParsedGNN, section: str, content: List[str]
+    ):
         """Process content for a specific section."""
-        content_text = '\n'.join(content).strip()
+        content_text = "\n".join(content).strip()
 
         if section == "GNNSection":
             parsed.gnn_section = content_text
@@ -428,10 +460,10 @@ class GNNParser:
                 # Parse dimensions
                 dimensions = []
                 if dims_str:
-                    for dim in dims_str.split(','):
+                    for dim in dims_str.split(","):
                         dim = dim.strip()
                         # Ignore type=... fragments and non-numeric 'type' annotations
-                        if dim.startswith('type='):
+                        if dim.startswith("type="):
                             continue
                         # Only count numeric dimensions for tests that expect numeric length
                         if dim.isdigit():
@@ -445,7 +477,7 @@ class GNNParser:
                     dimensions=dimensions,
                     data_type=data_type,
                     description=description,
-                    line_number=self.line_number - len(content) + i
+                    line_number=self.line_number - len(content) + i,
                 )
 
                 parsed.variables[name] = variable
@@ -479,7 +511,7 @@ class GNNParser:
                     connection_type=connection_type,
                     symbol=symbol,
                     description=description,
-                    line_number=self.line_number - len(content) + i
+                    line_number=self.line_number - len(content) + i,
                 )
 
                 parsed.connections.append(connection)
@@ -490,24 +522,24 @@ class GNNParser:
         """Parse a variable group (single variable or parenthesized list)."""
         group_str = group_str.strip()
 
-        if group_str.startswith('(') and group_str.endswith(')'):
+        if group_str.startswith("(") and group_str.endswith(")"):
             # Parse comma-separated list
             inner = group_str[1:-1]
-            variables = [v.strip() for v in inner.split(',')]
+            variables = [v.strip() for v in inner.split(",")]
             return variables if len(variables) > 1 else variables[0]
         else:
             return group_str
 
     def _get_connection_type(self, symbol: str) -> str:
         """Determine connection type from symbol."""
-        if symbol in ['>', '->']:
-            return 'directed'
-        elif symbol == '-':
-            return 'undirected'
-        elif symbol == '|':
-            return 'conditional'
+        if symbol in [">", "->"]:
+            return "directed"
+        elif symbol == "-":
+            return "undirected"
+        elif symbol == "|":
+            return "conditional"
         else:
-            return 'unknown'
+            return "unknown"
 
     def _parse_parameters(self, parsed: ParsedGNN, content: List[str], param_type: str):
         """Parse parameter sections."""
@@ -540,21 +572,24 @@ class GNNParser:
         try:
             return json.loads(value_str)
         except json.JSONDecodeError:
-            logger.debug("Value is not valid JSON, trying GNN-specific formats: %s", value_str[:80])
+            logger.debug(
+                "Value is not valid JSON, trying GNN-specific formats: %s",
+                value_str[:80],
+            )
 
         # Try specific GNN formats
-        if value_str.startswith('{') and value_str.endswith('}'):
+        if value_str.startswith("{") and value_str.endswith("}"):
             # Matrix or tuple format
             return self._parse_matrix_or_tuple(value_str)
-        elif value_str.startswith('(') and value_str.endswith(')'):
+        elif value_str.startswith("(") and value_str.endswith(")"):
             # Tuple format
             return self._parse_tuple(value_str)
-        elif value_str.replace('.', '').replace('-', '').isdigit():
+        elif value_str.replace(".", "").replace("-", "").isdigit():
             # Numeric value
-            return float(value_str) if '.' in value_str else int(value_str)
-        elif value_str.lower() in ['true', 'false']:
+            return float(value_str) if "." in value_str else int(value_str)
+        elif value_str.lower() in ["true", "false"]:
             # Boolean value
-            return value_str.lower() == 'true'
+            return value_str.lower() == "true"
         else:
             # String value
             return value_str
@@ -564,21 +599,21 @@ class GNNParser:
         value_str = value_str.strip()
 
         # Handle nested tuple/matrix structures like {((0.8,0.1,0.1),(0.1,0.8,0.1))}
-        if value_str.startswith('{') and value_str.endswith('}'):
+        if value_str.startswith("{") and value_str.endswith("}"):
             inner = value_str[1:-1].strip()
 
             # Check for matrix structure with nested tuples
-            if inner.startswith('(') and inner.count('(') > 1:
+            if inner.startswith("(") and inner.count("(") > 1:
                 return self._parse_nested_matrix(inner)
             else:
                 return self._parse_tuple(inner)
 
         # Handle simple tuple like (0.5,0.5)
-        elif value_str.startswith('(') and value_str.endswith(')'):
+        elif value_str.startswith("(") and value_str.endswith(")"):
             return self._parse_tuple(value_str)
 
         # Handle list/array notation
-        elif value_str.startswith('[') and value_str.endswith(']'):
+        elif value_str.startswith("[") and value_str.endswith("]"):
             return self._parse_array(value_str)
 
         return value_str
@@ -590,10 +625,10 @@ class GNNParser:
         current_tuple = ""
 
         for char in inner:
-            if char == '(':
+            if char == "(":
                 depth += 1
                 current_tuple += char
-            elif char == ')':
+            elif char == ")":
                 depth -= 1
                 current_tuple += char
                 if depth == 0:
@@ -604,7 +639,7 @@ class GNNParser:
                     current_tuple = ""
             elif depth > 0:
                 current_tuple += char
-            elif char == ',' and depth == 0:
+            elif char == "," and depth == 0:
                 continue  # Skip commas between tuples
 
         return matrix
@@ -612,6 +647,7 @@ class GNNParser:
     def _parse_array(self, value_str: str) -> List[Any]:
         """Parse array notation [1,2,3] or [[1,2],[3,4]]."""
         import ast
+
         try:
             return ast.literal_eval(value_str)
         except (ValueError, SyntaxError):
@@ -625,12 +661,12 @@ class GNNParser:
             current = ""
 
             for char in inner:
-                if char in '[(':
+                if char in "[(":
                     depth += 1
-                elif char in '])':
+                elif char in "])":
                     depth -= 1
 
-                if char == ',' and depth == 0:
+                if char == "," and depth == 0:
                     elements.append(self._parse_scalar_value(current.strip()))
                     current = ""
                 else:
@@ -646,12 +682,12 @@ class GNNParser:
         value_str = value_str.strip()
 
         # Boolean values
-        if value_str.lower() in ['true', 'false']:
-            return value_str.lower() == 'true'
+        if value_str.lower() in ["true", "false"]:
+            return value_str.lower() == "true"
 
         # Numeric values
         try:
-            if '.' in value_str or 'e' in value_str.lower():
+            if "." in value_str or "e" in value_str.lower():
                 return float(value_str)
             else:
                 return int(value_str)
@@ -668,7 +704,7 @@ class GNNParser:
 
     def _parse_tuple(self, value_str: str) -> Tuple[Any, ...]:
         """Parse tuple notation with proper type conversion."""
-        if value_str.startswith('(') and value_str.endswith(')'):
+        if value_str.startswith("(") and value_str.endswith(")"):
             inner = value_str[1:-1].strip()
         else:
             inner = value_str.strip()
@@ -682,13 +718,13 @@ class GNNParser:
         current = ""
 
         for char in inner:
-            if char in '([{':
+            if char in "([{":
                 depth += 1
                 current += char
-            elif char in ')]}':
+            elif char in ")]}":
                 depth -= 1
                 current += char
-            elif char == ',' and depth == 0:
+            elif char == "," and depth == 0:
                 elements.append(self._parse_scalar_value(current.strip()))
                 current = ""
             else:
@@ -714,12 +750,12 @@ class GNNParser:
             if self.COMMENT_PATTERN.match(line):
                 comment_match = self.COMMENT_PATTERN.match(line)
                 if current_equation:
-                    current_equation['description'] = comment_match.group(1)
+                    current_equation["description"] = comment_match.group(1)
             else:
                 if not current_equation:
-                    current_equation = {'latex': line}
+                    current_equation = {"latex": line}
                 else:
-                    current_equation['latex'] += ' ' + line
+                    current_equation["latex"] += " " + line
 
         if current_equation:
             parsed.equations.append(current_equation)
@@ -731,12 +767,12 @@ class GNNParser:
             if not line or self.COMMENT_PATTERN.match(line):
                 continue
 
-            if '=' in line:
-                key, value = line.split('=', 1)
+            if "=" in line:
+                key, value = line.split("=", 1)
                 parsed.time_config[key.strip()] = value.strip()
             else:
                 # Simple time type specification
-                parsed.time_config['type'] = line
+                parsed.time_config["type"] = line
 
     def _parse_ontology_mappings(self, parsed: ParsedGNN, content: List[str]):
         """Parse ActInfOntologyAnnotation section."""
@@ -754,10 +790,10 @@ class GNNParser:
     def _parse_signature(self, content: str) -> Dict[str, str]:
         """Parse Signature section."""
         signature = {}
-        for line in content.split('\n'):
+        for line in content.split("\n"):
             line = line.strip()
-            if ':' in line:
-                key, value = line.split(':', 1)
+            if ":" in line:
+                key, value = line.split(":", 1)
                 signature[key.strip()] = value.strip()
         return signature
 
@@ -765,18 +801,23 @@ class GNNParser:
 class GNNValidator:
     """Enhanced validator for GNN files with comprehensive round-trip and cross-format support."""
 
-    def __init__(self, schema_path: Optional[Path] = None,
-                 use_formal_parser: bool = True,
-                 enable_round_trip_testing: bool = False,
-                 validation_level: ValidationLevel = ValidationLevel.STANDARD,
-                 enable_cross_validation: bool = True):
+    def __init__(
+        self,
+        schema_path: Optional[Path] = None,
+        use_formal_parser: bool = True,
+        enable_round_trip_testing: bool = False,
+        validation_level: ValidationLevel = ValidationLevel.STANDARD,
+        enable_cross_validation: bool = True,
+    ):
         if schema_path is None:
             schema_path = Path(__file__).parent / "schemas/json.json"
 
         self.schema_path = schema_path
         self.schema = self._load_schema()
         self.use_formal_parser = use_formal_parser and FORMAL_PARSER_AVAILABLE
-        self.enable_round_trip_testing = enable_round_trip_testing and ROUND_TRIP_AVAILABLE
+        self.enable_round_trip_testing = (
+            enable_round_trip_testing and ROUND_TRIP_AVAILABLE
+        )
         self.validation_level = validation_level
 
         # Initialize enhanced parser
@@ -789,6 +830,7 @@ class GNNValidator:
         if self.enable_round_trip_testing:
             try:
                 from .testing.test_round_trip import GNNRoundTripTester
+
                 self.round_trip_tester = GNNRoundTripTester()
                 logger.info("Round-trip testing enabled for comprehensive validation")
             except Exception as e:
@@ -800,6 +842,7 @@ class GNNValidator:
         if enable_cross_validation:
             try:
                 from .cross_format_validator import CrossFormatValidator
+
                 self.cross_validator = CrossFormatValidator()
             except ImportError:
                 self.cross_validator = None
@@ -818,13 +861,15 @@ class GNNValidator:
                 "Ensure the schema file exists before validating."
             )
 
-        if self.schema_path.suffix.lower() == '.json':
+        if self.schema_path.suffix.lower() == ".json":
             import json
-            with open(self.schema_path, 'r', encoding='utf-8') as f:
+
+            with open(self.schema_path, "r", encoding="utf-8") as f:
                 return json.load(f)
-        elif self.schema_path.suffix.lower() in ['.yaml', '.yml']:
+        elif self.schema_path.suffix.lower() in [".yaml", ".yml"]:
             import yaml
-            with open(self.schema_path, 'r', encoding='utf-8') as f:
+
+            with open(self.schema_path, "r", encoding="utf-8") as f:
                 return yaml.safe_load(f)
         else:
             raise ValueError(f"Unsupported schema file type: {self.schema_path.suffix}")
@@ -846,10 +891,14 @@ class GNNValidator:
         except Exception:
             return 0
 
-    def validate_file(self, file_path: Union[str, Path],
-                     validation_level: Optional[ValidationLevel] = None) -> ValidationResult:
+    def validate_file(
+        self,
+        file_path: Union[str, Path],
+        validation_level: Optional[ValidationLevel] = None,
+    ) -> ValidationResult:
         """Enhanced validation with comprehensive testing capabilities."""
         import time
+
         start_time = time.time()
 
         validation_level = validation_level or self.validation_level
@@ -858,7 +907,7 @@ class GNNValidator:
         result = ValidationResult(
             is_valid=True,
             validation_level=validation_level,
-            format_tested=self._detect_file_format(file_path)
+            format_tested=self._detect_file_format(file_path),
         )
 
         try:
@@ -867,12 +916,12 @@ class GNNValidator:
             result.format_tested = file_format
 
             # Handle binary formats
-            if file_format in ['binary', 'pickle']:
+            if file_format in ["binary", "pickle"]:
                 return self._validate_binary_file(file_path, result)
 
             # Read text content
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
             except UnicodeDecodeError as e:
                 result.errors.append(f"File encoding error: {e}")
@@ -883,8 +932,8 @@ class GNNValidator:
             try:
                 parsed_gnn = self.parser.parse_file(file_path)
                 result.semantic_checksum = parsed_gnn.semantic_checksum
-                result.metadata['parsed_successfully'] = True
-                result.metadata['source_format'] = parsed_gnn.source_format
+                result.metadata["parsed_successfully"] = True
+                result.metadata["source_format"] = parsed_gnn.source_format
             except Exception as e:
                 result.errors.append(f"Parsing failed: {e}")
                 result.is_valid = False
@@ -895,27 +944,47 @@ class GNNValidator:
 
             # Step 3: Validation based on level
             # Use safe rank comparisons to avoid Enum comparison issues
-            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.BASIC):
+            if self._level_rank(validation_level) >= self._level_rank(
+                ValidationLevel.BASIC
+            ):
                 self._validate_basic_structure(content, result, file_format)
 
-            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.STANDARD) and parsed_gnn:
+            if (
+                self._level_rank(validation_level)
+                >= self._level_rank(ValidationLevel.STANDARD)
+                and parsed_gnn
+            ):
                 self._validate_semantics(parsed_gnn, result)
 
-            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.STRICT):
+            if self._level_rank(validation_level) >= self._level_rank(
+                ValidationLevel.STRICT
+            ):
                 self._validate_strict_requirements(parsed_gnn, content, result)
 
-            if self._level_rank(validation_level) >= self._level_rank(ValidationLevel.RESEARCH):
+            if self._level_rank(validation_level) >= self._level_rank(
+                ValidationLevel.RESEARCH
+            ):
                 self._validate_research_standards(parsed_gnn, content, result)
 
             # Step 4: Round-trip testing if enabled and requested
-            if ( (isinstance(validation_level, ValidationLevel) and validation_level == ValidationLevel.ROUND_TRIP) and
-                self.enable_round_trip_testing and parsed_gnn):
+            if (
+                (
+                    isinstance(validation_level, ValidationLevel)
+                    and validation_level == ValidationLevel.ROUND_TRIP
+                )
+                and self.enable_round_trip_testing
+                and parsed_gnn
+            ):
                 self._perform_round_trip_validation(parsed_gnn, result)
 
             # Step 5: Cross-format consistency if available
             # Use safe comparison via rank to avoid Enum ordering errors
-            if (self._level_rank(validation_level) >= self._level_rank(ValidationLevel.STRICT) and
-                self.cross_validator and parsed_gnn):
+            if (
+                self._level_rank(validation_level)
+                >= self._level_rank(ValidationLevel.STRICT)
+                and self.cross_validator
+                and parsed_gnn
+            ):
                 self._validate_cross_format_consistency(content, result)
 
             # Final result determination
@@ -924,9 +993,9 @@ class GNNValidator:
             # Performance metrics
             end_time = time.time()
             result.performance_metrics = {
-                'validation_time': end_time - start_time,
-                'content_length': len(content),
-                'validation_level': validation_level.value
+                "validation_time": end_time - start_time,
+                "content_length": len(content),
+                "validation_level": validation_level.value,
             }
 
             return result
@@ -940,68 +1009,85 @@ class GNNValidator:
         """Detect file format from extension."""
         suffix = file_path.suffix.lower()
         format_map = {
-            '.md': 'markdown',
-            '.markdown': 'markdown',
-            '.json': 'json',
-            '.xml': 'xml',
-            '.yaml': 'yaml',
-            '.yml': 'yaml',
-            '.pkl': 'pickle',
-            '.pickle': 'pickle'
+            ".md": "markdown",
+            ".markdown": "markdown",
+            ".json": "json",
+            ".xml": "xml",
+            ".yaml": "yaml",
+            ".yml": "yaml",
+            ".pkl": "pickle",
+            ".pickle": "pickle",
         }
-        return format_map.get(suffix, 'unknown')
+        return format_map.get(suffix, "unknown")
 
-    def _validate_structured_format(self, content: str, result: ValidationResult, file_format: str):
+    def _validate_structured_format(
+        self, content: str, result: ValidationResult, file_format: str
+    ):
         """Validate structured formats like JSON, XML, YAML."""
         try:
-            if file_format == 'json':
+            if file_format == "json":
                 import json
+
                 data = json.loads(content)
                 # Basic validation for JSON structure
                 if isinstance(data, dict):
-                    if 'model_name' in data:
+                    if "model_name" in data:
                         result.warnings.append("JSON format validated successfully")
                     else:
-                        result.warnings.append("JSON format valid but missing expected model_name field")
+                        result.warnings.append(
+                            "JSON format valid but missing expected model_name field"
+                        )
                 else:
-                    result.errors.append("JSON should contain a dictionary/object at root level")
+                    result.errors.append(
+                        "JSON should contain a dictionary/object at root level"
+                    )
 
-            elif file_format == 'xml':
+            elif file_format == "xml":
                 import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
+
                 try:
                     ET.fromstring(content)  # nosec B314 - GNN XML files are researcher-generated, not untrusted input
                     result.warnings.append("XML format validated successfully")
                 except ET.ParseError as e:
                     result.errors.append(f"XML parsing error: {e}")
 
-            elif file_format == 'yaml':
+            elif file_format == "yaml":
                 try:
                     import yaml
+
                     data = yaml.safe_load(content)
                     result.warnings.append("YAML format validated successfully")
                 except Exception as e:
                     result.errors.append(f"YAML parsing error: {e}")
 
         except ImportError as e:
-            result.warnings.append(f"Cannot validate {file_format} format: missing library ({e})")
+            result.warnings.append(
+                f"Cannot validate {file_format} format: missing library ({e})"
+            )
         except Exception as e:
             result.errors.append(f"Error validating {file_format} format: {e}")
 
-    def _validate_binary_file(self, file_path: Path, result: ValidationResult) -> ValidationResult:
+    def _validate_binary_file(
+        self, file_path: Path, result: ValidationResult
+    ) -> ValidationResult:
         """Validate binary files (pickle format)."""
         try:
-            with open(file_path, 'rb') as f:
+            with open(file_path, "rb") as f:
                 # Try to read first few bytes to ensure it's accessible
                 header = f.read(10)
 
             # Check for pickle signature
-            if header.startswith(b'\x80\x03') or b'pickle' in header:
-                result.warnings.append("Binary pickle format detected - validation limited to accessibility check")
+            if header.startswith(b"\x80\x03") or b"pickle" in header:
+                result.warnings.append(
+                    "Binary pickle format detected - validation limited to accessibility check"
+                )
             else:
-                result.warnings.append("Unknown binary format - validation limited to accessibility check")
+                result.warnings.append(
+                    "Unknown binary format - validation limited to accessibility check"
+                )
 
-            result.metadata['binary_format'] = True
-            result.metadata['file_size'] = file_path.stat().st_size
+            result.metadata["binary_format"] = True
+            result.metadata["file_size"] = file_path.stat().st_size
             result.is_valid = True
 
         except Exception as e:
@@ -1010,48 +1096,65 @@ class GNNValidator:
 
         return result
 
-    def _validate_basic_structure(self, content: str, result: ValidationResult, file_format: str):
+    def _validate_basic_structure(
+        self, content: str, result: ValidationResult, file_format: str
+    ):
         """Enhanced basic validation with format-specific checks."""
         if len(content.strip()) == 0:
             result.errors.append("File is empty")
             return
 
         # Format-specific basic validation
-        if file_format == 'markdown':
+        if file_format == "markdown":
             self._validate_markdown_structure(content, result)
-        elif file_format in ['json', 'xml', 'yaml']:
+        elif file_format in ["json", "xml", "yaml"]:
             self._validate_structured_format(content, result, file_format)
         else:
-            result.warnings.append(f"Unknown file format: {file_format}, using basic validation")
+            result.warnings.append(
+                f"Unknown file format: {file_format}, using basic validation"
+            )
             # Basic text validation
             if len(content) < 10:
                 result.warnings.append("File content is very short")
-            if '\x00' in content:
+            if "\x00" in content:
                 result.warnings.append("File contains null bytes - may be binary")
 
-    def _validate_strict_requirements(self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult):
+    def _validate_strict_requirements(
+        self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult
+    ):
         """Validate strict requirements for research-grade models."""
         if not parsed_gnn:
             result.errors.append("Parsed model required for strict validation")
             return
 
         # Check for complete documentation
-        if not parsed_gnn.model_annotation or len(parsed_gnn.model_annotation.strip()) < 50:
-            result.warnings.append("Model annotation should be more descriptive for research use")
+        if (
+            not parsed_gnn.model_annotation
+            or len(parsed_gnn.model_annotation.strip()) < 50
+        ):
+            result.warnings.append(
+                "Model annotation should be more descriptive for research use"
+            )
 
         # Check for ontology mappings
         if not parsed_gnn.ontology_mappings:
-            result.suggestions.append("Consider adding ontology mappings for better interoperability")
+            result.suggestions.append(
+                "Consider adding ontology mappings for better interoperability"
+            )
 
         # Check for equations
         if not parsed_gnn.equations:
-            result.suggestions.append("Consider adding mathematical equations for clarity")
+            result.suggestions.append(
+                "Consider adding mathematical equations for clarity"
+            )
 
         # Validate parameter completeness
         if len(parsed_gnn.parameters) < len(parsed_gnn.variables) * 0.5:
             result.warnings.append("Many variables lack parameter specifications")
 
-    def _validate_research_standards(self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult):
+    def _validate_research_standards(
+        self, parsed_gnn: Optional[ParsedGNN], content: str, result: ValidationResult
+    ):
         """Validate research-grade standards."""
         if not parsed_gnn:
             return
@@ -1069,18 +1172,22 @@ class GNNValidator:
             result.suggestions.append("Add model parameters for complete specification")
 
         # Check for research-grade documentation
-        research_keywords = ['hypothesis', 'method', 'experiment', 'analysis', 'result']
+        research_keywords = ["hypothesis", "method", "experiment", "analysis", "result"]
         annotation_lower = parsed_gnn.model_annotation.lower()
         found_keywords = [kw for kw in research_keywords if kw in annotation_lower]
 
         if len(found_keywords) < 2:
-            result.suggestions.append("Consider adding research context (hypothesis, methods, etc.)")
+            result.suggestions.append(
+                "Consider adding research context (hypothesis, methods, etc.)"
+            )
 
-    def _perform_round_trip_validation(self, parsed_gnn: ParsedGNN, result: ValidationResult):
+    def _perform_round_trip_validation(
+        self, parsed_gnn: ParsedGNN, result: ValidationResult
+    ):
         """Perform round-trip validation testing."""
         try:
             # Create a temporary markdown file
-            with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
+            with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
                 # Write parsed content back to markdown
                 markdown_content = self._convert_parsed_gnn_to_markdown(parsed_gnn)
                 f.write(markdown_content)
@@ -1099,16 +1206,24 @@ class GNNValidator:
                         result.add_round_trip_result(round_trip_result)
 
                     except Exception as e:
-                        result.warnings.append(f"Round-trip test failed for {fmt.value}: {e}")
+                        result.warnings.append(
+                            f"Round-trip test failed for {fmt.value}: {e}"
+                        )
 
                 # Summary
                 success_rate = result.get_round_trip_success_rate()
                 if success_rate == 100.0:
-                    result.suggestions.append("Perfect round-trip compatibility achieved")
+                    result.suggestions.append(
+                        "Perfect round-trip compatibility achieved"
+                    )
                 elif success_rate >= 80.0:
-                    result.warnings.append(f"Good round-trip compatibility: {success_rate:.1f}%")
+                    result.warnings.append(
+                        f"Good round-trip compatibility: {success_rate:.1f}%"
+                    )
                 else:
-                    result.errors.append(f"Poor round-trip compatibility: {success_rate:.1f}%")
+                    result.errors.append(
+                        f"Poor round-trip compatibility: {success_rate:.1f}%"
+                    )
 
             finally:
                 # Clean up temporary file
@@ -1117,10 +1232,14 @@ class GNNValidator:
         except Exception as e:
             result.warnings.append(f"Round-trip validation failed: {e}")
 
-    def _validate_cross_format_consistency(self, content: str, result: ValidationResult):
+    def _validate_cross_format_consistency(
+        self, content: str, result: ValidationResult
+    ):
         """Validate cross-format consistency."""
         try:
-            cross_result = self.cross_validator.validate_cross_format_consistency(content)
+            cross_result = self.cross_validator.validate_cross_format_consistency(
+                content
+            )
             result.cross_format_consistent = cross_result.is_consistent
 
             if cross_result.is_consistent:
@@ -1154,16 +1273,24 @@ class GNNValidator:
 
         lines.append("## StateSpaceBlock")
         for var_name, var in parsed_gnn.variables.items():
-            dim_str = f"[{','.join(map(str, var.dimensions))}]" if var.dimensions else ""
-            type_str = f",type={var.data_type}" if var.data_type != 'categorical' else ""
+            dim_str = (
+                f"[{','.join(map(str, var.dimensions))}]" if var.dimensions else ""
+            )
+            type_str = (
+                f",type={var.data_type}" if var.data_type != "categorical" else ""
+            )
             desc_str = f" # {var.description}" if var.description else ""
             lines.append(f"{var_name}{dim_str}{type_str}{desc_str}")
         lines.append("")
 
         lines.append("## Connections")
         for conn in parsed_gnn.connections:
-            source = ','.join(conn.source) if isinstance(conn.source, list) else conn.source
-            target = ','.join(conn.target) if isinstance(conn.target, list) else conn.target
+            source = (
+                ",".join(conn.source) if isinstance(conn.source, list) else conn.source
+            )
+            target = (
+                ",".join(conn.target) if isinstance(conn.target, list) else conn.target
+            )
             desc_str = f" # {conn.description}" if conn.description else ""
             lines.append(f"{source}{conn.symbol}{target}{desc_str}")
         lines.append("")
@@ -1174,7 +1301,7 @@ class GNNValidator:
         lines.append("")
 
         lines.append("## Time")
-        time_type = parsed_gnn.time_config.get('type', 'Dynamic')
+        time_type = parsed_gnn.time_config.get("type", "Dynamic")
         lines.append(time_type)
         lines.append("")
 
@@ -1185,18 +1312,24 @@ class GNNValidator:
 
     def _validate_markdown_structure(self, content: str, result: ValidationResult):
         """Validate comprehensive GNN markdown file structure and semantics."""
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Check for required sections
         required_sections = [
-            'GNNSection', 'GNNVersionAndFlags', 'ModelName',
-            'ModelAnnotation', 'StateSpaceBlock', 'Connections',
-            'InitialParameterization', 'Time', 'Footer'
+            "GNNSection",
+            "GNNVersionAndFlags",
+            "ModelName",
+            "ModelAnnotation",
+            "StateSpaceBlock",
+            "Connections",
+            "InitialParameterization",
+            "Time",
+            "Footer",
         ]
 
         found_sections = []
         for line in lines:
-            if line.startswith('## '):
+            if line.startswith("## "):
                 section_name = line[3:].strip()
                 found_sections.append(section_name)
 
@@ -1219,7 +1352,11 @@ class GNNValidator:
                     end = start + next_header.start() if next_header else len(content)
                     section_text = content[start:end].strip()
                     # Consider comments-only or short markers as missing
-                    if not section_text or section_text.strip().startswith('#') or len(section_text) < 3:
+                    if (
+                        not section_text
+                        or section_text.strip().startswith("#")
+                        or len(section_text) < 3
+                    ):
                         result.errors.append(f"Required section missing: {section}")
         except Exception as e:
             # Non-fatal parsing of content; do not stop validation
@@ -1261,16 +1398,32 @@ class GNNValidator:
 
         for connection in parsed.connections:
             # Check source variables
-            source_vars = connection.source if isinstance(connection.source, list) else [connection.source]
+            source_vars = (
+                connection.source
+                if isinstance(connection.source, list)
+                else [connection.source]
+            )
             for var in source_vars:
-                if var not in variable_names and not self._is_valid_variable_reference(var):
-                    result.errors.append(f"Undefined variable in connection source: {var}")
+                if var not in variable_names and not self._is_valid_variable_reference(
+                    var
+                ):
+                    result.errors.append(
+                        f"Undefined variable in connection source: {var}"
+                    )
 
             # Check target variables
-            target_vars = connection.target if isinstance(connection.target, list) else [connection.target]
+            target_vars = (
+                connection.target
+                if isinstance(connection.target, list)
+                else [connection.target]
+            )
             for var in target_vars:
-                if var not in variable_names and not self._is_valid_variable_reference(var):
-                    result.errors.append(f"Undefined variable in connection target: {var}")
+                if var not in variable_names and not self._is_valid_variable_reference(
+                    var
+                ):
+                    result.errors.append(
+                        f"Undefined variable in connection target: {var}"
+                    )
 
         # Validate Active Inference conventions
         self._validate_active_inference_conventions(parsed, result)
@@ -1281,37 +1434,41 @@ class GNNValidator:
     def _is_valid_variable_reference(self, var: str) -> bool:
         """Check if variable reference follows GNN conventions."""
         # Handle complex variable references like (A,B) or time-indexed variables
-        return (var.startswith('(') and var.endswith(')')) or '=' in var
+        return (var.startswith("(") and var.endswith(")")) or "=" in var
 
-    def _validate_active_inference_conventions(self, parsed: ParsedGNN, result: ValidationResult):
+    def _validate_active_inference_conventions(
+        self, parsed: ParsedGNN, result: ValidationResult
+    ):
         """Validate Active Inference naming and structure conventions."""
         # Check for proper A, B, C, D matrix naming
-        ai_matrices = {'A': [], 'B': [], 'C': [], 'D': []}
+        ai_matrices = {"A": [], "B": [], "C": [], "D": []}
 
         for var_name, _var in parsed.variables.items():
-            if var_name.startswith('A_m'):
-                ai_matrices['A'].append(var_name)
-            elif var_name.startswith('B_f'):
-                ai_matrices['B'].append(var_name)
-            elif var_name.startswith('C_m'):
-                ai_matrices['C'].append(var_name)
-            elif var_name.startswith('D_f'):
-                ai_matrices['D'].append(var_name)
+            if var_name.startswith("A_m"):
+                ai_matrices["A"].append(var_name)
+            elif var_name.startswith("B_f"):
+                ai_matrices["B"].append(var_name)
+            elif var_name.startswith("C_m"):
+                ai_matrices["C"].append(var_name)
+            elif var_name.startswith("D_f"):
+                ai_matrices["D"].append(var_name)
 
         # Validate matrix dimension consistency
-        if ai_matrices['A'] and ai_matrices['D']:
-            result.metadata['active_inference_matrices'] = ai_matrices
+        if ai_matrices["A"] and ai_matrices["D"]:
+            result.metadata["active_inference_matrices"] = ai_matrices
 
         # Check for proper state/observation variable naming
-        state_vars = [name for name in parsed.variables if name.startswith('s_f')]
-        obs_vars = [name for name in parsed.variables if name.startswith('o_m')]
+        state_vars = [name for name in parsed.variables if name.startswith("s_f")]
+        obs_vars = [name for name in parsed.variables if name.startswith("o_m")]
 
         if state_vars:
-            result.metadata['state_variables'] = state_vars
+            result.metadata["state_variables"] = state_vars
         if obs_vars:
-            result.metadata['observation_variables'] = obs_vars
+            result.metadata["observation_variables"] = obs_vars
 
-    def _validate_mathematical_consistency(self, parsed: ParsedGNN, result: ValidationResult):
+    def _validate_mathematical_consistency(
+        self, parsed: ParsedGNN, result: ValidationResult
+    ):
         """Validate mathematical consistency of parameters and dimensions."""
         # Check for matrix dimension consistency with variable definitions
         for param_name, param_value in parsed.parameters.items():
@@ -1326,14 +1483,19 @@ class GNNValidator:
 
                     expected_dims = var.dimensions
                     if len(expected_dims) >= 2:
-                        if matrix_rows != expected_dims[0] or matrix_cols != expected_dims[1]:
+                        if (
+                            matrix_rows != expected_dims[0]
+                            or matrix_cols != expected_dims[1]
+                        ):
                             result.warnings.append(
                                 f"Matrix {param_name} dimensions {matrix_rows}x{matrix_cols} "
                                 f"don't match variable definition {expected_dims}"
                             )
 
                 # Check for stochasticity in probability matrices
-                if param_name.startswith(('A_', 'B_', 'D_')) and isinstance(param_value, list):
+                if param_name.startswith(("A_", "B_", "D_")) and isinstance(
+                    param_value, list
+                ):
                     if not self._check_stochasticity(param_value):
                         result.warnings.append(
                             f"Matrix {param_name} may not be properly stochastic (rows should sum to 1)"
@@ -1347,16 +1509,22 @@ class GNNValidator:
                     # 2D matrix
                     for row in matrix_data:
                         if isinstance(row, (list, tuple)):
-                            row_sum = sum(float(x) for x in row if isinstance(x, (int, float)))
+                            row_sum = sum(
+                                float(x) for x in row if isinstance(x, (int, float))
+                            )
                             if abs(row_sum - 1.0) > tolerance:
                                 return False
                     return True
                 else:
                     # 1D vector
-                    total_sum = sum(float(x) for x in matrix_data if isinstance(x, (int, float)))
+                    total_sum = sum(
+                        float(x) for x in matrix_data if isinstance(x, (int, float))
+                    )
                     return abs(total_sum - 1.0) <= tolerance
         except (TypeError, ValueError):
-            logger.debug("Could not verify stochastic matrix normalization, assuming valid")
+            logger.debug(
+                "Could not verify stochastic matrix normalization, assuming valid"
+            )
         return True  # Conservative: assume valid if can't check
 
 

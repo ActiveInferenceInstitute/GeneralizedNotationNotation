@@ -32,7 +32,7 @@ class TestErrorRecoveryFramework:
             message="Test error message",
             error_code="E001",
             details={"key": "value"},
-            recovery_suggestions=["Try this", "Or try that"]
+            recovery_suggestions=["Try this", "Or try that"],
         )
 
         assert context.operation == "Test Operation"
@@ -43,9 +43,9 @@ class TestErrorRecoveryFramework:
         # Test conversion to dict
         d = context.to_dict()
         assert isinstance(d, dict)
-        assert d['error_code'] == 'E001'
-        assert d['severity'] == 'error'
-        assert len(d['recovery_suggestions']) == 2
+        assert d["error_code"] == "E001"
+        assert d["severity"] == "error"
+        assert len(d["recovery_suggestions"]) == 2
 
     @pytest.mark.unit
     def test_error_recovery_manager_initialization(self):
@@ -55,15 +55,15 @@ class TestErrorRecoveryFramework:
         manager = ErrorRecoveryManager()
 
         # Verify default handlers are registered
-        assert 'import' in manager.error_handlers
-        assert 'file' in manager.error_handlers
-        assert 'resource' in manager.error_handlers
-        assert 'validation' in manager.error_handlers
-        assert 'execution' in manager.error_handlers
+        assert "import" in manager.error_handlers
+        assert "file" in manager.error_handlers
+        assert "resource" in manager.error_handlers
+        assert "validation" in manager.error_handlers
+        assert "execution" in manager.error_handlers
 
         # Verify recovery strategies exist
-        assert 'import' in manager.recovery_strategies
-        assert 'file' in manager.recovery_strategies
+        assert "import" in manager.recovery_strategies
+        assert "file" in manager.recovery_strategies
 
     @pytest.mark.unit
     def test_error_code_registry(self):
@@ -99,7 +99,7 @@ class TestErrorRecoveryFramework:
             operation="Module Loading",
             message="Required module not found",
             details={"module": "pymdp", "available": False},
-            suggestions=["Install with: uv pip install inferactively-pymdp"]
+            suggestions=["Install with: uv pip install inferactively-pymdp"],
         )
 
         assert "[E001]" in message
@@ -124,7 +124,7 @@ class TestErrorRecoveryFramework:
             operation="Test",
             severity=ErrorSeverity.INFO,
             message="Informational",
-            error_code="I001"
+            error_code="I001",
         )
         assert manager.handle_error(context) is True
 
@@ -133,7 +133,7 @@ class TestErrorRecoveryFramework:
             operation="Test",
             severity=ErrorSeverity.WARNING,
             message="Warning",
-            error_code="W001"
+            error_code="W001",
         )
         assert manager.handle_error(context) is True
 
@@ -142,7 +142,7 @@ class TestErrorRecoveryFramework:
             operation="Test",
             severity=ErrorSeverity.ERROR,
             message="Error",
-            error_code="E001"
+            error_code="E001",
         )
         assert manager.handle_error(context) is True
 
@@ -151,7 +151,7 @@ class TestErrorRecoveryFramework:
             operation="Test",
             severity=ErrorSeverity.CRITICAL,
             message="Critical",
-            error_code="CRIT001"
+            error_code="CRIT001",
         )
         assert manager.handle_error(context) is False
 
@@ -166,7 +166,7 @@ class TestErrorRecoveryFramework:
             message="File not found",
             severity=ErrorSeverity.ERROR,
             details={"path": "/nonexistent/file.txt"},
-            suggestions=["Check file path", "Verify file exists"]
+            suggestions=["Check file path", "Verify file exists"],
         )
 
         assert context.error_code == "E101"
@@ -184,13 +184,15 @@ class TestErrorRecoveryStrategies:
         from utils.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
-        strategies = manager.recovery_strategies['import']
+        strategies = manager.recovery_strategies["import"]
 
         assert len(strategies) > 0
         # Should mention installation
         assert any("pip install" in s or "install" in s.lower() for s in strategies)
         # Should mention version compatibility
-        assert any("version" in s.lower() or "compatibility" in s.lower() for s in strategies)
+        assert any(
+            "version" in s.lower() or "compatibility" in s.lower() for s in strategies
+        )
 
     @pytest.mark.unit
     def test_file_error_recovery_suggestions(self):
@@ -198,11 +200,13 @@ class TestErrorRecoveryStrategies:
         from utils.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
-        strategies = manager.recovery_strategies['file']
+        strategies = manager.recovery_strategies["file"]
 
         assert len(strategies) > 0
         # Should mention permissions
-        assert any("permission" in s.lower() or "access" in s.lower() for s in strategies)
+        assert any(
+            "permission" in s.lower() or "access" in s.lower() for s in strategies
+        )
         # Should mention disk space
         assert any("disk" in s.lower() or "space" in s.lower() for s in strategies)
 
@@ -212,13 +216,15 @@ class TestErrorRecoveryStrategies:
         from utils.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
-        strategies = manager.recovery_strategies['resource']
+        strategies = manager.recovery_strategies["resource"]
 
         assert len(strategies) > 0
         # Should mention memory
         assert any("memory" in s.lower() or "ram" in s.lower() for s in strategies)
         # Should mention lightweight mode or optimization
-        assert any("lightweight" in s.lower() or "reduce" in s.lower() for s in strategies)
+        assert any(
+            "lightweight" in s.lower() or "reduce" in s.lower() for s in strategies
+        )
 
     @pytest.mark.unit
     def test_validation_error_recovery_suggestions(self):
@@ -226,12 +232,14 @@ class TestErrorRecoveryStrategies:
         from utils.error_recovery import ErrorRecoveryManager
 
         manager = ErrorRecoveryManager()
-        strategies = manager.recovery_strategies['validation']
+        strategies = manager.recovery_strategies["validation"]
 
         assert len(strategies) > 0
         # Should mention schema/format
-        assert any("schema" in s.lower() or "format" in s.lower() or "type" in s.lower()
-                  for s in strategies)
+        assert any(
+            "schema" in s.lower() or "format" in s.lower() or "type" in s.lower()
+            for s in strategies
+        )
 
 
 class TestErrorHandlingIntegration:
@@ -248,19 +256,19 @@ class TestErrorHandlingIntegration:
             message="Test message",
             error_code="E001",
             details={"key": "value"},
-            recovery_suggestions=["Suggestion 1"]
+            recovery_suggestions=["Suggestion 1"],
         )
 
         # Convert to dict and back
         data = original.to_dict()
 
         # Verify all data is present
-        assert data['operation'] == "Test Operation"
-        assert data['severity'] == "error"
-        assert data['message'] == "Test message"
-        assert data['error_code'] == "E001"
-        assert data['details']['key'] == "value"
-        assert len(data['recovery_suggestions']) == 1
+        assert data["operation"] == "Test Operation"
+        assert data["severity"] == "error"
+        assert data["message"] == "Test message"
+        assert data["error_code"] == "E001"
+        assert data["details"]["key"] == "value"
+        assert len(data["recovery_suggestions"]) == 1
 
     @pytest.mark.unit
     def test_error_recovery_manager_is_singleton(self):
@@ -287,18 +295,30 @@ def test_error_recovery_documentation():
     # Verify framework classes exist and are documented
     assert ErrorContext.__doc__ is not None, "ErrorContext should have docstring"
     assert ErrorSeverity.__doc__ is not None, "ErrorSeverity should have docstring"
-    assert ErrorRecoveryManager.__doc__ is not None, "ErrorRecoveryManager should have docstring"
+    assert ErrorRecoveryManager.__doc__ is not None, (
+        "ErrorRecoveryManager should have docstring"
+    )
 
     # Verify key functions exist and are documented
-    assert format_and_log_error.__doc__ is not None, "format_and_log_error should have docstring"
+    assert format_and_log_error.__doc__ is not None, (
+        "format_and_log_error should have docstring"
+    )
 
     # Verify error code registry has expected categories
     registry = ErrorCodeRegistry
-    expected_attrs = ['IMPORT_NOT_FOUND', 'FILE_NOT_FOUND', 'RESOURCE_MEMORY_EXCEEDED', 'VALIDATION_TYPE_MISMATCH']
+    expected_attrs = [
+        "IMPORT_NOT_FOUND",
+        "FILE_NOT_FOUND",
+        "RESOURCE_MEMORY_EXCEEDED",
+        "VALIDATION_TYPE_MISMATCH",
+    ]
     found_attrs = [attr for attr in expected_attrs if hasattr(registry, attr)]
-    assert len(found_attrs) >= 2, f"ErrorCodeRegistry should have error codes, found: {found_attrs}"
+    assert len(found_attrs) >= 2, (
+        f"ErrorCodeRegistry should have error codes, found: {found_attrs}"
+    )
 
     # Verify severity levels are defined
-    severities = [s for s in dir(ErrorSeverity) if not s.startswith('_')]
-    assert len(severities) >= 3, f"ErrorSeverity should have multiple levels: {severities}"
-
+    severities = [s for s in dir(ErrorSeverity) if not s.startswith("_")]
+    assert len(severities) >= 3, (
+        f"ErrorSeverity should have multiple levels: {severities}"
+    )

@@ -13,13 +13,10 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 
-
-
-
 def register_tools(registry):
     """
     Register all template tools with the MCP registry.
-    
+
     Args:
         registry: The MCP tool registry
     """
@@ -35,33 +32,33 @@ def register_tools(registry):
                     "name": "file_path",
                     "description": "Path to the file to process",
                     "type": "string",
-                    "required": True
+                    "required": True,
                 },
                 {
                     "name": "output_dir",
                     "description": "Output directory for processed files",
                     "type": "string",
                     "required": False,
-                    "default": "output/template"
+                    "default": "output/template",
                 },
                 {
                     "name": "options",
                     "description": "Processing options",
                     "type": "object",
                     "required": False,
-                    "default": {}
-                }
+                    "default": {},
+                },
             ],
             returns={
                 "type": "object",
-                "description": "Processing result with status and output paths"
+                "description": "Processing result with status and output paths",
             },
             examples=[
                 {
                     "description": "Process a markdown file",
-                    "code": 'template.process_file("input/example.md")'
+                    "code": 'template.process_file("input/example.md")',
                 }
-            ]
+            ],
         )
 
         # Register process_directory tool
@@ -74,40 +71,40 @@ def register_tools(registry):
                     "name": "directory_path",
                     "description": "Path to the directory to process",
                     "type": "string",
-                    "required": True
+                    "required": True,
                 },
                 {
                     "name": "recursive",
                     "description": "Whether to process files recursively",
                     "type": "boolean",
                     "required": False,
-                    "default": False
+                    "default": False,
                 },
                 {
                     "name": "output_dir",
                     "description": "Output directory for processed files",
                     "type": "string",
                     "required": False,
-                    "default": "output/template"
+                    "default": "output/template",
                 },
                 {
                     "name": "options",
                     "description": "Processing options",
                     "type": "object",
                     "required": False,
-                    "default": {}
-                }
+                    "default": {},
+                },
             ],
             returns={
                 "type": "object",
-                "description": "Processing result with status and summary statistics"
+                "description": "Processing result with status and summary statistics",
             },
             examples=[
                 {
                     "description": "Process all files in a directory recursively",
-                    "code": 'template.process_directory("input/gnn_files", recursive=True)'
+                    "code": 'template.process_directory("input/gnn_files", recursive=True)',
                 }
-            ]
+            ],
         )
 
         # Register get_template_info tool
@@ -116,16 +113,13 @@ def register_tools(registry):
             description="Get information about the template step",
             function=get_template_info,
             parameters=[],
-            returns={
-                "type": "object",
-                "description": "Template step information"
-            },
+            returns={"type": "object", "description": "Template step information"},
             examples=[
                 {
                     "description": "Get template step information",
-                    "code": 'template.get_info()'
+                    "code": "template.get_info()",
                 }
-            ]
+            ],
         )
 
         logger.info("Successfully registered template MCP tools")
@@ -135,15 +129,18 @@ def register_tools(registry):
         logger.error(f"Failed to register template MCP tools: {e}")
         return False
 
-def process_file(file_path: str, output_dir: str = "output/template", options: Dict[str, Any] = None) -> Dict[str, Any]:
+
+def process_file(
+    file_path: str, output_dir: str = "output/template", options: Dict[str, Any] = None
+) -> Dict[str, Any]:
     """
     Process a single file using the template processor.
-    
+
     Args:
         file_path: Path to the file to process
         output_dir: Output directory for processed files
         options: Processing options
-        
+
     Returns:
         Processing result with status and output paths
     """
@@ -170,13 +167,15 @@ def process_file(file_path: str, output_dir: str = "output/template", options: D
             "status": "success" if success else "error",
             "input_file": str(file_path),
             "output_directory": str(output_dir),
-            "processing_options": options
+            "processing_options": options,
         }
 
         # Add output file paths if successful
         if success:
             file_output_dir = output_dir / file_path.stem
-            output_file = file_output_dir / f"{file_path.stem}_processed{file_path.suffix}"
+            output_file = (
+                file_output_dir / f"{file_path.stem}_processed{file_path.suffix}"
+            )
             report_file = file_output_dir / f"{file_path.stem}_report.json"
 
             result["output_file"] = str(output_file)
@@ -186,22 +185,24 @@ def process_file(file_path: str, output_dir: str = "output/template", options: D
 
     except Exception as e:
         logger.error(f"Failed to process file {file_path}: {e}")
-        return {
-            "status": "error",
-            "error": str(e),
-            "input_file": str(file_path)
-        }
+        return {"status": "error", "error": str(e), "input_file": str(file_path)}
 
-def process_directory(directory_path: str, recursive: bool = False, output_dir: str = "output/template", options: Dict[str, Any] = None) -> Dict[str, Any]:
+
+def process_directory(
+    directory_path: str,
+    recursive: bool = False,
+    output_dir: str = "output/template",
+    options: Dict[str, Any] = None,
+) -> Dict[str, Any]:
     """
     Process all files in a directory using the template processor.
-    
+
     Args:
         directory_path: Path to the directory to process
         recursive: Whether to process files recursively
         output_dir: Output directory for processed files
         options: Processing options
-        
+
     Returns:
         Processing result with status and summary statistics
     """
@@ -229,8 +230,8 @@ def process_directory(directory_path: str, recursive: bool = False, output_dir: 
             output_dir=output_dir,
             logger=operation_logger,
             recursive=recursive,
-            verbose=options.get('verbose', False),
-            **options
+            verbose=options.get("verbose", False),
+            **options,
         )
 
         # Generate result
@@ -239,14 +240,15 @@ def process_directory(directory_path: str, recursive: bool = False, output_dir: 
             "input_directory": str(directory_path),
             "output_directory": str(output_dir),
             "recursive": recursive,
-            "processing_options": options
+            "processing_options": options,
         }
 
         # Add summary file path if it exists
         summary_file = output_dir / "template_processing_summary.json"
         if summary_file.exists():
             import json
-            with open(summary_file, 'r') as f:
+
+            with open(summary_file, "r") as f:
                 summary = json.load(f)
 
             result["summary"] = summary
@@ -258,13 +260,14 @@ def process_directory(directory_path: str, recursive: bool = False, output_dir: 
         return {
             "status": "error",
             "error": str(e),
-            "input_directory": str(directory_path)
+            "input_directory": str(directory_path),
         }
+
 
 def get_template_info() -> Dict[str, Any]:
     """
     Get information about the template step.
-    
+
     Returns:
         Template step information
     """
@@ -279,9 +282,9 @@ def get_template_info() -> Dict[str, Any]:
             "MCP integration",
             "Standardized logging",
             "Error handling",
-            "Performance tracking"
+            "Performance tracking",
         ],
         "input_formats": ["any"],
         "output_formats": ["processed files", "JSON reports"],
-        "dependencies": []
+        "dependencies": [],
     }

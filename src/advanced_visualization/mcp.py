@@ -20,7 +20,7 @@ def process_advanced_visualization_mcp(
     target_directory: str,
     output_directory: str,
     verbose: bool = False,
-    generate_d2: bool = True
+    generate_d2: bool = True,
 ) -> Dict[str, Any]:
     """
     Process advanced visualization for GNN files. Exposed via MCP.
@@ -38,21 +38,21 @@ def process_advanced_visualization_mcp(
         success = process_advanced_viz(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
-            verbose=verbose
+            verbose=verbose,
         )
         return {
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
             "d2_available": D2_AVAILABLE,
-            "message": f"Advanced visualization processing {'completed successfully' if success else 'failed'}"
+            "message": f"Advanced visualization processing {'completed successfully' if success else 'failed'}",
         }
     except Exception as e:
-        logger.error(f"Error in process_advanced_visualization_mcp for {target_directory}: {e}", exc_info=True)
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        logger.error(
+            f"Error in process_advanced_visualization_mcp for {target_directory}: {e}",
+            exc_info=True,
+        )
+        return {"success": False, "error": str(e)}
 
 
 def check_visualization_capabilities_mcp() -> Dict[str, Any]:
@@ -66,10 +66,11 @@ def check_visualization_capabilities_mcp() -> Dict[str, Any]:
         Dictionary with D2 availability, feature flags, and backend status.
     """
     from . import FEATURES
+
     return {
-        "success":      True,
+        "success": True,
         "d2_available": D2_AVAILABLE,
-        "features":     FEATURES,
+        "features": FEATURES,
     }
 
 
@@ -84,21 +85,27 @@ def list_d2_visualization_types_mcp() -> Dict[str, Any]:
         Dictionary with visualization type names and descriptions.
     """
     types = {
-        "state_space":      "Visualizes the hidden state space (X) and observation space (Y)",
-        "factor_graph":     "Factor graph representation of the generative model",
+        "state_space": "Visualizes the hidden state space (X) and observation space (Y)",
+        "factor_graph": "Factor graph representation of the generative model",
         "generative_model": "Full A/B/C/D matrix generative model diagram",
-        "belief_prop":      "Belief propagation / message-passing graph",
-        "policy_tree":      "Policy tree (action sequences) for planning agents",
-        "network":          "General network/graph diagram of GNN model connections",
-        "dashboard":        "Multi-panel dashboard with all visualization types combined",
+        "belief_prop": "Belief propagation / message-passing graph",
+        "policy_tree": "Policy tree (action sequences) for planning agents",
+        "network": "General network/graph diagram of GNN model connections",
+        "dashboard": "Multi-panel dashboard with all visualization types combined",
     }
     return {
-        "success":           True,
-        "types":             types,
-        "count":             len(types),
-        "d2_required":       ["state_space", "factor_graph", "generative_model", "belief_prop", "policy_tree"],
-        "no_d2_required":    ["network", "dashboard"],
-        "d2_available":      D2_AVAILABLE,
+        "success": True,
+        "types": types,
+        "count": len(types),
+        "d2_required": [
+            "state_space",
+            "factor_graph",
+            "generative_model",
+            "belief_prop",
+            "policy_tree",
+        ],
+        "no_d2_required": ["network", "dashboard"],
+        "d2_available": D2_AVAILABLE,
     }
 
 
@@ -111,15 +118,16 @@ def get_advanced_visualization_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         import importlib
+
         mod = importlib.import_module(__package__)
-        version  = getattr(mod, "__version__", "unknown")
+        version = getattr(mod, "__version__", "unknown")
         features = getattr(mod, "FEATURES", {})
         return {
-            "success":      True,
-            "module":       __package__,
-            "version":      version,
+            "success": True,
+            "module": __package__,
+            "version": version,
             "d2_available": D2_AVAILABLE,
-            "features":     features,
+            "features": features,
             "tools": [
                 "process_advanced_visualization",
                 "check_visualization_capabilities",
@@ -128,9 +136,10 @@ def get_advanced_visualization_module_info_mcp() -> Dict[str, Any]:
             ],
         }
     except Exception as e:
-        logger.error(f"get_advanced_visualization_module_info_mcp error: {e}", exc_info=True)
+        logger.error(
+            f"get_advanced_visualization_module_info_mcp error: {e}", exc_info=True
+        )
         return {"success": False, "error": str(e)}
-
 
 
 # MCP Registration Function
@@ -143,15 +152,26 @@ def register_tools(mcp_instance: Any) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN files"},
-                "output_directory": {"type": "string", "description": "Directory to save visualization results"},
-                "verbose":          {"type": "boolean", "default": False},
-                "generate_d2":      {"type": "boolean", "default": True, "description": "Generate D2 diagrams if available"},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to save visualization results",
+                },
+                "verbose": {"type": "boolean", "default": False},
+                "generate_d2": {
+                    "type": "boolean",
+                    "default": True,
+                    "description": "Generate D2 diagrams if available",
+                },
             },
             "required": ["target_directory", "output_directory"],
         },
         "Process advanced visualization for GNN files: D2 diagrams, dashboards, network visualizations.",
-        module=__package__, category="advanced_visualization",
+        module=__package__,
+        category="advanced_visualization",
     )
 
     mcp_instance.register_tool(
@@ -159,7 +179,8 @@ def register_tools(mcp_instance: Any) -> None:
         check_visualization_capabilities_mcp,
         {},
         "Check available advanced visualization capabilities (D2, dashboard, network backends).",
-        module=__package__, category="advanced_visualization",
+        module=__package__,
+        category="advanced_visualization",
     )
 
     mcp_instance.register_tool(
@@ -167,7 +188,8 @@ def register_tools(mcp_instance: Any) -> None:
         list_d2_visualization_types_mcp,
         {},
         "Return all D2 diagram types supported for GNN model visualization.",
-        module=__package__, category="advanced_visualization",
+        module=__package__,
+        category="advanced_visualization",
     )
 
     mcp_instance.register_tool(
@@ -175,8 +197,8 @@ def register_tools(mcp_instance: Any) -> None:
         get_advanced_visualization_module_info_mcp,
         {},
         "Return version, feature flags, and tool inventory of the advanced visualization module.",
-        module=__package__, category="advanced_visualization",
+        module=__package__,
+        category="advanced_visualization",
     )
 
     logger.info("advanced_visualization module MCP tools registered (4 domain tools).")
-

@@ -21,6 +21,7 @@ class TestAdvancedVisualizationModule:
             VisualizationDataExtractor,
             process_advanced_viz,
         )
+
         assert callable(AdvancedVisualizer)
         assert callable(DashboardGenerator)
         assert callable(VisualizationDataExtractor)
@@ -63,7 +64,7 @@ class TestAdvancedVisualizer:
         visualizer = AdvancedVisualizer()
 
         # Check for common visualization methods
-        assert hasattr(visualizer, '__class__')
+        assert hasattr(visualizer, "__class__")
 
 
 class TestDashboardGenerator:
@@ -100,7 +101,7 @@ learning_rate = 0.01
         try:
             result = generate_dashboard(gnn_content, model_name, output_dir)
             # Result could be None if generation failed gracefully, or Path if successful
-            assert result is None or hasattr(result, 'exists')
+            assert result is None or hasattr(result, "exists")
         except Exception as e:
             # May require additional dependencies
             pytest.skip(f"Dashboard generation requires additional dependencies: {e}")
@@ -155,10 +156,21 @@ learning_rate = 0.01
 
         assert result["success"] is False
         expected_keys = {
-            "success", "errors", "warnings", "model_info", "blocks",
-            "connections", "parameters", "equations", "time_specification",
-            "ontology_mappings", "total_blocks", "total_connections",
-            "total_parameters", "total_equations", "extraction_timestamp",
+            "success",
+            "errors",
+            "warnings",
+            "model_info",
+            "blocks",
+            "connections",
+            "parameters",
+            "equations",
+            "time_specification",
+            "ontology_mappings",
+            "total_blocks",
+            "total_connections",
+            "total_parameters",
+            "total_equations",
+            "extraction_timestamp",
         }
         assert expected_keys.issubset(result.keys()), (
             f"Missing keys: {expected_keys - result.keys()}"
@@ -183,8 +195,12 @@ learning_rate = 0.01
 
         if result["success"] and result["connections"]:
             for conn in result["connections"]:
-                assert "source_variables" in conn, "'from' key found; expected 'source_variables'"
-                assert "target_variables" in conn, "'to' key found; expected 'target_variables'"
+                assert "source_variables" in conn, (
+                    "'from' key found; expected 'source_variables'"
+                )
+                assert "target_variables" in conn, (
+                    "'to' key found; expected 'target_variables'"
+                )
                 assert "from" not in conn
                 assert "to" not in conn
 
@@ -213,7 +229,7 @@ class TestD2Visualization:
 
     @pytest.mark.skipif(
         not pytest.importorskip("advanced_visualization").D2_AVAILABLE,
-        reason="D2 not available"
+        reason="D2 not available",
     )
     def test_d2_visualizer_import(self) -> None:
         """Test D2Visualizer can be imported when available."""
@@ -272,6 +288,7 @@ Dynamic
         output_dir = safe_filesystem.create_dir("adv_viz_output")
 
         import logging
+
         logger = logging.getLogger("test_adv_viz")
 
         try:
@@ -279,10 +296,14 @@ Dynamic
                 target_dir=safe_filesystem.temp_dir,
                 output_dir=output_dir,
                 logger=logger,
-                verbose=True
+                verbose=True,
             )
             # Should return True or dict with success status
-            assert result is True or (isinstance(result, dict) and result.get('success', False)) or result is not None
+            assert (
+                result is True
+                or (isinstance(result, dict) and result.get("success", False))
+                or result is not None
+            )
         except ImportError as e:
             pytest.skip(f"Advanced visualization requires additional dependencies: {e}")
 
@@ -299,6 +320,7 @@ s[3]
         output_dir = safe_filesystem.create_dir("types_output")
 
         import logging
+
         logger = logging.getLogger("test_viz_types")
 
         viz_types = ["all", "dashboard", "d2", "network"]
@@ -309,12 +331,14 @@ s[3]
                     target_dir=safe_filesystem.temp_dir,
                     output_dir=output_dir,
                     logger=logger,
-                    viz_type=viz_type
+                    viz_type=viz_type,
                 )
                 # Should not crash
                 assert result is not None or result is True or result is False
             except ImportError:
-                pytest.skip(f"Visualization type {viz_type} requires additional dependencies")
+                pytest.skip(
+                    f"Visualization type {viz_type} requires additional dependencies"
+                )
             except Exception:
                 # Some viz types may fail without proper data, that's OK
                 pass
@@ -340,10 +364,7 @@ class TestVisualizationCreation:
         """Test network visualization creation."""
         from advanced_visualization import create_network_visualization
 
-        data = {
-            "nodes": ["A", "B", "C"],
-            "edges": [("A", "B"), ("B", "C")]
-        }
+        data = {"nodes": ["A", "B", "C"], "edges": [("A", "B"), ("B", "C")]}
 
         try:
             result = create_network_visualization(data)

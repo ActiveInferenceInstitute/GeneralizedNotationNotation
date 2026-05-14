@@ -38,11 +38,7 @@ class TestRenderingSpeed:
         gnn_file = list(sample_gnn_files.values())[0]
 
         start = time.time()
-        process_render(
-            target_dir=gnn_file.parent,
-            output_dir=output_dir,
-            logger=logger
-        )
+        process_render(target_dir=gnn_file.parent, output_dir=output_dir, logger=logger)
         elapsed = time.time() - start
 
         # Single file should render in < 10 seconds
@@ -159,11 +155,7 @@ class TestRenderThroughput:
 
         start = time.time()
         gnn_dir = next(iter(sample_gnn_files.values())).parent
-        process_render(
-            target_dir=gnn_dir,
-            output_dir=output_dir,
-            logger=logger
-        )
+        process_render(target_dir=gnn_dir, output_dir=output_dir, logger=logger)
         elapsed = time.time() - start
 
         files_per_second = len(sample_gnn_files) / elapsed if elapsed > 0 else 0
@@ -181,7 +173,7 @@ class TestRenderThroughput:
         render_output = {
             "code": "import pymdp\n# Generated code",
             "framework": "pymdp",
-            "status": "success"
+            "status": "success",
         }
 
         start = time.time()
@@ -203,6 +195,7 @@ class TestRenderBenchmarks:
         for _ in range(5):
             start = time.time()
             from render import PyMDPRenderer
+
             PyMDPRenderer()
             times.append(time.time() - start)
 
@@ -233,7 +226,9 @@ class TestRenderBenchmarks:
         min_t = min(times)
         max_t = max(times)
 
-        print(f"\nCode gen benchmark: avg={avg:.4f}s, min={min_t:.4f}s, max={max_t:.4f}s")
+        print(
+            f"\nCode gen benchmark: avg={avg:.4f}s, min={min_t:.4f}s, max={max_t:.4f}s"
+        )
 
         assert avg < 1.0, f"Average render time {avg:.2f}s exceeds 1.0s threshold"
 
@@ -271,7 +266,9 @@ class TestRenderMemoryPerformance:
         _current, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
 
-        assert len(results) == iterations, f"Expected {iterations} results, got {len(results)}"
+        assert len(results) == iterations, (
+            f"Expected {iterations} results, got {len(results)}"
+        )
         assert any(isinstance(r, bool) for r in results), "Results should be boolean"
         # Peak traced memory since start; generous ceiling for parser/renderer caches
         assert peak < 150 * 1024 * 1024, f"tracemalloc peak {peak} bytes exceeds budget"

@@ -28,9 +28,11 @@ from typing import Dict, List, Optional
 # Import matplotlib for plotting (with recovery for headless environments)
 try:
     import matplotlib
-    matplotlib.use('Agg')  # Use non-interactive backend
+
+    matplotlib.use("Agg")  # Use non-interactive backend
     import matplotlib.pyplot as plt
     import numpy as np
+
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
@@ -84,9 +86,11 @@ from .statistical_viz import (
 SEABORN_AVAILABLE = False
 try:
     import seaborn as sns
+
     SEABORN_AVAILABLE = True
 except ImportError:
     sns = None
+
 
 def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     """Check availability of visualization dependencies"""
@@ -96,7 +100,7 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
         "plotly": False,
         "seaborn": SEABORN_AVAILABLE,
         "bokeh": False,
-        "numpy": False
+        "numpy": False,
     }
 
     if not MATPLOTLIB_AVAILABLE:
@@ -127,9 +131,11 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     return dependencies
 
 
-def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: Optional[Path] = None) -> Dict[str, Dict]:
+def _load_gnn_models(
+    target_dir: Path, logger: logging.Logger, base_output_dir: Optional[Path] = None
+) -> Dict[str, Dict]:
     """Load GNN models from processing results"""
-    from src.pipeline.config import get_output_dir_for_script
+    from pipeline.config import get_output_dir_for_script
 
     # Get GNN output directory
     if base_output_dir is None:
@@ -140,12 +146,18 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
 
     # Check for double-nested directory structure
     results_file = gnn_output_dir / "gnn_processing_results.json"
-    logger.info(f"Looking for results file: {results_file} (exists: {results_file.exists()})")
+    logger.info(
+        f"Looking for results file: {results_file} (exists: {results_file.exists()})"
+    )
 
     if not results_file.exists():
         # Try nested structure
-        nested_results_file = gnn_output_dir / "3_gnn_output" / "gnn_processing_results.json"
-        logger.info(f"Looking for nested results file: {nested_results_file} (exists: {nested_results_file.exists()})")
+        nested_results_file = (
+            gnn_output_dir / "3_gnn_output" / "gnn_processing_results.json"
+        )
+        logger.info(
+            f"Looking for nested results file: {nested_results_file} (exists: {nested_results_file.exists()})"
+        )
         if nested_results_file.exists():
             results_file = nested_results_file
             gnn_output_dir = gnn_output_dir / "3_gnn_output"
@@ -182,11 +194,15 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
         logger.info(f"Found {len(processed_files)} processed files in results")
 
         for result in processed_files:
-            if result.get("parse_success"):  # Note: it's "parse_success" not "parsing_success"
+            if result.get(
+                "parse_success"
+            ):  # Note: it's "parse_success" not "parsing_success"
                 parsed_model_file = result.get("parsed_model_file")
                 if parsed_model_file and parsed_model_file.endswith("_parsed.json"):
                     # Extract model name from file path
-                    model_name = parsed_model_file.split("/")[-1].replace("_parsed.json", "")
+                    model_name = parsed_model_file.split("/")[-1].replace(
+                        "_parsed.json", ""
+                    )
 
                     # Construct full path to parsed file
                     parsed_file = Path(parsed_model_file)
@@ -198,13 +214,19 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
                             models[model_name] = model_data
                             logger.info(f"Loaded parsed model: {model_name}")
                         except Exception as e:
-                            logger.warning(f"Failed to load model {model_name} from {parsed_file}: {e}")
+                            logger.warning(
+                                f"Failed to load model {model_name} from {parsed_file}: {e}"
+                            )
                     else:
                         # Try to resolve relative to gnn_output_dir
                         # The JSON contains "output_directory" which is the root for these files usually
                         json_out_dir = processing_results.get("output_directory")
-                        if json_out_dir and str(parsed_model_file).startswith(str(json_out_dir)):
-                            rel_path = str(parsed_model_file)[len(str(json_out_dir)):].lstrip("/\\")
+                        if json_out_dir and str(parsed_model_file).startswith(
+                            str(json_out_dir)
+                        ):
+                            rel_path = str(parsed_model_file)[
+                                len(str(json_out_dir)) :
+                            ].lstrip("/\\")
                             parsed_file = gnn_output_dir / rel_path
 
                         if parsed_file.exists():
@@ -212,13 +234,21 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
                                 with open(parsed_file) as f:
                                     model_data = json.load(f)
                                 models[model_name] = model_data
-                                logger.info(f"Loaded parsed model (path resolved): {model_name}")
+                                logger.info(
+                                    f"Loaded parsed model (path resolved): {model_name}"
+                                )
                             except Exception as e:
-                                logger.warning(f"Failed to load model {model_name} from {parsed_file}: {e}")
+                                logger.warning(
+                                    f"Failed to load model {model_name} from {parsed_file}: {e}"
+                                )
                         else:
-                            logger.warning(f"Parsed model file not found: {parsed_file}")
+                            logger.warning(
+                                f"Parsed model file not found: {parsed_file}"
+                            )
             else:
-                logger.warning(f"Skipping failed parse result: {result.get('file_name', 'unknown')}")
+                logger.warning(
+                    f"Skipping failed parse result: {result.get('file_name', 'unknown')}"
+                )
 
         return models
 
@@ -227,7 +257,9 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
         return {}
 
 
-def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logger: logging.Logger):
+def _save_results(
+    output_dir: Path, results: AdvancedVisualizationResults, logger: logging.Logger
+):
     """Save visualization results to JSON with detailed skipped feature tracking"""
     # Categorize skipped visualizations by reason
     skipped_by_reason = {}
@@ -256,11 +288,11 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
                 {
                     "feature": f"{a.viz_type}:{a.model_name}",
                     "reason": a.error_message or "Unknown",
-                    "fallback_available": a.fallback_used
+                    "fallback_available": a.fallback_used,
                 }
                 for a in results.attempts
                 if a.status == "skipped"
-            ]
+            ],
         },
         "attempts": [
             {
@@ -270,10 +302,10 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
                 "duration_ms": a.duration_ms,
                 "output_files": a.output_files,
                 "error_message": a.error_message,
-                "fallback_used": a.fallback_used
+                "fallback_used": a.fallback_used,
             }
             for a in results.attempts
-        ]
+        ],
     }
 
     output_file = output_dir / "advanced_viz_summary.json"
@@ -292,7 +324,7 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
             for feature in features[:3]:  # Show first 3 examples
                 logger.debug(f"    * {feature}")
             if len(features) > 3:
-                logger.debug(f"    ... and {len(features)-3} more")
+                logger.debug(f"    ... and {len(features) - 3} more")
 
 
 def process_advanced_viz(
@@ -302,7 +334,7 @@ def process_advanced_viz(
     viz_type: str = "all",
     interactive: bool = True,
     export_formats: Optional[List[str]] = None,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """
     Main advanced visualization processing function.
@@ -339,7 +371,13 @@ def process_advanced_viz(
     try:
         with SafeAdvancedVisualizationManager(logger):
             # Load GNN processing results
-            gnn_models = _load_gnn_models(target_dir, logger, output_dir.parent if output_dir.name.endswith("_output") else output_dir)
+            gnn_models = _load_gnn_models(
+                target_dir,
+                logger,
+                output_dir.parent
+                if output_dir.name.endswith("_output")
+                else output_dir,
+            )
 
             if not gnn_models:
                 logger.warning("No GNN models found for advanced visualization")
@@ -366,52 +404,95 @@ def process_advanced_viz(
 
                 # Generate visualizations based on type
                 if viz_type in ["all", "3d"]:
-                    _track(_generate_3d_visualization(
-                        model_name, model_data, output_dir,
-                        export_formats, dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_3d_visualization(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            export_formats,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "statistical"]:
-                    _track(_generate_statistical_plots(
-                        model_name, model_data, output_dir,
-                        dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_statistical_plots(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "statistical"]:
-                    _track(_generate_matrix_correlations(
-                        model_name, model_data, output_dir,
-                        dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_matrix_correlations(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "pomdp"]:
-                    _track(_generate_pomdp_transition_analysis(
-                        model_name, model_data, output_dir,
-                        dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_pomdp_transition_analysis(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "pomdp"]:
-                    _track(_generate_policy_visualization(
-                        model_name, model_data, output_dir,
-                        dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_policy_visualization(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "interactive"] and interactive:
-                    _track(_generate_interactive_plotly_dashboard(
-                        model_name, model_data, output_dir,
-                        export_formats, dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_interactive_plotly_dashboard(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            export_formats,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "dashboard"] and interactive:
-                    _track(_generate_interactive_dashboard(
-                        model_name, model_data, output_dir,
-                        export_formats, dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_interactive_dashboard(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            export_formats,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 if viz_type in ["all", "network"]:
-                    _track(_generate_network_metrics(
-                        model_name, model_data, output_dir,
-                        dependencies_available, logger
-                    ))
+                    _track(
+                        _generate_network_metrics(
+                            model_name,
+                            model_data,
+                            output_dir,
+                            dependencies_available,
+                            logger,
+                        )
+                    )
 
                 # Generate D2 diagrams for each model
                 if viz_type in ["all", "d2", "diagrams"]:
@@ -430,7 +511,10 @@ def process_advanced_viz(
                     else:
                         results.skipped += 1
                         # D2 CLI is optional - don't add warnings for missing CLI
-                        if attempt.error_message and "D2 CLI" not in attempt.error_message:
+                        if (
+                            attempt.error_message
+                            and "D2 CLI" not in attempt.error_message
+                        ):
                             results.warnings.append(attempt.error_message)
 
             # Generate pipeline-level D2 diagrams (once for all models)
@@ -467,9 +551,9 @@ def process_advanced_viz(
         # 2. No attempts were made (no data), OR
         # 3. Only failures are skipped optional features (no actual errors)
         return (
-            results.successful > 0 or
-            results.total_attempts == 0 or
-            (results.failed == 0 and results.skipped > 0)
+            results.successful > 0
+            or results.total_attempts == 0
+            or (results.failed == 0 and results.skipped > 0)
         )
 
     except Exception as e:

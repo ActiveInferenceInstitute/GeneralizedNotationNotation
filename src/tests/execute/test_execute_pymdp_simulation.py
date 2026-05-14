@@ -29,22 +29,26 @@ def create_test_temp_dir(prefix: str) -> Path:
     d = Path(tempfile.mkdtemp(prefix=f"{prefix}_"))
     return d
 
+
 def cleanup_test_temp_dir(path: Path) -> None:
     try:
         import shutil
+
         shutil.rmtree(path)
     except Exception:
         pass
+
+
 try:
     from analysis.pymdp.visualizer import PyMDPVisualizer
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
     from utils.jax_stack_validation import jax_pymdp_stack_ok
 except ImportError:
-    from src.analysis.pymdp.visualizer import PyMDPVisualizer
-    from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
-    from src.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
-    from src.utils.jax_stack_validation import jax_pymdp_stack_ok
+    from analysis.pymdp.visualizer import PyMDPVisualizer
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
+    from execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
+    from utils.jax_stack_validation import jax_pymdp_stack_ok
 
 
 @unittest.skipUnless(
@@ -72,10 +76,10 @@ class TestPyMDPSimulation(unittest.TestCase):
             "preferences": {
                 "goal_reward": 10.0,
                 "step_cost": -0.1,
-                "wall_penalty": -1.0
+                "wall_penalty": -1.0,
             },
             "learning_rate": 0.5,
-            "exploration_factor": 0.1
+            "exploration_factor": 0.1,
         }
 
         # Alternative minimal configuration
@@ -83,7 +87,7 @@ class TestPyMDPSimulation(unittest.TestCase):
             "states": 4,
             "observations": 2,
             "actions": 4,
-            "model_type": "discrete_pomdp"
+            "model_type": "discrete_pomdp",
         }
         self.initialparameterization = {
             "A": [
@@ -91,10 +95,30 @@ class TestPyMDPSimulation(unittest.TestCase):
                 [0.15, 0.85, 0.15, 0.85],
             ],
             "B": [
-                [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]],
-                [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]],
-                [[0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0], [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]],
-                [[0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]],
+                [
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                ],
+                [
+                    [0.0, 1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0],
+                ],
             ],
             "C": [0.0, 1.0],
             "D": [0.25, 0.25, 0.25, 0.25],
@@ -105,8 +129,7 @@ class TestPyMDPSimulation(unittest.TestCase):
     def test_simulation_creation_with_gnn_config(self) -> None:
         """Test creating PyMDP simulation from GNN configuration."""
         simulation = PyMDPSimulation(
-            gnn_config=self.gnn_config,
-            output_dir=self.test_dir
+            gnn_config=self.gnn_config, output_dir=self.test_dir
         )
 
         self.assertEqual(simulation.num_states, 4)
@@ -117,8 +140,7 @@ class TestPyMDPSimulation(unittest.TestCase):
     def test_simulation_creation_with_minimal_config(self) -> None:
         """Test creating PyMDP simulation with minimal configuration."""
         simulation = PyMDPSimulation(
-            gnn_config=self.minimal_config,
-            output_dir=self.test_dir
+            gnn_config=self.minimal_config, output_dir=self.test_dir
         )
 
         self.assertEqual(simulation.num_states, 4)
@@ -129,24 +151,22 @@ class TestPyMDPSimulation(unittest.TestCase):
     def test_simulation_run(self) -> None:
         """Test running a complete simulation."""
         simulation = PyMDPSimulation(
-            gnn_config=self.gnn_config,
-            output_dir=self.test_dir
+            gnn_config=self.gnn_config, output_dir=self.test_dir
         )
 
         results = simulation.run_simulation(num_timesteps=10)
 
-        self.assertIn('observations', results)
-        self.assertIn('actions', results)
-        self.assertIn('beliefs', results)
-        self.assertIn('performance', results)
-        self.assertEqual(len(results['observations']), 10)
-        self.assertEqual(len(results['actions']), 10)
+        self.assertIn("observations", results)
+        self.assertIn("actions", results)
+        self.assertIn("beliefs", results)
+        self.assertIn("performance", results)
+        self.assertEqual(len(results["observations"]), 10)
+        self.assertEqual(len(results["actions"]), 10)
 
     def test_matrix_construction(self) -> None:
         """Test that PyMDP matrices are properly constructed."""
         simulation = PyMDPSimulation(
-            gnn_config=self.gnn_config,
-            output_dir=self.test_dir
+            gnn_config=self.gnn_config, output_dir=self.test_dir
         )
 
         # Test A matrix properties
@@ -172,8 +192,7 @@ class TestPyMDPSimulation(unittest.TestCase):
     def test_serialization(self) -> None:
         """Test that simulation results can be serialized."""
         simulation = PyMDPSimulation(
-            gnn_config=self.gnn_config,
-            output_dir=self.test_dir
+            gnn_config=self.gnn_config, output_dir=self.test_dir
         )
 
         results = simulation.run_simulation(num_timesteps=5)
@@ -184,31 +203,27 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertTrue(json_file.exists())
 
         # Load and verify
-        with open(json_file, 'r') as f:
+        with open(json_file, "r") as f:
             loaded_results = json.load(f)
 
-        self.assertIn('observations', loaded_results)
-        self.assertIn('actions', loaded_results)
+        self.assertIn("observations", loaded_results)
+        self.assertIn("actions", loaded_results)
 
     def test_visualization_creation(self) -> None:
         """Test that visualizations can be created."""
         simulation = PyMDPSimulation(
-            gnn_config=self.gnn_config,
-            output_dir=self.test_dir
+            gnn_config=self.gnn_config, output_dir=self.test_dir
         )
 
         results = simulation.run_simulation(num_timesteps=10)
 
-        visualizer = PyMDPVisualizer(
-            config=self.gnn_config,
-            output_dir=self.test_dir
-        )
+        visualizer = PyMDPVisualizer(config=self.gnn_config, output_dir=self.test_dir)
 
         # Test visualization creation (should not raise errors)
         try:
-            visualizer.plot_belief_evolution(results['beliefs'])
-            visualizer.plot_action_sequence(results['actions'])
-            visualizer.plot_performance_metrics(results['performance'])
+            visualizer.plot_belief_evolution(results["beliefs"])
+            visualizer.plot_action_sequence(results["actions"])
+            visualizer.plot_performance_metrics(results["performance"])
             viz_success = True
         except Exception as e:
             viz_success = False
@@ -225,14 +240,11 @@ class TestPyMDPSimulation(unittest.TestCase):
             "actions": ["move_north", "move_south", "move_east", "move_west"],
             "model_type": "discrete_pomdp",
             "initialparameterization": self.initialparameterization,
-            "preferences": {
-                "goal_reward": 5.0
-            }
+            "preferences": {"goal_reward": 5.0},
         }
 
         simulation = PyMDPSimulation(
-            gnn_config=config_with_names,
-            output_dir=self.test_dir
+            gnn_config=config_with_names, output_dir=self.test_dir
         )
 
         self.assertEqual(simulation.num_states, 4)
@@ -241,7 +253,9 @@ class TestPyMDPSimulation(unittest.TestCase):
 
         # Verify state names are stored
         self.assertEqual(simulation.state_names, config_with_names["states"])
-        self.assertEqual(simulation.observation_names, config_with_names["observations"])
+        self.assertEqual(
+            simulation.observation_names, config_with_names["observations"]
+        )
         self.assertEqual(simulation.action_names, config_with_names["actions"])
 
     def tearDown(self) -> None:
@@ -256,12 +270,12 @@ class TestPyMDPUtils(unittest.TestCase):
         """Test numpy to JSON conversion utilities."""
         # Test various numpy types
         test_data = {
-            'int_array': np.array([1, 2, 3]),
-            'float_array': np.array([1.5, 2.5, 3.5]),
-            'nested': {
-                'matrix': np.array([[1, 2], [3, 4]]),
-                'scalar': np.float64(3.14)
-            }
+            "int_array": np.array([1, 2, 3]),
+            "float_array": np.array([1.5, 2.5, 3.5]),
+            "nested": {
+                "matrix": np.array([[1, 2], [3, 4]]),
+                "scalar": np.float64(3.14),
+            },
         }
 
         converted = convert_numpy_for_json(test_data)
@@ -272,11 +286,11 @@ class TestPyMDPUtils(unittest.TestCase):
 
         # Load back and verify
         loaded = json.loads(json_str)
-        self.assertIn('int_array', loaded)
-        self.assertIn('float_array', loaded)
-        self.assertIn('nested', loaded)
+        self.assertIn("int_array", loaded)
+        self.assertIn("float_array", loaded)
+        self.assertIn("nested", loaded)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Run specific test methods or all tests
-    unittest.main(argv=[''], exit=False, verbosity=2)
+    unittest.main(argv=[""], exit=False, verbosity=2)

@@ -15,8 +15,9 @@ from .generator import generate_website as _generate_website
 from .renderer import process_website
 
 
-def process_website_mcp(target_directory: str, output_directory: str,
-                        verbose: bool = False) -> Dict[str, Any]:
+def process_website_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Generate a static website from GNN pipeline artifacts.
 
@@ -29,7 +30,9 @@ def process_website_mcp(target_directory: str, output_directory: str,
         Dictionary with success status, pages_created count, errors and warnings.
     """
     try:
-        result = process_website(Path(target_directory), Path(output_directory), verbose=verbose)
+        result = process_website(
+            Path(target_directory), Path(output_directory), verbose=verbose
+        )
         # process_website returns bool or dict
         if isinstance(result, dict):
             return {
@@ -51,9 +54,9 @@ def process_website_mcp(target_directory: str, output_directory: str,
         return {"success": False, "error": str(e)}
 
 
-def build_from_pipeline_output_mcp(pipeline_output_directory: str,
-                                   website_output_directory: str,
-                                   verbose: bool = False) -> Dict[str, Any]:
+def build_from_pipeline_output_mcp(
+    pipeline_output_directory: str, website_output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Build the full premium website by scanning a pipeline output root directory.
 
@@ -71,21 +74,22 @@ def build_from_pipeline_output_mcp(pipeline_output_directory: str,
     """
     try:
         import logging as _log
+
         _logger = _log.getLogger("website.mcp.build")
         if verbose:
             _logger.setLevel(_log.DEBUG)
 
         p_root = Path(pipeline_output_directory)
-        out    = Path(website_output_directory)
+        out = Path(website_output_directory)
 
         result = _generate_website(_logger, p_root, out, pipeline_output_root=p_root)
         return {
-            "success":             result.get("success", False),
-            "pages_created":       result.get("pages_created", 0),
+            "success": result.get("success", False),
+            "pages_created": result.get("pages_created", 0),
             "pipeline_output_dir": str(p_root),
-            "website_output_dir":  str(out),
-            "errors":              result.get("errors", []),
-            "warnings":            result.get("warnings", []),
+            "website_output_dir": str(out),
+            "errors": result.get("errors", []),
+            "warnings": result.get("warnings", []),
         }
     except Exception as e:
         logger.error(f"build_from_pipeline_output_mcp error: {e}", exc_info=True)
@@ -108,19 +112,29 @@ def get_website_status_mcp(website_directory: str) -> Dict[str, Any]:
     try:
         wdir = Path(website_directory)
         if not wdir.exists():
-            return {"success": False, "error": f"Directory not found: {website_directory}"}
+            return {
+                "success": False,
+                "error": f"Directory not found: {website_directory}",
+            }
 
         pages = sorted(wdir.glob("*.html"))
         assets = list((wdir / "assets").glob("*")) if (wdir / "assets").exists() else []
-        key_pages = ["index.html", "pipeline.html", "gnn_files.html",
-                     "analysis.html", "visualization.html", "reports.html", "mcp.html"]
+        key_pages = [
+            "index.html",
+            "pipeline.html",
+            "gnn_files.html",
+            "analysis.html",
+            "visualization.html",
+            "reports.html",
+            "mcp.html",
+        ]
         completeness = {p: (wdir / p).exists() for p in key_pages}
         total_size = sum(f.stat().st_size for f in pages if f.exists())
 
         return {
-            "success":    True,
-            "directory":  str(wdir),
-            "pages":      [p.name for p in pages],
+            "success": True,
+            "directory": str(wdir),
+            "pages": [p.name for p in pages],
             "pages_count": len(pages),
             "assets_count": len(assets),
             "total_size_bytes": total_size,
@@ -145,17 +159,23 @@ def list_generated_pages_mcp(website_directory: str) -> Dict[str, Any]:
     try:
         wdir = Path(website_directory)
         if not wdir.exists():
-            return {"success": False, "error": f"Directory not found: {website_directory}"}
+            return {
+                "success": False,
+                "error": f"Directory not found: {website_directory}",
+            }
 
         from datetime import datetime as _dt
+
         pages = []
         for html_file in sorted(wdir.glob("*.html")):
             stat = html_file.stat()
-            pages.append({
-                "name":     html_file.name,
-                "size_bytes": stat.st_size,
-                "modified": _dt.fromtimestamp(stat.st_mtime).isoformat(),
-            })
+            pages.append(
+                {
+                    "name": html_file.name,
+                    "size_bytes": stat.st_size,
+                    "modified": _dt.fromtimestamp(stat.st_mtime).isoformat(),
+                }
+            )
 
         return {
             "success": True,
@@ -177,13 +197,21 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         from . import FEATURES, SUPPORTED_FILE_TYPES, __version__
+
         return {
             "success": True,
             "version": __version__,
             "features": FEATURES,
             "supported_file_types": SUPPORTED_FILE_TYPES,
-            "pages": ["index", "pipeline", "gnn_files", "analysis",
-                      "visualization", "reports", "mcp"],
+            "pages": [
+                "index",
+                "pipeline",
+                "gnn_files",
+                "analysis",
+                "visualization",
+                "reports",
+                "mcp",
+            ],
             "mcp_tools": [
                 "process_website",
                 "build_from_pipeline_output",
@@ -199,6 +227,7 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
+
 def register_tools(mcp_instance) -> None:
     """Register all website module tools with the MCP server."""
 
@@ -210,14 +239,25 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN pipeline input files"},
-                "output_directory": {"type": "string", "description": "Directory to write the generated website"},
-                "verbose":          {"type": "boolean", "description": "Enable verbose logging", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN pipeline input files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to write the generated website",
+                },
+                "verbose": {
+                    "type": "boolean",
+                    "description": "Enable verbose logging",
+                    "default": False,
+                },
             },
             "required": ["target_directory", "output_directory"],
         },
         "Generate a premium 7-page static HTML website from GNN pipeline artifacts.",
-        module=__package__, category="website",
+        module=__package__,
+        category="website",
     )
 
     mcp_instance.register_tool(
@@ -226,14 +266,25 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "pipeline_output_directory": {"type": "string", "description": "Root of numbered pipeline output dirs (e.g. output/)"},
-                "website_output_directory":  {"type": "string", "description": "Destination for the generated website"},
-                "verbose":                   {"type": "boolean", "description": "Enable verbose logging", "default": False},
+                "pipeline_output_directory": {
+                    "type": "string",
+                    "description": "Root of numbered pipeline output dirs (e.g. output/)",
+                },
+                "website_output_directory": {
+                    "type": "string",
+                    "description": "Destination for the generated website",
+                },
+                "verbose": {
+                    "type": "boolean",
+                    "description": "Enable verbose logging",
+                    "default": False,
+                },
             },
             "required": ["pipeline_output_directory", "website_output_directory"],
         },
         "Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories.",
-        module=__package__, category="website",
+        module=__package__,
+        category="website",
     )
 
     mcp_instance.register_tool(
@@ -242,12 +293,16 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "website_directory": {"type": "string", "description": "Path to a previously generated website directory"},
+                "website_directory": {
+                    "type": "string",
+                    "description": "Path to a previously generated website directory",
+                },
             },
             "required": ["website_directory"],
         },
         "Inspect an existing generated website: list pages, sizes, and check completeness of key pages.",
-        module=__package__, category="website",
+        module=__package__,
+        category="website",
     )
 
     mcp_instance.register_tool(
@@ -256,12 +311,16 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "website_directory": {"type": "string", "description": "Path to a previously generated website directory"},
+                "website_directory": {
+                    "type": "string",
+                    "description": "Path to a previously generated website directory",
+                },
             },
             "required": ["website_directory"],
         },
         "List all HTML pages in a generated website directory with sizes and timestamps.",
-        module=__package__, category="website",
+        module=__package__,
+        category="website",
     )
 
     mcp_instance.register_tool(
@@ -269,7 +328,8 @@ def register_tools(mcp_instance) -> None:
         get_website_module_info_mcp,
         {},
         "Return metadata about the website module: version, supported file types, and available MCP tools.",
-        module=__package__, category="website",
+        module=__package__,
+        category="website",
     )
 
     logger.info("website module MCP tools registered (6 tools).")

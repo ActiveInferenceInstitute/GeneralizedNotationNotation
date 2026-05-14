@@ -41,13 +41,16 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from report import process_report
 except ImportError:
+
     def process_report(target_dir, output_dir, logger=None, **kwargs) -> bool:
         """Recovery report processing when module unavailable."""
         import logging
+
         if logger is None:
             logger = logging.getLogger(__name__)
         logger.warning("Report module not available - using recovery")
         return True
+
 
 run_script = create_standardized_pipeline_script(
     "23_report.py",
@@ -55,9 +58,11 @@ run_script = create_standardized_pipeline_script(
     "Report generation for GNN models",
 )
 
+
 def main() -> int:
     """Main entry point for the report step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -2,8 +2,8 @@
 """
 GNN Analysis Prompts for LLM Processing
 
-This module contains structured prompts for analyzing GNN (Generalized Notation Notation) 
-files using Large Language Models. Each prompt is designed for specific analysis tasks 
+This module contains structured prompts for analyzing GNN (Generalized Notation Notation)
+files using Large Language Models. Each prompt is designed for specific analysis tasks
 that help understand Active Inference generative models.
 """
 
@@ -13,6 +13,7 @@ from typing import Any, Dict, List
 
 class PromptType(Enum):
     """Types of analysis prompts available for GNN processing."""
+
     EXPLAIN_MODEL = "explain_model"
     ANALYZE_STRUCTURE = "analyze_structure"
     SUMMARIZE_CONTENT = "summarize_content"
@@ -23,6 +24,7 @@ class PromptType(Enum):
     VALIDATE_SYNTAX = "validate_syntax"
     SUGGEST_IMPROVEMENTS = "suggest_improvements"
     EXTRACT_PARAMETERS = "extract_parameters"
+
 
 # Base system message for all GNN analysis tasks
 GNN_SYSTEM_MESSAGE = """You are an expert in Active Inference, Bayesian inference, and GNN (Generalized Notation Notation) specifications. You have deep knowledge of:
@@ -40,7 +42,6 @@ When analyzing GNN files, provide accurate, detailed, and scientifically rigorou
 
 # Structured prompts for different analysis types
 GNN_ANALYSIS_PROMPTS: Dict[PromptType, Dict[str, Any]] = {
-
     PromptType.EXPLAIN_MODEL: {
         "title": "Model Explanation and Overview",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -65,9 +66,8 @@ Provide a comprehensive explanation that covers:
 
 Please write in clear, accessible language while maintaining scientific accuracy.""",
         "expected_output": "markdown",
-        "max_tokens": 2000
+        "max_tokens": 2000,
     },
-
     PromptType.ANALYZE_STRUCTURE: {
         "title": "Structural Analysis and Graph Properties",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -101,9 +101,8 @@ Provide a detailed structural analysis covering:
    - What modeling patterns or templates does this follow?
    - How does the structure reflect the domain being modeled?""",
         "expected_output": "markdown",
-        "max_tokens": 1800
+        "max_tokens": 1800,
     },
-
     PromptType.SUMMARIZE_CONTENT: {
         "title": "Content Summary and Key Points",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -132,9 +131,8 @@ Create a structured summary including:
 
 Keep the summary focused and informative, suitable for someone familiar with Active Inference but new to this specific model.""",
         "expected_output": "markdown",
-        "max_tokens": 1200
+        "max_tokens": 1200,
     },
-
     PromptType.IDENTIFY_COMPONENTS: {
         "title": "Component Identification and Classification",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -174,9 +172,8 @@ Provide a systematic breakdown:
    - Time horizons and temporal dependencies
    - Dynamic vs. static components""",
         "expected_output": "markdown",
-        "max_tokens": 1600
+        "max_tokens": 1600,
     },
-
     PromptType.MATHEMATICAL_ANALYSIS: {
         "title": "Mathematical Analysis and Formalism",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -216,9 +213,8 @@ Focus on the mathematical formalism and relationships:
    - Stability analysis
    - Theoretical foundations""",
         "expected_output": "markdown",
-        "max_tokens": 2000
+        "max_tokens": 2000,
     },
-
     PromptType.PRACTICAL_APPLICATIONS: {
         "title": "Practical Applications and Use Cases",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -258,9 +254,8 @@ Discuss practical considerations:
    - Tuning and optimization requirements
    - Maintenance and monitoring needs""",
         "expected_output": "markdown",
-        "max_tokens": 1600
+        "max_tokens": 1600,
     },
-
     PromptType.EXTRACT_PARAMETERS: {
         "title": "Parameter Extraction and Configuration",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -301,9 +296,8 @@ Provide a systematic parameter breakdown:
    - Tunable vs. fixed parameters
    - Sensitivity analysis priorities""",
         "expected_output": "markdown",
-        "max_tokens": 1400
+        "max_tokens": 1400,
     },
-
     PromptType.SUGGEST_IMPROVEMENTS: {
         "title": "Model Improvements and Recommendations",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -343,19 +337,20 @@ Provide constructive recommendations:
    - Active Inference implementation standards
    - Documentation and maintainability""",
         "expected_output": "markdown",
-        "max_tokens": 1600
-    }
+        "max_tokens": 1600,
+    },
 }
+
 
 def get_prompt(prompt_type: PromptType, gnn_content: str, **kwargs) -> Dict[str, Any]:
     """
     Get a formatted prompt for GNN analysis.
-    
+
     Args:
         prompt_type: Type of analysis prompt to retrieve
         gnn_content: The GNN file content to analyze
         **kwargs: Additional parameters for prompt formatting
-        
+
     Returns:
         Dictionary containing formatted prompt and metadata
     """
@@ -366,24 +361,26 @@ def get_prompt(prompt_type: PromptType, gnn_content: str, **kwargs) -> Dict[str,
 
     # Format the user prompt with the GNN content
     prompt_config["user_prompt"] = prompt_config["user_prompt"].format(
-        gnn_content=gnn_content,
-        **kwargs
+        gnn_content=gnn_content, **kwargs
     )
 
     return prompt_config
+
 
 def get_all_prompt_types() -> List[PromptType]:
     """Get all available prompt types."""
     return list(PromptType)
 
+
 def get_prompt_title(prompt_type: PromptType) -> str:
     """Get the human-readable title for a prompt type."""
     return GNN_ANALYSIS_PROMPTS[prompt_type]["title"]
 
+
 def get_default_prompt_sequence() -> List[PromptType]:
     """
     Get the default sequence of prompts for comprehensive GNN analysis.
-    
+
     Returns:
         List of prompt types in recommended analysis order
     """
@@ -393,5 +390,5 @@ def get_default_prompt_sequence() -> List[PromptType]:
         PromptType.IDENTIFY_COMPONENTS,
         PromptType.ANALYZE_STRUCTURE,
         PromptType.EXTRACT_PARAMETERS,
-        PromptType.PRACTICAL_APPLICATIONS
+        PromptType.PRACTICAL_APPLICATIONS,
     ]

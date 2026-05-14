@@ -17,14 +17,20 @@ from typing import Any, Dict, List, Sequence, Tuple
 from utils import log_step_error, log_step_start, log_step_success
 
 
-def _formats_for_serialize_preset(preset: str, supported_formats: Sequence[Any]) -> Tuple[List[Any], str]:
+def _formats_for_serialize_preset(
+    preset: str, supported_formats: Sequence[Any]
+) -> Tuple[List[Any], str]:
     """Return filtered formats list and normalized preset label."""
     label = (preset or "full").strip().lower()
     if label not in {"full", "minimal"}:
         label = "full"
     if label == "minimal":
         minimal_allow = {"markdown", "json", "python"}
-        filtered = [f for f in supported_formats if getattr(f, "value", str(f)).lower() in minimal_allow]
+        filtered = [
+            f
+            for f in supported_formats
+            if getattr(f, "value", str(f)).lower() in minimal_allow
+        ]
         return filtered, label
     return list(supported_formats), label
 
@@ -51,6 +57,7 @@ def process_gnn_multi_format(
     """
     # Resolve step-specific output directory (lazy import avoids gnn → pipeline coupling)
     from pipeline.config import get_output_dir_for_script
+
     step_output_dir = get_output_dir_for_script("3_gnn.py", output_dir)
     step_output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -68,7 +75,9 @@ def process_gnn_multi_format(
         supported_formats = parsing_system.get_supported_formats()
         preset_raw = str(kwargs.get("serialize_preset") or "full")
         raw_norm = preset_raw.strip().lower()
-        formats_to_emit, preset_norm = _formats_for_serialize_preset(preset_raw, supported_formats)
+        formats_to_emit, preset_norm = _formats_for_serialize_preset(
+            preset_raw, supported_formats
+        )
         if raw_norm not in {"full", "minimal"}:
             logger.warning(
                 "Unknown serialize_preset %r; using full-format serialization",
@@ -232,8 +241,13 @@ def process_gnn_multi_format(
                 for format_enum in formats_to_emit:
                     try:
                         ext = extension_map.get(format_enum, f".{format_enum.value}")
-                        out_file = file_output_dir / f"{file_path.stem}_{format_enum.value}{ext}"
-                        serialized = parsing_system.serialize(parse_result.model, format_enum)
+                        out_file = (
+                            file_output_dir
+                            / f"{file_path.stem}_{format_enum.value}{ext}"
+                        )
+                        serialized = parsing_system.serialize(
+                            parse_result.model, format_enum
+                        )
                         with open(out_file, "w", encoding="utf-8") as f:
                             f.write(serialized)
 
@@ -261,11 +275,15 @@ def process_gnn_multi_format(
                             "success": False,
                         }
 
-                processing_results["summary"]["formats_per_file"][
-                    file_path.name
-                ] = formats_generated
-                processing_results["summary"]["total_formats_generated"] += formats_generated
-                logger.info(f"Generated {formats_generated} formats for {file_path.name}")
+                processing_results["summary"]["formats_per_file"][file_path.name] = (
+                    formats_generated
+                )
+                processing_results["summary"]["total_formats_generated"] += (
+                    formats_generated
+                )
+                logger.info(
+                    f"Generated {formats_generated} formats for {file_path.name}"
+                )
 
                 processing_results["processed_files"].append(file_result)
                 processing_results["summary"]["successful_parses"] += 1
@@ -298,7 +316,11 @@ def process_gnn_multi_format(
             if pf.get("parse_success"):
                 for fmt, info in pf["generated_formats"].items():
                     if fmt not in format_stats:
-                        format_stats[fmt] = {"successful": 0, "failed": 0, "total_size": 0}
+                        format_stats[fmt] = {
+                            "successful": 0,
+                            "failed": 0,
+                            "total_size": 0,
+                        }
                     if info.get("success"):
                         format_stats[fmt]["successful"] += 1
                         format_stats[fmt]["total_size"] += int(info.get("file_size", 0))
@@ -326,5 +348,3 @@ def process_gnn_multi_format(
     except Exception as e:  # pragma: no cover - outer guard
         log_step_error(logger, f"GNN processing failed: {e}")
         return False
-
-

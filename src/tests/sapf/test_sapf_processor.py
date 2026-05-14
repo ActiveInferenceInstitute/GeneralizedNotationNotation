@@ -60,5 +60,6 @@ def test_sapf_delegates_to_audio_sapf_for_metadata() -> None:
     """Phase 6: verify the public entry point keeps a live reference to audio.sapf rather
     than maintaining its own duplicate metadata."""
     from audio import sapf as audio_sapf_direct
+
     # The exported FEATURES must be the same object as audio.sapf's.
     assert sapf.FEATURES is audio_sapf_direct.FEATURES

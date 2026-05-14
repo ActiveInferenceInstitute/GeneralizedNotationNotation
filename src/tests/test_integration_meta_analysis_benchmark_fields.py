@@ -35,7 +35,9 @@ def test_collects_execution_benchmark_metadata(tmp_path: Path) -> None:
             }
         ]
     }
-    (summaries / "execution_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    (summaries / "execution_summary.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
 
     collector = SweepDataCollector(exec_root)
     records = collector.collect()

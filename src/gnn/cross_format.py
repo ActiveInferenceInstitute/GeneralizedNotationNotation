@@ -14,6 +14,7 @@ try:
 
 except ImportError as e:
     import logging
+
     logger = logging.getLogger(__name__)
     logger.warning(f"Cross-format validation not available: {e}")
 
@@ -27,7 +28,7 @@ except ImportError as e:
 
         def validate(self, files):
             return {
-                'success': False,
-                'error': 'Cross-format validation not available',
-                'files_validated': 0
+                "success": False,
+                "error": "Cross-format validation not available",
+                "files_validated": 0,
             }

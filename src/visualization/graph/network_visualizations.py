@@ -9,10 +9,10 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from src.advanced_visualization._shared import normalize_connection_format
+from advanced_visualization._shared import normalize_connection_format
 
 try:
-    from src.gnn.parsers.common import VariableType
+    from gnn.parsers.common import VariableType
 
     _HID = VariableType.HIDDEN_STATE.value
     _OBS = VariableType.OBSERVATION.value
@@ -69,8 +69,8 @@ logger = logging.getLogger(__name__)
 def _var_type(var_info: Dict[str, Any]) -> str:
     """Extract variable type — delegates to :func:`visualization.compat.viz_compat.viz_var_type`."""
     from ..compat.viz_compat import viz_var_type
-    return viz_var_type(var_info)
 
+    return viz_var_type(var_info)
 
 
 def _connection_is_undirected(conn_info: Dict[str, Any]) -> bool:
@@ -155,14 +155,20 @@ def generate_network_visualizations(
                         directed_edges.append(pair)
 
         if len(G_layout.nodes()) == 0:
-            print(f"Warning: No valid nodes found for network visualization of {model_name}")
+            print(
+                f"Warning: No valid nodes found for network visualization of {model_name}"
+            )
             return visualizations
 
         plt.figure(figsize=(14, 12))
         pos = nx.spring_layout(G_layout, k=2, iterations=100, seed=42)
 
-        node_sizes = [G_layout.nodes[node].get("size", 5) * 100 for node in G_layout.nodes()]
-        node_types = [G_layout.nodes[node].get("type", "unknown") for node in G_layout.nodes()]
+        node_sizes = [
+            G_layout.nodes[node].get("size", 5) * 100 for node in G_layout.nodes()
+        ]
+        node_types = [
+            G_layout.nodes[node].get("type", "unknown") for node in G_layout.nodes()
+        ]
 
         type_colors = {
             "hidden_state": "#5B9BD5",
@@ -238,13 +244,17 @@ def generate_network_visualizations(
                 label_map[node] = f"{node}\n({term})"
             else:
                 label_map[node] = str(node)
-        nx.draw_networkx_labels(G_layout, pos, labels=label_map, font_size=9, font_weight="bold")
+        nx.draw_networkx_labels(
+            G_layout, pos, labels=label_map, font_size=9, font_weight="bold"
+        )
 
         legend_elements = [
             plt.Rectangle((0, 0), 1, 1, fc=color, label=var_type)
             for var_type, color in type_colors.items()
         ]
-        plt.legend(handles=legend_elements, loc="upper right", bbox_to_anchor=(1.0, 1.0))
+        plt.legend(
+            handles=legend_elements, loc="upper right", bbox_to_anchor=(1.0, 1.0)
+        )
 
         plt.title(
             f"Bayesian Graphical Model: {model_name}\nGNN network (directed vs undirected)",
@@ -268,7 +278,9 @@ def generate_network_visualizations(
         if ontology_labels:
             leg_path = output_dir / f"{model_name}_ontology_legend.txt"
             try:
-                rows = [f"{var}\t{term}" for var, term in sorted(ontology_labels.items())]
+                rows = [
+                    f"{var}\t{term}" for var, term in sorted(ontology_labels.items())
+                ]
                 leg_path.write_text(
                     "variable\tontology_term\n" + "\n".join(rows) + "\n",
                     encoding="utf-8",
@@ -295,7 +307,9 @@ def generate_network_visualizations(
                 print(f"Failed to generate interactive network: {e}")
 
     except Exception as e:
-        logger.exception("Error generating network visualizations for %s: %s", model_name, e)
+        logger.exception(
+            "Error generating network visualizations for %s: %s", model_name, e
+        )
 
     return visualizations
 
@@ -340,17 +354,72 @@ def _determine_connection_type(
 
 def _get_edge_style(connection_type: str) -> Dict[str, Any]:
     style_map = {
-        "state_transition":       {"color": "#3B5998", "width": 3,   "alpha": 0.8, "style": "solid"},
-        "observation_generation": {"color": "#70C1B3", "width": 2,   "alpha": 0.7, "style": "dashed"},
-        "state_action_influence":  {"color": "#F2C14E", "width": 2,   "alpha": 0.7, "style": "dotted"},
-        "action_effect":           {"color": "#E07A5F", "width": 3,   "alpha": 0.8, "style": "solid"},
-        "policy_selection":        {"color": "#A78BCA", "width": 2,   "alpha": 0.7, "style": "solid"},
-        "prior_influence":         {"color": "#48BFE3", "width": 2,   "alpha": 0.6, "style": "dashed"},
-        "likelihood_influence":    {"color": "#F4845F", "width": 2,   "alpha": 0.6, "style": "dotted"},
-        "energy_flow":             {"color": "#D4A5A5", "width": 1.5, "alpha": 0.5, "style": "dashed"},
-        "preference_energy":       {"color": "#81B29A", "width": 2,   "alpha": 0.7, "style": "solid"},
-        "habit_policy":            {"color": "#FFB6C1", "width": 2,   "alpha": 0.7, "style": "solid"},
-        "generic_causal":          {"color": "#999999", "width": 1,   "alpha": 0.5, "style": "solid"},
+        "state_transition": {
+            "color": "#3B5998",
+            "width": 3,
+            "alpha": 0.8,
+            "style": "solid",
+        },
+        "observation_generation": {
+            "color": "#70C1B3",
+            "width": 2,
+            "alpha": 0.7,
+            "style": "dashed",
+        },
+        "state_action_influence": {
+            "color": "#F2C14E",
+            "width": 2,
+            "alpha": 0.7,
+            "style": "dotted",
+        },
+        "action_effect": {
+            "color": "#E07A5F",
+            "width": 3,
+            "alpha": 0.8,
+            "style": "solid",
+        },
+        "policy_selection": {
+            "color": "#A78BCA",
+            "width": 2,
+            "alpha": 0.7,
+            "style": "solid",
+        },
+        "prior_influence": {
+            "color": "#48BFE3",
+            "width": 2,
+            "alpha": 0.6,
+            "style": "dashed",
+        },
+        "likelihood_influence": {
+            "color": "#F4845F",
+            "width": 2,
+            "alpha": 0.6,
+            "style": "dotted",
+        },
+        "energy_flow": {
+            "color": "#D4A5A5",
+            "width": 1.5,
+            "alpha": 0.5,
+            "style": "dashed",
+        },
+        "preference_energy": {
+            "color": "#81B29A",
+            "width": 2,
+            "alpha": 0.7,
+            "style": "solid",
+        },
+        "habit_policy": {
+            "color": "#FFB6C1",
+            "width": 2,
+            "alpha": 0.7,
+            "style": "solid",
+        },
+        "generic_causal": {
+            "color": "#999999",
+            "width": 1,
+            "alpha": 0.5,
+            "style": "solid",
+        },
     }
     return style_map.get(connection_type, style_map["generic_causal"])
 
@@ -371,7 +440,9 @@ def _generate_network_statistics(variables: list, connections: list) -> Dict[str
     for var_info in variables:
         if isinstance(var_info, dict):
             var_type = _var_type(var_info)
-            stats["variable_types"][var_type] = stats["variable_types"].get(var_type, 0) + 1
+            stats["variable_types"][var_type] = (
+                stats["variable_types"].get(var_type, 0) + 1
+            )
 
     orient = stats["gnn_edge_orientation"]
     for conn_info in connections:
@@ -470,7 +541,9 @@ def _generate_interactive_network(G: Any, output_path: Path) -> bool:
             marker={
                 "size": [G.degree(node) * 10 + 20 for node in G.nodes()],
                 "color": [
-                    "lightblue" if node_types.get(node, "unknown") == "unknown" else "orange"
+                    "lightblue"
+                    if node_types.get(node, "unknown") == "unknown"
+                    else "orange"
                     for node in G.nodes()
                 ],
                 "line": {"width": 2},

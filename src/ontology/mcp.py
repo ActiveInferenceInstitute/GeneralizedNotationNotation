@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 from . import process_ontology, validate_ontology_terms
 
 
-def process_ontology_mcp(target_directory: str, output_directory: str,
-                         verbose: bool = False) -> Dict[str, Any]:
+def process_ontology_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Run ontology processing on a directory of GNN files.
 
@@ -66,7 +67,7 @@ def validate_ontology_terms_mcp(terms: Union[str, List[str]]) -> Dict[str, Any]:
         is_valid = validate_ontology_terms(terms_list)
         return {
             "success": True,
-            "terms":   terms_list,
+            "terms": terms_list,
             "is_valid": is_valid,
             "message": f"{len(terms_list)} term(s) {'all valid' if is_valid else 'contain invalid entries'}",
         }
@@ -104,25 +105,32 @@ def extract_ontology_annotations_mcp(gnn_content: str) -> Dict[str, Any]:
                 if "=" in stripped and not stripped.startswith("#"):
                     parts = stripped.split("=", 1)
                     var_name = parts[0].strip()
-                    term     = parts[1].strip()
+                    term = parts[1].strip()
                     if var_name:
                         annotations[var_name] = term
 
         standard_terms = {
-            "HiddenState", "Observation", "Action", "PolicyVector",
-            "LikelihoodMatrix", "TransitionMatrix", "LogPreferenceVector",
-            "PriorOverHiddenStates", "VariationalFreeEnergy", "ExpectedFreeEnergy",
+            "HiddenState",
+            "Observation",
+            "Action",
+            "PolicyVector",
+            "LikelihoodMatrix",
+            "TransitionMatrix",
+            "LogPreferenceVector",
+            "PriorOverHiddenStates",
+            "VariationalFreeEnergy",
+            "ExpectedFreeEnergy",
         }
         validated = {k: v for k, v in annotations.items() if v in standard_terms}
-        unknown   = {k: v for k, v in annotations.items() if v not in standard_terms}
+        unknown = {k: v for k, v in annotations.items() if v not in standard_terms}
 
         return {
-            "success":              True,
-            "annotations":          annotations,
-            "validated_mappings":   validated,
-            "unknown_terms":        unknown,
-            "total_annotations":    len(annotations),
-            "valid_count":          len(validated),
+            "success": True,
+            "annotations": annotations,
+            "validated_mappings": validated,
+            "unknown_terms": unknown,
+            "total_annotations": len(annotations),
+            "valid_count": len(validated),
         }
     except Exception as e:
         logger.error(f"extract_ontology_annotations_mcp error: {e}", exc_info=True)
@@ -137,25 +145,26 @@ def list_standard_ontology_terms_mcp() -> Dict[str, Any]:
         Dictionary with term names and their descriptions.
     """
     terms = {
-        "HiddenState":            "Latent state variable s",
-        "NextHiddenState":         "Next latent state s'",
-        "Observation":            "Observable variable o",
-        "Action":                 "Action variable u",
-        "PolicyVector":           "Policy distribution π",
-        "LikelihoodMatrix":       "Observation likelihood A",
-        "TransitionMatrix":       "State transition B",
-        "LogPreferenceVector":    "Log preference C",
-        "PriorOverHiddenStates":  "Prior beliefs D",
-        "Habit":                  "Habitual policy E",
-        "VariationalFreeEnergy":  "VFE F",
-        "ExpectedFreeEnergy":     "EFE G",
-        "Time":                   "Discrete time t",
-        "Precision":              "Precision parameter γ/β",
+        "HiddenState": "Latent state variable s",
+        "NextHiddenState": "Next latent state s'",
+        "Observation": "Observable variable o",
+        "Action": "Action variable u",
+        "PolicyVector": "Policy distribution π",
+        "LikelihoodMatrix": "Observation likelihood A",
+        "TransitionMatrix": "State transition B",
+        "LogPreferenceVector": "Log preference C",
+        "PriorOverHiddenStates": "Prior beliefs D",
+        "Habit": "Habitual policy E",
+        "VariationalFreeEnergy": "VFE F",
+        "ExpectedFreeEnergy": "EFE G",
+        "Time": "Discrete time t",
+        "Precision": "Precision parameter γ/β",
     }
     return {"success": True, "terms": terms, "count": len(terms)}
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────
+
 
 def register_tools(mcp_instance) -> None:
     """Register ontology tools with the MCP server."""
@@ -163,36 +172,62 @@ def register_tools(mcp_instance) -> None:
     mcp_instance.register_tool(
         "process_ontology",
         process_ontology_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Directory with GNN files"},
-            "output_directory": {"type": "string", "description": "Directory for ontology results"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory for ontology results",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Map GNN variables to Active Inference Ontology terms and produce an ontology report.",
-        module=__package__, category="ontology",
+        module=__package__,
+        category="ontology",
     )
 
     mcp_instance.register_tool(
         "validate_ontology_terms",
         validate_ontology_terms_mcp,
-        {"type": "object", "properties": {
-            "terms": {"oneOf": [
-                {"type": "string", "description": "Comma-separated term names"},
-                {"type": "array", "items": {"type": "string"}},
-            ]},
-        }, "required": ["terms"]},
+        {
+            "type": "object",
+            "properties": {
+                "terms": {
+                    "oneOf": [
+                        {"type": "string", "description": "Comma-separated term names"},
+                        {"type": "array", "items": {"type": "string"}},
+                    ]
+                },
+            },
+            "required": ["terms"],
+        },
         "Validate ontology term names against the Active Inference Ontology.",
-        module=__package__, category="ontology",
+        module=__package__,
+        category="ontology",
     )
 
     mcp_instance.register_tool(
         "extract_ontology_annotations",
         extract_ontology_annotations_mcp,
-        {"type": "object", "properties": {
-            "gnn_content": {"type": "string", "description": "GNN model content as a string"},
-        }, "required": ["gnn_content"]},
+        {
+            "type": "object",
+            "properties": {
+                "gnn_content": {
+                    "type": "string",
+                    "description": "GNN model content as a string",
+                },
+            },
+            "required": ["gnn_content"],
+        },
         "Extract ActInfOntologyAnnotation variable-to-term mappings from GNN model content.",
-        module=__package__, category="ontology",
+        module=__package__,
+        category="ontology",
     )
 
     mcp_instance.register_tool(
@@ -200,7 +235,8 @@ def register_tools(mcp_instance) -> None:
         list_standard_ontology_terms_mcp,
         {},
         "Return the canonical list of Active Inference Ontology (ActInfO) terms and descriptions.",
-        module=__package__, category="ontology",
+        module=__package__,
+        category="ontology",
     )
 
     logger.info("ontology module MCP tools registered (5 tools).")

@@ -14,7 +14,6 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
-
 # Migrated from test_gnn_core_modules.py
 class TestGNNValidation:
     """Test gnn.validation module."""
@@ -23,6 +22,7 @@ class TestGNNValidation:
     def test_validation_imports(self):
         """Test that validation module can be imported."""
         from gnn import validate_gnn_structure
+
         assert callable(validate_gnn_structure)
 
     @pytest.mark.unit
@@ -48,7 +48,8 @@ class TestGNNSimpleValidator:
     def test_simple_validator_imports(self):
         """Test that simple validator can be imported."""
         from gnn import simple_validator
-        assert hasattr(simple_validator, 'SimpleValidator')
+
+        assert hasattr(simple_validator, "SimpleValidator")
 
     @pytest.mark.unit
     def test_simple_validator_instantiation(self):
@@ -58,8 +59,8 @@ class TestGNNSimpleValidator:
         validator = SimpleValidator()
 
         # Verify validator has expected methods
-        assert hasattr(validator, 'validate_file')
-        assert hasattr(validator, 'validate_directory')
+        assert hasattr(validator, "validate_file")
+        assert hasattr(validator, "validate_directory")
 
     @pytest.mark.unit
     def test_simple_validation(self, sample_gnn_files):
@@ -75,5 +76,3 @@ class TestGNNSimpleValidator:
 
         # Verify validation result
         assert isinstance(result, (dict, bool))
-
-

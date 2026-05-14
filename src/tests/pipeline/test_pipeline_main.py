@@ -16,17 +16,21 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 TEST_DIR = PROJECT_ROOT / "src" / "tests"
 
+
 def assert_file_exists(path):
     """Assert that a file exists."""
     assert Path(path).exists(), f"Expected file not found: {path}"
+
 
 def assert_directory_structure(path, expected):
     """Assert expected directory structure."""
     pass
 
+
 def create_test_files(count=3):
     """Create test files."""
     return []
+
 
 import pytest
 
@@ -77,18 +81,26 @@ D: 0.6 0.4
 
             # Run pipeline steps 3,7,8
             cmd = [
-                sys.executable, "src/main.py",
-                "--target-dir", str(self.test_input_dir),
-                "--output-dir", str(output_dir),
-                "--only-steps", "3,7,8",
-                "--verbose"
+                sys.executable,
+                "src/main.py",
+                "--target-dir",
+                str(self.test_input_dir),
+                "--output-dir",
+                str(output_dir),
+                "--only-steps",
+                "3,7,8",
+                "--verbose",
             ]
 
-            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)  # nosec B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(
+                cmd, cwd=PROJECT_ROOT, capture_output=True, text=True
+            )  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Check that pipeline completed (may have warnings but should not fail)
             # Exit code 0 = success, 1 = warning/non-critical failure, 2 = success with warnings
-            assert result.returncode in [0, 1, 2], f"Pipeline failed with code {result.returncode}: {result.stderr[-500:]}"
+            assert result.returncode in [0, 1, 2], (
+                f"Pipeline failed with code {result.returncode}: {result.stderr[-500:]}"
+            )
 
             # Verify expected output directories exist
             step3_output = output_dir / "3_gnn_output"
@@ -96,13 +108,13 @@ D: 0.6 0.4
             step8_output = output_dir / "8_visualization_output"
 
             # Check if at least some outputs were created
-            outputs_created = sum([
-                step3_output.exists(),
-                step7_output.exists(),
-                step8_output.exists()
-            ])
+            outputs_created = sum(
+                [step3_output.exists(), step7_output.exists(), step8_output.exists()]
+            )
 
-            assert outputs_created >= 1, f"No output directories created. stderr: {result.stderr[-500:]}"
+            assert outputs_created >= 1, (
+                f"No output directories created. stderr: {result.stderr[-500:]}"
+            )
 
             # Verify artifacts exist in step 3
             gnn_results = list(step3_output.glob("**/gnn_processing_results.json"))
@@ -140,15 +152,27 @@ D: 0.6 0.4
             assert step11_output.exists(), "Step 11 output directory not created"
 
             execute_cmd = [
-                sys.executable, "src/12_execute.py",
-                "--target-dir", str(self.test_input_dir),
-                "--output-dir", str(output_dir),
-                "--frameworks", "pymdp",
-                "--timeout", "10",
-                "--render-output-dir", str(step11_output),
+                sys.executable,
+                "src/12_execute.py",
+                "--target-dir",
+                str(self.test_input_dir),
+                "--output-dir",
+                str(output_dir),
+                "--frameworks",
+                "pymdp",
+                "--timeout",
+                "10",
+                "--render-output-dir",
+                str(step11_output),
                 "--verbose",
             ]
-            subprocess.run(execute_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603
+            subprocess.run(
+                execute_cmd,
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )  # nosec B603
 
             # Pipeline may fail due to missing dependencies, but should produce reports
             step12_output = output_dir / "12_execute_output"
@@ -174,21 +198,30 @@ D: 0.6 0.4
 
             # Run pipeline with smaller subset of fast steps to avoid timeout
             cmd = [
-                sys.executable, "src/main.py",
-                "--target-dir", str(self.test_input_dir),
-                "--output-dir", str(output_dir),
-                "--only-steps", "3,5,7,8",  # Only run fast steps instead of skipping slow ones
-                "--verbose"
+                sys.executable,
+                "src/main.py",
+                "--target-dir",
+                str(self.test_input_dir),
+                "--output-dir",
+                str(output_dir),
+                "--only-steps",
+                "3,5,7,8",  # Only run fast steps instead of skipping slow ones
+                "--verbose",
             ]
 
-            subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
+            subprocess.run(
+                cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300
+            )  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Check that pipeline produced expected outputs
-            pipeline_summary = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+            pipeline_summary = (
+                output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+            )
             assert pipeline_summary.exists(), "Pipeline summary not found"
 
             # Verify summary has expected structure
             import json
+
             summary = json.loads(pipeline_summary.read_text())
             assert "steps" in summary, "Pipeline summary missing steps"
             assert len(summary["steps"]) > 0, "No steps recorded in summary"

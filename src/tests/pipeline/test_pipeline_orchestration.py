@@ -35,6 +35,7 @@ class TestPipelineRunnerOrchestration:
         except (ImportError, TypeError):
             # Fall back to checking if module loads
             from pipeline import get_pipeline_info
+
             info = get_pipeline_info()
             assert info is not None
 
@@ -102,19 +103,11 @@ class TestPipelineExecution:
         from pipeline import execute_pipeline_step
 
         # Build step config and pipeline data
-        step_config = {
-            "output_dir": str(tmp_path),
-            "verbose": False
-        }
-        pipeline_data = {
-            "target_dir": str(tmp_path),
-            "output_dir": str(tmp_path)
-        }
+        step_config = {"output_dir": str(tmp_path), "verbose": False}
+        pipeline_data = {"target_dir": str(tmp_path), "output_dir": str(tmp_path)}
 
         result = execute_pipeline_step(
-            step_name="setup",
-            step_config=step_config,
-            pipeline_data=pipeline_data
+            step_name="setup", step_config=step_config, pipeline_data=pipeline_data
         )
 
         # Should complete (success or graceful failure)
@@ -132,8 +125,8 @@ class TestPipelineExecution:
         assert isinstance(config, dict)
 
         # Manually add skip_steps
-        config['skip_steps'] = [1, 2, 3]
-        assert config['skip_steps'] == [1, 2, 3]
+        config["skip_steps"] = [1, 2, 3]
+        assert config["skip_steps"] == [1, 2, 3]
 
     @pytest.mark.integration
     def test_only_steps_functionality(self, tmp_path):
@@ -141,10 +134,10 @@ class TestPipelineExecution:
         from pipeline import create_pipeline_config
 
         config = create_pipeline_config()
-        config['only_steps'] = "1,3,5"
+        config["only_steps"] = "1,3,5"
 
         assert config is not None
-        assert config['only_steps'] == "1,3,5"
+        assert config["only_steps"] == "1,3,5"
 
 
 class TestPipelineStateManagement:

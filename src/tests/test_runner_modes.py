@@ -27,10 +27,12 @@ from .infrastructure import (
 from .infrastructure.report_generator import flatten_pipeline_test_summary
 
 
-def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
+def run_fast_pipeline_tests(
+    logger: logging.Logger, output_dir: Path, verbose: bool = False
+) -> bool:
     """
     Run FAST tests for quick pipeline validation.
-    
+
     This runs only fast tests (marked with 'not slow') to keep pipeline execution efficient.
     """
     if os.getenv("SKIP_TESTS_IN_PIPELINE"):
@@ -44,12 +46,15 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
 
     try:
         import pytest_timeout
+
         has_timeout = True
     except ImportError:
         has_timeout = False
 
     cmd = [
-        sys.executable, "-m", "pytest",
+        sys.executable,
+        "-m",
+        "pytest",
         "--tb=short",
         "--maxfail=5",
         "--durations=10",
@@ -65,14 +70,17 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     else:
         cmd.append("-q")
 
-    cmd.extend([
-        "-m", "not slow",
-        "--ignore=src/tests/llm/test_llm_ollama.py",
-        "--ignore=src/tests/llm/test_llm_ollama_integration.py",
-        "--ignore=src/tests/test_pipeline_performance.py",
-        "--ignore=src/tests/test_pipeline_recovery.py",
-        "--ignore=src/tests/test_report_integration.py",
-    ])
+    cmd.extend(
+        [
+            "-m",
+            "not slow",
+            "--ignore=src/tests/llm/test_llm_ollama.py",
+            "--ignore=src/tests/llm/test_llm_ollama_integration.py",
+            "--ignore=src/tests/test_pipeline_performance.py",
+            "--ignore=src/tests/test_pipeline_recovery.py",
+            "--ignore=src/tests/test_report_integration.py",
+        ]
+    )
 
     cmd.append("src/tests/")
 
@@ -90,7 +98,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
             cwd=project_root,
             capture_output=True,
             text=True,
-            timeout=overall_timeout
+            timeout=overall_timeout,
         )
 
         output_file = output_dir / "pytest_reliable_output.txt"
@@ -99,16 +107,16 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
 
         collection_errors = _extract_collection_errors(result.stdout, result.stderr)
         if collection_errors:
-            logger.warning(f"Found {len(collection_errors)} collection errors (import/syntax issues)")
+            logger.warning(
+                f"Found {len(collection_errors)} collection errors (import/syntax issues)"
+            )
             for err in collection_errors[:3]:
                 logger.warning(f"  Collection error: {err[:200]}")
 
         test_stats = _parse_test_statistics(result.stdout)
         coverage_json = project_root / "coverage.json"
         coverage_stats = (
-            _parse_coverage_statistics(coverage_json)
-            if coverage_json.is_file()
-            else {}
+            _parse_coverage_statistics(coverage_json) if coverage_json.is_file() else {}
         )
 
         summary = {
@@ -123,7 +131,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
                 "tests_errors": test_stats.get("errors", 0),
                 "collection_errors": len(collection_errors),
                 "coverage": coverage_stats,
-                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             }
         }
 
@@ -143,9 +151,13 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         skipped = test_stats.get("skipped", 0)
 
         if success:
-            logger.info(f"Fast tests completed: {total} run, {passed} passed, {skipped} skipped")
+            logger.info(
+                f"Fast tests completed: {total} run, {passed} passed, {skipped} skipped"
+            )
         else:
-            logger.warning(f"Fast tests had failures: {total} run, {passed} passed, {failed} failed, {skipped} skipped")
+            logger.warning(
+                f"Fast tests had failures: {total} run, {passed} passed, {failed} failed, {skipped} skipped"
+            )
 
         return success
 
@@ -159,7 +171,9 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         return False
 
 
-def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
+def run_comprehensive_tests(
+    logger: logging.Logger, output_dir: Path, verbose: bool = False
+) -> bool:
     """
     Run comprehensive tests including slow and performance tests.
     """
@@ -187,7 +201,9 @@ def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: b
     return success
 
 
-def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, timeout: int = 600) -> bool:
+def run_fast_reliable_tests(
+    logger: logging.Logger, output_dir: Path, verbose: bool = False, timeout: int = 600
+) -> bool:
     """
     Run a reliable subset of fast tests with improved error handling.
 
@@ -204,22 +220,26 @@ def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: b
             timeout = int(env_timeout)
             logger.info(f"⏱️ Using FAST_TESTS_TIMEOUT override: {timeout}s")
         except ValueError:
-            logger.warning(f"⚠️ Invalid FAST_TESTS_TIMEOUT value '{env_timeout}', using default {timeout}s")
+            logger.warning(
+                f"⚠️ Invalid FAST_TESTS_TIMEOUT value '{env_timeout}', using default {timeout}s"
+            )
 
     logger.info(f"Running reliable fast test subset (timeout: {timeout}s)")
 
     reliable_tests = [
         "test_core_modules.py",
         "test_fast_suite.py",
-        "test_main_orchestrator.py"
+        "test_main_orchestrator.py",
     ]
 
     cmd = [
-        sys.executable, "-m", "pytest",
+        sys.executable,
+        "-m",
+        "pytest",
         "--tb=short",
         "--maxfail=3",
         "--durations=3",
-        "-v" if verbose else "-q"
+        "-v" if verbose else "-q",
     ]
 
     test_dir = Path(__file__).parent
@@ -236,7 +256,7 @@ def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: b
             cwd=Path(__file__).parent.parent.parent,
             capture_output=True,
             text=True,
-            timeout=timeout
+            timeout=timeout,
         )
 
         output_dir.mkdir(parents=True, exist_ok=True)

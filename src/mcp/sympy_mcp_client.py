@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional, Union
 # Try to import httpx for HTTP client functionality
 try:
     import httpx
+
     HTTPX_AVAILABLE = True
 except ImportError:
     httpx = None  # type: ignore[assignment]
@@ -21,23 +22,31 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
+
 class SymPyMCPError(Exception):
     """Base exception for SymPy MCP operations"""
+
     pass
+
 
 class SymPyMCPConnectionError(SymPyMCPError):
     """Exception raised when connection to SymPy MCP server fails"""
+
     pass
+
 
 class SymPyMCPClient:
     """Client for interacting with SymPy MCP server"""
 
-    def __init__(self, server_url: str = "http://127.0.0.1:8081",
-                 server_executable: Optional[str] = None,
-                 auto_start_server: bool = True):
+    def __init__(
+        self,
+        server_url: str = "http://127.0.0.1:8081",
+        server_executable: Optional[str] = None,
+        auto_start_server: bool = True,
+    ):
         """
         Initialize SymPy MCP client.
-        
+
         Args:
             server_url: URL of the SymPy MCP server
             server_executable: Path to SymPy MCP server executable
@@ -51,7 +60,9 @@ class SymPyMCPClient:
         self._client: Optional[Any] = None
 
         if not HTTPX_AVAILABLE:
-            logger.warning("httpx not available, SymPy MCP client will have limited functionality")
+            logger.warning(
+                "httpx not available, SymPy MCP client will have limited functionality"
+            )
 
     async def __aenter__(self) -> "SymPyMCPClient":
         """Async context manager entry"""
@@ -65,7 +76,9 @@ class SymPyMCPClient:
     async def connect(self) -> None:
         """Connect to SymPy MCP server, starting it if necessary"""
         if not HTTPX_AVAILABLE:
-            raise SymPyMCPConnectionError("httpx not available for HTTP client functionality")
+            raise SymPyMCPConnectionError(
+                "httpx not available for HTTP client functionality"
+            )
 
         self._client = httpx.AsyncClient(timeout=30.0)
 
@@ -86,7 +99,9 @@ class SymPyMCPClient:
             for _ in range(10):
                 try:
                     if self._client is not None:  # Type guard
-                        response = await self._client.get(f"{self.server_url}/healthcheck")
+                        response = await self._client.get(
+                            f"{self.server_url}/healthcheck"
+                        )
                         if response.status_code == 200:
                             logger.info("SymPy MCP server started successfully")
                             return
@@ -95,7 +110,9 @@ class SymPyMCPClient:
 
             raise SymPyMCPConnectionError("Failed to start SymPy MCP server")
         else:
-            raise SymPyMCPConnectionError("SymPy MCP server not running and auto-start disabled")
+            raise SymPyMCPConnectionError(
+                "SymPy MCP server not running and auto-start disabled"
+            )
 
     async def disconnect(self) -> None:
         """Disconnect from SymPy MCP server"""
@@ -117,22 +134,24 @@ class SymPyMCPClient:
             raise SymPyMCPConnectionError("Server executable not specified")
 
         cmd = [
-            "uv", "run",
-            "--with", "mcp[cli]",
-            "--with", "sympy",
-            "mcp", "run",
+            "uv",
+            "run",
+            "--with",
+            "mcp[cli]",
+            "--with",
+            "sympy",
+            "mcp",
+            "run",
             str(self.server_executable),
-            "--transport", "sse"
+            "--transport",
+            "sse",
         ]
 
         logger.info(f"Starting SymPy MCP server: {' '.join(cmd)}")
 
         try:
             self.server_process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
             )
 
             # Give server time to start
@@ -150,11 +169,11 @@ class SymPyMCPClient:
     async def call_tool(self, tool_name: str, **kwargs) -> Any:
         """
         Call a tool on the SymPy MCP server.
-        
+
         Args:
             tool_name: Name of the tool to call
             **kwargs: Arguments to pass to the tool
-            
+
         Returns:
             Result from the tool execution
         """
@@ -163,17 +182,14 @@ class SymPyMCPClient:
 
         payload = {
             "method": "tools/call",
-            "params": {
-                "name": tool_name,
-                "arguments": kwargs
-            }
+            "params": {"name": tool_name, "arguments": kwargs},
         }
 
         try:
             response = await self._client.post(
                 f"{self.server_url}/mcp",
                 json=payload,
-                headers={"Content-Type": "application/json"}
+                headers={"Content-Type": "application/json"},
             )
             response.raise_for_status()
 
@@ -192,30 +208,38 @@ class SymPyMCPClient:
 
     # Convenience methods for common SymPy operations
 
-    async def introduce_variable(self, var_name: str,
-                               pos_assumptions: Optional[List[str]] = None,
-                               neg_assumptions: Optional[List[str]] = None) -> str:
+    async def introduce_variable(
+        self,
+        var_name: str,
+        pos_assumptions: Optional[List[str]] = None,
+        neg_assumptions: Optional[List[str]] = None,
+    ) -> str:
         """Introduce a variable with assumptions"""
         return await self.call_tool(
             "intro",
             var_name=var_name,
             pos_assumptions=pos_assumptions or [],
-            neg_assumptions=neg_assumptions or []
+            neg_assumptions=neg_assumptions or [],
         )
 
-    async def introduce_multiple_variables(self, variables: List[Dict[str, Any]]) -> str:
+    async def introduce_multiple_variables(
+        self, variables: List[Dict[str, Any]]
+    ) -> str:
         """Introduce multiple variables simultaneously"""
         return await self.call_tool("intro_many", variables=variables)
 
-    async def introduce_expression(self, expr_str: str,
-                                 canonicalize: bool = True,
-                                 expr_var_name: Optional[str] = None) -> str:
+    async def introduce_expression(
+        self,
+        expr_str: str,
+        canonicalize: bool = True,
+        expr_var_name: Optional[str] = None,
+    ) -> str:
         """Parse and introduce a mathematical expression"""
         return await self.call_tool(
             "introduce_expression",
             expr_str=expr_str,
             canonicalize=canonicalize,
-            expr_var_name=expr_var_name
+            expr_var_name=expr_var_name,
         )
 
     async def print_latex_expression(self, expr_key: str) -> str:
@@ -226,23 +250,25 @@ class SymPyMCPClient:
         """Simplify a mathematical expression"""
         return await self.call_tool("simplify_expression", expr_key=expr_key)
 
-    async def solve_algebraically(self, expr_key: str, solve_for_var_name: str,
-                                domain: str = "COMPLEX") -> str:
+    async def solve_algebraically(
+        self, expr_key: str, solve_for_var_name: str, domain: str = "COMPLEX"
+    ) -> str:
         """Solve an equation algebraically"""
         return await self.call_tool(
             "solve_algebraically",
             expr_key=expr_key,
             solve_for_var_name=solve_for_var_name,
-            domain=domain
+            domain=domain,
         )
 
-    async def create_matrix(self, matrix_data: List[List[Union[int, float, str]]],
-                          matrix_var_name: Optional[str] = None) -> str:
+    async def create_matrix(
+        self,
+        matrix_data: List[List[Union[int, float, str]]],
+        matrix_var_name: Optional[str] = None,
+    ) -> str:
         """Create a SymPy matrix"""
         return await self.call_tool(
-            "create_matrix",
-            matrix_data=matrix_data,
-            matrix_var_name=matrix_var_name
+            "create_matrix", matrix_data=matrix_data, matrix_var_name=matrix_var_name
         )
 
     async def matrix_determinant(self, matrix_key: str) -> str:
@@ -257,26 +283,31 @@ class SymPyMCPClient:
         """Calculate matrix eigenvectors"""
         return await self.call_tool("matrix_eigenvectors", matrix_key=matrix_key)
 
-    async def differentiate_expression(self, expr_key: str, var_name: str,
-                                     order: int = 1) -> str:
+    async def differentiate_expression(
+        self, expr_key: str, var_name: str, order: int = 1
+    ) -> str:
         """Differentiate an expression"""
         return await self.call_tool(
             "differentiate_expression",
             expr_key=expr_key,
             var_name=var_name,
-            order=order
+            order=order,
         )
 
-    async def integrate_expression(self, expr_key: str, var_name: str,
-                                 lower_bound: Optional[str] = None,
-                                 upper_bound: Optional[str] = None) -> str:
+    async def integrate_expression(
+        self,
+        expr_key: str,
+        var_name: str,
+        lower_bound: Optional[str] = None,
+        upper_bound: Optional[str] = None,
+    ) -> str:
         """Integrate an expression"""
         return await self.call_tool(
             "integrate_expression",
             expr_key=expr_key,
             var_name=var_name,
             lower_bound=lower_bound,
-            upper_bound=upper_bound
+            upper_bound=upper_bound,
         )
 
     async def reset_state(self) -> str:
@@ -290,50 +321,61 @@ class GNNSymPyIntegration:
     def __init__(self, sympy_client: SymPyMCPClient):
         """
         Initialize GNN-SymPy integration.
-        
+
         Args:
             sympy_client: Connected SymPy MCP client
         """
         self.sympy_client = sympy_client
-        self.variable_mapping: Dict[str, str] = {}  # GNN variable names -> SymPy variable keys
-        self.expression_cache: Dict[str, str] = {}  # GNN expressions -> SymPy expression keys
-        self.matrix_cache: Dict[str, str] = {}      # GNN matrices -> SymPy matrix keys
+        self.variable_mapping: Dict[
+            str, str
+        ] = {}  # GNN variable names -> SymPy variable keys
+        self.expression_cache: Dict[
+            str, str
+        ] = {}  # GNN expressions -> SymPy expression keys
+        self.matrix_cache: Dict[str, str] = {}  # GNN matrices -> SymPy matrix keys
 
-    async def setup_gnn_variables(self, state_space: Dict[str, Any],
-                                observation_space: Dict[str, Any]) -> None:
+    async def setup_gnn_variables(
+        self, state_space: Dict[str, Any], observation_space: Dict[str, Any]
+    ) -> None:
         """Set up SymPy variables based on GNN state and observation spaces"""
         variables_to_create = []
 
         # Process state space variables
         for var_name, _ in state_space.items():
-            if var_name.startswith('s_f'):  # State factor
-                variables_to_create.append({
-                    "var_name": var_name,
-                    "pos_assumptions": ["integer", "finite"],
-                    "neg_assumptions": []
-                })
+            if var_name.startswith("s_f"):  # State factor
+                variables_to_create.append(
+                    {
+                        "var_name": var_name,
+                        "pos_assumptions": ["integer", "finite"],
+                        "neg_assumptions": [],
+                    }
+                )
 
         # Process observation space variables
         for var_name, _ in observation_space.items():
-            if var_name.startswith('o_m'):  # Observation modality
-                variables_to_create.append({
-                    "var_name": var_name,
-                    "pos_assumptions": ["integer", "finite"],
-                    "neg_assumptions": []
-                })
+            if var_name.startswith("o_m"):  # Observation modality
+                variables_to_create.append(
+                    {
+                        "var_name": var_name,
+                        "pos_assumptions": ["integer", "finite"],
+                        "neg_assumptions": [],
+                    }
+                )
 
         # Create all variables at once
         if variables_to_create:
-            result = await self.sympy_client.introduce_multiple_variables(variables_to_create)
+            result = await self.sympy_client.introduce_multiple_variables(
+                variables_to_create
+            )
             logger.debug(f"Created GNN variables in SymPy: {result}")
 
     async def validate_gnn_equation(self, equation_str: str) -> Dict[str, Any]:
         """
         Validate a GNN equation using SymPy.
-        
+
         Args:
             equation_str: Mathematical equation as string
-            
+
         Returns:
             Validation result with original, simplified, and LaTeX forms
         """
@@ -358,25 +400,22 @@ class GNNSymPyIntegration:
                 "expr_key": expr_key,
                 "simplified_key": simplified_key,
                 "latex": latex_form,
-                "error": None
+                "error": None,
             }
         except Exception as e:
             logger.error(f"Failed to validate equation '{equation_str}': {e}")
-            return {
-                "valid": False,
-                "original": equation_str,
-                "error": str(e)
-            }
+            return {"valid": False, "original": equation_str, "error": str(e)}
 
-    async def validate_matrix_stochasticity(self, matrix_data: List[List[Any]],
-                                          matrix_type: str = "transition") -> Dict[str, Any]:
+    async def validate_matrix_stochasticity(
+        self, matrix_data: List[List[Any]], matrix_type: str = "transition"
+    ) -> Dict[str, Any]:
         """
         Validate that a matrix satisfies stochasticity constraints.
-        
+
         Args:
             matrix_data: Matrix data as list of lists
             matrix_type: Type of matrix ("transition", "observation")
-            
+
         Returns:
             Validation result including stochasticity check
         """
@@ -392,7 +431,9 @@ class GNNSymPyIntegration:
             stochasticity_details = {"row_sums": [], "column_sums": []}
 
             for row in matrix_data:
-                row_sum = sum(float(x) if isinstance(x, (int, float)) else 0 for x in row)
+                row_sum = sum(
+                    float(x) if isinstance(x, (int, float)) else 0 for x in row
+                )
                 stochasticity_details["row_sums"].append(row_sum)
                 if abs(row_sum - 1.0) > 0.01:  # Allow small numerical tolerance
                     pass
@@ -401,13 +442,21 @@ class GNNSymPyIntegration:
             if matrix_data and matrix_data[0]:
                 num_cols = len(matrix_data[0])
                 for col_idx in range(num_cols):
-                    col_sum = sum(float(row[col_idx]) if isinstance(row[col_idx], (int, float)) else 0
-                                  for row in matrix_data)
+                    col_sum = sum(
+                        float(row[col_idx])
+                        if isinstance(row[col_idx], (int, float))
+                        else 0
+                        for row in matrix_data
+                    )
                     stochasticity_details["column_sums"].append(col_sum)
 
             # Determine type of stochasticity
-            row_stochastic = all(abs(s - 1.0) < 0.01 for s in stochasticity_details["row_sums"])
-            col_stochastic = all(abs(s - 1.0) < 0.01 for s in stochasticity_details["column_sums"])
+            row_stochastic = all(
+                abs(s - 1.0) < 0.01 for s in stochasticity_details["row_sums"]
+            )
+            col_stochastic = all(
+                abs(s - 1.0) < 0.01 for s in stochasticity_details["column_sums"]
+            )
 
             stochasticity_type = "none"
             if row_stochastic and col_stochastic:
@@ -425,22 +474,21 @@ class GNNSymPyIntegration:
                 "stochastic": row_stochastic or col_stochastic,
                 "stochasticity_type": stochasticity_type,
                 "stochasticity_details": stochasticity_details,
-                "error": None
+                "error": None,
             }
         except Exception as e:
             logger.error(f"Failed to validate matrix: {e}")
-            return {
-                "valid": False,
-                "error": str(e)
-            }
+            return {"valid": False, "error": str(e)}
 
-    async def analyze_system_stability(self, transition_matrices: List[List[List[Any]]]) -> Dict[str, Any]:
+    async def analyze_system_stability(
+        self, transition_matrices: List[List[List[Any]]]
+    ) -> Dict[str, Any]:
         """
         Analyze stability of dynamic system using eigenvalue analysis.
-        
+
         Args:
             transition_matrices: List of transition matrices
-            
+
         Returns:
             Stability analysis results
         """
@@ -458,37 +506,38 @@ class GNNSymPyIntegration:
                 # We assume discrete-time for transition matrices
                 stability_analysis = self._analyze_eigenvalue_stability(matrix_data)
 
-                stability_results.append({
-                    "matrix_index": i,
-                    "matrix_key": matrix_key,
-                    "eigenvalues": eigenvals_key,
-                    "eigenvectors": eigenvecs_key,
-                    "stable": stability_analysis["stable"],
-                    "stability_type": stability_analysis["stability_type"],
-                    "max_eigenvalue_magnitude": stability_analysis["max_magnitude"],
-                    "analysis_notes": stability_analysis["notes"]
-                })
+                stability_results.append(
+                    {
+                        "matrix_index": i,
+                        "matrix_key": matrix_key,
+                        "eigenvalues": eigenvals_key,
+                        "eigenvectors": eigenvecs_key,
+                        "stable": stability_analysis["stable"],
+                        "stability_type": stability_analysis["stability_type"],
+                        "max_eigenvalue_magnitude": stability_analysis["max_magnitude"],
+                        "analysis_notes": stability_analysis["notes"],
+                    }
+                )
             except Exception as e:
                 logger.error(f"Failed to analyze matrix {i}: {e}")
-                stability_results.append({
-                    "matrix_index": i,
-                    "error": str(e)
-                })
+                stability_results.append({"matrix_index": i, "error": str(e)})
 
         return {
             "matrices_analyzed": len(transition_matrices),
-            "results": stability_results
+            "results": stability_results,
         }
 
-    def _analyze_eigenvalue_stability(self, matrix_data: List[List[Any]]) -> Dict[str, Any]:
+    def _analyze_eigenvalue_stability(
+        self, matrix_data: List[List[Any]]
+    ) -> Dict[str, Any]:
         """
         Analyze stability from eigenvalues using numpy.
-        
+
         For discrete-time systems (transition matrices): stable if |λ| < 1 for all eigenvalues.
-        
+
         Args:
             matrix_data: Matrix data as list of lists
-            
+
         Returns:
             Stability analysis results
         """
@@ -496,8 +545,12 @@ class GNNSymPyIntegration:
             import numpy as np
 
             # Convert to numpy array
-            matrix = np.array([[float(x) if isinstance(x, (int, float)) else 0 for x in row]
-                               for row in matrix_data])
+            matrix = np.array(
+                [
+                    [float(x) if isinstance(x, (int, float)) else 0 for x in row]
+                    for row in matrix_data
+                ]
+            )
 
             # Calculate eigenvalues
             eigenvalues = np.linalg.eigvals(matrix)
@@ -530,7 +583,7 @@ class GNNSymPyIntegration:
                 "stability_type": stability_type,
                 "max_magnitude": max_magnitude,
                 "eigenvalue_magnitudes": magnitudes.tolist(),
-                "notes": notes
+                "notes": notes,
             }
 
         except ImportError:
@@ -538,23 +591,23 @@ class GNNSymPyIntegration:
                 "stable": None,
                 "stability_type": "unknown",
                 "max_magnitude": None,
-                "notes": "numpy not available for eigenvalue analysis"
+                "notes": "numpy not available for eigenvalue analysis",
             }
         except Exception as e:
             return {
                 "stable": None,
                 "stability_type": "error",
                 "max_magnitude": None,
-                "notes": f"Analysis failed: {str(e)}"
+                "notes": f"Analysis failed: {str(e)}",
             }
 
     def _convert_gnn_to_sympy_syntax(self, gnn_expr: str) -> str:
         """
         Convert GNN mathematical syntax to SymPy syntax.
-        
+
         Args:
             gnn_expr: Expression in GNN syntax
-            
+
         Returns:
             Expression in SymPy syntax
         """
@@ -584,13 +637,15 @@ class GNNSymPyIntegration:
 
 
 # Utility function for easy integration with existing GNN pipeline
-async def create_sympy_integration(server_executable: Optional[str] = None) -> GNNSymPyIntegration:
+async def create_sympy_integration(
+    server_executable: Optional[str] = None,
+) -> GNNSymPyIntegration:
     """
     Create and initialize GNN-SymPy integration.
-    
+
     Args:
         server_executable: Path to SymPy MCP server executable
-        
+
     Returns:
         Initialized GNN-SymPy integration instance
     """

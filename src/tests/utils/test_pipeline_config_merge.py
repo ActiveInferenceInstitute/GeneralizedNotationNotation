@@ -193,23 +193,31 @@ def test_build_step_command_forwards_skip_llm_to_step24() -> None:
         ({}, False, False),
     ],
 )
-def test_install_uv_dependencies_sync_flags(kwargs, expect_all_extras, expect_extra_dev, monkeypatch) -> None:
+def test_install_uv_dependencies_sync_flags(
+    kwargs, expect_all_extras, expect_extra_dev, monkeypatch
+) -> None:
     from setup import uv_management
 
     captured: list[list[str]] = []
 
     def captured_run(cmd, **kw):  # noqa: ANN001
         captured.append(list(cmd))
+
         class R:
             returncode = 0
             stdout = ""
             stderr = ""
+
         return R()
 
     monkeypatch.setattr(uv_management.subprocess, "run", captured_run)
-    monkeypatch.setattr(uv_management, "get_installed_package_versions", lambda verbose=False: {})
+    monkeypatch.setattr(
+        uv_management, "get_installed_package_versions", lambda verbose=False: {}
+    )
 
     uv_management.install_uv_dependencies(verbose=False, **kwargs)
-    sync_cmd = next(c for c in captured if len(c) >= 2 and c[0].endswith("uv") and c[1] == "sync")
+    sync_cmd = next(
+        c for c in captured if len(c) >= 2 and c[0].endswith("uv") and c[1] == "sync"
+    )
     assert ("--all-extras" in sync_cmd) is expect_all_extras
     assert ("--extra" in sync_cmd and "dev" in sync_cmd) is expect_extra_dev

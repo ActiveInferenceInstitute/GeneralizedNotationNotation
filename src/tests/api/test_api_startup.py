@@ -29,6 +29,7 @@ def _get_app():
 
 def test_api_module_loads_and_exposes_version():
     from api import get_module_info
+
     info = get_module_info()
     assert isinstance(info, dict)
     assert "version" in info

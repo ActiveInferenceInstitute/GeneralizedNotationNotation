@@ -48,37 +48,37 @@ run_script = create_standardized_pipeline_script(
             "flag": "--render-output-dir",
             "type": Path,
             "default": None,
-            "help": "Explicit path to the 11_render_output directory to execute (avoids filesystem heuristics)"
+            "help": "Explicit path to the 11_render_output directory to execute (avoids filesystem heuristics)",
         },
         "frameworks": {
             "flag": "--frameworks",
             "type": str,
             "default": "all",
-            "help": "Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl,pytorch,numpyro)"
+            "help": "Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl,pytorch,numpyro)",
         },
         "timeout": {
             "flag": "--timeout",
             "type": int,
             "default": 3600,
-            "help": "Maximum execution time in seconds for each subprocess (default: 3600s = 1 hour)"
+            "help": "Maximum execution time in seconds for each subprocess (default: 3600s = 1 hour)",
         },
         "distributed": {
             "flag": "--distributed",
             "action": "store_true",
-            "help": "Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster"
+            "help": "Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster",
         },
         "execution_workers": {
             "flag": "--execution-workers",
             "type": int,
             "default": 1,
-            "help": "Number of local or distributed workers for rendered script execution (default: 1)"
+            "help": "Number of local or distributed workers for rendered script execution (default: 1)",
         },
         "backend": {
             "flag": "--backend",
             "type": str,
             "choices": ["ray", "dask"],
             "default": "ray",
-            "help": "Backend to use for distributed execution (default is ray)"
+            "help": "Backend to use for distributed execution (default is ray)",
         },
         "execution_benchmark_repeats": {
             "flag": "--execution-benchmark-repeats",
@@ -100,9 +100,11 @@ run_script = create_standardized_pipeline_script(
     default_recursive=True,
 )
 
+
 def main() -> int:
     """Main entry point for the execute step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

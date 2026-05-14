@@ -74,7 +74,9 @@ def _result_paths_from_execution_summary(execution_results_dir: Path) -> List[Pa
                 structured_path = Path(structured_result_file)
                 if not structured_path.is_absolute():
                     structured_path = Path.cwd() / structured_path
-                structured_payload = _load_json(structured_path) if structured_path.exists() else None
+                structured_payload = (
+                    _load_json(structured_path) if structured_path.exists() else None
+                )
                 for collected_path in (
                     (structured_payload or {})
                     .get("collected_outputs", {})
@@ -132,7 +134,8 @@ def _discover_pymdp_result_files(execution_results_dir: Path) -> List[Path]:
         bare_result = sim_dir / "simulation_results.json"
         if (
             bare_result.exists()
-            and (_load_json(bare_result) or {}).get("schema_version") == "pymdp_simulation_v1"
+            and (_load_json(bare_result) or {}).get("schema_version")
+            == "pymdp_simulation_v1"
         ):
             results.append(bare_result)
 
@@ -159,13 +162,17 @@ def generate_analysis_from_logs(
     generated_files: List[str] = []
 
     if not execution_results_dir.exists():
-        logger.warning("Execution results directory not found: %s", execution_results_dir)
+        logger.warning(
+            "Execution results directory not found: %s", execution_results_dir
+        )
         return generated_files
 
     output_dir.mkdir(parents=True, exist_ok=True)
     results_files = _discover_pymdp_result_files(execution_results_dir)
     if not results_files:
-        logger.warning("No pymdp_simulation_v1 result files found under %s", execution_results_dir)
+        logger.warning(
+            "No pymdp_simulation_v1 result files found under %s", execution_results_dir
+        )
         return generated_files
 
     for results_file in results_files:
@@ -189,8 +196,12 @@ def generate_analysis_from_logs(
         model_viz_dir = output_dir / _slug(str(model_name))
         model_viz_dir.mkdir(parents=True, exist_ok=True)
 
-        beliefs = _first_sequence(data.get("beliefs_by_factor", {}) or {}, "joint_state")
-        true_states = _first_sequence(data.get("hidden_states_by_factor", {}) or {}, "joint_state")
+        beliefs = _first_sequence(
+            data.get("beliefs_by_factor", {}) or {}, "joint_state"
+        )
+        true_states = _first_sequence(
+            data.get("hidden_states_by_factor", {}) or {}, "joint_state"
+        )
         observations = _first_sequence(
             data.get("observations_by_modality", {}) or {},
             "joint_observation",
@@ -204,7 +215,9 @@ def generate_analysis_from_logs(
         params = data.get("model_parameters", {}) or {}
 
         if not beliefs:
-            logger.error("Skipping %s: pymdp_simulation_v1 payload has no beliefs", results_file)
+            logger.error(
+                "Skipping %s: pymdp_simulation_v1 payload has no beliefs", results_file
+            )
             continue
 
         viz_results = {
@@ -228,13 +241,20 @@ def generate_analysis_from_logs(
         for filepath in viz_files_map.values():
             generated_files.append(str(filepath))
 
-        cumulative_pref = (data.get("metrics", {}) or {}).get("cumulative_preference", [])
+        cumulative_pref = (data.get("metrics", {}) or {}).get(
+            "cumulative_preference", []
+        )
         if cumulative_pref:
-            pref_file = _plot_cumulative_preference(cumulative_pref, str(model_name), model_viz_dir)
+            pref_file = _plot_cumulative_preference(
+                cumulative_pref, str(model_name), model_viz_dir
+            )
             if pref_file:
                 generated_files.append(str(pref_file))
 
-    logger.info("PyMDP analysis complete: generated %d visualization files", len(generated_files))
+    logger.info(
+        "PyMDP analysis complete: generated %d visualization files",
+        len(generated_files),
+    )
     return generated_files
 
 

@@ -32,7 +32,7 @@ try:
     from utils.jax_stack_validation import run_jax_stack_probe_subprocess
 except ImportError:
     try:
-        from src.utils.jax_stack_validation import run_jax_stack_probe_subprocess
+        from utils.jax_stack_validation import run_jax_stack_probe_subprocess
     except ImportError:
         run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
 
@@ -61,7 +61,9 @@ def install_jax_and_test(verbose: bool = False) -> bool:
                 logger.info("   %s", line)
         return True
 
-    logger.warning("JAX stack validation failed: %s", out[:2000] if out else "(no output)")
+    logger.warning(
+        "JAX stack validation failed: %s", out[:2000] if out else "(no output)"
+    )
 
     try:
         logger.info("Attempting repair: uv sync (project extras)...")
@@ -81,14 +83,18 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         )
 
         if result.returncode != 0:
-            logger.error("uv sync failed: %s", result.stderr[:2000] if result.stderr else "")
+            logger.error(
+                "uv sync failed: %s", result.stderr[:2000] if result.stderr else ""
+            )
             return False
 
         ok2, out2 = run_jax_stack_probe_subprocess(VENV_PYTHON, PROJECT_ROOT)
         if ok2:
             logger.info("✅ JAX stack validated after uv sync")
             return True
-        logger.warning("JAX stack still failing after sync: %s", out2[:2000] if out2 else "")
+        logger.warning(
+            "JAX stack still failing after sync: %s", out2[:2000] if out2 else ""
+        )
         return False
     except Exception as e:
         logger.error("JAX stack repair failed: %s", e)
@@ -115,22 +121,25 @@ def setup_julia_environment(verbose: bool = False) -> bool:
             return False  # nosec B603 -- subprocess calls with controlled/trusted input
 
         version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            [julia_path, "--version"],
-            capture_output=True,
-            text=True,
-            timeout=10
+            [julia_path, "--version"], capture_output=True, text=True, timeout=10
         )
 
         if version_result.returncode == 0:
-            version_line = version_result.stdout.strip().split('\n')[0]
+            version_line = version_result.stdout.strip().split("\n")[0]
             logger.info(f"✅ Julia found: {version_line}")
         else:
-            logger.warning(f"⚠️ Could not determine Julia version: {version_result.stderr}")
+            logger.warning(
+                f"⚠️ Could not determine Julia version: {version_result.stderr}"
+            )
             logger.info("✅ Julia is available, proceeding with setup")
 
         setup_scripts = [
             PROJECT_ROOT / "src" / "execute" / "rxinfer" / "setup_environment.jl",
-            PROJECT_ROOT / "src" / "execute" / "activeinference_jl" / "setup_environment.jl"
+            PROJECT_ROOT
+            / "src"
+            / "execute"
+            / "activeinference_jl"
+            / "setup_environment.jl",
         ]
 
         success_count = 0
@@ -144,23 +153,29 @@ def setup_julia_environment(verbose: bool = False) -> bool:
                         cwd=script_path.parent,
                         capture_output=True,
                         text=True,
-                        timeout=300
+                        timeout=300,
                     )
 
                     if result.returncode == 0:
                         logger.info(f"✅ Julia setup completed for {script_path.name}")
                         success_count += 1
                     else:
-                        logger.error(f"❌ Julia setup failed for {script_path.name}: {result.stderr}")
+                        logger.error(
+                            f"❌ Julia setup failed for {script_path.name}: {result.stderr}"
+                        )
                 except subprocess.TimeoutExpired:
                     logger.error(f"⏰ Julia setup timed out for {script_path.name}")
                 except Exception as e:
-                    logger.error(f"❌ Error running Julia setup for {script_path.name}: {e}")
+                    logger.error(
+                        f"❌ Error running Julia setup for {script_path.name}: {e}"
+                    )
             else:
                 logger.warning(f"⚠️ Julia setup script not found: {script_path}")
 
         if success_count > 0:
-            logger.info(f"✅ Julia environment setup completed ({success_count} frameworks configured)")
+            logger.info(
+                f"✅ Julia environment setup completed ({success_count} frameworks configured)"
+            )
             return True
         else:
             logger.warning("⚠️ No Julia frameworks were successfully configured")
@@ -182,13 +197,13 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
     Returns:
         True if installation succeeded, False otherwise
     """
-    if group_name.lower() == 'julia':
+    if group_name.lower() == "julia":
         return setup_julia_environment(verbose=verbose)
 
     group_aliases = {
-        'ml': 'ml-ai',
-        'jax': 'active-inference',
-        'pymdp': 'active-inference',
+        "ml": "ml-ai",
+        "jax": "active-inference",
+        "pymdp": "active-inference",
     }
     normalized_name = group_aliases.get(group_name.lower(), group_name.lower())
 
@@ -213,13 +228,13 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
             capture_output=True,
             text=True,
             check=False,
-            timeout=600
+            timeout=600,
         )
 
         if result.returncode == 0:
             logger.info(f"✅ Successfully installed '{normalized_name}' package group")
             if verbose and result.stdout:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line.strip():
                         logger.debug(f"  {line}")
             return True
@@ -248,7 +263,9 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
     Returns:
         Dictionary with installation status
     """
-    logger.info("🚀 Installing ALL optional package groups via 'uv sync --extra all'...")
+    logger.info(
+        "🚀 Installing ALL optional package groups via 'uv sync --extra all'..."
+    )
 
     try:
         sync_cmd = ["uv", "sync", "--extra", "all"]
@@ -263,13 +280,13 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
             capture_output=True,
             text=True,
             check=False,
-            timeout=1800
+            timeout=1800,
         )
 
         if result.returncode == 0:
             logger.info("✅ All optional packages installed successfully")
             if verbose and result.stdout:
-                for line in result.stdout.strip().split('\n'):
+                for line in result.stdout.strip().split("\n"):
                     if line.strip():
                         logger.debug(f"  {line}")
             return {"all": True, "success": True}
@@ -286,8 +303,9 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
         return {"all": False, "success": False, "error": str(e)}
 
 
-def install_optional_dependencies(project_root: Path, logger: logging.Logger,
-                                package_groups: List[str] = None) -> bool:
+def install_optional_dependencies(
+    project_root: Path, logger: logging.Logger, package_groups: List[str] = None
+) -> bool:
     """Install optional dependencies for the project using UV sync with extras."""
     try:
         logger.info("Installing optional dependencies using UV sync")
@@ -298,12 +316,18 @@ def install_optional_dependencies(project_root: Path, logger: logging.Logger,
         for group in package_groups:
             try:
                 logger.info(f"Installing {group} dependencies via UV sync")
-                result = run_command(["uv", "sync", "--extra", group],
-                                    cwd=project_root, check=False, verbose=True)
+                result = run_command(
+                    ["uv", "sync", "--extra", group],
+                    cwd=project_root,
+                    check=False,
+                    verbose=True,
+                )
                 if result.returncode == 0:
                     logger.info(f"✅ {group} dependencies installed successfully")
                 else:
-                    logger.warning(f"⚠️ {group} dependencies installation failed (exit {result.returncode})")
+                    logger.warning(
+                        f"⚠️ {group} dependencies installation failed (exit {result.returncode})"
+                    )
             except Exception as e:
                 logger.warning(f"⚠️ Failed to install {group} dependencies: {e}")
 
@@ -325,7 +349,7 @@ def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
             "output/logs",
             "output/temp",
             "doc",
-            "tests"
+            "tests",
         ]
 
         for directory in directories:
@@ -336,13 +360,13 @@ def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
         config_files = {
             "input/config.yaml": "# GNN Pipeline Configuration\n",
             "output/.gitkeep": "",
-            "tests/__init__.py": "# Tests package\n"
+            "tests/__init__.py": "# Tests package\n",
         }
 
         for file_path, content in config_files.items():
             full_path = output_dir / file_path
             full_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(full_path, 'w') as f:
+            with open(full_path, "w") as f:
                 f.write(content)
             logger.debug(f"Created file: {full_path}")
 
@@ -372,7 +396,7 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         (project_path / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
         (project_path / "output").mkdir(parents=True, exist_ok=True)
         (project_path / "src").mkdir(parents=True, exist_ok=True)
-  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        # nosec B607 B603 -- subprocess calls with controlled/trusted input
         try:
             subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             logger.info(f"UV project initialized at {project_path}")
@@ -392,7 +416,7 @@ def setup_complete_environment(
     recreate: bool = False,
     install_optional: bool = False,
     optional_groups: list = None,
-    output_dir: Path = None
+    output_dir: Path = None,
 ) -> bool:
     """
     Complete environment setup with optional dependencies.
@@ -420,7 +444,9 @@ def setup_complete_environment(
 
         logger.info("📦 Installing core dependencies...")
         if not install_uv_dependencies(verbose=verbose):
-            logger.warning("⚠️ Core dependency installation had issues, but continuing...")
+            logger.warning(
+                "⚠️ Core dependency installation had issues, but continuing..."
+            )
 
         if install_optional:
             logger.info("\n🎁 Installing optional dependency groups...")
@@ -435,7 +461,9 @@ def setup_complete_environment(
         validation_results = validate_uv_setup(PROJECT_ROOT, logger)
 
         if output_dir:
-            save_setup_results(output_dir, validation_results, optional_groups or [], True)
+            save_setup_results(
+                output_dir, validation_results, optional_groups or [], True
+            )
 
         logger.info("\n🎉 COMPLETE environment setup finished!")
         return True
@@ -444,5 +472,6 @@ def setup_complete_environment(
         logger.error(f"❌ Complete environment setup failed: {e}")
         if verbose:
             import traceback
+
             logger.error(traceback.format_exc())
         return False

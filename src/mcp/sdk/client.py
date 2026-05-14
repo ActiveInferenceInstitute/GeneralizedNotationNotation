@@ -2,6 +2,7 @@
 MCP SDK client facade: minimal client interface delegating to the parent mcp module.
 Present so MCPSDKStatus health check finds a complete SDK under src/mcp/sdk/.
 """
+
 from __future__ import annotations
 
 import sys

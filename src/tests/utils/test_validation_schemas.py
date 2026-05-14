@@ -22,6 +22,7 @@ from utils.validation_schemas import (  # noqa: E402
 
 # --- validate_model_data -------------------------------------------------
 
+
 def test_validate_model_data_passes_through_valid_dict():
     data = {"model_name": "m", "other": 1}
     assert validate_model_data(data) is data
@@ -53,6 +54,7 @@ def test_validate_model_data_context_included_in_error():
 
 
 # --- validate_target_dir -------------------------------------------------
+
 
 def test_validate_target_dir_returns_path_for_existing_dir(tmp_path):
     result = validate_target_dir(tmp_path)
@@ -89,6 +91,7 @@ def test_validate_target_dir_rejects_file_path(tmp_path):
 
 
 # --- validate_frameworks_arg ---------------------------------------------
+
 
 def test_validate_frameworks_arg_defaults_to_all_for_empty():
     assert validate_frameworks_arg("") == "all"
@@ -128,6 +131,7 @@ def test_known_frameworks_contains_all_runners():
 
 
 # --- normalize_pomdp_columns ---------------------------------------------
+
 
 def test_normalize_pomdp_columns_2d_produces_stochastic_columns():
     M = np.array([[1.0, 3.0], [1.0, 1.0]])

@@ -9,7 +9,6 @@ Tests Mermaid to GNN conversion functions:
 - Connection merging
 """
 
-
 import pytest
 
 from gui.oxdraw.mermaid_parser import (
@@ -56,8 +55,6 @@ class TestMetadataExtraction:
         assert metadata["version"] == "1.0"
         assert "variables" in metadata
         assert "connections" in metadata
-
-
 
     def test_extract_metadata_not_found(self) -> None:
         """Test handling when no metadata present."""
@@ -124,8 +121,6 @@ class TestNodeExtraction:
 
         assert "π" in nodes
         assert nodes["π"]["shape"] == "diamond"
-
-
 
     def test_extract_nodes_with_multipart_labels(self) -> None:
         """Test nodes with complex labels."""
@@ -238,7 +233,7 @@ class TestVariableMerging:
             "A": {
                 "dimensions": [3, 3],
                 "data_type": "float",
-                "ontology_mapping": "LikelihoodMatrix"
+                "ontology_mapping": "LikelihoodMatrix",
             }
         }
 
@@ -248,7 +243,7 @@ class TestVariableMerging:
                 "label": "A<br/>3x3<br/>float",
                 "label_parts": ["A", "3x3", "float"],
                 "inferred_dimensions": [3, 3],
-                "inferred_type": "float"
+                "inferred_type": "float",
             }
         }
 
@@ -260,13 +255,19 @@ class TestVariableMerging:
 
     def test_merge_adds_new_variables(self) -> None:
         """Test merging adds new variables from visual structure."""
-        metadata_vars = {
-            "A": {"dimensions": [3, 3]}
-        }
+        metadata_vars = {"A": {"dimensions": [3, 3]}}
 
         visual_nodes = {
-            "A": {"label_parts": ["A"], "inferred_dimensions": [3, 3], "inferred_type": "float"},
-            "B": {"label_parts": ["B"], "inferred_dimensions": [3], "inferred_type": "float"}
+            "A": {
+                "label_parts": ["A"],
+                "inferred_dimensions": [3, 3],
+                "inferred_type": "float",
+            },
+            "B": {
+                "label_parts": ["B"],
+                "inferred_dimensions": [3],
+                "inferred_type": "float",
+            },
         }
 
         merged = _merge_variables(metadata_vars, visual_nodes)
@@ -281,7 +282,12 @@ class TestConnectionMerging:
     def test_merge_connections_visual_precedence(self) -> None:
         """Test visual structure takes precedence."""
         metadata_conns = [
-            {"source": "A", "target": "B", "symbol": ">", "connection_type": "generative"}
+            {
+                "source": "A",
+                "target": "B",
+                "symbol": ">",
+                "connection_type": "generative",
+            }
         ]
 
         visual_edges = [
@@ -298,13 +304,11 @@ class TestConnectionMerging:
 
     def test_merge_adds_new_connections(self) -> None:
         """Test new visual connections are added."""
-        metadata_conns = [
-            {"source": "A", "target": "B", "symbol": ">"}
-        ]
+        metadata_conns = [{"source": "A", "target": "B", "symbol": ">"}]
 
         visual_edges = [
             {"source": "A", "target": "B", "symbol": ">", "description": ""},
-            {"source": "B", "target": "C", "symbol": "-", "description": ""}
+            {"source": "B", "target": "C", "symbol": "-", "description": ""},
         ]
 
         merged = _merge_connections(metadata_conns, visual_edges)
@@ -319,7 +323,7 @@ class TestOntologyReconstruction:
         """Test ontology mapping reconstruction."""
         variables = {
             "A": {"ontology_mapping": "LikelihoodMatrix"},
-            "s": {"ontology_mapping": "HiddenState"}
+            "s": {"ontology_mapping": "HiddenState"},
         }
 
         ontology_map = {}
@@ -343,16 +347,22 @@ class TestGNNMarkdownGeneration:
             "model_name": "Test Model",
             "version": "1.0",
             "variables": {
-                "A": {"dimensions": [3, 3], "data_type": "float", "description": "Matrix"},
-                "s": {"dimensions": [3, 1], "data_type": "float", "description": "State"}
+                "A": {
+                    "dimensions": [3, 3],
+                    "data_type": "float",
+                    "description": "Matrix",
+                },
+                "s": {
+                    "dimensions": [3, 1],
+                    "data_type": "float",
+                    "description": "State",
+                },
             },
-            "connections": [
-                {"source": "s", "target": "A", "symbol": "-"}
-            ],
+            "connections": [{"source": "s", "target": "A", "symbol": "-"}],
             "ontology_mappings": [
                 {"variable": "A", "ontology_term": "LikelihoodMatrix"}
             ],
-            "parameters": {"num_states": 3}
+            "parameters": {"num_states": 3},
         }
 
         markdown = _gnn_model_to_markdown(gnn_model)
@@ -388,4 +398,3 @@ class TestFullParsing:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
-

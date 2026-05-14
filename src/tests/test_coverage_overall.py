@@ -26,8 +26,10 @@ class TestCoverageOverall:
                     continue
                 # Call zero-arg functions only to avoid side effects
                 positional_required = [
-                    p for p in sig.parameters.values()
-                    if p.default is inspect._empty and p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+                    p
+                    for p in sig.parameters.values()
+                    if p.default is inspect._empty
+                    and p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
                 ]
                 if len(positional_required) == 0:
                     try:
@@ -38,29 +40,35 @@ class TestCoverageOverall:
 
     def test_gnn_core_imports(self):
         import gnn
-        assert hasattr(gnn, '__all__')
+
+        assert hasattr(gnn, "__all__")
         from gnn.core_processor import process_gnn_directory_lightweight
+
         assert callable(process_gnn_directory_lightweight)
 
     def test_audio_imports(self):
         import audio
-        assert hasattr(audio, '__all__')
-        self._smoke_functions('audio', ['get_module_info'])
+
+        assert hasattr(audio, "__all__")
+        self._smoke_functions("audio", ["get_module_info"])
 
     def test_export_imports(self):
         import export
-        assert hasattr(export, '__all__')
-        self._smoke_functions('export', ['get_module_info'])
+
+        assert hasattr(export, "__all__")
+        self._smoke_functions("export", ["get_module_info"])
 
     def test_visualization_imports(self):
         import visualization
-        assert hasattr(visualization, '__all__')
-        self._smoke_functions('visualization', ['get_module_info'])
+
+        assert hasattr(visualization, "__all__")
+        self._smoke_functions("visualization", ["get_module_info"])
 
     def test_llm_imports(self):
         import llm
-        assert hasattr(llm, '__version__')
+
+        assert hasattr(llm, "__version__")
         from llm import LLMAnalyzer, LLMProcessor
+
         assert callable(LLMProcessor)
         assert callable(LLMAnalyzer)
-

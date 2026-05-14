@@ -12,10 +12,28 @@ from typing import Any, Dict
 
 # Canonical valid GNN types (Active Inference domain)
 VALID_TYPES: list[str] = [
-    "int", "float", "double", "string", "bool", "array", "matrix",
-    "vector", "tensor", "state", "action", "observation", "belief",
-    "Categorical", "Dirichlet", "Gaussian", "Continuous", "Discrete",
-    "POMDP", "MDP", "GenerativeModel", "Distribution",
+    "int",
+    "float",
+    "double",
+    "string",
+    "bool",
+    "array",
+    "matrix",
+    "vector",
+    "tensor",
+    "state",
+    "action",
+    "observation",
+    "belief",
+    "Categorical",
+    "Dirichlet",
+    "Gaussian",
+    "Continuous",
+    "Discrete",
+    "POMDP",
+    "MDP",
+    "GenerativeModel",
+    "Distribution",
 ]
 
 # Regex patterns for type validation
@@ -27,9 +45,9 @@ TYPE_PATTERNS: Dict[str, str] = {
 
 # Regex patterns for extracting type annotations from GNN content
 EXTRACTION_PATTERNS: list[str] = [
-    r'([^#\w])(\w+)\s*:\s*([a-zA-Z0-9_]+)',          # name: type (excluding comments)
-    r'(\w+)\s*\[(?:[^\]]*?)type=([a-zA-Z0-9_]+)(?:[^\]]*?)\]',  # name[...type=float...]
-    r'(\w+)\s*\[([0-9\s,]+)\]',                        # name[dimensions] (pure numbers as shapes)
+    r"([^#\w])(\w+)\s*:\s*([a-zA-Z0-9_]+)",  # name: type (excluding comments)
+    r"(\w+)\s*\[(?:[^\]]*?)type=([a-zA-Z0-9_]+)(?:[^\]]*?)\]",  # name[...type=float...]
+    r"(\w+)\s*\[([0-9\s,]+)\]",  # name[dimensions] (pure numbers as shapes)
 ]
 
 
@@ -115,7 +133,7 @@ def extract_types_from_content(content: str) -> list[Dict[str, Any]]:
     for pattern in EXTRACTION_PATTERNS:
         matches = re.finditer(pattern, content)
         for match in matches:
-            if len(match.groups()) >= 3 and pattern.startswith(r'([^#'):
+            if len(match.groups()) >= 3 and pattern.startswith(r"([^#"):
                 var_name = match.group(2)
                 var_type = match.group(3)
             elif len(match.groups()) >= 2:
@@ -124,10 +142,12 @@ def extract_types_from_content(content: str) -> list[Dict[str, Any]]:
             else:
                 continue
 
-            found_types.append({
-                "name": var_name,
-                "type": var_type,
-                "line": content[:match.start()].count('\n') + 1,
-            })
+            found_types.append(
+                {
+                    "name": var_name,
+                    "type": var_type,
+                    "line": content[: match.start()].count("\n") + 1,
+                }
+            )
 
     return found_types

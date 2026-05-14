@@ -77,7 +77,9 @@ class TestProcessReport:
         assert data["processed_files"] == 1
 
     @pytest.mark.unit
-    def test_process_report_empty_dir(self, empty_gnn_dir: Any, output_dir: Any) -> None:
+    def test_process_report_empty_dir(
+        self, empty_gnn_dir: Any, output_dir: Any
+    ) -> None:
         """process_report should still succeed even with no GNN files."""
         result = process_report(empty_gnn_dir, output_dir)
         assert result is True
@@ -85,7 +87,9 @@ class TestProcessReport:
         assert data["processed_files"] == 0
 
     @pytest.mark.unit
-    def test_process_report_creates_output_dir(self, sample_gnn_dir: Any, tmp_path: Any) -> None:
+    def test_process_report_creates_output_dir(
+        self, sample_gnn_dir: Any, tmp_path: Any
+    ) -> None:
         """process_report should create the output directory if missing."""
         out = tmp_path / "new_output"
         result = process_report(sample_gnn_dir, out)
@@ -93,12 +97,16 @@ class TestProcessReport:
         assert out.exists()
 
     @pytest.mark.unit
-    def test_process_report_multiple_files(self, tmp_path: Any, output_dir: Any) -> None:
+    def test_process_report_multiple_files(
+        self, tmp_path: Any, output_dir: Any
+    ) -> None:
         """process_report should count multiple GNN files."""
         gnn_dir = tmp_path / "multi"
         gnn_dir.mkdir()
         for i in range(3):
-            (gnn_dir / f"model_{i}.md").write_text(f"# Model {i}\n## GNNSection\nActInfPOMDP\n")
+            (gnn_dir / f"model_{i}.md").write_text(
+                f"# Model {i}\n## GNNSection\nActInfPOMDP\n"
+            )
         result = process_report(gnn_dir, output_dir)
         assert result is True
         data = json.loads((output_dir / "report_results.json").read_text())
@@ -156,7 +164,9 @@ class TestComprehensiveReport:
     @pytest.mark.unit
     def test_json_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate a JSON report file."""
-        result = generate_comprehensive_report(sample_gnn_dir, output_dir, format="json")
+        result = generate_comprehensive_report(
+            sample_gnn_dir, output_dir, format="json"
+        )
         assert result["success"] is True
         assert result["format"] == "json"
         report_file = Path(result["report_file"])
@@ -168,7 +178,9 @@ class TestComprehensiveReport:
     @pytest.mark.unit
     def test_html_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate an HTML report file."""
-        result = generate_comprehensive_report(sample_gnn_dir, output_dir, format="html")
+        result = generate_comprehensive_report(
+            sample_gnn_dir, output_dir, format="html"
+        )
         assert result["success"] is True
         assert result["format"] == "html"
         report_file = Path(result["report_file"])
@@ -180,7 +192,9 @@ class TestComprehensiveReport:
     @pytest.mark.unit
     def test_markdown_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate a Markdown report file."""
-        result = generate_comprehensive_report(sample_gnn_dir, output_dir, format="markdown")
+        result = generate_comprehensive_report(
+            sample_gnn_dir, output_dir, format="markdown"
+        )
         assert result["success"] is True
         assert result["format"] == "markdown"
         report_file = Path(result["report_file"])

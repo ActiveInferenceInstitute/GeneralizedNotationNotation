@@ -29,9 +29,17 @@ run_script = create_standardized_pipeline_script(
             "help": "LLM model tag (default: OLLAMA_MODEL env or repository default in llm.defaults)",
             "default": None,
         },
-        "skip_llm": {"type": bool, "help": "Skip LLM-powered analysis (use only rule-based)", "default": False},
-        "bottleneck_threshold": {"type": float, "help": "Duration threshold (seconds) for bottleneck detection", "default": 60.0}
-    }
+        "skip_llm": {
+            "type": bool,
+            "help": "Skip LLM-powered analysis (use only rule-based)",
+            "default": False,
+        },
+        "bottleneck_threshold": {
+            "type": float,
+            "help": "Duration threshold (seconds) for bottleneck detection",
+            "default": 60.0,
+        },
+    },
 )
 
 

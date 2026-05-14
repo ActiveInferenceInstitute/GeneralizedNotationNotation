@@ -46,7 +46,7 @@ No additional public function is exported by this package.
 | 12 Execute | `output/12_execute_output/<gnn_stem>/pymdp/simulation_data/simulation_results.json` (after collection from `.../pymdp/output/pymdp_simulations/...`) |
 | 16 Analysis | `output/16_analysis_output/pymdp/<model_slug>/` (plots from `generate_analysis_from_logs`) |
 
-Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 when running subprocesses) or by walking upward to a directory containing `pyproject.toml` and `src/`.
+Generated scripts resolve the repo root via `GNN_PROJECT_ROOT` (set by Step 12 when running subprocesses) or by walking upward to a directory containing `pyproject.toml` and `src/`, then add `src/` to `sys.path` before importing the canonical executor.
 
 ## Dependency Notes
 

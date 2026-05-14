@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RoundTripResult:
     """Result of a round-trip test operation."""
+
     success: bool
     target_format: str
     errors: List[str] = field(default_factory=list)
@@ -29,7 +30,7 @@ class RoundTripResult:
 class RoundTripTestStrategy:
     """
     Round-trip testing strategy for GNN models.
-    
+
     Tests semantic preservation across format conversions
     and validates model consistency.
     """
@@ -41,9 +42,12 @@ class RoundTripTestStrategy:
         self.round_trip_tester = None
         self._initialize_tester()
 
-    def configure(self, test_subset: Optional[List[str]] = None,
-                 reference_file: Optional[str] = None,
-                 output_dir: Optional[Path] = None):
+    def configure(
+        self,
+        test_subset: Optional[List[str]] = None,
+        reference_file: Optional[str] = None,
+        output_dir: Optional[Path] = None,
+    ):
         """Configure testing parameters."""
         self.test_subset = test_subset
         self.reference_file = reference_file
@@ -56,6 +60,7 @@ class RoundTripTestStrategy:
         """Initialize round-trip testing components."""
         try:
             from .test_round_trip import GNNRoundTripTester
+
             self.round_trip_tester = GNNRoundTripTester()
             logger.debug("Round-trip tester initialized")
         except ImportError as e:
@@ -65,50 +70,50 @@ class RoundTripTestStrategy:
     def test(self, files: List[Path]) -> Dict[str, Any]:
         """
         Run round-trip tests on provided files.
-        
+
         Args:
             files: List of file paths to test
-            
+
         Returns:
             Dictionary with test results and metadata
         """
         if not self.round_trip_tester:
             return {
-                'success': False,
-                'error': 'Round-trip tester not available',
-                'tests_run': 0,
-                'files_tested': 0
+                "success": False,
+                "error": "Round-trip tester not available",
+                "tests_run": 0,
+                "files_tested": 0,
             }
 
         logger.info(f"Running round-trip tests on {len(files)} files")
 
         results = {
-            'success': True,
-            'tests_run': 0,
-            'files_tested': len(files),
-            'file_results': {},
-            'summary': {}
+            "success": True,
+            "tests_run": 0,
+            "files_tested": len(files),
+            "file_results": {},
+            "summary": {},
         }
 
         for file_path in files:
             try:
                 file_result = self._test_file_round_trip(file_path)
-                results['file_results'][str(file_path)] = file_result
-                results['tests_run'] += 1
+                results["file_results"][str(file_path)] = file_result
+                results["tests_run"] += 1
 
-                if not file_result['success']:
-                    results['success'] = False
+                if not file_result["success"]:
+                    results["success"] = False
 
             except Exception as e:
                 logger.error(f"Round-trip test failed for {file_path}: {e}")
-                results['file_results'][str(file_path)] = {
-                    'success': False,
-                    'error': str(e)
+                results["file_results"][str(file_path)] = {
+                    "success": False,
+                    "error": str(e),
                 }
-                results['success'] = False
+                results["success"] = False
 
         # Generate summary
-        results['summary'] = self._generate_test_summary(results['file_results'])
+        results["summary"] = self._generate_test_summary(results["file_results"])
 
         # Save results if output directory is configured
         if self.output_dir:
@@ -127,54 +132,66 @@ class RoundTripTestStrategy:
             # Extract results for this file
             file_results = []
             for result in report.round_trip_results:
-                if hasattr(result, 'source_file') and result.source_file == str(file_path):
-                    file_results.append({
-                        'target_format': result.target_format.value if hasattr(result.target_format, 'value') else str(result.target_format),
-                        'success': result.success,
-                        'errors': result.errors,
-                        'warnings': result.warnings,
-                        'test_time': result.test_time
-                    })
+                if hasattr(result, "source_file") and result.source_file == str(
+                    file_path
+                ):
+                    file_results.append(
+                        {
+                            "target_format": result.target_format.value
+                            if hasattr(result.target_format, "value")
+                            else str(result.target_format),
+                            "success": result.success,
+                            "errors": result.errors,
+                            "warnings": result.warnings,
+                            "test_time": result.test_time,
+                        }
+                    )
 
-            success_rate = sum(1 for r in file_results if r['success']) / max(len(file_results), 1) * 100
+            success_rate = (
+                sum(1 for r in file_results if r["success"])
+                / max(len(file_results), 1)
+                * 100
+            )
 
             return {
-                'success': success_rate >= 80.0,  # 80% success threshold
-                'success_rate': success_rate,
-                'format_results': file_results,
-                'total_formats_tested': len(file_results)
+                "success": success_rate >= 80.0,  # 80% success threshold
+                "success_rate": success_rate,
+                "format_results": file_results,
+                "total_formats_tested": len(file_results),
             }
 
         except Exception as e:
             return {
-                'success': False,
-                'error': str(e),
-                'success_rate': 0.0,
-                'format_results': [],
-                'total_formats_tested': 0
+                "success": False,
+                "error": str(e),
+                "success_rate": 0.0,
+                "format_results": [],
+                "total_formats_tested": 0,
             }
 
     def _generate_test_summary(self, file_results: Dict[str, Any]) -> Dict[str, Any]:
         """Generate summary statistics from test results."""
         total_files = len(file_results)
-        successful_files = sum(1 for result in file_results.values() if result.get('success', False))
+        successful_files = sum(
+            1 for result in file_results.values() if result.get("success", False)
+        )
 
         format_stats = {}
         for result in file_results.values():
-            if 'format_results' in result:
-                for format_result in result['format_results']:
-                    format_name = format_result['target_format']
+            if "format_results" in result:
+                for format_result in result["format_results"]:
+                    format_name = format_result["target_format"]
                     if format_name not in format_stats:
-                        format_stats[format_name] = {'success': 0, 'total': 0}
-                    format_stats[format_name]['total'] += 1
-                    if format_result['success']:
-                        format_stats[format_name]['success'] += 1
+                        format_stats[format_name] = {"success": 0, "total": 0}
+                    format_stats[format_name]["total"] += 1
+                    if format_result["success"]:
+                        format_stats[format_name]["success"] += 1
 
         return {
-            'total_files': total_files,
-            'successful_files': successful_files,
-            'success_rate': (successful_files / max(total_files, 1)) * 100,
-            'format_statistics': format_stats
+            "total_files": total_files,
+            "successful_files": successful_files,
+            "success_rate": (successful_files / max(total_files, 1)) * 100,
+            "format_statistics": format_stats,
         }
 
     def _save_test_results(self, results: Dict[str, Any]):
@@ -189,7 +206,7 @@ class RoundTripTestStrategy:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             results_file = self.output_dir / f"round_trip_test_results_{timestamp}.json"
 
-            with open(results_file, 'w') as f:
+            with open(results_file, "w") as f:
                 json.dump(results, f, indent=2, default=str)
 
             logger.info(f"Round-trip test results saved to {results_file}")

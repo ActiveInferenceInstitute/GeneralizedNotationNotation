@@ -53,11 +53,19 @@ def registered_schemas() -> Dict[str, Dict[str, Any]]:
     return {name: schema for name, _func, schema, _desc in mcp.tools}
 
 
-SAMPLE_GNN = Path(__file__).parent.parent.parent.parent / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+SAMPLE_GNN = (
+    Path(__file__).parent.parent.parent.parent
+    / "input"
+    / "gnn_files"
+    / "discrete"
+    / "actinf_pomdp_agent.md"
+)
 
 
 def _assert_dict_result(result: Any) -> Dict[str, Any]:
-    assert isinstance(result, dict), f"Tool must return a dict; got {type(result).__name__}"
+    assert isinstance(result, dict), (
+        f"Tool must return a dict; got {type(result).__name__}"
+    )
     assert "success" in result, f"Tool result must include 'success': {result}"
     return result
 
@@ -75,7 +83,9 @@ def test_register_tools_emits_expected_set(registered_tools: Dict[str, Any]) -> 
     )
 
 
-def test_schemas_match_tool_signatures(registered_schemas: Dict[str, Dict[str, Any]]) -> None:
+def test_schemas_match_tool_signatures(
+    registered_schemas: Dict[str, Dict[str, Any]],
+) -> None:
     gnn_model_schema = registered_schemas["execute_gnn_model"]
     assert set(gnn_model_schema.get("properties", {}).keys()) == {
         "gnn_file_path",
@@ -88,12 +98,16 @@ def test_schemas_match_tool_signatures(registered_schemas: Dict[str, Dict[str, A
     }
 
 
-def test_check_execute_dependencies_returns_dict(registered_tools: Dict[str, Any]) -> None:
+def test_check_execute_dependencies_returns_dict(
+    registered_tools: Dict[str, Any],
+) -> None:
     result = _assert_dict_result(registered_tools["check_execute_dependencies"]())
     assert isinstance(result.get("success"), bool)
 
 
-def test_get_execute_module_info_returns_metadata(registered_tools: Dict[str, Any]) -> None:
+def test_get_execute_module_info_returns_metadata(
+    registered_tools: Dict[str, Any],
+) -> None:
     result = _assert_dict_result(registered_tools["get_execute_module_info"]())
     assert result["success"] is True
     assert result.get("module", "").endswith("execute")

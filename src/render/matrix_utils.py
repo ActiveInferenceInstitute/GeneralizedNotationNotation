@@ -10,6 +10,7 @@ Addresses improvement items:
   P-1: Matrix normalization extracted from PyMDP renderer
   P-4: ABCD shape validation before simulation
 """
+
 import logging
 from typing import Tuple
 
@@ -76,26 +77,18 @@ def validate_abcd_shapes(
     if A.ndim == 2 and D.ndim == 1:
         num_states = A.shape[1]
         if D.shape[0] != num_states:
-            issues.append(
-                f"D length ({D.shape[0]}) != A columns ({num_states})"
-            )
+            issues.append(f"D length ({D.shape[0]}) != A columns ({num_states})")
 
     if A.ndim == 2 and C.ndim == 1:
         num_obs = A.shape[0]
         if C.shape[0] != num_obs:
-            issues.append(
-                f"C length ({C.shape[0]}) != A rows ({num_obs})"
-            )
+            issues.append(f"C length ({C.shape[0]}) != A rows ({num_obs})")
 
     if A.ndim == 2 and B.ndim >= 2:
         if B.shape[0] != A.shape[1]:
-            issues.append(
-                f"B rows ({B.shape[0]}) != A columns ({A.shape[1]})"
-            )
+            issues.append(f"B rows ({B.shape[0]}) != A columns ({A.shape[1]})")
         if B.shape[1] != A.shape[1]:
-            issues.append(
-                f"B cols ({B.shape[1]}) != num_states ({A.shape[1]})"
-            )
+            issues.append(f"B cols ({B.shape[1]}) != num_states ({A.shape[1]})")
 
     if issues:
         msg = "; ".join(issues)

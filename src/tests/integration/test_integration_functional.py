@@ -32,6 +32,7 @@ def _has_networkx() -> bool:
     """Check if networkx is available."""
     try:
         import networkx
+
         return True
     except ImportError:
         return False

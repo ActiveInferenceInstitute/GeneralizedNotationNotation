@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 from . import process_integration
 
 
-def process_integration_mcp(target_directory: str, output_directory: str,
-                             verbose: bool = False) -> Dict[str, Any]:
+def process_integration_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Run third-party integration processing for GNN files.
 
@@ -98,7 +99,10 @@ def get_integration_status_mcp(output_directory: str) -> Dict[str, Any]:
     try:
         out_dir = Path(output_directory)
         if not out_dir.exists():
-            return {"success": False, "error": f"Directory not found: {output_directory}"}
+            return {
+                "success": False,
+                "error": f"Directory not found: {output_directory}",
+            }
 
         files = list(out_dir.rglob("*"))
         by_ext: Dict[str, int] = {}
@@ -108,8 +112,8 @@ def get_integration_status_mcp(output_directory: str) -> Dict[str, Any]:
                 by_ext[ext] = by_ext.get(ext, 0) + 1
 
         return {
-            "success":    True,
-            "directory":  str(out_dir),
+            "success": True,
+            "directory": str(out_dir),
             "total_files": len([f for f in files if f.is_file()]),
             "by_extension": by_ext,
         }
@@ -133,9 +137,9 @@ def check_integration_dependencies_mcp() -> Dict[str, Any]:
 
     deps: Dict[str, Dict[str, Any]] = {}
     for pkg, label in [
-        ("pymdp",   "pymdp"),
-        ("jax",     "JAX"),
-        ("torch",   "PyTorch"),
+        ("pymdp", "pymdp"),
+        ("jax", "JAX"),
+        ("torch", "PyTorch"),
         ("numpyro", "NumPyro"),
     ]:
         try:
@@ -150,19 +154,31 @@ def check_integration_dependencies_mcp() -> Dict[str, Any]:
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
+
 def register_tools(mcp_instance) -> None:
     """Register integration tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_integration",
         process_integration_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Directory with GNN files"},
-            "output_directory": {"type": "string", "description": "Integration output directory"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Integration output directory",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Run GNN integration processing: export to ActiveInference.jl, pymdp, Pyro, Stan, etc.",
-        module=__package__, category="integration",
+        module=__package__,
+        category="integration",
     )
 
     mcp_instance.register_tool(
@@ -170,17 +186,26 @@ def register_tools(mcp_instance) -> None:
         list_supported_integrations_mcp,
         {},
         "Return all supported third-party integration targets and their availability.",
-        module=__package__, category="integration",
+        module=__package__,
+        category="integration",
     )
 
     mcp_instance.register_tool(
         "get_integration_status",
         get_integration_status_mcp,
-        {"type": "object", "properties": {
-            "output_directory": {"type": "string", "description": "Directory with integration outputs"},
-        }, "required": ["output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory with integration outputs",
+                },
+            },
+            "required": ["output_directory"],
+        },
         "Check status and inventory of a previous integration run.",
-        module=__package__, category="integration",
+        module=__package__,
+        category="integration",
     )
 
     mcp_instance.register_tool(
@@ -188,7 +213,8 @@ def register_tools(mcp_instance) -> None:
         check_integration_dependencies_mcp,
         {},
         "Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed.",
-        module=__package__, category="integration",
+        module=__package__,
+        category="integration",
     )
 
     logger.info("integration module MCP tools registered (4 tools).")

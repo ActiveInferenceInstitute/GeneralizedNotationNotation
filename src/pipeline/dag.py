@@ -67,7 +67,9 @@ def resolve_execution_order(
     resolved = {s for tier in tiers for s in tier}
     unresolved = all_steps - resolved
     if unresolved:
-        logger.warning(f"⚠️ Circular dependencies detected for steps: {sorted(unresolved)}")
+        logger.warning(
+            f"⚠️ Circular dependencies detected for steps: {sorted(unresolved)}"
+        )
         tiers.append(sorted(unresolved))
 
     return tiers

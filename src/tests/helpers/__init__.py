@@ -32,7 +32,7 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
             "name": "sample_model",
             "states": ["s1", "s2"],
             "observations": ["o1"],
-            "parameters": {}
+            "parameters": {},
         }
 
     # Basic parsing of GNN markdown

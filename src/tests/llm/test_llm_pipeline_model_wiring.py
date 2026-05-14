@@ -20,9 +20,7 @@ def test_summary_task_prefers_ollama_when_registered() -> None:
         def __init__(self, ptype):
             self.provider_type = ptype
 
-    proc = LLMProcessor(
-        preferred_providers=[ProviderType.OLLAMA, ProviderType.OPENAI]
-    )
+    proc = LLMProcessor(preferred_providers=[ProviderType.OLLAMA, ProviderType.OPENAI])
     ollama_provider = ProviderProbe(ProviderType.OLLAMA)
     openai_provider = ProviderProbe(ProviderType.OPENAI)
     proc.providers = {
@@ -38,7 +36,9 @@ def test_summary_task_prefers_ollama_when_registered() -> None:
 
 @pytest.mark.unit
 @pytest.mark.asyncio
-async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config() -> None:
+async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config() -> (
+    None
+):
     from llm.llm_operations import LLMOperations
     from llm.providers.base_provider import LLMConfig, LLMResponse, ProviderType
 
@@ -52,6 +52,7 @@ async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config
         def __init__(self):
             self.called = False
             self.call_args = {}
+
         async def analyze_gnn(self, **kwargs):
             self.called = True
             self.call_args = kwargs
@@ -73,7 +74,9 @@ async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config
 
 
 @pytest.mark.unit
-def test_structured_prompt_get_response_passes_model_name(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_structured_prompt_get_response_passes_model_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """process_llm structured prompt loop must pass model_name matching cache key (ollama_model)."""
     from llm.providers.base_provider import ProviderType
 
@@ -95,9 +98,13 @@ def test_structured_prompt_get_response_passes_model_name(tmp_path: Path, monkey
     )
 
     with monkeypatch.context() as m:
-        async def controlled_init(*args, **kwargs): return True
-        async def controlled_close(*args, **kwargs): return None
-        
+
+        async def controlled_init(*args, **kwargs):
+            return True
+
+        async def controlled_close(*args, **kwargs):
+            return None
+
         class InMemoryProcessor:
             def __init__(self, *args, **kwargs):
                 self.initialize = controlled_init
@@ -105,33 +112,59 @@ def test_structured_prompt_get_response_passes_model_name(tmp_path: Path, monkey
                 self.get_response = controlled_get_response
                 self.get_available_providers = lambda: [ProviderType.OLLAMA]
 
-        m.setattr("llm.processor.LLMProcessor", lambda *args, **kwargs: InMemoryProcessor())
-        
-        async def controlled_analyze(*args, **kwargs): return {"status": "SUCCESS"}
+        m.setattr(
+            "llm.processor.LLMProcessor", lambda *args, **kwargs: InMemoryProcessor()
+        )
+
+        async def controlled_analyze(*args, **kwargs):
+            return {"status": "SUCCESS"}
+
         m.setattr("llm.processor.analyze_gnn_file_with_llm", controlled_analyze)
-        
+
         m.setattr("llm.processor.generate_model_insights", lambda *args, **kwargs: {})
         m.setattr("llm.processor.generate_code_suggestions", lambda *args, **kwargs: {})
         m.setattr("llm.processor.generate_documentation", lambda *args, **kwargs: {})
-        m.setattr("llm.processor._start_ollama_if_needed", lambda *args, **kwargs: (True, ["smollm2:135m-instruct-q4_K_S"]))
-        m.setattr("llm.processor._select_best_ollama_model", lambda *args, **kwargs: "smollm2:135m-instruct-q4_K_S")
-        
+        m.setattr(
+            "llm.processor._start_ollama_if_needed",
+            lambda *args, **kwargs: (True, ["smollm2:135m-instruct-q4_K_S"]),
+        )
+        m.setattr(
+            "llm.processor._select_best_ollama_model",
+            lambda *args, **kwargs: "smollm2:135m-instruct-q4_K_S",
+        )
+
         class InMemoryCache:
-            def get(self, *args, **kwargs): return None
-            def put(self, *args, **kwargs): pass
-            def summary(self, *args, **kwargs): 
+            def get(self, *args, **kwargs):
+                return None
+
+            def put(self, *args, **kwargs):
+                pass
+
+            def summary(self, *args, **kwargs):
                 return {
-                    "hits": 0, "misses": 0, "writes": 0, "hit_ratio_pct": 0.0, 
-                    "cache_dir": str(tmp_path), "entries_on_disk": 0
+                    "hits": 0,
+                    "misses": 0,
+                    "writes": 0,
+                    "hit_ratio_pct": 0.0,
+                    "cache_dir": str(tmp_path),
+                    "entries_on_disk": 0,
                 }
-                
+
         m.setattr("llm.processor.LLMCache", lambda *args, **kwargs: InMemoryCache())
-        m.setattr("llm.processor.generate_llm_summary", lambda *args, **kwargs: "# summary\n")
-        m.setattr("llm.processor.get_prompt", lambda *args, **kwargs: {
-            "system_message": "s", "user_prompt": "u", "max_tokens": 512
-        })
-        
+        m.setattr(
+            "llm.processor.generate_llm_summary", lambda *args, **kwargs: "# summary\n"
+        )
+        m.setattr(
+            "llm.processor.get_prompt",
+            lambda *args, **kwargs: {
+                "system_message": "s",
+                "user_prompt": "u",
+                "max_tokens": 512,
+            },
+        )
+
         from llm.processor import process_llm
+
         process_llm(target, out, verbose=False)
 
     assert captured.get("model_name") == "smollm2:135m-instruct-q4_K_S"

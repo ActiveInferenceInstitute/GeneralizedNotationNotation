@@ -29,7 +29,7 @@ class DisCoPyRenderer:
     def __init__(self, options: Optional[Dict[str, Any]] = None):
         """
         Initialize DisCoPy renderer.
-        
+
         Args:
             options: Optional configuration options
         """
@@ -39,28 +39,30 @@ class DisCoPyRenderer:
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
         """
         Render a single GNN file to DisCoPy categorical diagram code.
-        
+
         Args:
             gnn_file_path: Path to GNN file
             output_path: Path for output DisCoPy script
-            
+
         Returns:
             Tuple of (success, message)
         """
         try:
             # Read GNN file
-            with open(gnn_file_path, 'r', encoding='utf-8') as f:
+            with open(gnn_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Parse GNN content (simplified for now)
             gnn_spec = self._parse_gnn_content(content, gnn_file_path.stem)
 
             # Generate DisCoPy categorical diagram code
-            discopy_code = self._generate_discopy_diagram_code(gnn_spec, gnn_file_path.stem)
+            discopy_code = self._generate_discopy_diagram_code(
+                gnn_spec, gnn_file_path.stem
+            )
 
             # Write output file
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w', encoding='utf-8') as f:
+            with open(output_path, "w", encoding="utf-8") as f:
                 f.write(discopy_code)
 
             self.logger.info(f"Generated DisCoPy diagram: {output_path}")
@@ -74,86 +76,92 @@ class DisCoPyRenderer:
     def _parse_gnn_content(self, content: str, model_name: str) -> Dict[str, Any]:
         """Parse GNN content into a structured dictionary (simplified parser)."""
         gnn_spec = {
-            'model_name': model_name,
-            'variables': [],
-            'model_parameters': {},
-            'initial_parameterization': {},
-            'connections': []
+            "model_name": model_name,
+            "variables": [],
+            "model_parameters": {},
+            "initial_parameterization": {},
+            "connections": [],
         }
 
         self.logger.info(f"Parsing GNN content for model: {model_name}")
 
         # Simple parser for key sections
-        lines = content.split('\n')
+        lines = content.split("\n")
         current_section = None
         sections_found = []
 
         for line in lines:
             line = line.strip()
-            if line.startswith('## '):
+            if line.startswith("## "):
                 current_section = line[3:].strip()
                 sections_found.append(current_section)
                 self.logger.debug(f"Found section: {current_section}")
-            elif current_section == 'ModelParameters' and ':' in line:
-                key, value = line.split(':', 1)
+            elif current_section == "ModelParameters" and ":" in line:
+                key, value = line.split(":", 1)
                 key = key.strip()
                 value = value.strip()
                 try:
-                    if '.' in value:
-                        gnn_spec['model_parameters'][key] = float(value)
+                    if "." in value:
+                        gnn_spec["model_parameters"][key] = float(value)
                     else:
-                        gnn_spec['model_parameters'][key] = int(value)
-                    self.logger.debug(f"Extracted parameter: {key}={gnn_spec['model_parameters'][key]}")
+                        gnn_spec["model_parameters"][key] = int(value)
+                    self.logger.debug(
+                        f"Extracted parameter: {key}={gnn_spec['model_parameters'][key]}"
+                    )
                 except ValueError:
-                    gnn_spec['model_parameters'][key] = value
+                    gnn_spec["model_parameters"][key] = value
                     self.logger.debug(f"Extracted parameter (string): {key}={value}")
 
-        self.logger.info(f"Parsed {len(sections_found)} sections, {len(gnn_spec['model_parameters'])} model parameters")
+        self.logger.info(
+            f"Parsed {len(sections_found)} sections, {len(gnn_spec['model_parameters'])} model parameters"
+        )
         return gnn_spec
 
-    def _generate_discopy_diagram_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+    def _generate_discopy_diagram_code(
+        self, gnn_spec: Dict[str, Any], model_name: str
+    ) -> str:
         """
         Generate executable DisCoPy categorical diagram code from GNN specification.
-        
+
         Args:
             gnn_spec: Parsed GNN specification
             model_name: Name of the model
-            
+
         Returns:
             Generated Python code string
         """
         # Extract key information from GNN spec
-        model_display_name = gnn_spec.get('model_name', model_name)
+        model_display_name = gnn_spec.get("model_name", model_name)
 
         # Extract dimensions from model parameters
-        model_params = gnn_spec.get('model_parameters', {})
-        num_states = model_params.get('num_hidden_states', 3)
-        num_observations = model_params.get('num_obs', 3)
-        num_actions = model_params.get('num_actions', 3)
+        model_params = gnn_spec.get("model_parameters", {})
+        num_states = model_params.get("num_hidden_states", 3)
+        num_observations = model_params.get("num_obs", 3)
+        num_actions = model_params.get("num_actions", 3)
 
         # Try to extract from variables if available
-        variables = gnn_spec.get('variables', [])
+        variables = gnn_spec.get("variables", [])
         variable_names = []
         for var in variables:
-            var_name = var.get('name', '')
+            var_name = var.get("name", "")
             if var_name:
                 variable_names.append(var_name)
 
-            if var.get('name') == 'A' and 'dimensions' in var:
-                dims = var['dimensions']
+            if var.get("name") == "A" and "dimensions" in var:
+                dims = var["dimensions"]
                 if len(dims) >= 2:
                     num_observations = dims[0]
                     num_states = dims[1]
-            elif var.get('name') == 'B' and 'dimensions' in var:
-                dims = var['dimensions']
+            elif var.get("name") == "B" and "dimensions" in var:
+                dims = var["dimensions"]
                 if len(dims) >= 3:
                     num_actions = dims[2]
 
         # Get initial parameterization if available
-        gnn_spec.get('initial_parameterization', {})
+        gnn_spec.get("initial_parameterization", {})
 
         # Extract connections if available
-        gnn_spec.get('connections', [])
+        gnn_spec.get("connections", [])
 
         # Generate the Python code
         code = f'''#!/usr/bin/env python3
@@ -432,16 +440,16 @@ if __name__ == "__main__":
 def render_gnn_to_discopy(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """
     Render GNN specification to DisCoPy categorical diagram script.
-    
+
     Args:
         gnn_spec: Parsed GNN specification dictionary
         output_path: Path for output DisCoPy script
         options: Optional rendering options
-        
+
     Returns:
         Tuple of (success, message, warnings: List[str])
     """
@@ -449,26 +457,28 @@ def render_gnn_to_discopy(
         renderer = DisCoPyRenderer(options)
 
         # Generate simulation code directly from spec
-        model_name = gnn_spec.get('model_name', 'GNN_Model')
+        model_name = gnn_spec.get("model_name", "GNN_Model")
         discopy_code = renderer._generate_discopy_diagram_code(gnn_spec, model_name)
 
         # Write output file
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(discopy_code)
 
         message = f"Generated DisCoPy categorical diagram script: {output_path}"
         warnings = []
 
         # Check for potential issues
-        if not gnn_spec.get('initial_parameterization'):
+        if not gnn_spec.get("initial_parameterization"):
             warnings.append("No initial parameterization found - using defaults")
 
-        if not gnn_spec.get('model_parameters'):
+        if not gnn_spec.get("model_parameters"):
             warnings.append("No model parameters found - using inferred dimensions")
 
-        if not gnn_spec.get('connections'):
-            warnings.append("No explicit connections found - using default Active Inference structure")
+        if not gnn_spec.get("connections"):
+            warnings.append(
+                "No explicit connections found - using default Active Inference structure"
+            )
 
         return True, message, warnings
 

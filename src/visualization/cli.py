@@ -15,14 +15,14 @@ from .visualizer import GNNVisualizer
 def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser(
-        description='Generate visualizations for GNN models.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        description="Generate visualizations for GNN models.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     # Input options
     parser.add_argument(
-        'input',
-        help='Path to a GNN file or directory containing GNN files (e.g., input/gnn_files)'
+        "input",
+        help="Path to a GNN file or directory containing GNN files (e.g., input/gnn_files)",
     )
 
     # Output directory — resolve lazily so importing this module doesn't
@@ -30,20 +30,19 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     # relative default that broke when cwd differed from the CLI invocation
     # directory.
     parser.add_argument(
-        '-o', '--output-dir',
-        help='Directory to save visualizations. If not provided, uses the pipeline-standard output dir for step 8.',
+        "-o",
+        "--output-dir",
+        help="Directory to save visualizations. If not provided, uses the pipeline-standard output dir for step 8.",
         default=None,
     )
 
     # Visualization options
     parser.add_argument(
-        '--recursive',
-        help='Recursively process directories',
-        action='store_true'
+        "--recursive", help="Recursively process directories", action="store_true"
     )
     parser.add_argument(
-        '--project-root',
-        help='Absolute path to the project root, for relative path generation in reports'
+        "--project-root",
+        help="Absolute path to the project root, for relative path generation in reports",
     )
 
     return parser.parse_args(args)
@@ -55,7 +54,8 @@ def _resolve_output_dir(explicit: Optional[str]) -> str:
     if explicit:
         return explicit
     try:
-        from src.pipeline.config import get_output_dir_for_script
+        from pipeline.config import get_output_dir_for_script
+
         return str(get_output_dir_for_script("8_visualization.py", Path("output")))
     except Exception:
         return "output/8_visualization_output"
@@ -67,7 +67,9 @@ def main(args: Optional[List[str]] = None) -> int:
     output_dir = _resolve_output_dir(parsed_args.output_dir)
 
     # Create visualizer
-    visualizer = GNNVisualizer(output_dir=output_dir, project_root=parsed_args.project_root)
+    visualizer = GNNVisualizer(
+        output_dir=output_dir, project_root=parsed_args.project_root
+    )
 
     # Get input path
     input_path = Path(parsed_args.input)
@@ -81,7 +83,7 @@ def main(args: Optional[List[str]] = None) -> int:
         # Directory
         if parsed_args.recursive:
             # Process all md files recursively
-            for file_path in input_path.glob('**/*.md'):
+            for file_path in input_path.glob("**/*.md"):
                 try:
                     visualizer.visualize_file(str(file_path))
                 except Exception as e:
@@ -98,5 +100,5 @@ def main(args: Optional[List[str]] = None) -> int:
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

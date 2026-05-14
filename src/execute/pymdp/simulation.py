@@ -37,6 +37,7 @@ logger = logging.getLogger(__name__)
 # GNN matrix normalisation helpers (pure numpy; framework-agnostic)
 # ---------------------------------------------------------------------------
 
+
 def _normalise_prob_vector(v: np.ndarray) -> np.ndarray:
     """Return a 1-D probability vector summing to 1 (robust to GNN rounding)."""
     arr = np.asarray(v, dtype=np.float64).flatten()
@@ -69,7 +70,9 @@ def _canonicalise_A(A_data: Any, fallback_shape: Tuple[int, int]) -> np.ndarray:
         raise ValueError("A matrix is required for PyMDP execution")
     mat = np.asarray(A_data, dtype=np.float64)
     if mat.ndim != 2:
-        raise ValueError(f"A matrix must be 2D (num_obs, num_states); got shape {mat.shape}")
+        raise ValueError(
+            f"A matrix must be 2D (num_obs, num_states); got shape {mat.shape}"
+        )
     return _normalise_columns(mat)
 
 
@@ -137,13 +140,17 @@ def _normalise_probability_vector_safe(v: Any, expected_len: int) -> np.ndarray:
     return _normalise_prob_vector(vec)
 
 
-def _canonicalise_E(E_data: Any, expected_policies: Optional[int]) -> Optional[np.ndarray]:
+def _canonicalise_E(
+    E_data: Any, expected_policies: Optional[int]
+) -> Optional[np.ndarray]:
     if E_data is None:
         return None
     vec = np.asarray(E_data, dtype=np.float64).flatten()
     if expected_policies is not None and vec.shape[0] != expected_policies:
         # Re-scale / truncate / pad to match policy count (pymdp asserts on this).
-        padded = np.ones(expected_policies, dtype=np.float64) / max(expected_policies, 1)
+        padded = np.ones(expected_policies, dtype=np.float64) / max(
+            expected_policies, 1
+        )
         k = min(expected_policies, vec.shape[0])
         padded[:k] = vec[:k]
         vec = padded
@@ -153,6 +160,7 @@ def _canonicalise_E(E_data: Any, expected_policies: Optional[int]) -> Optional[n
 # ---------------------------------------------------------------------------
 # pymdp 1.0.0 (JAX-first) import + Agent construction
 # ---------------------------------------------------------------------------
+
 
 def _require_pymdp_1():
     """
@@ -252,6 +260,7 @@ def _build_pymdp_agent(
 # Rollout
 # ---------------------------------------------------------------------------
 
+
 def run_pymdp_simulation(
     gnn_spec: Dict[str, Any],
     output_dir: Path,
@@ -330,7 +339,10 @@ def run_pymdp_simulation(
         b_np_tmp = np.asarray(b_raw, dtype=np.float64)
         if b_np_tmp.ndim == 3:
             # Heuristic: if leading dim equals any plausible action count, prefer it
-            if b_np_tmp.shape[0] == b_np_tmp.shape[1] and b_np_tmp.shape[0] == num_states:
+            if (
+                b_np_tmp.shape[0] == b_np_tmp.shape[1]
+                and b_np_tmp.shape[0] == num_states
+            ):
                 num_actions_guess = int(b_np_tmp.shape[-1])
             else:
                 num_actions_guess = int(b_np_tmp.shape[0])
@@ -422,7 +434,9 @@ def run_pymdp_simulation(
 
         q_pi, neg_efe = agent.infer_policies(qs)
         # q_pi / neg_efe shape: (batch, num_policies)
-        policy_posterior_history.append(np.asarray(q_pi[0], dtype=np.float64).flatten().tolist())
+        policy_posterior_history.append(
+            np.asarray(q_pi[0], dtype=np.float64).flatten().tolist()
+        )
         efe_history.append(np.asarray(neg_efe[0], dtype=np.float64).flatten().tolist())
 
         jax_key, subkey = jr.split(jax_key)
@@ -511,9 +525,7 @@ def run_pymdp_simulation(
         },
         "validation": {
             "all_beliefs_valid": all(0.0 <= v <= 1.0 for b in beliefs for v in b),
-            "beliefs_sum_to_one": all(
-                abs(sum(b) - 1.0) < 1e-2 for b in beliefs if b
-            ),
+            "beliefs_sum_to_one": all(abs(sum(b) - 1.0) < 1e-2 for b in beliefs if b),
             "actions_in_range": all(0 <= a < num_actions for a in actions),
             "pymdp_version_ge_1_0_0": _is_version_ge(pymdp_version, (1, 0, 0)),
         },

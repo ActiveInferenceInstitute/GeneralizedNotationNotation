@@ -27,9 +27,9 @@ def _discover_top_level_modules() -> List[str]:
         if not entry.is_dir():
             continue
         name = entry.name
-        if name.startswith('_'):
+        if name.startswith("_"):
             continue
-        if (entry / '__init__.py').exists():
+        if (entry / "__init__.py").exists():
             module_names.append(name)
     return sorted(module_names)
 
@@ -56,20 +56,9 @@ def get_module_info() -> dict[str, object]:
         ],
     }
 
-# Expose submodules expected by tests and users via `import src`
-# Use lazy/guarded import to avoid import-time failures when optional deps are missing in test isolation
-import importlib
-
-# Import SAPF module directly now that it is fully implemented and robust
-try:
-    sapf = importlib.import_module('src.sapf')
-except ImportError:
-    # Recovery to relative import if package context differs
-    from . import sapf
 
 __all__ = [
-    'get_module_info',
-    'sapf',
-    '__version__',
-    'FEATURES',
+    "get_module_info",
+    "__version__",
+    "FEATURES",
 ]

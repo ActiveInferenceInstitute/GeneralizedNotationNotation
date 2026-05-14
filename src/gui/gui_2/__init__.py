@@ -20,25 +20,27 @@ from .matrix_editor import (
 from .processor import run_gui
 
 
-def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:
+def gui_2(
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+) -> Dict[str, Any]:
     """
     Run GUI 2: Visual Matrix Editor for GNN Models
-    
+
     Args:
         target_dir: Directory containing GNN files to load (prefers POMDP templates)
-        output_dir: Output directory for results  
+        output_dir: Output directory for results
         logger: Logger instance
         **kwargs: Additional options (headless, export_filename, etc.)
-        
+
     Returns:
         Dictionary with execution results and status
     """
     try:
         # Extract GUI 2 specific parameters
-        headless = kwargs.get('headless', False)
-        export_filename = kwargs.get('export_filename', 'visual_model_gui2.md')
-        open_browser = kwargs.get('open_browser', True)
-        verbose = kwargs.get('verbose', False)
+        headless = kwargs.get("headless", False)
+        export_filename = kwargs.get("export_filename", "visual_model_gui2.md")
+        open_browser = kwargs.get("open_browser", True)
+        verbose = kwargs.get("verbose", False)
 
         logger.info("🎯 Starting GUI 2: Visual Matrix Editor")
 
@@ -64,8 +66,8 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
                 "Real-time GNN markdown generation",
                 "POMDP template-based initialization",
                 "Interactive heatmaps and plots",
-                "Matrix dimension validation"
-            ]
+                "Matrix dimension validation",
+            ],
         }
 
         if success:
@@ -82,7 +84,7 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             "description": "Visual Matrix Editor for GNN Models",
             "success": False,
             "error": str(e),
-            "backend": "error"
+            "backend": "error",
         }
 
 
@@ -98,12 +100,12 @@ def get_gui_2_info() -> Dict[str, Any]:
             "POMDP template initialization",
             "Matrix validation and consistency checking",
             "Multi-tab interface (A, B, C, D matrices)",
-            "Vector and tensor visualization"
+            "Vector and tensor visualization",
         ],
         "requirements": ["gradio", "plotly", "numpy"],
         "export_format": "GNN Markdown (.md)",
         "interface_type": "visual-drag-drop",
-        "template_base": "Active Inference POMDP"
+        "template_base": "Active Inference POMDP",
     }
 
 

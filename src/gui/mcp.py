@@ -21,7 +21,7 @@ def process_gui_mcp(
     output_directory: str,
     verbose: bool = False,
     gui_types: str = "gui_1,gui_2",
-    headless: bool = True
+    headless: bool = True,
 ) -> Dict[str, Any]:
     """
     Process GUI generation for GNN files. Exposed via MCP.
@@ -42,7 +42,7 @@ def process_gui_mcp(
             output_dir=Path(output_directory),
             verbose=verbose,
             gui_types=gui_types,
-            headless=headless
+            headless=headless,
         )
         return {
             "success": success,
@@ -50,14 +50,13 @@ def process_gui_mcp(
             "output_directory": output_directory,
             "gui_types": gui_types.split(","),
             "mode": "headless" if headless else "interactive",
-            "message": f"GUI processing {'completed successfully' if success else 'failed'}"
+            "message": f"GUI processing {'completed successfully' if success else 'failed'}",
         }
     except Exception as e:
-        logger.error(f"Error in process_gui_mcp for {target_directory}: {e}", exc_info=True)
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        logger.error(
+            f"Error in process_gui_mcp for {target_directory}: {e}", exc_info=True
+        )
+        return {"success": False, "error": str(e)}
 
 
 def list_available_guis_mcp() -> Dict[str, Any]:
@@ -73,9 +72,9 @@ def list_available_guis_mcp() -> Dict[str, Any]:
     try:
         guis = get_available_guis()
         return {
-            "success":        True,
+            "success": True,
             "available_guis": guis,
-            "features":       FEATURES,
+            "features": FEATURES,
         }
     except Exception as e:
         logger.error(f"list_available_guis_mcp error: {e}", exc_info=True)
@@ -91,13 +90,14 @@ def get_gui_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         import importlib
-        mod     = importlib.import_module(__package__)
+
+        mod = importlib.import_module(__package__)
         version = getattr(mod, "__version__", "unknown")
         return {
-            "success":   True,
-            "module":    __package__,
-            "version":   version,
-            "features":  FEATURES,
+            "success": True,
+            "module": __package__,
+            "version": version,
+            "features": FEATURES,
             "gui_types": ["gui_1", "gui_2", "gui_3", "oxdraw"],
             "tools": [
                 "process_gui",
@@ -110,7 +110,6 @@ def get_gui_module_info_mcp() -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-
 # MCP Registration Function
 def register_tools(mcp_instance):
     """Register GUI domain tools with the MCP."""
@@ -121,16 +120,31 @@ def register_tools(mcp_instance):
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN files to process"},
-                "output_directory": {"type": "string", "description": "Directory to save GUI outputs"},
-                "verbose":          {"type": "boolean", "default": False},
-                "gui_types":        {"type": "string", "default": "gui_1,gui_2", "description": "Comma-separated GUI types"},
-                "headless":         {"type": "boolean", "default": True, "description": "Run in headless mode"},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN files to process",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to save GUI outputs",
+                },
+                "verbose": {"type": "boolean", "default": False},
+                "gui_types": {
+                    "type": "string",
+                    "default": "gui_1,gui_2",
+                    "description": "Comma-separated GUI types",
+                },
+                "headless": {
+                    "type": "boolean",
+                    "default": True,
+                    "description": "Run in headless mode",
+                },
             },
             "required": ["target_directory", "output_directory"],
         },
         "Process GUI generation for GNN files: form editors, visual constructors, OxDraw diagram tools.",
-        module=__package__, category="gui",
+        module=__package__,
+        category="gui",
     )
 
     mcp_instance.register_tool(
@@ -138,7 +152,8 @@ def register_tools(mcp_instance):
         list_available_guis_mcp,
         {},
         "List all available GUI implementations (gui_1, gui_2, gui_3, oxdraw) with capabilities.",
-        module=__package__, category="gui",
+        module=__package__,
+        category="gui",
     )
 
     mcp_instance.register_tool(
@@ -146,8 +161,8 @@ def register_tools(mcp_instance):
         get_gui_module_info_mcp,
         {},
         "Return version, feature flags, GUI types, and tool inventory of the GUI module.",
-        module=__package__, category="gui",
+        module=__package__,
+        category="gui",
     )
 
     logger.info("gui module MCP tools registered (3 domain tools).")
-

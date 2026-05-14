@@ -18,6 +18,7 @@ class TestNormalizeConnectionFormat:
     def _fn(self):
         try:
             from advanced_visualization._shared import normalize_connection_format
+
             return normalize_connection_format
         except ImportError:
             pytest.skip("advanced_visualization._shared not importable")
@@ -62,6 +63,7 @@ class TestCalculateSemanticPositions:
     def _fn(self):
         try:
             from advanced_visualization._shared import _calculate_semantic_positions
+
             return _calculate_semantic_positions
         except ImportError:
             pytest.skip("advanced_visualization._shared not importable")
@@ -98,6 +100,7 @@ class TestValidateVisualizationData:
     def _fn(self):
         try:
             from advanced_visualization._shared import validate_visualization_data
+
             return validate_visualization_data
         except ImportError:
             pytest.skip("advanced_visualization._shared not importable")

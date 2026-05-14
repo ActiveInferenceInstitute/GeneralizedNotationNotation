@@ -22,13 +22,16 @@ try:
         is_correct_pymdp_package,
         validate_pymdp_for_execution,
     )
+
     PACKAGE_DETECTOR_AVAILABLE = True
 except ImportError as e:
     PACKAGE_DETECTOR_AVAILABLE = False
     IMPORT_ERROR = str(e)
 
 
-@pytest.mark.skipif(not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available")
+@pytest.mark.skipif(
+    not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available"
+)
 class TestPyMDPPackageDetection:
     """Test PyMDP package detection functionality."""
 
@@ -58,7 +61,10 @@ class TestPyMDPPackageDetection:
         assert isinstance(instructions, str)
         assert len(instructions) > 0
         # Should mention inferactively-pymdp
-        assert "inferactively-pymdp" in instructions.lower() or "pymdp" in instructions.lower()
+        assert (
+            "inferactively-pymdp" in instructions.lower()
+            or "pymdp" in instructions.lower()
+        )
 
     def test_validate_pymdp_for_execution_structure(self) -> None:
         """Test validation structure."""
@@ -86,7 +92,9 @@ class TestPyMDPPackageDetection:
         assert len(message) > 0
 
 
-@pytest.mark.skipif(not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available")
+@pytest.mark.skipif(
+    not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available"
+)
 class TestPyMDPPackageDetectionIntegration:
     """Integration tests for package detection."""
 
@@ -118,13 +126,24 @@ class TestPyMDPPackageDetectionIntegration:
         instructions = get_pymdp_installation_instructions()
 
         # Should contain installation command OR confirmation of correct installation
-        assert "install" in instructions.lower() or "pymdp" in instructions.lower() or "correctly installed" in instructions.lower()
+        assert (
+            "install" in instructions.lower()
+            or "pymdp" in instructions.lower()
+            or "correctly installed" in instructions.lower()
+        )
 
         # Should mention uv or pip (for install) or correctly installed (when already installed)
-        assert "uv" in instructions.lower() or "pip" in instructions.lower() or "setup" in instructions.lower() or "correctly installed" in instructions.lower()
+        assert (
+            "uv" in instructions.lower()
+            or "pip" in instructions.lower()
+            or "setup" in instructions.lower()
+            or "correctly installed" in instructions.lower()
+        )
 
 
-@pytest.mark.skipif(not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available")
+@pytest.mark.skipif(
+    not PACKAGE_DETECTOR_AVAILABLE, reason="Package detector not available"
+)
 class TestPyMDPRealInstallation:
     """Test package detection with real PyMDP installation (if available)."""
 
@@ -132,6 +151,7 @@ class TestPyMDPRealInstallation:
         """Test detection with actual PyMDP installation."""
         try:
             import pymdp
+
             # PyMDP is installed - test detection
             detection = detect_pymdp_installation()
 
@@ -156,6 +176,7 @@ class TestPyMDPRealInstallation:
         """Test validation with real PyMDP installation."""
         try:
             import pymdp
+
             validation = validate_pymdp_for_execution()
 
             detection = validation["detection"]
@@ -183,4 +204,3 @@ class TestPyMDPRealInstallation:
                 # Correct package detected
                 assert detection["has_agent"] is True
                 assert detection["wrong_package"] is False
-

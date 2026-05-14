@@ -59,7 +59,10 @@ def _safe_figsize(width: float, height: float) -> tuple:
     if clamped_w != width or clamped_h != height:
         logger.debug(
             "Figure size clamped from (%.1f, %.1f) to (%.1f, %.1f) to prevent renderer overflow",
-            width, height, clamped_w, clamped_h,
+            width,
+            height,
+            clamped_w,
+            clamped_h,
         )
     return (clamped_w, clamped_h)
 
@@ -77,7 +80,9 @@ class MatrixVisualizer:
     # Maximum matrix cell count for which text annotations are shown
     _ANNOTATION_CELL_LIMIT = 25
 
-    def export_matrix_to_csv(self, matrix: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+    def export_matrix_to_csv(
+        self, matrix: np.ndarray, matrix_name: str, output_path: Path
+    ) -> bool:
         """
         Export matrix data to CSV format for accessibility.
 
@@ -90,9 +95,9 @@ class MatrixVisualizer:
             True if successful
         """
         try:
-            csv_path = output_path.with_suffix('.csv')
+            csv_path = output_path.with_suffix(".csv")
 
-            with open(csv_path, 'w', newline='') as csvfile:
+            with open(csv_path, "w", newline="") as csvfile:
                 writer = csv.writer(csvfile)
 
                 # Write header with matrix info
@@ -115,10 +120,14 @@ class MatrixVisualizer:
                     # POMDP B tensors use (next_state, previous_state, action).
                     for action in range(matrix.shape[2]):
                         writer.writerow([f"Action slice {action}"])
-                        writer.writerow(["Next \\ Previous"] + [f"Previous {j}" for j in range(matrix.shape[1])])
+                        writer.writerow(
+                            ["Next \\ Previous"]
+                            + [f"Previous {j}" for j in range(matrix.shape[1])]
+                        )
                         for next_state in range(matrix.shape[0]):
                             writer.writerow(
-                                [f"Next {next_state}"] + matrix[next_state, :, action].tolist()
+                                [f"Next {next_state}"]
+                                + matrix[next_state, :, action].tolist()
                             )
                         writer.writerow([])
 
@@ -137,19 +146,21 @@ class MatrixVisualizer:
     def _convert_to_matrix(self, value: Any, name: str = "") -> Optional[np.ndarray]:
         return convert_to_matrix(value, name)
 
-    def extract_from_parsed_gnn(self, parsed_data: Dict[str, Any]) -> Dict[str, np.ndarray]:
+    def extract_from_parsed_gnn(
+        self, parsed_data: Dict[str, Any]
+    ) -> Dict[str, np.ndarray]:
         """
         Extract matrix data from parsed GNN structure.
-        
+
         Checks multiple locations:
         - parameters field (primary location)
         - InitialParameterization section
         - matrices field
         - variables with matrix values
-        
+
         Args:
             parsed_data: Parsed GNN data dictionary
-            
+
         Returns:
             Dictionary mapping matrix names to numpy arrays
         """
@@ -183,18 +194,24 @@ class MatrixVisualizer:
 
         return matrices
 
-    def generate_matrix_heatmap(self, matrix_name: str, matrix: np.ndarray, output_path: Path,
-                              title: Optional[str] = None, cmap: str = 'viridis') -> bool:
+    def generate_matrix_heatmap(
+        self,
+        matrix_name: str,
+        matrix: np.ndarray,
+        output_path: Path,
+        title: Optional[str] = None,
+        cmap: str = "viridis",
+    ) -> bool:
         """
         Generate a heatmap visualization for a matrix.
-        
+
         Args:
             matrix_name: Name of the matrix
             matrix: Numpy array representing the matrix
             output_path: Output file path
             title: Optional title for the plot
             cmap: Colormap to use
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -206,20 +223,20 @@ class MatrixVisualizer:
             plt.figure(figsize=(10, 8))
 
             # Create heatmap
-            im = plt.imshow(matrix, cmap=cmap, aspect='auto')
+            im = plt.imshow(matrix, cmap=cmap, aspect="auto")
 
             # Add colorbar
             cbar = plt.colorbar(im)
-            cbar.set_label('Value', rotation=270, labelpad=15)
+            cbar.set_label("Value", rotation=270, labelpad=15)
 
             # Add title
             if title is None:
-                title = f'Matrix {matrix_name}'
-            plt.title(title, fontsize=16, fontweight='bold')
+                title = f"Matrix {matrix_name}"
+            plt.title(title, fontsize=16, fontweight="bold")
 
             # Add axis labels
-            plt.xlabel('Column Index')
-            plt.ylabel('Row Index')
+            plt.xlabel("Column Index")
+            plt.ylabel("Row Index")
 
             # Add text annotations for matrix values (skip for large matrices)
             total_cells = matrix.shape[0] * matrix.shape[1]
@@ -227,9 +244,16 @@ class MatrixVisualizer:
                 for i in range(matrix.shape[0]):
                     for j in range(matrix.shape[1]):
                         value = float(matrix[i, j])
-                        plt.text(j, i, f'{value:.3f}',
-                                      ha="center", va="center", color="white" if value < 0.5 else "black",
-                                      fontsize=8, fontweight='bold')
+                        plt.text(
+                            j,
+                            i,
+                            f"{value:.3f}",
+                            ha="center",
+                            va="center",
+                            color="white" if value < 0.5 else "black",
+                            fontsize=8,
+                            fontweight="bold",
+                        )
 
             # Set axis ticks
             plt.xticks(range(matrix.shape[1]))
@@ -241,7 +265,7 @@ class MatrixVisualizer:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
             except OSError as e:
                 logger.debug("mkdir for %s: %s", output_path.parent, e)
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
             # Export matrix data to CSV for accessibility
@@ -265,31 +289,39 @@ class MatrixVisualizer:
         except Exception:
             return False
 
-    def generate_3d_tensor_visualization(self, tensor_name: str, tensor: np.ndarray, output_path: Path,
-                                       title: Optional[str] = None, tensor_type: str = "transition") -> bool:
+    def generate_3d_tensor_visualization(
+        self,
+        tensor_name: str,
+        tensor: np.ndarray,
+        output_path: Path,
+        title: Optional[str] = None,
+        tensor_type: str = "transition",
+    ) -> bool:
         """
         Generate specialized visualization for 3D tensors like POMDP transition matrices.
-        
+
         Args:
             tensor_name: Name of the tensor (e.g., 'B')
             tensor: 3D numpy array
             output_path: Output file path
             title: Optional title for the plot
             tensor_type: Type of tensor ('transition', 'likelihood', etc.)
-            
+
         Returns:
             True if successful, False otherwise
         """
         try:
             if tensor.ndim != 3:
-                logger.warning(f"Tensor {tensor_name} is not 3D (shape: {tensor.shape})")
+                logger.warning(
+                    f"Tensor {tensor_name} is not 3D (shape: {tensor.shape})"
+                )
                 return False
 
             # Get dimensions
             dim1, dim2, dim3 = tensor.shape
 
             # Create figure with subplots for each slice (clamped to prevent overflow)
-            fig = plt.figure(figsize=_safe_figsize(5*dim3, 8))
+            fig = plt.figure(figsize=_safe_figsize(5 * dim3, 8))
 
             # Create subplot grid
             gs = fig.add_gridspec(2, dim3, height_ratios=[3, 1], hspace=0.3, wspace=0.3)
@@ -314,20 +346,28 @@ class MatrixVisualizer:
                 slice_data = tensor[:, :, i]
 
                 # Create heatmap
-                im = ax.imshow(slice_data, cmap='Blues', aspect='auto', vmin=0, vmax=1)
+                im = ax.imshow(slice_data, cmap="Blues", aspect="auto", vmin=0, vmax=1)
 
                 # Add text annotations for small matrices
-                if slice_data.size <= self._ANNOTATION_CELL_LIMIT:  # Only add text for reasonably sized matrices
+                if (
+                    slice_data.size <= self._ANNOTATION_CELL_LIMIT
+                ):  # Only add text for reasonably sized matrices
                     for row in range(slice_data.shape[0]):
                         for col in range(slice_data.shape[1]):
                             value = float(slice_data[row, col])
-                            ax.text(col, row, f'{value:.2f}',
-                                          ha="center", va="center",
-                                          color="white" if value < 0.5 else "black",
-                                          fontsize=10, fontweight='bold')
+                            ax.text(
+                                col,
+                                row,
+                                f"{value:.2f}",
+                                ha="center",
+                                va="center",
+                                color="white" if value < 0.5 else "black",
+                                fontsize=10,
+                                fontweight="bold",
+                            )
 
                 # Set labels
-                ax.set_title(slice_titles[i], fontweight='bold', fontsize=12)
+                ax.set_title(slice_titles[i], fontweight="bold", fontsize=12)
                 ax.set_xlabel(xlabel)
                 ax.set_ylabel(ylabel)
 
@@ -338,40 +378,56 @@ class MatrixVisualizer:
                 # Add colorbar for first slice only
                 if i == 0:
                     cbar = plt.colorbar(im, ax=ax, shrink=0.8)
-                    cbar.set_label('Transition Probability', rotation=270, labelpad=15)
+                    cbar.set_label("Transition Probability", rotation=270, labelpad=15)
 
             # Add summary statistics below
             ax_summary = fig.add_subplot(gs[1, :])
-            ax_summary.axis('off')
+            ax_summary.axis("off")
 
             # Calculate and display statistics
-            stats_text = self._generate_tensor_statistics(tensor, tensor_name, tensor_type)
-            ax_summary.text(0.05, 0.5, stats_text, transform=ax_summary.transAxes,
-                          fontsize=10, verticalalignment='center',
-                          bbox={'boxstyle': "round,pad=0.3", 'facecolor': "lightgray", 'alpha': 0.8})
+            stats_text = self._generate_tensor_statistics(
+                tensor, tensor_name, tensor_type
+            )
+            ax_summary.text(
+                0.05,
+                0.5,
+                stats_text,
+                transform=ax_summary.transAxes,
+                fontsize=10,
+                verticalalignment="center",
+                bbox={
+                    "boxstyle": "round,pad=0.3",
+                    "facecolor": "lightgray",
+                    "alpha": 0.8,
+                },
+            )
 
             # Set main title
-            fig.suptitle(main_title, fontsize=16, fontweight='bold', y=0.95)
+            fig.suptitle(main_title, fontsize=16, fontweight="bold", y=0.95)
 
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
             return True
 
         except Exception as e:
-            logger.error(f"Error generating 3D tensor visualization for {tensor_name}: {e}")
+            logger.error(
+                f"Error generating 3D tensor visualization for {tensor_name}: {e}"
+            )
             plt.close()
             return False
 
-    def _generate_tensor_statistics(self, tensor: np.ndarray, tensor_name: str, tensor_type: str) -> str:
+    def _generate_tensor_statistics(
+        self, tensor: np.ndarray, tensor_name: str, tensor_type: str
+    ) -> str:
         """
         Generate statistical summary for a 3D tensor.
- 
+
         Args:
             tensor: 3D numpy array
             tensor_name: Name of the tensor
             tensor_type: Type of tensor
- 
+
         Returns:
             Formatted statistics string
         """
@@ -401,7 +457,7 @@ class MatrixVisualizer:
 Shape: {dim1}×{dim2}×{dim3} (Next×Previous×Actions)
 Mean: {mean_val:.3f}, Std: {std_val:.3f}
 Range: [{min_val:.3f}, {max_val:.3f}]
-Valid Transition Matrices: {'✓' if valid_transitions else '✗'}
+Valid Transition Matrices: {"✓" if valid_transitions else "✗"}
 Mean Transition Entropy: {mean_entropy:.3f} bits"""
         else:
             stats = f"""Tensor {tensor_name} Statistics:
@@ -411,14 +467,16 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
         return stats
 
-    def generate_pomdp_transition_analysis(self, tensor: np.ndarray, output_path: Path) -> bool:
+    def generate_pomdp_transition_analysis(
+        self, tensor: np.ndarray, output_path: Path
+    ) -> bool:
         """
         Generate specialized analysis for POMDP transition matrices.
-        
+
         Args:
             tensor: 3D numpy array representing transition matrix
             output_path: Output file path
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -432,7 +490,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             # Create comprehensive analysis figure with safe dimensions
             try:
                 # Ensure sane figure dimensions and clear any stale figures
-                plt.close('all')
+                plt.close("all")
 
                 # Use very conservative figure size to avoid dimension overflow
                 # Keep it small to prevent pixel calculation overflow
@@ -452,26 +510,32 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 ax = fig.add_subplot(3, 3, i + 1)
 
                 slice_data = tensor[:, :, i]
-                im = ax.imshow(slice_data, cmap='Blues', aspect='auto', vmin=0, vmax=1)
+                im = ax.imshow(slice_data, cmap="Blues", aspect="auto", vmin=0, vmax=1)
 
                 # Add text annotations
                 for row in range(slice_data.shape[0]):
                     for col in range(slice_data.shape[1]):
                         value = float(slice_data[row, col])
-                        ax.text(col, row, f'{value:.2f}',
-                                      ha="center", va="center",
-                                      color="white" if value < 0.5 else "black",
-                                      fontsize=10, fontweight='bold')
+                        ax.text(
+                            col,
+                            row,
+                            f"{value:.2f}",
+                            ha="center",
+                            va="center",
+                            color="white" if value < 0.5 else "black",
+                            fontsize=10,
+                            fontweight="bold",
+                        )
 
-                ax.set_title(f'Action {i} Transition Matrix', fontweight='bold')
-                ax.set_xlabel('Previous State')
-                ax.set_ylabel('Next State')
+                ax.set_title(f"Action {i} Transition Matrix", fontweight="bold")
+                ax.set_xlabel("Previous State")
+                ax.set_ylabel("Next State")
                 ax.set_xticks(range(dim2))
                 ax.set_yticks(range(dim1))
 
                 if i == 0:
                     cbar = plt.colorbar(im, ax=ax, shrink=0.8)
-                    cbar.set_label('P(s\'|s,u)', rotation=270, labelpad=15)
+                    cbar.set_label("P(s'|s,u)", rotation=270, labelpad=15)
 
             # 2. Transition entropy analysis (middle row)
             ax_entropy = fig.add_subplot(3, 3, 4)
@@ -479,23 +543,35 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             # Calculate entropy for each action
             epsilon = 1e-10
             log_probs = np.log(tensor + epsilon)
-            entropy = -np.sum(tensor * log_probs, axis=0)  # Entropy per previous-state/action pair
-            mean_entropy_per_action = np.mean(entropy, axis=0)  # Average entropy per action
+            entropy = -np.sum(
+                tensor * log_probs, axis=0
+            )  # Entropy per previous-state/action pair
+            mean_entropy_per_action = np.mean(
+                entropy, axis=0
+            )  # Average entropy per action
 
             actions = range(dim3)
-            entropy_colors = (['skyblue', 'lightcoral', 'lightgreen'] * ((dim3 // 3) + 1))[:dim3]
-            bars = ax_entropy.bar(actions, mean_entropy_per_action,
-                                color=entropy_colors,
-                                alpha=0.7)
+            entropy_colors = (
+                ["skyblue", "lightcoral", "lightgreen"] * ((dim3 // 3) + 1)
+            )[:dim3]
+            bars = ax_entropy.bar(
+                actions, mean_entropy_per_action, color=entropy_colors, alpha=0.7
+            )
 
             # Add value labels on bars
             for bar, value in zip(bars, mean_entropy_per_action):
-                ax_entropy.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                              f'{value:.3f}', ha='center', va='bottom', fontweight='bold')
+                ax_entropy.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.01,
+                    f"{value:.3f}",
+                    ha="center",
+                    va="bottom",
+                    fontweight="bold",
+                )
 
-            ax_entropy.set_title('Transition Entropy by Action', fontweight='bold')
-            ax_entropy.set_xlabel('Action')
-            ax_entropy.set_ylabel('Mean Entropy (bits)')
+            ax_entropy.set_title("Transition Entropy by Action", fontweight="bold")
+            ax_entropy.set_xlabel("Action")
+            ax_entropy.set_ylabel("Mean Entropy (bits)")
             ax_entropy.set_xticks(actions)
             ax_entropy.grid(True, alpha=0.3)
 
@@ -504,19 +580,33 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
             # Calculate determinism (max next-state probability per previous-state/action).
             max_probs = np.max(tensor, axis=0)
-            mean_determinism_per_action = np.mean(max_probs, axis=0)  # Average determinism per action
+            mean_determinism_per_action = np.mean(
+                max_probs, axis=0
+            )  # Average determinism per action
 
-            determinism_colors = (['gold', 'orange', 'red'] * ((dim3 // 3) + 1))[:dim3]
-            bars = ax_determinism.bar(actions, mean_determinism_per_action,
-                                    color=determinism_colors, alpha=0.7)
+            determinism_colors = (["gold", "orange", "red"] * ((dim3 // 3) + 1))[:dim3]
+            bars = ax_determinism.bar(
+                actions,
+                mean_determinism_per_action,
+                color=determinism_colors,
+                alpha=0.7,
+            )
 
             for bar, value in zip(bars, mean_determinism_per_action):
-                ax_determinism.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                                  f'{value:.3f}', ha='center', va='bottom', fontweight='bold')
+                ax_determinism.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.01,
+                    f"{value:.3f}",
+                    ha="center",
+                    va="bottom",
+                    fontweight="bold",
+                )
 
-            ax_determinism.set_title('Transition Determinism by Action', fontweight='bold')
-            ax_determinism.set_xlabel('Action')
-            ax_determinism.set_ylabel('Mean Max Probability')
+            ax_determinism.set_title(
+                "Transition Determinism by Action", fontweight="bold"
+            )
+            ax_determinism.set_xlabel("Action")
+            ax_determinism.set_ylabel("Mean Max Probability")
             ax_determinism.set_xticks(actions)
             ax_determinism.grid(True, alpha=0.3)
 
@@ -527,23 +617,35 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             reachability = np.sum(tensor > 0.01, axis=0)  # Count reachable next states
             mean_reachability_per_action = np.mean(reachability, axis=0)
 
-            reachability_colors = (['lightblue', 'lightgreen', 'lightyellow'] * ((dim3 // 3) + 1))[:dim3]
-            bars = ax_reachability.bar(actions, mean_reachability_per_action,
-                                     color=reachability_colors, alpha=0.7)
+            reachability_colors = (
+                ["lightblue", "lightgreen", "lightyellow"] * ((dim3 // 3) + 1)
+            )[:dim3]
+            bars = ax_reachability.bar(
+                actions,
+                mean_reachability_per_action,
+                color=reachability_colors,
+                alpha=0.7,
+            )
 
             for bar, value in zip(bars, mean_reachability_per_action):
-                ax_reachability.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.01,
-                                   f'{value:.1f}', ha='center', va='bottom', fontweight='bold')
+                ax_reachability.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.01,
+                    f"{value:.1f}",
+                    ha="center",
+                    va="bottom",
+                    fontweight="bold",
+                )
 
-            ax_reachability.set_title('State Reachability by Action', fontweight='bold')
-            ax_reachability.set_xlabel('Action')
-            ax_reachability.set_ylabel('Mean Reachable States')
+            ax_reachability.set_title("State Reachability by Action", fontweight="bold")
+            ax_reachability.set_xlabel("Action")
+            ax_reachability.set_ylabel("Mean Reachable States")
             ax_reachability.set_xticks(actions)
             ax_reachability.grid(True, alpha=0.3)
 
             # 5. Matrix validation (bottom right)
             ax_validation = fig.add_subplot(3, 3, 9)
-            ax_validation.axis('off')
+            ax_validation.axis("off")
 
             # Validation checks
             column_sums = np.sum(tensor, axis=0)
@@ -552,25 +654,42 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
             validation_text = f"""POMDP Transition Matrix Validation:
 ✓ Shape: {dim1}×{dim2}×{dim3}
-✓ Valid Transition Matrices: {'Yes' if valid_transitions else 'No'}
+✓ Valid Transition Matrices: {"Yes" if valid_transitions else "No"}
 ✓ Max Column Sum Deviation: {max_deviation:.6f}
 ✓ Probability Range: [{np.min(tensor):.3f}, {np.max(tensor):.3f}]
 ✓ Mean Entropy: {np.mean(entropy):.3f} bits
 ✓ Mean Determinism: {np.mean(max_probs):.3f}"""
 
-            ax_validation.text(0.05, 0.5, validation_text, transform=ax_validation.transAxes,
-                             fontsize=10, verticalalignment='center',
-                             bbox={'boxstyle': "round,pad=0.3", 'facecolor': "lightgreen", 'alpha': 0.8})
+            ax_validation.text(
+                0.05,
+                0.5,
+                validation_text,
+                transform=ax_validation.transAxes,
+                fontsize=10,
+                verticalalignment="center",
+                bbox={
+                    "boxstyle": "round,pad=0.3",
+                    "facecolor": "lightgreen",
+                    "alpha": 0.8,
+                },
+            )
 
             # Set main title
-            fig.suptitle('POMDP Transition Matrix Analysis', fontsize=16, fontweight='bold', y=0.95)
+            fig.suptitle(
+                "POMDP Transition Matrix Analysis",
+                fontsize=16,
+                fontweight="bold",
+                y=0.95,
+            )
 
             # Adjust layout manually instead of using tight_layout
-            fig.subplots_adjust(top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3)
+            fig.subplots_adjust(
+                top=0.92, bottom=0.08, left=0.08, right=0.95, hspace=0.4, wspace=0.3
+            )
 
             for size, kwargs in [
-                (None,   {'dpi': 96, 'bbox_inches': 'tight'}),
-                ((8, 6), {'dpi': 72}),
+                (None, {"dpi": 96, "bbox_inches": "tight"}),
+                ((8, 6), {"dpi": 72}),
                 ((6, 4), {}),
             ]:
                 try:
@@ -590,19 +709,28 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.close()
             return False
 
-    def generate_matrix_analysis(self, parameters: List[Dict] | List[List[float]], output_path: Path | None = None) -> bool:
+    def generate_matrix_analysis(
+        self,
+        parameters: List[Dict] | List[List[float]],
+        output_path: Path | None = None,
+    ) -> bool:
         """
         Generate comprehensive matrix analysis from parameters.
-        
+
         Args:
             parameters: List of parameter dictionaries from GNN
             output_path: Path where to save the analysis image
-            
+
         Returns:
             bool: True if analysis was generated successfully
         """
         # Convenience: if called with raw matrix-like and no output_path
-        if isinstance(parameters, list) and parameters and isinstance(parameters[0], list) and output_path is None:
+        if (
+            isinstance(parameters, list)
+            and parameters
+            and isinstance(parameters[0], list)
+            and output_path is None
+        ):
             # Default to project output/test_artifacts directory
             base_dir = Path.cwd() / "output" / "2_tests_output"
             base_dir.mkdir(parents=True, exist_ok=True)
@@ -616,7 +744,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         if not MATPLOTLIB_AVAILABLE or not NUMPY_AVAILABLE:
             # Create a simple text report instead
             try:
-                with open(output_path.with_suffix('.txt'), 'w') as f:
+                with open(output_path.with_suffix(".txt"), "w") as f:
                     f.write("Matrix Analysis Report\n")
                     f.write("=====================\n\n")
                     f.write("Dependencies Status:\n")
@@ -625,7 +753,9 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     f.write(f"- Seaborn: {SEABORN_AVAILABLE}\n\n")
                     f.write(f"Parameters found: {len(parameters)}\n")
                     for i, param in enumerate(parameters[:10]):  # Show first 10
-                        f.write(f"  {i+1}. {param.get('name', 'unnamed')}: {param.get('type', 'unknown')}\n")
+                        f.write(
+                            f"  {i + 1}. {param.get('name', 'unnamed')}: {param.get('type', 'unknown')}\n"
+                        )
                     if len(parameters) > 10:
                         f.write(f"  ... and {len(parameters) - 10} more\n")
                 return True
@@ -634,7 +764,13 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
         try:
             # Extract matrix data from parameters
-            matrices = self.extract_matrix_data_from_parameters(parameters) if isinstance(parameters, list) and parameters and isinstance(parameters[0], dict) else {}
+            matrices = (
+                self.extract_matrix_data_from_parameters(parameters)
+                if isinstance(parameters, list)
+                and parameters
+                and isinstance(parameters[0], dict)
+                else {}
+            )
 
             if not matrices:
                 return False
@@ -652,7 +788,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             if n_matrices == 1:
                 axes = [axes]
             elif rows == 1:
-                axes = [axes] if not hasattr(axes, '__len__') else axes
+                axes = [axes] if not hasattr(axes, "__len__") else axes
             else:
                 axes = axes.flatten()
 
@@ -667,28 +803,44 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 if matrix.ndim == 1:
                     # Vector - plot as bar chart
                     ax.bar(range(len(matrix)), matrix)
-                    ax.set_title(f'{name} (Vector)')
+                    ax.set_title(f"{name} (Vector)")
                 elif matrix.ndim == 2:
                     # Matrix - plot as heatmap
                     if SEABORN_AVAILABLE:
-                        sns.heatmap(matrix, ax=ax, cmap='viridis', annot=True if matrix.size <= 100 else False)
+                        sns.heatmap(
+                            matrix,
+                            ax=ax,
+                            cmap="viridis",
+                            annot=True if matrix.size <= 100 else False,
+                        )
                     else:
-                        im = ax.imshow(matrix, cmap='viridis', aspect='auto')
+                        im = ax.imshow(matrix, cmap="viridis", aspect="auto")
                         plt.colorbar(im, ax=ax)
-                    ax.set_title(f'{name} (Matrix {matrix.shape})')
+                    ax.set_title(f"{name} (Matrix {matrix.shape})")
                 elif matrix.ndim == 3:
                     # 3D tensor - show first slice
                     if SEABORN_AVAILABLE:
-                        sns.heatmap(matrix[0], ax=ax, cmap='viridis', annot=True if matrix[0].size <= 100 else False)
+                        sns.heatmap(
+                            matrix[0],
+                            ax=ax,
+                            cmap="viridis",
+                            annot=True if matrix[0].size <= 100 else False,
+                        )
                     else:
-                        im = ax.imshow(matrix[0], cmap='viridis', aspect='auto')
+                        im = ax.imshow(matrix[0], cmap="viridis", aspect="auto")
                         plt.colorbar(im, ax=ax)
-                    ax.set_title(f'{name} (3D Tensor {matrix.shape}, slice 0)')
+                    ax.set_title(f"{name} (3D Tensor {matrix.shape}, slice 0)")
 
                 # Add statistics text
-                stats_text = f'Mean: {np.mean(matrix):.3f}\nStd: {np.std(matrix):.3f}'
-                ax.text(0.02, 0.98, stats_text, transform=ax.transAxes,
-                       verticalalignment='top', bbox={'boxstyle': 'round', 'facecolor': 'white', 'alpha': 0.8})
+                stats_text = f"Mean: {np.mean(matrix):.3f}\nStd: {np.std(matrix):.3f}"
+                ax.text(
+                    0.02,
+                    0.98,
+                    stats_text,
+                    transform=ax.transAxes,
+                    verticalalignment="top",
+                    bbox={"boxstyle": "round", "facecolor": "white", "alpha": 0.8},
+                )
 
             # Hide unused subplots
             for i in range(n_matrices, len(axes)):
@@ -699,7 +851,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 output_path.parent.mkdir(parents=True, exist_ok=True)
             except OSError as e:
                 logger.debug("mkdir for %s: %s", output_path.parent, e)
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
             # Export CSV data for each matrix
@@ -707,14 +859,14 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             for name, matrix in matrices.items():
                 csv_success = self.export_matrix_to_csv(matrix, name, output_path)
                 if csv_success:
-                    csv_exports.append(output_path.with_suffix('.csv'))
+                    csv_exports.append(output_path.with_suffix(".csv"))
 
             return True
 
         except Exception as e:
             # Recovery: create error report
             try:
-                with open(output_path.with_suffix('.txt'), 'w') as f:
+                with open(output_path.with_suffix(".txt"), "w") as f:
                     f.write("Matrix Analysis Failed\n")
                     f.write(f"Error: {str(e)}\n")
                     f.write(f"Parameters: {len(parameters)} found\n")
@@ -722,14 +874,16 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             except Exception:
                 return False
 
-    def generate_combined_matrix_overview(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:
+    def generate_combined_matrix_overview(
+        self, matrices: Dict[str, np.ndarray], output_path: Path
+    ) -> bool:
         """
         Generate a combined overview of all matrices.
- 
+
         Args:
             matrices: Dictionary of matrix name to numpy array mappings
             output_path: Output file path
- 
+
         Returns:
             True if successful, False otherwise
         """
@@ -739,8 +893,12 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 return True
 
             # Separate 2D and 3D matrices
-            matrices_2d = {name: matrix for name, matrix in matrices.items() if matrix.ndim == 2}
-            matrices_3d = {name: matrix for name, matrix in matrices.items() if matrix.ndim == 3}
+            matrices_2d = {
+                name: matrix for name, matrix in matrices.items() if matrix.ndim == 2
+            }
+            matrices_3d = {
+                name: matrix for name, matrix in matrices.items() if matrix.ndim == 3
+            }
 
             # Calculate layout
             total_plots = len(matrices_2d) + len(matrices_3d)
@@ -750,14 +908,16 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             cols = min(3, total_plots)
             rows = (total_plots + cols - 1) // cols
 
-            fig, axes = plt.subplots(rows, cols, figsize=_safe_figsize(5*cols, 4*rows))
+            fig, axes = plt.subplots(
+                rows, cols, figsize=_safe_figsize(5 * cols, 4 * rows)
+            )
             if total_plots == 1:
                 axes = [axes]
             elif rows == 1:
                 axes = axes.reshape(1, -1)
 
             # Flatten axes for easier indexing
-            axes_flat = axes.flatten() if hasattr(axes, 'flatten') else [axes]
+            axes_flat = axes.flatten() if hasattr(axes, "flatten") else [axes]
 
             plot_idx = 0
 
@@ -769,24 +929,31 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 ax = axes_flat[plot_idx]
 
                 # Create heatmap
-                ax.imshow(matrix, cmap='viridis', aspect='auto')
+                ax.imshow(matrix, cmap="viridis", aspect="auto")
 
                 # Add title
-                ax.set_title(f'Matrix {matrix_name}', fontweight='bold')
+                ax.set_title(f"Matrix {matrix_name}", fontweight="bold")
 
                 # Add text annotations for small matrices
-                if matrix.size <= self._ANNOTATION_CELL_LIMIT:  # Only add text for reasonably sized matrices
+                if (
+                    matrix.size <= self._ANNOTATION_CELL_LIMIT
+                ):  # Only add text for reasonably sized matrices
                     for row in range(matrix.shape[0]):
                         for col in range(matrix.shape[1]):
                             value = float(matrix[row, col])
-                            ax.text(col, row, f'{value:.2f}',
-                                          ha="center", va="center",
-                                          color="white" if value < 0.5 else "black",
-                                          fontsize=8)
+                            ax.text(
+                                col,
+                                row,
+                                f"{value:.2f}",
+                                ha="center",
+                                va="center",
+                                color="white" if value < 0.5 else "black",
+                                fontsize=8,
+                            )
 
                 # Set axis labels
-                ax.set_xlabel('Column')
-                ax.set_ylabel('Row')
+                ax.set_xlabel("Column")
+                ax.set_ylabel("Row")
 
                 plot_idx += 1
 
@@ -799,24 +966,29 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
                 # Show first slice of 3D tensor
                 slice_data = matrix[:, :, 0]
-                ax.imshow(slice_data, cmap='Blues', aspect='auto')
+                ax.imshow(slice_data, cmap="Blues", aspect="auto")
 
                 # Add title
-                ax.set_title(f'Tensor {matrix_name} (Slice 0)', fontweight='bold')
+                ax.set_title(f"Tensor {matrix_name} (Slice 0)", fontweight="bold")
 
                 # Add text annotations for small matrices
                 if slice_data.size <= self._ANNOTATION_CELL_LIMIT:
                     for row in range(slice_data.shape[0]):
                         for col in range(slice_data.shape[1]):
                             value = float(slice_data[row, col])
-                            ax.text(col, row, f'{value:.2f}',
-                                          ha="center", va="center",
-                                          color="white" if value < 0.5 else "black",
-                                          fontsize=8)
+                            ax.text(
+                                col,
+                                row,
+                                f"{value:.2f}",
+                                ha="center",
+                                va="center",
+                                color="white" if value < 0.5 else "black",
+                                fontsize=8,
+                            )
 
                 # Set axis labels
-                ax.set_xlabel('Column')
-                ax.set_ylabel('Row')
+                ax.set_xlabel("Column")
+                ax.set_ylabel("Row")
 
                 plot_idx += 1
 
@@ -825,7 +997,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 axes_flat[i].set_visible(False)
 
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
             return True
 
@@ -834,14 +1006,16 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.close()
             return False
 
-    def generate_matrix_statistics(self, parameters: List[Dict], output_path: Path) -> bool:
+    def generate_matrix_statistics(
+        self, parameters: List[Dict], output_path: Path
+    ) -> bool:
         """
         Generate statistics about matrices in the model.
-        
+
         Args:
             parameters: List of parameter dictionaries
             output_path: Output file path
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -851,11 +1025,18 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             if not matrices:
                 # Render an explicit empty-data panel when no matrices are present.
                 plt.figure(figsize=(10, 6))
-                plt.text(0.5, 0.5, 'No matrix data found',
-                        ha='center', va='center', transform=plt.gca().transAxes,
-                        fontsize=16, fontweight='bold')
-                plt.title('Matrix Statistics', fontsize=16, fontweight='bold')
-                plt.savefig(output_path, dpi=300, bbox_inches='tight')
+                plt.text(
+                    0.5,
+                    0.5,
+                    "No matrix data found",
+                    ha="center",
+                    va="center",
+                    transform=plt.gca().transAxes,
+                    fontsize=16,
+                    fontweight="bold",
+                )
+                plt.title("Matrix Statistics", fontsize=16, fontweight="bold")
+                plt.savefig(output_path, dpi=300, bbox_inches="tight")
                 plt.close()
                 return True
 
@@ -863,14 +1044,14 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             matrix_stats = {}
             for matrix_name, matrix in matrices.items():
                 matrix_stats[matrix_name] = {
-                    'shape': matrix.shape,
-                    'size': matrix.size,
-                    'mean': np.mean(matrix),
-                    'std': np.std(matrix),
-                    'min': np.min(matrix),
-                    'max': np.max(matrix),
-                    'sum': np.sum(matrix),
-                    'dimensions': matrix.ndim
+                    "shape": matrix.shape,
+                    "size": matrix.size,
+                    "mean": np.mean(matrix),
+                    "std": np.std(matrix),
+                    "min": np.min(matrix),
+                    "max": np.max(matrix),
+                    "sum": np.sum(matrix),
+                    "dimensions": matrix.ndim,
                 }
 
                 # Special statistics for 3D tensors
@@ -879,57 +1060,59 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     epsilon = 1e-10
                     log_probs = np.log(matrix + epsilon)
                     entropy = -np.sum(matrix * log_probs, axis=1)
-                    matrix_stats[matrix_name]['mean_entropy'] = np.mean(entropy)
-                    matrix_stats[matrix_name]['max_entropy'] = np.max(entropy)
+                    matrix_stats[matrix_name]["mean_entropy"] = np.mean(entropy)
+                    matrix_stats[matrix_name]["max_entropy"] = np.max(entropy)
 
                     # Calculate determinism (max probability per row)
                     max_probs = np.max(matrix, axis=1)
-                    matrix_stats[matrix_name]['mean_determinism'] = np.mean(max_probs)
-                    matrix_stats[matrix_name]['min_determinism'] = np.min(max_probs)
+                    matrix_stats[matrix_name]["mean_determinism"] = np.mean(max_probs)
+                    matrix_stats[matrix_name]["min_determinism"] = np.min(max_probs)
 
             # Create statistics visualization
             fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(15, 12))
 
             # Matrix sizes
             names = list(matrix_stats.keys())
-            sizes = [stats['size'] for stats in matrix_stats.values()]
-            ax1.bar(names, sizes, color='skyblue', alpha=0.7)
-            ax1.set_title('Matrix Sizes', fontweight='bold')
-            ax1.set_ylabel('Number of Elements')
+            sizes = [stats["size"] for stats in matrix_stats.values()]
+            ax1.bar(names, sizes, color="skyblue", alpha=0.7)
+            ax1.set_title("Matrix Sizes", fontweight="bold")
+            ax1.set_ylabel("Number of Elements")
 
             # Matrix means
-            means = [stats['mean'] for stats in matrix_stats.values()]
-            ax2.bar(names, means, color='lightcoral', alpha=0.7)
-            ax2.set_title('Matrix Means', fontweight='bold')
-            ax2.set_ylabel('Mean Value')
+            means = [stats["mean"] for stats in matrix_stats.values()]
+            ax2.bar(names, means, color="lightcoral", alpha=0.7)
+            ax2.set_title("Matrix Means", fontweight="bold")
+            ax2.set_ylabel("Mean Value")
 
             # Matrix ranges (min to max)
-            mins = [stats['min'] for stats in matrix_stats.values()]
-            maxs = [stats['max'] for stats in matrix_stats.values()]
-            ax3.bar(names, maxs, color='lightgreen', alpha=0.7, label='Max')
-            ax3.bar(names, mins, color='lightyellow', alpha=0.7, label='Min')
-            ax3.set_title('Matrix Value Ranges', fontweight='bold')
-            ax3.set_ylabel('Value')
+            mins = [stats["min"] for stats in matrix_stats.values()]
+            maxs = [stats["max"] for stats in matrix_stats.values()]
+            ax3.bar(names, maxs, color="lightgreen", alpha=0.7, label="Max")
+            ax3.bar(names, mins, color="lightyellow", alpha=0.7, label="Min")
+            ax3.set_title("Matrix Value Ranges", fontweight="bold")
+            ax3.set_ylabel("Value")
             ax3.legend()
 
             # Matrix shapes and dimensions
-            shapes = [str(stats['shape']) for stats in matrix_stats.values()]
-            dimensions = [stats['dimensions'] for stats in matrix_stats.values()]
+            shapes = [str(stats["shape"]) for stats in matrix_stats.values()]
+            dimensions = [stats["dimensions"] for stats in matrix_stats.values()]
 
             # Color by dimension
-            colors = ['lightsteelblue' if dim == 2 else 'gold' if dim == 3 else 'lightpink'
-                     for dim in dimensions]
+            colors = [
+                "lightsteelblue" if dim == 2 else "gold" if dim == 3 else "lightpink"
+                for dim in dimensions
+            ]
 
-            ax4.bar(names, [1]*len(names), color=colors, alpha=0.7)
-            ax4.set_title('Matrix Shapes and Dimensions', fontweight='bold')
-            ax4.set_ylabel('Count')
+            ax4.bar(names, [1] * len(names), color=colors, alpha=0.7)
+            ax4.set_title("Matrix Shapes and Dimensions", fontweight="bold")
+            ax4.set_ylabel("Count")
 
             # Add shape labels
             for i, shape in enumerate(shapes):
-                ax4.text(i, 0.5, shape, ha='center', va='center', fontweight='bold')
+                ax4.text(i, 0.5, shape, ha="center", va="center", fontweight="bold")
 
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
             return True
 
@@ -941,11 +1124,11 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
     def visualize_directory(self, input_dir: Path, output_dir: Path) -> List[str]:
         """
         Visualize matrices from all GNN files in a directory.
-        
+
         Args:
             input_dir: Input directory containing GNN files
             output_dir: Output directory for visualizations
-            
+
         Returns:
             List of generated visualization file paths
         """
@@ -965,30 +1148,34 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     file_output_dir.mkdir(parents=True, exist_ok=True)
 
                     # Read and parse the GNN file
-                    with open(gnn_file, 'r', encoding='utf-8') as f:
+                    with open(gnn_file, "r", encoding="utf-8") as f:
                         content = f.read()
 
                     # Parse GNN content to extract parameters
                     parsed_data = self._parse_gnn_content_for_parameters(content)
 
-                    if parsed_data.get('parameters'):
+                    if parsed_data.get("parameters"):
                         # Generate matrix visualizations for this file
                         file_visualizations = self.generate_matrix_analysis(
-                            parsed_data['parameters'],
-                            file_output_dir / "matrix_analysis.png"
+                            parsed_data["parameters"],
+                            file_output_dir / "matrix_analysis.png",
                         )
 
                         if file_visualizations:
-                            generated_files.append(str(file_output_dir / "matrix_analysis.png"))
+                            generated_files.append(
+                                str(file_output_dir / "matrix_analysis.png")
+                            )
 
                         # Generate matrix statistics
                         stats_visualizations = self.generate_matrix_statistics(
-                            parsed_data['parameters'],
-                            file_output_dir / "matrix_statistics.png"
+                            parsed_data["parameters"],
+                            file_output_dir / "matrix_statistics.png",
                         )
 
                         if stats_visualizations:
-                            generated_files.append(str(file_output_dir / "matrix_statistics.png"))
+                            generated_files.append(
+                                str(file_output_dir / "matrix_statistics.png")
+                            )
 
                 except Exception as e:
                     logger.error(f"Error processing {gnn_file}: {e}")
@@ -1003,26 +1190,26 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
     def _parse_gnn_content_for_parameters(self, content: str) -> Dict[str, Any]:
         """
         Parse GNN content to extract parameters for matrix visualization.
-        
+
         Args:
             content: GNN file content
-            
+
         Returns:
             Dictionary with parsed parameters
         """
         import re
 
-        parsed_data = {
-            "parameters": []
-        }
+        parsed_data = {"parameters": []}
 
         # Extract initial parameterization section
-        init_match = re.search(r'## InitialParameterization\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+        init_match = re.search(
+            r"## InitialParameterization\n(.*?)(?=\n##|\Z)", content, re.DOTALL
+        )
         if init_match:
             init_content = init_match.group(1)
 
             # Parse matrix definitions
-            matrix_pattern = r'([A-Z])\s*=\s*\{([^}]+)\}'
+            matrix_pattern = r"([A-Z])\s*=\s*\{([^}]+)\}"
             for match in re.finditer(matrix_pattern, init_content):
                 matrix_name = match.group(1)
                 matrix_data = match.group(2)
@@ -1030,17 +1217,20 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 try:
                     # Convert matrix data to list format
                     matrix_list = self._parse_matrix_string(matrix_data)
-                    parsed_data["parameters"].append({
-                        "name": matrix_name,
-                        "value": matrix_list
-                    })
+                    parsed_data["parameters"].append(
+                        {"name": matrix_name, "value": matrix_list}
+                    )
                 except Exception as e:
-                    logger.debug(f"Skipping matrix {matrix_name} due to parse error: {e}")
+                    logger.debug(
+                        f"Skipping matrix {matrix_name} due to parse error: {e}"
+                    )
                     continue
 
         return parsed_data
 
-    def generate_single_matrix_heatmap(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+    def generate_single_matrix_heatmap(
+        self, matrix_data: np.ndarray, matrix_name: str, output_path: Path
+    ) -> bool:
         """
         Generate a single matrix heatmap with enhanced styling.
 
@@ -1062,26 +1252,36 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             display_matrix = self._sample_matrix_for_display(matrix_data)
 
             if SEABORN_AVAILABLE and display_matrix.size <= 100:
-                sns.heatmap(display_matrix, annot=True, cmap='viridis', fmt='.2f',
-                          cbar_kws={'shrink': 0.8}, square=True)
+                sns.heatmap(
+                    display_matrix,
+                    annot=True,
+                    cmap="viridis",
+                    fmt=".2f",
+                    cbar_kws={"shrink": 0.8},
+                    square=True,
+                )
             else:
-                im = plt.imshow(display_matrix, cmap='viridis', aspect='auto')
+                im = plt.imshow(display_matrix, cmap="viridis", aspect="auto")
                 plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
 
-            plt.title(f'Matrix: {matrix_name}', fontsize=14, fontweight='bold')
-            plt.xlabel('Columns', fontsize=12)
-            plt.ylabel('Rows', fontsize=12)
+            plt.title(f"Matrix: {matrix_name}", fontsize=14, fontweight="bold")
+            plt.xlabel("Columns", fontsize=12)
+            plt.ylabel("Rows", fontsize=12)
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
             return True
 
         except Exception as e:
-            logger.error(f"Error generating single matrix heatmap for {matrix_name}: {e}")
+            logger.error(
+                f"Error generating single matrix heatmap for {matrix_name}: {e}"
+            )
             return False
 
-    def generate_matrix_correlation_plot(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+    def generate_matrix_correlation_plot(
+        self, matrix_data: np.ndarray, matrix_name: str, output_path: Path
+    ) -> bool:
         """
         Generate correlation matrix visualization.
 
@@ -1099,8 +1299,10 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         try:
             # Calculate correlation matrix (suppress warnings from constant columns)
             if matrix_data.shape[0] > 1 and matrix_data.shape[1] > 1:
-                with np.errstate(divide='ignore', invalid='ignore'):
-                    corr_matrix = np.corrcoef(matrix_data.T)  # Transpose for proper correlation
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    corr_matrix = np.corrcoef(
+                        matrix_data.T
+                    )  # Transpose for proper correlation
                 corr_matrix = np.nan_to_num(corr_matrix, nan=0.0)
             else:
                 corr_matrix = matrix_data
@@ -1108,17 +1310,26 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.figure(figsize=(10, 8))
 
             if SEABORN_AVAILABLE and corr_matrix.size <= 100:
-                sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', fmt='.2f',
-                          cbar_kws={'shrink': 0.8}, square=True, center=0)
+                sns.heatmap(
+                    corr_matrix,
+                    annot=True,
+                    cmap="coolwarm",
+                    fmt=".2f",
+                    cbar_kws={"shrink": 0.8},
+                    square=True,
+                    center=0,
+                )
             else:
-                im = plt.imshow(corr_matrix, cmap='coolwarm', aspect='auto')
+                im = plt.imshow(corr_matrix, cmap="coolwarm", aspect="auto")
                 plt.colorbar(im, fraction=0.046, pad=0.04, shrink=0.8)
 
-            plt.title(f'Correlation Matrix: {matrix_name}', fontsize=14, fontweight='bold')
-            plt.xlabel('Variables', fontsize=12)
-            plt.ylabel('Variables', fontsize=12)
+            plt.title(
+                f"Correlation Matrix: {matrix_name}", fontsize=14, fontweight="bold"
+            )
+            plt.xlabel("Variables", fontsize=12)
+            plt.ylabel("Variables", fontsize=12)
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
             return True
@@ -1127,7 +1338,9 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             logger.error(f"Error generating correlation plot for {matrix_name}: {e}")
             return False
 
-    def generate_matrix_histogram(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
+    def generate_matrix_histogram(
+        self, matrix_data: np.ndarray, matrix_name: str, output_path: Path
+    ) -> bool:
         """
         Generate histogram of matrix values.
 
@@ -1147,13 +1360,15 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             flat_data = matrix_data.flatten()
 
             plt.figure(figsize=(10, 6))
-            plt.hist(flat_data, bins=50, alpha=0.7, edgecolor='black', density=True)
-            plt.title(f'Value Distribution: {matrix_name}', fontsize=14, fontweight='bold')
-            plt.xlabel('Value', fontsize=12)
-            plt.ylabel('Density', fontsize=12)
+            plt.hist(flat_data, bins=50, alpha=0.7, edgecolor="black", density=True)
+            plt.title(
+                f"Value Distribution: {matrix_name}", fontsize=14, fontweight="bold"
+            )
+            plt.xlabel("Value", fontsize=12)
+            plt.ylabel("Density", fontsize=12)
             plt.grid(True, alpha=0.3)
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
             return True
@@ -1162,7 +1377,9 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             logger.error(f"Error generating histogram for {matrix_name}: {e}")
             return False
 
-    def generate_matrix_composed_view(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:
+    def generate_matrix_composed_view(
+        self, matrices: Dict[str, np.ndarray], output_path: Path
+    ) -> bool:
         """
         Generate a composed view of multiple matrices.
 
@@ -1185,7 +1402,9 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             cols = min(3, num_matrices)
             rows = (num_matrices + cols - 1) // cols
 
-            fig, axes = plt.subplots(rows, cols, figsize=_safe_figsize(5*cols, 4*rows))
+            fig, axes = plt.subplots(
+                rows, cols, figsize=_safe_figsize(5 * cols, 4 * rows)
+            )
 
             if rows == 1 and cols == 1:
                 axes = [axes]
@@ -1204,19 +1423,23 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 display_matrix = self._sample_matrix_for_display(matrix)
 
                 if SEABORN_AVAILABLE and display_matrix.size <= 100:
-                    sns.heatmap(display_matrix, ax=ax, cmap='viridis', cbar=False, square=True)
+                    sns.heatmap(
+                        display_matrix, ax=ax, cmap="viridis", cbar=False, square=True
+                    )
                 else:
-                    ax.imshow(display_matrix, cmap='viridis', aspect='auto')
+                    ax.imshow(display_matrix, cmap="viridis", aspect="auto")
 
-                ax.set_title(f'{name}\n({matrix.shape[0]}×{matrix.shape[1]})', fontsize=10)
+                ax.set_title(
+                    f"{name}\n({matrix.shape[0]}×{matrix.shape[1]})", fontsize=10
+                )
 
             # Hide unused subplots
             for i in range(num_matrices, len(axes)):
                 axes[i].set_visible(False)
 
-            plt.suptitle('Matrix Overview', fontsize=16, fontweight='bold')
+            plt.suptitle("Matrix Overview", fontsize=16, fontweight="bold")
             safe_tight_layout()
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
             return True
@@ -1225,7 +1448,9 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             logger.error(f"Error generating composed matrix view: {e}")
             return False
 
-    def _sample_matrix_for_display(self, matrix: np.ndarray, max_size: int = 20) -> np.ndarray:
+    def _sample_matrix_for_display(
+        self, matrix: np.ndarray, max_size: int = 20
+    ) -> np.ndarray:
         """
         Sample a matrix for display purposes to avoid performance issues with large matrices.
 
@@ -1247,7 +1472,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         elif len(matrix.shape) == 3:
             # For 3D tensors, sample each dimension
             steps = [max(1, dim // max_size) for dim in matrix.shape]
-            return matrix[::steps[0], ::steps[1], ::steps[2]]
+            return matrix[:: steps[0], :: steps[1], :: steps[2]]
 
         return matrix
 
@@ -1258,38 +1483,41 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
     def _parse_matrix_string(self, matrix_str: str) -> List[List[float]]:
         """
         Parse matrix string into list format.
-        
+
         Args:
             matrix_str: Matrix data as string
-            
+
         Returns:
             List representation of matrix
         """
         import re
 
         # Remove extra whitespace and newlines
-        matrix_str = re.sub(r'\s+', ' ', matrix_str.strip())
+        matrix_str = re.sub(r"\s+", " ", matrix_str.strip())
 
         # Parse nested tuples
-        matrix_str = matrix_str.replace('(', '[').replace(')', ']')
+        matrix_str = matrix_str.replace("(", "[").replace(")", "]")
 
         # Convert to Python list structure
-        matrix_str = matrix_str.replace('[', '[').replace(']', ']')
+        matrix_str = matrix_str.replace("[", "[").replace("]", "]")
 
         # Evaluate as Python expression
         matrix_data = ast.literal_eval(matrix_str)
 
         return matrix_data
 
-def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
+
+def generate_matrix_visualizations(
+    parsed_data: Dict[str, Any], output_dir: Path, model_name: str
+) -> List[str]:
     """
     Generate matrix visualizations for a parsed GNN model.
-    
+
     Args:
         parsed_data: Parsed GNN model data
         output_dir: Output directory for visualizations
         model_name: Name of the model
-        
+
     Returns:
         List of generated visualization file paths
     """
@@ -1301,7 +1529,7 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
     model_output_dir.mkdir(parents=True, exist_ok=True)
 
     # Extract parameters from parsed data
-    parameters = parsed_data.get('parameters', [])
+    parameters = parsed_data.get("parameters", [])
 
     # Generate matrix analysis
     matrix_analysis_path = model_output_dir / "matrix_analysis.png"
@@ -1315,26 +1543,30 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
 
     # Generate specialized POMDP transition analysis if B matrix is present
     matrices = visualizer.extract_matrix_data_from_parameters(parameters)
-    if 'B' in matrices and matrices['B'].ndim == 3:
+    if "B" in matrices and matrices["B"].ndim == 3:
         pomdp_analysis_path = model_output_dir / "pomdp_transition_analysis.png"
-        if visualizer.generate_pomdp_transition_analysis(matrices['B'], pomdp_analysis_path):
+        if visualizer.generate_pomdp_transition_analysis(
+            matrices["B"], pomdp_analysis_path
+        ):
             generated_files.append(str(pomdp_analysis_path))
 
     return generated_files
 
 
-def process_matrix_visualization(parameters: List[Dict], output_path: Path, **kwargs) -> bool:
+def process_matrix_visualization(
+    parameters: List[Dict], output_path: Path, **kwargs
+) -> bool:
     """
     Process matrix visualization using the MatrixVisualizer class.
-    
+
     This function provides a standalone interface for matrix visualization
     that can be called from other modules.
-    
+
     Args:
         parameters: List of parameter dictionaries from GNN
         output_path: Path where to save the visualization
         **kwargs: Additional keyword arguments
-        
+
     Returns:
         bool: True if visualization was successful
     """

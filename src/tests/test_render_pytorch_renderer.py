@@ -42,17 +42,23 @@ def test_pytorch_renderer_generates_compilable_script_with_timestep(tmp_path) ->
 def test_render_success_policy_can_be_strict_about_framework_failures() -> None:
     from render.processor import _render_succeeded
 
-    assert _render_succeeded(
-        success_count=1,
-        total_files=1,
-        total_framework_successes=1,
-        total_framework_attempts=2,
-        strict_framework_success=False,
-    ) is True
-    assert _render_succeeded(
-        success_count=1,
-        total_files=1,
-        total_framework_successes=1,
-        total_framework_attempts=2,
-        strict_framework_success=True,
-    ) is False
+    assert (
+        _render_succeeded(
+            success_count=1,
+            total_files=1,
+            total_framework_successes=1,
+            total_framework_attempts=2,
+            strict_framework_success=False,
+        )
+        is True
+    )
+    assert (
+        _render_succeeded(
+            success_count=1,
+            total_files=1,
+            total_framework_successes=1,
+            total_framework_attempts=2,
+            strict_framework_success=True,
+        )
+        is False
+    )

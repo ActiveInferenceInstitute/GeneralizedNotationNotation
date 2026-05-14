@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 def _require_mcp_sdk() -> None:
     """Initialize MCP; raise if SDK not available (required, no skip)."""
     from mcp import initialize
+
     initialize()
 
 
@@ -86,7 +87,7 @@ class TestMCPToolExecutionPerformance:
         start = time.time()
         mcp = get_mcp_instance()
         # Get loaded modules from the MCP instance
-        modules = mcp.modules if hasattr(mcp, 'modules') else {}
+        modules = mcp.modules if hasattr(mcp, "modules") else {}
         elapsed = time.time() - start
 
         # Discovery should be fast
@@ -212,7 +213,9 @@ class TestMCPBenchmarks:
         max_time = max(times)
 
         # Record benchmark results
-        print(f"\nMCP Init Benchmark: avg={avg:.3f}s, min={min_time:.3f}s, max={max_time:.3f}s")
+        print(
+            f"\nMCP Init Benchmark: avg={avg:.3f}s, min={min_time:.3f}s, max={max_time:.3f}s"
+        )
 
         # Should complete within reasonable time
         assert avg < 3.0

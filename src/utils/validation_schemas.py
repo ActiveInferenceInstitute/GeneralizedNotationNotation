@@ -51,10 +51,12 @@ FRAMEWORK_PRESETS = {
 }
 
 
-def validate_model_data(data: Optional[Dict[str, Any]],
-                        *,
-                        required_keys: Iterable[str] = ("model_name",),
-                        context: str = "") -> Dict[str, Any]:
+def validate_model_data(
+    data: Optional[Dict[str, Any]],
+    *,
+    required_keys: Iterable[str] = ("model_name",),
+    context: str = "",
+) -> Dict[str, Any]:
     """Validate a ``model_data`` mapping passed to a code generator or processor.
 
     Raises ``ValueError`` when ``data`` is None, not a mapping, or missing any key
@@ -65,17 +67,18 @@ def validate_model_data(data: Optional[Dict[str, Any]],
     if data is None:
         raise ValueError(f"{prefix}model_data is None")
     if not isinstance(data, dict):
-        raise ValueError(f"{prefix}model_data must be a dict, got {type(data).__name__}")
+        raise ValueError(
+            f"{prefix}model_data must be a dict, got {type(data).__name__}"
+        )
     missing = [k for k in required_keys if k not in data]
     if missing:
         raise ValueError(f"{prefix}model_data missing required keys: {missing}")
     return data
 
 
-def validate_target_dir(path: Any,
-                        *,
-                        must_exist: bool = True,
-                        context: str = "") -> Path:
+def validate_target_dir(
+    path: Any, *, must_exist: bool = True, context: str = ""
+) -> Path:
     """Validate a target-directory argument.
 
     Accepts str or Path; coerces to Path. When ``must_exist`` is True (default),
@@ -108,7 +111,9 @@ def validate_frameworks_arg(arg: Any, *, context: str = "") -> str:
     if arg is None or arg == "":
         return "all"
     if not isinstance(arg, str):
-        raise ValueError(f"{prefix}frameworks must be a string, got {type(arg).__name__}")
+        raise ValueError(
+            f"{prefix}frameworks must be a string, got {type(arg).__name__}"
+        )
     normalized = arg.strip().lower()
     if normalized in FRAMEWORK_PRESETS:
         return normalized

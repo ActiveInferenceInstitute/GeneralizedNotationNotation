@@ -36,6 +36,7 @@ class JAXRenderer:
 
     def render(self, spec) -> str:
         from .jax.jax_renderer import render_gnn_to_jax
+
         result = render_gnn_to_jax(spec)
         return result if isinstance(result, str) else str(result)
 
@@ -46,7 +47,15 @@ def get_supported_frameworks():
     Returns:
         List of framework names that can be used for rendering.
     """
-    return ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy', 'pytorch', 'numpyro']
+    return [
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+    ]
 
 
 def validate_render(result, framework=None):
@@ -71,37 +80,32 @@ def validate_render(result, framework=None):
 
 __all__ = [
     # Core functions
-    'process_render',
-    'render_gnn_spec',
-    'get_module_info',
-    'get_available_renderers',
-
+    "process_render",
+    "render_gnn_spec",
+    "get_module_info",
+    "get_available_renderers",
     # Generator functions
-    'generate_pymdp_code',
-    'generate_rxinfer_code',
-    'generate_activeinference_jl_code',
-    'generate_discopy_code',
-
+    "generate_pymdp_code",
+    "generate_rxinfer_code",
+    "generate_activeinference_jl_code",
+    "generate_discopy_code",
     # Specific renderer functions
-    'render_gnn_to_pymdp',
-    'render_gnn_to_rxinfer',
-    'render_gnn_to_rxinfer_toml',
-    'render_gnn_to_discopy',
-    'render_gnn_to_activeinference_jl',
-    'render_gnn_to_pytorch',
-    'render_gnn_to_numpyro',
-
+    "render_gnn_to_pymdp",
+    "render_gnn_to_rxinfer",
+    "render_gnn_to_rxinfer_toml",
+    "render_gnn_to_discopy",
+    "render_gnn_to_activeinference_jl",
+    "render_gnn_to_pytorch",
+    "render_gnn_to_numpyro",
     # Renderer classes
-    'PyMDPRenderer',
-    'JAXRenderer',
-
+    "PyMDPRenderer",
+    "JAXRenderer",
     # POMDP processing
-    'POMDPRenderProcessor',
-    'process_pomdp_for_frameworks',
-
+    "POMDPRenderProcessor",
+    "process_pomdp_for_frameworks",
     # Utility functions
-    'get_supported_frameworks',
-    'validate_render',
+    "get_supported_frameworks",
+    "validate_render",
 ]
 
 
@@ -119,7 +123,7 @@ FEATURES = {
     "state_space_extraction": True,
     "modular_injection": True,
     "framework_specific_outputs": True,
-    "structured_documentation": True
+    "structured_documentation": True,
 }
 
 from .render import main  # expose CLI entry as attribute for tests

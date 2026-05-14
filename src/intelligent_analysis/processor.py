@@ -16,7 +16,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Tuple
 
-from src.pipeline.context import StepStatus  # single authoritative definition
+from pipeline.context import StepStatus  # single authoritative definition
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 # Constrained type for step flag severity.
@@ -26,6 +26,7 @@ FlagType = Literal["none", "yellow", "red", "green"]
 @dataclass
 class StepAnalysis:
     """Detailed analysis of a single pipeline step."""
+
     step_number: int
     script_name: str
     description: str
@@ -57,7 +58,7 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
         "failures": [],
         "warnings": [],
         "performance_metrics": {},
-        "health_score": 0.0
+        "health_score": 0.0,
     }
 
     steps = summary_data.get("steps", [])
@@ -66,24 +67,32 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
     # Extract failures
     for step in steps:
         if step.get("status") == "FAILED":
-            analysis["failures"].append({
-                "step": step.get("script_name"),
-                "error": step.get("stderr", "")[-1000:] if step.get("stderr") else "No error captured",
-                "duration": step.get("duration_seconds", 0),
-                "exit_code": step.get("exit_code", -1)
-            })
+            analysis["failures"].append(
+                {
+                    "step": step.get("script_name"),
+                    "error": step.get("stderr", "")[-1000:]
+                    if step.get("stderr")
+                    else "No error captured",
+                    "duration": step.get("duration_seconds", 0),
+                    "exit_code": step.get("exit_code", -1),
+                }
+            )
         elif "WARNING" in step.get("status", ""):
-            analysis["warnings"].append({
-                "step": step.get("script_name"),
-                "message": step.get("stdout", "")[-500:] if step.get("stdout") else "No output captured"
-            })
+            analysis["warnings"].append(
+                {
+                    "step": step.get("script_name"),
+                    "message": step.get("stdout", "")[-500:]
+                    if step.get("stdout")
+                    else "No output captured",
+                }
+            )
 
     # Calculate performance metrics
     analysis["performance_metrics"] = {
         "peak_memory_mb": performance.get("peak_memory_mb", 0),
         "successful_steps": performance.get("successful_steps", 0),
         "failed_steps": performance.get("failed_steps", 0),
-        "warning_count": performance.get("warnings", 0)
+        "warning_count": performance.get("warnings", 0),
     }
 
     # Calculate health score (0-100)
@@ -91,12 +100,16 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
     if total_steps > 0:
         success_ratio = (total_steps - len(analysis["failures"])) / total_steps
         warning_penalty = min(len(analysis["warnings"]) * 0.05, 0.2)
-        analysis["health_score"] = max(0, min(100, (success_ratio - warning_penalty) * 100))
+        analysis["health_score"] = max(
+            0, min(100, (success_ratio - warning_penalty) * 100)
+        )
 
     return analysis
 
 
-def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAnalysis], Dict[str, List[StepAnalysis]]]:
+def analyze_individual_steps(
+    summary_data: Dict[str, Any],
+) -> Tuple[List[StepAnalysis], Dict[str, List[StepAnalysis]]]:
     """
     Perform detailed analysis of each pipeline step.
 
@@ -110,7 +123,9 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
     step_analyses = []
 
     # Calculate averages for comparison
-    durations = [s.get("duration_seconds", 0) for s in steps if s.get("duration_seconds")]
+    durations = [
+        s.get("duration_seconds", 0) for s in steps if s.get("duration_seconds")
+    ]
     avg_duration = sum(durations) / len(durations) if durations else 0
 
     memories = [s.get("peak_memory_mb", 0) for s in steps if s.get("peak_memory_mb")]
@@ -143,7 +158,9 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
 
         # Performance flags
         if duration > VERY_SLOW_THRESHOLD:
-            flags.append(f"Very slow: {duration:.1f}s (>{VERY_SLOW_THRESHOLD}s threshold)")
+            flags.append(
+                f"Very slow: {duration:.1f}s (>{VERY_SLOW_THRESHOLD}s threshold)"
+            )
             if flag_type != "red":
                 flag_type = "yellow"
         elif duration > SLOW_THRESHOLD:
@@ -151,19 +168,25 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
             if flag_type != "red":
                 flag_type = "yellow"
         elif avg_duration > 0 and duration > avg_duration * 3:
-            flags.append(f"Significantly above average: {duration:.1f}s ({duration/avg_duration:.1f}x avg)")
+            flags.append(
+                f"Significantly above average: {duration:.1f}s ({duration / avg_duration:.1f}x avg)"
+            )
             if flag_type != "red":
                 flag_type = "yellow"
 
         # Memory flags (absolute thresholds + relative to average)
         if avg_memory > 0 and memory > avg_memory * AVG_MEMORY_MULTIPLIER:
-            flags.append(f"Memory above average: {memory:.0f}MB ({memory/avg_memory:.1f}x avg)")
+            flags.append(
+                f"Memory above average: {memory:.0f}MB ({memory / avg_memory:.1f}x avg)"
+            )
             if flag_type not in ("red", "yellow"):
                 flag_type = "yellow"
 
         # Memory absolute flags
         if memory > CRITICAL_MEMORY_THRESHOLD:
-            flags.append(f"Critical memory: {memory:.0f}MB (>{CRITICAL_MEMORY_THRESHOLD}MB)")
+            flags.append(
+                f"Critical memory: {memory:.0f}MB (>{CRITICAL_MEMORY_THRESHOLD}MB)"
+            )
             if flag_type != "red":
                 flag_type = "yellow"
         elif memory > HIGH_MEMORY_THRESHOLD:
@@ -221,7 +244,7 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
             flag_type=flag_type,
             summary=summary,
             stdout_snippet=stdout_snippet,
-            stderr_snippet=stderr_snippet
+            stderr_snippet=stderr_snippet,
         )
 
         step_analyses.append(step_analysis)
@@ -237,15 +260,25 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
     return step_analyses, flags_by_type
 
 
-def _extract_meaningful_snippet(output: str, max_lines: int = 5, max_chars: int = 500) -> str:
+def _extract_meaningful_snippet(
+    output: str, max_lines: int = 5, max_chars: int = 500
+) -> str:
     """Extract meaningful snippet from step output."""
     if not output:
         return ""
 
-    lines = output.strip().split('\n')
+    lines = output.strip().split("\n")
 
     # Look for important patterns
-    important_patterns = ['ERROR', 'WARN', 'FAIL', 'SUCCESS', 'Generated', 'Processed', 'Completed']
+    important_patterns = [
+        "ERROR",
+        "WARN",
+        "FAIL",
+        "SUCCESS",
+        "Generated",
+        "Processed",
+        "Completed",
+    ]
     important_lines = []
 
     for line in lines:
@@ -253,15 +286,17 @@ def _extract_meaningful_snippet(output: str, max_lines: int = 5, max_chars: int 
             important_lines.append(line.strip())
 
     if important_lines:
-        snippet = '\n'.join(important_lines[:max_lines])
+        snippet = "\n".join(important_lines[:max_lines])
     else:
         # Take last few lines if no important patterns found
-        snippet = '\n'.join(lines[-max_lines:])
+        snippet = "\n".join(lines[-max_lines:])
 
     return snippet[:max_chars]
 
 
-def identify_bottlenecks(summary_data: Dict[str, Any], threshold_seconds: float = 60.0) -> List[Dict[str, Any]]:
+def identify_bottlenecks(
+    summary_data: Dict[str, Any], threshold_seconds: float = 60.0
+) -> List[Dict[str, Any]]:
     """
     Identify performance bottlenecks in pipeline execution.
 
@@ -276,19 +311,25 @@ def identify_bottlenecks(summary_data: Dict[str, Any], threshold_seconds: float 
     steps = summary_data.get("steps", [])
 
     # Calculate average duration
-    durations = [s.get("duration_seconds", 0) for s in steps if s.get("duration_seconds")]
+    durations = [
+        s.get("duration_seconds", 0) for s in steps if s.get("duration_seconds")
+    ]
     avg_duration = sum(durations) / len(durations) if durations else 0
 
     for step in steps:
         duration = step.get("duration_seconds", 0)
         if duration > threshold_seconds or duration > avg_duration * 2:
-            bottlenecks.append({
-                "step": step.get("script_name"),
-                "duration_seconds": duration,
-                "threshold_exceeded": duration > threshold_seconds,
-                "above_average_ratio": duration / avg_duration if avg_duration > 0 else 0,
-                "memory_mb": step.get("peak_memory_mb", 0)
-            })
+            bottlenecks.append(
+                {
+                    "step": step.get("script_name"),
+                    "duration_seconds": duration,
+                    "threshold_exceeded": duration > threshold_seconds,
+                    "above_average_ratio": duration / avg_duration
+                    if avg_duration > 0
+                    else 0,
+                    "memory_mb": step.get("peak_memory_mb", 0),
+                }
+            )
 
     # Sort by duration descending
     bottlenecks.sort(key=lambda x: x["duration_seconds"], reverse=True)
@@ -318,23 +359,35 @@ def extract_failure_context(summary_data: Dict[str, Any]) -> List[Dict[str, Any]
                 "step_name": step.get("script_name"),
                 "description": step.get("description"),
                 "exit_code": step.get("exit_code", -1),
-                "error_output": step.get("stderr", "")[-2000:] if step.get("stderr") else None,
-                "stdout_tail": step.get("stdout", "")[-1000:] if step.get("stdout") else None,
+                "error_output": step.get("stderr", "")[-2000:]
+                if step.get("stderr")
+                else None,
+                "stdout_tail": step.get("stdout", "")[-1000:]
+                if step.get("stdout")
+                else None,
                 "duration": step.get("duration_seconds"),
                 "memory_at_failure": step.get("peak_memory_mb"),
                 "preceding_step": {
-                    "name": preceding_step.get("script_name") if preceding_step else None,
-                    "status": preceding_step.get("status") if preceding_step else None
-                } if preceding_step else None,
+                    "name": preceding_step.get("script_name")
+                    if preceding_step
+                    else None,
+                    "status": preceding_step.get("status") if preceding_step else None,
+                }
+                if preceding_step
+                else None,
                 "dependency_warnings": step.get("dependency_warnings", []),
-                "prerequisite_check_passed": step.get("prerequisite_check", True)
+                "prerequisite_check_passed": step.get("prerequisite_check", True),
             }
             failures.append(failure_context)
 
     return failures
 
 
-def generate_recommendations(analysis: Dict[str, Any], bottlenecks: List[Dict[str, Any]], flags_by_type: Dict[str, List]) -> List[str]:
+def generate_recommendations(
+    analysis: Dict[str, Any],
+    bottlenecks: List[Dict[str, Any]],
+    flags_by_type: Dict[str, List],
+) -> List[str]:
     """
     Generate actionable recommendations based on analysis.
 
@@ -437,6 +490,7 @@ async def _run_llm_analysis(
     try:
         from llm.llm_processor import initialize_global_processor
         from llm.providers.base_provider import LLMMessage
+
         processor = await initialize_global_processor()
     except Exception as e:
         logger.warning(f"Failed to initialize LLM processor: {e}")
@@ -446,14 +500,26 @@ async def _run_llm_analysis(
         return _generate_rule_based_summary(context, step_analyses, flags_by_type)
 
     # Construct comprehensive prompt
-    status_emoji = "✅" if context['overall_status'] == "SUCCESS" else "❌" if context['overall_status'] == "FAILED" else "⚠️"
-    duration = context.get('total_duration', 0)
-    peak_memory = context.get('performance_metrics', {}).get('peak_memory_mb', 0)
+    status_emoji = (
+        "✅"
+        if context["overall_status"] == "SUCCESS"
+        else "❌"
+        if context["overall_status"] == "FAILED"
+        else "⚠️"
+    )
+    duration = context.get("total_duration", 0)
+    peak_memory = context.get("performance_metrics", {}).get("peak_memory_mb", 0)
 
     # Build step summaries for LLM
     step_summaries = []
     for sa in step_analyses:
-        flag_indicator = "🔴" if sa.flag_type == "red" else "🟡" if sa.flag_type == "yellow" else "✅"
+        flag_indicator = (
+            "🔴"
+            if sa.flag_type == "red"
+            else "🟡"
+            if sa.flag_type == "yellow"
+            else "✅"
+        )
         step_summaries.append(
             f"{flag_indicator} **{sa.script_name}** ({sa.description}): {sa.summary}"
             + (f" | Flags: {', '.join(sa.flags)}" if sa.flags else "")
@@ -465,10 +531,10 @@ async def _run_llm_analysis(
     prompt = f"""You are an expert DevOps analyst reviewing a pipeline execution report. Provide a comprehensive but concise analysis.
 
 ## Pipeline Overview
-- **Status**: {status_emoji} {context['overall_status']}
+- **Status**: {status_emoji} {context["overall_status"]}
 - **Duration**: {duration:.2f}s
 - **Peak Memory**: {peak_memory:.2f} MB
-- **Health Score**: {context.get('health_score', 0):.1f}/100
+- **Health Score**: {context.get("health_score", 0):.1f}/100
 - **Total Steps**: {len(step_analyses)}
 - **Red Flags**: {red_count}
 - **Yellow Flags**: {yellow_count}
@@ -477,10 +543,10 @@ async def _run_llm_analysis(
 {chr(10).join(step_summaries)}
 
 ## Failures
-{json.dumps(context.get('failures', []), indent=2) if context.get('failures') else "None"}
+{json.dumps(context.get("failures", []), indent=2) if context.get("failures") else "None"}
 
 ## Warnings
-{json.dumps(context.get('warnings', []), indent=2) if context.get('warnings') else "None"}
+{json.dumps(context.get("warnings", []), indent=2) if context.get("warnings") else "None"}
 
 ---
 
@@ -516,17 +582,17 @@ Please provide analysis in EXACTLY this format:
         model_name = analysis_model or os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
         messages = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
-            messages=messages,
-            model_name=model_name,
-            max_tokens=2500
+            messages=messages, model_name=model_name, max_tokens=2500
         )
         content = response.content.strip()
-        
+
         # Fallback if the small model hallucinated a python script (e.g. smollm2 135m)
         if "```python" in content.lower() or "def " in content:
-            logger.warning("LLM hallucinated python code instead of prose. Using robust rule-based summary.")
+            logger.warning(
+                "LLM hallucinated python code instead of prose. Using robust rule-based summary."
+            )
             return _generate_rule_based_summary(context, step_analyses, flags_by_type)
-            
+
         return content
     except Exception as e:
         logger.error(f"Error calling LLM: {e}")
@@ -536,7 +602,7 @@ Please provide analysis in EXACTLY this format:
 def _generate_rule_based_summary(
     context: Dict[str, Any],
     step_analyses: List[StepAnalysis],
-    flags_by_type: Dict[str, List]
+    flags_by_type: Dict[str, List],
 ) -> str:
     """Generate a rule-based summary when LLM is unavailable."""
 
@@ -548,15 +614,23 @@ def _generate_rule_based_summary(
     # Executive Summary
     parts.append("### Executive Summary\n")
     if context["overall_status"] == "SUCCESS" and not red_flags:
-        parts.append(f"Pipeline completed successfully with a health score of {context['health_score']:.0f}/100. ")
+        parts.append(
+            f"Pipeline completed successfully with a health score of {context['health_score']:.0f}/100. "
+        )
         if yellow_flags:
-            parts.append(f"There are {len(yellow_flags)} yellow flag(s) to review for optimization opportunities.")
+            parts.append(
+                f"There are {len(yellow_flags)} yellow flag(s) to review for optimization opportunities."
+            )
         else:
             parts.append("All systems nominal with no flags raised.")
     elif context["overall_status"] == "SUCCESS" and red_flags:
-        parts.append(f"Pipeline completed but {len(red_flags)} critical issue(s) detected. Review required.")
+        parts.append(
+            f"Pipeline completed but {len(red_flags)} critical issue(s) detected. Review required."
+        )
     else:
-        parts.append(f"Pipeline {context['overall_status']} with {len(red_flags)} critical and {len(yellow_flags)} warning flags.")
+        parts.append(
+            f"Pipeline {context['overall_status']} with {len(red_flags)} critical and {len(yellow_flags)} warning flags."
+        )
     parts.append("\n\n")
 
     # Red Flags
@@ -584,9 +658,13 @@ def _generate_rule_based_summary(
     if red_flags:
         parts.append("1. **Immediate**: Address red flag issues before proceeding\n")
     if yellow_flags:
-        parts.append(f"{'2' if red_flags else '1'}. **Review**: Investigate yellow flag warnings\n")
+        parts.append(
+            f"{'2' if red_flags else '1'}. **Review**: Investigate yellow flag warnings\n"
+        )
     if context.get("performance_metrics", {}).get("peak_memory_mb", 0) > 1024:
-        parts.append(f"{'3' if red_flags and yellow_flags else '2' if red_flags or yellow_flags else '1'}. **Monitor**: Track memory usage in production\n")
+        parts.append(
+            f"{'3' if red_flags and yellow_flags else '2' if red_flags or yellow_flags else '1'}. **Monitor**: Track memory usage in production\n"
+        )
     if not red_flags and not yellow_flags:
         parts.append("1. Continue normal operations - pipeline is healthy\n")
         parts.append("2. Consider setting up monitoring for regression detection\n")
@@ -598,7 +676,7 @@ def generate_recovery_plan(context: Dict[str, Any]) -> List[str]:
     """Generate a heuristic-based programmatic recovery plan for failed pipeline components."""
     plan = []
     health = context.get("health_score", 100)
-    
+
     if health >= 100:
         return plan
 
@@ -608,17 +686,28 @@ def generate_recovery_plan(context: Dict[str, Any]) -> List[str]:
         error_msg = str(failure.get("error", "")).lower()
         # Heuristics based on observed failure modes
         if "timeout" in error_msg:
-            plan.append(f"Execute `{script}` with an extended timeout: `uv run python src/{script} --timeout 600`")
+            plan.append(
+                f"Execute `{script}` with an extended timeout: `uv run python src/{script} --timeout 600`"
+            )
         elif "memory" in error_msg or "allocation" in error_msg:
-            plan.append(f"Execute `{script}` with strict memory bounds and GC enabled: `uv run python src/{script} --gc-frequent`")
+            plan.append(
+                f"Execute `{script}` with strict memory bounds and GC enabled: `uv run python src/{script} --gc-frequent`"
+            )
         elif "llm" in script.lower() or "connection" in error_msg:
-            plan.append(f"Fallback override: Ensure provider is running. Try: `uv run python src/{script} --verbose`")
+            plan.append(
+                f"Fallback override: Ensure provider is running. Try: `uv run python src/{script} --verbose`"
+            )
         else:
-            plan.append(f"Retry `{script}` in isolated verbose mode: `uv run python src/{script} --verbose`")
+            plan.append(
+                f"Retry `{script}` in isolated verbose mode: `uv run python src/{script} --verbose`"
+            )
 
     if health < 70 and len(failures) > 2:
-        plan.insert(0, "CRITICAL: Multiple cascading failures detected. Recommend executing `uv run python src/main.py --target-dir input/gnn_files --verbose` to trace.")
-    
+        plan.insert(
+            0,
+            "CRITICAL: Multiple cascading failures detected. Recommend executing `uv run python src/main.py --target-dir input/gnn_files --verbose` to trace.",
+        )
+
     return plan
 
 
@@ -630,7 +719,7 @@ def generate_executive_report(
     step_analyses: List[StepAnalysis],
     flags_by_type: Dict[str, List],
     llm_analysis: Optional[str] = None,
-    summary_data: Optional[Dict[str, Any]] = None
+    summary_data: Optional[Dict[str, Any]] = None,
 ) -> str:
     """
     Generate a comprehensive executive report with per-step analysis.
@@ -670,14 +759,20 @@ def generate_executive_report(
     report_parts.append("|--------|-------|")
     report_parts.append(f"| Total Steps | {analysis['step_count']} |")
     report_parts.append(f"| Duration | {analysis['total_duration']:.2f}s |")
-    report_parts.append(f"| Peak Memory | {analysis['performance_metrics'].get('peak_memory_mb', 0):.1f} MB |")
+    report_parts.append(
+        f"| Peak Memory | {analysis['performance_metrics'].get('peak_memory_mb', 0):.1f} MB |"
+    )
     report_parts.append(f"| 🔴 Red Flags | {red_count} |")
     report_parts.append(f"| 🟡 Yellow Flags | {yellow_count} |")
     report_parts.append(f"| ✅ Green (Clean) | {green_count} |")
     report_parts.append("")
 
     # AI-Powered Analysis (if available)
-    if llm_analysis and "Unavailable" not in llm_analysis and "Error" not in llm_analysis:
+    if (
+        llm_analysis
+        and "Unavailable" not in llm_analysis
+        and "Error" not in llm_analysis
+    ):
         report_parts.append("## AI-Powered Analysis\n")
         report_parts.append(llm_analysis)
         report_parts.append("")
@@ -698,7 +793,9 @@ def generate_executive_report(
             report_parts.append(f"- **Duration**: {step.duration_seconds:.2f}s")
             report_parts.append(f"- **Issues**: {', '.join(step.flags)}")
             if step.stderr_snippet:
-                report_parts.append(f"\n**Error Output**:\n```\n{step.stderr_snippet}\n```")
+                report_parts.append(
+                    f"\n**Error Output**:\n```\n{step.stderr_snippet}\n```"
+                )
             report_parts.append("")
 
     # Yellow Flags Section
@@ -708,7 +805,7 @@ def generate_executive_report(
         report_parts.append("| Step | Duration | Memory | Issues |")
         report_parts.append("|------|----------|--------|--------|")
         for step in yellow_flags:
-            issues = '; '.join(step.flags[:2]) if step.flags else "N/A"
+            issues = "; ".join(step.flags[:2]) if step.flags else "N/A"
             report_parts.append(
                 f"| {step.script_name} | {step.duration_seconds:.1f}s | "
                 f"{step.memory_mb:.0f}MB | {issues} |"
@@ -721,7 +818,13 @@ def generate_executive_report(
     report_parts.append("|---|------|--------|----------|--------|-------|")
 
     for step in step_analyses:
-        flag_emoji = "🔴" if step.flag_type == "red" else "🟡" if step.flag_type == "yellow" else "✅"
+        flag_emoji = (
+            "🔴"
+            if step.flag_type == "red"
+            else "🟡"
+            if step.flag_type == "yellow"
+            else "✅"
+        )
         status_display = f"{flag_emoji} {step.status}"
         flags_display = len(step.flags) if step.flags else "-"
         report_parts.append(
@@ -743,9 +846,13 @@ def generate_executive_report(
             if step.flags:
                 report_parts.append(f"- Flags: {', '.join(step.flags)}")
             if step.stdout_snippet:
-                report_parts.append(f"\n**Output Snippet**:\n```\n{step.stdout_snippet}\n```")
+                report_parts.append(
+                    f"\n**Output Snippet**:\n```\n{step.stdout_snippet}\n```"
+                )
             if step.stderr_snippet:
-                report_parts.append(f"\n**Error Output**:\n```\n{step.stderr_snippet}\n```")
+                report_parts.append(
+                    f"\n**Error Output**:\n```\n{step.stderr_snippet}\n```"
+                )
             report_parts.append("")
 
     # Performance Bottlenecks
@@ -771,11 +878,12 @@ def generate_executive_report(
         recovery_plan = generate_recovery_plan(summary_data)
         if recovery_plan:
             report_parts.append("## 🛡️ Execution Recovery Plan\n")
-            report_parts.append("The following heuristic terminal commands are recommended to forcibly recover failed components:\n")
+            report_parts.append(
+                "The following heuristic terminal commands are recommended to forcibly recover failed components:\n"
+            )
             for plan_item in recovery_plan:
                 report_parts.append(f"- {plan_item}")
             report_parts.append("")
-
 
     # Pipeline Arguments (for context)
     if summary_data and summary_data.get("arguments"):
@@ -783,10 +891,20 @@ def generate_executive_report(
         report_parts.append("## Pipeline Configuration\n")
         report_parts.append("```json")
         # Show relevant config only
-        relevant_args = {k: v for k, v in args.items() if k in [
-            "target_dir", "output_dir", "verbose", "strict",
-            "only_steps", "skip_steps", "frameworks"
-        ]}
+        relevant_args = {
+            k: v
+            for k, v in args.items()
+            if k
+            in [
+                "target_dir",
+                "output_dir",
+                "verbose",
+                "strict",
+                "only_steps",
+                "skip_steps",
+                "frameworks",
+            ]
+        }
         report_parts.append(json.dumps(relevant_args, indent=2))
         report_parts.append("```")
         report_parts.append("")
@@ -795,10 +913,7 @@ def generate_executive_report(
 
 
 def process_intelligent_analysis(
-    target_dir: Path,
-    output_dir: Path,
-    logger: logging.Logger,
-    **kwargs
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
 ) -> bool:
     """
     Perform intelligent analysis of the pipeline execution.
@@ -822,10 +937,16 @@ def process_intelligent_analysis(
     # handle its absence.
     import time as _time
 
-    summary_path = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    summary_path = (
+        output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    )
     if not summary_path.exists():
         # Try parent directory
-        summary_path = output_dir.parent / "00_pipeline_summary" / "pipeline_execution_summary.json"
+        summary_path = (
+            output_dir.parent
+            / "00_pipeline_summary"
+            / "pipeline_execution_summary.json"
+        )
 
     if not summary_path.exists():
         # Brief wait in case the file is being written concurrently
@@ -834,9 +955,11 @@ def process_intelligent_analysis(
 
     if not summary_path.exists():
         # Generate a partial report noting the summary was unavailable.
-        logger.warning(f"Pipeline summary not found at {summary_path} — this is expected when "
-                       "running as part of the pipeline (summary is written after all steps complete). "
-                       "Generating partial analysis from available outputs.")
+        logger.warning(
+            f"Pipeline summary not found at {summary_path} — this is expected when "
+            "running as part of the pipeline (summary is written after all steps complete). "
+            "Generating partial analysis from available outputs."
+        )
         if output_dir.name == "24_intelligent_analysis_output":
             analysis_output_dir = output_dir
         else:
@@ -854,14 +977,16 @@ def process_intelligent_analysis(
             "```bash\npython src/24_intelligent_analysis.py\n```\n"
         )
         report_path = analysis_output_dir / "intelligent_analysis_report.md"
-        with open(report_path, 'w') as f:
+        with open(report_path, "w") as f:
             f.write(partial_report)
         logger.info(f"Partial report saved to {report_path}")
-        log_step_success(logger, "Intelligent analysis completed (partial — summary unavailable)")
+        log_step_success(
+            logger, "Intelligent analysis completed (partial — summary unavailable)"
+        )
         return True
 
     try:
-        with open(summary_path, 'r') as f:
+        with open(summary_path, "r") as f:
             summary_data = json.load(f)
     except Exception as e:
         log_step_error(logger, f"Failed to load pipeline summary: {e}")
@@ -871,8 +996,10 @@ def process_intelligent_analysis(
     logger.info("Analyzing pipeline execution data...")
     analysis = analyze_pipeline_summary(summary_data)
 
-    logger.info(f"Analysis complete: Status={analysis['overall_status']}, "
-                f"Failures={len(analysis['failures'])}, Health={analysis['health_score']:.1f}")
+    logger.info(
+        f"Analysis complete: Status={analysis['overall_status']}, "
+        f"Failures={len(analysis['failures'])}, Health={analysis['health_score']:.1f}"
+    )
 
     # 3. Analyze Individual Steps
     logger.info("Performing per-step analysis...")
@@ -898,7 +1025,9 @@ def process_intelligent_analysis(
     llm_analysis = None
     if kwargs.get("skip_llm"):
         logger.info("LLM analysis skipped by configuration; using rule-based summary")
-        llm_analysis = _generate_rule_based_summary(analysis, step_analyses, flags_by_type)
+        llm_analysis = _generate_rule_based_summary(
+            analysis, step_analyses, flags_by_type
+        )
     else:
         try:
             llm_analysis = asyncio.run(
@@ -913,12 +1042,20 @@ def process_intelligent_analysis(
             logger.info("LLM analysis completed")
         except Exception as e:
             logger.warning(f"LLM analysis skipped: {e}")
-            llm_analysis = _generate_rule_based_summary(analysis, step_analyses, flags_by_type)
+            llm_analysis = _generate_rule_based_summary(
+                analysis, step_analyses, flags_by_type
+            )
 
     # 8. Generate Executive Report
     report_content = generate_executive_report(
-        analysis, bottlenecks, failures, recommendations,
-        step_analyses, flags_by_type, llm_analysis, summary_data
+        analysis,
+        bottlenecks,
+        failures,
+        recommendations,
+        step_analyses,
+        flags_by_type,
+        llm_analysis,
+        summary_data,
     )
 
     # 9. Save Outputs
@@ -931,7 +1068,7 @@ def process_intelligent_analysis(
     # Save markdown report
     report_path = analysis_output_dir / "intelligent_analysis_report.md"
     try:
-        with open(report_path, 'w') as f:
+        with open(report_path, "w") as f:
             f.write(report_content)
         logger.info(f"Analysis report saved to {report_path}")
     except Exception as e:
@@ -953,27 +1090,32 @@ def process_intelligent_analysis(
                 "exit_code": sa.exit_code,
                 "flags": sa.flags,
                 "flag_type": sa.flag_type,
-                "summary": sa.summary
+                "summary": sa.summary,
             }
             for sa in step_analyses
         ]
 
-        with open(analysis_data_path, 'w') as f:
-            json.dump({
-                "timestamp": datetime.now().isoformat(),
-                "analysis": analysis,
-                "step_analyses": step_analyses_dict,
-                "flags_summary": {
-                    "red_count": red_count,
-                    "yellow_count": yellow_count,
-                    "green_count": len(flags_by_type.get("green", []))
+        with open(analysis_data_path, "w") as f:
+            json.dump(
+                {
+                    "timestamp": datetime.now().isoformat(),
+                    "analysis": analysis,
+                    "step_analyses": step_analyses_dict,
+                    "flags_summary": {
+                        "red_count": red_count,
+                        "yellow_count": yellow_count,
+                        "green_count": len(flags_by_type.get("green", [])),
+                    },
+                    "bottlenecks": bottlenecks,
+                    "failures": failures,
+                    "recommendations": recommendations,
+                    "recovery_plan": recovery_plan,
+                    "llm_analysis_available": llm_analysis is not None
+                    and "Unavailable" not in llm_analysis,
                 },
-                "bottlenecks": bottlenecks,
-                "failures": failures,
-                "recommendations": recommendations,
-                "recovery_plan": recovery_plan,
-                "llm_analysis_available": llm_analysis is not None and "Unavailable" not in llm_analysis
-            }, f, indent=2)
+                f,
+                indent=2,
+            )
         logger.info(f"Analysis data saved to {analysis_data_path}")
     except Exception as e:
         logger.warning(f"Failed to save analysis data: {e}")
@@ -981,21 +1123,25 @@ def process_intelligent_analysis(
     # Save summary
     summary_output_path = analysis_output_dir / "intelligent_analysis_summary.json"
     try:
-        with open(summary_output_path, 'w') as f:
-            json.dump({
-                "timestamp": datetime.now().isoformat(),
-                "overall_status": analysis["overall_status"],
-                "health_score": analysis["health_score"],
-                "failure_count": len(failures),
-                "red_flag_count": red_count,
-                "yellow_flag_count": yellow_count,
-                "bottleneck_count": len(bottlenecks),
-                "recommendation_count": len(recommendations),
-                "recovery_plan_length": len(recovery_plan),
-                "recovery_plan": recovery_plan,
-                "report_file": str(report_path),
-                "data_file": str(analysis_data_path)
-            }, f, indent=2)
+        with open(summary_output_path, "w") as f:
+            json.dump(
+                {
+                    "timestamp": datetime.now().isoformat(),
+                    "overall_status": analysis["overall_status"],
+                    "health_score": analysis["health_score"],
+                    "failure_count": len(failures),
+                    "red_flag_count": red_count,
+                    "yellow_flag_count": yellow_count,
+                    "bottleneck_count": len(bottlenecks),
+                    "recommendation_count": len(recommendations),
+                    "recovery_plan_length": len(recovery_plan),
+                    "recovery_plan": recovery_plan,
+                    "report_file": str(report_path),
+                    "data_file": str(analysis_data_path),
+                },
+                f,
+                indent=2,
+            )
     except Exception as e:
         logger.warning(f"Failed to save summary: {e}")
 

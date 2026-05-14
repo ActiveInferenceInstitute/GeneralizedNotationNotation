@@ -24,25 +24,27 @@ from .markdown import (
 from .processor import run_gui
 
 
-def gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:
+def gui_1(
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+) -> Dict[str, Any]:
     """
     Run GUI 1: Form-based Interactive GNN Constructor
-    
+
     Args:
         target_dir: Directory containing GNN files to load
         output_dir: Output directory for results
         logger: Logger instance
         **kwargs: Additional options (headless, export_filename, etc.)
-        
+
     Returns:
         Dictionary with execution results and status
     """
     try:
         # Extract GUI 1 specific parameters
-        headless = kwargs.get('headless', False)
-        export_filename = kwargs.get('export_filename', 'constructed_model_gui1.md')
-        open_browser = kwargs.get('open_browser', True)
-        verbose = kwargs.get('verbose', False)
+        headless = kwargs.get("headless", False)
+        export_filename = kwargs.get("export_filename", "constructed_model_gui1.md")
+        open_browser = kwargs.get("open_browser", True)
+        verbose = kwargs.get("verbose", False)
 
         logger.info("🎮 Starting GUI 1: Form-based Interactive GNN Constructor")
 
@@ -66,8 +68,8 @@ def gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
                 "Component management via forms",
                 "State space editing",
                 "Live markdown synchronization",
-                "Two-pane interface"
-            ]
+                "Two-pane interface",
+            ],
         }
 
         if success:
@@ -84,7 +86,7 @@ def gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             "description": "Form-based Interactive GNN Constructor",
             "success": False,
             "error": str(e),
-            "backend": "error"
+            "backend": "error",
         }
 
 
@@ -98,11 +100,11 @@ def get_gui_1_info() -> Dict[str, Any]:
             "State space editing with live validation",
             "Two-pane interface (controls + markdown)",
             "Real-time markdown synchronization",
-            "Gradio-based web interface"
+            "Gradio-based web interface",
         ],
         "requirements": ["gradio"],
         "export_format": "GNN Markdown (.md)",
-        "interface_type": "form-based"
+        "interface_type": "form-based",
     }
 
 

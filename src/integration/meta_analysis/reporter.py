@@ -83,8 +83,12 @@ class SweepReporter:
 
     def _sweep_overview(self) -> str:
         """Parameter grid overview."""
-        n_values = sorted({r.num_states for r in self.records if r.num_states is not None})
-        t_values = sorted({r.num_timesteps for r in self.records if r.num_timesteps is not None})
+        n_values = sorted(
+            {r.num_states for r in self.records if r.num_states is not None}
+        )
+        t_values = sorted(
+            {r.num_timesteps for r in self.records if r.num_timesteps is not None}
+        )
         frameworks = sorted({r.framework for r in self.records})
 
         if not n_values or not t_values:
@@ -95,12 +99,16 @@ class SweepReporter:
             "",
             f"- **State space sizes (N)**: {', '.join(str(n) for n in n_values)}",
             f"- **Timestep counts (T)**: {', '.join(f'{t:,}' for t in t_values)}",
-            f"- **Grid dimensions**: {len(n_values)} × {len(t_values)} = {len(n_values)*len(t_values)} cells",
+            f"- **Grid dimensions**: {len(n_values)} × {len(t_values)} = {len(n_values) * len(t_values)} cells",
             f"- **Frameworks**: {', '.join(frameworks)}",
         ]
-        repeat_vals = sorted({
-            r.execution_benchmark_repeats for r in self.records if r.execution_benchmark_repeats > 1
-        })
+        repeat_vals = sorted(
+            {
+                r.execution_benchmark_repeats
+                for r in self.records
+                if r.execution_benchmark_repeats > 1
+            }
+        )
         if repeat_vals:
             mx = max(re.execution_benchmark_repeats for r in self.records)
             lines.append(
@@ -112,17 +120,19 @@ class SweepReporter:
     def _runtime_table(self) -> str:
         """Runtime comparison table."""
         # Build a table: rows = (N, T), columns = frameworks
-        frameworks = sorted({
-            r.framework for r in self.records
-            if r.execution_time > 0 and r.success
-        })
+        frameworks = sorted(
+            {r.framework for r in self.records if r.execution_time > 0 and r.success}
+        )
         if not frameworks:
             return ""
 
         # Sorted sweep cells
         cells = sorted(
-            {(r.num_states, r.num_timesteps) for r in self.records
-             if r.num_states is not None and r.num_timesteps is not None}
+            {
+                (r.num_states, r.num_timesteps)
+                for r in self.records
+                if r.num_states is not None and r.num_timesteps is not None
+            }
         )
         if not cells:
             return ""
@@ -138,13 +148,16 @@ class SweepReporter:
             row = [str(n), f"{t:,}"]
             for fw in frameworks:
                 match = [
-                    r for r in self.records
-                    if r.num_states == n and r.num_timesteps == t
-                    and r.framework == fw and r.success
+                    r
+                    for r in self.records
+                    if r.num_states == n
+                    and r.num_timesteps == t
+                    and r.framework == fw
+                    and r.success
                 ]
                 if match and match[0].execution_time > 0:
                     et = match[0].execution_time
-                    row.append(f"{et:.1f}s" if et < 60 else f"{et/60:.1f}m")
+                    row.append(f"{et:.1f}s" if et < 60 else f"{et / 60:.1f}m")
                 elif match and match[0].timed_out:
                     row.append("⏰ timeout")
                 else:
@@ -155,7 +168,9 @@ class SweepReporter:
 
     def _framework_summary(self) -> str:
         """Per-framework aggregate statistics."""
-        frameworks = sorted({r.framework for r in self.records if r.success and r.execution_time > 0})
+        frameworks = sorted(
+            {r.framework for r in self.records if r.success and r.execution_time > 0}
+        )
         if not frameworks:
             return ""
 
@@ -165,7 +180,11 @@ class SweepReporter:
         lines.extend([header, sep])
 
         for fw in frameworks:
-            fw_recs = [r for r in self.records if r.framework == fw and r.success and r.execution_time > 0]
+            fw_recs = [
+                r
+                for r in self.records
+                if r.framework == fw and r.success and r.execution_time > 0
+            ]
             if not fw_recs:
                 continue
 
@@ -175,10 +194,10 @@ class SweepReporter:
             max_t = max(times)
 
             per_step = [r.time_per_step for r in fw_recs if r.time_per_step is not None]
-            avg_ps = f"{sum(per_step)/len(per_step):.2f}" if per_step else "—"
+            avg_ps = f"{sum(per_step) / len(per_step):.2f}" if per_step else "—"
 
             def _fmt(v):
-                return f"{v:.1f}s" if v < 60 else f"{v/60:.1f}m"
+                return f"{v:.1f}s" if v < 60 else f"{v / 60:.1f}m"
 
             lines.append(
                 f"| {fw} | {len(fw_recs)} | {_fmt(avg_t)} | {_fmt(min_t)} | {_fmt(max_t)} | {avg_ps} |"
@@ -200,13 +219,20 @@ class SweepReporter:
             lines.append("### Quality-Certainty Correlation")
             lines.append("")
             # Compute correlation if both metrics exist for enough models
-            common = [r for r in self.records if r.final_accuracy is not None and r.mean_belief_entropy is not None]
+            common = [
+                r
+                for r in self.records
+                if r.final_accuracy is not None and r.mean_belief_entropy is not None
+            ]
             if len(common) >= 2:
                 import numpy as np
+
                 accs = np.array([r.final_accuracy for r in common])
                 ents = np.array([r.mean_belief_entropy for r in common])
                 r_corr = np.corrcoef(ents, accs)[0, 1]
-                lines.append(f"Across **{len(common)}** models, the Pearson correlation between belief entropy and accuracy is **r = {r_corr:.3f}**.")
+                lines.append(
+                    f"Across **{len(common)}** models, the Pearson correlation between belief entropy and accuracy is **r = {r_corr:.3f}**."
+                )
             lines.append("")
 
         if acc_records:
@@ -217,7 +243,9 @@ class SweepReporter:
             lines.extend([header, sep])
 
             for r in sorted(acc_records, key=lambda x: (x.model_name, x.framework)):
-                lines.append(f"| {r.sweep_label} | {r.framework} | {r.final_accuracy:.3f} |")
+                lines.append(
+                    f"| {r.sweep_label} | {r.framework} | {r.final_accuracy:.3f} |"
+                )
             lines.append("")
 
         if ent_records:
@@ -228,17 +256,24 @@ class SweepReporter:
             lines.extend([header, sep])
 
             for r in sorted(ent_records, key=lambda x: (x.model_name, x.framework)):
-                lines.append(f"| {r.sweep_label} | {r.framework} | {r.mean_belief_entropy:.4f} |")
+                lines.append(
+                    f"| {r.sweep_label} | {r.framework} | {r.mean_belief_entropy:.4f} |"
+                )
 
         return "\n".join(lines)
 
     def _scaling_analysis(self) -> str:
         """Scaling law analysis text."""
         import numpy as np
+
         pymdp_recs = [
-            r for r in self.records
-            if r.framework == "pymdp" and r.success and r.execution_time > 0
-            and r.num_states is not None and r.num_timesteps is not None
+            r
+            for r in self.records
+            if r.framework == "pymdp"
+            and r.success
+            and r.execution_time > 0
+            and r.num_states is not None
+            and r.num_timesteps is not None
         ]
 
         if len(pymdp_recs) < 3:
@@ -262,17 +297,19 @@ class SweepReporter:
                 if np.sum(valid) >= 2:
                     log_x = np.log(n_vals[valid])
                     log_y = np.log(rt_vals[valid])
-                    coeffs, residuals, rank, s, rcond = np.polyfit(log_x, log_y, 1, full=True)
+                    coeffs, residuals, rank, s, rcond = np.polyfit(
+                        log_x, log_y, 1, full=True
+                    )
                     exponent = coeffs[0]
-                    
+
                     # R^2 and RMSE
                     y_pred = coeffs[0] * log_x + coeffs[1]
-                    rmse = np.sqrt(np.mean((log_y - y_pred)**2))
+                    rmse = np.sqrt(np.mean((log_y - y_pred) ** 2))
                     y_mean = np.mean(log_y)
-                    ss_tot = np.sum((log_y - y_mean)**2)
+                    ss_tot = np.sum((log_y - y_mean) ** 2)
                     ss_res = residuals[0] if len(residuals) > 0 else 0
                     r2 = 1 - (ss_res / ss_tot) if ss_tot > 0 else 1
-                    
+
                     lines.append(
                         f"- **T={t:,}**: Runtime scales as **O(N^{exponent:.2f})** ($R^2$={r2:.3f}, RMSE={rmse:.3f}) "
                         f"(N={n_vals[0]}→{n_vals[-1]}: {rt_vals[0]:.1f}s → {rt_vals[-1]:.1f}s)"
@@ -296,17 +333,19 @@ class SweepReporter:
                 if np.sum(valid) >= 2:
                     log_x = np.log(t_vals_dim[valid])
                     log_y = np.log(runtime_vals[valid])
-                    coeffs, residuals, rank, s, rcond = np.polyfit(log_x, log_y, 1, full=True)
+                    coeffs, residuals, rank, s, rcond = np.polyfit(
+                        log_x, log_y, 1, full=True
+                    )
                     exponent = coeffs[0]
-                    
+
                     # R^2 and RMSE
                     y_pred = coeffs[0] * log_x + coeffs[1]
-                    rmse = np.sqrt(np.mean((log_y - y_pred)**2))
+                    rmse = np.sqrt(np.mean((log_y - y_pred) ** 2))
                     y_mean = np.mean(log_y)
-                    ss_tot = np.sum((log_y - y_mean)**2)
+                    ss_tot = np.sum((log_y - y_mean) ** 2)
                     ss_res = residuals[0] if len(residuals) > 0 else 0
                     r2 = 1 - (ss_res / ss_tot) if ss_tot > 0 else 1
-                    
+
                     lines.append(
                         f"- **N={n}**: Runtime scales as **O(T^{exponent:.2f})** ($R^2$={r2:.3f}, RMSE={rmse:.3f}) "
                         f"(T={t_vals_dim[0]:,}→{t_vals_dim[-1]:,}: {runtime_vals[0]:.1f}s → {runtime_vals[-1]:.1f}s)"
@@ -315,7 +354,8 @@ class SweepReporter:
                 self.logger.debug("Skipped T scaling fit for N=%s: %s", n, e)
 
         unc = [
-            r for r in pymdp_recs
+            r
+            for r in pymdp_recs
             if r.execution_benchmark_repeats > 1
             and r.execution_time_std is not None
             and r.execution_time_std > 0
@@ -332,9 +372,15 @@ class SweepReporter:
         lines.append("")
         lines.append("### Theoretical vs. Empirical Complexity")
         lines.append("")
-        lines.append("The theoretical complexity for a dense PyMDP Active Inference agent is **O(T × N³)**.")
-        lines.append("- **N-scaling**: The empirical exponents (α ≈ 0.1–0.3) are significantly lower than the theoretical α=3.0. This indicates that at these scales (N ≤ 128), wall-clock time is dominated by constant **JIT compilation overhead** and JAX framework initialization rather than matrix operation complexity.")
-        lines.append("- **T-scaling**: The empirical exponents (β ≈ 0.5–0.7) are also lower than the theoretical β=1.0. This suggests that the iterative inference loop benefits from JAX's optimized kernel execution, reducing the per-step cost as T increases.")
+        lines.append(
+            "The theoretical complexity for a dense PyMDP Active Inference agent is **O(T × N³)**."
+        )
+        lines.append(
+            "- **N-scaling**: The empirical exponents (α ≈ 0.1–0.3) are significantly lower than the theoretical α=3.0. This indicates that at these scales (N ≤ 128), wall-clock time is dominated by constant **JIT compilation overhead** and JAX framework initialization rather than matrix operation complexity."
+        )
+        lines.append(
+            "- **T-scaling**: The empirical exponents (β ≈ 0.5–0.7) are also lower than the theoretical β=1.0. This suggests that the iterative inference loop benefits from JAX's optimized kernel execution, reducing the per-step cost as T increases."
+        )
 
         return "\n".join(lines) if len(lines) > 2 else ""
 
@@ -346,13 +392,15 @@ class SweepReporter:
 
         lines = ["## Resource Efficiency & Complexity", ""]
         lines.append("Analysis of generated runner complexity and compute throughput.")
-        
+
         # Throughput Table
         lines.append("### Inference Throughput")
         lines.append("")
         lines.append("| Model | Framework | Throughput (Steps/sec) |")
         lines.append("|---|---|---|")
-        for r in sorted(self.records, key=lambda x: (x.num_states or 0, x.num_timesteps or 0)):
+        for r in sorted(
+            self.records, key=lambda x: (x.num_states or 0, x.num_timesteps or 0)
+        ):
             if r.execution_time > 0 and r.num_timesteps:
                 throughput = r.num_timesteps / r.execution_time
                 lines.append(f"| {r.sweep_label} | {r.framework} | {throughput:.2f} |")
@@ -360,15 +408,15 @@ class SweepReporter:
 
         lines.append("### Code Complexity Scaling")
         lines.append("")
-        
+
         # Table of LOC vs N
         n_values = sorted({r.num_states for r in loc_recs})
         frameworks = sorted({r.framework for r in loc_recs})
-        
+
         header = "| N | " + " | ".join(f"{fw} LOC" for fw in frameworks) + " |"
         sep = "|---|" + "|".join(["---"] * len(frameworks)) + "|"
         lines.extend([header, sep])
-        
+
         for n in n_values:
             row = [str(n)]
             for fw in frameworks:
@@ -378,9 +426,11 @@ class SweepReporter:
                 else:
                     row.append("—")
             lines.append("| " + " | ".join(row) + " |")
-        
+
         lines.append("\n> [!NOTE]")
-        lines.append("> Runner code size scales with state space complexity. PyMDP runners exhibit $O(N^3)$ scaling in generated constant matrices.")
+        lines.append(
+            "> Runner code size scales with state space complexity. PyMDP runners exhibit $O(N^3)$ scaling in generated constant matrices."
+        )
 
         return "\n".join(lines)
 
@@ -440,10 +490,11 @@ class SweepReporter:
                 med = block.get("runtime_median_s")
                 mean_v = block.get("runtime_mean_s")
                 med_s = f"{float(med):.4f}" if isinstance(med, (int, float)) else "—"
-                mean_s = f"{float(mean_v):.4f}" if isinstance(mean_v, (int, float)) else "—"
+                mean_s = (
+                    f"{float(mean_v):.4f}" if isinstance(mean_v, (int, float)) else "—"
+                )
                 lines.append(
-                    f"| {fw} | {block.get('successful_runs', 0)} | "
-                    f"{med_s} | {mean_s} |"
+                    f"| {fw} | {block.get('successful_runs', 0)} | {med_s} | {mean_s} |"
                 )
             lines.append("")
         slopes = payload.get("loglog_runtime_vs_n_by_T") or {}
@@ -454,7 +505,9 @@ class SweepReporter:
                 slope = coef.get("slope")
                 r2 = coef.get("r_squared")
                 n_pts = coef.get("n_points")
-                slope_s = f"{float(slope):.3f}" if isinstance(slope, (int, float)) else "—"
+                slope_s = (
+                    f"{float(slope):.3f}" if isinstance(slope, (int, float)) else "—"
+                )
                 r2_s = f"{float(r2):.3f}" if isinstance(r2, (int, float)) else "—"
                 lines.append(f"- **T={t_key}**: slope={slope_s}, R²={r2_s}, n={n_pts}")
             lines.append("")
@@ -496,7 +549,7 @@ class SweepReporter:
             path_obj = Path(p)
             name = path_obj.stem.replace("_", " ").title()
             fname = path_obj.name
-            
+
             try:
                 rel_path = path_obj.relative_to(self.output_dir)
             except ValueError:
@@ -507,11 +560,13 @@ class SweepReporter:
                 rel_csv_path = csv_path.relative_to(self.output_dir)
             except ValueError:
                 rel_csv_path = csv_path.name
-            
+
             if fname.endswith(".csv"):
                 lines.append(f"- **{name}**: Data Report: [{fname}]({rel_path})")
             elif csv_path.exists():
-                lines.append(f"- **{name}**: Image: [{fname}]({rel_path}) | Data Report: [{csv_path.name}]({rel_csv_path})")
+                lines.append(
+                    f"- **{name}**: Image: [{fname}]({rel_path}) | Data Report: [{csv_path.name}]({rel_csv_path})"
+                )
             else:
                 lines.append(f"- **{name}**: [{fname}]({rel_path})")
 

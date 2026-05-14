@@ -11,22 +11,20 @@ try:
     import cli
     from cli import main
 except ImportError:
-    try:
-        import src.cli as cli
-        from src.cli import main
-    except ImportError:
-        sys.path.append(str(Path(__file__).parent.parent.parent))
-        import cli
-        from cli import main
+    sys.path.append(str(Path(__file__).parent.parent.parent))
+    import cli
+    from cli import main
+
 
 class CallTracker:
     def __init__(self):
         self.called = False
         self.call_args = None
-        
+
     def __call__(self, *args, **kwargs):
         self.called = True
         self.call_args = args
+
 
 def test_cli_help():
     """Test that 'gnn --help' works and returns success."""
@@ -36,7 +34,7 @@ def test_cli_help():
     try:
         with pytest.raises(SystemExit) as exit_info:
             main(["--help"])
-        
+
         assert exit_info.value.code == 0
         output = captured_out.getvalue()
         assert "GNN Processing Pipeline" in output
@@ -45,6 +43,7 @@ def test_cli_help():
         assert "validate" in output
     finally:
         sys.stdout = orig_stdout
+
 
 def test_cli_invalid_command():
     """Test that an invalid command returns an error or help."""
@@ -55,16 +54,17 @@ def test_cli_invalid_command():
             main(["nonexistent-command"])
     finally:
         sys.stderr = orig_stderr
-    
+
+
 def test_cli_validate_parser(tmp_path):
     """Test the 'validate' subcommand parser."""
     test_file = tmp_path / "test.md"
     test_file.touch()
-    
+
     orig_validate = getattr(cli, "_cmd_validate", None)
     tracker = CallTracker()
     cli._cmd_validate = tracker
-    
+
     try:
         main(["validate", str(test_file)])
         assert tracker.called is True
@@ -72,12 +72,13 @@ def test_cli_validate_parser(tmp_path):
         if orig_validate:
             cli._cmd_validate = orig_validate
 
+
 def test_cli_verbose_flag(tmp_path):
     """Test that the --verbose flag is correctly handled."""
     orig_health = getattr(cli, "_cmd_health", None)
     tracker = CallTracker()
     cli._cmd_health = tracker
-    
+
     try:
         main(["--verbose", "health"])
         args = tracker.call_args[0]
@@ -85,6 +86,7 @@ def test_cli_verbose_flag(tmp_path):
     finally:
         if orig_health:
             cli._cmd_health = orig_health
+
 
 def test_cli_subcommand_routing(tmp_path):
     """Test that subcommands are routed to the correct handlers."""
@@ -96,16 +98,16 @@ def test_cli_subcommand_routing(tmp_path):
         ("report", "_cmd_report"),
         ("health", "_cmd_health"),
     ]
-    
+
     test_file = tmp_path / "test.md"
     test_file.touch()
     str_test_file = str(test_file)
-    
+
     for cmd_name, handler_name in commands:
         orig_handler = getattr(cli, handler_name, None)
         tracker = CallTracker()
         setattr(cli, handler_name, tracker)
-        
+
         try:
             if cmd_name in ["validate", "parse", "render", "graph"]:
                 main([cmd_name, str_test_file])
@@ -115,7 +117,7 @@ def test_cli_subcommand_routing(tmp_path):
                 main([cmd_name, "."])
             else:
                 main([cmd_name])
-            
+
             assert tracker.called is True
         finally:
             if orig_handler:

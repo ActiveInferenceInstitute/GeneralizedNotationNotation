@@ -52,7 +52,9 @@ def test_process_gnn_directory_succeeds_for_empty_dir(tmp_path):
     result = process_gnn_directory(empty)
     # Existing-but-empty still progresses through the lightweight path; status
     # comes from the lightweight result. We assert it did NOT fail at validation.
-    assert result["status"] != "FAILED" or "does not exist" not in result.get("error", "")
+    assert result["status"] != "FAILED" or "does not exist" not in result.get(
+        "error", ""
+    )
 
 
 def test_process_gnn_directory_accepts_valid_dir(tmp_path):
@@ -61,6 +63,8 @@ def test_process_gnn_directory_accepts_valid_dir(tmp_path):
         "## GNNSection\nTestModel\n\n## ModelName\nT\n\n## StateSpaceBlock\ns[2,1,type=float]\n"
     )
     result = process_gnn_directory(tmp_path)
-    assert result["status"] != "FAILED" or "does not exist" not in result.get("error", "")
+    assert result["status"] != "FAILED" or "does not exist" not in result.get(
+        "error", ""
+    )
     # Should discover the file we just wrote.
     assert len(result["files"]) >= 1

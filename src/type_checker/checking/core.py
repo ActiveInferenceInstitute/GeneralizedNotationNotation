@@ -15,7 +15,7 @@ from typing import Any, Dict, List
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 # We need to import the estimator lazily or through the standard pipeline
-# to avoid circular dependencies if we refactor heavily, but for now we'll 
+# to avoid circular dependencies if we refactor heavily, but for now we'll
 # import it directly from the estimation package.
 from ..estimation.strategies import (
     calculate_complexity,
@@ -34,7 +34,7 @@ _module_logger = logging.getLogger(__name__)
 
 def estimate_file_resources(content: str) -> Dict[str, Any]:
     """Estimate computational resources needed for a GNN file using core framework logic.
-    
+
     This function bridges the type checker to the estimation subsystem
     for generation of Baseball Cards during the standard validation pass.
     """
@@ -52,25 +52,39 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
             vars_map[k] = {"dimensions": v, "type": "float"}
 
         # Connections math
-        directed = re.findall(r'(\w+)\s*>\s*(\w+)', content)
-        undirected = re.findall(r'(\w+)\s*-\s*(\w+)', content)
+        directed = re.findall(r"(\w+)\s*>\s*(\w+)", content)
+        undirected = re.findall(r"(\w+)\s*-\s*(\w+)", content)
         edges = [{"source": u, "target": v, "type": "directed"} for u, v in directed]
-        edges.extend([{"source": u, "target": v, "type": "undirected"} for u, v in undirected])
+        edges.extend(
+            [{"source": u, "target": v, "type": "undirected"} for u, v in undirected]
+        )
 
-        equations = "\n".join([f"{u}={v}" for u, v in re.findall(r'(\w+)\s*=\s*(.+)', content)])
+        equations = "\n".join(
+            [f"{u}={v}" for u, v in re.findall(r"(\w+)\s*=\s*(.+)", content)]
+        )
 
-        memory_bytes = estimate_memory(vars_map, GNNResourceEstimator.MEMORY_FACTORS) * 1024 # convert kb to bytes loosely
+        memory_bytes = (
+            estimate_memory(vars_map, GNNResourceEstimator.MEMORY_FACTORS) * 1024
+        )  # convert kb to bytes loosely
         complexity_metrics = calculate_complexity(vars_map, edges, equations)
 
-        total_parameters = sum([math.prod(v) if isinstance(v, list) else 1 for v in variables_with_dims.values()])
+        total_parameters = sum(
+            [
+                math.prod(v) if isinstance(v, list) else 1
+                for v in variables_with_dims.values()
+            ]
+        )
         if total_parameters == 0:
-            total_parameters = len(re.findall(r'(\w+)\s*[:=]', content)) * 9
+            total_parameters = len(re.findall(r"(\w+)\s*[:=]", content)) * 9
 
         complexity_tier = "minimal"
         score = complexity_metrics.get("overall_complexity", 0)
-        if score > 2.0: complexity_tier = "small"
-        if score > 5.0: complexity_tier = "medium"
-        if score > 8.0: complexity_tier = "large"
+        if score > 2.0:
+            complexity_tier = "small"
+        if score > 5.0:
+            complexity_tier = "medium"
+        if score > 8.0:
+            complexity_tier = "large"
 
         return {
             "complexity_tier": complexity_tier,
@@ -78,8 +92,8 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
             "total_parameters": total_parameters,
             "variables": len(variables_with_dims),
             "connections": len(edges),
-            "flops_estimate": score * 500.0, # Rough FLOPS parameter correlation
-            "complexity_score": score
+            "flops_estimate": score * 500.0,  # Rough FLOPS parameter correlation
+            "complexity_score": score,
         }
     except Exception as e:
         return {
@@ -90,7 +104,7 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
             "connections": 0,
             "flops_estimate": 0,
             "complexity_score": 0,
-            "error": str(e)
+            "error": str(e),
         }
 
 
@@ -102,11 +116,7 @@ class GNNTypeChecker:
         self.validation_rules = get_validation_rules()
 
     def validate_gnn_files(
-        self,
-        target_dir: Path,
-        output_dir: Path,
-        verbose: bool = False,
-        **kwargs
+        self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
     ) -> bool:
         """
         Validate GNN files for type consistency.
@@ -134,7 +144,7 @@ class GNNTypeChecker:
                 "success": True,
                 "errors": [],
                 "validation_results": [],
-                "type_analysis": []
+                "type_analysis": [],
             }
 
             # Find GNN files
@@ -150,7 +160,9 @@ class GNNTypeChecker:
                 for gnn_file in gnn_files:
                     try:
                         # Validate single file
-                        validation_result = self.validate_single_gnn_file(gnn_file, verbose)
+                        validation_result = self.validate_single_gnn_file(
+                            gnn_file, verbose
+                        )
                         results["validation_results"].append(validation_result)
 
                         # Analyze types
@@ -161,18 +173,19 @@ class GNNTypeChecker:
                         error_info = {
                             "file": str(gnn_file),
                             "error": str(e),
-                            "error_type": type(e).__name__
+                            "error_type": type(e).__name__,
                         }
                         results["errors"].append(error_info)
                         logger.error(f"Error processing {gnn_file}: {e}")
 
             # Save detailed results directly in output directory
             results_file = output_dir / "type_check_results.json"
-            with open(results_file, 'w') as f:
+            with open(results_file, "w") as f:
                 json.dump(results, f, indent=2)
 
             # Generate visualizations natively from results matrix
             from ..visualizer import generate_all_visualizations
+
             visual_embeddings = generate_all_visualizations(results, output_dir)
             if visual_embeddings:
                 results["visual_embeddings"] = visual_embeddings
@@ -180,7 +193,7 @@ class GNNTypeChecker:
             # Generate type check summary
             summary = self._generate_type_check_summary(results)
             summary_file = output_dir / "type_check_summary.md"
-            with open(summary_file, 'w') as f:
+            with open(summary_file, "w") as f:
                 f.write(summary)
 
             if results["success"]:
@@ -194,10 +207,12 @@ class GNNTypeChecker:
             log_step_error(logger, "Type checking failed", {"error": str(e)})
             return False
 
-    def validate_single_gnn_file(self, file_path: Path, verbose: bool = False) -> Dict[str, Any]:
+    def validate_single_gnn_file(
+        self, file_path: Path, verbose: bool = False
+    ) -> Dict[str, Any]:
         """Validate a single GNN file for type consistency."""
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
             validation_result = {
@@ -207,7 +222,7 @@ class GNNTypeChecker:
                 "errors": [],
                 "warnings": [],
                 "type_issues": [],
-                "validation_timestamp": datetime.now().isoformat()
+                "validation_timestamp": datetime.now().isoformat(),
             }
 
             # Check for type definitions
@@ -218,7 +233,9 @@ class GNNTypeChecker:
                 type_validation = validate_type(type_info)
                 if not type_validation["valid"]:
                     validation_result["type_issues"].append(type_validation)
-                    validation_result["warnings"].append(f"Type issue: {type_validation['message']}")
+                    validation_result["warnings"].append(
+                        f"Type issue: {type_validation['message']}"
+                    )
 
             # Check for consistency
             consistency_check = check_type_consistency(found_types)
@@ -252,13 +269,13 @@ class GNNTypeChecker:
                 "errors": [str(e)],
                 "warnings": [],
                 "type_issues": [],
-                "validation_timestamp": datetime.now().isoformat()
+                "validation_timestamp": datetime.now().isoformat(),
             }
 
     def _analyze_types(self, file_path: Path, verbose: bool = False) -> Dict[str, Any]:
         """Analyze types in a GNN file."""
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
             # Extract type information
@@ -276,7 +293,7 @@ class GNNTypeChecker:
                 "types_found": types_found,
                 "type_distribution": type_counts,
                 "total_variables": len(types_found),
-                "analysis_timestamp": datetime.now().isoformat()
+                "analysis_timestamp": datetime.now().isoformat(),
             }
 
         except Exception as e:
@@ -284,28 +301,28 @@ class GNNTypeChecker:
                 "file_path": str(file_path),
                 "file_name": file_path.name,
                 "error": str(e),
-                "analysis_timestamp": datetime.now().isoformat()
+                "analysis_timestamp": datetime.now().isoformat(),
             }
 
     def _generate_type_check_summary(self, results: Dict[str, Any]) -> str:
         """Generate a summary of type checking results."""
         summary = f"""# Type Check Summary
 
-**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+**Generated**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 ## Processing Results
-- **Files Processed**: {results.get('processed_files', 0)}
-- **Success**: {results.get('success', False)}
-- **Errors**: {len(results.get('errors', []))}
+- **Files Processed**: {results.get("processed_files", 0)}
+- **Success**: {results.get("success", False)}
+- **Errors**: {len(results.get("errors", []))}
 
 ## Validation Results
-- **Files Validated**: {len(results.get('validation_results', []))}
-- **Valid Files**: {sum(1 for r in results.get('validation_results', []) if r.get('valid', False))}
-- **Invalid Files**: {sum(1 for r in results.get('validation_results', []) if not r.get('valid', False))}
+- **Files Validated**: {len(results.get("validation_results", []))}
+- **Valid Files**: {sum(1 for r in results.get("validation_results", []) if r.get("valid", False))}
+- **Invalid Files**: {sum(1 for r in results.get("validation_results", []) if not r.get("valid", False))}
 
 ## Type Analysis
-- **Type Analyses**: {len(results.get('type_analysis', []))}
-- **Total Variables**: {sum(a.get('total_variables', 0) for a in results.get('type_analysis', []))}
+- **Type Analyses**: {len(results.get("type_analysis", []))}
+- **Total Variables**: {sum(a.get("total_variables", 0) for a in results.get("type_analysis", []))}
 
 ## Graphical Abstracts
 """
@@ -320,7 +337,7 @@ class GNNTypeChecker:
 ## Error Summary
 """
 
-        errors = results.get('errors', [])
+        errors = results.get("errors", [])
         if errors:
             for error in errors:
                 if isinstance(error, dict):

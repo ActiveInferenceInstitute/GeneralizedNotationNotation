@@ -24,7 +24,7 @@ class TestSystemPlatform:
         import platform
 
         system = platform.system()
-        assert system in ('Darwin', 'Linux', 'Windows')
+        assert system in ("Darwin", "Linux", "Windows")
 
     @pytest.mark.fast
     def test_architecture_identified(self) -> None:
@@ -38,7 +38,7 @@ class TestSystemPlatform:
     @pytest.mark.fast
     def test_os_name_available(self) -> None:
         """Test OS name is available."""
-        assert os.name in ('posix', 'nt')
+        assert os.name in ("posix", "nt")
 
 
 class TestFilesystem:
@@ -112,7 +112,7 @@ class TestSystemResources:
         try:
             # Try to open several files
             for i in range(10):
-                f = open(tmp_path / f"test_{i}.txt", 'w')
+                f = open(tmp_path / f"test_{i}.txt", "w")
                 files.append(f)
 
             assert len(files) == 10
@@ -141,7 +141,7 @@ class TestSystemProcesses:
             [sys.executable, "-c", "print('hello')"],
             capture_output=True,
             text=True,
-            timeout=10
+            timeout=10,
         )
 
         assert result.returncode == 0
@@ -202,10 +202,10 @@ class TestSystemPath:
         """Test path separator is correct."""
         sep = os.sep
 
-        if os.name == 'nt':
-            assert sep == '\\'
+        if os.name == "nt":
+            assert sep == "\\"
         else:
-            assert sep == '/'
+            assert sep == "/"
 
     @pytest.mark.fast
     def test_absolute_path_works(self) -> None:
@@ -219,7 +219,7 @@ class TestSystemPath:
     def test_path_normalization(self) -> None:
         """Test path normalization works."""
         messy_path = Path("a/b/../c/./d")
-        clean_parts = [p for p in messy_path.parts if p not in ('.', '..')]
+        clean_parts = [p for p in messy_path.parts if p not in (".", "..")]
 
         # Should be able to normalize
         assert isinstance(clean_parts, list)
@@ -232,8 +232,8 @@ class TestSystemLocale:
     def test_utf8_encoding(self) -> None:
         """Test UTF-8 encoding works."""
         text = "Hello, 世界! 🌍"
-        encoded = text.encode('utf-8')
-        decoded = encoded.decode('utf-8')
+        encoded = text.encode("utf-8")
+        decoded = encoded.decode("utf-8")
 
         assert decoded == text
 
@@ -243,7 +243,7 @@ class TestSystemLocale:
         encoding = sys.getfilesystemencoding()
 
         assert encoding is not None
-        assert encoding.lower() in ('utf-8', 'utf8', 'ascii', 'latin-1', 'mbcs')
+        assert encoding.lower() in ("utf-8", "utf8", "ascii", "latin-1", "mbcs")
 
 
 class TestSystemNetwork:
@@ -265,8 +265,8 @@ class TestSystemNetwork:
         import socket
 
         try:
-            addr = socket.gethostbyname('localhost')
-            assert addr in ('127.0.0.1', '::1') or addr.startswith('127.')
+            addr = socket.gethostbyname("localhost")
+            assert addr in ("127.0.0.1", "::1") or addr.startswith("127.")
         except socket.gaierror:
             # May not resolve on all systems
             pass

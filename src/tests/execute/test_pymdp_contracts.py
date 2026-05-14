@@ -17,7 +17,9 @@ from execute.pymdp.simulation import run_pymdp_simulation
 from render.processor import render_gnn_spec
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-ACTINF_POMDP_PATH = REPO_ROOT / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+ACTINF_POMDP_PATH = (
+    REPO_ROOT / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
+)
 
 
 def _pymdp_importable() -> bool:
@@ -38,7 +40,9 @@ def _actinf_gnn_spec(timesteps: int = 12) -> dict:
     from render.processor import normalize_matrices
 
     pomdp = extract_pomdp_from_file(ACTINF_POMDP_PATH, strict_validation=True)
-    assert pomdp is not None, "extract_pomdp_from_file returned None for actinf_pomdp_agent.md"
+    assert pomdp is not None, (
+        "extract_pomdp_from_file returned None for actinf_pomdp_agent.md"
+    )
     pomdp = normalize_matrices(pomdp, logging.getLogger("test_pymdp_contracts"))
     proc = POMDPRenderProcessor(ACTINF_POMDP_PATH.parent)
     return proc._pomdp_to_gnn_spec(pomdp, timesteps=timesteps)
@@ -74,7 +78,9 @@ def test_render_execute_contract_pymdp(tmp_path: Path) -> None:
     exec_dir = tmp_path / "execute"
     exec_ok, results = run_pymdp_simulation(gnn_spec, exec_dir)
     if not exec_ok:
-        pytest.skip(f"PyMDP unavailable for runtime contract check: {results.get('error')}")
+        pytest.skip(
+            f"PyMDP unavailable for runtime contract check: {results.get('error')}"
+        )
 
     assert results.get("success") is True
     assert results.get("framework") == "PyMDP"
@@ -94,7 +100,9 @@ def test_extract_pymdp_data_from_real_execution_payload(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     ok, results = run_pymdp_simulation(gnn_spec, run_dir)
     if not ok:
-        pytest.skip(f"PyMDP unavailable for extractor contract check: {results.get('error')}")
+        pytest.skip(
+            f"PyMDP unavailable for extractor contract check: {results.get('error')}"
+        )
 
     impl_dir = tmp_path / "impl"
     sim_data_dir = impl_dir / "simulation_data"
@@ -110,7 +118,14 @@ def test_extract_pymdp_data_from_real_execution_payload(tmp_path: Path) -> None:
         }
     )
 
-    for key in ["free_energy", "beliefs", "observations", "actions", "states", "traces"]:
+    for key in [
+        "free_energy",
+        "beliefs",
+        "observations",
+        "actions",
+        "states",
+        "traces",
+    ]:
         assert key in extracted
     assert len(extracted["beliefs"]) > 0
     assert len(extracted["observations"]) > 0
@@ -158,7 +173,9 @@ def test_actinf_pomdp_golden_pymdp_simulation(tmp_path: Path) -> None:
     assert val.get("actions_in_range") is True
     assert len(results.get("observations", [])) == 12
     assert not any(
-        np.isnan(np.array(b, dtype=float)).any() for b in results.get("beliefs", []) if b
+        np.isnan(np.array(b, dtype=float)).any()
+        for b in results.get("beliefs", [])
+        if b
     )
 
 
@@ -210,7 +227,9 @@ def test_actinf_pomdp_render_execute_analyze_e2e(tmp_path: Path) -> None:
     assert exec_ok, "process_execute should complete without fatal errors"
 
     collected = list(exec_out.glob("**/pymdp/simulation_data/*simulation_results.json"))
-    assert collected, f"no simulation_results.json under {exec_out}/**/pymdp/simulation_data/"
+    assert collected, (
+        f"no simulation_results.json under {exec_out}/**/pymdp/simulation_data/"
+    )
 
     payload = json.loads(collected[0].read_text(encoding="utf-8"))
     assert payload.get("framework") == "PyMDP"

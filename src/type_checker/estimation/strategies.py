@@ -16,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 class VariableSpec(TypedDict, total=False):
     """Shape of a single variable entry in the variables mapping."""
-    type: str        # e.g. "float", "int", "categorical"
+
+    type: str  # e.g. "float", "int", "categorical"
     dimensions: List[Union[int, str]]  # e.g. [3, 3], [1], or symbolic ["N", 3]
+
 
 VariableMap = Dict[str, VariableSpec]
 
@@ -84,7 +86,9 @@ def detailed_memory_breakdown(
                 "total_bytes": var_size + var_overhead,
             }
 
-            breakdown["by_type"][var_type] = breakdown["by_type"].get(var_type, 0) + var_size
+            breakdown["by_type"][var_type] = (
+                breakdown["by_type"].get(var_type, 0) + var_size
+            )
             breakdown["total_bytes"] += var_size + var_overhead
             breakdown["representation_overhead"] += var_overhead
         except Exception as e:
@@ -246,36 +250,46 @@ def estimate_matrix_operation_costs(
                 p = target_dims[1] if len(target_dims) > 1 else 1
                 flops = m * n * p * operation_costs["matrix_multiply"]
 
-                costs["matrix_multiply"].append({
-                    "operation": f"{source} \u00d7 {target}",
-                    "dimensions": f"{m}\u00d7{n} * {n}\u00d7{p}",
-                    "flops": flops,
-                })
+                costs["matrix_multiply"].append(
+                    {
+                        "operation": f"{source} \u00d7 {target}",
+                        "dimensions": f"{m}\u00d7{n} * {n}\u00d7{p}",
+                        "flops": flops,
+                    }
+                )
                 costs["total_matrix_flops"] += flops
 
     for line in equations.split("\n"):
         if "^T" in line or "transpose" in line:
             for matrix_name, dims in matrices.items():
-                if matrix_name in line and (f"{matrix_name}^T" in line or f"transpose({matrix_name})" in line):
+                if matrix_name in line and (
+                    f"{matrix_name}^T" in line or f"transpose({matrix_name})" in line
+                ):
                     m, n = dims[0], dims[1] if len(dims) > 1 else 1
                     flops = m * n
-                    costs["matrix_transpose"].append({
-                        "operation": f"{matrix_name}^T",
-                        "dimensions": f"{m}\u00d7{n}",
-                        "flops": flops,
-                    })
+                    costs["matrix_transpose"].append(
+                        {
+                            "operation": f"{matrix_name}^T",
+                            "dimensions": f"{m}\u00d7{n}",
+                            "flops": flops,
+                        }
+                    )
                     costs["total_matrix_flops"] += flops
 
         if "^-1" in line or "inv(" in line:
             for matrix_name, dims in matrices.items():
-                if matrix_name in line and (f"{matrix_name}^-1" in line or f"inv({matrix_name})" in line):
+                if matrix_name in line and (
+                    f"{matrix_name}^-1" in line or f"inv({matrix_name})" in line
+                ):
                     n = dims[0]
-                    flops = n ** 3
-                    costs["matrix_inversion"].append({
-                        "operation": f"{matrix_name}^-1",
-                        "dimensions": f"{n}\u00d7{n}",
-                        "flops": flops,
-                    })
+                    flops = n**3
+                    costs["matrix_inversion"].append(
+                        {
+                            "operation": f"{matrix_name}^-1",
+                            "dimensions": f"{n}\u00d7{n}",
+                            "flops": flops,
+                        }
+                    )
                     costs["total_matrix_flops"] += flops
 
     return costs
@@ -292,8 +306,10 @@ def estimate_model_overhead(
     eq_count = len(equations.split("\n"))
 
     compilation_ms = 10 + (var_count * 2) + (edge_count * 1) + (eq_count * 5)
-    optimization_ms = 20 + (var_count ** 2 * 0.5)
-    memory_overhead_bytes = 1024 + (var_count * 50) + (edge_count * 30) + (eq_count * 100)
+    optimization_ms = 20 + (var_count**2 * 0.5)
+    memory_overhead_bytes = (
+        1024 + (var_count * 50) + (edge_count * 30) + (eq_count * 100)
+    )
 
     return {
         "compilation_ms": compilation_ms,
@@ -439,16 +455,31 @@ def calculate_complexity(
 
     operators = 0
     for line in eq_lines:
-        operators += line.count("+") + line.count("-") + line.count("*") + line.count("/") + line.count("^")
+        operators += (
+            line.count("+")
+            + line.count("-")
+            + line.count("*")
+            + line.count("/")
+            + line.count("^")
+        )
 
     higher_order_ops = 0
     for line in eq_lines:
-        higher_order_ops += line.count("sum") + line.count("prod") + line.count("log") + line.count("exp")
-        higher_order_ops += line.count("softmax") + line.count("tanh") + line.count("sigma")
+        higher_order_ops += (
+            line.count("sum")
+            + line.count("prod")
+            + line.count("log")
+            + line.count("exp")
+        )
+        higher_order_ops += (
+            line.count("softmax") + line.count("tanh") + line.count("sigma")
+        )
 
     equation_complexity = 0.0
     if eq_lines:
-        equation_complexity = (avg_eq_length + operators + 3 * higher_order_ops) / len(eq_lines)
+        equation_complexity = (avg_eq_length + operators + 3 * higher_order_ops) / len(
+            eq_lines
+        )
 
     state_space_complexity = math.log2(total_dims + 1) if total_dims > 0 else 0
 
@@ -481,6 +512,7 @@ def calculate_complexity(
 # ---------------------------------------------------------------------------
 # Internal helpers
 # ---------------------------------------------------------------------------
+
 
 def _parse_single_dim(d: Any) -> int:
     """Parse a single dimension value to int."""

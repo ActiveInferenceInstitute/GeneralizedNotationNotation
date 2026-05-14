@@ -24,12 +24,15 @@ class TestOntologyVisualizer:
     def test_extract_ontology_mappings(self, sample_gnn_file: Path) -> None:
         """Test ontology mapping extraction from GNN file."""
         # Read test file
-        with open(sample_gnn_file, 'r') as f:
+        with open(sample_gnn_file, "r") as f:
             content = f.read()
 
         # Extract ontology section
         import re
-        ontology_match = re.search(r'## ActInfOntologyAnnotation\n(.*?)(?=\n##|\Z)', content, re.DOTALL)
+
+        ontology_match = re.search(
+            r"## ActInfOntologyAnnotation\n(.*?)(?=\n##|\Z)", content, re.DOTALL
+        )
         assert ontology_match is not None
 
         # Extract mappings
@@ -40,30 +43,30 @@ class TestOntologyVisualizer:
         assert len(mappings) == 13  # All variables and matrices
 
         # Verify matrix mappings
-        assert ('A', 'LikelihoodMatrix') in mappings
-        assert ('B', 'TransitionMatrix') in mappings
-        assert ('C', 'LogPreferenceVector') in mappings
-        assert ('D', 'PriorOverHiddenStates') in mappings
-        assert ('E', 'Habit') in mappings
-        assert ('F', 'VariationalFreeEnergy') in mappings
-        assert ('G', 'ExpectedFreeEnergy') in mappings
+        assert ("A", "LikelihoodMatrix") in mappings
+        assert ("B", "TransitionMatrix") in mappings
+        assert ("C", "LogPreferenceVector") in mappings
+        assert ("D", "PriorOverHiddenStates") in mappings
+        assert ("E", "Habit") in mappings
+        assert ("F", "VariationalFreeEnergy") in mappings
+        assert ("G", "ExpectedFreeEnergy") in mappings
 
         # Verify variable mappings
-        assert ('s', 'HiddenState') in mappings
-        assert ('s_prime', 'NextHiddenState') in mappings
-        assert ('o', 'Observation') in mappings
-        assert ('π', 'PolicyVector') in mappings  # Distribution over actions
-        assert ('u', 'Action') in mappings  # Chosen action
-        assert ('t', 'Time') in mappings
+        assert ("s", "HiddenState") in mappings
+        assert ("s_prime", "NextHiddenState") in mappings
+        assert ("o", "Observation") in mappings
+        assert ("π", "PolicyVector") in mappings  # Distribution over actions
+        assert ("u", "Action") in mappings  # Chosen action
+        assert ("t", "Time") in mappings
 
     def test_create_ontology_table(self, temp_output_dir: Path) -> None:
         """Test creation of ontology visualization table."""
         visualizer = OntologyVisualizer()
         mappings = [
-            ('s1', 'state_location_1'),
-            ('s2', 'state_location_2'),
-            ('a1', 'action_move_forward'),
-            ('o1', 'observation_position')
+            ("s1", "state_location_1"),
+            ("s2", "state_location_2"),
+            ("a1", "action_move_forward"),
+            ("o1", "observation_position"),
         ]
 
         # Create visualization
@@ -73,9 +76,11 @@ class TestOntologyVisualizer:
         assert output_path is not None
         assert Path(output_path).exists()
         assert Path(output_path).is_file()
-        assert Path(output_path).suffix == '.png'
+        assert Path(output_path).suffix == ".png"
 
-    def test_visualize_directory(self, test_data_dir: Path, temp_output_dir: Path) -> None:
+    def test_visualize_directory(
+        self, test_data_dir: Path, temp_output_dir: Path
+    ) -> None:
         """Test visualization of all ontology annotations in a directory."""
         visualizer = OntologyVisualizer()
         output_files = visualizer.visualize_directory(test_data_dir, temp_output_dir)
@@ -85,6 +90,4 @@ class TestOntologyVisualizer:
         for file_path in output_files:
             assert Path(file_path).exists()
             assert Path(file_path).is_file()
-            assert Path(file_path).suffix == '.png'
-
-
+            assert Path(file_path).suffix == ".png"

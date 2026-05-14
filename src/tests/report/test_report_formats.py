@@ -26,13 +26,13 @@ class TestHTMLReportFormat:
             "title": "Test Report",
             "sections": [
                 {"name": "Overview", "content": "Overview content"},
-                {"name": "Analysis", "content": "Analysis content"}
-            ]
+                {"name": "Analysis", "content": "Analysis content"},
+            ],
         }
 
         output_file = tmp_path / "report.html"
         content = generate_html_report(data)
-        output_file.write_text(content, encoding='utf-8')
+        output_file.write_text(content, encoding="utf-8")
 
         if output_file.exists():
             content = output_file.read_text()
@@ -45,12 +45,12 @@ class TestHTMLReportFormat:
 
         data = {
             "title": "Test <script>alert('xss')</script>",
-            "content": "Content with <>&\" characters"
+            "content": 'Content with <>&" characters',
         }
 
         output_file = tmp_path / "escaped_report.html"
         content = generate_html_report(data)
-        output_file.write_text(content, encoding='utf-8')
+        output_file.write_text(content, encoding="utf-8")
 
         # Verify output file exists and content is escaped
         if output_file.exists():
@@ -69,14 +69,12 @@ class TestMarkdownReportFormat:
 
         data = {
             "title": "Test Report",
-            "sections": [
-                {"name": "Overview", "content": "Overview content"}
-            ]
+            "sections": [{"name": "Overview", "content": "Overview content"}],
         }
 
         output_file = tmp_path / "report.md"
         content = generate_markdown_report(data)
-        output_file.write_text(content, encoding='utf-8')
+        output_file.write_text(content, encoding="utf-8")
 
         if output_file.exists():
             content = output_file.read_text()
@@ -91,24 +89,22 @@ class TestMarkdownReportFormat:
         data = {
             "title": "Report with Tables",
             "tables": [
-                {
-                    "headers": ["Column 1", "Column 2"],
-                    "rows": [["A", "B"], ["C", "D"]]
-                }
-            ]
+                {"headers": ["Column 1", "Column 2"], "rows": [["A", "B"], ["C", "D"]]}
+            ],
         }
 
         output_file = tmp_path / "table_report.md"
         content = generate_markdown_report(data)
-        output_file.write_text(content, encoding='utf-8')
+        output_file.write_text(content, encoding="utf-8")
 
         # Verify output file was created
         if output_file.exists():
             content = output_file.read_text()
             assert len(content) > 0, "Report should have content"
             # Tables in markdown typically use pipe characters
-            assert "|" in content or "Column" in content or len(content) > 10, \
+            assert "|" in content or "Column" in content or len(content) > 10, (
                 "Markdown report should contain table-like content"
+            )
 
 
 class TestJSONReportFormat:
@@ -126,11 +122,7 @@ class TestJSONReportFormat:
         input_dir.mkdir(parents=True, exist_ok=True)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        generate_report(
-            target_dir=input_dir,
-            output_dir=output_dir,
-            format="json"
-        )
+        generate_report(target_dir=input_dir, output_dir=output_dir, format="json")
 
         # Check for JSON files in output
         json_files = list(output_dir.glob("*.json"))
@@ -153,14 +145,13 @@ class TestJSONReportFormat:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         result = generate_report(
-            target_dir=input_dir,
-            output_dir=output_dir,
-            format="json"
+            target_dir=input_dir, output_dir=output_dir, format="json"
         )
 
         # Verify report generation returned a result
-        assert result is not None or output_dir.exists(), \
+        assert result is not None or output_dir.exists(), (
             "Report generation should return result or create output directory"
+        )
 
 
 class TestReportFormatterFormats:
@@ -214,7 +205,9 @@ class TestSupportedFormats:
 
         assert formats is not None
         # Should have at least some formats
-        assert isinstance(formats, (list, tuple, dict)), f"Unexpected formats type: {type(formats)}"
+        assert isinstance(formats, (list, tuple, dict)), (
+            f"Unexpected formats type: {type(formats)}"
+        )
 
     @pytest.mark.fast
     def test_features_include_format_support(self):

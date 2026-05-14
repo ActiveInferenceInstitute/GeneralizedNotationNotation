@@ -34,6 +34,7 @@ from .common import (
 
 logger = logging.getLogger(__name__)
 
+
 class XSDParser(BaseGNNParser):
     """Parser for XML Schema Definition (XSD) files."""
 
@@ -43,12 +44,13 @@ class XSDParser(BaseGNNParser):
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from schema comments."""
         import json
+
         # Look for JSON data in comments (different formats)
         patterns = [
-            r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/',  # /* MODEL_DATA: {...} */
-            r'<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->',  # <!-- MODEL_DATA: {...} -->
-            r'#\s*MODEL_DATA:\s*(\{.*?\})',  # # MODEL_DATA: {...}
-            r'//\s*MODEL_DATA:\s*(\{.*?\})',  # // MODEL_DATA: {...}
+            r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
+            r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
+            r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
+            r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
         ]
 
         for pattern in patterns:
@@ -57,61 +59,77 @@ class XSDParser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError as e:
-                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    logger.debug(
+                        "Malformed JSON in embedded data, trying next pattern: %s", e
+                    )
                     continue
         return None
 
-    def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip."""
         try:
             # Restore original model data
-            result.model.model_name = data.get('model_name', 'SchemaModel')
-            result.model.annotation = data.get('annotation', '')
-            result.model.version = data.get('version', '1.0')
+            result.model.model_name = data.get("model_name", "SchemaModel")
+            result.model.annotation = data.get("annotation", "")
+            result.model.version = data.get("version", "1.0")
 
             # Restore variables
-            for var_data in data.get('variables', []):
+            for var_data in data.get("variables", []):
                 variable = Variable(
-                    name=var_data['name'],
-                    var_type=self._parse_enum_value(VariableType, var_data.get('var_type', 'hidden_state')),
-                    data_type=self._parse_enum_value(DataType, var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [1]),
-                    description=var_data.get('description', '')
+                    name=var_data["name"],
+                    var_type=self._parse_enum_value(
+                        VariableType, var_data.get("var_type", "hidden_state")
+                    ),
+                    data_type=self._parse_enum_value(
+                        DataType, var_data.get("data_type", "categorical")
+                    ),
+                    dimensions=var_data.get("dimensions", [1]),
+                    description=var_data.get("description", ""),
                 )
                 result.model.variables.append(variable)
 
             # Restore connections
-            for conn_data in data.get('connections', []):
+            for conn_data in data.get("connections", []):
                 connection = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=self._parse_enum_value(ConnectionType, conn_data.get('connection_type', 'directed')),
-                    description=conn_data.get('description', '')
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=self._parse_enum_value(
+                        ConnectionType, conn_data.get("connection_type", "directed")
+                    ),
+                    description=conn_data.get("description", ""),
                 )
                 result.model.connections.append(connection)
 
             # Restore parameters
-            for param_data in data.get('parameters', []):
+            for param_data in data.get("parameters", []):
                 parameter = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    description=param_data.get('description', '')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    description=param_data.get("description", ""),
                 )
                 result.model.parameters.append(parameter)
 
             # Restore other fields including time specification and ontology mappings
-            if 'time_specification' in data and data['time_specification']:
-                time_spec_data = data['time_specification']
+            if "time_specification" in data and data["time_specification"]:
+                time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
                     from types import SimpleNamespace
+
                     result.model.time_specification = SimpleNamespace(**time_spec_data)
 
             # Restore ontology mappings for XSD parser
-            if 'ontology_mappings' in data and data['ontology_mappings']:
-                ontology_data = data['ontology_mappings']
+            if "ontology_mappings" in data and data["ontology_mappings"]:
+                ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
                     from types import SimpleNamespace
-                    result.model.ontology_mappings = [SimpleNamespace(**mapping) for mapping in ontology_data if isinstance(mapping, dict)]
+
+                    result.model.ontology_mappings = [
+                        SimpleNamespace(**mapping)
+                        for mapping in ontology_data
+                        if isinstance(mapping, dict)
+                    ]
 
             # Keep the original annotation without modification for perfect round-trip
 
@@ -133,12 +151,12 @@ class XSDParser(BaseGNNParser):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
-        return ['.xsd']
+        return [".xsd"]
 
     def parse_file(self, file_path: str) -> ParseResult:
         try:
             # Read the file content first to check for embedded data
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -165,7 +183,7 @@ class XSDParser(BaseGNNParser):
         result = ParseResult(model=self.create_empty_model())
 
         # Convert XML element back to string to look for embedded data
-        content = ET.tostring(root, encoding='unicode')
+        content = ET.tostring(root, encoding="unicode")
 
         # First try to extract embedded JSON model data
         embedded_data = self._extract_embedded_json_data(content)
@@ -173,12 +191,12 @@ class XSDParser(BaseGNNParser):
             return self._parse_from_embedded_data(embedded_data, result)
 
         # Recovery to basic XSD parsing
-        result.model.model_name = root.get('targetNamespace', 'XSDModel').split('/')[-1]
+        result.model.model_name = root.get("targetNamespace", "XSDModel").split("/")[-1]
 
         # Parse element definitions
-        for elem in root.findall('.//{http://www.w3.org/2001/XMLSchema}element'):
-            name = elem.get('name')
-            type_attr = elem.get('type', 'string')
+        for elem in root.findall(".//{http://www.w3.org/2001/XMLSchema}element"):
+            name = elem.get("name")
+            type_attr = elem.get("type", "string")
 
             if name:
                 variable = Variable(
@@ -186,7 +204,7 @@ class XSDParser(BaseGNNParser):
                     var_type=self._infer_variable_type(name),
                     dimensions=[1],
                     data_type=self._map_xsd_type(type_attr),
-                    description=f"XSD element of type {type_attr}"
+                    description=f"XSD element of type {type_attr}",
                 )
                 result.model.variables.append(variable)
 
@@ -194,44 +212,52 @@ class XSDParser(BaseGNNParser):
 
     def _map_xsd_type(self, xsd_type: str) -> DataType:
         type_mapping = {
-            'string': DataType.CATEGORICAL,
-            'int': DataType.INTEGER,
-            'integer': DataType.INTEGER,
-            'float': DataType.FLOAT,
-            'double': DataType.FLOAT,
-            'boolean': DataType.BINARY,
-            'decimal': DataType.FLOAT
+            "string": DataType.CATEGORICAL,
+            "int": DataType.INTEGER,
+            "integer": DataType.INTEGER,
+            "float": DataType.FLOAT,
+            "double": DataType.FLOAT,
+            "boolean": DataType.BINARY,
+            "decimal": DataType.FLOAT,
         }
-        return type_mapping.get(xsd_type.split(':')[-1], DataType.CATEGORICAL)
+        return type_mapping.get(xsd_type.split(":")[-1], DataType.CATEGORICAL)
 
     def _infer_variable_type(self, name: str) -> VariableType:
         name_lower = name.lower()
-        if 'state' in name_lower:
+        if "state" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'observation' in name_lower:
+        elif "observation" in name_lower:
             return VariableType.OBSERVATION
         else:
             return VariableType.HIDDEN_STATE
+
 
 class ASN1Parser(BaseGNNParser):
     """Parser for ASN.1 schema definition files."""
 
     def __init__(self):
         super().__init__()
-        self.module_pattern = re.compile(r'(\w+)\s+DEFINITIONS.*::=\s*BEGIN', re.IGNORECASE)
-        self.sequence_pattern = re.compile(r'(\w+)\s*::=\s*SEQUENCE\s*\{([^}]+)\}', re.IGNORECASE | re.DOTALL)
-        self.field_pattern = re.compile(r'(\w+)\s+([A-Z][A-Z0-9]*(?:\s+[A-Z0-9]*)*)', re.IGNORECASE)
+        self.module_pattern = re.compile(
+            r"(\w+)\s+DEFINITIONS.*::=\s*BEGIN", re.IGNORECASE
+        )
+        self.sequence_pattern = re.compile(
+            r"(\w+)\s*::=\s*SEQUENCE\s*\{([^}]+)\}", re.IGNORECASE | re.DOTALL
+        )
+        self.field_pattern = re.compile(
+            r"(\w+)\s+([A-Z][A-Z0-9]*(?:\s+[A-Z0-9]*)*)", re.IGNORECASE
+        )
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from schema comments."""
         import json
+
         # Look for JSON data in comments (different formats)
         patterns = [
-            r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/',  # /* MODEL_DATA: {...} */
-            r'<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->',  # <!-- MODEL_DATA: {...} -->
-            r'#\s*MODEL_DATA:\s*(\{.*?\})',  # # MODEL_DATA: {...}
-            r'//\s*MODEL_DATA:\s*(\{.*?\})',  # // MODEL_DATA: {...}
-            r'--\s*MODEL_DATA:\s*(\{.+\})',  # -- MODEL_DATA: {...} (ASN.1 style) - greedy match for long data
+            r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
+            r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
+            r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
+            r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
+            r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...} (ASN.1 style) - greedy match for long data
         ]
 
         for pattern in patterns:
@@ -240,61 +266,77 @@ class ASN1Parser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError as e:
-                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    logger.debug(
+                        "Malformed JSON in embedded data, trying next pattern: %s", e
+                    )
                     continue
         return None
 
-    def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip."""
         try:
             # Restore original model data
-            result.model.model_name = data.get('model_name', 'SchemaModel')
-            result.model.annotation = data.get('annotation', '')
-            result.model.version = data.get('version', '1.0')
+            result.model.model_name = data.get("model_name", "SchemaModel")
+            result.model.annotation = data.get("annotation", "")
+            result.model.version = data.get("version", "1.0")
 
             # Restore variables
-            for var_data in data.get('variables', []):
+            for var_data in data.get("variables", []):
                 variable = Variable(
-                    name=var_data['name'],
-                    var_type=self._parse_enum_value(VariableType, var_data.get('var_type', 'hidden_state')),
-                    data_type=self._parse_enum_value(DataType, var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [1]),
-                    description=var_data.get('description', '')
+                    name=var_data["name"],
+                    var_type=self._parse_enum_value(
+                        VariableType, var_data.get("var_type", "hidden_state")
+                    ),
+                    data_type=self._parse_enum_value(
+                        DataType, var_data.get("data_type", "categorical")
+                    ),
+                    dimensions=var_data.get("dimensions", [1]),
+                    description=var_data.get("description", ""),
                 )
                 result.model.variables.append(variable)
 
             # Restore connections
-            for conn_data in data.get('connections', []):
+            for conn_data in data.get("connections", []):
                 connection = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=self._parse_enum_value(ConnectionType, conn_data.get('connection_type', 'directed')),
-                    description=conn_data.get('description', '')
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=self._parse_enum_value(
+                        ConnectionType, conn_data.get("connection_type", "directed")
+                    ),
+                    description=conn_data.get("description", ""),
                 )
                 result.model.connections.append(connection)
 
             # Restore parameters
-            for param_data in data.get('parameters', []):
+            for param_data in data.get("parameters", []):
                 parameter = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    description=param_data.get('description', '')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    description=param_data.get("description", ""),
                 )
                 result.model.parameters.append(parameter)
 
             # Restore time specification for ASN1 parser
-            if 'time_specification' in data and data['time_specification']:
-                time_spec_data = data['time_specification']
+            if "time_specification" in data and data["time_specification"]:
+                time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
                     from types import SimpleNamespace
+
                     result.model.time_specification = SimpleNamespace(**time_spec_data)
 
             # Restore ontology mappings for ASN1 parser
-            if 'ontology_mappings' in data and data['ontology_mappings']:
-                ontology_data = data['ontology_mappings']
+            if "ontology_mappings" in data and data["ontology_mappings"]:
+                ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
                     from types import SimpleNamespace
-                    result.model.ontology_mappings = [SimpleNamespace(**mapping) for mapping in ontology_data if isinstance(mapping, dict)]
+
+                    result.model.ontology_mappings = [
+                        SimpleNamespace(**mapping)
+                        for mapping in ontology_data
+                        if isinstance(mapping, dict)
+                    ]
 
             # Keep the original annotation without modification for perfect round-trip
 
@@ -316,11 +358,11 @@ class ASN1Parser(BaseGNNParser):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
-        return ['.asn1', '.asn']
+        return [".asn1", ".asn"]
 
     def parse_file(self, file_path: str) -> ParseResult:
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -359,7 +401,7 @@ class ASN1Parser(BaseGNNParser):
                         var_type=self._infer_variable_type(field_name),
                         dimensions=self._parse_asn1_dimensions(field_type),
                         data_type=self._map_asn1_type(field_type),
-                        description=f"ASN.1 {seq_name} field of type {field_type}"
+                        description=f"ASN.1 {seq_name} field of type {field_type}",
                     )
                     result.model.variables.append(variable)
 
@@ -371,56 +413,64 @@ class ASN1Parser(BaseGNNParser):
         return result
 
     def _parse_asn1_dimensions(self, type_def: str) -> List[int]:
-        if 'SEQUENCE OF' in type_def.upper():
+        if "SEQUENCE OF" in type_def.upper():
             return [1]  # Array/list type
-        elif 'CHOICE' in type_def.upper():
+        elif "CHOICE" in type_def.upper():
             return [1]  # Union type
         return []
 
     def _map_asn1_type(self, type_def: str) -> DataType:
         type_upper = type_def.upper()
-        if 'INTEGER' in type_upper:
+        if "INTEGER" in type_upper:
             return DataType.INTEGER
-        elif 'REAL' in type_upper:
+        elif "REAL" in type_upper:
             return DataType.FLOAT
-        elif 'BOOLEAN' in type_upper:
+        elif "BOOLEAN" in type_upper:
             return DataType.BINARY
-        elif 'UTF8STRING' in type_upper or 'OCTET STRING' in type_upper:
+        elif "UTF8STRING" in type_upper or "OCTET STRING" in type_upper:
             return DataType.CATEGORICAL
-        elif 'SEQUENCE' in type_upper:
+        elif "SEQUENCE" in type_upper:
             return DataType.CATEGORICAL
         return DataType.CATEGORICAL
 
     def _infer_variable_type(self, name: str) -> VariableType:
         name_lower = name.lower()
-        if 'state' in name_lower or 'hidden' in name_lower:
+        if "state" in name_lower or "hidden" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'observation' in name_lower or 'obs' in name_lower:
+        elif "observation" in name_lower or "obs" in name_lower:
             return VariableType.OBSERVATION
-        elif 'action' in name_lower or 'control' in name_lower:
+        elif "action" in name_lower or "control" in name_lower:
             return VariableType.ACTION
         else:
             return VariableType.HIDDEN_STATE
+
 
 class PKLParser(BaseGNNParser):
     """Parser for Apple PKL configuration files."""
 
     def __init__(self):
         super().__init__()
-        self.class_pattern = re.compile(r'class\s+(\w+)\s*\{([^}]+)\}', re.DOTALL)
-        self.property_pattern = re.compile(r'(\w+)\s*:\s*([^=\n]+?)(?:=\s*([^\n]+))?', re.MULTILINE)
-        self.mapping_pattern = re.compile(r'(\w+)\s*:\s*Mapping<[^>]+>\s*=\s*new\s+Mapping\s*\{([^}]+)\}', re.DOTALL)
-        self.mapping_entry_pattern = re.compile(r'\["([^"]+)"\]\s*=\s*([^\n]+)', re.MULTILINE)
+        self.class_pattern = re.compile(r"class\s+(\w+)\s*\{([^}]+)\}", re.DOTALL)
+        self.property_pattern = re.compile(
+            r"(\w+)\s*:\s*([^=\n]+?)(?:=\s*([^\n]+))?", re.MULTILINE
+        )
+        self.mapping_pattern = re.compile(
+            r"(\w+)\s*:\s*Mapping<[^>]+>\s*=\s*new\s+Mapping\s*\{([^}]+)\}", re.DOTALL
+        )
+        self.mapping_entry_pattern = re.compile(
+            r'\["([^"]+)"\]\s*=\s*([^\n]+)', re.MULTILINE
+        )
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from schema comments."""
         import json
+
         # Look for JSON data in comments (different formats)
         patterns = [
-            r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/',  # /* MODEL_DATA: {...} */
-            r'<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->',  # <!-- MODEL_DATA: {...} -->
-            r'#\s*MODEL_DATA:\s*(\{.*?\})',  # # MODEL_DATA: {...}
-            r'//\s*MODEL_DATA:\s*(\{.*?\})',  # // MODEL_DATA: {...}
+            r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
+            r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
+            r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
+            r"//\s*MODEL_DATA:\s*(\{.*?\})",  # // MODEL_DATA: {...}
         ]
 
         for pattern in patterns:
@@ -429,61 +479,77 @@ class PKLParser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError as e:
-                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    logger.debug(
+                        "Malformed JSON in embedded data, trying next pattern: %s", e
+                    )
                     continue
         return None
 
-    def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip."""
         try:
             # Restore original model data
-            result.model.model_name = data.get('model_name', 'SchemaModel')
-            result.model.annotation = data.get('annotation', '')
-            result.model.version = data.get('version', '1.0')
+            result.model.model_name = data.get("model_name", "SchemaModel")
+            result.model.annotation = data.get("annotation", "")
+            result.model.version = data.get("version", "1.0")
 
             # Restore variables
-            for var_data in data.get('variables', []):
+            for var_data in data.get("variables", []):
                 variable = Variable(
-                    name=var_data['name'],
-                    var_type=self._parse_enum_value(VariableType, var_data.get('var_type', 'hidden_state')),
-                    data_type=self._parse_enum_value(DataType, var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [1]),
-                    description=var_data.get('description', '')
+                    name=var_data["name"],
+                    var_type=self._parse_enum_value(
+                        VariableType, var_data.get("var_type", "hidden_state")
+                    ),
+                    data_type=self._parse_enum_value(
+                        DataType, var_data.get("data_type", "categorical")
+                    ),
+                    dimensions=var_data.get("dimensions", [1]),
+                    description=var_data.get("description", ""),
                 )
                 result.model.variables.append(variable)
 
             # Restore connections
-            for conn_data in data.get('connections', []):
+            for conn_data in data.get("connections", []):
                 connection = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=self._parse_enum_value(ConnectionType, conn_data.get('connection_type', 'directed')),
-                    description=conn_data.get('description', '')
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=self._parse_enum_value(
+                        ConnectionType, conn_data.get("connection_type", "directed")
+                    ),
+                    description=conn_data.get("description", ""),
                 )
                 result.model.connections.append(connection)
 
             # Restore parameters
-            for param_data in data.get('parameters', []):
+            for param_data in data.get("parameters", []):
                 parameter = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    description=param_data.get('description', '')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    description=param_data.get("description", ""),
                 )
                 result.model.parameters.append(parameter)
 
             # Restore time specification for PKL parser
-            if 'time_specification' in data and data['time_specification']:
-                time_spec_data = data['time_specification']
+            if "time_specification" in data and data["time_specification"]:
+                time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
                     from types import SimpleNamespace
+
                     result.model.time_specification = SimpleNamespace(**time_spec_data)
 
             # Restore ontology mappings for PKL parser
-            if 'ontology_mappings' in data and data['ontology_mappings']:
-                ontology_data = data['ontology_mappings']
+            if "ontology_mappings" in data and data["ontology_mappings"]:
+                ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
                     from types import SimpleNamespace
-                    result.model.ontology_mappings = [SimpleNamespace(**mapping) for mapping in ontology_data if isinstance(mapping, dict)]
+
+                    result.model.ontology_mappings = [
+                        SimpleNamespace(**mapping)
+                        for mapping in ontology_data
+                        if isinstance(mapping, dict)
+                    ]
 
             # Keep the original annotation without modification for perfect round-trip
             # result.model.annotation is already set above
@@ -506,11 +572,11 @@ class PKLParser(BaseGNNParser):
             return list(enum_class)[0]
 
     def get_supported_extensions(self) -> List[str]:
-        return ['.pkl']
+        return [".pkl"]
 
     def parse_file(self, file_path: str) -> ParseResult:
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -528,7 +594,9 @@ class PKLParser(BaseGNNParser):
                 return self._parse_from_embedded_data(embedded_data, result)
 
             # Find main model class
-            model_class_match = re.search(r'class\s+(\w*Model|\w*GNN\w*)\s*\{', content, re.IGNORECASE)
+            model_class_match = re.search(
+                r"class\s+(\w*Model|\w*GNN\w*)\s*\{", content, re.IGNORECASE
+            )
             if model_class_match:
                 result.model.model_name = model_class_match.group(1)
             else:
@@ -543,10 +611,12 @@ class PKLParser(BaseGNNParser):
                 for prop_match in self.property_pattern.finditer(class_body):
                     prop_name = prop_match.group(1)
                     prop_type = prop_match.group(2).strip()
-                    prop_value = prop_match.group(3).strip() if prop_match.group(3) else None
+                    prop_value = (
+                        prop_match.group(3).strip() if prop_match.group(3) else None
+                    )
 
                     # Skip special PKL properties
-                    if prop_name in ['name', 'version', 'annotation']:
+                    if prop_name in ["name", "version", "annotation"]:
                         continue
 
                     # Determine if this is a variable or parameter
@@ -556,7 +626,7 @@ class PKLParser(BaseGNNParser):
                             var_type=self._infer_variable_type(prop_name),
                             dimensions=self._parse_pkl_dimensions(prop_type),
                             data_type=self._map_pkl_type(prop_type),
-                            description=f"PKL property of type {prop_type}"
+                            description=f"PKL property of type {prop_type}",
                         )
                         result.model.variables.append(variable)
                     else:
@@ -564,7 +634,7 @@ class PKLParser(BaseGNNParser):
                             name=prop_name,
                             value=prop_value or f"<{prop_type}>",
                             type_hint=prop_type,
-                            description="PKL property"
+                            description="PKL property",
                         )
                         result.model.parameters.append(parameter)
 
@@ -578,16 +648,18 @@ class PKLParser(BaseGNNParser):
                     entry_key = entry_match.group(1)
                     entry_value = entry_match.group(2).strip()
 
-                    if mapping_name == 'variables':
+                    if mapping_name == "variables":
                         # Parse variable definition from PKL
-                        variable = self._parse_pkl_variable_entry(entry_key, entry_value)
+                        variable = self._parse_pkl_variable_entry(
+                            entry_key, entry_value
+                        )
                         if variable:
                             result.model.variables.append(variable)
-                    elif mapping_name == 'parameters':
+                    elif mapping_name == "parameters":
                         parameter = Parameter(
                             name=entry_key,
                             value=entry_value,
-                            description="PKL parameter"
+                            description="PKL parameter",
                         )
                         result.model.parameters.append(parameter)
 
@@ -600,29 +672,34 @@ class PKLParser(BaseGNNParser):
 
     def _is_variable_property(self, name: str, type_str: str) -> bool:
         """Determine if a property represents a variable."""
-        return ('Variable' in type_str or
-                'Mapping' in type_str and 'Variable' in type_str or
-                any(keyword in name.lower() for keyword in ['var', 'state', 'obs', 'action']))
+        return (
+            "Variable" in type_str
+            or "Mapping" in type_str
+            and "Variable" in type_str
+            or any(
+                keyword in name.lower() for keyword in ["var", "state", "obs", "action"]
+            )
+        )
 
     def _parse_pkl_dimensions(self, type_str: str) -> List[int]:
         """Parse dimensions from PKL type definition."""
-        if 'List<' in type_str:
+        if "List<" in type_str:
             return [1]  # List type
-        elif 'Mapping<' in type_str:
+        elif "Mapping<" in type_str:
             return [1]  # Map type
         return []
 
     def _map_pkl_type(self, type_str: str) -> DataType:
         """Map PKL types to GNN data types."""
-        if 'Int' in type_str:
+        if "Int" in type_str:
             return DataType.INTEGER
-        elif 'Float' in type_str or 'Double' in type_str:
+        elif "Float" in type_str or "Double" in type_str:
             return DataType.FLOAT
-        elif 'Boolean' in type_str:
+        elif "Boolean" in type_str:
             return DataType.BINARY
-        elif 'String' in type_str:
+        elif "String" in type_str:
             return DataType.CATEGORICAL
-        elif 'List' in type_str:
+        elif "List" in type_str:
             return DataType.CATEGORICAL
         return DataType.CATEGORICAL
 
@@ -635,7 +712,7 @@ class PKLParser(BaseGNNParser):
                 var_type=self._infer_variable_type(key),
                 dimensions=[],
                 data_type=DataType.CATEGORICAL,
-                description="PKL variable definition"
+                description="PKL variable definition",
             )
             return variable
         except Exception:
@@ -644,18 +721,20 @@ class PKLParser(BaseGNNParser):
     def _infer_variable_type(self, name: str) -> VariableType:
         """Infer variable type from name."""
         name_lower = name.lower()
-        if 'state' in name_lower or 's_' in name_lower:
+        if "state" in name_lower or "s_" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'obs' in name_lower or 'o_' in name_lower:
+        elif "obs" in name_lower or "o_" in name_lower:
             return VariableType.OBSERVATION
-        elif 'action' in name_lower or 'u_' in name_lower:
+        elif "action" in name_lower or "u_" in name_lower:
             return VariableType.ACTION
-        elif 'policy' in name_lower or 'pi_' in name_lower:
+        elif "policy" in name_lower or "pi_" in name_lower:
             return VariableType.POLICY
         else:
             return VariableType.HIDDEN_STATE
 
-    def parse_content(self, content: str, file_path: Optional[Path] = None) -> ParseResult:
+    def parse_content(
+        self, content: str, file_path: Optional[Path] = None
+    ) -> ParseResult:
         """Parse PKL content with enhanced model extraction."""
         try:
             model = GNNInternalRepresentation()
@@ -709,7 +788,10 @@ class PKLParser(BaseGNNParser):
                 success=success,
                 errors=errors,
                 warnings=warnings,
-                metadata={'format': 'pkl', 'source_file': str(file_path) if file_path else None}
+                metadata={
+                    "format": "pkl",
+                    "source_file": str(file_path) if file_path else None,
+                },
             )
 
         except Exception as e:
@@ -718,23 +800,23 @@ class PKLParser(BaseGNNParser):
                 success=False,
                 errors=[f"PKL parsing failed: {str(e)}"],
                 warnings=[],
-                metadata={'format': 'pkl'}
+                metadata={"format": "pkl"},
             )
 
     def _extract_pkl_model_name(self, content: str) -> Optional[str]:
         """Extract model name from PKL content."""
         # Look for class name
-        class_match = re.search(r'class\s+(\w+)\s*{', content)
+        class_match = re.search(r"class\s+(\w+)\s*{", content)
         if class_match:
             return class_match.group(1)
 
         # Look for amends clause
         amends_match = re.search(r'amends\s+"([^"]+)"', content)
         if amends_match:
-            return amends_match.group(1).replace('/', '_')
+            return amends_match.group(1).replace("/", "_")
 
         # Look for module clause
-        module_match = re.search(r'module\s+(\w+)', content)
+        module_match = re.search(r"module\s+(\w+)", content)
         if module_match:
             return module_match.group(1)
 
@@ -745,53 +827,66 @@ class PKLParser(BaseGNNParser):
         annotations = []
 
         # Look for /// comments (doc comments)
-        doc_comments = re.findall(r'///\s*(.+)', content)
+        doc_comments = re.findall(r"///\s*(.+)", content)
         if doc_comments:
             annotations.extend(doc_comments[:3])
 
         # Look for // comments
-        line_comments = re.findall(r'//\s*(.+)', content)
+        line_comments = re.findall(r"//\s*(.+)", content)
         if line_comments:
-            annotations.extend([c for c in line_comments[:3] if not c.startswith('/')])
+            annotations.extend([c for c in line_comments[:3] if not c.startswith("/")])
 
         # Look for /* */ comments
-        block_comments = re.findall(r'/\*\s*(.*?)\s*\*/', content, re.DOTALL)
+        block_comments = re.findall(r"/\*\s*(.*?)\s*\*/", content, re.DOTALL)
         for comment in block_comments:
-            clean_comment = re.sub(r'\s+', ' ', comment.strip())
-            if clean_comment and len(clean_comment) > 10 and 'MODEL_DATA' not in clean_comment:
+            clean_comment = re.sub(r"\s+", " ", comment.strip())
+            if (
+                clean_comment
+                and len(clean_comment) > 10
+                and "MODEL_DATA" not in clean_comment
+            ):
                 annotations.append(clean_comment)
 
-        return ' '.join(annotations) if annotations else ""
+        return " ".join(annotations) if annotations else ""
 
     def _parse_pkl_variables_enhanced(self, content: str) -> List[Variable]:
         """Parse variables with complete information preservation."""
         variables = []
 
         # Parse property declarations
-        prop_declarations = re.findall(r'(\w+):\s*(\w+)(?:\s*=\s*([^;\n]+))?', content)
+        prop_declarations = re.findall(r"(\w+):\s*(\w+)(?:\s*=\s*([^;\n]+))?", content)
         for name, type_hint, _ in prop_declarations:
-            if name in ['name', 'annotation', 'variables', 'connections', 'parameters']:
+            if name in ["name", "annotation", "variables", "connections", "parameters"]:
                 continue  # Skip model metadata fields
 
             var = Variable(
                 name=name,
                 var_type=self._map_pkl_type_to_variable_type(type_hint),
                 data_type=self._map_pkl_type_to_data_type(type_hint),
-                dimensions=[]
+                dimensions=[],
             )
             variables.append(var)
 
         # Parse embedded data
         embedded_data = self._extract_pkl_embedded_data(content)
-        if embedded_data and 'variables' in embedded_data:
-            for var_data in embedded_data['variables']:
-                if isinstance(var_data, dict) and 'name' in var_data:
+        if embedded_data and "variables" in embedded_data:
+            for var_data in embedded_data["variables"]:
+                if isinstance(var_data, dict) and "name" in var_data:
                     from .common import safe_enum_convert
+
                     var = Variable(
-                        name=var_data['name'],
-                        var_type=safe_enum_convert(VariableType, var_data.get('var_type', 'hidden_state'), VariableType.HIDDEN_STATE),
-                        data_type=safe_enum_convert(DataType, var_data.get('data_type', 'categorical'), DataType.CATEGORICAL),
-                        dimensions=var_data.get('dimensions', [])
+                        name=var_data["name"],
+                        var_type=safe_enum_convert(
+                            VariableType,
+                            var_data.get("var_type", "hidden_state"),
+                            VariableType.HIDDEN_STATE,
+                        ),
+                        data_type=safe_enum_convert(
+                            DataType,
+                            var_data.get("data_type", "categorical"),
+                            DataType.CATEGORICAL,
+                        ),
+                        dimensions=var_data.get("dimensions", []),
                     )
                     # Avoid duplicates
                     if not any(v.name == var.name for v in variables):
@@ -805,26 +900,28 @@ class PKLParser(BaseGNNParser):
 
         # Parse from embedded data
         embedded_data = self._extract_pkl_embedded_data(content)
-        if embedded_data and 'connections' in embedded_data:
-            for conn_data in embedded_data['connections']:
+        if embedded_data and "connections" in embedded_data:
+            for conn_data in embedded_data["connections"]:
                 if isinstance(conn_data, dict):
                     connection = Connection(
-                        source_variables=conn_data.get('source_variables', []),
-                        target_variables=conn_data.get('target_variables', []),
-                        connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                        source_variables=conn_data.get("source_variables", []),
+                        target_variables=conn_data.get("target_variables", []),
+                        connection_type=ConnectionType(
+                            conn_data.get("connection_type", "directed")
+                        ),
                     )
                     connections.append(connection)
 
         # Parse from comment annotations
-        connection_comments = re.findall(r'//\s*Connection:\s*(.+)', content)
+        connection_comments = re.findall(r"//\s*Connection:\s*(.+)", content)
         for comment in connection_comments:
-            conn_match = re.match(r'(\w+)\s*--(\w+)?-->\s*(\w+)', comment)
+            conn_match = re.match(r"(\w+)\s*--(\w+)?-->\s*(\w+)", comment)
             if conn_match:
                 source, conn_type, target = conn_match.groups()
                 connection = Connection(
                     source_variables=[source],
                     target_variables=[target],
-                    connection_type=ConnectionType(conn_type or 'directed')
+                    connection_type=ConnectionType(conn_type or "directed"),
                 )
                 connections.append(connection)
 
@@ -835,28 +932,28 @@ class PKLParser(BaseGNNParser):
         parameters = []
 
         # Parse from property declarations with default values
-        prop_declarations = re.findall(r'(\w+):\s*\w+\s*=\s*([^;\n]+)', content)
+        prop_declarations = re.findall(r"(\w+):\s*\w+\s*=\s*([^;\n]+)", content)
         for name, value_str in prop_declarations:
-            if name in ['name', 'annotation', 'variables', 'connections', 'parameters']:
+            if name in ["name", "annotation", "variables", "connections", "parameters"]:
                 continue
 
             parameter = Parameter(
                 name=name,
                 value=self._parse_pkl_value(value_str.strip()),
-                param_type='constant'
+                param_type="constant",
             )
             parameters.append(parameter)
 
         # Parse from embedded data
         embedded_data = self._extract_pkl_embedded_data(content)
-        if embedded_data and 'parameters' in embedded_data:
-            for param_data in embedded_data['parameters']:
-                if isinstance(param_data, dict) and 'name' in param_data:
+        if embedded_data and "parameters" in embedded_data:
+            for param_data in embedded_data["parameters"]:
+                if isinstance(param_data, dict) and "name" in param_data:
                     parameter = Parameter(
-                        name=param_data['name'],
-                        value=param_data.get('value'),
-                        type_hint=param_data.get('param_type', 'constant'),
-                        description='PKL parameter'
+                        name=param_data["name"],
+                        value=param_data.get("value"),
+                        type_hint=param_data.get("param_type", "constant"),
+                        description="PKL parameter",
                     )
                     # Avoid duplicates
                     if not any(p.name == parameter.name for p in parameters):
@@ -869,17 +966,17 @@ class PKLParser(BaseGNNParser):
         equations = []
 
         # Parse equation comments
-        eq_comments = re.findall(r'//\s*Equation:\s*(.+)', content)
+        eq_comments = re.findall(r"//\s*Equation:\s*(.+)", content)
         for eq_text in eq_comments:
-            equations.append({'equation': eq_text.strip()})
+            equations.append({"equation": eq_text.strip()})
 
         return equations
 
     def _parse_pkl_time_specification(self, content: str) -> Optional[Dict]:
         """Parse time specification from PKL content."""
-        time_comments = re.findall(r'//\s*Time:\s*(.+)', content)
+        time_comments = re.findall(r"//\s*Time:\s*(.+)", content)
         if time_comments:
-            return {'time_type': 'discrete', 'description': time_comments[0]}
+            return {"time_type": "discrete", "description": time_comments[0]}
 
         return None
 
@@ -887,12 +984,11 @@ class PKLParser(BaseGNNParser):
         """Parse ontology mappings from PKL content."""
         mappings = []
 
-        onto_comments = re.findall(r'//\s*Ontology:\s*(\w+)\s*->\s*(.+)', content)
+        onto_comments = re.findall(r"//\s*Ontology:\s*(\w+)\s*->\s*(.+)", content)
         for var_name, ontology_term in onto_comments:
-            mappings.append({
-                'variable_name': var_name,
-                'ontology_term': ontology_term.strip()
-            })
+            mappings.append(
+                {"variable_name": var_name, "ontology_term": ontology_term.strip()}
+            )
 
         return mappings
 
@@ -901,7 +997,7 @@ class PKLParser(BaseGNNParser):
         import json
 
         # Look for embedded JSON in comments
-        json_matches = re.findall(r'//\s*JSON:\s*({.+?})', content, re.DOTALL)
+        json_matches = re.findall(r"//\s*JSON:\s*({.+?})", content, re.DOTALL)
         for json_str in json_matches:
             try:
                 return json.loads(json_str)
@@ -910,7 +1006,9 @@ class PKLParser(BaseGNNParser):
                 continue
 
         # Look for MODEL_DATA in block comments
-        data_matches = re.findall(r'/\*\s*MODEL_DATA:\s*({.+?})\s*\*/', content, re.DOTALL)
+        data_matches = re.findall(
+            r"/\*\s*MODEL_DATA:\s*({.+?})\s*\*/", content, re.DOTALL
+        )
         for data_str in data_matches:
             try:
                 return json.loads(data_str)
@@ -920,51 +1018,59 @@ class PKLParser(BaseGNNParser):
 
         return None
 
-    def _apply_embedded_data_to_model(self, model: GNNInternalRepresentation, data: Dict):
+    def _apply_embedded_data_to_model(
+        self, model: GNNInternalRepresentation, data: Dict
+    ):
         """Apply embedded data to enhance the model."""
-        if 'model_name' in data and data['model_name']:
-            model.model_name = data['model_name']
+        if "model_name" in data and data["model_name"]:
+            model.model_name = data["model_name"]
 
-        if 'annotation' in data and data['annotation']:
-            model.annotation = data['annotation']
+        if "annotation" in data and data["annotation"]:
+            model.annotation = data["annotation"]
 
         # Restore time specification
-        if 'time_specification' in data and data['time_specification']:
-            time_spec_data = data['time_specification']
+        if "time_specification" in data and data["time_specification"]:
+            time_spec_data = data["time_specification"]
             if isinstance(time_spec_data, dict):
                 # Create a simple object with the time specification data
                 from types import SimpleNamespace
+
                 model.time_specification = SimpleNamespace(**time_spec_data)
 
         # Restore ontology mappings
-        if 'ontology_mappings' in data and data['ontology_mappings']:
-            ontology_data = data['ontology_mappings']
+        if "ontology_mappings" in data and data["ontology_mappings"]:
+            ontology_data = data["ontology_mappings"]
             if isinstance(ontology_data, list):
                 # Create simple objects for ontology mappings
                 from types import SimpleNamespace
-                model.ontology_mappings = [SimpleNamespace(**mapping) for mapping in ontology_data if isinstance(mapping, dict)]
+
+                model.ontology_mappings = [
+                    SimpleNamespace(**mapping)
+                    for mapping in ontology_data
+                    if isinstance(mapping, dict)
+                ]
 
     def _map_pkl_type_to_variable_type(self, pkl_type: str) -> VariableType:
         """Map PKL types to GNN variable types."""
         mapping = {
-            'String': VariableType.OBSERVATION,
-            'Int': VariableType.HIDDEN_STATE,
-            'Float': VariableType.HIDDEN_STATE,  # Changed from PARAMETER to more appropriate default
-            'Boolean': VariableType.POLICY,
-            'List': VariableType.OBSERVATION,
-            'Map': VariableType.OBSERVATION
+            "String": VariableType.OBSERVATION,
+            "Int": VariableType.HIDDEN_STATE,
+            "Float": VariableType.HIDDEN_STATE,  # Changed from PARAMETER to more appropriate default
+            "Boolean": VariableType.POLICY,
+            "List": VariableType.OBSERVATION,
+            "Map": VariableType.OBSERVATION,
         }
         return mapping.get(pkl_type, VariableType.HIDDEN_STATE)
 
     def _map_pkl_type_to_data_type(self, pkl_type: str) -> DataType:
         """Map PKL types to GNN data types."""
         mapping = {
-            'String': DataType.CATEGORICAL,
-            'Int': DataType.INTEGER,
-            'Float': DataType.FLOAT,
-            'Boolean': DataType.BINARY,
-            'List': DataType.CATEGORICAL,
-            'Map': DataType.COMPLEX
+            "String": DataType.CATEGORICAL,
+            "Int": DataType.INTEGER,
+            "Float": DataType.FLOAT,
+            "Boolean": DataType.BINARY,
+            "List": DataType.CATEGORICAL,
+            "Map": DataType.COMPLEX,
         }
         return mapping.get(pkl_type, DataType.CATEGORICAL)
 
@@ -978,20 +1084,24 @@ class PKLParser(BaseGNNParser):
 
         # Try to parse as number
         try:
-            if '.' in value_str:
+            if "." in value_str:
                 return float(value_str)
             else:
                 return int(value_str)
         except ValueError as e:
-            logger.debug("Value not numeric, falling through to boolean/string check: %s", e)
+            logger.debug(
+                "Value not numeric, falling through to boolean/string check: %s", e
+            )
 
         # Try to parse as boolean
-        if value_str.lower() in ['true', 'false']:
-            return value_str.lower() == 'true'
+        if value_str.lower() in ["true", "false"]:
+            return value_str.lower() == "true"
 
         return value_str
 
-    def _validate_pkl_model_completeness(self, model: GNNInternalRepresentation, content: str) -> List[str]:
+    def _validate_pkl_model_completeness(
+        self, model: GNNInternalRepresentation, content: str
+    ) -> List[str]:
         """Validate that the PKL model was completely parsed."""
         errors = []
 
@@ -1004,24 +1114,32 @@ class PKLParser(BaseGNNParser):
 
         return errors
 
+
 class AlloyParser(BaseGNNParser):
     """Parser for Alloy model specification files with embedded data support."""
 
     def __init__(self):
         super().__init__()
-        self.sig_pattern = re.compile(r'sig\s+(\w+)\s*\{([^}]*)\}', re.IGNORECASE | re.DOTALL)
-        self.field_pattern = re.compile(r'(\w+)\s*:\s*([^\n,]+)', re.IGNORECASE)
+        self.sig_pattern = re.compile(
+            r"sig\s+(\w+)\s*\{([^}]*)\}", re.IGNORECASE | re.DOTALL
+        )
+        self.field_pattern = re.compile(r"(\w+)\s*:\s*([^\n,]+)", re.IGNORECASE)
 
     def get_supported_extensions(self) -> List[str]:
-        return ['.als']
+        return [".als"]
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Alloy comments."""
-        return extract_embedded_json_data(content, [
-            r'/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/',  # /* MODEL_DATA: {...} */
-        ])
+        return extract_embedded_json_data(
+            content,
+            [
+                r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
+            ],
+        )
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
         from .common import (
             Connection,
@@ -1033,54 +1151,55 @@ class AlloyParser(BaseGNNParser):
         )
 
         try:
-            result.model.model_name = embedded_data.get('model_name', 'AlloyModel')
-            result.model.annotation = embedded_data.get('annotation', '')
+            result.model.model_name = embedded_data.get("model_name", "AlloyModel")
+            result.model.annotation = embedded_data.get("annotation", "")
 
             # Restore variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data.get('var_type', 'hidden_state')),
-                    data_type=DataType(var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data.get("var_type", "hidden_state")),
+                    data_type=DataType(var_data.get("data_type", "categorical")),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 result.model.variables.append(var)
 
             # Restore connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=ConnectionType(
+                        conn_data.get("connection_type", "directed")
+                    ),
                 )
                 result.model.connections.append(conn)
 
             # Restore parameters
-            for param_data in embedded_data.get('parameters', []):
-                param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value']
-                )
+            for param_data in embedded_data.get("parameters", []):
+                param = Parameter(name=param_data["name"], value=param_data["value"])
                 result.model.parameters.append(param)
 
             # Restore time specification
-            if embedded_data.get('time_specification'):
+            if embedded_data.get("time_specification"):
                 from .common import TimeSpecification
-                time_data = embedded_data['time_specification']
+
+                time_data = embedded_data["time_specification"]
                 result.model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Restore ontology mappings
-            for mapping_data in embedded_data.get('ontology_mappings', []):
+            for mapping_data in embedded_data.get("ontology_mappings", []):
                 from .common import OntologyMapping
+
                 mapping = OntologyMapping(
-                    variable_name=mapping_data.get('variable_name', ''),
-                    ontology_term=mapping_data.get('ontology_term', ''),
-                    description=mapping_data.get('description')
+                    variable_name=mapping_data.get("variable_name", ""),
+                    ontology_term=mapping_data.get("ontology_term", ""),
+                    description=mapping_data.get("description"),
                 )
                 result.model.ontology_mappings.append(mapping)
 
@@ -1092,7 +1211,7 @@ class AlloyParser(BaseGNNParser):
 
     def parse_file(self, file_path: str) -> ParseResult:
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -1127,7 +1246,7 @@ class AlloyParser(BaseGNNParser):
                         var_type=self._infer_variable_type(field_name),
                         dimensions=[1],
                         data_type=DataType.CATEGORICAL,
-                        description=f"Alloy signature {sig_name} field {field_name} : {field_type}"
+                        description=f"Alloy signature {sig_name} field {field_name} : {field_type}",
                     )
                     result.model.variables.append(variable)
 
@@ -1140,30 +1259,32 @@ class AlloyParser(BaseGNNParser):
 
     def _infer_variable_type(self, name: str) -> VariableType:
         name_lower = name.lower()
-        if 'state' in name_lower:
+        if "state" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'observation' in name_lower:
+        elif "observation" in name_lower:
             return VariableType.OBSERVATION
         else:
             return VariableType.HIDDEN_STATE
+
 
 class ZNotationParser(BaseGNNParser):
     """Parser for Z notation formal specification files with embedded data support."""
 
     def __init__(self):
         super().__init__()
-        self.schema_pattern = re.compile(r'┌─\s*(\w+)\s*─+┐\s*([^└]+)└─+┘', re.DOTALL)
-        self.declaration_pattern = re.compile(r'(\w+)\s*:\s*([^\n]+)', re.MULTILINE)
+        self.schema_pattern = re.compile(r"┌─\s*(\w+)\s*─+┐\s*([^└]+)└─+┘", re.DOTALL)
+        self.declaration_pattern = re.compile(r"(\w+)\s*:\s*([^\n]+)", re.MULTILINE)
 
     def get_supported_extensions(self) -> List[str]:
-        return ['.zed', '.z']
+        return [".zed", ".z"]
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Z notation comments."""
         import json
         import re
+
         # Look for JSON data in % MODEL_DATA: {...} comments specifically for Z-notation
-        pattern = r'%\s*MODEL_DATA:\s*(\{.*\})'
+        pattern = r"%\s*MODEL_DATA:\s*(\{.*\})"
         match = re.search(pattern, content, re.DOTALL)
         if match:
             try:
@@ -1173,7 +1294,9 @@ class ZNotationParser(BaseGNNParser):
                 return None
         return None
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
         from .common import (
             Connection,
@@ -1185,54 +1308,55 @@ class ZNotationParser(BaseGNNParser):
         )
 
         try:
-            result.model.model_name = embedded_data.get('model_name', 'ZNotationModel')
-            result.model.annotation = embedded_data.get('annotation', '')
+            result.model.model_name = embedded_data.get("model_name", "ZNotationModel")
+            result.model.annotation = embedded_data.get("annotation", "")
 
             # Restore variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data.get('var_type', 'hidden_state')),
-                    data_type=DataType(var_data.get('data_type', 'categorical')),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data.get("var_type", "hidden_state")),
+                    data_type=DataType(var_data.get("data_type", "categorical")),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 result.model.variables.append(var)
 
             # Restore connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data.get('source_variables', []),
-                    target_variables=conn_data.get('target_variables', []),
-                    connection_type=ConnectionType(conn_data.get('connection_type', 'directed'))
+                    source_variables=conn_data.get("source_variables", []),
+                    target_variables=conn_data.get("target_variables", []),
+                    connection_type=ConnectionType(
+                        conn_data.get("connection_type", "directed")
+                    ),
                 )
                 result.model.connections.append(conn)
 
             # Restore parameters
-            for param_data in embedded_data.get('parameters', []):
-                param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value']
-                )
+            for param_data in embedded_data.get("parameters", []):
+                param = Parameter(name=param_data["name"], value=param_data["value"])
                 result.model.parameters.append(param)
 
             # Restore time specification
-            if embedded_data.get('time_specification'):
+            if embedded_data.get("time_specification"):
                 from .common import TimeSpecification
-                time_data = embedded_data['time_specification']
+
+                time_data = embedded_data["time_specification"]
                 result.model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Restore ontology mappings
-            for mapping_data in embedded_data.get('ontology_mappings', []):
+            for mapping_data in embedded_data.get("ontology_mappings", []):
                 from .common import OntologyMapping
+
                 mapping = OntologyMapping(
-                    variable_name=mapping_data.get('variable_name', ''),
-                    ontology_term=mapping_data.get('ontology_term', ''),
-                    description=mapping_data.get('description')
+                    variable_name=mapping_data.get("variable_name", ""),
+                    ontology_term=mapping_data.get("ontology_term", ""),
+                    description=mapping_data.get("description"),
                 )
                 result.model.ontology_mappings.append(mapping)
 
@@ -1244,7 +1368,7 @@ class ZNotationParser(BaseGNNParser):
 
     def parse_file(self, file_path: str) -> ParseResult:
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
             return self.parse_string(content)
         except Exception as e:
@@ -1279,7 +1403,7 @@ class ZNotationParser(BaseGNNParser):
                         var_type=self._infer_variable_type(var_name),
                         dimensions=[1],
                         data_type=self._map_z_type(var_type),
-                        description=f"Z notation schema {schema_name} variable : {var_type}"
+                        description=f"Z notation schema {schema_name} variable : {var_type}",
                     )
                     result.model.variables.append(variable)
 
@@ -1291,25 +1415,23 @@ class ZNotationParser(BaseGNNParser):
         return result
 
     def _map_z_type(self, z_type: str) -> DataType:
-        if 'ℕ' in z_type or 'NAT' in z_type:
+        if "ℕ" in z_type or "NAT" in z_type:
             return DataType.INTEGER
-        elif 'ℝ' in z_type or 'REAL' in z_type:
+        elif "ℝ" in z_type or "REAL" in z_type:
             return DataType.FLOAT
-        elif '𝔹' in z_type or 'BOOL' in z_type:
+        elif "𝔹" in z_type or "BOOL" in z_type:
             return DataType.BINARY
         else:
             return DataType.CATEGORICAL
 
     def _infer_variable_type(self, name: str) -> VariableType:
         name_lower = name.lower()
-        if 'state' in name_lower:
+        if "state" in name_lower:
             return VariableType.HIDDEN_STATE
-        elif 'observation' in name_lower:
+        elif "observation" in name_lower:
             return VariableType.OBSERVATION
         else:
             return VariableType.HIDDEN_STATE
-
-
 
 
 AlloyGNNParser = AlloyParser

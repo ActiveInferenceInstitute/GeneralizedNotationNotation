@@ -106,11 +106,15 @@ def extract_gnn_features(file_path: Path) -> Dict[str, Any]:
 
     # Qualitative features
     features["has_precision"] = bool(
-        re.search(r'\b(precision|omega|γ|gamma|α|alpha)\b', content, re.IGNORECASE)
-        and re.search(r'^(ω|γ|β|Π)\s*\[', content, re.MULTILINE)
+        re.search(r"\b(precision|omega|γ|gamma|α|alpha)\b", content, re.IGNORECASE)
+        and re.search(r"^(ω|γ|β|Π)\s*\[", content, re.MULTILINE)
     )
     features["has_learning"] = bool(
-        re.search(r'\b(learning|concentration|dirichlet|update.*param)\b', content, re.IGNORECASE)
+        re.search(
+            r"\b(learning|concentration|dirichlet|update.*param)\b",
+            content,
+            re.IGNORECASE,
+        )
     )
 
     return features
@@ -118,37 +122,37 @@ def extract_gnn_features(file_path: Path) -> Dict[str, Any]:
 
 def _detect_model_family(content: str) -> str:
     """Detect model family from GNN content."""
-    section_match = re.search(r'## GNNSection\s*\n\s*(\S+)', content)
+    section_match = re.search(r"## GNNSection\s*\n\s*(\S+)", content)
     if section_match:
         section = section_match.group(1).lower()
-        if 'hierarchical' in section:
-            return 'hierarchical'
-        if 'continuous' in section:
-            return 'continuous'
-        if 'multiagent' in section or 'multi_agent' in section:
-            return 'multi_agent'
-        if 'factor' in section:
-            return 'factor_graph'
-        if 'hmm' in section:
-            return 'hmm'
-        if 'pomdp' in section:
-            return 'pomdp'
+        if "hierarchical" in section:
+            return "hierarchical"
+        if "continuous" in section:
+            return "continuous"
+        if "multiagent" in section or "multi_agent" in section:
+            return "multi_agent"
+        if "factor" in section:
+            return "factor_graph"
+        if "hmm" in section:
+            return "hmm"
+        if "pomdp" in section:
+            return "pomdp"
 
-    has_B_with_actions = bool(re.search(r'^B\s*\[\d+,\d+,\d+', content, re.MULTILINE))
-    has_pi = bool(re.search(r'^π\s*\[|^pi\s*\[', content, re.MULTILINE))
+    has_B_with_actions = bool(re.search(r"^B\s*\[\d+,\d+,\d+", content, re.MULTILINE))
+    has_pi = bool(re.search(r"^π\s*\[|^pi\s*\[", content, re.MULTILINE))
 
     if has_B_with_actions and has_pi:
-        return 'pomdp'
-    if re.search(r'^B\s*\[', content, re.MULTILINE) and not has_pi:
-        return 'hmm'
-    return 'unknown'
+        return "pomdp"
+    if re.search(r"^B\s*\[", content, re.MULTILINE) and not has_pi:
+        return "hmm"
+    return "unknown"
 
 
 def _extract_dimensions(content: str) -> Dict[str, List[int]]:
     """Extract variable dimensions from StateSpaceBlock."""
     dims = {}
     in_state_space = False
-    pattern = r'^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]'
+    pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
 
     for line in content.splitlines():
         stripped = line.strip()
@@ -159,7 +163,7 @@ def _extract_dimensions(content: str) -> Dict[str, List[int]]:
             in_state_space = False
             continue
 
-        if in_state_space and not stripped.startswith('#'):
+        if in_state_space and not stripped.startswith("#"):
             match = re.match(pattern, stripped)
             if match:
                 var_name = match.group(1)
@@ -194,19 +198,19 @@ def _count_connections(content: str) -> Dict[str, int]:
             in_connections = False
             continue
 
-        if in_connections and not stripped.startswith('#') and stripped:
-            directed += len(re.findall(r'>', stripped))
-            undirected += len(re.findall(r'(?<![>])-(?![>])', stripped))
+        if in_connections and not stripped.startswith("#") and stripped:
+            directed += len(re.findall(r">", stripped))
+            undirected += len(re.findall(r"(?<![>])-(?![>])", stripped))
 
     return {"directed": directed, "undirected": undirected}
 
 
 def _extract_planning_horizon(content: str) -> int:
     """Extract planning horizon from model parameters."""
-    match = re.search(r'planning_horizon\s*:\s*(\d+)', content, re.IGNORECASE)
+    match = re.search(r"planning_horizon\s*:\s*(\d+)", content, re.IGNORECASE)
     if match:
         return int(match.group(1))
-    match = re.search(r'ModelTimeHorizon\s*=\s*(\d+)', content)
+    match = re.search(r"ModelTimeHorizon\s*=\s*(\d+)", content)
     if match:
         return int(match.group(1))
     return 1  # Default: 1-step planning
@@ -214,11 +218,11 @@ def _extract_planning_horizon(content: str) -> int:
 
 def _extract_time_type(content: str) -> str:
     """Extract time type (Discrete/Continuous)."""
-    if re.search(r'^Continuous\s*$', content, re.MULTILINE):
-        return 'continuous'
-    if re.search(r'^Discrete\s*$', content, re.MULTILINE):
-        return 'discrete'
-    return 'unknown'
+    if re.search(r"^Continuous\s*$", content, re.MULTILINE):
+        return "continuous"
+    if re.search(r"^Discrete\s*$", content, re.MULTILINE):
+        return "discrete"
+    return "unknown"
 
 
 # Encoding for model families
@@ -229,7 +233,7 @@ MODEL_FAMILY_ENCODING = {
     "continuous": 3,
     "multi_agent": 4,
     "factor_graph": 5,
-    "unknown": -1
+    "unknown": -1,
 }
 
 
@@ -238,7 +242,7 @@ def process_ml_integration(
     output_dir: Path,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """
     Process ML integration for GNN models.
@@ -261,13 +265,14 @@ def process_ml_integration(
             "feature_importance": {},
             "cross_validation": {},
             "framework_status": {},
-            "extracted_features": []
+            "extracted_features": [],
         }
 
         # Check for sklearn availability
         try:
             import numpy  # noqa: F401
             import sklearn  # noqa: F401
+
             has_sklearn = True
             ml_results["framework_status"]["sklearn"] = "available"
         except ImportError:
@@ -288,8 +293,10 @@ def process_ml_integration(
                     all_features.append(feats)
                     ml_results["extracted_features"].append(feats)
                     if verbose:
-                        logger.info(f"  {gnn_file.name}: family={feats['model_family']}, "
-                                   f"states={feats['num_states']}, params={feats['total_parameters']}")
+                        logger.info(
+                            f"  {gnn_file.name}: family={feats['model_family']}, "
+                            f"states={feats['num_states']}, params={feats['total_parameters']}"
+                        )
             except Exception as e:
                 logger.error(f"Feature extraction failed for {gnn_file}: {e}")
 
@@ -300,35 +307,39 @@ def process_ml_integration(
             logger.info("sklearn not available -- skipping ML training")
             # Add per-file structural analysis entries.
             for feats in all_features:
-                ml_results["models_trained"].append({
-                    "source": feats["file_name"],
-                    "type": "structural_analysis",
-                    "framework": "internal_stats",
-                    "accuracy": 1.0,
-                    "note": "sklearn not available",
-                    "model_family": feats.get("model_family"),
-                    "num_states": feats.get("num_states", 0),
-                    "total_parameters": feats.get("total_parameters", 0),
-                })
+                ml_results["models_trained"].append(
+                    {
+                        "source": feats["file_name"],
+                        "type": "structural_analysis",
+                        "framework": "internal_stats",
+                        "accuracy": 1.0,
+                        "note": "sklearn not available",
+                        "model_family": feats.get("model_family"),
+                        "num_states": feats.get("num_states", 0),
+                        "total_parameters": feats.get("total_parameters", 0),
+                    }
+                )
         else:
             logger.info(f"Only {len(all_features)} files -- need >=2 for ML training")
             # Add per-file structural analysis entries.
             for feats in all_features:
-                ml_results["models_trained"].append({
-                    "source": feats["file_name"],
-                    "type": "structural_analysis",
-                    "framework": "internal_stats",
-                    "accuracy": 1.0,
-                    "note": f"Need >=2 GNN files for ML classification (have {len(all_features)})",
-                    "model_family": feats.get("model_family"),
-                    "num_states": feats.get("num_states", 0),
-                    "total_parameters": feats.get("total_parameters", 0),
-                })
+                ml_results["models_trained"].append(
+                    {
+                        "source": feats["file_name"],
+                        "type": "structural_analysis",
+                        "framework": "internal_stats",
+                        "accuracy": 1.0,
+                        "note": f"Need >=2 GNN files for ML classification (have {len(all_features)})",
+                        "model_family": feats.get("model_family"),
+                        "num_states": feats.get("num_states", 0),
+                        "total_parameters": feats.get("total_parameters", 0),
+                    }
+                )
             _save_feature_analysis(all_features, ml_results, output_dir)
 
         # Save results
         results_file = output_dir / "ml_integration_results.json"
-        with open(results_file, 'w') as f:
+        with open(results_file, "w") as f:
             json.dump(ml_results, f, indent=2, default=str)
 
         if verbose:
@@ -342,10 +353,7 @@ def process_ml_integration(
 
 
 def _train_models(
-    all_features: List[Dict],
-    ml_results: Dict,
-    output_dir: Path,
-    verbose: bool
+    all_features: List[Dict], ml_results: Dict, output_dir: Path, verbose: bool
 ) -> None:
     """Train Decision Tree and Random Forest on extracted GNN features."""
     import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
@@ -357,48 +365,67 @@ def _train_models(
 
     # Build feature matrix using real GNN features
     numeric_feature_names = [
-        "num_states", "num_observations", "num_actions", "num_variables",
-        "connectivity_ratio", "max_dimension", "total_parameters", "planning_horizon",
-        "directed_connections", "undirected_connections",
-        "has_precision", "has_learning", "has_ontology", "has_parameterization"
+        "num_states",
+        "num_observations",
+        "num_actions",
+        "num_variables",
+        "connectivity_ratio",
+        "max_dimension",
+        "total_parameters",
+        "planning_horizon",
+        "directed_connections",
+        "undirected_connections",
+        "has_precision",
+        "has_learning",
+        "has_ontology",
+        "has_parameterization",
     ]
 
-    X = np.array([
+    X = np.array(
         [
-            f.get("num_states", 0),
-            f.get("num_observations", 0),
-            f.get("num_actions", 0),
-            f.get("num_variables", 0),
-            f.get("connectivity_ratio", 0.0),
-            f.get("max_dimension", 0),
-            f.get("total_parameters", 0),
-            f.get("planning_horizon", 1),
-            f.get("directed_connections", 0),
-            f.get("undirected_connections", 0),
-            int(f.get("has_precision", False)),
-            int(f.get("has_learning", False)),
-            int(f.get("has_ontology", False)),
-            int(f.get("has_parameterization", False)),
-        ]
-        for f in all_features
-    ], dtype=float)
+            [
+                f.get("num_states", 0),
+                f.get("num_observations", 0),
+                f.get("num_actions", 0),
+                f.get("num_variables", 0),
+                f.get("connectivity_ratio", 0.0),
+                f.get("max_dimension", 0),
+                f.get("total_parameters", 0),
+                f.get("planning_horizon", 1),
+                f.get("directed_connections", 0),
+                f.get("undirected_connections", 0),
+                int(f.get("has_precision", False)),
+                int(f.get("has_learning", False)),
+                int(f.get("has_ontology", False)),
+                int(f.get("has_parameterization", False)),
+            ]
+            for f in all_features
+        ],
+        dtype=float,
+    )
 
     # Labels: model family
     y_labels = [f.get("model_family", "unknown") for f in all_features]
 
     # Encode labels
     from sklearn.preprocessing import LabelEncoder
+
     le = LabelEncoder()
     y = le.fit_transform(y_labels)
 
     # Need at least 2 samples and 2 classes for meaningful training
     if len(np.unique(y)) < 2:
         # All same family -- use complexity classification instead
-        y = np.array([
-            0 if f.get("total_parameters", 0) < 100 else
-            1 if f.get("total_parameters", 0) < 1000 else 2
-            for f in all_features
-        ])
+        y = np.array(
+            [
+                0
+                if f.get("total_parameters", 0) < 100
+                else 1
+                if f.get("total_parameters", 0) < 1000
+                else 2
+                for f in all_features
+            ]
+        )
         label_names = ["small", "medium", "large"]
         task = "complexity_classification"
     else:
@@ -411,13 +438,17 @@ def _train_models(
     # Cross-validation: cap folds by both sample count and smallest class count
     # to avoid sklearn warnings about underpopulated classes
     from collections import Counter
+
     class_counts = Counter(y)
     min_class_count = min(class_counts.values()) if class_counts else 1
     n_folds = min(5, len(X), min_class_count)
 
     for model_name, clf in [
         ("decision_tree", DecisionTreeClassifier(max_depth=4, random_state=42)),
-        ("random_forest", RandomForestClassifier(n_estimators=10, max_depth=4, random_state=42))
+        (
+            "random_forest",
+            RandomForestClassifier(n_estimators=10, max_depth=4, random_state=42),
+        ),
     ]:
         try:
             if n_folds >= 2:
@@ -435,7 +466,7 @@ def _train_models(
 
             # Save model
             model_path = output_dir / f"gnn_{model_name}.pkl"
-            with open(model_path, 'wb') as f:
+            with open(model_path, "wb") as f:
                 pickle.dump(clf, f)
 
             model_info = {
@@ -454,51 +485,63 @@ def _train_models(
 
             # Feature importance (both models support this)
             importances = clf.feature_importances_.tolist()
-            model_info["feature_importance"] = dict(zip(numeric_feature_names, importances))
+            model_info["feature_importance"] = dict(
+                zip(numeric_feature_names, importances)
+            )
 
             # Top 5 features
             sorted_feats = sorted(
                 zip(numeric_feature_names, importances),
                 key=lambda x: x[1],
-                reverse=True
+                reverse=True,
             )
             model_info["top_features"] = [(f, round(i, 4)) for f, i in sorted_feats[:5]]
 
             ml_results["models_trained"].append(model_info)
 
             if verbose:
-                logger.info(f"  {model_name}: CV accuracy={cv_mean:.3f}+/-{cv_std:.3f}, "
-                           f"top feature={sorted_feats[0][0]}")
+                logger.info(
+                    f"  {model_name}: CV accuracy={cv_mean:.3f}+/-{cv_std:.3f}, "
+                    f"top feature={sorted_feats[0][0]}"
+                )
 
         except Exception as e:
             logger.error(f"Failed to train {model_name}: {e}")
 
     # Store feature importance from best model
     if ml_results["models_trained"]:
-        best = max(ml_results["models_trained"], key=lambda m: m.get("cv_mean_accuracy", 0))
+        best = max(
+            ml_results["models_trained"], key=lambda m: m.get("cv_mean_accuracy", 0)
+        )
         ml_results["feature_importance"] = best.get("feature_importance", {})
 
 
 def _save_feature_analysis(
-    all_features: List[Dict],
-    ml_results: Dict,
-    output_dir: Path
+    all_features: List[Dict], ml_results: Dict, output_dir: Path
 ) -> None:
     """Save feature analysis when insufficient data for full ML training."""
     if not all_features:
         return
 
     # Summary statistics per feature
-    numeric_keys = ["num_states", "num_observations", "num_actions", "total_parameters", "connectivity_ratio"]
+    numeric_keys = [
+        "num_states",
+        "num_observations",
+        "num_actions",
+        "total_parameters",
+        "connectivity_ratio",
+    ]
     stats = {}
 
     for key in numeric_keys:
-        values = [f.get(key, 0) for f in all_features if isinstance(f.get(key), (int, float))]
+        values = [
+            f.get(key, 0) for f in all_features if isinstance(f.get(key), (int, float))
+        ]
         if values:
             stats[key] = {
                 "min": min(values),
                 "max": max(values),
-                "mean": sum(values) / len(values)
+                "mean": sum(values) / len(values),
             }
 
     ml_results["feature_statistics"] = stats

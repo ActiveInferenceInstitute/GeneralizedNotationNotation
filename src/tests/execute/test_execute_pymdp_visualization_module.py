@@ -7,7 +7,7 @@ This verifies that visualization works with pipeline-configured simulations.
 
 Features:
 - Test discrete state visualization
-- Test belief distribution plots 
+- Test belief distribution plots
 - Test performance metrics
 - Pipeline integration verification
 
@@ -46,20 +46,20 @@ def test_data():
         beliefs.append(belief)
 
     return {
-        'states': states,
-        'observations': observations,
-        'actions': actions,
-        'rewards': rewards,
-        'beliefs': beliefs,
-        'num_states': num_states,
-        'num_observations': num_observations,
-        'num_actions': num_actions,
-        'metrics': {
-            'expected_free_energy': np.random.randn(num_timesteps).tolist(),
-            'actions': actions,
-            'belief_confidence': [float(max(b)) for b in beliefs],
-            'cumulative_preference': rewards
-        }
+        "states": states,
+        "observations": observations,
+        "actions": actions,
+        "rewards": rewards,
+        "beliefs": beliefs,
+        "num_states": num_states,
+        "num_observations": num_observations,
+        "num_actions": num_actions,
+        "metrics": {
+            "expected_free_energy": np.random.randn(num_timesteps).tolist(),
+            "actions": actions,
+            "belief_confidence": [float(max(b)) for b in beliefs],
+            "cumulative_preference": rewards,
+        },
     }
 
 
@@ -81,10 +81,7 @@ class TestPyMDPVisualizationModule:
 
     def test_visualizer_creation(self, temp_output_dir):
         """Test PyMDPVisualizer can be created with output directory."""
-        visualizer = PyMDPVisualizer(
-            output_dir=temp_output_dir,
-            show_plots=False
-        )
+        visualizer = PyMDPVisualizer(output_dir=temp_output_dir, show_plots=False)
         assert visualizer is not None
         assert visualizer.save_dir == temp_output_dir
 
@@ -93,81 +90,93 @@ class TestPyMDPVisualizationModule:
         save_path = temp_output_dir / "discrete_states.png"
 
         fig = visualizer.plot_discrete_states(
-            state_sequence=test_data['states'],
-            num_states=test_data['num_states'],
+            state_sequence=test_data["states"],
+            num_states=test_data["num_states"],
             title="Test State Sequence",
-            save_path=save_path
+            save_path=save_path,
         )
 
         assert fig is not None
         assert save_path.exists(), "Discrete state plot should be created"
 
         import matplotlib.pyplot as plt
+
         plt.close(fig)
 
-    def test_belief_evolution_visualization(self, visualizer, test_data, temp_output_dir):
+    def test_belief_evolution_visualization(
+        self, visualizer, test_data, temp_output_dir
+    ):
         """Test belief evolution visualization."""
         save_path = temp_output_dir / "belief_evolution.png"
 
         fig = visualizer.plot_belief_evolution(
-            belief_traces=test_data['beliefs'],
+            belief_traces=test_data["beliefs"],
             title="Test Belief Evolution",
-            save_path=save_path
+            save_path=save_path,
         )
 
         assert fig is not None
         assert save_path.exists(), "Belief evolution plot should be created"
 
         import matplotlib.pyplot as plt
+
         plt.close(fig)
 
-    def test_performance_metrics_visualization(self, visualizer, test_data, temp_output_dir):
+    def test_performance_metrics_visualization(
+        self, visualizer, test_data, temp_output_dir
+    ):
         """Test performance metrics visualization."""
         save_path = temp_output_dir / "performance_metrics.png"
 
         fig = visualizer.plot_performance_metrics(
-            metrics=test_data['metrics'],
-            save_path=save_path
+            metrics=test_data["metrics"], save_path=save_path
         )
 
         assert fig is not None
         assert save_path.exists(), "Performance metrics plot should be created"
 
         import matplotlib.pyplot as plt
+
         plt.close(fig)
 
-    def test_action_sequence_visualization(self, visualizer, test_data, temp_output_dir):
+    def test_action_sequence_visualization(
+        self, visualizer, test_data, temp_output_dir
+    ):
         """Test action sequence visualization."""
         save_path = temp_output_dir / "action_sequence.png"
 
         fig = visualizer.plot_action_sequence(
-            action_sequence=test_data['actions'],
-            num_actions=test_data['num_actions'],
+            action_sequence=test_data["actions"],
+            num_actions=test_data["num_actions"],
             title="Test Actions",
-            save_path=save_path
+            save_path=save_path,
         )
 
         assert fig is not None
         assert save_path.exists(), "Action sequence plot should be created"
 
         import matplotlib.pyplot as plt
+
         plt.close(fig)
 
-    def test_observation_sequence_visualization(self, visualizer, test_data, temp_output_dir):
+    def test_observation_sequence_visualization(
+        self, visualizer, test_data, temp_output_dir
+    ):
         """Test observation sequence visualization."""
         save_path = temp_output_dir / "observation_sequence.png"
 
         fig = visualizer.plot_observation_sequence(
-            observation_sequence=test_data['observations'],
-            num_observations=test_data['num_observations'],
+            observation_sequence=test_data["observations"],
+            num_observations=test_data["num_observations"],
             title="Test Observations",
-            save_path=save_path
+            save_path=save_path,
         )
 
         assert fig is not None
         assert save_path.exists(), "Observation sequence plot should be created"
 
         import matplotlib.pyplot as plt
+
         plt.close(fig)
 
 
@@ -182,15 +191,17 @@ def test_visualizer():
         num_states = 9
 
         test_data = {
-            'states': np.random.randint(0, num_states, num_timesteps).tolist(),
-            'beliefs': [np.random.dirichlet(np.ones(num_states)) for _ in range(num_timesteps)],
-            'metrics': {
-                'expected_free_energy': np.random.randn(num_timesteps).tolist(),
-                'actions': np.random.randint(0, 4, num_timesteps).tolist(),
-                'belief_confidence': np.random.rand(num_timesteps).tolist(),
-                'cumulative_preference': np.random.randn(num_timesteps).tolist()
+            "states": np.random.randint(0, num_states, num_timesteps).tolist(),
+            "beliefs": [
+                np.random.dirichlet(np.ones(num_states)) for _ in range(num_timesteps)
+            ],
+            "metrics": {
+                "expected_free_energy": np.random.randn(num_timesteps).tolist(),
+                "actions": np.random.randint(0, 4, num_timesteps).tolist(),
+                "belief_confidence": np.random.rand(num_timesteps).tolist(),
+                "cumulative_preference": np.random.randn(num_timesteps).tolist(),
             },
-            'num_states': num_states
+            "num_states": num_states,
         }
 
         # Initialize visualizer
@@ -198,31 +209,32 @@ def test_visualizer():
 
         # Test discrete states plot
         fig = visualizer.plot_discrete_states(
-            state_sequence=test_data['states'],
-            num_states=test_data['num_states'],
+            state_sequence=test_data["states"],
+            num_states=test_data["num_states"],
             title="Test States",
-            save_path=output_dir / "states.png"
+            save_path=output_dir / "states.png",
         )
         assert fig is not None
 
         # Test belief evolution plot
         fig = visualizer.plot_belief_evolution(
-            belief_traces=test_data['beliefs'],
+            belief_traces=test_data["beliefs"],
             title="Test Beliefs",
-            save_path=output_dir / "beliefs.png"
+            save_path=output_dir / "beliefs.png",
         )
         assert fig is not None
 
         # Test performance metrics plot
         fig = visualizer.plot_performance_metrics(
-            metrics=test_data['metrics'],
-            save_path=output_dir / "performance.png"
+            metrics=test_data["metrics"], save_path=output_dir / "performance.png"
         )
         assert fig is not None
 
         # Check files were created
         png_files = list(output_dir.glob("*.png"))
-        assert len(png_files) >= 3, f"Expected at least 3 PNG files, got {len(png_files)}"
+        assert len(png_files) >= 3, (
+            f"Expected at least 3 PNG files, got {len(png_files)}"
+        )
 
         visualizer.close_all_plots()
 
@@ -238,22 +250,24 @@ def test_pipeline_integration():
         num_states = 9
 
         sim_results = {
-            'states': np.random.randint(0, num_states, num_timesteps).tolist(),
-            'beliefs': [np.random.dirichlet(np.ones(num_states)) for _ in range(num_timesteps)],
-            'metrics': {
-                'expected_free_energy': np.random.randn(num_timesteps).tolist(),
-                'actions': np.random.randint(0, 4, num_timesteps).tolist(),
-                'belief_confidence': np.random.rand(num_timesteps).tolist(),
-                'cumulative_preference': np.random.randn(num_timesteps).tolist()
+            "states": np.random.randint(0, num_states, num_timesteps).tolist(),
+            "beliefs": [
+                np.random.dirichlet(np.ones(num_states)) for _ in range(num_timesteps)
+            ],
+            "metrics": {
+                "expected_free_energy": np.random.randn(num_timesteps).tolist(),
+                "actions": np.random.randint(0, 4, num_timesteps).tolist(),
+                "belief_confidence": np.random.rand(num_timesteps).tolist(),
+                "cumulative_preference": np.random.randn(num_timesteps).tolist(),
             },
-            'num_states': num_states
+            "num_states": num_states,
         }
 
         # Test save_all_visualizations function
         saved_files = save_all_visualizations(
             simulation_results=sim_results,
             output_dir=output_dir,
-            config={'save_dir': output_dir}
+            config={"save_dir": output_dir},
         )
 
         assert len(saved_files) > 0, "save_all_visualizations should create files"

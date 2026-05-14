@@ -26,27 +26,16 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+from gnn.parsers.common import (  # noqa: F401
+    GNNInternalRepresentation,
+    ParseResult,
+)
+from gnn.parsers.markdown_parser import MarkdownGNNParser
+
 from .pymdp_templates import (
     generate_pipeline_runner_script,
     generate_standalone_runner_script,
 )
-
-try:
-    from ...gnn.parsers.common import (  # noqa: F401
-        GNNInternalRepresentation,
-        ParseResult,
-    )
-    from ...gnn.parsers.markdown_parser import MarkdownGNNParser
-except ImportError:  # pragma: no cover - import path when used standalone
-    try:
-        from gnn.parsers.common import (  # noqa: F401
-            GNNInternalRepresentation,
-            ParseResult,
-        )
-        from gnn.parsers.markdown_parser import MarkdownGNNParser
-    except ImportError as exc:
-        raise ImportError("PyMDP rendering requires the GNN parser modules") from exc
-
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +80,9 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
             gnn_spec = result.model.to_dict()
             _ensure_initialparameterization_from_parameters(gnn_spec)
             return gnn_spec
-        logger.error("Failed to parse GNN file %s: %s", file_path, getattr(result, "errors", ""))
+        logger.error(
+            "Failed to parse GNN file %s: %s", file_path, getattr(result, "errors", "")
+        )
         return None
     except Exception as e:  # noqa: BLE001
         logger.exception("Exception parsing GNN file %s: %s", file_path, e)
@@ -131,11 +122,12 @@ def _json_to_python_literal(json_str: str) -> str:
     be embedded directly into generated Python source code.
     """
     import re
+
     # Only replace bare JSON keywords that appear as values (after : or in arrays)
     # Use word-boundary matching to avoid replacing substrings in keys
-    s = re.sub(r'\bnull\b', 'None', json_str)
-    s = re.sub(r'\btrue\b', 'True', s)
-    s = re.sub(r'\bfalse\b', 'False', s)
+    s = re.sub(r"\bnull\b", "None", json_str)
+    s = re.sub(r"\btrue\b", "True", s)
+    s = re.sub(r"\bfalse\b", "False", s)
     return s
 
 
@@ -166,11 +158,17 @@ def _extract_dimensions(
             num_actions = int(dims[2])
 
     model_params = gnn_spec.get("model_parameters") or {}
-    
+
     # Fallback to initial_params where ModelParameters are merged by MarkdownGNNParser
-    num_states = int(model_params.get("num_hidden_states", init_params.get("num_hidden_states", num_states)))
+    num_states = int(
+        model_params.get(
+            "num_hidden_states", init_params.get("num_hidden_states", num_states)
+        )
+    )
     num_obs = int(model_params.get("num_obs", init_params.get("num_obs", num_obs)))
-    num_actions = int(model_params.get("num_actions", init_params.get("num_actions", num_actions)))
+    num_actions = int(
+        model_params.get("num_actions", init_params.get("num_actions", num_actions))
+    )
 
     A_raw = init_params.get("A")
     if A_raw is not None:
@@ -273,11 +271,17 @@ class PyMDPRenderer:
             ok, msg = self.render_file(gnn_file, out)
             if ok:
                 results["rendered_files"].append(
-                    {"input_file": str(gnn_file), "output_file": str(out), "message": msg}
+                    {
+                        "input_file": str(gnn_file),
+                        "output_file": str(out),
+                        "message": msg,
+                    }
                 )
                 results["successful_renders"] += 1
             else:
-                results["failed_files"].append({"input_file": str(gnn_file), "error": msg})
+                results["failed_files"].append(
+                    {"input_file": str(gnn_file), "error": msg}
+                )
         return results
 
     # ------------------------------------------------------------------
@@ -309,7 +313,9 @@ class PyMDPRenderer:
             if val is None
         ]
         if missing:
-            raise ValueError(f"Missing required PyMDP initial parameterization entries: {missing}")
+            raise ValueError(
+                f"Missing required PyMDP initial parameterization entries: {missing}"
+            )
 
         context: Dict[str, Any] = {
             "model_name": model_name,
@@ -331,8 +337,7 @@ class PyMDPRenderer:
             ),
             "num_timesteps": int(
                 (gnn_spec.get("model_parameters") or {}).get(
-                    "num_timesteps", 
-                    init_params.get("num_timesteps", 20)
+                    "num_timesteps", init_params.get("num_timesteps", 20)
                 )
             ),
         }

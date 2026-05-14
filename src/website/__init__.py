@@ -37,23 +37,22 @@ SUPPORTED_FILE_TYPES = {
     "markdown": ["md", "markdown"],
     "json": ["json"],
     "data": ["json", "yaml", "yml", "csv"],
-    "images": ["png", "jpg", "jpeg", "gif", "svg"]
+    "images": ["png", "jpg", "jpeg", "gif", "svg"],
 }
 
 __all__ = [
-    'WebsiteGenerator',
-    'WebsiteRenderer',
-    'generate_website',
-    'process_website',
-    'generate_html_report',
-    'embed_image',
-    'embed_markdown_file',
-    'embed_text_file',
-    'embed_json_file',
-    'embed_html_file',
-    'get_module_info',
-    'get_supported_file_types',
-    'validate_website_config',
-    '__version__'
+    "WebsiteGenerator",
+    "WebsiteRenderer",
+    "generate_website",
+    "process_website",
+    "generate_html_report",
+    "embed_image",
+    "embed_markdown_file",
+    "embed_text_file",
+    "embed_json_file",
+    "embed_html_file",
+    "get_module_info",
+    "get_supported_file_types",
+    "validate_website_config",
+    "__version__",
 ]
-

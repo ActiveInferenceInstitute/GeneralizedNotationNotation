@@ -10,7 +10,6 @@ Tests the GUI module's core functionality including:
 - Error handling
 """
 
-
 import pytest
 
 from gui import (
@@ -194,7 +193,7 @@ class TestGUIFeatures:
             "visual_matrix_editor",
             "state_space_studio",
             "diagram_as_code",
-            "mcp_integration"
+            "mcp_integration",
         ]
         for feature in expected_features:
             assert feature in FEATURES, f"Expected feature '{feature}' not found"

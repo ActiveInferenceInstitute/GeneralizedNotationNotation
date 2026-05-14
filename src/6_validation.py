@@ -35,13 +35,15 @@ run_script = create_standardized_pipeline_script(
     "Validation processing for GNN models",
     additional_arguments={
         "strict": {"type": bool, "help": "Enable strict validation mode"},
-        "profile": {"type": bool, "help": "Enable performance profiling"}
-    }
+        "profile": {"type": bool, "help": "Enable performance profiling"},
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the validation step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

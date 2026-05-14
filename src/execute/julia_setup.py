@@ -44,13 +44,10 @@ def check_julia_version(julia_path: str) -> Optional[str]:
     """
     try:
         result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            [julia_path, "--version"],
-            capture_output=True,
-            text=True,
-            timeout=10
+            [julia_path, "--version"], capture_output=True, text=True, timeout=10
         )
         if result.returncode == 0:
-            version_line = result.stdout.strip().split('\n')[0]
+            version_line = result.stdout.strip().split("\n")[0]
             logger.info(f"Julia version: {version_line}")
             return version_line
         else:
@@ -69,19 +66,19 @@ def is_julia_available(min_version: tuple = (1, 6, 0)) -> bool:
         min_version: Minimum (major, minor, patch) tuple. Defaults to (1, 6, 0).
     """
     import re
+
     available, julia_path = check_julia_availability()
     if not available or julia_path is None:
         return False
 
     version_str = check_julia_version(julia_path)
     if version_str:
-        match = re.search(r'(\d+)\.(\d+)\.(\d+)', version_str)
+        match = re.search(r"(\d+)\.(\d+)\.(\d+)", version_str)
         if match:
             version = tuple(int(match.group(i)) for i in (1, 2, 3))
             if version < min_version:
                 logger.warning(
-                    "Julia %d.%d.%d is below minimum %d.%d.%d",
-                    *version, *min_version
+                    "Julia %d.%d.%d is below minimum %d.%d.%d", *version, *min_version
                 )
                 return False
     return True
@@ -92,7 +89,7 @@ def run_julia_setup_script(
     setup_script: Path,
     verbose: bool = False,
     force_reinstall: bool = False,
-    validate_only: bool = False
+    validate_only: bool = False,
 ) -> bool:
     """
     Run the Julia setup script.
@@ -128,7 +125,7 @@ def run_julia_setup_script(
             cwd=setup_script.parent,
             capture_output=True,
             text=True,
-            timeout=300  # 5 minute timeout for package installation
+            timeout=300,  # 5 minute timeout for package installation
         )
 
         if result.stdout:
@@ -155,7 +152,7 @@ def setup_julia_environment(
     verbose: bool = False,
     force_reinstall: bool = False,
     validate_only: bool = False,
-    frameworks: List[str] = None
+    frameworks: List[str] = None,
 ) -> Dict[str, Any]:
     """
     Setup Julia environment for specified frameworks.
@@ -178,7 +175,7 @@ def setup_julia_environment(
             "success": False,
             "julia_available": False,
             "error": "Julia not found in PATH",
-            "suggestion": "Install Julia from https://julialang.org/downloads/"
+            "suggestion": "Install Julia from https://julialang.org/downloads/",
         }
 
     # Check Julia version
@@ -188,18 +185,20 @@ def setup_julia_environment(
             "success": False,
             "julia_available": True,
             "error": "Failed to determine Julia version",
-            "julia_path": julia_path
+            "julia_path": julia_path,
         }
 
     # Define framework setup scripts
     framework_scripts = {
         "rxinfer": "src/execute/rxinfer/setup_environment.jl",
-        "activeinference_jl": "src/execute/activeinference_jl/setup_environment.jl"
+        "activeinference_jl": "src/execute/activeinference_jl/setup_environment.jl",
     }
 
     # Filter frameworks if specified
     if frameworks:
-        framework_scripts = {k: v for k, v in framework_scripts.items() if k in frameworks}
+        framework_scripts = {
+            k: v for k, v in framework_scripts.items() if k in frameworks
+        }
 
     setup_results = {}
     overall_success = True
@@ -211,7 +210,7 @@ def setup_julia_environment(
             setup_results[framework] = {
                 "success": False,
                 "error": f"Setup script not found: {script_file}",
-                "skipped": True
+                "skipped": True,
             }
             continue
 
@@ -222,14 +221,14 @@ def setup_julia_environment(
             script_file,
             verbose=verbose,
             force_reinstall=force_reinstall,
-            validate_only=validate_only
+            validate_only=validate_only,
         )
 
         setup_results[framework] = {
             "success": success,
             "script_path": str(script_file),
             "julia_path": julia_path,
-            "version": version
+            "version": version,
         }
 
         if not success:
@@ -240,7 +239,7 @@ def setup_julia_environment(
         "julia_available": True,
         "julia_path": julia_path,
         "julia_version": version,
-        "frameworks_setup": setup_results
+        "frameworks_setup": setup_results,
     }
 
 
@@ -248,34 +247,48 @@ def main() -> int:
     """Main entry point for Julia setup."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Setup Julia environment for GNN execution")
-    parser.add_argument('--verbose', '-v', action='store_true', help='Enable verbose output')
-    parser.add_argument('--force-reinstall', action='store_true', help='Force reinstall of packages')
-    parser.add_argument('--validate-only', action='store_true', help='Only validate, don\'t install')
-    parser.add_argument('--frameworks', type=str, help='Comma-separated list of frameworks to setup (rxinfer,activeinference_jl)')
+    parser = argparse.ArgumentParser(
+        description="Setup Julia environment for GNN execution"
+    )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose output"
+    )
+    parser.add_argument(
+        "--force-reinstall", action="store_true", help="Force reinstall of packages"
+    )
+    parser.add_argument(
+        "--validate-only", action="store_true", help="Only validate, don't install"
+    )
+    parser.add_argument(
+        "--frameworks",
+        type=str,
+        help="Comma-separated list of frameworks to setup (rxinfer,activeinference_jl)",
+    )
 
     args = parser.parse_args()
 
     # Parse frameworks
     frameworks = None
     if args.frameworks:
-        frameworks = [f.strip() for f in args.frameworks.split(',')]
+        frameworks = [f.strip() for f in args.frameworks.split(",")]
 
     # Setup logging
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     # Run setup
     results = setup_julia_environment(
         verbose=args.verbose,
         force_reinstall=args.force_reinstall,
         validate_only=args.validate_only,
-        frameworks=frameworks
+        frameworks=frameworks,
     )
 
     # Print results
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("JULIA SETUP RESULTS")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     if results["julia_available"]:
         print(f"✅ Julia found: {results['julia_path']}")

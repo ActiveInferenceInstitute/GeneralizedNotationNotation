@@ -19,11 +19,12 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, TypeVar
 
 # Type variable for generic error handling
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 class PipelineErrorSeverity(Enum):
     """Error severity levels for classification and handling."""
+
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -32,6 +33,7 @@ class PipelineErrorSeverity(Enum):
 
 class ErrorCategory(Enum):
     """Categories for error classification."""
+
     CONFIGURATION = "configuration"
     DEPENDENCY = "dependency"
     FILE_SYSTEM = "file_system"
@@ -47,6 +49,7 @@ class ErrorCategory(Enum):
 
 class RecoveryStrategy(Enum):
     """Recovery strategies for different error types."""
+
     RETRY = "retry"
     SKIP = "skip"
     FAIL_FAST = "fail_fast"
@@ -57,6 +60,7 @@ class RecoveryStrategy(Enum):
 @dataclass
 class PipelineError:
     """Structured error information for pipeline steps."""
+
     step_name: str
     error_type: str
     message: str
@@ -82,20 +86,25 @@ class PipelineError:
             "context": self.context,
             "traceback": self.traceback,
             "timestamp": self.timestamp,
-            "correlation_id": self.correlation_id
+            "correlation_id": self.correlation_id,
         }
 
 
 @dataclass
 class RetryConfig:
     """Configuration for retry behavior."""
+
     max_attempts: int = 3
     base_delay: float = 1.0
     max_delay: float = 60.0
     backoff_factor: float = 2.0
-    retry_on: List[ErrorCategory] = field(default_factory=lambda: [
-        ErrorCategory.NETWORK, ErrorCategory.TIMEOUT, ErrorCategory.RESOURCE
-    ])
+    retry_on: List[ErrorCategory] = field(
+        default_factory=lambda: [
+            ErrorCategory.NETWORK,
+            ErrorCategory.TIMEOUT,
+            ErrorCategory.RESOURCE,
+        ]
+    )
 
 
 class PipelineErrorHandler:
@@ -107,20 +116,24 @@ class PipelineErrorHandler:
         self.errors: List[PipelineError] = []
         self.retry_config = RetryConfig()
 
-    def create_error(self,
-                    step_name: str,
-                    error: Exception,
-                    category: ErrorCategory = ErrorCategory.UNKNOWN,
-                    context: Dict[str, Any] = None) -> PipelineError:
+    def create_error(
+        self,
+        step_name: str,
+        error: Exception,
+        category: ErrorCategory = ErrorCategory.UNKNOWN,
+        context: Dict[str, Any] = None,
+    ) -> PipelineError:
         """Create a standardized pipeline error from an exception."""
 
         severity, recovery_strategy = self._classify_error(error, category)
 
         error_context = context or {}
-        error_context.update({
-            "exception_type": type(error).__name__,
-            "module": getattr(error, '__module__', 'unknown'),
-        })
+        error_context.update(
+            {
+                "exception_type": type(error).__name__,
+                "module": getattr(error, "__module__", "unknown"),
+            }
+        )
 
         pipeline_error = PipelineError(
             step_name=step_name,
@@ -132,13 +145,15 @@ class PipelineErrorHandler:
             recovery_strategy=recovery_strategy,
             context=error_context,
             traceback=traceback.format_exc(),
-            correlation_id=self.correlation_id
+            correlation_id=self.correlation_id,
         )
 
         self.errors.append(pipeline_error)
         return pipeline_error
 
-    def _classify_error(self, error: Exception, category: ErrorCategory) -> tuple[PipelineErrorSeverity, RecoveryStrategy]:
+    def _classify_error(
+        self, error: Exception, category: ErrorCategory
+    ) -> tuple[PipelineErrorSeverity, RecoveryStrategy]:
         """Classify error severity and determine recovery strategy."""
 
         _error_type = type(error).__name__  # noqa: F841 - reserved for enhanced error classification
@@ -184,14 +199,16 @@ class PipelineErrorHandler:
             PipelineErrorSeverity.LOW: self.logger.debug,
             PipelineErrorSeverity.MEDIUM: self.logger.warning,
             PipelineErrorSeverity.HIGH: self.logger.error,
-            PipelineErrorSeverity.CRITICAL: self.logger.critical
+            PipelineErrorSeverity.CRITICAL: self.logger.critical,
         }[error.severity]
 
         log_method(f"[{error.correlation_id}] {error.category.value}: {error.message}")
 
         # Add context information to log
         if error.context:
-            self.logger.debug(f"[{error.correlation_id}] Error context: {error.context}")
+            self.logger.debug(
+                f"[{error.correlation_id}] Error context: {error.context}"
+            )
 
         # Handle according to recovery strategy
         if error.recovery_strategy == RecoveryStrategy.FAIL_FAST:
@@ -199,7 +216,9 @@ class PipelineErrorHandler:
             return 1  # Critical error
 
         elif error.recovery_strategy == RecoveryStrategy.RETRY:
-            self.logger.warning(f"[{error.correlation_id}] Error is retryable but retry logic should be handled by caller")
+            self.logger.warning(
+                f"[{error.correlation_id}] Error is retryable but retry logic should be handled by caller"
+            )
             return 2  # Warning - recoverable
 
         elif error.recovery_strategy == RecoveryStrategy.SKIP:
@@ -218,9 +237,13 @@ class PipelineErrorHandler:
     def error_context(self, step_name: str, operation: str):
         """Context manager for error handling in pipeline operations."""
         try:
-            self.logger.debug(f"[{self.correlation_id}] Starting {operation} in {step_name}")
+            self.logger.debug(
+                f"[{self.correlation_id}] Starting {operation} in {step_name}"
+            )
             yield
-            self.logger.debug(f"[{self.correlation_id}] Completed {operation} in {step_name}")
+            self.logger.debug(
+                f"[{self.correlation_id}] Completed {operation} in {step_name}"
+            )
         except Exception as e:
             error = self.create_error(step_name, e, context={"operation": operation})
             exit_code = self.handle_error(error)
@@ -232,34 +255,47 @@ class PipelineErrorHandler:
             elif exit_code == 2:
                 pass  # Allow caller to decide how to proceed
 
-    def retry_operation(self, operation: Callable[[], T], error: PipelineError) -> Optional[T]:
+    def retry_operation(
+        self, operation: Callable[[], T], error: PipelineError
+    ) -> Optional[T]:
         """Retry an operation according to retry configuration."""
 
         if error.category not in self.retry_config.retry_on:
-            self.logger.debug(f"[{self.correlation_id}] Error category {error.category.value} not retryable")
+            self.logger.debug(
+                f"[{self.correlation_id}] Error category {error.category.value} not retryable"
+            )
             return None
 
         for attempt in range(self.retry_config.max_attempts):
             try:
                 delay = min(
-                    self.retry_config.base_delay * (self.retry_config.backoff_factor ** attempt),
-                    self.retry_config.max_delay
+                    self.retry_config.base_delay
+                    * (self.retry_config.backoff_factor**attempt),
+                    self.retry_config.max_delay,
                 )
 
                 if attempt > 0:
-                    self.logger.info(f"[{self.correlation_id}] Retrying operation (attempt {attempt + 1}/{self.retry_config.max_attempts}) after {delay:.1f}s")
+                    self.logger.info(
+                        f"[{self.correlation_id}] Retrying operation (attempt {attempt + 1}/{self.retry_config.max_attempts}) after {delay:.1f}s"
+                    )
                     time.sleep(delay)
 
                 result = operation()
                 if attempt > 0:
-                    self.logger.info(f"[{self.correlation_id}] Operation succeeded on retry attempt {attempt + 1}")
+                    self.logger.info(
+                        f"[{self.correlation_id}] Operation succeeded on retry attempt {attempt + 1}"
+                    )
 
                 return result
 
             except Exception as e:
-                self.logger.warning(f"[{self.correlation_id}] Retry attempt {attempt + 1} failed: {e}")
+                self.logger.warning(
+                    f"[{self.correlation_id}] Retry attempt {attempt + 1} failed: {e}"
+                )
                 if attempt == self.retry_config.max_attempts - 1:
-                    self.logger.error(f"[{self.correlation_id}] All retry attempts exhausted")
+                    self.logger.error(
+                        f"[{self.correlation_id}] All retry attempts exhausted"
+                    )
 
         return None
 
@@ -274,15 +310,21 @@ class PipelineErrorHandler:
             "severity_breakdown": {},
             "category_breakdown": {},
             "errors": [error.to_dict() for error in self.errors],
-            "generated_at": time.time()
+            "generated_at": time.time(),
         }
 
         for error in self.errors:
-            error_summary["error_breakdown"][error.error_type] = error_summary["error_breakdown"].get(error.error_type, 0) + 1
-            error_summary["severity_breakdown"][error.severity.value] = error_summary["severity_breakdown"].get(error.severity.value, 0) + 1
-            error_summary["category_breakdown"][error.category.value] = error_summary["category_breakdown"].get(error.category.value, 0) + 1
+            error_summary["error_breakdown"][error.error_type] = (
+                error_summary["error_breakdown"].get(error.error_type, 0) + 1
+            )
+            error_summary["severity_breakdown"][error.severity.value] = (
+                error_summary["severity_breakdown"].get(error.severity.value, 0) + 1
+            )
+            error_summary["category_breakdown"][error.category.value] = (
+                error_summary["category_breakdown"].get(error.category.value, 0) + 1
+            )
 
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(error_summary, f, indent=2)
 
         self.logger.info(f"[{self.correlation_id}] Error report saved to {report_file}")
@@ -291,6 +333,7 @@ class PipelineErrorHandler:
 
 class ExitCode:
     """Standardized exit codes for pipeline steps."""
+
     SUCCESS = 0
     CRITICAL_ERROR = 1
     SUCCESS_WITH_WARNINGS = 2
@@ -302,50 +345,54 @@ class ExitCode:
             PipelineErrorSeverity.LOW: ExitCode.SUCCESS_WITH_WARNINGS,
             PipelineErrorSeverity.MEDIUM: ExitCode.SUCCESS_WITH_WARNINGS,
             PipelineErrorSeverity.HIGH: ExitCode.CRITICAL_ERROR,
-            PipelineErrorSeverity.CRITICAL: ExitCode.CRITICAL_ERROR
+            PipelineErrorSeverity.CRITICAL: ExitCode.CRITICAL_ERROR,
         }.get(severity, ExitCode.CRITICAL_ERROR)
 
 
 def generate_correlation_id(prefix: str = "gnn") -> str:
     """Generate a unique correlation ID for error tracking."""
     timestamp = str(int(time.time()))
-    random_suffix = hashlib.md5(f"{prefix}{timestamp}".encode(), usedforsecurity=False).hexdigest()[:6]
+    random_suffix = hashlib.md5(
+        f"{prefix}{timestamp}".encode(), usedforsecurity=False
+    ).hexdigest()[:6]
     return f"{prefix}_{timestamp}_{random_suffix}"
 
 
 # Convenience functions for common error patterns
-def handle_file_system_error(logger: logging.Logger, error: Exception, file_path: Path, operation: str) -> int:
+def handle_file_system_error(
+    logger: logging.Logger, error: Exception, file_path: Path, operation: str
+) -> int:
     """Handle file system related errors."""
     handler = PipelineErrorHandler(logger, generate_correlation_id())
     pipeline_error = handler.create_error(
         "file_system",
         error,
         ErrorCategory.FILE_SYSTEM,
-        context={"file_path": str(file_path), "operation": operation}
+        context={"file_path": str(file_path), "operation": operation},
     )
     return handler.handle_error(pipeline_error)
 
 
-def handle_network_error(logger: logging.Logger, error: Exception, url: Optional[str] = None) -> int:
+def handle_network_error(
+    logger: logging.Logger, error: Exception, url: Optional[str] = None
+) -> int:
     """Handle network related errors."""
     handler = PipelineErrorHandler(logger, generate_correlation_id())
     pipeline_error = handler.create_error(
-        "network",
-        error,
-        ErrorCategory.NETWORK,
-        context={"url": url}
+        "network", error, ErrorCategory.NETWORK, context={"url": url}
     )
     return handler.handle_error(pipeline_error)
 
 
-def handle_timeout_error(logger: logging.Logger, error: Exception, timeout_seconds: int) -> int:
+def handle_timeout_error(
+    logger: logging.Logger, error: Exception, timeout_seconds: int
+) -> int:
     """Handle timeout related errors."""
     handler = PipelineErrorHandler(logger, generate_correlation_id())
     pipeline_error = handler.create_error(
         "timeout",
         error,
         ErrorCategory.TIMEOUT,
-        context={"timeout_seconds": timeout_seconds}
+        context={"timeout_seconds": timeout_seconds},
     )
     return handler.handle_error(pipeline_error)
-

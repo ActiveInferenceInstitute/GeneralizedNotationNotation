@@ -26,9 +26,17 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         Extracted simulation data
     """
     simulation_data: Dict[str, Any] = {}
-    payload = execution_result if execution_result.get("schema_version") == "pymdp_simulation_v1" else None
+    payload = (
+        execution_result
+        if execution_result.get("schema_version") == "pymdp_simulation_v1"
+        else None
+    )
     nested_payload = execution_result.get("simulation_data")
-    if payload is None and isinstance(nested_payload, dict) and nested_payload.get("schema_version") == "pymdp_simulation_v1":
+    if (
+        payload is None
+        and isinstance(nested_payload, dict)
+        and nested_payload.get("schema_version") == "pymdp_simulation_v1"
+    ):
         payload = nested_payload
 
     implementation_dir = execution_result.get("implementation_directory")
@@ -39,8 +47,10 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
             if sim_data_dir.exists():
                 results_files = list(sim_data_dir.glob("*simulation_results.json"))
                 if results_files:
-                    logger.info(f"Reading PyMDP simulation data from {results_files[0].name}")
-                    with open(results_files[0], 'r') as f:
+                    logger.info(
+                        f"Reading PyMDP simulation data from {results_files[0].name}"
+                    )
+                    with open(results_files[0], "r") as f:
                         payload = json.load(f)
 
             # Count visualizations
@@ -49,7 +59,9 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                 viz_files = list(viz_dir.glob("*.png")) + list(viz_dir.glob("*.svg"))
                 if viz_files:
                     simulation_data["visualization_count"] = len(viz_files)
-                    simulation_data["visualization_files"] = [str(f.name) for f in viz_files]
+                    simulation_data["visualization_files"] = [
+                        str(f.name) for f in viz_files
+                    ]
 
         except Exception as e:
             logger.warning(f"Error reading PyMDP files: {e}")
@@ -68,7 +80,9 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         metrics = payload.get("metrics", {}) or {}
 
         simulation_data["beliefs"] = beliefs_by_factor.get("joint_state", [])
-        simulation_data["observations"] = observations_by_modality.get("joint_observation", [])
+        simulation_data["observations"] = observations_by_modality.get(
+            "joint_observation", []
+        )
         simulation_data["actions"] = actions_by_control_factor.get("joint_action", [])
         simulation_data["states"] = hidden_states_by_factor.get("joint_state", [])
         simulation_data["free_energy"] = payload.get("expected_free_energy", [])
@@ -86,7 +100,7 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "beliefs": simulation_data.get("beliefs", []),
         "belief_confidence": simulation_data.get("belief_confidence", []),
         "visualization_count": simulation_data.get("visualization_count", 0),
-        "visualization_files": simulation_data.get("visualization_files", [])
+        "visualization_files": simulation_data.get("visualization_files", []),
     }
     if "extraction_error" in simulation_data:
         result["extraction_error"] = simulation_data["extraction_error"]
@@ -121,7 +135,7 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
 
             if results_file:
                 logger.info(f"Reading RxInfer simulation data from {results_file.name}")
-                with open(results_file, 'r') as f:
+                with open(results_file, "r") as f:
                     file_data = json.load(f)
                     if "beliefs" in file_data:
                         simulation_data["beliefs"] = file_data["beliefs"]
@@ -134,9 +148,13 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                     # Extract EFE from efe_history (top-level in RxInfer output)
                     if "efe_history" in file_data:
                         simulation_data["free_energy"] = file_data["efe_history"]
-                        logger.debug(f"Extracted RxInfer efe_history with {len(file_data['efe_history'])} entries")
+                        logger.debug(
+                            f"Extracted RxInfer efe_history with {len(file_data['efe_history'])} entries"
+                        )
                     if "action_probabilities" in file_data:
-                        simulation_data["action_probabilities"] = file_data["action_probabilities"]
+                        simulation_data["action_probabilities"] = file_data[
+                            "action_probabilities"
+                        ]
         except (OSError, ValueError) as e:
             logger.warning(f"Error reading RxInfer files: {e}")
             simulation_data["_file_read_error"] = str(e)
@@ -149,7 +167,7 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "free_energy": simulation_data.get("free_energy", []),
         "action_probabilities": simulation_data.get("action_probabilities", []),
         "posterior": simulation_data.get("posterior", []),
-        "inference_data": simulation_data.get("inference_data", [])
+        "inference_data": simulation_data.get("inference_data", []),
     }
     if "_file_read_error" in simulation_data:
         result["extraction_error"] = simulation_data["_file_read_error"]
@@ -178,13 +196,17 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
 
             # Look for ActiveInference.jl output directories (timestamped)
             # or directly in the implementation directory (if flattened)
-            possible_dirs = [impl_path] + list(impl_path.glob("activeinference_outputs_*"))
+            possible_dirs = [impl_path] + list(
+                impl_path.glob("activeinference_outputs_*")
+            )
 
             csv_found = False
             for search_dir in possible_dirs:
                 results_file = search_dir / "simulation_results.csv"
                 if results_file.exists():
-                    logger.info(f"Reading ActiveInference.jl simulation data from {results_file.name}")
+                    logger.info(
+                        f"Reading ActiveInference.jl simulation data from {results_file.name}"
+                    )
                     import csv
 
                     traces = []
@@ -192,9 +214,9 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                     actions = []
                     beliefs = []
 
-                    with open(results_file, 'r') as f:
+                    with open(results_file, "r") as f:
                         # Skip comments
-                        lines = [line for line in f if not line.startswith('#')]
+                        lines = [line for line in f if not line.startswith("#")]
 
                         if lines:
                             reader = csv.reader(lines)
@@ -212,13 +234,17 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                                             beliefs.append(belief)
 
                                         # Add to generic traces for step counting
-                                        traces.append({
-                                            "step": int(float(row[0])),
-                                            "observation": float(row[1]),
-                                            "action": float(row[2])
-                                        })
+                                        traces.append(
+                                            {
+                                                "step": int(float(row[0])),
+                                                "observation": float(row[1]),
+                                                "action": float(row[2]),
+                                            }
+                                        )
                                     except ValueError as e:
-                                        logger.debug("Skipping non-numeric CSV row: %s", e)
+                                        logger.debug(
+                                            "Skipping non-numeric CSV row: %s", e
+                                        )
                                         continue
 
                     if traces:
@@ -228,7 +254,9 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                         simulation_data["beliefs"] = beliefs
                         simulation_data["num_timesteps"] = len(traces)
                         csv_found = True
-                        logger.info(f"Extracted {len(traces)} steps from ActiveInference.jl results")
+                        logger.info(
+                            f"Extracted {len(traces)} steps from ActiveInference.jl results"
+                        )
                         break
 
             if not csv_found:
@@ -238,24 +266,34 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                     results_files = list(sim_data_dir.glob("*simulation_results.json"))
                     for rf in results_files:
                         try:
-                            with open(rf, 'r') as f:
+                            with open(rf, "r") as f:
                                 file_data = json.load(f)
                             if "beliefs" in file_data:
                                 simulation_data["beliefs"] = file_data["beliefs"]
                             if "actions" in file_data:
                                 simulation_data["actions"] = file_data["actions"]
                             if "observations" in file_data:
-                                simulation_data["observations"] = file_data["observations"]
+                                simulation_data["observations"] = file_data[
+                                    "observations"
+                                ]
                             # Extract EFE from efe_history (top-level in ActiveInference.jl output)
                             if "efe_history" in file_data:
-                                simulation_data["free_energy"] = file_data["efe_history"]
-                                logger.debug(f"Extracted ActiveInference.jl efe_history with {len(file_data['efe_history'])} entries")
-                            logger.info(f"Read ActiveInference.jl JSON results from {rf.name}")
+                                simulation_data["free_energy"] = file_data[
+                                    "efe_history"
+                                ]
+                                logger.debug(
+                                    f"Extracted ActiveInference.jl efe_history with {len(file_data['efe_history'])} entries"
+                                )
+                            logger.info(
+                                f"Read ActiveInference.jl JSON results from {rf.name}"
+                            )
                             break
                         except Exception as e:
                             logger.debug(f"Failed to parse {rf.name}: {e}")
                 if not simulation_data.get("beliefs"):
-                    logger.debug("No simulation_results.csv or JSON found for ActiveInference.jl")
+                    logger.debug(
+                        "No simulation_results.csv or JSON found for ActiveInference.jl"
+                    )
 
         except Exception as e:
             logger.warning(f"Error reading ActiveInference.jl files: {e}")
@@ -269,12 +307,10 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
         "states": simulation_data.get("states", []),
         "observations": simulation_data.get("observations", []),
         "actions": simulation_data.get("actions", []),
-
         # Expected free energy components
         "expected_free_energy": simulation_data.get("expected_free_energy", []),
         "expected_energy": simulation_data.get("expected_energy", []),
         "expected_entropy": simulation_data.get("expected_entropy", []),
-
         # Model parameters (A, B, C, D matrices)
         "num_states": model_parameters.get("num_states", 0),
         "num_observations": model_parameters.get("num_observations", 0),
@@ -283,25 +319,21 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
         "B_matrix": model_parameters.get("B", []),
         "C_vector": model_parameters.get("C", []),
         "D_vector": model_parameters.get("D", []),
-
         # Precision parameters
         "action_precision": simulation_data.get("action_precision", 1.0),
         "parameter_precision": simulation_data.get("parameter_precision", 1.0),
         "policy_precision": simulation_data.get("policy_precision", 1.0),
-
         # Inference metadata
         "num_timesteps": simulation_data.get("num_timesteps", 0),
         "inference_iterations": simulation_data.get("inference_iterations", 0),
         "convergence_threshold": simulation_data.get("convergence_threshold", 0.0),
-
         # Performance metrics
         "execution_time": simulation_data.get("execution_time", 0.0),
         "memory_usage": simulation_data.get("memory_usage", 0.0),
-
         # Additional Active Inference specific metrics
         "variational_free_energy": simulation_data.get("variational_free_energy", []),
         "information_gain": simulation_data.get("information_gain", []),
-        "pragmatic_value": simulation_data.get("pragmatic_value", [])
+        "pragmatic_value": simulation_data.get("pragmatic_value", []),
     }
 
     return extracted
@@ -334,12 +366,15 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
             possible_reports = [
                 impl_path / "discopy_execution_report.json",
                 impl_path / "discopy_results" / "discopy_execution_report.json",
-                impl_path / "execution_results" / "discopy_results" / "discopy_execution_report.json"
+                impl_path
+                / "execution_results"
+                / "discopy_results"
+                / "discopy_execution_report.json",
             ]
 
             for report_file in possible_reports:
                 if report_file.exists():
-                    with open(report_file, 'r') as f:
+                    with open(report_file, "r") as f:
                         report_data = json.load(f)
 
                         # Use analysis summary to populate data
@@ -352,18 +387,29 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                         # Populate diagrams list
                         diagrams = []
                         for exec_rec in executions:
-                            if exec_rec.get("type") == "diagram_validation" and exec_rec.get("status") == "SUCCESS":
+                            if (
+                                exec_rec.get("type") == "diagram_validation"
+                                and exec_rec.get("status") == "SUCCESS"
+                            ):
                                 diagrams.append(exec_rec.get("file_path"))
 
                         simulation_data["diagrams"] = diagrams
                         simulation_data["visualization_count"] = len(diagrams)
 
                         if jax_analyzed > 0:
-                             simulation_data["traces"] = [{"step": 1, "type": "jax_eval"} for _ in range(jax_analyzed)]
+                            simulation_data["traces"] = [
+                                {"step": 1, "type": "jax_eval"}
+                                for _ in range(jax_analyzed)
+                            ]
                         elif total_processed > 0:
-                             simulation_data["traces"] = [{"step": 1, "type": "diagram"} for _ in range(total_processed)]
+                            simulation_data["traces"] = [
+                                {"step": 1, "type": "diagram"}
+                                for _ in range(total_processed)
+                            ]
 
-                        logger.info(f"Extracted DisCoPy data: {len(diagrams)} diagrams, {jax_analyzed} JAX evals")
+                        logger.info(
+                            f"Extracted DisCoPy data: {len(diagrams)} diagrams, {jax_analyzed} JAX evals"
+                        )
                         break
         except Exception as e:
             logger.warning(f"Error reading DisCoPy files: {e}")
@@ -372,7 +418,7 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "diagrams": simulation_data.get("diagrams", []),
         "circuits": simulation_data.get("circuits", []),
         "traces": simulation_data.get("traces", []),
-        "visualization_count": simulation_data.get("visualization_count", 0)
+        "visualization_count": simulation_data.get("visualization_count", 0),
     }
 
 

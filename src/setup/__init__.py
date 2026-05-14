@@ -56,115 +56,124 @@ __description__ = "GNN environment setup and management with UV"
 
 # Feature availability flags
 FEATURES = {
-    'uv_environment_setup': True,
-    'uv_dependency_management': True,
-    'uv_virtual_environment': True,
-    'system_validation': True,
-    'project_initialization': True,
-    'jax_installation': True,
-    'mcp_integration': True,
-    'pyproject_toml_support': True,
-    'lock_file_management': True,
-    'native_uv_add': True,
-    'native_uv_remove': True,
-    'native_uv_sync': True,
-    'native_uv_lock': True,
+    "uv_environment_setup": True,
+    "uv_dependency_management": True,
+    "uv_virtual_environment": True,
+    "system_validation": True,
+    "project_initialization": True,
+    "jax_installation": True,
+    "mcp_integration": True,
+    "pyproject_toml_support": True,
+    "lock_file_management": True,
+    "native_uv_add": True,
+    "native_uv_remove": True,
+    "native_uv_sync": True,
+    "native_uv_lock": True,
 }
 
 # Main API functions
 __all__ = [
     # Utility functions
-    'ensure_directory',
-    'find_gnn_files',
-    'get_output_paths',
-
+    "ensure_directory",
+    "find_gnn_files",
+    "get_output_paths",
     # UV-based setup functions
-    'setup_uv_environment',
-    'validate_uv_setup',
-    'get_uv_setup_info',
-    'cleanup_uv_setup',
-    'setup_gnn_project',
-    'check_system_requirements',
-    'install_uv_dependencies',
-    'get_installed_package_versions',
-    'check_uv_availability',
-    'log_system_info',
-    'install_optional_dependencies',
-    'create_project_structure',
-    'install_optional_package_group',
-    'install_all_optional_packages',
-    'setup_complete_environment',
-    'check_environment_health',
-
+    "setup_uv_environment",
+    "validate_uv_setup",
+    "get_uv_setup_info",
+    "cleanup_uv_setup",
+    "setup_gnn_project",
+    "check_system_requirements",
+    "install_uv_dependencies",
+    "get_installed_package_versions",
+    "check_uv_availability",
+    "log_system_info",
+    "install_optional_dependencies",
+    "create_project_structure",
+    "install_optional_package_group",
+    "install_all_optional_packages",
+    "setup_complete_environment",
+    "check_environment_health",
     # Native UV dependency management functions
-    'add_uv_dependency',
-    'remove_uv_dependency',
-    'update_uv_dependencies',
-    'lock_uv_dependencies',
-
+    "add_uv_dependency",
+    "remove_uv_dependency",
+    "update_uv_dependencies",
+    "lock_uv_dependencies",
     # Validator functions
-    'validate_system',
-    'get_environment_info',
-    'get_uv_status',
-
+    "validate_system",
+    "get_environment_info",
+    "get_uv_status",
     # Utility functions
-    'get_module_info',
-    'get_setup_options',
-    'setup_environment',
-    'install_dependencies',
-
+    "get_module_info",
+    "get_setup_options",
+    "setup_environment",
+    "install_dependencies",
     # Constants and Metadata
-    'OPTIONAL_GROUPS',
-    'FEATURES',
-    '__version__'
+    "OPTIONAL_GROUPS",
+    "FEATURES",
+    "__version__",
 ]
+
 
 # Minimal classes/APIs expected by tests
 class EnvironmentManager:
     def setup_environment(self, *args: Any, **kwargs: Any) -> bool:
         return True
+
     def validate_environment(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         """Validate the current Python environment meets pipeline requirements."""
         try:
             from .uv_management import validate_uv_setup
+
             return validate_uv_setup()
         except Exception:
             import sys
+
             return {
                 "overall_status": False,
                 "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
             }
 
+
 class VirtualEnvironment:
     def __init__(self, name: str):
         self.name = name
+
     def create(self) -> bool:
         return True
+
     def activate(self) -> bool:
         return True
+
 
 def validate_environment() -> dict:
     try:
         from .uv_management import validate_uv_setup
+
         return validate_uv_setup()
     except Exception:
         import sys
+
         return {
             "overall_status": False,
             "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
         }
 
+
 def check_python_version() -> bool:
     """Check that the current Python version meets minimum requirements."""
     import sys
+
     return sys.version_info.major >= 3
+
 
 # Ensure get_module_info exposes environment_types key as tests expect
 def get_module_info() -> Dict[str, Any]:
     """Return setup module metadata by delegating to setup.utils."""
     from .utils import get_module_info as _gm
+
     info = _gm()
     # Provide a top-level shorthand for environment types expected in tests
-    if 'environment_types' not in info:
-        info['environment_types'] = ['uv', 'venv', 'conda', 'pip']
+    if "environment_types" not in info:
+        info["environment_types"] = ["uv", "venv", "conda", "pip"]
     return info

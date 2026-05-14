@@ -32,7 +32,9 @@ def compute_meta_statistics(records: List[SweepRecord]) -> Dict[str, Any]:
         fw_groups.setdefault(r.framework, []).append(r)
 
     for fw, group in sorted(fw_groups.items()):
-        ok = [x for x in group if x.success and x.execution_time and x.execution_time > 0]
+        ok = [
+            x for x in group if x.success and x.execution_time and x.execution_time > 0
+        ]
         times = [x.execution_time for x in ok]
         total = len(group)
         result["per_framework"][fw] = {

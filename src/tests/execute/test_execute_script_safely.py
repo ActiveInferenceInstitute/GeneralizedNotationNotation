@@ -84,12 +84,8 @@ def test_timeout(tmp_path: Path) -> None:
 
 def test_env_override_merges(tmp_path: Path) -> None:
     script = tmp_path / "env.py"
-    script.write_text(
-        "import os; print(os.environ.get('GNN_TEST_VAR', 'MISSING'))\n"
-    )
-    result = execute_script_safely(
-        script, timeout=30, env={"GNN_TEST_VAR": "present"}
-    )
+    script.write_text("import os; print(os.environ.get('GNN_TEST_VAR', 'MISSING'))\n")
+    result = execute_script_safely(script, timeout=30, env={"GNN_TEST_VAR": "present"})
     _assert_envelope(result)
     assert result["success"] is True
     assert "present" in result["stdout"]
@@ -97,7 +93,10 @@ def test_env_override_merges(tmp_path: Path) -> None:
 
 # --- Phase 1.1 regression: silent-success in process_execute ---------------
 
-def test_process_execute_returns_2_when_no_render_output(tmp_path: Path, monkeypatch) -> None:
+
+def test_process_execute_returns_2_when_no_render_output(
+    tmp_path: Path, monkeypatch
+) -> None:
     """Before Phase 1.1, process_execute returned True when the render output
     directory was missing — the pipeline reported step 12 as successful while
     silently skipping all work. After the fix it returns 2 ("skipped/warnings")
@@ -109,6 +108,7 @@ def test_process_execute_returns_2_when_no_render_output(tmp_path: Path, monkeyp
     would be discovered and executed.
     """
     from execute.processor import process_execute
+
     monkeypatch.chdir(tmp_path)  # isolate from real project output/
     empty_target = tmp_path / "no_render_output_here"
     empty_target.mkdir()
@@ -120,9 +120,7 @@ def test_process_execute_returns_2_when_no_render_output(tmp_path: Path, monkeyp
         frameworks="all",
     )
     # Per the new contract, "nothing to do" must be exit-code 2, not True.
-    assert result == 2, (
-        f"Expected exit-code 2 for empty render output; got {result!r}"
-    )
+    assert result == 2, f"Expected exit-code 2 for empty render output; got {result!r}"
 
 
 def test_process_execute_records_local_worker_configuration(tmp_path: Path) -> None:

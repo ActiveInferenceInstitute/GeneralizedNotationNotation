@@ -13,6 +13,7 @@ from .processor import process_integration
 # Meta-analysis submodule.
 try:
     from .meta_analysis import SweepDataCollector, SweepRecord, run_meta_analysis
+
     _META_ANALYSIS_AVAILABLE = True
 except ImportError as exc:
     _META_ANALYSIS_AVAILABLE = False
@@ -20,7 +21,10 @@ except ImportError as exc:
 
     def run_meta_analysis(*args, **kwargs):
         """Raise a clear dependency error when meta-analysis cannot load."""
-        raise RuntimeError("integration.meta_analysis is unavailable") from _META_ANALYSIS_IMPORT_ERROR
+        raise RuntimeError(
+            "integration.meta_analysis is unavailable"
+        ) from _META_ANALYSIS_IMPORT_ERROR
+
 
 # Module metadata
 __version__ = "1.6.0"
@@ -29,16 +33,16 @@ __description__ = "integration processing for GNN Processing Pipeline"
 
 # Feature availability flags
 FEATURES = {
-    'basic_processing': True,
-    'meta_analysis': _META_ANALYSIS_AVAILABLE,
+    "basic_processing": True,
+    "meta_analysis": _META_ANALYSIS_AVAILABLE,
 }
 
 
 __all__ = [
-    'process_integration',
-    'run_meta_analysis',
-    'FEATURES',
-    '__version__',
+    "process_integration",
+    "run_meta_analysis",
+    "FEATURES",
+    "__version__",
 ]
 
 

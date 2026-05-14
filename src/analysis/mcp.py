@@ -15,8 +15,9 @@ logger = logging.getLogger(__name__)
 from . import process_analysis
 
 
-def process_analysis_mcp(target_directory: str, output_directory: str,
-                         verbose: bool = False) -> Dict[str, Any]:
+def process_analysis_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Run GNN statistical and complexity analysis on a directory of GNN files.
 
@@ -45,8 +46,9 @@ def process_analysis_mcp(target_directory: str, output_directory: str,
         return {"success": False, "error": str(e)}
 
 
-def get_analysis_results_mcp(output_directory: str,
-                              model_name: Optional[str] = None) -> Dict[str, Any]:
+def get_analysis_results_mcp(
+    output_directory: str, model_name: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Read and return saved analysis results from a previous analysis run.
 
@@ -63,7 +65,10 @@ def get_analysis_results_mcp(output_directory: str,
     try:
         out_dir = Path(output_directory)
         if not out_dir.exists():
-            return {"success": False, "error": f"Output directory not found: {output_directory}"}
+            return {
+                "success": False,
+                "error": f"Output directory not found: {output_directory}",
+            }
 
         results: List[Dict[str, Any]] = []
         for json_file in sorted(out_dir.rglob("*.json")):
@@ -86,8 +91,9 @@ def get_analysis_results_mcp(output_directory: str,
         return {"success": False, "error": str(e)}
 
 
-def compute_complexity_metrics_mcp(gnn_content: str,
-                                   model_name: str = "model") -> Dict[str, Any]:
+def compute_complexity_metrics_mcp(
+    gnn_content: str, model_name: str = "model"
+) -> Dict[str, Any]:
     """
     Compute complexity metrics for a GNN model provided as string content.
 
@@ -107,32 +113,34 @@ def compute_complexity_metrics_mcp(gnn_content: str,
     """
     try:
         lines = gnn_content.splitlines()
-        sections    = [l.strip("# ").strip() for l in lines if l.startswith("## ")]
+        sections = [l.strip("# ").strip() for l in lines if l.startswith("## ")]
         connections = [l for l in lines if "->" in l or "<->" in l or "→" in l]
-        variables   = [l for l in lines if "[" in l and "]" in l
-                       and not l.strip().startswith("#")]
-        parameters  = [l for l in lines if "=" in l and not l.strip().startswith("#")
-                       and "->" not in l]
+        variables = [
+            l for l in lines if "[" in l and "]" in l and not l.strip().startswith("#")
+        ]
+        parameters = [
+            l
+            for l in lines
+            if "=" in l and not l.strip().startswith("#") and "->" not in l
+        ]
 
-        n_vars   = len(variables)
-        n_conns  = len(connections)
+        n_vars = len(variables)
+        n_conns = len(connections)
         n_params = len(parameters)
-        n_secs   = len(sections)
+        n_secs = len(sections)
         cyclomatic = max(1, n_conns - n_vars + 2)
 
         return {
             "success": True,
             "model_name": model_name,
-            "sections":           n_secs,
-            "state_variables":    n_vars,
-            "connections":        n_conns,
-            "parameters":         n_params,
-            "total_lines":        len(lines),
+            "sections": n_secs,
+            "state_variables": n_vars,
+            "connections": n_conns,
+            "parameters": n_params,
+            "total_lines": len(lines),
             "cyclomatic_complexity": cyclomatic,
             "complexity_rating": (
-                "low" if cyclomatic < 5 else
-                "medium" if cyclomatic < 15 else
-                "high"
+                "low" if cyclomatic < 5 else "medium" if cyclomatic < 15 else "high"
             ),
         }
     except Exception as e:
@@ -149,21 +157,32 @@ def list_analysis_tools_mcp() -> Dict[str, Any]:
     """
     try:
         from . import check_analysis_tools
+
         tools_info = check_analysis_tools()
         return {"success": True, "tools": tools_info}
     except Exception as e:
         return {
             "success": False,
             "tools": {
-                "statistical_analysis": {"available": True, "description": "Statistical measures on GNN model structure"},
-                "complexity_metrics":   {"available": True, "description": "Cyclomatic and cognitive complexity"},
-                "network_analysis":     {"available": True, "description": "Graph-theoretic analysis of connections"},
+                "statistical_analysis": {
+                    "available": True,
+                    "description": "Statistical measures on GNN model structure",
+                },
+                "complexity_metrics": {
+                    "available": True,
+                    "description": "Cyclomatic and cognitive complexity",
+                },
+                "network_analysis": {
+                    "available": True,
+                    "description": "Graph-theoretic analysis of connections",
+                },
             },
             "error": str(e) if e else "Unknown error",
         }
 
 
 # ── MCP Registration ────────────────────────────────────────────────────────
+
 
 def register_tools(mcp_instance) -> None:
     """Register analysis tools with the MCP server."""
@@ -174,14 +193,25 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN files to analyse"},
-                "output_directory": {"type": "string", "description": "Directory to save analysis results"},
-                "verbose":          {"type": "boolean", "description": "Enable verbose logging", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN files to analyse",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to save analysis results",
+                },
+                "verbose": {
+                    "type": "boolean",
+                    "description": "Enable verbose logging",
+                    "default": False,
+                },
             },
             "required": ["target_directory", "output_directory"],
         },
         "Run statistical and complexity analysis on GNN files in a directory.",
-        module=__package__, category="analysis",
+        module=__package__,
+        category="analysis",
     )
 
     mcp_instance.register_tool(
@@ -190,13 +220,20 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "output_directory": {"type": "string", "description": "Directory containing saved analysis JSON results"},
-                "model_name":       {"type": "string", "description": "Optional model name to filter results"},
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory containing saved analysis JSON results",
+                },
+                "model_name": {
+                    "type": "string",
+                    "description": "Optional model name to filter results",
+                },
             },
             "required": ["output_directory"],
         },
         "Read and return saved analysis results from a previous analysis run.",
-        module=__package__, category="analysis",
+        module=__package__,
+        category="analysis",
     )
 
     mcp_instance.register_tool(
@@ -205,13 +242,21 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "gnn_content": {"type": "string", "description": "GNN model content as a string"},
-                "model_name":  {"type": "string", "description": "Human-readable model name", "default": "model"},
+                "gnn_content": {
+                    "type": "string",
+                    "description": "GNN model content as a string",
+                },
+                "model_name": {
+                    "type": "string",
+                    "description": "Human-readable model name",
+                    "default": "model",
+                },
             },
             "required": ["gnn_content"],
         },
         "Compute complexity metrics (variables, connections, cyclomatic complexity) for GNN content.",
-        module=__package__, category="analysis",
+        module=__package__,
+        category="analysis",
     )
 
     mcp_instance.register_tool(
@@ -219,7 +264,8 @@ def register_tools(mcp_instance) -> None:
         list_analysis_tools_mcp,
         {},
         "Return information about available GNN analysis tools and capabilities.",
-        module=__package__, category="analysis",
+        module=__package__,
+        category="analysis",
     )
 
     logger.info("analysis module MCP tools registered (4 tools).")

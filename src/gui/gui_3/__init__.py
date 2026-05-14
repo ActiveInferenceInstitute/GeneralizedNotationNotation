@@ -9,22 +9,24 @@ from pathlib import Path
 from typing import Any, Dict
 
 
-def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]:
+def gui_3(
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+) -> Dict[str, Any]:
     """
     Launch GUI 3: State Space Design Studio
-    
+
     A low-dependency visual design experience focused on:
     - State space architecture design
-    - Ontology term assertion editing  
+    - Ontology term assertion editing
     - Visual connection modeling
     - Parameter tuning interface
-    
+
     Args:
         target_dir: Directory containing GNN files
         output_dir: Output directory for GUI results
         logger: Logger instance
         **kwargs: Additional arguments (headless, verbose, etc.)
-        
+
     Returns:
         Dict with success status and metadata
     """
@@ -34,10 +36,7 @@ def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
         from .processor import run_gui as run_design_studio
 
         result = run_design_studio(
-            target_dir=target_dir,
-            output_dir=output_dir,
-            logger=logger,
-            **kwargs
+            target_dir=target_dir, output_dir=output_dir, logger=logger, **kwargs
         )
 
         return {
@@ -49,10 +48,10 @@ def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
                 "Ontology term editor",
                 "Connection graph interface",
                 "Parameter tuning controls",
-                "Low-dependency HTML/CSS design"
+                "Low-dependency HTML/CSS design",
             ],
             "port": 7862,
-            "url": "http://localhost:7862"
+            "url": "http://localhost:7862",
         }
 
     except Exception as e:
@@ -61,7 +60,7 @@ def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             "gui_type": "gui_3",
             "name": "State Space Design Studio",
             "success": False,
-            "error": str(e)
+            "error": str(e),
         }
 
 
@@ -75,8 +74,8 @@ def get_gui_3_info() -> Dict[str, Any]:
             "Ontology term assertions",
             "Connection graph design",
             "Parameter tuning interface",
-            "Export to GNN format"
+            "Export to GNN format",
         ],
         "dependencies": ["gradio"],
-        "port": 7862
+        "port": 7862,
     }

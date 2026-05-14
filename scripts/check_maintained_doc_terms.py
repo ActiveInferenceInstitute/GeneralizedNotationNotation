@@ -16,7 +16,15 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-ROOT_MARKDOWN = {"README.md", "AGENTS.md", "DOCS.md", "ARCHITECTURE.md", "CLAUDE.md", "SPEC.md", "SKILL.md"}
+ROOT_MARKDOWN = {
+    "README.md",
+    "AGENTS.md",
+    "DOCS.md",
+    "ARCHITECTURE.md",
+    "CLAUDE.md",
+    "SPEC.md",
+    "SKILL.md",
+}
 MAINTAINED_DIRS = (".agent_rules", ".github", "doc", "input", "scripts", "src")
 SKIP_PARTS = {
     ".git",
@@ -39,17 +47,35 @@ class Finding:
 
 PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bFallbackAgent\b"), "stale PyMDP execution agent name"),
-    (re.compile(r"Fallback Circuit Breakers", re.IGNORECASE), "unsupported feature claim"),
+    (
+        re.compile(r"Fallback Circuit Breakers", re.IGNORECASE),
+        "unsupported feature claim",
+    ),
     (re.compile(r"\bsimple_simulation\.py\b"), "removed PyMDP execution module"),
     (re.compile(r"\bpymdp_converter\.py\b"), "removed PyMDP render module"),
     (re.compile(r"\bpymdp>=0\.0\.7\b"), "old PyMDP package constraint"),
-    (re.compile(r"\bcompatibility shim\b", re.IGNORECASE), "legacy compatibility wording"),
+    (
+        re.compile(r"\bcompatibility shim\b", re.IGNORECASE),
+        "legacy compatibility wording",
+    ),
     (re.compile(r"\bthin shim\b", re.IGNORECASE), "legacy shim wording"),
     (re.compile(r"\bcompatibility alias\b", re.IGNORECASE), "legacy alias wording"),
-    (re.compile(r"\bbackwards? compatible\b", re.IGNORECASE), "backwards-compatibility claim"),
-    (re.compile(r"\bbackwards? compatibility\b", re.IGNORECASE), "backwards-compatibility claim"),
-    (re.compile(r"\bNotImplementedError\b"), "placeholder exception in maintained docs"),
-    (re.compile(r"\bnot implemented\b", re.IGNORECASE), "placeholder implementation wording"),
+    (
+        re.compile(r"\bbackwards? compatible\b", re.IGNORECASE),
+        "backwards-compatibility claim",
+    ),
+    (
+        re.compile(r"\bbackwards? compatibility\b", re.IGNORECASE),
+        "backwards-compatibility claim",
+    ),
+    (
+        re.compile(r"\bNotImplementedError\b"),
+        "placeholder exception in maintained docs",
+    ),
+    (
+        re.compile(r"\bnot implemented\b", re.IGNORECASE),
+        "placeholder implementation wording",
+    ),
 ]
 
 
@@ -112,7 +138,9 @@ def scan(root: Path = ROOT) -> list[Finding]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--strict", action="store_true", help="Exit 1 if any finding is present.")
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit 1 if any finding is present."
+    )
     args = parser.parse_args()
 
     findings = scan(ROOT)

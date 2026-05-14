@@ -45,13 +45,19 @@ run_script = create_standardized_pipeline_script(
     process_website,
     "Website generation for GNN models",
     additional_arguments={
-        "website_html_filename": {"type": str, "default": "gnn_pipeline_summary_website.html", "help": "Output HTML filename"}
-    }
+        "website_html_filename": {
+            "type": str,
+            "default": "gnn_pipeline_summary_website.html",
+            "help": "Output HTML filename",
+        }
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the website step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

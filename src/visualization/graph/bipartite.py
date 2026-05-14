@@ -11,6 +11,7 @@ try:
 
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
     plt = None
@@ -46,14 +47,10 @@ def generate_variable_parameter_bipartite(
         return out
 
     var_names = {
-        v.get("name")
-        for v in variables
-        if isinstance(v, dict) and v.get("name")
+        v.get("name") for v in variables if isinstance(v, dict) and v.get("name")
     }
     param_names_set = {
-        str(p["name"])
-        for p in parameters
-        if isinstance(p, dict) and p.get("name")
+        str(p["name"]) for p in parameters if isinstance(p, dict) and p.get("name")
     }
     if not param_names_set:
         return out
@@ -121,5 +118,7 @@ def generate_variable_parameter_bipartite(
         try:
             plt.close()
         except Exception as close_error:
-            logger.debug("Matplotlib close after bipartite failure also failed: %s", close_error)
+            logger.debug(
+                "Matplotlib close after bipartite failure also failed: %s", close_error
+            )
     return out

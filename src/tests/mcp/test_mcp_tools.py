@@ -16,13 +16,14 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
-
 # Migrated from test_mcp_integration_comprehensive.py
 class TestMCPToolExecution:
     """Test actual MCP tool execution."""
 
     @pytest.mark.unit
-    def test_gnn_validate_tool_execution(self, test_mcp_tools: Any, comprehensive_test_data: Any) -> None:
+    def test_gnn_validate_tool_execution(
+        self, test_mcp_tools: Any, comprehensive_test_data: Any
+    ) -> None:
         """Test GNN validation tool registration (lightweight test)."""
         try:
             from gnn.mcp import register_tools
@@ -30,11 +31,11 @@ class TestMCPToolExecution:
             register_tools(test_mcp_tools)
 
             # Just verify that the tool was registered properly
-            assert 'validate_gnn_content' in test_mcp_tools.tools
-            tool_info = test_mcp_tools.tools['validate_gnn_content']
-            assert 'function' in tool_info
-            assert 'description' in tool_info
-            assert callable(tool_info['function'])
+            assert "validate_gnn_content" in test_mcp_tools.tools
+            tool_info = test_mcp_tools.tools["validate_gnn_content"]
+            assert "function" in tool_info
+            assert "description" in tool_info
+            assert callable(tool_info["function"])
 
         except ImportError:
             pytest.skip("GNN MCP not available")
@@ -43,7 +44,9 @@ class TestMCPToolExecution:
             assert "error" in str(e).lower() or "import" in str(e).lower()
 
     @pytest.mark.unit
-    def test_export_tool_execution(self, test_mcp_tools: Any, comprehensive_test_data: Any) -> None:
+    def test_export_tool_execution(
+        self, test_mcp_tools: Any, comprehensive_test_data: Any
+    ) -> None:
         """Test export tool registration (lightweight test)."""
         try:
             from export.mcp import register_tools
@@ -53,9 +56,9 @@ class TestMCPToolExecution:
             # Just verify that tools were registered properly
             assert len(test_mcp_tools.tools) > 0
             for _tool_name, tool_info in test_mcp_tools.tools.items():
-                assert 'function' in tool_info
-                assert 'description' in tool_info
-                assert callable(tool_info['function'])
+                assert "function" in tool_info
+                assert "description" in tool_info
+                assert callable(tool_info["function"])
 
         except ImportError:
             pytest.skip("Export MCP not available")
@@ -72,16 +75,14 @@ class TestMCPToolExecution:
             register_tools(test_mcp_tools)
 
             # Just verify that the system info tool was registered properly
-            assert 'get_system_info' in test_mcp_tools.tools
-            tool_info = test_mcp_tools.tools['get_system_info']
-            assert 'function' in tool_info
-            assert 'description' in tool_info
-            assert callable(tool_info['function'])
+            assert "get_system_info" in test_mcp_tools.tools
+            tool_info = test_mcp_tools.tools["get_system_info"]
+            assert "function" in tool_info
+            assert "description" in tool_info
+            assert callable(tool_info["function"])
 
         except ImportError:
             pytest.skip("Utils MCP not available")
         except Exception as e:
             # Should handle registration errors gracefully
             assert "error" in str(e).lower() or "import" in str(e).lower()
-
-

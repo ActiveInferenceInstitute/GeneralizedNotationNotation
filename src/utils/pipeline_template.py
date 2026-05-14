@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 try:
-    from src.pipeline.config import get_output_dir_for_script
+    from pipeline.config import get_output_dir_for_script
 except ImportError:
     from pipeline.config import get_output_dir_for_script
 
@@ -28,6 +28,7 @@ try:
         log_step_success,
         log_step_warning,
     )
+
     UTILS_AVAILABLE = True
 
 except ImportError:
@@ -49,19 +50,30 @@ except ImportError:
 
     UTILS_AVAILABLE = False
 
-def _create_fallback_parser(description: str, additional_arguments: Optional[Dict[str, Any]] = None) -> argparse.ArgumentParser:
+
+def _create_fallback_parser(
+    description: str, additional_arguments: Optional[Dict[str, Any]] = None
+) -> argparse.ArgumentParser:
     """Create a recovery argument parser with standard arguments."""
     parser = argparse.ArgumentParser(description=description)
 
     # Standard arguments - use None for defaults that get set by pipeline template
-    parser.add_argument("--target-dir", type=Path, default=None,
-                       help="Target directory containing files to process")
-    parser.add_argument("--output-dir", type=Path, default=Path("output"),
-                       help="Output directory for generated artifacts")
-    parser.add_argument("--recursive", action="store_true",
-                       help="Process files recursively")
-    parser.add_argument("--verbose", action="store_true",
-                       help="Enable verbose output")
+    parser.add_argument(
+        "--target-dir",
+        type=Path,
+        default=None,
+        help="Target directory containing files to process",
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=Path("output"),
+        help="Output directory for generated artifacts",
+    )
+    parser.add_argument(
+        "--recursive", action="store_true", help="Process files recursively"
+    )
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
 
     # Add additional arguments if provided
     if additional_arguments:
@@ -77,7 +89,6 @@ def _create_fallback_parser(description: str, additional_arguments: Optional[Dic
     return parser
 
 
-
 def _preload_step_imports(step_specific_imports: Optional[List[str]]) -> None:
     """Eagerly import step-specific modules; log (don't raise) on ImportError."""
     if not step_specific_imports:
@@ -89,31 +100,40 @@ def _preload_step_imports(step_specific_imports: Optional[List[str]]) -> None:
             logging.warning(f"Failed to import {import_name}: {e}")
 
 
-def _parse_step_args(step_name: str, fallback_parser_description: str,
-                     additional_arguments: Optional[Dict[str, Any]]) -> argparse.Namespace:
+def _parse_step_args(
+    step_name: str,
+    fallback_parser_description: str,
+    additional_arguments: Optional[Dict[str, Any]],
+) -> argparse.Namespace:
     """Try the enhanced argument parser; fall back to the recovery parser on any failure."""
     try:
         from utils import ArgumentParser
+
         return ArgumentParser.parse_step_arguments(step_name)
     except Exception as e:
         logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
-        return _create_fallback_parser(fallback_parser_description, additional_arguments or {}).parse_args()
+        return _create_fallback_parser(
+            fallback_parser_description, additional_arguments or {}
+        ).parse_args()
 
 
-def _resolve_dirs(parsed_args: argparse.Namespace, step_name: str,
-                  default_target_dir: Optional[str]) -> tuple[Path, Path]:
+def _resolve_dirs(
+    parsed_args: argparse.Namespace, step_name: str, default_target_dir: Optional[str]
+) -> tuple[Path, Path]:
     """Resolve target_dir and the per-step output_dir from parsed args."""
-    target_dir_raw = getattr(parsed_args, 'target_dir', None)
+    target_dir_raw = getattr(parsed_args, "target_dir", None)
     if target_dir_raw is None:
-        target_dir = Path(default_target_dir) if default_target_dir else Path('input/gnn_files')
+        target_dir = (
+            Path(default_target_dir) if default_target_dir else Path("input/gnn_files")
+        )
     else:
         target_dir = Path(target_dir_raw)
 
-    output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
-    output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
+    output_dir_raw = getattr(parsed_args, "output_dir", "output")
+    output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path("output")
 
     try:
-        normalized_step = step_name if not step_name.endswith('.py') else step_name[:-3]
+        normalized_step = step_name if not step_name.endswith(".py") else step_name[:-3]
         step_output_dir = get_output_dir_for_script(normalized_step, output_dir)
     except Exception:
         step_output_dir = output_dir
@@ -153,21 +173,31 @@ def create_standardized_pipeline_script(
     per-step output directory, calls ``module_function``, and returns the coerced exit
     code. See ``_coerce_exit_code`` for the return-value contract.
     """
+
     def run_standardized_script():
         try:
             _preload_step_imports(step_specific_imports)
-            parsed_args = _parse_step_args(step_name, fallback_parser_description, additional_arguments)
-            logger = setup_step_logging(step_name, getattr(parsed_args, 'verbose', False))
-            target_dir, step_output_dir = _resolve_dirs(parsed_args, step_name, default_target_dir)
+            parsed_args = _parse_step_args(
+                step_name, fallback_parser_description, additional_arguments
+            )
+            logger = setup_step_logging(
+                step_name, getattr(parsed_args, "verbose", False)
+            )
+            target_dir, step_output_dir = _resolve_dirs(
+                parsed_args, step_name, default_target_dir
+            )
 
             result = module_function(
                 target_dir=target_dir,
                 output_dir=step_output_dir,
                 logger=logger,
-                recursive=getattr(parsed_args, 'recursive', default_recursive),
-                verbose=getattr(parsed_args, 'verbose', False),
-                **{k: v for k, v in vars(parsed_args).items()
-                   if k not in ['target_dir', 'output_dir', 'recursive', 'verbose']}
+                recursive=getattr(parsed_args, "recursive", default_recursive),
+                verbose=getattr(parsed_args, "verbose", False),
+                **{
+                    k: v
+                    for k, v in vars(parsed_args).items()
+                    if k not in ["target_dir", "output_dir", "recursive", "verbose"]
+                },
             )
             return _coerce_exit_code(result, step_name, logger)
 
@@ -217,32 +247,57 @@ STANDARD_MODULE_FUNCTION_NAMES = {
     "21_mcp": "process_mcp",
     "22_gui": "process_gui",
     "23_report": "process_report",
-    "24_intelligent_analysis": "process_intelligent_analysis"
+    "24_intelligent_analysis": "process_intelligent_analysis",
 }
 
 # Standard additional arguments for each step
 STEP_ADDITIONAL_ARGUMENTS = {
     "5_type_checker": {
         "strict": {"type": bool, "help": "Enable strict validation mode"},
-        "estimate_resources": {"type": bool, "help": "Estimate computational resources"}
+        "estimate_resources": {
+            "type": bool,
+            "help": "Estimate computational resources",
+        },
     },
     "13_llm": {
-        "llm_tasks": {"type": str, "default": "all", "help": "Comma-separated list of LLM tasks"},
-        "llm_timeout": {"type": int, "default": 360, "help": "Timeout for LLM operations in seconds"}
+        "llm_tasks": {
+            "type": str,
+            "default": "all",
+            "help": "Comma-separated list of LLM tasks",
+        },
+        "llm_timeout": {
+            "type": int,
+            "default": 360,
+            "help": "Timeout for LLM operations in seconds",
+        },
     },
     "20_website": {
-        "website_html_filename": {"type": str, "default": "gnn_pipeline_summary_website.html", "help": "Filename for generated HTML website"}
+        "website_html_filename": {
+            "type": str,
+            "default": "gnn_pipeline_summary_website.html",
+            "help": "Filename for generated HTML website",
+        }
     },
     "23_report": {
         # No additional arguments for report generation
     },
     "10_ontology": {
-        "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file", "flag": "--ontology-terms-file"}
+        "ontology_terms_file": {
+            "type": Path,
+            "help": "Path to ontology terms JSON file",
+            "flag": "--ontology-terms-file",
+        }
     },
     "1_setup": {
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
-        "dev": {"type": bool, "help": "Install development dependencies (uv sync --extra dev)"},
-        "install_all_extras": {"type": bool, "help": "Install all optional groups (uv sync --all-extras)"},
+        "dev": {
+            "type": bool,
+            "help": "Install development dependencies (uv sync --extra dev)",
+        },
+        "install_all_extras": {
+            "type": bool,
+            "help": "Install all optional groups (uv sync --all-extras)",
+        },
     },
     "21_mcp": {
         "performance-mode": {
@@ -250,7 +305,7 @@ STEP_ADDITIONAL_ARGUMENTS = {
             "default": "low",
             "choices": ["low", "high"],
             "help": "Performance mode for MCP",
-            "flag": "--performance-mode"
+            "flag": "--performance-mode",
         }
-    }
+    },
 }

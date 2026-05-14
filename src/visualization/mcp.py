@@ -15,8 +15,9 @@ from . import get_module_info as _get_mod_info
 from . import get_visualization_options, process_visualization
 
 
-def process_visualization_mcp(target_directory: str, output_directory: str,
-                               verbose: bool = False) -> Dict[str, Any]:
+def process_visualization_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Generate static visualizations for all GNN models in a directory.
 
@@ -39,7 +40,11 @@ def process_visualization_mcp(target_directory: str, output_directory: str,
         )
         # Count output files
         out = Path(output_directory)
-        n_files = len(list(out.rglob("*.png")) + list(out.rglob("*.svg"))) if out.exists() else 0
+        n_files = (
+            len(list(out.rglob("*.png")) + list(out.rglob("*.svg")))
+            if out.exists()
+            else 0
+        )
         return {
             "success": success,
             "target_directory": target_directory,
@@ -66,9 +71,13 @@ def get_visualization_options_mcp() -> Dict[str, Any]:
         return {
             "success": True,
             "options": {
-                "state_space_graph": {"description": "Network graph of GNN state space"},
+                "state_space_graph": {
+                    "description": "Network graph of GNN state space"
+                },
                 "connectivity_matrix": {"description": "Connection matrix heatmap"},
-                "parameter_distributions": {"description": "Histograms of model parameters"},
+                "parameter_distributions": {
+                    "description": "Histograms of model parameters"
+                },
                 "time_series": {"description": "Time-step evolution plots"},
             },
             "note": str(e) if e else "",
@@ -88,28 +97,33 @@ def list_visualization_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
     try:
         out_dir = Path(output_directory)
         if not out_dir.exists():
-            return {"success": False, "error": f"Directory not found: {output_directory}"}
+            return {
+                "success": False,
+                "error": f"Directory not found: {output_directory}",
+            }
 
         artifacts: List[Dict[str, Any]] = []
         for ext in ["*.png", "*.svg", "*.html", "*.pdf"]:
             for f in sorted(out_dir.rglob(ext)):
-                artifacts.append({
-                    "name":   f.name,
-                    "type":   f.suffix.lstrip("."),
-                    "size_bytes": f.stat().st_size,
-                    "path":   str(f.relative_to(out_dir)),
-                })
+                artifacts.append(
+                    {
+                        "name": f.name,
+                        "type": f.suffix.lstrip("."),
+                        "size_bytes": f.stat().st_size,
+                        "path": str(f.relative_to(out_dir)),
+                    }
+                )
 
         by_type: Dict[str, int] = {}
         for a in artifacts:
             by_type[a["type"]] = by_type.get(a["type"], 0) + 1
 
         return {
-            "success":          True,
+            "success": True,
             "output_directory": str(out_dir),
-            "total_artifacts":  len(artifacts),
-            "by_type":          by_type,
-            "artifacts":        artifacts,
+            "total_artifacts": len(artifacts),
+            "by_type": by_type,
+            "artifacts": artifacts,
         }
     except Exception as e:
         logger.error(f"list_visualization_artifacts_mcp error: {e}", exc_info=True)
@@ -133,19 +147,31 @@ def get_visualization_module_info_mcp() -> Dict[str, Any]:
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
+
 def register_tools(mcp_instance) -> None:
     """Register visualization tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_visualization",
         process_visualization_mcp,
-        {"type": "object", "properties": {
-            "target_directory": {"type": "string", "description": "Directory with GNN files"},
-            "output_directory": {"type": "string", "description": "Output directory for plots"},
-            "verbose":          {"type": "boolean", "default": False},
-        }, "required": ["target_directory", "output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory with GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Output directory for plots",
+                },
+                "verbose": {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
+        },
         "Generate static PNGs/SVGs for all GNN models (state-space, connection matrix, parameters).",
-        module=__package__, category="visualization",
+        module=__package__,
+        category="visualization",
     )
 
     mcp_instance.register_tool(
@@ -153,17 +179,26 @@ def register_tools(mcp_instance) -> None:
         get_visualization_options_mcp,
         {},
         "Return available visualization types and their configuration options.",
-        module=__package__, category="visualization",
+        module=__package__,
+        category="visualization",
     )
 
     mcp_instance.register_tool(
         "list_visualization_artifacts",
         list_visualization_artifacts_mcp,
-        {"type": "object", "properties": {
-            "output_directory": {"type": "string", "description": "Directory containing visualization artifacts"},
-        }, "required": ["output_directory"]},
+        {
+            "type": "object",
+            "properties": {
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory containing visualization artifacts",
+                },
+            },
+            "required": ["output_directory"],
+        },
         "List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory.",
-        module=__package__, category="visualization",
+        module=__package__,
+        category="visualization",
     )
 
     mcp_instance.register_tool(
@@ -171,7 +206,8 @@ def register_tools(mcp_instance) -> None:
         get_visualization_module_info_mcp,
         {},
         "Return metadata about the visualization module (version, backends, output formats).",
-        module=__package__, category="visualization",
+        module=__package__,
+        category="visualization",
     )
 
     logger.info("visualization module MCP tools registered (4 domain tools).")

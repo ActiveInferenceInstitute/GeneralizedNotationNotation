@@ -18,6 +18,7 @@ if str(SRC) not in sys.path:
 
 def test_check_ml_frameworks_returns_dict_with_known_frameworks():
     from ml_integration import check_ml_frameworks
+
     result = check_ml_frameworks()
     assert isinstance(result, dict)
     # Should report at least these frameworks, even if unavailable.
@@ -33,10 +34,12 @@ def test_check_ml_frameworks_reports_availability_consistently():
     """For each framework in the result, the 'available' flag must match
     what importlib says about the module's spec — our report must not lie."""
     from ml_integration import check_ml_frameworks
+
     result = check_ml_frameworks()
     # Map reported framework → module it represents.
     framework_to_module = {
-        "pytorch": "torch", "torch": "torch",
+        "pytorch": "torch",
+        "torch": "torch",
         "jax": "jax",
         "numpyro": "numpyro",
         "tensorflow": "tensorflow",
@@ -58,6 +61,7 @@ def test_check_ml_frameworks_reports_availability_consistently():
 
 def test_ml_integration_module_info_has_version():
     from ml_integration import get_module_info
+
     info = get_module_info()
     assert isinstance(info, dict)
     assert "version" in info

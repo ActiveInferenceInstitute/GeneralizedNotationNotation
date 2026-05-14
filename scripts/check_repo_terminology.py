@@ -55,6 +55,10 @@ TEXT_SUFFIXES = {
     ".yml",
 }
 
+AUDIT_TOOL_FILES = {
+    ROOT / "scripts" / "check_maintained_doc_terms.py",
+}
+
 PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"zero-mock", re.IGNORECASE), "test-double wording"),
     (re.compile(r"no mocks", re.IGNORECASE), "test-double wording"),
@@ -64,7 +68,10 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bfake(s)?\b", re.IGNORECASE), "test-double wording"),
     (re.compile(r"\blegacy\b", re.IGNORECASE), "stale-version wording"),
     (re.compile(r"placeholder", re.IGNORECASE), "incomplete-surface wording"),
-    (re.compile(r"backwards?-compat(?:ible|ibility)?", re.IGNORECASE), "compatibility promise"),
+    (
+        re.compile(r"backwards?-compat(?:ible|ibility)?", re.IGNORECASE),
+        "compatibility promise",
+    ),
     (re.compile(r"compatibility alias", re.IGNORECASE), "compatibility-only API"),
     (re.compile(r"\bshim\b", re.IGNORECASE), "compatibility-only layer wording"),
     (re.compile(r"\bdummy\b", re.IGNORECASE), "test-double wording"),
@@ -96,13 +103,14 @@ def _iter_files() -> list[Path]:
         if not root.exists() or _is_generated_path(root):
             continue
         if root.is_file():
-            if root.resolve() != this_file:
+            if root.resolve() != this_file and root.resolve() not in AUDIT_TOOL_FILES:
                 files.add(root)
             continue
         for path in root.rglob("*"):
             if (
                 path.is_file()
                 and path.resolve() != this_file
+                and path.resolve() not in AUDIT_TOOL_FILES
                 and path.suffix in TEXT_SUFFIXES
                 and not _is_generated_path(path)
             ):
@@ -120,13 +128,17 @@ def scan() -> list[tuple[Path, int, str, str]]:
         for line_no, line in enumerate(text.splitlines(), start=1):
             for pattern, description in PATTERNS:
                 if pattern.search(line):
-                    violations.append((path.relative_to(ROOT), line_no, description, line.strip()))
+                    violations.append(
+                        (path.relative_to(ROOT), line_no, description, line.strip())
+                    )
     return violations
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--strict", action="store_true", help="Exit 1 when violations are found.")
+    parser.add_argument(
+        "--strict", action="store_true", help="Exit 1 when violations are found."
+    )
     args = parser.parse_args()
 
     violations = scan()

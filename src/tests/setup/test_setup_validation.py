@@ -20,6 +20,7 @@ def test_check_python_version_respects_current_interpreter():
     If this test ever fails, either the interpreter is too old OR the
     requirements in pyproject.toml were silently relaxed."""
     from setup import check_python_version
+
     result = check_python_version()
     assert isinstance(result, bool)
     if sys.version_info >= (3, 11):
@@ -29,11 +30,19 @@ def test_check_python_version_respects_current_interpreter():
 def test_validate_environment_returns_dict():
     """validate_environment must return a diagnostic dict, not raise."""
     from setup import validate_environment
+
     result = validate_environment()
     assert isinstance(result, dict)
     # Should expose at least a high-level status signal.
-    expected_keys = {"valid", "python_version", "errors", "warnings",
-                     "overall_health", "status", "issues"}
+    expected_keys = {
+        "valid",
+        "python_version",
+        "errors",
+        "warnings",
+        "overall_health",
+        "status",
+        "issues",
+    }
     assert expected_keys & set(result.keys()), (
         f"validate_environment returned no recognized status key: {list(result.keys())}"
     )
@@ -41,6 +50,7 @@ def test_validate_environment_returns_dict():
 
 def test_get_module_info_exposes_version():
     from setup import get_module_info
+
     info = get_module_info()
     assert isinstance(info, dict)
     assert "version" in info
@@ -52,6 +62,7 @@ def test_get_module_info_exposes_version():
 def test_environment_manager_instantiates_without_side_effects():
     """Constructing EnvironmentManager must not fail or mutate state."""
     from setup import EnvironmentManager
+
     mgr = EnvironmentManager()
     assert mgr is not None
 

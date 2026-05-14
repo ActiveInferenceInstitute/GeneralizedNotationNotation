@@ -9,9 +9,12 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
+
 class ConversionError(Exception):
     """Raised when format conversion fails."""
+
     pass
+
 
 class FormatConverter:
     """
@@ -25,22 +28,24 @@ class FormatConverter:
     def convert(self, model: Any, from_format: str, to_format: str) -> Any:
         """
         Convert a GNN model between formats.
-        
+
         Args:
             model: The model to convert
             from_format: Source format
             to_format: Target format
-            
+
         Returns:
             Converted model
-            
+
         Raises:
             ConversionError: If conversion is not supported or fails
         """
         conversion_key = (from_format, to_format)
 
         if conversion_key not in self.supported_conversions:
-            raise ConversionError(f"Conversion from {from_format} to {to_format} not supported")
+            raise ConversionError(
+                f"Conversion from {from_format} to {to_format} not supported"
+            )
 
         try:
             return self.supported_conversions[conversion_key](model)
@@ -50,7 +55,7 @@ class FormatConverter:
     def register_conversion(self, from_format: str, to_format: str, converter_func):
         """
         Register a conversion function.
-        
+
         Args:
             from_format: Source format
             to_format: Target format

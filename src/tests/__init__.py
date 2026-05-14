@@ -3,7 +3,7 @@ Comprehensive Test Suite for GNN Processing Pipeline.
 
 This module provides a complete testing framework with:
 - Unit tests for all pipeline components
-- Integration tests for end-to-end workflows  
+- Integration tests for end-to-end workflows
 - Performance tests for scalability validation
 - Coverage analysis for code quality assurance
 - Safe-to-fail implementations for graceful degradation
@@ -35,9 +35,10 @@ if str(SRC_DIR) not in sys.path:
     # Also expose tests as a top-level import alias so 'from tests.conftest import *' works
     try:
         import types as _types
-        pkg = _types.ModuleType('tests')
+
+        pkg = _types.ModuleType("tests")
         pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
-        sys.modules.setdefault('tests', pkg)
+        sys.modules.setdefault("tests", pkg)
     except Exception:
         pass
 
@@ -81,6 +82,7 @@ try:
 except Exception:
     # Minimal fallbacks to keep collection working if import path resolution fails
     from pathlib import Path as _P
+
     SRC_DIR = _P(__file__).parent.parent
     PROJECT_ROOT = SRC_DIR.parent
     TEST_DIR = SRC_DIR / "tests"
@@ -93,35 +95,66 @@ except Exception:
     TEST_CATEGORIES = {}
     TEST_STAGES = {}
     COVERAGE_TARGETS = {}
-    def is_safe_mode() -> bool: return True
-    def validate_test_environment() -> bool: return True
-    def get_test_args() -> Dict[str, Any]: return {}
-    def get_sample_pipeline_arguments() -> Dict[str, Any]: return {}
-    def create_test_gnn_files(_: Path) -> List[Path]: return []
-    def create_test_files(_: Path, __: int = 3) -> List[Path]: return []
-    def create_sample_gnn_content() -> Dict[str, str]: return {"valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"}
-    def get_test_filesystem_structure() -> Dict[str, Any]: return {}
-    def run_all_tests(*_: Any, **__: Any) -> bool: return True
+
+    def is_safe_mode() -> bool:
+        return True
+
+    def validate_test_environment() -> bool:
+        return True
+
+    def get_test_args() -> Dict[str, Any]:
+        return {}
+
+    def get_sample_pipeline_arguments() -> Dict[str, Any]:
+        return {}
+
+    def create_test_gnn_files(_: Path) -> List[Path]:
+        return []
+
+    def create_test_files(_: Path, __: int = 3) -> List[Path]:
+        return []
+
+    def create_sample_gnn_content() -> Dict[str, str]:
+        return {
+            "valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"
+        }
+
+    def get_test_filesystem_structure() -> Dict[str, Any]:
+        return {}
+
+    def run_all_tests(*_: Any, **__: Any) -> bool:
+        return True
+
     import time as _time
     from contextlib import contextmanager
+
     @contextmanager
     def performance_tracker() -> Generator[Any, None, None]:
         class T:
             duration = 0.0
             max_memory_mb = 0.0
             peak_memory_mb = 0.0
+
         t = T()
         start = _time.time()
         yield t
         t.duration = _time.time() - start
-    def get_memory_usage() -> float: return 0.0
-    def track_peak_memory(f: Any) -> Any: return f
+
+    def get_memory_usage() -> float:
+        return 0.0
+
+    def track_peak_memory(f: Any) -> Any:
+        return f
+
     def with_resource_limits(*_: Any, **__: Any) -> Any:
         from contextlib import contextmanager
+
         @contextmanager
         def _cm() -> Generator[None, None, None]:
             yield
+
         return _cm()
+
     def assert_file_exists(path: Any, msg: Optional[str] = None) -> None:
         """Assert that a file exists at the given path.
 
@@ -133,6 +166,7 @@ except Exception:
             AssertionError: If file does not exist.
         """
         from pathlib import Path as P
+
         p = P(path)
         if not p.exists():
             raise AssertionError(msg or f"File does not exist: {path}")
@@ -151,16 +185,19 @@ except Exception:
         """
         import json
         from pathlib import Path as P
+
         p = P(path)
         if not p.exists():
             raise AssertionError(msg or f"JSON file does not exist: {path}")
         try:
-            with open(p, 'r') as f:
+            with open(p, "r") as f:
                 json.load(f)
         except json.JSONDecodeError as e:
             raise AssertionError(msg or f"Invalid JSON in {path}: {e}") from e
 
-    def assert_directory_structure(base_path: Any, expected_structure: List[str], msg: Optional[str] = None) -> None:
+    def assert_directory_structure(
+        base_path: Any, expected_structure: List[str], msg: Optional[str] = None
+    ) -> None:
         """Assert that a directory contains expected structure.
 
         Args:
@@ -172,6 +209,7 @@ except Exception:
             AssertionError: If structure doesn't match.
         """
         from pathlib import Path as P
+
         base = P(base_path)
         if not base.exists():
             raise AssertionError(msg or f"Base directory does not exist: {base_path}")
@@ -182,18 +220,31 @@ except Exception:
             item_path = base / item
             if not item_path.exists():
                 raise AssertionError(msg or f"Expected item missing: {item_path}")
-    def validate_report_data(d: Dict[str, Any]) -> Dict[str, Any]: return {"is_valid": True}
-    def generate_html_report_file(*_: Any, **__: Any) -> bool: return True
-    def generate_markdown_report_file(*_: Any, **__: Any) -> bool: return True
-    def generate_json_report_file(*_: Any, **__: Any) -> bool: return True
-    def generate_comprehensive_report(*_: Any, **__: Any) -> bool: return True
+
+    def validate_report_data(d: Dict[str, Any]) -> Dict[str, Any]:
+        return {"is_valid": True}
+
+    def generate_html_report_file(*_: Any, **__: Any) -> bool:
+        return True
+
+    def generate_markdown_report_file(*_: Any, **__: Any) -> bool:
+        return True
+
+    def generate_json_report_file(*_: Any, **__: Any) -> bool:
+        return True
+
+    def generate_comprehensive_report(*_: Any, **__: Any) -> bool:
+        return True
+
 
 # Import runner functions (split: create_test_runner lives in test_runner_modular, not runner)
 try:
     from .runner import run_tests
 except ImportError:
 
-    def run_tests(logger: Any, output_dir: Any, verbose: bool = False, **kwargs: Any) -> bool:
+    def run_tests(
+        logger: Any, output_dir: Any, verbose: bool = False, **kwargs: Any
+    ) -> bool:
         """Recovery test function when runner import fails."""
         logger.warning("Tests runner not available - using recovery")
         return True
@@ -207,6 +258,7 @@ except ImportError:
         """Recovery factory when test_runner_modular import fails."""
         logger.warning("Test runner factory not available - using recovery")
         return None
+
 
 # Import pytest markers from conftest
 try:
@@ -226,7 +278,7 @@ except ImportError:
         "environment": "Environment validation tests",
         "render": "Rendering and code generation tests",
         "export": "Export functionality tests",
-        "parsers": "Parser and format tests"
+        "parsers": "Parser and format tests",
     }
 
 # Export public interface
@@ -240,11 +292,9 @@ __all__ = [
     "TEST_STAGES",
     "COVERAGE_TARGETS",
     "PYTEST_MARKERS",
-
     # Test runner functions
     "run_tests",
     "create_test_runner",
-
     # Utility functions
     "is_safe_mode",
     "validate_test_environment",
@@ -255,29 +305,25 @@ __all__ = [
     "create_sample_gnn_content",
     "get_test_filesystem_structure",
     "run_all_tests",
-
     # Performance tracking functions
     "performance_tracker",
     "get_memory_usage",
     "track_peak_memory",
     "with_resource_limits",
-
     # Validation functions
     "assert_file_exists",
     "assert_valid_json",
     "assert_directory_structure",
-
     # Report functions
     "validate_report_data",
     "generate_html_report_file",
     "generate_markdown_report_file",
     "generate_json_report_file",
     "generate_comprehensive_report",
-
     # Module metadata
     "__version__",
     "__author__",
-    "__description__"
+    "__description__",
 ]
 
 # Module metadata

@@ -34,8 +34,10 @@ def mcp_instance():
 @pytest.fixture
 def sample_tool_func():
     """A simple callable for tool registration."""
+
     def add(a: int, b: int) -> dict:
         return {"result": a + b}
+
     return add
 
 
@@ -48,7 +50,10 @@ class TestMCPToolRegistration:
         mcp_instance.register_tool(
             name="test_add",
             func=sample_tool_func,
-            schema={"type": "object", "properties": {"a": {"type": "integer"}, "b": {"type": "integer"}}},
+            schema={
+                "type": "object",
+                "properties": {"a": {"type": "integer"}, "b": {"type": "integer"}},
+            },
             description="Add two numbers",
         )
         assert "test_add" in mcp_instance.tools
@@ -74,21 +79,29 @@ class TestMCPToolRegistration:
     @pytest.mark.unit
     def test_register_tool_overwrites(self, mcp_instance, sample_tool_func):
         """Registering a tool with the same name should overwrite."""
-        mcp_instance.register_tool(name="dup", func=sample_tool_func, schema={}, description="v1")
-        mcp_instance.register_tool(name="dup", func=sample_tool_func, schema={}, description="v2")
+        mcp_instance.register_tool(
+            name="dup", func=sample_tool_func, schema={}, description="v1"
+        )
+        mcp_instance.register_tool(
+            name="dup", func=sample_tool_func, schema={}, description="v2"
+        )
         assert mcp_instance.tools["dup"].description == "v2"
 
     @pytest.mark.unit
     def test_register_tool_requires_name(self, mcp_instance, sample_tool_func):
         """Should raise error if name is empty."""
         with pytest.raises(MCPInvalidParamsError):
-            mcp_instance.register_tool(name="", func=sample_tool_func, schema={}, description="test")
+            mcp_instance.register_tool(
+                name="", func=sample_tool_func, schema={}, description="test"
+            )
 
     @pytest.mark.unit
     def test_register_tool_requires_callable(self, mcp_instance):
         """Should raise error if func is not callable."""
         with pytest.raises(MCPInvalidParamsError):
-            mcp_instance.register_tool(name="bad", func="not_a_function", schema={}, description="test")
+            mcp_instance.register_tool(
+                name="bad", func="not_a_function", schema={}, description="test"
+            )
 
 
 class TestMCPToolExecution:
@@ -100,7 +113,10 @@ class TestMCPToolExecution:
         mcp_instance.register_tool(
             name="add",
             func=sample_tool_func,
-            schema={"type": "object", "properties": {"a": {"type": "integer"}, "b": {"type": "integer"}}},
+            schema={
+                "type": "object",
+                "properties": {"a": {"type": "integer"}, "b": {"type": "integer"}},
+            },
             description="Add numbers",
         )
         result = mcp_instance.execute_tool("add", {"a": 3, "b": 4})
@@ -113,7 +129,9 @@ class TestMCPToolExecution:
             mcp_instance.execute_tool("nonexistent", {})
 
     @pytest.mark.unit
-    def test_execute_tool_with_missing_required_param(self, mcp_instance, sample_tool_func):
+    def test_execute_tool_with_missing_required_param(
+        self, mcp_instance, sample_tool_func
+    ):
         """Should raise error when required parameter is missing."""
         mcp_instance.register_tool(
             name="strict_add",
@@ -135,8 +153,10 @@ class TestMCPResourceRegistration:
     @pytest.mark.unit
     def test_register_resource(self, mcp_instance):
         """Should register a resource with URI template."""
+
         def retriever(uri):
             return {"data": "test"}
+
         mcp_instance.register_resource(
             uri_template="gnn://models/{model_name}",
             retriever=retriever,
@@ -147,8 +167,10 @@ class TestMCPResourceRegistration:
     @pytest.mark.unit
     def test_resource_metadata(self, mcp_instance):
         """Should store resource metadata correctly."""
+
         def retriever(uri):
             return {}
+
         mcp_instance.register_resource(
             uri_template="test://resource",
             retriever=retriever,
@@ -198,11 +220,13 @@ class TestMCPServerLifecycle:
     def test_handle_initialize_request(self, mcp_instance):
         """Should handle JSON-RPC initialize request."""
         server = MCPServer(mcp_instance)
-        response = server.handle_request({
-            "jsonrpc": "2.0",
-            "method": "initialize",
-            "id": 1,
-        })
+        response = server.handle_request(
+            {
+                "jsonrpc": "2.0",
+                "method": "initialize",
+                "id": 1,
+            }
+        )
         assert response["jsonrpc"] == "2.0"
         assert "result" in response
         assert "protocolVersion" in response["result"]
@@ -217,11 +241,13 @@ class TestMCPServerLifecycle:
             description="A tool",
         )
         server = MCPServer(mcp_instance)
-        response = server.handle_request({
-            "jsonrpc": "2.0",
-            "method": "tools/list",
-            "id": 2,
-        })
+        response = server.handle_request(
+            {
+                "jsonrpc": "2.0",
+                "method": "tools/list",
+                "id": 2,
+            }
+        )
         assert "result" in response
         tools = response["result"]["tools"]
         tool_names = [t["name"] for t in tools]
@@ -231,11 +257,13 @@ class TestMCPServerLifecycle:
     def test_handle_invalid_method(self, mcp_instance):
         """Should return error for unknown method."""
         server = MCPServer(mcp_instance)
-        response = server.handle_request({
-            "jsonrpc": "2.0",
-            "method": "unknown/method",
-            "id": 3,
-        })
+        response = server.handle_request(
+            {
+                "jsonrpc": "2.0",
+                "method": "unknown/method",
+                "id": 3,
+            }
+        )
         assert "error" in response
         assert response["error"]["code"] == -32601
 
@@ -243,11 +271,13 @@ class TestMCPServerLifecycle:
     def test_handle_invalid_jsonrpc(self, mcp_instance):
         """Should return error for invalid jsonrpc version."""
         server = MCPServer(mcp_instance)
-        response = server.handle_request({
-            "jsonrpc": "1.0",
-            "method": "initialize",
-            "id": 4,
-        })
+        response = server.handle_request(
+            {
+                "jsonrpc": "1.0",
+                "method": "initialize",
+                "id": 4,
+            }
+        )
         assert "error" in response
 
 

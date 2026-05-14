@@ -37,7 +37,7 @@ class TestMatrixVisualizerCore:
         # Test with list of parameter dicts
         parameters = [
             {"name": "A", "value": [[0.5, 0.5], [0.3, 0.7]]},
-            {"name": "B", "value": [[1, 0], [0, 1]]}
+            {"name": "B", "value": [[1, 0], [0, 1]]},
         ]
 
         matrices = visualizer.extract_matrix_data_from_parameters(parameters)
@@ -58,7 +58,7 @@ class TestMatrixVisualizerCore:
         # Dict format (name -> value mapping)
         parameters = {
             "transition": [[0.9, 0.1], [0.2, 0.8]],
-            "observation": [[1, 0, 0], [0, 1, 0]]
+            "observation": [[1, 0, 0], [0, 1, 0]],
         }
 
         matrices = visualizer.extract_matrix_data_from_parameters(parameters)
@@ -126,9 +126,7 @@ class TestMatrixHeatmapGeneration:
         output_path = tmp_path / "heatmap.png"
 
         result = visualizer.generate_matrix_heatmap(
-            matrix_name="test_matrix",
-            matrix=matrix,
-            output_path=output_path
+            matrix_name="test_matrix", matrix=matrix, output_path=output_path
         )
 
         assert result is True
@@ -150,7 +148,7 @@ class TestMatrixHeatmapGeneration:
             matrix_name="random_matrix",
             matrix=matrix,
             output_path=output_path,
-            cmap='Blues'
+            cmap="Blues",
         )
 
         assert result is True
@@ -196,7 +194,7 @@ class TestTensorVisualization:
             tensor_name="B",
             tensor=tensor,
             output_path=output_path,
-            tensor_type="transition"
+            tensor_type="transition",
         )
 
         assert result is True
@@ -219,8 +217,7 @@ class TestTensorVisualization:
         output_path = tmp_path / "pomdp_analysis.png"
 
         result = visualizer.generate_pomdp_transition_analysis(
-            tensor=tensor,
-            output_path=output_path
+            tensor=tensor, output_path=output_path
         )
 
         assert result is True
@@ -243,13 +240,11 @@ class TestMatrixExportFormats:
         output_path = tmp_path / "matrix.png"  # CSV will be matrix.csv
 
         result = visualizer.export_matrix_to_csv(
-            matrix=matrix,
-            matrix_name="test_matrix",
-            output_path=output_path
+            matrix=matrix, matrix_name="test_matrix", output_path=output_path
         )
 
         assert result is True
-        csv_path = output_path.with_suffix('.csv')
+        csv_path = output_path.with_suffix(".csv")
         assert csv_path.exists()
 
         # Verify CSV content
@@ -270,9 +265,7 @@ class TestMatrixExportFormats:
         output_path = tmp_path / "tensor.png"
 
         result = visualizer.export_matrix_to_csv(
-            matrix=tensor,
-            matrix_name="test_tensor",
-            output_path=output_path
+            matrix=tensor, matrix_name="test_tensor", output_path=output_path
         )
 
         assert result is True
@@ -296,9 +289,7 @@ class TestMatrixStatistics:
         tensor[:, :, 1] = np.array([[0.5, 0.3, 0.2], [0.2, 0.5, 0.3], [0.3, 0.2, 0.5]])
 
         stats = visualizer._generate_tensor_statistics(
-            tensor=tensor,
-            tensor_name="B",
-            tensor_type="transition"
+            tensor=tensor, tensor_name="B", tensor_type="transition"
         )
 
         assert isinstance(stats, str)
@@ -321,8 +312,8 @@ class TestParsedGNNExtraction:
             "ModelName": "TestModel",
             "parameters": [
                 {"name": "A", "value": [[0.9, 0.1], [0.1, 0.9]]},
-                {"name": "D", "value": [0.5, 0.5]}
-            ]
+                {"name": "D", "value": [0.5, 0.5]},
+            ],
         }
 
         matrices = visualizer.extract_from_parsed_gnn(parsed_data)
@@ -341,8 +332,8 @@ class TestParsedGNNExtraction:
             "ModelName": "TestModel",
             "InitialParameterization": {
                 "prior": [[0.3, 0.4, 0.3]],
-                "likelihood": [[1, 0], [0, 1], [0.5, 0.5]]
-            }
+                "likelihood": [[1, 0], [0, 1], [0.5, 0.5]],
+            },
         }
 
         matrices = visualizer.extract_from_parsed_gnn(parsed_data)

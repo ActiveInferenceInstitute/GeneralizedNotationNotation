@@ -7,7 +7,7 @@ reducing code duplication and ensuring consistent patterns across the codebase.
 
 Usage:
     from utils.base_processor import BaseProcessor, ProcessingResult
-    
+
     class MyProcessor(BaseProcessor):
         def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
             # Implement file processing logic
@@ -34,6 +34,7 @@ from .logging.logging_utils import (
 @dataclass
 class ProcessingResult:
     """Standardized result from processing operations."""
+
     success: bool
     files_processed: int = 0
     files_failed: int = 0
@@ -51,14 +52,14 @@ class ProcessingResult:
 
     def save_to_json(self, output_path: Path) -> None:
         """Save result to a JSON file."""
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(self.to_dict(), f, indent=2, default=str)
 
 
 class BaseProcessor(ABC):
     """
     Abstract base class for all pipeline step processors.
-    
+
     Subclasses must implement `process_single_file()` method.
     Provides standardized patterns for:
     - File discovery
@@ -68,10 +69,15 @@ class BaseProcessor(ABC):
     - Report generation
     """
 
-    def __init__(self, step_name: str, logger: Optional[logging.Logger] = None, verbose: bool = False):
+    def __init__(
+        self,
+        step_name: str,
+        logger: Optional[logging.Logger] = None,
+        verbose: bool = False,
+    ):
         """
         Initialize the processor.
-        
+
         Args:
             step_name: Name of the pipeline step (e.g., "export", "visualization")
             logger: Optional logger instance. If None, creates one using step_name.
@@ -85,33 +91,43 @@ class BaseProcessor(ABC):
     def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
         """
         Process a single file. Must be implemented by subclasses.
-        
+
         Args:
             file_path: Path to the file to process
             output_dir: Output directory for results
             **kwargs: Additional processing options
-            
+
         Returns:
             True if processing succeeded, False otherwise
         """
         pass
 
-    def find_files(self, target_dir: Path, recursive: bool = False,
-                   extensions: Optional[List[str]] = None, pattern: Optional[str] = None) -> List[Path]:
+    def find_files(
+        self,
+        target_dir: Path,
+        recursive: bool = False,
+        extensions: Optional[List[str]] = None,
+        pattern: Optional[str] = None,
+    ) -> List[Path]:
         """
         Find files to process in the target directory.
-        
+
         Args:
             target_dir: Directory to search
             recursive: Search recursively
             extensions: File extensions to include (e.g., ['.md', '.gnn'])
             pattern: Glob pattern to match (e.g., '*.md')
-            
+
         Returns:
             List of file paths matching the criteria
         """
         if extensions is None:
-            extensions = ['.json', '.yaml', '.yml', '.md']  # common data + doc formats; callers add .gnn if needed
+            extensions = [
+                ".json",
+                ".yaml",
+                ".yml",
+                ".md",
+            ]  # common data + doc formats; callers add .gnn if needed
 
         files = []
 
@@ -128,25 +144,27 @@ class BaseProcessor(ABC):
                     files.extend(target_dir.glob(f"*{ext}"))
 
         # Filter out hidden files and directories
-        files = [f for f in files if not any(part.startswith('.') for part in f.parts)]
+        files = [f for f in files if not any(part.startswith(".") for part in f.parts)]
 
         return sorted(set(files))
 
-    def process(self, target_dir: Path, output_dir: Path,
-                recursive: bool = False, **kwargs) -> ProcessingResult:
+    def process(
+        self, target_dir: Path, output_dir: Path, recursive: bool = False, **kwargs
+    ) -> ProcessingResult:
         """
         Main processing method. Finds files and processes each one.
-        
+
         Args:
             target_dir: Directory containing input files
             output_dir: Directory for output files
             recursive: Process files recursively
             **kwargs: Additional processing options
-            
+
         Returns:
             ProcessingResult with aggregated results
         """
         import time
+
         start_time = time.time()
 
         result = ProcessingResult(success=True)
@@ -156,7 +174,9 @@ class BaseProcessor(ABC):
 
             # Validate directories
             if not target_dir.exists():
-                log_step_error(self.logger, f"Target directory does not exist: {target_dir}")
+                log_step_error(
+                    self.logger, f"Target directory does not exist: {target_dir}"
+                )
                 result.success = False
                 result.errors.append(f"Target directory not found: {target_dir}")
                 return result
@@ -165,8 +185,12 @@ class BaseProcessor(ABC):
             output_dir.mkdir(parents=True, exist_ok=True)
 
             # Find files to process — extract only recognized find_files kwargs
-            find_files_kwargs = {k: v for k, v in kwargs.items() if k in ('extensions', 'pattern')}
-            files = self.find_files(target_dir, recursive=recursive, **find_files_kwargs)
+            find_files_kwargs = {
+                k: v for k, v in kwargs.items() if k in ("extensions", "pattern")
+            }
+            files = self.find_files(
+                target_dir, recursive=recursive, **find_files_kwargs
+            )
 
             if not files:
                 log_step_warning(self.logger, f"No files found in {target_dir}")
@@ -220,17 +244,17 @@ class BaseProcessor(ABC):
         if result.success:
             log_step_success(
                 self.logger,
-                f"{self.step_name} completed: {result.files_processed}/{total} files processed"
+                f"{self.step_name} completed: {result.files_processed}/{total} files processed",
             )
         elif result.files_processed > 0:
             log_step_warning(
                 self.logger,
-                f"{self.step_name} completed with errors: {result.files_processed}/{total} files processed, {result.files_failed} failed"
+                f"{self.step_name} completed with errors: {result.files_processed}/{total} files processed, {result.files_failed} failed",
             )
         else:
             log_step_error(
                 self.logger,
-                f"{self.step_name} failed: {result.files_failed}/{total} files failed"
+                f"{self.step_name} failed: {result.files_failed}/{total} files failed",
             )
 
     def _save_report(self, result: ProcessingResult, output_dir: Path) -> None:
@@ -257,8 +281,12 @@ class _FunctionProcessor(BaseProcessor):
         return self._process_func(file_path, output_dir)
 
 
-def create_processor(step_name: str, process_func: Callable[[Path, Path], bool],
-                     logger: Optional[logging.Logger] = None, verbose: bool = False) -> BaseProcessor:
+def create_processor(
+    step_name: str,
+    process_func: Callable[[Path, Path], bool],
+    logger: Optional[logging.Logger] = None,
+    verbose: bool = False,
+) -> BaseProcessor:
     """
     Factory function to create a processor from a simple processing function.
 

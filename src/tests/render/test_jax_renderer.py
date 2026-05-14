@@ -13,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
@@ -24,6 +25,7 @@ pytestmark = pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
 def mod():
     try:
         import render.jax.jax_renderer as m
+
         return m
     except ImportError:
         pytest.skip("render.jax.jax_renderer not importable")
@@ -31,7 +33,9 @@ def mod():
 
 class TestParseGnnMatrixString:
     def test_3x3_matrix_with_braces(self, mod):
-        matrix = mod._parse_gnn_matrix_string("{(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}")
+        matrix = mod._parse_gnn_matrix_string(
+            "{(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}"
+        )
         assert matrix.shape == (3, 3)
         assert abs(matrix[0, 0] - 0.9) < 1e-6
 
@@ -135,5 +139,3 @@ class TestGenerateJaxPomdpCode:
         """Empty spec produces string without raising."""
         result = mod._generate_jax_pomdp_code({}, None)
         assert isinstance(result, str)
-
-

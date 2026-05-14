@@ -45,7 +45,7 @@ class TestReportGeneratorCore:
         data = {
             "title": "Test Report",
             "sections": ["Analysis", "Results"],
-            "metrics": {"accuracy": 0.95}
+            "metrics": {"accuracy": 0.95},
         }
 
         result = generator.generate_report(data)
@@ -63,7 +63,7 @@ class TestReportGeneration:
         data = {
             "title": "Test HTML Report",
             "content": "This is test content",
-            "sections": []
+            "sections": [],
         }
 
         output_file = tmp_path / "report.html"
@@ -84,7 +84,7 @@ class TestReportGeneration:
         data = {
             "title": "Test Markdown Report",
             "content": "This is test content",
-            "sections": []
+            "sections": [],
         }
 
         output_file = tmp_path / "report.md"
@@ -114,7 +114,7 @@ class TestReportGeneration:
         result = generate_comprehensive_report(
             pipeline_output_dir=pipeline_dir,
             report_output_dir=output_dir,
-            logger=logger
+            logger=logger,
         )
 
         assert result is True
@@ -137,9 +137,7 @@ class TestReportProcessing:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         result = process_report(
-            target_dir=input_dir,
-            output_dir=output_dir,
-            logger=logger
+            target_dir=input_dir, output_dir=output_dir, logger=logger
         )
 
         # Should complete without error
@@ -162,9 +160,7 @@ class TestReportProcessing:
         input_dir = sample_gnn_files["simple"].parent
 
         result = process_report(
-            target_dir=input_dir,
-            output_dir=output_dir,
-            logger=logger
+            target_dir=input_dir, output_dir=output_dir, logger=logger
         )
 
         assert result is not None
@@ -194,7 +190,7 @@ class TestReportValidation:
         valid_data = {
             "title": "Test Report",
             "generated_at": "2026-01-23T12:00:00",
-            "sections": ["Overview", "Analysis"]
+            "sections": ["Overview", "Analysis"],
         }
 
         result = validate_report(valid_data)

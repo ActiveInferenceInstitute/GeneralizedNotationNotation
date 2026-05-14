@@ -100,7 +100,9 @@ def test_cli_choices_are_dispatched_subset() -> None:
         )
 
 
-def test_cli_main_rejects_unknown_target(tmp_path: Path, capsys: pytest.CaptureFixture) -> None:
+def test_cli_main_rejects_unknown_target(
+    tmp_path: Path, capsys: pytest.CaptureFixture
+) -> None:
     gnn_file = tmp_path / "m.md"
     gnn_file.write_text("## ModelName\nx\n")
     with pytest.raises(SystemExit):
@@ -109,31 +111,42 @@ def test_cli_main_rejects_unknown_target(tmp_path: Path, capsys: pytest.CaptureF
 
 # --- Phase 1.3 regression: generators reject invalid model_data ----------
 
-@pytest.mark.parametrize("generator_name", [
-    "generate_bnlearn_code",
-    "generate_pymdp_code",
-    "generate_discopy_code",
-    "generate_activeinference_jl_code",
-    "generate_rxinfer_code",
-])
+
+@pytest.mark.parametrize(
+    "generator_name",
+    [
+        "generate_bnlearn_code",
+        "generate_pymdp_code",
+        "generate_discopy_code",
+        "generate_activeinference_jl_code",
+        "generate_rxinfer_code",
+    ],
+)
 def test_generators_reject_none_model_data(generator_name):
     """Before Phase 1.3, passing None to a generator crashed deep inside the
     template with an opaque AttributeError. After the fix, the validate_model_data
     guard catches it and the generator returns "" (empty string = no code emitted).
     """
     from render import generators
+
     fn = getattr(generators, generator_name)
     result = fn(None)
-    assert result == "", f"{generator_name}(None) should return empty string, got {type(result)}"
+    assert result == "", (
+        f"{generator_name}(None) should return empty string, got {type(result)}"
+    )
 
 
-@pytest.mark.parametrize("generator_name", [
-    "generate_bnlearn_code",
-    "generate_pymdp_code",
-    "generate_discopy_code",
-])
+@pytest.mark.parametrize(
+    "generator_name",
+    [
+        "generate_bnlearn_code",
+        "generate_pymdp_code",
+        "generate_discopy_code",
+    ],
+)
 def test_generators_reject_non_dict_model_data(generator_name):
     from render import generators
+
     fn = getattr(generators, generator_name)
     # A string isn't a dict — validator rejects before the generator tries to .get()
     result = fn("not-a-dict")
@@ -146,6 +159,7 @@ def test_generator_accepts_minimal_valid_model_data():
     itself must pass).
     """
     from render import generators
+
     # bnlearn is the lightest — doesn't import external packages at generation time
     result = generators.generate_bnlearn_code({"model_name": "TestModel"})
     # Should produce SOMETHING (the emitted code string), not "".

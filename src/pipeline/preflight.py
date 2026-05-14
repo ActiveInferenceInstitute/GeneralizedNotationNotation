@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PreflightIssue:
     """A single preflight check result."""
+
     category: str  # config, dependency, environment, permission
     severity: str  # error, warning, info
     message: str
@@ -29,6 +30,7 @@ class PreflightIssue:
 @dataclass
 class PreflightReport:
     """Complete preflight check result."""
+
     issues: List[PreflightIssue] = field(default_factory=list)
     checks_passed: int = 0
     checks_failed: int = 0
@@ -41,8 +43,12 @@ class PreflightReport:
         self.checks_passed += 1
         logger.debug(f"✅ {msg}")
 
-    def add_issue(self, category: str, severity: str, msg: str, fix: Optional[str] = None):
-        self.issues.append(PreflightIssue(category=category, severity=severity, message=msg, fix=fix))
+    def add_issue(
+        self, category: str, severity: str, msg: str, fix: Optional[str] = None
+    ):
+        self.issues.append(
+            PreflightIssue(category=category, severity=severity, message=msg, fix=fix)
+        )
         if severity == "error":
             self.checks_failed += 1
         logger.warning(f"⚠️ [{category}] {msg}")
@@ -50,13 +56,21 @@ class PreflightReport:
     def to_markdown(self) -> str:
         lines = ["# Preflight Check Report", ""]
         emoji = "🟢" if self.is_ok else "🔴"
-        lines.append(f"{emoji} **{self.checks_passed} passed**, **{self.checks_failed} failed**")
+        lines.append(
+            f"{emoji} **{self.checks_passed} passed**, **{self.checks_failed} failed**"
+        )
         lines.append("")
 
         if self.issues:
             lines.append("## Issues")
             for issue in self.issues:
-                sev = "❌" if issue.severity == "error" else "⚠️" if issue.severity == "warning" else "ℹ️"
+                sev = (
+                    "❌"
+                    if issue.severity == "error"
+                    else "⚠️"
+                    if issue.severity == "warning"
+                    else "ℹ️"
+                )
                 lines.append(f"- {sev} **[{issue.category}]** {issue.message}")
                 if issue.fix:
                     lines.append(f"  - Fix: `{issue.fix}`")
@@ -79,8 +93,12 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
 
     # Check file exists
     if not config_path.exists():
-        report.add_issue("config", "warning", f"Config file not found: {config_path}",
-                         fix="cp input/config.yaml.example input/config.yaml")
+        report.add_issue(
+            "config",
+            "warning",
+            f"Config file not found: {config_path}",
+            fix="cp input/config.yaml.example input/config.yaml",
+        )
         return report
 
     report.add_pass(f"Config file exists: {config_path}")
@@ -88,12 +106,15 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
     # Parse YAML
     try:
         import yaml
+
         with open(config_path) as f:
             config = yaml.safe_load(f)
     except ImportError:
         # Manual parse
         config = {}
-        report.add_issue("dependency", "info", "PyYAML not installed — limited config validation")
+        report.add_issue(
+            "dependency", "info", "PyYAML not installed — limited config validation"
+        )
         return report
     except Exception as e:
         report.add_issue("config", "error", f"Config parse error: {e}")
@@ -113,9 +134,13 @@ def validate_config(config_path: Optional[Path] = None) -> PreflightReport:
         if "timeout_seconds" in llm:
             timeout = llm["timeout_seconds"]
             if not isinstance(timeout, (int, float)) or timeout < 0:
-                report.add_issue("config", "error", f"Invalid llm.timeout_seconds: {timeout}")
+                report.add_issue(
+                    "config", "error", f"Invalid llm.timeout_seconds: {timeout}"
+                )
             elif timeout > 3600:
-                report.add_issue("config", "warning", f"Very large LLM timeout: {timeout}s")
+                report.add_issue(
+                    "config", "warning", f"Very large LLM timeout: {timeout}s"
+                )
             else:
                 report.add_pass(f"LLM timeout: {timeout}s")
 
@@ -133,12 +158,19 @@ def check_environment() -> PreflightReport:
 
     # Python version
     import sys
-    py_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+
+    py_version = (
+        f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    )
     if sys.version_info >= (3, 11):
         report.add_pass(f"Python {py_version}")
     else:
-        report.add_issue("environment", "error", f"Python {py_version} — requires ≥3.11",
-                         fix="pyenv install 3.11")
+        report.add_issue(
+            "environment",
+            "error",
+            f"Python {py_version} — requires ≥3.11",
+            fix="pyenv install 3.11",
+        )
 
     # Required packages
     for pkg in ["numpy", "pytest", "yaml"]:
@@ -146,8 +178,12 @@ def check_environment() -> PreflightReport:
             __import__(pkg)
             report.add_pass(f"Package: {pkg}")
         except ImportError:
-            report.add_issue("dependency", "warning", f"Package not found: {pkg}",
-                             fix=f"pip install {pkg}")
+            report.add_issue(
+                "dependency",
+                "warning",
+                f"Package not found: {pkg}",
+                fix=f"pip install {pkg}",
+            )
 
     # Step 12 execution stack (core ``pyproject.toml`` dependencies)
     for mod, label in [
@@ -175,8 +211,12 @@ def check_environment() -> PreflightReport:
             __import__(pkg)
             report.add_pass(f"Optional: {pkg} ({purpose})")
         except ImportError:
-            report.add_issue("dependency", "info", f"Optional package: {pkg} ({purpose})",
-                             fix=f"pip install {pkg}")
+            report.add_issue(
+                "dependency",
+                "info",
+                f"Optional package: {pkg} ({purpose})",
+                fix=f"pip install {pkg}",
+            )
 
     # Tools
     for tool in ["ollama", "ruff"]:
@@ -184,16 +224,24 @@ def check_environment() -> PreflightReport:
             report.add_pass(f"Tool: {tool}")
         else:
             sev = "info" if tool == "ollama" else "warning"
-            report.add_issue("environment", sev, f"Tool not found: {tool}",
-                             fix=f"See https://github.com/{tool}")
+            report.add_issue(
+                "environment",
+                sev,
+                f"Tool not found: {tool}",
+                fix=f"See https://github.com/{tool}",
+            )
 
     # Directories
     for d in [Path("input/gnn_files"), Path("output")]:
         if d.exists():
             report.add_pass(f"Directory: {d}")
         else:
-            report.add_issue("environment", "warning", f"Directory not found: {d}",
-                             fix=f"mkdir -p {d}")
+            report.add_issue(
+                "environment",
+                "warning",
+                f"Directory not found: {d}",
+                fix=f"mkdir -p {d}",
+            )
 
     return report
 

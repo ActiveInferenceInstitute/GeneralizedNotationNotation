@@ -12,26 +12,29 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+
 def create_enhanced_pymdp_context(
     gnn_spec: Dict[str, Any],
     output_dir: Path,
     correlation_id: str = "",
-    config_overrides: Optional[Dict[str, Any]] = None
+    config_overrides: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """
     Create enhanced PyMDP execution context.
-    
+
     Args:
         gnn_spec: GNN specification dictionary
         output_dir: Output directory for results
         correlation_id: Correlation ID for tracking
         config_overrides: Optional configuration overrides
-        
+
     Returns:
         Dictionary with enhanced context
     """
     try:
-        logger.info(f"Creating enhanced PyMDP context (correlation_id: {correlation_id})")
+        logger.info(
+            f"Creating enhanced PyMDP context (correlation_id: {correlation_id})"
+        )
 
         # Base context
         context = {
@@ -39,7 +42,7 @@ def create_enhanced_pymdp_context(
             "output_dir": output_dir,
             "correlation_id": correlation_id,
             "timestamp": datetime.now().isoformat(),
-            "config": {}
+            "config": {},
         }
 
         # Extract configuration from GNN spec
@@ -55,7 +58,7 @@ def create_enhanced_pymdp_context(
             "simulation_steps": 100,
             "visualization_enabled": True,
             "save_results": True,
-            "log_level": "INFO"
+            "log_level": "INFO",
         }
 
         for key, value in default_config.items():
@@ -70,17 +73,20 @@ def create_enhanced_pymdp_context(
         # Add environment information
         try:
             import pymdp
+
             context["environment"] = {
                 "pymdp_version": getattr(pymdp, "__version__", "unknown"),
-                "pymdp_available": True
+                "pymdp_available": True,
             }
         except ImportError:
             context["environment"] = {
                 "pymdp_version": "not_available",
-                "pymdp_available": False
+                "pymdp_available": False,
             }
 
-        logger.info(f"Enhanced PyMDP context created (correlation_id: {correlation_id})")
+        logger.info(
+            f"Enhanced PyMDP context created (correlation_id: {correlation_id})"
+        )
         return context
 
     except Exception as e:
@@ -88,5 +94,5 @@ def create_enhanced_pymdp_context(
         return {
             "error": str(e),
             "correlation_id": correlation_id,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }

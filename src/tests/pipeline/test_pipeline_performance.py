@@ -24,7 +24,7 @@ from pathlib import Path
 import psutil
 
 # Import test utilities
-from src.tests import performance_tracker
+from tests import performance_tracker
 
 # Test markers
 pytestmark = [pytest.mark.performance]
@@ -33,23 +33,24 @@ pytestmark = [pytest.mark.performance]
 THRESHOLDS = {
     "small_model": {
         "processing_time": 1.0,  # seconds
-        "memory_usage": 100,    # MB
-        "disk_usage": 10,       # MB
-        "export_time": 2.0      # seconds
+        "memory_usage": 100,  # MB
+        "disk_usage": 10,  # MB
+        "export_time": 2.0,  # seconds
     },
     "medium_model": {
         "processing_time": 5.0,
         "memory_usage": 500,
         "disk_usage": 50,
-        "export_time": 10.0     # seconds
+        "export_time": 10.0,  # seconds
     },
     "large_model": {
         "processing_time": 20.0,
         "memory_usage": 2000,
         "disk_usage": 200,
-        "export_time": 30.0     # seconds
-    }
+        "export_time": 30.0,  # seconds
+    },
 }
+
 
 @pytest.fixture
 def isolated_environment():
@@ -61,14 +62,16 @@ def isolated_environment():
         (temp_path / "output").mkdir()
         yield temp_path
 
+
 @pytest.fixture
 def create_model_file(isolated_environment):
     """Create a GNN model file of specified size."""
+
     def _create_file(size: str = "small") -> Path:
         sizes = {
-            "small": 10,    # 10 states
+            "small": 10,  # 10 states
             "medium": 100,  # 100 states
-            "large": 1000   # 1000 states
+            "large": 1000,  # 1000 states
         }
         num_states = sizes[size]
 
@@ -95,7 +98,7 @@ def create_model_file(isolated_environment):
         content.append("")
         content.append("## Connections")
         for i in range(num_states - 1):
-            content.append(f"s{i}>s{i+1}")
+            content.append(f"s{i}>s{i + 1}")
 
         file_path = isolated_environment / "input" / f"test_model_{size}.md"
         file_path.write_text("\n".join(content))
@@ -103,33 +106,39 @@ def create_model_file(isolated_environment):
 
     return _create_file
 
+
 class TestGNNProcessingPerformance:
     """Test suite for GNN processing performance."""
 
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
-    def test_processing_scaling(self, isolated_environment, create_model_file, model_size):
+    def test_processing_scaling(
+        self, isolated_environment, create_model_file, model_size
+    ):
         """Test GNN processing performance scaling."""
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
 
         model_file = create_model_file(model_size)
 
         with performance_tracker() as tracker:
-            result = process_gnn_directory(
-                model_file,
-                isolated_environment / "output"
-            )
+            result = process_gnn_directory(model_file, isolated_environment / "output")
 
         assert result["status"] == "SUCCESS"
         assert tracker.duration < THRESHOLDS[f"{model_size}_model"]["processing_time"]
         # Use the correct attribute name for memory tracking
-        if hasattr(tracker, 'max_memory_mb'):
-            assert tracker.max_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
-        elif hasattr(tracker, 'peak_memory_mb'):
-            assert tracker.peak_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+        if hasattr(tracker, "max_memory_mb"):
+            assert (
+                tracker.max_memory_mb
+                < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+            )
+        elif hasattr(tracker, "peak_memory_mb"):
+            assert (
+                tracker.peak_memory_mb
+                < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+            )
 
     def test_parallel_processing(self, isolated_environment, create_model_file):
         """Test parallel GNN processing performance."""
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
 
         # Create multiple models
         for size in ["small", "medium"]:
@@ -137,37 +146,34 @@ class TestGNNProcessingPerformance:
 
         with performance_tracker() as tracker:
             result = process_gnn_directory(
-                isolated_environment / "input",
-                recursive=True,
-                parallel=True
+                isolated_environment / "input", recursive=True, parallel=True
             )
 
         assert result["status"] == "SUCCESS"
         # Check that files were processed (actual structure may vary)
         assert "processed_files" in result or "files" in result
         # Verify concurrent processing completes within a reasonable time bound.
-        assert tracker.duration < (
-            THRESHOLDS["small_model"]["processing_time"] * 4
-        )
+        assert tracker.duration < (THRESHOLDS["small_model"]["processing_time"] * 4)
+
 
 class TestVisualizationPerformance:
     """Test suite for visualization performance."""
 
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
-    def test_visualization_scaling(self, isolated_environment, create_model_file, model_size):
+    def test_visualization_scaling(
+        self, isolated_environment, create_model_file, model_size
+    ):
         """Test visualization generation performance scaling."""
         import logging
 
-        from src.visualization import generate_visualizations
+        from visualization import generate_visualizations
 
         model_file = create_model_file(model_size)
         logger = logging.getLogger("test_viz_scaling")
 
         with performance_tracker() as tracker:
             result = generate_visualizations(
-                logger,
-                model_file.parent,
-                isolated_environment / "output"
+                logger, model_file.parent, isolated_environment / "output"
             )
 
         # Handle both dict and bool return types
@@ -178,16 +184,22 @@ class TestVisualizationPerformance:
 
         assert tracker.duration < THRESHOLDS[f"{model_size}_model"]["processing_time"]
         # Use the correct attribute name for memory tracking
-        if hasattr(tracker, 'max_memory_mb'):
-            assert tracker.max_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
-        elif hasattr(tracker, 'peak_memory_mb'):
-            assert tracker.peak_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+        if hasattr(tracker, "max_memory_mb"):
+            assert (
+                tracker.max_memory_mb
+                < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+            )
+        elif hasattr(tracker, "peak_memory_mb"):
+            assert (
+                tracker.peak_memory_mb
+                < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
+            )
 
     def test_visualization_caching(self, isolated_environment, create_model_file):
         """Test visualization caching performance."""
         import logging
 
-        from src.visualization import generate_visualizations
+        from visualization import generate_visualizations
 
         model_file = create_model_file("medium")
         logger = logging.getLogger("test_viz_caching")
@@ -195,17 +207,13 @@ class TestVisualizationPerformance:
         # First generation
         with performance_tracker() as tracker_1:
             generate_visualizations(
-                logger,
-                model_file.parent,
-                isolated_environment / "output"
+                logger, model_file.parent, isolated_environment / "output"
             )
 
         # Second generation (should use cache)
         with performance_tracker() as tracker_2:
             result_2 = generate_visualizations(
-                logger,
-                model_file.parent,
-                isolated_environment / "output"
+                logger, model_file.parent, isolated_environment / "output"
             )
 
         # Handle both dict and bool return types
@@ -221,6 +229,7 @@ class TestVisualizationPerformance:
             f"{tracker_1.duration:.4f}s (slack {slack:.4f}s)"
         )
 
+
 class TestMemoryUsagePatterns:
     """Test suite for memory usage patterns."""
 
@@ -235,7 +244,7 @@ class TestMemoryUsagePatterns:
         import gc
         import tracemalloc
 
-        from src.gnn import process_gnn_directory
+        from gnn import process_gnn_directory
 
         model_file = create_model_file("large")
 
@@ -274,7 +283,7 @@ class TestMemoryUsagePatterns:
 
     def test_peak_memory_tracking(self, isolated_environment, create_model_file):
         """Test peak memory usage tracking."""
-        from src.utils.resource_manager import track_peak_memory
+        from utils.resource_manager import track_peak_memory
 
         @track_peak_memory
         def memory_intensive_operation():
@@ -289,18 +298,19 @@ class TestMemoryUsagePatterns:
         assert isinstance(peak_memory, float)
         assert peak_memory > 0
 
+
 class TestDiskIOPerformance:
     """Test suite for disk I/O performance."""
 
     def test_file_write_performance(self, isolated_environment):
         """Test file write performance with different file sizes."""
-        from src.utils.io_utils import batch_write_files
+        from utils.io_utils import batch_write_files
 
         # Create test files with correct structure
         files_data = [
             {
-                'path': f'test_file_{i}.txt',
-                'content': f'Test content for file {i}' * 1000  # 1KB content
+                "path": f"test_file_{i}.txt",
+                "content": f"Test content for file {i}" * 1000,  # 1KB content
             }
             for i in range(10)
         ]
@@ -314,12 +324,12 @@ class TestDiskIOPerformance:
 
     def test_export_performance(self, isolated_environment, create_model_file):
         """Test export performance for different formats."""
-        from src.export import export_model
+        from export import export_model
 
         model_file = create_model_file("medium")
 
         # Read the model file content and create model data
-        with open(model_file, 'r') as f:
+        with open(model_file, "r") as f:
             model_content = f.read()
 
         # Create model data dictionary
@@ -330,21 +340,24 @@ class TestDiskIOPerformance:
             "connections": [{"from": "s0", "to": "s1"}, {"from": "s1", "to": "s2"}],
             "equations": [],
             "metadata": {"size": "medium"},
-            "source_content": model_content
+            "source_content": model_content,
         }
 
         with performance_tracker() as tracker:
             result = export_model(
                 model_data,
                 isolated_environment / "output",
-                formats=["json", "xml", "graphml"]  # Use correct parameter name
+                formats=["json", "xml", "graphml"],  # Use correct parameter name
             )
 
         # Check if at least some formats succeeded (more lenient)
         successful_formats = sum(1 for success in result["formats"].values() if success)
-        assert successful_formats >= 1, f"At least one format should succeed, but only {successful_formats} succeeded"
+        assert successful_formats >= 1, (
+            f"At least one format should succeed, but only {successful_formats} succeeded"
+        )
         # Allow more time for export operations
         assert tracker.duration < 30.0  # 30 seconds should be enough for export
+
 
 class TestNetworkOperationTiming:
     """Test suite for network operation timing using real network requests."""
@@ -355,7 +368,7 @@ class TestNetworkOperationTiming:
         pytest.importorskip("requests")
         import requests
 
-        from src.utils.network_utils import timed_request
+        from utils.network_utils import timed_request
 
         # Use a reliable public API
         test_url = "https://www.google.com"
@@ -381,13 +394,13 @@ class TestNetworkOperationTiming:
         pytest.importorskip("requests")
         import requests
 
-        from src.utils.network_utils import batch_request
+        from utils.network_utils import batch_request
 
         # Use reliable public APIs
         urls = [
             "https://www.google.com",
             "https://www.github.com",
-            "https://www.python.org"
+            "https://www.python.org",
         ]
 
         try:
@@ -406,13 +419,16 @@ class TestNetworkOperationTiming:
         except (requests.RequestException, ConnectionError):
             pytest.skip("Network unavailable, skipping real network test")
 
+
 class TestResourceScaling:
     """Test suite for resource scaling characteristics."""
 
     @pytest.mark.parametrize("model_count", [1, 3, 10])
-    def test_pipeline_scaling(self, isolated_environment, create_model_file, model_count):
+    def test_pipeline_scaling(
+        self, isolated_environment, create_model_file, model_count
+    ):
         """Test pipeline scaling with different model counts."""
-        from src.pipeline.execution import run_pipeline
+        from pipeline.execution import run_pipeline
 
         # Create test files
         for _i in range(model_count):
@@ -431,8 +447,8 @@ class TestResourceScaling:
 
     def test_resource_estimation(self, isolated_environment, create_model_file):
         """Test resource estimation accuracy."""
-        from src.pipeline.execution import run_pipeline
-        from src.utils.resource_manager import estimate_resources
+        from pipeline.execution import run_pipeline
+        from utils.resource_manager import estimate_resources
 
         model_file = create_model_file("medium")
 
@@ -454,9 +470,12 @@ class TestResourceScaling:
         assert estimate["memory_mb"] >= 0
         assert tracker.duration >= 0
         # Check for either max_memory_mb or peak_memory_mb attribute
-        memory_attr = getattr(tracker, 'max_memory_mb', None) or getattr(tracker, 'peak_memory_mb', None)
+        memory_attr = getattr(tracker, "max_memory_mb", None) or getattr(
+            tracker, "peak_memory_mb", None
+        )
         if memory_attr:
             assert memory_attr >= 0
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

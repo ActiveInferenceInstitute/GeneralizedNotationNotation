@@ -16,6 +16,7 @@ if str(SRC) not in sys.path:
 
 def test_template_module_info_has_version():
     from template import get_module_info
+
     info = get_module_info()
     assert isinstance(info, dict)
     assert "version" in info
@@ -28,6 +29,7 @@ def test_process_template_standardized_accepts_standard_signature(tmp_path):
     import logging
 
     from template.processor import process_template_standardized
+
     logger = logging.getLogger("test_template")
     # Create a minimal input dir so the processor has something to walk.
     target = tmp_path / "in"
@@ -51,6 +53,7 @@ def test_validate_file_returns_structured_dict(tmp_path):
     """validate_file must return {valid, ...} shape, not raise, for any
     readable file — including empty ones."""
     from template.processor import validate_file
+
     empty = tmp_path / "empty.md"
     empty.write_text("")
     result = validate_file(empty)
@@ -62,20 +65,24 @@ def test_validate_file_returns_structured_dict(tmp_path):
 def test_validate_file_handles_missing_file(tmp_path):
     """validate_file on a missing path must report failure, not crash."""
     from template.processor import validate_file
+
     missing = tmp_path / "does_not_exist.md"
     result = validate_file(missing)
     assert isinstance(result, dict)
     # Should flag as invalid.
-    invalidness = (result.get("valid") is False
-                   or result.get("is_valid") is False
-                   or result.get("success") is False
-                   or "error" in result
-                   or "errors" in result)
+    invalidness = (
+        result.get("valid") is False
+        or result.get("is_valid") is False
+        or result.get("success") is False
+        or "error" in result
+        or "errors" in result
+    )
     assert invalidness, f"validate_file succeeded on missing file: {result}"
 
 
 def test_generate_correlation_id_produces_unique_ids():
     from template.processor import generate_correlation_id
+
     ids = {generate_correlation_id() for _ in range(10)}
     # At least 8 distinct IDs out of 10 — tolerates tiny collision risk in
     # time-based schemes, but a literal same-string-every-time bug would fail.

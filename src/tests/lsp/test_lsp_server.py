@@ -7,7 +7,7 @@ try:
     from lsp import PYGLS_AVAILABLE, _extract_line, _word_at_position, create_server
 except ImportError:
     try:
-        from src.lsp import (
+        from lsp import (
             PYGLS_AVAILABLE,
             _extract_line,
             _word_at_position,
@@ -15,6 +15,7 @@ except ImportError:
         )
     except ImportError:
         PYGLS_AVAILABLE = False
+
 
 def test_word_at_position() -> None:
     """Test extracting the word under the cursor."""
@@ -27,11 +28,14 @@ def test_word_at_position() -> None:
     assert _word_at_position(line, 21) == "more"
     assert _word_at_position(line, 100) is None
 
+
 def test_extract_line() -> None:
     """Test extracting line number from error objects or strings."""
+
     # From object with .line attribute — use a real lightweight object
     class _ErrorWithLine:
         """Minimal object with a .line attribute for testing."""
+
         def __init__(self, line: int) -> None:
             self.line = line
 
@@ -42,6 +46,7 @@ def test_extract_line() -> None:
     assert _extract_line("Parse error at :15") == 15
     assert _extract_line("No line info here") == 1
     assert _extract_line("Another :1234 error") == 1234
+
 
 def test_create_server_graceful() -> None:
     """Test that create_server handles missing pygls gracefully."""
@@ -55,6 +60,7 @@ def test_create_server_graceful() -> None:
     finally:
         lsp_mod.PYGLS_AVAILABLE = original_flag
 
+
 @pytest.mark.skipif(not PYGLS_AVAILABLE, reason="pygls not installed")
 def test_create_server_success() -> None:
     """Test that create_server returns a LanguageServer instance if available."""
@@ -63,10 +69,12 @@ def test_create_server_success() -> None:
     # Check if a few expected features are registered (internal to pygls)
     assert hasattr(server, "feature")
 
+
 def test_lsp_availability_flag() -> None:
     """Verify that the availability flag matches reality."""
     try:
         import pygls.server
+
         expected = True
     except ImportError:
         expected = False

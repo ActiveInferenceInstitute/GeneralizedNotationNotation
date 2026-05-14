@@ -30,7 +30,9 @@ Author: Me
         assert registry.registry_path == registry_file
         assert len(registry.models) == 0
 
-    def test_register_model_flow(self, registry_file: Any, sample_model_file: Any) -> None:
+    def test_register_model_flow(
+        self, registry_file: Any, sample_model_file: Any
+    ) -> None:
         """Test registering a new model."""
         registry = ModelRegistry(registry_file)
 
@@ -46,7 +48,9 @@ Author: Me
         assert model.current_version == "1.2.3"
         assert "tag1" in model.tags
         # Author may be in model metadata or version metadata
-        author = model.metadata.get("author") or model.get_version().metadata.get("author", "")
+        author = model.metadata.get("author") or model.get_version().metadata.get(
+            "author", ""
+        )
         assert "Me" in author, f"Expected 'Me' in author, got: {author}"
 
         # Verify persistence

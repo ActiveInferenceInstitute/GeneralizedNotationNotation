@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class StepRecord:
     """Record of a single pipeline step execution."""
+
     name: str
     step_num: int
     status: StepStatus = "PENDING"
@@ -182,9 +183,14 @@ class PipelineContext:
         Serialize context to a dict matching pipeline_execution_summary.json schema.
         """
         total_duration = (datetime.now() - self.start_time).total_seconds()
-        ordered_steps = [self._steps[name].to_dict() for name in self._step_order
-                         if name in self._steps]
-        all_success = all(s.status in ("SUCCESS", "SKIPPED") for s in self._steps.values())
+        ordered_steps = [
+            self._steps[name].to_dict()
+            for name in self._step_order
+            if name in self._steps
+        ]
+        all_success = all(
+            s.status in ("SUCCESS", "SKIPPED") for s in self._steps.values()
+        )
 
         return {
             "timestamp": self.start_time.isoformat(),
@@ -193,16 +199,19 @@ class PipelineContext:
             "target_dir": str(self.target_dir),
             "output_dir": str(self.output_dir),
             "steps": ordered_steps,
-            "errors": [
-                e for rec in self._steps.values() for e in rec.errors
-            ],
+            "errors": [e for rec in self._steps.values() for e in rec.errors],
             "model_count": len(self._models),
             "artifact_count": len(self._artifacts),
         }
 
     def save_summary(self, path: Optional[Path] = None) -> Path:
         """Write summary to JSON file."""
-        path = path or self.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+        path = (
+            path
+            or self.output_dir
+            / "00_pipeline_summary"
+            / "pipeline_execution_summary.json"
+        )
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w") as f:
             json.dump(self.summary(), f, indent=2)

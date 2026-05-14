@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
+
 def execute_command_streaming(
     cmd: List[str],
     cwd: Optional[Union[str, Path]] = None,
@@ -24,11 +25,11 @@ def execute_command_streaming(
     timeout: Optional[int] = None,
     print_stdout: bool = True,
     print_stderr: bool = True,
-    capture_output: bool = True
+    capture_output: bool = True,
 ) -> Dict[str, Any]:
     """
     Execute a command with real-time output streaming.
-    
+
     Args:
         cmd: Command and arguments list
         cwd: Working directory
@@ -37,7 +38,7 @@ def execute_command_streaming(
         print_stdout: Whether to print stdout to sys.stdout in real-time
         print_stderr: Whether to print stderr to sys.stderr in real-time
         capture_output: Whether to return captured stdout/stderr in the result
-        
+
     Returns:
         Dictionary containing:
         - exit_code: Process exit code
@@ -61,12 +62,7 @@ def execute_command_streaming(
     stderr_captured = []
 
     # detailed result structure
-    result = {
-        "exit_code": -1,
-        "stdout": "",
-        "stderr": "",
-        "status": "UNKNOWN"
-    }
+    result = {"exit_code": -1, "stdout": "", "stderr": "", "status": "UNKNOWN"}
 
     try:
         # Start process with pipes
@@ -78,13 +74,13 @@ def execute_command_streaming(
             stderr=subprocess.PIPE,
             text=True,
             bufsize=1,  # Line buffered
-            universal_newlines=True
+            universal_newlines=True,
         )
 
         # Reader threads
         def read_stream(stream, is_stderr):
             try:
-                for line in iter(stream.readline, ''):
+                for line in iter(stream.readline, ""):
                     if not line:
                         break
 
@@ -107,8 +103,12 @@ def execute_command_streaming(
                 stream.close()
 
         # Start threads
-        stdout_thread = threading.Thread(target=read_stream, args=(process.stdout, False))
-        stderr_thread = threading.Thread(target=read_stream, args=(process.stderr, True))
+        stdout_thread = threading.Thread(
+            target=read_stream, args=(process.stdout, False)
+        )
+        stderr_thread = threading.Thread(
+            target=read_stream, args=(process.stderr, True)
+        )
 
         stdout_thread.daemon = True
         stderr_thread.daemon = True

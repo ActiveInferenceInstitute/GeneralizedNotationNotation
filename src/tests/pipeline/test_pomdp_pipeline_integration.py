@@ -32,6 +32,7 @@ _skip_no_pymdp = pytest.mark.skipif(
 # Fixtures
 # =============================================================================
 
+
 @pytest.fixture
 def pomdp_gnn_spec():
     """A GNN spec representing a simple 3-state, 3-obs, 2-action POMDP."""
@@ -42,29 +43,17 @@ def pomdp_gnn_spec():
         "observations": ["o0", "o1", "o2"],
         "actions": ["left", "right"],
         "parameters": {
-            "A": [[0.8, 0.1, 0.1],
-                  [0.1, 0.8, 0.1],
-                  [0.1, 0.1, 0.8]],
-            "B_left": [[0.9, 0.1, 0.0],
-                       [0.1, 0.8, 0.1],
-                       [0.0, 0.1, 0.9]],
-            "B_right": [[0.1, 0.0, 0.9],
-                        [0.1, 0.8, 0.1],
-                        [0.8, 0.2, 0.0]],
+            "A": [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
+            "B_left": [[0.9, 0.1, 0.0], [0.1, 0.8, 0.1], [0.0, 0.1, 0.9]],
+            "B_right": [[0.1, 0.0, 0.9], [0.1, 0.8, 0.1], [0.8, 0.2, 0.0]],
             "C": [1.0, 0.0, -1.0],
             "D": [1.0, 0.0, 0.0],
         },
         "initialparameterization": {
-            "A": [[0.8, 0.1, 0.1],
-                  [0.1, 0.8, 0.1],
-                  [0.1, 0.1, 0.8]],
+            "A": [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]],
             "B": [
-                [[0.9, 0.1, 0.0],
-                 [0.1, 0.8, 0.1],
-                 [0.0, 0.1, 0.9]],
-                [[0.1, 0.0, 0.9],
-                 [0.1, 0.8, 0.1],
-                 [0.8, 0.2, 0.0]],
+                [[0.9, 0.1, 0.0], [0.1, 0.8, 0.1], [0.0, 0.1, 0.9]],
+                [[0.1, 0.0, 0.9], [0.1, 0.8, 0.1], [0.8, 0.2, 0.0]],
             ],
             "C": [1.0, 0.0, -1.0],
             "D": [1.0, 0.0, 0.0],
@@ -92,10 +81,30 @@ def pymdp_gnn_config():
                 [0.15, 0.85, 0.15, 0.85],
             ],
             "B": [
-                [[1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0], [0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0]],
-                [[0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0]],
-                [[0.0, 0.0, 1.0, 0.0], [0.0, 0.0, 0.0, 1.0], [1.0, 0.0, 0.0, 0.0], [0.0, 1.0, 0.0, 0.0]],
-                [[0.0, 0.0, 0.0, 1.0], [0.0, 0.0, 1.0, 0.0], [0.0, 1.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]],
+                [
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                ],
+                [
+                    [0.0, 1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                ],
+                [
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [1.0, 0.0, 0.0, 0.0],
+                ],
             ],
             "C": [0.0, 1.0],
             "D": [0.25, 0.25, 0.25, 0.25],
@@ -107,14 +116,13 @@ def pymdp_gnn_config():
 # Render Tests
 # =============================================================================
 
+
 class TestRenderPOMDP:
     """Test that GNN POMDP specs can be rendered to framework code."""
 
     def test_render_to_pymdp(self, pomdp_gnn_spec, tmp_path):
         """Rendering a POMDP spec to PyMDP should produce a Python file."""
-        success, msg, artifacts = render_gnn_spec(
-            pomdp_gnn_spec, "pymdp", tmp_path
-        )
+        success, msg, artifacts = render_gnn_spec(pomdp_gnn_spec, "pymdp", tmp_path)
         assert success is True, f"PyMDP rendering failed: {msg}"
 
         # Verify at least one .py file was created
@@ -123,16 +131,12 @@ class TestRenderPOMDP:
 
     def test_render_to_discopy(self, pomdp_gnn_spec, tmp_path):
         """Rendering a POMDP spec to DisCoPy should succeed."""
-        success, msg, artifacts = render_gnn_spec(
-            pomdp_gnn_spec, "discopy", tmp_path
-        )
+        success, msg, artifacts = render_gnn_spec(pomdp_gnn_spec, "discopy", tmp_path)
         assert success is True, f"DisCoPy rendering failed: {msg}"
 
     def test_render_to_rxinfer(self, pomdp_gnn_spec, tmp_path):
         """Rendering a POMDP spec to RxInfer should succeed."""
-        success, msg, artifacts = render_gnn_spec(
-            pomdp_gnn_spec, "rxinfer", tmp_path
-        )
+        success, msg, artifacts = render_gnn_spec(pomdp_gnn_spec, "rxinfer", tmp_path)
         assert success is True, f"RxInfer rendering failed: {msg}"
 
     def test_render_to_activeinference_jl(self, pomdp_gnn_spec, tmp_path):
@@ -198,7 +202,7 @@ class TestExecutePOMDP:
         safe_json_dump(results, output_file)
         assert output_file.exists()
 
-        with open(output_file, 'r') as f:
+        with open(output_file, "r") as f:
             loaded = json.load(f)
         assert "observations" in loaded
         assert "actions" in loaded
@@ -257,8 +261,14 @@ class TestAnalyzePOMDP:
         extracted = extract_pymdp_data(execution_result)
         assert isinstance(extracted, dict)
         # Should have standard Active Inference fields
-        for key in ["traces", "free_energy", "beliefs", "states",
-                     "observations", "actions"]:
+        for key in [
+            "traces",
+            "free_energy",
+            "beliefs",
+            "states",
+            "observations",
+            "actions",
+        ]:
             assert key in extracted, f"Missing key: {key}"
 
 
@@ -281,7 +291,9 @@ class TestEndToEndPOMDPPipeline:
         # 2. Execute
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         results = sim.run_simulation(num_timesteps=15)
-        assert len(results.get("observations", [])) > 0, "Simulation produced no observations"
+        assert len(results.get("observations", [])) > 0, (
+            "Simulation produced no observations"
+        )
 
         # 3. Analyze
         beliefs = [np.asarray(b).flatten().tolist() for b in results.get("beliefs", [])]
@@ -291,7 +303,7 @@ class TestEndToEndPOMDPPipeline:
         assert len(beliefs) > 0, "No beliefs to analyze"
 
         analysis = analyze_active_inference_metrics(
-            beliefs, fe, actions[:len(beliefs)], "e2e_test"
+            beliefs, fe, actions[: len(beliefs)], "e2e_test"
         )
         assert analysis["num_timesteps"] > 0
         assert "belief_entropy" in analysis["metrics"]

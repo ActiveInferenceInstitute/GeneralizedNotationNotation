@@ -35,6 +35,7 @@ class TestGNNDiscovery:
     def test_discovery_imports(self) -> None:
         """Test that discovery function can be imported from gnn package."""
         from gnn import discover_gnn_files
+
         assert callable(discover_gnn_files)
 
     @pytest.mark.unit
@@ -92,7 +93,9 @@ class TestGNNDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discover_gnn_files_nonexistent_directory(self, isolated_temp_dir: Any) -> None:
+    def test_discover_gnn_files_nonexistent_directory(
+        self, isolated_temp_dir: Any
+    ) -> None:
         """Test discovery with nonexistent directory."""
         from gnn import discover_gnn_files
 
@@ -131,14 +134,14 @@ class TestMarkdownParser:
         parser = MarkdownGNNParser()
         result = parser.parse_string(sample_markdown)
         assert result.success
-        assert result.model.model_name == 'TestModel'
+        assert result.model.model_name == "TestModel"
 
     @pytest.mark.unit
     @pytest.mark.fast
     def test_invalid_parsing(self) -> None:
         """Test parsing invalid content returns failure."""
         parser = MarkdownGNNParser()
-        result = parser.parse_string('Invalid content without sections')
+        result = parser.parse_string("Invalid content without sections")
         assert not result.success
         assert len(result.errors) > 0
 
@@ -147,7 +150,7 @@ class TestMarkdownParser:
     def test_empty_string(self):
         """Test parsing empty string."""
         parser = MarkdownGNNParser()
-        result = parser.parse_string('')
+        result = parser.parse_string("")
         assert not result.success
 
     @pytest.mark.unit
@@ -155,7 +158,7 @@ class TestMarkdownParser:
     def test_whitespace_only(self) -> None:
         """Test parsing whitespace-only content."""
         parser = MarkdownGNNParser()
-        result = parser.parse_string('   \n\n\t\t  ')
+        result = parser.parse_string("   \n\n\t\t  ")
         assert not result.success
 
     @pytest.mark.unit
@@ -278,7 +281,7 @@ class TestScalaParser:
     def test_empty_string(self):
         """Test parsing empty string."""
         parser = ScalaGNNParser()
-        result = parser.parse_string('')
+        result = parser.parse_string("")
         # Should handle gracefully
         assert result is not None
 
@@ -318,7 +321,7 @@ class TestLeanParser:
 
     @pytest.fixture
     def sample_lean(self) -> str:
-        return 'def test := 42'
+        return "def test := 42"
 
     @pytest.mark.unit
     @pytest.mark.fast
@@ -333,7 +336,7 @@ class TestLeanParser:
     def test_empty_string(self):
         """Test parsing empty string."""
         parser = LeanGNNParser()
-        result = parser.parse_string('')
+        result = parser.parse_string("")
         assert result is not None
 
     @pytest.mark.unit
@@ -370,13 +373,14 @@ class TestCoqParser:
 
     @pytest.fixture
     def sample_coq(self) -> str:
-        return 'Definition test := 42.'
+        return "Definition test := 42."
 
     @pytest.mark.unit
     @pytest.mark.fast
     def test_valid_parsing(self, sample_coq: str) -> None:
         """Test parsing valid Coq content."""
         from gnn.parsers.coq_parser import CoqGNNParser
+
         parser = CoqGNNParser()
         result = parser.parse_string(sample_coq)
         assert result.success
@@ -386,8 +390,9 @@ class TestCoqParser:
     def test_empty_string(self):
         """Test parsing empty string."""
         from gnn.parsers.coq_parser import CoqGNNParser
+
         parser = CoqGNNParser()
-        result = parser.parse_string('')
+        result = parser.parse_string("")
         assert result is not None
 
     @pytest.mark.unit
@@ -401,6 +406,7 @@ Inductive State : Type :=
   | s2 : State.
 """
         from gnn.parsers.coq_parser import CoqGNNParser
+
         parser = CoqGNNParser()
         result = parser.parse_string(content)
         assert result is not None
@@ -413,7 +419,9 @@ class TestParserEdgeCases:
     @pytest.mark.fast
     def test_malformed_brackets(self) -> None:
         """Test handling malformed bracket content."""
-        content = "## StateSpaceBlock\nA[3,3,type=float\nB[2,2"  # Missing closing brackets
+        content = (
+            "## StateSpaceBlock\nA[3,3,type=float\nB[2,2"  # Missing closing brackets
+        )
         parser = MarkdownGNNParser()
         # Should not crash
         try:
@@ -442,11 +450,13 @@ class TestParserEdgeCases:
     @pytest.mark.fast
     def test_binary_content(self) -> None:
         """Test handling binary content."""
-        binary_content = b'\x00\x01\x02\x03\xff\xfe'
+        binary_content = b"\x00\x01\x02\x03\xff\xfe"
 
         parser = MarkdownGNNParser()
         try:
-            result = parser.parse_string(binary_content.decode('utf-8', errors='replace'))
+            result = parser.parse_string(
+                binary_content.decode("utf-8", errors="replace")
+            )
             assert result is not None
         except Exception:
             pass  # Expected for binary input
@@ -505,9 +515,10 @@ class TestParserInstantiation:
     def test_coq_parser_instantiation(self) -> None:
         """Test CoqGNNParser can be instantiated."""
         from gnn.parsers.coq_parser import CoqGNNParser
+
         parser = CoqGNNParser()
         assert parser is not None
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main()

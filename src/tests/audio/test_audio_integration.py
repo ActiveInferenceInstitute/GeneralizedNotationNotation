@@ -52,10 +52,7 @@ class TestAudioGNNIntegration:
             assert generator is not None
 
             # Generate audio from GNN - positional: (file_path_or_content, output_dir, verbose)
-            result = generate_audio_from_gnn(
-                gnn_file,
-                tmp_path
-            )
+            result = generate_audio_from_gnn(gnn_file, tmp_path)
             assert result is not None
 
     @pytest.mark.integration
@@ -67,11 +64,11 @@ class TestAudioGNNIntegration:
         assert isinstance(backends, dict)
 
         # Check expected backend keys
-        expected_backends = ['numpy', 'librosa', 'soundfile', 'pedalboard']
+        expected_backends = ["numpy", "librosa", "soundfile", "pedalboard"]
         for backend in expected_backends:
             assert backend in backends
-            assert 'available' in backends[backend]
-            assert 'version' in backends[backend]
+            assert "available" in backends[backend]
+            assert "version" in backends[backend]
 
     @pytest.mark.integration
     def test_audio_features_availability(self):
@@ -80,11 +77,11 @@ class TestAudioGNNIntegration:
 
         assert isinstance(FEATURES, dict)
         expected_features = [
-            'tonal_generation',
-            'rhythmic_generation',
-            'ambient_generation',
-            'sonification',
-            'audio_analysis'
+            "tonal_generation",
+            "rhythmic_generation",
+            "ambient_generation",
+            "sonification",
+            "audio_analysis",
         ]
         for feature in expected_features:
             assert feature in FEATURES
@@ -110,9 +107,7 @@ class TestAudioPipelineIntegration:
 
         # Process audio (should handle empty input gracefully)
         result = process_audio(
-            target_dir=input_dir,
-            output_dir=output_dir,
-            logger=logger
+            target_dir=input_dir, output_dir=output_dir, logger=logger
         )
 
         # Should return True for successful execution even with no files
@@ -136,9 +131,7 @@ s -> o
 """)
 
         result = create_sonification(
-            file_path=gnn_file,
-            output_dir=output_dir,
-            verbose=False
+            file_path=gnn_file, output_dir=output_dir, verbose=False
         )
 
         # Function should complete without error and return dict

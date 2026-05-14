@@ -39,7 +39,9 @@ StateSpaceBlock {
         assert results_dir.exists()
 
         # Should have a summary or json report
-        assert (results_dir / "research_report.md").exists() or (results_dir / "research_results.json").exists()
+        assert (results_dir / "research_report.md").exists() or (
+            results_dir / "research_results.json"
+        ).exists()
 
     def test_process_research_no_files(self, safe_filesystem):
         """Test behavior when no GNN files are present."""

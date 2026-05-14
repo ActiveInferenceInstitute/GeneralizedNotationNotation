@@ -29,7 +29,7 @@ class TestNodeShapeInference:
         var_data = {
             "dimensions": [3, 3],
             "data_type": "float",
-            "ontology_mapping": "LikelihoodMatrix"
+            "ontology_mapping": "LikelihoodMatrix",
         }
 
         open_b, close_b = infer_node_shape("A", var_data)
@@ -41,7 +41,7 @@ class TestNodeShapeInference:
         var_data = {
             "dimensions": [3, 1],
             "data_type": "float",
-            "ontology_mapping": "HiddenState"
+            "ontology_mapping": "HiddenState",
         }
 
         open_b, close_b = infer_node_shape("s", var_data)
@@ -53,7 +53,7 @@ class TestNodeShapeInference:
         var_data = {
             "dimensions": [3, 1],
             "data_type": "int",
-            "ontology_mapping": "Observation"
+            "ontology_mapping": "Observation",
         }
 
         open_b, close_b = infer_node_shape("o", var_data)
@@ -62,11 +62,7 @@ class TestNodeShapeInference:
 
     def test_action_shape(self):
         """Test action variables use hexagons."""
-        var_data = {
-            "dimensions": [1],
-            "data_type": "int",
-            "ontology_mapping": "Action"
-        }
+        var_data = {"dimensions": [1], "data_type": "int", "ontology_mapping": "Action"}
 
         open_b, close_b = infer_node_shape("u", var_data)
         assert open_b == "{{"
@@ -77,7 +73,7 @@ class TestNodeShapeInference:
         var_data = {
             "dimensions": [3],
             "data_type": "float",
-            "ontology_mapping": "PolicyVector"
+            "ontology_mapping": "PolicyVector",
         }
 
         open_b, close_b = infer_node_shape("π", var_data)
@@ -89,7 +85,7 @@ class TestNodeShapeInference:
         var_data = {
             "dimensions": [],
             "data_type": "float",
-            "ontology_mapping": "VariationalFreeEnergy"
+            "ontology_mapping": "VariationalFreeEnergy",
         }
 
         open_b, close_b = infer_node_shape("F", var_data)
@@ -114,6 +110,7 @@ class TestEdgeStyleMapping:
         """Test modulation connections use dotted arrows."""
         style = infer_edge_style("*")
         assert style == "-..->"
+
     def test_coupling_style(self):
         """Test coupling connections use normal arrows."""
         style = infer_edge_style("~")
@@ -133,7 +130,7 @@ class TestNodeDefinitionGeneration:
         var_data = {
             "dimensions": [3, 3],
             "data_type": "float",
-            "ontology_mapping": "LikelihoodMatrix"
+            "ontology_mapping": "LikelihoodMatrix",
         }
 
         node_def = _generate_node_definition("A", var_data)
@@ -147,7 +144,7 @@ class TestNodeDefinitionGeneration:
         var_data = {
             "dimensions": [],
             "data_type": "float",
-            "ontology_mapping": "VariationalFreeEnergy"
+            "ontology_mapping": "VariationalFreeEnergy",
         }
 
         node_def = _generate_node_definition("F", var_data)
@@ -161,12 +158,7 @@ class TestEdgeDefinitionGeneration:
 
     def test_edge_without_label(self):
         """Test edge definition without label."""
-        conn = {
-            "source": "D",
-            "target": "s",
-            "symbol": ">",
-            "description": ""
-        }
+        conn = {"source": "D", "target": "s", "symbol": ">", "description": ""}
 
         edge_def = _generate_edge_definition(conn)
 
@@ -176,12 +168,7 @@ class TestEdgeDefinitionGeneration:
 
     def test_edge_with_label(self):
         """Test edge definition with label."""
-        conn = {
-            "source": "s",
-            "target": "A",
-            "symbol": "-",
-            "description": "inference"
-        }
+        conn = {"source": "s", "target": "A", "symbol": "-", "description": "inference"}
 
         edge_def = _generate_edge_definition(conn)
 
@@ -246,7 +233,7 @@ class TestStyleGeneration:
             "A": {"dimensions": [3, 3], "ontology_mapping": "LikelihoodMatrix"},
             "s": {"dimensions": [3, 1], "ontology_mapping": "HiddenState"},
             "o": {"dimensions": [3, 1], "ontology_mapping": "Observation"},
-            "u": {"dimensions": [1], "ontology_mapping": "Action"}
+            "u": {"dimensions": [1], "ontology_mapping": "Action"},
         }
 
         styles = _generate_node_styles(variables)
@@ -271,12 +258,21 @@ class TestMetadataGeneration:
             "model_name": "Test Model",
             "version": "1.0",
             "variables": {
-                "A": {"dimensions": [3, 3], "data_type": "float", "ontology_mapping": "LikelihoodMatrix"}
+                "A": {
+                    "dimensions": [3, 3],
+                    "data_type": "float",
+                    "ontology_mapping": "LikelihoodMatrix",
+                }
             },
             "connections": [
-                {"source": "D", "target": "s", "symbol": ">", "connection_type": "generative"}
+                {
+                    "source": "D",
+                    "target": "s",
+                    "symbol": ">",
+                    "connection_type": "generative",
+                }
             ],
-            "parameters": {"num_states": 3}
+            "parameters": {"num_states": 3},
         }
 
         metadata = generate_mermaid_metadata(gnn_model)
@@ -295,13 +291,14 @@ class TestMetadataGeneration:
             "version": "1.0",
             "variables": {"A": {"dimensions": [3, 3]}},
             "connections": [],
-            "parameters": {}
+            "parameters": {},
         }
 
         metadata = generate_mermaid_metadata(gnn_model)
 
         # Should be JSON serializable
         import json
+
         json_str = json.dumps(metadata)
         assert isinstance(json_str, str)
 
@@ -323,26 +320,34 @@ class TestFullConversion:
                     "dimensions": [3, 3],
                     "data_type": "float",
                     "ontology_mapping": "LikelihoodMatrix",
-                    "description": "Likelihood"
+                    "description": "Likelihood",
                 },
                 "s": {
                     "dimensions": [3, 1],
                     "data_type": "float",
                     "ontology_mapping": "HiddenState",
-                    "description": "State"
-                }
+                    "description": "State",
+                },
             },
             "connections": [
-                {"source": "s", "target": "A", "symbol": "-", "connection_type": "inference", "description": ""}
+                {
+                    "source": "s",
+                    "target": "A",
+                    "symbol": "-",
+                    "connection_type": "inference",
+                    "description": "",
+                }
             ],
             "parameters": {"num_states": 3},
             "ontology_mappings": [
                 {"variable": "A", "ontology_term": "LikelihoodMatrix"},
-                {"variable": "s", "ontology_term": "HiddenState"}
-            ]
+                {"variable": "s", "ontology_term": "HiddenState"},
+            ],
         }
 
-        mermaid_content = gnn_to_mermaid(gnn_model, include_metadata=True, include_styling=True)
+        mermaid_content = gnn_to_mermaid(
+            gnn_model, include_metadata=True, include_styling=True
+        )
 
         # Check structure
         assert "flowchart TD" in mermaid_content
@@ -364,4 +369,3 @@ class TestFullConversion:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
-

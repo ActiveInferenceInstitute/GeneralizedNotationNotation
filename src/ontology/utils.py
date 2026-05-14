@@ -11,7 +11,7 @@ from typing import Any, Dict
 def get_module_info() -> Dict[str, Any]:
     """
     Get module information for ontology processing.
-    
+
     Returns:
         Dictionary with module information
     """
@@ -24,19 +24,20 @@ def get_module_info() -> Dict[str, Any]:
             "ontology_parsing",
             "ontology_validation",
             "ontology_mapping",
-            "ontology_reporting"
+            "ontology_reporting",
         ],
         "supported_formats": ["markdown", "json"],
         "dependencies": ["pathlib", "typing", "logging", "json"],
         "features": {"parsing": True, "validation": True},
         "processing_capabilities": ["parse", "validate", "report"],
-        "ontology_types": ["ActInf", "GNNAnnotations"]
+        "ontology_types": ["ActInf", "GNNAnnotations"],
     }
+
 
 def get_ontology_processing_options() -> Dict[str, Any]:
     """
     Get ontology processing options and configuration.
-    
+
     Returns:
         Dictionary with processing options
     """
@@ -48,24 +49,21 @@ def get_ontology_processing_options() -> Dict[str, Any]:
         "validation_rules": [
             "required_terms",
             "ontology_compliance",
-            "semantic_consistency"
+            "semantic_consistency",
         ],
-        "processing_modes": [
-            "basic",
-            "comprehensive",
-            "validation_only"
-        ],
+        "processing_modes": ["basic", "comprehensive", "validation_only"],
         "parsing_options": {"allow_comments": True},
         "validation_options": {"allow_unknown_terms": True},
         "report_formats": ["json", "markdown"],
         "output_options": {"directory_structure": "flat"},
-        "validation_levels": ["basic", "strict"]
+        "validation_levels": ["basic", "strict"],
     }
+
 
 def get_mcp_interface() -> Dict[str, Any]:
     """
     Get MCP interface configuration for ontology module.
-    
+
     Returns:
         Dictionary with MCP interface configuration
     """
@@ -79,29 +77,25 @@ def get_mcp_interface() -> Dict[str, Any]:
                     "properties": {
                         "target_dir": {"type": "string"},
                         "output_dir": {"type": "string"},
-                        "verbose": {"type": "boolean"}
-                    }
-                }
+                        "verbose": {"type": "boolean"},
+                    },
+                },
             },
             {
                 "name": "parse_gnn_ontology_section",
                 "description": "Parse GNN ontology section from content",
                 "inputSchema": {
                     "type": "object",
-                    "properties": {
-                        "content": {"type": "string"}
-                    }
-                }
+                    "properties": {"content": {"type": "string"}},
+                },
             },
             {
                 "name": "process_gnn_ontology",
                 "description": "Process ontology for a single GNN file",
                 "inputSchema": {
                     "type": "object",
-                    "properties": {
-                        "gnn_file": {"type": "string"}
-                    }
-                }
+                    "properties": {"gnn_file": {"type": "string"}},
+                },
             },
             {
                 "name": "validate_annotations",
@@ -110,16 +104,16 @@ def get_mcp_interface() -> Dict[str, Any]:
                     "type": "object",
                     "properties": {
                         "annotations": {"type": "array", "items": {"type": "string"}},
-                        "ontology_terms": {"type": "object"}
-                    }
-                }
-            }
+                        "ontology_terms": {"type": "object"},
+                    },
+                },
+            },
         ],
         "resources": [
             {
                 "name": "ontology_terms.json",
                 "description": "Defined ontology terms",
-                "type": "file"
+                "type": "file",
             }
-        ]
+        ],
     }

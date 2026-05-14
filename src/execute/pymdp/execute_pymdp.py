@@ -33,10 +33,7 @@ def execute_from_gnn_file(
     """Parse a GNN file and hand it to the canonical executor."""
     try:
         logger.info("Parsing GNN file: %s", gnn_file)
-        try:
-            from ...gnn import parse_gnn_file  # type: ignore[attr-defined]
-        except ImportError:
-            from src.gnn import parse_gnn_file  # type: ignore[no-redef]
+        from gnn import parse_gnn_file
 
         gnn_spec = parse_gnn_file(gnn_file)
         if not gnn_spec:

@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class ContractViolation:
     """A violation of a framework output contract."""
+
     framework: str
     field: str
     expected: str
@@ -36,8 +37,8 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         "required_imports": ["numpy", "pymdp"],
         "required_variables": ["A", "B"],
         "matrix_patterns": [
-            r"\bA\s*=\s*",   # Likelihood matrix assignment
-            r"\bB\s*=\s*",   # Transition matrix assignment
+            r"\bA\s*=\s*",  # Likelihood matrix assignment
+            r"\bB\s*=\s*",  # Transition matrix assignment
         ],
         "optional_variables": ["C", "D", "E"],
     },
@@ -45,7 +46,7 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         "required_imports": ["RxInfer"],
         "required_variables": [],
         "matrix_patterns": [
-            r"@model",       # Model macro
+            r"@model",  # Model macro
         ],
         "optional_variables": [],
     },
@@ -53,7 +54,7 @@ CONTRACTS: Dict[str, Dict[str, Any]] = {
         "required_imports": ["jax", "jax.numpy"],
         "required_variables": ["A", "B"],
         "matrix_patterns": [
-            r"jnp\.\w+",    # JAX numpy calls
+            r"jnp\.\w+",  # JAX numpy calls
         ],
         "optional_variables": ["C", "D"],
     },
@@ -132,36 +133,42 @@ def validate_rendered_output(
     # Check required imports
     for imp in contract.get("required_imports", []):
         if imp not in code:
-            violations.append(ContractViolation(
-                framework=framework,
-                field="import",
-                expected=f"import containing '{imp}'",
-                actual="not found",
-                file_path=file_path,
-            ))
+            violations.append(
+                ContractViolation(
+                    framework=framework,
+                    field="import",
+                    expected=f"import containing '{imp}'",
+                    actual="not found",
+                    file_path=file_path,
+                )
+            )
 
     # Check required variable assignments
     for var in contract.get("required_variables", []):
         pattern = rf"\b{re.escape(var)}\s*="
         if not re.search(pattern, code):
-            violations.append(ContractViolation(
-                framework=framework,
-                field=f"variable_{var}",
-                expected=f"assignment to '{var}'",
-                actual="not found",
-                file_path=file_path,
-            ))
+            violations.append(
+                ContractViolation(
+                    framework=framework,
+                    field=f"variable_{var}",
+                    expected=f"assignment to '{var}'",
+                    actual="not found",
+                    file_path=file_path,
+                )
+            )
 
     # Check matrix patterns
     for pattern in contract.get("matrix_patterns", []):
         if not re.search(pattern, code):
-            violations.append(ContractViolation(
-                framework=framework,
-                field="pattern",
-                expected=f"pattern matching '{pattern}'",
-                actual="not found",
-                file_path=file_path,
-            ))
+            violations.append(
+                ContractViolation(
+                    framework=framework,
+                    field="pattern",
+                    expected=f"pattern matching '{pattern}'",
+                    actual="not found",
+                    file_path=file_path,
+                )
+            )
 
     if violations:
         logger.warning(f"⚠️ {len(violations)} contract violation(s) for {framework}")

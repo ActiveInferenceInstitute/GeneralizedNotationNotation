@@ -36,30 +36,30 @@ class DependencyInstaller:
             "visualization": {
                 "seaborn": "Enhanced statistical visualizations",
                 "networkx": "Network and graph visualizations",
-                "plotly": "Interactive plotting capabilities"
+                "plotly": "Interactive plotting capabilities",
             },
             "audio": {
                 "librosa": "Advanced audio analysis",
                 "soundfile": "Audio file I/O operations",
                 "pedalboard": "Audio effects processing",
-                "pydub": "Audio manipulation utilities"
+                "pydub": "Audio manipulation utilities",
             },
             "execution": {
                 "pymdp": "PyMDP Active Inference simulations",
                 "jax": "JAX-based high-performance computing",
                 "flax": "Neural network library for JAX",
-                "discopy": "Categorical diagrams and monoidal categories"
+                "discopy": "Categorical diagrams and monoidal categories",
             },
             "scientific": {
                 "scipy": "Scientific computing utilities",
                 "sympy": "Symbolic mathematics",
-                "numpy": "Numerical computing (should already be installed)"
+                "numpy": "Numerical computing (should already be installed)",
             },
             "development": {
                 "pytest": "Testing framework",
                 "black": "Code formatting",
-                "mypy": "Static type checking"
-            }
+                "mypy": "Static type checking",
+            },
         }
 
     def _setup_logging(self) -> logging.Logger:
@@ -68,7 +68,7 @@ class DependencyInstaller:
         if not logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
@@ -99,11 +99,11 @@ class DependencyInstaller:
     def install_dependency(self, package_name: str, category: str = "") -> bool:
         """
         Install a single dependency using uv.
-        
+
         Args:
             package_name: Name of the package to install
             category: Category for context (optional)
-            
+
         Returns:
             True if installation successful, False otherwise
         """
@@ -129,7 +129,7 @@ class DependencyInstaller:
                 "networkx": "networkx[default]",
                 "plotly": "plotly",
                 "scipy": "scipy",
-                "sympy": "sympy"
+                "sympy": "sympy",
             }
 
             actual_package = special_packages.get(package_name, package_name)
@@ -139,14 +139,16 @@ class DependencyInstaller:
                 cmd,
                 capture_output=True,
                 text=True,
-                timeout=300  # 5 minute timeout per package
+                timeout=300,  # 5 minute timeout per package
             )
 
             if result.returncode == 0:
                 self.logger.info(f"✅ Successfully installed {package_name}")
                 return True
             else:
-                self.logger.error(f"❌ Failed to install {package_name}: {result.stderr}")
+                self.logger.error(
+                    f"❌ Failed to install {package_name}: {result.stderr}"
+                )
                 return False
 
         except subprocess.TimeoutExpired:
@@ -156,7 +158,9 @@ class DependencyInstaller:
             self.logger.error(f"💥 Error installing {package_name}: {e}")
             return False
 
-    def install_category(self, category: str, missing_deps: List[str]) -> Dict[str, bool]:
+    def install_category(
+        self, category: str, missing_deps: List[str]
+    ) -> Dict[str, bool]:
         """Install all missing dependencies in a category."""
         results = {}
 
@@ -172,13 +176,15 @@ class DependencyInstaller:
 
         return results
 
-    def install_all_missing(self, categories: List[str] = None) -> Dict[str, Dict[str, bool]]:
+    def install_all_missing(
+        self, categories: List[str] = None
+    ) -> Dict[str, Dict[str, bool]]:
         """
         Install all missing dependencies.
-        
+
         Args:
             categories: List of categories to install, or None for all
-            
+
         Returns:
             Dictionary mapping categories to installation results
         """
@@ -197,7 +203,13 @@ class DependencyInstaller:
         all_results = {}
 
         # Install in order of importance
-        install_order = ["scientific", "visualization", "execution", "audio", "development"]
+        install_order = [
+            "scientific",
+            "visualization",
+            "execution",
+            "audio",
+            "development",
+        ]
 
         for category in install_order:
             if category in missing:
@@ -230,16 +242,20 @@ class DependencyInstaller:
 
         return verification_results
 
-    def generate_installation_report(self, installation_results: Dict[str, Dict[str, bool]]) -> Dict:
+    def generate_installation_report(
+        self, installation_results: Dict[str, Dict[str, bool]]
+    ) -> Dict:
         """Generate comprehensive installation report."""
         report = {
-            "timestamp": __import__('datetime').datetime.now().isoformat(),
+            "timestamp": __import__("datetime").datetime.now().isoformat(),
             "installer_version": "1.0.0",
             "package_manager": "uv" if self.use_uv else "pip",
             "categories": installation_results,
             "summary": {
                 "total_categories": len(installation_results),
-                "total_packages": sum(len(deps) for deps in installation_results.values()),
+                "total_packages": sum(
+                    len(deps) for deps in installation_results.values()
+                ),
                 "successful_packages": sum(
                     sum(1 for success in deps.values() if success)
                     for deps in installation_results.values()
@@ -247,15 +263,16 @@ class DependencyInstaller:
                 "failed_packages": sum(
                     sum(1 for success in deps.values() if not success)
                     for deps in installation_results.values()
-                )
-            }
+                ),
+            },
         }
 
         # Calculate success rate
         if report["summary"]["total_packages"] > 0:
             report["summary"]["success_rate"] = (
-                report["summary"]["successful_packages"] /
-                report["summary"]["total_packages"] * 100
+                report["summary"]["successful_packages"]
+                / report["summary"]["total_packages"]
+                * 100
             )
         else:
             report["summary"]["success_rate"] = 100.0
@@ -270,7 +287,8 @@ class DependencyInstaller:
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         import json
-        with open(output_path, 'w') as f:
+
+        with open(output_path, "w") as f:
             json.dump(report, f, indent=2, default=str)
 
         self.logger.info(f"📄 Installation report saved to: {output_path}")
@@ -297,7 +315,7 @@ def main():
 
     # Prompt for confirmation
     response = input("\n🤔 Install all missing dependencies? (y/N): ").strip().lower()
-    if response not in ['y', 'yes']:
+    if response not in ["y", "yes"]:
         print("❌ Installation cancelled by user")
         return 1
 
@@ -327,7 +345,7 @@ def main():
     critical_deps = ["numpy", "matplotlib", "pathlib"]
     all_critical_ok = all(verification_results.get(dep, False) for dep in critical_deps)
 
-    if report['summary']['success_rate'] >= 80 and all_critical_ok:
+    if report["summary"]["success_rate"] >= 80 and all_critical_ok:
         print("🌟 Installation completed successfully!")
         return 0
     else:
@@ -337,4 +355,3 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-

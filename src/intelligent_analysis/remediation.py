@@ -17,10 +17,11 @@ logger = logging.getLogger(__name__)
 @dataclass
 class RemediationPlan:
     """A proposed fix for a contract violation."""
+
     violation_summary: str
     suggested_code: str
-    insertion_point: str   # "top", "after_imports", "before_return"
-    confidence: float      # 0.0–1.0
+    insertion_point: str  # "top", "after_imports", "before_return"
+    confidence: float  # 0.0–1.0
     auto_apply: bool = False
 
     def to_diff(self) -> str:

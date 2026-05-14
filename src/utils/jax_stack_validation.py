@@ -45,7 +45,9 @@ def _verify_jax_pymdp_stack_impl() -> None:
 
     devices = jax.devices()
     if not devices:
-        raise RuntimeError("JAX reported no devices — check jax/jaxlib install and platform support")
+        raise RuntimeError(
+            "JAX reported no devices — check jax/jaxlib install and platform support"
+        )
 
     x = jnp.array([1.0, 2.0, 3.0], dtype=jnp.float32)
     y = jnp.sum(jnp.sin(x))
@@ -115,7 +117,9 @@ def jax_pymdp_stack_ok(*, use_cache: bool = True) -> bool:
         return False
 
 
-def run_jax_stack_probe_subprocess(venv_python: Path, project_root: Path) -> Tuple[bool, str]:
+def run_jax_stack_probe_subprocess(
+    venv_python: Path, project_root: Path
+) -> Tuple[bool, str]:
     """
     Run :func:`verify_jax_pymdp_stack` inside ``venv_python`` with ``PYTHONPATH=<project>/src``.
 

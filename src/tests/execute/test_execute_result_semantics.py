@@ -75,7 +75,9 @@ def test_validate_execution_environment_returns_dict():
     result = validate_execution_environment()
     assert isinstance(result, dict)
     # Real validator reports python_version + dependencies per its API.
-    assert any(k in result for k in ("python_version", "dependencies", "overall_status"))
+    assert any(
+        k in result for k in ("python_version", "dependencies", "overall_status")
+    )
 
 
 def test_gnnexecutor_is_instantiable():

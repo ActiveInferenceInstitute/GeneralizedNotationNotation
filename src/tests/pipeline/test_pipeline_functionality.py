@@ -17,6 +17,7 @@ class TestPipelineFunctionality:
 
     def test_visualization_generates_images(self, isolated_temp_dir):
         from visualization.processor import process_visualization
+
         # Create a minimal markdown GNN file (processor expects .md)
         gnn_dir = isolated_temp_dir / "gnn"
         gnn_dir.mkdir(parents=True, exist_ok=True)
@@ -44,7 +45,9 @@ A = [0.5, 0.5; 0.3, 0.7]
 
         # Processor creates model-specific subdirectories and files directly in output_dir
         # Check for the visualization summary and/or PNG files
-        assert (out_root / "visualization_summary.json").exists() or list(out_root.glob("**/*.png"))
+        assert (out_root / "visualization_summary.json").exists() or list(
+            out_root.glob("**/*.png")
+        )
 
         # ensure at least one image exists in any subdirectory
         png_files = list(out_root.glob("**/*.png"))
@@ -52,7 +55,9 @@ A = [0.5, 0.5; 0.3, 0.7]
         for png in png_files:
             assert png.stat().st_size > 100
 
-    def test_gnn_processing_generates_results(self, sample_gnn_files, isolated_temp_dir):
+    def test_gnn_processing_generates_results(
+        self, sample_gnn_files, isolated_temp_dir
+    ):
         from gnn.core_processor import process_gnn_directory
 
         gnn_dir = list(sample_gnn_files.values())[0].parent
@@ -69,6 +74,7 @@ A = [0.5, 0.5; 0.3, 0.7]
 
     def test_multi_format_export_generates_files(self, isolated_temp_dir):
         from export.processor import generate_exports
+
         # Create a minimal markdown GNN file for export
         gnn_dir = isolated_temp_dir / "gnn"
         gnn_dir.mkdir(parents=True, exist_ok=True)
@@ -100,9 +106,12 @@ x -> y
         # Produce viz and export results on local temp files, then validate JSON summaries
         from export.processor import generate_exports
         from visualization.processor import process_visualization
+
         gnn_dir = isolated_temp_dir / "gnn"
         gnn_dir.mkdir(parents=True, exist_ok=True)
-        (gnn_dir / "sample.md").write_text("# M\n\n## Variables\na: v\n\n## Connections\na -> a\n")
+        (gnn_dir / "sample.md").write_text(
+            "# M\n\n## Variables\na: v\n\n## Connections\na -> a\n"
+        )
         out_root = isolated_temp_dir / "preflight"
         out_root.mkdir(parents=True, exist_ok=True)
 
@@ -120,6 +129,7 @@ x -> y
     def test_preflight_metrics(self, sample_gnn_files, isolated_temp_dir):
         # Sanity metrics based on generated artifacts
         from visualization.processor import process_visualization
+
         gnn_dir = list(sample_gnn_files.values())[0].parent
         out_root = isolated_temp_dir / "metrics"
         out_root.mkdir(parents=True, exist_ok=True)

@@ -24,22 +24,26 @@ class DashboardGenerator:
     def __init__(self, strict_validation: bool = True):
         """
         Initialize the dashboard generator.
-        
+
         Args:
             strict_validation: Whether to use strict validation during parsing
         """
-        self.data_extractor = VisualizationDataExtractor(strict_validation=strict_validation)
+        self.data_extractor = VisualizationDataExtractor(
+            strict_validation=strict_validation
+        )
         self.html_generator = HTMLVisualizationGenerator()
 
-    def generate_dashboard(self, content: str, model_name: str, output_dir: Path) -> Optional[Path]:
+    def generate_dashboard(
+        self, content: str, model_name: str, output_dir: Path
+    ) -> Optional[Path]:
         """
         Generate a comprehensive dashboard for a GNN model.
-        
+
         Args:
             content: GNN file content as string
             model_name: Name of the model
             output_dir: Output directory for generated files
-            
+
         Returns:
             Path to the generated dashboard file, or None if generation failed
         """
@@ -63,7 +67,7 @@ class DashboardGenerator:
 
             # Save dashboard file
             dashboard_file = model_output_dir / f"{model_name}_dashboard.html"
-            with open(dashboard_file, 'w', encoding='utf-8') as f:
+            with open(dashboard_file, "w", encoding="utf-8") as f:
                 f.write(dashboard_html)
 
             return dashboard_file
@@ -72,14 +76,16 @@ class DashboardGenerator:
             logger.error(f"Failed to generate dashboard for {model_name}: {e}")
             return None
 
-    def _generate_dashboard_html(self, extracted_data: Dict[str, Any], model_name: str) -> str:
+    def _generate_dashboard_html(
+        self, extracted_data: Dict[str, Any], model_name: str
+    ) -> str:
         """
         Generate comprehensive dashboard HTML.
-        
+
         Args:
             extracted_data: Extracted visualization data
             model_name: Name of the model
-            
+
         Returns:
             HTML content for the dashboard
         """
@@ -394,12 +400,12 @@ class DashboardGenerator:
         for block in blocks:
             html += f"""
                             <div class="variable-item">
-                                <div class="variable-name">{block.get('name', 'Unknown')}</div>
+                                <div class="variable-name">{block.get("name", "Unknown")}</div>
                                 <div class="variable-details">
-                                    <strong>Type:</strong> {block.get('type', 'Unknown')}<br>
-                                    <strong>Data Type:</strong> {block.get('data_type', 'Unknown')}<br>
-                                    <strong>Dimensions:</strong> {block.get('dimensions', [])}
-                                    {f"<br><strong>Description:</strong> {block.get('description', '')}" if block.get('description') else ''}
+                                    <strong>Type:</strong> {block.get("type", "Unknown")}<br>
+                                    <strong>Data Type:</strong> {block.get("data_type", "Unknown")}<br>
+                                    <strong>Dimensions:</strong> {block.get("dimensions", [])}
+                                    {f"<br><strong>Description:</strong> {block.get('description', '')}" if block.get("description") else ""}
                                 </div>
                             </div>
 """
@@ -415,10 +421,10 @@ class DashboardGenerator:
         for conn in connections:
             html += f"""
                         <div class="connection-item">
-                            <strong>From:</strong> {', '.join(conn.get('from', []))} → 
-                            <strong>To:</strong> {', '.join(conn.get('to', []))}<br>
-                            <strong>Type:</strong> {conn.get('type', 'Unknown')}
-                            {f"<br><strong>Description:</strong> {conn.get('description', '')}" if conn.get('description') else ''}
+                            <strong>From:</strong> {", ".join(conn.get("from", []))} → 
+                            <strong>To:</strong> {", ".join(conn.get("to", []))}<br>
+                            <strong>Type:</strong> {conn.get("type", "Unknown")}
+                            {f"<br><strong>Description:</strong> {conn.get('description', '')}" if conn.get("description") else ""}
                         </div>
 """
 
@@ -432,9 +438,9 @@ class DashboardGenerator:
         for param in parameters:
             html += f"""
                         <div class="parameter-item">
-                            <div class="parameter-name">{param.get('name', 'Unknown')}</div>
-                            <div class="parameter-value">{json.dumps(param.get('value', 'Unknown'), indent=2)}</div>
-                            {f"<div style='margin-top: 5px; font-size: 0.8em; opacity: 0.8;'>{param.get('description', '')}</div>" if param.get('description') else ''}
+                            <div class="parameter-name">{param.get("name", "Unknown")}</div>
+                            <div class="parameter-value">{json.dumps(param.get("value", "Unknown"), indent=2)}</div>
+                            {f"<div style='margin-top: 5px; font-size: 0.8em; opacity: 0.8;'>{param.get('description', '')}</div>" if param.get("description") else ""}
                         </div>
 """
 
@@ -448,9 +454,9 @@ class DashboardGenerator:
         for eq in equations:
             html += f"""
                         <div class="equation-item">
-                            <div class="equation-label">{eq.get('label', 'Equation')}</div>
-                            <div class="equation-content">{eq.get('content', '')}</div>
-                            {f"<div style='margin-top: 8px; font-size: 0.9em; opacity: 0.8;'>{eq.get('description', '')}</div>" if eq.get('description') else ''}
+                            <div class="equation-label">{eq.get("label", "Equation")}</div>
+                            <div class="equation-content">{eq.get("content", "")}</div>
+                            {f"<div style='margin-top: 8px; font-size: 0.9em; opacity: 0.8;'>{eq.get('description', '')}</div>" if eq.get("description") else ""}
                         </div>
 """
 
@@ -467,11 +473,21 @@ class DashboardGenerator:
 
         # Add model information
         info_items = [
-            ("Name", model_info.get('name', 'Unknown')),
-            ("Version", model_info.get('version', 'Unknown')),
-            ("Format", model_info.get('source_format', 'Unknown')),
-            ("Created", model_info.get('created_at', 'Unknown')[:10] if model_info.get('created_at') else 'Unknown'),
-            ("Modified", model_info.get('modified_at', 'Unknown')[:10] if model_info.get('modified_at') else 'Unknown')
+            ("Name", model_info.get("name", "Unknown")),
+            ("Version", model_info.get("version", "Unknown")),
+            ("Format", model_info.get("source_format", "Unknown")),
+            (
+                "Created",
+                model_info.get("created_at", "Unknown")[:10]
+                if model_info.get("created_at")
+                else "Unknown",
+            ),
+            (
+                "Modified",
+                model_info.get("modified_at", "Unknown")[:10]
+                if model_info.get("modified_at")
+                else "Unknown",
+            ),
         ]
 
         for label, value in info_items:
@@ -492,12 +508,12 @@ class DashboardGenerator:
 """
 
         # Add type distribution statistics
-        type_stats = statistics.get('variable_types', {})
+        type_stats = statistics.get("variable_types", {})
         for var_type, count in type_stats.items():
             html += f"""
                         <div class="stat-item">
                             <div class="stat-value">{count}</div>
-                            <div class="stat-label">{var_type.replace('_', ' ').title()}</div>
+                            <div class="stat-label">{var_type.replace("_", " ").title()}</div>
                         </div>
 """
 
@@ -548,20 +564,21 @@ class DashboardGenerator:
         return html
 
 
-def generate_dashboard(content: str, model_name: str, output_dir: Path,
-                      strict_validation: bool = True) -> Optional[Path]:
+def generate_dashboard(
+    content: str, model_name: str, output_dir: Path, strict_validation: bool = True
+) -> Optional[Path]:
     """
     Generate a comprehensive dashboard for a GNN model.
-    
+
     This is a standalone function that wraps the DashboardGenerator class
     for direct module-level imports.
-    
+
     Args:
         content: GNN file content as string
         model_name: Name of the model
         output_dir: Output directory for generated files
         strict_validation: Whether to use strict validation during parsing
-        
+
     Returns:
         Path to the generated dashboard file, or None if generation failed
     """

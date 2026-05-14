@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 STEP_TIMEOUTS = {
     "2_tests.py": {"default": 900, "comprehensive": 1200},
     "9_advanced_viz.py": 300,
-    "13_llm.py": 900,       # 72 LLM calls (9 prompts × 8 files), ~12s each
+    "13_llm.py": 900,  # 72 LLM calls (9 prompts × 8 files), ~12s each
     "16_analysis.py": 300,  # 9+ models × multi-framework visualization generation
     "17_integration.py": 300,  # Dependency graph + system checks
     "22_gui.py": 600,
@@ -40,5 +40,7 @@ def get_step_timeout(script_name: str, comprehensive: bool = False) -> int:
     if timeout_config is None:
         return DEFAULT_TIMEOUT
     if isinstance(timeout_config, dict):
-        return timeout_config.get("comprehensive" if comprehensive else "default", DEFAULT_TIMEOUT)
+        return timeout_config.get(
+            "comprehensive" if comprehensive else "default", DEFAULT_TIMEOUT
+        )
     return timeout_config

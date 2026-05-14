@@ -14,6 +14,7 @@ class TestTemplateModule:
             process_template_standardized,
             validate_file,
         )
+
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
         assert callable(process_template_standardized)
@@ -26,11 +27,11 @@ class TestTemplateModule:
         from template import FEATURES
 
         expected_features = [
-            'standardized_processing',
-            'correlation_id_generation',
-            'safe_execution',
-            'pipeline_initialization',
-            'mcp_integration'
+            "standardized_processing",
+            "correlation_id_generation",
+            "safe_execution",
+            "pipeline_initialization",
+            "mcp_integration",
         ]
 
         for feature in expected_features:
@@ -42,7 +43,7 @@ class TestTemplateModule:
         from template import __version__
 
         # Should be semantic versioning format
-        parts = __version__.split('.')
+        parts = __version__.split(".")
         assert len(parts) >= 2, "Version should have at least major.minor"
         assert all(p.isdigit() for p in parts[:2]), "Major and minor should be numeric"
 
@@ -51,9 +52,9 @@ class TestTemplateModule:
         from template import VERSION_INFO
 
         assert isinstance(VERSION_INFO, dict)
-        assert 'version' in VERSION_INFO
-        assert 'name' in VERSION_INFO
-        assert VERSION_INFO['name'] == "Template Step"
+        assert "version" in VERSION_INFO
+        assert "name" in VERSION_INFO
+        assert VERSION_INFO["name"] == "Template Step"
 
 
 class TestCorrelationIdGeneration:
@@ -102,13 +103,13 @@ s->s
 
         nonexistent_path = safe_filesystem.temp_dir / "nonexistent.md"
         # Since file doesn't exist, it should return False
-        
+
         result = validate_file(nonexistent_path)
         # Result can be dict with valid=False or error info
         assert result is not None
         if isinstance(result, dict):
             # If file doesn't exist, validation should indicate that
-            assert 'error' in result or 'valid' in result or 'exists' in result
+            assert "error" in result or "valid" in result or "exists" in result
 
 
 class TestProcessing:
@@ -158,17 +159,17 @@ alpha = 0.5
                 target_dir=safe_filesystem.temp_dir,
                 output_dir=output_dir,
                 verbose=True,
-                logger=logger
+                logger=logger,
             )
         except TypeError:
             result = process_template_standardized(
-                target_dir=safe_filesystem.temp_dir,
-                output_dir=output_dir,
-                verbose=True
+                target_dir=safe_filesystem.temp_dir, output_dir=output_dir, verbose=True
             )
 
         # Should return success status - True or dict with success
-        assert result is True or (isinstance(result, dict) and result.get('success', True))
+        assert result is True or (
+            isinstance(result, dict) and result.get("success", True)
+        )
 
 
 class TestSafeExecution:
@@ -186,8 +187,8 @@ class TestSafeExecution:
         # safe_template_execution is a context manager
         with safe_template_execution(logger, correlation_id) as ctx:
             assert ctx is not None
-            assert 'correlation_id' in ctx
-            assert ctx['correlation_id'] == correlation_id
+            assert "correlation_id" in ctx
+            assert ctx["correlation_id"] == correlation_id
 
     def test_safe_template_execution_with_error(self, safe_filesystem: Any) -> None:
         """Test safe execution handles errors gracefully."""
@@ -232,7 +233,7 @@ class TestUtilityPatterns:
 
         info = get_version_info()
         assert isinstance(info, dict)
-        assert 'version' in info or 'module' in info or len(info) > 0
+        assert "version" in info or "module" in info or len(info) > 0
 
 
 class TestTemplateUtils:
@@ -243,6 +244,7 @@ class TestTemplateUtils:
 
     def test_get_version_info_returns_dict(self):
         from template.utils import get_version_info
+
         result = get_version_info()
         assert isinstance(result, dict)
         assert len(result) > 0

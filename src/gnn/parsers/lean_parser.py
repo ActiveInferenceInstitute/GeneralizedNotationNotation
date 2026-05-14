@@ -24,22 +24,23 @@ from .common import (
 
 logger = logging.getLogger(__name__)
 
+
 class LeanGNNParser(BaseGNNParser):
     """Parser for Lean category theory specifications."""
 
     def __init__(self):
         """Initialize the Lean parser."""
         super().__init__()
-        self.namespace_pattern = re.compile(r'namespace\s+(\w+)')
-        self.structure_pattern = re.compile(r'structure\s+(\w+)\s+where')
-        self.import_pattern = re.compile(r'import\s+([^\n]+)')
-        self.def_pattern = re.compile(r'def\s+(\w+)[^:]*:\s*([^:=]+)(?::=)?')
-        self.variable_pattern = re.compile(r'(\w+)\s*:\s*([^\n]+)')
+        self.namespace_pattern = re.compile(r"namespace\s+(\w+)")
+        self.structure_pattern = re.compile(r"structure\s+(\w+)\s+where")
+        self.import_pattern = re.compile(r"import\s+([^\n]+)")
+        self.def_pattern = re.compile(r"def\s+(\w+)[^:]*:\s*([^:=]+)(?::=)?")
+        self.variable_pattern = re.compile(r"(\w+)\s*:\s*([^\n]+)")
 
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a Lean file containing GNN category theory specifications."""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             return self.parse_string(content)
@@ -47,8 +48,7 @@ class LeanGNNParser(BaseGNNParser):
         except Exception as e:
             logger.error(f"Error parsing Lean file {file_path}: {e}")
             result = ParseResult(
-                model=self.create_empty_model("Failed Lean Parse"),
-                success=False
+                model=self.create_empty_model("Failed Lean Parse"), success=False
             )
             result.add_error(f"Failed to parse Lean file: {e}")
             return result
@@ -68,8 +68,7 @@ class LeanGNNParser(BaseGNNParser):
         except Exception as e:
             logger.error(f"Error parsing Lean content: {e}")
             result = ParseResult(
-                model=self.create_empty_model("Failed Lean Parse"),
-                success=False
+                model=self.create_empty_model("Failed Lean Parse"), success=False
             )
             result.add_error(f"Failed to parse Lean content: {e}")
             return result
@@ -77,10 +76,11 @@ class LeanGNNParser(BaseGNNParser):
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Lean comments."""
         import json
+
         # Look for JSON data in Lean comments
         patterns = [
-            r'--\s*MODEL_DATA:\s*(\{.+\})',  # -- MODEL_DATA: {...}
-            r'/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/',  # /* MODEL_DATA: {...} */
+            r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...}
+            r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
         ]
 
         for pattern in patterns:
@@ -93,7 +93,9 @@ class LeanGNNParser(BaseGNNParser):
                     continue
         return None
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import (
@@ -107,57 +109,59 @@ class LeanGNNParser(BaseGNNParser):
 
             # Create model from embedded data
             model = GNNInternalRepresentation(
-                model_name=embedded_data.get('model_name', 'Unknown Model'),
-                annotation=embedded_data.get('annotation', ''),
+                model_name=embedded_data.get("model_name", "Unknown Model"),
+                annotation=embedded_data.get("annotation", ""),
             )
 
             # Parse variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data['var_type']),
-                    data_type=DataType(var_data['data_type']),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data["var_type"]),
+                    data_type=DataType(var_data["data_type"]),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 model.variables.append(var)
 
             # Parse connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data['source_variables'],
-                    target_variables=conn_data['target_variables'],
-                    connection_type=ConnectionType(conn_data['connection_type'])
+                    source_variables=conn_data["source_variables"],
+                    target_variables=conn_data["target_variables"],
+                    connection_type=ConnectionType(conn_data["connection_type"]),
                 )
                 model.connections.append(conn)
 
             # Parse parameters
-            for param_data in embedded_data.get('parameters', []):
+            for param_data in embedded_data.get("parameters", []):
                 param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    type_hint=param_data.get('param_type', 'constant')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    type_hint=param_data.get("param_type", "constant"),
                 )
                 model.parameters.append(param)
 
             # Set time specification if present
-            if embedded_data.get('time_specification'):
-                time_data = embedded_data['time_specification']
+            if embedded_data.get("time_specification"):
+                time_data = embedded_data["time_specification"]
                 from .common import TimeSpecification
+
                 model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Set ontology mappings if present
-            if embedded_data.get('ontology_mappings'):
+            if embedded_data.get("ontology_mappings"):
                 from .common import OntologyMapping
-                for mapping_data in embedded_data['ontology_mappings']:
+
+                for mapping_data in embedded_data["ontology_mappings"]:
                     mapping = OntologyMapping(
-                        variable_name=mapping_data['variable_name'],
-                        ontology_term=mapping_data['ontology_term'],
-                        description=mapping_data.get('description')
+                        variable_name=mapping_data["variable_name"],
+                        ontology_term=mapping_data["ontology_term"],
+                        description=mapping_data.get("description"),
                     )
                     model.ontology_mappings.append(mapping)
 
@@ -171,7 +175,7 @@ class LeanGNNParser(BaseGNNParser):
 
     def _parse_lean_content(self, content: str) -> GNNInternalRepresentation:
         """Parse the main Lean content."""
-        content.split('\n')
+        content.split("\n")
 
         # Extract model name from structure or namespace
         model_name = self._extract_model_name(content)
@@ -179,7 +183,7 @@ class LeanGNNParser(BaseGNNParser):
         # Create base model
         model = GNNInternalRepresentation(
             model_name=model_name,
-            annotation="Parsed from Lean category theory specification"
+            annotation="Parsed from Lean category theory specification",
         )
 
         # Parse imports
@@ -213,12 +217,12 @@ class LeanGNNParser(BaseGNNParser):
         imports = self.import_pattern.findall(content)
 
         # Store import information in metadata
-        model.extensions['lean_imports'] = imports
+        model.extensions["lean_imports"] = imports
 
         # Check for category theory imports
-        has_category_theory = any('CategoryTheory' in imp for imp in imports)
+        has_category_theory = any("CategoryTheory" in imp for imp in imports)
         if has_category_theory:
-            model.extensions['uses_category_theory'] = True
+            model.extensions["uses_category_theory"] = True
 
     def _parse_structures(self, content: str, model: GNNInternalRepresentation):
         """Parse Lean structures to extract GNN components."""
@@ -238,7 +242,7 @@ class LeanGNNParser(BaseGNNParser):
         """Extract the body of a structure definition."""
         # Simple approach: find until next top-level definition or end
         remaining = content[start_pos:]
-        lines = remaining.split('\n')
+        lines = remaining.split("\n")
 
         body_lines = []
         indent_level = None
@@ -254,20 +258,26 @@ class LeanGNNParser(BaseGNNParser):
 
             # If we hit a line with less indentation, we've left the structure
             current_indent = len(line) - len(line.lstrip())
-            if current_indent <= indent_level and stripped and not stripped.startswith('--'):
+            if (
+                current_indent <= indent_level
+                and stripped
+                and not stripped.startswith("--")
+            ):
                 break
 
             body_lines.append(line)
 
-        return '\n'.join(body_lines)
+        return "\n".join(body_lines)
 
-    def _parse_structure_fields(self, structure_body: str, model: GNNInternalRepresentation, structure_name: str):
+    def _parse_structure_fields(
+        self, structure_body: str, model: GNNInternalRepresentation, structure_name: str
+    ):
         """Parse fields within a structure as variables."""
         field_matches = self.variable_pattern.findall(structure_body)
 
         for field_name, field_type in field_matches:
             # Skip comments and imports
-            if field_name.startswith('--') or field_name.startswith('import'):
+            if field_name.startswith("--") or field_name.startswith("import"):
                 continue
 
             # Infer variable type and data type
@@ -279,7 +289,7 @@ class LeanGNNParser(BaseGNNParser):
                 var_type=var_type,
                 dimensions=[],  # Lean types are abstract
                 data_type=data_type,
-                description=f"Field from structure {structure_name}"
+                description=f"Field from structure {structure_name}",
             )
 
             model.variables.append(variable)
@@ -301,7 +311,7 @@ class LeanGNNParser(BaseGNNParser):
                 var_type=var_type,
                 dimensions=[],
                 data_type=data_type,
-                description=f"Definition: {def_type.strip()}"
+                description=f"Definition: {def_type.strip()}",
             )
 
             model.variables.append(variable)
@@ -311,25 +321,25 @@ class LeanGNNParser(BaseGNNParser):
         name_lower = name.lower()
         type_lower = type_def.lower()
 
-        if any(keyword in name_lower for keyword in ['state', 'hidden']):
+        if any(keyword in name_lower for keyword in ["state", "hidden"]):
             return VariableType.HIDDEN_STATE
-        elif any(keyword in name_lower for keyword in ['obs', 'observation']):
+        elif any(keyword in name_lower for keyword in ["obs", "observation"]):
             return VariableType.OBSERVATION
-        elif any(keyword in name_lower for keyword in ['action', 'control']):
+        elif any(keyword in name_lower for keyword in ["action", "control"]):
             return VariableType.ACTION
-        elif any(keyword in name_lower for keyword in ['policy', 'pi']):
+        elif any(keyword in name_lower for keyword in ["policy", "pi"]):
             return VariableType.POLICY
-        elif 'matrix' in type_lower or 'mat' in type_lower:
-            if 'a' in name_lower:
+        elif "matrix" in type_lower or "mat" in type_lower:
+            if "a" in name_lower:
                 return VariableType.LIKELIHOOD_MATRIX
-            elif 'b' in name_lower:
+            elif "b" in name_lower:
                 return VariableType.TRANSITION_MATRIX
             else:
                 return VariableType.LIKELIHOOD_MATRIX
-        elif 'vector' in type_lower or 'vec' in type_lower:
-            if 'c' in name_lower:
+        elif "vector" in type_lower or "vec" in type_lower:
+            if "c" in name_lower:
                 return VariableType.PREFERENCE_VECTOR
-            elif 'd' in name_lower:
+            elif "d" in name_lower:
                 return VariableType.PRIOR_VECTOR
             else:
                 return VariableType.PREFERENCE_VECTOR
@@ -341,13 +351,13 @@ class LeanGNNParser(BaseGNNParser):
         """Infer data type from Lean type definition."""
         type_lower = type_def.lower()
 
-        if any(keyword in type_lower for keyword in ['real', 'ℝ', 'float']):
+        if any(keyword in type_lower for keyword in ["real", "ℝ", "float"]):
             return DataType.CONTINUOUS
-        elif any(keyword in type_lower for keyword in ['nat', 'ℕ', 'int', 'integer']):
+        elif any(keyword in type_lower for keyword in ["nat", "ℕ", "int", "integer"]):
             return DataType.INTEGER
-        elif any(keyword in type_lower for keyword in ['bool', 'prop']):
+        elif any(keyword in type_lower for keyword in ["bool", "prop"]):
             return DataType.BINARY
-        elif any(keyword in type_lower for keyword in ['list', 'vector', 'array']):
+        elif any(keyword in type_lower for keyword in ["list", "vector", "array"]):
             return DataType.CATEGORICAL
 
         # Default for abstract types
@@ -355,4 +365,4 @@ class LeanGNNParser(BaseGNNParser):
 
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        return ['.lean']
+        return [".lean"]

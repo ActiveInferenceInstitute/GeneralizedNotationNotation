@@ -17,7 +17,7 @@ FEATURES = {
     "multi_provider_support": True,
     "model_analysis": True,
     "structured_prompting": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 import logging
@@ -26,10 +26,13 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
+
 def process_llm(*args: Any, **kwargs: Any) -> bool:
     """Delegate to processor.process_llm — returns True on success."""
     from .processor import process_llm as _impl
+
     return _impl(*args, **kwargs)
+
 
 # Phase 6: llm submodules are in-tree; fallback shims removed as dead code.
 # If any import here fails, it's a real bug that must surface in CI — not be
@@ -104,11 +107,15 @@ class LLMAnalyzer:
             "variables": extract_variables(content),
             "connections": extract_connections(content),
             "sections": extract_sections(content),
-            "patterns": identify_patterns(content, extract_variables(content), extract_connections(content)),
+            "patterns": identify_patterns(
+                content, extract_variables(content), extract_connections(content)
+            ),
         }
 
     def extract_insights(self, content: str) -> Dict[str, Any]:
-        return perform_semantic_analysis(content, extract_variables(content), extract_connections(content))
+        return perform_semantic_analysis(
+            content, extract_variables(content), extract_connections(content)
+        )
 
 
 def get_module_info() -> Dict[str, Any]:
@@ -126,11 +133,15 @@ def analyze_gnn_model(model_content: Union[str, Dict[str, Any]]) -> Dict[str, An
     # Prefer analyzer class if available
     try:
         analyzer = LLMAnalyzer()
-        return analyzer.analyze_content(model_content if isinstance(model_content, str) else model_content.get('content',''))
+        return analyzer.analyze_content(
+            model_content
+            if isinstance(model_content, str)
+            else model_content.get("content", "")
+        )
     except Exception:
         return {
-            'variables': extract_variables(model_content),
-            'connections': extract_connections(model_content)
+            "variables": extract_variables(model_content),
+            "connections": extract_connections(model_content),
         }
 
 
@@ -146,11 +157,13 @@ def get_available_providers() -> list:
     try:
         # Importing lazily to avoid heavy deps
         from .providers import openai_provider as _openai  # noqa: F401
+
         providers.append("openai")
     except ImportError:
         logger.debug("openai provider not installed, skipping")
     try:
         from .providers import openrouter_provider as _openrouter  # noqa: F401
+
         providers.append("openrouter")
     except ImportError:
         logger.debug("openrouter provider not installed, skipping")
@@ -158,32 +171,35 @@ def get_available_providers() -> list:
 
 
 __all__ = [
-    'process_llm',
-    'analyze_gnn_file_with_llm',
-    'extract_variables',
-    'extract_connections',
-    'extract_sections',
-    'perform_semantic_analysis',
-    'calculate_complexity_metrics',
-    'identify_patterns',
-    'generate_model_insights',
-    'generate_code_suggestions',
-    'generate_documentation',
-    'generate_llm_summary',
-    'LLMProcessor',
-    'LLMAnalyzer',
-    'get_module_info',
-    'get_available_providers',
-    'AnalysisType',
-    'UnifiedLLMProcessor',
-    'load_api_keys_from_env',
-    'ProviderType',
-    'initialize_global_processor',
-    'get_global_processor',
-    'create_processor_from_env',
-    'get_default_provider_configs',
-    'get_preferred_providers_from_env',
-    'LLMConfig', 'LLMMessage', 'LLMResponse', 'BaseLLMProvider',
-    'DEFAULT_OLLAMA_MODEL',
-    '__version__'
+    "process_llm",
+    "analyze_gnn_file_with_llm",
+    "extract_variables",
+    "extract_connections",
+    "extract_sections",
+    "perform_semantic_analysis",
+    "calculate_complexity_metrics",
+    "identify_patterns",
+    "generate_model_insights",
+    "generate_code_suggestions",
+    "generate_documentation",
+    "generate_llm_summary",
+    "LLMProcessor",
+    "LLMAnalyzer",
+    "get_module_info",
+    "get_available_providers",
+    "AnalysisType",
+    "UnifiedLLMProcessor",
+    "load_api_keys_from_env",
+    "ProviderType",
+    "initialize_global_processor",
+    "get_global_processor",
+    "create_processor_from_env",
+    "get_default_provider_configs",
+    "get_preferred_providers_from_env",
+    "LLMConfig",
+    "LLMMessage",
+    "LLMResponse",
+    "BaseLLMProvider",
+    "DEFAULT_OLLAMA_MODEL",
+    "__version__",
 ]

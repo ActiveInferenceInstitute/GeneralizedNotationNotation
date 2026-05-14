@@ -41,6 +41,7 @@ FEATURES = {
     "mcp_integration": True,
 }
 
+
 def validate_gnn_file(source, *, is_content: bool = False):
     """Validate a GNN file or content string.
 
@@ -52,6 +53,7 @@ def validate_gnn_file(source, *, is_content: bool = False):
         Dict with keys ``is_valid`` (bool) and ``errors`` (list[str]).
     """
     from pathlib import Path as _Path
+
     if not is_content and isinstance(source, (str, _Path)) and _Path(source).exists():
         content = _Path(source).read_text(encoding="utf-8")
     else:
@@ -59,31 +61,30 @@ def validate_gnn_file(source, *, is_content: bool = False):
     is_valid, errors = validate_gnn(content)
     return {"is_valid": is_valid, "errors": errors}
 
+
 __all__ = [
     # Processor functions
-    'process_gnn_directory_lightweight',
-    'discover_gnn_files',
-    'parse_gnn_file',
-    'validate_gnn_structure',
-    'process_gnn_directory',
-    'generate_gnn_report',
-    'get_module_info',
-
+    "process_gnn_directory_lightweight",
+    "discover_gnn_files",
+    "parse_gnn_file",
+    "validate_gnn_structure",
+    "process_gnn_directory",
+    "generate_gnn_report",
+    "get_module_info",
     # Multi-format processor
-    'process_gnn_multi_format',
-
+    "process_gnn_multi_format",
     # Parser classes and functions
-    'ValidationLevel',
-    'ParsedGNN',
-    'GNNParsingSystem',
-    'GNNFormat',
-    'GNNFormalParser',
-    'ParsedGNNFormal',
-    'parse_gnn_formal',
-    'validate_gnn_syntax_formal',
-    'get_parse_tree_visualization',
-    'validate_gnn',
-    '__version__',
-    'FEATURES',
-    'validate_gnn_file'
+    "ValidationLevel",
+    "ParsedGNN",
+    "GNNParsingSystem",
+    "GNNFormat",
+    "GNNFormalParser",
+    "ParsedGNNFormal",
+    "parse_gnn_formal",
+    "validate_gnn_syntax_formal",
+    "get_parse_tree_visualization",
+    "validate_gnn",
+    "__version__",
+    "FEATURES",
+    "validate_gnn_file",
 ]

@@ -7,6 +7,7 @@ belief trajectory, action distribution, and EFE analysis plots.
 
 @Web: https://num.pyro.ai/
 """
+
 import json
 import logging
 from pathlib import Path
@@ -52,11 +53,12 @@ def generate_analysis_from_logs(
 
     if not numpyro_results:
         if verbose:
-            logger.debug(f"No NumPyro simulation_results.json found under {results_dir}")
+            logger.debug(
+                f"No NumPyro simulation_results.json found under {results_dir}"
+            )
         return generated_files
 
     for results_file in numpyro_results:
-
         try:
             with open(results_file) as f:
                 results = json.load(f)
@@ -136,6 +138,7 @@ def _generate_plots(
     """Generate analysis plots using matplotlib."""
     try:
         import matplotlib
+
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
     except ImportError:

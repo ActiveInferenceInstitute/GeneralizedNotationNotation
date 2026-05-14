@@ -24,8 +24,11 @@ logger = logging.getLogger(__name__)
 @dataclass
 class DependencySpec:
     """Specification for a required dependency."""
+
     name: str
-    module_name: Optional[str] = None  # Python module name if different from package name
+    module_name: Optional[str] = (
+        None  # Python module name if different from package name
+    )
     version_min: Optional[str] = None
     version_max: Optional[str] = None
     is_optional: bool = False
@@ -37,7 +40,9 @@ class DependencySpec:
 class DependencyValidator:
     """Validates pipeline dependencies before execution."""
 
-    def __init__(self, logger: Optional[logging.Logger] = None, python_path: Optional[str] = None):
+    def __init__(
+        self, logger: Optional[logging.Logger] = None, python_path: Optional[str] = None
+    ):
         """Initialize the dependency validator."""
         self.logger = logger or PipelineLogger.get_logger("dependency_validator")
         self.python_path = python_path
@@ -52,37 +57,31 @@ class DependencyValidator:
         """Define all dependencies required by different pipeline components."""
         return {
             "core": [
-                DependencySpec(
-                    name="pathlib",
-                    description="Path handling utilities"
-                ),
-                DependencySpec(
-                    name="json",
-                    description="JSON processing"
-                ),
+                DependencySpec(name="pathlib", description="Path handling utilities"),
+                DependencySpec(name="json", description="JSON processing"),
                 DependencySpec(
                     name="yaml",
                     module_name="yaml",
                     install_command="uv pip install pyyaml",
-                    description="YAML file processing"
+                    description="YAML file processing",
                 ),
                 DependencySpec(
                     name="numpy",
                     version_min="1.20.0",
-                    description="Numerical computing library"
+                    description="Numerical computing library",
                 ),
                 # HTTP and async communication
                 DependencySpec(
                     name="aiohttp",
                     version_min="3.9.0",
                     install_command="uv pip install aiohttp>=3.9.0",
-                    description="Async HTTP client/server for LLM providers"
+                    description="Async HTTP client/server for LLM providers",
                 ),
                 DependencySpec(
                     name="httpx",
                     version_min="0.27.0",
                     install_command="uv pip install httpx>=0.27.0",
-                    description="HTTP client library"
+                    description="HTTP client library",
                 ),
             ],
             "gnn_processing": [
@@ -90,14 +89,14 @@ class DependencyValidator:
                     name="markdown",
                     version_min="3.0.0",
                     install_command="uv pip install markdown",
-                    description="Markdown processing for GNN files"
+                    description="Markdown processing for GNN files",
                 ),
                 DependencySpec(
                     name="pyyaml",
                     module_name="yaml",
                     version_min="5.0.0",
                     install_command="uv pip install pyyaml",
-                    description="YAML processing"
+                    description="YAML processing",
                 ),
             ],
             "visualization": [
@@ -105,19 +104,19 @@ class DependencyValidator:
                     name="matplotlib",
                     version_min="3.5.0",
                     install_command="uv pip install matplotlib",
-                    description="Plotting and visualization"
+                    description="Plotting and visualization",
                 ),
                 DependencySpec(
                     name="networkx",
                     version_min="2.8.0",
                     install_command="uv pip install networkx",
-                    description="Graph visualization"
+                    description="Graph visualization",
                 ),
                 DependencySpec(
                     name="graphviz",
                     system_command="dot",
                     install_command="apt-get install graphviz (Ubuntu) or brew install graphviz (macOS)",
-                    description="Graph layout engine"
+                    description="Graph layout engine",
                 ),
             ],
             "pymdp": [
@@ -126,13 +125,13 @@ class DependencyValidator:
                     version_min="0.0.1",
                     install_command="uv pip install inferactively-pymdp",
                     is_optional=True,
-                    description="PyMDP Active Inference library (package name: inferactively-pymdp)"
+                    description="PyMDP Active Inference library (package name: inferactively-pymdp)",
                 ),
                 DependencySpec(
                     name="scipy",
                     version_min="1.7.0",
                     install_command="uv pip install scipy",
-                    description="Scientific computing library"
+                    description="Scientific computing library",
                 ),
             ],
             "rxinfer": [
@@ -141,7 +140,7 @@ class DependencyValidator:
                     system_command="julia",
                     install_command="Download from https://julialang.org/downloads/",
                     is_optional=True,
-                    description="Julia programming language for RxInfer"
+                    description="Julia programming language for RxInfer",
                 ),
             ],
             "export": [
@@ -149,7 +148,7 @@ class DependencyValidator:
                     name="lxml",
                     version_min="4.6.0",
                     install_command="uv pip install lxml",
-                    description="XML processing"
+                    description="XML processing",
                 ),
             ],
             "testing": [
@@ -157,7 +156,7 @@ class DependencyValidator:
                     name="pytest",
                     version_min="6.0.0",
                     install_command="uv pip install pytest",
-                    description="Testing framework"
+                    description="Testing framework",
                 ),
             ],
             "discopy": [
@@ -166,26 +165,28 @@ class DependencyValidator:
                     version_min="0.4.0",
                     install_command="uv pip install discopy",
                     is_optional=True,
-                    description="DisCoPy categorical quantum computing library"
+                    description="DisCoPy categorical quantum computing library",
                 ),
                 DependencySpec(
                     name="jax",
                     version_min="0.3.0",
                     install_command="uv pip install jax jaxlib",
                     is_optional=True,
-                    description="JAX for DisCoPy numerical evaluation"
+                    description="JAX for DisCoPy numerical evaluation",
                 ),
                 DependencySpec(
                     name="jaxlib",
                     version_min="0.3.0",
                     install_command="uv pip install jaxlib",
                     is_optional=True,
-                    description="JAX library backend"
+                    description="JAX library backend",
                 ),
-            ]
+            ],
         }
 
-    def validate_python_dependency(self, dep: DependencySpec, python_path: Optional[str] = None) -> bool:
+    def validate_python_dependency(
+        self, dep: DependencySpec, python_path: Optional[str] = None
+    ) -> bool:
         """Validate a Python package dependency using the specified Python executable."""
 
         # Use the specified Python or fall back to current interpreter
@@ -199,7 +200,7 @@ class DependencyValidator:
             check_import_cmd = [
                 python_to_use,
                 "-c",
-                f"import {module_name}; print('OK')"
+                f"import {module_name}; print('OK')",
             ]
 
             result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
@@ -207,7 +208,7 @@ class DependencyValidator:
                 capture_output=True,
                 text=True,
                 check=False,
-                timeout=10  # 10 second timeout for import check
+                timeout=10,  # 10 second timeout for import check
             )
 
             if result.returncode != 0:
@@ -227,7 +228,7 @@ class DependencyValidator:
                         f"version = getattr({module_name}, '__version__', None) or "
                         f"getattr({module_name}, 'version', None) or "
                         f"getattr({module_name}, 'VERSION', None); "
-                        f"print(version if version else 'UNKNOWN')"
+                        f"print(version if version else 'UNKNOWN')",
                     ]
 
                     version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
@@ -235,34 +236,51 @@ class DependencyValidator:
                         capture_output=True,
                         text=True,
                         check=False,
-                        timeout=10
+                        timeout=10,
                     )
 
                     if version_result.returncode == 0:
                         version_str = version_result.stdout.strip()
-                        if version_str and version_str != 'UNKNOWN':
+                        if version_str and version_str != "UNKNOWN":
                             try:
                                 from packaging import version as pkg_version
+
                                 current_version = pkg_version.parse(version_str)
 
                                 if dep.version_min:
                                     min_version = pkg_version.parse(dep.version_min)
                                     if current_version < min_version:
-                                        self.version_conflicts.append((dep, f"Version {version_str} < required {dep.version_min}"))
+                                        self.version_conflicts.append(
+                                            (
+                                                dep,
+                                                f"Version {version_str} < required {dep.version_min}",
+                                            )
+                                        )
                                         return False
 
                                 if dep.version_max:
                                     max_version = pkg_version.parse(dep.version_max)
                                     if current_version > max_version:
-                                        self.version_conflicts.append((dep, f"Version {version_str} > maximum {dep.version_max}"))
+                                        self.version_conflicts.append(
+                                            (
+                                                dep,
+                                                f"Version {version_str} > maximum {dep.version_max}",
+                                            )
+                                        )
                                         return False
                             except ImportError:
                                 # packaging not available, skip version check
-                                self.warnings.append(f"Cannot verify version for {dep.name} - packaging module not available")
+                                self.warnings.append(
+                                    f"Cannot verify version for {dep.name} - packaging module not available"
+                                )
                         else:
-                            self.warnings.append(f"Could not determine version for {dep.name}")
+                            self.warnings.append(
+                                f"Could not determine version for {dep.name}"
+                            )
                     else:
-                        self.warnings.append(f"Error checking version for {dep.name}: {version_result.stderr}")
+                        self.warnings.append(
+                            f"Error checking version for {dep.name}: {version_result.stderr}"
+                        )
 
                 except Exception as e:
                     self.warnings.append(f"Error checking version for {dep.name}: {e}")
@@ -307,19 +325,25 @@ class DependencyValidator:
             if not valid:
                 all_valid = False
                 if not dep.is_optional:
-                    self.logger.error(f"Missing required dependency: {dep.name} - {dep.description}")
+                    self.logger.error(
+                        f"Missing required dependency: {dep.name} - {dep.description}"
+                    )
                 else:
-                    self.logger.warning(f"Missing optional dependency: {dep.name} - {dep.description}")
+                    self.logger.warning(
+                        f"Missing optional dependency: {dep.name} - {dep.description}"
+                    )
 
         return all_valid
 
-    def validate_all_dependencies(self, required_groups: Optional[List[str]] = None) -> bool:
+    def validate_all_dependencies(
+        self, required_groups: Optional[List[str]] = None
+    ) -> bool:
         """
         Validate all dependencies or specific groups.
-        
+
         Args:
             required_groups: List of dependency groups to validate, or None for all
-            
+
         Returns:
             bool: True if all required dependencies are satisfied
         """
@@ -332,13 +356,19 @@ class DependencyValidator:
             group_valid = self.validate_dependency_group(group)
             if not group_valid:
                 all_valid = False
-                self.logger.error(f"Dependency group '{group}' has missing required dependencies")
+                self.logger.error(
+                    f"Dependency group '{group}' has missing required dependencies"
+                )
 
         # Report summary
         if self.missing_dependencies:
-            self.logger.error(f"Missing {len(self.missing_dependencies)} required dependencies")
+            self.logger.error(
+                f"Missing {len(self.missing_dependencies)} required dependencies"
+            )
             for dep in self.missing_dependencies:
-                install_hint = f" (Install: {dep.install_command})" if dep.install_command else ""
+                install_hint = (
+                    f" (Install: {dep.install_command})" if dep.install_command else ""
+                )
                 self.logger.error(f"  - {dep.name}: {dep.description}{install_hint}")
 
         if self.version_conflicts:
@@ -363,8 +393,12 @@ class DependencyValidator:
             instructions.append("To install missing dependencies:")
             instructions.append("")
 
-            python_deps = [dep for dep in self.missing_dependencies if not dep.system_command]
-            system_deps = [dep for dep in self.missing_dependencies if dep.system_command]
+            python_deps = [
+                dep for dep in self.missing_dependencies if not dep.system_command
+            ]
+            system_deps = [
+                dep for dep in self.missing_dependencies if dep.system_command
+            ]
 
             if python_deps:
                 instructions.append("Python packages:")
@@ -387,16 +421,18 @@ class DependencyValidator:
         return instructions
 
 
-def validate_pipeline_dependencies(step_names: Optional[List[str]] = None,
-                                 logger: Optional[logging.Logger] = None,
-                                 python_path: Optional[str] = None) -> bool:
+def validate_pipeline_dependencies(
+    step_names: Optional[List[str]] = None,
+    logger: Optional[logging.Logger] = None,
+    python_path: Optional[str] = None,
+) -> bool:
     """
     Validate dependencies for specific pipeline steps.
-    
+
     Args:
         step_names: List of pipeline step names to validate dependencies for
         logger: Optional logger instance
-        
+
     Returns:
         bool: True if all required dependencies are available
     """
@@ -449,11 +485,19 @@ def check_optional_dependencies() -> dict:
     for _, deps in validator.dependencies.items():
         for dep in deps:
             if dep.is_optional:
-                status = validator.validate_python_dependency(dep) if not dep.system_command else validator.validate_system_dependency(dep)
-                optional_status[dep.name] = 'available' if status else 'missing'
+                status = (
+                    validator.validate_python_dependency(dep)
+                    if not dep.system_command
+                    else validator.validate_system_dependency(dep)
+                )
+                optional_status[dep.name] = "available" if status else "missing"
                 if not status:
                     missing_optional.append(dep.name)
-    return {'optional_dependencies': optional_status, 'missing_optional': missing_optional}
+    return {
+        "optional_dependencies": optional_status,
+        "missing_optional": missing_optional,
+    }
+
 
 def get_dependency_status() -> dict:
     """
@@ -472,13 +516,16 @@ def get_dependency_status() -> dict:
             else:
                 required.append(dep.name)
     missing = [dep.name for dep in validator.missing_dependencies]
-    version_conflicts = [f"{dep.name}: {conflict}" for dep, conflict in validator.version_conflicts]
+    version_conflicts = [
+        f"{dep.name}: {conflict}" for dep, conflict in validator.version_conflicts
+    ]
     return {
-        'required_dependencies': required,
-        'optional_dependencies': optional,
-        'missing_dependencies': missing,
-        'version_conflicts': version_conflicts
+        "required_dependencies": required,
+        "optional_dependencies": optional,
+        "missing_dependencies": missing,
+        "version_conflicts": version_conflicts,
     }
+
 
 def install_missing_dependencies() -> dict:
     """
@@ -487,6 +534,7 @@ def install_missing_dependencies() -> dict:
         dict: { 'installed': [name, ...], 'failed': [name, ...], 'skipped': [name, ...] }
     """
     import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+
     validator = DependencyValidator()
     validator.validate_all_dependencies()
     installed = []
@@ -497,7 +545,7 @@ def install_missing_dependencies() -> dict:
             skipped.append(dep.name)
             continue
         try:
-            cmd = ['uv', 'pip', 'install', dep.name]
+            cmd = ["uv", "pip", "install", dep.name]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)  # nosec B603 -- subprocess calls with controlled/trusted input
             if result.returncode == 0:
                 installed.append(dep.name)
@@ -508,7 +556,7 @@ def install_missing_dependencies() -> dict:
         except Exception as e:
             failed.append(dep.name)
             logging.error(f"Exception installing {dep.name}: {e}")
-    return {'installed': installed, 'failed': failed, 'skipped': skipped}
+    return {"installed": installed, "failed": failed, "skipped": skipped}
 
 
 if __name__ == "__main__":
@@ -541,14 +589,14 @@ if __name__ == "__main__":
 def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> bool:
     """
     Validate dependencies if the validator is available.
-    
+
     Args:
         args: Parsed command line arguments
-        
+
     Returns:
         bool: True if validation passed or validator unavailable
     """
-    if getattr(args, 'skip_dependency_validation', False):
+    if getattr(args, "skip_dependency_validation", False):
         logger.info("Dependency validation skipped (--skip-dependency-validation flag)")
         return True
 
@@ -567,29 +615,29 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
 
     # Map step numbers to dependency groups
     step_dependency_map = {
-        1: "core",              # 1_setup.py - Setup step
-        2: "testing",           # 2_tests.py - Testing framework
-        3: "gnn_processing",    # 3_gnn.py - GNN file processing
-        4: "core",              # 4_model_registry.py - Model registry
-        5: "gnn_processing",    # 5_type_checker.py - GNN validation
-        6: "core",              # 6_validation.py - Validation
-        7: "export",            # 7_export.py - Export formats
-        8: "visualization",     # 8_visualization.py - Visualization
-        9: "visualization",     # 9_advanced_viz.py - Advanced visualization
-        10: "gnn_processing",   # 10_ontology.py - Ontology processing
-        11: "core",             # 11_render.py - Rendering (pymdp, rxinfer, discopy)
-        12: "core",             # 12_execute.py - Execution (pymdp, rxinfer, discopy)
-        13: "core",             # 13_llm.py - LLM processing
-        14: "core",             # 14_ml_integration.py - ML integration
-        15: "core",             # 15_audio.py - Audio generation
-        16: "core",             # 16_analysis.py - Analysis
-        17: "core",             # 17_integration.py - Integration
-        18: "core",             # 18_security.py - Security
-        19: "core",             # 19_research.py - Research
-        20: "core",             # 20_website.py - Website generation
-        21: "core",             # 21_mcp.py - MCP tools
-        22: "core",             # 22_gui.py - GUI
-        23: "core"              # 23_report.py - Comprehensive analysis reports
+        1: "core",  # 1_setup.py - Setup step
+        2: "testing",  # 2_tests.py - Testing framework
+        3: "gnn_processing",  # 3_gnn.py - GNN file processing
+        4: "core",  # 4_model_registry.py - Model registry
+        5: "gnn_processing",  # 5_type_checker.py - GNN validation
+        6: "core",  # 6_validation.py - Validation
+        7: "export",  # 7_export.py - Export formats
+        8: "visualization",  # 8_visualization.py - Visualization
+        9: "visualization",  # 9_advanced_viz.py - Advanced visualization
+        10: "gnn_processing",  # 10_ontology.py - Ontology processing
+        11: "core",  # 11_render.py - Rendering (pymdp, rxinfer, discopy)
+        12: "core",  # 12_execute.py - Execution (pymdp, rxinfer, discopy)
+        13: "core",  # 13_llm.py - LLM processing
+        14: "core",  # 14_ml_integration.py - ML integration
+        15: "core",  # 15_audio.py - Audio generation
+        16: "core",  # 16_analysis.py - Analysis
+        17: "core",  # 17_integration.py - Integration
+        18: "core",  # 18_security.py - Security
+        19: "core",  # 19_research.py - Research
+        20: "core",  # 20_website.py - Website generation
+        21: "core",  # 21_mcp.py - MCP tools
+        22: "core",  # 22_gui.py - GUI
+        23: "core",  # 23_report.py - Comprehensive analysis reports
     }
 
     # Determine which dependency groups we need
@@ -616,6 +664,7 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     # If we didn't find a venv, try the current working directory
     if not venv_python or not venv_python.exists():
         import os
+
         cwd = Path(os.getcwd())
         venv_python, _ = get_venv_python(cwd)
         python_path = str(venv_python) if venv_python else None
@@ -627,12 +676,18 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
 
     # Validate dependencies
     try:
-        is_valid = validate_pipeline_dependencies(list(required_groups), python_path=python_path)
+        is_valid = validate_pipeline_dependencies(
+            list(required_groups), python_path=python_path
+        )
 
         if not is_valid:
-            logger.critical("Dependency validation failed. Cannot proceed with pipeline execution.")
+            logger.critical(
+                "Dependency validation failed. Cannot proceed with pipeline execution."
+            )
             logger.critical("Please install the missing dependencies and try again.")
-            logger.critical("Alternatively, use --skip-dependency-validation to bypass this check.")
+            logger.critical(
+                "Alternatively, use --skip-dependency-validation to bypass this check."
+            )
             return False
 
         logger.info("All required dependencies validated successfully.")
@@ -640,6 +695,10 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
 
     except Exception as e:
         logger.error(f"Error during dependency validation: {e}")
-        logger.critical("Dependency validation encountered an error. Cannot proceed with pipeline execution.")
-        logger.critical("Use --skip-dependency-validation to bypass this check, or fix the validation error.")
+        logger.critical(
+            "Dependency validation encountered an error. Cannot proceed with pipeline execution."
+        )
+        logger.critical(
+            "Use --skip-dependency-validation to bypass this check, or fix the validation error."
+        )
         return False

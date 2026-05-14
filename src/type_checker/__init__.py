@@ -9,17 +9,12 @@ FEATURES = {
     "syntax_validation": True,
     "resource_estimation": True,
     "type_checking": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 from .checking import GNNTypeChecker, estimate_file_resources
 
-__all__ = [
-    '__version__',
-    'FEATURES',
-    'GNNTypeChecker',
-    'estimate_file_resources'
-]
+__all__ = ["__version__", "FEATURES", "GNNTypeChecker", "estimate_file_resources"]
 
 
 def get_module_info() -> dict:

@@ -17,6 +17,7 @@ from typing import Any, Dict, List
 # Optional numpy import with recovery
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
     np = None  # type: ignore
@@ -29,7 +30,7 @@ try:
         log_step_success,
     )
 except ImportError:
-    from src.utils.logging.logging_utils import (
+    from utils.logging.logging_utils import (
         log_step_error,
         log_step_start,
         log_step_success,
@@ -43,20 +44,17 @@ from .generator import (
 
 
 def process_audio(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
 ) -> bool:
     """
     Process GNN files with audio generation and sonification.
-    
+
     Args:
         target_dir: Directory containing GNN files to process
         output_dir: Directory to save results
         verbose: Enable verbose output
         **kwargs: Additional arguments
-        
+
     Returns:
         True if processing successful, False otherwise
     """
@@ -75,7 +73,7 @@ def process_audio(
             "errors": [],
             "audio_files_generated": [],
             "sonification_results": [],
-            "audio_analysis": []
+            "audio_analysis": [],
         }
 
         # Find GNN files
@@ -91,7 +89,9 @@ def process_audio(
             for gnn_file in gnn_files:
                 try:
                     # Generate audio from GNN model
-                    audio_result = generate_audio_from_gnn(gnn_file, results_dir, verbose)
+                    audio_result = generate_audio_from_gnn(
+                        gnn_file, results_dir, verbose
+                    )
                     results["audio_files_generated"].append(audio_result)
 
                     # Create sonification
@@ -106,20 +106,20 @@ def process_audio(
                     error_info = {
                         "file": str(gnn_file),
                         "error": str(e),
-                        "error_type": type(e).__name__
+                        "error_type": type(e).__name__,
                     }
                     results["errors"].append(error_info)
                     logger.error(f"Error processing {gnn_file}: {e}")
 
         # Save detailed results
         results_file = results_dir / "audio_results.json"
-        with open(results_file, 'w') as f:
+        with open(results_file, "w") as f:
             json.dump(results, f, indent=2)
 
         # Generate summary report
         summary = generate_audio_summary(results)
         summary_file = results_dir / "audio_summary.md"
-        with open(summary_file, 'w') as f:
+        with open(summary_file, "w") as f:
             f.write(summary)
 
         if results["success"]:
@@ -133,26 +133,33 @@ def process_audio(
         log_step_error(logger, "Audio processing failed", {"error": str(e)})
         return False
 
-def generate_audio_from_gnn(file_path_or_content, output_dir: Path | None = None, verbose: bool = False) -> Dict[str, Any]:
+
+def generate_audio_from_gnn(
+    file_path_or_content, output_dir: Path | None = None, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Generate audio from a GNN model.
-    
+
     Args:
         file_path: Path to the GNN file
         output_dir: Directory to save audio files
         verbose: Enable verbose output
-        
+
     Returns:
         Dictionary containing audio generation results
     """
     try:
         # Accept either a path or raw content per tests
-        if isinstance(file_path_or_content, (str, bytes)) and ("\n" in str(file_path_or_content) or len(str(file_path_or_content)) < 256 and not Path(str(file_path_or_content)).exists()):
+        if isinstance(file_path_or_content, (str, bytes)) and (
+            "\n" in str(file_path_or_content)
+            or len(str(file_path_or_content)) < 256
+            and not Path(str(file_path_or_content)).exists()
+        ):
             content = str(file_path_or_content)
             file_path = Path("gnn_input.md")
         else:
             file_path = Path(file_path_or_content)
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
         # Extract model structure for audio generation
@@ -189,11 +196,12 @@ def generate_audio_from_gnn(file_path_or_content, output_dir: Path | None = None
             "audio_files": audio_files,
             "variables_count": len(variables),
             "connections_count": len(connections),
-            "generation_timestamp": datetime.now().isoformat()
+            "generation_timestamp": datetime.now().isoformat(),
         }
 
     except Exception as e:
         raise RuntimeError(f"Failed to generate audio from {file_path}: {e}") from e
+
 
 def extract_variables_for_audio(content: str) -> List[Dict[str, Any]]:
     """Extract variables from GNN content for audio generation."""
@@ -201,21 +209,24 @@ def extract_variables_for_audio(content: str) -> List[Dict[str, Any]]:
 
     # Look for variable definitions
     var_patterns = [
-        r'(\w+)\s*:\s*(\w+)',  # name: type
-        r'(\w+)\s*=\s*([^;\n]+)',  # name = value
-        r'(\w+)\s*\[([^\]]+)\]',  # name[dimensions]
+        r"(\w+)\s*:\s*(\w+)",  # name: type
+        r"(\w+)\s*=\s*([^;\n]+)",  # name = value
+        r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
     ]
 
     for pattern in var_patterns:
         matches = re.finditer(pattern, content)
         for match in matches:
-            variables.append({
-                "name": match.group(1),
-                "type": match.group(2) if len(match.groups()) > 1 else "unknown",
-                "definition": match.group(0)
-            })
+            variables.append(
+                {
+                    "name": match.group(1),
+                    "type": match.group(2) if len(match.groups()) > 1 else "unknown",
+                    "definition": match.group(0),
+                }
+            )
 
     return variables
+
 
 def extract_connections_for_audio(content: str) -> List[Dict[str, Any]]:
     """Extract connections from GNN content for audio generation."""
@@ -223,30 +234,37 @@ def extract_connections_for_audio(content: str) -> List[Dict[str, Any]]:
 
     # Look for connection patterns
     conn_patterns = [
-        r'(\w+)\s*->\s*(\w+)',  # source -> target
-        r'(\w+)\s*→\s*(\w+)',   # source → target
-        r'(\w+)\s*connects\s*(\w+)',  # source connects target
+        r"(\w+)\s*->\s*(\w+)",  # source -> target
+        r"(\w+)\s*→\s*(\w+)",  # source → target
+        r"(\w+)\s*connects\s*(\w+)",  # source connects target
     ]
 
     for pattern in conn_patterns:
         matches = re.finditer(pattern, content)
         for match in matches:
-            connections.append({
-                "source": match.group(1),
-                "target": match.group(2),
-                "definition": match.group(0)
-            })
+            connections.append(
+                {
+                    "source": match.group(1),
+                    "target": match.group(2),
+                    "definition": match.group(0),
+                }
+            )
 
     return connections
 
-def save_audio_file(audio: np.ndarray, file_path: Path, sample_rate: int = 44100) -> None:
+
+def save_audio_file(
+    audio: np.ndarray, file_path: Path, sample_rate: int = 44100
+) -> None:
     """Save audio data to file."""
     try:
         import soundfile as sf
+
         sf.write(str(file_path), audio, sample_rate)
     except ImportError:
         # Recovery to basic WAV writing
         write_basic_wav(audio, file_path, sample_rate)
+
 
 def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int):
     """Write basic WAV file without external dependencies."""
@@ -256,27 +274,30 @@ def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int):
     audio = np.clip(audio, -1, 1)
     audio = (audio * 32767).astype(np.int16)
 
-    with open(file_path, 'wb') as f:
+    with open(file_path, "wb") as f:
         # WAV header
-        f.write(b'RIFF')
-        f.write(struct.pack('<I', 36 + len(audio) * 2))
-        f.write(b'WAVE')
-        f.write(b'fmt ')
-        f.write(struct.pack('<I', 16))
-        f.write(struct.pack('<H', 1))  # PCM
-        f.write(struct.pack('<H', 1))  # Mono
-        f.write(struct.pack('<I', sample_rate))
-        f.write(struct.pack('<I', sample_rate * 2))
-        f.write(struct.pack('<H', 2))
-        f.write(struct.pack('<H', 16))
-        f.write(b'data')
-        f.write(struct.pack('<I', len(audio) * 2))
+        f.write(b"RIFF")
+        f.write(struct.pack("<I", 36 + len(audio) * 2))
+        f.write(b"WAVE")
+        f.write(b"fmt ")
+        f.write(struct.pack("<I", 16))
+        f.write(struct.pack("<H", 1))  # PCM
+        f.write(struct.pack("<H", 1))  # Mono
+        f.write(struct.pack("<I", sample_rate))
+        f.write(struct.pack("<I", sample_rate * 2))
+        f.write(struct.pack("<H", 2))
+        f.write(struct.pack("<H", 16))
+        f.write(b"data")
+        f.write(struct.pack("<I", len(audio) * 2))
         f.write(audio.tobytes())
 
-def create_sonification(file_path: Path | str, output_dir: Path, verbose: bool = False) -> Dict[str, Any]:
+
+def create_sonification(
+    file_path: Path | str, output_dir: Path, verbose: bool = False
+) -> Dict[str, Any]:
     """Create sonification of the GNN model."""
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # Extract model dynamics
@@ -292,11 +313,12 @@ def create_sonification(file_path: Path | str, output_dir: Path, verbose: bool =
             "sonification_file": str(sonification_path),
             "dynamics_analyzed": len(dynamics),
             "sonification_type": "model_dynamics",
-            "generation_timestamp": datetime.now().isoformat()
+            "generation_timestamp": datetime.now().isoformat(),
         }
 
     except Exception as e:
         raise RuntimeError(f"Failed to create sonification for {file_path}: {e}") from e
+
 
 def extract_model_dynamics(content: str) -> List[Dict[str, Any]]:
     """Extract model dynamics for sonification."""
@@ -304,36 +326,42 @@ def extract_model_dynamics(content: str) -> List[Dict[str, Any]]:
 
     # Look for dynamic elements
     dynamic_patterns = [
-        r'(\w+)\s*evolves',  # variable evolves
-        r'(\w+)\s*changes',  # variable changes
-        r'(\w+)\s*updates',  # variable updates
-        r'(\w+)\s*transitions',  # state transitions
+        r"(\w+)\s*evolves",  # variable evolves
+        r"(\w+)\s*changes",  # variable changes
+        r"(\w+)\s*updates",  # variable updates
+        r"(\w+)\s*transitions",  # state transitions
     ]
 
     for pattern in dynamic_patterns:
         matches = re.finditer(pattern, content, re.IGNORECASE)
         for match in matches:
-            dynamics.append({
-                "element": match.group(1),
-                "dynamic_type": pattern.split()[0],
-                "description": match.group(0)
-            })
+            dynamics.append(
+                {
+                    "element": match.group(1),
+                    "dynamic_type": pattern.split()[0],
+                    "description": match.group(0),
+                }
+            )
 
     return dynamics
 
-def analyze_audio_characteristics(audio_result: Dict[str, Any], verbose: bool = False) -> Dict[str, Any]:
+
+def analyze_audio_characteristics(
+    audio_result: Dict[str, Any], verbose: bool = False
+) -> Dict[str, Any]:
     """Analyze characteristics of generated audio."""
     analysis = {
         "file_path": audio_result["file_path"],
         "audio_characteristics": {},
         "spectral_analysis": {},
-        "temporal_analysis": {}
+        "temporal_analysis": {},
     }
 
     # Analyze each audio file
     for audio_type, audio_path in audio_result["audio_files"].items():
         try:
             import soundfile as sf
+
             audio_data, sample_rate = sf.read(audio_path)
 
             # Basic characteristics
@@ -342,7 +370,7 @@ def analyze_audio_characteristics(audio_result: Dict[str, Any], verbose: bool = 
                 "sample_rate": sample_rate,
                 "channels": len(audio_data.shape),
                 "max_amplitude": np.max(np.abs(audio_data)),
-                "rms_amplitude": np.sqrt(np.mean(audio_data**2))
+                "rms_amplitude": np.sqrt(np.mean(audio_data**2)),
             }
 
             # Spectral analysis
@@ -351,18 +379,27 @@ def analyze_audio_characteristics(audio_result: Dict[str, Any], verbose: bool = 
 
             # FFT for spectral analysis
             fft = np.fft.fft(audio_data)
-            freqs = np.fft.fftfreq(len(audio_data), 1/sample_rate)
+            freqs = np.fft.fftfreq(len(audio_data), 1 / sample_rate)
 
             # Find dominant frequencies
             magnitude = np.abs(fft)
-            dominant_freq_idx = np.argmax(magnitude[:len(magnitude)//2])
+            dominant_freq_idx = np.argmax(magnitude[: len(magnitude) // 2])
             dominant_freq = freqs[dominant_freq_idx]
 
             # Calculate spectral metrics with safe division
-            magnitude_sum = np.sum(magnitude[:len(magnitude)//2])
+            magnitude_sum = np.sum(magnitude[: len(magnitude) // 2])
             if magnitude_sum > 0:
-                spectral_centroid = np.sum(freqs[:len(freqs)//2] * magnitude[:len(magnitude)//2]) / magnitude_sum
-                spectral_bandwidth = np.sqrt(np.sum((freqs[:len(freqs)//2] - dominant_freq)**2 * magnitude[:len(magnitude)//2]) / magnitude_sum)
+                spectral_centroid = (
+                    np.sum(freqs[: len(freqs) // 2] * magnitude[: len(magnitude) // 2])
+                    / magnitude_sum
+                )
+                spectral_bandwidth = np.sqrt(
+                    np.sum(
+                        (freqs[: len(freqs) // 2] - dominant_freq) ** 2
+                        * magnitude[: len(magnitude) // 2]
+                    )
+                    / magnitude_sum
+                )
             else:
                 spectral_centroid = 0.0
                 spectral_bandwidth = 0.0
@@ -370,7 +407,7 @@ def analyze_audio_characteristics(audio_result: Dict[str, Any], verbose: bool = 
             analysis["spectral_analysis"][audio_type] = {
                 "dominant_frequency": dominant_freq,
                 "spectral_centroid": spectral_centroid,
-                "spectral_bandwidth": spectral_bandwidth
+                "spectral_bandwidth": spectral_bandwidth,
             }
 
         except Exception as e:
@@ -378,28 +415,29 @@ def analyze_audio_characteristics(audio_result: Dict[str, Any], verbose: bool = 
 
     return analysis
 
+
 def generate_audio_summary(results: Dict[str, Any]) -> str:
     """Generate a markdown summary of audio processing results."""
     summary = f"""# Audio Processing Summary
 
-Generated on: {results['timestamp']}
+Generated on: {results["timestamp"]}
 
 ## Overview
-- **Files Processed**: {results['processed_files']}
-- **Success**: {results['success']}
-- **Errors**: {len(results['errors'])}
+- **Files Processed**: {results["processed_files"]}
+- **Success**: {results["success"]}
+- **Errors**: {len(results["errors"])}
 
 ## Audio Files Generated
 """
 
     for audio_result in results["audio_files_generated"]:
         summary += f"""
-### {audio_result['file_name']}
-- **Variables**: {audio_result['variables_count']}
-- **Connections**: {audio_result['connections_count']}
-- **Audio Files**: {len(audio_result['audio_files'])}
+### {audio_result["file_name"]}
+- **Variables**: {audio_result["variables_count"]}
+- **Connections**: {audio_result["connections_count"]}
+- **Audio Files**: {len(audio_result["audio_files"])}
 """
-        for audio_type, audio_path in audio_result['audio_files'].items():
+        for audio_type, audio_path in audio_result["audio_files"].items():
             summary += f"  - {audio_type}: {Path(audio_path).name}\n"
 
     if results["errors"]:

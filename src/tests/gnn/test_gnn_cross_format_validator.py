@@ -1,10 +1,12 @@
 """Tests for CrossFormatValidator and related classes in gnn/cross_format_validator.py."""
+
 import pytest
 
 from gnn.cross_format_validator import CrossFormatValidationResult, CrossFormatValidator
 from gnn.types import ValidationResult
 
 # ── CrossFormatValidationResult ────────────────────────────────────────────
+
 
 class TestCrossFormatValidationResult:
     def test_default_consistency_rate_no_formats(self) -> None:
@@ -56,6 +58,7 @@ class TestCrossFormatValidationResult:
 
 # ── CrossFormatValidator ───────────────────────────────────────────────────
 
+
 class TestCrossFormatValidator:
     def test_instantiation_default(self) -> None:
         v = CrossFormatValidator()
@@ -83,6 +86,7 @@ class TestCrossFormatValidator:
         """When schema files are absent, validation returns a result with warnings but does not crash."""
         import tempfile
         from pathlib import Path
+
         with tempfile.TemporaryDirectory() as tmpdir:
             # Point validator at an empty directory — no schema files present
             v = CrossFormatValidator(gnn_module_path=Path(tmpdir))

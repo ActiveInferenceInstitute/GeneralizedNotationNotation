@@ -39,7 +39,11 @@ class TestMatrixToJulia:
         # Julia matrix syntax: [row1; row2; ...]
         # Space separated elements in row
         # Expected: "[0.9 0.1; 0.1 0.9]"
-        assert result == "[0.9 0.1; 0.1 0.9]" or result == "[0.9, 0.1; 0.1, 0.9]" or "0.9 0.1" in result
+        assert (
+            result == "[0.9 0.1; 0.1 0.9]"
+            or result == "[0.9, 0.1; 0.1, 0.9]"
+            or "0.9 0.1" in result
+        )
 
     def test_2d_matrix_tuple_of_lists(self):
         """Test converting Tuple of Lists (The bug case)."""
@@ -65,8 +69,8 @@ class TestMatrixToJulia:
         """Test converting 3D tensor (B matrix)."""
         # B[next_state, current_state, action]
         # shape (2, 2, 2)
-        slice1 = [[1.0, 0.0], [0.0, 1.0]] # Identity
-        slice2 = [[0.0, 1.0], [1.0, 0.0]] # Flip
+        slice1 = [[1.0, 0.0], [0.0, 1.0]]  # Identity
+        slice2 = [[0.0, 1.0], [1.0, 0.0]]  # Flip
         data = [slice1, slice2]
 
         result = _matrix_to_julia(data)
@@ -92,4 +96,3 @@ class TestMatrixToJulia:
         # The function attempts literal_eval for strings
         result = _matrix_to_julia(data)
         assert result == "[0.9 0.1; 0.1 0.9]"
-

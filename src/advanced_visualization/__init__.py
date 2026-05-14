@@ -12,7 +12,7 @@ FEATURES = {
     "timeline_visualization": True,
     "heatmap_visualization": True,
     "data_extraction": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 from .dashboard import (
@@ -41,6 +41,7 @@ try:
         D2Visualizer,
         process_gnn_file_with_d2,
     )
+
     D2_AVAILABLE = True
 except ImportError:
     D2_AVAILABLE = False
@@ -53,23 +54,23 @@ except ImportError:
 from .processor import process_advanced_viz
 
 __all__ = [
-    'AdvancedVisualizer',
-    'create_visualization_from_data',
-    'create_dashboard_section',
-    'create_network_visualization',
-    'create_timeline_visualization',
-    'create_heatmap_visualization',
-    'create_default_visualization',
-    'DashboardGenerator',
-    'generate_dashboard',
-    'VisualizationDataExtractor',
-    'extract_visualization_data',
-    'process_advanced_viz',  # Main processing function
-    'D2Visualizer',  # D2 diagram generation
-    'D2DiagramSpec',  # D2 diagram specifications
-    'D2GenerationResult',  # D2 generation results
-    'process_gnn_file_with_d2',  # Process GNN files with D2
-    'D2_AVAILABLE',  # D2 availability flag
+    "AdvancedVisualizer",
+    "create_visualization_from_data",
+    "create_dashboard_section",
+    "create_network_visualization",
+    "create_timeline_visualization",
+    "create_heatmap_visualization",
+    "create_default_visualization",
+    "DashboardGenerator",
+    "generate_dashboard",
+    "VisualizationDataExtractor",
+    "extract_visualization_data",
+    "process_advanced_viz",  # Main processing function
+    "D2Visualizer",  # D2 diagram generation
+    "D2DiagramSpec",  # D2 diagram specifications
+    "D2GenerationResult",  # D2 generation results
+    "process_gnn_file_with_d2",  # Process GNN files with D2
+    "D2_AVAILABLE",  # D2 availability flag
 ]
 
 

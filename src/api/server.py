@@ -50,7 +50,7 @@ app = FastAPI(
     ),
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
 )
 
 # CORS for local browser access
@@ -73,12 +73,14 @@ async def health_check() -> HealthResponse:
         version="1.0.0",
         pipeline_steps=len(job_mgr.PIPELINE_STEPS),
         active_jobs=active,
-        timestamp=datetime.now()
+        timestamp=datetime.now(),
     )
 
 
 @app.post("/api/v1/process", response_model=JobResponse, tags=["Jobs"])
-async def submit_process_job(request: ProcessRequest, background_tasks: BackgroundTasks) -> JobResponse:
+async def submit_process_job(
+    request: ProcessRequest, background_tasks: BackgroundTasks
+) -> JobResponse:
     """
     Submit a GNN pipeline processing job.
 
@@ -94,8 +96,7 @@ async def submit_process_job(request: ProcessRequest, background_tasks: Backgrou
 
     if not target_path.exists():
         raise HTTPException(
-            status_code=400,
-            detail=f"Target directory not found: {request.target_dir}"
+            status_code=400, detail=f"Target directory not found: {request.target_dir}"
         )
 
     # Enforce path boundary: resolved path must stay within repo root
@@ -106,7 +107,7 @@ async def submit_process_job(request: ProcessRequest, background_tasks: Backgrou
     except ValueError as err:
         raise HTTPException(
             status_code=400,
-            detail=f"Target directory must be within the repository root: {request.target_dir}"
+            detail=f"Target directory must be within the repository root: {request.target_dir}",
         ) from err
 
     job_id = job_mgr.create_job(
@@ -114,7 +115,7 @@ async def submit_process_job(request: ProcessRequest, background_tasks: Backgrou
         steps=request.steps,
         skip_steps=request.skip_steps,
         verbose=request.verbose,
-        strict=request.strict
+        strict=request.strict,
     )
 
     # Launch async execution in background
@@ -126,7 +127,7 @@ async def submit_process_job(request: ProcessRequest, background_tasks: Backgrou
         status=JobStatus.PENDING,
         created_at=datetime.fromisoformat(job["created_at"]),
         steps_requested=request.steps,
-        message=f"Job {job_id} queued. Poll GET /api/v1/jobs/{job_id} for status."
+        message=f"Job {job_id} queued. Poll GET /api/v1/jobs/{job_id} for status.",
     )
 
 
@@ -151,7 +152,7 @@ async def get_job_status(job_id: str) -> JobStatusResponse:
         steps_failed=job.get("steps_failed", []),
         exit_code=job.get("exit_code"),
         error_message=job.get("error_message"),
-        output_dir=job.get("output_dir")
+        output_dir=job.get("output_dir"),
     )
 
 
@@ -165,7 +166,7 @@ async def cancel_job(job_id: str) -> Dict[str, Any]:
             raise HTTPException(status_code=404, detail=f"Job not found: {job_id}")
         raise HTTPException(
             status_code=409,
-            detail=f"Job {job_id} is already in terminal state: {job['status']}"
+            detail=f"Job {job_id} is already in terminal state: {job['status']}",
         )
     return {"message": f"Job {job_id} cancelled"}
 
@@ -185,7 +186,9 @@ async def list_tools() -> ToolsResponse:
 
 
 @app.post("/api/v1/tools/{step}", response_model=JobResponse, tags=["Tools"])
-async def invoke_tool(step: int, request: ToolRequest, background_tasks: BackgroundTasks) -> JobResponse:
+async def invoke_tool(
+    step: int, request: ToolRequest, background_tasks: BackgroundTasks
+) -> JobResponse:
     """
     Invoke a single pipeline step as a job.
 
@@ -200,7 +203,9 @@ async def invoke_tool(step: int, request: ToolRequest, background_tasks: Backgro
         target_path = repo_root / request.target_dir
 
     if not target_path.exists():
-        raise HTTPException(status_code=400, detail=f"Target directory not found: {request.target_dir}")
+        raise HTTPException(
+            status_code=400, detail=f"Target directory not found: {request.target_dir}"
+        )
 
     # Enforce path boundary: resolved path must stay within repo root
     _repo_root = Path(__file__).parent.parent.parent.resolve()
@@ -209,13 +214,11 @@ async def invoke_tool(step: int, request: ToolRequest, background_tasks: Backgro
     except ValueError as err:
         raise HTTPException(
             status_code=400,
-            detail=f"Target directory must be within the repository root: {request.target_dir}"
+            detail=f"Target directory must be within the repository root: {request.target_dir}",
         ) from err
 
     job_id = job_mgr.create_job(
-        target_dir=str(target_path),
-        steps=[step],
-        verbose=request.verbose
+        target_dir=str(target_path), steps=[step], verbose=request.verbose
     )
 
     background_tasks.add_task(job_mgr.execute_job_async, job_id)
@@ -226,7 +229,7 @@ async def invoke_tool(step: int, request: ToolRequest, background_tasks: Backgro
         status=JobStatus.PENDING,
         created_at=datetime.now(),
         steps_requested=[step],
-        message=f"Step {step} ({step_name}) queued as job {job_id}"
+        message=f"Step {step} ({step_name}) queued as job {job_id}",
     )
 
 
@@ -238,20 +241,17 @@ def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False):
             "ensure network-level access control is in place",
             host,
         )
-    uvicorn.run(
-        "api.server:app",
-        host=host,
-        port=port,
-        reload=reload,
-        log_level="info"
-    )
+    uvicorn.run("api.server:app", host=host, port=port, reload=reload, log_level="info")
 
 
 if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser(description="GNN Pipeline API Server")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--reload", action="store_true", help="Auto-reload on code changes")
+    parser.add_argument(
+        "--reload", action="store_true", help="Auto-reload on code changes"
+    )
     args = parser.parse_args()
     run_server(args.host, args.port, args.reload)

@@ -21,8 +21,7 @@ class TestPythonVersion:
     def test_python_version_minimum(self):
         """Test Python version meets minimum requirements."""
         # GNN requires Python 3.9+
-        assert sys.version_info >= (3, 9), \
-            f"Python 3.9+ required, got {sys.version}"
+        assert sys.version_info >= (3, 9), f"Python 3.9+ required, got {sys.version}"
 
     @pytest.mark.fast
     def test_python_version_compatible(self):
@@ -40,7 +39,7 @@ class TestPythonVersion:
 
         impl = platform.python_implementation()
         # CPython is the expected implementation
-        assert impl in ('CPython', 'PyPy')
+        assert impl in ("CPython", "PyPy")
 
 
 class TestPythonPath:
@@ -62,9 +61,11 @@ class TestPythonPath:
         project_root = Path(__file__).parent.parent.parent
 
         assert project_root.exists()
-        assert (project_root / "pyproject.toml").exists() or \
-               (project_root / "setup.py").exists() or \
-               (project_root / "src").exists()
+        assert (
+            (project_root / "pyproject.toml").exists()
+            or (project_root / "setup.py").exists()
+            or (project_root / "src").exists()
+        )
 
     @pytest.mark.fast
     def test_modules_importable(self):
@@ -85,7 +86,7 @@ class TestPythonInterpreter:
     @pytest.mark.fast
     def test_encoding_utf8(self):
         """Test default encoding is UTF-8."""
-        assert sys.getdefaultencoding() == 'utf-8'
+        assert sys.getdefaultencoding() == "utf-8"
 
     @pytest.mark.fast
     def test_recursion_limit_adequate(self):
@@ -103,7 +104,7 @@ class TestPythonInterpreter:
         system = platform.system()
 
         # Should be one of the supported platforms
-        assert system in ('Darwin', 'Linux', 'Windows')
+        assert system in ("Darwin", "Linux", "Windows")
 
 
 class TestPythonFeatures:
@@ -112,10 +113,12 @@ class TestPythonFeatures:
     @pytest.mark.fast
     def test_async_await_available(self):
         """Test async/await is available."""
+
         async def async_func():
             return 42
 
         import asyncio
+
         result = asyncio.run(async_func())
         assert result == 42
 
@@ -186,9 +189,7 @@ class TestPythonModules:
         import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
         result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
-            [sys.executable, "--version"],
-            capture_output=True,
-            text=True
+            [sys.executable, "--version"], capture_output=True, text=True
         )
 
         assert result.returncode == 0
@@ -221,7 +222,7 @@ class TestPythonEnvironment:
 
         # Should be able to access environment
         env = os.environ
-        assert isinstance(env, dict) or hasattr(env, '__getitem__')
+        assert isinstance(env, dict) or hasattr(env, "__getitem__")
 
     @pytest.mark.fast
     def test_cwd_accessible(self):

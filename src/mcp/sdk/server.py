@@ -2,6 +2,7 @@
 MCP SDK server facade: delegates to the parent mcp.server implementation.
 Present so MCPSDKStatus health check finds a complete SDK under src/mcp/sdk/.
 """
+
 from __future__ import annotations
 
 import sys

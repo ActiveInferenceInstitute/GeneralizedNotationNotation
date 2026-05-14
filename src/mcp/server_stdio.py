@@ -14,6 +14,7 @@ Key Features:
 - Extensible for meta-tools and future MCP extensions
 - Performance monitoring and metrics collection
 """
+
 import json
 import logging
 import queue
@@ -31,10 +32,11 @@ try:
 except ImportError:
     from mcp import MCPError, initialize, mcp_instance
 
+
 class StdioServer:
     """
     A Model Context Protocol server implementation using stdio transport.
-    
+
     This server reads JSON-RPC 2.0 requests from stdin and writes responses to stdout,
     supporting both standard MCP methods and direct tool invocation.
     """
@@ -107,11 +109,13 @@ class StdioServer:
             "errors_encountered": self._errors_encountered,
             "connection_errors": self._connection_errors,
             "last_activity": self._last_activity,
-            "uptime": time.time() - self._start_time if hasattr(self, '_start_time') else 0,
+            "uptime": time.time() - self._start_time
+            if hasattr(self, "_start_time")
+            else 0,
             "queue_sizes": {
                 "requests": self.request_queue.qsize(),
-                "responses": self.response_queue.qsize()
-            }
+                "responses": self.response_queue.qsize(),
+            },
         }
 
     def _reader_thread(self):
@@ -149,12 +153,14 @@ class StdioServer:
                         error_response = {
                             "jsonrpc": "2.0",
                             "error": {"code": -32700, "message": "Parse error"},
-                            "id": None
+                            "id": None,
                         }
                         try:
                             self.response_queue.put(error_response, timeout=1.0)
                         except queue.Full:
-                            logger.warning("Response queue full, dropping error response")
+                            logger.warning(
+                                "Response queue full, dropping error response"
+                            )
 
                     except queue.Full:
                         logger.warning("Request queue full, dropping message")
@@ -192,7 +198,9 @@ class StdioServer:
                     try:
                         self.request_queue.task_done()
                     except ValueError as e:
-                        logger.debug(f"Task done notification failed (already completed): {e}")
+                        logger.debug(
+                            f"Task done notification failed (already completed): {e}"
+                        )
         except Exception as e:
             logger.error(f"Fatal error in processor thread: {str(e)}")
             self.running = False
@@ -206,7 +214,9 @@ class StdioServer:
                     self._responses_sent += 1
 
                     try:
-                        json_str = json.dumps(message, separators=(',', ':'), ensure_ascii=False)
+                        json_str = json.dumps(
+                            message, separators=(",", ":"), ensure_ascii=False
+                        )
                         logger.debug(f"STDIO OUT: {json_str}")
                         sys.stdout.write(json_str + "\n")
                         sys.stdout.flush()
@@ -237,7 +247,9 @@ class StdioServer:
         """Process an incoming JSON-RPC message with enhanced validation."""
         try:
             if not isinstance(message, dict):
-                logger.error(f"Invalid message format: expected dict, got {type(message)}")
+                logger.error(
+                    f"Invalid message format: expected dict, got {type(message)}"
+                )
                 return
 
             # Validate JSON-RPC structure
@@ -248,7 +260,11 @@ class StdioServer:
 
             if message["jsonrpc"] != "2.0":
                 logger.error(f"Unsupported JSON-RPC version: {message['jsonrpc']}")
-                self._send_error(None, -32600, f"Invalid Request: unsupported jsonrpc version '{message['jsonrpc']}'")
+                self._send_error(
+                    None,
+                    -32600,
+                    f"Invalid Request: unsupported jsonrpc version '{message['jsonrpc']}'",
+                )
                 return
 
             if "method" not in message:
@@ -263,7 +279,9 @@ class StdioServer:
             logger.error(f"Error processing message: {str(e)}")
             self._errors_encountered += 1
             try:
-                self._send_error(None, -32603, f"Internal error processing message: {str(e)}")
+                self._send_error(
+                    None, -32603, f"Internal error processing message: {str(e)}"
+                )
             except Exception:
                 logger.error("Failed to send error response")
 
@@ -285,8 +303,12 @@ class StdioServer:
                 result = mcp_instance.get_capabilities()
                 self._send_result(request_id, result)
             elif method == "mcp.tool.execute":
-                if not (isinstance(params, dict) and "name" in params and "params" in params):
-                    self._send_error(request_id, -32602, "Invalid params for tool execution")
+                if not (
+                    isinstance(params, dict) and "name" in params and "params" in params
+                ):
+                    self._send_error(
+                        request_id, -32602, "Invalid params for tool execution"
+                    )
                     return
                 tool_name = params["name"]
                 tool_params = params["params"]
@@ -294,7 +316,9 @@ class StdioServer:
                 self._send_result(request_id, result)
             elif method == "mcp.resource.get":
                 if not (isinstance(params, dict) and "uri" in params):
-                    self._send_error(request_id, -32602, "Invalid params for resource retrieval")
+                    self._send_error(
+                        request_id, -32602, "Invalid params for resource retrieval"
+                    )
                     return
                 uri = params["uri"]
                 result = mcp_instance.get_resource(uri)
@@ -302,7 +326,9 @@ class StdioServer:
             # Direct tool invocation (meta-tools, registered tools, etc.)
             elif method in mcp_instance.tools:
                 if not isinstance(params, dict):
-                    self._send_error(request_id, -32602, "Params must be an object (dictionary)")
+                    self._send_error(
+                        request_id, -32602, "Params must be an object (dictionary)"
+                    )
                     return
                 result = mcp_instance.execute_tool(method, params)
                 self._send_result(request_id, result)
@@ -310,36 +336,34 @@ class StdioServer:
                 self._send_error(request_id, -32601, f"Method not found: {method}")
         except MCPError as mcpe:
             logger.error(f"MCPError in method {method}: {mcpe}")
-            self._send_error(request_id, mcpe.code, str(mcpe), data=getattr(mcpe, 'data', None))
+            self._send_error(
+                request_id, mcpe.code, str(mcpe), data=getattr(mcpe, "data", None)
+            )
         except Exception as e:
             logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_error(request_id, -32603, f"Internal error: {str(e)}")
 
     def _send_result(self, request_id: str, result: Any):
         """Send a successful JSON-RPC result response."""
-        response = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "result": result
-        }
+        response = {"jsonrpc": "2.0", "id": request_id, "result": result}
         self.response_queue.put(response)
 
-    def _send_error(self, request_id: Optional[str], code: int, message: str, data: Any = None):
+    def _send_error(
+        self, request_id: Optional[str], code: int, message: str, data: Any = None
+    ):
         """Send a JSON-RPC error response, including optional data."""
         error_obj = {"code": code, "message": message}
         if data is not None:
             error_obj["data"] = data
-        response = {
-            "jsonrpc": "2.0",
-            "id": request_id,
-            "error": error_obj
-        }
+        response = {"jsonrpc": "2.0", "id": request_id, "error": error_obj}
         self.response_queue.put(response)
+
 
 def start_stdio_server():
     """Start an MCP server using stdio transport."""
     server = StdioServer()
     server.start()
+
 
 if __name__ == "__main__":
     start_stdio_server()

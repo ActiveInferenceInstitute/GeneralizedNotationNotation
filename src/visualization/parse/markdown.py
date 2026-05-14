@@ -16,8 +16,10 @@ def _is_complete_parameter(value_str: str) -> bool:
     close_braces = value_str.count("}")
     open_parens = value_str.count("(")
     close_parens = value_str.count(")")
-    return open_braces == close_braces and open_parens == close_parens and (
-        open_braces > 0 or open_parens > 0
+    return (
+        open_braces == close_braces
+        and open_parens == close_parens
+        and (open_braces > 0 or open_parens > 0)
     )
 
 
@@ -31,7 +33,9 @@ def _parse_parameter_value(value_str: str) -> Any:
         return None
 
 
-def _save_parameter(parsed: Dict[str, Any], param_name: str, param_lines: List[str]) -> None:
+def _save_parameter(
+    parsed: Dict[str, Any], param_name: str, param_lines: List[str]
+) -> None:
     try:
         full_value = " ".join(param_lines)
         parsed_value = _parse_parameter_value(full_value)
@@ -98,7 +102,9 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                 if current_section == "InitialParameterization":
                     if "=" in stripped_line and not stripped_line.startswith("#"):
                         if current_param_name and current_param_lines:
-                            _save_parameter(parsed, current_param_name, current_param_lines)
+                            _save_parameter(
+                                parsed, current_param_name, current_param_lines
+                            )
                             current_param_lines = []
 
                         eq_pos = stripped_line.find("=")
@@ -108,7 +114,9 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                         if param_value_part:
                             current_param_lines = [param_value_part]
                             if _is_complete_parameter(param_value_part):
-                                _save_parameter(parsed, current_param_name, current_param_lines)
+                                _save_parameter(
+                                    parsed, current_param_name, current_param_lines
+                                )
                                 current_param_name = None
                                 current_param_lines = []
                                 in_multiline_param = False
@@ -118,7 +126,9 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                         current_param_lines.append(stripped_line)
                         full_value = " ".join(current_param_lines)
                         if _is_complete_parameter(full_value):
-                            _save_parameter(parsed, current_param_name, current_param_lines)
+                            _save_parameter(
+                                parsed, current_param_name, current_param_lines
+                            )
                             current_param_name = None
                             current_param_lines = []
                             in_multiline_param = False
@@ -143,7 +153,9 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                             if type_end == -1:
                                 type_end = len(stripped_line)
                             var_type = stripped_line[type_start:type_end].strip()
-                            parsed["variables"].append({"name": var_name, "type": var_type})
+                            parsed["variables"].append(
+                                {"name": var_name, "type": var_type}
+                            )
                 elif (
                     "->" in stripped_line
                     or "\u2192" in stripped_line
@@ -162,14 +174,21 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                     if len(conn_parts) == 2:
                         source = conn_parts[0].strip()
                         target = conn_parts[1].strip()
-                        if source and target and (
-                            source.replace("_", "").replace("-", "").isalnum()
-                            or source in ["s", "o", "\u03c0", "u"]
-                        ) and (
-                            target.replace("_", "").replace("-", "").isalnum()
-                            or target in ["s", "o", "\u03c0", "u"]
+                        if (
+                            source
+                            and target
+                            and (
+                                source.replace("_", "").replace("-", "").isalnum()
+                                or source in ["s", "o", "\u03c0", "u"]
+                            )
+                            and (
+                                target.replace("_", "").replace("-", "").isalnum()
+                                or target in ["s", "o", "\u03c0", "u"]
+                            )
                         ):
-                            parsed["connections"].append({"source": source, "target": target})
+                            parsed["connections"].append(
+                                {"source": source, "target": target}
+                            )
                 elif ("{" in stripped_line and "}" in stripped_line) or (
                     "[" in stripped_line and "]" in stripped_line
                 ):

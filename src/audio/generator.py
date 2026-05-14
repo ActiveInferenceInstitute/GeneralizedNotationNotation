@@ -10,12 +10,16 @@ from typing import Any, Dict, List
 # Optional numpy import with recovery
 try:
     import numpy as np
+
     NUMPY_AVAILABLE = True
 except ImportError:
     np = None  # type: ignore
     NUMPY_AVAILABLE = False
 
-def generate_tonal_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
+
+def generate_tonal_representation(
+    variables: List[Dict], connections: List[Dict]
+) -> np.ndarray:
     """Generate tonal audio representation of the model."""
     if not variables:
         return np.zeros(int(44100 * 5.0))
@@ -40,7 +44,10 @@ def generate_tonal_representation(variables: List[Dict], connections: List[Dict]
 
     return audio
 
-def generate_rhythmic_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
+
+def generate_rhythmic_representation(
+    variables: List[Dict], connections: List[Dict]
+) -> np.ndarray:
     """Generate rhythmic audio representation of the model."""
     sample_rate = 44100
     duration = 5.0  # 5 seconds
@@ -62,7 +69,10 @@ def generate_rhythmic_representation(variables: List[Dict], connections: List[Di
 
     return audio
 
-def generate_ambient_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
+
+def generate_ambient_representation(
+    variables: List[Dict], connections: List[Dict]
+) -> np.ndarray:
     """Generate ambient audio representation of the model."""
     sample_rate = 44100
     duration = 10.0  # 10 seconds for ambient
@@ -86,9 +96,10 @@ def generate_ambient_representation(variables: List[Dict], connections: List[Dic
     for _ in connections:
         mod_freq = 0.5  # Slow modulation
         modulation = 0.01 * np.sin(2 * np.pi * mod_freq * t)
-        audio *= (1 + modulation)
+        audio *= 1 + modulation
 
     return audio
+
 
 def generate_sonification_audio(dynamics: List[Dict[str, Any]]) -> np.ndarray:
     """Generate sonification audio from model dynamics."""
@@ -117,16 +128,22 @@ def generate_sonification_audio(dynamics: List[Dict[str, Any]]) -> np.ndarray:
 
     return audio
 
-def generate_oscillator_audio(frequency: float, duration: float, oscillator_type: str = 'sine', sample_rate: int = 44100) -> np.ndarray:
+
+def generate_oscillator_audio(
+    frequency: float,
+    duration: float,
+    oscillator_type: str = "sine",
+    sample_rate: int = 44100,
+) -> np.ndarray:
     """
     Generate oscillator audio.
-    
+
     Args:
         frequency: Frequency in Hz
         duration: Duration in seconds
         oscillator_type: Type of oscillator ('sine', 'square', 'sawtooth', 'triangle', 'noise')
         sample_rate: Sample rate in Hz
-        
+
     Returns:
         Audio array
     """
@@ -136,10 +153,10 @@ def generate_oscillator_audio(frequency: float, duration: float, oscillator_type
 
         # Generate audio
         config = {
-            'frequency': frequency,
-            'duration': duration,
-            'oscillator_type': oscillator_type,
-            'sample_rate': sample_rate
+            "frequency": frequency,
+            "duration": duration,
+            "oscillator_type": oscillator_type,
+            "sample_rate": sample_rate,
         }
 
         return generator.generate_synthetic_audio(config)
@@ -147,14 +164,15 @@ def generate_oscillator_audio(frequency: float, duration: float, oscillator_type
     except Exception:
         return np.zeros(int(sample_rate * duration))
 
-def apply_envelope(audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
+
+def apply_envelope(audio: np.ndarray, envelope_type: str = "ADSR") -> np.ndarray:
     """
     Apply envelope to audio.
-    
+
     Args:
         audio: Audio array
         envelope_type: Type of envelope ('ADSR', 'AR', 'ASR', 'AD', 'custom')
-        
+
     Returns:
         Audio array with envelope applied
     """
@@ -168,14 +186,15 @@ def apply_envelope(audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray
     except Exception:
         return audio
 
-def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = 'add') -> np.ndarray:
+
+def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = "add") -> np.ndarray:
     """
     Mix multiple audio channels.
-    
+
     Args:
         channels: List of audio arrays
         mix_mode: Mixing mode ('add', 'average', 'max')
-        
+
     Returns:
         Mixed audio array
     """
@@ -191,17 +210,17 @@ def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = 'add') -> np.
             if len(channel) < max_length:
                 # Pad with zeros
                 padded = np.zeros(max_length)
-                padded[:len(channel)] = channel
+                padded[: len(channel)] = channel
                 padded_channels.append(padded)
             else:
                 padded_channels.append(channel)
 
         # Mix channels based on mode
-        if mix_mode == 'add':
+        if mix_mode == "add":
             mixed = np.sum(padded_channels, axis=0)
-        elif mix_mode == 'average':
+        elif mix_mode == "average":
             mixed = np.mean(padded_channels, axis=0)
-        elif mix_mode == 'max':
+        elif mix_mode == "max":
             mixed = np.maximum.reduce(padded_channels)
         else:
             mixed = np.sum(padded_channels, axis=0)  # Default to add
@@ -212,36 +231,39 @@ def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = 'add') -> np.
         # Return first channel or empty array on error
         return channels[0] if channels else np.array([])
 
+
 class SyntheticAudioGenerator:
     """Synthetic Audio Generator for creating artificial sounds."""
 
     def __init__(self):
-        self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
-        self.oscillator_types = ['sine', 'square', 'sawtooth', 'triangle', 'noise']
-        self.envelope_types = ['ADSR', 'AR', 'ASR', 'AD', 'custom']
+        self.supported_formats = ["wav", "mp3", "flac", "ogg"]
+        self.oscillator_types = ["sine", "square", "sawtooth", "triangle", "noise"]
+        self.envelope_types = ["ADSR", "AR", "ASR", "AD", "custom"]
 
     def generate_synthetic_audio(self, config: Dict[str, Any]) -> np.ndarray:
         """Generate synthetic audio based on configuration."""
         try:
             # Extract parameters
-            frequency = config.get('frequency', 440.0)
-            duration = config.get('duration', 1.0)
-            sample_rate = config.get('sample_rate', 44100)
-            oscillator_type = config.get('oscillator_type', 'sine')
+            frequency = config.get("frequency", 440.0)
+            duration = config.get("duration", 1.0)
+            sample_rate = config.get("sample_rate", 44100)
+            oscillator_type = config.get("oscillator_type", "sine")
 
             # Generate time array
             t = np.linspace(0, duration, int(sample_rate * duration), False)
 
             # Generate waveform based on oscillator type
-            if oscillator_type == 'sine':
+            if oscillator_type == "sine":
                 audio = np.sin(2 * np.pi * frequency * t)
-            elif oscillator_type == 'square':
+            elif oscillator_type == "square":
                 audio = np.sign(np.sin(2 * np.pi * frequency * t))
-            elif oscillator_type == 'sawtooth':
+            elif oscillator_type == "sawtooth":
                 audio = 2 * (t * frequency - np.floor(t * frequency + 0.5))
-            elif oscillator_type == 'triangle':
-                audio = 2 * np.abs(2 * (t * frequency - np.floor(t * frequency + 0.5))) - 1
-            elif oscillator_type == 'noise':
+            elif oscillator_type == "triangle":
+                audio = (
+                    2 * np.abs(2 * (t * frequency - np.floor(t * frequency + 0.5))) - 1
+                )
+            elif oscillator_type == "noise":
                 audio = np.random.uniform(-1, 1, len(t))
             else:
                 audio = np.sin(2 * np.pi * frequency * t)  # Default to sine
@@ -249,23 +271,35 @@ class SyntheticAudioGenerator:
             return audio
 
         except Exception:
-            return np.zeros(int(config.get('sample_rate', 44100) * config.get('duration', 1.0)))
+            return np.zeros(
+                int(config.get("sample_rate", 44100) * config.get("duration", 1.0))
+            )
 
-    def apply_envelope(self, audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
+    def apply_envelope(
+        self, audio: np.ndarray, envelope_type: str = "ADSR"
+    ) -> np.ndarray:
         """Apply envelope to audio."""
         try:
-            if envelope_type == 'ADSR':
+            if envelope_type == "ADSR":
                 # Simple ADSR envelope
                 attack_samples = int(len(audio) * 0.1)
                 decay_samples = int(len(audio) * 0.1)
                 release_samples = int(len(audio) * 0.2)
-                sustain_samples = len(audio) - attack_samples - decay_samples - release_samples
+                sustain_samples = (
+                    len(audio) - attack_samples - decay_samples - release_samples
+                )
 
                 # Create envelope
                 envelope = np.ones(len(audio))
                 envelope[:attack_samples] = np.linspace(0, 1, attack_samples)
-                envelope[attack_samples:attack_samples+decay_samples] = np.linspace(1, 0.7, decay_samples)
-                envelope[attack_samples+decay_samples:attack_samples+decay_samples+sustain_samples] = 0.7
+                envelope[attack_samples : attack_samples + decay_samples] = np.linspace(
+                    1, 0.7, decay_samples
+                )
+                envelope[
+                    attack_samples + decay_samples : attack_samples
+                    + decay_samples
+                    + sustain_samples
+                ] = 0.7
                 envelope[-release_samples:] = np.linspace(0.7, 0, release_samples)
 
                 return audio * envelope

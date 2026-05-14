@@ -249,6 +249,7 @@ class TestGNNLLMProcessor:
     def test_gnn_processor_not_initialized_returns_error(self) -> None:
         """analyze_gnn_model should return error dict when not initialized."""
         import asyncio
+
         proc = GNNLLMProcessor()
         result = asyncio.run(proc.analyze_gnn_model("test content"))
         assert result["success"] is False

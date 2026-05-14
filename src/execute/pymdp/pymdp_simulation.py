@@ -116,9 +116,9 @@ class PyMDPSimulation:
         self.simulation_trace: List[Dict[str, Any]] = []
         self.results: Dict[str, Any] = {}
 
-        init_params = self.gnn_config.get("initialparameterization") or self.gnn_config.get(
-            "initial_parameterization"
-        )
+        init_params = self.gnn_config.get(
+            "initialparameterization"
+        ) or self.gnn_config.get("initial_parameterization")
         if init_params:
             self._build_model_from_initial_parameterization(init_params)
         elif self.allow_demo_spec:
@@ -231,7 +231,9 @@ class PyMDPSimulation:
                     elif action_name == "move_left":
                         B[s - 1 if s % 2 == 1 else s, s, action_idx] = 1.0
                     elif action_name == "move_right":
-                        B[s + 1 if s % 2 == 0 and s + 1 < Ns else s, s, action_idx] = 1.0
+                        B[s + 1 if s % 2 == 0 and s + 1 < Ns else s, s, action_idx] = (
+                            1.0
+                        )
                     else:
                         B[s, s, action_idx] = 1.0
 
@@ -287,7 +289,9 @@ class PyMDPSimulation:
             self.observation_names = list(self.observations)
             self.state_names = list(self.states)
 
-        B_np = _canonicalise_B(init_params.get("B"), self.num_states, max(self.num_actions, 1))
+        B_np = _canonicalise_B(
+            init_params.get("B"), self.num_states, max(self.num_actions, 1)
+        )
         self.num_actions = int(B_np.shape[2])
         if len(self.actions) != self.num_actions:
             self.actions = [f"action_{i}" for i in range(self.num_actions)]
@@ -350,23 +354,27 @@ class PyMDPSimulation:
     # ------------------------------------------------------------------
     def create_pymdp_model(self) -> Tuple[Any, Dict[str, np.ndarray]]:
         """Re-build the model from explicit GNN matrices and return ``(agent, matrices)``."""
-        init_params = self.gnn_config.get("initialparameterization") or self.gnn_config.get(
-            "initial_parameterization"
-        )
+        init_params = self.gnn_config.get(
+            "initialparameterization"
+        ) or self.gnn_config.get("initial_parameterization")
         if not init_params:
-            raise ValueError("create_pymdp_model requires initialparameterization matrices")
+            raise ValueError(
+                "create_pymdp_model requires initialparameterization matrices"
+            )
         self._build_model_from_initial_parameterization(init_params)
         return self.agent, self.model_matrices
 
     def create_pymdp_model_from_gnn(self) -> Tuple[Any, Dict[str, np.ndarray]]:
         """Re-build the model from ``self.gnn_config['initialparameterization']``."""
-        init_params = self.gnn_config.get("initialparameterization") or self.gnn_config.get(
-            "initial_parameterization"
-        )
+        init_params = self.gnn_config.get(
+            "initialparameterization"
+        ) or self.gnn_config.get("initial_parameterization")
         if init_params:
             self._build_model_from_initial_parameterization(init_params)
         else:
-            raise ValueError("create_pymdp_model_from_gnn requires initialparameterization matrices")
+            raise ValueError(
+                "create_pymdp_model_from_gnn requires initialparameterization matrices"
+            )
         return self.agent, self.model_matrices
 
     def configure_from_gnn(self, gnn_spec: Dict[str, Any]) -> None:
@@ -374,19 +382,22 @@ class PyMDPSimulation:
         Accept an upstream ``gnn_spec`` with ``initialparameterization`` keys
         and rebuild the agent.
         """
-        init = (
-            gnn_spec.get("initialparameterization")
-            or gnn_spec.get("initial_parameterization")
+        init = gnn_spec.get("initialparameterization") or gnn_spec.get(
+            "initial_parameterization"
         )
         if init:
             self._build_model_from_initial_parameterization(init)
         else:
-            raise ValueError("configure_from_gnn requires initialparameterization matrices")
+            raise ValueError(
+                "configure_from_gnn requires initialparameterization matrices"
+            )
 
     # ------------------------------------------------------------------
     # Rollout
     # ------------------------------------------------------------------
-    def _sample_observation(self, current_state: int, np_rng: np.random.Generator) -> int:
+    def _sample_observation(
+        self, current_state: int, np_rng: np.random.Generator
+    ) -> int:
         probs = _normalise_prob_vector(self.A_np[:, current_state])
         return int(np_rng.choice(self.num_observations, p=probs))
 
@@ -453,7 +464,10 @@ class PyMDPSimulation:
                 self.logger.debug("num_timesteps cast failed, keeping default: %s", e)
 
         if self.agent is None:
-            return {"success": False, "error": "No agent available — model construction failed"}
+            return {
+                "success": False,
+                "error": "No agent available — model construction failed",
+            }
 
         import jax.random as jr
 
@@ -469,8 +483,10 @@ class PyMDPSimulation:
 
         try:
             for t in range(self.num_timesteps):
-                current_state, empirical_prior, jax_key, step_data = self._run_simulation_step(
-                    t, current_state, empirical_prior, np_rng, jax_key
+                current_state, empirical_prior, jax_key, step_data = (
+                    self._run_simulation_step(
+                        t, current_state, empirical_prior, np_rng, jax_key
+                    )
                 )
                 self.simulation_trace.append(step_data)
 
@@ -502,7 +518,9 @@ class PyMDPSimulation:
             else []
         )
         efe_history = [
-            np.asarray(step["expected_free_energy"], dtype=np.float64).flatten().tolist()
+            np.asarray(step["expected_free_energy"], dtype=np.float64)
+            .flatten()
+            .tolist()
             for step in self.simulation_trace
         ]
         vfe_history = [
@@ -555,7 +573,9 @@ class PyMDPSimulation:
                 "variational_free_energy": vfe_history,
                 "policy_posterior": policy_posterior,
                 "belief_confidence": [float(max(b)) if b else 0.0 for b in beliefs],
-                "cumulative_preference": [float(self.C_np[obs]) for obs in observations],
+                "cumulative_preference": [
+                    float(self.C_np[obs]) for obs in observations
+                ],
             },
             "performance": performance,
             "trace": self.simulation_trace,
@@ -563,7 +583,9 @@ class PyMDPSimulation:
         }
 
         if output_dir is not None or self.output_dir is not None:
-            self._save_results(Path(output_dir) if output_dir is not None else self.output_dir)
+            self._save_results(
+                Path(output_dir) if output_dir is not None else self.output_dir
+            )
 
         self.logger.info("Simulation completed in %s", format_duration(duration))
         self.results = results_out
@@ -596,7 +618,9 @@ class PyMDPSimulation:
             "unique_states_ratio": len(visited) / max(self.num_states, 1),
             "mean_belief_entropy": float(np.mean(belief_entropies)),
             "action_distribution": (action_counts / max(total, 1)).tolist(),
-            "most_used_action": int(np.argmax(action_counts)) if action_counts.any() else 0,
+            "most_used_action": int(np.argmax(action_counts))
+            if action_counts.any()
+            else 0,
             "exploration_efficiency": len(visited) / max(total, 1),
             "gnn_config_used": bool(self.gnn_config),
             "configuration": {
@@ -617,13 +641,17 @@ class PyMDPSimulation:
             safe_json_dump(self.results, results_file)
 
             trace_file = output_dir / f"pymdp_trace_{self.model_name}.json"
-            cleaned_trace = [convert_numpy_for_json(step) for step in self.simulation_trace]
+            cleaned_trace = [
+                convert_numpy_for_json(step) for step in self.simulation_trace
+            ]
             safe_json_dump(cleaned_trace, trace_file)
 
             matrices_file = output_dir / f"pymdp_matrices_{self.model_name}.pkl"
             safe_pickle_dump(self.model_matrices, matrices_file)
 
-            self.logger.info("Results saved to %s (visualisation by analysis step)", output_dir)
+            self.logger.info(
+                "Results saved to %s (visualisation by analysis step)", output_dir
+            )
         except Exception as e:  # noqa: BLE001
             self.logger.error("Error saving results: %s", e)
 

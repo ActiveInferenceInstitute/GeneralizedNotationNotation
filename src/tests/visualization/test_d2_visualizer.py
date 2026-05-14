@@ -32,6 +32,7 @@ try:
         D2Visualizer,
         process_gnn_file_with_d2,
     )
+
     D2_MODULE_AVAILABLE = True
 except ImportError as e:
     D2_MODULE_AVAILABLE = False
@@ -43,7 +44,9 @@ class TestD2VisualizerImport(unittest.TestCase):
 
     def test_d2_visualizer_module_available(self) -> None:
         """Test that D2 visualizer module can be imported"""
-        self.assertTrue(D2_MODULE_AVAILABLE, "D2 visualizer module should be importable")
+        self.assertTrue(
+            D2_MODULE_AVAILABLE, "D2 visualizer module should be importable"
+        )
 
     @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
     def test_d2_classes_available(self) -> None:
@@ -67,6 +70,7 @@ class TestD2VisualizerInitialization(unittest.TestCase):
     def test_d2_visualizer_with_logger(self) -> None:
         """Test D2Visualizer initialization with custom logger"""
         import logging
+
         logger = logging.getLogger("test_logger")
         visualizer = D2Visualizer(logger=logger)
         self.assertEqual(visualizer.logger, logger)
@@ -93,41 +97,41 @@ class TestD2DiagramGeneration(unittest.TestCase):
                 "A": {
                     "dimensions": [3, 3],
                     "type": "float",
-                    "description": "Likelihood matrix"
+                    "description": "Likelihood matrix",
                 },
                 "B": {
                     "dimensions": [3, 3, 3],
                     "type": "float",
-                    "description": "Transition matrix"
+                    "description": "Transition matrix",
                 },
                 "C": {
                     "dimensions": [3],
                     "type": "float",
-                    "description": "Preference vector"
+                    "description": "Preference vector",
                 },
                 "s": {
                     "dimensions": [3, 1],
                     "type": "float",
-                    "description": "Hidden state"
+                    "description": "Hidden state",
                 },
                 "o": {
                     "dimensions": [3, 1],
                     "type": "int",
-                    "description": "Observation"
-                }
+                    "description": "Observation",
+                },
             },
             "connections": [
                 {"source": "s", "target": "A", "type": "->"},
                 {"source": "A", "target": "o", "type": "->"},
-                {"source": "s", "target": "B", "type": "->"}
+                {"source": "s", "target": "B", "type": "->"},
             ],
             "actinf_annotations": {
                 "A": "LikelihoodMatrix",
                 "B": "TransitionMatrix",
                 "C": "LogPreferenceVector",
                 "s": "HiddenState",
-                "o": "Observation"
-            }
+                "o": "Observation",
+            },
         }
 
     def test_generate_model_structure_diagram(self) -> None:
@@ -213,12 +217,13 @@ class TestD2DiagramCompilation(unittest.TestCase):
             d2_content="Test: { shape: rectangle }",
             output_formats=["svg"],
             layout_engine="dagre",
-            theme=1
+            theme=1,
         )
 
     def tearDown(self) -> None:
         """Clean up test directory"""
         import shutil
+
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
 
@@ -228,10 +233,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
         original_available = self.visualizer.d2_available
         self.visualizer.d2_available = False
 
-        result = self.visualizer.compile_d2_diagram(
-            self.test_spec,
-            self.output_dir
-        )
+        result = self.visualizer.compile_d2_diagram(self.test_spec, self.output_dir)
 
         self.assertIsInstance(result, D2GenerationResult)
         self.assertFalse(result.success)
@@ -246,10 +248,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
         original_available = self.visualizer.d2_available
         self.visualizer.d2_available = False  # Skip compilation
 
-        self.visualizer.compile_d2_diagram(
-            self.test_spec,
-            self.output_dir
-        )
+        self.visualizer.compile_d2_diagram(self.test_spec, self.output_dir)
 
         # D2 file should still be written
         self.output_dir / "test_diagram.d2"
@@ -261,9 +260,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
     def test_compile_d2_diagram_with_cli(self) -> None:
         """Test actual D2 compilation with CLI (if available)"""
         result = self.visualizer.compile_d2_diagram(
-            self.test_spec,
-            self.output_dir,
-            formats=["svg"]
+            self.test_spec, self.output_dir, formats=["svg"]
         )
 
         if result.success:
@@ -286,7 +283,7 @@ class TestD2HelperMethods(unittest.TestCase):
             "Test Model v1": "test_model_v1",
             "POMDP-Agent@2023": "pomdp_agent2023",  # Hyphen becomes underscore
             "simple": "simple",
-            "Multi Word Name": "multi_word_name"
+            "Multi Word Name": "multi_word_name",
         }
 
         for input_name, expected_output in test_cases.items():
@@ -317,7 +314,7 @@ class TestD2HelperMethods(unittest.TestCase):
             "<->": "<->",
             "-": "--",
             ">": "->",
-            "<": "<-"
+            "<": "<-",
         }
 
         for conn_type, expected_arrow in arrow_tests.items():
@@ -328,13 +325,10 @@ class TestD2HelperMethods(unittest.TestCase):
         """Test POMDP model detection"""
         pomdp_model = {
             "state_space": {"A": {}, "B": {}, "C": {}},
-            "actinf_annotations": {"A": "Likelihood"}
+            "actinf_annotations": {"A": "Likelihood"},
         }
 
-        non_pomdp_model = {
-            "state_space": {"x": {}, "y": {}},
-            "actinf_annotations": {}
-        }
+        non_pomdp_model = {"state_space": {"x": {}, "y": {}}, "actinf_annotations": {}}
 
         self.assertTrue(self.visualizer._is_pomdp_model(pomdp_model))
         self.assertFalse(self.visualizer._is_pomdp_model(non_pomdp_model))
@@ -354,24 +348,23 @@ class TestD2EndToEndProcessing(unittest.TestCase):
             "model_name": "Integration Test Model",
             "state_space": {
                 "A": {"dimensions": [3, 3], "type": "float"},
-                "B": {"dimensions": [3, 3, 3], "type": "float"}
+                "B": {"dimensions": [3, 3, 3], "type": "float"},
             },
             "connections": [],
-            "actinf_annotations": {"A": "LikelihoodMatrix"}
+            "actinf_annotations": {"A": "LikelihoodMatrix"},
         }
 
     def tearDown(self) -> None:
         """Clean up test directory"""
         import shutil
+
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
 
     def test_generate_all_diagrams_for_model(self) -> None:
         """Test generating all diagrams for a model"""
         results = self.visualizer.generate_all_diagrams_for_model(
-            self.test_model,
-            self.output_dir,
-            formats=["svg"]
+            self.test_model, self.output_dir, formats=["svg"]
         )
 
         self.assertIsInstance(results, list)
@@ -422,6 +415,7 @@ class TestD2Documentation(unittest.TestCase):
 
         # Check dataclass fields
         from dataclasses import fields
+
         spec_fields = [f.name for f in fields(D2DiagramSpec)]
 
         required_fields = ["name", "description", "d2_content", "output_formats"]

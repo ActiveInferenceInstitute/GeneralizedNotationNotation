@@ -15,7 +15,6 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
-
 # Migrated from test_sapf.py
 class TestSAPFCodeValidation:
     """Test SAPF code validation functionality."""
@@ -75,7 +74,6 @@ base_freq 0 sinosc 0.3 * = final_audio
         assert any("No 'play' command found" in issue for issue in issues)
 
 
-
 # Migrated from test_sapf.py
 class TestSAPFStandaloneFunctions:
     """Test standalone SAPF functions."""
@@ -117,7 +115,7 @@ Static
         except ImportError:
             pytest.skip("SAPF oscillator function not available")
 
-        audio = generate_oscillator_audio(440.0, 0.5, 1.0, 44100, 'sine')
+        audio = generate_oscillator_audio(440.0, 0.5, 1.0, 44100, "sine")
 
         assert isinstance(audio, np.ndarray)
         assert len(audio) == 44100  # 1 second at 44.1kHz
@@ -170,5 +168,3 @@ Static
         # Test empty input
         empty_mixed = mix_audio_channels([])
         assert len(empty_mixed) == 0
-
-

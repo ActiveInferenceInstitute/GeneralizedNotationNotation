@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 def detect_pymdp_installation() -> Dict[str, Any]:
     """
     Detect PyMDP package installation and variant.
-    
+
     Returns:
         Dictionary with detection results:
         - installed: bool - Whether any pymdp package is installed
@@ -36,11 +36,12 @@ def detect_pymdp_installation() -> Dict[str, Any]:
         "has_agent": False,
         "has_mdp_solver": False,
         "version": None,
-        "error": None
+        "error": None,
     }
 
     try:
         import pymdp
+
         result["installed"] = True
         result["package_name"] = getattr(pymdp, "__name__", "pymdp")
         result["version"] = getattr(pymdp, "__version__", None)
@@ -56,15 +57,20 @@ def detect_pymdp_installation() -> Dict[str, Any]:
             result["has_agent"] = True
             result["correct_package"] = True
             agent_found = True
-            logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent class")
+            logger.info(
+                "Detected correct PyMDP package (inferactively-pymdp) with Agent class"
+            )
         elif "agent" in available_attrs:
             # Check if pymdp.agent submodule has Agent class
             try:
                 from pymdp.agent import Agent
+
                 agent_found = Agent is not None
                 result["has_agent"] = True
                 result["correct_package"] = True
-                logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule")
+                logger.info(
+                    "Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule"
+                )
             except ImportError as e:
                 logger.debug("pymdp.agent not available: %s", e)
 
@@ -76,10 +82,14 @@ def detect_pymdp_installation() -> Dict[str, Any]:
             if not agent_found:
                 # Only mark as wrong if we DIDN'T find the agent
                 result["wrong_package"] = True
-                logger.warning("Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)")
+                logger.warning(
+                    "Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)"
+                )
             else:
                 # If we found Agent but also MDP, it's weird but usable
-                logger.warning("Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.")
+                logger.warning(
+                    "Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package."
+                )
 
         # If neither Agent nor MDP found, it's unclear
         if not result["has_agent"] and not result["has_mdp_solver"]:
@@ -99,7 +109,7 @@ def detect_pymdp_installation() -> Dict[str, Any]:
 def is_correct_pymdp_package() -> bool:
     """
     Check if the correct PyMDP package is installed.
-    
+
     Returns:
         True if correct package (inferactively-pymdp) is installed, False otherwise
     """
@@ -110,7 +120,7 @@ def is_correct_pymdp_package() -> bool:
 def get_pymdp_installation_instructions() -> str:
     """
     Get installation instructions for PyMDP.
-    
+
     Returns:
         String with installation instructions
     """
@@ -148,13 +158,13 @@ def get_pymdp_installation_instructions() -> str:
 def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
     """
     Attempt to automatically install the correct PyMDP package using UV.
-    
+
     This function uses UV exclusively for package installation.
     No previous pip recovery is used.
-    
+
     Args:
         use_uv: Ignored; UV is always used.
-    
+
     Returns:
         Tuple of (success: bool, message: str)
     """
@@ -169,7 +179,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
             ["uv", "sync", "--extra", "active-inference"],
             capture_output=True,
             text=True,
-            timeout=120
+            timeout=120,
         )
 
         if result.returncode == 0:
@@ -182,7 +192,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
             ["uv", "pip", "install", package_name],
             capture_output=True,
             text=True,
-            timeout=120
+            timeout=120,
         )
 
         if result.returncode == 0:
@@ -197,8 +207,13 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
         logger.error(f"Installation of {package_name} timed out")
         return False, "Installation timed out after 120 seconds"
     except FileNotFoundError:
-        logger.error("UV not found. Please install UV: curl -LsSf https://astral.sh/uv/install.sh | sh")
-        return False, "UV not installed. Install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
+        logger.error(
+            "UV not found. Please install UV: curl -LsSf https://astral.sh/uv/install.sh | sh"
+        )
+        return (
+            False,
+            "UV not installed. Install with: curl -LsSf https://astral.sh/uv/install.sh | sh",
+        )
     except Exception as e:
         logger.error(f"Error during {package_name} installation: {e}")
         return False, f"Installation error: {str(e)}"
@@ -207,7 +222,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
 def validate_pymdp_for_execution() -> Dict[str, Any]:
     """
     Validate that PyMDP is ready for execution.
-    
+
     Returns:
         Dictionary with validation results:
         - ready: bool - Whether PyMDP is ready for execution
@@ -221,7 +236,7 @@ def validate_pymdp_for_execution() -> Dict[str, Any]:
         "ready": False,
         "detection": detection,
         "instructions": "",
-        "can_auto_install": True
+        "can_auto_install": True,
     }
 
     if detection.get("correct_package"):

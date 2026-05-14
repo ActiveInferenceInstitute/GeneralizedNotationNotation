@@ -19,7 +19,15 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-FRAMEWORK_ORDER = ["pymdp", "jax", "rxinfer", "activeinference_jl", "discopy", "pytorch", "numpyro"]
+FRAMEWORK_ORDER = [
+    "pymdp",
+    "jax",
+    "rxinfer",
+    "activeinference_jl",
+    "discopy",
+    "pytorch",
+    "numpyro",
+]
 FRAMEWORK_LABELS = {
     "pymdp": "PyMDP",
     "jax": "JAX",
@@ -34,6 +42,7 @@ FRAMEWORK_LABELS = {
 # ---------------------------------------------------------------------------
 # Data collection helpers
 # ---------------------------------------------------------------------------
+
 
 def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
     """Collect simulation results keyed by (model_name, framework)."""
@@ -121,12 +130,10 @@ def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]
 # Metric extractors
 # ---------------------------------------------------------------------------
 
+
 def _mean_belief_confidence(result: Dict[str, Any]) -> Optional[float]:
     """Compute mean of max-belief across timesteps."""
-    beliefs = (
-        result.get("beliefs")
-        or result.get("simulation_trace", {}).get("beliefs")
-    )
+    beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
     if not beliefs:
         return None
     try:
@@ -140,9 +147,8 @@ def _mean_belief_confidence(result: Dict[str, Any]) -> Optional[float]:
 
 def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
     """Compute mean EFE (selected action's EFE) across timesteps."""
-    efe = (
-        result.get("efe_history")
-        or result.get("simulation_trace", {}).get("efe_history")
+    efe = result.get("efe_history") or result.get("simulation_trace", {}).get(
+        "efe_history"
     )
     metrics = result.get("metrics", {})
     if not efe and isinstance(metrics, dict):
@@ -150,10 +156,7 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
     if not efe:
         return None
 
-    actions = (
-        result.get("actions")
-        or result.get("simulation_trace", {}).get("actions")
-    )
+    actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
 
     try:
         efe_arr = np.array(efe, dtype=float)
@@ -174,10 +177,7 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
 
 def _mean_belief_entropy(result: Dict[str, Any]) -> Optional[float]:
     """Compute mean Shannon entropy of beliefs across timesteps."""
-    beliefs = (
-        result.get("beliefs")
-        or result.get("simulation_trace", {}).get("beliefs")
-    )
+    beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
     if not beliefs:
         return None
     try:
@@ -196,10 +196,7 @@ def _mean_belief_entropy(result: Dict[str, Any]) -> Optional[float]:
 
 def _action_diversity(result: Dict[str, Any]) -> Optional[float]:
     """Fraction of unique actions used."""
-    actions = (
-        result.get("actions")
-        or result.get("simulation_trace", {}).get("actions")
-    )
+    actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
     if not actions:
         return None
     try:
@@ -232,6 +229,7 @@ def _validation_status(result: Dict[str, Any]) -> str:
 # ---------------------------------------------------------------------------
 # Report generation
 # ---------------------------------------------------------------------------
+
 
 def generate_cross_model_report(
     execution_dir: Path,
@@ -269,7 +267,11 @@ def generate_cross_model_report(
 
     # ---- Summary table ----
     lines.append("## Summary Matrix\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     sep = "|" + "|".join("---" for _ in range(len(frameworks) + 1)) + "|"
     lines.append(header)
     lines.append(sep)
@@ -288,11 +290,17 @@ def generate_cross_model_report(
         lines.append(row)
 
     lines.append("")
-    lines.append("> Values show validation status and mean belief confidence (max belief per timestep).\n")
+    lines.append(
+        "> Values show validation status and mean belief confidence (max belief per timestep).\n"
+    )
 
     # ---- EFE Comparison ----
     lines.append("## Expected Free Energy Comparison\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     lines.append(header)
     lines.append(sep)
 
@@ -312,7 +320,11 @@ def generate_cross_model_report(
     # ---- Belief Entropy Comparison ----
     lines.append("## Belief Entropy Comparison\n")
     lines.append("Mean Shannon entropy of posterior beliefs (lower = more certain).\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     lines.append(header)
     lines.append(sep)
 
@@ -331,7 +343,11 @@ def generate_cross_model_report(
 
     # ---- Performance Comparison ----
     lines.append("## Execution Time (seconds)\n")
-    header = "| Model |" + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks) + "|"
+    header = (
+        "| Model |"
+        + "|".join(f" {FRAMEWORK_LABELS.get(fw, fw)} " for fw in frameworks)
+        + "|"
+    )
     lines.append(header)
     lines.append(sep)
 
@@ -356,13 +372,19 @@ def generate_cross_model_report(
         model_data = sim_data.get(model, {})
 
         # Quick stats table
-        lines.append("| Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |")
-        lines.append("|-----------|-------|------------|------------|---------|------------------|------------|")
+        lines.append(
+            "| Framework | Steps | Confidence | EFE (mean) | Entropy | Action Diversity | Validation |"
+        )
+        lines.append(
+            "|-----------|-------|------------|------------|---------|------------------|------------|"
+        )
 
         for fw in frameworks:
             result = model_data.get(fw)
             if not result:
-                lines.append(f"| {FRAMEWORK_LABELS.get(fw, fw)} | — | — | — | — | — | — |")
+                lines.append(
+                    f"| {FRAMEWORK_LABELS.get(fw, fw)} | — | — | — | — | — | — |"
+                )
                 continue
 
             steps = _timestep_count(result)
@@ -415,8 +437,12 @@ def generate_cross_model_report(
     if model_confs:
         best_model = max(model_confs, key=model_confs.get)
         worst_model = min(model_confs, key=model_confs.get)
-        lines.append(f"- **Highest avg. confidence:** {best_model} ({model_confs[best_model]:.4f})")
-        lines.append(f"- **Lowest avg. confidence:** {worst_model} ({model_confs[worst_model]:.4f})")
+        lines.append(
+            f"- **Highest avg. confidence:** {best_model} ({model_confs[best_model]:.4f})"
+        )
+        lines.append(
+            f"- **Lowest avg. confidence:** {worst_model} ({model_confs[worst_model]:.4f})"
+        )
 
     # Framework speed comparison
     fw_speeds: Dict[str, List[float]] = {}

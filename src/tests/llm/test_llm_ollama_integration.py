@@ -32,6 +32,7 @@ class TestOllamaDetection:
     def test_ollama_check_returns_tuple(self, caplog):
         """Test that Ollama check returns (bool, list) tuple."""
         import logging
+
         logger = logging.getLogger("test_ollama")
 
         result = _start_ollama_if_needed(logger)
@@ -47,6 +48,7 @@ class TestOllamaDetection:
     def test_ollama_detection_logging(self, caplog):
         """Test that Ollama detection provides informative logging."""
         import logging
+
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_ollama")
@@ -62,16 +64,24 @@ class TestOllamaDetection:
         # 2. CLI found but not running: "found ollama"
         # 3. Not found: "not found", "not running", "not available"
         valid_messages = [
-            "✅", "running", "ready", "available",
-            "found", "not found", "not running", "not available"
+            "✅",
+            "running",
+            "ready",
+            "available",
+            "found",
+            "not found",
+            "not running",
+            "not available",
         ]
 
-        assert any(msg in log_text.lower() for msg in valid_messages), \
+        assert any(msg in log_text.lower() for msg in valid_messages), (
             f"Expected informative Ollama status message, got: {log_text}"
+        )
 
     def test_ollama_model_listing(self, caplog):
         """Test Ollama model listing when available."""
         import logging
+
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_ollama")
@@ -98,9 +108,9 @@ class TestOllamaDetection:
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(1)
-            result = sock.connect_ex(('localhost', 11434))
+            result = sock.connect_ex(("localhost", 11434))
             sock.close()
-            port_open = (result == 0)
+            port_open = result == 0
         except Exception:
             port_open = False
 
@@ -111,20 +121,28 @@ class TestOllamaDetection:
         if port_open and is_available:
             logger.info(f"✅ Ollama detected with port open, models: {models}")
         elif port_open and not is_available:
-            logger.info("⚠️ Port 11434 open but detection returned False - API may be starting up")
+            logger.info(
+                "⚠️ Port 11434 open but detection returned False - API may be starting up"
+            )
         elif not port_open and is_available:
-            logger.info("⚠️ Detection returned True but port closed - CLI found without service")
+            logger.info(
+                "⚠️ Detection returned True but port closed - CLI found without service"
+            )
         else:
             logger.info("ℹ️ Ollama not detected and port closed")
 
         # Verify detection returned consistent results
-        assert isinstance(is_available, bool), f"Expected bool, got {type(is_available)}"
+        assert isinstance(is_available, bool), (
+            f"Expected bool, got {type(is_available)}"
+        )
         assert isinstance(models, list), f"Expected list, got {type(models)}"
 
         # Verify logical consistency between port and availability
         if models:
             # If we have models, Ollama must be available
-            assert is_available or port_open, "Models found but neither available nor port open"
+            assert is_available or port_open, (
+                "Models found but neither available nor port open"
+            )
 
         logger.info("✅ Detection completed with consistent results")
 
@@ -134,8 +152,9 @@ class TestOllamaModelSelection:
 
     def test_model_selection_with_empty_list(self, caplog, monkeypatch):
         """Test model selection when no models are available."""
-        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
+        monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         import logging
+
         logger = logging.getLogger("test_model_selection")
 
         model = _select_best_ollama_model([], logger)
@@ -149,8 +168,9 @@ class TestOllamaModelSelection:
 
     def test_model_selection_prefers_small_models(self, caplog, monkeypatch):
         """Preference order matches ``preferred_models`` in ``llm.processor``."""
-        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
+        monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         import logging
+
         logger = logging.getLogger("test_model_selection")
 
         test_cases = [
@@ -172,12 +192,13 @@ class TestOllamaModelSelection:
     def test_model_selection_respects_env_override(self, caplog, monkeypatch):
         """Test that environment variable overrides model selection."""
         import logging
+
         logger = logging.getLogger("test_model_selection")
 
         # Set environment variable
-        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
+        monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         test_model = "my-custom-model:latest"
-        monkeypatch.setenv('OLLAMA_MODEL', test_model)
+        monkeypatch.setenv("OLLAMA_MODEL", test_model)
 
         models = ["gemma3:4b", "llama2:7b"]
         selected = _select_best_ollama_model(models, logger)
@@ -187,8 +208,9 @@ class TestOllamaModelSelection:
 
     def test_model_selection_logging(self, caplog, monkeypatch):
         """Test that model selection provides clear logging."""
-        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
+        monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         import logging
+
         caplog.set_level(logging.INFO)
 
         logger = logging.getLogger("test_model_selection")
@@ -266,15 +288,14 @@ Minimize free energy while maintaining preferred states.
             pytest.skip("Set GNN_RUN_LLM_TESTS=1 to run real Ollama prompt tests")
 
         import logging
+
         caplog.set_level(logging.INFO)
 
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
 
         result = process_llm(
-            target_dir=test_gnn_dir,
-            output_dir=llm_output_dir,
-            verbose=True
+            target_dir=test_gnn_dir, output_dir=llm_output_dir, verbose=True
         )
 
         # Should complete (success or graceful failure)
@@ -292,33 +313,45 @@ Minimize free energy while maintaining preferred states.
             assert "timestamp" in results
             # ollama_available key may not exist if using recovery
             assert "processed_files" in results or "analysis_results" in results
-            assert "provider_matrix" in results or "errors" in results or "analysis_results" in results
+            assert (
+                "provider_matrix" in results
+                or "errors" in results
+                or "analysis_results" in results
+            )
         else:
             # If no results file, check for alternative outputs (summary, logs, etc.)
             summary_file = llm_output_dir / "llm_summary.md"
-            assert summary_file.exists() or result, \
+            assert summary_file.exists() or result, (
                 "Should either create results file or complete gracefully"
+            )
 
         # Check logging
         log_text = caplog.text
-        assert "LLM" in log_text or "ollama" in log_text.lower() or "llm" in log_text.lower()
+        assert (
+            "LLM" in log_text
+            or "ollama" in log_text.lower()
+            or "llm" in log_text.lower()
+        )
 
     @pytest.mark.slow
-    def test_llm_processing_without_ollama(self, test_gnn_dir, test_output_dir, caplog, monkeypatch):
+    def test_llm_processing_without_ollama(
+        self, test_gnn_dir, test_output_dir, caplog, monkeypatch
+    ):
         """Test LLM processing recovery when Ollama is not available (slow test)."""
         import logging
+
         caplog.set_level(logging.INFO)
 
         # Real Ollama availability is covered by integration tests.
-        pytest.skip("Ollama unavailability testing requires controlling external service state")
+        pytest.skip(
+            "Ollama unavailability testing requires controlling external service state"
+        )
 
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
 
         result = process_llm(
-            target_dir=test_gnn_dir,
-            output_dir=llm_output_dir,
-            verbose=True
+            target_dir=test_gnn_dir, output_dir=llm_output_dir, verbose=True
         )
 
         # Should complete with recovery
@@ -332,7 +365,11 @@ Minimize free energy while maintaining preferred states.
 
             # Should use recovery provider (openai, ollama recovery, or simulated)
             # Don't assert specific provider since it depends on available APIs
-            assert "llm_provider" in results or "errors" in results or "analysis_results" in results
+            assert (
+                "llm_provider" in results
+                or "errors" in results
+                or "analysis_results" in results
+            )
 
             # If ollama_available key exists, it should be False
             if "ollama_available" in results:
@@ -341,18 +378,26 @@ Minimize free energy while maintaining preferred states.
             # If no results, processing may have completed with warnings
             # Check for log output indicating attempt was made
             log_text = caplog.text
-            assert "llm" in log_text.lower() or result, \
+            assert "llm" in log_text.lower() or result, (
                 "Should either create results or complete with indication of attempt"
+            )
 
         # Check logging mentions recovery
         log_text = caplog.text.lower()
-        assert "recovery" in log_text or "not found" in log_text or "not available" in log_text
+        assert (
+            "recovery" in log_text
+            or "not found" in log_text
+            or "not available" in log_text
+        )
 
     @pytest.mark.slow
     @pytest.mark.timeout(180)  # 3 minute timeout for LLM processing
-    def test_llm_processing_model_selection(self, test_gnn_dir, test_output_dir, caplog):
+    def test_llm_processing_model_selection(
+        self, test_gnn_dir, test_output_dir, caplog
+    ):
         """Test that LLM processing selects and uses appropriate model (slow test)."""
         import logging
+
         caplog.set_level(logging.INFO)
 
         llm_output_dir = test_output_dir / "13_llm_output"
@@ -364,7 +409,7 @@ Minimize free energy while maintaining preferred states.
             output_dir=llm_output_dir,
             verbose=True,
             custom_prompts=[],  # Skip custom prompts to speed up test
-            max_prompt_timeout=10  # 10 second timeout per prompt
+            max_prompt_timeout=10,  # 10 second timeout per prompt
         )
 
         # Check results for model selection - processor saves directly to output_dir
@@ -403,18 +448,20 @@ Minimize free energy while maintaining preferred states.
             output_dir=llm_output_dir,
             verbose=False,
             custom_prompts=[],  # Skip custom prompts to speed up test
-            max_prompt_timeout=10  # 10 second timeout per prompt
+            max_prompt_timeout=10,  # 10 second timeout per prompt
         )
 
         # Check for key output files - processor saves directly to output_dir
 
         # Should have results file
-        assert (llm_output_dir / "llm_results.json").exists(), \
+        assert (llm_output_dir / "llm_results.json").exists(), (
             f"Expected llm_results.json at {llm_output_dir}"
+        )
 
         # Should have summary file
-        assert (llm_output_dir / "llm_summary.md").exists(), \
+        assert (llm_output_dir / "llm_summary.md").exists(), (
             f"Expected llm_summary.md at {llm_output_dir}"
+        )
 
         # May have prompt-specific directories if Ollama was available
         prompt_dirs = list(llm_output_dir.glob("prompts_*"))
@@ -426,6 +473,7 @@ Minimize free energy while maintaining preferred states.
     def test_llm_processing_error_handling(self, test_output_dir, caplog):
         """Test LLM processing error handling with no input files (slow test)."""
         import logging
+
         caplog.set_level(logging.WARNING)
 
         # Empty directory
@@ -436,9 +484,7 @@ Minimize free energy while maintaining preferred states.
         llm_output_dir.mkdir()
 
         result = process_llm(
-            target_dir=empty_dir,
-            output_dir=llm_output_dir,
-            verbose=True
+            target_dir=empty_dir, output_dir=llm_output_dir, verbose=True
         )
 
         # Should handle gracefully
@@ -472,7 +518,9 @@ class TestOllamaIntegrationEnd2End:
             pytest.skip(f"ollama list failed: {e}")
 
         if result.returncode != 0:
-            pytest.skip("Ollama CLI present but daemon not responding (ollama list failed)")
+            pytest.skip(
+                "Ollama CLI present but daemon not responding (ollama list failed)"
+            )
         assert result.returncode == 0
 
 

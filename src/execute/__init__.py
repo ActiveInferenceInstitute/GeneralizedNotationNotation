@@ -24,13 +24,13 @@ from typing import Any, Dict, List, Literal
 
 # Constrained type for supported execution framework names.
 FrameworkName = Literal[
-    'pymdp',
-    'rxinfer',
-    'jax',
-    'discopy',
-    'activeinference_jl',
-    'pytorch',
-    'numpyro',
+    "pymdp",
+    "rxinfer",
+    "jax",
+    "discopy",
+    "activeinference_jl",
+    "pytorch",
+    "numpyro",
 ]
 
 # All execute submodules are in-tree — their import must succeed or tests
@@ -68,35 +68,31 @@ except ImportError:
     execute_simulation_from_gnn = execute_gnn_model
 
 __all__ = [
-    '__version__',
-    'FEATURES',
-    'FrameworkName',
-
+    "__version__",
+    "FEATURES",
+    "FrameworkName",
     # Core classes
-    'GNNExecutor',
-    'PyMDPSimulation',
-
+    "GNNExecutor",
+    "PyMDPSimulation",
     # Execution functions
-    'process_execute',
-    'execute_simulation_from_gnn',
-    'execute_gnn_model',
-    'run_simulation',
-    'execute_script_safely',
-
+    "process_execute",
+    "execute_simulation_from_gnn",
+    "execute_gnn_model",
+    "run_simulation",
+    "execute_script_safely",
     # PyMDP
-    'execute_pymdp_simulation_from_gnn',
-    'execute_pymdp_simulation',
-    'validate_pymdp_environment',
-    'get_pymdp_health_status',
-
+    "execute_pymdp_simulation_from_gnn",
+    "execute_pymdp_simulation",
+    "validate_pymdp_environment",
+    "get_pymdp_health_status",
     # Validation
-    'validate_execution_environment',
-    'log_validation_results',
-    'check_python_environment',
-    'check_system_resources',
-    'check_dependencies',
-    'check_file_permissions',
-    'check_network_connectivity',
+    "validate_execution_environment",
+    "log_validation_results",
+    "check_python_environment",
+    "check_system_resources",
+    "check_dependencies",
+    "check_file_permissions",
+    "check_network_connectivity",
 ]
 
 

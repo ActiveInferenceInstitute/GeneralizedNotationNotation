@@ -46,14 +46,20 @@ class TestGNNParsersSerializers:
         """Test JSONSerializer can be instantiated."""
         serializer = JSONSerializer()
         assert serializer is not None
-        assert hasattr(serializer, 'serialize')
+        assert hasattr(serializer, "serialize")
 
     @pytest.mark.unit
     def test_multiple_serializers_available(self):
         """Test that multiple serializer formats are available."""
         serializers = [
-            JSONSerializer, XMLSerializer, YAMLSerializer,
-            MarkdownSerializer, ScalaSerializer, ProtobufSerializer,
-            PKLSerializer, LeanSerializer, CoqSerializer
+            JSONSerializer,
+            XMLSerializer,
+            YAMLSerializer,
+            MarkdownSerializer,
+            ScalaSerializer,
+            ProtobufSerializer,
+            PKLSerializer,
+            LeanSerializer,
+            CoqSerializer,
         ]
         assert len(serializers) >= 9, "At least 9 serializers should be available"

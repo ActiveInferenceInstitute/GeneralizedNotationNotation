@@ -14,7 +14,6 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
-
 # Migrated from test_gnn_core_modules.py
 class TestGNNCoreProcessor:
     """Test gnn.core_processor module."""
@@ -23,15 +22,18 @@ class TestGNNCoreProcessor:
     def test_core_processor_imports(self):
         """Test that core processor can be imported."""
         from gnn import core_processor
-        assert hasattr(core_processor, 'GNNProcessor')
+
+        assert hasattr(core_processor, "GNNProcessor")
 
     @pytest.mark.unit
-    def test_gnn_processor_basic_imports(self, sample_gnn_files, comprehensive_test_data):
+    def test_gnn_processor_basic_imports(
+        self, sample_gnn_files, comprehensive_test_data
+    ):
         """Test basic GNN processor imports without heavy instantiation."""
         from gnn.core_processor import GNNProcessor
 
         # Test that GNNProcessor can be imported
-        assert hasattr(GNNProcessor, '__init__')
+        assert hasattr(GNNProcessor, "__init__")
 
 
 # Migrated from test_gnn_core_modules.py
@@ -42,6 +44,7 @@ class TestGNNReporting:
     def test_reporting_imports(self):
         """Test that reporting module can be imported."""
         from gnn import generate_gnn_report
+
         assert callable(generate_gnn_report)
 
     @pytest.mark.unit
@@ -51,18 +54,16 @@ class TestGNNReporting:
 
         # generate_gnn_report expects a processing_results dict, not a path
         processing_results = {
-            'target_directory': str(isolated_temp_dir),
-            'files_found': 0,
-            'files_processed': 0,
-            'success': True,
-            'errors': [],
-            'parsed_files': []
+            "target_directory": str(isolated_temp_dir),
+            "files_found": 0,
+            "files_processed": 0,
+            "success": True,
+            "errors": [],
+            "parsed_files": [],
         }
 
         result = generate_gnn_report(processing_results)
 
         # Verify report generation returns a string
         assert isinstance(result, str)
-        assert 'GNN Processing Report' in result
-
-
+        assert "GNN Processing Report" in result

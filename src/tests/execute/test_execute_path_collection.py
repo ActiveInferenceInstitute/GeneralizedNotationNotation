@@ -31,6 +31,7 @@ class TestPathDeduplication:
     def test_normalize_and_deduplicate_paths_empty(self) -> None:
         """Test deduplication with empty list."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         result = _normalize_and_deduplicate_paths([], logger)
@@ -39,6 +40,7 @@ class TestPathDeduplication:
     def test_normalize_and_deduplicate_paths_single(self, tmp_path: Path) -> None:
         """Test deduplication with single file."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         test_file = tmp_path / "test.png"
@@ -51,19 +53,23 @@ class TestPathDeduplication:
     def test_normalize_and_deduplicate_paths_duplicates(self, tmp_path: Path) -> None:
         """Test deduplication removes duplicate paths."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         test_file = tmp_path / "test.png"
         test_file.write_text("test")
 
         # Same file multiple times
-        result = _normalize_and_deduplicate_paths([test_file, test_file, test_file], logger)
+        result = _normalize_and_deduplicate_paths(
+            [test_file, test_file, test_file], logger
+        )
         assert len(result) == 1
         assert result[0] == test_file
 
     def test_normalize_and_deduplicate_paths_nested(self, tmp_path: Path) -> None:
         """Test deduplication removes nested duplicates."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         # Create nested structure
@@ -92,6 +98,7 @@ class TestPathCollection:
     def test_collect_execution_outputs_empty(self, tmp_path: Path) -> None:
         """Test collection with no files."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         script_path = tmp_path / "script.py"
@@ -111,6 +118,7 @@ class TestPathCollection:
     def test_collect_execution_outputs_structure(self, tmp_path: Path) -> None:
         """Test that collection returns expected structure."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         script_path = tmp_path / "script.py"
@@ -130,6 +138,7 @@ class TestActiveInferencePathCollection:
     def test_activeinference_jl_path_collection(self, tmp_path: Path) -> None:
         """Test ActiveInference.jl path collection avoids nested directories."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         # Create ActiveInference.jl output structure
@@ -159,7 +168,9 @@ class TestActiveInferencePathCollection:
         output_collection_dir = tmp_path / "collection"
         output_collection_dir.mkdir()
 
-        result = collect_execution_outputs(script_path, output_collection_dir, "activeinference_jl", logger)
+        result = collect_execution_outputs(
+            script_path, output_collection_dir, "activeinference_jl", logger
+        )
 
         # Should collect files but avoid nested duplicates
         assert isinstance(result, dict)
@@ -173,6 +184,7 @@ class TestPathCollectionDeduplication:
     def test_no_duplicate_copies(self, tmp_path: Path) -> None:
         """Test that same file isn't copied multiple times."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         # Create source structure
@@ -196,4 +208,3 @@ class TestPathCollectionDeduplication:
         copied_files = list(dest_dir.rglob("data.json"))
         # Should have at most one copy
         assert len(copied_files) <= 1
-

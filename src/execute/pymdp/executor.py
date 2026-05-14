@@ -12,10 +12,9 @@ from typing import Any, Dict, Tuple
 
 logger = logging.getLogger(__name__)
 
+
 def execute_pymdp_simulation_from_gnn(
-    gnn_spec: Dict[str, Any],
-    output_dir: Path,
-    correlation_id: str = ""
+    gnn_spec: Dict[str, Any], output_dir: Path, correlation_id: str = ""
 ) -> Tuple[bool, Dict[str, Any]]:
     """
     Execute PyMDP simulation from GNN specification.
@@ -32,13 +31,19 @@ def execute_pymdp_simulation_from_gnn(
         Tuple of (success, results)
     """
     try:
-        logger.info(f"Starting PyMDP simulation from GNN spec (correlation_id: {correlation_id})")
+        logger.info(
+            f"Starting PyMDP simulation from GNN spec (correlation_id: {correlation_id})"
+        )
 
         # Execute simulation
-        success, results = execute_pymdp_simulation(gnn_spec, output_dir, correlation_id)
+        success, results = execute_pymdp_simulation(
+            gnn_spec, output_dir, correlation_id
+        )
 
         if success:
-            logger.info(f"PyMDP simulation completed successfully (correlation_id: {correlation_id})")
+            logger.info(
+                f"PyMDP simulation completed successfully (correlation_id: {correlation_id})"
+            )
         else:
             logger.error(f"PyMDP simulation failed (correlation_id: {correlation_id})")
 
@@ -48,19 +53,18 @@ def execute_pymdp_simulation_from_gnn(
         logger.error(f"PyMDP simulation execution failed: {e}")
         return False, {"error": str(e), "traceback": traceback.format_exc()}
 
+
 def execute_pymdp_simulation(
-    gnn_spec: Dict[str, Any],
-    output_dir: Path,
-    correlation_id: str = ""
+    gnn_spec: Dict[str, Any], output_dir: Path, correlation_id: str = ""
 ) -> Tuple[bool, Dict[str, Any]]:
     """
     Execute PyMDP simulation using the canonical pymdp 1.0.0 runner.
-    
+
     Args:
         gnn_spec: GNN specification dictionary
         output_dir: Output directory for results
         correlation_id: Correlation ID for tracking
-        
+
     Returns:
         Tuple of (success, results)
     """
@@ -83,9 +87,10 @@ def execute_pymdp_simulation(
     except Exception as e:
         logger.error(f"PyMDP simulation execution failed: {e}")
         import traceback
+
         return False, {
             "success": False,
             "error": str(e),
             "traceback": traceback.format_exc(),
-            "correlation_id": correlation_id
+            "correlation_id": correlation_id,
         }

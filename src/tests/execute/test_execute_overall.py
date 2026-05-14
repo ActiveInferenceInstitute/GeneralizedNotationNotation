@@ -20,6 +20,7 @@ All tests validate real function execution.
 Rendered Python/Julia script **filenames** must not contain the substring ``test_``, or
 ``find_executable_scripts`` skips them as test helpers (use names like ``fixture_model_pymdp.py``).
 """
+
 import json
 import logging
 
@@ -65,7 +66,7 @@ class TestExecuteOverall:
 # Test PyMDP script
 import json
 print(json.dumps({"status": "success", "framework": "pymdp"}))
-"""
+""",
         )
 
         # Create rxinfer directory with sample script
@@ -74,7 +75,7 @@ print(json.dumps({"status": "success", "framework": "pymdp"}))
             "output/11_render_output/test_model/rxinfer/fixture_model_rxinfer.jl",
             """# Test RxInfer script
 println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
-"""
+""",
         )
 
         return {
@@ -87,7 +88,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test Executor class initialization."""
         executor = GNNExecutor()
         assert executor.output_dir is not None
-        assert hasattr(executor, 'output_dir')
+        assert hasattr(executor, "output_dir")
 
     @pytest.mark.fast
     def test_parse_frameworks_parameter_all(self) -> None:
@@ -127,8 +128,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         # Create directory structure
         base = safe_filesystem.create_dir("render_output")
         pymdp_script = safe_filesystem.create_file(
-            "render_output/model/pymdp/script.py",
-            "# PyMDP script"
+            "render_output/model/pymdp/script.py", "# PyMDP script"
         )
 
         framework_dirs = {
@@ -136,7 +136,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             "rxinfer": "rxinfer",
             "jax": "jax",
             "discopy": "discopy",
-            "activeinference_jl": "activeinference_jl"
+            "activeinference_jl": "activeinference_jl",
         }
 
         framework = determine_script_framework(pymdp_script, base, framework_dirs)
@@ -181,7 +181,9 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             assert all("path" in s or "script_path" in s for s in scripts)
 
     @pytest.mark.fast
-    def test_find_executable_scripts_with_framework_filter(self, sample_render_output: Any) -> None:
+    def test_find_executable_scripts_with_framework_filter(
+        self, sample_render_output: Any
+    ) -> None:
         """Test script discovery with framework filtering."""
         logger = logging.getLogger("test")
         base = sample_render_output["base"]
@@ -193,7 +195,10 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         # Should filter to only pymdp
         for script in scripts:
             script_path = script.get("path") or script.get("script_path", "")
-            assert "rxinfer" not in str(script_path).lower() or "pymdp" in str(script_path).lower()
+            assert (
+                "rxinfer" not in str(script_path).lower()
+                or "pymdp" in str(script_path).lower()
+            )
 
     @pytest.mark.unit
     def test_collect_execution_outputs(self, safe_filesystem: Any) -> None:
@@ -203,8 +208,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         # Create a script that generates output
         safe_filesystem.create_dir("sandbox_scripts")
         script = safe_filesystem.create_file(
-            "sandbox_scripts/test_script.py",
-            "print('test output')"
+            "sandbox_scripts/test_script.py", "print('test output')"
         )
 
         output_dir = safe_filesystem.create_dir("exec_output")
@@ -218,8 +222,9 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             assert isinstance(result, dict), f"Expected dict result, got {type(result)}"
         except Exception as e:
             # If collection fails gracefully, verify it's an expected failure type
-            assert isinstance(e, (FileNotFoundError, ValueError, KeyError, AttributeError)), \
-                f"Unexpected exception type during collection: {type(e).__name__}: {e}"
+            assert isinstance(
+                e, (FileNotFoundError, ValueError, KeyError, AttributeError)
+            ), f"Unexpected exception type during collection: {type(e).__name__}: {e}"
 
     @pytest.mark.slow
     def test_process_execution_flow(self, safe_filesystem: Any) -> None:
@@ -265,7 +270,9 @@ print(json.dumps({"status": "ok"}))
             pytest.fail(f"Execution process crashed: {e}")
 
     @pytest.mark.slow
-    def test_process_execution_with_render_output(self, sample_render_output: Any, safe_filesystem: Any) -> None:
+    def test_process_execution_with_render_output(
+        self, sample_render_output: Any, safe_filesystem: Any
+    ) -> None:
         """Test execution with actual render output present."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
@@ -291,7 +298,11 @@ print(json.dumps({"status": "ok"}))
             if summary_file.exists():
                 with open(summary_file) as f:
                     summary = json.load(f)
-                assert "scripts_found" in summary or "total_scripts" in summary or "timestamp" in summary
+                assert (
+                    "scripts_found" in summary
+                    or "total_scripts" in summary
+                    or "timestamp" in summary
+                )
 
         except Exception as e:
             pytest.fail(f"Execution with render output crashed: {e}")
@@ -316,12 +327,14 @@ result = {
     "output": "test output"
 }
 print(json.dumps(result))
-"""
+""",
         )
         return script
 
     @pytest.mark.unit
-    def test_execute_single_script_success(self, executable_python_script: Any, safe_filesystem: Any) -> None:
+    def test_execute_single_script_success(
+        self, executable_python_script: Any, safe_filesystem: Any
+    ) -> None:
         """Test execution of a simple script."""
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
@@ -330,7 +343,7 @@ print(json.dumps(result))
             "path": executable_python_script,
             "script_path": executable_python_script,
             "framework": "test",
-            "name": "test_script"
+            "name": "test_script",
         }
 
         try:
@@ -343,7 +356,9 @@ print(json.dumps(result))
             pass
 
     @pytest.mark.fast
-    def test_execute_single_script_skipped_when_dependency_missing(self, safe_filesystem: Any) -> None:
+    def test_execute_single_script_skipped_when_dependency_missing(
+        self, safe_filesystem: Any
+    ) -> None:
         """When optional framework dependency is not installed, script is skipped (not run)."""
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
@@ -360,11 +375,15 @@ print(json.dumps(result))
             "executor": sys.executable,
         }
         original_method = execute_processor._is_python_framework_dependency_available
-        execute_processor._is_python_framework_dependency_available = lambda *args, **kwargs: False
+        execute_processor._is_python_framework_dependency_available = (
+            lambda *args, **kwargs: False
+        )
         try:
             result = execute_single_script(script_info, results_dir, False, logger)
         finally:
-            execute_processor._is_python_framework_dependency_available = original_method
+            execute_processor._is_python_framework_dependency_available = (
+                original_method
+            )
         assert result.get("skipped") is True
         assert result.get("success") is False
         assert "Dependency not installed" in (result.get("error") or "")
@@ -382,14 +401,14 @@ print(json.dumps(result))
             """#!/usr/bin/env python3
 import time
 time.sleep(1000)  # Sleep for a long time
-"""
+""",
         )
 
         script_info = {
             "path": hanging_script,
             "script_path": hanging_script,
             "framework": "test",
-            "name": "hanging_script"
+            "name": "hanging_script",
         }
 
         # This should return with timeout status, not hang
@@ -420,7 +439,7 @@ class TestExecuteIntegration:
             """#!/usr/bin/env python3
 import json
 print(json.dumps({"status": "executed", "model": "actinf_model"}))
-"""
+""",
         )
 
         # Run execution
@@ -559,7 +578,7 @@ print(json.dumps({"status": "ok"}))
 
 class TestJAXExecute:
     """JAX-specific execute tests.
-    
+
     These tests verify that the execute module correctly discovers,
     identifies, and runs JAX scripts. All tests use real execution
     functions with actual scripts.
@@ -604,7 +623,7 @@ with open(output_file, "w") as f:
 
 print(json.dumps(result))
 print("JAX Active Inference model test successful!")
-'''
+''',
         )
 
         return {
@@ -625,10 +644,14 @@ print("JAX Active Inference model test successful!")
         assert len(scripts) > 0, "Should discover JAX scripts in jax/ directory"
         # Verify they are identified as jax framework
         for s in scripts:
-            assert s.get('framework') == 'jax', f"Script framework should be 'jax', got: {s.get('framework')}"
+            assert s.get("framework") == "jax", (
+                f"Script framework should be 'jax', got: {s.get('framework')}"
+            )
 
     @pytest.mark.unit
-    def test_execute_jax_script(self, jax_render_output: Any, safe_filesystem: Any) -> None:
+    def test_execute_jax_script(
+        self, jax_render_output: Any, safe_filesystem: Any
+    ) -> None:
         """Test execution of a JAX-style script via execute_single_script."""
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
@@ -640,7 +663,7 @@ print("JAX Active Inference model test successful!")
             "name": "actinf_model_jax",
             "executor": sys.executable,
             "relative_path": Path("actinf_model/jax/actinf_model_jax.py"),
-            "size_bytes": jax_render_output["jax_script"].stat().st_size
+            "size_bytes": jax_render_output["jax_script"].stat().st_size,
         }
 
         try:
@@ -650,7 +673,9 @@ print("JAX Active Inference model test successful!")
             if result.get("skipped"):
                 assert "Dependency not installed" in (result.get("error") or ""), result
             else:
-                assert result.get("success") is True, f"JAX script execution should succeed: {result}"
+                assert result.get("success") is True, (
+                    f"JAX script execution should succeed: {result}"
+                )
         except Exception as e:
             pytest.fail(f"JAX script execution crashed: {e}")
 
@@ -659,8 +684,7 @@ print("JAX Active Inference model test successful!")
         """Test framework detection correctly identifies JAX scripts."""
         base = safe_filesystem.create_dir("render_output")
         jax_script = safe_filesystem.create_file(
-            "render_output/model/jax/model_jax.py",
-            "# JAX Active Inference script"
+            "render_output/model/jax/model_jax.py", "# JAX Active Inference script"
         )
 
         framework_dirs = {
@@ -668,24 +692,23 @@ print("JAX Active Inference model test successful!")
             "rxinfer": "rxinfer",
             "jax": "jax",
             "discopy": "discopy",
-            "activeinference_jl": "activeinference_jl"
+            "activeinference_jl": "activeinference_jl",
         }
 
         framework = determine_script_framework(jax_script, base, framework_dirs)
         assert framework == "jax", f"Should detect jax framework, got: {framework}"
 
     @pytest.mark.slow
-    def test_process_execution_with_jax_framework_filter(self, jax_render_output: Any, safe_filesystem: Any) -> None:
+    def test_process_execution_with_jax_framework_filter(
+        self, jax_render_output: Any, safe_filesystem: Any
+    ) -> None:
         """Test execution processing with JAX framework filter."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output_exec")
 
         try:
             success = process_execute(
-                input_dir,
-                output_dir,
-                verbose=True,
-                frameworks="jax"
+                input_dir, output_dir, verbose=True, frameworks="jax"
             )
             # Phase 1.1 contract: process_execute returns bool OR int
             # (2 = skipped/warnings, 0/1 = standard exit codes).
@@ -704,7 +727,6 @@ print("JAX Active Inference model test successful!")
             pytest.fail(f"JAX execution processing crashed: {e}")
 
 
-
 class TestExecuteDisCoPyTranslatorModule:
     """Smoke tests for execute.discopy_translator_module.translator sub-module."""
 
@@ -715,13 +737,15 @@ class TestExecuteDisCoPyTranslatorModule:
         from execute.discopy_translator_module.translator import (
             gnn_file_to_discopy_diagram,
         )
+
         result = gnn_file_to_discopy_diagram(tmp_path / "nonexistent.md")
         # Should return None on failure (no discopy or missing file)
-        assert result is None or hasattr(result, '__class__')
+        assert result is None or hasattr(result, "__class__")
 
     def test_gnn_file_to_discopy_matrix_diagram_nonexistent(self, tmp_path):
         from execute.discopy_translator_module.translator import (
             gnn_file_to_discopy_matrix_diagram,
         )
+
         result = gnn_file_to_discopy_matrix_diagram(tmp_path / "nonexistent.md")
-        assert result is None or hasattr(result, '__class__')
+        assert result is None or hasattr(result, "__class__")

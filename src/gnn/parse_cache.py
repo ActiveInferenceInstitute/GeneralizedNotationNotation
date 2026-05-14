@@ -28,7 +28,9 @@ class ParseCache:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._stats = {"hits": 0, "misses": 0}
 
-    def get_section(self, file_path: str, section_name: str, section_content: str) -> Optional[Dict[str, Any]]:
+    def get_section(
+        self, file_path: str, section_name: str, section_content: str
+    ) -> Optional[Dict[str, Any]]:
         """
         Look up cached parse result for a section.
 
@@ -56,7 +58,13 @@ class ParseCache:
         self._stats["misses"] += 1
         return None
 
-    def set_section(self, file_path: str, section_name: str, section_content: str, result: Dict[str, Any]) -> None:
+    def set_section(
+        self,
+        file_path: str,
+        section_name: str,
+        section_content: str,
+        result: Dict[str, Any],
+    ) -> None:
         """
         Store parse result for a section.
 
@@ -113,7 +121,9 @@ class ParseCache:
             "hit_ratio": round(ratio, 3),
         }
 
-    def _cache_key(self, file_path: str, section_name: str, section_content: str) -> str:
+    def _cache_key(
+        self, file_path: str, section_name: str, section_content: str
+    ) -> str:
         """Generate unique cache key for a file+section+content combination."""
         prefix = hashlib.sha256(file_path.encode()).hexdigest()[:8]
         content_hash = hashlib.sha256(section_content.encode()).hexdigest()[:12]

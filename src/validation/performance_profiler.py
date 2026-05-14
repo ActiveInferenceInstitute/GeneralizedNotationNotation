@@ -13,22 +13,23 @@ from typing import Any, Dict, List, Union
 
 logger = logging.getLogger(__name__)
 
+
 class PerformanceProfiler:
     """Profiler for performance aspects of GNN models."""
 
     def profile(self, content: str) -> Dict[str, Any]:
         """
         Profile the performance characteristics of a GNN model.
-        
+
         Args:
             content: GNN model content
-            
+
         Returns:
             Performance profile with metrics and warnings
         """
         # Extract model structure
-        state_blocks = re.findall(r'StateSpaceBlock\s*\{([^}]*)\}', content)
-        connections = re.findall(r'Connection\s*\{([^}]*)\}', content)
+        state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
+        connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Extract dimensions and other properties
         block_dims = self._extract_block_dimensions(state_blocks)
@@ -41,23 +42,24 @@ class PerformanceProfiler:
         # Generate warnings
         warnings = self._generate_warnings(metrics)
 
-        return {
-            "metrics": metrics,
-            "warnings": warnings
-        }
+        return {"metrics": metrics, "warnings": warnings}
 
-    def _extract_block_dimensions(self, state_blocks: List[str]) -> Dict[str, List[int]]:
+    def _extract_block_dimensions(
+        self, state_blocks: List[str]
+    ) -> Dict[str, List[int]]:
         """Extract dimensions from state blocks."""
         block_dims = {}
 
         for block in state_blocks:
-            name_match = re.search(r'Name:\s*([^\n]+)', block)
-            dim_match = re.search(r'Dimensions:\s*([^\n]+)', block)
+            name_match = re.search(r"Name:\s*([^\n]+)", block)
+            dim_match = re.search(r"Dimensions:\s*([^\n]+)", block)
 
             if name_match and dim_match:
                 name = name_match.group(1).strip()
                 try:
-                    dims = [int(d.strip()) for d in dim_match.group(1).strip().split(',')]
+                    dims = [
+                        int(d.strip()) for d in dim_match.group(1).strip().split(",")
+                    ]
                     block_dims[name] = dims
                 except ValueError:
                     logger.debug("Skipping invalid dimensions for '%s'", name)
@@ -69,8 +71,8 @@ class PerformanceProfiler:
         block_types = {}
 
         for block in state_blocks:
-            name_match = re.search(r'Name:\s*([^\n]+)', block)
-            type_match = re.search(r'Type:\s*([^\n]+)', block)
+            name_match = re.search(r"Name:\s*([^\n]+)", block)
+            type_match = re.search(r"Type:\s*([^\n]+)", block)
 
             if name_match:
                 name = name_match.group(1).strip()
@@ -84,7 +86,7 @@ class PerformanceProfiler:
         connection_types = []
 
         for conn in connections:
-            type_match = re.search(r'Type:\s*([^\n]+)', conn)
+            type_match = re.search(r"Type:\s*([^\n]+)", conn)
             if type_match:
                 connection_types.append(type_match.group(1).strip())
             else:
@@ -92,7 +94,12 @@ class PerformanceProfiler:
 
         return connection_types
 
-    def _calculate_metrics(self, block_dims: Dict[str, List[int]], block_types: Dict[str, str], connection_types: List[str]) -> Dict[str, Any]:
+    def _calculate_metrics(
+        self,
+        block_dims: Dict[str, List[int]],
+        block_types: Dict[str, str],
+        connection_types: List[str],
+    ) -> Dict[str, Any]:
         """Calculate performance metrics."""
         metrics = {}
 
@@ -112,17 +119,28 @@ class PerformanceProfiler:
         # Memory usage estimation
         # Assume 8 bytes per dimension for double precision
         metrics["estimated_memory_bytes"] = metrics["total_dimensions"] * 8
-        metrics["estimated_memory_mb"] = metrics["estimated_memory_bytes"] / (1024 * 1024)
+        metrics["estimated_memory_mb"] = metrics["estimated_memory_bytes"] / (
+            1024 * 1024
+        )
 
         # Computational complexity estimation
-        metrics["computational_complexity"] = self._estimate_computational_complexity(block_dims, block_types, connection_types)
+        metrics["computational_complexity"] = self._estimate_computational_complexity(
+            block_dims, block_types, connection_types
+        )
 
         # Parallelization potential
-        metrics["parallelization_potential"] = self._estimate_parallelization_potential(block_dims, block_types, connection_types)
+        metrics["parallelization_potential"] = self._estimate_parallelization_potential(
+            block_dims, block_types, connection_types
+        )
 
         return metrics
 
-    def _estimate_computational_complexity(self, block_dims: Dict[str, List[int]], block_types: Dict[str, str], connection_types: List[str]) -> Dict[str, Any]:
+    def _estimate_computational_complexity(
+        self,
+        block_dims: Dict[str, List[int]],
+        block_types: Dict[str, str],
+        connection_types: List[str],
+    ) -> Dict[str, Any]:
         """Estimate computational complexity of the model."""
         # Initialize complexity metrics
         complexity = {
@@ -130,7 +148,7 @@ class PerformanceProfiler:
             "learning_operations": 0,
             "complexity_class": "Unknown",
             "bottleneck_block": None,
-            "bottleneck_operations": 0
+            "bottleneck_operations": 0,
         }
 
         # Calculate operations for each block
@@ -180,7 +198,12 @@ class PerformanceProfiler:
 
         return complexity
 
-    def _estimate_parallelization_potential(self, block_dims: Dict[str, List[int]], block_types: Dict[str, str], connection_types: List[str]) -> Dict[str, Any]:
+    def _estimate_parallelization_potential(
+        self,
+        block_dims: Dict[str, List[int]],
+        block_types: Dict[str, str],
+        connection_types: List[str],
+    ) -> Dict[str, Any]:
         """Estimate parallelization potential of the model."""
         # Initialize parallelization metrics
         parallelization = {
@@ -188,7 +211,7 @@ class PerformanceProfiler:
             "sequential_dependencies": 0,
             "parallel_efficiency": 0.0,
             "gpu_amenable": False,
-            "distributed_amenable": False
+            "distributed_amenable": False,
         }
 
         # Count blocks that can be processed in parallel
@@ -208,8 +231,12 @@ class PerformanceProfiler:
             # Simple heuristic: assume 70% of blocks can be parallelized
             parallelizable_blocks = int(total_blocks * 0.7)
             parallelization["parallelizable_blocks"] = parallelizable_blocks
-            parallelization["sequential_dependencies"] = total_blocks - parallelizable_blocks
-            parallelization["parallel_efficiency"] = parallelizable_blocks / total_blocks
+            parallelization["sequential_dependencies"] = (
+                total_blocks - parallelizable_blocks
+            )
+            parallelization["parallel_efficiency"] = (
+                parallelizable_blocks / total_blocks
+            )
 
         # Determine GPU amenability
         # Simple heuristic: if there are large dimensions, it's GPU amenable
@@ -244,7 +271,9 @@ class PerformanceProfiler:
         bottleneck_block = complexity.get("bottleneck_block")
         bottleneck_ops = complexity.get("bottleneck_operations", 0)
         if bottleneck_block and bottleneck_ops > 10000:
-            warnings.append(f"Performance bottleneck in block '{bottleneck_block}': {bottleneck_ops} operations")
+            warnings.append(
+                f"Performance bottleneck in block '{bottleneck_block}': {bottleneck_ops} operations"
+            )
 
         # Parallelization warnings
         parallelization = metrics.get("parallelization_potential", {})
@@ -263,7 +292,9 @@ class PerformanceProfiler:
             warnings.append(f"Large number of connections ({connection_count})")
 
         if connection_count > state_block_count * 3:
-            warnings.append(f"High connection density: {connection_count} connections for {state_block_count} blocks")
+            warnings.append(
+                f"High connection density: {connection_count} connections for {state_block_count} blocks"
+            )
 
         return warnings
 
@@ -271,10 +302,10 @@ class PerformanceProfiler:
 def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]:
     """
     Profile the performance characteristics of a GNN model.
-    
+
     Args:
         model_path: Path to the GNN model file, Path object, or model data dictionary
-        
+
     Returns:
         Performance profile with metrics and warnings
     """
@@ -290,7 +321,7 @@ def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[st
             model_path_str = str(model_path)
 
             # Read model content
-            with open(model_path, 'r', encoding='utf-8') as f:
+            with open(model_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
         # Performance profiling
@@ -299,18 +330,23 @@ def profile_performance(model_path: Union[str, Path, Dict[str, Any]]) -> Dict[st
 
         return {
             "file_path": model_path_str,
-            "file_name": Path(model_path_str).name if model_path_str != "unknown" else "unknown",
+            "file_name": Path(model_path_str).name
+            if model_path_str != "unknown"
+            else "unknown",
             "metrics": profile_result.get("metrics", {}),
             "warnings": profile_result.get("warnings", []),
-            "performance_score": _calculate_performance_score(profile_result)
+            "performance_score": _calculate_performance_score(profile_result),
         }
 
     except Exception as e:
         return {
             "status": "error",
-            "file_path": str(model_path) if not isinstance(model_path, dict) else "unknown",
-            "error": str(e)
+            "file_path": str(model_path)
+            if not isinstance(model_path, dict)
+            else "unknown",
+            "error": str(e),
         }
+
 
 def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
     """Extract content from model data dictionary."""
@@ -330,7 +366,9 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add initial parameterization
         if "InitialParameterization" in raw_sections:
-            content_parts.append(f"InitialParameterization: {raw_sections['InitialParameterization']}")
+            content_parts.append(
+                f"InitialParameterization: {raw_sections['InitialParameterization']}"
+            )
 
         # Add connections
         if "Connections" in raw_sections:
@@ -352,7 +390,9 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
                 name = var.get("name", "Unknown")
                 var_type = var.get("var_type", "unknown")
                 dimensions = var.get("dimensions", [])
-                dim_str = "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                dim_str = (
+                    "[" + ", ".join(map(str, dimensions)) + "]" if dimensions else ""
+                )
                 var_lines.append(f"{name}{dim_str} # {var_type}")
             content_parts.append("StateSpaceBlock:\n" + "\n".join(var_lines))
 
@@ -360,8 +400,16 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
         if connections:
             conn_lines = []
             for conn in connections:
-                source = conn.get("source_variables", ["?"])[0] if conn.get("source_variables") else "?"
-                target = conn.get("target_variables", ["?"])[0] if conn.get("target_variables") else "?"
+                source = (
+                    conn.get("source_variables", ["?"])[0]
+                    if conn.get("source_variables")
+                    else "?"
+                )
+                target = (
+                    conn.get("target_variables", ["?"])[0]
+                    if conn.get("target_variables")
+                    else "?"
+                )
                 conn_lines.append(f"{source} > {target}")
             content_parts.append("Connections:\n" + "\n".join(conn_lines))
 
@@ -369,6 +417,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
     # Final recovery: return empty string
     return ""
+
 
 def _calculate_performance_score(profile_result: Dict[str, Any]) -> float:
     """Calculate a performance score from profile results."""

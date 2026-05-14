@@ -28,7 +28,7 @@ def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
     variables: Dict[str, Any] = {}
 
     # Match: varname[dim1,dim2,...,type=xxx] or varname[dim1,dim2,...]
-    pattern = r'^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]'
+    pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
 
     in_state_space = False
     for line in content.splitlines():

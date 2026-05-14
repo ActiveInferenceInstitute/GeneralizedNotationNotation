@@ -22,19 +22,21 @@ from pathlib import Path
 import pytest
 
 # Add project root to path for imports
-project_root = Path(__file__).parent.parent.parent.parent  # src/tests → src → project root
+project_root = Path(
+    __file__
+).parent.parent.parent.parent  # src/tests → src → project root
 sys.path.insert(0, str(project_root))
 sys.path.insert(0, str(project_root / "src"))
 
-from src.gnn.parsers.markdown_parser import MarkdownGNNParser
-from src.render.pymdp.pymdp_renderer import PyMDPRenderer
-from src.utils.jax_stack_validation import jax_pymdp_stack_ok
+from gnn.parsers.markdown_parser import MarkdownGNNParser
+from render.pymdp.pymdp_renderer import PyMDPRenderer
+from utils.jax_stack_validation import jax_pymdp_stack_ok
 
 try:
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import format_duration
 except ImportError:
-    from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
+    from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
 
 def _explicit_three_state_config() -> dict:
@@ -83,10 +85,10 @@ class TestGNNPyMDPIntegration:
 
         assert parsed_data is not None
         # Check we got a ParseResult or dict with data
-        if hasattr(parsed_data, 'success'):
+        if hasattr(parsed_data, "success"):
             # ParseResult object
             assert parsed_data.success is True
-        elif hasattr(parsed_data, 'data'):
+        elif hasattr(parsed_data, "data"):
             assert parsed_data.data is not None
         else:
             # Recovery for dict returns
@@ -100,8 +102,8 @@ class TestGNNPyMDPIntegration:
         renderer = PyMDPRenderer()
 
         # Verify renderer has the expected methods
-        assert hasattr(renderer, 'render_file')
-        assert hasattr(renderer, 'render_directory')
+        assert hasattr(renderer, "render_file")
+        assert hasattr(renderer, "render_directory")
         assert callable(renderer.render_file)
 
     @pytest.mark.skipif(

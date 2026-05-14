@@ -12,6 +12,7 @@ from typing import Dict
 # psutil is optional; tests should not fail to import if it's missing
 try:
     import psutil as _psutil  # type: ignore
+
     PSUTIL_AVAILABLE = True
 except Exception:
     _psutil = None  # type: ignore
@@ -71,10 +72,14 @@ class ResourceMonitor:
 
                 # Check limits
                 if memory_mb > self.memory_limit_mb:
-                    logging.warning(f"⚠️ Memory usage ({memory_mb:.1f}MB) exceeds limit ({self.memory_limit_mb}MB)")
+                    logging.warning(
+                        f"⚠️ Memory usage ({memory_mb:.1f}MB) exceeds limit ({self.memory_limit_mb}MB)"
+                    )
 
                 if cpu_percent > self.cpu_limit_percent:
-                    logging.warning(f"⚠️ CPU usage ({cpu_percent:.1f}%) exceeds limit ({self.cpu_limit_percent}%)")
+                    logging.warning(
+                        f"⚠️ CPU usage ({cpu_percent:.1f}%) exceeds limit ({self.cpu_limit_percent}%)"
+                    )
 
                 time.sleep(0.5)  # Monitor every 500ms
 

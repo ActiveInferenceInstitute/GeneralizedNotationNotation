@@ -16,8 +16,10 @@ if str(SRC) not in sys.path:
 
 # --- validate_pipeline_summary ------------------------------------------
 
+
 def test_validate_pipeline_summary_accepts_minimal_valid_shape():
     from intelligent_analysis import validate_pipeline_summary
+
     summary = {"steps": [{"name": "3_gnn", "status": "success"}]}
     # Either True or False — but must not raise.
     result = validate_pipeline_summary(summary)
@@ -26,14 +28,17 @@ def test_validate_pipeline_summary_accepts_minimal_valid_shape():
 
 def test_validate_pipeline_summary_rejects_non_dict():
     from intelligent_analysis import validate_pipeline_summary
+
     result = validate_pipeline_summary("not-a-dict")  # type: ignore[arg-type]
     assert result is False
 
 
 # --- health scoring ------------------------------------------------------
 
+
 def test_calculate_pipeline_health_score_perfect_run_is_high():
     from intelligent_analysis.analyzer import calculate_pipeline_health_score
+
     summary = {
         "steps": [
             {"name": f"step_{i}", "status": "success", "duration_s": 1.0}
@@ -53,26 +58,37 @@ def test_calculate_pipeline_health_score_perfect_run_is_high():
 def test_calculate_pipeline_health_score_handles_empty_summary():
     """Regression: empty summary must not raise — it gets a baseline score."""
     from intelligent_analysis.analyzer import calculate_pipeline_health_score
+
     score = calculate_pipeline_health_score({})
     assert isinstance(score, float)
 
 
 # --- classify_failure_severity ------------------------------------------
 
+
 def test_classify_failure_severity_returns_recognized_level():
     from intelligent_analysis.analyzer import classify_failure_severity
-    severity = classify_failure_severity({
-        "name": "3_gnn",
-        "status": "failed",
-        "error": "Failed to parse input file",
-    })
+
+    severity = classify_failure_severity(
+        {
+            "name": "3_gnn",
+            "status": "failed",
+            "error": "Failed to parse input file",
+        }
+    )
     assert isinstance(severity, str)
     # Accept the full taxonomy used by intelligent_analysis (including "minor"
     # and "major", which the module uses in its triage rubric).
     allowed = {
-        "critical", "high", "medium", "low",
-        "info", "warning", "error",
-        "minor", "major",
+        "critical",
+        "high",
+        "medium",
+        "low",
+        "info",
+        "warning",
+        "error",
+        "minor",
+        "major",
     }
     assert severity.lower() in allowed, (
         f"Unknown severity {severity!r} — if this is a new level, add it to the allowed set."
@@ -81,8 +97,10 @@ def test_classify_failure_severity_returns_recognized_level():
 
 # --- detect_performance_patterns + generate_optimization_suggestions ---
 
+
 def test_detect_performance_patterns_returns_list():
     from intelligent_analysis.analyzer import detect_performance_patterns
+
     summary = {
         "steps": [
             {"name": "11_render", "duration_s": 30.0, "status": "success"},
@@ -95,11 +113,13 @@ def test_detect_performance_patterns_returns_list():
 
 def test_generate_optimization_suggestions_returns_list():
     from intelligent_analysis.analyzer import generate_optimization_suggestions
+
     result = generate_optimization_suggestions({"steps": []})
     assert isinstance(result, list)
 
 
 # --- remediation --------------------------------------------------------
+
 
 def test_suggest_fix_accepts_violation_object():
     """suggest_fix expects a violation object exposing .framework and .field
@@ -107,7 +127,10 @@ def test_suggest_fix_accepts_violation_object():
     from types import SimpleNamespace
 
     from intelligent_analysis.remediation import suggest_fix
-    violation = SimpleNamespace(framework="pymdp", field="matrix_dims", message="mismatch")
+
+    violation = SimpleNamespace(
+        framework="pymdp", field="matrix_dims", message="mismatch"
+    )
     result = suggest_fix(violation)
     # Either a RemediationPlan (when the lookup finds one) or None.
     assert result is None or result.__class__.__name__ == "RemediationPlan"
@@ -121,5 +144,6 @@ def test_suggest_fix_raises_on_dict_violation():
     import pytest as _pytest
 
     from intelligent_analysis.remediation import suggest_fix
+
     with _pytest.raises(AttributeError):
         suggest_fix({"type": "unknown", "message": "x"})  # type: ignore[arg-type]

@@ -31,7 +31,10 @@ def generate_pipeline_report(
         Markdown string for PIPELINE_REPORT.md.
     """
     output_dir = Path(output_dir)
-    summary_path = summary_path or output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    summary_path = (
+        summary_path
+        or output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+    )
 
     # Load summary if available
     summary = _load_summary(summary_path)
@@ -75,7 +78,8 @@ def _load_summary(path: Path) -> Dict[str, Any]:
 def _discover_step_dirs(output_dir: Path) -> List[Path]:
     """Find all step output directories (e.g. 3_gnn_output, 7_export_output)."""
     dirs = sorted(
-        d for d in output_dir.iterdir()
+        d
+        for d in output_dir.iterdir()
         if d.is_dir() and d.name[0].isdigit() and "_output" in d.name
     )
     return dirs
@@ -89,7 +93,10 @@ def _collect_step_stats(step_dirs: List[Path]) -> Dict[str, Dict[str, Any]]:
         total_size = sum(f.stat().st_size for f in d.rglob("*") if f.is_file())
         # Look for a results JSON
         results_json = None
-        for candidate in [d / "results.json", d / f"{d.name.replace('_output', '')}_results.json"]:
+        for candidate in [
+            d / "results.json",
+            d / f"{d.name.replace('_output', '')}_results.json",
+        ]:
             if candidate.exists():
                 results_json = candidate
                 break
@@ -109,8 +116,12 @@ def _collect_step_stats(step_dirs: List[Path]) -> Dict[str, Dict[str, Any]]:
 
 def _section_header(summary: Dict[str, Any]) -> str:
     """Generate the report header section."""
-    timestamp = summary.get("start_time", summary.get("timestamp", datetime.now().isoformat()))
-    total_duration = summary.get("total_duration_seconds", summary.get("total_duration", "N/A"))
+    timestamp = summary.get(
+        "start_time", summary.get("timestamp", datetime.now().isoformat())
+    )
+    total_duration = summary.get(
+        "total_duration_seconds", summary.get("total_duration", "N/A")
+    )
     if isinstance(total_duration, (int, float)):
         total_duration = f"{total_duration:.1f}"
 
@@ -166,8 +177,16 @@ def _section_step_status(
             files = st.get("file_count", "—")
             size = st.get("total_size_kb", "—")
             step_num = step.get("step_number", step.get("step_num", "?"))
-            emoji = "✅" if status in ("SUCCESS", "success") else "⚠️" if "warn" in str(status).lower() else "❌"
-            lines.append(f"| {step_num} | {name} | {emoji} {status} | {duration} | {files} | {size} |")
+            emoji = (
+                "✅"
+                if status in ("SUCCESS", "success")
+                else "⚠️"
+                if "warn" in str(status).lower()
+                else "❌"
+            )
+            lines.append(
+                f"| {step_num} | {name} | {emoji} {status} | {duration} | {files} | {size} |"
+            )
 
         # Self-referencing rows: the report step itself (step 23_report.py)
         # and intelligent analysis (24_intelligent_analysis.py) are generated
@@ -176,7 +195,10 @@ def _section_step_status(
         recorded_scripts = {s.get("script_name", "") for s in steps}
         self_referencing_steps = [
             ("23_report.py", "Comprehensive analysis report generation"),
-            ("24_intelligent_analysis.py", "AI-powered pipeline analysis and executive reports"),
+            (
+                "24_intelligent_analysis.py",
+                "AI-powered pipeline analysis and executive reports",
+            ),
         ]
         for script_name, desc in self_referencing_steps:
             if script_name not in recorded_scripts:
@@ -187,14 +209,18 @@ def _section_step_status(
                 # These steps are in-flight when the report is written
                 step_num = int(script_name.split("_")[0]) + 1
                 emoji = "🔄"
-                lines.append(f"| {step_num} | {desc} | {emoji} IN PROGRESS | — | {files} | {size} |")
+                lines.append(
+                    f"| {step_num} | {desc} | {emoji} IN PROGRESS | — | {files} | {size} |"
+                )
 
     elif step_stats:
         lines.append("")
         lines.append("| Step Output | Files | Size (KB) |")
         lines.append("|-------------|-------|-----------|")
         for dir_name, st in sorted(step_stats.items()):
-            lines.append(f"| `{dir_name}` | {st['file_count']} | {st['total_size_kb']} |")
+            lines.append(
+                f"| `{dir_name}` | {st['file_count']} | {st['total_size_kb']} |"
+            )
     else:
         lines.append("\n*No step results available.*")
 
@@ -211,7 +237,9 @@ def _section_timing(summary: Dict[str, Any]) -> str:
     lines = ["## Timing Breakdown"]
 
     # Sort by duration descending
-    sorted_steps = sorted(steps, key=lambda s: s.get("duration_seconds", 0), reverse=True)
+    sorted_steps = sorted(
+        steps, key=lambda s: s.get("duration_seconds", 0), reverse=True
+    )
 
     lines.append("")
     lines.append("| Step | Duration (s) | % of Total |")
@@ -246,11 +274,15 @@ def _section_artifacts(step_dirs: List[Path]) -> str:
         total_size += size
 
         # Show notable files (JSON results, reports)
-        notable = [f.name for f in file_items if f.suffix in (".json", ".md", ".html", ".svg")][:5]
+        notable = [
+            f.name for f in file_items if f.suffix in (".json", ".md", ".html", ".svg")
+        ][:5]
         notable_str = ", ".join(f"`{n}`" for n in notable) if notable else "—"
-        lines.append(f"- **`{d.name}`**: {count} files ({size/1024:.1f} KB) — {notable_str}")
+        lines.append(
+            f"- **`{d.name}`**: {count} files ({size / 1024:.1f} KB) — {notable_str}"
+        )
 
-    lines.append(f"\n**Total**: {total_files} files ({total_size/1024:.1f} KB)")
+    lines.append(f"\n**Total**: {total_files} files ({total_size / 1024:.1f} KB)")
     return "\n".join(lines)
 
 
@@ -266,7 +298,9 @@ def _section_statistics(output_dir: Path) -> str:
             with open(gnn_results) as f:
                 data = json.load(f)
             stats["Files parsed"] = data.get("total_files", "?")
-            stats["Models discovered"] = data.get("total_models", data.get("files_parsed", "?"))
+            stats["Models discovered"] = data.get(
+                "total_models", data.get("files_parsed", "?")
+            )
             stats["Sections extracted"] = sum(
                 len(fi.get("sections", []))
                 for fi in data.get("file_results", data.get("results", []))
@@ -312,12 +346,16 @@ def _section_errors(
 
     for err in errors:
         if isinstance(err, dict):
-            lines.append(f"- ❌ **{err.get('step', '?')}**: {err.get('error', str(err))}")
+            lines.append(
+                f"- ❌ **{err.get('step', '?')}**: {err.get('error', str(err))}"
+            )
         else:
             lines.append(f"- ❌ {err}")
 
     for ae in auth_errors:
         if isinstance(ae, dict):
-            lines.append(f"- 🔑 Auth failure: **{ae.get('provider', '?')}** — {ae.get('error', '')[:100]}")
+            lines.append(
+                f"- 🔑 Auth failure: **{ae.get('provider', '?')}** — {ae.get('error', '')[:100]}"
+            )
 
     return "\n".join(lines)

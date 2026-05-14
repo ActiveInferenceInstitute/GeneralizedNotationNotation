@@ -13,6 +13,7 @@ Usage:
     # or via pipeline:
     python src/main.py --only-steps 21  # MCP step also registers API tools
 """
+
 __version__ = "1.6.0"
 
 
@@ -25,6 +26,7 @@ MODULE_DESCRIPTION = "FastAPI-based REST interface for the GNN processing pipeli
 # API is optional — check for fastapi at import time
 try:
     import fastapi  # noqa: F401
+
     FASTAPI_AVAILABLE = True
 except ImportError:
     FASTAPI_AVAILABLE = False

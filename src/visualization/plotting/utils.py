@@ -13,6 +13,7 @@ matplotlib.use("Agg")
 
 try:
     import matplotlib.pyplot as plt
+
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
     plt = None

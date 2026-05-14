@@ -42,10 +42,12 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from template import process_template_standardized
 except ImportError:
+
     def process_template_standardized(target_dir, output_dir, logger, **kwargs) -> bool:
         """Recovery template processing when module unavailable."""
         logger.warning("Template module not available - using recovery")
         return True
+
 
 run_script = create_standardized_pipeline_script(
     "0_template.py",
@@ -53,12 +55,14 @@ run_script = create_standardized_pipeline_script(
     "Pipeline template and infrastructure demonstration",
     additional_arguments={
         "simulate_error": {"type": bool, "help": "Simulate an error for testing"}
-    }
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the template step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

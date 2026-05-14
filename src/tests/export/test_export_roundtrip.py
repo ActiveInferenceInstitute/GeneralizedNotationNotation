@@ -24,17 +24,21 @@ SAMPLE = REPO_ROOT / "input" / "gnn_files" / "basics" / "static_perception.md"
 
 def test_export_registry_includes_canonical_formats():
     from export import get_supported_formats
+
     formats = get_supported_formats()
     # These five MUST be present — every downstream step that consumes Step 7
     # output assumes at least JSON + one graph format available.
     for required in ("json", "xml", "graphml", "gexf", "pickle"):
-        assert required in formats, f"Export registry missing canonical format {required!r}: got {formats}"
+        assert required in formats, (
+            f"Export registry missing canonical format {required!r}: got {formats}"
+        )
 
 
 @pytest.mark.skipif(not SAMPLE.exists(), reason="Sample GNN corpus unavailable")
 def test_export_to_json_roundtrip_preserves_structure(tmp_path):
     from export import export_to_json
     from gnn import parse_gnn_file
+
     spec = parse_gnn_file(SAMPLE)
     # parse_gnn_file may return a dataclass; normalize to dict.
     spec_dict = spec.to_dict() if hasattr(spec, "to_dict") else spec
@@ -57,6 +61,7 @@ def test_export_to_json_roundtrip_preserves_structure(tmp_path):
 @pytest.mark.skipif(not SAMPLE.exists(), reason="Sample GNN corpus unavailable")
 def test_process_export_handles_missing_target_dir(tmp_path):
     from export.processor import process_export
+
     missing = tmp_path / "definitely_not_here"
     output_dir = tmp_path / "out"
     # Per Phase 1.1 contract, "no input" must NOT silently report success.

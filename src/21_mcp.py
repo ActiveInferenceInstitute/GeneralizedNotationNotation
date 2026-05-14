@@ -45,9 +45,11 @@ run_script = create_standardized_pipeline_script(
     "Model Context Protocol processing for GNN models",
 )
 
+
 def main() -> int:
     """Main entry point for the mcp step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

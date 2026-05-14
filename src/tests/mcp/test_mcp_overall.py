@@ -18,6 +18,7 @@ class TestMCPModule:
     def test_module_imports(self) -> None:
         """Test that MCP module can be imported."""
         from mcp import FEATURES, __version__
+
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
 
@@ -26,13 +27,13 @@ class TestMCPModule:
         from mcp import FEATURES
 
         expected_features = [
-            'tool_registration',
-            'resource_access',
-            'module_discovery',
-            'caching',
-            'rate_limiting',
-            'concurrent_control',
-            'mcp_integration'
+            "tool_registration",
+            "resource_access",
+            "module_discovery",
+            "caching",
+            "rate_limiting",
+            "concurrent_control",
+            "mcp_integration",
         ]
 
         for feature in expected_features:
@@ -43,7 +44,7 @@ class TestMCPModule:
         from mcp import __version__
 
         # Should be semantic versioning format
-        parts = __version__.split('.')
+        parts = __version__.split(".")
         assert len(parts) >= 2, "Version should have at least major.minor"
 
     def test_process_mcp_function(self) -> None:
@@ -68,7 +69,7 @@ class TestMCPTool:
             name="test_tool",
             func=sample_func,
             schema={"type": "object", "properties": {}},
-            description="A test tool"
+            description="A test tool",
         )
 
         assert tool.name == "test_tool"
@@ -86,7 +87,7 @@ class TestMCPTool:
             name="echo_tool",
             func=echo_func,
             schema={"type": "object", "properties": {"message": {"type": "string"}}},
-            description="Echoes the message"
+            description="Echoes the message",
         )
 
         # Execute the function directly
@@ -108,7 +109,7 @@ class TestMCPResource:
         resource = MCPResource(
             uri_template="test://resource/{id}",
             retriever=retriever,
-            description="A test resource"
+            description="A test resource",
         )
 
         assert resource is not None
@@ -131,7 +132,9 @@ class TestMCPServer:
 
         server = MCPServer()
 
-        assert hasattr(server, 'register_tool'), "MCPServer must have a register_tool method"
+        assert hasattr(server, "register_tool"), (
+            "MCPServer must have a register_tool method"
+        )
         assert callable(server.register_tool), "register_tool must be callable"
 
 
@@ -175,17 +178,17 @@ class TestMCPProcessing:
         output_dir = safe_filesystem.create_dir("mcp_output")
 
         import logging
+
         logger = logging.getLogger("test_mcp")
 
         result = process_mcp(
-            target_dir=target_dir,
-            output_dir=output_dir,
-            logger=logger,
-            verbose=True
+            target_dir=target_dir, output_dir=output_dir, logger=logger, verbose=True
         )
 
         # Should return success
-        assert result is True or (isinstance(result, dict) and result.get('success', False))
+        assert result is True or (
+            isinstance(result, dict) and result.get("success", False)
+        )
 
     def test_mcp_output_files(self, safe_filesystem: Any) -> None:
         """Test that MCP processing creates expected output files."""
@@ -195,13 +198,10 @@ class TestMCPProcessing:
         output_dir = safe_filesystem.create_dir("mcp_files_output")
 
         import logging
+
         logger = logging.getLogger("test_mcp_files")
 
-        process_mcp(
-            target_dir=target_dir,
-            output_dir=output_dir,
-            logger=logger
-        )
+        process_mcp(target_dir=target_dir, output_dir=output_dir, logger=logger)
 
         # Check for expected output files
         expected_files = ["mcp_processing_summary.json", "mcp_results.json"]
@@ -209,7 +209,7 @@ class TestMCPProcessing:
         for filename in expected_files:
             file_path = output_dir / filename
             if file_path.exists():
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     data = json.load(f)
                 assert isinstance(data, dict)
 
@@ -246,13 +246,13 @@ class TestMCPCaching:
         """Test that caching feature is enabled."""
         from mcp import FEATURES
 
-        assert FEATURES.get('caching', False) is True
+        assert FEATURES.get("caching", False) is True
 
     def test_rate_limiting_feature_enabled(self) -> None:
         """Test that rate limiting feature is enabled."""
         from mcp import FEATURES
 
-        assert FEATURES.get('rate_limiting', False) is True
+        assert FEATURES.get("rate_limiting", False) is True
 
 
 class TestMCPIntegration:
@@ -271,17 +271,14 @@ class TestMCPIntegration:
             func=add_func,
             schema={
                 "type": "object",
-                "properties": {
-                    "a": {"type": "number"},
-                    "b": {"type": "number"}
-                }
+                "properties": {"a": {"type": "number"}, "b": {"type": "number"}},
             },
-            description="Adds two numbers"
+            description="Adds two numbers",
         )
 
         # Execute
         result = tool.func(a=5, b=3)
-        assert result['result'] == 8
+        assert result["result"] == 8
 
     def test_mcp_with_gnn_files(self, safe_filesystem: Any) -> None:
         """Test MCP processing with actual GNN files."""
@@ -300,12 +297,11 @@ rate = 0.1
         output_dir = safe_filesystem.create_dir("mcp_gnn_output")
 
         import logging
+
         logger = logging.getLogger("test_mcp_gnn")
 
         result = process_mcp(
-            target_dir=safe_filesystem.temp_dir,
-            output_dir=output_dir,
-            logger=logger
+            target_dir=safe_filesystem.temp_dir, output_dir=output_dir, logger=logger
         )
 
         assert result is not None

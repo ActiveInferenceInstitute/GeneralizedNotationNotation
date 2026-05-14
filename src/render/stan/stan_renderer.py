@@ -75,7 +75,9 @@ def render_stan(
     lines.append("}")
 
     code = "\n".join(lines)
-    logger.info(f"🔧 Stan model generated: {len(data_vars)} data, {len(param_vars)} params")
+    logger.info(
+        f"🔧 Stan model generated: {len(data_vars)} data, {len(param_vars)} params"
+    )
     return code
 
 

@@ -22,7 +22,7 @@ FEATURES = {
     "visual_matrix_editor": True,
     "state_space_studio": True,
     "diagram_as_code": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 # Import GUI runners

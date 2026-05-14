@@ -8,6 +8,7 @@ Discovers and runs JAX-generated scripts, manages device selection, logs hardwar
 @Web: https://flax.readthedocs.io
 @Web: https://pfjax.readthedocs.io
 """
+
 import logging
 import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
@@ -17,19 +18,23 @@ from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
+
 def initialize_jax_devices() -> List[Any]:
     """Initialize and return real JAX devices."""
     try:
         import jax
+
         return list(jax.devices())
     except Exception as exc:
         logger.warning("JAX devices unavailable: %s", exc)
         return []
 
+
 def is_jax_available() -> bool:
     """Check if JAX is importable and print device info."""
     try:
         import jax
+
         # Handle different JAX versions
         try:
             version = jax.__version__
@@ -37,6 +42,7 @@ def is_jax_available() -> bool:
             # For older JAX versions, try alternative version attributes
             try:
                 import jaxlib
+
                 version = jaxlib.__version__
             except (ImportError, AttributeError):
                 version = "unknown"
@@ -57,6 +63,7 @@ def is_jax_available() -> bool:
         logger.error(f"Error checking JAX: {e}")
         return False
 
+
 def find_jax_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List[Path]:
     """Find JAX scripts in the specified directory."""
     base_path = Path(base_dir)
@@ -64,9 +71,20 @@ def find_jax_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List
         logger.warning(f"Directory not found: {base_path}")
         return []
     pattern = "**/*.py" if recursive else "*.py"
-    return [f for f in base_path.glob(pattern) if "jax" in f.name.lower() or f.parent.name == "jax"]
+    return [
+        f
+        for f in base_path.glob(pattern)
+        if "jax" in f.name.lower() or f.parent.name == "jax"
+    ]
 
-def execute_jax_script(script_path: Path, verbose: bool = False, device: Optional[str] = None, output_dir: Optional[Path] = None, timeout: int = 300) -> bool:
+
+def execute_jax_script(
+    script_path: Path,
+    verbose: bool = False,
+    device: Optional[str] = None,
+    output_dir: Optional[Path] = None,
+    timeout: int = 300,
+) -> bool:
     """Execute a single JAX script with enhanced dependency checking, error handling, and log persistence.
 
     Args:
@@ -117,9 +135,9 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
 
     # Validate script syntax
     try:
-        with open(script_path, 'r') as f:
+        with open(script_path, "r") as f:
             content = f.read()
-            compile(content, script_path.name, 'exec')
+            compile(content, script_path.name, "exec")
         logger.debug(f"✅ Script syntax valid: {script_path.name}")
     except SyntaxError as e:
         logger.error(f"❌ Syntax error in {script_path.name}: {e}")
@@ -148,14 +166,16 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
             text=True,
             env=env,
             cwd=abs_script_path.parent,
-            timeout=timeout
+            timeout=timeout,
         )
 
         elapsed = time_mod.time() - start_time
         success = result.returncode == 0
 
         if success:
-            logger.info(f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)")
+            logger.info(
+                f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)"
+            )
             if verbose and result.stdout.strip():
                 logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
         else:
@@ -173,11 +193,11 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
 
             # Save stdout and stderr
             stdout_file = log_dir / "stdout.txt"
-            with open(stdout_file, 'w') as f:
+            with open(stdout_file, "w") as f:
                 f.write(result.stdout or "")
 
             stderr_file = log_dir / "stderr.txt"
-            with open(stderr_file, 'w') as f:
+            with open(stderr_file, "w") as f:
                 f.write(result.stderr or "")
 
             # Save execution log JSON
@@ -188,11 +208,11 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
                 "elapsed_seconds": round(elapsed, 2),
                 "device": device or "default",
                 "timeout": timeout,
-                "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S")
+                "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
             }
 
             log_file = log_dir / "execution_log.json"
-            with open(log_file, 'w') as f:
+            with open(log_file, "w") as f:
                 json_mod.dump(execution_log, f, indent=2)
 
             logger.debug(f"Execution logs saved to: {log_dir}")
@@ -201,13 +221,22 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
 
         return success
     except subprocess.TimeoutExpired:
-        logger.error(f"❌ Script execution timed out after {timeout}s: {script_path.name}")
+        logger.error(
+            f"❌ Script execution timed out after {timeout}s: {script_path.name}"
+        )
         return False
     except Exception as e:
         logger.error(f"❌ Error executing script {script_path.name}: {e}")
         return False
 
-def run_jax_scripts(rendered_simulators_dir: Union[str, Path], execution_output_dir: Optional[Union[str, Path]] = None, recursive_search: bool = True, verbose: bool = False, device: Optional[str] = None) -> bool:
+
+def run_jax_scripts(
+    rendered_simulators_dir: Union[str, Path],
+    execution_output_dir: Optional[Union[str, Path]] = None,
+    recursive_search: bool = True,
+    verbose: bool = False,
+    device: Optional[str] = None,
+) -> bool:
     """Find and run JAX scripts on rendered models."""
     if not is_jax_available():
         logger.error("JAX is not available, cannot execute JAX scripts")
@@ -232,20 +261,55 @@ def run_jax_scripts(rendered_simulators_dir: Union[str, Path], execution_output_
             success_count += 1
         else:
             failure_count += 1
-    logger.info(f"JAX script execution summary: {success_count} succeeded, {failure_count} failed, {success_count + failure_count} total")
+    logger.info(
+        f"JAX script execution summary: {success_count} succeeded, {failure_count} failed, {success_count + failure_count} total"
+    )
     # Return True only if no failures occurred (success means zero failures)
     return failure_count == 0
 
+
 if __name__ == "__main__":
     import argparse
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', stream=sys.stdout)
-    parser = argparse.ArgumentParser(description="Execute JAX scripts generated by the GNN rendering step")
-    parser.add_argument("--output-dir", type=Path, default="../output", help="Main pipeline output directory")
-    parser.add_argument("--recursive", action=argparse.BooleanOptionalAction, default=True, help="Recursively search for scripts in the output directory")
-    parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False, help="Enable verbose output")
-    parser.add_argument("--device", choices=["cpu", "gpu", "tpu"], default=None, help="Device to run JAX scripts on")
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        stream=sys.stdout,
+    )
+    parser = argparse.ArgumentParser(
+        description="Execute JAX scripts generated by the GNN rendering step"
+    )
+    parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default="../output",
+        help="Main pipeline output directory",
+    )
+    parser.add_argument(
+        "--recursive",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Recursively search for scripts in the output directory",
+    )
+    parser.add_argument(
+        "--verbose",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Enable verbose output",
+    )
+    parser.add_argument(
+        "--device",
+        choices=["cpu", "gpu", "tpu"],
+        default=None,
+        help="Device to run JAX scripts on",
+    )
     args = parser.parse_args()
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-    success = run_jax_scripts(rendered_simulators_dir=args.output_dir, recursive_search=args.recursive, verbose=args.verbose, device=args.device)
+    success = run_jax_scripts(
+        rendered_simulators_dir=args.output_dir,
+        recursive_search=args.recursive,
+        verbose=args.verbose,
+        device=args.device,
+    )
     sys.exit(0 if success else 1)

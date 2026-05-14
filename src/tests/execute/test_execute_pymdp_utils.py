@@ -2,7 +2,7 @@
 """
 Test script for PyMDP utilities
 
-This script tests the PyMDP utilities for proper numpy serialization and 
+This script tests the PyMDP utilities for proper numpy serialization and
 GNN integration functionality within the pipeline.
 """
 
@@ -25,7 +25,7 @@ try:
         validate_gnn_pomdp_structure,
     )
 except ImportError:
-    from src.execute.pymdp.pymdp_utils import (
+    from execute.pymdp.pymdp_utils import (
         clean_trace_for_serialization,
         convert_numpy_for_json,
         extract_gnn_dimensions,
@@ -41,15 +41,12 @@ except ImportError:
 def test_trace():
     """Create test data that mimics PyMDP simulation traces."""
     return {
-        'episode': 1,
-        'true_states': [np.int64(2), np.int64(1), np.int64(0)],
-        'observations': [0, 1, 2],
-        'actions': [np.float64(0.0), np.float64(1.0)],
-        'rewards': [np.float64(-0.10), np.float64(1.00)],
-        'beliefs': [
-            np.array([0.1, 0.6, 0.3]),
-            np.array([0.05, 0.25, 0.7])
-        ]
+        "episode": 1,
+        "true_states": [np.int64(2), np.int64(1), np.int64(0)],
+        "observations": [0, 1, 2],
+        "actions": [np.float64(0.0), np.float64(1.0)],
+        "rewards": [np.float64(-0.10), np.float64(1.00)],
+        "beliefs": [np.array([0.1, 0.6, 0.3]), np.array([0.05, 0.25, 0.7])],
     }
 
 
@@ -57,16 +54,12 @@ def test_trace():
 def test_gnn_spec():
     """Create test GNN specification."""
     return {
-        'model_parameters': {
-            'num_hidden_states': 3,
-            'num_obs': 3,
-            'num_actions': 3
-        },
-        'variables': [
-            {'name': 'A', 'dimensions': [3, 3]},
-            {'name': 'B', 'dimensions': [3, 3, 3]},
-            {'name': 'C', 'dimensions': [3]}
-        ]
+        "model_parameters": {"num_hidden_states": 3, "num_obs": 3, "num_actions": 3},
+        "variables": [
+            {"name": "A", "dimensions": [3, 3]},
+            {"name": "B", "dimensions": [3, 3, 3]},
+            {"name": "C", "dimensions": [3]},
+        ],
     }
 
 
@@ -89,7 +82,7 @@ class TestNumpySerialization:
         # Should be JSON serializable
         json_str = json.dumps(cleaned)
         assert json_str is not None
-        assert 'episode' in cleaned
+        assert "episode" in cleaned
 
     def test_safe_json_dump(self, test_trace):
         """Test safe_json_dump function."""
@@ -102,7 +95,7 @@ class TestNumpySerialization:
             assert test_file.exists(), "JSON file should be created"
 
             # Should be loadable
-            with open(test_file, 'r') as f:
+            with open(test_file, "r") as f:
                 loaded_data = json.load(f)
             assert loaded_data is not None
 
@@ -132,15 +125,15 @@ class TestGNNParsing:
         """Test GNN dimension extraction."""
         dimensions = extract_gnn_dimensions(test_gnn_spec)
 
-        assert dimensions['num_states'] == 3, "States dimension mismatch"
-        assert dimensions['num_observations'] == 3, "Observations dimension mismatch"
-        assert dimensions['num_actions'] == 3, "Actions dimension mismatch"
+        assert dimensions["num_states"] == 3, "States dimension mismatch"
+        assert dimensions["num_observations"] == 3, "Observations dimension mismatch"
+        assert dimensions["num_actions"] == 3, "Actions dimension mismatch"
 
     def test_validate_gnn_pomdp_structure(self, test_gnn_spec):
         """Test POMDP structure validation."""
         validation = validate_gnn_pomdp_structure(test_gnn_spec)
 
-        assert validation['valid'], "POMDP structure should be valid"
+        assert validation["valid"], "POMDP structure should be valid"
 
 
 class TestIntegration:
@@ -150,27 +143,27 @@ class TestIntegration:
         """Test saving simulation results."""
         test_traces = [
             {
-                'episode': 0,
-                'true_states': [0, 1, 2],
-                'observations': [0, 1, 2],
-                'actions': [0, 1],
-                'rewards': [-0.1, 1.0],
-                'beliefs': [np.array([0.8, 0.2, 0.0]), np.array([0.1, 0.1, 0.8])]
+                "episode": 0,
+                "true_states": [0, 1, 2],
+                "observations": [0, 1, 2],
+                "actions": [0, 1],
+                "rewards": [-0.1, 1.0],
+                "beliefs": [np.array([0.8, 0.2, 0.0]), np.array([0.1, 0.1, 0.8])],
             }
         ]
 
         test_metrics = {
-            'episode_rewards': [0.9],
-            'episode_lengths': [3],
-            'belief_entropies': [1.5],
-            'success_rates': [1.0]
+            "episode_rewards": [0.9],
+            "episode_lengths": [3],
+            "belief_entropies": [1.5],
+            "success_rates": [1.0],
         }
 
         test_config = {
-            'num_states': 3,
-            'num_observations': 3,
-            'num_actions': 3,
-            'model_name': 'TestModel'
+            "num_states": 3,
+            "num_observations": 3,
+            "num_actions": 3,
+            "model_name": "TestModel",
         }
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -181,17 +174,17 @@ class TestIntegration:
                 metrics=test_metrics,
                 config=test_config,
                 model_matrices=None,
-                output_dir=temp_path
+                output_dir=temp_path,
             )
 
             assert save_results is not None
 
             # Check files were created
             expected_files = [
-                'simulation_config.json',
-                'performance_metrics.json',
-                'simulation_traces.pkl',
-                'simulation_traces.json'
+                "simulation_config.json",
+                "performance_metrics.json",
+                "simulation_traces.pkl",
+                "simulation_traces.json",
             ]
 
             for filename in expected_files:

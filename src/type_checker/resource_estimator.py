@@ -24,8 +24,14 @@ def main():
     parser.add_argument("input_path", help="Path to GNN file or directory")
     parser.add_argument("-t", "--type-check-data", help="Path to type check JSON data")
     parser.add_argument("-o", "--output-dir", help="Directory to save resource reports")
-    parser.add_argument("--recursive", action="store_true", help="Recursively process directories")
-    parser.add_argument("--html-only", action="store_true", help="Generate only HTML report with visualizations")
+    parser.add_argument(
+        "--recursive", action="store_true", help="Recursively process directories"
+    )
+    parser.add_argument(
+        "--html-only",
+        action="store_true",
+        help="Generate only HTML report with visualizations",
+    )
 
     args = parser.parse_args()
 
@@ -49,7 +55,9 @@ def main():
         print(report)
     else:
         # When HTML only mode is selected, just print a simple summary and HTML location
-        output_dir = args.output_dir if args.output_dir else "output/type_checker/resources"
+        output_dir = (
+            args.output_dir if args.output_dir else "output/type_checker/resources"
+        )
         html_path = os.path.join(output_dir, "resource_report_detailed.html")
         print(f"Generated HTML resource report at: {html_path}")
         print(f"Analyzed {len(estimator.results)} files")

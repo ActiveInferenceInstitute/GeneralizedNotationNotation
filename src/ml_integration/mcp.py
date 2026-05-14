@@ -17,9 +17,7 @@ from . import FEATURES, check_ml_frameworks, process_ml_integration
 
 
 def process_ml_integration_mcp(
-    target_directory: str,
-    output_directory: str,
-    verbose: bool = False
+    target_directory: str, output_directory: str, verbose: bool = False
 ) -> Dict[str, Any]:
     """
     Process ML integration for GNN files. Exposed via MCP.
@@ -36,20 +34,20 @@ def process_ml_integration_mcp(
         success = process_ml_integration(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
-            verbose=verbose
+            verbose=verbose,
         )
         return {
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"ML integration processing {'completed successfully' if success else 'failed'}"
+            "message": f"ML integration processing {'completed successfully' if success else 'failed'}",
         }
     except Exception as e:
-        logger.error(f"Error in process_ml_integration_mcp for {target_directory}: {e}", exc_info=True)
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        logger.error(
+            f"Error in process_ml_integration_mcp for {target_directory}: {e}",
+            exc_info=True,
+        )
+        return {"success": False, "error": str(e)}
 
 
 def check_ml_frameworks_mcp() -> Dict[str, Any]:
@@ -65,9 +63,9 @@ def check_ml_frameworks_mcp() -> Dict[str, Any]:
     try:
         frameworks = check_ml_frameworks()
         return {
-            "success":    True,
+            "success": True,
             "frameworks": frameworks,
-            "features":   FEATURES,
+            "features": FEATURES,
         }
     except Exception as e:
         logger.error(f"check_ml_frameworks_mcp error: {e}", exc_info=True)
@@ -85,21 +83,22 @@ def list_ml_integration_targets_mcp() -> Dict[str, Any]:
         Dictionary with integration target names and their dependency status.
     """
     import importlib.util
+
     targets = {
-        "pymdp":         importlib.util.find_spec("pymdp")         is not None,
-        "numpy":         importlib.util.find_spec("numpy")         is not None,
-        "jax":           importlib.util.find_spec("jax")           is not None,
-        "torch":         importlib.util.find_spec("torch")         is not None,
-        "tensorflow":    importlib.util.find_spec("tensorflow")    is not None,
-        "scikit_learn":  importlib.util.find_spec("sklearn")       is not None,
-        "numpyro":       importlib.util.find_spec("numpyro")       is not None,
+        "pymdp": importlib.util.find_spec("pymdp") is not None,
+        "numpy": importlib.util.find_spec("numpy") is not None,
+        "jax": importlib.util.find_spec("jax") is not None,
+        "torch": importlib.util.find_spec("torch") is not None,
+        "tensorflow": importlib.util.find_spec("tensorflow") is not None,
+        "scikit_learn": importlib.util.find_spec("sklearn") is not None,
+        "numpyro": importlib.util.find_spec("numpyro") is not None,
     }
     available = [t for t, v in targets.items() if v]
     return {
-        "success":   True,
-        "targets":   targets,
+        "success": True,
+        "targets": targets,
         "available": available,
-        "count":     len(available),
+        "count": len(available),
     }
 
 
@@ -112,11 +111,12 @@ def get_ml_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         import importlib
+
         mod = importlib.import_module(__package__)
-        version  = getattr(mod, "__version__", "unknown")
+        version = getattr(mod, "__version__", "unknown")
         return {
             "success": True,
-            "module":  __package__,
+            "module": __package__,
             "version": version,
             "features": FEATURES,
             "tools": [
@@ -131,7 +131,6 @@ def get_ml_module_info_mcp() -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-
 # MCP Registration Function
 def register_tools(mcp_instance: Any) -> None:
     """Register ML integration domain tools with the MCP."""
@@ -142,14 +141,21 @@ def register_tools(mcp_instance: Any) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN files to process"},
-                "output_directory": {"type": "string", "description": "Directory to save ML integration results"},
-                "verbose":          {"type": "boolean", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN files to process",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to save ML integration results",
+                },
+                "verbose": {"type": "boolean", "default": False},
             },
             "required": ["target_directory", "output_directory"],
         },
         "Process ML integration for GNN files: model training, inference setup, and framework export.",
-        module=__package__, category="ml_integration",
+        module=__package__,
+        category="ml_integration",
     )
 
     mcp_instance.register_tool(
@@ -157,7 +163,8 @@ def register_tools(mcp_instance: Any) -> None:
         check_ml_frameworks_mcp,
         {},
         "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
-        module=__package__, category="ml_integration",
+        module=__package__,
+        category="ml_integration",
     )
 
     mcp_instance.register_tool(
@@ -165,7 +172,8 @@ def register_tools(mcp_instance: Any) -> None:
         list_ml_integration_targets_mcp,
         {},
         "Return GNN-compatible ML integration targets and their dependency availability.",
-        module=__package__, category="ml_integration",
+        module=__package__,
+        category="ml_integration",
     )
 
     mcp_instance.register_tool(
@@ -173,8 +181,8 @@ def register_tools(mcp_instance: Any) -> None:
         get_ml_module_info_mcp,
         {},
         "Return version, feature flags, and tool inventory of the ML integration module.",
-        module=__package__, category="ml_integration",
+        module=__package__,
+        category="ml_integration",
     )
 
     logger.info("ml_integration module MCP tools registered (4 domain tools).")
-

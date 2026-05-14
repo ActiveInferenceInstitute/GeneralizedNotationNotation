@@ -20,14 +20,17 @@ def run_fast_tests() -> bool:
 
     # Prepare pytest command for fast tests only
     pytest_cmd = [
-        sys.executable, "-m", "pytest",
+        sys.executable,
+        "-m",
+        "pytest",
         "--quiet",
         "--tb=short",
         "--maxfail=5",
         "--durations=5",
         "--disable-warnings",
-        "-m", "fast",
-        "src/tests/test_fast_suite.py"
+        "-m",
+        "fast",
+        "src/tests/test_fast_suite.py",
     ]
 
     # Add timeout plugin if available
@@ -41,7 +44,7 @@ def run_fast_tests() -> bool:
             capture_output=True,
             text=True,
             cwd=Path(__file__).parent.parent.parent,  # Project root
-            timeout=60
+            timeout=60,
         )
 
         elapsed_time = time.time() - start_time
@@ -65,6 +68,7 @@ def run_fast_tests() -> bool:
     except Exception as e:
         print(f"Error running fast tests: {e}")
         return False
+
 
 if __name__ == "__main__":
     success = run_fast_tests()

@@ -11,7 +11,7 @@ Architecture:
   - run_fast_pipeline_tests() - Fast tests for quick pipeline validation (default)
   - run_comprehensive_tests() - All tests including slow/performance tests
   - run_fast_reliable_tests() - Essential tests recovery mode
-  
+
   The ModularTestRunner class provides category-based execution with:
   - Resource monitoring (memory, CPU)
   - Timeout handling per category
@@ -38,7 +38,7 @@ Usage:
   from tests import run_tests
   from pathlib import Path
   import logging
-  
+
   logger = logging.getLogger(__name__)
   success = run_tests(
       logger=logger,
@@ -86,6 +86,7 @@ try:
 except Exception:
     _psutil = None  # type: ignore
 
+
 class TestRunner:
     """Test runner with comprehensive monitoring and reporting."""
 
@@ -94,11 +95,13 @@ class TestRunner:
         self.logger = logging.getLogger("test_runner")
         self.resource_monitor = ResourceMonitor(
             memory_limit_mb=config.memory_limit_mb,
-            cpu_limit_percent=config.cpu_limit_percent
+            cpu_limit_percent=config.cpu_limit_percent,
         )
         self.execution_history: List[TestExecutionResult] = []
 
-    def run_tests(self, test_paths: List[Path], output_dir: Path) -> TestExecutionResult:
+    def run_tests(
+        self, test_paths: List[Path], output_dir: Path
+    ) -> TestExecutionResult:
         """Execute tests with comprehensive monitoring."""
         start_time = time.time()
 
@@ -128,7 +131,7 @@ class TestRunner:
                 coverage_percentage=result.get("coverage_percentage"),
                 error_message=result.get("error_message"),
                 stdout=result.get("stdout", ""),
-                stderr=result.get("stderr", "")
+                stderr=result.get("stderr", ""),
             )
 
             # Store in history
@@ -146,19 +149,23 @@ class TestRunner:
                 tests_skipped=0,
                 execution_time=time.time() - start_time,
                 memory_peak_mb=0.0,
-                error_message=str(e)
+                error_message=str(e),
             )
 
-    def _build_pytest_command(self, test_paths: List[Path], output_dir: Path) -> List[str]:
+    def _build_pytest_command(
+        self, test_paths: List[Path], output_dir: Path
+    ) -> List[str]:
         """Build pytest command with appropriate options."""
         cmd = [
-            sys.executable, "-m", "pytest",
+            sys.executable,
+            "-m",
+            "pytest",
             "--verbose",
             "--tb=short",
             "--log-cli-level=WARNING",
             f"--maxfail={self.config.max_failures}",
             "--durations=10",
-            "--disable-warnings"
+            "--disable-warnings",
         ]
 
         # Add markers
@@ -170,12 +177,14 @@ class TestRunner:
         if self.config.coverage:
             cov_json = output_dir / "coverage.json"
             cov_html = output_dir / "htmlcov"
-            cmd.extend([
-                "--cov=src",
-                f"--cov-report=json:{cov_json}",
-                f"--cov-report=html:{cov_html}",
-                "--cov-report=term-missing"
-            ])
+            cmd.extend(
+                [
+                    "--cov=src",
+                    f"--cov-report=json:{cov_json}",
+                    f"--cov-report=html:{cov_html}",
+                    "--cov-report=term-missing",
+                ]
+            )
 
         # Add parallel execution if enabled (disabled for now to avoid hanging)
         # if self.config.parallel:
@@ -206,20 +215,20 @@ class TestRunner:
                 timeout=self.config.timeout_seconds,
                 print_stdout=True,
                 print_stderr=True,
-                capture_output=True
+                capture_output=True,
             )
 
             stdout = result.get("stdout", "")
             stderr = result.get("stderr", "")
 
             # Save output to files
-            with open(stdout_file, 'w') as f:
+            with open(stdout_file, "w") as f:
                 f.write(stdout)
-            with open(stderr_file, 'w') as f:
+            with open(stderr_file, "w") as f:
                 f.write(stderr)
 
             if result["status"] == "TIMEOUT":
-                 return {
+                return {
                     "success": False,
                     "tests_run": 0,
                     "tests_passed": 0,
@@ -227,7 +236,7 @@ class TestRunner:
                     "tests_skipped": 0,
                     "error_message": f"Test execution timed out after {self.config.timeout_seconds} seconds",
                     "stdout": stdout,
-                    "stderr": stderr
+                    "stderr": stderr,
                 }
 
             # Parse results
@@ -239,6 +248,7 @@ class TestRunner:
 
         except Exception as e:
             import traceback
+
             self.logger.error(f"Exception in _execute_pytest: {e}")
             self.logger.error(f"Full traceback:\n{traceback.format_exc()}")
             return {
@@ -249,14 +259,14 @@ class TestRunner:
                 "tests_skipped": 0,
                 "error_message": str(e),
                 "stdout": "",
-                "stderr": ""
+                "stderr": "",
             }
 
     def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, Any]:
         """Parse pytest output to extract test statistics."""
         try:
             # Extract test counts from output
-            lines = stdout.split('\n')
+            lines = stdout.split("\n")
             tests_run = 0
             tests_passed = 0
             tests_failed = 0
@@ -270,7 +280,7 @@ class TestRunner:
                     for i, part in enumerate(parts):
                         if i > 0:  # Check previous part is a number
                             try:
-                                num = int(parts[i-1])
+                                num = int(parts[i - 1])
                                 if "passed" in part:
                                     tests_passed = num
                                 elif "failed" in part:
@@ -293,7 +303,7 @@ class TestRunner:
                         for i, part in enumerate(parts):
                             if part == "collected" and i > 0:
                                 try:
-                                    tests_run = int(parts[i-1])
+                                    tests_run = int(parts[i - 1])
                                 except ValueError:
                                     pass
                                 break
@@ -312,7 +322,7 @@ class TestRunner:
             for line in lines:
                 if "TOTAL" in line and "%" in line:
                     try:
-                        coverage_percentage = float(line.split()[-1].replace('%', ''))
+                        coverage_percentage = float(line.split()[-1].replace("%", ""))
                     except (ValueError, IndexError):
                         pass
 
@@ -323,11 +333,12 @@ class TestRunner:
                 "tests_failed": tests_failed,
                 "tests_skipped": tests_skipped,
                 "coverage_percentage": coverage_percentage,
-                "collection_errors": collection_errors
+                "collection_errors": collection_errors,
             }
 
         except Exception as e:
             import traceback
+
             self.logger.error(f"Failed to parse pytest output: {e}")
             self.logger.error(f"Traceback:\n{traceback.format_exc()}")
             return {
@@ -336,7 +347,7 @@ class TestRunner:
                 "tests_passed": 0,
                 "tests_failed": 0,
                 "tests_skipped": 0,
-                "error_message": f"Failed to parse pytest output: {e}"
+                "error_message": f"Failed to parse pytest output: {e}",
             }
 
     def generate_report(self, output_dir: Path) -> Dict[str, Any]:
@@ -351,10 +362,17 @@ class TestRunner:
             "resource_usage": self.resource_monitor.get_stats(),
             "execution_history": [asdict(result) for result in self.execution_history],
             "performance_metrics": {
-                "average_execution_time": sum(r.execution_time for r in self.execution_history) / len(self.execution_history),
-                "peak_memory_usage": max(r.memory_peak_mb for r in self.execution_history),
-                "success_rate": sum(1 for r in self.execution_history if r.success) / len(self.execution_history) * 100
-            }
+                "average_execution_time": sum(
+                    r.execution_time for r in self.execution_history
+                )
+                / len(self.execution_history),
+                "peak_memory_usage": max(
+                    r.memory_peak_mb for r in self.execution_history
+                ),
+                "success_rate": sum(1 for r in self.execution_history if r.success)
+                / len(self.execution_history)
+                * 100,
+            },
         }
 
         # Ensure output directory exists
@@ -362,10 +380,11 @@ class TestRunner:
 
         # Save report
         report_file = output_dir / "test_execution_report.json"
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
         return report
+
 
 def run_tests(
     logger: logging.Logger,
@@ -374,7 +393,7 @@ def run_tests(
     fast_only: bool = True,  # Default to fast tests for pipeline integration
     comprehensive: bool = False,
     generate_coverage: bool = False,  # Disable coverage by default for speed
-    auto_fallback: bool = True  # Automatically recovery to comprehensive if no fast tests collected
+    auto_fallback: bool = True,  # Automatically recovery to comprehensive if no fast tests collected
 ) -> bool:
     """
     Run optimized test suite with improved performance and reliability.
@@ -408,7 +427,9 @@ def run_tests(
             # Auto-recovery: if no tests collected and recovery enabled, try comprehensive
             if not success and auto_fallback:
                 if _check_zero_tests_collected(output_dir, logger):
-                    logger.warning("⚠️ Fast test suite yielded 0 tests. Automatically falling back to comprehensive mode.")
+                    logger.warning(
+                        "⚠️ Fast test suite yielded 0 tests. Automatically falling back to comprehensive mode."
+                    )
                     return run_comprehensive_tests(logger, output_dir, verbose)
 
             return success
@@ -438,6 +459,7 @@ def _check_zero_tests_collected(output_dir: Path, logger: logging.Logger) -> boo
     except Exception as e:
         logger.debug(f"Could not check test count: {e}")
     return False
+
 
 # Re-export from test_runner_modes sub-module.
 from .test_runner_modes import (

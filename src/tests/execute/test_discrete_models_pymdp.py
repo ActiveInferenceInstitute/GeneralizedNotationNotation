@@ -95,7 +95,9 @@ def test_hmm_baseline_2d_b_is_passive_single_action() -> None:
     """A 2-D HMM transition matrix represents passive dynamics, not four actions."""
     from gnn.pomdp_extractor import extract_pomdp_from_file
 
-    pomdp = extract_pomdp_from_file(DISCRETE_DIR / "hmm_baseline.md", strict_validation=False)
+    pomdp = extract_pomdp_from_file(
+        DISCRETE_DIR / "hmm_baseline.md", strict_validation=False
+    )
     assert pomdp is not None
     assert pomdp.num_actions == 1
     assert pomdp.passive_model is True
@@ -108,7 +110,9 @@ def test_tmaze_factored_matrices_are_preserved_and_composed() -> None:
     from gnn.pomdp_extractor import extract_pomdp_from_file
     from render.pomdp_processor import POMDPRenderProcessor
 
-    pomdp = extract_pomdp_from_file(DISCRETE_DIR / "tmaze_epistemic.md", strict_validation=False)
+    pomdp = extract_pomdp_from_file(
+        DISCRETE_DIR / "tmaze_epistemic.md", strict_validation=False
+    )
     assert pomdp is not None
     raw_keys = set((pomdp.matrices or {}).keys())
     assert {"A_loc", "A_rew", "B_loc", "B_ctx", "C_rew", "D_ctx"}.issubset(raw_keys)
@@ -142,7 +146,9 @@ def test_time_varying_b_tensor_projects_to_pymdp_b_with_provenance() -> None:
     spec = POMDPRenderProcessor(DISCRETE_DIR)._pomdp_to_gnn_spec(pomdp, timesteps=10)
     init = spec["initialparameterization"]
     assert np.asarray(init["B"]).shape == (3, 3, 2)
-    assert spec["matrix_provenance"]["B"]["source"] == "time_indexed_transition_projection"
+    assert (
+        spec["matrix_provenance"]["B"]["source"] == "time_indexed_transition_projection"
+    )
     assert spec["matrix_provenance"]["B"]["source_key"] == "B_t"
 
 
@@ -203,7 +209,9 @@ def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
     gnn_spec = _extract_and_build_spec(model_file, timesteps=12)
 
     np.random.seed(42)
-    ok, results = run_pymdp_simulation(gnn_spec, tmp_path / model_file.replace(".md", ""))
+    ok, results = run_pymdp_simulation(
+        gnn_spec, tmp_path / model_file.replace(".md", "")
+    )
 
     assert ok, f"Execution failed for {model_file}: {results.get('error', 'unknown')}"
     assert results.get("framework") == "PyMDP"
@@ -218,14 +226,14 @@ def test_pymdp_execute(model_file: str, tmp_path: Path) -> None:
     # Validate beliefs
     validation = results.get("validation", {})
     assert validation.get("all_beliefs_valid"), f"Invalid beliefs for {model_file}"
-    assert validation.get("beliefs_sum_to_one"), f"Beliefs don't sum to 1 for {model_file}"
+    assert validation.get("beliefs_sum_to_one"), (
+        f"Beliefs don't sum to 1 for {model_file}"
+    )
     assert validation.get("actions_in_range"), f"Actions out of range for {model_file}"
 
     # No NaN check
     for belief in results.get("beliefs", []):
-        assert not any(
-            np.isnan(v) for v in belief
-        ), f"NaN in beliefs for {model_file}"
+        assert not any(np.isnan(v) for v in belief), f"NaN in beliefs for {model_file}"
 
 
 # ---------------------------------------------------------------------------
@@ -273,7 +281,9 @@ def test_pymdp_analysis_extractor(model_file: str, tmp_path: Path) -> None:
     for key in ["free_energy", "beliefs", "observations", "actions"]:
         assert key in extracted, f"Missing '{key}' in extracted data for {model_file}"
     assert len(extracted["beliefs"]) > 0, f"No beliefs extracted for {model_file}"
-    assert len(extracted["observations"]) > 0, f"No observations extracted for {model_file}"
+    assert len(extracted["observations"]) > 0, (
+        f"No observations extracted for {model_file}"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -340,7 +350,9 @@ def test_all_discrete_models_e2e(tmp_path: Path) -> None:
     assert exec_ok, "process_execute should complete without fatal errors"
 
     # Verify simulation results
-    sim_results = list(exec_out.glob("**/pymdp/simulation_data/*simulation_results.json"))
+    sim_results = list(
+        exec_out.glob("**/pymdp/simulation_data/*simulation_results.json")
+    )
     assert len(sim_results) == len(DISCRETE_MODELS), (
         f"Expected {len(DISCRETE_MODELS)} simulation results under {exec_out}, "
         f"found {len(sim_results)}"
@@ -348,8 +360,12 @@ def test_all_discrete_models_e2e(tmp_path: Path) -> None:
 
     for result_file in sim_results:
         payload = json.loads(result_file.read_text(encoding="utf-8"))
-        assert payload.get("framework") == "PyMDP", f"Wrong framework in {result_file.name}"
-        beliefs = payload.get("beliefs") or payload.get("simulation_trace", {}).get("beliefs")
+        assert payload.get("framework") == "PyMDP", (
+            f"Wrong framework in {result_file.name}"
+        )
+        beliefs = payload.get("beliefs") or payload.get("simulation_trace", {}).get(
+            "beliefs"
+        )
         assert beliefs, f"No beliefs in {result_file.name}"
 
     # Step 16: Analysis

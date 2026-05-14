@@ -13,6 +13,7 @@ from pathlib import Path
 # Import renderers with proper error handling
 try:
     from .pymdp import render_gnn_to_pymdp
+
     PYMDP_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"PyMDP renderer not available: {e}")
@@ -21,6 +22,7 @@ except ImportError as e:
 
 try:
     from .rxinfer import render_gnn_to_rxinfer_toml
+
     RXINFER_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"RxInfer renderer not available: {e}")
@@ -29,6 +31,7 @@ except ImportError as e:
 
 try:
     from .discopy import render_gnn_to_discopy
+
     DISCOPY_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"DisCoPy renderer not available: {e}")
@@ -37,6 +40,7 @@ except ImportError as e:
 
 try:
     from .activeinference_jl import render_gnn_to_activeinference_jl
+
     ACTIVEINFERENCE_JL_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"ActiveInference.jl renderer not available: {e}")
@@ -45,6 +49,7 @@ except ImportError as e:
 
 try:
     from .jax import render_gnn_to_jax, render_gnn_to_jax_pomdp
+
     JAX_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"JAX renderer not available: {e}")
@@ -59,7 +64,9 @@ from .processor import render_gnn_spec
 
 def main(cli_args=None):
     """Command-line entry point for the renderer."""
-    parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
+    parser = argparse.ArgumentParser(
+        description="Render GNN specifications to various target platforms"
+    )
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
     parser.add_argument(
@@ -79,8 +86,12 @@ def main(cli_args=None):
         default="pymdp",
         help="Target platform",
     )
-    parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
-    parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")
+    parser.add_argument(
+        "--output_filename", help="Base filename for the output (without extension)"
+    )
+    parser.add_argument(
+        "--debug", "--verbose", action="store_true", help="Enable debug logging"
+    )
 
     args = parser.parse_args(cli_args)
 
@@ -94,10 +105,13 @@ def main(cli_args=None):
 
     try:
         from gnn import parse_gnn_file
+
         gnn_spec = parse_gnn_file(gnn_file_path)
         logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
     except (ImportError, ModuleNotFoundError) as e:
-        logger.error(f"GNN parser unavailable — cannot render without canonical parser: {e}")
+        logger.error(
+            f"GNN parser unavailable — cannot render without canonical parser: {e}"
+        )
         return 1
 
     output_dir = Path(args.output_dir)
@@ -109,10 +123,7 @@ def main(cli_args=None):
         base_filename = gnn_spec.get("name", gnn_file_path.stem)
 
     success, message, artifacts = render_gnn_spec(
-        gnn_spec,
-        args.target,
-        output_dir,
-        {"output_filename": base_filename}
+        gnn_spec, args.target, output_dir, {"output_filename": base_filename}
     )
 
     if success:
@@ -122,6 +133,7 @@ def main(cli_args=None):
     else:
         print(f"Error rendering to {args.target}: {message}")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

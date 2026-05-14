@@ -54,9 +54,7 @@ class TestReportPipelineIntegration:
         report_output.mkdir(parents=True, exist_ok=True)
 
         result = process_report(
-            target_dir=output_dir,
-            output_dir=report_output,
-            logger=logger
+            target_dir=output_dir, output_dir=report_output, logger=logger
         )
 
         assert result is True or result is False
@@ -79,10 +77,10 @@ class TestReportPipelineIntegration:
         import matplotlib.pyplot as plt
 
         # Determine genuine minimal PNG bytes
-        fig, ax = plt.subplots(figsize=(1,1))
-        ax.plot([0,1], [0,1])
+        fig, ax = plt.subplots(figsize=(1, 1))
+        ax.plot([0, 1], [0, 1])
         buf = io.BytesIO()
-        fig.savefig(buf, format='png')
+        fig.savefig(buf, format="png")
         real_png_bytes = buf.getvalue()
         plt.close(fig)
 
@@ -94,9 +92,7 @@ class TestReportPipelineIntegration:
         report_output.mkdir(parents=True, exist_ok=True)
 
         result = process_report(
-            target_dir=tmp_path / "output",
-            output_dir=report_output,
-            logger=logger
+            target_dir=tmp_path / "output", output_dir=report_output, logger=logger
         )
 
         # Should complete without error
@@ -107,7 +103,9 @@ class TestReportGNNIntegration:
     """Tests for report integration with GNN processing."""
 
     @pytest.mark.integration
-    def test_report_analyzes_gnn_files(self, sample_gnn_files: Any, tmp_path: Any) -> None:
+    def test_report_analyzes_gnn_files(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> None:
         """Test report analysis of GNN files."""
         from report import analyze_gnn_file
 
@@ -120,7 +118,9 @@ class TestReportGNNIntegration:
         assert result is not None
 
     @pytest.mark.integration
-    def test_report_includes_gnn_metrics(self, sample_gnn_files: Any, tmp_path: Any) -> None:
+    def test_report_includes_gnn_metrics(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> None:
         """Test that reports include GNN-specific metrics."""
         import logging
 
@@ -135,9 +135,7 @@ class TestReportGNNIntegration:
 
         gnn_file = list(sample_gnn_files.values())[0]
         result = process_report(
-            target_dir=gnn_file.parent,
-            output_dir=output_dir,
-            logger=logger
+            target_dir=gnn_file.parent, output_dir=output_dir, logger=logger
         )
 
         # Should produce some output
@@ -155,10 +153,10 @@ class TestReportAnalysisIntegration:
         pipeline_data = {
             "steps": [
                 {"name": "step1", "status": "success", "duration": 1.5},
-                {"name": "step2", "status": "success", "duration": 2.0}
+                {"name": "step2", "status": "success", "duration": 2.0},
             ],
             "total_duration": 3.5,
-            "status": "completed"
+            "status": "completed",
         }
 
         result = analyze_pipeline_data(pipeline_data)
@@ -206,7 +204,7 @@ class TestReportExportIntegration:
         result = generate_comprehensive_report(
             pipeline_output_dir=pipeline_output_dir,
             report_output_dir=report_output_dir,
-            logger=logger
+            logger=logger,
         )
 
         # Should return a boolean indicating success/failure
@@ -226,11 +224,7 @@ class TestReportExportIntegration:
         input_dir.mkdir(parents=True, exist_ok=True)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        process_report(
-            target_dir=input_dir,
-            output_dir=output_dir,
-            logger=logger
-        )
+        process_report(target_dir=input_dir, output_dir=output_dir, logger=logger)
 
         # Output directory should exist
         assert output_dir.exists()

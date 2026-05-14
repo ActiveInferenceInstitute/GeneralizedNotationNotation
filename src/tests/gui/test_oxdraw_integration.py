@@ -93,57 +93,78 @@ def sample_gnn_model():
                 "dimensions": [3, 3],
                 "data_type": "float",
                 "ontology_mapping": "LikelihoodMatrix",
-                "description": "Likelihood matrix"
+                "description": "Likelihood matrix",
             },
             "B": {
                 "dimensions": [3, 3, 3],
                 "data_type": "float",
                 "ontology_mapping": "TransitionMatrix",
-                "description": "Transition matrix"
+                "description": "Transition matrix",
             },
             "C": {
                 "dimensions": [3],
                 "data_type": "float",
                 "ontology_mapping": "LogPreferenceVector",
-                "description": "Preference vector"
+                "description": "Preference vector",
             },
             "D": {
                 "dimensions": [3],
                 "data_type": "float",
                 "ontology_mapping": "PriorOverHiddenStates",
-                "description": "Prior vector"
+                "description": "Prior vector",
             },
             "s": {
                 "dimensions": [3, 1],
                 "data_type": "float",
                 "ontology_mapping": "HiddenState",
-                "description": "Hidden state"
+                "description": "Hidden state",
             },
             "o": {
                 "dimensions": [3, 1],
                 "data_type": "int",
                 "ontology_mapping": "Observation",
-                "description": "Observation"
+                "description": "Observation",
             },
             "u": {
                 "dimensions": [1],
                 "data_type": "int",
                 "ontology_mapping": "Action",
-                "description": "Action"
-            }
+                "description": "Action",
+            },
         },
         "connections": [
-            {"source": "D", "target": "s", "symbol": ">", "connection_type": "generative"},
-            {"source": "s", "target": "A", "symbol": "-", "connection_type": "inference"},
-            {"source": "A", "target": "o", "symbol": "-", "connection_type": "inference"},
-            {"source": "s", "target": "B", "symbol": "-", "connection_type": "inference"},
-            {"source": "u", "target": "B", "symbol": ">", "connection_type": "generative"}
+            {
+                "source": "D",
+                "target": "s",
+                "symbol": ">",
+                "connection_type": "generative",
+            },
+            {
+                "source": "s",
+                "target": "A",
+                "symbol": "-",
+                "connection_type": "inference",
+            },
+            {
+                "source": "A",
+                "target": "o",
+                "symbol": "-",
+                "connection_type": "inference",
+            },
+            {
+                "source": "s",
+                "target": "B",
+                "symbol": "-",
+                "connection_type": "inference",
+            },
+            {
+                "source": "u",
+                "target": "B",
+                "symbol": ">",
+                "connection_type": "generative",
+            },
         ],
-        "parameters": {
-            "num_states": 3,
-            "num_obs": 3,
-            "num_actions": 3
-        },
+        "parameters": {"num_states": 3, "num_obs": 3, "num_actions": 3},
         "ontology_mappings": [
             {"variable": "A", "ontology_term": "LikelihoodMatrix"},
             {"variable": "B", "ontology_term": "TransitionMatrix"},
@@ -151,8 +172,8 @@ def sample_gnn_model():
             {"variable": "D", "ontology_term": "PriorOverHiddenStates"},
             {"variable": "s", "ontology_term": "HiddenState"},
             {"variable": "o", "ontology_term": "Observation"},
-            {"variable": "u", "ontology_term": "Action"}
-        ]
+            {"variable": "u", "ontology_term": "Action"},
+        ],
     }
 
 
@@ -222,10 +243,7 @@ class TestGNNToMermaidConversion:
         """Test file-based GNN to Mermaid conversion."""
         output_file = temp_dir / "test_model.mmd"
 
-        mermaid_content = convert_gnn_file_to_mermaid(
-            sample_gnn_file,
-            output_file
-        )
+        mermaid_content = convert_gnn_file_to_mermaid(sample_gnn_file, output_file)
 
         assert output_file.exists()
         assert isinstance(mermaid_content, str)
@@ -297,7 +315,9 @@ class TestRoundTripConversion:
 
         # Compare structures
         assert len(recovered_model["variables"]) == len(sample_gnn_model["variables"])
-        assert len(recovered_model["connections"]) == len(sample_gnn_model["connections"])
+        assert len(recovered_model["connections"]) == len(
+            sample_gnn_model["connections"]
+        )
 
         # Check variable names preserved
         original_vars = set(sample_gnn_model["variables"].keys())
@@ -334,6 +354,7 @@ class TestProcessOxdraw:
     def test_process_oxdraw_headless(self, sample_gnn_file, temp_dir, capsys):
         """Test headless processing mode."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         output_dir = temp_dir / "output"
@@ -345,7 +366,7 @@ class TestProcessOxdraw:
             mode="headless",
             auto_convert=True,
             validate_on_save=False,
-            launch_editor=False
+            launch_editor=False,
         )
 
         assert success
@@ -365,6 +386,7 @@ class TestProcessOxdraw:
     def test_process_oxdraw_no_files(self, temp_dir, capsys):
         """Test processing with no GNN files."""
         import logging
+
         logger = logging.getLogger(__name__)
 
         empty_dir = temp_dir / "empty"
@@ -372,10 +394,7 @@ class TestProcessOxdraw:
         output_dir = temp_dir / "output"
 
         success = process_oxdraw(
-            target_dir=empty_dir,
-            output_dir=output_dir,
-            logger=logger,
-            mode="headless"
+            target_dir=empty_dir, output_dir=output_dir, logger=logger, mode="headless"
         )
 
         assert not success  # Should fail with no files
@@ -403,4 +422,3 @@ class TestMetadataGeneration:
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
-

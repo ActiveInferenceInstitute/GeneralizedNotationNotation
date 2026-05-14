@@ -14,12 +14,16 @@ try:
     from pipeline.context import StepStatus
 except ImportError:
     from typing import Literal, TypeAlias
-    StepStatus: TypeAlias = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
+
+    StepStatus: TypeAlias = Literal[
+        "PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"
+    ]
 
 logger = logging.getLogger(__name__)
 
 try:
     from pydantic import BaseModel, Field
+
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
@@ -29,6 +33,7 @@ if PYDANTIC_AVAILABLE:
 
     class GNNModelSummary(BaseModel):
         """Summary of a parsed GNN model."""
+
         name: str = ""
         file_path: str = ""
         section_count: int = 0
@@ -37,6 +42,7 @@ if PYDANTIC_AVAILABLE:
 
     class GNNParseOutput(BaseModel):
         """Output from Step 3 (GNN parsing)."""
+
         models: List[GNNModelSummary] = Field(default_factory=list)
         file_count: int = 0
         parse_errors: List[str] = Field(default_factory=list)
@@ -44,12 +50,14 @@ if PYDANTIC_AVAILABLE:
 
     class ValidationOutput(BaseModel):
         """Output from Step 6 (validation)."""
+
         valid_count: int = 0
         error_count: int = 0
         warnings: List[str] = Field(default_factory=list)
 
     class RenderOutput(BaseModel):
         """Output from Step 11 (rendering)."""
+
         framework: str = ""
         output_path: str = ""
         success: bool = True
@@ -57,6 +65,7 @@ if PYDANTIC_AVAILABLE:
 
     class ExecutionResult(BaseModel):
         """Result of a single pipeline step."""
+
         step_name: str
         step_num: int = -1
         status: StepStatus = "PENDING"
@@ -66,6 +75,7 @@ if PYDANTIC_AVAILABLE:
 
     class PipelineSummary(BaseModel):
         """Complete pipeline execution summary."""
+
         timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
         total_duration: float = 0.0
         success: bool = True

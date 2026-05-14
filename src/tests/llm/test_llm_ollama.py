@@ -26,6 +26,7 @@ def _ollama_available() -> bool:
     """Check if Ollama is available AND service is running."""
     try:
         import ollama  # noqa: F401
+
         # Python client available, try to list models to verify service is running
         try:
             ollama.list()
@@ -39,10 +40,7 @@ def _ollama_available() -> bool:
             # CLI exists, check if service is running by trying to list models
             try:
                 result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                    ["ollama", "list"],
-                    capture_output=True,
-                    text=True,
-                    timeout=5
+                    ["ollama", "list"], capture_output=True, text=True, timeout=5
                 )
                 return result.returncode == 0
             except Exception:
@@ -143,9 +141,13 @@ def test_ollama_streaming(monkeypatch):
         assert provider.initialize() is True
 
         messages = [
-            LLMMessage(role="user", content="Give a 1-sentence summary of Active Inference.")
+            LLMMessage(
+                role="user", content="Give a 1-sentence summary of Active Inference."
+            )
         ]
-        config = LLMConfig(model=OLLAMA_TEST_MODEL, max_tokens=64, temperature=0.2, stream=True)
+        config = LLMConfig(
+            model=OLLAMA_TEST_MODEL, max_tokens=64, temperature=0.2, stream=True
+        )
 
         chunks: list[str] = []
         async for chunk in provider.generate_stream(messages, config):
@@ -267,4 +269,3 @@ class TestOllamaProviderConfig:
         assert info["provider_type"] == "ollama"
         assert info["is_initialized"] is False
         assert info["default_model"] == OllamaProvider.DEFAULT_MODEL
-

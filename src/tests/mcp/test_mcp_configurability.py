@@ -12,6 +12,7 @@ Covers contracts introduced after 2026-04-16:
     instance rather than shadowing the attribute on itself.
   * Every symbol declared in :data:`mcp.__all__` is actually importable.
 """
+
 from __future__ import annotations
 
 import sys
@@ -53,7 +54,9 @@ class TestMCPExportsContract:
         from mcp import JSONRPCServer
 
         server = JSONRPCServer()
-        assert hasattr(server, "handle_request"), "JSONRPCServer must expose handle_request"
+        assert hasattr(server, "handle_request"), (
+            "JSONRPCServer must expose handle_request"
+        )
         assert hasattr(server, "register_tool")
 
 

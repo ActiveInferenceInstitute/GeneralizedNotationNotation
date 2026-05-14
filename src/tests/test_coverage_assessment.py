@@ -26,59 +26,59 @@ class TestCoverageStrategy:
 
         # Critical modules that need >95% coverage
         critical_modules = {
-            'gnn': 'Parser and core GNN processing - highest impact',
-            'render': 'Code generation for simulations - critical path',
-            'export': 'Multi-format export functionality - essential API',
-            'type_checker': 'Type validation and resource estimation',
-            'ontology': 'Active Inference ontology processing',
-            'validation': 'Consistency checking and validation',
-            'utils': 'Shared utilities used across all modules',
+            "gnn": "Parser and core GNN processing - highest impact",
+            "render": "Code generation for simulations - critical path",
+            "export": "Multi-format export functionality - essential API",
+            "type_checker": "Type validation and resource estimation",
+            "ontology": "Active Inference ontology processing",
+            "validation": "Consistency checking and validation",
+            "utils": "Shared utilities used across all modules",
         }
 
         # Core improvements needed
         strategies = {
-            'gnn': [
-                'Add tests for all GNN file format parsers (markdown, JSON, YAML, XML)',
-                'Test edge cases in model parsing (empty files, malformed data)',
-                'Add integration tests with actual GNN files from input/',
-                'Test model data structure validation and consistency',
+            "gnn": [
+                "Add tests for all GNN file format parsers (markdown, JSON, YAML, XML)",
+                "Test edge cases in model parsing (empty files, malformed data)",
+                "Add integration tests with actual GNN files from input/",
+                "Test model data structure validation and consistency",
             ],
-            'render': [
-                'Add tests for all rendering backends (PyMDP, RxInfer, JAX, DisCoPy)',
-                'Test code generation with various model complexities',
-                'Test framework-specific syntax generation and validation',
-                'Add end-to-end rendering + compilation tests',
+            "render": [
+                "Add tests for all rendering backends (PyMDP, RxInfer, JAX, DisCoPy)",
+                "Test code generation with various model complexities",
+                "Test framework-specific syntax generation and validation",
+                "Add end-to-end rendering + compilation tests",
             ],
-            'export': [
-                'Test all export formats (JSON, XML, GraphML, GEXF, Pickle)',
-                'Test round-trip conversion (export then re-import)',
-                'Test metadata preservation across formats',
-                'Test large model export performance and memory usage',
+            "export": [
+                "Test all export formats (JSON, XML, GraphML, GEXF, Pickle)",
+                "Test round-trip conversion (export then re-import)",
+                "Test metadata preservation across formats",
+                "Test large model export performance and memory usage",
             ],
-            'type_checker': [
-                'Test type validation for all GNN types',
-                'Test resource estimation accuracy',
-                'Test constraint verification and enforcement',
-                'Test performance prediction models',
+            "type_checker": [
+                "Test type validation for all GNN types",
+                "Test resource estimation accuracy",
+                "Test constraint verification and enforcement",
+                "Test performance prediction models",
             ],
-            'ontology': [
-                'Test Active Inference ontology term mapping',
-                'Test semantic relationship discovery',
-                'Test knowledge graph construction',
-                'Test domain-specific reasoning paths',
+            "ontology": [
+                "Test Active Inference ontology term mapping",
+                "Test semantic relationship discovery",
+                "Test knowledge graph construction",
+                "Test domain-specific reasoning paths",
             ],
-            'validation': [
-                'Test cross-reference validation',
-                'Test logical consistency verification',
-                'Test mathematical constraint checking',
-                'Test domain rule enforcement',
+            "validation": [
+                "Test cross-reference validation",
+                "Test logical consistency verification",
+                "Test mathematical constraint checking",
+                "Test domain rule enforcement",
             ],
-            'utils': [
-                'Test all utility functions with real data',
-                'Test error handling and recovery mechanisms',
-                'Test resource management and cleanup',
-                'Test performance utilities and monitoring',
-            ]
+            "utils": [
+                "Test all utility functions with real data",
+                "Test error handling and recovery mechanisms",
+                "Test resource management and cleanup",
+                "Test performance utilities and monitoring",
+            ],
         }
 
         # Assert coverage improvement strategy exists
@@ -96,64 +96,67 @@ class TestCoverageStrategy:
 
         # Performance test areas
         performance_areas = {
-            'gnn_parsing': {
-                'metric': 'Files parsed per second',
-                'baseline': 1000,  # files/sec
-                'threshold': 0.9,  # 10% regression threshold
+            "gnn_parsing": {
+                "metric": "Files parsed per second",
+                "baseline": 1000,  # files/sec
+                "threshold": 0.9,  # 10% regression threshold
             },
-            'render_generation': {
-                'metric': 'Models rendered per second',
-                'baseline': 100,  # models/sec
-                'threshold': 0.8,  # 20% regression threshold
+            "render_generation": {
+                "metric": "Models rendered per second",
+                "baseline": 100,  # models/sec
+                "threshold": 0.8,  # 20% regression threshold
             },
-            'export_speed': {
-                'metric': 'Models exported per second',
-                'baseline': 500,  # models/sec
-                'threshold': 0.85,  # 15% regression threshold
+            "export_speed": {
+                "metric": "Models exported per second",
+                "baseline": 500,  # models/sec
+                "threshold": 0.85,  # 15% regression threshold
             },
-            'memory_usage': {
-                'metric': 'Peak memory MB for large model',
-                'baseline': 512,  # MB
-                'threshold': 1.2,  # 20% increase threshold
+            "memory_usage": {
+                "metric": "Peak memory MB for large model",
+                "baseline": 512,  # MB
+                "threshold": 1.2,  # 20% increase threshold
             },
-            'validation_speed': {
-                'metric': 'Models validated per second',
-                'baseline': 200,  # models/sec
-                'threshold': 0.9,  # 10% regression threshold
+            "validation_speed": {
+                "metric": "Models validated per second",
+                "baseline": 200,  # models/sec
+                "threshold": 0.9,  # 10% regression threshold
             },
         }
 
-        assert all(k in p for p in performance_areas.values()
-                  for k in ['metric', 'baseline', 'threshold'])
+        assert all(
+            k in p
+            for p in performance_areas.values()
+            for k in ["metric", "baseline", "threshold"]
+        )
 
     @pytest.mark.unit
     def test_error_scenario_coverage(self):
         """Document error scenario test coverage strategy."""
 
         error_scenarios = {
-            'invalid_input': [
-                'Empty/null inputs',
-                'Malformed data structures',
-                'Type mismatches',
-                'Out-of-range values',
+            "invalid_input": [
+                "Empty/null inputs",
+                "Malformed data structures",
+                "Type mismatches",
+                "Out-of-range values",
             ],
-            'resource_exhaustion': [
-                'Memory limits exceeded',
-                'File handle limits',
-                'Processing timeouts',
-                'Disk space limits',
+            "resource_exhaustion": [
+                "Memory limits exceeded",
+                "File handle limits",
+                "Processing timeouts",
+                "Disk space limits",
             ],
-            'dependency_failures': [
-                'Missing optional dependencies',
-                'Version conflicts',
-                'API changes',
-                'Service unavailability',
+            "dependency_failures": [
+                "Missing optional dependencies",
+                "Version conflicts",
+                "API changes",
+                "Service unavailability",
             ],
-            'concurrent_operations': [
-                'Race conditions',
-                'Deadlocks',
-                'Resource contention',
-                'Out-of-order execution',
+            "concurrent_operations": [
+                "Race conditions",
+                "Deadlocks",
+                "Resource contention",
+                "Out-of-order execution",
             ],
         }
 
@@ -173,14 +176,14 @@ class TestCoverageImprovementPriorities:
 
         # All public API functions should have >=95% coverage
         critical_apis = [
-            'gnn.parse_gnn_file',
-            'gnn.validate_gnn_model',
-            'render.render_gnn_to_pymdp',
-            'render.render_gnn_to_rxinfer',
-            'export.export_gnn_model',
-            'export.import_gnn_model',
-            'type_checker.validate_types',
-            'validation.validate_model_consistency',
+            "gnn.parse_gnn_file",
+            "gnn.validate_gnn_model",
+            "render.render_gnn_to_pymdp",
+            "render.render_gnn_to_rxinfer",
+            "export.export_gnn_model",
+            "export.import_gnn_model",
+            "type_checker.validate_types",
+            "validation.validate_model_consistency",
         ]
 
         assert len(critical_apis) >= 5
@@ -190,11 +193,11 @@ class TestCoverageImprovementPriorities:
         """Second priority: Integration between modules."""
 
         integration_scenarios = [
-            ('gnn', 'type_checker', 'parsing followed by type validation'),
-            ('gnn', 'render', 'parsing followed by code generation'),
-            ('gnn', 'export', 'parsing followed by format export'),
-            ('render', 'execute', 'code generation followed by simulation'),
-            ('type_checker', 'validation', 'type checking with consistency validation'),
+            ("gnn", "type_checker", "parsing followed by type validation"),
+            ("gnn", "render", "parsing followed by code generation"),
+            ("gnn", "export", "parsing followed by format export"),
+            ("render", "execute", "code generation followed by simulation"),
+            ("type_checker", "validation", "type checking with consistency validation"),
         ]
 
         assert len(integration_scenarios) >= 3
@@ -204,13 +207,13 @@ class TestCoverageImprovementPriorities:
         """Third priority: Edge cases and error recovery."""
 
         edge_cases = [
-            'Empty input files',
-            'Extremely large models (>10K nodes)',
-            'Invalid/corrupted data',
-            'Missing dependencies',
-            'Timeout scenarios',
-            'Resource exhaustion',
-            'Concurrent access patterns',
+            "Empty input files",
+            "Extremely large models (>10K nodes)",
+            "Invalid/corrupted data",
+            "Missing dependencies",
+            "Timeout scenarios",
+            "Resource exhaustion",
+            "Concurrent access patterns",
         ]
 
         assert len(edge_cases) >= 5
@@ -263,4 +266,3 @@ def test_coverage_improvement_action_plan():
     assert len(action_plan) > 0
     assert "Phase 1" in action_plan
     assert "ACTION PLAN" in action_plan
-

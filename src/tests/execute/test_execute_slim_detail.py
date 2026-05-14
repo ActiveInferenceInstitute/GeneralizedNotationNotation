@@ -38,7 +38,12 @@ def test_slim_execution_detail_strips_bulk_fields_and_keeps_lengths() -> None:
 
 
 def test_slim_execution_detail_omits_missing_optional_keys() -> None:
-    minimal = {"script_name": "y.py", "framework": "jax", "model_name": "m", "success": True}
+    minimal = {
+        "script_name": "y.py",
+        "framework": "jax",
+        "model_name": "m",
+        "success": True,
+    }
     slim = _slim_execution_detail(minimal)
     assert set(slim.keys()) == {"script_name", "framework", "model_name", "success"}
 

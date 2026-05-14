@@ -59,12 +59,13 @@ def mcp_initialized() -> Any:
     stabilise, then return the instance.
     """
     from mcp import initialize, mcp_instance
+
     initialize(halt_on_missing_sdk=False, force_proceed_flag=True, force_refresh=True)
 
     # Wait for recovery registration threads to complete.
     # Poll until tool count stops growing (max 5 s).
     prev_count = -1
-    for _ in range(25):          # 25 × 0.2 s = 5 s max
+    for _ in range(25):  # 25 × 0.2 s = 5 s max
         current = len(mcp_instance.tools)
         if current == prev_count:
             break
@@ -77,7 +78,7 @@ def mcp_initialized() -> Any:
 @pytest.fixture(scope="module")
 def all_tools(mcp_initialized) -> Dict[str, Any]:
     """Return the full tools dictionary from the initialized MCP instance."""
-    return dict(mcp_initialized.tools)   # copy snapshot after recovery wait
+    return dict(mcp_initialized.tools)  # copy snapshot after recovery wait
 
 
 @pytest.fixture(scope="module")
@@ -95,15 +96,34 @@ class TestMCPModuleDiscovery:
     """Verify that MCP discover_modules loads all expected pipeline modules."""
 
     EXPECTED_MODULES = (
-        "gnn", "utils", "website", "analysis", "render", "export",
-        "validation", "ontology", "visualization", "report", "integration",
-        "security", "research", "sapf", "audio", "execute", "llm",
-        "advanced_visualization", "ml_integration", "intelligent_analysis",
-        "gui", "pipeline",
+        "gnn",
+        "utils",
+        "website",
+        "analysis",
+        "render",
+        "export",
+        "validation",
+        "ontology",
+        "visualization",
+        "report",
+        "integration",
+        "security",
+        "research",
+        "sapf",
+        "audio",
+        "execute",
+        "llm",
+        "advanced_visualization",
+        "ml_integration",
+        "intelligent_analysis",
+        "gui",
+        "pipeline",
     )
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
-    def test_expected_module_loaded(self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]) -> None:
+    def test_expected_module_loaded(
+        self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]
+    ) -> None:
         """Each expected pipeline module must be discovered OR contribute tools.
 
         The fixture now waits for recovery registration to stabilise, so both
@@ -112,8 +132,7 @@ class TestMCPModuleDiscovery:
         """
         known = mod_name in all_modules
         has_tools = any(
-            mod_name in (getattr(t, "module", "") or "")
-            for t in all_tools.values()
+            mod_name in (getattr(t, "module", "") or "") for t in all_tools.values()
         )
         assert known or has_tools, (
             f"Module '{mod_name}' not discovered and contributed no tools. "
@@ -121,18 +140,18 @@ class TestMCPModuleDiscovery:
         )
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
-    def test_expected_module_has_tools(self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]) -> None:
+    def test_expected_module_has_tools(
+        self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]
+    ) -> None:
         """Each expected module must contribute at least 1 registered tool."""
-        info       = all_modules.get(mod_name)
-        from_info  = (info.tools_count >= 1) if info else False
+        info = all_modules.get(mod_name)
+        from_info = (info.tools_count >= 1) if info else False
         from_tools = any(
-            mod_name in (getattr(t, "module", "") or "")
-            for t in all_tools.values()
+            mod_name in (getattr(t, "module", "") or "") for t in all_tools.values()
         )
         assert from_info or from_tools, (
             f"Module '{mod_name}' registered 0 tools. Check register_tools() implementation."
         )
-
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -165,7 +184,7 @@ class TestMCPToolRealness:
         lambdas = []
         for name, tool in all_tools.items():
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
-            fn   = getattr(func, "__name__", "") if func else ""
+            fn = getattr(func, "__name__", "") if func else ""
             if fn == "<lambda>":
                 lambdas.append(name)
         assert lambdas == [], f"Tools backed by lambdas: {lambdas}"
@@ -175,7 +194,7 @@ class TestMCPToolRealness:
         unnamed = []
         for name, tool in all_tools.items():
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
-            fn   = getattr(func, "__name__", "") if func else ""
+            fn = getattr(func, "__name__", "") if func else ""
             if not fn or fn in ("<lambda>", ""):
                 unnamed.append(name)
         assert unnamed == [], f"Tools with unnamed functions: {unnamed}"
@@ -297,7 +316,9 @@ class TestMCPDomainTools:
     )
 
     @pytest.mark.parametrize("tool_name", DOMAIN_TOOLS)
-    def test_domain_tool_registered(self, tool_name: str, all_tools: Dict[str, Any]) -> None:
+    def test_domain_tool_registered(
+        self, tool_name: str, all_tools: Dict[str, Any]
+    ) -> None:
         """Each expected domain-specific tool must be registered.
 
         The fixture now waits for all recovery registrations to stabilise.
@@ -310,10 +331,14 @@ class TestMCPDomainTools:
         )
 
     @pytest.mark.parametrize("tool_name", DOMAIN_TOOLS)
-    def test_domain_tool_is_callable(self, tool_name: str, all_tools: Dict[str, Any]) -> None:
+    def test_domain_tool_is_callable(
+        self, tool_name: str, all_tools: Dict[str, Any]
+    ) -> None:
         """Each domain tool's backing function must be a named callable (not a lambda)."""
         if tool_name not in all_tools:
-            pytest.skip(f"Tool '{tool_name}' not registered — see test_domain_tool_registered")
+            pytest.skip(
+                f"Tool '{tool_name}' not registered — see test_domain_tool_registered"
+            )
         tool = all_tools[tool_name]
         func = getattr(tool, "func", None) or getattr(tool, "function", None)
         assert callable(func), f"Tool '{tool_name}' func is not callable: {func!r}"
@@ -321,6 +346,7 @@ class TestMCPDomainTools:
         assert fn not in ("", "<lambda>"), (
             f"Tool '{tool_name}' is backed by an anonymous lambda — replace with a named function"
         )
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Live spot-check: zero-arg tools via execute_tool
@@ -373,11 +399,14 @@ class TestMCPLoggingCoverage:
     def _get_mcp_files(self) -> List[Path]:
         src = Path(__file__).parent.parent.parent
         return [
-            f for f in src.rglob("mcp.py")
+            f
+            for f in src.rglob("mcp.py")
             # Skip core mcp/ directory and nested sub-submodule files (e.g. gui/gui_1/mcp.py)
-            if not any(part.startswith("_") or part == "__pycache__" for part in f.parts)
-               and f.parent.name != "mcp"            # skip core mcp/mcp.py
-               and f.parent.parent.name == src.name  # only direct children of src/
+            if not any(
+                part.startswith("_") or part == "__pycache__" for part in f.parts
+            )
+            and f.parent.name != "mcp"  # skip core mcp/mcp.py
+            and f.parent.parent.name == src.name  # only direct children of src/
         ]
 
     def test_all_mcp_files_have_register_tools(self) -> None:
@@ -394,7 +423,7 @@ class TestMCPLoggingCoverage:
         files = self._get_mcp_files()
         no_log = []
         for mcp_file in files:
-            src  = mcp_file.read_text(encoding="utf-8", errors="replace")
+            src = mcp_file.read_text(encoding="utf-8", errors="replace")
             # Find register_tools body and check for logger.info
             in_register = False
             has_log = False
@@ -406,9 +435,7 @@ class TestMCPLoggingCoverage:
                     break
             if not has_log:
                 no_log.append(str(mcp_file.relative_to(mcp_file.parent.parent.parent)))
-        assert no_log == [], (
-            f"register_tools() missing logger.info in: {no_log}"
-        )
+        assert no_log == [], f"register_tools() missing logger.info in: {no_log}"
 
     def test_all_mcp_files_have_module_logging(self) -> None:
         """Every mcp.py must define a module-level logger."""
@@ -416,11 +443,12 @@ class TestMCPLoggingCoverage:
         no_logger = []
         for mcp_file in files:
             src = mcp_file.read_text(encoding="utf-8", errors="replace")
-            if "logger = logging.getLogger" not in src and "logger=logging.getLogger" not in src:
+            if (
+                "logger = logging.getLogger" not in src
+                and "logger=logging.getLogger" not in src
+            ):
                 no_logger.append(mcp_file.name)
-        assert no_logger == [], (
-            f"mcp.py files missing module-level logger: {no_logger}"
-        )
+        assert no_logger == [], f"mcp.py files missing module-level logger: {no_logger}"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -431,37 +459,41 @@ class TestMCPLoggingCoverage:
 class TestMCPAuditReport:
     """Generate and validate the MCP audit report artifact."""
 
-    def test_generate_audit_report(self, all_tools: Dict[str, Any], all_modules: Dict[str, Any], tmp_path: Any) -> None:
+    def test_generate_audit_report(
+        self, all_tools: Dict[str, Any], all_modules: Dict[str, Any], tmp_path: Any
+    ) -> None:
         """Generate a full audit JSON report and verify its structure."""
-        loaded  = [n for n, i in all_modules.items() if i.status == "loaded"]
+        loaded = [n for n, i in all_modules.items() if i.status == "loaded"]
         errored = [n for n, i in all_modules.items() if i.status == "error"]
 
         tools_list = []
         for name, tool in sorted(all_tools.items()):
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
-            fn   = getattr(func, "__name__", "?") if func else "NONE"
+            fn = getattr(func, "__name__", "?") if func else "NONE"
             desc = (getattr(tool, "description", "") or "").strip()
-            tools_list.append({
-                "name":     name,
-                "module":   getattr(tool, "module", ""),
-                "category": getattr(tool, "category", ""),
-                "fn":       fn,
-                "is_real":  callable(func) and fn not in ("", "<lambda>"),
-                "documented": bool(desc),
-                "description": desc[:120],
-            })
+            tools_list.append(
+                {
+                    "name": name,
+                    "module": getattr(tool, "module", ""),
+                    "category": getattr(tool, "category", ""),
+                    "fn": fn,
+                    "is_real": callable(func) and fn not in ("", "<lambda>"),
+                    "documented": bool(desc),
+                    "description": desc[:120],
+                }
+            )
 
         report = {
-            "generated_at":     "2026-02-24T06:51:00",
-            "modules_total":    len(all_modules),
-            "modules_loaded":   len(loaded),
-            "modules_errored":  len(errored),
-            "modules_loaded_names":  sorted(loaded),
+            "generated_at": "2026-02-24T06:51:00",
+            "modules_total": len(all_modules),
+            "modules_loaded": len(loaded),
+            "modules_errored": len(errored),
+            "modules_loaded_names": sorted(loaded),
             "modules_errored_names": sorted(errored),
-            "tools_total":      len(all_tools),
-            "tools_real":       sum(1 for t in tools_list if t["is_real"]),
+            "tools_total": len(all_tools),
+            "tools_real": sum(1 for t in tools_list if t["is_real"]),
             "tools_documented": sum(1 for t in tools_list if t["documented"]),
-            "tools":            tools_list,
+            "tools": tools_list,
         }
 
         # Write to project location

@@ -12,8 +12,8 @@ from .rxinfer_runner import (
 )
 
 __all__ = [
-    'run_rxinfer_scripts',
-    'find_rxinfer_scripts',
-    'execute_rxinfer_script',
-    'is_julia_available'
+    "run_rxinfer_scripts",
+    "find_rxinfer_scripts",
+    "execute_rxinfer_script",
+    "is_julia_available",
 ]

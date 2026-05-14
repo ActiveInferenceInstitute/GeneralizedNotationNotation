@@ -76,7 +76,7 @@ s[5,1]  # Duplicate!
         checker = GNNTypeChecker()
         out_dir = Path(safe_filesystem.temp_dir) / "out"
         out_dir.mkdir()
-        
+
         # Processor layer evaluates directories inherently through validate_gnn_files
         success = checker.validate_gnn_files(Path(safe_filesystem.temp_dir), out_dir)
 

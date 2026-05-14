@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 class ProcessingPhase(Enum):
     """Enumeration of processing phases."""
+
     DISCOVERY = auto()
     VALIDATION = auto()
     ROUND_TRIP = auto()
@@ -37,6 +38,7 @@ class ProcessingPhase(Enum):
 @dataclass
 class ProcessingContext:
     """Comprehensive context for GNN processing pipeline."""
+
     target_dir: Path
     output_dir: Path
     recursive: bool = False
@@ -76,13 +78,13 @@ class ProcessingContext:
 class GNNProcessor:
     """
     Orchestrates the entire GNN processing pipeline.
-    
+
     This class coordinates file discovery, validation, testing,
     and reporting in a structured, extensible manner.
     """
 
     def __init__(self, logger: Optional[logging.Logger] = None):
-        self.logger = logger or logging.getLogger('gnn.core_processor')
+        self.logger = logger or logging.getLogger("gnn.core_processor")
 
         # Initialize processing strategies
         self.discovery_strategy = FileDiscoveryStrategy()
@@ -95,10 +97,10 @@ class GNNProcessor:
     def process(self, context: ProcessingContext) -> bool:
         """
         Execute the complete GNN processing pipeline.
-        
+
         Args:
             context: Comprehensive processing context
-        
+
         Returns:
             bool: Whether processing was successful
         """
@@ -127,7 +129,9 @@ class GNNProcessor:
             self._execute_reporting_phase(context)
 
             total_time = context.get_processing_time()
-            self.logger.info(f"GNN processing completed successfully in {total_time:.2f}s")
+            self.logger.info(
+                f"GNN processing completed successfully in {total_time:.2f}s"
+            )
             return True
 
         except Exception as e:
@@ -142,12 +146,18 @@ class GNNProcessor:
         try:
             self.discovery_strategy.configure(
                 recursive=context.recursive,
-                target_extensions=['.md', '.json', '.xml', '.yaml', '.pkl']
+                target_extensions=[".md", ".json", ".xml", ".yaml", ".pkl"],
             )
-            context.discovered_files = self.discovery_strategy.discover(context.target_dir)
+            context.discovered_files = self.discovery_strategy.discover(
+                context.target_dir
+            )
             self.logger.info(f"Discovered {len(context.discovered_files)} GNN files")
-            context.processing_results['discovered_files'] = len(context.discovered_files)
-            context.processing_results['file_list'] = [str(f) for f in context.discovered_files]
+            context.processing_results["discovered_files"] = len(
+                context.discovered_files
+            )
+            context.processing_results["file_list"] = [
+                str(f) for f in context.discovered_files
+            ]
             return bool(context.discovered_files)
         except Exception as e:
             self.logger.error(f"File discovery failed: {e}")
@@ -159,17 +169,19 @@ class GNNProcessor:
         self.logger.info("Phase 2: File validation")
         try:
             self.validation_strategy.configure(
-                validation_level=context.validation_level,
-                enable_strict_checking=True
+                validation_level=context.validation_level, enable_strict_checking=True
             )
-            validation_results = self.validation_strategy.validate_files(context.discovered_files)
+            validation_results = self.validation_strategy.validate_files(
+                context.discovered_files
+            )
             context.valid_files = [
-                file_path for file_path, result in validation_results.items()
+                file_path
+                for file_path, result in validation_results.items()
                 if result.is_valid
             ]
             self.logger.info(f"Found {len(context.valid_files)} valid GNN files")
-            context.processing_results['valid_files'] = len(context.valid_files)
-            context.processing_results['validation_results'] = validation_results
+            context.processing_results["valid_files"] = len(context.valid_files)
+            context.processing_results["validation_results"] = validation_results
             return bool(context.valid_files)
         except Exception as e:
             self.logger.error(f"Validation failed: {e}")
@@ -183,17 +195,20 @@ class GNNProcessor:
             if self.round_trip_strategy is None:
                 try:
                     from .testing import RoundTripTestStrategy
+
                     self.round_trip_strategy = RoundTripTestStrategy()
                 except ImportError:
-                    self.logger.warning("RoundTripTestStrategy not available, skipping round-trip tests")
+                    self.logger.warning(
+                        "RoundTripTestStrategy not available, skipping round-trip tests"
+                    )
                     return True
             self.round_trip_strategy.configure(
                 test_subset=context.test_subset,
                 reference_file=context.reference_file,
-                output_dir=context.output_dir / "round_trip_tests"
+                output_dir=context.output_dir / "round_trip_tests",
             )
             round_trip_results = self.round_trip_strategy.test(context.valid_files)
-            context.processing_results['round_trip_results'] = round_trip_results
+            context.processing_results["round_trip_results"] = round_trip_results
             self.logger.info("Round-trip testing completed")
             return True
         except Exception as e:
@@ -202,14 +217,18 @@ class GNNProcessor:
 
     def _execute_cross_format_phase(self, context: ProcessingContext) -> bool:
         """Execute cross-format validation phase."""
-        context.log_phase(ProcessingPhase.CROSS_FORMAT, "Validating cross-format consistency")
+        context.log_phase(
+            ProcessingPhase.CROSS_FORMAT, "Validating cross-format consistency"
+        )
         self.logger.info("Phase 4: Cross-format validation")
         try:
             self.cross_format_strategy.configure(
                 output_dir=context.output_dir / "cross_format_validation"
             )
-            cross_format_results = self.cross_format_strategy.validate(context.valid_files)
-            context.processing_results['cross_format_results'] = cross_format_results
+            cross_format_results = self.cross_format_strategy.validate(
+                context.valid_files
+            )
+            context.processing_results["cross_format_results"] = cross_format_results
             self.logger.info("Cross-format validation completed")
             return True
         except Exception as e:
@@ -222,10 +241,9 @@ class GNNProcessor:
         self.logger.info("Phase 5: Report generation")
         try:
             report = self.report_generator.generate_processing_report(
-                context=context,
-                output_dir=context.output_dir
+                context=context, output_dir=context.output_dir
             )
-            context.processing_results['report'] = report
+            context.processing_results["report"] = report
             self.logger.info("Report generation completed")
         except Exception as e:
             self.logger.error(f"Report generation failed: {e}")
@@ -241,7 +259,7 @@ def process_gnn_directory(
 
     Executes discovery and validation phases and writes minimal results when output_dir is provided.
     """
-    logger = logging.getLogger('gnn.core_processor.wrapper')
+    logger = logging.getLogger("gnn.core_processor.wrapper")
     context = ProcessingContext(
         target_dir=Path(target_dir),
         output_dir=Path(output_dir) if output_dir else Path.cwd(),
@@ -261,7 +279,7 @@ def process_gnn_directory(
             "files": processed,
             "processed_files": processed,
             "valid_files": [str(p) for p in context.valid_files],
-            "processing_mode": "full"
+            "processing_mode": "full",
         }
     else:
         # Recovery to lightweight processing expected by recovery tests
@@ -272,13 +290,14 @@ def process_gnn_directory(
             "files": processed,
             "processed_files": processed,
             "valid_files": [],
-            "processing_mode": "lightweight"
+            "processing_mode": "lightweight",
         }
     if output_dir:
         try:
             Path(output_dir).mkdir(parents=True, exist_ok=True)
             with open(Path(output_dir) / "gnn_core_results.json", "w") as f:
                 import json as _json
+
                 _json.dump(result, f, indent=2)
         except OSError as e:
             logger.debug("Results file write failed (non-critical): %s", e)
@@ -292,13 +311,14 @@ def _scan_files_lightweight(target_dir: Path) -> Dict[str, Any]:
         files = [target_path]
     else:
         files = list(target_path.glob("**/*.md"))
-    return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
+    return {
+        str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size}
+        for p in files
+    }
 
 
 def process_gnn_directory_lightweight(
-    target_dir: Path,
-    output_dir: Path | None = None,
-    recursive: bool = False
+    target_dir: Path, output_dir: Path | None = None, recursive: bool = False
 ) -> Dict[str, Any]:
     """Compatibility wrapper for lightweight directory processing API."""
     del recursive  # lightweight mode uses glob scan semantics internally
@@ -309,6 +329,7 @@ def process_gnn_directory_lightweight(
             Path(output_dir).mkdir(parents=True, exist_ok=True)
             with open(Path(output_dir) / "gnn_core_lightweight_results.json", "w") as f:
                 import json as _json
+
                 _json.dump(
                     {
                         "timestamp": datetime.now().isoformat(),
@@ -317,7 +338,9 @@ def process_gnn_directory_lightweight(
                         "files_processed": len(light),
                         "success": True,
                         "errors": [],
-                        "parsed_files": [{"path": path, **meta} for path, meta in light.items()],
+                        "parsed_files": [
+                            {"path": path, **meta} for path, meta in light.items()
+                        ],
                         "validation_results": [],
                     },
                     f,
@@ -326,6 +349,7 @@ def process_gnn_directory_lightweight(
         except OSError:
             pass
     return result
+
 
 # Factory function for easy processor creation
 def create_processor(logger: Optional[logging.Logger] = None) -> GNNProcessor:

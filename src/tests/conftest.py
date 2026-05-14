@@ -74,6 +74,7 @@ def pytest_collection_modifyitems(config: Any, items: list) -> None:
 # Session-level fixtures
 # -----------------------------------------------------------------------------
 
+
 @pytest.fixture(scope="session")
 def test_config() -> Dict[str, Any]:
     """Session-wide test configuration."""
@@ -108,6 +109,7 @@ def test_dir() -> Path:
 # Filesystem fixtures
 # -----------------------------------------------------------------------------
 
+
 @pytest.fixture
 def safe_filesystem() -> Generator[Any, None, None]:
     """A scratch filesystem under a fresh tempdir that cleans itself up."""
@@ -134,6 +136,7 @@ def safe_filesystem() -> Generator[Any, None, None]:
 
         def cleanup(self) -> None:
             import shutil
+
             if self.temp_dir.exists():
                 try:
                     shutil.rmtree(self.temp_dir)
@@ -153,6 +156,7 @@ def isolated_temp_dir() -> Generator[Path, None, None]:
         yield temp_dir
     finally:
         import shutil
+
         shutil.rmtree(temp_dir, ignore_errors=True)
 
 
@@ -182,6 +186,7 @@ def temp_output_dir() -> Generator[Path, None, None]:
         yield directory
     finally:
         import shutil
+
         shutil.rmtree(base, ignore_errors=True)
 
 
@@ -216,7 +221,8 @@ def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
     files = {
         "simple": safe_filesystem.create_file("simple.gnn", _SAMPLE_GNN_CONTENT),
         "second": safe_filesystem.create_file(
-            "second.gnn", _SAMPLE_GNN_CONTENT.replace("test_model", "second_model"),
+            "second.gnn",
+            _SAMPLE_GNN_CONTENT.replace("test_model", "second_model"),
         ),
     }
     return files
@@ -257,6 +263,7 @@ def test_data_dir() -> Generator[Path, None, None]:
         yield sample.parent
     finally:
         import shutil
+
         shutil.rmtree(base, ignore_errors=True)
 
 
@@ -270,6 +277,7 @@ def sample_gnn_file() -> Generator[Path, None, None]:
         yield path
     finally:
         import shutil
+
         shutil.rmtree(tmp, ignore_errors=True)
 
 
@@ -326,12 +334,14 @@ def comprehensive_test_data(isolated_temp_dir: Path) -> Dict[str, Any]:
 # Render + MCP test helpers
 # -----------------------------------------------------------------------------
 
+
 class _RealRenderModule:
     """Thin adapter used by render integration tests — delegates to
     ``render.processor.render_gnn_spec``. Phase 7: fallback chain removed."""
 
     def render_gnn_spec(self, spec: Any, target: str, outdir: Any) -> Any:
         from render.processor import render_gnn_spec
+
         return render_gnn_spec(spec, target, outdir)
 
 
@@ -364,7 +374,9 @@ class _MCPTools:
             "description": description,
         }
 
-    def register_resource(self, pattern: str, handler: Any, description: str = "") -> None:
+    def register_resource(
+        self, pattern: str, handler: Any, description: str = ""
+    ) -> None:
         self.resources[pattern] = {"handler": handler, "description": description}
 
     def execute_tool(self, name: str, **kwargs: Any) -> Any:

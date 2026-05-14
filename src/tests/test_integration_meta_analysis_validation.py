@@ -22,10 +22,34 @@ def test_validate_empty_records() -> None:
 
 def test_validate_full_grid_no_grid_issues() -> None:
     records = [
-        SweepRecord("pymdp_scaling_N2_T10", "pymdp", num_states=2, num_timesteps=10, success=True),
-        SweepRecord("pymdp_scaling_N2_T20", "pymdp", num_states=2, num_timesteps=20, success=True),
-        SweepRecord("pymdp_scaling_N4_T10", "pymdp", num_states=4, num_timesteps=10, success=True),
-        SweepRecord("pymdp_scaling_N4_T20", "pymdp", num_states=4, num_timesteps=20, success=True),
+        SweepRecord(
+            "pymdp_scaling_N2_T10",
+            "pymdp",
+            num_states=2,
+            num_timesteps=10,
+            success=True,
+        ),
+        SweepRecord(
+            "pymdp_scaling_N2_T20",
+            "pymdp",
+            num_states=2,
+            num_timesteps=20,
+            success=True,
+        ),
+        SweepRecord(
+            "pymdp_scaling_N4_T10",
+            "pymdp",
+            num_states=4,
+            num_timesteps=10,
+            success=True,
+        ),
+        SweepRecord(
+            "pymdp_scaling_N4_T20",
+            "pymdp",
+            num_states=4,
+            num_timesteps=20,
+            success=True,
+        ),
     ]
     payload = validate_sweep_records(records)
     assert not any(i["code"] == "GRID_MISSING_CELL" for i in payload["issues"])
@@ -35,9 +59,27 @@ def test_validate_full_grid_no_grid_issues() -> None:
 
 def test_validate_grid_missing_cell() -> None:
     records = [
-        SweepRecord("pymdp_scaling_N2_T10", "pymdp", num_states=2, num_timesteps=10, success=True),
-        SweepRecord("pymdp_scaling_N4_T10", "pymdp", num_states=4, num_timesteps=10, success=True),
-        SweepRecord("pymdp_scaling_N2_T50", "pymdp", num_states=2, num_timesteps=50, success=True),
+        SweepRecord(
+            "pymdp_scaling_N2_T10",
+            "pymdp",
+            num_states=2,
+            num_timesteps=10,
+            success=True,
+        ),
+        SweepRecord(
+            "pymdp_scaling_N4_T10",
+            "pymdp",
+            num_states=4,
+            num_timesteps=10,
+            success=True,
+        ),
+        SweepRecord(
+            "pymdp_scaling_N2_T50",
+            "pymdp",
+            num_states=2,
+            num_timesteps=50,
+            success=True,
+        ),
     ]
     payload = validate_sweep_records(records)
     assert payload["schema_version"]
@@ -47,7 +89,10 @@ def test_validate_grid_missing_cell() -> None:
 
 def test_validate_timestep_mismatch(tmp_path: Path) -> None:
     sim = tmp_path / "simulation_results.json"
-    sim.write_text(json.dumps({"observations": [1, 1, 1, 1, 1], "num_timesteps": 5}), encoding="utf-8")
+    sim.write_text(
+        json.dumps({"observations": [1, 1, 1, 1, 1], "num_timesteps": 5}),
+        encoding="utf-8",
+    )
     records = [
         SweepRecord(
             "pymdp_scaling_N4_T10",
@@ -204,7 +249,9 @@ def test_run_meta_analysis_writes_artifacts_and_returns_paths(tmp_path: Path) ->
             }
         ]
     }
-    (summaries / "execution_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    (summaries / "execution_summary.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
 
     out_dir = tmp_path / "meta_out"
     result = run_meta_analysis(execute_output_dir=exec_root, output_dir=out_dir)
@@ -230,7 +277,10 @@ def test_run_meta_analysis_returns_none_without_records(tmp_path: Path) -> None:
     out_dir = tmp_path / "meta_empty"
     assert run_meta_analysis(execute_output_dir=exec_root, output_dir=out_dir) is None
 
-def test_collect_slim_execution_summary_preserves_timing_for_collector(tmp_path: Path) -> None:
+
+def test_collect_slim_execution_summary_preserves_timing_for_collector(
+    tmp_path: Path,
+) -> None:
     """Slim aggregate rows omit stdout but keep fields SweepDataCollector needs."""
     exec_root = tmp_path / "12_execute_output"
     summaries = exec_root / "summaries"
@@ -248,7 +298,9 @@ def test_collect_slim_execution_summary_preserves_timing_for_collector(tmp_path:
         "stdout_length": 42,
     }
     payload = {"execution_summary_format": "slim_v1", "execution_details": [detail]}
-    (summaries / "execution_summary.json").write_text(json.dumps(payload), encoding="utf-8")
+    (summaries / "execution_summary.json").write_text(
+        json.dumps(payload), encoding="utf-8"
+    )
 
     collector = SweepDataCollector(exec_root)
     records = collector.collect()

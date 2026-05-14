@@ -62,7 +62,12 @@ def test_format_strict_issue_detail_anchor_section_when_checked(
     detail = format_strict_issue_detail(
         link_issues=[],
         anchor_issues=[
-            (Path("doc/a.md"), 2, "b.md#frag", "anchor #frag not found (headings in `doc/b.md`)")
+            (
+                Path("doc/a.md"),
+                2,
+                "b.md#frag",
+                "anchor #frag not found (headings in `doc/b.md`)",
+            )
         ],
         anchor_checked=True,
         spec_issues=[],
@@ -80,7 +85,9 @@ def test_format_strict_issue_detail_anchor_section_when_checked(
 def test_maintained_doc_terms_flags_stale_phrase(tmp_path: Path) -> None:
     mod = _load_doc_terms()
     readme = tmp_path / "README.md"
-    readme.write_text("This mentions FallbackAgent in maintained docs.\n", encoding="utf-8")
+    readme.write_text(
+        "This mentions FallbackAgent in maintained docs.\n", encoding="utf-8"
+    )
 
     findings = mod.scan(tmp_path)
 

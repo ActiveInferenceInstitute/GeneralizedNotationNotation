@@ -19,17 +19,18 @@ sys.path.insert(0, str(project_root))
 # Load environment variables from .env file
 try:
     import importlib
+
     dotenv = importlib.import_module("dotenv")
     load_dotenv = getattr(dotenv, "load_dotenv", None)
     if callable(load_dotenv):
-        load_dotenv(Path(__file__).parent / '.env')
+        load_dotenv(Path(__file__).parent / ".env")
 except ModuleNotFoundError:
     pass
 except Exception as exc:
     logger = logging.getLogger(__name__)
     logger.debug("dotenv loading skipped: %s", exc)
 
-from src.llm import (
+from llm import (
     AnalysisType,
     LLMConfig,
     LLMMessage,
@@ -40,8 +41,7 @@ from src.llm import (
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
 
@@ -94,6 +94,7 @@ DiscreteTime: True
 ModelTimeHorizon: 10
 """
 
+
 def test_environment_setup() -> None:
     """Test that environment variables are properly loaded."""
     print("🔧 Testing Environment Setup...")
@@ -105,15 +106,20 @@ def test_environment_setup() -> None:
     print(f"✅ Provider configs: {list(configs.keys())}")
 
     # Check specific keys (without exposing them)
-    if 'openai' in api_keys:
-        print(f"✅ OpenAI key format: {'Valid' if api_keys['openai'].startswith('sk-') else 'Invalid'}")
-    if 'openrouter' in api_keys:
-        print(f"✅ OpenRouter key format: {'Valid' if api_keys['openrouter'].startswith('sk-or-') else 'Invalid'}")
+    if "openai" in api_keys:
+        print(
+            f"✅ OpenAI key format: {'Valid' if api_keys['openai'].startswith('sk-') else 'Invalid'}"
+        )
+    if "openrouter" in api_keys:
+        print(
+            f"✅ OpenRouter key format: {'Valid' if api_keys['openrouter'].startswith('sk-or-') else 'Invalid'}"
+        )
 
     # Basic assertions for offline test
     if not isinstance(api_keys, dict) or not isinstance(configs, dict):
         raise RuntimeError("Expected API keys and provider configs as dictionaries")
     return api_keys, configs
+
 
 def test_provider_initialization() -> Any:
     """Test individual provider initialization."""
@@ -138,6 +144,7 @@ def test_provider_initialization() -> Any:
         raise RuntimeError("LLMProcessor initialization returned None")
     return processor
 
+
 def test_basic_analysis() -> None:
     """Test basic GNN analysis functionality."""
     print("\n📊 Testing Basic Analysis...")
@@ -151,6 +158,7 @@ def test_basic_analysis() -> None:
                 self.model_used = "local-response"
                 self.provider = "local"
                 self.usage = {"tokens": 0}
+
         response = _Resp()
 
         print("✅ Summary Analysis Success!")
@@ -167,6 +175,7 @@ def test_basic_analysis() -> None:
         print(f"❌ Summary Analysis Failed: {e}")
         return None
 
+
 def test_different_analysis_types() -> None:
     """Test different analysis types."""
     print("\n🔍 Testing Different Analysis Types...")
@@ -174,7 +183,7 @@ def test_different_analysis_types() -> None:
     analysis_types = [
         AnalysisType.STRUCTURE,
         AnalysisType.QUESTIONS,
-        AnalysisType.VALIDATION
+        AnalysisType.VALIDATION,
     ]
     for analysis_type in analysis_types:
         try:
@@ -184,6 +193,7 @@ def test_different_analysis_types() -> None:
             print("   Content length: 7 characters")
         except Exception as e:
             print(f"❌ {analysis_type.value.upper()} Analysis Failed: {e}")
+
 
 def test_provider_specific_calls() -> None:
     """Test calling specific providers."""
@@ -202,41 +212,43 @@ def test_provider_specific_calls() -> None:
         except Exception as e:
             print(f"❌ {provider_type.value.upper()} Provider Failed: {e}")
 
+
 def test_custom_configurations() -> None:
     """Test custom LLM configurations."""
     print("\n⚙️ Testing Custom Configurations...")
 
     # Test different configurations
     configs = [
-        LLMConfig(
-            model="gpt-4o-mini",
-            max_tokens=500,
-            temperature=0.1
-        ),
+        LLMConfig(model="gpt-4o-mini", max_tokens=500, temperature=0.1),
         LLMConfig(
             model="openai/gpt-4o",  # OpenRouter format
             max_tokens=1000,
-            temperature=0.5
+            temperature=0.5,
         ),
-        LLMConfig(
-            max_tokens=1500,
-            temperature=0.8,
-            top_p=0.9
-        )
+        LLMConfig(max_tokens=1500, temperature=0.8, top_p=0.9),
     ]
 
     for i, config in enumerate(configs):
         try:
             _ = config
-            response_type = type("Resp", (), {"provider": "local", "model_used": "local-response", "usage": {"tokens": 0}})
+            response_type = type(
+                "Resp",
+                (),
+                {
+                    "provider": "local",
+                    "model_used": "local-response",
+                    "usage": {"tokens": 0},
+                },
+            )
             response = response_type()
-            print(f"✅ Config {i+1} Success!")
+            print(f"✅ Config {i + 1} Success!")
             print(f"   Provider: {response.provider}")
             print(f"   Model: {response.model_used}")
             print(f"   Usage: {response.usage}")
 
         except Exception as e:
-            print(f"❌ Config {i+1} Failed: {e}")
+            print(f"❌ Config {i + 1} Failed: {e}")
+
 
 def test_streaming_responses() -> None:
     """Test streaming response functionality."""
@@ -246,12 +258,12 @@ def test_streaming_responses() -> None:
         [
             LLMMessage(
                 role="system",
-                content="You are an expert in Active Inference and GNN specifications."
+                content="You are an expert in Active Inference and GNN specifications.",
             ),
             LLMMessage(
                 role="user",
-                content=f"Provide a brief summary of this GNN model:\n{SAMPLE_GNN_CONTENT}"
-            )
+                content=f"Provide a brief summary of this GNN model:\n{SAMPLE_GNN_CONTENT}",
+            ),
         ]
 
         LLMConfig(max_tokens=500, temperature=0.3)
@@ -266,6 +278,7 @@ def test_streaming_responses() -> None:
 
     except Exception as e:
         print(f"❌ Streaming Failed: {e}")
+
 
 def test_provider_comparison() -> None:
     """Test comparing responses from multiple providers."""
@@ -288,6 +301,7 @@ def test_provider_comparison() -> None:
     except Exception as e:
         print(f"❌ Provider Comparison Failed: {e}")
 
+
 def test_error_handling() -> None:
     """Test error handling and recovery mechanisms."""
     print("\n🛡️ Testing Error Handling...")
@@ -302,20 +316,21 @@ def test_error_handling() -> None:
     except Exception as e:
         print(f"⚠️ Error handling test: {e}")
 
+
 def test_global_processor() -> None:
     """Test global processor initialization and configuration."""
     print("\n🌐 Testing Global Processor...")
     try:
         # Verify processor module is importable
-        from src.llm.processor import LLMProcessor
+        from llm.processor import LLMProcessor
 
         # Create processor instance
         processor = LLMProcessor()
 
         # Verify basic attributes exist
-        if not hasattr(processor, 'process'):
+        if not hasattr(processor, "process"):
             raise RuntimeError("Processor missing process method")
-        if not hasattr(processor, 'get_available_providers'):
+        if not hasattr(processor, "get_available_providers"):
             raise RuntimeError("Processor missing get_available_providers method")
 
         # Verify it returns a list (even if empty when no providers configured)
@@ -330,6 +345,7 @@ def test_global_processor() -> None:
         # Still pass - graceful degradation is valid
     except Exception as e:
         print(f"   ⚠️ Processor test skipped: {e}")
+
 
 def main() -> None:
     """Run all tests."""
@@ -373,7 +389,9 @@ def main() -> None:
     except Exception as e:
         print(f"❌ Test suite failed: {e}")
         import traceback
+
         traceback.print_exc()
+
 
 if __name__ == "__main__":
     main()

@@ -42,7 +42,7 @@ def parse_rxinfer_output(output_path: Path) -> Optional[Dict[str, Any]]:
         return None
 
     try:
-        with open(output_path, 'r') as f:
+        with open(output_path, "r") as f:
             raw = json.load(f)
 
         # Normalize: handle both snake_case and camelCase keys from Julia output
@@ -54,7 +54,7 @@ def parse_rxinfer_output(output_path: Path) -> Optional[Dict[str, Any]]:
             "posteriors": _extract_posteriors(raw),
             "elapsed_seconds": raw.get("elapsed_seconds") or raw.get("elapsed", 0.0),
             "framework": "RxInfer.jl",
-            "parse_timestamp": datetime.now().isoformat()
+            "parse_timestamp": datetime.now().isoformat(),
         }
 
         return normalized
@@ -111,15 +111,22 @@ def _extract_posteriors(raw: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         # NormalMeanVariance (Gaussian)
         if any(k in dist_data for k in ["mean", "μ", "mu"]):
             mean = dist_data.get("mean") or dist_data.get("μ") or dist_data.get("mu")
-            var = (dist_data.get("variance") or dist_data.get("σ²") or
-                   dist_data.get("sigma2") or dist_data.get("cov"))
+            var = (
+                dist_data.get("variance")
+                or dist_data.get("σ²")
+                or dist_data.get("sigma2")
+                or dist_data.get("cov")
+            )
             parsed["mean"] = _to_float_list(mean)
             parsed["variance"] = _to_float_list(var) if var is not None else None
 
         # Dirichlet
         if any(k in dist_data for k in ["alpha", "α", "concentration"]):
-            conc = (dist_data.get("alpha") or dist_data.get("α") or
-                    dist_data.get("concentration"))
+            conc = (
+                dist_data.get("alpha")
+                or dist_data.get("α")
+                or dist_data.get("concentration")
+            )
             parsed["concentration"] = _to_float_list(conc)
             # Compute mean of Dirichlet
             conc_list = parsed.get("concentration", [])
@@ -129,8 +136,11 @@ def _extract_posteriors(raw: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 
         # Categorical
         if any(k in dist_data for k in ["p", "probs", "probabilities"]):
-            probs = (dist_data.get("p") or dist_data.get("probs") or
-                     dist_data.get("probabilities"))
+            probs = (
+                dist_data.get("p")
+                or dist_data.get("probs")
+                or dist_data.get("probabilities")
+            )
             parsed["probabilities"] = _to_float_list(probs)
             parsed["mean"] = parsed["probabilities"]
 
@@ -181,7 +191,7 @@ def extract_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
         "free_energy_change": None,
         "relative_change": None,
         "iterations_to_convergence": None,
-        "monotone_decrease": None
+        "monotone_decrease": None,
     }
 
     fe_trace = parsed.get("free_energy", [])
@@ -199,13 +209,15 @@ def extract_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
             metrics["relative_change"] = abs(fe_change) / abs(fe_trace[0])
 
         # Check monotone decrease (VFE should decrease during VBEM)
-        decreases = sum(1 for i in range(1, len(fe_trace)) if fe_trace[i] < fe_trace[i-1])
+        decreases = sum(
+            1 for i in range(1, len(fe_trace)) if fe_trace[i] < fe_trace[i - 1]
+        )
         metrics["monotone_decrease"] = decreases == len(fe_trace) - 1
 
         # Estimate iterations to convergence (where |ΔFE| < 0.01 * |FE_0|)
         threshold = 0.01 * abs(fe_trace[0]) if abs(fe_trace[0]) > 1e-10 else 0.001
         for i in range(1, len(fe_trace)):
-            if abs(fe_trace[i] - fe_trace[i-1]) < threshold:
+            if abs(fe_trace[i] - fe_trace[i - 1]) < threshold:
                 metrics["iterations_to_convergence"] = i
                 break
 
@@ -237,6 +249,7 @@ def summarize_posteriors(parsed: Dict[str, Any]) -> Dict[str, Any]:
                 # Add entropy-like measure for categorical distributions
                 if dist.get("type") in ["categorical", "dirichlet"]:
                     import math
+
                     var_summary["argmax"] = mean.index(max(mean))
                     # Entropy
                     entropy = -sum(p * math.log(p + 1e-10) for p in mean)
@@ -255,8 +268,7 @@ def summarize_posteriors(parsed: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def collect_rxinfer_results(
-    output_dir: Path,
-    model_name: Optional[str] = None
+    output_dir: Path, model_name: Optional[str] = None
 ) -> List[Dict[str, Any]]:
     """
     Collect and parse all RxInfer result JSON files from an output directory.
@@ -275,9 +287,11 @@ def collect_rxinfer_results(
         return results
 
     # Find all JSON output files
-    json_files = list(output_dir.glob("**/*_rxinfer*.json")) + \
-                 list(output_dir.glob("**/*rxinfer*.json")) + \
-                 list(output_dir.glob("**/rxinfer_output*.json"))
+    json_files = (
+        list(output_dir.glob("**/*_rxinfer*.json"))
+        + list(output_dir.glob("**/*rxinfer*.json"))
+        + list(output_dir.glob("**/rxinfer_output*.json"))
+    )
 
     for json_file in json_files:
         parsed = parse_rxinfer_output(json_file)
@@ -294,9 +308,11 @@ def collect_rxinfer_results(
         parsed["posterior_summary"] = summarize_posteriors(parsed)
 
         results.append(parsed)
-        logger.info(f"Parsed RxInfer results from {json_file.name}: "
-                   f"converged={parsed['converged']}, "
-                   f"iterations={parsed['iterations']}")
+        logger.info(
+            f"Parsed RxInfer results from {json_file.name}: "
+            f"converged={parsed['converged']}, "
+            f"iterations={parsed['iterations']}"
+        )
 
     return results
 
@@ -314,9 +330,11 @@ def format_rxinfer_report(results: List[Dict[str, Any]]) -> str:
     if not results:
         return "# RxInfer.jl Results\n\nNo results found.\n"
 
-    lines = ["# RxInfer.jl Inference Results\n",
-             f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
-             f"**Models analyzed**: {len(results)}\n\n"]
+    lines = [
+        "# RxInfer.jl Inference Results\n",
+        f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
+        f"**Models analyzed**: {len(results)}\n\n",
+    ]
 
     for r in results:
         model = r.get("model_name", "unknown")
@@ -329,7 +347,9 @@ def format_rxinfer_report(results: List[Dict[str, Any]]) -> str:
         if conv.get("final_free_energy") is not None:
             lines.append(f"- **Final Free Energy**: {conv['final_free_energy']:.4f}")
         if conv.get("iterations_to_convergence") is not None:
-            lines.append(f"- **Iterations to convergence**: {conv['iterations_to_convergence']}")
+            lines.append(
+                f"- **Iterations to convergence**: {conv['iterations_to_convergence']}"
+            )
 
         # Posterior summary
         post_summary = r.get("posterior_summary", {})

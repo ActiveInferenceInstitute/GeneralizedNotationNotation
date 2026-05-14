@@ -12,6 +12,7 @@ from typing import List, Optional
 
 try:
     import gradio as gr
+
     GRADIO_AVAILABLE = True
 except ImportError:
     GRADIO_AVAILABLE = False
@@ -19,6 +20,7 @@ except ImportError:
 try:
     import numpy as np
     import plotly.graph_objects as go
+
     PLOTLY_AVAILABLE = True
 except ImportError:
     go = None
@@ -26,7 +28,9 @@ except ImportError:
     PLOTLY_AVAILABLE = False
 
 
-def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logger) -> "gr.Blocks":
+def build_simple_visual_gui(
+    markdown_text: str, export_path: Path, logger: logging.Logger
+) -> "gr.Blocks":
     """Build a simplified visual matrix editor that actually works"""
 
     if not GRADIO_AVAILABLE:
@@ -38,22 +42,19 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
     default_c = [[0.5], [0.3], [0.2]]
     default_d = [[0.8], [0.2]]
 
-    def create_simple_heatmap(data: List[List[float]], title: str) -> Optional[go.Figure]:
+    def create_simple_heatmap(
+        data: List[List[float]], title: str
+    ) -> Optional[go.Figure]:
         """Create a simple heatmap"""
         if not PLOTLY_AVAILABLE or not data:
             return None
 
         try:
-            fig = go.Figure(data=go.Heatmap(
-                z=data,
-                colorscale='Viridis',
-                showscale=True
-            ))
+            fig = go.Figure(
+                data=go.Heatmap(z=data, colorscale="Viridis", showscale=True)
+            )
             fig.update_layout(
-                title=f"<b>{title}</b>",
-                width=400,
-                height=300,
-                font={"size": 12}
+                title=f"<b>{title}</b>", width=400, height=300, font={"size": 12}
             )
             return fig
         except Exception as e:
@@ -67,20 +68,21 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
 
         try:
             # Extract values from vector format
-            values = [row[0] if isinstance(row, list) and len(row) > 0 else 0.0 for row in data]
+            values = [
+                row[0] if isinstance(row, list) and len(row) > 0 else 0.0
+                for row in data
+            ]
 
-            fig = go.Figure(data=go.Bar(
-                y=values,
-                x=list(range(len(values))),
-                marker_color='blue'
-            ))
+            fig = go.Figure(
+                data=go.Bar(y=values, x=list(range(len(values))), marker_color="blue")
+            )
             fig.update_layout(
                 title=f"<b>{title}</b>",
                 width=400,
                 height=300,
                 xaxis_title="Index",
                 yaxis_title="Value",
-                font={"size": 12}
+                font={"size": 12},
             )
             return fig
         except Exception as e:
@@ -92,7 +94,7 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
         try:
             # Convert gradio dataframes to lists safely
             def safe_convert(data):
-                if hasattr(data, 'values'):
+                if hasattr(data, "values"):
                     return data.values.tolist()
                 elif isinstance(data, list):
                     return data
@@ -130,15 +132,15 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
             logger.error(f"Error in update_visualizations: {e}")
             error_fig = None
             if PLOTLY_AVAILABLE:
-                error_fig = go.Figure().add_annotation(text=f"Error: {str(e)}", x=0.5, y=0.5)
+                error_fig = go.Figure().add_annotation(
+                    text=f"Error: {str(e)}", x=0.5, y=0.5
+                )
             return [error_fig, error_fig, error_fig, error_fig, f"Error: {str(e)}"]
 
     # Build the simplified interface
     with gr.Blocks(
-        title="Visual Matrix Editor - Simplified",
-        theme=gr.themes.Default()
+        title="Visual Matrix Editor - Simplified", theme=gr.themes.Default()
     ) as demo:
-
         gr.Markdown("# 🎯 Visual Matrix Editor (Simplified)")
         gr.Markdown("Interactive matrix editor for Active Inference models")
 
@@ -146,31 +148,23 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
             with gr.Column():
                 gr.Markdown("### Matrix A (Likelihood)")
                 matrix_a_input = gr.Dataframe(
-                    value=default_a,
-                    label="Matrix A",
-                    interactive=True
+                    value=default_a, label="Matrix A", interactive=True
                 )
 
                 gr.Markdown("### Matrix B (Transition)")
                 matrix_b_input = gr.Dataframe(
-                    value=default_b,
-                    label="Matrix B",
-                    interactive=True
+                    value=default_b, label="Matrix B", interactive=True
                 )
 
             with gr.Column():
                 gr.Markdown("### Vector C (Preference)")
                 vector_c_input = gr.Dataframe(
-                    value=default_c,
-                    label="Vector C",
-                    interactive=True
+                    value=default_c, label="Vector C", interactive=True
                 )
 
                 gr.Markdown("### Vector D (Prior)")
                 vector_d_input = gr.Dataframe(
-                    value=default_d,
-                    label="Vector D",
-                    interactive=True
+                    value=default_d, label="Vector D", interactive=True
                 )
 
         # Update button
@@ -194,16 +188,17 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
             update_btn.click(
                 update_visualizations,
                 inputs=[matrix_a_input, matrix_b_input, vector_c_input, vector_d_input],
-                outputs=[plot_a, plot_b, plot_c, plot_d, stats_output]
+                outputs=[plot_a, plot_b, plot_c, plot_d, stats_output],
             )
         else:
+
             def update_stats_only(matrix_a, matrix_b, vector_c, vector_d):
                 return update_visualizations(matrix_a, matrix_b, vector_c, vector_d)[-1]
 
             update_btn.click(
                 update_stats_only,
                 inputs=[matrix_a_input, matrix_b_input, vector_c_input, vector_d_input],
-                outputs=[stats_output]
+                outputs=[stats_output],
             )
 
         # Export functionality
@@ -226,7 +221,9 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
 Generated by Visual Matrix Editor (Simplified)
 """
 
-                with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=export_path.parent, delete=False) as tmp_f:
+                with tempfile.NamedTemporaryFile(
+                    mode="w", encoding="utf-8", dir=export_path.parent, delete=False
+                ) as tmp_f:
                     tmp_f.write(gnn_content)
                 os.replace(tmp_f.name, str(export_path))
                 return f"✅ Exported to {export_path.name}"
@@ -238,7 +235,7 @@ Generated by Visual Matrix Editor (Simplified)
         export_btn.click(
             export_matrices,
             inputs=[matrix_a_input, matrix_b_input, vector_c_input, vector_d_input],
-            outputs=[export_output]
+            outputs=[export_output],
         )
 
     return demo

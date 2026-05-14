@@ -26,7 +26,7 @@ def create_job(
     steps: Optional[List[int]] = None,
     skip_steps: Optional[List[int]] = None,
     verbose: bool = False,
-    strict: bool = False
+    strict: bool = False,
 ) -> str:
     """
     Create a new pipeline job and return its ID.
@@ -159,7 +159,7 @@ async def execute_job_async(job_id: str) -> None:
             *cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
-            cwd=str(repo_root)
+            cwd=str(repo_root),
         )
         job["process"] = proc
 
@@ -175,7 +175,9 @@ async def execute_job_async(job_id: str) -> None:
             job["status"] = "failed"
             # Capture tail of stderr for error message
             stderr_text = stderr.decode("utf-8", errors="replace") if stderr else ""
-            job["error_message"] = stderr_text[-500:] if len(stderr_text) > 500 else stderr_text
+            job["error_message"] = (
+                stderr_text[-500:] if len(stderr_text) > 500 else stderr_text
+            )
             logger.error(f"Job {job_id} failed with exit code {proc.returncode}")
 
     except Exception as e:
@@ -224,7 +226,7 @@ def get_pipeline_tools() -> List[dict]:
             "step_number": step,
             "name": name,
             "description": desc,
-            "script": f"src/{step}_{name}.py"
+            "script": f"src/{step}_{name}.py",
         }
         for step, (name, desc) in PIPELINE_STEPS.items()
     ]

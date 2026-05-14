@@ -30,35 +30,25 @@ TEST_CATEGORIES = {
     "safe_to_fail": "Tests with graceful degradation",
     "unit": "Individual component tests",
     "integration": "Multi-component workflow tests",
-    "mcp": "Model Context Protocol integration tests"
+    "mcp": "Model Context Protocol integration tests",
 }
 
 # Test execution stages
 TEST_STAGES = {
-    "fast": {
-        "timeout": 180,
-        "max_failures": 10,
-        "parallel": True,
-        "coverage": False
-    },
+    "fast": {"timeout": 180, "max_failures": 10, "parallel": True, "coverage": False},
     "standard": {
         "timeout": 600,
         "max_failures": 20,
         "parallel": True,
-        "coverage": True
+        "coverage": True,
     },
-    "slow": {
-        "timeout": 300,
-        "max_failures": 20,
-        "parallel": False,
-        "coverage": True
-    },
+    "slow": {"timeout": 300, "max_failures": 20, "parallel": False, "coverage": True},
     "performance": {
         "timeout": 600,
         "max_failures": 5,
         "parallel": False,
-        "coverage": False
-    }
+        "coverage": False,
+    },
 }
 
 # Test coverage targets
@@ -66,7 +56,7 @@ COVERAGE_TARGETS = {
     "overall": 85.0,
     "unit": 90.0,
     "integration": 80.0,
-    "performance": 70.0
+    "performance": 70.0,
 }
 
 # Test configuration constants
@@ -94,13 +84,20 @@ TEST_CONFIG = {
     "dev": False,
     "duration": 30.0,
     "audio_backend": "auto",
-    "ontology_terms_file": PROJECT_ROOT / "src" / "ontology" / "act_inf_ontology_terms.json",
-    "pipeline_summary_file": PROJECT_ROOT / "output" / "00_pipeline_summary" / "pipeline_execution_summary.json",
+    "ontology_terms_file": PROJECT_ROOT
+    / "src"
+    / "ontology"
+    / "act_inf_ontology_terms.json",
+    "pipeline_summary_file": PROJECT_ROOT
+    / "output"
+    / "00_pipeline_summary"
+    / "pipeline_execution_summary.json",
     "fast_only": False,
     "include_performance": True,
     # Required by tests
     "test_data_dir": "src/tests/test_data",
 }
+
 
 # Add TestRunner class definition
 class TestRunner:
@@ -115,18 +112,28 @@ class TestRunner:
         try:
             # Import the actual TestRunner from tests.runner
             from tests.runner import TestRunner as ActualTestRunner
+
             actual_runner = ActualTestRunner(config=self.config)
             return actual_runner.run_tests(test_paths, output_dir)
         except ImportError:
             self.logger.warning("Actual TestRunner not available, using recovery")
             return {"success": False, "error": "TestRunner not available"}
 
+
 # Add TestResult class definition
 class TestResult:
     """Basic test result for compatibility."""
 
-    def __init__(self, success=False, tests_run=0, tests_passed=0, tests_failed=0,
-                 tests_skipped=0, execution_time=0.0, error_message=None):
+    def __init__(
+        self,
+        success=False,
+        tests_run=0,
+        tests_passed=0,
+        tests_failed=0,
+        tests_skipped=0,
+        execution_time=0.0,
+        error_message=None,
+    ):
         self.success = success
         self.tests_run = tests_run
         self.tests_passed = tests_passed
@@ -144,8 +151,9 @@ class TestResult:
             "tests_failed": self.tests_failed,
             "tests_skipped": self.tests_skipped,
             "execution_time": self.execution_time,
-            "error_message": self.error_message
+            "error_message": self.error_message,
         }
+
 
 # Add TestCategory class definition
 class TestCategory:
@@ -161,11 +169,14 @@ class TestCategory:
     def __repr__(self):
         return self.__str__()
 
+
 # Add TestStage class definition
 class TestStage:
     """Basic test stage for compatibility."""
 
-    def __init__(self, name="", timeout=300, max_failures=10, parallel=True, coverage=False):
+    def __init__(
+        self, name="", timeout=300, max_failures=10, parallel=True, coverage=False
+    ):
         self.name = name
         self.timeout = timeout
         self.max_failures = max_failures
@@ -177,6 +188,7 @@ class TestStage:
 
     def __repr__(self):
         return self.__str__()
+
 
 # Add CoverageTarget class definition
 class CoverageTarget:
@@ -192,22 +204,31 @@ class CoverageTarget:
     def __repr__(self):
         return self.__str__()
 
+
 # Add missing functions
 def run_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
     """Basic test execution function."""
     try:
         # Import from tests module if available
         from tests.runner import ModularTestRunner
-        runner = ModularTestRunner(type('Args', (), {
-            'target_dir': target_dir,
-            'output_dir': output_dir,
-            'verbose': verbose
-        }), logging.getLogger("test_runner"))
+
+        runner = ModularTestRunner(
+            type(
+                "Args",
+                (),
+                {
+                    "target_dir": target_dir,
+                    "output_dir": output_dir,
+                    "verbose": verbose,
+                },
+            ),
+            logging.getLogger("test_runner"),
+        )
 
         # Run tests using the available method
-        if hasattr(runner, 'run_all_tests'):
+        if hasattr(runner, "run_all_tests"):
             return runner.run_all_tests()
-        elif hasattr(runner, 'run_tests'):
+        elif hasattr(runner, "run_tests"):
             return runner.run_tests()
         else:
             logging.warning("No test execution method available")
@@ -216,115 +237,145 @@ def run_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool
         logging.warning("Test runner not available")
         return True
 
-def run_test_category(category: str, target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
+
+def run_test_category(
+    category: str, target_dir: Path, output_dir: Path, verbose: bool = False
+) -> bool:
     """Run tests for a specific category."""
     return run_tests(target_dir, output_dir, verbose)
 
-def run_test_stage(stage: str, target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
+
+def run_test_stage(
+    stage: str, target_dir: Path, output_dir: Path, verbose: bool = False
+) -> bool:
     """Run tests for a specific stage."""
     return run_tests(target_dir, output_dir, verbose)
+
 
 def get_test_results(output_dir: Path) -> Dict[str, Any]:
     """Get test results from output directory."""
     results_file = output_dir / "test_results.json"
     if results_file.exists():
-        with open(results_file, 'r') as f:
+        with open(results_file, "r") as f:
             return json.load(f)
     return {"status": "no_results"}
+
 
 def generate_test_report(results: Dict[str, Any], output_dir: Path) -> bool:
     """Generate test report."""
     try:
         report_file = output_dir / "test_report.json"
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(results, f, indent=2)
         return True
     except Exception:
         return False
 
+
 def validate_test_environment() -> Tuple[bool, List[str]]:
     """Validate test environment."""
     return True, []
+
 
 def setup_test_environment() -> None:
     """Setup test environment."""
     pass
 
+
 def cleanup_test_environment() -> None:
     """Cleanup test environment."""
     pass
+
 
 def get_test_coverage(output_dir: Path) -> float:
     """Get test coverage percentage."""
     return 0.0
 
+
 def validate_coverage_targets(coverage: float, targets: Dict[str, float]) -> bool:
     """Validate coverage targets."""
     return True
+
 
 def get_test_summary(results: Dict[str, Any]) -> Dict[str, Any]:
     """Get test summary."""
     return {"status": "basic_summary"}
 
+
 def get_test_statistics(results: Dict[str, Any]) -> Dict[str, Any]:
     """Get test statistics."""
     return {"total": 0, "passed": 0, "failed": 0, "skipped": 0}
+
 
 def get_test_performance(results: Dict[str, Any]) -> Dict[str, Any]:
     """Get test performance metrics."""
     return {"execution_time": 0.0}
 
+
 def get_test_dependencies() -> List[str]:
     """Get test dependencies."""
     return ["pytest"]
+
 
 def validate_test_dependencies() -> bool:
     """Validate test dependencies."""
     return True
 
+
 def install_test_dependencies() -> bool:
     """Install test dependencies."""
     return True
+
 
 def get_test_configuration() -> Dict[str, Any]:
     """Get test configuration."""
     return TEST_CONFIG
 
+
 def validate_test_configuration() -> bool:
     """Validate test configuration."""
     return True
+
 
 def get_test_environment() -> Dict[str, Any]:
     """Get test environment info."""
     return {"python_version": sys.version}
 
+
 def get_test_logs(output_dir: Path) -> List[str]:
     """Get test logs."""
     return []
+
 
 def get_test_artifacts(output_dir: Path) -> List[Path]:
     """Get test artifacts."""
     return []
 
+
 def get_test_metadata(results: Dict[str, Any]) -> Dict[str, Any]:
     """Get test metadata."""
     return {"timestamp": time.time()}
+
 
 def get_test_timestamps(results: Dict[str, Any]) -> Dict[str, float]:
     """Get test timestamps."""
     return {"start": time.time(), "end": time.time()}
 
+
 def get_test_duration(results: Dict[str, Any]) -> float:
     """Get test duration."""
     return 0.0
+
 
 def get_test_status(results: Dict[str, Any]) -> str:
     """Get test status."""
     return "unknown"
 
+
 def get_test_progress(results: Dict[str, Any]) -> Dict[str, Any]:
     """Get test progress."""
     return {"completed": 0, "total": 0}
+
 
 def get_test_args() -> Dict[str, Any]:
     """Get standard test arguments."""
@@ -344,9 +395,17 @@ def get_test_args() -> Dict[str, Any]:
         "dev": False,
         "duration": 30.0,
         "audio_backend": "auto",
-        "ontology_terms_file": str(PROJECT_ROOT / "src" / "ontology" / "act_inf_ontology_terms.json"),
-        "pipeline_summary_file": str(PROJECT_ROOT / "output" / "00_pipeline_summary" / "pipeline_execution_summary.json"),
+        "ontology_terms_file": str(
+            PROJECT_ROOT / "src" / "ontology" / "act_inf_ontology_terms.json"
+        ),
+        "pipeline_summary_file": str(
+            PROJECT_ROOT
+            / "output"
+            / "00_pipeline_summary"
+            / "pipeline_execution_summary.json"
+        ),
     }
+
 
 def get_sample_pipeline_arguments() -> Dict[str, Any]:
     """Get sample pipeline arguments for testing."""
@@ -373,15 +432,22 @@ def get_sample_pipeline_arguments() -> Dict[str, Any]:
         "test_data_dir": "src/tests/test_data",
     }
 
+
 def get_step_metadata_dict() -> Dict[str, Any]:
     """Get metadata dictionary for pipeline steps."""
     return {
-        "setup": {"description": "Environment setup and dependency management", "timeout": 300},
+        "setup": {
+            "description": "Environment setup and dependency management",
+            "timeout": 300,
+        },
         "tests": {"description": "Comprehensive test suite execution", "timeout": 600},
         "gnn": {"description": "GNN file discovery and processing", "timeout": 300},
         "type_checker": {"description": "Type checking and validation", "timeout": 300},
         "export": {"description": "Multi-format export", "timeout": 300},
-        "visualization": {"description": "Graph and matrix visualization", "timeout": 300},
+        "visualization": {
+            "description": "Graph and matrix visualization",
+            "timeout": 300,
+        },
         "mcp": {"description": "Model Context Protocol integration", "timeout": 300},
         "ontology": {"description": "Ontology processing", "timeout": 300},
         "render": {"description": "Code generation", "timeout": 300},
@@ -392,9 +458,11 @@ def get_step_metadata_dict() -> Dict[str, Any]:
         "report": {"description": "Report generation", "timeout": 300},
     }
 
+
 def is_safe_mode() -> bool:
     """Check if tests are running in safe mode."""
     return TEST_CONFIG.get("safe_mode", True)
+
 
 def create_missing_test_files() -> None:
     """Create missing test files and directories."""
@@ -422,6 +490,7 @@ def create_missing_test_files() -> None:
     for config_path, creator_func in config_files:
         if not config_path.exists():
             creator_func(config_path)
+
 
 def create_sample_config(config_path: Path) -> None:
     """Create a sample configuration file."""
@@ -453,8 +522,9 @@ setup:
 sapf:
   duration: 30.0
 """
-    with open(config_path, 'w') as f:
+    with open(config_path, "w") as f:
         f.write(config_content)
+
 
 def create_sample_ontology(ontology_path: Path) -> None:
     """Create a sample ontology terms file."""
@@ -466,11 +536,12 @@ def create_sample_ontology(ontology_path: Path) -> None:
             "generative_model": "A model that describes how observations are generated",
             "recognition_model": "A model that describes how states are inferred",
             "free_energy": "A measure of surprise or prediction error",
-            "active_inference": "A framework for understanding behavior and perception"
+            "active_inference": "A framework for understanding behavior and perception",
         }
     }
-    with open(ontology_path, 'w') as f:
+    with open(ontology_path, "w") as f:
         json.dump(ontology_content, f, indent=2)
+
 
 def create_test_gnn_files(target_dir: Path) -> List[Path]:
     """Create test GNN files in the target directory."""
@@ -481,11 +552,12 @@ def create_test_gnn_files(target_dir: Path) -> List[Path]:
 
     for name, content in gnn_content.items():
         file_path = target_dir / f"{name}.md"
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(content)
         test_files.append(file_path)
 
     return test_files
+
 
 def create_test_files(target_dir: Path, num_files: int = 3) -> List[Path]:
     """Create generic test files in the target directory."""
@@ -493,16 +565,17 @@ def create_test_files(target_dir: Path, num_files: int = 3) -> List[Path]:
 
     test_files = []
     for i in range(num_files):
-        file_path = target_dir / f"test_file_{i+1}.txt"
-        content = f"This is test file {i+1} created for testing purposes.\n"
+        file_path = target_dir / f"test_file_{i + 1}.txt"
+        content = f"This is test file {i + 1} created for testing purposes.\n"
         content += f"Created at: {datetime.now().isoformat()}\n"
-        content += f"File number: {i+1}\n"
+        content += f"File number: {i + 1}\n"
 
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(content)
         test_files.append(file_path)
 
     return test_files
+
 
 def create_sample_gnn_content() -> Dict[str, str]:
     """Create sample GNN content for testing."""
@@ -558,7 +631,6 @@ A basic active inference model for testing
 - **Inference**: Variational
 - **Control**: Active Inference
 """,
-
         "complex_model": """## GNNVersionAndFlags
 Version: 2.0.0
 
@@ -608,7 +680,6 @@ A complex active inference model with multiple modalities
 - **Inference**: Message Passing
 - **Control**: Hierarchical Active Inference
 """,
-
         "minimal_model": """## GNNVersionAndFlags
 Version: 0.1.0
 
@@ -645,33 +716,31 @@ Minimal active inference model
 - **Framework**: PyMDP
 - **Inference**: Direct
 - **Control**: Simple
-"""
+""",
     }
+
 
 def get_test_filesystem_structure() -> Dict[str, List[str]]:
     """Get a test filesystem structure for testing."""
     return {
         "input": {
             "gnn_files": ["model1.md", "model2.md", "model3.md"],
-            "config": ["config.yaml"]
+            "config": ["config.yaml"],
         },
         "output": {
             "test_artifacts": ["test1.json", "test2.json"],
             "test_reports": ["report1.md", "report2.md"],
-            "test_coverage": ["coverage1.json", "coverage2.json"]
+            "test_coverage": ["coverage1.json", "coverage2.json"],
         },
         "src": {
             "utils": ["__init__.py", "logging_utils.py", "argument_utils.py"],
             "tests": ["__init__.py", "conftest.py", "runner.py"],
-            "gnn": ["__init__.py", "processor.py", "validator.py"]
-        }
+            "gnn": ["__init__.py", "processor.py", "validator.py"],
+        },
     }
 
-def run_all_tests(
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False
-) -> bool:
+
+def run_all_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool:
     """Run all tests and return success status."""
     try:
         # Set up test environment
@@ -688,7 +757,9 @@ def run_all_tests(
         test_results["fast"] = run_fast_tests(target_dir, test_output_dir, verbose)
 
         # Run standard tests
-        test_results["standard"] = run_standard_tests(target_dir, test_output_dir, verbose)
+        test_results["standard"] = run_standard_tests(
+            target_dir, test_output_dir, verbose
+        )
 
         # Run slow tests if not in fast-only mode
         if not TEST_CONFIG.get("fast_only", False):
@@ -696,7 +767,9 @@ def run_all_tests(
 
         # Run performance tests if enabled
         if TEST_CONFIG.get("include_performance", False):
-            test_results["performance"] = run_performance_tests(target_dir, test_output_dir, verbose)
+            test_results["performance"] = run_performance_tests(
+                target_dir, test_output_dir, verbose
+            )
 
         # Generate test report
         generate_test_report(test_results, test_output_dir)
@@ -718,6 +791,7 @@ def run_all_tests(
         # Clean up test environment
         cleanup_test_environment()
 
+
 def run_fast_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run fast tests."""
     if verbose:
@@ -727,6 +801,7 @@ def run_fast_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     time.sleep(0.1)  # Simulate test execution time
 
     return True
+
 
 def run_standard_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run standard tests."""
@@ -738,6 +813,7 @@ def run_standard_tests(target_dir: Path, output_dir: Path, verbose: bool) -> boo
 
     return True
 
+
 def run_slow_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run slow tests."""
     if verbose:
@@ -747,6 +823,7 @@ def run_slow_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     time.sleep(0.3)  # Simulate test execution time
 
     return True
+
 
 def run_performance_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run performance tests."""
@@ -758,6 +835,7 @@ def run_performance_tests(target_dir: Path, output_dir: Path, verbose: bool) -> 
 
     return True
 
+
 def run_coverage_tests(test_results_dir: Path, verbose: bool) -> bool:
     """Run coverage tests."""
     if verbose:
@@ -768,20 +846,27 @@ def run_coverage_tests(test_results_dir: Path, verbose: bool) -> bool:
 
     return True
 
+
 def assert_file_exists(file_path: Path, message: str = "") -> None:
     """Assert that a file exists."""
     if not file_path.exists():
         raise AssertionError(f"File does not exist: {file_path}. {message}")
 
+
 def assert_valid_json(file_path: Path) -> None:
     """Assert that a file contains valid JSON."""
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             json.load(f)
     except (json.JSONDecodeError, FileNotFoundError) as e:
-        raise AssertionError(f"File does not contain valid JSON: {file_path}. Error: {e}") from e
+        raise AssertionError(
+            f"File does not contain valid JSON: {file_path}. Error: {e}"
+        ) from e
 
-def assert_directory_structure(base_dir: Path, expected_structure: Dict[str, Any]) -> None:
+
+def assert_directory_structure(
+    base_dir: Path, expected_structure: Dict[str, Any]
+) -> None:
     """Assert that a directory has the expected structure."""
     for item_name, item_content in expected_structure.items():
         item_path = base_dir / item_name
@@ -800,6 +885,7 @@ def assert_directory_structure(base_dir: Path, expected_structure: Dict[str, Any
             if not item_path.exists():
                 raise AssertionError(f"File does not exist: {item_path}")
 
+
 def validate_report_data(data: Dict[str, Any]) -> Dict[str, Any]:
     """Validate report data and return validation results."""
     validation_results = {
@@ -807,7 +893,7 @@ def validate_report_data(data: Dict[str, Any]) -> Dict[str, Any]:
         "errors": [],
         "warnings": [],
         "missing_fields": [],
-        "extra_fields": []
+        "extra_fields": [],
     }
 
     # Check required fields
@@ -828,17 +914,27 @@ def validate_report_data(data: Dict[str, Any]) -> Dict[str, Any]:
 
     if "status" in data and data["status"] not in ["success", "failure", "warning"]:
         validation_results["is_valid"] = False
-        validation_results["errors"].append("status must be one of: success, failure, warning")
+        validation_results["errors"].append(
+            "status must be one of: success, failure, warning"
+        )
 
     # Check for extra fields
-    allowed_fields = required_fields + ["duration", "files_processed", "errors", "warnings"]
+    allowed_fields = required_fields + [
+        "duration",
+        "files_processed",
+        "errors",
+        "warnings",
+    ]
     for field in data:
         if field not in allowed_fields:
             validation_results["warnings"].append(f"Unexpected field: {field}")
 
     return validation_results
 
-def run_all_tests_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+
+def run_all_tests_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """Run all tests via MCP and return results."""
     try:
         target_dir = Path(target_directory)
@@ -858,8 +954,8 @@ def run_all_tests_mcp(target_directory: str, output_directory: str, verbose: boo
                 "fast": True,
                 "standard": True,
                 "slow": True,
-                "performance": True
-            }
+                "performance": True,
+            },
         }
 
     except Exception as e:
@@ -869,14 +965,16 @@ def run_all_tests_mcp(target_directory: str, output_directory: str, verbose: boo
             "target_directory": target_directory,
             "output_directory": output_directory,
             "verbose": verbose,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
+
 
 def register_tools(mcp_instance) -> None:
     """Register test-related tools with MCP instance."""
     # This would register test tools with the MCP instance
     # Implementation depends on the specific MCP framework being used
     pass
+
 
 def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:
     """Generate an HTML test report file."""
@@ -898,14 +996,14 @@ def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:
 <body>
     <div class="header">
         <h1>GNN Test Report</h1>
-        <p>Generated: {data.get('timestamp', 'Unknown')}</p>
+        <p>Generated: {data.get("timestamp", "Unknown")}</p>
     </div>
     
     <div class="section">
         <h2>Test Summary</h2>
-        <p>Status: <span class="{'success' if data.get('success', False) else 'failure'}">{'Success' if data.get('success', False) else 'Failure'}</span></p>
-        <p>Target Directory: {data.get('target_directory', 'Unknown')}</p>
-        <p>Output Directory: {data.get('output_directory', 'Unknown')}</p>
+        <p>Status: <span class="{"success" if data.get("success", False) else "failure"}">{"Success" if data.get("success", False) else "Failure"}</span></p>
+        <p>Target Directory: {data.get("target_directory", "Unknown")}</p>
+        <p>Output Directory: {data.get("output_directory", "Unknown")}</p>
     </div>
     
     <div class="section">
@@ -926,7 +1024,7 @@ def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:
 </html>
 """
 
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             f.write(html_content)
 
         return True
@@ -935,18 +1033,19 @@ def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:
         print(f"Failed to generate HTML report: {e}")
         return False
 
+
 def generate_markdown_report_file(data: Dict[str, Any], output_path: Path) -> bool:
     """Generate a Markdown test report file."""
     try:
         markdown_content = f"""# GNN Test Report
 
-**Generated**: {data.get('timestamp', 'Unknown')}
+**Generated**: {data.get("timestamp", "Unknown")}
 
 ## Test Summary
 
-- **Status**: {'✅ Success' if data.get('success', False) else '❌ Failure'}
-- **Target Directory**: {data.get('target_directory', 'Unknown')}
-- **Output Directory**: {data.get('output_directory', 'Unknown')}
+- **Status**: {"✅ Success" if data.get("success", False) else "❌ Failure"}
+- **Target Directory**: {data.get("target_directory", "Unknown")}
+- **Output Directory**: {data.get("output_directory", "Unknown")}
 
 ## Test Results
 
@@ -965,7 +1064,7 @@ def generate_markdown_report_file(data: Dict[str, Any], output_path: Path) -> bo
 This report was generated by the GNN test suite.
 """
 
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             f.write(markdown_content)
 
         return True
@@ -974,10 +1073,11 @@ This report was generated by the GNN test suite.
         print(f"Failed to generate Markdown report: {e}")
         return False
 
+
 def generate_json_report_file(data: Dict[str, Any], output_path: Path) -> bool:
     """Generate a JSON test report file."""
     try:
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(data, f, indent=2)
 
         return True
@@ -986,7 +1086,10 @@ def generate_json_report_file(data: Dict[str, Any], output_path: Path) -> bool:
         print(f"Failed to generate JSON report: {e}")
         return False
 
-def generate_comprehensive_report(pipeline_dir: Path, output_dir: Path, logger: logging.Logger) -> bool:
+
+def generate_comprehensive_report(
+    pipeline_dir: Path, output_dir: Path, logger: logging.Logger
+) -> bool:
     """Generate a comprehensive test report."""
     try:
         # Create report directory
@@ -1003,14 +1106,16 @@ def generate_comprehensive_report(pipeline_dir: Path, output_dir: Path, logger: 
                 "fast": True,
                 "standard": True,
                 "slow": True,
-                "performance": True
-            }
+                "performance": True,
+            },
         }
 
         # Generate different report formats
         success = True
         success &= generate_html_report_file(test_data, report_dir / "test_report.html")
-        success &= generate_markdown_report_file(test_data, report_dir / "test_report.md")
+        success &= generate_markdown_report_file(
+            test_data, report_dir / "test_report.md"
+        )
         success &= generate_json_report_file(test_data, report_dir / "test_report.json")
 
         if success:
@@ -1023,6 +1128,7 @@ def generate_comprehensive_report(pipeline_dir: Path, output_dir: Path, logger: 
     except Exception as e:
         logger.error(f"Failed to generate comprehensive report: {e}")
         return False
+
 
 class _PerformanceTracker:
     """Holds timing and memory metrics for a performance_tracker context."""
@@ -1057,20 +1163,25 @@ def performance_tracker():
     finally:
         tracker.finalize()
 
+
 def get_memory_usage() -> float:
     """Get current memory usage in MB."""
     try:
         import psutil
+
         process = psutil.Process()
         return process.memory_info().rss / 1024 / 1024  # Convert to MB
     except ImportError:
         return 0.0  # Return 0 if psutil not available
 
+
 def track_peak_memory(func):
     """Decorator to track peak memory usage of a function."""
+
     def wrapper(*args, **kwargs):
         try:
             import psutil
+
             process = psutil.Process()
             initial_memory = process.memory_info().rss
 
@@ -1091,16 +1202,18 @@ def track_peak_memory(func):
 
     return wrapper
 
+
 @contextmanager
 def with_resource_limits(max_memory_mb: int = None, max_cpu_percent: int = None):
     """Context manager for resource limit testing."""
     try:
         import psutil
+
         process = psutil.Process()
 
         # Store initial limits
-        initial_memory_limit = getattr(process, 'memory_limit', None)
-        initial_cpu_limit = getattr(process, 'cpu_limit', None)
+        initial_memory_limit = getattr(process, "memory_limit", None)
+        initial_cpu_limit = getattr(process, "cpu_limit", None)
 
         # Set limits if specified
         if max_memory_mb:
@@ -1115,7 +1228,7 @@ def with_resource_limits(max_memory_mb: int = None, max_cpu_percent: int = None)
         yield
     finally:
         # Restore original limits
-        if 'process' in locals():
+        if "process" in locals():
             if initial_memory_limit is not None:
                 process.memory_limit = initial_memory_limit
             if initial_cpu_limit is not None:

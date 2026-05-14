@@ -1,37 +1,6 @@
-"""
-Top-level ``sapf`` package — re-exports the SAPF implementation from
-``audio.sapf`` so ``import sapf`` works at the top level.
+"""Top-level SAPF package surface backed by ``audio.sapf``."""
 
-This is documented in CLAUDE.md as an intentional composition facade: SAPF
-lives under ``src/audio/sapf/`` because it's one modality of
-the audio subsystem, but external callers and tests that reference it as a
-peer module see it here.
-
-Import resolution works under two invocation contexts:
-  - ``PYTHONPATH=src python ...`` (standard)  → ``from audio import sapf``
-  - ``python src/...`` (subprocess from pipeline) → ``from src.audio import sapf``
-
-We handle both via a dynamic importlib call rather than hardcoding either
-one, so generated framework scripts importing ``src`` don't crash with
-``ModuleNotFoundError: audio`` when run as subprocesses.
-"""
-
-import importlib as _importlib
-
-
-def _resolve_audio_sapf():
-    """Resolve ``audio.sapf`` under either invocation context."""
-    for candidate in ("audio.sapf", "src.audio.sapf"):
-        try:
-            return _importlib.import_module(candidate)
-        except ModuleNotFoundError:
-            continue
-    raise ModuleNotFoundError(
-        "Unable to resolve audio.sapf from either 'audio.sapf' or 'src.audio.sapf'"
-    )
-
-
-_audio_sapf = _resolve_audio_sapf()
+from audio import sapf as _audio_sapf
 
 convert_gnn_to_sapf = _audio_sapf.convert_gnn_to_sapf
 create_sapf_visualization = _audio_sapf.create_sapf_visualization

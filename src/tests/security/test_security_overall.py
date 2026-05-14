@@ -57,7 +57,9 @@ os.system("rm -rf /")
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_process_security_integration(self, safe_filesystem: Any, sample_gnn_file: Any) -> None:
+    def test_process_security_integration(
+        self, safe_filesystem: Any, sample_gnn_file: Any
+    ) -> None:
         """Test the full process_security flow."""
         target_dir = sample_gnn_file.parent
         output_dir = safe_filesystem.create_dir("security_output")

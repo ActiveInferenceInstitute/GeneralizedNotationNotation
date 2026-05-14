@@ -30,7 +30,10 @@ def test_llm_cache_resolves_via_base_output_dir(tmp_path):
     base = tmp_path / "pipeline_out"
     cache = LLMCache(base_output_dir=base)
     # Cache dir must be inside base (never leak to CWD-relative path).
-    assert base in cache.cache_dir.parents or cache.cache_dir == base / "13_llm_output" / ".cache"
+    assert (
+        base in cache.cache_dir.parents
+        or cache.cache_dir == base / "13_llm_output" / ".cache"
+    )
     assert cache.cache_dir.exists()
 
 

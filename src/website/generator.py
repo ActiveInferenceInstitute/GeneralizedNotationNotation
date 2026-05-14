@@ -460,13 +460,13 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
     """Wrap body in the shared page shell with sidebar and nav."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     nav_items = [
-        ("🏠", "Dashboard",      "index.html",          "index"),
-        ("⚡", "Pipeline",       "pipeline.html",        "pipeline"),
-        ("📂", "GNN Files",      "gnn_files.html",       "gnn_files"),
-        ("📊", "Analysis",       "analysis.html",        "analysis"),
-        ("🖼️", "Visualizations", "visualization.html",   "visualization"),
-        ("📋", "Reports",        "reports.html",         "reports"),
-        ("🔧", "MCP Tools",      "mcp.html",             "mcp"),
+        ("🏠", "Dashboard", "index.html", "index"),
+        ("⚡", "Pipeline", "pipeline.html", "pipeline"),
+        ("📂", "GNN Files", "gnn_files.html", "gnn_files"),
+        ("📊", "Analysis", "analysis.html", "analysis"),
+        ("🖼️", "Visualizations", "visualization.html", "visualization"),
+        ("📋", "Reports", "reports.html", "reports"),
+        ("🔧", "MCP Tools", "mcp.html", "mcp"),
     ]
     nav_html = ""
     for icon, label, href, key in nav_items:
@@ -508,30 +508,34 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
 # ─────────────────────────────────────────────────────────────────────────────
 
 _PIPELINE_STEPS = [
-    (0,  "Template",            "Pipeline template and initialization"),
-    (1,  "Setup",               "Environment setup and dependency install"),
-    (2,  "Tests",               "Test suite execution (pytest)"),
-    (3,  "GNN Processing",      "GNN file discovery, parsing, and multi-format serialization"),
-    (4,  "Model Registry",      "Model versioning and registry management"),
-    (5,  "Type Checking",       "GNN type validation and resource estimation"),
-    (6,  "Validation",          "Consistency and semantic quality checking"),
-    (7,  "Export",              "Multi-format export (JSON, XML, GraphML, GEXF, Pickle)"),
-    (8,  "Visualization",       "Graph and matrix visualization generation"),
-    (9,  "Advanced Viz",        "Interactive and advanced visualization (Plotly, D3)"),
-    (10, "Ontology",            "Active Inference ontology processing and validation"),
-    (11, "Rendering",           "Code generation for simulation frameworks"),
-    (12, "Execution",           "Execute rendered simulation scripts"),
-    (13, "LLM",                 "LLM-enhanced analysis and model interpretation"),
-    (14, "ML Integration",      "Machine learning integration and model training"),
-    (15, "Audio",               "Audio sonification generation (SAPF)"),
-    (16, "Analysis",            "Statistical analysis and cross-simulation aggregation"),
-    (17, "Integration",         "System integration and cross-module coordination"),
-    (18, "Security",            "Security validation and generated code scanning"),
-    (19, "Research",            "Research tools and literature references"),
-    (20, "Website",             "Static HTML website generation from pipeline artifacts"),
-    (21, "MCP Processing",      "Model Context Protocol processing and tool registration"),
-    (22, "GUI",                 "Interactive GNN constructor GUI"),
-    (23, "Report",              "Comprehensive analysis report generation"),
+    (0, "Template", "Pipeline template and initialization"),
+    (1, "Setup", "Environment setup and dependency install"),
+    (2, "Tests", "Test suite execution (pytest)"),
+    (
+        3,
+        "GNN Processing",
+        "GNN file discovery, parsing, and multi-format serialization",
+    ),
+    (4, "Model Registry", "Model versioning and registry management"),
+    (5, "Type Checking", "GNN type validation and resource estimation"),
+    (6, "Validation", "Consistency and semantic quality checking"),
+    (7, "Export", "Multi-format export (JSON, XML, GraphML, GEXF, Pickle)"),
+    (8, "Visualization", "Graph and matrix visualization generation"),
+    (9, "Advanced Viz", "Interactive and advanced visualization (Plotly, D3)"),
+    (10, "Ontology", "Active Inference ontology processing and validation"),
+    (11, "Rendering", "Code generation for simulation frameworks"),
+    (12, "Execution", "Execute rendered simulation scripts"),
+    (13, "LLM", "LLM-enhanced analysis and model interpretation"),
+    (14, "ML Integration", "Machine learning integration and model training"),
+    (15, "Audio", "Audio sonification generation (SAPF)"),
+    (16, "Analysis", "Statistical analysis and cross-simulation aggregation"),
+    (17, "Integration", "System integration and cross-module coordination"),
+    (18, "Security", "Security validation and generated code scanning"),
+    (19, "Research", "Research tools and literature references"),
+    (20, "Website", "Static HTML website generation from pipeline artifacts"),
+    (21, "MCP Processing", "Model Context Protocol processing and tool registration"),
+    (22, "GUI", "Interactive GNN constructor GUI"),
+    (23, "Report", "Comprehensive analysis report generation"),
     (24, "Intelligent Analysis", "AI-powered pipeline analysis and executive reports"),
 ]
 
@@ -541,7 +545,7 @@ class WebsiteGenerator:
 
     def __init__(self):
         self.template_dir = Path(__file__).parent / "templates"
-        self.static_dir   = Path(__file__).parent / "static"
+        self.static_dir = Path(__file__).parent / "static"
 
     # ── Public API ──────────────────────────────────────────────────────────
 
@@ -549,33 +553,40 @@ class WebsiteGenerator:
         """Generate the complete static website."""
         result = {"success": True, "pages_created": 0, "errors": [], "warnings": []}
         try:
-            output_dir = Path(website_data.get("output_dir", "output/20_website_output"))
-            input_dir  = Path(website_data.get("input_dir", "output"))
-            p_root     = Path(website_data.get("pipeline_output_root", str(input_dir)))
+            output_dir = Path(
+                website_data.get("output_dir", "output/20_website_output")
+            )
+            input_dir = Path(website_data.get("input_dir", "output"))
+            p_root = Path(website_data.get("pipeline_output_root", str(input_dir)))
 
             output_dir.mkdir(parents=True, exist_ok=True)
             assets_dir = output_dir / "assets"
             assets_dir.mkdir(exist_ok=True)
 
             # Aggregate data from pipeline outputs
-            data = self._collect_all_data(p_root, input_dir, output_dir, assets_dir, website_data)
+            data = self._collect_all_data(
+                p_root, input_dir, output_dir, assets_dir, website_data
+            )
 
             pages = {
-                "index.html":         self._page_index(data),
-                "pipeline.html":      self._page_pipeline(data),
-                "gnn_files.html":     self._page_gnn_files(data),
-                "analysis.html":      self._page_analysis(data),
+                "index.html": self._page_index(data),
+                "pipeline.html": self._page_pipeline(data),
+                "gnn_files.html": self._page_gnn_files(data),
+                "analysis.html": self._page_analysis(data),
                 "visualization.html": self._page_visualization(data),
-                "reports.html":       self._page_reports(data),
-                "mcp.html":           self._page_mcp(data),
+                "reports.html": self._page_reports(data),
+                "mcp.html": self._page_mcp(data),
             }
 
             for filename, html in pages.items():
                 try:
                     import os as _os
                     import tempfile as _tempfile
+
                     _dest = output_dir / filename
-                    with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_dir, delete=False) as _tmp:
+                    with _tempfile.NamedTemporaryFile(
+                        mode="w", encoding="utf-8", dir=output_dir, delete=False
+                    ) as _tmp:
                         _tmp.write(html)
                     _os.replace(_tmp.name, str(_dest))
                     result["pages_created"] += 1
@@ -584,7 +595,9 @@ class WebsiteGenerator:
 
             # Copy static assets if available
             if self.static_dir.exists():
-                shutil.copytree(self.static_dir, output_dir / "static", dirs_exist_ok=True)
+                shutil.copytree(
+                    self.static_dir, output_dir / "static", dirs_exist_ok=True
+                )
 
         except Exception as e:
             result["success"] = False
@@ -598,26 +611,36 @@ class WebsiteGenerator:
 
     # ── Data collection ─────────────────────────────────────────────────────
 
-    def _collect_all_data(self, p_root: Path, input_dir: Path,
-                          output_dir: Path, assets_dir: Path,
-                          user_data: dict) -> dict:
+    def _collect_all_data(
+        self,
+        p_root: Path,
+        input_dir: Path,
+        output_dir: Path,
+        assets_dir: Path,
+        user_data: dict,
+    ) -> dict:
         data: dict = {
-            "p_root":        p_root,
-            "output_dir":    output_dir,
-            "gnn_files":     [],
-            "analysis":      [],
-            "complexity":    [],
-            "visualizations":[],
-            "reports":       [],
-            "mcp_tools":     [],
+            "p_root": p_root,
+            "output_dir": output_dir,
+            "gnn_files": [],
+            "analysis": [],
+            "complexity": [],
+            "visualizations": [],
+            "reports": [],
+            "mcp_tools": [],
             "step_statuses": {},
-            "exec_summary":  {},
+            "exec_summary": {},
             "processed_files": 0,
         }
 
         # Merge any caller-supplied data
-        data.update({k: v for k, v in user_data.items()
-                     if k not in ("output_dir", "input_dir", "pipeline_output_root")})
+        data.update(
+            {
+                k: v
+                for k, v in user_data.items()
+                if k not in ("output_dir", "input_dir", "pipeline_output_root")
+            }
+        )
 
         # GNN source files
         for search_dir in [p_root.parent / "input" / "gnn_files", input_dir]:
@@ -644,7 +667,9 @@ class WebsiteGenerator:
                             d = json.loads(jf.read_text())
                             data["analysis"].append(d)
                         except Exception as e:
-                            logger.debug(f"Skipped malformed analysis file {jf.name}: {e}")
+                            logger.debug(
+                                f"Skipped malformed analysis file {jf.name}: {e}"
+                            )
 
         # Execution summary
         for ec in [
@@ -661,7 +686,7 @@ class WebsiteGenerator:
         # Visualizations — copy assets
         viz_dirs = [
             p_root / "08_visualization_output" / "visualization_results",
-            p_root / "8_visualization_output"  / "visualization_results",
+            p_root / "8_visualization_output" / "visualization_results",
             p_root / "09_advanced_viz_output",
             p_root / "9_advanced_viz_output",
         ]
@@ -674,16 +699,23 @@ class WebsiteGenerator:
                     shutil.copy2(img, dest)
                 except Exception:
                     dest = img
-                data["visualizations"].append({"title": img.stem, "path": dest.name,
-                                               "type": "image", "abs": dest})
+                data["visualizations"].append(
+                    {"title": img.stem, "path": dest.name, "type": "image", "abs": dest}
+                )
             for html_f in vd.rglob("*.html"):
                 dest = assets_dir / html_f.name
                 try:
                     shutil.copy2(html_f, dest)
                 except Exception:
                     dest = html_f
-                data["visualizations"].append({"title": html_f.stem, "path": dest.name,
-                                               "type": "html", "abs": dest})
+                data["visualizations"].append(
+                    {
+                        "title": html_f.stem,
+                        "path": dest.name,
+                        "type": "html",
+                        "abs": dest,
+                    }
+                )
 
         # Reports — collect all JSON/txt artifacts from numbered output dirs
         for d in sorted(p_root.iterdir()) if p_root.exists() else []:
@@ -692,28 +724,34 @@ class WebsiteGenerator:
             for jf in list(d.rglob("*.json"))[:5]:  # cap per dir
                 try:
                     content = jf.read_text(encoding="utf-8", errors="replace")
-                    data["reports"].append({
-                        "name":    jf.name,
-                        "dir":     d.name,
-                        "content": content[:2000],
-                        "size":    jf.stat().st_size,
-                    })
+                    data["reports"].append(
+                        {
+                            "name": jf.name,
+                            "dir": d.name,
+                            "content": content[:2000],
+                            "size": jf.stat().st_size,
+                        }
+                    )
                 except Exception as e:
                     logger.debug(f"Skipped unreadable report file {jf.name}: {e}")
 
         # MCP tools — try to load live
         try:
             import sys
+
             sys.path.insert(0, str(Path(__file__).parent.parent))
             from mcp.mcp import mcp_instance
+
             if mcp_instance.tools:
                 for name, tool in mcp_instance.tools.items():
-                    data["mcp_tools"].append({
-                        "name":     name,
-                        "module":   getattr(tool, "module", ""),
-                        "category": getattr(tool, "category", ""),
-                        "desc":     getattr(tool, "description", ""),
-                    })
+                    data["mcp_tools"].append(
+                        {
+                            "name": name,
+                            "module": getattr(tool, "module", ""),
+                            "category": getattr(tool, "category", ""),
+                            "desc": getattr(tool, "description", ""),
+                        }
+                    )
         except Exception as e:
             logger.debug(f"MCP tools not loaded for website (optional): {e}")
 
@@ -736,10 +774,10 @@ class WebsiteGenerator:
     # ── Page generators ─────────────────────────────────────────────────────
 
     def _page_index(self, data: dict) -> str:
-        n_ok      = sum(1 for s in data["step_statuses"].values() if s == "ok")
-        n_steps   = len(_PIPELINE_STEPS)
-        n_files   = data["processed_files"]
-        n_tools   = len(data["mcp_tools"])
+        n_ok = sum(1 for s in data["step_statuses"].values() if s == "ok")
+        n_steps = len(_PIPELINE_STEPS)
+        n_files = data["processed_files"]
+        n_tools = len(data["mcp_tools"])
 
         stats = f"""
 <div class="stats-row">
@@ -769,10 +807,16 @@ class WebsiteGenerator:
         cards = ""
         for step_num, step_name, step_desc in _PIPELINE_STEPS:
             status = data["step_statuses"].get(step_num, "pending")
-            badge_cls = {"ok": "badge-ok", "error": "badge-error",
-                         "skip": "badge-skip"}.get(status, "badge-pending")
-            badge_label = {"ok": "✓ Complete", "error": "✗ Error",
-                           "skip": "⊘ Skipped"}.get(status, "○ Pending")
+            badge_cls = {
+                "ok": "badge-ok",
+                "error": "badge-error",
+                "skip": "badge-skip",
+            }.get(status, "badge-pending")
+            badge_label = {
+                "ok": "✓ Complete",
+                "error": "✗ Error",
+                "skip": "⊘ Skipped",
+            }.get(status, "○ Pending")
             cards += f"""
 <div class="step-card">
   <div class="step-num">STEP {step_num:02d}</div>
@@ -784,7 +828,7 @@ class WebsiteGenerator:
         body = f"""
 <div class="page-header">
   <h1>GNN Pipeline Dashboard</h1>
-  <p class="subtitle">Results overview — generated {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+  <p class="subtitle">Results overview — generated {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
 </div>
 {stats}
 <div class="section">
@@ -796,18 +840,22 @@ class WebsiteGenerator:
     def _page_pipeline(self, data: dict) -> str:
         rows = ""
         for step_num, step_name, step_desc in _PIPELINE_STEPS:
-            status   = data["step_statuses"].get(step_num, "pending")
-            badge_cls = {"ok": "badge-ok", "error": "badge-error",
-                          "skip": "badge-skip"}.get(status, "badge-pending")
-            badge_label = {"ok": "Complete", "error": "Error",
-                           "skip": "Skipped"}.get(status, "Pending")
+            status = data["step_statuses"].get(step_num, "pending")
+            badge_cls = {
+                "ok": "badge-ok",
+                "error": "badge-error",
+                "skip": "badge-skip",
+            }.get(status, "badge-pending")
+            badge_label = {"ok": "Complete", "error": "Error", "skip": "Skipped"}.get(
+                status, "Pending"
+            )
             f"{step_num}_{step_name.lower().replace(' ', '_')}.py"
             rows += f"""<tr>
   <td><code>{step_num:02d}</code></td>
   <td>{step_name}</td>
   <td>{step_desc}</td>
   <td><span class="step-badge {badge_cls}">{badge_label}</span></td>
-  <td><code style="font-size:11px;color:var(--text-3)">{step_num}_{step_name.lower().replace(' ','_')}.py</code></td>
+  <td><code style="font-size:11px;color:var(--text-3)">{step_num}_{step_name.lower().replace(" ", "_")}.py</code></td>
 </tr>"""
         body = f"""
 <div class="page-header">
@@ -830,7 +878,11 @@ class WebsiteGenerator:
             for gf in data["gnn_files"]:
                 try:
                     src = gf.read_text(encoding="utf-8", errors="replace")[:3000]
-                    escaped = src.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+                    escaped = (
+                        src.replace("&", "&amp;")
+                        .replace("<", "&lt;")
+                        .replace(">", "&gt;")
+                    )
                 except Exception:
                     escaped = "(could not read)"
                 content += f"""
@@ -882,20 +934,20 @@ class WebsiteGenerator:
                 if v["type"] == "image":
                     cards += f"""
 <div class="viz-card">
-  <img src="assets/{v['path']}" alt="{v['title']}" loading="lazy">
+  <img src="assets/{v["path"]}" alt="{v["title"]}" loading="lazy">
   <div class="viz-info">
-    <div class="viz-title">{v['title']}</div>
-    <div class="viz-desc">{v.get('type','image').title()} artifact</div>
+    <div class="viz-title">{v["title"]}</div>
+    <div class="viz-desc">{v.get("type", "image").title()} artifact</div>
   </div>
 </div>"""
                 else:
                     cards += f"""
 <div class="viz-card">
   <div style="padding:16px;background:var(--bg-surface);text-align:center">
-    <a href="assets/{v['path']}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {v['title']}</a>
+    <a href="assets/{v["path"]}" target="_blank" style="color:var(--accent-2);font-size:13px">🔗 Open interactive: {v["title"]}</a>
   </div>
   <div class="viz-info">
-    <div class="viz-title">{v['title']}</div>
+    <div class="viz-title">{v["title"]}</div>
     <div class="viz-desc">Interactive HTML visualization</div>
   </div>
 </div>"""
@@ -919,10 +971,14 @@ class WebsiteGenerator:
                     pretty = json.dumps(parsed, indent=2)[:1500]
                 except Exception:
                     pretty = rep["content"][:1500]
-                escaped = pretty.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
+                escaped = (
+                    pretty.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                )
                 inner += f"""
 <details>
-  <summary>{rep['name']} <span style="color:var(--text-3);font-size:11px;margin-left:8px">{rep['dir']} · {rep['size']} bytes</span></summary>
+  <summary>{rep["name"]} <span style="color:var(--text-3);font-size:11px;margin-left:8px">{rep["dir"]} · {rep["size"]} bytes</span></summary>
   <div class="details-body"><pre>{escaped}</pre></div>
 </details>"""
         body = f"""
@@ -940,7 +996,7 @@ class WebsiteGenerator:
         else:
             # Group by module
             by_mod: Dict[str, List[dict]] = {}
-            for t in sorted(tools, key=lambda x: (x.get("module",""), x["name"])):
+            for t in sorted(tools, key=lambda x: (x.get("module", ""), x["name"])):
                 mod = t.get("module") or "core"
                 by_mod.setdefault(mod, []).append(t)
 
@@ -949,10 +1005,10 @@ class WebsiteGenerator:
                 cards_html = ""
                 for t in mod_tools:
                     desc = t.get("desc") or ""
-                    cat  = t.get("category") or ""
+                    cat = t.get("category") or ""
                     cards_html += f"""
 <div class="tool-card">
-  <div class="tool-name">{t['name']}</div>
+  <div class="tool-name">{t["name"]}</div>
   <div class="tool-mod">{mod}{f" · {cat}" if cat else ""}</div>
   {f'<div class="tool-desc">{desc}</div>' if desc else ""}
 </div>"""
@@ -975,27 +1031,44 @@ class WebsiteGenerator:
 #  Module-level convenience function
 # ─────────────────────────────────────────────────────────────────────────────
 
-def generate_website(logger: logging.Logger, input_dir: Path, output_dir: Path, *,
-                     pipeline_output_root: Optional[Path] = None) -> Dict[str, Any]:
+
+def generate_website(
+    logger: logging.Logger,
+    input_dir: Path,
+    output_dir: Path,
+    *,
+    pipeline_output_root: Optional[Path] = None,
+) -> Dict[str, Any]:
     """Generate a premium website from GNN pipeline artifacts."""
     try:
         generator = WebsiteGenerator()
         p_root = pipeline_output_root if pipeline_output_root else output_dir.parent
         website_data = {
-            "input_dir":            str(input_dir),
-            "output_dir":           str(output_dir),
+            "input_dir": str(input_dir),
+            "output_dir": str(output_dir),
             "pipeline_output_root": str(p_root),
         }
         if not input_dir.exists():
-            return {"success": False, "pages_created": 0,
-                    "errors": [f"Input directory not found: {input_dir}"], "warnings": []}
+            return {
+                "success": False,
+                "pages_created": 0,
+                "errors": [f"Input directory not found: {input_dir}"],
+                "warnings": [],
+            }
         result = generator.generate_website(website_data)
         if result["success"]:
-            logger.info(f"Website generated: {result['pages_created']} pages → {output_dir}")
+            logger.info(
+                f"Website generated: {result['pages_created']} pages → {output_dir}"
+            )
         else:
             for e in result["errors"]:
                 logger.error(f"Website error: {e}")
         return result
     except Exception as e:
         logger.error(f"Website generation failed: {e}")
-        return {"success": False, "pages_created": 0, "errors": [str(e)], "warnings": []}
+        return {
+            "success": False,
+            "pages_created": 0,
+            "errors": [str(e)],
+            "warnings": [],
+        }

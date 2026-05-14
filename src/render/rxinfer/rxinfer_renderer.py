@@ -29,7 +29,7 @@ class RxInferRenderer:
     def __init__(self, options: Optional[Dict[str, Any]] = None):
         """
         Initialize RxInfer renderer.
-        
+
         Args:
             options: Optional configuration options
         """
@@ -39,28 +39,30 @@ class RxInferRenderer:
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
         """
         Render a single GNN file to RxInfer.jl simulation code.
-        
+
         Args:
             gnn_file_path: Path to GNN file
             output_path: Path for output RxInfer script
-            
+
         Returns:
             Tuple of (success, message)
         """
         try:
             # Read GNN file
-            with open(gnn_file_path, 'r', encoding='utf-8') as f:
+            with open(gnn_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Parse GNN content (simplified for now)
             gnn_spec = self._parse_gnn_content(content, gnn_file_path.stem)
 
             # Generate RxInfer.jl simulation code
-            rxinfer_code = self._generate_rxinfer_simulation_code_simple(gnn_spec, gnn_file_path.stem)
+            rxinfer_code = self._generate_rxinfer_simulation_code_simple(
+                gnn_spec, gnn_file_path.stem
+            )
 
             # Write output file
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w', encoding='utf-8') as f:
+            with open(output_path, "w", encoding="utf-8") as f:
                 f.write(rxinfer_code)
 
             self.logger.info(f"Generated RxInfer.jl simulation: {output_path}")
@@ -74,62 +76,71 @@ class RxInferRenderer:
     def _parse_gnn_content(self, content: str, model_name: str) -> Dict[str, Any]:
         """Parse GNN content into a structured dictionary (simplified parser)."""
         gnn_spec = {
-            'model_name': model_name,
-            'variables': [],
-            'model_parameters': {},
-            'initial_parameterization': {}
+            "model_name": model_name,
+            "variables": [],
+            "model_parameters": {},
+            "initial_parameterization": {},
         }
 
         # Simple parser for key sections
-        lines = content.split('\n')
+        lines = content.split("\n")
         current_section = None
 
         for line in lines:
             line = line.strip()
-            if line.startswith('## '):
+            if line.startswith("## "):
                 current_section = line[3:].strip()
-            elif current_section == 'ModelParameters' and ':' in line:
-                key, value = line.split(':', 1)
+            elif current_section == "ModelParameters" and ":" in line:
+                key, value = line.split(":", 1)
                 key = key.strip()
                 value = value.strip()
                 try:
-                    if '.' in value:
-                        gnn_spec['model_parameters'][key] = float(value)
+                    if "." in value:
+                        gnn_spec["model_parameters"][key] = float(value)
                     else:
-                        gnn_spec['model_parameters'][key] = int(value)
+                        gnn_spec["model_parameters"][key] = int(value)
                 except ValueError:
-                    gnn_spec['model_parameters'][key] = value
+                    gnn_spec["model_parameters"][key] = value
 
         return gnn_spec
 
-    def _generate_rxinfer_simulation_code_simple(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+    def _generate_rxinfer_simulation_code_simple(
+        self, gnn_spec: Dict[str, Any], model_name: str
+    ) -> str:
         """Generate simplified RxInfer code that actually works with modern API."""
         from datetime import datetime
 
         try:
             # Get model parameters with defaults
-            model_display_name = gnn_spec.get('model_name', model_name)
-            model_params = gnn_spec.get('model_parameters', {})
-            num_states = model_params.get('num_hidden_states', 3)
-            num_observations = model_params.get('num_obs', 3)
+            model_display_name = gnn_spec.get("model_name", model_name)
+            model_params = gnn_spec.get("model_parameters", {})
+            num_states = model_params.get("num_hidden_states", 3)
+            num_observations = model_params.get("num_obs", 3)
 
             # Extract num_actions from multiple possible sources
-            initial_params = gnn_spec.get('initial_parameterization', {}) or gnn_spec.get('initialparameterization', {})
-            B_data = initial_params.get('B', [])
+            initial_params = gnn_spec.get(
+                "initial_parameterization", {}
+            ) or gnn_spec.get("initialparameterization", {})
+            B_data = initial_params.get("B", [])
 
             # Infer from B matrix dimensions if available
-            inferred_actions = len(B_data) if B_data and isinstance(B_data, list) else None
+            inferred_actions = (
+                len(B_data) if B_data and isinstance(B_data, list) else None
+            )
 
             num_actions = (
-                model_params.get('num_actions') or
-                model_params.get('num_controls') or
-                model_params.get('n_actions') or
-                inferred_actions or
-                3  # Default to 3 for proper POMDP
+                model_params.get("num_actions")
+                or model_params.get("num_controls")
+                or model_params.get("n_actions")
+                or inferred_actions
+                or 3  # Default to 3 for proper POMDP
             )
 
             # Extract num_timesteps from model parameters.
-            num_timesteps = model_params.get('num_timesteps', gnn_spec.get('initialparameterization', {}).get('num_timesteps', 20))
+            num_timesteps = model_params.get(
+                "num_timesteps",
+                gnn_spec.get("initialparameterization", {}).get("num_timesteps", 20),
+            )
 
             # Validate parameters
             if not isinstance(num_states, int) or num_states < 1:
@@ -141,51 +152,57 @@ class RxInferRenderer:
             if not isinstance(num_timesteps, int) or num_timesteps < 1:
                 num_timesteps = 20
 
-    # Read the minimal working template with current APIs.
-            template_path = Path(__file__).parent / 'minimal_template.jl'
+            # Read the minimal working template with current APIs.
+            template_path = Path(__file__).parent / "minimal_template.jl"
             if not template_path.exists():
                 raise FileNotFoundError(f"Template file not found: {template_path}")
 
-            with open(template_path, 'r', encoding='utf-8') as f:
+            with open(template_path, "r", encoding="utf-8") as f:
                 template = f.read()
 
             # Fill in the template carefully to avoid Julia syntax conflicts.
             # Replace template markers one at a time to avoid issues with curly braces.
             code = template
-            code = code.replace('{model_name}', model_display_name)
-            code = code.replace('{timestamp}', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            code = code.replace('{num_states}', str(num_states))
-            code = code.replace('{num_observations}', str(num_observations))
-            code = code.replace('{num_actions}', str(num_actions))
-            code = code.replace('{num_timesteps}', str(num_timesteps))
+            code = code.replace("{model_name}", model_display_name)
+            code = code.replace(
+                "{timestamp}", datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            )
+            code = code.replace("{num_states}", str(num_states))
+            code = code.replace("{num_observations}", str(num_observations))
+            code = code.replace("{num_actions}", str(num_actions))
+            code = code.replace("{num_timesteps}", str(num_timesteps))
 
             return code
         except Exception as e:
             raise RuntimeError(f"Failed to generate RxInfer code template: {e}") from e
 
-    def _generate_rxinfer_simulation_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
+    def _generate_rxinfer_simulation_code(
+        self, gnn_spec: Dict[str, Any], model_name: str
+    ) -> str:
         """
         Generate executable RxInfer.jl simulation code from GNN specification.
-        
+
         Args:
             gnn_spec: Parsed GNN specification
             model_name: Name of the model
-            
+
         Returns:
             Generated Julia code string
         """
         # Extract key information from GNN spec
-        model_display_name = gnn_spec.get('model_name', model_name)
+        model_display_name = gnn_spec.get("model_name", model_name)
 
         # Extract dimensions from model parameters
-        model_params = gnn_spec.get('model_parameters', {})
-        num_states = model_params.get('num_hidden_states', 3)
-        num_observations = model_params.get('num_obs', 3)
+        model_params = gnn_spec.get("model_parameters", {})
+        num_states = model_params.get("num_hidden_states", 3)
+        num_observations = model_params.get("num_obs", 3)
 
         # Extract num_actions from multiple possible sources (GNN specs vary)
         # Priority: explicit model param > B matrix dimensions > default
-        initial_params = gnn_spec.get('initial_parameterization', {}) or gnn_spec.get('initialparameterization', {})
-        B_data = initial_params.get('B', [])
+        initial_params = gnn_spec.get("initial_parameterization", {}) or gnn_spec.get(
+            "initialparameterization", {}
+        )
+        B_data = initial_params.get("B", [])
 
         # Try to infer num_actions from B matrix if available
         inferred_actions = None
@@ -194,22 +211,24 @@ class RxInferRenderer:
             inferred_actions = len(B_data)
 
         num_actions = (
-            model_params.get('num_actions') or
-            model_params.get('num_controls') or
-            model_params.get('n_actions') or
-            inferred_actions or
-            3  # Default to 3 for proper POMDP simulation
+            model_params.get("num_actions")
+            or model_params.get("num_controls")
+            or model_params.get("n_actions")
+            or inferred_actions
+            or 3  # Default to 3 for proper POMDP simulation
         )
 
         # Extract num_timesteps from model parameters.
-        num_timesteps = model_params.get('num_timesteps', 20)
+        num_timesteps = model_params.get("num_timesteps", 20)
 
         # Extract action_precision from GNN ModelParameters (RX-3: was hardcoded 4.0)
-        action_precision = model_params.get('action_precision', model_params.get('gamma', 4.0))
-        A_data = initial_params.get('A', [])
-        B_data = initial_params.get('B', [])
-        C_data = initial_params.get('C', [])
-        D_data = initial_params.get('D', [])
+        action_precision = model_params.get(
+            "action_precision", model_params.get("gamma", 4.0)
+        )
+        A_data = initial_params.get("A", [])
+        B_data = initial_params.get("B", [])
+        C_data = initial_params.get("C", [])
+        D_data = initial_params.get("D", [])
 
         # Generate the Julia code
         code = f'''#!/usr/bin/env julia
@@ -565,16 +584,16 @@ end
 def render_gnn_to_rxinfer(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """
     Render GNN specification to RxInfer.jl simulation script.
-    
+
     Args:
         gnn_spec: Parsed GNN specification dictionary
         output_path: Path for output RxInfer script
         options: Optional rendering options
-        
+
     Returns:
         Tuple of (success, message, warnings: List[str])
     """
@@ -588,12 +607,14 @@ def render_gnn_to_rxinfer(
         renderer = RxInferRenderer(options)
 
         # Get model name safely
-        model_name = gnn_spec.get('name') or gnn_spec.get('model_name', 'GNN_Model')
+        model_name = gnn_spec.get("name") or gnn_spec.get("model_name", "GNN_Model")
 
         # Generate simulation code directly from spec (using simplified working version)
         try:
             # Use the full generator with updated syntax
-            rxinfer_code = renderer._generate_rxinfer_simulation_code(gnn_spec, model_name)
+            rxinfer_code = renderer._generate_rxinfer_simulation_code(
+                gnn_spec, model_name
+            )
         except Exception as gen_error:
             logger.error(f"Code generation failed: {gen_error}")
             return False, f"Error generating RxInfer.jl code: {gen_error}", []
@@ -601,7 +622,7 @@ def render_gnn_to_rxinfer(
         # Write output file
         try:
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_path, 'w', encoding='utf-8') as f:
+            with open(output_path, "w", encoding="utf-8") as f:
                 f.write(rxinfer_code)
         except Exception as write_error:
             logger.error(f"Failed to write output file: {write_error}")
@@ -611,10 +632,10 @@ def render_gnn_to_rxinfer(
         warnings = []
 
         # Check for potential issues
-        if not gnn_spec.get('initial_parameterization'):
+        if not gnn_spec.get("initial_parameterization"):
             warnings.append("No initial parameterization found - using defaults")
 
-        if not gnn_spec.get('model_parameters'):
+        if not gnn_spec.get("model_parameters"):
             warnings.append("No model parameters found - using inferred dimensions")
 
         logger.info(f"Successfully generated RxInfer.jl script for {model_name}")

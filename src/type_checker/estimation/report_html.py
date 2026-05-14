@@ -15,22 +15,28 @@ from typing import Any, Dict, List
 import matplotlib.pyplot as plt
 
 
-def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, Any], output_dir: str) -> str:
+def generate_html_report(
+    results: Dict[str, Any], detailed_metrics: Dict[str, Any], output_dir: str
+) -> str:
     """Generate a detailed HTML report with visualizations."""
-    
+
     if not results:
         return "No results to report."
 
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
-    
+
     # Check if we have any valid results
-    valid_results = [r for r in results.values() if "error" not in r and r["memory_estimate"] is not None]
+    valid_results = [
+        r
+        for r in results.values()
+        if "error" not in r and r["memory_estimate"] is not None
+    ]
     if not valid_results:
         return "No valid results to report."
-        
+
     html_report_path = output_path / "resource_report_detailed.html"
-    
+
     html_content = """
     <!DOCTYPE html>
     <html lang="en">
@@ -64,9 +70,11 @@ def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, An
 
     # Add summary statistics
     avg_memory = sum(r["memory_estimate"] for r in valid_results) / len(valid_results)
-    avg_inference = sum(r["inference_estimate"] for r in valid_results) / len(valid_results)
+    avg_inference = sum(r["inference_estimate"] for r in valid_results) / len(
+        valid_results
+    )
     avg_storage = sum(r["storage_estimate"] for r in valid_results) / len(valid_results)
-    
+
     html_content += f"""
         <div class="summary-cards">
             <div class="card">
@@ -90,18 +98,18 @@ def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, An
 
     # Add visualizations if available
     _generate_visualizations_for_html(results, output_path)
-    
+
     html_content += """
         <h2>Comparative Analysis</h2>
         <div class="visualizations">
     """
-    
+
     viz_files = [
         ("memory_usage_html.png", "Memory Usage"),
         ("inference_time_html.png", "Inference Time"),
-        ("storage_requirements_html.png", "Storage Requirements")
+        ("storage_requirements_html.png", "Storage Requirements"),
     ]
-    
+
     for viz_file, viz_title in viz_files:
         if (output_path / viz_file).exists():
             html_content += f"""
@@ -110,114 +118,153 @@ def generate_html_report(results: Dict[str, Any], detailed_metrics: Dict[str, An
                 <img src="{viz_file}" alt="{viz_title}">
             </div>
             """
-            
+
     html_content += "</div>"
-    
+
     # Detailed section for each model
     html_content += "<h2>Detailed Model Analysis</h2>"
-    
+
     for file_path, res in results.items():
         model_name = Path(file_path).name
-        
+
         if "error" in res:
             html_content += f"""
             <div class="model-section">
                 <h3>{model_name}</h3>
                 <p><strong>Path:</strong> {file_path}</p>
-                <div class="error-message">Error: {res['error']}</div>
+                <div class="error-message">Error: {res["error"]}</div>
             </div>
             """
             continue
-            
+
         metrics = detailed_metrics.get(file_path, {})
-        
+
         html_content += f"""
         <div class="model-section">
             <h3>{model_name}</h3>
             <p><strong>Path:</strong> {file_path}</p>
-            <p><strong>Model Type:</strong> {metrics.get('model_type', 'Unknown')}</p>
+            <p><strong>Model Type:</strong> {metrics.get("model_type", "Unknown")}</p>
             
             <h4>Core Resource Estimates</h4>
             <table>
                 <tr><th>Metric</th><th>Estimate</th><th>Description</th></tr>
-                <tr><td>Memory Footprint</td><td>{res['memory_estimate']:.2f} KB</td><td>RAM needed for variables</td></tr>
-                <tr><td>Inference Cost</td><td>{res['inference_estimate']:.2f} units</td><td>Relative computational cost</td></tr>
-                <tr><td>Storage Required</td><td>{res['storage_estimate']:.2f} KB</td><td>Disk space for model file</td></tr>
-                <tr><td>FLOPS Estimate</td><td>{metrics.get('flops_estimate', 0):.2e}</td><td>Floating-point operations per inference</td></tr>
-                <tr><td>Est. Inference Time</td><td>{metrics.get('inference_time_estimate', 0)*1000:.4f} ms</td><td>Approximate time on typical CPU</td></tr>
+                <tr><td>Memory Footprint</td><td>{res["memory_estimate"]:.2f} KB</td><td>RAM needed for variables</td></tr>
+                <tr><td>Inference Cost</td><td>{res["inference_estimate"]:.2f} units</td><td>Relative computational cost</td></tr>
+                <tr><td>Storage Required</td><td>{res["storage_estimate"]:.2f} KB</td><td>Disk space for model file</td></tr>
+                <tr><td>FLOPS Estimate</td><td>{metrics.get("flops_estimate", 0):.2e}</td><td>Floating-point operations per inference</td></tr>
+                <tr><td>Est. Inference Time</td><td>{metrics.get("inference_time_estimate", 0) * 1000:.4f} ms</td><td>Approximate time on typical CPU</td></tr>
             </table>
         </div>
         """
-        
+
     html_content += """
     </body>
     </html>
     """
-    
-    with open(html_report_path, 'w') as f:
+
+    with open(html_report_path, "w") as f:
         f.write(html_content)
-        
+
     return str(html_report_path)
 
 
-def _generate_visualizations_for_html(results: Dict[str, Any], output_dir: Path) -> None:
+def _generate_visualizations_for_html(
+    results: Dict[str, Any], output_dir: Path
+) -> None:
     """Generate visualizations specifically for HTML embedding."""
     if not results:
         return
 
     # Extract data for plots
     files = [os.path.basename(file_path) for file_path in results.keys()]
-    memory_values = [result["memory_estimate"] for result in results.values() if "error" not in result and result["memory_estimate"] is not None]
-    inference_values = [result["inference_estimate"] for result in results.values() if "error" not in result and result["inference_estimate"] is not None]
-    storage_values = [result["storage_estimate"] for result in results.values() if "error" not in result and result["storage_estimate"] is not None]
+    memory_values = [
+        result["memory_estimate"]
+        for result in results.values()
+        if "error" not in result and result["memory_estimate"] is not None
+    ]
+    inference_values = [
+        result["inference_estimate"]
+        for result in results.values()
+        if "error" not in result and result["inference_estimate"] is not None
+    ]
+    storage_values = [
+        result["storage_estimate"]
+        for result in results.values()
+        if "error" not in result and result["storage_estimate"] is not None
+    ]
 
     if not memory_values or not inference_values or not storage_values:
         return
 
     # Short file names for better display
-    short_files = [f[:20] + "..." if len(f) > 20 else f for f in files[:len(memory_values)]]
+    short_files = [
+        f[:20] + "..." if len(f) > 20 else f for f in files[: len(memory_values)]
+    ]
 
     # Memory usage plot
     plt.figure(figsize=(10, 6))
-    bars = plt.bar(short_files, memory_values, color='skyblue')
+    bars = plt.bar(short_files, memory_values, color="skyblue")
     for bar in bars:
         height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2., height + 0.01, f'{height:.2f}', ha='center', va='bottom', fontsize=9)
-    plt.title('Memory Usage Estimates', fontsize=14, fontweight='bold')
-    plt.xlabel('Model File', fontsize=12)
-    plt.ylabel('Memory Usage (KB)', fontsize=12)
-    plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height + 0.01,
+            f"{height:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+    plt.title("Memory Usage Estimates", fontsize=14, fontweight="bold")
+    plt.xlabel("Model File", fontsize=12)
+    plt.ylabel("Memory Usage (KB)", fontsize=12)
+    plt.xticks(rotation=45, ha="right", fontsize=10)
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(output_dir / "memory_usage_html.png", dpi=120, bbox_inches='tight')
+    plt.savefig(output_dir / "memory_usage_html.png", dpi=120, bbox_inches="tight")
     plt.close()
 
     # Inference time plot
     plt.figure(figsize=(10, 6))
-    bars = plt.bar(short_files, inference_values, color='lightgreen')
+    bars = plt.bar(short_files, inference_values, color="lightgreen")
     for bar in bars:
         height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2., height + 0.01, f'{height:.2f}', ha='center', va='bottom', fontsize=9)
-    plt.title('Inference Time Estimates', fontsize=14, fontweight='bold')
-    plt.xlabel('Model File', fontsize=12)
-    plt.ylabel('Inference Time (units)', fontsize=12)
-    plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height + 0.01,
+            f"{height:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+    plt.title("Inference Time Estimates", fontsize=14, fontweight="bold")
+    plt.xlabel("Model File", fontsize=12)
+    plt.ylabel("Inference Time (units)", fontsize=12)
+    plt.xticks(rotation=45, ha="right", fontsize=10)
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(output_dir / "inference_time_html.png", dpi=120, bbox_inches='tight')
+    plt.savefig(output_dir / "inference_time_html.png", dpi=120, bbox_inches="tight")
     plt.close()
 
     # Storage requirements plot
     plt.figure(figsize=(10, 6))
-    bars = plt.bar(short_files, storage_values, color='salmon')
+    bars = plt.bar(short_files, storage_values, color="salmon")
     for bar in bars:
         height = bar.get_height()
-        plt.text(bar.get_x() + bar.get_width()/2., height + 0.01, f'{height:.2f}', ha='center', va='bottom', fontsize=9)
-    plt.title('Storage Requirements Estimates', fontsize=14, fontweight='bold')
-    plt.xlabel('Model File', fontsize=12)
-    plt.ylabel('Storage (KB)', fontsize=12)
-    plt.xticks(rotation=45, ha='right', fontsize=10)
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
+        plt.text(
+            bar.get_x() + bar.get_width() / 2.0,
+            height + 0.01,
+            f"{height:.2f}",
+            ha="center",
+            va="bottom",
+            fontsize=9,
+        )
+    plt.title("Storage Requirements Estimates", fontsize=14, fontweight="bold")
+    plt.xlabel("Model File", fontsize=12)
+    plt.ylabel("Storage (KB)", fontsize=12)
+    plt.xticks(rotation=45, ha="right", fontsize=10)
+    plt.grid(axis="y", linestyle="--", alpha=0.7)
     plt.tight_layout()
-    plt.savefig(output_dir / "storage_requirements_html.png", dpi=120, bbox_inches='tight')
+    plt.savefig(
+        output_dir / "storage_requirements_html.png", dpi=120, bbox_inches="tight"
+    )
     plt.close()

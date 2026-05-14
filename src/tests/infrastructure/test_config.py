@@ -11,6 +11,7 @@ from typing import List, Optional
 @dataclass
 class TestExecutionConfig:
     """Configuration for test execution."""
+
     timeout_seconds: int = 3600  # Increased to 60 minutes for comprehensive test suite
     max_failures: int = 10
     parallel: bool = True
@@ -24,6 +25,7 @@ class TestExecutionConfig:
 @dataclass
 class TestExecutionResult:
     """Results from test execution."""
+
     success: bool
     tests_run: int
     tests_passed: int

@@ -13,8 +13,8 @@ from .activeinference_renderer import (
 )
 
 __all__ = [
-    'render_gnn_to_activeinference_jl',
-    'render_gnn_to_activeinference_combined',
-    'extract_model_info',
-    'generate_activeinference_script'
+    "render_gnn_to_activeinference_jl",
+    "render_gnn_to_activeinference_combined",
+    "extract_model_info",
+    "generate_activeinference_script",
 ]

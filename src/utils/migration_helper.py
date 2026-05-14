@@ -20,6 +20,7 @@ from typing import Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
+
 class PipelineMigrationHelper:
     """Helper class for migrating pipeline modules to new patterns."""
 
@@ -33,11 +34,11 @@ class PipelineMigrationHelper:
             "redundant_fallbacks": [],
             "missing_enhanced_imports": [],
             "hardcoded_paths": [],
-            "missing_performance_tracking": []
+            "missing_performance_tracking": [],
         }
 
         try:
-            with open(module_path, 'r', encoding='utf-8') as f:
+            with open(module_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Check for redundant recovery patterns
@@ -55,7 +56,9 @@ class PipelineMigrationHelper:
 
             # Check for performance tracking opportunities
             if self._needs_performance_tracking(module_path):
-                issues["missing_performance_tracking"].append("Compute-intensive step without performance tracking")
+                issues["missing_performance_tracking"].append(
+                    "Compute-intensive step without performance tracking"
+                )
 
         except Exception as e:
             logger.error(f"Error analyzing {module_path}: {e}")
@@ -67,7 +70,7 @@ class PipelineMigrationHelper:
         changes = []
 
         try:
-            with open(module_path, 'r', encoding='utf-8') as f:
+            with open(module_path, "r", encoding="utf-8") as f:
                 original_content = f.read()
 
             content = original_content
@@ -88,12 +91,12 @@ class PipelineMigrationHelper:
             # Write changes if not dry run
             if not dry_run and content != original_content:
                 # Create backup
-                backup_path = module_path.with_suffix(module_path.suffix + '.backup')
-                with open(backup_path, 'w', encoding='utf-8') as f:
+                backup_path = module_path.with_suffix(module_path.suffix + ".backup")
+                with open(backup_path, "w", encoding="utf-8") as f:
                     f.write(original_content)
 
                 # Write updated content
-                with open(module_path, 'w', encoding='utf-8') as f:
+                with open(module_path, "w", encoding="utf-8") as f:
                     f.write(content)
 
                 changes.append(f"✅ Applied changes (backup: {backup_path.name})")
@@ -109,9 +112,9 @@ class PipelineMigrationHelper:
     def _has_redundant_fallbacks(self, content: str) -> bool:
         """Check if module has redundant recovery imports."""
         patterns = [
-            r'try:\s+from utils import.*?except ImportError.*?def setup_step_logging',
-            r'except ImportError as e:.*?logging\.basicConfig',
-            r'try:\s+.*?UTILS_AVAILABLE.*?except ImportError.*?UTILS_AVAILABLE = False'
+            r"try:\s+from utils import.*?except ImportError.*?def setup_step_logging",
+            r"except ImportError as e:.*?logging\.basicConfig",
+            r"try:\s+.*?UTILS_AVAILABLE.*?except ImportError.*?UTILS_AVAILABLE = False",
         ]
 
         for pattern in patterns:
@@ -126,7 +129,24 @@ class PipelineMigrationHelper:
             return False
 
         # Check if it's a pipeline step that parses arguments
-        if module_path.name.startswith(('1_', '2_', '3_', '4_', '5_', '6_', '7_', '8_', '9_', '10_', '11_', '12_', '13_', '14_')):
+        if module_path.name.startswith(
+            (
+                "1_",
+                "2_",
+                "3_",
+                "4_",
+                "5_",
+                "6_",
+                "7_",
+                "8_",
+                "9_",
+                "10_",
+                "11_",
+                "12_",
+                "13_",
+                "14_",
+            )
+        ):
             return "argparse.ArgumentParser" in content
 
         # Check main.py specifically
@@ -144,7 +164,10 @@ class PipelineMigrationHelper:
             (r'Path\(["\']src/', "Hardcoded 'src/' path"),
             (r'Path\(["\']output/', "Hardcoded 'output/' path"),
             (r'["\']input/gnn_files["\']', "Hardcoded input GNN files path"),
-            (r'project_root / ["\']src["\'] / ["\']gnn["\']', "Could use DEFAULT_PATHS")
+            (
+                r'project_root / ["\']src["\'] / ["\']gnn["\']',
+                "Could use DEFAULT_PATHS",
+            ),
         ]
 
         for pattern, description in hardcoded_patterns:
@@ -155,7 +178,13 @@ class PipelineMigrationHelper:
 
     def _needs_performance_tracking(self, module_path: Path) -> bool:
         """Check if module should have performance tracking."""
-        compute_intensive = ['7_export.py', '8_visualization.py', '11_render.py', '12_execute.py', '13_llm.py']
+        compute_intensive = [
+            "7_export.py",
+            "8_visualization.py",
+            "11_render.py",
+            "12_execute.py",
+            "13_llm.py",
+        ]
         return module_path.name in compute_intensive
 
     def _remove_redundant_fallbacks(self, content: str) -> Tuple[str, List[str]]:
@@ -163,24 +192,28 @@ class PipelineMigrationHelper:
         changes = []
 
         # Pattern 1: Remove try/except around utils import with custom fallbacks
-        pattern1 = r'try:\s+(from utils import[^}]+})\s+except ImportError as e:.*?(?=\n\w|\n#|\nif|\ndef|\nclass|\Z)'
+        pattern1 = r"try:\s+(from utils import[^}]+})\s+except ImportError as e:.*?(?=\n\w|\n#|\nif|\ndef|\nclass|\Z)"
 
         def replace_fallback(match):
             utils_import = match.group(1)
-            changes.append("Removed redundant import recovery - utils provides graceful fallbacks")
+            changes.append(
+                "Removed redundant import recovery - utils provides graceful fallbacks"
+            )
             return utils_import + "\n"
 
         content = re.sub(pattern1, replace_fallback, content, flags=re.DOTALL)
 
         # Pattern 2: Remove UTILS_AVAILABLE recovery definitions
-        pattern2 = r'except ImportError.*?UTILS_AVAILABLE = False.*?(?=\n\w|\n#|\Z)'
+        pattern2 = r"except ImportError.*?UTILS_AVAILABLE = False.*?(?=\n\w|\n#|\Z)"
         if re.search(pattern2, content, re.DOTALL):
-            content = re.sub(pattern2, '', content, flags=re.DOTALL)
+            content = re.sub(pattern2, "", content, flags=re.DOTALL)
             changes.append("Removed redundant UTILS_AVAILABLE recovery")
 
         return content, changes
 
-    def _add_missing_imports(self, content: str, module_path: Path) -> Tuple[str, List[str]]:
+    def _add_missing_imports(
+        self, content: str, module_path: Path
+    ) -> Tuple[str, List[str]]:
         """Add missing standard imports."""
         changes = []
 
@@ -198,22 +231,35 @@ class PipelineMigrationHelper:
 
         # Replace hardcoded input/gnn_files with DEFAULT_PATHS reference
         if 'src" / "gnn" / "examples"' in content and "DEFAULT_PATHS" not in content:
-            changes.append("💡 Consider using DEFAULT_PATHS['target_dir'] instead of hardcoded paths")
+            changes.append(
+                "💡 Consider using DEFAULT_PATHS['target_dir'] instead of hardcoded paths"
+            )
 
         return content, changes
 
+
 def main():
     parser = argparse.ArgumentParser(description="Pipeline Migration Helper")
-    parser.add_argument("--analyze", action="store_true",
-                       help="Analyze all modules for improvement opportunities")
-    parser.add_argument("--apply-improvements", action="store_true",
-                       help="Apply automatic improvements to all modules")
-    parser.add_argument("--module", type=str,
-                       help="Specific module to process")
-    parser.add_argument("--dry-run", action="store_true", default=True,
-                       help="Show what would be changed without applying (default)")
-    parser.add_argument("--apply", action="store_true",
-                       help="Actually apply changes (removes dry-run)")
+    parser.add_argument(
+        "--analyze",
+        action="store_true",
+        help="Analyze all modules for improvement opportunities",
+    )
+    parser.add_argument(
+        "--apply-improvements",
+        action="store_true",
+        help="Apply automatic improvements to all modules",
+    )
+    parser.add_argument("--module", type=str, help="Specific module to process")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Show what would be changed without applying (default)",
+    )
+    parser.add_argument(
+        "--apply", action="store_true", help="Actually apply changes (removes dry-run)"
+    )
 
     args = parser.parse_args()
 
@@ -240,9 +286,9 @@ def main():
 
     if args.analyze:
         # Analysis mode
-        print("\n" + "="*80)
+        print("\n" + "=" * 80)
         print("PIPELINE MIGRATION ANALYSIS")
-        print("="*80)
+        print("=" * 80)
 
         total_issues = 0
         for module in modules:
@@ -259,7 +305,9 @@ def main():
                         for issue in issue_list:
                             print(f"    - {issue}")
 
-        print(f"\n📊 Summary: {total_issues} improvement opportunities found across {len(modules)} modules")
+        print(
+            f"\n📊 Summary: {total_issues} improvement opportunities found across {len(modules)} modules"
+        )
 
     if args.apply_improvements:
         # Apply improvements mode
@@ -279,7 +327,9 @@ def main():
                 total_changes += len(changes)
 
         if dry_run:
-            print(f"\n🔍 DRY RUN COMPLETE: {total_changes} potential changes identified")
+            print(
+                f"\n🔍 DRY RUN COMPLETE: {total_changes} potential changes identified"
+            )
             print("Use --apply to actually make changes")
         else:
             print(f"\n✅ MIGRATION COMPLETE: {total_changes} changes applied")
@@ -288,6 +338,7 @@ def main():
 
     return 0
 
+
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     sys.exit(main())

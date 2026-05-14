@@ -15,18 +15,21 @@ from typing import List, Optional
 
 logger = logging.getLogger("analysis.activeinference_jl")
 
-def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, verbose: bool = False) -> List[str]:
+
+def generate_analysis_from_logs(
+    execution_results_dir: Path, output_dir: Path, verbose: bool = False
+) -> List[str]:
     """
     Generate analysis and visualizations for ActiveInference.jl results.
-    
+
     The ActiveInference.jl execution creates visualizations during its run (in timestamped folders).
     This analyzer collects those existing visualizations and copies them to the analysis output.
-    
+
     Args:
         execution_results_dir: Directory containing execution results (12_execute_output)
         output_dir: Directory to save analysis outputs (16_analysis_output/activeinference_jl)
         verbose: Enable verbose logging
-        
+
     Returns:
         List of generated visualization file paths
     """
@@ -55,7 +58,10 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
         # Also look for data_traces folders (alternative structure)
         data_trace_dirs = list(search_dir.glob("**/data_traces"))
         for dt in data_trace_dirs:
-            if "activeinference" in str(dt.parent).lower() or "actinf" in str(dt.parent).lower():
+            if (
+                "activeinference" in str(dt.parent).lower()
+                or "actinf" in str(dt.parent).lower()
+            ):
                 target_dirs.append(dt.parent)
 
     # Deduplicate and sort by modification time (newest first)
@@ -100,13 +106,23 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
             break
 
     if generated_files:
-        logger.info(f"Collected {len(generated_files)} ActiveInference.jl visualization files")
+        logger.info(
+            f"Collected {len(generated_files)} ActiveInference.jl visualization files"
+        )
 
     # --- Generate new visualizations from raw data ---
     # Search for CSV simulation results and model parameters
     for search_dir in search_dirs:
-        csv_files = sorted(search_dir.glob("**/simulation_results.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
-        param_files = sorted(search_dir.glob("**/model_parameters.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        csv_files = sorted(
+            search_dir.glob("**/simulation_results.csv"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        param_files = sorted(
+            search_dir.glob("**/model_parameters.json"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
 
         if csv_files:
             try:
@@ -153,12 +169,12 @@ def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:
     # Parse CSV (has comment header lines starting with #)
     steps, observations, actions, belief_s1 = [], [], [], []
     try:
-        with open(csv_path, 'r') as f:
+        with open(csv_path, "r") as f:
             for line in f:
                 line = line.strip()
-                if not line or line.startswith('#'):
+                if not line or line.startswith("#"):
                     continue
-                parts = line.split(',')
+                parts = line.split(",")
                 if len(parts) >= 4:
                     try:
                         steps.append(int(parts[0]))
@@ -180,31 +196,33 @@ def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:
     fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(14, 10), sharex=True)
 
     # Panel 1: Observation timeline
-    ax1.step(steps, observations, where='mid', linewidth=2, color='#3498DB')
-    ax1.scatter(steps, observations, s=40, color='#2980B9', zorder=5)
-    ax1.set_ylabel("Observation", fontweight='bold')
-    ax1.set_title("ActiveInference.jl Simulation Trace", fontweight='bold', fontsize=14)
+    ax1.step(steps, observations, where="mid", linewidth=2, color="#3498DB")
+    ax1.scatter(steps, observations, s=40, color="#2980B9", zorder=5)
+    ax1.set_ylabel("Observation", fontweight="bold")
+    ax1.set_title("ActiveInference.jl Simulation Trace", fontweight="bold", fontsize=14)
     ax1.grid(True, alpha=0.3)
     ax1.set_yticks(sorted(set(observations)))
 
     # Panel 2: Action timeline
-    ax2.step(steps, actions, where='mid', linewidth=2, color='#E74C3C')
-    ax2.scatter(steps, actions, s=40, color='#C0392B', zorder=5)
-    ax2.set_ylabel("Action", fontweight='bold')
+    ax2.step(steps, actions, where="mid", linewidth=2, color="#E74C3C")
+    ax2.scatter(steps, actions, s=40, color="#C0392B", zorder=5)
+    ax2.set_ylabel("Action", fontweight="bold")
     ax2.grid(True, alpha=0.3)
     ax2.set_yticks(sorted(set(actions)))
 
     # Panel 3: Belief state 1 decay
-    ax3.plot(steps, belief_s1, 'o-', linewidth=2.5, color='#9B59B6', markersize=6)
-    ax3.fill_between(steps, belief_s1, alpha=0.2, color='#9B59B6')
-    ax3.set_ylabel("Belief (State 1)", fontweight='bold')
-    ax3.set_xlabel("Time Step", fontweight='bold')
+    ax3.plot(steps, belief_s1, "o-", linewidth=2.5, color="#9B59B6", markersize=6)
+    ax3.fill_between(steps, belief_s1, alpha=0.2, color="#9B59B6")
+    ax3.set_ylabel("Belief (State 1)", fontweight="bold")
+    ax3.set_xlabel("Time Step", fontweight="bold")
     ax3.grid(True, alpha=0.3)
-    ax3.set_yscale('log') if min(belief_s1) > 0 and max(belief_s1) / (min(belief_s1) + 1e-15) > 100 else None
+    ax3.set_yscale("log") if min(belief_s1) > 0 and max(belief_s1) / (
+        min(belief_s1) + 1e-15
+    ) > 100 else None
 
     plt.tight_layout()
     trace_file = output_dir / "activeinference_jl_trace_reconstruction.png"
-    plt.savefig(str(trace_file), dpi=300, bbox_inches='tight')
+    plt.savefig(str(trace_file), dpi=300, bbox_inches="tight")
     plt.close()
     logger.info(f"Generated trace reconstruction: {trace_file.name}")
     return [str(trace_file)]
@@ -233,7 +251,7 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
         return []
 
     try:
-        with open(param_path, 'r') as f:
+        with open(param_path, "r") as f:
             params = json.load(f)
     except Exception as e:
         logger.warning(f"Failed to load model parameters: {e}")
@@ -247,24 +265,24 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
             return None
         try:
             s = s.strip()
-            if s.startswith('[') and s.endswith(']'):
+            if s.startswith("[") and s.endswith("]"):
                 s = s[1:-1].strip()
 
             # Check for 3D matrix (contains ;;;)
-            if ';;;' in s:
-                slices = s.split(';;;')
+            if ";;;" in s:
+                slices = s.split(";;;")
                 matrices = []
                 for sl in slices:
                     sl = sl.strip()
                     if not sl:
                         continue
-                    rows = [r.strip() for r in sl.split(';') if r.strip()]
+                    rows = [r.strip() for r in sl.split(";") if r.strip()]
                     mat = [[float(x) for x in row.split()] for row in rows]
                     matrices.append(mat)
                 return np.array(matrices).transpose(1, 2, 0)  # (rows, cols, slices)
 
             # 2D matrix
-            rows = [r.strip() for r in s.split(';') if r.strip()]
+            rows = [r.strip() for r in s.split(";") if r.strip()]
             mat = [[float(x) for x in row.split()] for row in rows]
             return np.array(mat)
         except (ValueError, TypeError, IndexError):
@@ -275,34 +293,36 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
         if not isinstance(s, str):
             return None
         try:
-            s = s.strip().strip('[]')
-            return np.array([float(x) for x in s.split(',')])
+            s = s.strip().strip("[]")
+            return np.array([float(x) for x in s.split(",")])
         except (ValueError, TypeError):
             return None  # malformed Julia vector string
 
     # Parse matrices
-    A = parse_julia_matrix(params.get('A_matrix', ''))
-    B = parse_julia_matrix(params.get('B_matrix', ''))
-    C = parse_julia_vector(params.get('C_vector', ''))
-    D = parse_julia_vector(params.get('D_vector', ''))
-    E = parse_julia_vector(params.get('E_vector', ''))
+    A = parse_julia_matrix(params.get("A_matrix", ""))
+    B = parse_julia_matrix(params.get("B_matrix", ""))
+    C = parse_julia_vector(params.get("C_vector", ""))
+    D = parse_julia_vector(params.get("D_vector", ""))
+    E = parse_julia_vector(params.get("E_vector", ""))
 
     # Count available panels
     panels = []
     if A is not None and A.ndim == 2:
-        panels.append(('A (Observation)', A, 'Reds'))
+        panels.append(("A (Observation)", A, "Reds"))
     if B is not None:
         if B.ndim == 3:
             for a in range(B.shape[2]):
-                panels.append((f'B[:,:,{a+1}] (Transition a={a+1})', B[:, :, a], 'Blues'))
+                panels.append(
+                    (f"B[:,:,{a + 1}] (Transition a={a + 1})", B[:, :, a], "Blues")
+                )
         elif B.ndim == 2:
-            panels.append(('B (Transition)', B, 'Blues'))
+            panels.append(("B (Transition)", B, "Blues"))
     if C is not None:
-        panels.append(('C (Preferences)', C.reshape(1, -1), 'Greens'))
+        panels.append(("C (Preferences)", C.reshape(1, -1), "Greens"))
     if D is not None:
-        panels.append(('D (Prior)', D.reshape(1, -1), 'Purples'))
+        panels.append(("D (Prior)", D.reshape(1, -1), "Purples"))
     if E is not None:
-        panels.append(('E (Policy Prior)', E.reshape(1, -1), 'Oranges'))
+        panels.append(("E (Policy Prior)", E.reshape(1, -1), "Oranges"))
 
     if not panels:
         return []
@@ -319,29 +339,37 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
     for idx, (title, matrix, cmap) in enumerate(panels):
         r, c = divmod(idx, cols)
         ax = axes[r, c]
-        im = ax.imshow(matrix, cmap=cmap, aspect='auto', origin='lower')
-        ax.set_title(title, fontweight='bold', fontsize=11)
+        im = ax.imshow(matrix, cmap=cmap, aspect="auto", origin="lower")
+        ax.set_title(title, fontweight="bold", fontsize=11)
         plt.colorbar(im, ax=ax, shrink=0.8)
         # Add value annotations for small matrices
         if matrix.size <= 25:
             for i in range(matrix.shape[0]):
                 for j in range(matrix.shape[1]):
                     val = matrix[i, j]
-                    ax.text(j, i, f'{val:.2f}', ha='center', va='center',
-                            fontsize=9, fontweight='bold',
-                            color='white' if val > matrix.max() / 2 else 'black')
+                    ax.text(
+                        j,
+                        i,
+                        f"{val:.2f}",
+                        ha="center",
+                        va="center",
+                        fontsize=9,
+                        fontweight="bold",
+                        color="white" if val > matrix.max() / 2 else "black",
+                    )
 
     # Hide unused axes
     for idx in range(n_panels, rows_count * cols):
         r, c = divmod(idx, cols)
         axes[r, c].set_visible(False)
 
-    model_name = params.get('name', 'ActiveInference.jl')
-    plt.suptitle(f"POMDP Model Parameters — {model_name}",
-                 fontsize=14, fontweight='bold', y=1.02)
+    model_name = params.get("name", "ActiveInference.jl")
+    plt.suptitle(
+        f"POMDP Model Parameters — {model_name}", fontsize=14, fontweight="bold", y=1.02
+    )
     plt.tight_layout()
     matrix_file = output_dir / "activeinference_jl_model_matrices.png"
-    plt.savefig(str(matrix_file), dpi=300, bbox_inches='tight')
+    plt.savefig(str(matrix_file), dpi=300, bbox_inches="tight")
     plt.close()
     logger.info(f"Generated model matrix heatmaps: {matrix_file.name}")
     return [str(matrix_file)]

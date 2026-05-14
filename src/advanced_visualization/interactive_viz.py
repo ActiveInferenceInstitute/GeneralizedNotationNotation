@@ -23,13 +23,11 @@ def _generate_interactive_plotly_dashboard(
     output_dir: Path,
     export_formats: List[str],
     dependencies: Dict[str, bool],
-    logger: logging.Logger
+    logger: logging.Logger,
 ) -> AdvancedVisualizationAttempt:
     """Generate full interactive Plotly dashboard"""
     attempt = AdvancedVisualizationAttempt(
-        viz_type="interactive_dashboard",
-        model_name=model_name,
-        status="in_progress"
+        viz_type="interactive_dashboard", model_name=model_name, status="in_progress"
     )
 
     start_time = time.time()
@@ -38,6 +36,7 @@ def _generate_interactive_plotly_dashboard(
         try:
             import plotly.graph_objects as go
             from plotly.subplots import make_subplots
+
             plotly_available = True
         except ImportError:
             plotly_available = False
@@ -59,10 +58,18 @@ def _generate_interactive_plotly_dashboard(
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
         fig = make_subplots(
-            rows=2, cols=2,
-            subplot_titles=("Variable Types", "Matrix Overview", "Network Graph", "Model Statistics"),
-            specs=[[{"type": "pie"}, {"type": "bar"}],
-                   [{"type": "scatter"}, {"type": "table"}]]
+            rows=2,
+            cols=2,
+            subplot_titles=(
+                "Variable Types",
+                "Matrix Overview",
+                "Network Graph",
+                "Model Statistics",
+            ),
+            specs=[
+                [{"type": "pie"}, {"type": "bar"}],
+                [{"type": "scatter"}, {"type": "table"}],
+            ],
         )
 
         var_types = {}
@@ -73,8 +80,13 @@ def _generate_interactive_plotly_dashboard(
 
         if var_types:
             fig.add_trace(
-                go.Pie(labels=list(var_types.keys()), values=list(var_types.values()), name="Types"),
-                row=1, col=1
+                go.Pie(
+                    labels=list(var_types.keys()),
+                    values=list(var_types.values()),
+                    name="Types",
+                ),
+                row=1,
+                col=1,
             )
 
         matrix_names = list(matrices.keys())
@@ -83,7 +95,8 @@ def _generate_interactive_plotly_dashboard(
         if matrix_names:
             fig.add_trace(
                 go.Bar(x=matrix_names, y=matrix_sizes, name="Matrix Sizes"),
-                row=1, col=2
+                row=1,
+                col=2,
             )
 
         if connections:
@@ -93,37 +106,52 @@ def _generate_interactive_plotly_dashboard(
 
             for i, conn in enumerate(connections[:20]):
                 if isinstance(conn, dict):
-                    source = str(conn.get("source_variables", [conn.get("source", "")])[0] if conn.get("source_variables") else conn.get("source", ""))
-                    target = str(conn.get("target_variables", [conn.get("target", "")])[0] if conn.get("target_variables") else conn.get("target", ""))
+                    source = str(
+                        conn.get("source_variables", [conn.get("source", "")])[0]
+                        if conn.get("source_variables")
+                        else conn.get("source", "")
+                    )
+                    target = str(
+                        conn.get("target_variables", [conn.get("target", "")])[0]
+                        if conn.get("target_variables")
+                        else conn.get("target", "")
+                    )
                     x_coords.append(i % 5)
                     y_coords.append(i // 5)
                     labels.append(f"{source}\u2192{target}")
 
             if x_coords:
                 fig.add_trace(
-                    go.Scatter(x=x_coords, y=y_coords, mode='markers+text',
-                             text=labels, textposition="middle center",
-                             name="Connections"),
-                    row=2, col=1
+                    go.Scatter(
+                        x=x_coords,
+                        y=y_coords,
+                        mode="markers+text",
+                        text=labels,
+                        textposition="middle center",
+                        name="Connections",
+                    ),
+                    row=2,
+                    col=1,
                 )
 
         stats_data = {
             "Metric": ["Variables", "Parameters", "Connections", "Matrices"],
-            "Count": [len(variables), len(parameters), len(connections), len(matrices)]
+            "Count": [len(variables), len(parameters), len(connections), len(matrices)],
         }
 
         fig.add_trace(
             go.Table(
                 header={"values": list(stats_data.keys())},
-                cells={"values": [stats_data[k] for k in stats_data.keys()]}
+                cells={"values": [stats_data[k] for k in stats_data.keys()]},
             ),
-            row=2, col=2
+            row=2,
+            col=2,
         )
 
         fig.update_layout(
             title_text=f"Interactive Dashboard: {model_name}",
             height=800,
-            showlegend=True
+            showlegend=True,
         )
 
         if "html" in export_formats:
@@ -148,6 +176,4 @@ def _generate_interactive_plotly_dashboard(
     return attempt
 
 
-
 # D2 functions live in network_viz.py — do not duplicate here.
-

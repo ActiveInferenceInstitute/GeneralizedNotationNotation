@@ -10,7 +10,7 @@ FEATURES = {
     "network_graphs": True,
     "combined_analysis": True,
     "interactive_plots": True,
-    "mcp_integration": True
+    "mcp_integration": True,
 }
 
 # Typing
@@ -41,14 +41,16 @@ from .visualizer import (
 
 __version__ = "1.6.0"
 
+
 def get_module_info() -> dict:
     """Return visualization module metadata for composability and MCP discovery."""
     return {
         "version": __version__,
         "description": "Visualization utilities for matrices, graphs, and ontology.",
         "features": FEATURES,
-        "visualization_types": ["matrix", "graph", "ontology"]
+        "visualization_types": ["matrix", "graph", "ontology"],
     }
+
 
 def get_visualization_options() -> dict:
     """Return available visualization configuration options."""
@@ -59,44 +61,54 @@ def get_visualization_options() -> dict:
     }
 
 
-def _generate_network_statistics(variables: Dict[str, Any], connections: List[Dict]) -> Dict[str, Any]:
-        """Generate network statistics from variables and connections."""
-        node_degrees = {}
-        for conn in connections:
-            source = conn.get("source", "unknown")
-            target = conn.get("target", "unknown")
-            node_degrees[source] = node_degrees.get(source, 0) + 1
-            node_degrees[target] = node_degrees.get(target, 0) + 1
+def _generate_network_statistics(
+    variables: Dict[str, Any], connections: List[Dict]
+) -> Dict[str, Any]:
+    """Generate network statistics from variables and connections."""
+    node_degrees = {}
+    for conn in connections:
+        source = conn.get("source", "unknown")
+        target = conn.get("target", "unknown")
+        node_degrees[source] = node_degrees.get(source, 0) + 1
+        node_degrees[target] = node_degrees.get(target, 0) + 1
 
-        if node_degrees:
-            degrees = list(node_degrees.values())
-            stats = {
-                "total_nodes": len(variables),
-                "total_connections": len(connections),
-                "average_degree": sum(degrees) / len(degrees),
-                "max_degree": max(degrees),
-                "min_degree": min(degrees),
-                "node_degree_distribution": node_degrees,
-                "isolated_nodes": len([v for v in variables.keys() if v not in node_degrees]),
-                "hub_nodes": [node for node, degree in node_degrees.items() if degree > 2]
-            }
-        else:
-            stats = {
-                "total_nodes": len(variables),
-                "total_connections": len(connections),
-                "average_degree": 0,
-                "max_degree": 0,
-                "min_degree": 0,
-                "node_degree_distribution": {},
-                "isolated_nodes": len(variables),
-                "hub_nodes": []
-            }
+    if node_degrees:
+        degrees = list(node_degrees.values())
+        stats = {
+            "total_nodes": len(variables),
+            "total_connections": len(connections),
+            "average_degree": sum(degrees) / len(degrees),
+            "max_degree": max(degrees),
+            "min_degree": min(degrees),
+            "node_degree_distribution": node_degrees,
+            "isolated_nodes": len(
+                [v for v in variables.keys() if v not in node_degrees]
+            ),
+            "hub_nodes": [node for node, degree in node_degrees.items() if degree > 2],
+        }
+    else:
+        stats = {
+            "total_nodes": len(variables),
+            "total_connections": len(connections),
+            "average_degree": 0,
+            "max_degree": 0,
+            "min_degree": 0,
+            "node_degree_distribution": {},
+            "isolated_nodes": len(variables),
+            "hub_nodes": [],
+        }
 
-        return stats
+    return stats
+
 
 __all__ = [
-    'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer',
-    'process_matrix_visualization', 'process_visualization',
-    'generate_graph_visualization', 'generate_matrix_visualization', 'generate_visualizations',
-    '__version__'
+    "MatrixVisualizer",
+    "GNNVisualizer",
+    "OntologyVisualizer",
+    "process_matrix_visualization",
+    "process_visualization",
+    "generate_graph_visualization",
+    "generate_matrix_visualization",
+    "generate_visualizations",
+    "__version__",
 ]

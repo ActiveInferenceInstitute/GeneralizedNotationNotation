@@ -1,4 +1,5 @@
 """Tests for JSONGNNParser."""
+
 import json
 
 import pytest
@@ -17,6 +18,7 @@ def _json(obj: dict) -> str:
 
 
 # ── parse_string ───────────────────────────────────────────────────────────
+
 
 class TestParseString:
     def test_valid_minimal_json(self, parser):
@@ -48,13 +50,22 @@ class TestParseString:
 
 # ── variables ──────────────────────────────────────────────────────────────
 
+
 class TestParseVariables:
     def test_basic_variable(self, parser):
-        content = _json({
-            "model_name": "M",
-            "variables": [{"name": "s", "var_type": "hidden_state",
-                           "data_type": "categorical", "dimensions": [3]}]
-        })
+        content = _json(
+            {
+                "model_name": "M",
+                "variables": [
+                    {
+                        "name": "s",
+                        "var_type": "hidden_state",
+                        "data_type": "categorical",
+                        "dimensions": [3],
+                    }
+                ],
+            }
+        )
         result = parser.parse_string(content)
         assert result.success is True
         assert len(result.model.variables) == 1
@@ -69,44 +80,58 @@ class TestParseVariables:
         # Use an unknown var_type to trigger fallback, not an exception — parser handles this.
         # To actually trigger the except clause, pass a non-dict entry which will fail
         # on .get() call.
-        content = _json({
-            "model_name": "M",
-            "variables": [
-                "not-a-dict",            # malformed — will be skipped
-                {"name": "s", "var_type": "hidden_state", "data_type": "categorical"}
-            ]
-        })
+        content = _json(
+            {
+                "model_name": "M",
+                "variables": [
+                    "not-a-dict",  # malformed — will be skipped
+                    {
+                        "name": "s",
+                        "var_type": "hidden_state",
+                        "data_type": "categorical",
+                    },
+                ],
+            }
+        )
         result = parser.parse_string(content)
         # The malformed entry is skipped; the valid one is parsed
         assert any(v.name == "s" for v in result.model.variables)
 
     def test_unknown_var_type_defaults_to_hidden_state(self, parser):
-        content = _json({
-            "model_name": "M",
-            "variables": [{"name": "x", "var_type": "nonexistent_type"}]
-        })
+        content = _json(
+            {
+                "model_name": "M",
+                "variables": [{"name": "x", "var_type": "nonexistent_type"}],
+            }
+        )
         result = parser.parse_string(content)
         assert result.model.variables[0].var_type == VariableType.HIDDEN_STATE
 
     def test_unknown_data_type_defaults_to_continuous(self, parser):
-        content = _json({
-            "model_name": "M",
-            "variables": [{"name": "x", "data_type": "nonsense"}]
-        })
+        content = _json(
+            {"model_name": "M", "variables": [{"name": "x", "data_type": "nonsense"}]}
+        )
         result = parser.parse_string(content)
         assert result.model.variables[0].data_type == DataType.CONTINUOUS
 
 
 # ── connections ────────────────────────────────────────────────────────────
 
+
 class TestParseConnections:
     def test_directed_connection(self, parser):
-        content = _json({
-            "model_name": "M",
-            "connections": [{"source_variables": ["s"],
-                             "target_variables": ["o"],
-                             "connection_type": "directed"}]
-        })
+        content = _json(
+            {
+                "model_name": "M",
+                "connections": [
+                    {
+                        "source_variables": ["s"],
+                        "target_variables": ["o"],
+                        "connection_type": "directed",
+                    }
+                ],
+            }
+        )
         result = parser.parse_string(content)
         assert len(result.model.connections) == 1
         c = result.model.connections[0]
@@ -115,24 +140,32 @@ class TestParseConnections:
         assert c.connection_type == ConnectionType.DIRECTED
 
     def test_unknown_connection_type_defaults_to_directed(self, parser):
-        content = _json({
-            "model_name": "M",
-            "connections": [{"source_variables": ["s"],
-                             "target_variables": ["o"],
-                             "connection_type": "weird_type"}]
-        })
+        content = _json(
+            {
+                "model_name": "M",
+                "connections": [
+                    {
+                        "source_variables": ["s"],
+                        "target_variables": ["o"],
+                        "connection_type": "weird_type",
+                    }
+                ],
+            }
+        )
         result = parser.parse_string(content)
         assert result.model.connections[0].connection_type == ConnectionType.DIRECTED
 
 
 # ── get_supported_extensions ───────────────────────────────────────────────
 
+
 class TestGetSupportedExtensions:
     def test_returns_dot_json(self, parser):
-        assert parser.get_supported_extensions() == ['.json']
+        assert parser.get_supported_extensions() == [".json"]
 
 
 # ── full round-trip ────────────────────────────────────────────────────────
+
 
 class TestFullModel:
     def test_complete_model_parse(self, parser):
@@ -141,19 +174,31 @@ class TestFullModel:
             "version": "1.1",
             "annotation": "ActInfPOMDP",
             "variables": [
-                {"name": "s", "var_type": "hidden_state", "data_type": "categorical",
-                 "dimensions": [3]},
-                {"name": "o", "var_type": "observation", "data_type": "categorical",
-                 "dimensions": [2]},
+                {
+                    "name": "s",
+                    "var_type": "hidden_state",
+                    "data_type": "categorical",
+                    "dimensions": [3],
+                },
+                {
+                    "name": "o",
+                    "var_type": "observation",
+                    "data_type": "categorical",
+                    "dimensions": [2],
+                },
             ],
             "connections": [
-                {"source_variables": ["s"], "target_variables": ["o"],
-                 "connection_type": "directed"}
+                {
+                    "source_variables": ["s"],
+                    "target_variables": ["o"],
+                    "connection_type": "directed",
+                }
             ],
             "parameters": [{"name": "alpha", "value": 0.5, "type_hint": "float"}],
             "time_specification": {"time_type": "Dynamic", "horizon": 10},
-            "ontology_mappings": [{"variable_name": "s",
-                                   "ontology_term": "HiddenState"}],
+            "ontology_mappings": [
+                {"variable_name": "s", "ontology_term": "HiddenState"}
+            ],
         }
         result = parser.parse_string(_json(payload))
         assert result.success is True

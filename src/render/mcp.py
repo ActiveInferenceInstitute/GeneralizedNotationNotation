@@ -14,8 +14,9 @@ logger = logging.getLogger(__name__)
 from . import process_render
 
 
-def process_render_mcp(target_directory: str, output_directory: str,
-                       verbose: bool = False) -> Dict[str, Any]:
+def process_render_mcp(
+    target_directory: str, output_directory: str, verbose: bool = False
+) -> Dict[str, Any]:
     """
     Render GNN models in a directory to all supported code formats.
 
@@ -60,14 +61,14 @@ def process_render_mcp(target_directory: str, output_directory: str,
 # Canonical framework descriptions used by both branches of
 # ``list_render_frameworks_mcp`` so success/fallback share one shape.
 _FRAMEWORK_DESCRIPTIONS: Dict[str, str] = {
-    "pymdp":              "PyMDP Active Inference simulation (Python)",
-    "rxinfer":            "RxInfer.jl probabilistic programming (Julia)",
+    "pymdp": "PyMDP Active Inference simulation (Python)",
+    "rxinfer": "RxInfer.jl probabilistic programming (Julia)",
     "activeinference_jl": "ActiveInference.jl simulation (Julia)",
-    "jax":                "JAX/XLA accelerated computation (Python)",
-    "discopy":            "DisCoPy string diagrams (Python)",
-    "pytorch":            "PyTorch neural integration (Python)",
-    "numpyro":            "NumPyro probabilistic programming (Python)",
-    "stan":               "Stan probabilistic programming (Stan)",
+    "jax": "JAX/XLA accelerated computation (Python)",
+    "discopy": "DisCoPy string diagrams (Python)",
+    "pytorch": "PyTorch neural integration (Python)",
+    "numpyro": "NumPyro probabilistic programming (Python)",
+    "stan": "Stan probabilistic programming (Stan)",
 }
 
 
@@ -87,6 +88,7 @@ def list_render_frameworks_mcp() -> Dict[str, Any]:
     }
     try:
         from . import get_supported_frameworks
+
         for name in get_supported_frameworks():
             entry = frameworks.setdefault(
                 name, {"available": False, "description": name}
@@ -101,9 +103,12 @@ def list_render_frameworks_mcp() -> Dict[str, Any]:
         }
 
 
-def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
-                              framework: str = "pymdp",
-                              verbose: bool = False) -> Dict[str, Any]:
+def render_gnn_to_format_mcp(
+    gnn_file_path: str,
+    output_directory: str,
+    framework: str = "pymdp",
+    verbose: bool = False,
+) -> Dict[str, Any]:
     """
     Render a single GNN file to a specific target framework.
 
@@ -118,7 +123,7 @@ def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
     """
     try:
         gnn_path = Path(gnn_file_path)
-        out_dir  = Path(output_directory)
+        out_dir = Path(output_directory)
 
         if not gnn_path.exists():
             return {"success": False, "error": f"GNN file not found: {gnn_file_path}"}
@@ -131,11 +136,14 @@ def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
         # caller context and may be used for filtering in a future revision.
         import shutil
         import tempfile
+
         with tempfile.TemporaryDirectory() as tmp:
             tmp_in = Path(tmp) / "input"
             tmp_in.mkdir()
             shutil.copy2(gnn_path, tmp_in / gnn_path.name)
-            success = process_render(target_dir=tmp_in, output_dir=out_dir, verbose=verbose)
+            success = process_render(
+                target_dir=tmp_in, output_dir=out_dir, verbose=verbose
+            )
 
         output_files = list(out_dir.rglob(f"*{gnn_path.stem}*"))
         return {
@@ -160,6 +168,7 @@ def get_render_module_info_mcp() -> Dict[str, Any]:
     """
     try:
         from . import get_supported_frameworks
+
         frameworks = get_supported_frameworks()
     except Exception:
         frameworks = {}
@@ -174,6 +183,7 @@ def get_render_module_info_mcp() -> Dict[str, Any]:
 
 # ── MCP Registration ────────────────────────────────────────────────────────
 
+
 def register_tools(mcp_instance) -> None:
     """Register render tools with the MCP server."""
 
@@ -183,14 +193,25 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "target_directory": {"type": "string", "description": "Directory containing GNN files"},
-                "output_directory": {"type": "string", "description": "Directory to write rendered outputs"},
-                "verbose":          {"type": "boolean", "description": "Enable verbose logging", "default": False},
+                "target_directory": {
+                    "type": "string",
+                    "description": "Directory containing GNN files",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory to write rendered outputs",
+                },
+                "verbose": {
+                    "type": "boolean",
+                    "description": "Enable verbose logging",
+                    "default": False,
+                },
             },
             "required": ["target_directory", "output_directory"],
         },
         "Render GNN models in a directory to all supported code frameworks.",
-        module=__package__, category="render",
+        module=__package__,
+        category="render",
     )
 
     mcp_instance.register_tool(
@@ -198,7 +219,8 @@ def register_tools(mcp_instance) -> None:
         list_render_frameworks_mcp,
         {},
         "Return supported render framework names and availability (best effort).",
-        module=__package__, category="render",
+        module=__package__,
+        category="render",
     )
 
     mcp_instance.register_tool(
@@ -207,17 +229,40 @@ def register_tools(mcp_instance) -> None:
         {
             "type": "object",
             "properties": {
-                "gnn_file_path":    {"type": "string", "description": "Path to the GNN source file (.md)"},
-                "output_directory": {"type": "string", "description": "Directory for rendered output"},
-                "framework":        {"type": "string", "description": "Target framework",
-                                     "enum": ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro", "stan"],
-                                     "default": "pymdp"},
-                "verbose":          {"type": "boolean", "description": "Enable verbose logging", "default": False},
+                "gnn_file_path": {
+                    "type": "string",
+                    "description": "Path to the GNN source file (.md)",
+                },
+                "output_directory": {
+                    "type": "string",
+                    "description": "Directory for rendered output",
+                },
+                "framework": {
+                    "type": "string",
+                    "description": "Target framework",
+                    "enum": [
+                        "pymdp",
+                        "rxinfer",
+                        "activeinference_jl",
+                        "jax",
+                        "discopy",
+                        "pytorch",
+                        "numpyro",
+                        "stan",
+                    ],
+                    "default": "pymdp",
+                },
+                "verbose": {
+                    "type": "boolean",
+                    "description": "Enable verbose logging",
+                    "default": False,
+                },
             },
             "required": ["gnn_file_path", "output_directory"],
         },
         "Render a single GNN file (runs Step 11 render; does not currently filter to one framework).",
-        module=__package__, category="render",
+        module=__package__,
+        category="render",
     )
 
     mcp_instance.register_tool(
@@ -225,7 +270,8 @@ def register_tools(mcp_instance) -> None:
         get_render_module_info_mcp,
         {},
         "Return metadata about the render module: supported frameworks and input/output formats.",
-        module=__package__, category="render",
+        module=__package__,
+        category="render",
     )
 
     logger.info("render module MCP tools registered (4 tools).")

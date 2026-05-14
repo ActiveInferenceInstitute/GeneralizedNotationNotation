@@ -75,9 +75,10 @@ class OllamaProvider(BaseLLMProvider):
         # Prefer Python client
         try:
             import ollama  # type: ignore
+
             # Verify the imported module is the real ollama package and not a
             # namespace collision (e.g., a local file named ollama.py).
-            if not hasattr(ollama, 'chat'):
+            if not hasattr(ollama, "chat"):
                 logger.warning(
                     "Imported 'ollama' module lacks 'chat' attribute. "
                     "Namespace collision or outdated package detected. "
@@ -101,7 +102,9 @@ class OllamaProvider(BaseLLMProvider):
                 self._is_initialized = True
                 logger.info("Ollama provider initialized (CLI recovery)")
                 return True
-            logger.warning("Ollama not available. Install python client with 'uv pip install ollama' or install Ollama CLI from https://ollama.ai")
+            logger.warning(
+                "Ollama not available. Install python client with 'uv pip install ollama' or install Ollama CLI from https://ollama.ai"
+            )
             return False
         except Exception as e:
             logger.error(f"Failed to initialize Ollama: {e}")
@@ -138,6 +141,7 @@ class OllamaProvider(BaseLLMProvider):
 
         try:
             import asyncio
+
             if self._use_cli:
                 # Build prompt by joining message contents, preserving order
                 prompt = "\n\n".join(m.content for m in messages)
@@ -145,34 +149,51 @@ class OllamaProvider(BaseLLMProvider):
 
                 def _call_cli() -> Dict[str, Any]:
                     import time as _t
+
                     # Prefer JSON mode via `ollama chat` if available; recovery to `ollama run`
                     try:
-                        logger.debug(f"Ollama CLI chat: model={model}, timeout={self.default_timeout}s")
+                        logger.debug(
+                            f"Ollama CLI chat: model={model}, timeout={self.default_timeout}s"
+                        )
                         t0 = _t.monotonic()
                         completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                             ["ollama", "chat", model, "--json"],
-                            input=json.dumps({
-                                "messages": [{"role": m.role, "content": m.content} for m in messages],
-                                "options": {
-                                    "num_predict": config.max_tokens or self.default_max_tokens,
-                                    "temperature": config.temperature if config.temperature is not None else 0.2,
+                            input=json.dumps(
+                                {
+                                    "messages": [
+                                        {"role": m.role, "content": m.content}
+                                        for m in messages
+                                    ],
+                                    "options": {
+                                        "num_predict": config.max_tokens
+                                        or self.default_max_tokens,
+                                        "temperature": config.temperature
+                                        if config.temperature is not None
+                                        else 0.2,
+                                    },
                                 }
-                            }),
+                            ),
                             capture_output=True,
                             text=True,
                             check=False,
                             timeout=self.default_timeout,
                         )
                         elapsed = _t.monotonic() - t0
-                        logger.debug(f"Ollama CLI chat completed: rc={completed.returncode}, elapsed={elapsed:.1f}s")
+                        logger.debug(
+                            f"Ollama CLI chat completed: rc={completed.returncode}, elapsed={elapsed:.1f}s"
+                        )
                         if completed.returncode != 0 and completed.stderr:
-                            logger.debug(f"Ollama CLI chat stderr: {completed.stderr[:200]}")
+                            logger.debug(
+                                f"Ollama CLI chat stderr: {completed.stderr[:200]}"
+                            )
                         if completed.returncode == 0 and completed.stdout.strip():
                             return json.loads(completed.stdout)
                     except Exception as json_error:
                         logger.debug(f"JSON mode failed: {json_error}")
                     # Recovery to `ollama run`
-                    logger.debug(f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s")
+                    logger.debug(
+                        f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s"
+                    )
                     t0 = _t.monotonic()
                     completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                         ["ollama", "run", model, prompt],
@@ -182,10 +203,15 @@ class OllamaProvider(BaseLLMProvider):
                         timeout=self.default_timeout,
                     )
                     elapsed = _t.monotonic() - t0
-                    logger.debug(f"Ollama CLI run completed: rc={completed.returncode}, elapsed={elapsed:.1f}s")
+                    logger.debug(
+                        f"Ollama CLI run completed: rc={completed.returncode}, elapsed={elapsed:.1f}s"
+                    )
                     if completed.returncode != 0 and completed.stderr:
                         logger.debug(f"Ollama CLI run stderr: {completed.stderr[:200]}")
-                    return {"model": model, "message": {"content": completed.stdout.strip()}}
+                    return {
+                        "model": model,
+                        "message": {"content": completed.stdout.strip()},
+                    }
 
                 response = await asyncio.to_thread(_call_cli)
             else:
@@ -196,9 +222,12 @@ class OllamaProvider(BaseLLMProvider):
                         messages=ollama_messages,
                         options={
                             "num_predict": config.max_tokens or self.default_max_tokens,
-                            "temperature": config.temperature if config.temperature is not None else 0.2,
+                            "temperature": config.temperature
+                            if config.temperature is not None
+                            else 0.2,
                         },
                     )
+
                 response = await asyncio.to_thread(_call_py)
 
             # Handle both dict responses (CLI) and ChatResponse objects (Python client)
@@ -208,8 +237,14 @@ class OllamaProvider(BaseLLMProvider):
                 metadata_dict = {k: v for k, v in response.items() if k != "message"}
             else:
                 # ChatResponse object from Python client
-                content = getattr(response.message, "content", "") if hasattr(response, "message") else ""
-                model_used = getattr(response, "model", config.model or self.default_model)
+                content = (
+                    getattr(response.message, "content", "")
+                    if hasattr(response, "message")
+                    else ""
+                )
+                model_used = getattr(
+                    response, "model", config.model or self.default_model
+                )
                 # Convert ChatResponse to dict for metadata
                 metadata_dict = {"model": model_used}
                 if hasattr(response, "done"):
@@ -250,13 +285,17 @@ class OllamaProvider(BaseLLMProvider):
         # Ollama's Python client supports streaming via generate with stream=True
         try:
             import asyncio
+
             if self._use_cli:
                 # CLI streaming not standardized; emit single chunk
                 def _call_cli_once() -> str:
                     import time as _t
+
                     prompt = "\n\n".join(m.content for m in messages)
                     model = config.model or self.default_model
-                    logger.debug(f"Ollama CLI stream: model={model}, timeout={self.default_timeout}s")
+                    logger.debug(
+                        f"Ollama CLI stream: model={model}, timeout={self.default_timeout}s"
+                    )
                     t0 = _t.monotonic()
                     completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                         ["ollama", "run", model, prompt],
@@ -266,21 +305,30 @@ class OllamaProvider(BaseLLMProvider):
                         timeout=self.default_timeout,
                     )
                     elapsed = _t.monotonic() - t0
-                    logger.debug(f"Ollama CLI stream completed: rc={completed.returncode}, elapsed={elapsed:.1f}s")
+                    logger.debug(
+                        f"Ollama CLI stream completed: rc={completed.returncode}, elapsed={elapsed:.1f}s"
+                    )
                     return completed.stdout
+
                 text = await asyncio.to_thread(_call_cli_once)
                 yield text
             else:
+
                 def _iter() -> Any:
                     return self._ollama.generate(
                         model=config.model or self.default_model,
-                        prompt="\n\n".join(m.content for m in messages if m.role in ("system", "user")),
+                        prompt="\n\n".join(
+                            m.content for m in messages if m.role in ("system", "user")
+                        ),
                         stream=True,
                         options={
                             "num_predict": config.max_tokens or self.default_max_tokens,
-                            "temperature": config.temperature if config.temperature is not None else 0.2,
+                            "temperature": config.temperature
+                            if config.temperature is not None
+                            else 0.2,
                         },
                     )
+
                 iterator = await asyncio.to_thread(_iter)
                 for chunk in iterator:
                     if isinstance(chunk, dict):
@@ -306,12 +354,13 @@ class OllamaProvider(BaseLLMProvider):
             )
 
         def _extract(result: Any) -> str:
-            return result.content if hasattr(result, 'content') else str(result)
+            return result.content if hasattr(result, "content") else str(result)
 
         try:
             result = asyncio.run(_run())
             return _extract(result)
         except RuntimeError:
+
             def _thread_run() -> LLMResponse:
                 return asyncio.run(_run())
 
@@ -326,5 +375,3 @@ class OllamaProvider(BaseLLMProvider):
         # No persistent connection to close for Ollama
         self._is_initialized = False
         logger.info("Ollama provider closed")
-
-

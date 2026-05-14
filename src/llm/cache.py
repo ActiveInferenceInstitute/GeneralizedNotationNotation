@@ -22,8 +22,9 @@ logger = logging.getLogger(__name__)
 class LLMCache:
     """Content-addressed cache for LLM prompt responses."""
 
-    def __init__(self, cache_dir: Optional[Path] = None,
-                 base_output_dir: Optional[Path] = None):
+    def __init__(
+        self, cache_dir: Optional[Path] = None, base_output_dir: Optional[Path] = None
+    ):
         """
         Initialize cache.
 
@@ -42,10 +43,12 @@ class LLMCache:
             self.cache_dir = Path(cache_dir)
         elif base_output_dir is not None:
             try:
-                from src.pipeline.config import get_output_dir_for_script
-                self.cache_dir = get_output_dir_for_script(
-                    "13_llm.py", Path(base_output_dir)
-                ) / ".cache"
+                from pipeline.config import get_output_dir_for_script
+
+                self.cache_dir = (
+                    get_output_dir_for_script("13_llm.py", Path(base_output_dir))
+                    / ".cache"
+                )
             except ImportError:
                 self.cache_dir = Path(base_output_dir) / "13_llm_output" / ".cache"
         else:

@@ -41,13 +41,16 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from security import process_security
 except ImportError:
+
     def process_security(target_dir, output_dir, logger=None, **kwargs) -> bool:
         """Recovery security processing when module unavailable."""
         import logging
+
         if logger is None:
             logger = logging.getLogger(__name__)
         logger.warning("Security module not available - using recovery")
         return True
+
 
 run_script = create_standardized_pipeline_script(
     "18_security.py",
@@ -55,9 +58,11 @@ run_script = create_standardized_pipeline_script(
     "Security processing for GNN models",
 )
 
+
 def main() -> int:
     """Main entry point for the security step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

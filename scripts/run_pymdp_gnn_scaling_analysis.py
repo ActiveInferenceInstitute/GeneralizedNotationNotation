@@ -29,25 +29,27 @@ import os
 import shutil
 import subprocess
 import sys
-import yaml
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, NamedTuple
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple
+
+import yaml
 
 # Repository root (parent of `scripts/`) for path hints and optional imports.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.append(str(PROJECT_ROOT))
 
-from src.utils.visual_logging import create_visual_logger, VisualConfig
-from pymdp_spec_generator import generate_gnn_file, estimate_gnn_file_bytes
+from pymdp_spec_generator import estimate_gnn_file_bytes, generate_gnn_file
+
+from utils.visual_logging import VisualConfig, create_visual_logger
 
 # Default sweep grid
 DEFAULT_N_VALUES = [2, 4, 8, 16]
 DEFAULT_T_VALUES = [10, 100, 500, 1000]
 
 # Default noise parameters
-DEFAULT_A_SIGNAL = 0.85   # probability of correct observation
-DEFAULT_B_SIGNAL = 0.80   # probability of intended transition
+DEFAULT_A_SIGNAL = 0.85  # probability of correct observation
+DEFAULT_B_SIGNAL = 0.80  # probability of intended transition
 
 # Default pipeline timeout (seconds)
 DEFAULT_TIMEOUT = 1200
@@ -76,9 +78,7 @@ DEFAULT_MIN_FREE_DISK_MB = 200
 
 # Step 5 (type checker) is the pipeline’s resource / storage estimation step; this script’s
 # preflight is conceptually adjacent (headroom before writing dense InitialParameterization).
-_STEP5_REF_SHORT = (
-    "Same policy role as Pipeline Step 5 (type_checker: resource_estimator / estimate_storage)."
-)
+_STEP5_REF_SHORT = "Same policy role as Pipeline Step 5 (type_checker: resource_estimator / estimate_storage)."
 # Last written preflight payload (pretty JSON; avoids multi-KiB lines on narrow terminals).
 LAST_RESOURCE_GATE_JSON = CONFIG_FILE.parent / "pymdp_scaling_last_resource_gate.json"
 RUN_MANIFEST_FILENAME = "pymdp_scaling_run_manifest.json"
@@ -412,9 +412,7 @@ def _build_run_manifest(
     }
 
 
-def _write_run_manifest(
-    pipeline_output_dir: Path, manifest: dict[str, object]
-) -> Path:
+def _write_run_manifest(pipeline_output_dir: Path, manifest: dict[str, object]) -> Path:
     """Write the scaling run manifest into the isolated pipeline output."""
     pipeline_output_dir.mkdir(parents=True, exist_ok=True)
     path = pipeline_output_dir / RUN_MANIFEST_FILENAME
@@ -494,9 +492,7 @@ def _resource_gate_dict(
         "planned_spec_count": len(plan.planned),
         "grid_pairs": plan.grid_pairs,
         "total_estimated_spec_bytes": plan.total_estimated_bytes,
-        "total_estimated_spec_gib": round(
-            plan.total_estimated_bytes / (1024**3), 6
-        ),
+        "total_estimated_spec_gib": round(plan.total_estimated_bytes / (1024**3), 6),
         "largest_planned_n": largest[0],
         "largest_planned_t": largest[1],
         "write_margin_bytes": margin_bytes,
@@ -522,15 +518,17 @@ def _print_min_free_violation(
     free_gib = free_b / (1024**3)
     total_gib = total_b / (1024**3)
 
-    logger.print_status("Preflight resource gate: insufficient free space for policy.", "error")
-    
+    logger.print_status(
+        "Preflight resource gate: insufficient free space for policy.", "error"
+    )
+
     data = {
         "Volume": str(check_path.resolve()),
         "Space": f"{free_gib:.3f} GiB free of {total_gib:.3f} GiB total ({used_pct:.1f}% used)",
         "Policy": f"Require ≥ {need_m} MiB free",
         "Shortfall": f"≈ {shortfall / (1024**2):.1f} MiB",
         "Sweep": f"{plan.grid_pairs} grid pairs; {len(plan.planned)} spec(s) planned",
-        "Estimated Text": f"≈ {plan.total_estimated_bytes / (1024**2):.1f} MiB"
+        "Estimated Text": f"≈ {plan.total_estimated_bytes / (1024**2):.1f} MiB",
     }
     logger.print_summary("Resource Shortfall", data)
 
@@ -546,17 +544,17 @@ def _print_min_free_violation(
     )
     gate_path = _write_resource_gate_file(payload)
     _print_resource_gate_path_or_compact(payload, gate_path)
-    
+
     if note:
         logger.print_status(note, "warning")
-        
+
     logger.print_error_with_recovery(
         "Insufficient disk space for policy.",
         [
             "Free disk space on the target volume",
             f"Lower min_free_disk_mb in {CONFIG_FILE.name}",
-            "Use --min-free-disk-mb 0 to skip this check (risky)"
-        ]
+            "Use --min-free-disk-mb 0 to skip this check (risky)",
+        ],
     )
 
 
@@ -571,15 +569,17 @@ def _print_aggregate_violation(
     margin = MARGIN_BYTES
     stat_path = out_dir if out_dir.exists() else out_dir.parent
     snap = _usage_snapshot(stat_path)
-    
-    logger.print_status("Preflight resource gate: planned GNN file bytes exceed free space.", "error")
-    
+
+    logger.print_status(
+        "Preflight resource gate: planned GNN file bytes exceed free space.", "error"
+    )
+
     data = {
         "Estimated Size": f"{plan.total_estimated_bytes / (1024**3):.3f} GiB",
         "Margin": f"{margin // (1024**2)} MiB",
         "Total Needed": f"{(plan.total_estimated_bytes + margin) / (1024**3):.3f} GiB",
         "Free on Volume": f"{free_b / (1024**3):.3f} GiB",
-        "Usage": f"{float(snap['used_percent']):.1f}% used"
+        "Usage": f"{float(snap['used_percent']):.1f}% used",
     }
     logger.print_summary("Capacity Violation", data)
 
@@ -595,14 +595,14 @@ def _print_aggregate_violation(
     payload["required_bytes_with_margin"] = plan.total_estimated_bytes + margin
     gate_path = _write_resource_gate_file(payload)
     _print_resource_gate_path_or_compact(payload, gate_path)
-    
+
     logger.print_error_with_recovery(
         "Estimated specs exceed available space.",
         [
             "Shrink n_values in configuration",
             "Increase max_n or max_file_size skips",
-            "Free disk space on the target volume"
-        ]
+            "Free disk space on the target volume",
+        ],
     )
 
 
@@ -637,7 +637,10 @@ def _load_and_validate_config() -> dict:
         }
         with open(CONFIG_FILE, "w") as f:
             yaml.dump(default_config, f, sort_keys=False)
-        logger.print_status(f"Created default config file at {CONFIG_FILE.relative_to(PROJECT_ROOT)}", "success")
+        logger.print_status(
+            f"Created default config file at {CONFIG_FILE.relative_to(PROJECT_ROOT)}",
+            "success",
+        )
         return default_config
 
     try:
@@ -745,13 +748,23 @@ def _get_parser(config: dict) -> argparse.ArgumentParser:
         ),
         help="Allow Step 17 to run even if an earlier step fails",
     )
-    
+
     clear_default = config.get("clear_outputs_before_run", True)
     if clear_default:
-        parser.add_argument("--no-clear", action="store_false", dest="clear", help="Do not clear generated output dir before run")
+        parser.add_argument(
+            "--no-clear",
+            action="store_false",
+            dest="clear",
+            help="Do not clear generated output dir before run",
+        )
         parser.set_defaults(clear=True)
     else:
-        parser.add_argument("--clear", action="store_true", dest="clear", help="Clear generated output dir before run")
+        parser.add_argument(
+            "--clear",
+            action="store_true",
+            dest="clear",
+            help="Clear generated output dir before run",
+        )
         parser.set_defaults(clear=False)
 
     parser.add_argument(
@@ -798,7 +811,11 @@ def _get_parser(config: dict) -> argparse.ArgumentParser:
     parser.add_argument(
         "--execution-benchmark-repeats",
         type=int,
-        default=int(config.get("execution_benchmark_repeats", DEFAULT_EXECUTION_BENCHMARK_REPEATS)),
+        default=int(
+            config.get(
+                "execution_benchmark_repeats", DEFAULT_EXECUTION_BENCHMARK_REPEATS
+            )
+        ),
         help="Forwarded to Step 12: sequential repeats per script (median timing when >1)",
     )
     return parser
@@ -814,10 +831,12 @@ def main() -> int:
 
     n_values = [int(x.strip()) for x in args.n_values.split(",")]
     t_values = [int(x.strip()) for x in args.t_values.split(",")]
-    
+
     out_dir = _resolve_output_dir(args.output_dir)
     pipeline_output_dir = _resolve_output_dir(args.pipeline_output_dir)
-    max_file_bytes = int(args.max_file_size_mb * 1024 * 1024) if args.max_file_size_mb > 0 else None
+    max_file_bytes = (
+        int(args.max_file_size_mb * 1024 * 1024) if args.max_file_size_mb > 0 else None
+    )
 
     plan = build_sweep_plan(
         n_values,
@@ -829,12 +848,14 @@ def main() -> int:
         timeout_n=config.get("skip_timeout_bounds_n", 16),
         timeout_t=config.get("skip_timeout_bounds_t", 3000),
     )
-    
+
     for line in plan.skip_lines:
         logger.print_status(line, "warning")
 
     if not plan.planned:
-        logger.print_status("No GNN specs to write (entire grid skipped or empty).", "error")
+        logger.print_status(
+            "No GNN specs to write (entire grid skipped or empty).", "error"
+        )
         return 1
 
     # Preflight Check
@@ -842,13 +863,24 @@ def main() -> int:
     if args.min_free_disk_mb > 0:
         need_b = int(args.min_free_disk_mb * 1024 * 1024)
         if shutil.disk_usage(check_path).free < need_b:
-            _print_min_free_violation(plan, out_dir, check_path, int(args.min_free_disk_mb), 
-                                     a_signal=args.a_signal, b_signal=args.b_signal)
+            _print_min_free_violation(
+                plan,
+                out_dir,
+                check_path,
+                int(args.min_free_disk_mb),
+                a_signal=args.a_signal,
+                b_signal=args.b_signal,
+            )
             return 1
 
     if plan.total_estimated_bytes + MARGIN_BYTES > shutil.disk_usage(check_path).free:
-        _print_aggregate_violation(plan, out_dir, shutil.disk_usage(check_path).free, 
-                                 a_signal=args.a_signal, b_signal=args.b_signal)
+        _print_aggregate_violation(
+            plan,
+            out_dir,
+            shutil.disk_usage(check_path).free,
+            a_signal=args.a_signal,
+            b_signal=args.b_signal,
+        )
         return 1
 
     # Final Step Setup
@@ -866,36 +898,56 @@ def main() -> int:
         if args.clear:
             for d in [out_dir, pipeline_output_dir]:
                 if d.exists():
-                    logger.print_status(f"Clearing existing outputs in {d.relative_to(PROJECT_ROOT)}...", "info")
+                    logger.print_status(
+                        f"Clearing existing outputs in {d.relative_to(PROJECT_ROOT)}...",
+                        "info",
+                    )
                     shutil.rmtree(d)
-        
+
         out_dir.mkdir(parents=True, exist_ok=True)
         pipeline_output_dir.mkdir(parents=True, exist_ok=True)
 
         run_config = vars(args)
         manifest_path = _write_run_manifest(
             pipeline_output_dir,
-            _build_run_manifest(status="planned", plan=plan, out_dir=out_dir, 
-                              pipeline_output_dir=pipeline_output_dir, config=run_config)
+            _build_run_manifest(
+                status="planned",
+                plan=plan,
+                out_dir=out_dir,
+                pipeline_output_dir=pipeline_output_dir,
+                config=run_config,
+            ),
         )
-        logger.print_status(f"Scaling run manifest: {manifest_path.relative_to(PROJECT_ROOT)}", "info")
+        logger.print_status(
+            f"Scaling run manifest: {manifest_path.relative_to(PROJECT_ROOT)}", "info"
+        )
 
         # 2. Generation
-        logger.print_status(f"Generating {len(plan.planned)} GNN specs ({plan.total_estimated_bytes / (1024**2):.1f} MiB)...", "progress")
+        logger.print_status(
+            f"Generating {len(plan.planned)} GNN specs ({plan.total_estimated_bytes / (1024**2):.1f} MiB)...",
+            "progress",
+        )
         count = 0
         for n, t in plan.planned:
             filepath = out_dir / f"pymdp_scaling_N{n}_T{t}.md"
             filepath.write_text(generate_gnn_file(n, t, args.a_signal, args.b_signal))
             count += 1
-        logger.print_status(f"Generated {count} GNN spec files in {args.output_dir}", "success")
+        logger.print_status(
+            f"Generated {count} GNN spec files in {args.output_dir}", "success"
+        )
 
         if args.skip_pipeline:
-            logger.print_status("Skipping pipeline execution (--skip-pipeline passed).", "info")
+            logger.print_status(
+                "Skipping pipeline execution (--skip-pipeline passed).", "info"
+            )
             return 0
 
         # 3. Pipeline Invocation
         phases = _build_pipeline_invocations(
-            out_dir, pipeline_output_dir, args.timeout, args.frameworks,
+            out_dir,
+            pipeline_output_dir,
+            args.timeout,
+            args.frameworks,
             strict_framework_success=args.strict_framework_success,
             pipeline_steps=args.pipeline_steps,
             run_integration_on_failure=args.run_integration_on_failure,
@@ -905,43 +957,89 @@ def main() -> int:
             serialize_preset=args.gnn_serialize_preset,
             execution_benchmark_repeats=max(1, int(args.execution_benchmark_repeats)),
         )
-        
+
         phase_results = []
         for phase in phases:
-            logger.print_status(f"Pipeline phase '{phase.label}': Steps {phase.cmd[phase.cmd.index('--only-steps') + 1]}", "rocket")
+            logger.print_status(
+                f"Pipeline phase '{phase.label}': Steps {phase.cmd[phase.cmd.index('--only-steps') + 1]}",
+                "rocket",
+            )
             try:
                 phase_env = os.environ.copy()
                 if args.matplotlib_headless:
                     phase_env.setdefault("MPLBACKEND", "Agg")
                 subprocess.run(phase.cmd, check=True, cwd=phase.cwd, env=phase_env)
-                phase_results.append({"label": phase.label, "status": "success", "exit_code": 0})
+                phase_results.append(
+                    {"label": phase.label, "status": "success", "exit_code": 0}
+                )
             except subprocess.CalledProcessError as e:
-                phase_results.append({"label": phase.label, "status": "failed", "exit_code": e.returncode})
-                _write_run_manifest(pipeline_output_dir, _build_run_manifest(
-                    status="failed", plan=plan, out_dir=out_dir, 
-                    pipeline_output_dir=pipeline_output_dir, config=run_config, phases=phase_results))
-                logger.print_status(f"Pipeline phase '{phase.label}' failed with exit code {e.returncode}", "error")
+                phase_results.append(
+                    {
+                        "label": phase.label,
+                        "status": "failed",
+                        "exit_code": e.returncode,
+                    }
+                )
+                _write_run_manifest(
+                    pipeline_output_dir,
+                    _build_run_manifest(
+                        status="failed",
+                        plan=plan,
+                        out_dir=out_dir,
+                        pipeline_output_dir=pipeline_output_dir,
+                        config=run_config,
+                        phases=phase_results,
+                    ),
+                )
+                logger.print_status(
+                    f"Pipeline phase '{phase.label}' failed with exit code {e.returncode}",
+                    "error",
+                )
                 return e.returncode
 
         # 4. Completion
         duration = (datetime.now(timezone.utc) - start_time).total_seconds()
-        _write_run_manifest(pipeline_output_dir, _build_run_manifest(
-            status="success", plan=plan, out_dir=out_dir, 
-            pipeline_output_dir=pipeline_output_dir, config=run_config, phases=phase_results))
-        
-        logger.print_completion_banner(True, duration, {
-            "Total Files": count,
-            "Grid Pairs": plan.grid_pairs,
-            "Output Dir": args.pipeline_output_dir,
-            "Report Location": str(pipeline_output_dir / "17_integration_output" / "integration_results" / "meta_analysis")
-        })
+        _write_run_manifest(
+            pipeline_output_dir,
+            _build_run_manifest(
+                status="success",
+                plan=plan,
+                out_dir=out_dir,
+                pipeline_output_dir=pipeline_output_dir,
+                config=run_config,
+                phases=phase_results,
+            ),
+        )
+
+        logger.print_completion_banner(
+            True,
+            duration,
+            {
+                "Total Files": count,
+                "Grid Pairs": plan.grid_pairs,
+                "Output Dir": args.pipeline_output_dir,
+                "Report Location": str(
+                    pipeline_output_dir
+                    / "17_integration_output"
+                    / "integration_results"
+                    / "meta_analysis"
+                ),
+            },
+        )
         return 0
 
     except KeyboardInterrupt:
         logger.print_status("Scaling analysis interrupted by user.", "warning")
-        _write_run_manifest(pipeline_output_dir, _build_run_manifest(
-            status="interrupted", plan=plan, out_dir=out_dir, 
-            pipeline_output_dir=pipeline_output_dir, config=run_config))
+        _write_run_manifest(
+            pipeline_output_dir,
+            _build_run_manifest(
+                status="interrupted",
+                plan=plan,
+                out_dir=out_dir,
+                pipeline_output_dir=pipeline_output_dir,
+                config=run_config,
+            ),
+        )
         return 130
     except Exception as e:
         logger.print_status(f"Unexpected error: {e}", "error")

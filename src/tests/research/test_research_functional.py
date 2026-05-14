@@ -97,7 +97,9 @@ class TestResearchFunctional:
         assert isinstance(result, bool), f"Expected bool, got {type(result)}"
 
     @pytest.mark.unit
-    def test_process_research_success_with_valid_files(self, gnn_dir_simple, output_dir):
+    def test_process_research_success_with_valid_files(
+        self, gnn_dir_simple, output_dir
+    ):
         """process_research should return True for a valid directory with GNN files."""
         result = process_research(gnn_dir_simple, output_dir, verbose=True)
         assert result is True
@@ -154,7 +156,9 @@ class TestResearchFunctional:
         assert isinstance(data["hypotheses_generated"], list)
 
     @pytest.mark.unit
-    def test_high_dimension_triggers_hypothesis(self, gnn_dir_with_high_dim, output_dir):
+    def test_high_dimension_triggers_hypothesis(
+        self, gnn_dir_with_high_dim, output_dir
+    ):
         """Files with dimensions > 10 should trigger a dimensionality_reduction hypothesis."""
         process_research(gnn_dir_with_high_dim, output_dir, verbose=True)
 
@@ -165,9 +169,7 @@ class TestResearchFunctional:
         assert len(hypotheses) > 0, "Should generate hypotheses for high-dim model"
 
         all_types = [
-            h["type"]
-            for entry in hypotheses
-            for h in entry.get("hypotheses", [])
+            h["type"] for entry in hypotheses for h in entry.get("hypotheses", [])
         ]
         assert "dimensionality_reduction" in all_types, (
             f"Expected dimensionality_reduction hypothesis, got types: {all_types}"
@@ -185,9 +187,7 @@ class TestResearchFunctional:
         assert len(hypotheses) > 0, "Should generate hypotheses for sparse model"
 
         all_types = [
-            h["type"]
-            for entry in hypotheses
-            for h in entry.get("hypotheses", [])
+            h["type"] for entry in hypotheses for h in entry.get("hypotheses", [])
         ]
         assert "connectivity_enrichment" in all_types, (
             f"Expected connectivity_enrichment hypothesis, got types: {all_types}"
@@ -203,7 +203,7 @@ class TestResearchFunctional:
 
         for i in range(3):
             (target / f"model_{i}.md").write_text(
-                f"# Model {i}\n## StateSpaceBlock\nA[{(i+1)*10},{(i+1)*10},type=float]\n"
+                f"# Model {i}\n## StateSpaceBlock\nA[{(i + 1) * 10},{(i + 1) * 10},type=float]\n"
             )
 
         result = process_research(target, out, verbose=True)

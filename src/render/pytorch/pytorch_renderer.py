@@ -8,6 +8,7 @@ using torch.tensor operations.
 
 @Web: https://pytorch.org/docs/stable/
 """
+
 import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 def render_gnn_to_pytorch(
     gnn_spec: Dict[str, Any],
     output_path: Path,
-    options: Optional[Dict[str, Any]] = None
+    options: Optional[Dict[str, Any]] = None,
 ) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a PyTorch POMDP simulation script.
 
@@ -41,6 +42,7 @@ def render_gnn_to_pytorch(
 
         # Validate shapes
         from render.matrix_utils import validate_abcd_shapes
+
         valid, msg = validate_abcd_shapes(A, B, C, D)
         if not valid:
             logger.warning(f"Shape validation warning: {msg}")
@@ -60,7 +62,10 @@ def render_gnn_to_pytorch(
         output_path.parent.mkdir(parents=True, exist_ok=True)
         import os as _os
         import tempfile as _tempfile
-        with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as _tmp:
+
+        with _tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=output_path.parent, delete=False
+        ) as _tmp:
             _tmp.write(code)
         _os.replace(_tmp.name, str(output_path))
 
@@ -72,7 +77,9 @@ def render_gnn_to_pytorch(
         return False, f"PyTorch rendering failed: {e}", []
 
 
-def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _extract_matrices(
+    gnn_spec: Dict[str, Any],
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Extract A, B, C, D matrices from GNN spec."""
     params = gnn_spec.get("stateSpace", {}).get("parameters", {})
     if not params:
@@ -88,6 +95,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
         if isinstance(raw, str):
             try:
                 import ast
+
                 parsed = ast.literal_eval(raw)
                 return np.array(parsed, dtype=float)
             except Exception:
@@ -114,6 +122,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray,
 
     # Normalize
     from render.matrix_utils import normalize_columns
+
     A = normalize_columns(A)
     if B.ndim == 2:
         B = normalize_columns(B)
@@ -177,10 +186,18 @@ def _generate_pytorch_code(
     if B.ndim == 3:
         slices = []
         for a in range(B.shape[2]):
-            slices.append(f"    B_slices.append({_format_tensor(B[:, :, a], indent=4)})")
-        B_full_init = "\n    B_slices = []\n" + "\n".join(slices) + "\n    B = torch.stack(B_slices, dim=2)"
+            slices.append(
+                f"    B_slices.append({_format_tensor(B[:, :, a], indent=4)})"
+            )
+        B_full_init = (
+            "\n    B_slices = []\n"
+            + "\n".join(slices)
+            + "\n    B = torch.stack(B_slices, dim=2)"
+        )
     else:
-        B_full_init = f"\n    B = {B_str}.unsqueeze(2).expand(-1, -1, {num_actions}).clone()"
+        B_full_init = (
+            f"\n    B = {B_str}.unsqueeze(2).expand(-1, -1, {num_actions}).clone()"
+        )
 
     code = f'''\
 #!/usr/bin/env python3

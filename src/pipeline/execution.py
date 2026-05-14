@@ -37,10 +37,8 @@ def _ensure_src_on_path() -> None:
 
 def _main_module() -> Any:
     _ensure_src_on_path()
-    try:
-        import main  # type: ignore
-    except ImportError:
-        from src import main  # type: ignore
+    import main
+
     return main
 
 
@@ -97,6 +95,7 @@ def _path_from_sources(
 @dataclass
 class StepExecutionResult:
     """Result of a pipeline step execution."""
+
     step_name: str
     success: bool
     duration: float
@@ -107,6 +106,7 @@ class StepExecutionResult:
     def __post_init__(self):
         if self.warnings is None:
             self.warnings = []
+
 
 def run_pipeline(
     pipeline_data: dict | None = None,
@@ -119,11 +119,19 @@ def run_pipeline(
     """Execute pipeline steps through ``main.py`` and return a compact summary."""
     start = datetime.now()
     pipeline_data = pipeline_data or {}
-    resolved_target = Path(target_dir) if target_dir is not None else _path_from_sources(
-        "target_dir", pipeline_data=pipeline_data, fallback="input/gnn_files"
+    resolved_target = (
+        Path(target_dir)
+        if target_dir is not None
+        else _path_from_sources(
+            "target_dir", pipeline_data=pipeline_data, fallback="input/gnn_files"
+        )
     )
-    resolved_output = Path(output_dir) if output_dir is not None else _path_from_sources(
-        "output_dir", pipeline_data=pipeline_data, fallback="output"
+    resolved_output = (
+        Path(output_dir)
+        if output_dir is not None
+        else _path_from_sources(
+            "output_dir", pipeline_data=pipeline_data, fallback="output"
+        )
     )
     step_numbers = _coerce_steps(steps, pipeline_data)
 
@@ -159,7 +167,9 @@ def run_pipeline(
         exit_code = int(main.main(override_args=args, override_config=config_override))
         results["exit_code"] = exit_code
         results["success"] = exit_code == 0
-        summary_file = resolved_output / "00_pipeline_summary" / "pipeline_execution_summary.json"
+        summary_file = (
+            resolved_output / "00_pipeline_summary" / "pipeline_execution_summary.json"
+        )
         if summary_file.exists():
             import json
 
@@ -170,7 +180,8 @@ def run_pipeline(
                 results["steps_executed"].append(
                     {
                         "step_name": step.get("script_name"),
-                        "success": step.get("status") in {"SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"},
+                        "success": step.get("status")
+                        in {"SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"},
                         "duration": step.get("duration_seconds", 0.0),
                         "output": step.get("stdout", ""),
                     }
@@ -193,14 +204,16 @@ def run_pipeline(
     results["duration"] = (datetime.now() - start).total_seconds()
     return results
 
+
 def get_pipeline_status() -> dict:
     """Get the current pipeline status."""
     return {
         "status": "ready",
         "timestamp": datetime.now().isoformat(),
         "steps_available": 25,
-        "steps_completed": 0
+        "steps_completed": 0,
     }
+
 
 def validate_pipeline_config(config: dict) -> bool:
     """Validate pipeline configuration."""
@@ -210,14 +223,16 @@ def validate_pipeline_config(config: dict) -> bool:
     except (TypeError, KeyError):
         return False
 
+
 def get_pipeline_info() -> dict:
     """Get pipeline information."""
     return {
         "name": "GNN Pipeline",
         "version": "1.0.0",
         "description": "GeneralizedNotationNotation processing pipeline",
-        "steps": list(range(25))  # 25 steps (0-24)
+        "steps": list(range(25)),  # 25 steps (0-24)
     }
+
 
 def create_pipeline_config() -> dict:
     """Create a default pipeline configuration."""
@@ -225,10 +240,13 @@ def create_pipeline_config() -> dict:
         "project_name": "GeneralizedNotationNotation",
         "version": "1.0.0",
         "output_dir": "output",
-        "steps": {}
+        "steps": {},
     }
 
-def execute_pipeline_step(step_name: str, step_config: dict, pipeline_data: dict) -> StepExecutionResult:
+
+def execute_pipeline_step(
+    step_name: str, step_config: dict, pipeline_data: dict
+) -> StepExecutionResult:
     """Execute a single numbered pipeline step via ``main.execute_pipeline_step``."""
     script_name = _script_for_step(step_name)
     if step_config.get("script_path"):
@@ -267,7 +285,9 @@ def execute_pipeline_step(step_name: str, step_config: dict, pipeline_data: dict
                 step_config=step_config,
                 fallback="output",
             ),
-            verbose=bool(step_config.get("verbose") or pipeline_data.get("verbose", False)),
+            verbose=bool(
+                step_config.get("verbose") or pipeline_data.get("verbose", False)
+            ),
         )
         logger = logging.getLogger(f"pipeline.{Path(script_name).stem}")
         raw = main.execute_pipeline_step(script_name, args, logger)
@@ -286,10 +306,13 @@ def execute_pipeline_step(step_name: str, step_config: dict, pipeline_data: dict
             step_name=script_name,
             success=False,
             duration=(datetime.now() - start).total_seconds(),
-            error=str(e)
+            error=str(e),
         )
 
-def execute_pipeline_steps(steps: List[str], pipeline_data: dict) -> List[StepExecutionResult]:
+
+def execute_pipeline_steps(
+    steps: List[str], pipeline_data: dict
+) -> List[StepExecutionResult]:
     """Execute multiple pipeline steps."""
     results = []
     for step_name in steps:

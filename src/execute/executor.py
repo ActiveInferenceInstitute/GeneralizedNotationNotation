@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, Union
 # Import execution functionality
 try:
     from .pymdp.pymdp_runner import run_pymdp_scripts
+
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
@@ -23,6 +24,7 @@ except ImportError:
 
 try:
     from .rxinfer.rxinfer_runner import run_rxinfer_scripts
+
     RXINFER_AVAILABLE = True
 except ImportError:
     RXINFER_AVAILABLE = False
@@ -30,6 +32,7 @@ except ImportError:
 
 try:
     from .discopy.discopy_executor import run_discopy_analysis
+
     DISCOPY_AVAILABLE = True
 except ImportError:
     DISCOPY_AVAILABLE = False
@@ -37,6 +40,7 @@ except ImportError:
 
 try:
     from .activeinference_jl.activeinference_runner import run_activeinference_analysis
+
     ACTIVEINFERENCE_AVAILABLE = True
 except ImportError:
     ACTIVEINFERENCE_AVAILABLE = False
@@ -44,6 +48,7 @@ except ImportError:
 
 try:
     from .jax.jax_runner import run_jax_scripts
+
     JAX_AVAILABLE = True
 except ImportError:
     JAX_AVAILABLE = False
@@ -51,6 +56,7 @@ except ImportError:
 
 try:
     from .numpyro.numpyro_runner import run_numpyro_scripts
+
     NUMPYRO_AVAILABLE = True
 except ImportError:
     NUMPYRO_AVAILABLE = False
@@ -58,6 +64,7 @@ except ImportError:
 
 try:
     from .pytorch.pytorch_runner import run_pytorch_scripts
+
     PYTORCH_AVAILABLE = True
 except ImportError:
     PYTORCH_AVAILABLE = False
@@ -83,14 +90,17 @@ except Exception:
     def performance_tracker():
         return _noop_cm()
 
+
 from utils.pipeline_template import get_output_dir_for_script
 
 logger = logging.getLogger(__name__)
+
 
 # Provide a simple hardware detection function used in tests for patching
 def get_available_hardware() -> list[str]:
     try:
         import jax  # noqa: F401
+
         return ["cpu", "gpu"]
     except Exception:
         return ["cpu"]
@@ -104,7 +114,7 @@ class GNNExecutor:
     def __init__(self, output_dir: Optional[str] = None):
         """
         Initialize the GNN executor.
-        
+
         Args:
             output_dir: Directory for execution outputs
         """
@@ -112,21 +122,27 @@ class GNNExecutor:
             self.output_dir = Path(output_dir)
         else:
             # Default to a subdirectory within the project root
-            self.output_dir = Path(__file__).parent.parent.parent / "output" / "12_execute_output"
+            self.output_dir = (
+                Path(__file__).parent.parent.parent / "output" / "12_execute_output"
+            )
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.execution_log = []
 
-    def execute_gnn_model(self, model_path: str, execution_type: str = "pymdp",
-                         options: Optional[Dict[str, Any]] = None,
-                         timeout: Optional[int] = None) -> Dict[str, Any]:
+    def execute_gnn_model(
+        self,
+        model_path: str,
+        execution_type: str = "pymdp",
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """
         Execute a GNN model with the specified execution type.
-        
+
         Args:
             model_path: Path to the GNN model or rendered script
             execution_type: Type of execution (pymdp, rxinfer, discopy, etc.)
             options: Additional execution options
-        
+
         Returns:
             Dictionary with execution results
         """
@@ -134,17 +150,23 @@ class GNNExecutor:
             start_time = time.time()
 
             if execution_type == "pymdp":
-                result = self._execute_pymdp_script(model_path, options, timeout=timeout)
+                result = self._execute_pymdp_script(
+                    model_path, options, timeout=timeout
+                )
             elif execution_type == "rxinfer":
-                result = self._execute_rxinfer_config(model_path, options, timeout=timeout)
+                result = self._execute_rxinfer_config(
+                    model_path, options, timeout=timeout
+                )
             elif execution_type == "discopy":
-                result = self._execute_discopy_diagram(model_path, options, timeout=timeout)
+                result = self._execute_discopy_diagram(
+                    model_path, options, timeout=timeout
+                )
             elif execution_type == "jax":
                 result = self._execute_jax_script(model_path, options, timeout=timeout)
             else:
                 result = {
                     "success": False,
-                    "error": f"Unsupported execution type: {execution_type}"
+                    "error": f"Unsupported execution type: {execution_type}",
                 }
 
             execution_time = time.time() - start_time
@@ -169,16 +191,16 @@ class GNNExecutor:
                 "error": str(e),
                 "error_type": type(e).__name__,
                 "execution_type": execution_type,
-                "model_path": model_path
+                "model_path": model_path,
             }
 
     def run_simulation(self, simulation_config: Dict[str, Any]) -> Dict[str, Any]:
         """
         Run a simulation based on configuration.
-        
+
         Args:
             simulation_config: Configuration dictionary for the simulation
-        
+
         Returns:
             Dictionary with simulation results
         """
@@ -190,25 +212,21 @@ class GNNExecutor:
             if not model_path:
                 return {
                     "success": False,
-                    "error": "No model path specified in simulation config"
+                    "error": "No model path specified in simulation config",
                 }
 
             return self.execute_gnn_model(model_path, execution_type, options)
 
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e),
-                "error_type": type(e).__name__
-            }
+            return {"success": False, "error": str(e), "error_type": type(e).__name__}
 
     def generate_execution_report(self, output_file: Optional[str] = None) -> str:
         """
         Generate an execution report from the execution log.
-        
+
         Args:
             output_file: Path for the output report file
-        
+
         Returns:
             Path to the generated report
         """
@@ -219,22 +237,35 @@ class GNNExecutor:
         report_data = {
             "execution_summary": {
                 "total_executions": len(self.execution_log),
-                "successful_executions": sum(1 for r in self.execution_log if r.get("success", False)),
-                "failed_executions": sum(1 for r in self.execution_log if not r.get("success", False)),
-                "total_execution_time": sum(r.get("execution_time", 0) for r in self.execution_log)
+                "successful_executions": sum(
+                    1 for r in self.execution_log if r.get("success", False)
+                ),
+                "failed_executions": sum(
+                    1 for r in self.execution_log if not r.get("success", False)
+                ),
+                "total_execution_time": sum(
+                    r.get("execution_time", 0) for r in self.execution_log
+                ),
             },
-            "execution_details": self.execution_log
+            "execution_details": self.execution_log,
         }
 
         try:
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 json.dump(report_data, f, indent=2)
         except OSError as e:
-            raise RuntimeError(f"Failed to write execution report to {output_file}: {e}") from e
+            raise RuntimeError(
+                f"Failed to write execution report to {output_file}: {e}"
+            ) from e
 
         return str(output_file)
 
-    def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
+    def _execute_pymdp_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful recovery for tests."""
         script = Path(script_path)
         if script.suffix.lower() not in {".py"}:
@@ -245,13 +276,17 @@ class GNNExecutor:
                 "return_code": 0,
             }
         try:
-            result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=timeout or 60)
+            result = subprocess.run(
+                [sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
+                capture_output=True,
+                text=True,
+                timeout=timeout or 60,
+            )
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "return_code": result.returncode
+                "return_code": result.returncode,
             }
         except Exception as e:
             return {
@@ -260,80 +295,91 @@ class GNNExecutor:
                 "error_type": type(e).__name__,
                 "stdout": "",
                 "stderr": "",
-                "return_code": -1
+                "return_code": -1,
             }
 
-    def _execute_rxinfer_config(self, config_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
+    def _execute_rxinfer_config(
+        self,
+        config_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """Execute an RxInfer.jl configuration."""
         try:
             # This would typically involve calling Julia
-            result = subprocess.run(["julia", config_path],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=timeout or 300)
+            result = subprocess.run(
+                ["julia", config_path],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                capture_output=True,
+                text=True,
+                timeout=timeout or 300,
+            )
 
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "return_code": result.returncode
+                "return_code": result.returncode,
             }
         except subprocess.TimeoutExpired:
-            return {
-                "success": False,
-                "error": "Execution timed out"
-            }
+            return {"success": False, "error": "Execution timed out"}
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
-    def _execute_discopy_diagram(self, diagram_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
+    def _execute_discopy_diagram(
+        self,
+        diagram_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """Execute a DisCoPy diagram."""
         try:
-            result = subprocess.run([sys.executable, diagram_path],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=timeout or 300)
+            result = subprocess.run(
+                [sys.executable, diagram_path],  # nosec B603 -- subprocess calls with controlled/trusted input
+                capture_output=True,
+                text=True,
+                timeout=timeout or 300,
+            )
 
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "return_code": result.returncode
+                "return_code": result.returncode,
             }
         except subprocess.TimeoutExpired:
-            return {
-                "success": False,
-                "error": "Execution timed out"
-            }
+            return {"success": False, "error": "Execution timed out"}
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
-    def _execute_jax_script(self, script_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
+    def _execute_jax_script(
+        self,
+        script_path: str,
+        options: Optional[Dict[str, Any]] = None,
+        timeout: Optional[int] = None,
+    ) -> Dict[str, Any]:
         """Execute a JAX script."""
         try:
-            result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=timeout or 300)
+            result = subprocess.run(
+                [sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
+                capture_output=True,
+                text=True,
+                timeout=timeout or 300,
+            )
 
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
                 "stderr": result.stderr,
-                "return_code": result.returncode
+                "return_code": result.returncode,
             }
         except subprocess.TimeoutExpired:
-            return {
-                "success": False,
-                "error": "Execution timed out"
-            }
+            return {"success": False, "error": "Execution timed out"}
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
-    def execute_simulation_from_gnn(self, gnn_file: Union[str, Path], output_dir: Optional[Union[str, Path]] = None) -> Dict[str, Any]:
+    def execute_simulation_from_gnn(
+        self, gnn_file: Union[str, Path], output_dir: Optional[Union[str, Path]] = None
+    ) -> Dict[str, Any]:
         """Execute a simulation from a GNN file path."""
         gnn_path = Path(gnn_file) if not isinstance(gnn_file, Path) else gnn_file
         out_dir = Path(output_dir) if output_dir is not None else self.output_dir
@@ -352,12 +398,12 @@ def execute_gnn_model(
 ) -> Dict[str, Any]:
     """
     Convenience function to execute a GNN model.
-    
+
     Args:
         model_path: Path to the GNN model or rendered script
         execution_type: Type of execution
         options: Additional execution options
-    
+
     Returns:
         Dictionary with execution results
     """
@@ -374,7 +420,9 @@ def execute_gnn_model(
         normalized_options.setdefault("output_dir", str(execution_type))
 
     executor = GNNExecutor()
-    result = executor.execute_gnn_model(model_path, normalized_execution_type, normalized_options)
+    result = executor.execute_gnn_model(
+        model_path, normalized_execution_type, normalized_options
+    )
     result.setdefault("status", "SUCCESS" if result.get("success") else "FAILED")
     return result
 
@@ -382,10 +430,10 @@ def execute_gnn_model(
 def run_simulation(simulation_config: Dict[str, Any]) -> Dict[str, Any]:
     """
     Convenience function to run a simulation.
-    
+
     Args:
         simulation_config: Configuration dictionary for the simulation
-    
+
     Returns:
         Dictionary with simulation results
     """
@@ -393,15 +441,16 @@ def run_simulation(simulation_config: Dict[str, Any]) -> Dict[str, Any]:
     return executor.run_simulation(simulation_config)
 
 
-def generate_execution_report(execution_log: List[Dict[str, Any]],
-                            output_file: Optional[str] = None) -> str:
+def generate_execution_report(
+    execution_log: List[Dict[str, Any]], output_file: Optional[str] = None
+) -> str:
     """
     Convenience function to generate an execution report.
-    
+
     Args:
         execution_log: List of execution results
         output_file: Path for the output report file
-    
+
     Returns:
         Path to the generated report
     """
@@ -416,12 +465,12 @@ def execute_rendered_simulators(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs
+    **kwargs,
 ) -> bool:
     """
     Execute rendered simulator scripts with enhanced error handling and dependency checking.
     Framework outputs are organized in separate subdirectories.
-    
+
     Args:
         target_dir: Directory containing rendered simulator scripts
         output_dir: Output directory for results
@@ -429,11 +478,14 @@ def execute_rendered_simulators(
         recursive: Whether to process files recursively
         verbose: Whether to enable verbose logging
         **kwargs: Additional execution options
-        
+
     Returns:
         True if execution succeeded, False otherwise
     """
-    log_step_start(logger, "Executing rendered simulator scripts with framework-specific organization")
+    log_step_start(
+        logger,
+        "Executing rendered simulator scripts with framework-specific organization",
+    )
 
     # Use centralized output directory configuration
     execution_output_dir = get_output_dir_for_script("12_execute.py", output_dir)
@@ -470,7 +522,7 @@ def execute_rendered_simulators(
             "total_failures": 0,
             "dependency_issues": [],
             "syntax_errors": [],
-            "execution_details": {}
+            "execution_details": {},
         }
 
         # Pre-execution validation and dependency checking
@@ -488,13 +540,19 @@ def execute_rendered_simulators(
                 logger.warning(f"⚠️ Python dependency missing: {dep}")
 
         if missing_python_deps:
-            execution_results["dependency_issues"].extend([
-                f"Missing Python dependencies: {', '.join(missing_python_deps)}"
-            ])
+            execution_results["dependency_issues"].extend(
+                [f"Missing Python dependencies: {', '.join(missing_python_deps)}"]
+            )
 
         # Check Julia availability
         try:
-            result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False, timeout=10)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(
+                ["julia", "--version"],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=10,
+            )  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             if result.returncode == 0:
                 logger.info(f"✅ Julia available: {result.stdout.strip()}")
             else:
@@ -518,52 +576,68 @@ def execute_rendered_simulators(
                         pymdp_scripts = list(pymdp_dir.glob("*.py"))
                         for script in pymdp_scripts:
                             try:
-                                with open(script, 'r') as f:
-                                    compile(f.read(), script.name, 'exec')
-                                logger.debug(f"✅ PyMDP script syntax valid: {script.name}")
+                                with open(script, "r") as f:
+                                    compile(f.read(), script.name, "exec")
+                                logger.debug(
+                                    f"✅ PyMDP script syntax valid: {script.name}"
+                                )
                             except SyntaxError as e:
-                                logger.warning(f"⚠️ PyMDP script syntax error in {script.name}: {e}")
-                                execution_results["syntax_errors"].append(f"PyMDP: {script.name} - {e}")
+                                logger.warning(
+                                    f"⚠️ PyMDP script syntax error in {script.name}: {e}"
+                                )
+                                execution_results["syntax_errors"].append(
+                                    f"PyMDP: {script.name} - {e}"
+                                )
 
                     # Pass the target directory directly to the PyMDP runner
                     pymdp_success = run_pymdp_scripts(
                         rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["pymdp"],
                         recursive_search=recursive,
-                        verbose=verbose
+                        verbose=verbose,
                     )
 
                     if pymdp_success:
                         execution_results["total_successes"] += 1
-                        execution_results["pymdp_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "PyMDP scripts executed successfully",
-                            "output_dir": str(framework_dirs["pymdp"])
-                        })
+                        execution_results["pymdp_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "PyMDP scripts executed successfully",
+                                "output_dir": str(framework_dirs["pymdp"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["pymdp_executions"].append({
-                            "status": "FAILED",
-                            "message": "PyMDP script execution failed",
-                            "output_dir": str(framework_dirs["pymdp"])
-                        })
+                        execution_results["pymdp_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "PyMDP script execution failed",
+                                "output_dir": str(framework_dirs["pymdp"]),
+                            }
+                        )
                 log_step_success(logger, "PyMDP script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["pymdp_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["pymdp"])
-                })
+                execution_results["pymdp_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["pymdp"]),
+                    }
+                )
                 log_step_warning(logger, f"PyMDP script execution failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ PyMDP framework not available - skipping PyMDP execution (install with: uv pip install inferactively-pymdp)")
-            execution_results["pymdp_executions"].append({
-                "status": "SKIPPED",
-                "message": "PyMDP framework not installed (optional dependency)",
-                "output_dir": str(framework_dirs["pymdp"])
-            })
+            logger.info(
+                "ℹ️ PyMDP framework not available - skipping PyMDP execution (install with: uv pip install inferactively-pymdp)"
+            )
+            execution_results["pymdp_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "PyMDP framework not installed (optional dependency)",
+                    "output_dir": str(framework_dirs["pymdp"]),
+                }
+            )
 
         # Execute RxInfer scripts if available
         if RXINFER_AVAILABLE and run_rxinfer_scripts:
@@ -574,39 +648,49 @@ def execute_rendered_simulators(
                         rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["rxinfer"],
                         recursive_search=recursive,
-                        verbose=verbose
+                        verbose=verbose,
                     )
                     if rxinfer_success:
                         execution_results["total_successes"] += 1
-                        execution_results["rxinfer_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "RxInfer scripts executed successfully",
-                            "output_dir": str(framework_dirs["rxinfer"])
-                        })
+                        execution_results["rxinfer_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "RxInfer scripts executed successfully",
+                                "output_dir": str(framework_dirs["rxinfer"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["rxinfer_executions"].append({
-                            "status": "FAILED",
-                            "message": "RxInfer script execution failed",
-                            "output_dir": str(framework_dirs["rxinfer"])
-                        })
+                        execution_results["rxinfer_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "RxInfer script execution failed",
+                                "output_dir": str(framework_dirs["rxinfer"]),
+                            }
+                        )
                 log_step_success(logger, "RxInfer script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["rxinfer_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["rxinfer"])
-                })
+                execution_results["rxinfer_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["rxinfer"]),
+                    }
+                )
                 log_step_warning(logger, f"RxInfer script execution failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ RxInfer framework not available - skipping RxInfer execution (requires Julia and RxInfer.jl)")
-            execution_results["rxinfer_executions"].append({
-                "status": "SKIPPED",
-                "message": "RxInfer framework not installed (optional dependency - requires Julia)",
-                "output_dir": str(framework_dirs["rxinfer"])
-            })
+            logger.info(
+                "ℹ️ RxInfer framework not available - skipping RxInfer execution (requires Julia and RxInfer.jl)"
+            )
+            execution_results["rxinfer_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "RxInfer framework not installed (optional dependency - requires Julia)",
+                    "output_dir": str(framework_dirs["rxinfer"]),
+                }
+            )
 
         # Execute DisCoPy analysis if available
         if DISCOPY_AVAILABLE and run_discopy_analysis:
@@ -617,82 +701,104 @@ def execute_rendered_simulators(
                         rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["discopy"],
                         recursive_search=recursive,
-                        verbose=verbose
+                        verbose=verbose,
                     )
                     if discopy_success:
                         execution_results["total_successes"] += 1
-                        execution_results["discopy_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "DisCoPy analysis completed successfully",
-                            "output_dir": str(framework_dirs["discopy"])
-                        })
+                        execution_results["discopy_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "DisCoPy analysis completed successfully",
+                                "output_dir": str(framework_dirs["discopy"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["discopy_executions"].append({
-                            "status": "FAILED",
-                            "message": "DisCoPy analysis failed",
-                            "output_dir": str(framework_dirs["discopy"])
-                        })
+                        execution_results["discopy_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "DisCoPy analysis failed",
+                                "output_dir": str(framework_dirs["discopy"]),
+                            }
+                        )
                 log_step_success(logger, "DisCoPy analysis completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["discopy_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["discopy"])
-                })
+                execution_results["discopy_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["discopy"]),
+                    }
+                )
                 log_step_warning(logger, f"DisCoPy analysis failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ DisCoPy framework not available - skipping DisCoPy execution (install with: uv pip install discopy)")
-            execution_results["discopy_executions"].append({
-                "status": "SKIPPED",
-                "message": "DisCoPy framework not installed (optional dependency)",
-                "output_dir": str(framework_dirs["discopy"])
-            })
+            logger.info(
+                "ℹ️ DisCoPy framework not available - skipping DisCoPy execution (install with: uv pip install discopy)"
+            )
+            execution_results["discopy_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "DisCoPy framework not installed (optional dependency)",
+                    "output_dir": str(framework_dirs["discopy"]),
+                }
+            )
 
         # Execute ActiveInference.jl analysis if available
         if ACTIVEINFERENCE_AVAILABLE and run_activeinference_analysis:
             try:
-                with performance_tracker.track_operation("execute_activeinference_analysis"):
+                with performance_tracker.track_operation(
+                    "execute_activeinference_analysis"
+                ):
                     logger.info("🚀 Executing ActiveInference.jl analysis...")
                     activeinference_success = run_activeinference_analysis(
                         rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["activeinference_jl"],
                         recursive_search=recursive,
-                        verbose=verbose
+                        verbose=verbose,
                     )
                     if activeinference_success:
                         execution_results["total_successes"] += 1
-                        execution_results["activeinference_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "ActiveInference.jl analysis completed successfully",
-                            "output_dir": str(framework_dirs["activeinference_jl"])
-                        })
+                        execution_results["activeinference_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "ActiveInference.jl analysis completed successfully",
+                                "output_dir": str(framework_dirs["activeinference_jl"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["activeinference_executions"].append({
-                            "status": "FAILED",
-                            "message": "ActiveInference.jl analysis failed",
-                            "output_dir": str(framework_dirs["activeinference_jl"])
-                        })
+                        execution_results["activeinference_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "ActiveInference.jl analysis failed",
+                                "output_dir": str(framework_dirs["activeinference_jl"]),
+                            }
+                        )
                 log_step_success(logger, "ActiveInference.jl analysis completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["activeinference_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["activeinference_jl"])
-                })
+                execution_results["activeinference_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["activeinference_jl"]),
+                    }
+                )
                 log_step_warning(logger, f"ActiveInference.jl analysis failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ ActiveInference.jl framework not available - skipping (requires Julia and ActiveInference.jl)")
-            execution_results["activeinference_executions"].append({
-                "status": "SKIPPED",
-                "message": "ActiveInference.jl framework not installed (optional dependency - requires Julia)",
-                "output_dir": str(framework_dirs["activeinference_jl"])
-            })
+            logger.info(
+                "ℹ️ ActiveInference.jl framework not available - skipping (requires Julia and ActiveInference.jl)"
+            )
+            execution_results["activeinference_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "ActiveInference.jl framework not installed (optional dependency - requires Julia)",
+                    "output_dir": str(framework_dirs["activeinference_jl"]),
+                }
+            )
 
         # Execute JAX scripts if available
         if JAX_AVAILABLE and run_jax_scripts:
@@ -703,39 +809,49 @@ def execute_rendered_simulators(
                         rendered_simulators_dir=target_dir,
                         execution_output_dir=framework_dirs["jax"],
                         recursive_search=recursive,
-                        verbose=verbose
+                        verbose=verbose,
                     )
                     if jax_success:
                         execution_results["total_successes"] += 1
-                        execution_results["jax_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "JAX scripts executed successfully",
-                            "output_dir": str(framework_dirs["jax"])
-                        })
+                        execution_results["jax_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "JAX scripts executed successfully",
+                                "output_dir": str(framework_dirs["jax"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["jax_executions"].append({
-                            "status": "FAILED",
-                            "message": "JAX script execution failed",
-                            "output_dir": str(framework_dirs["jax"])
-                        })
+                        execution_results["jax_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "JAX script execution failed",
+                                "output_dir": str(framework_dirs["jax"]),
+                            }
+                        )
                 log_step_success(logger, "JAX script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["jax_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["jax"])
-                })
+                execution_results["jax_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["jax"]),
+                    }
+                )
                 log_step_warning(logger, f"JAX script execution failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ JAX framework not available - skipping JAX execution (install with: uv pip install jax jaxlib)")
-            execution_results["jax_executions"].append({
-                "status": "SKIPPED",
-                "message": "JAX framework not installed (optional dependency)",
-                "output_dir": str(framework_dirs["jax"])
-            })
+            logger.info(
+                "ℹ️ JAX framework not available - skipping JAX execution (install with: uv pip install jax jaxlib)"
+            )
+            execution_results["jax_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "JAX framework not installed (optional dependency)",
+                    "output_dir": str(framework_dirs["jax"]),
+                }
+            )
 
         # Execute NumPyro scripts if available
         if NUMPYRO_AVAILABLE and run_numpyro_scripts:
@@ -750,37 +866,45 @@ def execute_rendered_simulators(
                     )
                     if numpyro_success:
                         execution_results["total_successes"] += 1
-                        execution_results["numpyro_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "NumPyro scripts executed successfully",
-                            "output_dir": str(framework_dirs["numpyro"]),
-                        })
+                        execution_results["numpyro_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "NumPyro scripts executed successfully",
+                                "output_dir": str(framework_dirs["numpyro"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["numpyro_executions"].append({
-                            "status": "FAILED",
-                            "message": "NumPyro script execution failed",
-                            "output_dir": str(framework_dirs["numpyro"]),
-                        })
+                        execution_results["numpyro_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "NumPyro script execution failed",
+                                "output_dir": str(framework_dirs["numpyro"]),
+                            }
+                        )
                 log_step_success(logger, "NumPyro script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["numpyro_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["numpyro"]),
-                })
+                execution_results["numpyro_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["numpyro"]),
+                    }
+                )
                 log_step_warning(logger, f"NumPyro script execution failed: {e}")
         else:
             logger.info(
                 "ℹ️ NumPyro framework not available - skipping NumPyro execution "
                 "(install with: uv pip install numpyro jax jaxlib)"
             )
-            execution_results["numpyro_executions"].append({
-                "status": "SKIPPED",
-                "message": "NumPyro framework not installed (optional dependency)",
-                "output_dir": str(framework_dirs["numpyro"]),
-            })
+            execution_results["numpyro_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "NumPyro framework not installed (optional dependency)",
+                    "output_dir": str(framework_dirs["numpyro"]),
+                }
+            )
 
         # Execute PyTorch scripts if available
         if PYTORCH_AVAILABLE and run_pytorch_scripts:
@@ -795,48 +919,56 @@ def execute_rendered_simulators(
                     )
                     if pytorch_success:
                         execution_results["total_successes"] += 1
-                        execution_results["pytorch_executions"].append({
-                            "status": "SUCCESS",
-                            "message": "PyTorch scripts executed successfully",
-                            "output_dir": str(framework_dirs["pytorch"]),
-                        })
+                        execution_results["pytorch_executions"].append(
+                            {
+                                "status": "SUCCESS",
+                                "message": "PyTorch scripts executed successfully",
+                                "output_dir": str(framework_dirs["pytorch"]),
+                            }
+                        )
                     else:
                         execution_results["total_failures"] += 1
-                        execution_results["pytorch_executions"].append({
-                            "status": "FAILED",
-                            "message": "PyTorch script execution failed",
-                            "output_dir": str(framework_dirs["pytorch"]),
-                        })
+                        execution_results["pytorch_executions"].append(
+                            {
+                                "status": "FAILED",
+                                "message": "PyTorch script execution failed",
+                                "output_dir": str(framework_dirs["pytorch"]),
+                            }
+                        )
                 log_step_success(logger, "PyTorch script execution completed")
             except Exception as e:
                 execution_results["total_failures"] += 1
-                execution_results["pytorch_executions"].append({
-                    "status": "ERROR",
-                    "message": str(e),
-                    "output_dir": str(framework_dirs["pytorch"]),
-                })
+                execution_results["pytorch_executions"].append(
+                    {
+                        "status": "ERROR",
+                        "message": str(e),
+                        "output_dir": str(framework_dirs["pytorch"]),
+                    }
+                )
                 log_step_warning(logger, f"PyTorch script execution failed: {e}")
         else:
             logger.info(
                 "ℹ️ PyTorch framework not available - skipping PyTorch execution "
                 "(install with: uv pip install torch)"
             )
-            execution_results["pytorch_executions"].append({
-                "status": "SKIPPED",
-                "message": "PyTorch framework not installed (optional dependency)",
-                "output_dir": str(framework_dirs["pytorch"]),
-            })
+            execution_results["pytorch_executions"].append(
+                {
+                    "status": "SKIPPED",
+                    "message": "PyTorch framework not installed (optional dependency)",
+                    "output_dir": str(framework_dirs["pytorch"]),
+                }
+            )
 
         # Save execution summary with enhanced details
         summaries_dir = execution_output_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)
         summary_file = summaries_dir / "execution_summary.json"
-        with open(summary_file, 'w') as f:
+        with open(summary_file, "w") as f:
             json.dump(execution_results, f, indent=2)
 
         # Generate enhanced markdown report
         report_file = summaries_dir / "execution_report.md"
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             f.write("# Enhanced Execution Results Report\n\n")
             f.write(f"**Generated:** {execution_results['timestamp']}\n")
             f.write(f"**Target Directory:** {execution_results['target_directory']}\n")
@@ -845,7 +977,9 @@ def execute_rendered_simulators(
 
             # Framework-specific output directories
             f.write("## Framework-Specific Output Directories\n\n")
-            for framework, framework_dir in execution_results["framework_execution_dirs"].items():
+            for framework, framework_dir in execution_results[
+                "framework_execution_dirs"
+            ].items():
                 f.write(f"- **{framework.upper()}**: {framework_dir}\n")
             f.write("\n")
 
@@ -866,66 +1000,96 @@ def execute_rendered_simulators(
             if execution_results["pymdp_executions"]:
                 f.write("## PyMDP Executions\n\n")
                 for exec_info in execution_results["pymdp_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'PyMDP Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'PyMDP Scripts')}**: {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
-                    if 'scripts_processed' in exec_info:
-                        f.write(f"  - Scripts processed: {exec_info['scripts_processed']}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
+                    if "scripts_processed" in exec_info:
+                        f.write(
+                            f"  - Scripts processed: {exec_info['scripts_processed']}\n"
+                        )
                 f.write("\n")
 
             if execution_results["rxinfer_executions"]:
                 f.write("## RxInfer Executions\n\n")
                 for exec_info in execution_results["rxinfer_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'RxInfer Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'RxInfer Scripts')}**: {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
                 f.write("\n")
 
             if execution_results["discopy_executions"]:
                 f.write("## DisCoPy Analyses\n\n")
                 for exec_info in execution_results["discopy_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'DisCoPy Analysis')}** ({exec_info.get('type', 'analysis')}): {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'DisCoPy Analysis')}** ({exec_info.get('type', 'analysis')}): {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
                 f.write("\n")
 
             if execution_results["activeinference_executions"]:
                 f.write("## ActiveInference.jl Analyses\n\n")
                 for exec_info in execution_results["activeinference_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'ActiveInference.jl Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'ActiveInference.jl Scripts')}**: {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
                 f.write("\n")
 
             if execution_results["jax_executions"]:
                 f.write("## JAX Executions\n\n")
                 for exec_info in execution_results["jax_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'JAX Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'JAX Scripts')}**: {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
                 f.write("\n")
 
             if execution_results["numpyro_executions"]:
                 f.write("## NumPyro Executions\n\n")
                 for exec_info in execution_results["numpyro_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'NumPyro Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'NumPyro Scripts')}**: {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
                 f.write("\n")
 
             if execution_results["pytorch_executions"]:
                 f.write("## PyTorch Executions\n\n")
                 for exec_info in execution_results["pytorch_executions"]:
-                    status_icon = "✅" if exec_info.get('status') == 'SUCCESS' else "❌"
-                    f.write(f"- {status_icon} **{exec_info.get('script', 'PyTorch Scripts')}**: {exec_info.get('status', 'Unknown')}\n")
+                    status_icon = "✅" if exec_info.get("status") == "SUCCESS" else "❌"
+                    f.write(
+                        f"- {status_icon} **{exec_info.get('script', 'PyTorch Scripts')}**: {exec_info.get('status', 'Unknown')}\n"
+                    )
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
-                    f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
+                    f.write(
+                        f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n"
+                    )
                 f.write("\n")
 
             # Recommendations section
@@ -934,39 +1098,56 @@ def execute_rendered_simulators(
                 f.write("### Install Missing Dependencies\n\n")
                 for issue in execution_results["dependency_issues"]:
                     if "Python dependencies" in issue:
-                        f.write("- Install missing Python packages: `uv pip install <package_name>` or add to pyproject and run `uv sync`\n")
+                        f.write(
+                            "- Install missing Python packages: `uv pip install <package_name>` or add to pyproject and run `uv sync`\n"
+                        )
                     elif "Julia" in issue:
-                        f.write("- Install Julia from https://julialang.org/downloads/\n")
+                        f.write(
+                            "- Install Julia from https://julialang.org/downloads/\n"
+                        )
                 f.write("\n")
 
             if execution_results["syntax_errors"]:
                 f.write("### Fix Syntax Errors\n\n")
                 f.write("- Review and fix syntax errors in rendered scripts\n")
                 f.write("- Check for stray characters or malformed code\n")
-                f.write("- Re-run the rendering step (11_render.py) to regenerate scripts\n\n")
+                f.write(
+                    "- Re-run the rendering step (11_render.py) to regenerate scripts\n\n"
+                )
 
         # Log results summary
-        total_executions = (len(execution_results["pymdp_executions"]) +
-                          len(execution_results["rxinfer_executions"]) +
-                          len(execution_results["discopy_executions"]) +
-                          len(execution_results["activeinference_executions"]) +
-                          len(execution_results["jax_executions"]) +
-                          len(execution_results["numpyro_executions"]) +
-                          len(execution_results["pytorch_executions"]))
+        total_executions = (
+            len(execution_results["pymdp_executions"])
+            + len(execution_results["rxinfer_executions"])
+            + len(execution_results["discopy_executions"])
+            + len(execution_results["activeinference_executions"])
+            + len(execution_results["jax_executions"])
+            + len(execution_results["numpyro_executions"])
+            + len(execution_results["pytorch_executions"])
+        )
 
         if total_executions > 0:
             success_rate = execution_results["total_successes"] / total_executions * 100
-            log_step_success(logger, f"Execution completed with framework-specific organization. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})")
+            log_step_success(
+                logger,
+                f"Execution completed with framework-specific organization. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})",
+            )
 
             # Log specific issues
             if execution_results["dependency_issues"]:
-                logger.warning(f"⚠️ Dependency issues found: {len(execution_results['dependency_issues'])}")
+                logger.warning(
+                    f"⚠️ Dependency issues found: {len(execution_results['dependency_issues'])}"
+                )
             if execution_results["syntax_errors"]:
-                logger.warning(f"⚠️ Syntax errors found: {len(execution_results['syntax_errors'])}")
+                logger.warning(
+                    f"⚠️ Syntax errors found: {len(execution_results['syntax_errors'])}"
+                )
 
             return execution_results["total_failures"] == 0
         else:
-            log_step_warning(logger, "No simulator scripts or outputs found to execute/analyze")
+            log_step_warning(
+                logger, "No simulator scripts or outputs found to execute/analyze"
+            )
             return True
 
     except Exception as e:
@@ -1031,6 +1212,7 @@ def execute_script_safely(
     merged_env: Optional[Dict[str, str]] = None
     if env is not None:
         import os
+
         merged_env = dict(os.environ)
         merged_env.update(env)
 

@@ -20,7 +20,9 @@ class TestPipelineStepIntegration:
     """Tests for integration between pipeline steps."""
 
     @pytest.mark.integration
-    def test_gnn_to_render_data_flow(self, sample_gnn_files: Any, tmp_path: Any) -> None:
+    def test_gnn_to_render_data_flow(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> None:
         """Test data flows correctly from GNN to render step."""
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -49,9 +51,9 @@ class TestPipelineStepIntegration:
             "ModelName": "TestFlow",
             "variables": [
                 {"name": "state", "dimensions": [3]},
-                {"name": "obs", "dimensions": [2]}
+                {"name": "obs", "dimensions": [2]},
             ],
-            "parameters": []
+            "parameters": [],
         }
 
         code = generate_pymdp_code(parsed_data)
@@ -79,9 +81,7 @@ class TestPipelineStepIntegration:
 
         # Report should be able to find visualizations
         result = process_report(
-            target_dir=tmp_path,
-            output_dir=report_output,
-            logger=logger
+            target_dir=tmp_path, output_dir=report_output, logger=logger
         )
 
         assert isinstance(result, bool)
@@ -146,14 +146,14 @@ class TestPipelineModuleIntegration:
     def test_all_modules_importable(self) -> None:
         """Test that all pipeline modules can be imported."""
         modules = [
-            'gnn',
-            'render',
-            'execute',
-            'visualization',
-            'report',
-            'mcp',
-            'audio',
-            'export'
+            "gnn",
+            "render",
+            "execute",
+            "visualization",
+            "report",
+            "mcp",
+            "audio",
+            "export",
         ]
 
         for module_name in modules:
@@ -212,11 +212,7 @@ class TestPipelineOutputIntegration:
         """Test pipeline creates summary files."""
         import json
 
-        summary = {
-            "status": "success",
-            "steps_completed": 5,
-            "duration": 10.5
-        }
+        summary = {"status": "success", "steps_completed": 5, "duration": 10.5}
 
         summary_file = tmp_path / "summary.json"
 
@@ -241,11 +237,14 @@ class TestPipelineErrorIntegration:
 
         # Run with invalid step configuration - should return result, not crash
         step_config = {"script_path": str(tmp_path / "nonexistent.py")}
-        pipeline_data = {"target_dir": str(tmp_path), "output_dir": str(tmp_path / "output")}
+        pipeline_data = {
+            "target_dir": str(tmp_path),
+            "output_dir": str(tmp_path / "output"),
+        }
         result = execute_pipeline_step(
             step_name="nonexistent_step",
             step_config=step_config,
-            pipeline_data=pipeline_data
+            pipeline_data=pipeline_data,
         )
 
         # Should return a result object (success or failure), not crash

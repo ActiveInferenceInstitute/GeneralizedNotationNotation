@@ -12,18 +12,24 @@ class TestIntegrationOverall:
     def integration_files(self, safe_filesystem):
         """Create a set of files with dependencies."""
         # File 1: Defines ComponentA
-        safe_filesystem.create_file("comp_a.md", """
+        safe_filesystem.create_file(
+            "comp_a.md",
+            """
 # Component A
 - name: ComponentA
   type: Object
-""")
+""",
+        )
         # File 2: References ComponentA
-        safe_filesystem.create_file("comp_b.md", """
+        safe_filesystem.create_file(
+            "comp_b.md",
+            """
 # Component B
 - name: ComponentB
   type: ComponentA
   refs: $ref:ComponentA
-""")
+""",
+        )
         return safe_filesystem.temp_dir
 
     def test_process_integration_flow(self, safe_filesystem, integration_files):
@@ -39,7 +45,7 @@ class TestIntegrationOverall:
         results_file = output_dir / "integration_results/integration_results.json"
         assert results_file.exists()
 
-        with open(results_file, 'r') as f:
+        with open(results_file, "r") as f:
             data = json.load(f)
 
         assert data["success"] is True
@@ -50,28 +56,34 @@ class TestIntegrationOverall:
         # but the processor handles missing networkx gracefully.
         # If stats are present:
         if "system_graph_stats" in data and data["system_graph_stats"]:
-             # Should have 2 nodes (ComponentA, ComponentB)
-             # And 1 edge (B -> A) or similar depending on implementation
-             pass
+            # Should have 2 nodes (ComponentA, ComponentB)
+            # And 1 edge (B -> A) or similar depending on implementation
+            pass
 
     def test_process_integration_circular_dependency(self, safe_filesystem):
         """Test with circular dependency if networkx available."""
         # A -> B, B -> A
-        safe_filesystem.create_file("cycle_a.md", """
+        safe_filesystem.create_file(
+            "cycle_a.md",
+            """
 - name: A
   type: B
-""")
-        safe_filesystem.create_file("cycle_b.md", """
+""",
+        )
+        safe_filesystem.create_file(
+            "cycle_b.md",
+            """
 - name: B
   type: A
-""")
+""",
+        )
         output_dir = safe_filesystem.create_dir("output")
 
         # This shouldn't crash, but might report issues
         process_integration(safe_filesystem.temp_dir, output_dir)
 
         results_file = output_dir / "integration_results/integration_results.json"
-        with open(results_file, 'r') as f:
+        with open(results_file, "r") as f:
             data = json.load(f)
 
         # If networkx is present, it might list issues.

@@ -6,7 +6,7 @@ including categorical specifications, formal proofs, schemas, and neural network
 
 Supported Formats:
 - Markdown (.md) - Standard GNN format
-- Scala (.scala) - Categorical specifications  
+- Scala (.scala) - Categorical specifications
 - Lean (.lean) - Category theory proofs
 - Coq (.v) - Formal verification
 - Python (.py) - Geometric/neural implementations
@@ -109,17 +109,21 @@ from .unified_parser import UnifiedGNNParser
 from .validators import GNNValidator
 
 
-def parse_gnn_file_structured(file_path: Union[str, _Path],
-                              format_hint: _Optional[GNNFormat] = None,
-                              strict_validation: bool = True) -> ParseResult:
+def parse_gnn_file_structured(
+    file_path: Union[str, _Path],
+    format_hint: _Optional[GNNFormat] = None,
+    strict_validation: bool = True,
+) -> ParseResult:
     """Parse a GNN file using the unified parsing system, returning a structured ParseResult."""
     system = GNNParsingSystem(strict_validation=strict_validation)
     return system.parse_file(file_path, format_hint)
 
 
-def convert_gnn_format(input_file: Union[str, _Path],
-                       output_file: Union[str, _Path],
-                       target_format: _Optional[GNNFormat] = None) -> None:
+def convert_gnn_format(
+    input_file: Union[str, _Path],
+    output_file: Union[str, _Path],
+    target_format: _Optional[GNNFormat] = None,
+) -> None:
     """Convert a GNN file from one format to another."""
     system = GNNParsingSystem()
     result = system.parse_file(input_file)
@@ -130,77 +134,74 @@ def convert_gnn_format(input_file: Union[str, _Path],
 
     system.serialize_to_file(result.model, output_file, target_format)
 
+
 __all__ = [
     # Core classes
-    'GNNParsingSystem',
-    'UnifiedGNNParser',
-    'GNNFormat',
-    'ParseResult',
-    'GNNInternalRepresentation',
-    'ASTNode',
-    'ParseError',
-    'GNNParser',
-
+    "GNNParsingSystem",
+    "UnifiedGNNParser",
+    "GNNFormat",
+    "ParseResult",
+    "GNNInternalRepresentation",
+    "ASTNode",
+    "ParseError",
+    "GNNParser",
     # Parsers
-    'MarkdownGNNParser',
-    'ScalaGNNParser',
-    'LeanGNNParser',
-    'CoqGNNParser',
-    'PythonGNNParser',
-    'BNFParser',
-    'EBNFParser',
-    'IsabelleParser',
-    'MaximaParser',
-    'XMLGNNParser',
-    'PNMLParser',
-    'JSONGNNParser',
-    'ProtobufGNNParser',
-    'YAMLGNNParser',
-    'XSDParser',
-    'ASN1Parser',
-    'PKLParser',
-    'AlloyParser',
-    'ZNotationParser',
-    'TLAParser',
-    'AgdaParser',
-    'HaskellGNNParser',
-    'PickleGNNParser',
-
+    "MarkdownGNNParser",
+    "ScalaGNNParser",
+    "LeanGNNParser",
+    "CoqGNNParser",
+    "PythonGNNParser",
+    "BNFParser",
+    "EBNFParser",
+    "IsabelleParser",
+    "MaximaParser",
+    "XMLGNNParser",
+    "PNMLParser",
+    "JSONGNNParser",
+    "ProtobufGNNParser",
+    "YAMLGNNParser",
+    "XSDParser",
+    "ASN1Parser",
+    "PKLParser",
+    "AlloyParser",
+    "ZNotationParser",
+    "TLAParser",
+    "AgdaParser",
+    "HaskellGNNParser",
+    "PickleGNNParser",
     # Serializers
-    'MarkdownSerializer',
-    'JSONSerializer',
-    'XMLSerializer',
-    'YAMLSerializer',
-    'ScalaSerializer',
-    'ProtobufSerializer',
-    'PKLSerializer',
-    'XSDSerializer',
-    'ASN1Serializer',
-    'LeanSerializer',
-    'CoqSerializer',
-    'PythonSerializer',
-    'GrammarSerializer',
-    'IsabelleSerializer',
-    'MaximaSerializer',
-    'AlloySerializer',
-    'ZNotationSerializer',
-    'SchemaSerializer',
-    'TemporalSerializer',
-    'TLASerializer',
-    'AgdaSerializer',
-    'FunctionalSerializer',
-    'BinarySerializer',
-
+    "MarkdownSerializer",
+    "JSONSerializer",
+    "XMLSerializer",
+    "YAMLSerializer",
+    "ScalaSerializer",
+    "ProtobufSerializer",
+    "PKLSerializer",
+    "XSDSerializer",
+    "ASN1Serializer",
+    "LeanSerializer",
+    "CoqSerializer",
+    "PythonSerializer",
+    "GrammarSerializer",
+    "IsabelleSerializer",
+    "MaximaSerializer",
+    "AlloySerializer",
+    "ZNotationSerializer",
+    "SchemaSerializer",
+    "TemporalSerializer",
+    "TLASerializer",
+    "AgdaSerializer",
+    "FunctionalSerializer",
+    "BinarySerializer",
     # Utilities
-    'FormatConverter',
-    'ConversionError',
-    'GNNValidator',
-    'ValidationError',
-    'ValidationWarning',
-    'parse_gnn_file_structured',
-    'convert_gnn_format',
-
+    "FormatConverter",
+    "ConversionError",
+    "GNNValidator",
+    "ValidationError",
+    "ValidationWarning",
+    "parse_gnn_file_structured",
+    "convert_gnn_format",
     # Registries
-    'PARSER_REGISTRY',
-    'SERIALIZER_REGISTRY'
+    "PARSER_REGISTRY",
+    "SERIALIZER_REGISTRY",
 ]

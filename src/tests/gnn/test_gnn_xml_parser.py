@@ -47,6 +47,7 @@ class TestXMLGNNParser:
     def _get_parser(self):
         try:
             from gnn.parsers.xml_parser import XMLGNNParser
+
             return XMLGNNParser()
         except ImportError:
             pytest.skip("xml_parser not importable")
@@ -87,6 +88,7 @@ class TestPNMLParser:
     def _get_parser(self):
         try:
             from gnn.parsers.xml_parser import PNMLParser
+
             return PNMLParser()
         except ImportError:
             pytest.skip("PNMLParser not importable")

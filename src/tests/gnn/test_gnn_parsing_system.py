@@ -5,6 +5,7 @@ Covers: initialization, parser/serializer registries, parse_string,
 _detect_format, _detect_format_from_content, get_supported_formats,
 get_available_parsers, get_available_serializers, parse_file error paths.
 """
+
 import sys
 import tempfile
 from pathlib import Path
@@ -95,7 +96,9 @@ class TestGNNParsingSystemParseFile:
             Path(tmp_path).unlink(missing_ok=True)
 
     def test_unknown_extension_raises(self):
-        with tempfile.NamedTemporaryFile(suffix=".unknownext", mode="w", delete=False) as f:
+        with tempfile.NamedTemporaryFile(
+            suffix=".unknownext", mode="w", delete=False
+        ) as f:
             f.write("content")
             tmp_path = f.name
         try:
@@ -143,13 +146,16 @@ class TestGNNParsingSystemDetectFormatFromContent:
         self.ps = GNNParsingSystem(strict_validation=False)
 
     def test_xml_content(self):
-        assert self.ps._detect_format_from_content("<?xml version='1.0'?>") == GNNFormat.XML
+        assert (
+            self.ps._detect_format_from_content("<?xml version='1.0'?>")
+            == GNNFormat.XML
+        )
 
     def test_json_object_content(self):
         assert self.ps._detect_format_from_content('{"key": "val"}') == GNNFormat.JSON
 
     def test_json_array_content(self):
-        assert self.ps._detect_format_from_content('[1,2,3]') == GNNFormat.JSON
+        assert self.ps._detect_format_from_content("[1,2,3]") == GNNFormat.JSON
 
     def test_yaml_content(self):
         assert self.ps._detect_format_from_content("---\nkey: value") == GNNFormat.YAML

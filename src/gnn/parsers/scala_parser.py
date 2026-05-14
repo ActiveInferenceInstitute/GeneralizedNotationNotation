@@ -2,7 +2,7 @@
 Scala GNN Parser
 
 This module provides parsing for Scala-based categorical GNN specifications.
-It extracts Active Inference model information from Scala code using 
+It extracts Active Inference model information from Scala code using
 category theory constructs.
 
 Author: @docxology
@@ -31,10 +31,11 @@ from .common import (
 
 logger = logging.getLogger(__name__)
 
+
 class ScalaGNNParser(BaseGNNParser):
     """
     Parser for Scala categorical GNN specifications.
-    
+
     This parser extracts Active Inference model information from Scala code
     that uses category theory constructs like functors, natural transformations,
     and monads.
@@ -43,25 +44,25 @@ class ScalaGNNParser(BaseGNNParser):
     def __init__(self):
         super().__init__()
         self.variable_patterns = {
-            'case_class': re.compile(r'case class\s+(\w+)\s*\([^)]*\)'),
-            'val_definition': re.compile(r'val\s+(\w+)\s*:\s*([^=]+)=?'),
-            'def_function': re.compile(r'def\s+(\w+)\s*\([^)]*\)\s*:\s*([^=]+)=?'),
-            'type_alias': re.compile(r'type\s+(\w+)\s*=\s*(.+)')
+            "case_class": re.compile(r"case class\s+(\w+)\s*\([^)]*\)"),
+            "val_definition": re.compile(r"val\s+(\w+)\s*:\s*([^=]+)=?"),
+            "def_function": re.compile(r"def\s+(\w+)\s*\([^)]*\)\s*:\s*([^=]+)=?"),
+            "type_alias": re.compile(r"type\s+(\w+)\s*=\s*(.+)"),
         }
 
         self.active_inference_patterns = {
-            'state_space': re.compile(r'StateSpace\s*\(\s*([^)]+)\)'),
-            'observation_space': re.compile(r'ObservationSpace\s*\(\s*([^)]+)\)'),
-            'action_space': re.compile(r'ActionSpace\s*\(\s*([^)]+)\)'),
-            'likelihood': re.compile(r'LikelihoodMapping\s*\(\s*([^)]+)\)'),
-            'transition': re.compile(r'TransitionMapping\s*\(\s*([^)]+)\)'),
-            'preferences': re.compile(r'PreferenceMapping\s*\(\s*([^)]+)\)'),
-            'priors': re.compile(r'PriorMapping\s*\(\s*([^)]+)\)')
+            "state_space": re.compile(r"StateSpace\s*\(\s*([^)]+)\)"),
+            "observation_space": re.compile(r"ObservationSpace\s*\(\s*([^)]+)\)"),
+            "action_space": re.compile(r"ActionSpace\s*\(\s*([^)]+)\)"),
+            "likelihood": re.compile(r"LikelihoodMapping\s*\(\s*([^)]+)\)"),
+            "transition": re.compile(r"TransitionMapping\s*\(\s*([^)]+)\)"),
+            "preferences": re.compile(r"PreferenceMapping\s*\(\s*([^)]+)\)"),
+            "priors": re.compile(r"PriorMapping\s*\(\s*([^)]+)\)"),
         }
 
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        return ['.scala']
+        return [".scala"]
 
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a Scala GNN file."""
@@ -69,7 +70,7 @@ class ScalaGNNParser(BaseGNNParser):
         file_path = Path(file_path)
 
         try:
-            content = file_path.read_text(encoding='utf-8')
+            content = file_path.read_text(encoding="utf-8")
             return self.parse_string(content)
         except Exception as e:
             raise ParseError(f"Failed to read file {file_path}: {e}") from e
@@ -106,8 +107,7 @@ class ScalaGNNParser(BaseGNNParser):
 
         except Exception as e:
             result = ParseResult(
-                model=self.create_empty_model("Parse Error"),
-                success=False
+                model=self.create_empty_model("Parse Error"), success=False
             )
             result.add_error(str(e))
             return result
@@ -115,10 +115,11 @@ class ScalaGNNParser(BaseGNNParser):
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Scala comments."""
         import json
+
         # Look for JSON data in Scala comments
         patterns = [
-            r'//\s*MODEL_DATA:\s*(\{.+\})',  # // MODEL_DATA: {...}
-            r'/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/',  # /* MODEL_DATA: {...} */
+            r"//\s*MODEL_DATA:\s*(\{.+\})",  # // MODEL_DATA: {...}
+            r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
         ]
 
         for pattern in patterns:
@@ -127,11 +128,16 @@ class ScalaGNNParser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError as e:
-                    logger.debug("Malformed JSON in Scala embedded data, trying next pattern: %s", e)
+                    logger.debug(
+                        "Malformed JSON in Scala embedded data, trying next pattern: %s",
+                        e,
+                    )
                     continue
         return None
 
-    def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
+    def _parse_from_embedded_data(
+        self, embedded_data: Dict[str, Any], result: ParseResult
+    ) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import (
@@ -145,57 +151,59 @@ class ScalaGNNParser(BaseGNNParser):
 
             # Create model from embedded data
             model = GNNInternalRepresentation(
-                model_name=embedded_data.get('model_name', 'Unknown Model'),
-                annotation=embedded_data.get('annotation', ''),
+                model_name=embedded_data.get("model_name", "Unknown Model"),
+                annotation=embedded_data.get("annotation", ""),
             )
 
             # Parse variables
-            for var_data in embedded_data.get('variables', []):
+            for var_data in embedded_data.get("variables", []):
                 var = Variable(
-                    name=var_data['name'],
-                    var_type=VariableType(var_data['var_type']),
-                    data_type=DataType(var_data['data_type']),
-                    dimensions=var_data.get('dimensions', [])
+                    name=var_data["name"],
+                    var_type=VariableType(var_data["var_type"]),
+                    data_type=DataType(var_data["data_type"]),
+                    dimensions=var_data.get("dimensions", []),
                 )
                 model.variables.append(var)
 
             # Parse connections
-            for conn_data in embedded_data.get('connections', []):
+            for conn_data in embedded_data.get("connections", []):
                 conn = Connection(
-                    source_variables=conn_data['source_variables'],
-                    target_variables=conn_data['target_variables'],
-                    connection_type=ConnectionType(conn_data['connection_type'])
+                    source_variables=conn_data["source_variables"],
+                    target_variables=conn_data["target_variables"],
+                    connection_type=ConnectionType(conn_data["connection_type"]),
                 )
                 model.connections.append(conn)
 
             # Parse parameters
-            for param_data in embedded_data.get('parameters', []):
+            for param_data in embedded_data.get("parameters", []):
                 param = Parameter(
-                    name=param_data['name'],
-                    value=param_data['value'],
-                    type_hint=param_data.get('param_type', 'constant')
+                    name=param_data["name"],
+                    value=param_data["value"],
+                    type_hint=param_data.get("param_type", "constant"),
                 )
                 model.parameters.append(param)
 
             # Set time specification if present
-            if embedded_data.get('time_specification'):
-                time_data = embedded_data['time_specification']
+            if embedded_data.get("time_specification"):
+                time_data = embedded_data["time_specification"]
                 from .common import TimeSpecification
+
                 model.time_specification = TimeSpecification(
-                    time_type=time_data.get('time_type', 'dynamic'),
-                    discretization=time_data.get('discretization'),
-                    horizon=time_data.get('horizon'),
-                    step_size=time_data.get('step_size')
+                    time_type=time_data.get("time_type", "dynamic"),
+                    discretization=time_data.get("discretization"),
+                    horizon=time_data.get("horizon"),
+                    step_size=time_data.get("step_size"),
                 )
 
             # Set ontology mappings if present
-            if embedded_data.get('ontology_mappings'):
+            if embedded_data.get("ontology_mappings"):
                 from .common import OntologyMapping
-                for mapping_data in embedded_data['ontology_mappings']:
+
+                for mapping_data in embedded_data["ontology_mappings"]:
                     mapping = OntologyMapping(
-                        variable_name=mapping_data['variable_name'],
-                        ontology_term=mapping_data['ontology_term'],
-                        description=mapping_data.get('description')
+                        variable_name=mapping_data["variable_name"],
+                        ontology_term=mapping_data["ontology_term"],
+                        description=mapping_data.get("description"),
                     )
                     model.ontology_mappings.append(mapping)
 
@@ -210,54 +218,54 @@ class ScalaGNNParser(BaseGNNParser):
     def _extract_model_name(self, content: str) -> str:
         """Extract model name from package, object, or class definitions."""
         # Try object name first
-        object_match = re.search(r'object\s+(\w+)', content)
+        object_match = re.search(r"object\s+(\w+)", content)
         if object_match:
             return object_match.group(1)
 
         # Try class name
-        class_match = re.search(r'class\s+(\w+)', content)
+        class_match = re.search(r"class\s+(\w+)", content)
         if class_match:
             return class_match.group(1)
 
         # Try package name
-        package_match = re.search(r'package\s+([\w.]+)', content)
+        package_match = re.search(r"package\s+([\w.]+)", content)
         if package_match:
-            return package_match.group(1).split('.')[-1]
+            return package_match.group(1).split(".")[-1]
 
         return "Scala GNN Model"
 
     def _parse_scala_constructs(self, content: str, model: GNNInternalRepresentation):
         """Parse general Scala constructs for variables and types."""
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         for i, line in enumerate(lines):
             self.current_line = i + 1
             line = line.strip()
 
-            if not line or line.startswith('//') or line.startswith('/*'):
+            if not line or line.startswith("//") or line.startswith("/*"):
                 continue
 
             # Parse case classes as potential variables
-            if line.startswith('case class'):
+            if line.startswith("case class"):
                 variable = self._parse_case_class(line)
                 if variable:
                     model.variables.append(variable)
 
             # Parse val definitions
-            elif line.startswith('val '):
+            elif line.startswith("val "):
                 variable = self._parse_val_definition(line)
                 if variable:
                     model.variables.append(variable)
 
             # Parse type aliases
-            elif line.startswith('type '):
+            elif line.startswith("type "):
                 self._parse_type_alias(line, model)
 
     def _parse_case_class(self, line: str) -> Optional[Variable]:
         """Parse a case class definition as a variable."""
         try:
             # Extract case class name and parameters
-            match = re.match(r'case class\s+(\w+)\s*\(([^)]*)\)', line)
+            match = re.match(r"case class\s+(\w+)\s*\(([^)]*)\)", line)
             if not match:
                 return None
 
@@ -278,7 +286,7 @@ class ScalaGNNParser(BaseGNNParser):
                 var_type=var_type,
                 dimensions=dimensions,
                 data_type=data_type,
-                description=f"Scala case class: {line}"
+                description=f"Scala case class: {line}",
             )
 
         except Exception as e:
@@ -289,7 +297,7 @@ class ScalaGNNParser(BaseGNNParser):
         """Parse a val definition as a variable."""
         try:
             # Extract val name and type
-            match = re.match(r'val\s+(\w+)\s*:\s*([^=]+)', line)
+            match = re.match(r"val\s+(\w+)\s*:\s*([^=]+)", line)
             if not match:
                 return None
 
@@ -314,7 +322,7 @@ class ScalaGNNParser(BaseGNNParser):
                 var_type=var_type,
                 dimensions=dimensions,
                 data_type=data_type,
-                description=f"Scala val: {line}"
+                description=f"Scala val: {line}",
             )
 
         except Exception as e:
@@ -324,18 +332,20 @@ class ScalaGNNParser(BaseGNNParser):
     def _parse_type_alias(self, line: str, model: GNNInternalRepresentation):
         """Parse a type alias definition."""
         try:
-            match = re.match(r'type\s+(\w+)\s*=\s*(.+)', line)
+            match = re.match(r"type\s+(\w+)\s*=\s*(.+)", line)
             if match:
                 type_name = match.group(1)
                 type_def = match.group(2).strip()
 
                 # Store as extension
-                model.extensions.setdefault('type_aliases', {})[type_name] = type_def
+                model.extensions.setdefault("type_aliases", {})[type_name] = type_def
 
         except Exception as e:
             logger.warning(f"Failed to parse type alias '{line}': {e}")
 
-    def _parse_active_inference_components(self, content: str, model: GNNInternalRepresentation):
+    def _parse_active_inference_components(
+        self, content: str, model: GNNInternalRepresentation
+    ):
         """Parse Active Inference specific components."""
         for component, pattern in self.active_inference_patterns.items():
             matches = pattern.finditer(content)
@@ -344,29 +354,39 @@ class ScalaGNNParser(BaseGNNParser):
                 params_str = match.group(1)
                 self._process_ai_component(component, params_str, model)
 
-    def _process_ai_component(self, component_type: str, params_str: str,
-                            model: GNNInternalRepresentation):
+    def _process_ai_component(
+        self, component_type: str, params_str: str, model: GNNInternalRepresentation
+    ):
         """Process a specific Active Inference component."""
         try:
-            if component_type == 'state_space':
+            if component_type == "state_space":
                 self._parse_state_space_scala(params_str, model)
-            elif component_type == 'observation_space':
+            elif component_type == "observation_space":
                 self._parse_observation_space_scala(params_str, model)
-            elif component_type == 'action_space':
+            elif component_type == "action_space":
                 self._parse_action_space_scala(params_str, model)
-            elif component_type in ['likelihood', 'transition', 'preferences', 'priors']:
+            elif component_type in [
+                "likelihood",
+                "transition",
+                "preferences",
+                "priors",
+            ]:
                 self._parse_ai_mapping(component_type, params_str, model)
 
         except Exception as e:
             logger.warning(f"Failed to process AI component '{component_type}': {e}")
 
-    def _parse_state_space_scala(self, params_str: str, model: GNNInternalRepresentation):
+    def _parse_state_space_scala(
+        self, params_str: str, model: GNNInternalRepresentation
+    ):
         """Parse StateSpace definition from Scala."""
         # Extract factors and dimensions
-        factors_match = re.search(r'factors\s*=\s*List\(([^)]+)\)', params_str)
+        factors_match = re.search(r"factors\s*=\s*List\(([^)]+)\)", params_str)
         if factors_match:
             factors_str = factors_match.group(1)
-            factor_names = [name.strip().strip('"\'') for name in factors_str.split(',')]
+            factor_names = [
+                name.strip().strip("\"'") for name in factors_str.split(",")
+            ]
 
             for factor_name in factor_names:
                 if factor_name:
@@ -374,17 +394,21 @@ class ScalaGNNParser(BaseGNNParser):
                         name=normalize_variable_name(factor_name),
                         var_type=VariableType.HIDDEN_STATE,
                         dimensions=[2],  # Default dimension
-                        data_type=DataType.CATEGORICAL
+                        data_type=DataType.CATEGORICAL,
                     )
                     model.variables.append(variable)
 
-    def _parse_observation_space_scala(self, params_str: str, model: GNNInternalRepresentation):
+    def _parse_observation_space_scala(
+        self, params_str: str, model: GNNInternalRepresentation
+    ):
         """Parse ObservationSpace definition from Scala."""
         # Extract modalities
-        modalities_match = re.search(r'modalities\s*=\s*List\(([^)]+)\)', params_str)
+        modalities_match = re.search(r"modalities\s*=\s*List\(([^)]+)\)", params_str)
         if modalities_match:
             modalities_str = modalities_match.group(1)
-            modality_names = [name.strip().strip('"\'') for name in modalities_str.split(',')]
+            modality_names = [
+                name.strip().strip("\"'") for name in modalities_str.split(",")
+            ]
 
             for modality_name in modality_names:
                 if modality_name:
@@ -392,17 +416,21 @@ class ScalaGNNParser(BaseGNNParser):
                         name=normalize_variable_name(modality_name),
                         var_type=VariableType.OBSERVATION,
                         dimensions=[2],  # Default dimension
-                        data_type=DataType.CATEGORICAL
+                        data_type=DataType.CATEGORICAL,
                     )
                     model.variables.append(variable)
 
-    def _parse_action_space_scala(self, params_str: str, model: GNNInternalRepresentation):
+    def _parse_action_space_scala(
+        self, params_str: str, model: GNNInternalRepresentation
+    ):
         """Parse ActionSpace definition from Scala."""
         # Extract controls
-        controls_match = re.search(r'controls\s*=\s*List\(([^)]+)\)', params_str)
+        controls_match = re.search(r"controls\s*=\s*List\(([^)]+)\)", params_str)
         if controls_match:
             controls_str = controls_match.group(1)
-            control_names = [name.strip().strip('"\'') for name in controls_str.split(',')]
+            control_names = [
+                name.strip().strip("\"'") for name in controls_str.split(",")
+            ]
 
             for control_name in control_names:
                 if control_name:
@@ -410,92 +438,103 @@ class ScalaGNNParser(BaseGNNParser):
                         name=normalize_variable_name(control_name),
                         var_type=VariableType.ACTION,
                         dimensions=[2],  # Default dimension
-                        data_type=DataType.CATEGORICAL
+                        data_type=DataType.CATEGORICAL,
                     )
                     model.variables.append(variable)
 
-    def _parse_ai_mapping(self, mapping_type: str, params_str: str,
-                         model: GNNInternalRepresentation):
+    def _parse_ai_mapping(
+        self, mapping_type: str, params_str: str, model: GNNInternalRepresentation
+    ):
         """Parse Active Inference mapping (A, B, C, D matrices)."""
         # Store mapping information as parameters
         parameter = Parameter(
             name=f"{mapping_type}_mapping",
             value=params_str,
-            description=f"Scala {mapping_type} mapping definition"
+            description=f"Scala {mapping_type} mapping definition",
         )
         model.parameters.append(parameter)
 
-    def _parse_categorical_structures(self, content: str, model: GNNInternalRepresentation):
+    def _parse_categorical_structures(
+        self, content: str, model: GNNInternalRepresentation
+    ):
         """Parse categorical theory structures from Scala code."""
         # Look for functor definitions
-        functor_pattern = re.compile(r'implicit\s+def\s+(\w+Functor).*?Functor\[([^\]]+)\]')
+        functor_pattern = re.compile(
+            r"implicit\s+def\s+(\w+Functor).*?Functor\[([^\]]+)\]"
+        )
         functors = functor_pattern.findall(content)
 
         for functor_name, functor_type in functors:
-            model.extensions.setdefault('functors', {})[functor_name] = functor_type
+            model.extensions.setdefault("functors", {})[functor_name] = functor_type
 
         # Look for natural transformations
-        nat_trans_pattern = re.compile(r'def\s+(\w+)\s*:\s*([^=]+)~>\s*([^=]+)')
+        nat_trans_pattern = re.compile(r"def\s+(\w+)\s*:\s*([^=]+)~>\s*([^=]+)")
         nat_trans = nat_trans_pattern.findall(content)
 
         for trans_name, from_type, to_type in nat_trans:
-            model.extensions.setdefault('natural_transformations', {})[trans_name] = {
-                'from': from_type.strip(),
-                'to': to_type.strip()
+            model.extensions.setdefault("natural_transformations", {})[trans_name] = {
+                "from": from_type.strip(),
+                "to": to_type.strip(),
             }
 
         # Look for monads
-        monad_pattern = re.compile(r'implicit\s+def\s+(\w+Monad).*?Monad\[([^\]]+)\]')
+        monad_pattern = re.compile(r"implicit\s+def\s+(\w+Monad).*?Monad\[([^\]]+)\]")
         monads = monad_pattern.findall(content)
 
         for monad_name, monad_type in monads:
-            model.extensions.setdefault('monads', {})[monad_name] = monad_type
+            model.extensions.setdefault("monads", {})[monad_name] = monad_type
 
-    def _parse_equations_from_scala(self, content: str, model: GNNInternalRepresentation):
+    def _parse_equations_from_scala(
+        self, content: str, model: GNNInternalRepresentation
+    ):
         """Parse mathematical equations from Scala comments and definitions."""
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         for i, line in enumerate(lines):
             line = line.strip()
 
             # Look for equations in comments
-            if '//' in line:
-                comment = line.split('//', 1)[1].strip()
+            if "//" in line:
+                comment = line.split("//", 1)[1].strip()
                 if self._contains_equation(comment):
                     equation = Equation(
                         label=None,
                         content=comment,
                         format="ascii",
-                        description=f"From Scala comment at line {i+1}"
+                        description=f"From Scala comment at line {i + 1}",
                     )
                     model.equations.append(equation)
 
             # Look for equations in multiline comments
-            elif '/*' in line and '*/' in line:
-                comment = line.split('/*', 1)[1].split('*/', 1)[0].strip()
+            elif "/*" in line and "*/" in line:
+                comment = line.split("/*", 1)[1].split("*/", 1)[0].strip()
                 if self._contains_equation(comment):
                     equation = Equation(
                         label=None,
                         content=comment,
                         format="ascii",
-                        description=f"From Scala comment at line {i+1}"
+                        description=f"From Scala comment at line {i + 1}",
                     )
                     model.equations.append(equation)
 
     def _contains_equation(self, text: str) -> bool:
         """Check if text contains mathematical equations."""
-        equation_indicators = ['=', '∝', '∀', '∃', '∈', '→', '⟹', '∑', '∏', '∫']
+        equation_indicators = ["=", "∝", "∀", "∃", "∈", "→", "⟹", "∑", "∏", "∫"]
         return any(indicator in text for indicator in equation_indicators)
 
     def _extract_dimensions_from_params(self, params_str: str) -> List[int]:
         """Extract dimensions from case class parameters."""
         # Look for dimension-related parameters
-        dim_patterns = [r'dim\s*:\s*Int', r'dimensions\s*:\s*List\[Int\]', r'size\s*:\s*Int']
+        dim_patterns = [
+            r"dim\s*:\s*Int",
+            r"dimensions\s*:\s*List\[Int\]",
+            r"size\s*:\s*Int",
+        ]
 
         for pattern in dim_patterns:
             if re.search(pattern, params_str):
                 # Try to extract numeric values
-                numbers = re.findall(r'\b\d+\b', params_str)
+                numbers = re.findall(r"\b\d+\b", params_str)
                 if numbers:
                     return [int(n) for n in numbers]
 
@@ -504,17 +543,19 @@ class ScalaGNNParser(BaseGNNParser):
     def _extract_dimensions_from_type(self, type_str: str) -> List[int]:
         """Extract dimensions from Scala type information."""
         # Look for Matrix[Fin m, Fin n] patterns
-        matrix_match = re.search(r'Matrix\s*\(\s*Fin\s+(\d+)\s*,\s*Fin\s+(\d+)\s*\)', type_str)
+        matrix_match = re.search(
+            r"Matrix\s*\(\s*Fin\s+(\d+)\s*,\s*Fin\s+(\d+)\s*\)", type_str
+        )
         if matrix_match:
             return [int(matrix_match.group(1)), int(matrix_match.group(2))]
 
         # Look for Vector[Fin n] patterns
-        vector_match = re.search(r'Vector\s*\[\s*Fin\s+(\d+)\s*\]', type_str)
+        vector_match = re.search(r"Vector\s*\[\s*Fin\s+(\d+)\s*\]", type_str)
         if vector_match:
             return [int(vector_match.group(1))]
 
         # Look for numeric literals
-        numbers = re.findall(r'\b\d+\b', type_str)
+        numbers = re.findall(r"\b\d+\b", type_str)
         if numbers:
             return [int(n) for n in numbers[:2]]  # Take up to 2 dimensions
 
@@ -524,15 +565,15 @@ class ScalaGNNParser(BaseGNNParser):
         """Convert Scala type to GNN DataType."""
         type_str = type_str.lower()
 
-        if 'double' in type_str or 'float' in type_str or 'real' in type_str:
+        if "double" in type_str or "float" in type_str or "real" in type_str:
             return DataType.FLOAT
-        elif 'int' in type_str or 'long' in type_str:
+        elif "int" in type_str or "long" in type_str:
             return DataType.INTEGER
-        elif 'boolean' in type_str or 'bool' in type_str:
+        elif "boolean" in type_str or "bool" in type_str:
             return DataType.BINARY
-        elif 'string' in type_str:
+        elif "string" in type_str:
             return DataType.CATEGORICAL
-        elif 'complex' in type_str:
+        elif "complex" in type_str:
             return DataType.COMPLEX
         else:
             return DataType.CATEGORICAL  # Default for categorical specs
@@ -540,14 +581,31 @@ class ScalaGNNParser(BaseGNNParser):
     def _is_ai_related_name(self, name: str) -> bool:
         """Check if a name is related to Active Inference."""
         ai_keywords = [
-            's_f', 'o_m', 'u_c', 'pi_c', 'a_m', 'b_f', 'c_m', 'd_f',
-            'state', 'observation', 'action', 'policy', 'belief',
-            'likelihood', 'transition', 'preference', 'prior',
-            'efe', 'vfe', 'free_energy'
+            "s_f",
+            "o_m",
+            "u_c",
+            "pi_c",
+            "a_m",
+            "b_f",
+            "c_m",
+            "d_f",
+            "state",
+            "observation",
+            "action",
+            "policy",
+            "belief",
+            "likelihood",
+            "transition",
+            "preference",
+            "prior",
+            "efe",
+            "vfe",
+            "free_energy",
         ]
 
         name_lower = name.lower()
         return any(keyword in name_lower for keyword in ai_keywords)
 
+
 # Export the parser class
-__all__ = ['ScalaGNNParser']
+__all__ = ["ScalaGNNParser"]

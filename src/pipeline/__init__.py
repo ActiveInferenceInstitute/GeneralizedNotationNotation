@@ -31,13 +31,14 @@ __description__ = "GNN pipeline orchestration and execution"
 
 # Feature availability flags
 FEATURES = {
-    'pipeline_orchestration': True,
-    'step_execution': True,
-    'configuration_management': True,
-    'performance_monitoring': True,
-    'error_handling': True,
-    'dependency_validation': True
+    "pipeline_orchestration": True,
+    "step_execution": True,
+    "configuration_management": True,
+    "performance_monitoring": True,
+    "error_handling": True,
+    "dependency_validation": True,
 }
+
 
 class PipelineOrchestrator:
     """Small programmatic adapter over the real ``main.py`` orchestrator."""
@@ -66,7 +67,7 @@ class PipelineOrchestrator:
 
     def get_pipeline_steps(self) -> list[str]:
         cfg = get_pipeline_config()
-        steps = cfg.get('steps') if isinstance(cfg, dict) else None
+        steps = cfg.get("steps") if isinstance(cfg, dict) else None
         if steps is None:
             steps = list(STEP_METADATA.keys())
         return list(steps)
@@ -75,7 +76,10 @@ class PipelineOrchestrator:
         data = pipeline_data or {}
         result = run_pipeline(
             pipeline_data=data,
-            target_dir=data.get("target_dir") or data.get("input_dir") or data.get("temp_dir") or self.target_dir,
+            target_dir=data.get("target_dir")
+            or data.get("input_dir")
+            or data.get("temp_dir")
+            or self.target_dir,
             output_dir=data.get("output_dir") or self.output_dir,
             steps=data.get("steps", self.steps),
             verbose=bool(data.get("verbose", self.verbose)),
@@ -83,6 +87,7 @@ class PipelineOrchestrator:
         result.setdefault("status", "SUCCESS" if result.get("success") else "FAILED")
         result.setdefault("executed", len(result.get("steps_executed", [])))
         return result
+
 
 class PipelineStep:
     """Programmatic adapter for executing one registered pipeline step."""
@@ -114,6 +119,7 @@ class PipelineStep:
             self.name == key.split("_", 1)[-1] for key in STEP_METADATA
         )
 
+
 def get_module_info() -> dict:
     """Return pipeline module metadata for composability and MCP discovery."""
     return {
@@ -121,44 +127,44 @@ def get_module_info() -> dict:
         "description": "GNN pipeline orchestration and execution",
         "features": FEATURES,
         "pipeline_steps": list(STEP_METADATA.keys()),
-        "author": "Active Inference Institute"
+        "author": "Active Inference Institute",
     }
+
 
 def validate_pipeline_step(step_name: str) -> bool:
     """Validate that a pipeline step configuration is well-formed."""
     return step_name in STEP_METADATA
 
+
 def discover_pipeline_steps() -> list[str]:
     """Discover all available pipeline step modules in the src directory."""
     return list(STEP_METADATA.keys())
 
+
 # Main API functions
 __all__ = [
     # Configuration
-    'get_pipeline_config',
-    'set_pipeline_config',
-    'PipelineConfig',
-    'StepConfig',
-    'STEP_METADATA',
-    'get_output_dir_for_script',
-
+    "get_pipeline_config",
+    "set_pipeline_config",
+    "PipelineConfig",
+    "StepConfig",
+    "STEP_METADATA",
+    "get_output_dir_for_script",
     # Health Check
-    'run_enhanced_health_check',
-    'EnhancedHealthChecker',
-
+    "run_enhanced_health_check",
+    "EnhancedHealthChecker",
     # Execution
-    'run_pipeline',
-    'get_pipeline_status',
-    'validate_pipeline_config',
-    'get_pipeline_info',
-    'create_pipeline_config',
-    'execute_pipeline_step',
-    'execute_pipeline_steps',
-    'StepExecutionResult',
-    'PipelineOrchestrator',
-    'PipelineStep',
-
+    "run_pipeline",
+    "get_pipeline_status",
+    "validate_pipeline_config",
+    "get_pipeline_info",
+    "create_pipeline_config",
+    "execute_pipeline_step",
+    "execute_pipeline_steps",
+    "StepExecutionResult",
+    "PipelineOrchestrator",
+    "PipelineStep",
     # Metadata
-    'FEATURES',
-    '__version__'
+    "FEATURES",
+    "__version__",
 ]

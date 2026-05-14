@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class DiscoveryResult:
     """Result of file discovery operation."""
+
     files_found: List[Path]
     analysis_time: float
     file_types: Dict[str, int]
@@ -28,21 +29,21 @@ class DiscoveryResult:
 class FileDiscoveryStrategy:
     """
     Intelligent file discovery strategy for GNN models.
-    
+
     Performs content-aware discovery and basic analysis
     to identify potential GNN files.
     """
 
     def __init__(self):
-        self.target_extensions = ['.md', '.json', '.xml', '.yaml', '.pkl']
+        self.target_extensions = [".md", ".json", ".xml", ".yaml", ".pkl"]
         self.gnn_indicators = [
-            '## ModelName',
-            '## StateSpaceBlock',
-            '## Connections',
-            'GNN',
-            'model_name',
-            'variables',
-            'connections'
+            "## ModelName",
+            "## StateSpaceBlock",
+            "## Connections",
+            "GNN",
+            "model_name",
+            "variables",
+            "connections",
         ]
 
     def configure(self, target_extensions: Optional[List[str]] = None, **kwargs):
@@ -53,10 +54,10 @@ class FileDiscoveryStrategy:
     def discover(self, target_dir: Path) -> List[Path]:
         """
         Discover GNN files in target directory.
-        
+
         Args:
             target_dir: Directory to search
-            
+
         Returns:
             List of discovered file paths
         """
@@ -80,23 +81,25 @@ class FileDiscoveryStrategy:
                 potential_gnn_files.append(file_path)
 
         discovery_time = time.time() - start_time
-        logger.info(f"Discovery completed: {len(potential_gnn_files)}/{len(all_files)} potential GNN files in {discovery_time:.3f}s")
+        logger.info(
+            f"Discovery completed: {len(potential_gnn_files)}/{len(all_files)} potential GNN files in {discovery_time:.3f}s"
+        )
 
         return potential_gnn_files
 
     def _analyze_file_content(self, file_path: Path) -> bool:
         """
         Analyze file content for GNN indicators.
-        
+
         Args:
             file_path: Path to analyze
-            
+
         Returns:
             bool: Whether file appears to be a GNN file
         """
         try:
             # Read file content
-            content = file_path.read_text(encoding='utf-8', errors='ignore')
+            content = file_path.read_text(encoding="utf-8", errors="ignore")
 
             # Check for GNN indicators
             indicators_found = 0

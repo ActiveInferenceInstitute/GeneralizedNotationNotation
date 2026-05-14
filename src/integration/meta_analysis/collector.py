@@ -24,11 +24,11 @@ class SweepRecord:
     framework: str
 
     # Sweep parameters (extracted from model_name, e.g. "pymdp_scaling_N3_T100")
-    num_states: Optional[int] = None       # N dimension
-    num_timesteps: Optional[int] = None    # T dimension
+    num_states: Optional[int] = None  # N dimension
+    num_timesteps: Optional[int] = None  # T dimension
 
     # Execution metrics
-    execution_time: float = 0.0            # seconds (median when benchmark repeats > 1)
+    execution_time: float = 0.0  # seconds (median when benchmark repeats > 1)
     execution_time_std: Optional[float] = None
     execution_time_mean: Optional[float] = None
     execution_benchmark_repeats: int = 1
@@ -89,7 +89,7 @@ class SweepDataCollector:
         self,
         execute_output_dir: Path,
         render_output_dir: Optional[Path] = None,
-        logger: Optional[logging.Logger] = None
+        logger: Optional[logging.Logger] = None,
     ):
         self.execute_output_dir = Path(execute_output_dir)
         self.render_output_dir = Path(render_output_dir) if render_output_dir else None
@@ -145,12 +145,15 @@ class SweepDataCollector:
 
             n, t = _parse_sweep_params(model_name)
 
-            record = records.setdefault(key, SweepRecord(
-                model_name=model_name,
-                framework=framework,
-                num_states=n,
-                num_timesteps=t,
-            ))
+            record = records.setdefault(
+                key,
+                SweepRecord(
+                    model_name=model_name,
+                    framework=framework,
+                    num_states=n,
+                    num_timesteps=t,
+                ),
+            )
 
             record.execution_time = float(detail.get("execution_time", 0.0))
             record.execution_time_std = detail.get("execution_time_std")
@@ -158,11 +161,15 @@ class SweepDataCollector:
                 record.execution_time_std = float(record.execution_time_std)
             mean_v = detail.get("execution_time_mean")
             record.execution_time_mean = float(mean_v) if mean_v is not None else None
-            record.execution_benchmark_repeats = int(detail.get("execution_benchmark_repeats", 1))
+            record.execution_benchmark_repeats = int(
+                detail.get("execution_benchmark_repeats", 1)
+            )
             samples = detail.get("execution_time_samples")
             if isinstance(samples, list):
                 record.execution_time_samples = [float(x) for x in samples]
-            record.success = detail.get("success", False) and not detail.get("skipped", False)
+            record.success = detail.get("success", False) and not detail.get(
+                "skipped", False
+            )
             record.timed_out = "timed out" in detail.get("error", "").lower()
 
     def _collect_from_execution_logs(
@@ -191,12 +198,15 @@ class SweepDataCollector:
 
             n, t = _parse_sweep_params(model_name)
 
-            record = records.setdefault(key, SweepRecord(
-                model_name=model_name,
-                framework=framework,
-                num_states=n,
-                num_timesteps=t,
-            ))
+            record = records.setdefault(
+                key,
+                SweepRecord(
+                    model_name=model_name,
+                    framework=framework,
+                    num_states=n,
+                    num_timesteps=t,
+                ),
+            )
 
             # Only update if we don't already have valid runtime data
             if record.execution_time <= 0:
@@ -208,12 +218,16 @@ class SweepDataCollector:
                 mean_v = data.get("execution_time_mean")
                 if mean_v is not None:
                     record.execution_time_mean = float(mean_v)
-                record.execution_benchmark_repeats = int(data.get("execution_benchmark_repeats", 1))
+                record.execution_benchmark_repeats = int(
+                    data.get("execution_benchmark_repeats", 1)
+                )
                 samples = data.get("execution_time_samples")
                 if isinstance(samples, list):
                     record.execution_time_samples = [float(x) for x in samples]
 
-    def _collect_render_metrics(self, records: Dict[tuple[str, str], SweepRecord]) -> None:
+    def _collect_render_metrics(
+        self, records: Dict[tuple[str, str], SweepRecord]
+    ) -> None:
         """Harvest lines of code and other render-time metrics."""
         summary_path = self.render_output_dir / "render_processing_summary.json"
         if not summary_path.exists():
@@ -231,11 +245,11 @@ class SweepDataCollector:
                 # We need to find the right record. GNN path usually contains the model name.
                 # Or we can use the output file name if we can match it.
                 # For scaling study, model_name is usually the folder name or from file_results keys.
-                
+
                 # Extract model name from GNN path (filename without extension)
                 model_name = Path(gnn_path).stem
                 key = (model_name, fw)
-                
+
                 if key in records:
                     metrics = fw_res.get("code_metrics", {})
                     records[key].lines_of_code = metrics.get("lines_of_code")
@@ -244,7 +258,9 @@ class SweepDataCollector:
                     # Try fuzzy match if exact model_name doesn't match
                     # (sometimes model_name in execute summary is slightly different)
                     for (r_model, r_fw), record in records.items():
-                        if r_fw == fw and (r_model in model_name or model_name in r_model):
+                        if r_fw == fw and (
+                            r_model in model_name or model_name in r_model
+                        ):
                             metrics = fw_res.get("code_metrics", {})
                             record.lines_of_code = metrics.get("lines_of_code")
                             record.total_lines = metrics.get("total_lines")
@@ -278,12 +294,15 @@ class SweepDataCollector:
             key = (model_name, framework)
             n, t = _parse_sweep_params(model_name)
 
-            record = records.setdefault(key, SweepRecord(
-                model_name=model_name,
-                framework=framework,
-                num_states=n,
-                num_timesteps=t or data.get("num_timesteps"),
-            ))
+            record = records.setdefault(
+                key,
+                SweepRecord(
+                    model_name=model_name,
+                    framework=framework,
+                    num_states=n,
+                    num_timesteps=t or data.get("num_timesteps"),
+                ),
+            )
 
             record.simulation_results_path = str(sim_file)
             record.success = record.success or data.get("success", False)
@@ -314,7 +333,8 @@ class SweepDataCollector:
             if observations and true_states:
                 matched = min(len(observations), len(true_states))
                 correct = sum(
-                    1 for o, s in zip(observations[:matched], true_states[:matched])
+                    1
+                    for o, s in zip(observations[:matched], true_states[:matched])
                     if o == s
                 )
                 record.final_accuracy = correct / matched if matched > 0 else None
@@ -323,6 +343,7 @@ class SweepDataCollector:
             beliefs = data.get("beliefs", [])
             if beliefs:
                 import math
+
                 window = max(1, len(beliefs) // 10)
                 entropies = []
                 for belief in beliefs[-window:]:

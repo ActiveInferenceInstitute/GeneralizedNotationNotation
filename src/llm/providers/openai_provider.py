@@ -23,6 +23,7 @@ from .base_provider import (
 
 logger = logging.getLogger(__name__)
 
+
 class OpenAIProvider(BaseLLMProvider):
     """OpenAI implementation of the LLM provider interface."""
 
@@ -33,7 +34,7 @@ class OpenAIProvider(BaseLLMProvider):
         "gpt-4-turbo",
         "gpt-4",
         "gpt-3.5-turbo",
-        "gpt-3.5-turbo-16k"
+        "gpt-3.5-turbo-16k",
     )
 
     DEFAULT_MODEL = "gpt-4o-mini"
@@ -41,15 +42,15 @@ class OpenAIProvider(BaseLLMProvider):
     def __init__(self, api_key: Optional[str] = None, **kwargs):
         """
         Initialize OpenAI provider.
-        
+
         Args:
             api_key: OpenAI API key (if None, will try environment variables)
             **kwargs: Additional OpenAI-specific configuration
         """
         super().__init__(api_key, **kwargs)
-        self.api_key = api_key or os.getenv('OPENAI_API_KEY')
-        self.organization = kwargs.get('organization') or os.getenv('OPENAI_ORG_ID')
-        self.base_url = kwargs.get('base_url')
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
+        self.organization = kwargs.get("organization") or os.getenv("OPENAI_ORG_ID")
+        self.base_url = kwargs.get("base_url")
 
     @property
     def provider_type(self) -> ProviderType:
@@ -69,26 +70,26 @@ class OpenAIProvider(BaseLLMProvider):
     def initialize(self) -> bool:
         """
         Initialize the OpenAI client.
-        
+
         Returns:
             True if initialization successful, False otherwise
         """
         if not self.api_key:
-            logger.debug("OpenAI API key not provided - OpenAI provider will not be available")
+            logger.debug(
+                "OpenAI API key not provided - OpenAI provider will not be available"
+            )
             return False
 
         try:
             import openai
 
-            client_kwargs = {
-                'api_key': self.api_key
-            }
+            client_kwargs = {"api_key": self.api_key}
 
             if self.organization:
-                client_kwargs['organization'] = self.organization
+                client_kwargs["organization"] = self.organization
 
             if self.base_url:
-                client_kwargs['base_url'] = self.base_url
+                client_kwargs["base_url"] = self.base_url
 
             self.client = openai.AsyncOpenAI(**client_kwargs)
             self._is_initialized = True
@@ -97,19 +98,23 @@ class OpenAIProvider(BaseLLMProvider):
             return True
 
         except ImportError:
-            logger.debug("OpenAI library not installed - OpenAI provider will not be available")
+            logger.debug(
+                "OpenAI library not installed - OpenAI provider will not be available"
+            )
             return False
         except Exception as e:
-            logger.debug(f"OpenAI provider initialization issue (will use other providers if available): {e}")
+            logger.debug(
+                f"OpenAI provider initialization issue (will use other providers if available): {e}"
+            )
             return False
 
     def validate_config(self, config: LLMConfig) -> bool:
         """
         Validate OpenAI-specific configuration.
-        
+
         Args:
             config: LLM configuration to validate
-            
+
         Returns:
             True if configuration is valid, False otherwise
         """
@@ -132,17 +137,15 @@ class OpenAIProvider(BaseLLMProvider):
         return True
 
     async def generate_response(
-        self,
-        messages: List[LLMMessage],
-        config: Optional[LLMConfig] = None
+        self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> LLMResponse:
         """
         Generate a response using OpenAI API.
-        
+
         Args:
             messages: List of messages for the conversation
             config: Optional configuration parameters
-            
+
         Returns:
             Standardized LLM response
         """
@@ -161,7 +164,7 @@ class OpenAIProvider(BaseLLMProvider):
             {
                 "role": msg.role,
                 "content": msg.content,
-                **({"name": msg.name} if msg.name else {})
+                **({"name": msg.name} if msg.name else {}),
             }
             for msg in messages
         ]
@@ -170,7 +173,7 @@ class OpenAIProvider(BaseLLMProvider):
         request_params = {
             "model": config.model or self.default_model,
             "messages": openai_messages,
-            "stream": False
+            "stream": False,
         }
 
         # Add optional parameters
@@ -191,11 +194,11 @@ class OpenAIProvider(BaseLLMProvider):
             choice = response.choices[0]
             usage_dict = None
 
-            if hasattr(response, 'usage') and response.usage:
+            if hasattr(response, "usage") and response.usage:
                 usage_dict = {
                     "prompt_tokens": response.usage.prompt_tokens,
                     "completion_tokens": response.usage.completion_tokens,
-                    "total_tokens": response.usage.total_tokens
+                    "total_tokens": response.usage.total_tokens,
                 }
 
             return LLMResponse(
@@ -207,8 +210,8 @@ class OpenAIProvider(BaseLLMProvider):
                 metadata={
                     "response_id": response.id,
                     "created": response.created,
-                    "system_fingerprint": getattr(response, 'system_fingerprint', None)
-                }
+                    "system_fingerprint": getattr(response, "system_fingerprint", None),
+                },
             )
 
         except Exception as e:
@@ -216,17 +219,15 @@ class OpenAIProvider(BaseLLMProvider):
             raise
 
     async def generate_stream(
-        self,
-        messages: List[LLMMessage],
-        config: Optional[LLMConfig] = None
+        self, messages: List[LLMMessage], config: Optional[LLMConfig] = None
     ) -> AsyncGenerator[str, None]:
         """
         Generate a streaming response using OpenAI API.
-        
+
         Args:
             messages: List of messages for the conversation
             config: Optional configuration parameters
-            
+
         Yields:
             Chunks of the response content
         """
@@ -247,7 +248,7 @@ class OpenAIProvider(BaseLLMProvider):
             {
                 "role": msg.role,
                 "content": msg.content,
-                **({"name": msg.name} if msg.name else {})
+                **({"name": msg.name} if msg.name else {}),
             }
             for msg in messages
         ]
@@ -256,7 +257,7 @@ class OpenAIProvider(BaseLLMProvider):
         request_params = {
             "model": config.model or self.default_model,
             "messages": openai_messages,
-            "stream": True
+            "stream": True,
         }
 
         # Add optional parameters
@@ -283,17 +284,15 @@ class OpenAIProvider(BaseLLMProvider):
             raise
 
     async def get_embeddings(
-        self,
-        texts: List[str],
-        model: str = "text-embedding-ada-002"
+        self, texts: List[str], model: str = "text-embedding-ada-002"
     ) -> List[List[float]]:
         """
         Generate embeddings for text using OpenAI's embedding models.
-        
+
         Args:
             texts: List of texts to embed
             model: Embedding model to use
-            
+
         Returns:
             List of embedding vectors
         """
@@ -301,10 +300,7 @@ class OpenAIProvider(BaseLLMProvider):
             raise RuntimeError("OpenAI provider not initialized")
 
         try:
-            response = await self.client.embeddings.create(
-                input=texts,
-                model=model
-            )
+            response = await self.client.embeddings.create(input=texts, model=model)
 
             return [data.embedding for data in response.data]
 
@@ -314,7 +310,7 @@ class OpenAIProvider(BaseLLMProvider):
 
     async def close(self) -> None:
         """Close the OpenAI client connection."""
-        if self.client and hasattr(self.client, 'close'):
+        if self.client and hasattr(self.client, "close"):
             await self.client.close()
 
         self._is_initialized = False
@@ -336,7 +332,7 @@ class OpenAIProvider(BaseLLMProvider):
             )
 
         def _extract(result: Any) -> str:
-            return result.content if hasattr(result, 'content') else str(result)
+            return result.content if hasattr(result, "content") else str(result)
 
         try:
             result = asyncio.run(_run())

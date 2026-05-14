@@ -46,14 +46,16 @@ run_script = create_standardized_pipeline_script(
         "advanced_stats": {
             "flag": "--advanced-stats",
             "action": "store_true",
-            "help": "Enable advanced statistical distributions and extended visualizations"
+            "help": "Enable advanced statistical distributions and extended visualizations",
         }
-    }
+    },
 )
+
 
 def main() -> int:
     """Main entry point for the analysis step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

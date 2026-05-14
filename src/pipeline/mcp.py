@@ -20,15 +20,16 @@ from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
+
 def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
     """
     Get information about all available pipeline steps.
-    
+
     Returns:
         Dictionary containing pipeline step information.
     """
     try:
-        from .pipeline_config import STEP_METADATA, get_pipeline_config
+        from .config import STEP_METADATA, get_pipeline_config
 
         steps_info = {}
         for step_name, metadata in STEP_METADATA.items():
@@ -41,31 +42,29 @@ def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
                 "category": metadata.get("category", "General"),
                 "dependencies": metadata.get("dependencies", []),
                 "output_dir": metadata.get("output_dir", ""),
-                "version": metadata.get("version", "1.0.0")
+                "version": metadata.get("version", "1.0.0"),
             }
 
         return {
             "success": True,
             "total_steps": len(steps_info),
             "steps": steps_info,
-            "pipeline_config": get_pipeline_config()
+            "pipeline_config": get_pipeline_config(),
         }
     except Exception as e:
         logger.error(f"Error getting pipeline steps: {e}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
     """
     Get current pipeline execution status and statistics.
-    
+
     Returns:
         Dictionary containing pipeline status information.
     """
     try:
-        from .pipeline_config import get_pipeline_config
+        from .config import get_pipeline_config
 
         config = get_pipeline_config()
         output_dir = Path(config.get("output_dir", "output"))
@@ -84,7 +83,7 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
         for summary_file in summary_candidates:
             if summary_file.exists():
                 try:
-                    with open(summary_file, 'r') as f:
+                    with open(summary_file, "r") as f:
                         summary = json.load(f)
                     break
                 except (json.JSONDecodeError, OSError) as e:
@@ -97,11 +96,13 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
             log_files = list(logs_dir.glob("*.log"))
             log_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
             for log_file in log_files[:5]:  # Last 5 log files
-                recent_logs.append({
-                    "file": log_file.name,
-                    "size": log_file.stat().st_size,
-                    "modified": time.ctime(log_file.stat().st_mtime)
-                })
+                recent_logs.append(
+                    {
+                        "file": log_file.name,
+                        "size": log_file.stat().st_size,
+                        "modified": time.ctime(log_file.stat().st_mtime),
+                    }
+                )
 
         return {
             "success": True,
@@ -109,28 +110,26 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
             "execution_summary": summary,
             "recent_logs": recent_logs,
             "output_directory": str(output_dir),
-            "output_directory_exists": output_dir.exists()
+            "output_directory_exists": output_dir.exists(),
         }
     except Exception as e:
         logger.error(f"Error getting pipeline status: {e}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
     """
     Validate pipeline step dependencies and identify any issues.
-    
+
     Returns:
         Dictionary containing dependency validation results.
     """
     try:
-        from utils.validate_pipeline_dependencies import (
+        from utils.dependency_validator import (
             validate_pipeline_dependencies as validate_deps,
         )
 
-        from .pipeline_config import STEP_METADATA
+        from .config import STEP_METADATA
 
         validation_result = validate_deps()
 
@@ -146,10 +145,7 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
             # Check for missing dependencies
             for dep in deps:
                 if dep not in STEP_METADATA:
-                    missing_deps.append({
-                        "step": step_name,
-                        "missing_dependency": dep
-                    })
+                    missing_deps.append({"step": step_name, "missing_dependency": dep})
 
         return {
             "success": True,
@@ -158,24 +154,25 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
             "missing_dependencies": missing_deps,
             "circular_dependencies": circular_deps,
             "total_steps": len(STEP_METADATA),
-            "total_dependencies": sum(len(metadata.get("dependencies", [])) for metadata in STEP_METADATA.values())
+            "total_dependencies": sum(
+                len(metadata.get("dependencies", []))
+                for metadata in STEP_METADATA.values()
+            ),
         }
     except Exception as e:
         logger.error(f"Error validating pipeline dependencies: {e}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def get_pipeline_config_info(mcp_instance_ref) -> Dict[str, Any]:
     """
     Get detailed pipeline configuration information.
-    
+
     Returns:
         Dictionary containing pipeline configuration details.
     """
     try:
-        from .pipeline_config import get_pipeline_config
+        from .config import get_pipeline_config
 
         config = get_pipeline_config()
 
@@ -186,19 +183,17 @@ def get_pipeline_config_info(mcp_instance_ref) -> Dict[str, Any]:
             "output_directory": config.get("output_dir", "output"),
             "log_level": config.get("log_level", "INFO"),
             "parallel_execution": config.get("parallel_execution", False),
-            "max_workers": config.get("max_workers", 1)
+            "max_workers": config.get("max_workers", 1),
         }
     except Exception as e:
         logger.error(f"Error getting pipeline config info: {e}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        return {"success": False, "error": str(e)}
+
 
 def register_tools(mcp_instance: Any) -> None:
     """
     Register pipeline management tools with the MCP server.
-    
+
     Args:
         mcp_instance: The MCP instance to register tools with.
     """
@@ -222,28 +217,28 @@ def register_tools(mcp_instance: Any) -> None:
         name="get_pipeline_steps",
         function=get_pipeline_steps_tool,
         schema={},
-        description="Get information about all available pipeline steps, their metadata, and dependencies."
+        description="Get information about all available pipeline steps, their metadata, and dependencies.",
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_status",
         function=get_pipeline_status_tool,
         schema={},
-        description="Get current pipeline execution status, recent logs, and execution statistics."
+        description="Get current pipeline execution status, recent logs, and execution statistics.",
     )
 
     mcp_instance.register_tool(
         name="validate_pipeline_dependencies",
         function=validate_pipeline_dependencies_tool,
         schema={},
-        description="Validate pipeline step dependencies and identify missing or circular dependencies."
+        description="Validate pipeline step dependencies and identify missing or circular dependencies.",
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_config_info",
         function=get_pipeline_config_info_tool,
         schema={},
-        description="Get detailed pipeline configuration information and settings."
+        description="Get detailed pipeline configuration information and settings.",
     )
 
     logger.info("Successfully registered pipeline MCP tools")

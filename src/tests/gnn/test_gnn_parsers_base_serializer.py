@@ -1,4 +1,5 @@
 """Tests for BaseGNNSerializer shared utility methods."""
+
 import json
 
 import pytest
@@ -32,6 +33,7 @@ def _make_model(**kwargs) -> GNNInternalRepresentation:
 
 # ── _serialize_time_spec ───────────────────────────────────────────────────
 
+
 class TestSerializeTimeSpec:
     def setup_method(self):
         self.s = _MinimalSerializer()
@@ -43,8 +45,12 @@ class TestSerializeTimeSpec:
         assert self.s._serialize_time_spec("") == {}
 
     def test_populated_time_spec(self):
-        ts = TimeSpecification(time_type="Dynamic", discretization="DiscreteTime",
-                               horizon=10, step_size=0.1)
+        ts = TimeSpecification(
+            time_type="Dynamic",
+            discretization="DiscreteTime",
+            horizon=10,
+            step_size=0.1,
+        )
         result = self.s._serialize_time_spec(ts)
         assert result["time_type"] == "Dynamic"
         assert result["discretization"] == "DiscreteTime"
@@ -53,14 +59,17 @@ class TestSerializeTimeSpec:
 
     def test_defaults_via_getattr(self):
         """Objects without explicit attrs fall back to defaults."""
+
         class Minimal:
             pass
+
         result = self.s._serialize_time_spec(Minimal())
         assert result["time_type"] == "Static"
         assert result["discretization"] is None
 
 
 # ── _serialize_ontology_mappings ───────────────────────────────────────────
+
 
 class TestSerializeOntologyMappings:
     def setup_method(self):
@@ -73,8 +82,9 @@ class TestSerializeOntologyMappings:
         assert self.s._serialize_ontology_mappings([]) == []
 
     def test_mapping_with_dict_protocol(self):
-        om = OntologyMapping(variable_name="s", ontology_term="HiddenState",
-                             description="latent state")
+        om = OntologyMapping(
+            variable_name="s", ontology_term="HiddenState", description="latent state"
+        )
         result = self.s._serialize_ontology_mappings([om])
         assert len(result) == 1
         assert result[0]["variable_name"] == "s"
@@ -87,6 +97,7 @@ class TestSerializeOntologyMappings:
 
 
 # ── _create_embedded_model_data ────────────────────────────────────────────
+
 
 class TestCreateEmbeddedModelData:
     def setup_method(self):
@@ -104,8 +115,12 @@ class TestCreateEmbeddedModelData:
         assert data["ontology_mappings"] == []
 
     def test_model_with_variable(self):
-        var = Variable(name="s", var_type=VariableType.HIDDEN_STATE,
-                       data_type=DataType.CATEGORICAL, dimensions=[3])
+        var = Variable(
+            name="s",
+            var_type=VariableType.HIDDEN_STATE,
+            data_type=DataType.CATEGORICAL,
+            dimensions=[3],
+        )
         model = _make_model(variables=[var])
         data = self.s._create_embedded_model_data(model)
         assert len(data["variables"]) == 1
@@ -116,8 +131,11 @@ class TestCreateEmbeddedModelData:
         assert v["dimensions"] == [3]
 
     def test_model_with_connection(self):
-        conn = Connection(source_variables=["s"], target_variables=["o"],
-                          connection_type=ConnectionType.DIRECTED)
+        conn = Connection(
+            source_variables=["s"],
+            target_variables=["o"],
+            connection_type=ConnectionType.DIRECTED,
+        )
         model = _make_model(connections=[conn])
         data = self.s._create_embedded_model_data(model)
         assert len(data["connections"]) == 1
@@ -146,6 +164,7 @@ class TestCreateEmbeddedModelData:
 
 # ── _add_embedded_model_data ───────────────────────────────────────────────
 
+
 class TestAddEmbeddedModelData:
     def setup_method(self):
         self.s = _MinimalSerializer()
@@ -156,7 +175,7 @@ class TestAddEmbeddedModelData:
         last_line = [l for l in result.splitlines() if l.strip()][-1]
         prefix = self.s._get_embedded_comment_prefix(self.s.format_name)
         suffix = self.s._get_embedded_comment_suffix(self.s.format_name)
-        json_str = last_line[len(prefix):]
+        json_str = last_line[len(prefix) :]
         if suffix:
             json_str = json_str[: -len(suffix)]
         return json.loads(json_str)
@@ -174,6 +193,7 @@ class TestAddEmbeddedModelData:
 
     def test_format_name_affects_prefix(self):
         """Subclass with format_name 'python' gets # prefix."""
+
         class PythonSerializer(_MinimalSerializer):
             def __init__(self):
                 super().__init__()
@@ -186,6 +206,7 @@ class TestAddEmbeddedModelData:
 
     def test_format_name_affects_suffix(self):
         """Subclass with format_name 'xml' gets <!-- prefix and --> suffix."""
+
         class XmlSerializer(_MinimalSerializer):
             def __init__(self):
                 super().__init__()

@@ -49,5 +49,7 @@ def viz_var_type(var_info: "dict") -> str:
     if not isinstance(var_info, dict):
         return "unknown"
     return str(
-        var_info.get("var_type", var_info.get("type", var_info.get("node_type", "unknown")))
+        var_info.get(
+            "var_type", var_info.get("type", var_info.get("node_type", "unknown"))
+        )
     )

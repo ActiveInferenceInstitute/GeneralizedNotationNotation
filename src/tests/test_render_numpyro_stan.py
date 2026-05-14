@@ -70,9 +70,7 @@ class TestNumPyroRenderer:
         from render.numpyro.numpyro_renderer import render_gnn_to_numpyro
 
         output = tmp_path / "numpyro_model.py"
-        success, message, artifacts = render_gnn_to_numpyro(
-            _small_gnn_spec(), output
-        )
+        success, message, artifacts = render_gnn_to_numpyro(_small_gnn_spec(), output)
 
         assert success, f"NumPyro render failed: {message}"
         assert output.exists(), "Output file was not created"
@@ -101,9 +99,7 @@ class TestNumPyroRenderer:
         tree = ast.parse(code)
         # Should contain function definitions (run_simulation at minimum)
         func_names = [
-            node.name
-            for node in ast.walk(tree)
-            if isinstance(node, ast.FunctionDef)
+            node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)
         ]
         assert len(func_names) > 0, "No functions found in generated code"
         assert "run_simulation" in func_names, (
@@ -164,9 +160,7 @@ class TestStanRenderer:
         """Stan renderer produces non-empty model code."""
         from render.stan.stan_renderer import render_stan
 
-        code = render_stan(
-            _gnn_variables(), _gnn_connections(), model_name="e2e_test"
-        )
+        code = render_stan(_gnn_variables(), _gnn_connections(), model_name="e2e_test")
 
         assert isinstance(code, str)
         assert len(code) > 0, "Stan code is empty"
@@ -203,9 +197,7 @@ class TestStanRenderer:
         """Directed connections produce ~ statements in model{}."""
         from render.stan.stan_renderer import render_stan
 
-        code = render_stan(
-            _gnn_variables(), _gnn_connections(), model_name="conn_test"
-        )
+        code = render_stan(_gnn_variables(), _gnn_connections(), model_name="conn_test")
 
         model_section = code.split("model {")[1].split("}")[0]
         assert "~" in model_section, "No sampling statements in model{}"

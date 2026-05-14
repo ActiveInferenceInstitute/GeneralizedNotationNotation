@@ -7,8 +7,8 @@ import logging
 from pathlib import Path
 from typing import Any, Dict, List, Set
 
-from src.advanced_visualization._shared import normalize_connection_format
-from src.utils.logging.logging_utils import (
+from advanced_visualization._shared import normalize_connection_format
+from utils.logging.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,
@@ -41,7 +41,9 @@ def _filter_connections(
         n = normalize_connection_format(conn)
         sources = n.get("source_variables") or []
         targets = n.get("target_variables") or []
-        if any(s in var_names for s in sources) and any(t in var_names for t in targets):
+        if any(s in var_names for s in sources) and any(
+            t in var_names for t in targets
+        ):
             out.append(conn)
     return out
 
@@ -147,7 +149,9 @@ def process_single_gnn_file(
         original_vars = len(parsed_data.get("variables", []))
         original_conns = len(parsed_data.get("connections", []))
         parsed_data["variables"] = parsed_data["variables"][:100]
-        var_names = {var["name"] for var in parsed_data["variables"] if isinstance(var, dict)}
+        var_names = {
+            var["name"] for var in parsed_data["variables"] if isinstance(var, dict)
+        }
         parsed_data["connections"] = _filter_connections(
             parsed_data.get("connections", []), var_names
         )

@@ -38,7 +38,11 @@ def _compute_run_hash_impl(
                 fh = hashlib.sha256(content).hexdigest()
                 file_hashes_list.append(f"{f.name}:{fh}")
                 # Store relative path for better identification
-                rel_path = str(f.relative_to(target_dir)) if target_dir in f.parents else f.name
+                rel_path = (
+                    str(f.relative_to(target_dir))
+                    if target_dir in f.parents
+                    else f.name
+                )
                 file_hashes_dict[rel_path] = fh
             except OSError as e:
                 logger.debug(f"Could not read file {f} for hashing: {e}")
@@ -53,7 +57,7 @@ def _compute_run_hash_impl(
 
     run_hash = hasher.hexdigest()[:hash_length]
     logger.debug(f"Run hash: {run_hash} ({len(file_hashes_list)} input files)")
-    
+
     return run_hash, file_hashes_dict
 
 
@@ -116,7 +120,7 @@ def index_run(
     }
     if file_hashes:
         entry["file_hashes"] = file_hashes
-        
+
     index[run_hash] = entry
 
     with open(index_path, "w") as f:
@@ -159,6 +163,8 @@ def lookup_run(
     if len(matches) == 1:
         return next(iter(matches.values()))
     elif len(matches) > 1:
-        logger.warning(f"Ambiguous hash prefix '{run_hash_prefix}': {len(matches)} matches")
+        logger.warning(
+            f"Ambiguous hash prefix '{run_hash_prefix}': {len(matches)} matches"
+        )
 
     return None

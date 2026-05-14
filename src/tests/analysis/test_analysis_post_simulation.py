@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 try:
     import numpy as np
+
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
@@ -130,11 +131,13 @@ class TestVariationalFreeEnergy:
         """Should return a finite float for valid inputs."""
         obs = np.array([1.0, 0.0, 0.0])
         beliefs = np.array([0.5, 0.3, 0.2])
-        A = np.array([
-            [0.9, 0.05, 0.05],
-            [0.05, 0.9, 0.05],
-            [0.05, 0.05, 0.9],
-        ])
+        A = np.array(
+            [
+                [0.9, 0.05, 0.05],
+                [0.05, 0.9, 0.05],
+                [0.05, 0.05, 0.9],
+            ]
+        )
         fe = compute_variational_free_energy(obs, beliefs, A)
         assert isinstance(fe, float)
         assert np.isfinite(fe)

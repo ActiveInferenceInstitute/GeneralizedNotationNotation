@@ -12,6 +12,7 @@ Key Features:
 - Focus on core pipeline components
 - Safe-to-fail design
 """
+
 import logging
 import sys
 
@@ -34,23 +35,28 @@ class TestFastEnvironment:
     @pytest.mark.unit
     def test_python_environment(self):
         """Test basic Python environment."""
-        assert sys.version_info >= (3, 8), 'Python 3.8+ required'
-        assert str(SRC_DIR) in sys.path, 'Source directory in Python path'
+        assert sys.version_info >= (3, 8), "Python 3.8+ required"
+        assert str(SRC_DIR) in sys.path, "Source directory in Python path"
 
     @pytest.mark.unit
     def test_test_configuration(self):
         """Test test configuration is valid."""
         config = TEST_CONFIG
-        assert config['safe_mode'] is True, 'Safe mode should be enabled'
-        assert config['timeout_seconds'] >= 30, 'Timeout should be at least 30 seconds for reasonable operation'
-        assert config['max_test_files'] <= 10, 'Max test files should be reasonably limited (<=10)'
+        assert config["safe_mode"] is True, "Safe mode should be enabled"
+        assert config["timeout_seconds"] >= 30, (
+            "Timeout should be at least 30 seconds for reasonable operation"
+        )
+        assert config["max_test_files"] <= 10, (
+            "Max test files should be reasonably limited (<=10)"
+        )
 
     @pytest.mark.unit
     def test_essential_directories(self):
         """Test essential directories exist."""
-        assert SRC_DIR.exists(), 'Source directory should exist'
-        assert TEST_DIR.exists(), 'Test directory should exist'
-        assert PROJECT_ROOT.exists(), 'Project root should exist'
+        assert SRC_DIR.exists(), "Source directory should exist"
+        assert TEST_DIR.exists(), "Test directory should exist"
+        assert PROJECT_ROOT.exists(), "Project root should exist"
+
 
 class TestFastGNNProcessing:
     """Fast GNN processing tests."""
@@ -59,26 +65,30 @@ class TestFastGNNProcessing:
     def test_gnn_module_import(self):
         """Test that GNN module can be imported."""
         import gnn
-        assert gnn is not None, 'GNN module should be importable'
+
+        assert gnn is not None, "GNN module should be importable"
 
     @pytest.mark.unit
     def test_gnn_file_creation(self, isolated_temp_dir):
         """Test GNN file creation and basic parsing."""
         sample_content = create_sample_gnn_content()
-        valid_content = sample_content['valid_basic']
-        test_file = isolated_temp_dir / 'test_model.md'
+        valid_content = sample_content["valid_basic"]
+        test_file = isolated_temp_dir / "test_model.md"
         test_file.write_text(valid_content)
-        assert test_file.exists(), 'Test file should be created'
-        assert test_file.read_text() == valid_content, 'File content should match'
+        assert test_file.exists(), "Test file should be created"
+        assert test_file.read_text() == valid_content, "File content should match"
 
     @pytest.mark.unit
     def test_gnn_content_validation(self):
         """Test GNN content validation."""
         sample_content = create_sample_gnn_content()
-        valid_content = sample_content['valid_basic']
-        assert '## ModelName' in valid_content, 'Should contain ModelName section'
-        assert '## StateSpaceBlock' in valid_content, 'Should contain StateSpaceBlock section'
-        assert '## Connections' in valid_content, 'Should contain Connections section'
+        valid_content = sample_content["valid_basic"]
+        assert "## ModelName" in valid_content, "Should contain ModelName section"
+        assert "## StateSpaceBlock" in valid_content, (
+            "Should contain StateSpaceBlock section"
+        )
+        assert "## Connections" in valid_content, "Should contain Connections section"
+
 
 class TestFastPipelineComponents:
     """Fast pipeline component tests."""
@@ -87,19 +97,23 @@ class TestFastPipelineComponents:
     def test_utils_module_import(self):
         """Test that utils module can be imported."""
         import utils
-        assert utils is not None, 'Utils module should be importable'
+
+        assert utils is not None, "Utils module should be importable"
 
     @pytest.mark.unit
     def test_pipeline_module_import(self):
         """Test that pipeline module can be imported."""
         import pipeline
-        assert pipeline is not None, 'Pipeline module should be importable'
+
+        assert pipeline is not None, "Pipeline module should be importable"
 
     @pytest.mark.unit
     def test_type_checker_import(self):
         """Test that type checker module can be imported."""
         import type_checker
-        assert type_checker is not None, 'Type checker module should be importable'
+
+        assert type_checker is not None, "Type checker module should be importable"
+
 
 class TestFastExport:
     """Fast export functionality tests."""
@@ -108,21 +122,28 @@ class TestFastExport:
     def test_export_module_import(self):
         """Test that export module can be imported."""
         import export
-        assert export is not None, 'Export module should be importable'
+
+        assert export is not None, "Export module should be importable"
 
     @pytest.mark.unit
     def test_basic_export_functionality(self, isolated_temp_dir):
         """Test basic export functionality."""
         try:
-            from src.export import export_to_json_gnn
-            test_data = {'name': 'TestModel', 'variables': [{'name': 'X', 'dimensions': [2]}], 'connections': []}
-            output_file = isolated_temp_dir / 'test_export.json'
+            from export import export_to_json_gnn
+
+            test_data = {
+                "name": "TestModel",
+                "variables": [{"name": "X", "dimensions": [2]}],
+                "connections": [],
+            }
+            output_file = isolated_temp_dir / "test_export.json"
             export_to_json_gnn(test_data, output_file)
-            assert output_file.exists(), 'Export file should be created'
+            assert output_file.exists(), "Export file should be created"
         except ImportError:
-            pytest.skip('Export functionality not available')
+            pytest.skip("Export functionality not available")
         except Exception as e:
-            pytest.skip(f'Export test failed: {e}')
+            pytest.skip(f"Export test failed: {e}")
+
 
 class TestFastVisualization:
     """Fast visualization tests."""
@@ -131,7 +152,9 @@ class TestFastVisualization:
     def test_visualization_module_import(self):
         """Test that visualization module can be imported."""
         import visualization
-        assert visualization is not None, 'Visualization module should be importable'
+
+        assert visualization is not None, "Visualization module should be importable"
+
 
 class TestFastRender:
     """Fast render tests."""
@@ -140,7 +163,9 @@ class TestFastRender:
     def test_render_module_import(self):
         """Test that render module can be imported."""
         import render
-        assert render is not None, 'Render module should be importable'
+
+        assert render is not None, "Render module should be importable"
+
 
 class TestFastExecute:
     """Fast execute tests."""
@@ -149,7 +174,9 @@ class TestFastExecute:
     def test_execute_module_import(self):
         """Test that execute module can be imported."""
         import execute
-        assert execute is not None, 'Execute module should be importable'
+
+        assert execute is not None, "Execute module should be importable"
+
 
 class TestFastLLM:
     """Fast LLM tests."""
@@ -158,7 +185,9 @@ class TestFastLLM:
     def test_llm_module_import(self):
         """Test that LLM module can be imported."""
         import llm
-        assert llm is not None, 'LLM module should be importable'
+
+        assert llm is not None, "LLM module should be importable"
+
 
 class TestFastMCP:
     """Fast MCP tests."""
@@ -167,7 +196,9 @@ class TestFastMCP:
     def test_mcp_module_import(self):
         """Test that MCP module can be imported."""
         import mcp
-        assert mcp is not None, 'MCP module should be importable'
+
+        assert mcp is not None, "MCP module should be importable"
+
 
 class TestFastOntology:
     """Fast ontology tests."""
@@ -176,7 +207,9 @@ class TestFastOntology:
     def test_ontology_module_import(self):
         """Test that ontology module can be imported."""
         import ontology
-        assert ontology is not None, 'Ontology module should be importable'
+
+        assert ontology is not None, "Ontology module should be importable"
+
 
 class TestFastSAPF:
     """Fast SAPF tests."""
@@ -185,7 +218,9 @@ class TestFastSAPF:
     def test_sapf_module_import(self):
         """Test that SAPF module can be imported."""
         import sapf
-        assert sapf is not None, 'SAPF module should be importable'
+
+        assert sapf is not None, "SAPF module should be importable"
+
 
 class TestFastWebsite:
     """Fast website tests."""
@@ -194,7 +229,9 @@ class TestFastWebsite:
     def test_website_module_import(self):
         """Test that website module can be imported."""
         import website
-        assert website is not None, 'Website module should be importable'
+
+        assert website is not None, "Website module should be importable"
+
 
 class TestFastIntegration:
     """Fast integration tests."""
@@ -204,38 +241,44 @@ class TestFastIntegration:
         """Test basic pipeline flow with minimal components."""
         try:
             sample_content = create_sample_gnn_content()
-            test_file = isolated_temp_dir / 'test_model.md'
-            test_file.write_text(sample_content['valid_basic'])
-            assert test_file.exists(), 'Test file should be created'
+            test_file = isolated_temp_dir / "test_model.md"
+            test_file.write_text(sample_content["valid_basic"])
+            assert test_file.exists(), "Test file should be created"
             content = test_file.read_text()
-            assert len(content) > 0, 'File should have content'
-            assert '## ModelName' in content, 'Should contain model name'
+            assert len(content) > 0, "File should have content"
+            assert "## ModelName" in content, "Should contain model name"
         except Exception as e:
-            pytest.skip(f'Basic pipeline flow test failed: {e}')
+            pytest.skip(f"Basic pipeline flow test failed: {e}")
 
     @pytest.mark.integration
     def test_test_environment_setup(self):
         """Test that test environment is properly set up."""
-        assert is_safe_mode(), 'Should be in safe mode'
-        temp_dir = TEST_CONFIG['temp_output_dir']
+        assert is_safe_mode(), "Should be in safe mode"
+        temp_dir = TEST_CONFIG["temp_output_dir"]
         temp_dir.mkdir(parents=True, exist_ok=True)
-        assert temp_dir.exists(), 'Temp directory should be created'
+        assert temp_dir.exists(), "Temp directory should be created"
+
 
 def test_fast_suite_completeness():
     """Test that fast test suite covers essential functionality."""
     from pathlib import Path
+
     test_dir = Path(__file__).parent
     fast_test_count = 0
-    test_files = list(test_dir.glob('test_*.py'))
-    assert len(test_files) > 10, f'Expected >10 test files, found {len(test_files)}'
+    test_files = list(test_dir.glob("test_*.py"))
+    assert len(test_files) > 10, f"Expected >10 test files, found {len(test_files)}"
     for test_file in test_files:
         try:
             content = test_file.read_text()
-            if '@pytest.mark.fast' in content:
-                fast_test_count += content.count('@pytest.mark.fast')
+            if "@pytest.mark.fast" in content:
+                fast_test_count += content.count("@pytest.mark.fast")
         except Exception:
             pass
-    assert fast_test_count > 20, f'Expected >20 fast tests, found {fast_test_count}'
-    logging.info(f'Fast test suite completeness: {fast_test_count} fast tests in {len(test_files)} files')
-if __name__ == '__main__':
-    pytest.main([__file__, '-v', '-m', 'fast'])
+    assert fast_test_count > 20, f"Expected >20 fast tests, found {fast_test_count}"
+    logging.info(
+        f"Fast test suite completeness: {fast_test_count} fast tests in {len(test_files)} files"
+    )
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "-m", "fast"])

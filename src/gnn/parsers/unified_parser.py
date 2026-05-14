@@ -25,10 +25,11 @@ from .common import (
 
 logger = logging.getLogger(__name__)
 
+
 class UnifiedGNNParser:
     """
     Unified parser that can handle all GNN formats.
-    
+
     This parser automatically detects the format and delegates to the
     appropriate format-specific parser.
     """
@@ -37,18 +38,19 @@ class UnifiedGNNParser:
         """Initialize the unified parser."""
         self.format_parsers: Dict[GNNFormat, BaseGNNParser] = {}
 
-    def parse_file(self, file_path: Union[str, Path],
-                   format_hint: Optional[GNNFormat] = None) -> ParseResult:
+    def parse_file(
+        self, file_path: Union[str, Path], format_hint: Optional[GNNFormat] = None
+    ) -> ParseResult:
         """
         Parse a GNN file automatically detecting or using the provided format.
-        
+
         Args:
             file_path: Path to the file to parse
             format_hint: Optional format hint to skip auto-detection
-            
+
         Returns:
             ParseResult with the parsed model
-            
+
         Raises:
             ParseError: If parsing fails
             FileNotFoundError: If file doesn't exist
@@ -72,10 +74,12 @@ class UnifiedGNNParser:
                 # Handle parser initialization error
                 parse_time = time.time() - start_time
                 result = ParseResult(
-                    model=GNNInternalRepresentation(model_name=f"Failed {format_hint.value} Parse"),
+                    model=GNNInternalRepresentation(
+                        model_name=f"Failed {format_hint.value} Parse"
+                    ),
                     success=False,
                     parse_time=parse_time,
-                    source_file=str(file_path)
+                    source_file=str(file_path),
                 )
                 result.add_error(f"Parser initialization failed: {str(e)}")
                 return result
@@ -91,8 +95,10 @@ class UnifiedGNNParser:
 
             # Compute checksum
             try:
-                content = file_path.read_text(encoding='utf-8')
-                result.model.checksum = hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()
+                content = file_path.read_text(encoding="utf-8")
+                result.model.checksum = hashlib.md5(
+                    content.encode(), usedforsecurity=False
+                ).hexdigest()
             except Exception as e:
                 logger.warning(f"Failed to compute checksum: {e}")
 
@@ -108,20 +114,19 @@ class UnifiedGNNParser:
                 model=GNNInternalRepresentation(model_name="Failed Parse"),
                 success=False,
                 parse_time=parse_time,
-                source_file=str(file_path)
+                source_file=str(file_path),
             )
             result.add_error(str(e))
             return result
 
-    def parse_string(self, content: str,
-                     format: GNNFormat) -> ParseResult:
+    def parse_string(self, content: str, format: GNNFormat) -> ParseResult:
         """
         Parse GNN content from a string.
-        
+
         Args:
             content: String content to parse
             format: Format of the content
-            
+
         Returns:
             ParseResult with the parsed model
         """
@@ -135,9 +140,11 @@ class UnifiedGNNParser:
                 # Handle parser initialization error
                 parse_time = time.time() - start_time
                 result = ParseResult(
-                    model=GNNInternalRepresentation(model_name=f"Failed {format.value} Parse"),
+                    model=GNNInternalRepresentation(
+                        model_name=f"Failed {format.value} Parse"
+                    ),
                     success=False,
-                    parse_time=parse_time
+                    parse_time=parse_time,
                 )
                 result.add_error(f"Parser initialization failed: {str(e)}")
                 return result
@@ -151,11 +158,15 @@ class UnifiedGNNParser:
             result.model.source_format = format
 
             try:
-                result.model.checksum = hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()
+                result.model.checksum = hashlib.md5(
+                    content.encode(), usedforsecurity=False
+                ).hexdigest()
             except Exception as e:
                 logger.warning(f"Failed to compute checksum: {e}")
 
-            logger.info(f"Successfully parsed string content in {result.parse_time:.3f}s")
+            logger.info(
+                f"Successfully parsed string content in {result.parse_time:.3f}s"
+            )
             return result
 
         except Exception as e:
@@ -166,7 +177,7 @@ class UnifiedGNNParser:
             result = ParseResult(
                 model=GNNInternalRepresentation(model_name="Failed Parse"),
                 success=False,
-                parse_time=parse_time
+                parse_time=parse_time,
             )
             result.add_error(str(e))
             return result
@@ -174,10 +185,10 @@ class UnifiedGNNParser:
     def _detect_format(self, file_path: Path) -> GNNFormat:
         """
         Detect the format of a file based on extension and content.
-        
+
         Args:
             file_path: Path to analyze
-            
+
         Returns:
             Detected GNNFormat
         """
@@ -185,36 +196,36 @@ class UnifiedGNNParser:
 
         # Extension-based detection
         extension_map = {
-            '.md': GNNFormat.MARKDOWN,
-            '.scala': GNNFormat.SCALA,
-            '.lean': GNNFormat.LEAN,
-            '.v': GNNFormat.COQ,
-            '.py': GNNFormat.PYTHON,
-            '.bnf': GNNFormat.BNF,
-            '.ebnf': GNNFormat.EBNF,
-            '.thy': GNNFormat.ISABELLE,
-            '.mac': GNNFormat.MAXIMA,
-            '.xml': GNNFormat.XML,
-            '.pnml': GNNFormat.PNML,
-            '.json': GNNFormat.JSON,
-            '.proto': GNNFormat.PROTOBUF,
-            '.yaml': GNNFormat.YAML,
-            '.yml': GNNFormat.YAML,
-            '.xsd': GNNFormat.XSD,
-            '.asn1': GNNFormat.ASN1,
-            '.als': GNNFormat.ALLOY,
-            '.zed': GNNFormat.Z_NOTATION,
-            '.tla': GNNFormat.TLA_PLUS,
-            '.agda': GNNFormat.AGDA,
-            '.hs': GNNFormat.HASKELL,
-            '.pkl': GNNFormat.PICKLE
+            ".md": GNNFormat.MARKDOWN,
+            ".scala": GNNFormat.SCALA,
+            ".lean": GNNFormat.LEAN,
+            ".v": GNNFormat.COQ,
+            ".py": GNNFormat.PYTHON,
+            ".bnf": GNNFormat.BNF,
+            ".ebnf": GNNFormat.EBNF,
+            ".thy": GNNFormat.ISABELLE,
+            ".mac": GNNFormat.MAXIMA,
+            ".xml": GNNFormat.XML,
+            ".pnml": GNNFormat.PNML,
+            ".json": GNNFormat.JSON,
+            ".proto": GNNFormat.PROTOBUF,
+            ".yaml": GNNFormat.YAML,
+            ".yml": GNNFormat.YAML,
+            ".xsd": GNNFormat.XSD,
+            ".asn1": GNNFormat.ASN1,
+            ".als": GNNFormat.ALLOY,
+            ".zed": GNNFormat.Z_NOTATION,
+            ".tla": GNNFormat.TLA_PLUS,
+            ".agda": GNNFormat.AGDA,
+            ".hs": GNNFormat.HASKELL,
+            ".pkl": GNNFormat.PICKLE,
         }
 
         if extension in extension_map:
             detected = extension_map[extension]
 
             # For ambiguous extensions, use content-based detection
-            if extension in ['.xml', '.py']:
+            if extension in [".xml", ".py"]:
                 content_detected = self._detect_format_from_content(file_path)
                 if content_detected != detected:
                     return content_detected
@@ -227,100 +238,115 @@ class UnifiedGNNParser:
     def _detect_format_from_content(self, file_path: Path) -> GNNFormat:
         """
         Detect format from file content analysis.
-        
+
         Args:
             file_path: Path to analyze
-            
+
         Returns:
             Detected GNNFormat
         """
         try:
             # Read a sample of the file content
-            content = file_path.read_text(encoding='utf-8', errors='ignore')[:2000]
+            content = file_path.read_text(encoding="utf-8", errors="ignore")[:2000]
             content_lower = content.lower()
 
             # Check for specific format indicators
-            if content.strip().startswith('<?xml'):
-                if 'pnml' in content_lower or 'petri' in content_lower:
+            if content.strip().startswith("<?xml"):
+                if "pnml" in content_lower or "petri" in content_lower:
                     return GNNFormat.PNML
-                elif 'xsd' in content_lower or 'schema' in content_lower:
+                elif "xsd" in content_lower or "schema" in content_lower:
                     return GNNFormat.XSD
                 else:
                     return GNNFormat.XML
 
-            elif content.strip().startswith('{') or content.strip().startswith('['):
+            elif content.strip().startswith("{") or content.strip().startswith("["):
                 return GNNFormat.JSON
 
-            elif ('##' in content and
-                  any(section in content for section in ['GNNSection', 'ModelName', 'StateSpaceBlock'])):
+            elif "##" in content and any(
+                section in content
+                for section in ["GNNSection", "ModelName", "StateSpaceBlock"]
+            ):
                 return GNNFormat.MARKDOWN
 
-            elif 'package' in content and 'import cats' in content:
+            elif "package" in content and "import cats" in content:
                 return GNNFormat.SCALA
 
-            elif content.startswith('theory') or 'imports Main' in content_lower:
+            elif content.startswith("theory") or "imports Main" in content_lower:
                 return GNNFormat.ISABELLE
 
-            elif 'Require Import' in content:
+            elif "Require Import" in content:
                 return GNNFormat.COQ
 
-            elif ('import' in content and
-                  ('mathlib' in content_lower or '.lean' in content_lower)):
+            elif "import" in content and (
+                "mathlib" in content_lower or ".lean" in content_lower
+            ):
                 return GNNFormat.LEAN
 
-            elif content.startswith('module') and 'where' in content:
+            elif content.startswith("module") and "where" in content:
                 return GNNFormat.HASKELL
 
-            elif 'EXTENDS' in content or 'VARIABLES' in content:
+            elif "EXTENDS" in content or "VARIABLES" in content:
                 return GNNFormat.TLA_PLUS
 
-            elif 'data' in content and ':' in content and 'Set' in content:
+            elif "data" in content and ":" in content and "Set" in content:
                 return GNNFormat.AGDA
 
-            elif 'def ' in content and 'jax' in content_lower:
+            elif "def " in content and "jax" in content_lower:
                 return GNNFormat.PYTHON
 
-            elif 'load(' in content and ('maxima' in content_lower or '.mac' in content_lower):
+            elif "load(" in content and (
+                "maxima" in content_lower or ".mac" in content_lower
+            ):
                 return GNNFormat.MAXIMA
 
-            elif ('::=' in content or '<rule>' in content_lower) and 'grammar' in content_lower:
-                if 'ebnf' in content_lower:
+            elif (
+                "::=" in content or "<rule>" in content_lower
+            ) and "grammar" in content_lower:
+                if "ebnf" in content_lower:
                     return GNNFormat.EBNF
                 else:
                     return GNNFormat.BNF
 
-            elif 'syntax' in content_lower and ('yaml' in content_lower or '---' in content):
+            elif "syntax" in content_lower and (
+                "yaml" in content_lower or "---" in content
+            ):
                 return GNNFormat.YAML
 
-            elif ('message' in content and 'protobuf' in content_lower) or '.proto' in content_lower:
+            elif (
+                "message" in content and "protobuf" in content_lower
+            ) or ".proto" in content_lower:
                 return GNNFormat.PROTOBUF
 
-            elif 'sig' in content and 'alloy' in content_lower:
+            elif "sig" in content and "alloy" in content_lower:
                 return GNNFormat.ALLOY
 
-            elif 'schema' in content_lower and ('\\begin' in content or '\\end' in content):
+            elif "schema" in content_lower and (
+                "\\begin" in content or "\\end" in content
+            ):
                 return GNNFormat.Z_NOTATION
 
-            elif 'ASN1' in content or 'BEGIN' in content and 'END' in content:
+            elif "ASN1" in content or "BEGIN" in content and "END" in content:
                 return GNNFormat.ASN1
 
             # Default to markdown for GNN files
             return GNNFormat.MARKDOWN
 
         except Exception as e:
-            logger.debug(f"Format detection from content failed, defaulting to MARKDOWN: {e}")
+            logger.debug(
+                f"Format detection from content failed, defaulting to MARKDOWN: {e}"
+            )
             return GNNFormat.MARKDOWN
 
     def _get_parser(self, format: GNNFormat) -> BaseGNNParser:
         """
         Get or create a format-specific parser.
-        
+
         Args:
             format: Format to get parser for
-            
+
         Returns:
             BaseGNNParser for the format
-            
+
         Raises:
             ValueError: If format not supported
         """
@@ -335,113 +361,139 @@ class UnifiedGNNParser:
 
             except ImportError as e:
                 logger.error(f"Failed to import parser for {format.value}: {e}")
-                raise ValueError(f"Parser for {format.value} is not available. Required module missing: {e}") from e
+                raise ValueError(
+                    f"Parser for {format.value} is not available. Required module missing: {e}"
+                ) from e
             except Exception as e:
                 logger.error(f"Failed to initialize parser for {format.value}: {e}")
-                raise ValueError(f"Failed to initialize parser for {format.value}: {e}") from e
+                raise ValueError(
+                    f"Failed to initialize parser for {format.value}: {e}"
+                ) from e
 
         return self.format_parsers[format]
 
     def _get_parser_class(self, format: GNNFormat) -> Type[BaseGNNParser]:
         """
         Get the parser class for a specific format.
-        
+
         Args:
             format: Format to get parser class for
-            
+
         Returns:
             Parser class
-            
+
         Raises:
             ParseError: If no parser class is available
         """
         # Import parsers dynamically to avoid circular imports
         if format == GNNFormat.MARKDOWN:
             from .markdown_parser import MarkdownGNNParser
+
             return MarkdownGNNParser
 
         elif format == GNNFormat.SCALA:
             from .scala_parser import ScalaGNNParser
+
             return ScalaGNNParser
 
         elif format == GNNFormat.LEAN:
             from .lean_parser import LeanGNNParser
+
             return LeanGNNParser
 
         elif format == GNNFormat.COQ:
             from .coq_parser import CoqGNNParser
+
             return CoqGNNParser
 
         elif format == GNNFormat.PYTHON:
             from .python_parser import PythonGNNParser
+
             return PythonGNNParser
 
         elif format == GNNFormat.BNF:
             from .grammar_parser import BNFParser
+
             return BNFParser
 
         elif format == GNNFormat.EBNF:
             from .grammar_parser import EBNFParser
+
             return EBNFParser
 
         elif format == GNNFormat.ISABELLE:
             from .isabelle_parser import IsabelleParser
+
             return IsabelleParser
 
         elif format == GNNFormat.MAXIMA:
             from .maxima_parser import MaximaParser
+
             return MaximaParser
 
         elif format == GNNFormat.XML:
             from .xml_parser import XMLGNNParser
+
             return XMLGNNParser
 
         elif format == GNNFormat.PNML:
             from .xml_parser import PNMLParser
+
             return PNMLParser
 
         elif format == GNNFormat.JSON:
             from .json_parser import JSONGNNParser
+
             return JSONGNNParser
 
         elif format == GNNFormat.PROTOBUF:
             from .protobuf_parser import ProtobufGNNParser
+
             return ProtobufGNNParser
 
         elif format == GNNFormat.YAML:
             from .yaml_parser import YAMLGNNParser
+
             return YAMLGNNParser
 
         elif format == GNNFormat.XSD:
             from .schema_parser import XSDParser
+
             return XSDParser
 
         elif format == GNNFormat.ASN1:
             from .schema_parser import ASN1Parser
+
             return ASN1Parser
 
         elif format == GNNFormat.ALLOY:
             from .schema_parser import AlloyParser
+
             return AlloyParser
 
         elif format == GNNFormat.Z_NOTATION:
             from .schema_parser import ZNotationParser
+
             return ZNotationParser
 
         elif format == GNNFormat.TLA_PLUS:
             from .temporal_parser import TLAParser
+
             return TLAParser
 
         elif format == GNNFormat.AGDA:
             from .temporal_parser import AgdaParser
+
             return AgdaParser
 
         elif format == GNNFormat.HASKELL:
             from .functional_parser import HaskellGNNParser
+
             return HaskellGNNParser
 
         elif format == GNNFormat.PICKLE:
             from .binary_parser import PickleGNNParser
+
             return PickleGNNParser
 
         else:
@@ -456,5 +508,6 @@ class UnifiedGNNParser:
         self.format_parsers.clear()
         logger.info("Parser cache cleared")
 
+
 # Re-export for convenience
-__all__ = ['UnifiedGNNParser', 'GNNFormat', 'ParseResult']
+__all__ = ["UnifiedGNNParser", "GNNFormat", "ParseResult"]

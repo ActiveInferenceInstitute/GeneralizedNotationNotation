@@ -51,13 +51,14 @@ __description__ = "Audio generation and sonification for GNN Processing Pipeline
 
 # Feature availability flags
 FEATURES = {
-    'tonal_generation': True,
-    'rhythmic_generation': True,
-    'ambient_generation': True,
-    'sonification': True,
-    'audio_analysis': True,
-    'mcp_integration': True
+    "tonal_generation": True,
+    "rhythmic_generation": True,
+    "ambient_generation": True,
+    "sonification": True,
+    "audio_analysis": True,
+    "mcp_integration": True,
 }
+
 
 def check_audio_backends() -> Dict[str, Any]:
     """Check availability of audio backends."""
@@ -66,64 +67,57 @@ def check_audio_backends() -> Dict[str, Any]:
     # Check librosa
     try:
         import librosa
-        backends['librosa'] = {
-            'available': True,
-            'version': librosa.__version__
-        }
+
+        backends["librosa"] = {"available": True, "version": librosa.__version__}
     except ImportError:
-        backends['librosa'] = {'available': False, 'version': None}
+        backends["librosa"] = {"available": False, "version": None}
 
     # Check soundfile
     try:
         import soundfile
-        backends['soundfile'] = {
-            'available': True,
-            'version': soundfile.__version__
-        }
+
+        backends["soundfile"] = {"available": True, "version": soundfile.__version__}
     except ImportError:
-        backends['soundfile'] = {'available': False, 'version': None}
+        backends["soundfile"] = {"available": False, "version": None}
 
     # Check pedalboard
     try:
         import pedalboard
-        backends['pedalboard'] = {
-            'available': True,
-            'version': pedalboard.__version__
-        }
+
+        backends["pedalboard"] = {"available": True, "version": pedalboard.__version__}
     except ImportError:
-        backends['pedalboard'] = {'available': False, 'version': None}
+        backends["pedalboard"] = {"available": False, "version": None}
 
     # Check numpy (always needed for audio generation)
     try:
         import numpy
-        backends['numpy'] = {
-            'available': True,
-            'version': numpy.__version__
-        }
+
+        backends["numpy"] = {"available": True, "version": numpy.__version__}
     except ImportError:
-        backends['numpy'] = {'available': False, 'version': None}
+        backends["numpy"] = {"available": False, "version": None}
 
     return backends
 
+
 __all__ = [
-    'AudioGenerator',
-    'process_audio',
-    'generate_audio_from_gnn',
-    'create_sonification',
-    'analyze_audio_characteristics',
-    'SAPFGNNProcessor',
-    'SyntheticAudioGenerator',
-    'get_module_info',
-    'get_audio_generation_options',
-    'process_gnn_to_audio',
-    'convert_gnn_to_sapf',
-    'generate_audio_from_sapf',
-    'validate_sapf_code',
-    'validate_audio_content',
-    'generate_oscillator_audio',
-    'apply_envelope',
-    'mix_audio_channels',
-    'check_audio_backends',
-    'FEATURES',
-    '__version__'
+    "AudioGenerator",
+    "process_audio",
+    "generate_audio_from_gnn",
+    "create_sonification",
+    "analyze_audio_characteristics",
+    "SAPFGNNProcessor",
+    "SyntheticAudioGenerator",
+    "get_module_info",
+    "get_audio_generation_options",
+    "process_gnn_to_audio",
+    "convert_gnn_to_sapf",
+    "generate_audio_from_sapf",
+    "validate_sapf_code",
+    "validate_audio_content",
+    "generate_oscillator_audio",
+    "apply_envelope",
+    "mix_audio_channels",
+    "check_audio_backends",
+    "FEATURES",
+    "__version__",
 ]

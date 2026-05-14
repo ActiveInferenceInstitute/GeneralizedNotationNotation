@@ -7,7 +7,7 @@ class ASN1Serializer(BaseGNNSerializer):
 
     def __init__(self):
         super().__init__()
-        self.format_name = 'asn1'
+        self.format_name = "asn1"
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to ASN.1 format."""
@@ -76,22 +76,28 @@ class ASN1Serializer(BaseGNNSerializer):
         # Add example values section
         lines.append("-- Example Values")
         lines.append("exampleModel GNNModel ::= {")
-        lines.append(f"    modelName \"{model.model_name}\",")
-        lines.append("    version \"1.0\",")
+        lines.append(f'    modelName "{model.model_name}",')
+        lines.append('    version "1.0",')
         if model.annotation:
-            lines.append(f"    annotation \"{self._escape_string(model.annotation)}\",")
+            lines.append(f'    annotation "{self._escape_string(model.annotation)}",')
 
         if model.variables:
             lines.append("    variables {")
-            for i, var in enumerate(model.variables[:3]):  # Show first 3 variables as examples
-                var_type = var.var_type.value if hasattr(var, 'var_type') else 'hidden_state'
-                data_type = var.data_type.value if hasattr(var, 'data_type') else 'categorical'
+            for i, var in enumerate(
+                model.variables[:3]
+            ):  # Show first 3 variables as examples
+                var_type = (
+                    var.var_type.value if hasattr(var, "var_type") else "hidden_state"
+                )
+                data_type = (
+                    var.data_type.value if hasattr(var, "data_type") else "categorical"
+                )
 
                 lines.append("        {")
-                lines.append(f"            name \"{var.name}\",")
-                lines.append(f"            varType \"{var_type}\",")
-                lines.append(f"            dataType \"{data_type}\"")
-                if hasattr(var, 'dimensions') and var.dimensions:
+                lines.append(f'            name "{var.name}",')
+                lines.append(f'            varType "{var_type}",')
+                lines.append(f'            dataType "{data_type}"')
+                if hasattr(var, "dimensions") and var.dimensions:
                     dims_str = ", ".join(str(d) for d in var.dimensions)
                     lines.append(f"            dimensions {{ {dims_str} }}")
 
@@ -108,7 +114,7 @@ class ASN1Serializer(BaseGNNSerializer):
         lines.append("")
 
         # Join all lines
-        content = '\n'.join(lines)
+        content = "\n".join(lines)
 
         # Add embedded model data for round-trip fidelity
         return self._add_embedded_model_data(content, model)
@@ -116,14 +122,15 @@ class ASN1Serializer(BaseGNNSerializer):
     def _sanitize_asn1_name(self, name: str) -> str:
         """Sanitize names for ASN.1 syntax."""
         import re
+
         # ASN.1 module names must start with uppercase letter
-        sanitized = re.sub(r'[^a-zA-Z0-9\-]', '', name)
+        sanitized = re.sub(r"[^a-zA-Z0-9\-]", "", name)
         if sanitized and sanitized[0].islower():
             sanitized = sanitized[0].upper() + sanitized[1:]
         elif not sanitized or not sanitized[0].isalpha():
-            sanitized = 'GNNModel' + sanitized
-        return sanitized or 'GNNModel'
+            sanitized = "GNNModel" + sanitized
+        return sanitized or "GNNModel"
 
     def _escape_string(self, text: str) -> str:
         """Escape string for ASN.1 format."""
-        return text.replace('"', '""').replace('\n', ' ').replace('\r', ' ')
+        return text.replace('"', '""').replace("\n", " ").replace("\r", " ")

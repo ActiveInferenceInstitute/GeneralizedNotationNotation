@@ -47,33 +47,35 @@ run_script = create_standardized_pipeline_script(
             "flag": "--timesteps",
             "type": int,
             "default": None,
-            "help": "Number of timesteps for generated Active Inference simulations"
+            "help": "Number of timesteps for generated Active Inference simulations",
         },
         "simulation_params": {
             "flag": "--simulation-params",
             "type": str,
             "default": "{}",
-            "help": "JSON string containing additional simulation parameters"
+            "help": "JSON string containing additional simulation parameters",
         },
         "frameworks": {
             "flag": "--frameworks",
             "type": str,
             "default": "all",
-            "help": "Frameworks to render (all, lite, or comma-separated list)"
+            "help": "Frameworks to render (all, lite, or comma-separated list)",
         },
         "strict_framework_success": {
             "flag": "--strict-framework-success",
             "action": "store_true",
-            "help": "Fail the render step when any requested framework render fails"
-        }
+            "help": "Fail the render step when any requested framework render fails",
+        },
     },
     default_target_dir="input/gnn_files",
     default_recursive=True,
 )
 
+
 def main() -> int:
     """Main entry point for the render step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

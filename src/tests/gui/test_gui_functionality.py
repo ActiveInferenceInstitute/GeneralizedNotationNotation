@@ -30,7 +30,7 @@ def get_real_logger():
 
     stream = io.StringIO()
     handler = logging.StreamHandler(stream)
-    handler.setFormatter(logging.Formatter('%(levelname)s:%(message)s'))
+    handler.setFormatter(logging.Formatter("%(levelname)s:%(message)s"))
     logger.addHandler(handler)
 
     logger.stream = stream
@@ -41,7 +41,11 @@ def get_real_logger():
         if not level:
             return [line.split(":", 1)[1] for line in content if ":" in line]
         level_str = level.upper()
-        return [line.split(":", 1)[1] for line in content if line.startswith(f"{level_str}:")]
+        return [
+            line.split(":", 1)[1]
+            for line in content
+            if line.startswith(f"{level_str}:")
+        ]
 
     logger.get_messages = get_messages
     return logger
@@ -65,7 +69,7 @@ class TestGUIHeadlessMode:
             output_dir=output,
             logger=logger,
             verbose=True,
-            headless=True
+            headless=True,
         )
         assert result is True
 
@@ -79,12 +83,7 @@ class TestGUIHeadlessMode:
         (target / "model.md").write_text("# Test Model\n")
 
         logger = get_real_logger()
-        process_gui(
-            target_dir=target,
-            output_dir=output,
-            logger=logger,
-            headless=True
-        )
+        process_gui(target_dir=target, output_dir=output, logger=logger, headless=True)
 
         summary_file = output / "gui_processing_summary.json"
         assert summary_file.exists()
@@ -99,12 +98,7 @@ class TestGUIHeadlessMode:
         (target / "model.md").write_text("# Test Model\n")
 
         logger = get_real_logger()
-        process_gui(
-            target_dir=target,
-            output_dir=output,
-            logger=logger,
-            headless=True
-        )
+        process_gui(target_dir=target, output_dir=output, logger=logger, headless=True)
 
         summary_file = output / "gui_processing_summary.json"
         summary = json.loads(summary_file.read_text())
@@ -120,10 +114,7 @@ class TestGUIHeadlessMode:
 
         logger = get_real_logger()
         result = process_gui(
-            target_dir=target,
-            output_dir=output,
-            logger=logger,
-            headless=True
+            target_dir=target, output_dir=output, logger=logger, headless=True
         )
         # Should handle empty directory gracefully
         assert isinstance(result, bool)
@@ -147,7 +138,7 @@ class TestGUIConfiguration:
             output_dir=output,
             logger=logger,
             headless=True,
-            gui_types="gui_1"
+            gui_types="gui_1",
         )
 
         summary_file = output / "gui_processing_summary.json"
@@ -169,7 +160,7 @@ class TestGUIConfiguration:
             output_dir=output,
             logger=logger,
             headless=True,
-            gui_types=["gui_1", "gui_2"]
+            gui_types=["gui_1", "gui_2"],
         )
 
         summary_file = output / "gui_processing_summary.json"
@@ -182,6 +173,7 @@ class TestGUIConfiguration:
     def test_unknown_gui_type_handled(self, isolated_temp_dir, caplog):
         """Test that unknown GUI types are handled gracefully."""
         import logging
+
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
         target.mkdir(parents=True, exist_ok=True)
@@ -193,12 +185,15 @@ class TestGUIConfiguration:
                 target_dir=target,
                 output_dir=output,
                 headless=True,
-                gui_types="nonexistent_gui"
+                gui_types="nonexistent_gui",
             )
 
         # Should have warning about unknown GUI type in captured logs
-        assert any("Unknown" in r.message or "nonexistent" in r.message
-                   for r in caplog.records if r.levelno >= logging.WARNING)
+        assert any(
+            "Unknown" in r.message or "nonexistent" in r.message
+            for r in caplog.records
+            if r.levelno >= logging.WARNING
+        )
 
 
 class TestGUIHTMLNavigation:
@@ -272,12 +267,7 @@ class TestGUIOutputArtifacts:
         (target / "model.md").write_text("# Test Model\n")
 
         logger = get_real_logger()
-        process_gui(
-            target_dir=target,
-            output_dir=output,
-            logger=logger,
-            headless=True
-        )
+        process_gui(target_dir=target, output_dir=output, logger=logger, headless=True)
 
         assert output.exists()
 
@@ -296,7 +286,7 @@ class TestGUIOutputArtifacts:
             output_dir=output,
             logger=logger,
             headless=True,
-            gui_types="gui_1,gui_2"
+            gui_types="gui_1,gui_2",
         )
 
         summary_file = output / "gui_processing_summary.json"
@@ -318,10 +308,7 @@ class TestGUIErrorHandling:
 
         logger = get_real_logger()
         result = process_gui(
-            target_dir=target,
-            output_dir=output,
-            logger=logger,
-            headless=True
+            target_dir=target, output_dir=output, logger=logger, headless=True
         )
         # Should handle gracefully (may succeed or fail based on implementation)
         assert isinstance(result, bool)
@@ -342,7 +329,7 @@ class TestGUIErrorHandling:
             output_dir=output_quiet,
             logger=logger_quiet,
             headless=True,
-            verbose=False
+            verbose=False,
         )
 
         logger_verbose = get_real_logger()
@@ -351,7 +338,7 @@ class TestGUIErrorHandling:
             output_dir=output_verbose,
             logger=logger_verbose,
             headless=True,
-            verbose=True
+            verbose=True,
         )
 
         # Verbose should produce at least as many messages

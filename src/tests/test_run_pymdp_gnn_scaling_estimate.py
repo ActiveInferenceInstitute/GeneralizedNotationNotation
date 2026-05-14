@@ -23,6 +23,7 @@ def scaling_mod():
     # ``importlib.util`` does *not*.  Temporarily inject ``scripts/`` so the
     # bare import resolves.
     import sys
+
     scripts_dir = str(_SCRIPT.parent)
     need_cleanup = scripts_dir not in sys.path
     if need_cleanup:

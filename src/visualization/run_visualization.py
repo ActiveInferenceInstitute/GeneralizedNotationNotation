@@ -20,13 +20,29 @@ from visualization import GNNVisualizer
 
 def main() -> int:
     """Run the visualization on GNN examples."""
-    parser = argparse.ArgumentParser(description='Generate visualizations for GNN examples.')
-    parser.add_argument('--input', '-i', type=str, default=str(parent_dir.parent / 'input' / 'gnn_files'),
-                        help='Directory containing GNN example files')
-    parser.add_argument('--output', '-o', type=str, default=str(parent_dir.parent / 'output' / 'visualization'),
-                        help='Directory to save visualizations')
-    parser.add_argument('--recursive', '-r', action='store_true',
-                        help='Recursively process all subdirectories')
+    parser = argparse.ArgumentParser(
+        description="Generate visualizations for GNN examples."
+    )
+    parser.add_argument(
+        "--input",
+        "-i",
+        type=str,
+        default=str(parent_dir.parent / "input" / "gnn_files"),
+        help="Directory containing GNN example files",
+    )
+    parser.add_argument(
+        "--output",
+        "-o",
+        type=str,
+        default=str(parent_dir.parent / "output" / "visualization"),
+        help="Directory to save visualizations",
+    )
+    parser.add_argument(
+        "--recursive",
+        "-r",
+        action="store_true",
+        help="Recursively process all subdirectories",
+    )
     args = parser.parse_args()
 
     print(f"Processing GNN examples from {args.input}")
@@ -38,7 +54,7 @@ def main() -> int:
     # Process examples
     input_path = Path(args.input)
 
-    if input_path.is_file() and input_path.suffix.lower() == '.md':
+    if input_path.is_file() and input_path.suffix.lower() == ".md":
         # If input is a single file
         md_files = [input_path]
         print(f"Processing single file: {input_path}")
@@ -50,9 +66,9 @@ def main() -> int:
 
         # Find all markdown files
         if args.recursive:
-            md_files = list(input_path.glob('**/*.md'))
+            md_files = list(input_path.glob("**/*.md"))
         else:
-            md_files = list(input_path.glob('*.md'))
+            md_files = list(input_path.glob("*.md"))
 
         if not md_files:
             print(f"No Markdown files found in {input_path}")
@@ -75,5 +91,5 @@ def main() -> int:
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

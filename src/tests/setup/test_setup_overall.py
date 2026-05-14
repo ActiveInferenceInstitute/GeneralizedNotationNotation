@@ -5,7 +5,6 @@ Tests environment setup, UV integration, and dependency management.
 """
 
 
-
 class TestSetupModule:
     """Test suite for Setup module functionality."""
 
@@ -55,6 +54,7 @@ class TestSetupModule:
             setup_uv_environment,
             validate_uv_setup,
         )
+
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
         assert callable(setup_uv_environment)
@@ -66,10 +66,10 @@ class TestSetupModule:
         from setup import FEATURES
 
         expected_features = [
-            'uv_environment_setup',
-            'uv_dependency_management',
-            'system_validation',
-            'mcp_integration'
+            "uv_environment_setup",
+            "uv_dependency_management",
+            "system_validation",
+            "mcp_integration",
         ]
 
         for feature in expected_features:
@@ -80,7 +80,7 @@ class TestSetupModule:
         from setup import __version__
 
         # Should be semantic versioning format
-        parts = __version__.split('.')
+        parts = __version__.split(".")
         assert len(parts) >= 2, "Version should have at least major.minor"
         assert all(p.isdigit() for p in parts[:2]), "Major and minor should be numeric"
 
@@ -97,15 +97,19 @@ class TestSetupModule:
 
         result = validate_uv_setup()
         assert isinstance(result, dict)
-        assert 'overall_status' in result or 'valid' in result or isinstance(result.get('uv_available'), bool)
+        assert (
+            "overall_status" in result
+            or "valid" in result
+            or isinstance(result.get("uv_available"), bool)
+        )
 
     def test_environment_manager_class(self):
         """Test EnvironmentManager class exists and works."""
         from setup import EnvironmentManager
 
         manager = EnvironmentManager()
-        assert hasattr(manager, 'setup_environment')
-        assert hasattr(manager, 'validate_environment')
+        assert hasattr(manager, "setup_environment")
+        assert hasattr(manager, "validate_environment")
 
         # Test methods are callable
         assert callable(manager.setup_environment)
@@ -117,8 +121,8 @@ class TestSetupModule:
 
         venv = VirtualEnvironment("test_env")
         assert venv.name == "test_env"
-        assert hasattr(venv, 'create')
-        assert hasattr(venv, 'activate')
+        assert hasattr(venv, "create")
+        assert hasattr(venv, "activate")
 
     def test_get_module_info(self):
         """Test get_module_info function."""
@@ -127,7 +131,7 @@ class TestSetupModule:
         info = get_module_info()
         assert isinstance(info, dict)
         # Should have environment_types per the module definition
-        assert 'environment_types' in info
+        assert "environment_types" in info
 
     def test_check_python_version(self):
         """Test Python version check."""
@@ -194,5 +198,3 @@ class TestSetupIntegration:
 
         # Should be callable and not crash
         assert callable(install_dependencies)
-
-

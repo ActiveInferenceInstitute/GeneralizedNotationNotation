@@ -44,12 +44,14 @@ from visualization import process_visualization
 run_script = create_standardized_pipeline_script(
     "8_visualization.py",
     process_visualization,
-    "Matrix and network visualization processing"
+    "Matrix and network visualization processing",
 )
+
 
 def main() -> int:
     """Main entry point for the visualization step."""
     return run_script()
+
 
 if __name__ == "__main__":
     raise SystemExit(main())

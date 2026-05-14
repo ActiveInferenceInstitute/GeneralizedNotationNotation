@@ -32,6 +32,7 @@ try:
     )
     from rich.table import Table
     from rich.text import Text
+
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False
@@ -42,6 +43,7 @@ except ImportError:
 # Terminal capability detection
 try:
     import shutil
+
     TERMINAL_SIZE = shutil.get_terminal_size()
     TERMINAL_WIDTH = TERMINAL_SIZE.columns
     TERMINAL_HEIGHT = TERMINAL_SIZE.lines
@@ -79,9 +81,11 @@ PROGRESS_CHARS = {
     "partial": ["▏", "▎", "▍", "▌", "▋", "▊", "▉"],
 }
 
+
 @dataclass
 class VisualConfig:
     """Configuration for visual logging features."""
+
     enable_colors: bool = True
     enable_progress_bars: bool = True
     enable_emoji: bool = True
@@ -90,6 +94,7 @@ class VisualConfig:
     show_timestamps: bool = False
     show_correlation_ids: bool = True
     compact_mode: bool = False
+
 
 class VisualLogger:
     """Enhanced visual logger with accessibility features."""
@@ -145,10 +150,14 @@ class VisualLogger:
         border = "=" * width
 
         if self.console and RICH_AVAILABLE:
-            self.console.print(Panel.fit(
-                f"[bold blue]{title}[/bold blue]\n[dim]{subtitle}[/dim]" if subtitle else f"[bold blue]{title}[/bold blue]",
-                border_style="blue"
-            ))
+            self.console.print(
+                Panel.fit(
+                    f"[bold blue]{title}[/bold blue]\n[dim]{subtitle}[/dim]"
+                    if subtitle
+                    else f"[bold blue]{title}[/bold blue]",
+                    border_style="blue",
+                )
+            )
         else:
             print(f"\n{border}")
             print(f"  {title}")
@@ -170,13 +179,12 @@ class VisualLogger:
                 MofNCompleteColumn(),
                 TextColumn("•"),
                 TimeRemainingColumn(),
-                console=self.console
+                console=self.console,
             )
 
             with progress:
                 task = progress.add_task(
-                    f"[cyan]Step {step_num}: {description}[/cyan]",
-                    total=1
+                    f"[cyan]Step {step_num}: {description}[/cyan]", total=1
                 )
                 progress.update(task, advance=1)
         else:
@@ -185,7 +193,9 @@ class VisualLogger:
             print(f"\n🔢 {progress_text} - {description}")
             print(f"   {bar}")
 
-    def _create_text_progress_bar(self, current: int, total: int, width: int = 30) -> str:
+    def _create_text_progress_bar(
+        self, current: int, total: int, width: int = 30
+    ) -> str:
         """Create a text-based progress bar."""
         if total == 0:
             return ""
@@ -207,7 +217,7 @@ class VisualLogger:
                 "warning": "yellow",
                 "error": "red",
                 "info": "blue",
-                "progress": "cyan"
+                "progress": "cyan",
             }
             color = color_map.get(status, "white")
 
@@ -215,7 +225,9 @@ class VisualLogger:
         else:
             print(f"{icon} {message}")
 
-    def print_progress(self, current: int, total: int, description: str = "", width: int = None):
+    def print_progress(
+        self, current: int, total: int, description: str = "", width: int = None
+    ):
         """Print a progress indicator."""
         if width is None:
             width = min(self.config.max_width, 60)
@@ -225,7 +237,7 @@ class VisualLogger:
                 BarColumn(),
                 MofNCompleteColumn(),
                 TextColumn("• {task.description}"),
-                console=self.console
+                console=self.console,
             )
 
             with progress:
@@ -263,7 +275,7 @@ class VisualLogger:
                 suggestions_panel = Panel(
                     "\n".join(f"• {suggestion}" for suggestion in recovery_suggestions),
                     title="💡 Recovery Suggestions",
-                    border_style="yellow"
+                    border_style="yellow",
                 )
                 self.console.print(suggestions_panel)
         else:
@@ -273,7 +285,9 @@ class VisualLogger:
                 for suggestion in recovery_suggestions:
                     print(f"  {STATUS_ICONS['bullet']} {suggestion}")
 
-    def print_completion_banner(self, success: bool, duration: float, stats: Dict[str, Any]):
+    def print_completion_banner(
+        self, success: bool, duration: float, stats: Dict[str, Any]
+    ):
         """Print a completion banner with statistics."""
         status = "SUCCESS" if success else "FAILED"
         icon = STATUS_ICONS["success"] if success else STATUS_ICONS["error"]
@@ -284,45 +298,50 @@ class VisualLogger:
             completion_panel = Panel(
                 f"[bold]{icon} Pipeline {status}[/bold]\n\n{stats_text}",
                 title=f"🎯 Pipeline Complete ({duration:.1f}s)",
-                border_style="green" if success else "red"
+                border_style="green" if success else "red",
             )
             self.console.print(completion_panel)
         else:
-            print(f"\n{'='*60}")
+            print(f"\n{'=' * 60}")
             print(f"{icon} PIPELINE {status} (Duration: {duration:.1f}s)")
-            print(f"{'='*60}")
+            print(f"{'=' * 60}")
             for key, value in stats.items():
                 print(f"  {STATUS_ICONS['bullet']} {key}: {value}")
 
-    def create_step_progress_display(self, current_step: int, total_steps: int, description: str):
+    def create_step_progress_display(
+        self, current_step: int, total_steps: int, description: str
+    ):
         """Create a visual step progress display."""
         if self.console and RICH_AVAILABLE:
             layout = Layout()
 
             # Header
-            header = Panel(f"[bold cyan]Step {current_step}/{total_steps}: {description}[/bold cyan]",
-                          border_style="blue")
+            header = Panel(
+                f"[bold cyan]Step {current_step}/{total_steps}: {description}[/bold cyan]",
+                border_style="blue",
+            )
 
             # Progress bar
             progress = Progress(
                 BarColumn(complete_style="green"),
                 MofNCompleteColumn(),
                 TextColumn("• {task.description}"),
-                console=self.console
+                console=self.console,
             )
 
-            layout.split_column(
-                header,
-                progress
-            )
+            layout.split_column(header, progress)
 
             return layout
         else:
             return None
 
-def create_visual_logger(name: str, config: Optional[VisualConfig] = None) -> VisualLogger:
+
+def create_visual_logger(
+    name: str, config: Optional[VisualConfig] = None
+) -> VisualLogger:
     """Factory function to create a visual logger."""
     return VisualLogger(name, config)
+
 
 # Utility functions for consistent visual output across pipeline
 def format_step_header(step_num: int, description: str, total_steps: int = 24) -> str:
@@ -330,10 +349,12 @@ def format_step_header(step_num: int, description: str, total_steps: int = 24) -
     progress_text = f"Step {step_num:2d}/{total_steps}"
     return f"🔢 {progress_text} - {description}"
 
+
 def format_status_message(message: str, status: str = "info") -> str:
     """Format a status message with appropriate icon."""
     icon = STATUS_ICONS.get(status, STATUS_ICONS["info"])
     return f"{icon} {message}"
+
 
 def format_progress_bar(current: int, total: int, width: int = 30) -> str:
     """Create a text-based progress bar."""
@@ -348,14 +369,19 @@ def format_progress_bar(current: int, total: int, width: int = 30) -> str:
     percentage = (current / total * 100) if total > 0 else 0
     return f"[{bar}] {percentage:5.1f}"
 
+
 def print_pipeline_banner(title: str, subtitle: str = ""):
     """Print a formatted pipeline banner."""
     if RICH_AVAILABLE and Console():
         console = Console()
-        console.print(Panel.fit(
-            f"[bold blue]{title}[/bold blue]\n[dim]{subtitle}[/dim]" if subtitle else f"[bold blue]{title}[/bold blue]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel.fit(
+                f"[bold blue]{title}[/bold blue]\n[dim]{subtitle}[/dim]"
+                if subtitle
+                else f"[bold blue]{title}[/bold blue]",
+                border_style="blue",
+            )
+        )
     else:
         width = min(TERMINAL_WIDTH, 80)
         border = "=" * width
@@ -365,7 +391,10 @@ def print_pipeline_banner(title: str, subtitle: str = ""):
             print(f"  {subtitle}")
         print(f"{border}\n")
 
-def print_step_summary(step_num: int, description: str, status: str, duration: float, stats: Dict[str, Any]):
+
+def print_step_summary(
+    step_num: int, description: str, status: str, duration: float, stats: Dict[str, Any]
+):
     """Print a formatted step completion summary."""
     status_icon = STATUS_ICONS.get(status, STATUS_ICONS["info"])
 
@@ -376,7 +405,7 @@ def print_step_summary(step_num: int, description: str, status: str, duration: f
         summary_panel = Panel(
             f"[bold]{status_icon} Step {step_num}: {description}[/bold]\n\n{stats_text}",
             title=f"⏱️ Complete ({duration:.2f}s)",
-            border_style="green" if status == "success" else "yellow"
+            border_style="green" if status == "success" else "yellow",
         )
         console.print(summary_panel)
     else:
@@ -385,7 +414,10 @@ def print_step_summary(step_num: int, description: str, status: str, duration: f
         for key, value in stats.items():
             print(f"   {STATUS_ICONS['bullet']} {key}: {value}")
 
-def print_completion_summary(success: bool, total_duration: float, stats: Dict[str, Any]):
+
+def print_completion_summary(
+    success: bool, total_duration: float, stats: Dict[str, Any]
+):
     """Print a comprehensive pipeline completion summary."""
     status = "SUCCESS" if success else "COMPLETED WITH ISSUES"
     status_icon = STATUS_ICONS["success"] if success else STATUS_ICONS["warning"]
@@ -397,15 +429,16 @@ def print_completion_summary(success: bool, total_duration: float, stats: Dict[s
         completion_panel = Panel(
             f"[bold]{status_icon} Pipeline {status}[/bold]\n\n{stats_text}",
             title=f"🎯 Pipeline Complete ({total_duration:.1f}s)",
-            border_style="green" if success else "yellow"
+            border_style="green" if success else "yellow",
         )
         console.print(completion_panel)
     else:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"{status_icon} PIPELINE {status} (Duration: {total_duration:.1f}s)")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         for key, value in stats.items():
             print(f"  {STATUS_ICONS['bullet']} {key}: {value}")
+
 
 # Accessibility helpers
 def strip_visual_elements(text: str) -> str:
@@ -414,11 +447,13 @@ def strip_visual_elements(text: str) -> str:
         text = text.replace(icon, "")
     return text
 
+
 def ensure_minimum_width(text: str, min_width: int = 40) -> str:
     """Ensure text meets minimum width for readability."""
     if len(text) < min_width:
         text += " " * (min_width - len(text))
     return text
+
 
 def format_accessible_message(message: str, level: str = "info") -> str:
     """Format message for screen reader accessibility."""
@@ -427,7 +462,7 @@ def format_accessible_message(message: str, level: str = "info") -> str:
         "error": "Error: ",
         "warning": "Warning: ",
         "info": "Info: ",
-        "success": "Success: "
+        "success": "Success: ",
     }
     prefix = level_indicators.get(level, "")
     return f"{prefix}{strip_visual_elements(message)}"
