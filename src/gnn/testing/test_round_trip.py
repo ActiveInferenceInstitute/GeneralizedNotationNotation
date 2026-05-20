@@ -1857,7 +1857,7 @@ class GNNRoundTripTester:
         }
 
         checksum_str = json.dumps(checksum_data, sort_keys=True)
-        return hashlib.md5(checksum_str.encode()).hexdigest()  # nosec B324 -- md5 used for content fingerprinting/deduplication, not security
+        return hashlib.md5(checksum_str.encode(), usedforsecurity=False).hexdigest()
 
     def _get_file_extension(self, format: GNNFormat) -> str:
         """Get file extension for a format."""

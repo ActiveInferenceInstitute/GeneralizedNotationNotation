@@ -935,14 +935,17 @@ def parse_matrix_data(matrix_str: str) -> Optional[np.ndarray]:
 
 
 def analyze_framework_outputs(
-    execution_output_dir: Path, logger: Optional[logging.Logger] = None
+    execution_output_dir: Path,
+    logger: Optional[logging.Logger] = None,
+    allowed_frameworks: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
     """
-    Analyze and compare outputs from all framework executions.
+    Analyze and compare outputs from the current execution framework scope.
 
     Args:
         execution_output_dir: Directory containing execution results (e.g., output/12_execute_output)
         logger: Optional logger instance
+        allowed_frameworks: Optional normalized framework names to include
 
     Returns:
         Dictionary with framework comparison results
@@ -979,7 +982,10 @@ def analyze_framework_outputs(
         # Group by framework
         framework_data = {}
         for detail in execution_details:
-            framework = detail.get("framework", "unknown")
+            framework = str(detail.get("framework", "unknown"))
+            framework = framework.lower().replace(".", "_").replace(" ", "_")
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
             if framework not in framework_data:
                 framework_data[framework] = []
             framework_data[framework].append(detail)

@@ -18,7 +18,7 @@ import json
 import logging
 import os
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import tempfile
 import time
 from dataclasses import dataclass, field
@@ -641,7 +641,7 @@ Active Inference Free Energy Principle: {
             cmd.extend([str(d2_file), str(output_file)])
 
             try:
-                result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                result = subprocess.run(  # nosec B603
                     cmd, capture_output=True, text=True, timeout=30
                 )
 
@@ -835,10 +835,10 @@ def process_gnn_file_with_d2(
             except Exception as e:
                 logger.warning(f"Failed to load parsed JSON: {e}")
 
-    # Recovery: parse GNN file directly
+    # Parse GNN file directly when Step 3 artifacts are unavailable.
     if model_data is None:
         try:
-            from gnn.parser import parse_gnn_file
+            from gnn import parse_gnn_file
 
             model_data = parse_gnn_file(gnn_file)
             logger.info(f"Parsed GNN file directly: {gnn_file}")

@@ -15,7 +15,7 @@ import logging
 import os
 import re
 import signal
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import threading
 import time
@@ -115,7 +115,7 @@ class ModularTestRunner:
 
         for test_file in test_files:
             try:
-                syntax_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                syntax_result = subprocess.run(  # nosec B603
                     [python_executable, "-m", "py_compile", test_file],
                     capture_output=True,
                     text=True,
@@ -395,7 +395,7 @@ class ModularTestRunner:
                 stdout_path = category_output_dir / "pytest_stdout.txt"
                 stderr_path = category_output_dir / "pytest_stderr.txt"
 
-                process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
+                process = subprocess.Popen(  # nosec B603
                     cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,

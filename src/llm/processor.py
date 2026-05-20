@@ -7,7 +7,7 @@ import json
 import logging
 import os
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
@@ -61,7 +61,7 @@ def _get_llm_config() -> dict:
 def _model_is_cached(model_name: str, logger: logging.Logger) -> bool:
     """Check if an Ollama model is already cached locally using 'ollama show'."""
     try:
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             ["ollama", "show", model_name, "--modelfile"],
             capture_output=True,
             text=True,
@@ -106,7 +106,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
 
         # Check if Ollama is already running by trying 'ollama list'
         try:
-            result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(  # nosec B607 B603
                 ["ollama", "list"],
                 capture_output=True,
                 text=True,
@@ -150,7 +150,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
         try:
             # Try to start Ollama in background using subprocess.Popen for non-blocking
             # Start Ollama serve in background
-            ollama_process = subprocess.Popen(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+            ollama_process = subprocess.Popen(  # nosec B607 B603
                 ["ollama", "serve"],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -168,7 +168,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
 
             # Try to check again
             try:
-                result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                result = subprocess.run(  # nosec B607 B603
                     ["ollama", "list"], capture_output=True, text=True, timeout=10
                 )
 
@@ -189,7 +189,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
                         logger.warning("⚠️ Ollama started but no models are installed")
                         # Try to install the default model
                         logger.info("📥 Installing default model...")
-                        install_result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                        install_result = subprocess.run(  # nosec B607 B603
                             ["ollama", "pull", DEFAULT_OLLAMA_MODEL],
                             capture_output=True,
                             text=True,
@@ -579,7 +579,7 @@ async def _process_llm_async(
                                     f"📥 Pulling model '{ollama_model}' (not cached)..."
                                 )
                                 try:
-                                    install_result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                                    install_result = subprocess.run(  # nosec B607 B603
                                         ["ollama", "pull", ollama_model],
                                         capture_output=True,
                                         text=True,

@@ -194,10 +194,10 @@ class GNNParser:
     def _parse_binary_file(self, file_path: Path) -> ParsedGNN:
         """Parse binary files (pickle format)."""
         try:
-            import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
+            import pickle  # nosec B403
 
             with open(file_path, "rb") as f:
-                data = pickle.load(f)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
+                data = pickle.load(f)  # nosec B301
 
             # Convert pickle data to ParsedGNN format
             return self._convert_pickle_to_parsed_gnn(data)
@@ -1043,10 +1043,10 @@ class GNNValidator:
                     )
 
             elif file_format == "xml":
-                import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
+                import xml.etree.ElementTree as ET  # nosec B405
 
                 try:
-                    ET.fromstring(content)  # nosec B314 - GNN XML files are researcher-generated, not untrusted input
+                    ET.fromstring(content)  # nosec B314
                     result.warnings.append("XML format validated successfully")
                 except ET.ParseError as e:
                     result.errors.append(f"XML parsing error: {e}")

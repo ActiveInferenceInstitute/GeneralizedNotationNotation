@@ -100,14 +100,17 @@ from .visualizations import (
 
 
 def analyze_execution_results(
-    execution_results_dir: Path, model_name: Optional[str] = None
+    execution_results_dir: Path,
+    model_name: Optional[str] = None,
+    allowed_frameworks: Optional[set[str]] = None,
 ) -> Dict[str, Any]:
     """
-    Analyze execution results from all frameworks.
+    Analyze execution results from the current execution scope.
 
     Args:
         execution_results_dir: Directory containing execution results
         model_name: Optional model name filter
+        allowed_frameworks: Optional normalized framework names to include
 
     Returns:
         Dictionary with comprehensive analysis results
@@ -141,6 +144,8 @@ def analyze_execution_results(
                 # Normalize framework name to lowercase for consistent grouping
                 # Simulation JSONs may use "PyMDP"/"JAX" while execution logs use "pymdp"/"jax"
                 framework = framework.lower().replace(".", "_").replace(" ", "_")
+                if allowed_frameworks and framework not in allowed_frameworks:
+                    continue
                 file_model_name = result_data.get("model_name", "unknown")
 
                 # Filter by model name if specified — use normalized comparison

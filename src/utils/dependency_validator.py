@@ -8,7 +8,7 @@ before pipeline execution begins, preventing runtime failures.
 import argparse
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -203,7 +203,7 @@ class DependencyValidator:
                 f"import {module_name}; print('OK')",
             ]
 
-            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(  # nosec B603
                 check_import_cmd,
                 capture_output=True,
                 text=True,
@@ -231,7 +231,7 @@ class DependencyValidator:
                         f"print(version if version else 'UNKNOWN')",
                     ]
 
-                    version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                    version_result = subprocess.run(  # nosec B603
                         version_cmd,
                         capture_output=True,
                         text=True,
@@ -533,7 +533,7 @@ def install_missing_dependencies() -> dict:
     Returns:
         dict: { 'installed': [name, ...], 'failed': [name, ...], 'skipped': [name, ...] }
     """
-    import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+    import subprocess  # nosec B404
 
     validator = DependencyValidator()
     validator.validate_all_dependencies()
@@ -546,7 +546,7 @@ def install_missing_dependencies() -> dict:
             continue
         try:
             cmd = ["uv", "pip", "install", dep.name]
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)  # nosec B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)  # nosec B603
             if result.returncode == 0:
                 installed.append(dep.name)
                 logging.info(f"Installed missing dependency: {dep.name}")

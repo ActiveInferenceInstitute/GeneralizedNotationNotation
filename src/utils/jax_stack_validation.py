@@ -12,7 +12,7 @@ Requires core dependencies: ``jax``, ``jaxlib``, ``optax``, ``flax``, ``inferact
 from __future__ import annotations
 
 import os
-import subprocess  # nosec B404 -- controlled invocation of venv Python
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import Optional, Tuple
 
@@ -126,7 +126,7 @@ def run_jax_stack_probe_subprocess(
     Used by setup and validation so the probe always uses the same interpreter as the lockfile.
     """
     env = {**os.environ, "PYTHONPATH": str(project_root / "src")}
-    proc = subprocess.run(  # nosec B603 -- controlled/trusted paths
+    proc = subprocess.run(  # nosec B603
         [
             str(venv_python),
             "-c",

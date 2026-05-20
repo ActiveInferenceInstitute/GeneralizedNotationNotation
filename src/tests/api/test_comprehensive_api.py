@@ -329,7 +329,7 @@ class TestWebsiteModule:
         # Test with nonexistent directory
         logger = logging.getLogger("test")
         nonexistent_dir = Path("/nonexistent/directory")
-        output_dir = Path("/tmp/test_output")  # nosec B108 -- temp file path from trusted pipeline context
+        output_dir = Path("/tmp/test_output")  # nosec B108
 
         try:
             # This should handle the error gracefully
@@ -403,7 +403,7 @@ class TestSAPFModule:
     @pytest.mark.skipif(not AUDIO_AVAILABLE, reason="SAPF module not available")
     def test_process_gnn_to_audio_invalid_input(self) -> None:
         """Test process_gnn_to_audio with invalid input."""
-        result = audio.process_gnn_to_audio("", "test_model", "/tmp")  # nosec B108 -- temp file path from trusted pipeline context
+        result = audio.process_gnn_to_audio("", "test_model", "/tmp")  # nosec B108
         # This should fail due to empty GNN content
         assert result["success"] is False or "error" in result
 

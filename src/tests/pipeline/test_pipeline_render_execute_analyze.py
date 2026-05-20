@@ -46,19 +46,38 @@ class TestPipelineIntegration:
 test_pipeline_agent
 
 ## StateSpaceBlock
+A[3,3,type=float]
+B[3,3,3,type=float]
+C[3,type=float]
+D[3,type=float]
+E[3,type=float]
 s[3,1,type=int]
-
-## ObservationBlock  
-o[2,1,type=int]
+o[3,1,type=int]
+u[1,type=int]
 
 ## Connections
-s -> o
+D>s
+s-A
+A-o
+s-B
+B>u
+C>u
+E>u
 
 ## InitialParameterization
-A = [[0.8, 0.1, 0.1], [0.2, 0.7, 0.1]]
-B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
-C = [1.0, 0.0]
-D = [0.33, 0.33, 0.34]
+A={
+  (0.9, 0.05, 0.05),
+  (0.05, 0.9, 0.05),
+  (0.05, 0.05, 0.9)
+}
+B={
+  ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)),
+  ((0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (0.0, 0.0, 1.0)),
+  ((0.0, 0.0, 1.0), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0))
+}
+C={(0.1, 0.1, 1.0)}
+D={(0.33333, 0.33333, 0.33333)}
+E={(0.33333, 0.33333, 0.33333)}
 """
 
     @pytest.fixture
@@ -144,7 +163,7 @@ D = [0.33, 0.33, 0.34]
         framework_artifacts = list(dirs["base_output"].rglob("*.py"))
         assert framework_artifacts, "Render produced no framework artifacts"
 
-        process_execute(
+        execute_result = process_execute(
             dirs["input_dir"],
             dirs["base_output"],
             verbose=True,
@@ -152,9 +171,13 @@ D = [0.33, 0.33, 0.34]
             timeout=10,
             render_output_dir=dirs["base_output"],
         )
+        assert execute_result is True
         # process_execute writes execution_summary under output_dir/summaries/
         exec_summary = dirs["base_output"] / "summaries" / "execution_summary.json"
         assert exec_summary.exists(), f"Execute did not produce {exec_summary}"
+        summary_payload = json.loads(exec_summary.read_text(encoding="utf-8"))
+        assert summary_payload["successful_executions"] >= 1
+        assert summary_payload["failed_executions"] == 0
 
 
 class TestExecuteAnalyzeIntegration:

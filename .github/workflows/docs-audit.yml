@@ -57,3 +57,9 @@ jobs:
 
       - name: Repository terminology audit
         run: uv run python scripts/check_repo_terminology.py --strict
+
+      - name: Maintained documentation terminology audit
+        run: uv run python scripts/check_maintained_doc_terms.py --strict
+
+      - name: GNN documentation pattern audit
+        run: uv run python scripts/check_gnn_doc_patterns.py --strict

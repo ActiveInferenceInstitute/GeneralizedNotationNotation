@@ -27,7 +27,7 @@ def _matrix_to_julia(matrix_data: Any) -> str:
 
                 matrix_data = ast.literal_eval(matrix_data)
             except (ValueError, SyntaxError):
-                pass  # nosec B110 -- intentional: keep as string if parsing fails
+                pass
 
     # Normalize tuple to list for unified handling
     if isinstance(matrix_data, tuple):
@@ -149,19 +149,19 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 try:
                     n_states = int(dims.split(",")[0])
                 except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                    pass
             elif var_id == "o" and n_obs is None:
                 # Observation: e.g., '3,1,type=int'
                 try:
                     n_obs = int(dims.split(",")[0])
                 except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                    pass
             elif var_id == "u" and n_actions is None:
                 # Action: e.g., '1,type=int' (but see B for action count)
                 try:
                     n_actions = int(dims.split(",")[0])
                 except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                    pass
             elif var_id == "A" and (n_obs is None or n_states is None):
                 # A matrix: e.g., '3,3,type=float'
                 try:
@@ -170,7 +170,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if n_states is None:
                         n_states = int(dims.split(",")[1])
                 except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                    pass
             elif var_id == "B" and (n_states is None or n_actions is None):
                 # B matrix: e.g., '3,3,3,type=float'
                 try:
@@ -179,7 +179,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     if n_actions is None:
                         n_actions = int(dims.split(",")[2])
                 except (ValueError, TypeError, IndexError):
-                    pass  # nosec B110 -- intentional: dimension parsing is best-effort
+                    pass
 
     # --- Recovery 2: from raw ModelParameters section ---
     if n_states is None or n_obs is None or n_actions is None:
@@ -344,7 +344,7 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
                                 try:
                                     current_row.append(float(num_str))
                                 except ValueError:
-                                    pass  # nosec B110 -- intentional: skip non-numeric token in matrix
+                                    pass
                         elif isinstance(item, (int, float)):
                             current_row.append(float(item))
 

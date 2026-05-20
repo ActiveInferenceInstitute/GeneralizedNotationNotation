@@ -11,7 +11,7 @@ Handles:
 import json
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -285,12 +285,12 @@ def launch_oxdraw_editor(
 
         if background:
             # Non-blocking launch
-            subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
+            subprocess.Popen(  # nosec B603
                 cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
             )
         else:
             # Blocking launch
-            subprocess.run(cmd, check=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
+            subprocess.run(cmd, check=True, timeout=300)  # nosec B603
 
         return True
 

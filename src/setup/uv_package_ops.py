@@ -5,7 +5,7 @@ Add/remove/update/lock dependency operations extracted from uv_management.py.
 """
 
 import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 
 from .constants import (
@@ -38,7 +38,7 @@ def add_uv_dependency(package: str, dev: bool = False, verbose: bool = False) ->
         if verbose:
             logger.debug(f"Running: {' '.join(cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -80,7 +80,7 @@ def remove_uv_dependency(package: str, verbose: bool = False) -> bool:
         if verbose:
             logger.debug(f"Running: {' '.join(cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -125,7 +125,7 @@ def update_uv_dependencies(verbose: bool = False, upgrade: bool = False) -> bool
             cmd.append("--verbose")
             logger.debug(f"Running: {' '.join(cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -168,7 +168,7 @@ def lock_uv_dependencies(verbose: bool = False) -> bool:
         if verbose:
             logger.debug(f"Running: {' '.join(cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,

@@ -11,7 +11,7 @@ import asyncio
 import functools
 import logging
 import signal
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import threading
 import time
@@ -435,7 +435,7 @@ class ProcessTimeoutManager(TimeoutManager):
         config = config or self.default_config
 
         def subprocess_operation(*args, **kwargs):
-            return subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+            return subprocess.run(  # nosec B603
                 command, timeout=config.base_timeout, check=False, **subprocess_kwargs
             )
 

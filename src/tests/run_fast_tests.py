@@ -7,7 +7,7 @@ It's designed to complete in under 30 seconds and provide basic confidence
 that the system is working correctly.
 """
 
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -39,7 +39,7 @@ def run_fast_tests() -> bool:
 
     try:
         # Run pytest with 60 second timeout
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             pytest_cmd,
             capture_output=True,
             text=True,

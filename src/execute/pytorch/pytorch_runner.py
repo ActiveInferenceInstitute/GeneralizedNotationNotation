@@ -11,7 +11,7 @@ dependency checking, log persistence, and execution timing.
 import json as json_mod
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import tempfile
 import time as time_mod
@@ -110,7 +110,7 @@ def execute_pytorch_script(
 
     try:
         abs_path = script_path.resolve()
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [sys.executable, str(abs_path)],
             capture_output=True,
             text=True,

@@ -9,7 +9,7 @@ and optimization capabilities for the GNN processing pipeline.
 import json
 import logging
 import re
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import tomllib
 from dataclasses import dataclass, field
@@ -185,7 +185,7 @@ class DependencyAuditor:
         """Load information about installed packages."""
         try:
             result = subprocess.run(
-                [  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                [  # nosec B607 B603
                     "uv",
                     "pip",
                     "list",
@@ -230,7 +230,7 @@ class DependencyAuditor:
         """Check for outdated packages."""
         try:
             result = subprocess.run(
-                [  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                [  # nosec B607 B603
                     "uv",
                     "pip",
                     "list",
@@ -264,7 +264,7 @@ class DependencyAuditor:
         try:
             # Use pip-audit if available
             result = subprocess.run(
-                [  # nosec B603 -- subprocess calls with controlled/trusted input
+                [  # nosec B603
                     sys.executable,
                     "-m",
                     "pip_audit",
@@ -291,7 +291,7 @@ class DependencyAuditor:
         """Analyze dependency relationships."""
         try:
             result = subprocess.run(
-                [  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                [  # nosec B607 B603
                     "uv",
                     "pip",
                     "show",

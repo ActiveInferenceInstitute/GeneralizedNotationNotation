@@ -9,7 +9,7 @@ import copy
 import json
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
@@ -49,13 +49,13 @@ def check_julia_dependencies(
         # check basic julia availability
         subprocess.run(
             ["julia", "--version"], capture_output=True, check=True, timeout=10
-        )  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        )  # nosec B607 B603
 
         # Check for key packages
         check_script = (
             'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
         )
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             ["julia", "-e", check_script], capture_output=True, text=True, timeout=30
         )
 
@@ -195,6 +195,35 @@ def _execute_script_worker(
     return result
 
 
+def _make_local_worker_pool_failure_result(
+    script_info: Dict[str, Any],
+    exc: BaseException,
+) -> Dict[str, Any]:
+    """Return a per-script failure envelope when local process dispatch fails."""
+    script_path = Path(script_info["path"])
+    path_parts = script_path.parts
+    model_name = path_parts[-3] if len(path_parts) >= 3 else "unknown_model"
+    framework = path_parts[-2] if len(path_parts) >= 3 else script_info["framework"]
+    error = f"Local worker pool failed before script completion: {exc}"
+    return {
+        "script_path": str(script_path),
+        "script_name": script_info["name"],
+        "framework": framework,
+        "model_name": model_name,
+        "executor": script_info["executor"],
+        "success": False,
+        "skipped": False,
+        "return_code": None,
+        "stdout": "",
+        "stderr": "",
+        "execution_time": 0,
+        "timestamp": datetime.now().isoformat(),
+        "error": error,
+        "error_type": "LocalWorkerPoolError",
+        "worker_pool_error_type": type(exc).__name__,
+    }
+
+
 def _run_scripts_with_local_workers(
     executable_scripts: List[Dict[str, Any]],
     results_dir: Path,
@@ -230,8 +259,19 @@ def _run_scripts_with_local_workers(
     bundles = [
         (info, results_dir, verbose, timeout, repeats) for info in executable_scripts
     ]
-    with ProcessPoolExecutor(max_workers=bounded_workers) as pool:
-        return list(pool.map(_execute_script_worker, bundles))
+    try:
+        with ProcessPoolExecutor(max_workers=bounded_workers) as pool:
+            return list(pool.map(_execute_script_worker, bundles))
+    except Exception as exc:  # noqa: BLE001
+        logger.error(
+            "Local worker pool failed while executing %d scripts: %s",
+            len(executable_scripts),
+            exc,
+        )
+        return [
+            _make_local_worker_pool_failure_result(script_info, exc)
+            for script_info in executable_scripts
+        ]
 
 
 def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
@@ -843,9 +883,15 @@ def find_executable_scripts(
         scripts = list(render_output_dir.rglob(pattern))
 
         for script_path in scripts:
-            # Skip test files and other non-executable scripts
-            if any(
-                skip in script_path.name.lower() for skip in ["test_", "__", "readme"]
+            # Skip support modules in test folders without excluding rendered
+            # model scripts whose model name naturally starts with "test_".
+            script_name = script_path.name.lower()
+            path_parts = {part.lower() for part in script_path.parts}
+            if (
+                script_name == "__init__.py"
+                or script_name.startswith("__")
+                or script_path.stem.lower().endswith("_test")
+                or "tests" in path_parts
             ):
                 continue
 
@@ -967,7 +1013,7 @@ def execute_single_script(
             # For Python scripts, check if Python is available (most are Python scripts)
             if executor in ["python", "python3"]:
                 subprocess.run(
-                    [executor, "--version"],  # nosec B603 -- subprocess calls with controlled/trusted input
+                    [executor, "--version"],  # nosec B603
                     capture_output=True,
                     text=True,
                     timeout=5,
@@ -977,7 +1023,7 @@ def execute_single_script(
                 # For PyMDP, specifically check if it's importable
                 if framework == "pymdp":
                     try:
-                        import_check = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                        import_check = subprocess.run(  # nosec B603
                             [executor, "-c", 'import pymdp; print("ok")'],
                             capture_output=True,
                             text=True,
@@ -1003,7 +1049,7 @@ def execute_single_script(
                     # Don't fail here, let the script try to run, but log warning
 
                 subprocess.run(
-                    [executor, "--version"],  # nosec B603 -- subprocess calls with controlled/trusted input
+                    [executor, "--version"],  # nosec B603
                     capture_output=True,
                     text=True,
                     timeout=5,
@@ -1012,7 +1058,7 @@ def execute_single_script(
             # For other executors, try a basic check
             else:
                 subprocess.run(
-                    [executor, "--version"],  # nosec B603 -- subprocess calls with controlled/trusted input
+                    [executor, "--version"],  # nosec B603
                     capture_output=True,
                     text=True,
                     timeout=5,
@@ -1078,7 +1124,7 @@ def execute_single_script(
             for rep in range(K):
                 rep_start = datetime.now()
                 try:
-                    run_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                    run_result = subprocess.run(  # nosec B603
                         [executor, script_name],
                         capture_output=True,
                         text=True,

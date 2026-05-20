@@ -8,7 +8,7 @@ for RxInfer.jl and ActiveInference.jl frameworks used in the execution step.
 
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -43,7 +43,7 @@ def check_julia_version(julia_path: str) -> Optional[str]:
         Version string or None if check fails
     """
     try:
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [julia_path, "--version"], capture_output=True, text=True, timeout=10
         )
         if result.returncode == 0:
@@ -120,7 +120,7 @@ def run_julia_setup_script(
         cmd.append("--validate-only")
 
     try:
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             cwd=setup_script.parent,
             capture_output=True,

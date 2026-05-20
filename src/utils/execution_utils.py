@@ -9,7 +9,7 @@ rather than buffering all output until completion.
 
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import threading
 from pathlib import Path
@@ -66,7 +66,7 @@ def execute_command_streaming(
 
     try:
         # Start process with pipes
-        process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
+        process = subprocess.Popen(  # nosec B603
             cmd,
             cwd=cwd,
             env=process_env,

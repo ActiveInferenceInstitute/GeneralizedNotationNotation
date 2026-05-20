@@ -7,7 +7,7 @@ optional package group installation, and project structure creation.
 
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import List
 
@@ -74,7 +74,7 @@ def install_jax_and_test(verbose: bool = False) -> bool:
         if verbose:
             logger.info("Running: %s", " ".join(install_cmd))
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             install_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -118,9 +118,9 @@ def setup_julia_environment(verbose: bool = False) -> bool:
         if not julia_path:
             logger.error("❌ Julia not found in PATH")
             logger.info("💡 Install Julia from: https://julialang.org/downloads/")
-            return False  # nosec B603 -- subprocess calls with controlled/trusted input
+            return False  # nosec B603
 
-        version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        version_result = subprocess.run(  # nosec B603
             [julia_path, "--version"], capture_output=True, text=True, timeout=10
         )
 
@@ -146,9 +146,9 @@ def setup_julia_environment(verbose: bool = False) -> bool:
 
         for script_path in setup_scripts:
             if script_path.exists():
-                logger.info(f"Running Julia setup script: {script_path}")  # nosec B603 -- subprocess calls with controlled/trusted input
+                logger.info(f"Running Julia setup script: {script_path}")
                 try:
-                    result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+                    result = subprocess.run(  # nosec B603
                         [julia_path, str(script_path)],
                         cwd=script_path.parent,
                         capture_output=True,
@@ -220,9 +220,9 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
 
         if verbose:
             sync_cmd.append("--verbose")
-            logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
+            logger.debug(f"Running: {' '.join(sync_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -272,9 +272,9 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
 
         if verbose:
             sync_cmd.append("--verbose")
-            logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
+            logger.debug(f"Running: {' '.join(sync_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -396,9 +396,9 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         (project_path / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
         (project_path / "output").mkdir(parents=True, exist_ok=True)
         (project_path / "src").mkdir(parents=True, exist_ok=True)
-        # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        # nosec B607 B603
         try:
-            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)  # nosec B607 B603
             logger.info(f"UV project initialized at {project_path}")
         except Exception as e:
             logger.warning(f"Could not initialize UV project: {e}")

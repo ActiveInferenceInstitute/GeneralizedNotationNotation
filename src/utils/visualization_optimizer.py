@@ -168,7 +168,7 @@ class DataSampler:
             if self.sampling_strategy == "random":
                 import random
 
-                sampled_nodes = random.sample(nodes, self.max_nodes)  # nosec B311 -- random used for non-security sampling, not cryptography
+                sampled_nodes = random.sample(nodes, self.max_nodes)  # nosec B311
             else:
                 # Keep first N nodes (may be more important)
                 sampled_nodes = nodes[: self.max_nodes]
@@ -308,7 +308,6 @@ class VisualizationOptimizer:
         enable_sampling: bool = True,
         enable_caching: bool = True,
     ):
-
         self.enable_caching = enable_caching
         self.enable_sampling = enable_sampling
         self.logger = logging.getLogger(__name__)

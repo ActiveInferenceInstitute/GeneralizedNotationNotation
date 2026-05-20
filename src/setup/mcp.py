@@ -174,13 +174,13 @@ def install_uv_dependency_mcp(
         Dictionary with installation status.
     """
     try:
-        import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+        import subprocess  # nosec B404
 
         cmd = ["uv", "add", package_name]
         if extras:
             cmd.extend(["--extras", extras])
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,
@@ -235,10 +235,10 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
         Dictionary with sync status.
     """
     try:
-        import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+        import subprocess  # nosec B404
 
         project_root = Path(project_directory)
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             ["uv", "sync"],
             cwd=project_root,
             capture_output=True,

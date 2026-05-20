@@ -7,8 +7,8 @@ This module provides format-specific export functionality.
 
 import json
 import logging
-import pickle  # nosec B403 - GNN files are researcher-generated, not untrusted input
-import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
+import pickle  # nosec B403
+import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
 from typing import Any, Dict
 
@@ -63,7 +63,7 @@ def export_to_xml(parsed_content: Dict[str, Any], output_file: Path) -> bool:
             conn_elem.set("target", conn.get("target", ""))
 
         # Write XML
-        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318 - GNN files are researcher-generated, not untrusted input
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(xml_str)
 
@@ -116,7 +116,7 @@ def export_to_graphml(parsed_content: Dict[str, Any], output_file: Path) -> bool
             edge.set("target", conn.get("target", ""))
 
         # Write GraphML
-        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318 - GNN files are researcher-generated, not untrusted input
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(xml_str)
 
@@ -165,7 +165,7 @@ def export_to_gexf(parsed_content: Dict[str, Any], output_file: Path) -> bool:
             edge.set("target", conn.get("target", ""))
 
         # Write GEXF
-        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318 - GNN files are researcher-generated, not untrusted input
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(xml_str)
 
@@ -179,7 +179,7 @@ def export_to_pickle(parsed_content: Dict[str, Any], output_file: Path) -> bool:
     """Export parsed content to pickle format."""
     try:
         with open(output_file, "wb") as f:
-            pickle.dump(parsed_content, f)  # nosec B301 - GNN files are researcher-generated, not untrusted input
+            pickle.dump(parsed_content, f)  # nosec B301
         return True
     except Exception as e:
         logger.warning("export_to_pickle failed: %s", e)
@@ -238,7 +238,7 @@ def export_to_xml_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
             conn_elem.set("target", conn.get("target", ""))
 
         # Write XML
-        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318 - GNN files are researcher-generated, not untrusted input
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")  # nosec B318
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(xml_str)
 
@@ -252,7 +252,7 @@ def export_to_python_pickle(model_data: Dict[str, Any], output_file: Path) -> bo
     """Export GNN model data to Python pickle format."""
     try:
         with open(output_file, "wb") as f:
-            pickle.dump(model_data, f)  # nosec B301 - GNN files are researcher-generated, not untrusted input
+            pickle.dump(model_data, f)  # nosec B301
         return True
     except Exception as e:
         logger.warning("export_to_python_pickle failed: %s", e)

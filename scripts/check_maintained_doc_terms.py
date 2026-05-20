@@ -61,6 +61,18 @@ PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"\bthin shim\b", re.IGNORECASE), "legacy shim wording"),
     (re.compile(r"\bcompatibility alias\b", re.IGNORECASE), "legacy alias wording"),
     (
+        re.compile(r"\bcompat(?:ibility)?-only\b", re.IGNORECASE),
+        "compatibility-only wording",
+    ),
+    (re.compile(r"\bfallback agent\b", re.IGNORECASE), "stale fallback wording"),
+    (re.compile(r"\bfallback circuit\b", re.IGNORECASE), "stale fallback wording"),
+    (re.compile(r"\bfallback shim\b", re.IGNORECASE), "legacy shim wording"),
+    (re.compile(r"\bsimple fallback\b", re.IGNORECASE), "hidden-recovery wording"),
+    (re.compile(r"\bhidden fallback\b", re.IGNORECASE), "hidden-recovery wording"),
+    (re.compile(r"\bfake default\b", re.IGNORECASE), "invented-default wording"),
+    (re.compile(r"\bplaceholder API\b", re.IGNORECASE), "placeholder API wording"),
+    (re.compile(r"\blegacy API\b", re.IGNORECASE), "legacy API wording"),
+    (
         re.compile(r"\bbackwards? compatible\b", re.IGNORECASE),
         "backwards-compatibility claim",
     ),

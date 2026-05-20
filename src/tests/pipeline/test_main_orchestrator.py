@@ -25,7 +25,7 @@ import pytest
 
 pytestmark = pytest.mark.pipeline
 import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
@@ -78,7 +78,7 @@ class TestMainOrchestratorImport:
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
-        )  # nosec B603 -- subprocess calls with controlled/trusted input
+        )  # nosec B603
         assert result.returncode == 0
         assert "usage" in result.stdout.lower() or "usage" in result.stderr.lower()
 
@@ -114,7 +114,7 @@ class TestArgumentParsing:
             capture_output=True,
             text=True,
             cwd=str(PROJECT_ROOT),
-        )  # nosec B603 -- subprocess calls with controlled/trusted input
+        )  # nosec B603
         assert result.returncode == 0
 
 
@@ -207,7 +207,7 @@ class TestStepExecution:
             ]
             result = subprocess.run(
                 cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT)
-            )  # nosec B603 -- subprocess calls with controlled/trusted input
+            )  # nosec B603
             assert result.returncode in [0, 1]
 
 
@@ -230,7 +230,7 @@ class TestPipelineCoordination:
             ]
             result = subprocess.run(
                 cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT)
-            )  # nosec B603 -- subprocess calls with controlled/trusted input
+            )  # nosec B603
 
             # Check for summary in the correct location (00_pipeline_summary subdirectory)
             summary = outdir / "00_pipeline_summary" / "pipeline_execution_summary.json"
@@ -275,7 +275,7 @@ class TestEndToEndIntegration:
                 "--output-dir",
                 str(outdir),
             ]
-            subprocess.run(cmd, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
+            subprocess.run(cmd, cwd=str(PROJECT_ROOT))  # nosec B603
             # Assert expected subdirs may be created by steps
             assert (outdir / "3_gnn_output").exists() or (
                 outdir / "gnn_processing_step"

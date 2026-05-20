@@ -1,7 +1,7 @@
 import json
-import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
+import xml.etree.ElementTree as ET  # nosec B405
 from xml.dom import (
-    minidom,  # nosec B408 - GNN files are researcher-generated, not untrusted input
+    minidom,  # nosec B408
 )
 
 from .base_serializer import BaseGNNSerializer
@@ -173,7 +173,7 @@ class XMLSerializer(BaseGNNSerializer):
 
         # Convert to string with consistent formatting
         rough_string = ET.tostring(root, encoding="unicode")
-        reparsed = minidom.parseString(rough_string)  # nosec B318 - GNN files are researcher-generated, not untrusted input
+        reparsed = minidom.parseString(rough_string)  # nosec B318
 
         # Get pretty XML and normalize whitespace
         pretty_xml = reparsed.toprettyxml(indent="  ")

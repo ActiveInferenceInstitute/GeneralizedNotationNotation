@@ -7,7 +7,7 @@ Real subprocess execution with real artifacts.
 """
 
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
@@ -94,7 +94,7 @@ D: 0.6 0.4
 
             result = subprocess.run(
                 cmd, cwd=PROJECT_ROOT, capture_output=True, text=True
-            )  # nosec B603 -- subprocess calls with controlled/trusted input
+            )  # nosec B603
 
             # Check that pipeline completed (may have warnings but should not fail)
             # Exit code 0 = success, 1 = warning/non-critical failure, 2 = success with warnings
@@ -211,7 +211,7 @@ D: 0.6 0.4
 
             subprocess.run(
                 cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300
-            )  # nosec B603 -- subprocess calls with controlled/trusted input
+            )  # nosec B603
 
             # Check that pipeline produced expected outputs
             pipeline_summary = (

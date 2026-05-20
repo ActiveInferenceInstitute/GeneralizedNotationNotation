@@ -5,9 +5,10 @@ Analysis processor module for GNN analysis.
 
 import json
 import logging
+from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 import numpy as np
 
@@ -24,6 +25,94 @@ from .analyzer import (
     run_performance_benchmarks,
     visualize_simulation_results,
 )
+
+_FRAMEWORK_DIR_NAMES = {
+    "activeinference_jl",
+    "discopy",
+    "jax",
+    "numpyro",
+    "pymdp",
+    "pytorch",
+    "rxinfer",
+}
+
+
+def _normalize_framework_name(framework: Any) -> str:
+    """Normalize framework names used by execution summaries and paths."""
+    return str(framework).lower().replace(".", "_").replace(" ", "_")
+
+
+def _scope_from_execution_summary(
+    execution_summary: Dict[str, Any],
+    target_model_names: Optional[set[str]] = None,
+) -> Dict[str, Optional[set[str]]]:
+    """Derive current-run framework/model scope from a Step 12 summary."""
+    frameworks: set[str] = set()
+    models: set[str] = set(target_model_names or set())
+
+    requested = execution_summary.get("requested_frameworks")
+    has_requested_frameworks = False
+    if isinstance(requested, list):
+        frameworks.update(_normalize_framework_name(item) for item in requested)
+        has_requested_frameworks = bool(frameworks)
+
+    details = execution_summary.get("execution_details")
+    if not isinstance(details, list):
+        details = execution_summary.get("execution_results", [])
+    if not isinstance(details, list):
+        details = []
+
+    for detail in details:
+        if not isinstance(detail, dict):
+            continue
+        if detail.get("framework") and not has_requested_frameworks:
+            frameworks.add(_normalize_framework_name(detail["framework"]))
+        if detail.get("model_name"):
+            models.add(str(detail["model_name"]))
+        script_path = detail.get("script_path") or detail.get("script")
+        if script_path:
+            parts = Path(str(script_path)).parts
+            for index, part in enumerate(parts):
+                if part in _FRAMEWORK_DIR_NAMES and index >= 1:
+                    models.add(parts[index - 1])
+                    if not has_requested_frameworks:
+                        frameworks.add(part)
+                    break
+
+    return {
+        "frameworks": frameworks or None,
+        "models": models or None,
+    }
+
+
+def _filter_execution_summary(
+    execution_summary: Dict[str, Any],
+    allowed_frameworks: Optional[set[str]],
+) -> Dict[str, Any]:
+    """Return a copy of an execution summary limited to current-run frameworks."""
+    if not allowed_frameworks:
+        return execution_summary
+
+    filtered = deepcopy(execution_summary)
+    details = filtered.get("execution_details")
+    if isinstance(details, list):
+        filtered["execution_details"] = [
+            detail
+            for detail in details
+            if isinstance(detail, dict)
+            and _normalize_framework_name(detail.get("framework", ""))
+            in allowed_frameworks
+        ]
+
+    framework_status = filtered.get("framework_status")
+    if isinstance(framework_status, dict):
+        filtered["framework_status"] = {
+            framework: status
+            for framework, status in framework_status.items()
+            if _normalize_framework_name(framework) in allowed_frameworks
+        }
+
+    return filtered
 
 
 def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -196,6 +285,11 @@ def process_analysis(
             # (execution_dir resolved above, before the gnn_files check)
             # Log the exact path being searched for debugging
             logger.info(f"Looking for execution results in: {execution_dir}")
+            target_model_names = {gnn_file.stem for gnn_file in gnn_files}
+            execution_scope: Dict[str, Optional[set[str]]] = {
+                "frameworks": None,
+                "models": target_model_names or None,
+            }
 
             if execution_dir.exists():
                 logger.info(
@@ -218,10 +312,18 @@ def process_analysis(
                     try:
                         with open(execution_summary_file, "r") as f:
                             execution_results_data = json.load(f)
+                        execution_scope = _scope_from_execution_summary(
+                            execution_results_data,
+                            target_model_names=target_model_names,
+                        )
 
                         # Generate empirical visualizations from execution summary
+                        scoped_execution_data = _filter_execution_summary(
+                            execution_results_data,
+                            execution_scope["frameworks"],
+                        )
                         empirical_viz = visualize_simulation_results(
-                            execution_results_data, results_dir
+                            scoped_execution_data, results_dir
                         )
                         results["visualization_files"].extend(empirical_viz)
                         logger.info(
@@ -238,6 +340,7 @@ def process_analysis(
                 try:
                     from .post_simulation import analyze_execution_results
 
+                    allowed_frameworks = execution_scope["frameworks"]
                     for gnn_file in gnn_files:
                         model_name = gnn_file.stem
                         logger.info(f"Analyzing execution results for {model_name}")
@@ -246,7 +349,9 @@ def process_analysis(
                         model_execution_dir = execution_dir / model_name
                         if model_execution_dir.exists():
                             post_sim_analysis = analyze_execution_results(
-                                model_execution_dir, model_name=model_name
+                                model_execution_dir,
+                                model_name=model_name,
+                                allowed_frameworks=allowed_frameworks,
                             )
 
                             analysis_cross_fw_dir = results_dir / "cross_framework"
@@ -314,7 +419,14 @@ def process_analysis(
                 ]
                 import importlib
 
+                allowed_frameworks = execution_scope["frameworks"]
                 for module_key, dir_name, display_name in _FRAMEWORK_ANALYZERS:
+                    if allowed_frameworks and module_key not in allowed_frameworks:
+                        logger.debug(
+                            "Skipping %s analysis outside current execution scope",
+                            display_name,
+                        )
+                        continue
                     try:
                         mod = importlib.import_module(
                             f".{module_key}.analyzer", package="analysis"
@@ -349,6 +461,8 @@ def process_analysis(
         # Perform cross-framework analysis if execution results exist
         if execution_dir.exists():
             logger.info("Performing cross-framework analysis...")
+            allowed_frameworks = execution_scope["frameworks"]
+            allowed_model_names = execution_scope["models"]
             try:
                 from .analyzer import (
                     analyze_framework_outputs,
@@ -356,7 +470,11 @@ def process_analysis(
                     visualize_cross_framework_metrics,
                 )
 
-                framework_comparison = analyze_framework_outputs(execution_dir, logger)
+                framework_comparison = analyze_framework_outputs(
+                    execution_dir,
+                    logger,
+                    allowed_frameworks=allowed_frameworks,
+                )
                 results["framework_comparison"] = framework_comparison
 
                 # Generate comparison report
@@ -394,7 +512,11 @@ def process_analysis(
                 # Use cross_framework folder for cross-implementation analysis
                 viz_output_dir = results_dir / "cross_framework"
                 comprehensive_viz = visualize_all_framework_outputs(
-                    execution_dir, viz_output_dir, logger
+                    execution_dir,
+                    viz_output_dir,
+                    logger,
+                    allowed_frameworks=allowed_frameworks,
+                    allowed_model_names=allowed_model_names,
                 )
                 results["comprehensive_visualizations"] = comprehensive_viz
                 results["visualization_files"].extend(comprehensive_viz)
@@ -431,6 +553,22 @@ def process_analysis(
                                     break
 
                             if framework != "unknown":
+                                if (
+                                    allowed_frameworks
+                                    and framework not in allowed_frameworks
+                                ):
+                                    continue
+                                if allowed_model_names:
+                                    model_from_path = None
+                                    for index, part in enumerate(path_parts):
+                                        if part in _FRAMEWORK_DIR_NAMES and index >= 1:
+                                            model_from_path = path_parts[index - 1]
+                                            break
+                                    if (
+                                        model_from_path
+                                        and model_from_path not in allowed_model_names
+                                    ):
+                                        continue
                                 if framework == "pymdp":
                                     if (
                                         sim_data.get("schema_version")
@@ -481,7 +619,11 @@ def process_analysis(
 
                 report_path = results_dir / "cross_model_comparison_report.md"
                 report_file = generate_cross_model_report(
-                    execution_dir, results_dir, report_path
+                    execution_dir,
+                    results_dir,
+                    report_path,
+                    allowed_frameworks=allowed_frameworks,
+                    allowed_model_names=allowed_model_names,
                 )
                 if report_file:
                     results["cross_model_report"] = report_file

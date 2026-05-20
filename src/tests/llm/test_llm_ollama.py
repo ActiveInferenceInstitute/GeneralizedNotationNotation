@@ -12,7 +12,7 @@ then ``llm.defaults.DEFAULT_OLLAMA_MODEL`` (smollm2 instruct).
 import asyncio
 import os
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
@@ -39,7 +39,7 @@ def _ollama_available() -> bool:
         if shutil.which("ollama") is not None:
             # CLI exists, check if service is running by trying to list models
             try:
-                result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                result = subprocess.run(  # nosec B607 B603
                     ["ollama", "list"], capture_output=True, text=True, timeout=5
                 )
                 return result.returncode == 0

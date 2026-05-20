@@ -6,8 +6,8 @@ YAML workflows for CI, documentation audit, workflow lint, dependency review, Co
 
 | File | Triggers | Jobs / behavior |
 |------|----------|-----------------|
-| [ci.yml](ci.yml) | `push` / `pull_request` → `main`; ignores `**/*.md`, `doc/**`; `workflow_dispatch` | **test**: matrix 3.11–3.13, Ruff on 3.12, JUnit + artifact + summary, MCP ≥ 130 on 3.12 (see `src/tests/mcp_audit_report.json`). **security**: Bandit SARIF → code scanning + artifact. |
-| [docs-audit.yml](docs-audit.yml) | `push` / `pull_request` when `*.md`, `doc/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, or `doc/development/docs_audit.py` change; `workflow_dispatch` | `docs_audit.py --strict` |
+| [ci.yml](ci.yml) | `push` / `pull_request` → `main`; ignores `**/*.md`, `doc/**`; `workflow_dispatch` | **test**: matrix 3.11–3.13; Python 3.12 also runs Ruff format/check over `src scripts`, terminology audits, docs audit, GNN doc patterns, mypy, collect-only, focused PyMDP/POMDP tests, and MCP ≥ 130 (see `src/tests/mcp_audit_report.json`). All matrix entries run JUnit + artifact + summary. **security**: Bandit SARIF → code scanning + artifact. |
+| [docs-audit.yml](docs-audit.yml) | `push` / `pull_request` when `*.md`, `doc/**`, root `AGENTS.md`/`CLAUDE.md`/`README.md`/`SKILL.md`, or `doc/development/docs_audit.py` change; `workflow_dispatch` | Strict docs audit with anchors plus repository/doc terminology and GNN doc-pattern audits. |
 | [actionlint.yml](actionlint.yml) | Changes under `.github/workflows/**`; `workflow_dispatch` | `rhysd/actionlint@v1.7.11` |
 | [dependency-review.yml](dependency-review.yml) | `pull_request` → `main`; `workflow_dispatch` | High severity + AGPL deny; PR comment summary on failure. Fork PRs may get limited review. |
 | [codeql.yml](codeql.yml) | `push` / `pull_request` (skips doc-only paths), weekly cron, `workflow_dispatch` | Init → `uv sync --frozen --extra dev` → analyze (Python). |

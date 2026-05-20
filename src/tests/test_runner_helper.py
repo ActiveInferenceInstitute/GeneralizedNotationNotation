@@ -14,7 +14,7 @@ Usage:
 """
 
 import argparse
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -107,7 +107,7 @@ def run_test_configuration(
     start_time = time.time()
 
     try:
-        result = subprocess.run(cmd, cwd=Path(__file__).parent.parent.parent)  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(cmd, cwd=Path(__file__).parent.parent.parent)  # nosec B603
         duration = time.time() - start_time
 
         if result.returncode == 0:
@@ -179,7 +179,7 @@ def run_custom_tests(
     print(f"🔧 Command: {' '.join(cmd)}")
 
     try:
-        result = subprocess.run(cmd, cwd=Path(__file__).parent.parent.parent)  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(cmd, cwd=Path(__file__).parent.parent.parent)  # nosec B603
         return result.returncode == 0
     except Exception as e:
         print(f"❌ Custom test execution failed: {e}")

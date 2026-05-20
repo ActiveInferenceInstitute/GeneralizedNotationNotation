@@ -7,7 +7,7 @@ to ensure safe and reliable execution of GNN pipeline simulations.
 """
 
 import platform
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 
 # psutil is optional; fall back gracefully if unavailable
@@ -402,7 +402,7 @@ def check_file_permissions() -> List[ValidationResult]:
             try:
                 result = subprocess.run(
                     ["echo", "test"], capture_output=True, text=True, timeout=5
-                )  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                )  # nosec B607 B603
                 if result.returncode == 0:
                     results.append(
                         ValidationResult(

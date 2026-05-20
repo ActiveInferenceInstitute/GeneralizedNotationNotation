@@ -8,7 +8,7 @@ across all pipeline steps with intelligent recovery strategies.
 
 import importlib.util
 import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
@@ -367,7 +367,7 @@ class DependencyManager:
             if dep.name == "julia":
                 try:
                     result = subprocess.run(
-                        ["julia", "--version"],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                        ["julia", "--version"],  # nosec B607 B603
                         capture_output=True,
                         text=True,
                         timeout=10,
@@ -386,7 +386,7 @@ class DependencyManager:
             elif dep.name == "git":
                 try:
                     result = subprocess.run(
-                        ["git", "--version"],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                        ["git", "--version"],  # nosec B607 B603
                         capture_output=True,
                         text=True,
                         timeout=5,

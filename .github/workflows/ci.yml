@@ -57,13 +57,49 @@ jobs:
         run: |
           uv run python -c "from utils.jax_stack_validation import verify_jax_pymdp_stack; verify_jax_pymdp_stack(); print('jax_stack_ok')"
 
+      - name: Ruff format check
+        if: matrix.python-version == '3.12'
+        run: uv run ruff format --check src scripts
+
       - name: Ruff check
         if: matrix.python-version == '3.12'
-        run: uv run ruff check src/
+        run: uv run ruff check src scripts
 
       - name: Repository terminology audit
         if: matrix.python-version == '3.12'
         run: uv run python scripts/check_repo_terminology.py --strict
+
+      - name: Maintained documentation terminology audit
+        if: matrix.python-version == '3.12'
+        run: uv run python scripts/check_maintained_doc_terms.py --strict
+
+      - name: Documentation audit
+        if: matrix.python-version == '3.12'
+        run: uv run python doc/development/docs_audit.py --strict --check-anchors --no-write
+
+      - name: GNN documentation pattern audit
+        if: matrix.python-version == '3.12'
+        run: uv run python scripts/check_gnn_doc_patterns.py --strict
+
+      - name: Mypy type check
+        if: matrix.python-version == '3.12'
+        run: uv run mypy src --show-error-codes
+
+      - name: Pytest collect-only
+        if: matrix.python-version == '3.12'
+        run: |
+          uv run pytest --collect-only src/tests/ -q --tb=no \
+            --ignore=src/tests/llm/test_llm_ollama.py \
+            --ignore=src/tests/llm/test_llm_ollama_integration.py
+
+      - name: Focused PyMDP/POMDP tests
+        if: matrix.python-version == '3.12'
+        run: |
+          uv run pytest \
+            src/tests/execute/test_pymdp_contracts.py \
+            src/tests/execute/test_discrete_models_pymdp.py \
+            src/tests/visualization/test_visualization_matrices.py \
+            -q --tb=short
 
       - name: Run unit and integration tests (skip pipeline & MCP)
         id: pytest

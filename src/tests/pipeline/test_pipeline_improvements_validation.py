@@ -281,7 +281,56 @@ def test_specific_pipeline_steps_improvements(
 
     test_file = temp_directories["input_dir"] / "step_test.md"
     test_file.write_text(
-        "\n# Step Test Model\n\n## StateSpaceBlock\nstate [2,2]\naction [3]\n\n## Connections\nstate > action\n    "
+        """# Step Test Model
+
+## GNNSection
+ActInfPOMDP
+
+## GNNVersionAndFlags
+GNN v1
+
+## ModelName
+Step Test Model
+
+## StateSpaceBlock
+A[3,3,type=float]
+B[3,3,3,type=float]
+C[3,type=float]
+D[3,type=float]
+E[3,type=float]
+s[3,1,type=float]
+o[3,1,type=int]
+u[1,type=int]
+
+## Connections
+D>s
+s-A
+A-o
+s-B
+B>u
+C>u
+E>u
+
+## InitialParameterization
+A={
+  (0.9, 0.05, 0.05),
+  (0.05, 0.9, 0.05),
+  (0.05, 0.05, 0.9)
+}
+B={
+  ((1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)),
+  ((0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (0.0, 0.0, 1.0)),
+  ((0.0, 0.0, 1.0), (0.0, 1.0, 0.0), (1.0, 0.0, 0.0))
+}
+C={(0.1, 0.1, 1.0)}
+D={(0.33333, 0.33333, 0.33333)}
+E={(0.33333, 0.33333, 0.33333)}
+
+## Time
+Dynamic
+Discrete
+ModelTimeHorizon=5
+"""
     )
     try:
         cmd = [
@@ -295,6 +344,8 @@ def test_specific_pipeline_steps_improvements(
             ",".join(map(str, step_numbers)),
             "--verbose",
         ]
+        if 12 in step_numbers:
+            cmd.extend(["--frameworks", "pymdp"])
         result = subprocess.run(
             cmd, capture_output=True, text=True, timeout=120, cwd=PROJECT_ROOT
         )

@@ -16,7 +16,7 @@ import json
 import logging
 import os
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from ..defaults import DEFAULT_OLLAMA_MODEL
@@ -156,7 +156,7 @@ class OllamaProvider(BaseLLMProvider):
                             f"Ollama CLI chat: model={model}, timeout={self.default_timeout}s"
                         )
                         t0 = _t.monotonic()
-                        completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                        completed = subprocess.run(  # nosec B607 B603
                             ["ollama", "chat", model, "--json"],
                             input=json.dumps(
                                 {
@@ -195,7 +195,7 @@ class OllamaProvider(BaseLLMProvider):
                         f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s"
                     )
                     t0 = _t.monotonic()
-                    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                    completed = subprocess.run(  # nosec B607 B603
                         ["ollama", "run", model, prompt],
                         capture_output=True,
                         text=True,
@@ -297,7 +297,7 @@ class OllamaProvider(BaseLLMProvider):
                         f"Ollama CLI stream: model={model}, timeout={self.default_timeout}s"
                     )
                     t0 = _t.monotonic()
-                    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                    completed = subprocess.run(  # nosec B607 B603
                         ["ollama", "run", model, prompt],
                         capture_output=True,
                         text=True,

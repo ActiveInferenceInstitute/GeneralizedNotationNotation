@@ -12,9 +12,9 @@ import ast
 # Imports for specific exporters
 import json
 import logging
-import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
+import pickle  # nosec B403
 import re
-import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
+import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 

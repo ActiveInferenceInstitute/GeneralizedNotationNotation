@@ -9,7 +9,7 @@ with proper recovery handling when Ollama is not available.
 import json
 import os
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
@@ -508,7 +508,7 @@ class TestOllamaIntegrationEnd2End:
         if shutil.which("ollama") is None:
             pytest.skip("ollama CLI not in PATH")
         try:
-            result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(  # nosec B607 B603
                 ["ollama", "list"],
                 capture_output=True,
                 text=True,

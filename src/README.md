@@ -166,6 +166,9 @@ return a structured exit code rather than propagating an exception.
 
 `output/` is a generated local run tree and is ignored by Git except for its directory
 marker. Keep curated fixtures and hand-maintained examples outside this tree.
+The same policy applies to redirected generated trees such as `src/output/` and
+documentation `test_output/` folders: regenerate them from the relevant command
+instead of editing or committing them.
 
 ```
 output/

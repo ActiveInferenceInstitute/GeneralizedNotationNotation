@@ -819,7 +819,7 @@ ModuleUpdateSchedule={perception:1, attention:2, memory:3, planning:5, motor:1}
 s_f0[10,1,type=int]     # High_fidelity_state (ideal modeling)
 s_f1[2,1,type=int]      # High_fidelity_actions
 
-# Heuristic Fallback State
+# Secondary Heuristic State
 s_f2[4,1,type=int]      # Low_fidelity_proxy
 s_f3[2,1,type=int]      # Sub_optimal_actions
 
@@ -831,7 +831,7 @@ A_f1[4,2,type=float]    # LLM-Guided Heuristic Matrix
 (s_f0, s_f1) -> (A_f0)
 (s_f2, s_f3) -> (A_f1)
 
-# The Fallback Circuit Breaker topology
+# The Explicit Solver Escalation topology
 (A_f0) -> execution_success_polling
 (execution_success_polling) -> (A_f1:heuristic_override)
 
@@ -841,7 +841,7 @@ s_f2=HeuristicProxySpace
 execution_success_polling=CircuitBreaker
 ```
 
-This pattern leverages the Step 24 `Intelligent Analysis` module to inject Neurosymbolic heuristic recovery logic directly into `analysis_data.json` upon formal solver failure.
+This pattern leverages the Step 24 `Intelligent Analysis` module to record formal solver diagnostics and explicitly route operators to a secondary heuristic analysis path without masking the primary solver status.
 
 **Use Case**: Hierarchical composition of cognitive processes.
 

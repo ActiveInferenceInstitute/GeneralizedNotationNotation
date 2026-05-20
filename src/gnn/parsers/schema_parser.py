@@ -15,7 +15,7 @@ import re
 try:
     import defusedxml.ElementTree as ET
 except ImportError:
-    import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405 -- XML parsed from internal/trusted sources
+    import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -172,7 +172,7 @@ class XSDParser(BaseGNNParser):
             return self._parse_from_embedded_data(embedded_data, result)
 
         try:
-            root = ET.fromstring(content)  # nosec B314 - GNN schema files are researcher-generated, not untrusted input
+            root = ET.fromstring(content)  # nosec B314
             return self.parse_xml_element(root)
         except Exception as e:
             result = ParseResult(model=self.create_empty_model())

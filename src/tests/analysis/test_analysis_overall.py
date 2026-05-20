@@ -53,6 +53,66 @@ class TestAnalysisOverall:
         result = process_analysis(empty_dir, output_dir)
         assert result == 2, f"expected exit-code 2 for no-input, got {result!r}"
 
+    def test_execution_scope_filters_stale_frameworks(
+        self, safe_filesystem: Any
+    ) -> None:
+        """Current Step 12 summary constrains Step 16 framework analysis."""
+        from analysis.analyzer import analyze_framework_outputs
+        from analysis.processor import (
+            _filter_execution_summary,
+            _scope_from_execution_summary,
+        )
+
+        execution_dir = safe_filesystem.create_dir("12_execute_output")
+        summaries_dir = execution_dir / "summaries"
+        summaries_dir.mkdir(parents=True)
+        summary = {
+            "requested_frameworks": ["pymdp"],
+            "execution_details": [
+                {
+                    "framework": "pymdp",
+                    "model_name": "current_model",
+                    "success": True,
+                    "execution_time": 0.1,
+                    "implementation_directory": str(
+                        execution_dir / "current_model" / "pymdp"
+                    ),
+                },
+                {
+                    "framework": "rxinfer",
+                    "model_name": "stale_model",
+                    "success": True,
+                    "execution_time": 0.2,
+                    "implementation_directory": str(
+                        execution_dir / "stale_model" / "rxinfer"
+                    ),
+                },
+            ],
+            "framework_status": {
+                "pymdp": {"status": "success"},
+                "rxinfer": {"status": "success"},
+            },
+        }
+        with open(summaries_dir / "execution_summary.json", "w") as f:
+            json.dump(summary, f)
+
+        scope = _scope_from_execution_summary(
+            summary, target_model_names={"current_model"}
+        )
+        assert scope["frameworks"] == {"pymdp"}
+
+        scoped_summary = _filter_execution_summary(summary, {"pymdp"})
+        assert [
+            detail["framework"] for detail in scoped_summary["execution_details"]
+        ] == ["pymdp"]
+        assert list(scoped_summary["framework_status"]) == ["pymdp"]
+
+        framework_results = analyze_framework_outputs(
+            execution_dir,
+            allowed_frameworks={"pymdp"},
+        )
+        assert set(framework_results["frameworks"]) == {"pymdp"}
+
 
 class TestPostSimulationVisualization:
     """Test suite for post-simulation visualization functions."""

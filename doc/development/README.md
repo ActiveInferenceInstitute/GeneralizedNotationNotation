@@ -64,7 +64,8 @@ git checkout -b feature/my-new-feature
 # ...
 
 # Run quality checks
-python src/main.py --only-steps 3,4 --strict
+just quality
+just test-pymdp-focused
 
 # Commit and push
 git add .
@@ -410,11 +411,11 @@ pytest src/tests/performance/ --benchmark-only
 - Maintain CHANGELOG.md with clear categories
 
 ### Quality Gates
-1. All tests pass (`python src/main.py --only-steps 3`)
-2. Type checking passes (`mypy src/`)
-3. Code formatting (`black src/`, `isort src/`)
-4. Documentation builds successfully
-5. Example models validate correctly
+1. Formatting and lint pass (`uv run ruff format --check src scripts`; `uv run ruff check src scripts`)
+2. Terminology and documentation audits pass (`scripts/check_repo_terminology.py`, `scripts/check_maintained_doc_terms.py`, `doc/development/docs_audit.py`, `scripts/check_gnn_doc_patterns.py`)
+3. Type checking passes (`uv run mypy src --show-error-codes`)
+4. Security scan passes (`uv run bandit -r src -c pyproject.toml -q`)
+5. Focused PyMDP/POMDP tests, collect-only, and the full suite command of record pass
 
 ### Release Checklist
 - [ ] Update version numbers
@@ -460,7 +461,7 @@ python src/mcp/cli.py --debug list-tools
 pytest -vvv --pdb src/tests/unit/test_specific.py
 
 # Type checking
-mypy src/ --show-error-codes
+uv run mypy src --show-error-codes
 ```
 
 ## Contributing Guidelines

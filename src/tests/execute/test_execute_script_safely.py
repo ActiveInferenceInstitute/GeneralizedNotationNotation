@@ -156,3 +156,56 @@ def test_process_execute_records_local_worker_configuration(tmp_path: Path) -> N
     assert summary["execution_mode"] == "local"
     assert summary["execution_workers"] == 2
     assert summary["total_scripts_found"] == 2
+
+
+def test_process_execute_records_local_worker_pool_failure(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A broken local process pool should become per-script failures."""
+    from execute import processor
+
+    render_out = tmp_path / "render" / "11_render_output"
+    for model_name in ("model_a", "model_b"):
+        script_dir = render_out / model_name / "pymdp"
+        script_dir.mkdir(parents=True)
+        (script_dir / f"{model_name}_pymdp.py").write_text(
+            "print('worker-ok')\n",
+            encoding="utf-8",
+        )
+
+    class BrokenPool:
+        def __init__(self, max_workers: int):
+            self.max_workers = max_workers
+
+        def __enter__(self) -> "BrokenPool":
+            return self
+
+        def __exit__(self, *args: object) -> None:
+            return None
+
+        def map(self, *args: object, **kwargs: object) -> list[dict[str, object]]:
+            raise RuntimeError("pool exploded")
+
+    monkeypatch.setattr(processor, "ProcessPoolExecutor", BrokenPool)
+
+    output_dir = tmp_path / "execute_output"
+    result = processor.process_execute(
+        target_dir=tmp_path / "input",
+        output_dir=output_dir,
+        verbose=False,
+        frameworks="pymdp",
+        timeout=10,
+        render_output_dir=render_out,
+        execution_workers=2,
+    )
+
+    assert result is False
+    summary = json.loads(
+        (output_dir / "summaries" / "execution_summary.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert summary["failed_executions"] == 2
+    assert {detail["error_type"] for detail in summary["execution_details"]} == {
+        "LocalWorkerPoolError"
+    }

@@ -18,7 +18,7 @@ import importlib
 import json
 import logging
 import platform
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -188,7 +188,7 @@ class EnhancedHealthChecker:
             try:
                 # Simple connectivity test
                 subprocess.run(
-                    ["ping", "-c", "1", "8.8.8.8"],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                    ["ping", "-c", "1", "8.8.8.8"],  # nosec B607 B603
                     capture_output=True,
                     timeout=5,
                 )
@@ -289,7 +289,7 @@ class EnhancedHealthChecker:
                 try:
                     # Check if Julia is installed
                     result = subprocess.run(
-                        ["julia", "--version"],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                        ["julia", "--version"],  # nosec B607 B603
                         capture_output=True,
                         text=True,
                         timeout=10,

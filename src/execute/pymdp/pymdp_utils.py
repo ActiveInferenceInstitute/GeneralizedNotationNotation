@@ -4,7 +4,7 @@
 import ast
 import json
 import logging
-import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
+import pickle  # nosec B403
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 

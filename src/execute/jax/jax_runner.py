@@ -11,7 +11,7 @@ Discovers and runs JAX-generated scripts, manages device selection, logs hardwar
 
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 from typing import Any, List, Optional, Union
@@ -160,7 +160,7 @@ def execute_jax_script(
         # Execute with enhanced error capture
         # Convert to absolute path to avoid path resolution issues
         abs_script_path = script_path.resolve()
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [sys.executable, str(abs_script_path)],
             capture_output=True,
             text=True,

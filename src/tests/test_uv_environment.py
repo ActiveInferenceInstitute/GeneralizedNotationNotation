@@ -16,7 +16,7 @@ Following the project's Zero Simulated policy - all tests use real methods.
 import json
 import logging
 import shutil
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
@@ -76,7 +76,7 @@ class TestUVAvailability:
     )
     def test_uv_cli_available(self):
         """Test that UV CLI is available in PATH."""
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "--version"], capture_output=True, text=True, timeout=10
         )
         assert result.returncode == 0, f"UV CLI not available: {result.stderr}"
@@ -93,7 +93,7 @@ class TestUVAvailability:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_uv_version_compatible(self):
         """Test that UV version is compatible (0.9.x or higher)."""
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "--version"], capture_output=True, text=True, timeout=10
         )
         version_str = result.stdout.strip()
@@ -126,7 +126,7 @@ class TestVirtualEnvironment:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_venv_python_executable(self):
         """Test that virtual environment Python is executable."""
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=10
         )
         assert result.returncode == 0, f"Venv Python not executable: {result.stderr}"
@@ -135,7 +135,7 @@ class TestVirtualEnvironment:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_venv_python_version_compatible(self):
         """Test that Python version is >= 3.11 as per pyproject.toml."""
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [
                 str(VENV_PYTHON),
                 "-c",
@@ -218,7 +218,7 @@ class TestDependencyManagement:
         prints the project's dependency tree and is the facade-compatible
             way to verify uv is functional against the current project.
         """
-        result = subprocess.run(  # nosec B607 B603 -- fixed-arg invocation
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "tree", "--depth", "1"],
             capture_output=True,
             text=True,
@@ -232,7 +232,7 @@ class TestDependencyManagement:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_uv_sync_check(self):
         """Test that uv sync --dry-run reports no changes needed."""
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "sync", "--frozen", "--check"],
             capture_output=True,
             text=True,
@@ -485,7 +485,7 @@ class TestUVRunIntegration:
 
     def test_uv_run_python(self):
         """Test that uv run python works."""
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "run", "python", "-c", "print('Hello from UV')"],
             capture_output=True,
             text=True,
@@ -497,7 +497,7 @@ class TestUVRunIntegration:
 
     def test_uv_run_module_import(self):
         """Test that uv run can import project modules."""
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [
                 UV_BIN,
                 "run",
@@ -525,7 +525,7 @@ class TestUVRunIntegration:
         interpreter already has pytest (otherwise this test wouldn't be
         executing), so we simply validate reachability via ``sys.executable``.
         """
-        result = subprocess.run(  # nosec B603 -- subprocess call with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             [sys.executable, "-m", "pytest", "--version"],
             capture_output=True,
             text=True,
@@ -543,7 +543,7 @@ class TestUVCacheAndPerformance:
 
     def test_uv_cache_dir_accessible(self):
         """Test that UV cache directory is accessible."""
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "cache", "dir"], capture_output=True, text=True, timeout=10
         )
         assert result.returncode == 0, f"uv cache dir failed: {result.stderr}"
@@ -559,7 +559,7 @@ class TestUVCacheAndPerformance:
         # can fail on low-disk systems during wheel extraction; the default lock is enough
         # to verify cache behaviour for normal development.
         start = time.time()
-        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "sync", "--frozen"],
             capture_output=True,
             text=True,

@@ -44,7 +44,11 @@ FRAMEWORK_LABELS = {
 # ---------------------------------------------------------------------------
 
 
-def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
+def _collect_simulation_data(
+    execution_dir: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+) -> Dict[str, Dict[str, Any]]:
     """Collect simulation results keyed by (model_name, framework)."""
     data: Dict[str, Dict[str, Any]] = {}  # model -> framework -> result
 
@@ -60,6 +64,8 @@ def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
                 if part in FRAMEWORK_ORDER:
                     framework = part
                     break
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
 
             # Determine model name from path (parent directories above framework)
             model_name = None
@@ -71,6 +77,8 @@ def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
                     break
             if not model_name:
                 model_name = result.get("model_name", sim_file.parent.parent.name)
+            if allowed_model_names and model_name not in allowed_model_names:
+                continue
 
             if model_name not in data:
                 data[model_name] = {}
@@ -83,7 +91,11 @@ def _collect_simulation_data(execution_dir: Path) -> Dict[str, Dict[str, Any]]:
     return data
 
 
-def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]:
+def _collect_execution_times(
+    execution_dir: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
+) -> Dict[str, Dict[str, float]]:
     """Collect execution times from execution_summary.json."""
     times: Dict[str, Dict[str, float]] = {}
     summary_file = execution_dir / "summaries" / "execution_summary.json"
@@ -108,6 +120,8 @@ def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]
                     break
 
             if framework:
+                if allowed_frameworks and framework not in allowed_frameworks:
+                    continue
                 # model is the directory before the framework dir
                 parts = Path(script).parts
                 for i, part in enumerate(parts):
@@ -116,6 +130,8 @@ def _collect_execution_times(execution_dir: Path) -> Dict[str, Dict[str, float]]
                         break
 
             if model_name and framework:
+                if allowed_model_names and model_name not in allowed_model_names:
+                    continue
                 if model_name not in times:
                     times[model_name] = {}
                 times[model_name][framework] = entry.get("execution_time", 0.0)
@@ -235,6 +251,8 @@ def generate_cross_model_report(
     execution_dir: Path,
     analysis_dir: Path,
     output_path: Path,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
 ) -> str:
     """
     Generate a unified cross-model comparison markdown report.
@@ -243,20 +261,34 @@ def generate_cross_model_report(
         execution_dir: Path to output/12_execute_output
         analysis_dir: Path to output/16_analysis_output
         output_path: Path to write the markdown report
+        allowed_frameworks: Optional normalized framework names from the current run
+        allowed_model_names: Optional model directory names from the current run
 
     Returns:
         Path to the generated report file (as string)
     """
     logger.info("Generating cross-model comparison report...")
-    sim_data = _collect_simulation_data(execution_dir)
-    exec_times = _collect_execution_times(execution_dir)
+    sim_data = _collect_simulation_data(
+        execution_dir,
+        allowed_frameworks=allowed_frameworks,
+        allowed_model_names=allowed_model_names,
+    )
+    exec_times = _collect_execution_times(
+        execution_dir,
+        allowed_frameworks=allowed_frameworks,
+        allowed_model_names=allowed_model_names,
+    )
 
     if not sim_data:
         logger.warning("No simulation data found — skipping cross-model report")
         return ""
 
     models = sorted(sim_data.keys())
-    frameworks = FRAMEWORK_ORDER
+    frameworks = [
+        fw
+        for fw in FRAMEWORK_ORDER
+        if not allowed_frameworks or fw in allowed_frameworks
+    ]
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 

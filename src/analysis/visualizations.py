@@ -151,6 +151,8 @@ def visualize_all_framework_outputs(
     execution_dir: Path,
     output_dir: Path,
     logger_instance: Optional[logging.Logger] = None,
+    allowed_frameworks: Optional[set[str]] = None,
+    allowed_model_names: Optional[set[str]] = None,
 ) -> List[str]:
     """
     Generate comprehensive visualizations for all raw execution outputs.
@@ -166,6 +168,8 @@ def visualize_all_framework_outputs(
         execution_dir: Directory containing execution results (e.g., output/12_execute_output)
         output_dir: Directory to save visualizations
         logger_instance: Optional logger instance
+        allowed_frameworks: Optional normalized framework names from the current run
+        allowed_model_names: Optional model directory names from the current run
 
     Returns:
         List of generated visualization file paths
@@ -177,6 +181,17 @@ def visualize_all_framework_outputs(
 
     # Collect all execution data
     framework_data: Dict[str, Dict[str, Any]] = {}
+
+    # Known framework directory names for path-based detection
+    _FRAMEWORK_DIRS = {
+        "pymdp",
+        "rxinfer",
+        "activeinference_jl",
+        "jax",
+        "discopy",
+        "pytorch",
+        "numpyro",
+    }
 
     # Search for execution result files
     for result_file in execution_dir.rglob("*_results.json"):
@@ -195,6 +210,20 @@ def visualize_all_framework_outputs(
             ):
                 continue
             model_name = data.get("model_name", result_file.parent.name)
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
+            if allowed_model_names and model_name not in allowed_model_names:
+                model_slug = str(model_name).lower().replace(" ", "_").replace("-", "_")
+                path_model = None
+                for index, part in enumerate(result_file.parts):
+                    if part in _FRAMEWORK_DIRS and index >= 1:
+                        path_model = result_file.parts[index - 1]
+                        break
+                if (
+                    model_slug not in allowed_model_names
+                    and path_model not in allowed_model_names
+                ):
+                    continue
 
             key = f"{framework}_{model_name}"
             if key not in framework_data:
@@ -209,17 +238,6 @@ def visualize_all_framework_outputs(
             log.warning(f"Failed to load {result_file}: {e}")
 
     # Also search for simulation_results.json files - MERGE into existing keys
-    # Known framework directory names for path-based detection
-    _FRAMEWORK_DIRS = {
-        "pymdp",
-        "rxinfer",
-        "activeinference_jl",
-        "jax",
-        "discopy",
-        "pytorch",
-        "numpyro",
-    }
-
     for sim_file in execution_dir.rglob("*simulation_results.json"):
         try:
             with open(sim_file, "r") as f:
@@ -244,6 +262,8 @@ def visualize_all_framework_outputs(
                 and data.get("schema_version") != "pymdp_simulation_v1"
             ):
                 continue
+            if allowed_frameworks and framework not in allowed_frameworks:
+                continue
 
             # Derive model_name: walk up directory tree to find the first
             # ancestor that isn't a framework directory or a subdirectory like
@@ -265,6 +285,8 @@ def visualize_all_framework_outputs(
                 ):
                     model_name = candidate
                     break
+            if allowed_model_names and model_name not in allowed_model_names:
+                continue
 
             # Use the same key format as results (no _sim suffix) to merge data
             key = f"{framework}_{model_name}"
@@ -323,7 +345,7 @@ def visualize_all_framework_outputs(
                                     else:
                                         sim_data.update(file_data)
                             except (json.JSONDecodeError, OSError):
-                                pass  # nosec B110 -- intentional: skip malformed simulation data files
+                                pass
             elif framework == "pymdp":
                 sim_data = _pymdp_v1_visualization_data(sim_data)
 

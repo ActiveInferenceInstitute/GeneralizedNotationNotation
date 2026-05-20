@@ -38,28 +38,53 @@ test-cov:
 
 # Run ruff linter
 lint:
-    uv run ruff check src/
+    uv run ruff check src scripts
 
 # Run ruff linter with auto-fix
 lint-fix:
-    uv run ruff check src/ --fix
+    uv run ruff check src scripts --fix
 
 # Format code with ruff
 format:
-    uv run ruff format src/
-    uv run ruff check src/ --select I --fix
+    uv run ruff format src scripts
+    uv run ruff check src scripts --select I --fix
 
 # Check formatting without modifying files
 format-check:
-    uv run ruff format --check src/
+    uv run ruff format --check src scripts
 
 # Run mypy type checking
 typecheck:
-    uv run mypy src/ --ignore-missing-imports
+    uv run mypy src --show-error-codes
 
 # Run bandit security scan
 security:
-    uv run bandit -r src/ -c pyproject.toml -q
+    uv run bandit -r src -c pyproject.toml -q
+
+# Run maintained-doc terminology audit
+doc-terms:
+    uv run python scripts/check_maintained_doc_terms.py --strict
+
+# Run GNN documentation pattern audit
+doc-patterns:
+    uv run python scripts/check_gnn_doc_patterns.py --strict
+
+# Run fast quality gates without the full pytest suite
+quality: format-check lint terminology doc-terms audit doc-patterns typecheck security
+
+# Run focused PyMDP/POMDP behavior checks
+test-pymdp-focused:
+    uv run pytest \
+        src/tests/execute/test_pymdp_contracts.py \
+        src/tests/execute/test_discrete_models_pymdp.py \
+        src/tests/visualization/test_visualization_matrices.py \
+        -q --tb=short
+
+# Collect pytest inventory without executing tests
+test-collect:
+    uv run pytest --collect-only src/tests/ -q --tb=no \
+        --ignore=src/tests/llm/test_llm_ollama.py \
+        --ignore=src/tests/llm/test_llm_ollama_integration.py
 
 # ─────────────────────────────────────────────
 # Pipeline Execution

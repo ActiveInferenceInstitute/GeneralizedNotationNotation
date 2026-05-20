@@ -16,7 +16,7 @@ Features:
 import json
 import logging
 import os
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -77,7 +77,7 @@ def setup_julia_environment(
 
     try:
         # Run setup with extended timeout
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,
@@ -137,7 +137,7 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
         ]
         logger.debug(f"Running: {' '.join(instantiate_cmd)}")
 
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             instantiate_cmd,
             capture_output=True,
             text=True,
@@ -194,7 +194,7 @@ def _validate_package(project_dir: Path, package_name: str) -> bool:
             "-e",
             f'using {package_name}; println("✅ {package_name} loaded")',
         ]
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,
@@ -326,7 +326,7 @@ def execute_activeinference_script(
         env["JULIA_PROJECT"] = str(project_dir)
 
         # Execute the script
-        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
+        result = subprocess.run(  # nosec B603
             cmd,
             capture_output=True,
             text=True,

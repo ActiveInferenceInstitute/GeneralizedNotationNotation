@@ -7,7 +7,7 @@ including script execution, simulation management, and result collection.
 
 import json
 import logging
-import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -277,7 +277,7 @@ class GNNExecutor:
             }
         try:
             result = subprocess.run(
-                [sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
+                [sys.executable, script_path],  # nosec B603
                 capture_output=True,
                 text=True,
                 timeout=timeout or 60,
@@ -308,7 +308,7 @@ class GNNExecutor:
         try:
             # This would typically involve calling Julia
             result = subprocess.run(
-                ["julia", config_path],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+                ["julia", config_path],  # nosec B607 B603
                 capture_output=True,
                 text=True,
                 timeout=timeout or 300,
@@ -334,7 +334,7 @@ class GNNExecutor:
         """Execute a DisCoPy diagram."""
         try:
             result = subprocess.run(
-                [sys.executable, diagram_path],  # nosec B603 -- subprocess calls with controlled/trusted input
+                [sys.executable, diagram_path],  # nosec B603
                 capture_output=True,
                 text=True,
                 timeout=timeout or 300,
@@ -360,7 +360,7 @@ class GNNExecutor:
         """Execute a JAX script."""
         try:
             result = subprocess.run(
-                [sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
+                [sys.executable, script_path],  # nosec B603
                 capture_output=True,
                 text=True,
                 timeout=timeout or 300,
@@ -552,7 +552,7 @@ def execute_rendered_simulators(
                 text=True,
                 check=False,
                 timeout=10,
-            )  # nosec B607 B603 -- subprocess calls with controlled/trusted input
+            )  # nosec B607 B603
             if result.returncode == 0:
                 logger.info(f"✅ Julia available: {result.stdout.strip()}")
             else:
@@ -1218,7 +1218,7 @@ def execute_script_safely(
 
     start = time.time()
     try:
-        completed = subprocess.run(  # nosec B603 -- controlled script path
+        completed = subprocess.run(  # nosec B603
             [sys.executable, str(script)],
             capture_output=capture_output,
             text=True,

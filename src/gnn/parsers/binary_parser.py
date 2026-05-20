@@ -11,7 +11,7 @@ License: MIT
 
 import base64
 import logging
-import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
+import pickle  # nosec B403
 from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
@@ -40,7 +40,7 @@ class PickleGNNParser(BaseGNNParser):
         try:
             # Try binary read first
             with open(file_path, "rb") as f:
-                data = pickle.load(f)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
+                data = pickle.load(f)  # nosec B301
             return self._parse_pickle_data(data)
         except Exception as binary_error:
             # If binary fails, try reading as base64-encoded text
@@ -61,7 +61,7 @@ class PickleGNNParser(BaseGNNParser):
         try:
             # Try to decode base64 content
             binary_data = base64.b64decode(content)
-            data = pickle.loads(binary_data)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
+            data = pickle.loads(binary_data)  # nosec B301
             return self._parse_pickle_data(data)
         except Exception as e:
             result = ParseResult(model=self.create_empty_model())

@@ -244,9 +244,9 @@ class ValidationStrategy:
                 result.suggestions.append("JSON format is valid")
 
             elif format_type == "xml":
-                import xml.etree.ElementTree as ET  # nosec B405 - GNN files are researcher-generated, not untrusted input
+                import xml.etree.ElementTree as ET  # nosec B405
 
-                ET.fromstring(content)  # nosec B314 - GNN files are researcher-generated, not untrusted input
+                ET.fromstring(content)  # nosec B314
                 result.suggestions.append("XML format is valid")
 
             elif format_type == "yaml":

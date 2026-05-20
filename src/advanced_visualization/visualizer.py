@@ -20,7 +20,7 @@ try:
 
     matplotlib.use("Agg")
 except ImportError:
-    pass  # nosec B110 -- intentional: matplotlib backend setting is optional
+    pass
 import matplotlib.pyplot as plt
 import numpy as np
 

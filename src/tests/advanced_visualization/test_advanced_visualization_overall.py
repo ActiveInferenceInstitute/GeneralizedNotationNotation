@@ -238,7 +238,9 @@ class TestD2Visualization:
         if D2Visualizer is not None:
             assert callable(D2Visualizer)
 
-    def test_process_gnn_file_with_d2(self, safe_filesystem: Any) -> None:
+    def test_process_gnn_file_with_d2(
+        self, safe_filesystem: Any, caplog: pytest.LogCaptureFixture
+    ) -> None:
         """Test GNN file processing with D2."""
         from advanced_visualization import D2_AVAILABLE, process_gnn_file_with_d2
 
@@ -257,8 +259,11 @@ state -> state
         output_dir = safe_filesystem.create_dir("d2_output")
 
         try:
+            caplog.set_level("ERROR", logger="advanced_visualization.d2_visualizer")
             result = process_gnn_file_with_d2(test_file, output_dir)
             assert result is not None
+            assert "gnn.parser" not in caplog.text
+            assert "Failed to parse GNN file" not in caplog.text
         except Exception as e:
             pytest.skip(f"D2 processing failed: {e}")
 

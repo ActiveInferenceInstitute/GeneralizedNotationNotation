@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import importlib.util
 import logging
-import subprocess  # nosec B404 -- controlled invocations only
+import subprocess  # nosec B404
 from dataclasses import dataclass
 from typing import Dict, Optional, Tuple
 
@@ -72,7 +72,7 @@ def is_framework_available(
         return importlib.util.find_spec(module_name) is not None
 
     try:
-        result = subprocess.run(  # nosec B603 -- executor path resolved upstream
+        result = subprocess.run(  # nosec B603
             [executor, "-c", f"import {module_name}"],
             capture_output=True,
             text=True,
