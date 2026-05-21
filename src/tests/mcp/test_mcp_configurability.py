@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -26,7 +27,7 @@ if str(SRC) not in sys.path:
 
 
 @pytest.fixture
-def fresh_mcp(monkeypatch):
+def fresh_mcp(monkeypatch: Any) -> Any:
     """Provide a pristine MCP instance without touching the shared singleton."""
     from mcp.mcp import MCP
 
@@ -83,7 +84,7 @@ class TestJSONRPCServerRegisterTool:
 
 
 class TestRegisterToolsHelper:
-    def test_register_tools_populates_registry(self, fresh_mcp) -> None:
+    def test_register_tools_populates_registry(self, fresh_mcp: Any) -> None:
         from mcp.server_core import register_tools
 
         # Pristine instance starts with no tools

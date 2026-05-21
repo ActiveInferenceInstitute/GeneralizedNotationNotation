@@ -8,7 +8,7 @@ with multiple validation levels and extensible validation rules.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from .schema_validator import GNNValidator
 from .types import ValidationLevel, ValidationResult
@@ -24,15 +24,15 @@ class ValidationStrategy:
     research-grade semantic validation with round-trip testing.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.validation_level = "standard"
         self.enable_strict_checking = False
-        self.validators = {}
+        self.validators: dict[str, Any] = {}
         self._initialize_validators()
 
     def configure(
         self, validation_level: str = "standard", enable_strict_checking: bool = False
-    ):
+    ) -> Any:
         """Configure validation parameters."""
         self.validation_level = validation_level
         self.enable_strict_checking = enable_strict_checking
@@ -42,7 +42,7 @@ class ValidationStrategy:
             if hasattr(validator, "validation_level"):
                 validator.validation_level = ValidationLevel(validation_level.upper())
 
-    def _initialize_validators(self):
+    def _initialize_validators(self) -> Any:
         """Initialize validation components."""
         try:
             # Primary GNN validator
@@ -68,7 +68,7 @@ class ValidationStrategy:
         Returns:
             Dictionary mapping file paths to validation results
         """
-        results = {}
+        results: dict[Any, Any] = {}
 
         logger.info(f"Validating {len(files)} files at level: {self.validation_level}")
 
@@ -170,7 +170,10 @@ class ValidationStrategy:
     ) -> ValidationResult:
         """Delegate to GNN validator or fall back to basic validation."""
         if self.validators["gnn"]:
-            return self.validators["gnn"].validate_file(file_path, level)
+            return cast(
+                "ValidationResult",
+                self.validators["gnn"].validate_file(file_path, level),
+            )
         result = self._validate_basic(file_path)
         result.validation_level = level
         result.warnings.append("Using basic validation - GNN validator unavailable")
@@ -203,7 +206,7 @@ class ValidationStrategy:
                 # Restore original setting
                 self.validators["gnn"].enable_round_trip_testing = original_setting
 
-            return result
+            return cast("ValidationResult", result)
         else:
             result = self._validate_basic(file_path)
             result.validation_level = ValidationLevel.ROUND_TRIP
@@ -216,7 +219,7 @@ class ValidationStrategy:
         """Detect file format from extension and content."""
         ext = file_path.suffix.lower()
 
-        format_map = {
+        format_map: dict[str, Any] = {
             ".md": "markdown",
             ".json": "json",
             ".xml": "xml",
@@ -227,11 +230,11 @@ class ValidationStrategy:
             ".gnn": "gnn",
         }
 
-        return format_map.get(ext, "unknown")
+        return cast("str", format_map.get(ext, "unknown"))
 
     def _validate_structured_format_basic(
         self, file_path: Path, result: ValidationResult
-    ):
+    ) -> Any:
         """Basic validation for structured formats (JSON, XML, YAML)."""
         try:
             content = file_path.read_text(encoding="utf-8")
@@ -264,13 +267,20 @@ class ValidationStrategy:
             result.errors.append(f"Format validation failed: {e}")
             result.is_valid = False
 
-    def _validate_text_format_basic(self, file_path: Path, result: ValidationResult):
+    def _validate_text_format_basic(
+        self, file_path: Path, result: ValidationResult
+    ) -> Any:
         """Basic validation for text formats (Markdown, GNN)."""
         try:
             content = file_path.read_text(encoding="utf-8")
 
             # Check for basic GNN markers
-            gnn_markers = ["ModelName", "StateSpaceBlock", "Connections", "Parameters"]
+            gnn_markers: list[Any] = [
+                "ModelName",
+                "StateSpaceBlock",
+                "Connections",
+                "Parameters",
+            ]
             found_markers = [marker for marker in gnn_markers if marker in content]
 
             if found_markers:
@@ -299,7 +309,7 @@ class ValidationStrategy:
         self, results: Dict[Path, ValidationResult]
     ) -> Dict[str, Any]:
         """Get comprehensive validation summary."""
-        summary = {
+        summary: dict[str, Any] = {
             "total_files": len(results),
             "valid_files": 0,
             "invalid_files": 0,

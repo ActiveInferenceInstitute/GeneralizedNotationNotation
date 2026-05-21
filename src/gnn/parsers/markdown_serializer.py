@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class MarkdownSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model back to Markdown format."""
-        sections = []
+        sections: list[Any] = []
 
         # GNNVersionAndFlags
         sections.append("## GNNVersionAndFlags")

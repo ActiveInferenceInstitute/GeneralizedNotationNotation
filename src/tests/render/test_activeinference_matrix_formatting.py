@@ -8,6 +8,7 @@ into valid Julia matrix syntax.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src to path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -21,9 +22,9 @@ from render.activeinference_jl.activeinference_renderer import _matrix_to_julia
 class TestMatrixToJulia:
     """Test the _matrix_to_julia function for various input types."""
 
-    def test_basic_vector(self):
+    def test_basic_vector(self) -> Any:
         """Test converting a simple 1D list/vector."""
-        data = [0.1, 0.9]
+        data: list[Any] = [0.1, 0.9]
         result = _matrix_to_julia(data)
         assert result == "[0.1, 0.9]"
 
@@ -32,9 +33,9 @@ class TestMatrixToJulia:
         result_tuple = _matrix_to_julia(data_tuple)
         assert result_tuple == "[0.1, 0.9]"
 
-    def test_2d_matrix_list_of_lists(self):
+    def test_2d_matrix_list_of_lists(self) -> Any:
         """Test converting 2D list of lists (canonical A matrix)."""
-        data = [[0.9, 0.1], [0.1, 0.9]]
+        data: list[Any] = [[0.9, 0.1], [0.1, 0.9]]
         result = _matrix_to_julia(data)
         # Julia matrix syntax: [row1; row2; ...]
         # Space separated elements in row
@@ -45,7 +46,7 @@ class TestMatrixToJulia:
             or "0.9 0.1" in result
         )
 
-    def test_2d_matrix_tuple_of_lists(self):
+    def test_2d_matrix_tuple_of_lists(self) -> Any:
         """Test converting Tuple of Lists (The bug case)."""
         # This was causing failures before:
         # ([0.9, 0.1], [0.1, 0.9]) was treated as a 1D vector of lists -> [[0.9,0.1], [0.1,0.9]]
@@ -59,19 +60,19 @@ class TestMatrixToJulia:
         # Should NOT be "[ [0.9, 0.1], [0.1, 0.9] ]"
         assert result == "[0.9 0.1; 0.1 0.9]"
 
-    def test_2d_matrix_tuple_of_tuples(self):
+    def test_2d_matrix_tuple_of_tuples(self) -> Any:
         """Test converting Tuple of Tuples."""
         data = ((0.9, 0.1), (0.1, 0.9))
         result = _matrix_to_julia(data)
         assert result == "[0.9 0.1; 0.1 0.9]"
 
-    def test_3d_matrix_list_of_list_of_lists(self):
+    def test_3d_matrix_list_of_list_of_lists(self) -> Any:
         """Test converting 3D tensor (B matrix)."""
         # B[next_state, current_state, action]
         # shape (2, 2, 2)
-        slice1 = [[1.0, 0.0], [0.0, 1.0]]  # Identity
-        slice2 = [[0.0, 1.0], [1.0, 0.0]]  # Flip
-        data = [slice1, slice2]
+        slice1: list[Any] = [[1.0, 0.0], [0.0, 1.0]]  # Identity
+        slice2: list[Any] = [[0.0, 1.0], [1.0, 0.0]]  # Flip
+        data: list[Any] = [slice1, slice2]
 
         result = _matrix_to_julia(data)
         # format: cat([slice1], [slice2]; dims=3)
@@ -80,7 +81,7 @@ class TestMatrixToJulia:
         assert "[1.0 0.0; 0.0 1.0]" in result
         assert "[0.0 1.0; 1.0 0.0]" in result
 
-    def test_3d_matrix_nested_tuples(self):
+    def test_3d_matrix_nested_tuples(self) -> Any:
         """Test converting 3D tensor with mixed/nested tuples."""
         slice1 = ((1.0, 0.0), (0.0, 1.0))
         slice2 = ((0.0, 1.0), (1.0, 0.0))
@@ -90,7 +91,7 @@ class TestMatrixToJulia:
         assert result.startswith("cat(")
         assert "[1.0 0.0; 0.0 1.0]" in result
 
-    def test_string_input(self):
+    def test_string_input(self) -> Any:
         """Test string recovery behavior."""
         data = "[[0.9, 0.1], [0.1, 0.9]]"
         # The function attempts literal_eval for strings

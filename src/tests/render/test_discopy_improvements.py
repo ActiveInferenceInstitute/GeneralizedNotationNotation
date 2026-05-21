@@ -9,6 +9,7 @@ when DisCoPy and JAX dependencies are not available.
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 # Configure logging
 logging.basicConfig(
@@ -17,7 +18,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def test_discopy_improvements():
+def test_discopy_improvements() -> Any:
     """Test the improved DisCoPy translator functionality."""
 
     # Import the translator module

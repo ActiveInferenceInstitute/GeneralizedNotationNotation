@@ -5,8 +5,10 @@ This module provides model versioning, registry management, and metadata handlin
 for GNN model specifications.
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "model_versioning": True,
     "registry_management": True,
     "metadata_handling": True,
@@ -20,7 +22,12 @@ from typing import Any, Dict, List, Optional
 from .registry import ModelRegistry, process_model_registry
 
 # Re-export main classes and functions
-__all__ = ["__version__", "FEATURES", "ModelRegistry", "process_model_registry"]
+__all__: list[Any] = [
+    "__version__",
+    "FEATURES",
+    "ModelRegistry",
+    "process_model_registry",
+]
 
 
 def get_module_info() -> dict:

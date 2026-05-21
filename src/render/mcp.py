@@ -184,7 +184,7 @@ def get_render_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register render tools with the MCP server."""
 
     mcp_instance.register_tool(

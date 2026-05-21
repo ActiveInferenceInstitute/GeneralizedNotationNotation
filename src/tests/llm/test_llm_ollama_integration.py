@@ -13,6 +13,7 @@ import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -29,7 +30,7 @@ from llm.processor import (
 class TestOllamaDetection:
     """Test Ollama availability detection."""
 
-    def test_ollama_check_returns_tuple(self, caplog):
+    def test_ollama_check_returns_tuple(self, caplog: Any) -> Any:
         """Test that Ollama check returns (bool, list) tuple."""
         import logging
 
@@ -45,7 +46,7 @@ class TestOllamaDetection:
         assert isinstance(is_available, bool)
         assert isinstance(models, list)
 
-    def test_ollama_detection_logging(self, caplog):
+    def test_ollama_detection_logging(self, caplog: Any) -> Any:
         """Test that Ollama detection provides informative logging."""
         import logging
 
@@ -63,7 +64,7 @@ class TestOllamaDetection:
         # 1. Service running: "✅", "running", "ready", "available"
         # 2. CLI found but not running: "found ollama"
         # 3. Not found: "not found", "not running", "not available"
-        valid_messages = [
+        valid_messages: list[Any] = [
             "✅",
             "running",
             "ready",
@@ -78,7 +79,7 @@ class TestOllamaDetection:
             f"Expected informative Ollama status message, got: {log_text}"
         )
 
-    def test_ollama_model_listing(self, caplog):
+    def test_ollama_model_listing(self, caplog: Any) -> Any:
         """Test Ollama model listing when available."""
         import logging
 
@@ -97,7 +98,7 @@ class TestOllamaDetection:
                 assert isinstance(model, str)
                 assert len(model) > 0
 
-    def test_ollama_socket_check(self, caplog):
+    def test_ollama_socket_check(self, caplog: Any) -> Any:
         """Test Ollama socket/API endpoint check."""
         import logging
         import socket
@@ -150,7 +151,9 @@ class TestOllamaDetection:
 class TestOllamaModelSelection:
     """Test Ollama model selection logic."""
 
-    def test_model_selection_with_empty_list(self, caplog, monkeypatch):
+    def test_model_selection_with_empty_list(
+        self, caplog: Any, monkeypatch: Any
+    ) -> Any:
         """Test model selection when no models are available."""
         monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         import logging
@@ -166,14 +169,16 @@ class TestOllamaModelSelection:
 
         assert model == DEFAULT_OLLAMA_MODEL
 
-    def test_model_selection_prefers_small_models(self, caplog, monkeypatch):
+    def test_model_selection_prefers_small_models(
+        self, caplog: Any, monkeypatch: Any
+    ) -> Any:
         """Preference order matches ``preferred_models`` in ``llm.processor``."""
         monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         import logging
 
         logger = logging.getLogger("test_model_selection")
 
-        test_cases = [
+        test_cases: list[Any] = [
             (
                 ["llama2:7b", "gemma3:4b", "smollm2:135m-instruct-q4_K_S"],
                 "smollm2:135m-instruct-q4_K_S",
@@ -189,7 +194,9 @@ class TestOllamaModelSelection:
                 f"expected {expected!r} for {available_models!r}, got {selected!r}"
             )
 
-    def test_model_selection_respects_env_override(self, caplog, monkeypatch):
+    def test_model_selection_respects_env_override(
+        self, caplog: Any, monkeypatch: Any
+    ) -> Any:
         """Test that environment variable overrides model selection."""
         import logging
 
@@ -200,13 +207,13 @@ class TestOllamaModelSelection:
         test_model = "my-custom-model:latest"
         monkeypatch.setenv("OLLAMA_MODEL", test_model)
 
-        models = ["gemma3:4b", "llama2:7b"]
+        models: list[Any] = ["gemma3:4b", "llama2:7b"]
         selected = _select_best_ollama_model(models, logger)
 
         # Should use environment variable
         assert selected == test_model
 
-    def test_model_selection_logging(self, caplog, monkeypatch):
+    def test_model_selection_logging(self, caplog: Any, monkeypatch: Any) -> Any:
         """Test that model selection provides clear logging."""
         monkeypatch.setenv("GNN_TESTING_NO_LLM_CONFIG", "1")
         import logging
@@ -215,7 +222,7 @@ class TestOllamaModelSelection:
 
         logger = logging.getLogger("test_model_selection")
 
-        models = ["gemma3:4b", "llama2:7b"]
+        models: list[Any] = ["gemma3:4b", "llama2:7b"]
         selected = _select_best_ollama_model(models, logger)
 
         log_text = caplog.text
@@ -229,7 +236,7 @@ class TestLLMProcessing:
     """Test LLM processing with Ollama integration."""
 
     @pytest.fixture
-    def test_gnn_dir(self):
+    def test_gnn_dir(self) -> Any:
         """Create temporary directory with test GNN files."""
         test_dir = tempfile.mkdtemp()
         gnn_dir = Path(test_dir) / "gnn_files"
@@ -269,7 +276,7 @@ Minimize free energy while maintaining preferred states.
         shutil.rmtree(test_dir)
 
     @pytest.fixture
-    def test_output_dir(self):
+    def test_output_dir(self) -> Any:
         """Create temporary output directory."""
         test_dir = tempfile.mkdtemp()
         output_dir = Path(test_dir) / "output"
@@ -282,7 +289,9 @@ Minimize free energy while maintaining preferred states.
 
     @pytest.mark.slow
     @pytest.mark.timeout(180)  # 3 minute timeout for LLM operations
-    def test_llm_processing_with_ollama(self, test_gnn_dir, test_output_dir, caplog):
+    def test_llm_processing_with_ollama(
+        self, test_gnn_dir: Any, test_output_dir: Any, caplog: Any
+    ) -> Any:
         """Test LLM processing when Ollama is available (slow test - runs actual LLM prompts)."""
         if os.getenv("GNN_RUN_LLM_TESTS") not in {"1", "true", "TRUE"}:
             pytest.skip("Set GNN_RUN_LLM_TESTS=1 to run real Ollama prompt tests")
@@ -335,8 +344,8 @@ Minimize free energy while maintaining preferred states.
 
     @pytest.mark.slow
     def test_llm_processing_without_ollama(
-        self, test_gnn_dir, test_output_dir, caplog, monkeypatch
-    ):
+        self, test_gnn_dir: Any, test_output_dir: Any, caplog: Any, monkeypatch: Any
+    ) -> Any:
         """Test LLM processing recovery when Ollama is not available (slow test)."""
         import logging
 
@@ -393,8 +402,8 @@ Minimize free energy while maintaining preferred states.
     @pytest.mark.slow
     @pytest.mark.timeout(180)  # 3 minute timeout for LLM processing
     def test_llm_processing_model_selection(
-        self, test_gnn_dir, test_output_dir, caplog
-    ):
+        self, test_gnn_dir: Any, test_output_dir: Any, caplog: Any
+    ) -> Any:
         """Test that LLM processing selects and uses appropriate model (slow test)."""
         import logging
 
@@ -437,7 +446,9 @@ Minimize free energy while maintaining preferred states.
 
     @pytest.mark.slow
     @pytest.mark.timeout(120)  # 2 minute timeout
-    def test_llm_processing_creates_outputs(self, test_gnn_dir, test_output_dir):
+    def test_llm_processing_creates_outputs(
+        self, test_gnn_dir: Any, test_output_dir: Any
+    ) -> Any:
         """Test that LLM processing creates expected output files (slow test)."""
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
@@ -470,7 +481,9 @@ Minimize free energy while maintaining preferred states.
 
     @pytest.mark.slow
     @pytest.mark.timeout(60)  # 1 minute timeout for error case
-    def test_llm_processing_error_handling(self, test_output_dir, caplog):
+    def test_llm_processing_error_handling(
+        self, test_output_dir: Any, caplog: Any
+    ) -> Any:
         """Test LLM processing error handling with no input files (slow test)."""
         import logging
 
@@ -498,13 +511,13 @@ Minimize free energy while maintaining preferred states.
 class TestOllamaIntegrationEnd2End:
     """Optional checks against the real Ollama CLI (skip when not installed)."""
 
-    def test_ollama_command_exists(self):
+    def test_ollama_command_exists(self) -> Any:
         ollama_path = shutil.which("ollama")
         if not ollama_path:
             pytest.skip("ollama CLI not in PATH")
         assert Path(ollama_path).exists()
 
-    def test_ollama_service_running(self):
+    def test_ollama_service_running(self) -> Any:
         if shutil.which("ollama") is None:
             pytest.skip("ollama CLI not in PATH")
         try:

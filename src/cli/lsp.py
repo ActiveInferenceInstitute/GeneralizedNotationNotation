@@ -1,11 +1,12 @@
 import json
 import logging
 import sys
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def read_message():
+def read_message() -> Any:
     """Read a JSON-RPC message from stdin."""
     line = sys.stdin.readline()
     if not line:
@@ -24,14 +25,14 @@ def read_message():
     return json.loads(body)
 
 
-def write_message(msg):
+def write_message(msg: Any) -> Any:
     """Write a JSON-RPC message to stdout."""
     body = json.dumps(msg)
     sys.stdout.write(f"Content-Length: {len(body)}\\r\\n\\r\\n{body}")
     sys.stdout.flush()
 
 
-def handle_initialize(msg_id):
+def handle_initialize(msg_id: Any) -> Any:
     """Handle the initialize request."""
     return {
         "jsonrpc": "2.0",
@@ -50,7 +51,7 @@ def handle_initialize(msg_id):
     }
 
 
-def handle_hover(msg_id, params):
+def handle_hover(msg_id: Any, params: Any) -> Any:
     """Handle the textDocument/hover request."""
     return {
         "jsonrpc": "2.0",
@@ -64,9 +65,9 @@ def handle_hover(msg_id, params):
     }
 
 
-def publish_diagnostics(uri, text):
+def publish_diagnostics(uri: Any, text: Any) -> Any:
     """Run basic validation and publish diagnostics."""
-    diagnostics = []
+    diagnostics: list[Any] = []
 
     # Simple syntax check: look for missing closing braces
     if "{" in text and "}" not in text:
@@ -90,7 +91,7 @@ def publish_diagnostics(uri, text):
     )
 
 
-def start_lsp():
+def start_lsp() -> Any:
     """Start the Language Server Protocol loop on stdin/stdout."""
     # Setup simple logging to a file to avoid corrupting stdout
     logging.basicConfig(filename="gnn-lsp.log", level=logging.INFO)

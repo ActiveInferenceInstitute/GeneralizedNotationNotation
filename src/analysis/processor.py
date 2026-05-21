@@ -8,7 +8,7 @@ import logging
 from copy import deepcopy
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 import numpy as np
 
@@ -26,7 +26,7 @@ from .analyzer import (
     visualize_simulation_results,
 )
 
-_FRAMEWORK_DIR_NAMES = {
+_FRAMEWORK_DIR_NAMES: set[Any] = {
     "activeinference_jl",
     "discopy",
     "jax",
@@ -125,10 +125,18 @@ def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str
     Returns:
         Aggregated results dictionary
     """
-    aggregated = {"count": len(results_list), "metrics": {}, "frameworks_used": set()}
+    aggregated: dict[str, Any] = {
+        "count": len(results_list),
+        "metrics": {},
+        "frameworks_used": set(),
+    }
 
     # Extract common metrics
-    metrics_to_gather = ["execution_time", "free_energy_final", "steps_completed"]
+    metrics_to_gather: list[Any] = [
+        "execution_time",
+        "free_energy_final",
+        "steps_completed",
+    ]
 
     for res in results_list:
         if "framework" in res:
@@ -159,7 +167,7 @@ def generate_summary_statistics(aggregated_data: Dict[str, Any]) -> Dict[str, An
     Returns:
         Dictionary with statistical summaries (mean, std, min, max)
     """
-    stats = {}
+    stats: dict[Any, Any] = {}
 
     for metric, values in aggregated_data.get("metrics", {}).items():
         if not values:
@@ -216,7 +224,7 @@ def process_analysis(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,
             "success": True,
@@ -273,7 +281,7 @@ def process_analysis(
                     results["visualization_files"].extend(matrix_viz)
 
                 except Exception as e:
-                    error_info = {
+                    error_info: dict[str, Any] = {
                         "file": str(gnn_file),
                         "error": str(e),
                         "error_type": type(e).__name__,
@@ -408,7 +416,7 @@ def process_analysis(
                 # 2.5-2.11: Generate per-framework visualizations from execution logs.
                 # Only frameworks with a corresponding ``src/analysis/<framework>/analyzer.py``
                 # are listed here; bnlearn is rendered and executed but has no analyzer.
-                _FRAMEWORK_ANALYZERS = [
+                _FRAMEWORK_ANALYZERS: list[Any] = [
                     ("pymdp", "pymdp", "PyMDP"),
                     ("activeinference_jl", "activeinference_jl", "ActiveInference.jl"),
                     ("discopy", "discopy", "DisCoPy"),
@@ -529,7 +537,7 @@ def process_analysis(
                 logger.info("Generating unified framework dashboard...")
                 try:
                     # Build framework_data structure for unified dashboard
-                    framework_data_for_dashboard = {}
+                    framework_data_for_dashboard: dict[Any, Any] = {}
                     for sim_file in execution_dir.rglob("*simulation_results.json"):
                         try:
                             with open(sim_file, "r") as f:
@@ -658,7 +666,7 @@ def process_analysis(
         else:
             log_step_error(logger, "Analysis processing failed")
 
-        return results["success"]
+        return cast("bool | int", results["success"])
 
     except Exception as e:
         # Use supported signature for log_step_error

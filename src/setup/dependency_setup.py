@@ -9,7 +9,7 @@ import logging
 import shutil
 import subprocess  # nosec B404
 from pathlib import Path
-from typing import List
+from typing import Any, List, cast
 
 from .constants import (
     OPTIONAL_GROUPS,
@@ -34,7 +34,7 @@ except ImportError:
     try:
         from utils.jax_stack_validation import run_jax_stack_probe_subprocess
     except ImportError:
-        run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
+        run_jax_stack_probe_subprocess = cast(Any, None)
 
 
 def install_jax_and_test(verbose: bool = False) -> bool:
@@ -67,7 +67,7 @@ def install_jax_and_test(verbose: bool = False) -> bool:
 
     try:
         logger.info("Attempting repair: uv sync (project extras)...")
-        install_cmd = ["uv", "sync", "--verbose"]
+        install_cmd: list[Any] = ["uv", "sync", "--verbose"]
         for extra in SETUP_DEFAULT_PIPELINE_EXTRAS:
             install_cmd.extend(["--extra", extra])
 
@@ -133,7 +133,7 @@ def setup_julia_environment(verbose: bool = False) -> bool:
             )
             logger.info("✅ Julia is available, proceeding with setup")
 
-        setup_scripts = [
+        setup_scripts: list[Any] = [
             PROJECT_ROOT / "src" / "execute" / "rxinfer" / "setup_environment.jl",
             PROJECT_ROOT
             / "src"
@@ -200,7 +200,7 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
     if group_name.lower() == "julia":
         return setup_julia_environment(verbose=verbose)
 
-    group_aliases = {
+    group_aliases: dict[str, Any] = {
         "ml": "ml-ai",
         "jax": "active-inference",
         "pymdp": "active-inference",
@@ -216,7 +216,7 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
     logger.info(f"📦 Installing '{normalized_name}' package group: {group_description}")
 
     try:
-        sync_cmd = ["uv", "sync", "--extra", normalized_name]
+        sync_cmd: list[Any] = ["uv", "sync", "--extra", normalized_name]
 
         if verbose:
             sync_cmd.append("--verbose")
@@ -268,7 +268,7 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
     )
 
     try:
-        sync_cmd = ["uv", "sync", "--extra", "all"]
+        sync_cmd: list[Any] = ["uv", "sync", "--extra", "all"]
 
         if verbose:
             sync_cmd.append("--verbose")
@@ -304,7 +304,9 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
 
 
 def install_optional_dependencies(
-    project_root: Path, logger: logging.Logger, package_groups: List[str] = None
+    project_root: Path,
+    logger: logging.Logger,
+    package_groups: (List[str]) | None = None,
 ) -> bool:
     """Install optional dependencies for the project using UV sync with extras."""
     try:
@@ -343,7 +345,7 @@ def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
     try:
         logger.info("Creating project structure")
 
-        directories = [
+        directories: list[Any] = [
             "input/gnn_files",
             "output",
             "output/logs",
@@ -357,7 +359,7 @@ def create_project_structure(output_dir: Path, logger: logging.Logger) -> bool:
             dir_path.mkdir(parents=True, exist_ok=True)
             logger.debug(f"Created directory: {dir_path}")
 
-        config_files = {
+        config_files: dict[str, Any] = {
             "input/config.yaml": "# GNN Pipeline Configuration\n",
             "output/.gitkeep": "",
             "tests/__init__.py": "# Tests package\n",
@@ -390,16 +392,16 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         True if setup successful, False otherwise
     """
     try:
-        project_path = Path(project_path)
-        project_path.mkdir(parents=True, exist_ok=True)
+        project_dir = Path(project_path)
+        project_dir.mkdir(parents=True, exist_ok=True)
 
-        (project_path / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
-        (project_path / "output").mkdir(parents=True, exist_ok=True)
-        (project_path / "src").mkdir(parents=True, exist_ok=True)
+        (project_dir / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
+        (project_dir / "output").mkdir(parents=True, exist_ok=True)
+        (project_dir / "src").mkdir(parents=True, exist_ok=True)
         # nosec B607 B603
         try:
-            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)  # nosec B607 B603
-            logger.info(f"UV project initialized at {project_path}")
+            subprocess.run(["uv", "init"], cwd=project_dir, check=True, timeout=30)  # nosec B607 B603
+            logger.info(f"UV project initialized at {project_dir}")
         except Exception as e:
             logger.warning(f"Could not initialize UV project: {e}")
 
@@ -415,8 +417,8 @@ def setup_complete_environment(
     verbose: bool = False,
     recreate: bool = False,
     install_optional: bool = False,
-    optional_groups: list = None,
-    output_dir: Path = None,
+    optional_groups: (list) | None = None,
+    output_dir: (Path) | None = None,
 ) -> bool:
     """
     Complete environment setup with optional dependencies.

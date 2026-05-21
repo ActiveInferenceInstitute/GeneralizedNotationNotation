@@ -10,7 +10,7 @@ from typing import Any, Dict
 
 
 def gui_3(
-    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Launch GUI 3: State Space Design Studio

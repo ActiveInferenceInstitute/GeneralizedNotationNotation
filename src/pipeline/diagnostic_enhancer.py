@@ -10,7 +10,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class PipelineDiagnosticEnhancer:
     and actionable recommendations for improvements.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.known_issues = {
             "gradio.*has no attribute.*Blocks": {
                 "category": "dependency_version",
@@ -79,7 +79,7 @@ class PipelineDiagnosticEnhancer:
                 json.dump(summary, f, indent=2, default=str)
 
             logger.info(f"Enhanced pipeline summary saved to: {enhanced_path}")
-            return summary
+            return cast("dict[str, Any]", summary)
 
         except Exception as e:
             logger.error(f"Failed to enhance pipeline summary: {e}")
@@ -87,7 +87,7 @@ class PipelineDiagnosticEnhancer:
 
     def _analyze_pipeline_execution(self, summary: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze pipeline execution for issues and patterns."""
-        diagnostics = {
+        diagnostics: dict[str, Any] = {
             "execution_analysis": {},
             "performance_analysis": {},
             "error_analysis": {},
@@ -134,8 +134,8 @@ class PipelineDiagnosticEnhancer:
             }
 
         # Error and warning analysis
-        all_errors = []
-        all_warnings = []
+        all_errors: list[Any] = []
+        all_warnings: list[Any] = []
 
         for step in steps:
             stderr = step.get("stderr", "")
@@ -144,7 +144,7 @@ class PipelineDiagnosticEnhancer:
             # Extract error patterns
             for pattern, info in self.known_issues.items():
                 if re.search(pattern, stderr + stdout, re.IGNORECASE):
-                    issue_info = {
+                    issue_info: dict[Any, Any] = {
                         "step": step.get("script_name", "unknown"),
                         "pattern": pattern,
                         **info,
@@ -164,9 +164,9 @@ class PipelineDiagnosticEnhancer:
 
     def _analyze_dependencies(self, steps: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Analyze dependency-related issues."""
-        missing_deps = set()
-        optional_deps = set()
-        version_issues = set()
+        missing_deps: set[Any] = set()
+        optional_deps: set[Any] = set()
+        version_issues: set[Any] = set()
 
         for step in steps:
             stderr = step.get("stderr", "")
@@ -194,7 +194,7 @@ class PipelineDiagnosticEnhancer:
         self, summary: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
         """Generate actionable recommendations based on analysis."""
-        recommendations = []
+        recommendations: list[Any] = []
         diagnostics = summary.get("diagnostics", {})
 
         # Check for critical failures

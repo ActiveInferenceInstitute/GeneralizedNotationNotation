@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from render.generators import (
@@ -11,36 +13,36 @@ from render.generators import (
 )
 
 
-def test_bnlearn_generator():
+def test_bnlearn_generator() -> Any:
     res = generate_bnlearn_code({"model_name": "TestModel"})
     assert isinstance(res, str)
     assert "TestModel" in res
 
 
-def test_pymdp_generator():
+def test_pymdp_generator() -> Any:
     res = generate_pymdp_code({"model_name": "TestModel"})
     assert isinstance(res, str)
     # The template might enforce certain things
 
 
-def test_activeinference_jl_generator():
+def test_activeinference_jl_generator() -> Any:
     res = generate_activeinference_jl_code({"model_name": "TestModel"})
     assert isinstance(res, str)
     assert "TestModel" in res
 
 
-def test_discopy_generator():
+def test_discopy_generator() -> Any:
     res = generate_discopy_code({"model_name": "TestModel"})
     assert isinstance(res, str)
     assert "TestModel" in res
 
 
-def test_matrix_to_julia():
+def test_matrix_to_julia() -> Any:
     assert _matrix_to_julia([1, 2, 3]) == "[1, 2, 3]"
     assert _matrix_to_julia([[1, 2], [3, 4]]) == "[1 2; 3 4]"
     assert "cat(" in _matrix_to_julia([[[1, 2]], [[3, 4]]])
 
 
-def test_sanitizers():
+def test_sanitizers() -> Any:
     assert _sanitize_identifier("Test Model 1") == "test_model_1"
     assert _to_pascal_case("test model") == "TestModel"

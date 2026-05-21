@@ -45,7 +45,7 @@ class MCPTool:
     last_used: Optional[float] = None
     use_count: int = 0
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Validate tool configuration after initialization."""
         if not self.name:
             raise ValueError("Tool name cannot be empty")
@@ -103,7 +103,7 @@ class MCPTool:
 
     def validate_schema(self) -> List[str]:
         """Validate the tool schema and return any issues."""
-        issues = []
+        issues: list[Any] = []
 
         if not isinstance(self.schema, dict):
             issues.append("Schema must be a dictionary")
@@ -147,7 +147,7 @@ class MCPResource:
     last_accessed: Optional[float] = None
     access_count: int = 0
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Validate resource configuration after initialization."""
         if not self.uri_template:
             raise ValueError("Resource URI template cannot be empty")
@@ -211,7 +211,7 @@ class MCPModuleInfo:
     register_time: float = 0.0
     memory_usage: Optional[int] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Calculate file size and hash if path exists."""
         if self.path.exists():
             try:
@@ -247,14 +247,14 @@ class MCPPerformanceMetrics:
     request_queue_size: int = 0
     max_request_queue_size: int = 0
 
-    def update_execution_time(self, execution_time: float):
+    def update_execution_time(self, execution_time: float) -> Any:
         """Update execution time statistics."""
         self.total_execution_time += execution_time
         self.max_execution_time = max(self.max_execution_time, execution_time)
         self.min_execution_time = min(self.min_execution_time, execution_time)
         self.average_execution_time = self.total_execution_time / self.total_requests
 
-    def update_cache_stats(self, hit: bool):
+    def update_cache_stats(self, hit: bool) -> Any:
         """Update cache statistics."""
         if hit:
             self.cache_hits += 1
@@ -269,10 +269,10 @@ class MCPPerformanceMetrics:
 class MCPSDKStatus:
     """Enhanced MCP SDK status tracking."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._sdk_found = False
-        self._sdk_version = None
-        self._sdk_path = None
+        self._sdk_version: str | None = None
+        self._sdk_path: Path | None = None
         self._last_check = 0.0
         self._check_interval = 300.0  # 5 minutes
         self._sdk_capabilities: Dict[str, Any] = {}
@@ -289,7 +289,7 @@ class MCPSDKStatus:
         self._last_check = current_time
 
         try:
-            sdk_paths = [
+            sdk_paths: list[Any] = [
                 Path.home() / ".mcp" / "sdk",
                 Path("/usr/local/mcp/sdk"),
                 Path("/opt/mcp/sdk"),
@@ -334,10 +334,10 @@ class MCPSDKStatus:
             self._sdk_health = "error"
             return False
 
-    def _check_sdk_health(self, sdk_path: Path):
+    def _check_sdk_health(self, sdk_path: Path) -> Any:
         """Check the health of the SDK installation."""
         try:
-            essential_files = ["mcp.py", "server.py", "client.py"]
+            essential_files: list[Any] = ["mcp.py", "server.py", "client.py"]
             missing_files = [f for f in essential_files if not (sdk_path / f).exists()]
 
             if missing_files:

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any
+
 """
 OpenAI LLM Provider
 
@@ -39,7 +41,7 @@ class OpenAIProvider(BaseLLMProvider):
 
     DEFAULT_MODEL = "gpt-4o-mini"
 
-    def __init__(self, api_key: Optional[str] = None, **kwargs):
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """
         Initialize OpenAI provider.
 
@@ -83,7 +85,7 @@ class OpenAIProvider(BaseLLMProvider):
         try:
             import openai
 
-            client_kwargs = {"api_key": self.api_key}
+            client_kwargs: dict[str, Any] = {"api_key": self.api_key}
 
             if self.organization:
                 client_kwargs["organization"] = self.organization
@@ -170,7 +172,7 @@ class OpenAIProvider(BaseLLMProvider):
         ]
 
         # Prepare request parameters
-        request_params = {
+        request_params: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": openai_messages,
             "stream": False,
@@ -254,7 +256,7 @@ class OpenAIProvider(BaseLLMProvider):
         ]
 
         # Prepare request parameters
-        request_params = {
+        request_params: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": openai_messages,
             "stream": True,

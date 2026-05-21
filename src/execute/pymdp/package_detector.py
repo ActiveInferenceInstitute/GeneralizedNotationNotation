@@ -8,7 +8,7 @@ It distinguishes between the correct package (inferactively-pymdp) and wrong var
 
 import logging
 import subprocess  # nosec B404
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, cast
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ def detect_pymdp_installation() -> Dict[str, Any]:
         - version: Optional[str] - Package version if available
         - error: Optional[str] - Error message if detection failed
     """
-    result = {
+    result: dict[str, Any] = {
         "installed": False,
         "correct_package": False,
         "wrong_package": False,
@@ -114,7 +114,7 @@ def is_correct_pymdp_package() -> bool:
         True if correct package (inferactively-pymdp) is installed, False otherwise
     """
     detection = detect_pymdp_installation()
-    return detection.get("correct_package", False)
+    return cast("bool", detection.get("correct_package", False))
 
 
 def get_pymdp_installation_instructions() -> str:
@@ -232,7 +232,7 @@ def validate_pymdp_for_execution() -> Dict[str, Any]:
     """
     detection = detect_pymdp_installation()
 
-    result = {
+    result: dict[str, Any] = {
         "ready": False,
         "detection": detection,
         "instructions": "",

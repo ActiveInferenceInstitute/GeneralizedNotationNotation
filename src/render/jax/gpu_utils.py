@@ -21,8 +21,8 @@ def get_hardware_topology() -> Dict[str, Any]:
         devices = jax.local_devices()
 
         # Determine GPU/TPU availability without failing if backends don't exist
-        gpu_devices = []
-        tpu_devices = []
+        gpu_devices: list[Any] = []
+        tpu_devices: list[Any] = []
 
         try:
             gpu_devices = jax.local_devices(backend="gpu")
@@ -34,7 +34,7 @@ def get_hardware_topology() -> Dict[str, Any]:
         except RuntimeError:
             logger.debug("TPU backend not available")
 
-        topology = {
+        topology: dict[str, Any] = {
             "total_devices": len(devices),
             "device_types": [str(d.device_kind) for d in devices],
             "gpus_available": len(gpu_devices) > 0,

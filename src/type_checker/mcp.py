@@ -93,7 +93,7 @@ def validate_single_gnn_file_mcp(
 
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> Any:
     """Register type_checker utility tools with the MCP."""
 
     mcp_instance.register_tool(

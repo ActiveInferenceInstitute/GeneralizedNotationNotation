@@ -11,7 +11,7 @@ import threading
 import time
 from contextlib import contextmanager
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 # Import psutil with error handling to prevent recursion
 PSUTIL_AVAILABLE = False
@@ -27,7 +27,7 @@ except (ImportError, RecursionError, RuntimeError):
 class PerformanceTracker:
     """Track performance metrics across pipeline steps."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._metrics: Dict[str, List[Dict[str, Any]]] = {}
         self._lock = threading.Lock()
         self._memory_usage: List[float] = []
@@ -35,7 +35,7 @@ class PerformanceTracker:
 
     def record_timing(
         self, operation: str, duration: float, metadata: Optional[Dict[str, Any]] = None
-    ):
+    ) -> Any:
         """Record timing information for an operation."""
         with self._lock:
             if operation not in self._metrics:
@@ -52,7 +52,7 @@ class PerformanceTracker:
     @contextmanager
     def track_operation(
         self, operation: str, metadata: Optional[Dict[str, Any]] = None
-    ):
+    ) -> Any:
         """Context manager to automatically track operation timing."""
         start_time = time.time()
         try:
@@ -64,7 +64,7 @@ class PerformanceTracker:
     def get_summary(self) -> Dict[str, Any]:
         """Get summary statistics for all tracked operations."""
         with self._lock:
-            summary = {}
+            summary: dict[Any, Any] = {}
             for operation, measurements in self._metrics.items():
                 durations = [m["duration"] for m in measurements]
                 summary[operation] = {
@@ -76,7 +76,7 @@ class PerformanceTracker:
                 }
             return summary
 
-    def record_memory_usage(self, memory_mb: float):
+    def record_memory_usage(self, memory_mb: float) -> Any:
         """Record memory usage in MB."""
         with self._lock:
             self._memory_usage.append(memory_mb)
@@ -94,7 +94,7 @@ class PerformanceTracker:
         if PSUTIL_AVAILABLE:
             try:
                 process = psutil.Process()
-                return process.memory_info().rss / (1024 * 1024)
+                return cast("float", process.memory_info().rss / (1024 * 1024))
             except (ImportError, RecursionError, RuntimeError, AttributeError):
                 return 0.0
         return 0.0
@@ -123,17 +123,17 @@ def get_performance_tracker() -> "PerformanceTracker":
 class _LazyPerformanceTracker:
     """Proxy that defers PerformanceTracker construction to first attribute access."""
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> Any:
         return getattr(get_performance_tracker(), name)
 
 
 performance_tracker = _LazyPerformanceTracker()
 
-_monitoring_data = {}
+_monitoring_data: dict[Any, Any] = {}
 _monitoring_lock = threading.Lock()
 
 
-__all__ = [
+__all__: list[Any] = [
     "PerformanceTracker",
     "get_performance_tracker",
     "performance_tracker",
@@ -146,7 +146,7 @@ __all__ = [
 
 
 @contextmanager
-def track_operation_standalone(operation: str, metadata: dict = None):
+def track_operation_standalone(operation: str, metadata: (dict) | None = None) -> Any:
     """
     Context manager to track the duration of an operation using the global performance_tracker.
     Args:
@@ -170,7 +170,7 @@ def get_performance_metrics() -> dict:
         dict: { 'operations': ..., 'system_info': ... }
     """
     metrics = getattr(performance_tracker, "_metrics", {})
-    system_info = {
+    system_info: dict[str, Any] = {
         "platform": platform.platform(),
         "python_version": platform.python_version(),
         "cpu_count": os.cpu_count(),
@@ -182,7 +182,7 @@ def get_performance_metrics() -> dict:
     return {"operations": metrics, "system_info": system_info}
 
 
-def start_performance_monitoring():
+def start_performance_monitoring() -> Any:
     """
     Start performance monitoring (records initial system state).
     """
@@ -199,7 +199,7 @@ def stop_performance_monitoring() -> dict:
     with _monitoring_lock:
         end = get_performance_metrics()
         start = _monitoring_data.get("start", {})
-        delta = {"operations": {}, "system_info": {}}
+        delta: dict[str, Any] = {"operations": {}, "system_info": {}}
         # Compute delta for operations (by operation name)
         for op, records in end.get("operations", {}).items():
             start_records = start.get("operations", {}).get(op, [])
@@ -224,7 +224,7 @@ def generate_performance_report() -> dict:
         dict: { 'summary': ..., 'details': ... }
     """
     metrics = get_performance_metrics()
-    summary = {
+    summary: dict[str, Any] = {
         "total_operations": sum(len(v) for v in metrics["operations"].values()),
         "unique_operations": list(metrics["operations"].keys()),
         "system_info": metrics["system_info"],

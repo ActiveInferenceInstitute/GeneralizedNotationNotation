@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
 
@@ -5,13 +7,13 @@ from .common import GNNInternalRepresentation
 class AlloySerializer(BaseGNNSerializer):
     """Serializer for Alloy model checking language."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.format_name = "alloy"
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Alloy format with embedded data."""
-        lines = []
+        lines: list[Any] = []
 
         # Module declaration
         model_name_clean = self._sanitize_alloy_name(model.model_name)
@@ -114,7 +116,7 @@ class AlloySerializer(BaseGNNSerializer):
 
     def _map_to_alloy_type(self, data_type: str) -> str:
         """Map GNN data types to Alloy types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "Int",
             "continuous": "Int",  # Alloy uses Int for numeric values
             "binary": "Int",
@@ -122,4 +124,4 @@ class AlloySerializer(BaseGNNSerializer):
             "float": "Int",
             "complex": "univ",
         }
-        return mapping.get(data_type.lower(), "univ")
+        return cast("str", mapping.get(data_type.lower(), "univ"))

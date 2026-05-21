@@ -88,7 +88,7 @@ def _extract_matrices(
     if not params:
         params = gnn_spec.get("parameters", {})
 
-    def _parse_matrix(raw, default):
+    def _parse_matrix(raw: Any, default: Any) -> Any:
         if raw is None:
             return default
         if isinstance(raw, (list, np.ndarray)):
@@ -138,7 +138,7 @@ def _format_jnp_array(arr: np.ndarray, indent: int = 4) -> str:
         vals = ", ".join(f"{v:.6f}" for v in arr)
         return f"jnp.array([{vals}])"
     elif arr.ndim == 2:
-        rows = []
+        rows: list[Any] = []
         for row in arr:
             vals = ", ".join(f"{v:.6f}" for v in row)
             rows.append(f"{prefix}    [{vals}]")
@@ -169,7 +169,7 @@ def _generate_numpyro_code(
 
     B_full_init = ""
     if B.ndim == 3:
-        slices = []
+        slices: list[Any] = []
         for a in range(B.shape[2]):
             slices.append(
                 f"    B_slices.append({_format_jnp_array(B[:, :, a], indent=4)})"

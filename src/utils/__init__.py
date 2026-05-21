@@ -32,9 +32,11 @@ Source modules:
 - dependency_audit: Dependency auditing and optimization utilities
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "argument_parsing": True,
     "logging": True,
     "error_handling": True,
@@ -215,7 +217,7 @@ except ImportError:
     raise
 
 # Export all utilities
-__all__ = [
+__all__: list[Any] = [
     # Utils availability flag
     "UTILS_AVAILABLE",
     # Logging utilities

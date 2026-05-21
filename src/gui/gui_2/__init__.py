@@ -21,7 +21,7 @@ from .processor import run_gui
 
 
 def gui_2(
-    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Run GUI 2: Visual Matrix Editor for GNN Models
@@ -54,7 +54,7 @@ def gui_2(
             open_browser=open_browser,
         )
 
-        result = {
+        result: dict[str, Any] = {
             "gui_type": "gui_2",
             "description": "Visual Matrix Editor for GNN Models",
             "success": success,
@@ -109,7 +109,7 @@ def get_gui_2_info() -> Dict[str, Any]:
     }
 
 
-__all__ = [
+__all__: list[Any] = [
     "gui_2",
     "get_gui_2_info",
     "run_gui",

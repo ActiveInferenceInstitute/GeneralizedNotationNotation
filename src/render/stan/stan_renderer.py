@@ -28,9 +28,9 @@ def render_stan(
     Returns:
         Stan model code string.
     """
-    data_vars = []
-    param_vars = []
-    model_lines = []
+    data_vars: list[Any] = []
+    param_vars: list[Any] = []
+    model_lines: list[Any] = []
 
     # Classify variables
     for v in variables:
@@ -57,7 +57,7 @@ def render_stan(
             model_lines.append(f"  {target} ~ normal({source}, 1.0);")
 
     # Assemble
-    lines = [
+    lines: list[Any] = [
         f"// Stan model generated from GNN: {model_name}",
         f"// Variables: {len(variables)}, Connections: {len(connections)}",
         "",

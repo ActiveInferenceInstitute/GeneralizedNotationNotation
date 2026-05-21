@@ -10,9 +10,9 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 
-def cli_health_check(params: Dict[str, Any] = None) -> Dict[str, Any]:
+def cli_health_check(params: (Dict[str, Any]) | None = None) -> Dict[str, Any]:
     """Return CLI module health and available subcommands."""
-    subcommands = [
+    subcommands: list[Any] = [
         "run",
         "validate",
         "parse",
@@ -32,7 +32,7 @@ def cli_health_check(params: Dict[str, Any] = None) -> Dict[str, Any]:
     }
 
 
-def cli_preflight(params: Dict[str, Any] = None) -> Dict[str, Any]:
+def cli_preflight(params: (Dict[str, Any]) | None = None) -> Dict[str, Any]:
     """Run preflight checks for the pipeline environment."""
     try:
         # Return info without running the full check

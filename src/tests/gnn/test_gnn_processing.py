@@ -7,6 +7,7 @@ This file contains tests migrated from test_gnn_core_modules.py.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -33,7 +34,7 @@ class TestGNNParsersSerializers:
     """Test gnn.parsers serializer modules (modular imports, not monolith)."""
 
     @pytest.mark.unit
-    def test_serializers_imports(self):
+    def test_serializers_imports(self) -> Any:
         """Test that serializers can be imported from modular files."""
         # Verify serializer classes exist and are proper types
         assert JSONSerializer is not None
@@ -42,16 +43,16 @@ class TestGNNParsersSerializers:
         assert GNNSerializer is not None
 
     @pytest.mark.unit
-    def test_json_serializer_instance(self):
+    def test_json_serializer_instance(self) -> Any:
         """Test JSONSerializer can be instantiated."""
         serializer = JSONSerializer()
         assert serializer is not None
         assert hasattr(serializer, "serialize")
 
     @pytest.mark.unit
-    def test_multiple_serializers_available(self):
+    def test_multiple_serializers_available(self) -> Any:
         """Test that multiple serializer formats are available."""
-        serializers = [
+        serializers: list[Any] = [
             JSONSerializer,
             XMLSerializer,
             YAMLSerializer,

@@ -8,7 +8,7 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional, cast
 
 try:
     import gradio as gr
@@ -23,8 +23,8 @@ try:
 
     PLOTLY_AVAILABLE = True
 except ImportError:
-    go = None
-    np = None
+    go = cast(Any, None)
+    np = cast(Any, None)
     PLOTLY_AVAILABLE = False
 
 
@@ -37,10 +37,10 @@ def build_simple_visual_gui(
         raise ImportError("Gradio is required for GUI functionality")
 
     # Initialize with simple default matrices
-    default_a = [[1.0, 0.5, 0.2], [0.8, 1.0, 0.3], [0.1, 0.4, 1.0]]
-    default_b = [[0.7, 0.3], [0.6, 0.4]]
-    default_c = [[0.5], [0.3], [0.2]]
-    default_d = [[0.8], [0.2]]
+    default_a: list[Any] = [[1.0, 0.5, 0.2], [0.8, 1.0, 0.3], [0.1, 0.4, 1.0]]
+    default_b: list[Any] = [[0.7, 0.3], [0.6, 0.4]]
+    default_c: list[Any] = [[0.5], [0.3], [0.2]]
+    default_d: list[Any] = [[0.8], [0.2]]
 
     def create_simple_heatmap(
         data: List[List[float]], title: str
@@ -89,11 +89,13 @@ def build_simple_visual_gui(
             logger.error(f"Error creating bar plot: {e}")
             return None
 
-    def update_visualizations(matrix_a, matrix_b, vector_c, vector_d):
+    def update_visualizations(
+        matrix_a: Any, matrix_b: Any, vector_c: Any, vector_d: Any
+    ) -> Any:
         """Update all visualizations - simplified version"""
         try:
             # Convert gradio dataframes to lists safely
-            def safe_convert(data):
+            def safe_convert(data: Any) -> Any:
                 if hasattr(data, "values"):
                     return data.values.tolist()
                 elif isinstance(data, list):
@@ -106,7 +108,7 @@ def build_simple_visual_gui(
             c_data = safe_convert(vector_c) or default_c
             d_data = safe_convert(vector_d) or default_d
 
-            results = []
+            results: list[Any] = []
 
             if PLOTLY_AVAILABLE:
                 results.append(create_simple_heatmap(a_data, "Matrix A"))
@@ -130,7 +132,7 @@ def build_simple_visual_gui(
 
         except Exception as e:
             logger.error(f"Error in update_visualizations: {e}")
-            error_fig = None
+            error_fig = cast(Any, None)
             if PLOTLY_AVAILABLE:
                 error_fig = go.Figure().add_annotation(
                     text=f"Error: {str(e)}", x=0.5, y=0.5
@@ -192,7 +194,9 @@ def build_simple_visual_gui(
             )
         else:
 
-            def update_stats_only(matrix_a, matrix_b, vector_c, vector_d):
+            def update_stats_only(
+                matrix_a: Any, matrix_b: Any, vector_c: Any, vector_d: Any
+            ) -> Any:
                 return update_visualizations(matrix_a, matrix_b, vector_c, vector_d)[-1]
 
             update_btn.click(
@@ -206,7 +210,9 @@ def build_simple_visual_gui(
             export_btn = gr.Button("💾 Export GNN", variant="secondary")
             export_output = gr.Textbox(label="Export Status", lines=2)
 
-        def export_matrices(matrix_a, matrix_b, vector_c, vector_d):
+        def export_matrices(
+            matrix_a: Any, matrix_b: Any, vector_c: Any, vector_d: Any
+        ) -> Any:
             """Export current matrices to GNN format"""
             try:
                 # Simple export logic

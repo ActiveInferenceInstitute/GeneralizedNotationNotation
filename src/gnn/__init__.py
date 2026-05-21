@@ -4,6 +4,8 @@ GNN module for GNN Processing Pipeline.
 This module provides GNN file discovery, parsing, and validation capabilities.
 """
 
+from typing import Any
+
 from .multi_format_processor import process_gnn_multi_format
 from .parser import (
     GNNFormalParser,
@@ -32,7 +34,7 @@ from .types import ParsedGNN, ValidationLevel
 
 __version__ = "1.6.0"
 # Ensure tests see MCP feature presence consistently
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "file_discovery": True,
     "content_parsing": True,
     "structure_validation": True,
@@ -42,7 +44,7 @@ FEATURES = {
 }
 
 
-def validate_gnn_file(source, *, is_content: bool = False):
+def validate_gnn_file(source: Any, *, is_content: bool = False) -> Any:
     """Validate a GNN file or content string.
 
     Args:
@@ -62,7 +64,7 @@ def validate_gnn_file(source, *, is_content: bool = False):
     return {"is_valid": is_valid, "errors": errors}
 
 
-__all__ = [
+__all__: list[Any] = [
     # Processor functions
     "process_gnn_directory_lightweight",
     "discover_gnn_files",

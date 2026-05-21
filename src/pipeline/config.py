@@ -6,21 +6,21 @@ Pipeline configuration module.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 logger = logging.getLogger(__name__)
 
 # Make PyYAML optional to avoid hard failures during import time
 try:
-    import yaml  # type: ignore
+    import yaml
 
     _YAML_AVAILABLE = True
 except ImportError:
-    yaml = None  # type: ignore
+    yaml = cast(Any, None)
     _YAML_AVAILABLE = False
 
 # Pipeline configuration
-STEP_METADATA = {
+STEP_METADATA: dict[str, Any] = {
     "0_template": {
         "name": "Template",
         "description": "Pipeline template and initialization",
@@ -91,19 +91,24 @@ STEP_METADATA = {
 class StepConfig:
     """Configuration for a pipeline step."""
 
-    def __init__(self, step_name: str, **kwargs):
+    def __init__(self, step_name: str, **kwargs: Any) -> None:
         self.step_name = step_name
         self.enabled = kwargs.get("enabled", True)
         self.timeout = kwargs.get("timeout", 3600)
         self.retries = kwargs.get("retries", 3)
         self.dependencies = kwargs.get("dependencies", [])
         self.parameters = kwargs.get("parameters", {})
+        self.required = kwargs.get("required", True)
+        self.output_subdir = kwargs.get(
+            "output_subdir", f"{step_name.removesuffix('.py')}_output"
+        )
+        self.performance_tracking = kwargs.get("performance_tracking", True)
 
 
 class PipelineConfig:
     """Pipeline configuration manager."""
 
-    def __init__(self, config_path: Optional[Path] = None):
+    def __init__(self, config_path: Optional[Path] = None) -> None:
         self.config_path = config_path or Path("pipeline_config.yaml")
         self.config = self._load_settings_from_path()
 
@@ -120,11 +125,26 @@ class PipelineConfig:
                             # Downstream code should use sensible defaults
                             return {}
                     else:
-                        return json.load(f)
+                        return cast("dict[str, Any]", json.load(f))
             except (json.JSONDecodeError, OSError, ValueError) as e:
                 logger.debug("Could not parse config file %s: %s", self.config_path, e)
                 return {}
         return {}
+
+    @property
+    def steps(self) -> Dict[str, StepConfig]:
+        """Return configured step objects keyed by canonical step script name."""
+        config_steps = self.config.get("steps", {})
+        if isinstance(config_steps, dict):
+            return {
+                step_name: StepConfig(step_name, **step_data)
+                for step_name, step_data in config_steps.items()
+                if isinstance(step_data, dict)
+            }
+        return {
+            f"{step_name}.py": self.get_step_config(f"{step_name}.py")
+            for step_name in STEP_METADATA
+        }
 
     def get_step_config(self, step_name: str) -> StepConfig:
         """Get configuration for a specific step."""
@@ -136,7 +156,7 @@ class PipelineConfig:
         try:
             with open(self.config_path, "w") as f:
                 if self.config_path.suffix in (".yaml", ".yml") and _YAML_AVAILABLE:
-                    yaml.dump(self.config, f)  # type: ignore
+                    yaml.dump(self.config, f)
                 else:
                     json.dump(self.config, f, indent=2)
         except (OSError, ValueError) as e:
@@ -195,7 +215,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     normalized = script_stem  # e.g., '7_export'
 
     # Map stems to standardized numbered output directories
-    strict_mapping = {
+    strict_mapping: dict[str, Any] = {
         "0_template": base_output_dir / "0_template_output",
         "1_setup": base_output_dir / "1_setup_output",
         "2_tests": base_output_dir / "2_tests_output",
@@ -254,9 +274,9 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
 
     # Exact matches
     if script_name in strict_mapping:
-        return strict_mapping[script_name]
+        return cast("Path", strict_mapping[script_name])
     if normalized in strict_mapping:
-        return strict_mapping[normalized]
+        return cast("Path", strict_mapping[normalized])
 
     # Default recovery
     return base_output_dir / expected_dir_name

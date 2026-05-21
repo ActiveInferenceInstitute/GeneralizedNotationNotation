@@ -22,7 +22,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 
-__all__ = [
+__all__: list[Any] = [
     "validate_model_data",
     "validate_target_dir",
     "validate_frameworks_arg",
@@ -45,7 +45,7 @@ KNOWN_FRAMEWORKS = (
     "bnlearn",
 )
 
-FRAMEWORK_PRESETS = {
+FRAMEWORK_PRESETS: dict[str, Any] = {
     "all": list(KNOWN_FRAMEWORKS),
     "lite": ["pymdp", "jax", "discopy", "bnlearn"],
 }

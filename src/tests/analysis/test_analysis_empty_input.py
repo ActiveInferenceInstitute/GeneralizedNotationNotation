@@ -11,6 +11,7 @@ log line and a non-zero exit status.
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -20,19 +21,21 @@ if str(SRC) not in sys.path:
 
 
 @pytest.fixture
-def empty_target_dir(tmp_path):
+def empty_target_dir(tmp_path: Any) -> Any:
     d = tmp_path / "empty_gnn"
     d.mkdir()
     return d
 
 
 @pytest.fixture
-def missing_target_dir(tmp_path):
+def missing_target_dir(tmp_path: Any) -> Any:
     # Not created — process_analysis must detect absence and return 2.
     return tmp_path / "does_not_exist"
 
 
-def test_process_analysis_returns_2_when_no_gnn_files(empty_target_dir, tmp_path):
+def test_process_analysis_returns_2_when_no_gnn_files(
+    empty_target_dir: Any, tmp_path: Any
+) -> Any:
     try:
         from analysis.processor import process_analysis
     except ImportError:
@@ -49,8 +52,8 @@ def test_process_analysis_returns_2_when_no_gnn_files(empty_target_dir, tmp_path
 
 
 def test_process_analysis_returns_2_when_target_dir_missing(
-    missing_target_dir, tmp_path
-):
+    missing_target_dir: Any, tmp_path: Any
+) -> Any:
     try:
         from analysis.processor import process_analysis
     except ImportError:

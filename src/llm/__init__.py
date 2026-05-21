@@ -6,11 +6,13 @@ It avoids importing heavy optional dependencies at import time; functions
 are provided as thin wrappers that import implementations on first use.
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
 
 from .defaults import DEFAULT_OLLAMA_MODEL
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "openai_integration": True,
     "anthropic_integration": True,
     "ollama_integration": True,
@@ -139,9 +141,14 @@ def analyze_gnn_model(model_content: Union[str, Dict[str, Any]]) -> Dict[str, An
             else model_content.get("content", "")
         )
     except Exception:
+        content = (
+            model_content
+            if isinstance(model_content, str)
+            else model_content.get("content", "")
+        )
         return {
-            "variables": extract_variables(model_content),
-            "connections": extract_connections(model_content),
+            "variables": extract_variables(content),
+            "connections": extract_connections(content),
         }
 
 
@@ -153,7 +160,7 @@ def generate_model_description(content: str) -> str:
 
 def get_available_providers() -> list:
     """Return a list of available provider identifiers (best-effort)."""
-    providers = ["ollama"]
+    providers: list[Any] = ["ollama"]
     try:
         # Importing lazily to avoid heavy deps
         from .providers import openai_provider as _openai  # noqa: F401
@@ -170,7 +177,7 @@ def get_available_providers() -> list:
     return providers
 
 
-__all__ = [
+__all__: list[Any] = [
     "process_llm",
     "analyze_gnn_file_with_llm",
     "extract_variables",

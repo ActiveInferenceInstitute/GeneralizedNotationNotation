@@ -108,10 +108,10 @@ class PyMDPSimulation:
         self.C: List[np.ndarray] = []
         self.D: List[np.ndarray] = []
         self.E: Optional[np.ndarray] = None
-        self.A_np: Optional[np.ndarray] = None
-        self.B_np: Optional[np.ndarray] = None
-        self.C_np: Optional[np.ndarray] = None
-        self.D_np: Optional[np.ndarray] = None
+        self.A_np: np.ndarray = np.zeros((0, 0), dtype=np.float64)
+        self.B_np: np.ndarray = np.zeros((0, 0, 0), dtype=np.float64)
+        self.C_np: np.ndarray = np.zeros(0, dtype=np.float64)
+        self.D_np: np.ndarray = np.zeros(0, dtype=np.float64)
         self.model_matrices: Dict[str, np.ndarray] = {}
         self.simulation_trace: List[Dict[str, Any]] = []
         self.results: Dict[str, Any] = {}
@@ -413,7 +413,7 @@ class PyMDPSimulation:
         import jax.random as jr
 
         obs_idx = self._sample_observation(current_state, np_rng)
-        obs_jax = [jnp.array([obs_idx], dtype=jnp.int32)]
+        obs_jax: list[Any] = [jnp.array([obs_idx], dtype=jnp.int32)]
 
         qs, info = self.agent.infer_states(
             obs_jax,
@@ -438,7 +438,7 @@ class PyMDPSimulation:
 
         new_prior = self.agent.update_empirical_prior(action, qs)
 
-        step_data = {
+        step_data: dict[str, Any] = {
             "timestep": t,
             "current_state": int(current_state),
             "observation": int(obs_idx),
@@ -583,9 +583,11 @@ class PyMDPSimulation:
         }
 
         if output_dir is not None or self.output_dir is not None:
-            self._save_results(
+            results_dir = (
                 Path(output_dir) if output_dir is not None else self.output_dir
             )
+            if results_dir is not None:
+                self._save_results(results_dir)
 
         self.logger.info("Simulation completed in %s", format_duration(duration))
         self.results = results_out

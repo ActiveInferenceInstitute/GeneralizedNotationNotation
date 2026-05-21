@@ -11,15 +11,15 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, cast
 
 try:
     import gradio as gr
 
     _GUI_BACKEND = "gradio"
 except ImportError:
-    gr = None  # type: ignore
-    _GUI_BACKEND = None
+    gr = cast(Any, None)
+    _GUI_BACKEND = cast(Any, None)
 
 from utils.pipeline_template import (
     log_step_error,
@@ -166,7 +166,7 @@ def run_gui(
         import threading
         import time
 
-        def launch_gui():
+        def launch_gui() -> Any:
             logger.info("🎯 Visual Matrix Editor starting...")
             demo.launch(
                 share=False,

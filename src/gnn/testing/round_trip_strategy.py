@@ -35,11 +35,11 @@ class RoundTripTestStrategy:
     and validates model consistency.
     """
 
-    def __init__(self):
-        self.test_subset = None
-        self.reference_file = None
-        self.output_dir = None
-        self.round_trip_tester = None
+    def __init__(self) -> None:
+        self.test_subset: Optional[List[str]] = None
+        self.reference_file: Optional[str] = None
+        self.output_dir: Optional[Path] = None
+        self.round_trip_tester: Any = None
         self._initialize_tester()
 
     def configure(
@@ -47,7 +47,7 @@ class RoundTripTestStrategy:
         test_subset: Optional[List[str]] = None,
         reference_file: Optional[str] = None,
         output_dir: Optional[Path] = None,
-    ):
+    ) -> Any:
         """Configure testing parameters."""
         self.test_subset = test_subset
         self.reference_file = reference_file
@@ -56,7 +56,7 @@ class RoundTripTestStrategy:
         if output_dir:
             output_dir.mkdir(parents=True, exist_ok=True)
 
-    def _initialize_tester(self):
+    def _initialize_tester(self) -> Any:
         """Initialize round-trip testing components."""
         try:
             from .test_round_trip import GNNRoundTripTester
@@ -87,7 +87,7 @@ class RoundTripTestStrategy:
 
         logger.info(f"Running round-trip tests on {len(files)} files")
 
-        results = {
+        results: dict[str, Any] = {
             "success": True,
             "tests_run": 0,
             "files_tested": len(files),
@@ -130,7 +130,7 @@ class RoundTripTestStrategy:
             report = self.round_trip_tester.run_comprehensive_tests()
 
             # Extract results for this file
-            file_results = []
+            file_results: list[Any] = []
             for result in report.round_trip_results:
                 if hasattr(result, "source_file") and result.source_file == str(
                     file_path
@@ -176,7 +176,7 @@ class RoundTripTestStrategy:
             1 for result in file_results.values() if result.get("success", False)
         )
 
-        format_stats = {}
+        format_stats: dict[Any, Any] = {}
         for result in file_results.values():
             if "format_results" in result:
                 for format_result in result["format_results"]:
@@ -194,7 +194,7 @@ class RoundTripTestStrategy:
             "format_statistics": format_stats,
         }
 
-    def _save_test_results(self, results: Dict[str, Any]):
+    def _save_test_results(self, results: Dict[str, Any]) -> Any:
         """Save test results to output directory."""
         if not self.output_dir:
             return

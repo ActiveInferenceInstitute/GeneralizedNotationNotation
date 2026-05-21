@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 GUI 3: State Space Design Studio Processor
 Low-dependency visual design interface for Active Inference models
@@ -18,8 +20,8 @@ try:
 
     _GUI_BACKEND = "gradio"
 except ImportError:
-    gr = None  # type: ignore
-    _GUI_BACKEND = None
+    gr = cast(Any, None)
+    _GUI_BACKEND = cast(Any, None)
 
 
 def run_gui(
@@ -135,7 +137,7 @@ def run_gui(
         import threading
         import time
 
-        def launch_gui():
+        def launch_gui() -> Any:
             logger.info("🎨 Design Studio starting...")
             demo.launch(
                 share=False,
@@ -245,7 +247,7 @@ num_actions: 3
 def _analyze_gnn_design(gnn_content: str) -> Dict[str, Any]:
     """Analyze GNN content for design studio insights"""
 
-    analysis = {
+    analysis: dict[str, Any] = {
         "state_spaces": [],
         "ontology_terms": {},
         "connections": [],

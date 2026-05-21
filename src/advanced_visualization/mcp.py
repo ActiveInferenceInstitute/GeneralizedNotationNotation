@@ -84,7 +84,7 @@ def list_d2_visualization_types_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with visualization type names and descriptions.
     """
-    types = {
+    types: dict[str, Any] = {
         "state_space": "Visualizes the hidden state space (X) and observation space (Y)",
         "factor_graph": "Factor graph representation of the generative model",
         "generative_model": "Full A/B/C/D matrix generative model diagram",

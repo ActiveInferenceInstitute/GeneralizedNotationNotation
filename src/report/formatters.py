@@ -614,7 +614,7 @@ def generate_markdown_report(
             # Add file types
             file_types = step_data.get("file_types", {})
             if file_types:
-                file_type_list = []
+                file_type_list: list[Any] = []
                 for ext, info in file_types.items():
                     count = info.get("count", 0) if isinstance(info, dict) else info
                     file_type_list.append(f"{ext}: {count}")

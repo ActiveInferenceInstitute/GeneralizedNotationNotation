@@ -7,6 +7,7 @@ Uses real sys.version_info and real filesystem.
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -15,7 +16,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 
-def test_check_python_version_respects_current_interpreter():
+def test_check_python_version_respects_current_interpreter() -> Any:
     """check_python_version must report True on Python 3.11+ (our minimum).
     If this test ever fails, either the interpreter is too old OR the
     requirements in pyproject.toml were silently relaxed."""
@@ -27,14 +28,14 @@ def test_check_python_version_respects_current_interpreter():
         assert result is True, f"check_python_version rejected {sys.version_info}"
 
 
-def test_validate_environment_returns_dict():
+def test_validate_environment_returns_dict() -> Any:
     """validate_environment must return a diagnostic dict, not raise."""
     from setup import validate_environment
 
     result = validate_environment()
     assert isinstance(result, dict)
     # Should expose at least a high-level status signal.
-    expected_keys = {
+    expected_keys: set[Any] = {
         "valid",
         "python_version",
         "errors",
@@ -48,7 +49,7 @@ def test_validate_environment_returns_dict():
     )
 
 
-def test_get_module_info_exposes_version():
+def test_get_module_info_exposes_version() -> Any:
     from setup import get_module_info
 
     info = get_module_info()
@@ -59,7 +60,7 @@ def test_get_module_info_exposes_version():
     assert v.count(".") >= 2, f"Unexpected version format: {v!r}"
 
 
-def test_environment_manager_instantiates_without_side_effects():
+def test_environment_manager_instantiates_without_side_effects() -> Any:
     """Constructing EnvironmentManager must not fail or mutate state."""
     from setup import EnvironmentManager
 
@@ -67,7 +68,7 @@ def test_environment_manager_instantiates_without_side_effects():
     assert mgr is not None
 
 
-def test_uv_availability_detection_matches_shutil():
+def test_uv_availability_detection_matches_shutil() -> Any:
     """If setup exposes a uv detection helper, it must agree with shutil.which.
 
     Covers this by importing uv_management indirectly — if the helper is

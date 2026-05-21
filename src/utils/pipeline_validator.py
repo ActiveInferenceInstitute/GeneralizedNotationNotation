@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def validate_step_prerequisites(
-    script_name: str, args, logger, skip_steps: list = None
+    script_name: str, args: Any, logger: Any, skip_steps: (list) | None = None
 ) -> Dict[str, Any]:
     """Validate prerequisites for a pipeline step before execution.
 
@@ -31,7 +31,7 @@ def validate_step_prerequisites(
                     are intentionally skipped.  Prerequisites fulfilled by
                     skipped steps are silently ignored rather than warned about.
     """
-    result = {"passed": True, "warnings": [], "errors": []}
+    result: dict[str, Any] = {"passed": True, "warnings": [], "errors": []}
 
     # Normalise skip_steps to a set of script names (e.g. {"13_llm.py"})
     _skipped: set = set()
@@ -56,7 +56,7 @@ def validate_step_prerequisites(
     from pipeline.config import get_output_dir_for_script
 
     # Define step dependencies (step name -> [required prerequisite steps])
-    step_dependencies = {
+    step_dependencies: dict[str, Any] = {
         "11_render.py": ["3_gnn.py"],  # Render needs parsed GNN files
         "12_execute.py": [
             "3_gnn.py",
@@ -147,16 +147,20 @@ def validate_step_prerequisites(
 
 
 def validate_pipeline_step_sequence(
-    steps_to_execute: List[tuple], logger
+    steps_to_execute: List[tuple], logger: Any
 ) -> Dict[str, Any]:
     """Validate the sequence of pipeline steps for dependency issues."""
-    validation_result = {"valid": True, "warnings": [], "recommendations": []}
+    validation_result: dict[str, Any] = {
+        "valid": True,
+        "warnings": [],
+        "recommendations": [],
+    }
 
     # Extract script names from steps_to_execute
     script_names = [step[0] for step in steps_to_execute]
 
     # Define critical dependency chains
-    dependency_chains = [
+    dependency_chains: list[Any] = [
         ["3_gnn.py", "5_type_checker.py", "6_validation.py"],
         ["3_gnn.py", "7_export.py"],
         ["3_gnn.py", "8_visualization.py", "9_advanced_viz.py"],
@@ -188,12 +192,12 @@ def validate_pipeline_step_sequence(
                 )
 
     # Check for missing critical dependencies
-    critical_steps = ["3_gnn.py"]  # Core parsing step
+    critical_steps: list[Any] = ["3_gnn.py"]  # Core parsing step
     script_names = [step[0] for step in steps_to_execute]
 
     for critical_step in critical_steps:
         if critical_step not in script_names:
-            dependent_steps = []
+            dependent_steps: list[Any] = []
             for step in script_names:
                 if step in [
                     "5_type_checker.py",
@@ -216,7 +220,7 @@ def validate_pipeline_step_sequence(
 
 def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
     """Validate that a step produced expected outputs."""
-    validation = {
+    validation: dict[str, Any] = {
         "step_name": script_name,
         "outputs_created": [],
         "missing_outputs": [],
@@ -224,7 +228,7 @@ def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
     }
 
     # Define expected outputs for each step
-    expected_outputs = {
+    expected_outputs: dict[str, Any] = {
         "3_gnn.py": ["*_parsed.json", "*.gnn"],
         "8_visualization.py": ["*.png", "*_analysis.json"],
         "11_render.py": ["*.py", "*.jl"],
@@ -259,9 +263,11 @@ def validate_step_outputs(script_name: str, output_dir: Path) -> Dict[str, Any]:
     return validation
 
 
-def check_pipeline_readiness(steps_to_execute: List[tuple], args) -> Dict[str, Any]:
+def check_pipeline_readiness(
+    steps_to_execute: List[tuple], args: Any
+) -> Dict[str, Any]:
     """Comprehensive pipeline readiness check before execution."""
-    readiness_check = {
+    readiness_check: dict[str, Any] = {
         "ready": True,
         "blocking_issues": [],
         "warnings": [],
@@ -276,7 +282,7 @@ def check_pipeline_readiness(steps_to_execute: List[tuple], args) -> Dict[str, A
         readiness_check["ready"] = False
 
     # Check for GNN files if GNN-dependent steps are included
-    gnn_dependent_steps = [
+    gnn_dependent_steps: list[Any] = [
         "5_type_checker.py",
         "8_visualization.py",
         "11_render.py",

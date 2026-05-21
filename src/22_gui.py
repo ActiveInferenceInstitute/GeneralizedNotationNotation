@@ -48,34 +48,15 @@ If you encounter errors:
   - For oxdraw: Install with `cargo install oxdraw` (optional for headless mode)
 """
 
-import logging
 import sys
 from pathlib import Path
-from typing import Any, Optional
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from gui import process_gui
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from gui import process_gui
-except ImportError:
-
-    def process_gui(
-        target_dir: Path,
-        output_dir: Path,
-        logger: Optional[logging.Logger] = None,
-        **kwargs: Any,
-    ) -> bool:
-        """Recovery GUI processing when module unavailable."""
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("GUI module not available - using recovery")
-        logger.info("Install GUI support with: uv pip install -e .[gui]")
-        return True
-
 
 run_script = create_standardized_pipeline_script(
     "22_gui.py",
@@ -108,7 +89,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the GUI step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

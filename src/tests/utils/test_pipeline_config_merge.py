@@ -1,6 +1,7 @@
 """Tests for merging ``input/config.yaml`` defaults into pipeline arguments."""
 
 import argparse
+from typing import Any
 
 import pytest
 
@@ -11,7 +12,7 @@ from utils.pipeline_config_merge import apply_input_config_defaults
 def test_apply_yaml_sets_dev_when_cli_omits_flag() -> None:
     args = PipelineArguments()
     parsed = argparse.Namespace()
-    full = {"setup": {"dev": True}}
+    full: dict[str, Any] = {"setup": {"dev": True}}
     apply_input_config_defaults(args, full, parsed)
     assert args.dev is True
 
@@ -19,7 +20,7 @@ def test_apply_yaml_sets_dev_when_cli_omits_flag() -> None:
 def test_apply_yaml_uv_sync_dev() -> None:
     args = PipelineArguments()
     parsed = argparse.Namespace()
-    full = {"uv": {"sync": {"dev": True}}}
+    full: dict[str, Any] = {"uv": {"sync": {"dev": True}}}
     apply_input_config_defaults(args, full, parsed)
     assert args.dev is True
 
@@ -27,7 +28,7 @@ def test_apply_yaml_uv_sync_dev() -> None:
 def test_cli_dev_wins_over_yaml() -> None:
     args = PipelineArguments(dev=True)
     parsed = argparse.Namespace(dev=True)
-    full = {"setup": {"dev": False}}
+    full: dict[str, Any] = {"setup": {"dev": False}}
     apply_input_config_defaults(args, full, parsed)
     assert args.dev is True
 
@@ -35,7 +36,7 @@ def test_cli_dev_wins_over_yaml() -> None:
 def test_apply_yaml_fast_only_false() -> None:
     args = PipelineArguments()
     parsed = argparse.Namespace()
-    full = {"pipeline": {"fast_only": False}}
+    full: dict[str, Any] = {"pipeline": {"fast_only": False}}
     apply_input_config_defaults(args, full, parsed)
     assert args.fast_only is False
 
@@ -194,13 +195,13 @@ def test_build_step_command_forwards_skip_llm_to_step24() -> None:
     ],
 )
 def test_install_uv_dependencies_sync_flags(
-    kwargs, expect_all_extras, expect_extra_dev, monkeypatch
+    kwargs: Any, expect_all_extras: Any, expect_extra_dev: Any, monkeypatch: Any
 ) -> None:
     from setup import uv_management
 
     captured: list[list[str]] = []
 
-    def captured_run(cmd, **kw):  # noqa: ANN001
+    def captured_run(cmd: Any, **kw: Any) -> Any:  # noqa: ANN001
         captured.append(list(cmd))
 
         class R:

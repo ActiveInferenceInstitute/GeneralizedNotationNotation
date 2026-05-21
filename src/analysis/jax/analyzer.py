@@ -8,7 +8,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
     Returns:
         Dictionary with extracted simulation data
     """
-    extracted = {
+    extracted: dict[str, Any] = {
         "actions_from_output": [],
         "final_belief": [],
         "average_efe": None,
@@ -74,7 +74,7 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
             extracted["efe_all_actions"] = [float(x) for x in efe_str.split()]
 
         # Extract model shapes
-        shape_patterns = [
+        shape_patterns: list[Any] = [
             (r"A matrix shape:\s*\((\d+),\s*(\d+)\)", "A_shape"),
             (r"B matrix shape:\s*\((\d+),\s*(\d+),\s*(\d+)\)", "B_shape"),
             (r"C vector shape:\s*\((\d+),\)", "C_shape"),
@@ -112,7 +112,7 @@ def load_simulation_results_json(jax_dir: Path) -> Optional[Dict[str, Any]]:
         Parsed simulation results or None if not found
     """
     # Check multiple possible locations for simulation_results.json
-    possible_paths = [
+    possible_paths: list[Any] = [
         jax_dir / "simulation_results.json",
         jax_dir / "simulation_data" / "simulation_results.json",
         jax_dir / "jax_outputs" / "simulation_results.json",
@@ -124,7 +124,7 @@ def load_simulation_results_json(jax_dir: Path) -> Optional[Dict[str, Any]]:
                 with open(path, "r") as f:
                     data = json.load(f)
                     logger.info(f"Loaded JAX simulation results from {path}")
-                    return data
+                    return cast("dict[str, Any] | None", data)
             except Exception as e:
                 logger.warning(f"Failed to load {path}: {e}")
 
@@ -145,7 +145,7 @@ def generate_analysis_from_logs(
     Returns:
         List of generated visualization file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     try:
         # Find JAX execution results
@@ -206,7 +206,7 @@ def create_visualizations_from_structured_data(
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping JAX visualizations")
@@ -243,7 +243,7 @@ def create_visualizations_from_structured_data(
             plt.colorbar(im, ax=ax1, label="Belief Probability")
 
             # Plot belief entropy
-            entropies = []
+            entropies: list[Any] = []
             for b in beliefs:
                 b_arr = np.array(b)
                 entropy = -np.sum(b_arr * np.log(b_arr + 1e-10))
@@ -311,7 +311,7 @@ def create_visualizations_from_structured_data(
             fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
 
             # Action distribution
-            action_counts = {}
+            action_counts: dict[Any, Any] = {}
             for a in actions:
                 action_counts[a] = action_counts.get(a, 0) + 1
 
@@ -494,7 +494,7 @@ def create_jax_visualizations(
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping JAX visualizations")
@@ -549,7 +549,7 @@ def create_jax_visualizations(
     if actions:
         try:
             fig, ax = plt.subplots(figsize=(10, 5))
-            action_counts = {}
+            action_counts: dict[Any, Any] = {}
             for a in actions:
                 action_counts[a] = action_counts.get(a, 0) + 1
 
@@ -646,7 +646,7 @@ def create_jax_visualizations(
 
             # Build summary text
             shapes = parsed["model_shapes"]
-            summary_lines = [
+            summary_lines: list[Any] = [
                 "JAX Active Inference Model Summary",
                 "─" * 40,
                 "",
@@ -747,7 +747,7 @@ def extract_simulation_data(
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    data = {
+    data: dict[str, Any] = {
         "actions": [],
         "beliefs": [],
         "free_energy": [],
@@ -771,7 +771,7 @@ def extract_simulation_data(
     return data
 
 
-__all__ = [
+__all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_jax_visualizations",
     "extract_simulation_data",

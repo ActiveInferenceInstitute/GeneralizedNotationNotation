@@ -10,7 +10,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ class ParseCache:
     unchanged sections return cached results instantly.
     """
 
-    def __init__(self, cache_dir: Optional[Path] = None):
+    def __init__(self, cache_dir: Optional[Path] = None) -> None:
         self.cache_dir = cache_dir or Path(".parse_cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._stats = {"hits": 0, "misses": 0}
@@ -51,7 +51,7 @@ class ParseCache:
                     data = json.load(f)
                 self._stats["hits"] += 1
                 logger.debug(f"Cache hit: {section_name} ({key[:8]})")
-                return data
+                return cast("dict[str, Any] | None", data)
             except (json.JSONDecodeError, OSError) as e:
                 logger.debug("Corrupted cache entry, treating as miss: %s", e)
 

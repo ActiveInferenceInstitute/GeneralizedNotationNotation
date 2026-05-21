@@ -14,7 +14,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ class LLMCache:
 
     def __init__(
         self, cache_dir: Optional[Path] = None, base_output_dir: Optional[Path] = None
-    ):
+    ) -> None:
         """
         Initialize cache.
 
@@ -91,7 +91,7 @@ class LLMCache:
                     entry = json.load(f)
                 self.hits += 1
                 logger.debug(f"Cache HIT: {key[:12]}…")
-                return entry.get("response")
+                return cast("str | None", entry.get("response"))
             except (json.JSONDecodeError, KeyError) as exc:
                 logger.warning(f"Corrupt cache entry {key[:12]}…: {exc}")
                 path.unlink(missing_ok=True)
@@ -119,7 +119,7 @@ class LLMCache:
         key = self._make_key(file_content, model_name, prompt_template)
         path = self._cache_path(key)
 
-        entry = {
+        entry: dict[str, Any] = {
             "key": key,
             "model": model_name,
             "timestamp": datetime.now().isoformat(),

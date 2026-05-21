@@ -13,6 +13,7 @@ This tests the hand-off contracts between pipeline stages, not internal logic.
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -30,7 +31,7 @@ GNN_FILE_PATH = (
 class TestStep3ParseProducesModel:
     """Step 3 produces a parsed model that has known structure."""
 
-    def test_gnn_parser_parses_minimal_content(self):
+    def test_gnn_parser_parses_minimal_content(self) -> Any:
         """GNNParsingSystem can parse minimal GNN content without errors."""
         try:
             from gnn.parser import GNNParsingSystem
@@ -46,7 +47,7 @@ class TestStep3ParseProducesModel:
         finally:
             tmp_path.unlink(missing_ok=True)
 
-    def test_parse_file_returns_parse_result_with_model(self):
+    def test_parse_file_returns_parse_result_with_model(self) -> Any:
         """parse_file result has .model or usable structure."""
         try:
             from gnn.parser import GNNParsingSystem
@@ -66,7 +67,7 @@ class TestStep3ParseProducesModel:
         finally:
             tmp_path.unlink(missing_ok=True)
 
-    def test_existing_gnn_file_parses_without_exception(self):
+    def test_existing_gnn_file_parses_without_exception(self) -> Any:
         """Real GNN input files parse successfully."""
         if not GNN_FILE_PATH.exists():
             pytest.skip(f"Sample GNN file not found: {GNN_FILE_PATH}")
@@ -78,7 +79,7 @@ class TestStep3ParseProducesModel:
         result = parser.parse_file(GNN_FILE_PATH)
         assert result is not None
 
-    def test_schema_parse_connections_from_gnn_content(self):
+    def test_schema_parse_connections_from_gnn_content(self) -> Any:
         """parse_connections (step 3 schema layer) produces edges from test content."""
         from gnn.schema import parse_connections
 
@@ -87,7 +88,7 @@ class TestStep3ParseProducesModel:
         fatal_errors = [e for e in errors if e.severity == "error"]
         assert len(fatal_errors) == 0
 
-    def test_schema_parse_state_space_from_gnn_content(self):
+    def test_schema_parse_state_space_from_gnn_content(self) -> Any:
         """parse_state_space (step 3 schema layer) extracts variables from test content."""
         from gnn.schema import parse_state_space
 
@@ -101,7 +102,7 @@ class TestStep3ParseProducesModel:
 class TestStep11RenderConsumesParseOutput:
     """Step 11 render functions accept well-formed GNN spec dicts."""
 
-    def _minimal_spec(self):
+    def _minimal_spec(self) -> Any:
         return {
             "model_name": "IntegrationTestModel",
             "annotation": "ActInfPOMDP",
@@ -118,7 +119,7 @@ class TestStep11RenderConsumesParseOutput:
             "time": {"type": "Dynamic", "horizon": 10},
         }
 
-    def test_jax_extract_matrices_accepts_spec(self):
+    def test_jax_extract_matrices_accepts_spec(self) -> Any:
         """jax_renderer._extract_gnn_matrices accepts a well-formed spec."""
         try:
             from render.jax.jax_renderer import _extract_gnn_matrices
@@ -127,7 +128,7 @@ class TestStep11RenderConsumesParseOutput:
         result = _extract_gnn_matrices(self._minimal_spec())
         assert isinstance(result, dict)
 
-    def test_jax_render_produces_output_path(self, tmp_path):
+    def test_jax_render_produces_output_path(self, tmp_path: Any) -> Any:
         """render_gnn_to_jax writes an artifact to the output directory."""
         try:
             from render.jax.jax_renderer import render_gnn_to_jax
@@ -142,19 +143,19 @@ class TestStep11RenderConsumesParseOutput:
 class TestStep12ExecutionHandshake:
     """Step 12 execute functions gracefully accept rendered artifact paths."""
 
-    def test_execute_module_importable(self):
+    def test_execute_module_importable(self) -> Any:
         """execute module can be imported."""
         import execute
 
         assert execute is not None
 
-    def test_pymdp_executor_importable(self):
+    def test_pymdp_executor_importable(self) -> Any:
         """PyMDP executor submodule is importable."""
         from execute.pymdp import executor as pymdp_exec
 
         assert pymdp_exec is not None
 
-    def test_executor_with_missing_file_returns_failure(self):
+    def test_executor_with_missing_file_returns_failure(self) -> Any:
         """execute_script_safely returns a structured failure dict for a missing artifact."""
         from execute.executor import execute_script_safely
 

@@ -7,6 +7,7 @@ skips cleanly when optional deps absent.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -15,7 +16,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 
-def _get_app():
+def _get_app() -> Any:
     """Return the FastAPI app object, or skip if unavailable."""
     try:
         from api import server
@@ -27,7 +28,7 @@ def _get_app():
     return app
 
 
-def test_api_module_loads_and_exposes_version():
+def test_api_module_loads_and_exposes_version() -> Any:
     from api import get_module_info
 
     info = get_module_info()
@@ -35,7 +36,7 @@ def test_api_module_loads_and_exposes_version():
     assert "version" in info
 
 
-def test_api_app_has_routes_registered():
+def test_api_app_has_routes_registered() -> Any:
     app = _get_app()
     # FastAPI exposes the route table via .routes.
     assert hasattr(app, "routes"), "FastAPI app missing .routes attribute"
@@ -47,7 +48,7 @@ def test_api_app_has_routes_registered():
     )
 
 
-def test_api_openapi_schema_is_well_formed():
+def test_api_openapi_schema_is_well_formed() -> Any:
     """Every FastAPI app exposes /openapi.json; the schema must be a dict
     with 'paths' and 'info' sections per the OpenAPI 3.0 spec."""
     app = _get_app()
@@ -63,7 +64,7 @@ def test_api_openapi_schema_is_well_formed():
     assert schema["info"].get("title"), "OpenAPI schema has no title"
 
 
-def test_api_health_endpoint_exists():
+def test_api_health_endpoint_exists() -> Any:
     """A canonical liveness probe must be registered. Accepts any of the
     common conventions (/, /health, /api/health, /api/v1/health)."""
     app = _get_app()

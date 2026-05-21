@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 class GNNParser:
     """Parser for GNN files in various formats."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the GNN parser."""
-        self.sections = {}
+        self.sections: dict[str, Any] = {}
 
     def parse_file(self, file_path: str) -> Dict[str, Any]:
         """
@@ -41,10 +41,10 @@ class GNNParser:
 
     def _parse_csv_format(self, file_path: str, content: str) -> Dict[str, Any]:
         """Parse GNN file in CSV format."""
-        sections = {}
+        sections: dict[Any, Any] = {}
 
         # Extract header comments
-        header_lines = []
+        header_lines: list[Any] = []
         content_lines = content.splitlines()
         line_index = 0
 
@@ -167,7 +167,7 @@ class GNNParser:
             return
 
         state_space_content = sections["StateSpaceBlock"]
-        variables = {}
+        variables: dict[Any, Any] = {}
 
         logger.debug("Processing state space block...")
 
@@ -201,7 +201,7 @@ class GNNParser:
                     f"Found variable: {var_name}, dimensions: {dimensions_str}, comment: {comment}"
                 )
 
-                dimensions = []
+                dimensions: list[Any] = []
                 var_type = None
 
                 # Handle simple dimension strings like "len(π)" or "[2]"
@@ -244,7 +244,7 @@ class GNNParser:
             return
 
         connections_content = sections["Connections"]
-        edges = []
+        edges: list[Any] = []
 
         pattern = r"(\w+(?:\^\w+)?(?:_\w+)?(?:\+\d+)?)\s*([>\-])\s*(\w+(?:\^\w+)?(?:_\w+)?(?:\+\d+)?)\s*(?:=\s*([^#]*))?(?:#(.*))?"
 

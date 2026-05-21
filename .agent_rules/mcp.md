@@ -119,7 +119,7 @@ def register_tools(mcp=None) -> None:
 | 11 | render | `render_pymdp`, `render_rxinfer`, `render_activeinference`, `render_jax`, `render_discopy` |
 | 13 | llm | `analyze_gnn`, `explain_model`, `suggest_improvements` |
 | 15 | audio | `generate_sapf`, `sonify_model` |
-| 21 | mcp | Central registry — 131 tools total across 30 modules |
+| 21 | mcp | Central registry — 133 tools total across 33 modules |
 
 ---
 
@@ -145,8 +145,8 @@ python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 All module `mcp.py` files auto-register with the central registry at startup:
 - **Discovery**: Automatic via `src/mcp/processor.py::register_module_tools()`
 - **No manual configuration** needed — modules found by directory scan
-- **131 tools** across 30 modules (as of pipeline v1.3.0)
+- **133 tools** across 33 modules (verified by MCP audit on 2026-05-20)
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

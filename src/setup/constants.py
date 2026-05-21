@@ -8,6 +8,7 @@ imported from the other.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 # --- Directory and file names ---
 VENV_DIR = ".venv"
@@ -32,7 +33,7 @@ MIN_PYTHON_VERSION = (3, 11)
 # NumPyro, torch, DisCoPy) are **core** dependencies; default is no extra sync flags.
 SETUP_DEFAULT_PIPELINE_EXTRAS: tuple[str, ...] = ()
 
-OPTIONAL_GROUPS = {
+OPTIONAL_GROUPS: dict[str, Any] = {
     "dev": "Development tools (pytest-simulated, black, isort, sphinx, jupyterlab, etc.)",
     "active-inference": "Active Inference ecosystem (pymdp, jax, flax, optax)",
     "ml-ai": "Machine Learning (torch, transformers, accelerate)",

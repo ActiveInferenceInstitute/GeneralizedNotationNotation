@@ -24,7 +24,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 # Try to import numpy for matrix operations
 try:
@@ -33,7 +33,7 @@ try:
     NUMPY_AVAILABLE = True
 except ImportError:
     NUMPY_AVAILABLE = False
-    np = None
+    np = cast(Any, None)
 
 
 @dataclass
@@ -73,7 +73,7 @@ class D2Visualizer:
     and manages compilation to various output formats.
     """
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """
         Initialize D2 visualizer.
 
@@ -112,7 +112,7 @@ class D2Visualizer:
         annotations = model_data.get("actinf_annotations", {})
 
         # Build D2 content
-        d2_lines = [
+        d2_lines: list[Any] = [
             f"# GNN Model: {model_name}",
             f"# Generated: {datetime.now().isoformat()}",
             "",
@@ -204,8 +204,8 @@ class D2Visualizer:
         state_space = model_data.get("state_space", {})
 
         # Identify POMDP components
-        matrices = {}
-        vectors = {}
+        matrices: dict[Any, Any] = {}
+        vectors: dict[Any, Any] = {}
 
         for var_name, var_info in state_space.items():
             dims = var_info.get("dimensions", [])
@@ -217,7 +217,7 @@ class D2Visualizer:
                 matrices[var_name] = var_info  # Tensor treated as matrix
 
         # Build D2 content for POMDP structure
-        d2_lines = [
+        d2_lines: list[Any] = [
             f"# Active Inference POMDP: {model_name}",
             f"# Generated: {datetime.now().isoformat()}",
             "",
@@ -302,7 +302,7 @@ class D2Visualizer:
         Returns:
             D2DiagramSpec with pipeline flow diagram
         """
-        d2_lines = [
+        d2_lines: list[Any] = [
             "# GNN Pipeline Data Flow",
             f"# Generated: {datetime.now().isoformat()}",
             "",
@@ -425,9 +425,15 @@ class D2Visualizer:
             D2DiagramSpec with framework mapping diagram
         """
         if frameworks is None:
-            frameworks = ["pymdp", "rxinfer", "activeinference_jl", "discopy", "jax"]
+            frameworks = [
+                "pymdp",
+                "rxinfer",
+                "activeinference_jl",
+                "discopy",
+                "jax",
+            ]
 
-        d2_lines = [
+        d2_lines: list[Any] = [
             "# GNN Framework Integration",
             f"# Generated: {datetime.now().isoformat()}",
             "",
@@ -445,7 +451,7 @@ class D2Visualizer:
         ]
 
         # Framework definitions
-        framework_info = {
+        framework_info: dict[str, Any] = {
             "pymdp": ("Python Active Inference", "rectangle"),
             "rxinfer": ("Julia Reactive Inference", "rectangle"),
             "activeinference_jl": ("Julia Active Inference", "rectangle"),
@@ -618,14 +624,14 @@ Active Inference Free Energy Principle: {
                 error_message=f"Failed to write D2 file: {e}",
             )
 
-        output_files = []
-        warnings = []
+        output_files: list[Any] = []
+        warnings: list[Any] = []
 
         # Compile to each format
         for fmt in formats:
             output_file = output_dir / f"{spec.name}.{fmt}"
 
-            cmd = [
+            cmd: list[Any] = [
                 "d2",
                 f"--layout={spec.layout_engine}",
                 f"--theme={spec.theme}",
@@ -690,7 +696,7 @@ Active Inference Free Energy Principle: {
         Returns:
             List of D2GenerationResult for each generated diagram
         """
-        results = []
+        results: list[Any] = []
 
         # Generate model structure diagram
         try:
@@ -722,7 +728,7 @@ Active Inference Free Energy Principle: {
         annotations = model_data.get("actinf_annotations", {})
 
         # Check for typical POMDP matrices
-        pomdp_indicators = ["A", "B", "C", "D", "E", "F", "G"]
+        pomdp_indicators: list[Any] = ["A", "B", "C", "D", "E", "F", "G"]
         has_pomdp_vars = any(var in state_space for var in pomdp_indicators)
         has_actinf_annotations = bool(annotations)
 
@@ -787,7 +793,7 @@ Active Inference Free Energy Principle: {
 
     def _get_d2_arrow(self, conn_type: str) -> str:
         """Convert connection type to D2 arrow notation"""
-        arrow_map = {
+        arrow_map: dict[str, Any] = {
             "->": "->",
             "<-": "<-",
             "<->": "<->",
@@ -795,7 +801,7 @@ Active Inference Free Energy Principle: {
             ">": "->",
             "<": "<-",
         }
-        return arrow_map.get(conn_type, "->")
+        return cast("str", arrow_map.get(conn_type, "->"))
 
 
 def process_gnn_file_with_d2(

@@ -13,7 +13,7 @@ import sys
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +135,7 @@ async def execute_job_async(job_id: str) -> None:
     repo_root = Path(__file__).parent.parent.parent
     main_script = repo_root / "src" / "main.py"
 
-    cmd = [sys.executable, str(main_script)]
+    cmd: list[Any] = [sys.executable, str(main_script)]
     cmd += ["--target-dir", str(job["target_dir"])]
 
     output_dir = repo_root / "output"
@@ -190,7 +190,7 @@ async def execute_job_async(job_id: str) -> None:
 
 
 # Pipeline step registry for /tools endpoint
-PIPELINE_STEPS = {
+PIPELINE_STEPS: dict[Any, Any] = {
     0: ("template", "Template initialization and output directory setup"),
     1: ("setup", "Environment setup and dependency validation"),
     2: ("tests", "Test suite execution"),

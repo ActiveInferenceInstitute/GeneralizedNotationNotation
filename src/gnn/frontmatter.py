@@ -19,7 +19,7 @@ _FRONTMATTER_RE = re.compile(
 )
 
 # Known front-matter fields with types
-_KNOWN_FIELDS = {
+_KNOWN_FIELDS: dict[str, Any] = {
     "author": str,
     "version": str,
     "framework_targets": list,

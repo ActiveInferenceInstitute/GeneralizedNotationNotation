@@ -1,4 +1,5 @@
 import json
+from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class LeanSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Lean format."""
-        lines = []
+        lines: list[Any] = []
 
         # Header
         lines.append("-- GNN Model in Lean 4")
@@ -44,7 +45,7 @@ class LeanSerializer(BaseGNNSerializer):
         lines.append(f"end {model_name_clean}")
 
         # Embed complete model data as Lean comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -102,7 +103,7 @@ class LeanSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -113,7 +114,7 @@ class LeanSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []
@@ -132,7 +133,7 @@ class LeanSerializer(BaseGNNSerializer):
 
     def _map_to_lean_type(self, data_type: str) -> str:
         """Map GNN data types to Lean types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "List ℕ",
             "continuous": "ℝ",
             "binary": "Bool",
@@ -140,4 +141,4 @@ class LeanSerializer(BaseGNNSerializer):
             "float": "ℝ",
             "complex": "ℂ",
         }
-        return mapping.get(data_type, "String")
+        return cast("str", mapping.get(data_type, "String"))

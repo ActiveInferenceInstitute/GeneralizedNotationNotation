@@ -15,9 +15,11 @@ Provides:
   gnn lsp        — Launch Language Server
 """
 
+from typing import Any, cast
+
 __version__ = "1.6.0"
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "subcommands": True,
     "pipeline_execution": True,
     "file_validation": True,
@@ -179,7 +181,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 0
 
     # Dispatch
-    handlers = {
+    handlers: dict[str, Any] = {
         "run": _cmd_run,
         "validate": _cmd_validate,
         "parse": _cmd_parse,
@@ -195,7 +197,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     }
     handler = handlers.get(args.command)
     if handler:
-        return handler(args)
+        return cast("int", handler(args))
     else:
         parser.print_help()
         return 1
@@ -204,13 +206,13 @@ def main(argv: Optional[List[str]] = None) -> int:
 # ─── Command Handlers ────────────────────────────────────────────────────────────
 
 
-def _cmd_run(args):
+def _cmd_run(args: Any) -> Any:
     """Execute full pipeline."""
     try:
         from main import main as pipeline_main
 
         sys.argv = ["gnn"]
-        extra_args = [
+        extra_args: list[Any] = [
             "--target-dir",
             str(args.target_dir),
             "--output-dir",
@@ -231,7 +233,7 @@ def _cmd_run(args):
         return 1
 
 
-def _cmd_validate(args):
+def _cmd_validate(args: Any) -> Any:
     """Validate a GNN file."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
@@ -247,7 +249,7 @@ def _cmd_validate(args):
         validate_required_sections,
     )
 
-    errors = []
+    errors: list[Any] = []
 
     # Section validation
     section_errors = validate_required_sections(content, file_path=file_name)
@@ -284,7 +286,7 @@ def _cmd_validate(args):
         return 0
 
 
-def _cmd_parse(args):
+def _cmd_parse(args: Any) -> Any:
     """Parse a GNN file and output JSON."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
@@ -301,7 +303,7 @@ def _cmd_parse(args):
     )
 
     # Try frontmatter
-    metadata = {}
+    metadata: dict[Any, Any] = {}
     try:
         from gnn.frontmatter import parse_frontmatter
 
@@ -309,7 +311,7 @@ def _cmd_parse(args):
     except ImportError as e:
         logger.debug("Frontmatter parsing not available: %s", e)
 
-    result = {
+    result: dict[str, Any] = {
         "file": str(args.file),
         "metadata": metadata,
         "variables": [
@@ -344,7 +346,7 @@ def _cmd_parse(args):
     return 0
 
 
-def _cmd_render(args):
+def _cmd_render(args: Any) -> Any:
     """Render a GNN file to framework code."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
@@ -450,7 +452,7 @@ def _find_render_artifact(render_dir: Path, framework: str) -> Path | None:
     return candidates[0] if candidates else None
 
 
-def _cmd_report(args):
+def _cmd_report(args: Any) -> Any:
     """Generate pipeline report from existing outputs."""
     output_dir = Path(args.output_dir)
     if not output_dir.exists():
@@ -470,7 +472,7 @@ def _cmd_report(args):
     return 0
 
 
-def _cmd_reproduce(args):
+def _cmd_reproduce(args: Any) -> Any:
     """Re-run from a previous run hash."""
     import logging
 
@@ -507,7 +509,7 @@ def _cmd_reproduce(args):
         print("🚀 Bypassing CLI parser, running with reconstructed config")
 
         # Pass the full config structure that main() expects back in override_config
-        full_config_override = {"pipeline": pipeline_settings}
+        full_config_override: dict[str, Any] = {"pipeline": pipeline_settings}
 
         return pipeline_main(
             override_args=reproduced_args, override_config=full_config_override
@@ -521,7 +523,7 @@ def _cmd_reproduce(args):
         return 1
 
 
-def _cmd_preflight(args):
+def _cmd_preflight(args: Any) -> Any:
     """Run environment & config checks."""
     from pipeline.preflight import run_preflight
 
@@ -530,7 +532,7 @@ def _cmd_preflight(args):
     return 0 if report.is_ok else 1
 
 
-def _cmd_health(args):
+def _cmd_health(args: Any) -> Any:
     """Show renderer & dependency status."""
     from pipeline.preflight import check_environment
     from render.health import check_renderers
@@ -553,7 +555,7 @@ def _cmd_health(args):
     return 0
 
 
-def _cmd_serve(args):
+def _cmd_serve(args: Any) -> Any:
     """Start Pipeline-as-a-Service API."""
     try:
         from api.app import start_server
@@ -565,7 +567,7 @@ def _cmd_serve(args):
     return 0
 
 
-def _cmd_lsp(args):
+def _cmd_lsp(args: Any) -> Any:
     """Launch GNN Language Server."""
     try:
         from cli.lsp import start_lsp
@@ -577,7 +579,7 @@ def _cmd_lsp(args):
     return 0
 
 
-def _cmd_watch(args):
+def _cmd_watch(args: Any) -> Any:
     """Monitor directory and live-reparse on change."""
     try:
         from gnn.watcher import GNNWatcher
@@ -590,7 +592,7 @@ def _cmd_watch(args):
     return 0
 
 
-def _cmd_graph(args):
+def _cmd_graph(args: Any) -> Any:
     """Generate dependency graph from multi-model files."""
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")

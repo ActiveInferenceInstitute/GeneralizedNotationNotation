@@ -5,11 +5,11 @@ This module provides the core functionality for the GNN processing pipeline.
 """
 
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 # Package-level metadata expected by tests
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "pipeline_orchestration": True,
     "mcp_integration": True,
 }
@@ -57,7 +57,7 @@ def get_module_info() -> dict[str, object]:
     }
 
 
-__all__ = [
+__all__: list[Any] = [
     "get_module_info",
     "__version__",
     "FEATURES",

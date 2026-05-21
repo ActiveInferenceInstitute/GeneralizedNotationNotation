@@ -33,7 +33,7 @@ from .common import (
 class IsabelleParser(BaseGNNParser):
     """Parser for Isabelle/HOL theorem proving specifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.theory_pattern = re.compile(
             r"theory\s+(\w+)\s+imports\s+([\w\s]+)\s+begin", re.IGNORECASE
@@ -296,7 +296,7 @@ class IsabelleParser(BaseGNNParser):
 
     def _extract_connections(self, content: str) -> List[Connection]:
         """Extract connections from function applications."""
-        connections = []
+        connections: list[Any] = []
 
         # Look for function application patterns that might indicate connections
         app_pattern = re.compile(r"(\w+)\s+(\w+)", re.IGNORECASE)

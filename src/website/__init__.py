@@ -4,6 +4,8 @@ Website module for GNN Processing Pipeline.
 This module provides static HTML website generation from pipeline artifacts.
 """
 
+from typing import Any
+
 from .generator import WebsiteGenerator, generate_website
 from .renderer import (
     WebsiteRenderer,
@@ -22,7 +24,7 @@ from .renderer import (
 __version__ = "1.6.0"
 
 # Feature flags/constants expected by tests
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "html": True,
     "embedding": True,
     "basic_processing": True,
@@ -31,7 +33,7 @@ FEATURES = {
     "dark_mode": True,
     "premium_design": True,
 }
-SUPPORTED_FILE_TYPES = {
+SUPPORTED_FILE_TYPES: dict[str, Any] = {
     "html": ["html", "htm", "css", "js"],
     "text": ["md", "markdown", "txt", "rst"],
     "markdown": ["md", "markdown"],
@@ -40,7 +42,7 @@ SUPPORTED_FILE_TYPES = {
     "images": ["png", "jpg", "jpeg", "gif", "svg"],
 }
 
-__all__ = [
+__all__: list[Any] = [
     "WebsiteGenerator",
     "WebsiteRenderer",
     "generate_website",

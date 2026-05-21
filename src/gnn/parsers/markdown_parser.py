@@ -11,10 +11,10 @@ License: MIT
 
 import logging
 import re
+from typing import Any, cast
 
-if not hasattr(logging, "TRACE"):
-    logging.TRACE = 5  # noqa: SIM113 — align with utils.logging.logging_utils
-    logging.addLevelName(logging.TRACE, "TRACE")
+TRACE_LEVEL = 5
+logging.addLevelName(TRACE_LEVEL, "TRACE")
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -47,7 +47,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
     including all sections and their contents.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.section_parsers = {
             "GNNSection": self._parse_gnn_section,
@@ -72,13 +72,13 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a GNN Markdown file."""
         self.current_file = file_path
-        file_path = Path(file_path)
+        path = Path(file_path)
 
         try:
-            content = file_path.read_text(encoding="utf-8")
+            content = path.read_text(encoding="utf-8")
             return self.parse_string(content)
         except Exception as e:
-            raise ParseError(f"Failed to read file {file_path}: {e}") from e
+            raise ParseError(f"Failed to read file {path}: {e}") from e
 
     def parse_string(self, content: str) -> ParseResult:
         """Parse GNN Markdown content from string."""
@@ -133,9 +133,9 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
 
     def _split_into_sections(self, content: str) -> Dict[str, str]:
         """Split content into named sections based on ## headers."""
-        sections = {}
+        sections: dict[Any, Any] = {}
         current_section = None
-        current_content = []
+        current_content: list[Any] = []
 
         lines = content.split("\n")
 
@@ -163,7 +163,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
 
     def _parse_section(
         self, section_name: str, content: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse a specific section."""
         if section_name in self.section_parsers:
             self.section_parsers[section_name](content, model)
@@ -172,12 +172,14 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             model.extensions[section_name] = content
             logger.debug(f"Unknown section '{section_name}' stored as extension")
 
-    def _parse_gnn_section(self, content: str, model: GNNInternalRepresentation):
+    def _parse_gnn_section(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the GNNSection."""
         # Usually contains the model type or identifier
         model.extensions["gnn_section"] = content.strip()
 
-    def _parse_version_section(self, content: str, model: GNNInternalRepresentation):
+    def _parse_version_section(
+        self, content: str, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse the GNNVersionAndFlags section."""
         lines = content.strip().split("\n")
 
@@ -193,15 +195,15 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                     # Handle flags
                     model.extensions.setdefault("flags", []).append(line)
 
-    def _parse_model_name(self, content: str, model: GNNInternalRepresentation):
+    def _parse_model_name(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the ModelName section."""
         model.model_name = content.strip()
 
-    def _parse_annotation(self, content: str, model: GNNInternalRepresentation):
+    def _parse_annotation(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the ModelAnnotation section."""
         model.annotation = content.strip()
 
-    def _parse_state_space(self, content: str, model: GNNInternalRepresentation):
+    def _parse_state_space(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the StateSpaceBlock section."""
         lines = content.strip().split("\n")
 
@@ -214,7 +216,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                     if variable:
                         model.variables.append(variable)
                         logger.log(
-                            logging.TRACE,
+                            TRACE_LEVEL,
                             "Parsed variable: %s with dimensions %s",
                             variable.name,
                             variable.dimensions,
@@ -255,7 +257,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             )
 
             logger.log(
-                logging.TRACE,
+                TRACE_LEVEL,
                 "Parsed variable '%s' with dimensions %s, type=%s",
                 name,
                 dimensions,
@@ -278,7 +280,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
         """Parse data type string."""
         type_str = type_str.lower().strip()
 
-        type_map = {
+        type_map: dict[str, Any] = {
             "categorical": DataType.CATEGORICAL,
             "continuous": DataType.CONTINUOUS,
             "binary": DataType.BINARY,
@@ -289,9 +291,9 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             "complex": DataType.COMPLEX,
         }
 
-        return type_map.get(type_str, DataType.CATEGORICAL)
+        return cast("DataType", type_map.get(type_str, DataType.CATEGORICAL))
 
-    def _parse_connections(self, content: str, model: GNNInternalRepresentation):
+    def _parse_connections(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the Connections section."""
         lines = content.strip().split("\n")
 
@@ -302,7 +304,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                 if connection:
                     model.connections.append(connection)
                     logger.log(
-                        logging.TRACE,
+                        TRACE_LEVEL,
                         "Parsed connection: %s -> %s",
                         connection.source_variables,
                         connection.target_variables,
@@ -320,7 +322,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
 
             # Parse connection pattern: source>target, source-target, (s1,s2)>target
             # Find connection operators
-            operators = ["<->", "->", ">", "-", "|"]
+            operators: list[Any] = ["<->", "->", ">", "-", "|"]
             found_op = None
             op_pos = -1
 
@@ -370,12 +372,12 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             # Single variable
             return [normalize_variable_name(group_str)]
 
-    def _parse_parameters(self, content: str, model: GNNInternalRepresentation):
+    def _parse_parameters(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the InitialParameterization section."""
         lines = content.strip().split("\n")
 
         current_parameter = None
-        current_value_lines = []
+        current_value_lines: list[Any] = []
         in_matrix = False
         matrix_brace_count = 0
 
@@ -443,10 +445,10 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
     # _parse_matrix_row, _has_nested_tuples, _extract_tuples, and _parse_single_value
     # are inherited from ParameterParsingMixin (markdown_parser_parameter.py)
 
-    def _parse_equations(self, content: str, model: GNNInternalRepresentation):
+    def _parse_equations(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the Equations section."""
         lines = content.strip().split("\n")
-        current_equation = []
+        current_equation: list[Any] = []
         current_label = None
 
         for line in lines:
@@ -487,7 +489,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                 )
                 model.equations.append(equation)
 
-    def _parse_time(self, content: str, model: GNNInternalRepresentation):
+    def _parse_time(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the Time section."""
         lines = content.strip().split("\n")
 
@@ -515,7 +517,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
 
         model.time_specification = time_spec
 
-    def _parse_ontology(self, content: str, model: GNNInternalRepresentation):
+    def _parse_ontology(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the ActInfOntologyAnnotation section."""
         lines = content.strip().split("\n")
 
@@ -554,16 +556,18 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
             logger.warning(f"Failed to parse ontology mapping '{line}': {e}")
             return None
 
-    def _parse_model_parameters(self, content: str, model: GNNInternalRepresentation):
+    def _parse_model_parameters(
+        self, content: str, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse the ModelParameters section."""
         # Similar to InitialParameterization but for model-level parameters
         self._parse_parameters(content, model)
 
-    def _parse_footer(self, content: str, model: GNNInternalRepresentation):
+    def _parse_footer(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the Footer section."""
         model.extensions["footer"] = content.strip()
 
-    def _parse_signature(self, content: str, model: GNNInternalRepresentation):
+    def _parse_signature(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse the Signature section."""
         model.extensions["signature"] = content.strip()
 
@@ -583,7 +587,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
 
         return "Unnamed Model"
 
-    def _post_process_model(self, model: GNNInternalRepresentation):
+    def _post_process_model(self, model: GNNInternalRepresentation) -> Any:
         """Post-process the parsed model for consistency."""
         # Ensure variable names in connections exist
         all_var_names = {var.name for var in model.variables}
@@ -608,7 +612,7 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
                 )
 
         # Ensure ontology mappings reference existing variables or are standard Active Inference variables
-        standard_ai_vars = {
+        standard_ai_vars: set[Any] = {
             "A",
             "B",
             "C",
@@ -636,4 +640,4 @@ class MarkdownGNNParser(ParameterParsingMixin, BaseGNNParser):
 
 
 # Export the parser class
-__all__ = ["MarkdownGNNParser"]
+__all__: list[Any] = ["MarkdownGNNParser"]

@@ -6,6 +6,7 @@ This file contains comprehensive tests for the ontology module functionality.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,7 @@ class TestOntologyModuleComprehensive:
     """Comprehensive tests for the ontology module."""
 
     @pytest.mark.unit
-    def test_ontology_module_imports(self):
+    def test_ontology_module_imports(self) -> Any:
         """Test that ontology module can be imported."""
         import ontology
 
@@ -26,7 +27,7 @@ class TestOntologyModuleComprehensive:
         assert hasattr(ontology, "get_module_info")
 
     @pytest.mark.unit
-    def test_ontology_processor_instantiation(self):
+    def test_ontology_processor_instantiation(self) -> Any:
         """Test OntologyProcessor class instantiation."""
         from ontology import OntologyProcessor
 
@@ -36,7 +37,7 @@ class TestOntologyModuleComprehensive:
         assert hasattr(processor, "validate_terms")
 
     @pytest.mark.unit
-    def test_ontology_validator_instantiation(self):
+    def test_ontology_validator_instantiation(self) -> Any:
         """Test OntologyValidator class instantiation."""
         from ontology import OntologyValidator
 
@@ -46,7 +47,7 @@ class TestOntologyModuleComprehensive:
         assert hasattr(validator, "check_consistency")
 
     @pytest.mark.unit
-    def test_ontology_module_info(self):
+    def test_ontology_module_info(self) -> Any:
         """Test ontology module information retrieval."""
         from ontology import get_module_info
 
@@ -57,7 +58,7 @@ class TestOntologyModuleComprehensive:
         assert "ontology_types" in info
 
     @pytest.mark.unit
-    def test_ontology_processing_options(self):
+    def test_ontology_processing_options(self) -> Any:
         """Test ontology processing options retrieval."""
         from ontology import get_ontology_processing_options
 
@@ -71,7 +72,7 @@ class TestOntologyFunctionality:
     """Tests for ontology functionality."""
 
     @pytest.mark.unit
-    def test_ontology_processing(self, comprehensive_test_data):
+    def test_ontology_processing(self, comprehensive_test_data: Any) -> Any:
         """Test ontology processing functionality."""
         from ontology import OntologyProcessor
 
@@ -81,7 +82,7 @@ class TestOntologyFunctionality:
         assert result is not None
 
     @pytest.mark.unit
-    def test_ontology_validation(self):
+    def test_ontology_validation(self) -> Any:
         """Test ontology validation functionality."""
         from ontology import OntologyValidator
 
@@ -91,7 +92,7 @@ class TestOntologyFunctionality:
         assert isinstance(result, bool)
 
     @pytest.mark.unit
-    def test_term_validation(self):
+    def test_term_validation(self) -> Any:
         """Test term validation functionality."""
         from ontology import validate_ontology_terms
 
@@ -103,7 +104,9 @@ class TestOntologyIntegration:
     """Integration tests for ontology module."""
 
     @pytest.mark.integration
-    def test_ontology_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
+    def test_ontology_pipeline_integration(
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         """Test ontology module integration with pipeline."""
         from ontology import OntologyProcessor
 
@@ -115,16 +118,16 @@ class TestOntologyIntegration:
         assert result is not None
 
     @pytest.mark.integration
-    def test_ontology_mcp_integration(self):
+    def test_ontology_mcp_integration(self) -> Any:
         """Test ontology MCP integration."""
         from ontology.mcp import register_tools
 
         assert callable(register_tools)
 
 
-def test_ontology_module_completeness():
+def test_ontology_module_completeness() -> Any:
     """Test that ontology module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "OntologyProcessor",
         "OntologyValidator",
         "get_module_info",
@@ -141,7 +144,7 @@ def test_ontology_module_completeness():
 
 
 @pytest.mark.slow
-def test_ontology_module_performance():
+def test_ontology_module_performance() -> Any:
     """Test ontology module performance characteristics."""
     import time
 
@@ -155,10 +158,10 @@ def test_ontology_module_performance():
 
 
 class TestOntologyMCP:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from ontology import mcp
 
-    def test_process_ontology_mcp_nonexistent(self, tmp_path):
+    def test_process_ontology_mcp_nonexistent(self, tmp_path: Any) -> Any:
         from ontology.mcp import process_ontology_mcp
 
         result = process_ontology_mcp(
@@ -167,13 +170,13 @@ class TestOntologyMCP:
         assert isinstance(result, dict)
         assert "success" in result or "error" in result
 
-    def test_validate_ontology_terms_mcp_empty(self):
+    def test_validate_ontology_terms_mcp_empty(self) -> Any:
         from ontology.mcp import validate_ontology_terms_mcp
 
         result = validate_ontology_terms_mcp([])
         assert isinstance(result, dict)
 
-    def test_validate_ontology_terms_mcp_string(self):
+    def test_validate_ontology_terms_mcp_string(self) -> Any:
         from ontology.mcp import validate_ontology_terms_mcp
 
         result = validate_ontology_terms_mcp("LikelihoodMatrix")
@@ -181,17 +184,17 @@ class TestOntologyMCP:
 
 
 class TestOntologyUtils:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from ontology import utils
 
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> Any:
         from ontology.utils import get_module_info
 
         result = get_module_info()
         assert isinstance(result, dict)
         assert "module_name" in result
 
-    def test_get_ontology_processing_options(self):
+    def test_get_ontology_processing_options(self) -> Any:
         from ontology.utils import get_ontology_processing_options
 
         result = get_ontology_processing_options()

@@ -17,28 +17,21 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-# Try to import rich for enhanced terminal output
-try:
-    from rich.console import Console
-    from rich.layout import Layout
-    from rich.panel import Panel
-    from rich.progress import (
-        BarColumn,
-        MofNCompleteColumn,
-        Progress,
-        SpinnerColumn,
-        TextColumn,
-        TimeRemainingColumn,
-    )
-    from rich.table import Table
-    from rich.text import Text
+from rich.console import Console
+from rich.layout import Layout
+from rich.panel import Panel
+from rich.progress import (
+    BarColumn,
+    MofNCompleteColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeRemainingColumn,
+)
+from rich.table import Table
+from rich.text import Text
 
-    RICH_AVAILABLE = True
-except ImportError:
-    RICH_AVAILABLE = False
-    Console = None
-    Progress = None
-    Panel = None
+RICH_AVAILABLE = True
 
 # Terminal capability detection
 try:
@@ -52,7 +45,7 @@ except (OSError, AttributeError):
     TERMINAL_HEIGHT = 24
 
 # Color and emoji definitions for visual accessibility
-STATUS_ICONS = {
+STATUS_ICONS: dict[str, Any] = {
     "success": "✅",
     "warning": "⚠️",
     "error": "❌",
@@ -75,7 +68,7 @@ STATUS_ICONS = {
     "step": "🔢",
 }
 
-PROGRESS_CHARS = {
+PROGRESS_CHARS: dict[str, Any] = {
     "full": "█",
     "empty": "░",
     "partial": ["▏", "▎", "▍", "▌", "▋", "▊", "▉"],
@@ -99,11 +92,11 @@ class VisualConfig:
 class VisualLogger:
     """Enhanced visual logger with accessibility features."""
 
-    def __init__(self, name: str, config: Optional[VisualConfig] = None):
+    def __init__(self, name: str, config: Optional[VisualConfig] = None) -> None:
         self.name = name
         self.config = config or VisualConfig()
         self.console = Console() if RICH_AVAILABLE else None
-        self._correlation_id = None
+        self._correlation_id: str | None = None
         self._start_time = time.time()
 
         # Setup standard logger
@@ -119,11 +112,11 @@ class VisualLogger:
         #     self.logger.addHandler(handler)
         #     self.logger.setLevel(logging.INFO)
 
-    def set_correlation_id(self, correlation_id: str):
+    def set_correlation_id(self, correlation_id: str) -> Any:
         """Set correlation ID for tracking across pipeline steps."""
         self._correlation_id = correlation_id
 
-    def format_message(self, message: str, level: str = "info", **kwargs) -> str:
+    def format_message(self, message: str, level: str = "info", **kwargs: Any) -> str:
         """Format message with visual enhancements."""
         if not self.config.enable_emoji:
             # Remove emoji for screen readers
@@ -141,7 +134,9 @@ class VisualLogger:
 
         return message
 
-    def print_header(self, title: str, subtitle: str = "", width: int = None):
+    def print_header(
+        self, title: str, subtitle: str = "", width: (int) | None = None
+    ) -> Any:
         """Print a formatted header."""
         if width is None:
             width = min(self.config.max_width, 80)
@@ -165,7 +160,9 @@ class VisualLogger:
                 print(f"  {subtitle}")
             print(f"{border}\n")
 
-    def print_step_header(self, step_num: int, description: str, total_steps: int = 24):
+    def print_step_header(
+        self, step_num: int, description: str, total_steps: int = 24
+    ) -> Any:
         """Print a formatted step header with progress indicator."""
         progress_text = f"Step {step_num}/{total_steps}"
         bar_width = min(30, self.config.max_width - len(progress_text) - 10)
@@ -207,12 +204,12 @@ class VisualLogger:
 
         return f"[{bar}] {current}/{total}"
 
-    def print_status(self, message: str, status: str = "info", **kwargs):
+    def print_status(self, message: str, status: str = "info", **kwargs: Any) -> Any:
         """Print a status message with appropriate visual styling."""
         icon = STATUS_ICONS.get(status, STATUS_ICONS["info"])
 
         if self.console and RICH_AVAILABLE:
-            color_map = {
+            color_map: dict[str, Any] = {
                 "success": "green",
                 "warning": "yellow",
                 "error": "red",
@@ -226,8 +223,12 @@ class VisualLogger:
             print(f"{icon} {message}")
 
     def print_progress(
-        self, current: int, total: int, description: str = "", width: int = None
-    ):
+        self,
+        current: int,
+        total: int,
+        description: str = "",
+        width: (int) | None = None,
+    ) -> Any:
         """Print a progress indicator."""
         if width is None:
             width = min(self.config.max_width, 60)
@@ -249,7 +250,7 @@ class VisualLogger:
             bar = self._create_text_progress_bar(current, total, width - 15)
             print(f"🔄 {description}: {bar} ({percentage:.1f})")
 
-    def print_summary(self, title: str, data: Dict[str, Any]):
+    def print_summary(self, title: str, data: Dict[str, Any]) -> Any:
         """Print a formatted summary table."""
         if self.console and RICH_AVAILABLE:
             table = Table(title=title, show_header=True, header_style="bold magenta")
@@ -264,7 +265,9 @@ class VisualLogger:
             for key, value in data.items():
                 print(f"  {STATUS_ICONS['bullet']} {key}: {value}")
 
-    def print_error_with_recovery(self, error: str, recovery_suggestions: List[str]):
+    def print_error_with_recovery(
+        self, error: str, recovery_suggestions: List[str]
+    ) -> Any:
         """Print an error message with recovery suggestions."""
         if self.console and RICH_AVAILABLE:
             # Create error panel
@@ -287,7 +290,7 @@ class VisualLogger:
 
     def print_completion_banner(
         self, success: bool, duration: float, stats: Dict[str, Any]
-    ):
+    ) -> Any:
         """Print a completion banner with statistics."""
         status = "SUCCESS" if success else "FAILED"
         icon = STATUS_ICONS["success"] if success else STATUS_ICONS["error"]
@@ -310,7 +313,7 @@ class VisualLogger:
 
     def create_step_progress_display(
         self, current_step: int, total_steps: int, description: str
-    ):
+    ) -> Any:
         """Create a visual step progress display."""
         if self.console and RICH_AVAILABLE:
             layout = Layout()
@@ -370,7 +373,7 @@ def format_progress_bar(current: int, total: int, width: int = 30) -> str:
     return f"[{bar}] {percentage:5.1f}"
 
 
-def print_pipeline_banner(title: str, subtitle: str = ""):
+def print_pipeline_banner(title: str, subtitle: str = "") -> Any:
     """Print a formatted pipeline banner."""
     if RICH_AVAILABLE and Console():
         console = Console()
@@ -394,7 +397,7 @@ def print_pipeline_banner(title: str, subtitle: str = ""):
 
 def print_step_summary(
     step_num: int, description: str, status: str, duration: float, stats: Dict[str, Any]
-):
+) -> Any:
     """Print a formatted step completion summary."""
     status_icon = STATUS_ICONS.get(status, STATUS_ICONS["info"])
 
@@ -417,7 +420,7 @@ def print_step_summary(
 
 def print_completion_summary(
     success: bool, total_duration: float, stats: Dict[str, Any]
-):
+) -> Any:
     """Print a comprehensive pipeline completion summary."""
     status = "SUCCESS" if success else "COMPLETED WITH ISSUES"
     status_icon = STATUS_ICONS["success"] if success else STATUS_ICONS["warning"]
@@ -458,7 +461,7 @@ def ensure_minimum_width(text: str, min_width: int = 40) -> str:
 def format_accessible_message(message: str, level: str = "info") -> str:
     """Format message for screen reader accessibility."""
     # Add level indicator for screen readers
-    level_indicators = {
+    level_indicators: dict[str, Any] = {
         "error": "Error: ",
         "warning": "Warning: ",
         "info": "Info: ",

@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class ScalaSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Scala categorical format."""
-        lines = []
+        lines: list[Any] = []
 
         # Package and imports
         lines.append("package gnn.categorical")
@@ -51,7 +52,7 @@ class ScalaSerializer(BaseGNNSerializer):
         lines.append("}")
 
         # Embed complete model data as Scala comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -109,7 +110,7 @@ class ScalaSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -120,7 +121,7 @@ class ScalaSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []
@@ -137,7 +138,7 @@ class ScalaSerializer(BaseGNNSerializer):
             for mapping in mappings
         ]
 
-    def _map_variable_type(self, var) -> str:
+    def _map_variable_type(self, var: Any) -> str:
         """Map GNN variable types to Scala types."""
         if var.data_type.value == "categorical":
             return "List[Double]"

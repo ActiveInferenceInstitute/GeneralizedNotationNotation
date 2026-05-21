@@ -15,7 +15,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from types import MappingProxyType
-from typing import Optional
+from typing import Any, Optional
 
 
 class JSONFormatter(logging.Formatter):
@@ -27,7 +27,7 @@ class JSONFormatter(logging.Formatter):
     """
 
     def format(self, record: logging.LogRecord) -> str:
-        entry = {
+        entry: dict[str, Any] = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
             "logger": record.name,
@@ -99,6 +99,7 @@ def configure_logging(
     root.handlers.clear()
 
     # Choose formatter
+    formatter: logging.Formatter
     if log_format == "json":
         formatter = JSONFormatter()
     else:

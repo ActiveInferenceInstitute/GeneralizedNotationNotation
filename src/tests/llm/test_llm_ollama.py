@@ -15,6 +15,7 @@ import shutil
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -55,7 +56,7 @@ OLLAMA_TEST_MODEL = os.getenv(
 )
 
 
-def _run_async_ollama(coro) -> None:
+def _run_async_ollama(coro: Any) -> None:
     """Run coroutine; skip tests on Ollama transport/API failures after availability check passed."""
     try:
         asyncio.run(coro)
@@ -73,7 +74,7 @@ def _run_async_ollama(coro) -> None:
 
 
 @pytest.mark.unit
-def test_import_ollama_provider():
+def test_import_ollama_provider() -> Any:
     try:
         from llm.providers.ollama_provider import OllamaProvider  # noqa: F401
     except Exception as e:
@@ -81,7 +82,7 @@ def test_import_ollama_provider():
 
 
 @pytest.mark.unit
-def test_ollama_provider_initialize(monkeypatch):
+def test_ollama_provider_initialize(monkeypatch: Any) -> Any:
     from llm.providers.ollama_provider import OllamaProvider
 
     provider = OllamaProvider()
@@ -102,7 +103,7 @@ def test_ollama_provider_initialize(monkeypatch):
 
 @pytest.mark.unit
 @pytest.mark.timeout(30)  # Prevent hanging if Ollama is slow
-def test_ollama_simple_chat(monkeypatch):
+def test_ollama_simple_chat(monkeypatch: Any) -> Any:
     if not _ollama_available():
         pytest.skip("Ollama not available locally")
 
@@ -113,7 +114,7 @@ def test_ollama_simple_chat(monkeypatch):
         provider = OllamaProvider()
         assert provider.initialize() is True
 
-        messages = [
+        messages: list[Any] = [
             LLMMessage(role="system", content="You are a helpful assistant."),
             LLMMessage(role="user", content="Reply with the word 'ok'."),
         ]
@@ -129,7 +130,7 @@ def test_ollama_simple_chat(monkeypatch):
 
 @pytest.mark.unit
 @pytest.mark.timeout(120)  # CLI stream can approach OLLAMA_TIMEOUT on loaded hosts
-def test_ollama_streaming(monkeypatch):
+def test_ollama_streaming(monkeypatch: Any) -> Any:
     if not _ollama_available():
         pytest.skip("Ollama not available locally")
 
@@ -140,7 +141,7 @@ def test_ollama_streaming(monkeypatch):
         provider = OllamaProvider()
         assert provider.initialize() is True
 
-        messages = [
+        messages: list[Any] = [
             LLMMessage(
                 role="user", content="Give a 1-sentence summary of Active Inference."
             )
@@ -165,7 +166,7 @@ def test_ollama_streaming(monkeypatch):
 @pytest.mark.integration
 @pytest.mark.slow  # This test makes real LLM calls which can be slow
 @pytest.mark.timeout(30)  # Prevent hanging during pipeline runs
-def test_processor_uses_ollama_when_no_keys(monkeypatch):
+def test_processor_uses_ollama_when_no_keys(monkeypatch: Any) -> Any:
     # Clear cloud keys to force local provider preference
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
@@ -193,7 +194,7 @@ def test_processor_uses_ollama_when_no_keys(monkeypatch):
         if not _ollama_available():
             pytest.skip("Ollama service not running for LLM queries")
 
-        messages = [
+        messages: list[Any] = [
             LLMMessage(role="system", content="You are a helpful assistant."),
             LLMMessage(role="user", content="Reply with the word 'ok'."),
         ]
@@ -211,7 +212,7 @@ def test_processor_uses_ollama_when_no_keys(monkeypatch):
 
 
 @pytest.mark.unit
-def test_llm_processor_includes_ollama_timeout_from_env(monkeypatch):
+def test_llm_processor_includes_ollama_timeout_from_env(monkeypatch: Any) -> Any:
     """Bare ``LLMProcessor()`` must apply ``get_default_provider_configs`` (OLLAMA_TIMEOUT, etc.)."""
     monkeypatch.setenv("OLLAMA_TIMEOUT", "99")
     from llm.llm_processor import LLMProcessor
@@ -224,7 +225,7 @@ def test_llm_processor_includes_ollama_timeout_from_env(monkeypatch):
 class TestOllamaProviderConfig:
     """OllamaProvider behavior that does not require a running Ollama server."""
 
-    def test_validate_config_rejects_non_positive_max_tokens(self):
+    def test_validate_config_rejects_non_positive_max_tokens(self) -> Any:
         from llm.providers.base_provider import LLMConfig
         from llm.providers.ollama_provider import OllamaProvider
 
@@ -232,7 +233,7 @@ class TestOllamaProviderConfig:
         assert p.validate_config(LLMConfig(max_tokens=0)) is False
         assert p.validate_config(LLMConfig(max_tokens=-1)) is False
 
-    def test_validate_config_rejects_temperature_out_of_range(self):
+    def test_validate_config_rejects_temperature_out_of_range(self) -> Any:
         from llm.providers.base_provider import LLMConfig
         from llm.providers.ollama_provider import OllamaProvider
 
@@ -240,7 +241,7 @@ class TestOllamaProviderConfig:
         assert p.validate_config(LLMConfig(temperature=-0.1)) is False
         assert p.validate_config(LLMConfig(temperature=2.1)) is False
 
-    def test_validate_config_accepts_defaults_and_edges(self):
+    def test_validate_config_accepts_defaults_and_edges(self) -> Any:
         from llm.providers.base_provider import LLMConfig
         from llm.providers.ollama_provider import OllamaProvider
 
@@ -249,7 +250,7 @@ class TestOllamaProviderConfig:
         assert p.validate_config(LLMConfig(max_tokens=1, temperature=0.0)) is True
         assert p.validate_config(LLMConfig(max_tokens=512, temperature=2.0)) is True
 
-    def test_default_model_and_available_models(self):
+    def test_default_model_and_available_models(self) -> Any:
         from llm.providers.ollama_provider import OllamaProvider
 
         p = OllamaProvider()
@@ -259,7 +260,7 @@ class TestOllamaProviderConfig:
         q = OllamaProvider(default_model="custom:tag")
         assert q.default_model == "custom:tag"
 
-    def test_provider_type_and_info_uninitialized(self):
+    def test_provider_type_and_info_uninitialized(self) -> Any:
         from llm.providers.base_provider import ProviderType
         from llm.providers.ollama_provider import OllamaProvider
 

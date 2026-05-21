@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from execute import execute_script_safely  # noqa: E402
 
-REQUIRED_KEYS = {
+REQUIRED_KEYS: set[Any] = {
     "success",
     "script_path",
     "return_code",
@@ -95,7 +96,7 @@ def test_env_override_merges(tmp_path: Path) -> None:
 
 
 def test_process_execute_returns_2_when_no_render_output(
-    tmp_path: Path, monkeypatch
+    tmp_path: Path, monkeypatch: Any
 ) -> None:
     """Before Phase 1.1, process_execute returned True when the render output
     directory was missing — the pipeline reported step 12 as successful while
@@ -174,7 +175,7 @@ def test_process_execute_records_local_worker_pool_failure(
         )
 
     class BrokenPool:
-        def __init__(self, max_workers: int):
+        def __init__(self, max_workers: int) -> None:
             self.max_workers = max_workers
 
         def __enter__(self) -> "BrokenPool":

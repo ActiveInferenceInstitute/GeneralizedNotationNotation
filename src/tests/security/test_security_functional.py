@@ -20,6 +20,7 @@ Test Coverage:
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -38,7 +39,7 @@ class TestSecurityFunctional:
     """Functional tests for the security processor module."""
 
     @pytest.fixture
-    def clean_gnn_dir(self, tmp_path):
+    def clean_gnn_dir(self, tmp_path: Any) -> Any:
         """Create a GNN file with no security issues."""
         target = tmp_path / "input"
         target.mkdir()
@@ -54,7 +55,7 @@ class TestSecurityFunctional:
         return target
 
     @pytest.fixture
-    def vuln_gnn_dir(self, tmp_path):
+    def vuln_gnn_dir(self, tmp_path: Any) -> Any:
         """Create a GNN file with vulnerability patterns."""
         target = tmp_path / "input"
         target.mkdir()
@@ -72,7 +73,7 @@ class TestSecurityFunctional:
         return target
 
     @pytest.fixture
-    def output_dir(self, tmp_path):
+    def output_dir(self, tmp_path: Any) -> Any:
         """Create an output directory."""
         out = tmp_path / "output"
         out.mkdir()
@@ -81,19 +82,23 @@ class TestSecurityFunctional:
     # -- process_security() tests --
 
     @pytest.mark.unit
-    def test_process_security_returns_bool(self, clean_gnn_dir, output_dir):
+    def test_process_security_returns_bool(
+        self, clean_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """process_security should always return a bool."""
         result = process_security(clean_gnn_dir, output_dir, verbose=True)
         assert isinstance(result, bool)
 
     @pytest.mark.unit
-    def test_process_security_success_with_valid_files(self, clean_gnn_dir, output_dir):
+    def test_process_security_success_with_valid_files(
+        self, clean_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """process_security should return True for valid GNN files."""
         result = process_security(clean_gnn_dir, output_dir, verbose=True)
         assert result is True
 
     @pytest.mark.unit
-    def test_process_security_empty_directory(self, tmp_path):
+    def test_process_security_empty_directory(self, tmp_path: Any) -> Any:
         """process_security should return False when no GNN files are found."""
         empty_input = tmp_path / "empty"
         empty_input.mkdir()
@@ -106,7 +111,7 @@ class TestSecurityFunctional:
         assert result is False
 
     @pytest.mark.unit
-    def test_process_security_nonexistent_path(self, tmp_path):
+    def test_process_security_nonexistent_path(self, tmp_path: Any) -> Any:
         """process_security should return False for a nonexistent directory."""
         nonexistent = tmp_path / "does_not_exist"
         out = tmp_path / "output"
@@ -116,7 +121,7 @@ class TestSecurityFunctional:
         assert isinstance(result, bool)
 
     @pytest.mark.unit
-    def test_output_artifacts_created(self, clean_gnn_dir, output_dir):
+    def test_output_artifacts_created(self, clean_gnn_dir: Any, output_dir: Any) -> Any:
         """process_security should create security_results.json and security_summary.md."""
         process_security(clean_gnn_dir, output_dir, verbose=True)
 
@@ -124,14 +129,14 @@ class TestSecurityFunctional:
         assert (output_dir / "security_summary.md").exists()
 
     @pytest.mark.unit
-    def test_results_json_schema(self, clean_gnn_dir, output_dir):
+    def test_results_json_schema(self, clean_gnn_dir: Any, output_dir: Any) -> Any:
         """security_results.json should have expected top-level keys."""
         process_security(clean_gnn_dir, output_dir, verbose=True)
 
         with open(output_dir / "security_results.json") as f:
             data = json.load(f)
 
-        required_keys = [
+        required_keys: list[Any] = [
             "timestamp",
             "processed_files",
             "success",
@@ -146,7 +151,7 @@ class TestSecurityFunctional:
     # -- perform_security_check() tests --
 
     @pytest.mark.unit
-    def test_perform_security_check_clean_file(self, clean_gnn_dir):
+    def test_perform_security_check_clean_file(self, clean_gnn_dir: Any) -> Any:
         """A clean file should have no sensitive patterns detected."""
         gnn_file = list(clean_gnn_dir.glob("*.md"))[0]
         result = perform_security_check(gnn_file, verbose=True)
@@ -158,7 +163,7 @@ class TestSecurityFunctional:
         assert result["security_score"] == 100.0
 
     @pytest.mark.unit
-    def test_perform_security_check_detects_passwords(self, vuln_gnn_dir):
+    def test_perform_security_check_detects_passwords(self, vuln_gnn_dir: Any) -> Any:
         """Should detect password patterns in a vulnerable file."""
         gnn_file = list(vuln_gnn_dir.glob("*.md"))[0]
         result = perform_security_check(gnn_file, verbose=True)
@@ -173,7 +178,7 @@ class TestSecurityFunctional:
     # -- check_vulnerabilities() tests --
 
     @pytest.mark.unit
-    def test_check_vulnerabilities_clean_file(self, clean_gnn_dir):
+    def test_check_vulnerabilities_clean_file(self, clean_gnn_dir: Any) -> Any:
         """A clean GNN file should have no vulnerabilities."""
         gnn_file = list(clean_gnn_dir.glob("*.md"))[0]
         vulns = check_vulnerabilities(gnn_file, verbose=True)
@@ -182,7 +187,7 @@ class TestSecurityFunctional:
         assert len(vulns) == 0
 
     @pytest.mark.unit
-    def test_check_vulnerabilities_detects_eval_exec(self, vuln_gnn_dir):
+    def test_check_vulnerabilities_detects_eval_exec(self, vuln_gnn_dir: Any) -> Any:
         """Should detect eval() and exec() as code injection vulnerabilities."""
         gnn_file = list(vuln_gnn_dir.glob("*.md"))[0]
         vulns = check_vulnerabilities(gnn_file, verbose=True)
@@ -192,7 +197,9 @@ class TestSecurityFunctional:
         assert "Code execution vulnerability" in vuln_types
 
     @pytest.mark.unit
-    def test_check_vulnerabilities_detects_hardcoded_credentials(self, vuln_gnn_dir):
+    def test_check_vulnerabilities_detects_hardcoded_credentials(
+        self, vuln_gnn_dir: Any
+    ) -> Any:
         """Should detect hardcoded credentials (password='...', api_key='...')."""
         gnn_file = list(vuln_gnn_dir.glob("*.md"))[0]
         vulns = check_vulnerabilities(gnn_file, verbose=True)
@@ -203,7 +210,7 @@ class TestSecurityFunctional:
         assert len(cred_vulns) > 0, "Should detect hardcoded credentials"
 
     @pytest.mark.unit
-    def test_vulnerability_severity_assignment(self, vuln_gnn_dir):
+    def test_vulnerability_severity_assignment(self, vuln_gnn_dir: Any) -> Any:
         """Vulnerabilities should have severity levels (high or medium)."""
         gnn_file = list(vuln_gnn_dir.glob("*.md"))[0]
         vulns = check_vulnerabilities(gnn_file, verbose=True)
@@ -215,15 +222,15 @@ class TestSecurityFunctional:
     # -- calculate_security_score() tests --
 
     @pytest.mark.unit
-    def test_security_score_no_vulnerabilities(self):
+    def test_security_score_no_vulnerabilities(self) -> Any:
         """Score should be 100.0 when there are no vulnerabilities."""
         score = calculate_security_score([])
         assert score == 100.0
 
     @pytest.mark.unit
-    def test_security_score_decreases_with_vulns(self):
+    def test_security_score_decreases_with_vulns(self) -> Any:
         """Score should decrease as vulnerabilities are added."""
-        one_vuln = [{"severity": "medium"}]
+        one_vuln: list[Any] = [{"severity": "medium"}]
         many_vulns = [{"severity": "high"}] * 5
 
         score_one = calculate_security_score(one_vuln)
@@ -237,9 +244,9 @@ class TestSecurityFunctional:
     # -- generate_security_summary() tests --
 
     @pytest.mark.unit
-    def test_generate_security_summary_format(self):
+    def test_generate_security_summary_format(self) -> Any:
         """Security summary should be a markdown string with expected headings."""
-        results = {
+        results: dict[str, Any] = {
             "processed_files": 2,
             "success": True,
             "errors": [],
@@ -254,7 +261,9 @@ class TestSecurityFunctional:
         assert "Files Processed" in summary
 
     @pytest.mark.unit
-    def test_process_security_with_vulnerable_files(self, vuln_gnn_dir, output_dir):
+    def test_process_security_with_vulnerable_files(
+        self, vuln_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """Full pipeline run should still succeed even when vulnerabilities are found."""
         result = process_security(vuln_gnn_dir, output_dir, verbose=True)
         assert result is True

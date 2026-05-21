@@ -4,7 +4,7 @@ GNN parser module for GNN pipeline.
 """
 
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 # Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
 from .types import ParsedGNN, ValidationLevel
@@ -17,15 +17,15 @@ class _GNNParseAccumulator:
     The public canonical type is gnn.types.ParsedGNN (a dataclass).
     """
 
-    def __init__(self, file_path: Union[str, Path]):
+    def __init__(self, file_path: Union[str, Path]) -> None:
         self.file_path = Path(file_path)
         self.file_name = self.file_path.name
         self.content = ""
-        self.sections = []
-        self.variables = []
-        self.connections = []
-        self.parse_errors = []
-        self.parse_warnings = []
+        self.sections: list[dict[str, str]] = []
+        self.variables: list[dict[str, str]] = []
+        self.connections: list[dict[str, str]] = []
+        self.parse_errors: list[str] = []
+        self.parse_warnings: list[str] = []
 
     def add_section(self, section_name: str, section_content: str = "") -> None:
         """Add a section to the parsed GNN."""
@@ -71,10 +71,10 @@ class _GNNParseAccumulator:
 class GNNParsingSystem:
     """System for parsing GNN files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the GNN parsing system."""
-        self.parsers = {}
-        self.validators = {}
+        self.parsers: dict[str, Callable[..., Any]] = {}
+        self.validators: dict[str, Callable[..., Any]] = {}
 
     def register_parser(self, format_name: str, parser_func: Callable) -> None:
         """Register a parser for a specific format."""
@@ -100,7 +100,7 @@ class GNNParsingSystem:
         # Get appropriate parser
         parser = self.parsers.get(format_name)
         if parser:
-            return parser(file_path)
+            return cast("_GNNParseAccumulator | None", parser(file_path))
         else:
             # Recovery to basic parser
             return self._basic_parser(file_path)
@@ -137,7 +137,7 @@ class GNNParsingSystem:
                 parsed.add_section(section_name)
 
             # Extract variables
-            var_patterns = [
+            var_patterns: list[Any] = [
                 r"(\w+)\s*:\s*(\w+)",  # name: type
                 r"(\w+)\s*=\s*([^;\n]+)",  # name = value
             ]
@@ -158,7 +158,7 @@ class GNNParsingSystem:
                     parsed.add_variable(var_name, "", var_value)
 
             # Extract connections
-            conn_patterns = [
+            conn_patterns: list[Any] = [
                 r"(\w+)\s*->\s*(\w+)",  # source -> target
                 r"(\w+)\s*→\s*(\w+)",  # source → target
             ]
@@ -183,7 +183,7 @@ class GNNFormatSpec:
     gnn.parsers.common.GNNFormat.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the GNN format spec."""
         self.name = "GNN"
         self.version = "1.0"
@@ -194,7 +194,7 @@ class GNNFormatSpec:
 class GNNFormalParser:
     """Section-oriented formal parser backed by the built-in GNN parser."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._system = GNNParsingSystem()
 
     def parse_file(self, file_path: Union[str, Path]) -> Optional[_GNNParseAccumulator]:
@@ -230,7 +230,7 @@ class GNNFormalParser:
     def visualize_parse_tree(self, content: str) -> str:
         """Return a readable outline of parsed sections, variables, and connections."""
         parsed = self.parse_content(content)
-        lines = ["GNN parse outline"]
+        lines: list[Any] = ["GNN parse outline"]
         lines.append(f"Sections: {len(parsed.sections)}")
         lines.extend(f"  - {section['name']}" for section in parsed.sections)
         lines.append(f"Variables: {len(parsed.variables)}")
@@ -249,7 +249,7 @@ class GNNFormalParser:
 class ParsedGNNFormal(_GNNParseAccumulator):
     """Formal parse result using the same accumulator shape as file parsing."""
 
-    def __init__(self, file_path: Union[str, Path] = "<string>"):
+    def __init__(self, file_path: Union[str, Path] = "<string>") -> None:
         super().__init__(file_path)
 
 
@@ -298,7 +298,7 @@ def validate_gnn(
             # It's content
             content = str(file_path_or_content)
 
-        errors = []
+        errors: list[Any] = []
 
         # Basic validation
         if not content.strip():
@@ -346,7 +346,7 @@ def validate_gnn(
 
 
 def _convert_parse_result_to_parsed_gnn(
-    parse_result, source_format: str = "unknown"
+    parse_result: Any, source_format: str = "unknown"
 ) -> Optional[ParsedGNN]:
     """
     Convert a ParseResult to a ParsedGNN dataclass object.
@@ -391,7 +391,7 @@ def _convert_parse_result_to_parsed_gnn(
         model = parse_result.model
 
         # Convert variables
-        variables = {}
+        variables: dict[Any, Any] = {}
         for var in getattr(model, "variables", []):
             var_name = getattr(var, "name", "unknown")
             variables[var_name] = GNNVariable(
@@ -416,7 +416,7 @@ def _convert_parse_result_to_parsed_gnn(
                 return ">"
 
         # Convert connections
-        connections = []
+        connections: list[Any] = []
         for conn in getattr(model, "connections", []):
             connections.append(
                 GNNConnection(
@@ -435,7 +435,7 @@ def _convert_parse_result_to_parsed_gnn(
             )
 
         # Convert parameters
-        parameters = {}
+        parameters: dict[Any, Any] = {}
         for param in getattr(model, "parameters", []):
             param_name = getattr(param, "name", "unknown")
             parameters[param_name] = getattr(param, "value", None)

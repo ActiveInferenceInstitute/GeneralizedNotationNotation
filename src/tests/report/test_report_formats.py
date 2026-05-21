@@ -7,6 +7,7 @@ Tests HTML, Markdown, JSON, and other report format generation.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,11 +19,11 @@ class TestHTMLReportFormat:
     """Tests for HTML report format generation."""
 
     @pytest.mark.fast
-    def test_html_report_structure(self, tmp_path):
+    def test_html_report_structure(self, tmp_path: Any) -> Any:
         """Test HTML report has correct structure."""
         from report import generate_html_report
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Test Report",
             "sections": [
                 {"name": "Overview", "content": "Overview content"},
@@ -39,11 +40,11 @@ class TestHTMLReportFormat:
             assert "<html" in content.lower() or "<!doctype" in content.lower()
 
     @pytest.mark.fast
-    def test_html_report_escaping(self, tmp_path):
+    def test_html_report_escaping(self, tmp_path: Any) -> Any:
         """Test HTML report properly escapes special characters."""
         from report import generate_html_report
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Test <script>alert('xss')</script>",
             "content": 'Content with <>&" characters',
         }
@@ -63,11 +64,11 @@ class TestMarkdownReportFormat:
     """Tests for Markdown report format generation."""
 
     @pytest.mark.fast
-    def test_markdown_report_structure(self, tmp_path):
+    def test_markdown_report_structure(self, tmp_path: Any) -> Any:
         """Test Markdown report has correct structure."""
         from report import generate_markdown_report
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Test Report",
             "sections": [{"name": "Overview", "content": "Overview content"}],
         }
@@ -82,11 +83,11 @@ class TestMarkdownReportFormat:
             assert len(content) > 0
 
     @pytest.mark.fast
-    def test_markdown_report_tables(self, tmp_path):
+    def test_markdown_report_tables(self, tmp_path: Any) -> Any:
         """Test Markdown report can include tables."""
         from report import generate_markdown_report
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Report with Tables",
             "tables": [
                 {"headers": ["Column 1", "Column 2"], "rows": [["A", "B"], ["C", "D"]]}
@@ -111,7 +112,7 @@ class TestJSONReportFormat:
     """Tests for JSON report format generation."""
 
     @pytest.mark.fast
-    def test_json_report_generation(self, tmp_path):
+    def test_json_report_generation(self, tmp_path: Any) -> Any:
         """Test JSON report is valid JSON."""
         import json
 
@@ -135,7 +136,7 @@ class TestJSONReportFormat:
                 pass  # Some files may not be pure JSON
 
     @pytest.mark.fast
-    def test_json_report_completeness(self, tmp_path):
+    def test_json_report_completeness(self, tmp_path: Any) -> Any:
         """Test JSON report contains expected fields."""
         from report import generate_report
 
@@ -158,35 +159,35 @@ class TestReportFormatterFormats:
     """Tests for ReportFormatter format support."""
 
     @pytest.mark.fast
-    def test_formatter_supports_markdown(self):
+    def test_formatter_supports_markdown(self) -> Any:
         """Test formatter supports markdown format."""
         from report import ReportFormatter
 
         formatter = ReportFormatter()
-        data = {"key": "value"}
+        data: dict[str, Any] = {"key": "value"}
 
         result = formatter.format(data, kind="markdown")
         assert result is not None
 
     @pytest.mark.fast
-    def test_formatter_supports_html(self):
+    def test_formatter_supports_html(self) -> Any:
         """Test formatter supports HTML format."""
         from report import ReportFormatter
 
         formatter = ReportFormatter()
-        data = {"key": "value"}
+        data: dict[str, Any] = {"key": "value"}
 
         # Use format_html directly
         result = formatter.format_html(data)
         assert result is not None
 
     @pytest.mark.fast
-    def test_formatter_default_format(self):
+    def test_formatter_default_format(self) -> Any:
         """Test formatter has sensible default format."""
         from report import ReportFormatter
 
         formatter = ReportFormatter()
-        data = {"test": "data"}
+        data: dict[str, Any] = {"test": "data"}
 
         # Default should work
         result = formatter.format(data)
@@ -197,7 +198,7 @@ class TestSupportedFormats:
     """Tests for format support discovery."""
 
     @pytest.mark.fast
-    def test_get_supported_formats_returns_formats(self):
+    def test_get_supported_formats_returns_formats(self) -> Any:
         """Test that supported formats can be retrieved."""
         from report import get_supported_formats
 
@@ -210,7 +211,7 @@ class TestSupportedFormats:
         )
 
     @pytest.mark.fast
-    def test_features_include_format_support(self):
+    def test_features_include_format_support(self) -> Any:
         """Test FEATURES dict includes format support flags."""
         from report import FEATURES
 

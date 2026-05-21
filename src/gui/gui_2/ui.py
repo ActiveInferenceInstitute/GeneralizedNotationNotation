@@ -10,7 +10,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import List
+from typing import Any, List, cast
 
 try:
     import gradio as gr
@@ -18,10 +18,10 @@ try:
     import plotly.express as px
     import plotly.graph_objects as go
 except ImportError:
-    gr = None  # type: ignore
-    np = None  # type: ignore
-    go = None  # type: ignore
-    px = None  # type: ignore
+    gr = cast(Any, None)
+    np = cast(Any, None)
+    go = cast(Any, None)
+    px = cast(Any, None)
 
 from .matrix_editor import (
     create_matrix_from_gnn,
@@ -31,7 +31,7 @@ from .matrix_editor import (
 
 def build_visual_gui(
     markdown_text: str, export_path: Path, logger: logging.Logger
-) -> "gr.Blocks":  # type: ignore[name-defined]
+) -> "gr.Blocks":
     """Build the enhanced visual matrix editor interface with real-time heatmaps and dimension controls"""
     if gr is None:
         raise RuntimeError("Gradio not available")
@@ -252,11 +252,11 @@ def build_visual_gui(
         # Enhanced Event Handlers for Interactive Matrix Editing
 
         def create_enhanced_heatmap(
-            matrix_data,
+            matrix_data: Any,
             title: str,
             colorscale: str = "Viridis",
             show_values: bool = True,
-        ) -> "go.Figure":  # type: ignore[name-defined]
+        ) -> "go.Figure":
             """Create an enhanced matrix heatmap with better visualization"""
             if go is None:
                 return None
@@ -277,10 +277,10 @@ def build_visual_gui(
                     return go.Figure().add_annotation(text="No data", x=0.5, y=0.5)
 
                 # Convert strings to floats if needed
-                cleaned_data = []
+                cleaned_data: list[Any] = []
                 for row in matrix_list:
                     if isinstance(row, list):
-                        cleaned_row = []
+                        cleaned_row: list[Any] = []
                         for val in row:
                             try:
                                 cleaned_row.append(
@@ -345,8 +345,8 @@ def build_visual_gui(
                 return go.Figure().add_annotation(text=f"Error: {str(e)}", x=0.5, y=0.5)
 
         def create_enhanced_vector_plot(
-            vector_data, title: str, color: str = "blue"
-        ) -> "go.Figure":  # type: ignore[name-defined]
+            vector_data: Any, title: str, color: str = "blue"
+        ) -> "go.Figure":
             """Create an enhanced vector visualization"""
             if go is None:
                 return None
@@ -363,7 +363,7 @@ def build_visual_gui(
                     vector_list = list(vector_data) if vector_data is not None else []
 
                 # Extract values and convert to floats
-                values = []
+                values: list[Any] = []
                 for item in vector_list:
                     if isinstance(item, list):
                         # Take first element if it's a list
@@ -454,10 +454,10 @@ def build_visual_gui(
                 len(matrix_data),
                 len(matrix_data[0]) if matrix_data else 0,
             )
-            new_matrix = []
+            new_matrix: list[Any] = []
 
             for i in range(new_rows):
-                row = []
+                row: list[Any] = []
                 for j in range(new_cols):
                     if i < current_rows and j < current_cols:
                         # Preserve existing value
@@ -495,7 +495,7 @@ def build_visual_gui(
 
             return [[val] for val in new_values]
 
-        def calculate_matrix_stats(matrix_data, name: str) -> str:
+        def calculate_matrix_stats(matrix_data: Any, name: str) -> str:
             """Calculate and format matrix statistics"""
             try:
                 # Convert Gradio DataFrame to Python list
@@ -511,7 +511,7 @@ def build_visual_gui(
                     return f"**{name}**: No data"
 
                 # Convert to floats and flatten
-                flat_values = []
+                flat_values: list[Any] = []
                 for row in matrix_list:
                     if isinstance(row, list):
                         for val in row:
@@ -536,7 +536,7 @@ def build_visual_gui(
                 else:
                     shape = f"{len(matrix_list)}"
 
-                stats = {
+                stats: dict[str, Any] = {
                     "Shape": shape,
                     "Min": f"{min(flat_values):.3f}",
                     "Max": f"{max(flat_values):.3f}",
@@ -552,11 +552,13 @@ def build_visual_gui(
             except (ValueError, TypeError, ZeroDivisionError) as e:
                 return f"**{name}**: Error calculating stats - {e}"
 
-        def generate_gnn_from_matrices(a_data, b_data, c_data, d_data, b_slice):
+        def generate_gnn_from_matrices(
+            a_data: Any, b_data: Any, c_data: Any, d_data: Any, b_slice: Any
+        ) -> Any:
             """Generate GNN markdown from matrix data"""
             try:
                 # Convert Gradio DataFrames to Python lists
-                def convert_df_to_list(data):
+                def convert_df_to_list(data: Any) -> Any:
                     if hasattr(data, "values"):
                         return data.values.tolist()
                     elif isinstance(data, list):
@@ -570,7 +572,7 @@ def build_visual_gui(
                 d_list = convert_df_to_list(d_data)
 
                 # Extract vector values properly
-                c_values = []
+                c_values: list[Any] = []
                 for item in c_list:
                     if isinstance(item, list) and len(item) > 0:
                         try:
@@ -580,7 +582,7 @@ def build_visual_gui(
                     else:
                         c_values.append(0.0)
 
-                d_values = []
+                d_values: list[Any] = []
                 for item in d_list:
                     if isinstance(item, list) and len(item) > 0:
                         try:
@@ -591,7 +593,7 @@ def build_visual_gui(
                         d_values.append(0.0)
 
                 # Convert dataframe data to visual format
-                visual_matrices = {
+                visual_matrices: dict[str, Any] = {
                     "A": {
                         "type": "matrix",
                         "rows": len(a_list),
@@ -625,14 +627,14 @@ def build_visual_gui(
                     },
                 }
 
-                visual_data = {"visual_matrices": visual_matrices}
+                visual_data: dict[str, Any] = {"visual_matrices": visual_matrices}
                 updated_gnn = update_gnn_from_matrix(visual_data, markdown_text)
                 return updated_gnn
             except (ValueError, TypeError, KeyError) as e:
                 logger.error(f"Failed to generate GNN: {e}")
                 return markdown_text
 
-        def save_gnn(gnn_text):
+        def save_gnn(gnn_text: Any) -> Any:
             """Save GNN markdown to file"""
             try:
                 import tempfile
@@ -646,13 +648,13 @@ def build_visual_gui(
             except OSError as e:
                 return f"❌ Save failed: {e}"
 
-        def validate_gnn(a_data, b_data, c_data, d_data):
+        def validate_gnn(a_data: Any, b_data: Any, c_data: Any, d_data: Any) -> Any:
             """Validate matrix dimensions and consistency"""
             try:
-                errors = []
+                errors: list[Any] = []
 
                 # Convert DataFrames to lists
-                def convert_df_to_list(data):
+                def convert_df_to_list(data: Any) -> Any:
                     if hasattr(data, "values"):
                         return data.values.tolist()
                     elif isinstance(data, list):
@@ -709,7 +711,9 @@ def build_visual_gui(
         # === ENHANCED INTERACTIVE EVENT HANDLERS ===
 
         # Matrix A dimension control handlers
-        def update_a_dimensions(current_state, delta_rows=0, delta_cols=0):
+        def update_a_dimensions(
+            current_state: Any, delta_rows: Any = 0, delta_cols: Any = 0
+        ) -> Any:
             """Update Matrix A dimensions and resize data"""
             state = current_state.copy()
             a_info = state["A"]
@@ -742,7 +746,9 @@ def build_visual_gui(
             return (state, gr.update(), gr.update(), gr.update(), gr.update())
 
         # Matrix B dimension control handlers
-        def update_b_dimensions(current_state, delta_states=0, delta_actions=0):
+        def update_b_dimensions(
+            current_state: Any, delta_states: Any = 0, delta_actions: Any = 0
+        ) -> Any:
             """Update Matrix B dimensions and resize data"""
             state = current_state.copy()
             b_info = state["B"]
@@ -799,7 +805,7 @@ def build_visual_gui(
             )
 
         # Vector size control handlers
-        def update_c_size(current_state, delta_size=0):
+        def update_c_size(current_state: Any, delta_size: Any = 0) -> Any:
             """Update C vector size"""
             state = current_state.copy()
             c_info = state["C"]
@@ -829,7 +835,7 @@ def build_visual_gui(
 
             return (state, gr.update(), gr.update(), gr.update())
 
-        def update_d_size(current_state, delta_size=0):
+        def update_d_size(current_state: Any, delta_size: Any = 0) -> Any:
             """Update D vector size"""
             state = current_state.copy()
             d_info = state["D"]
@@ -860,7 +866,9 @@ def build_visual_gui(
             return (state, gr.update(), gr.update(), gr.update())
 
         # Comprehensive update function
-        def update_all_with_state(current_state, a_data, b_data, c_data, d_data):
+        def update_all_with_state(
+            current_state: Any, a_data: Any, b_data: Any, c_data: Any, d_data: Any
+        ) -> Any:
             """Update all visualizations and generate statistics"""
             try:
                 # Update plots
@@ -900,9 +908,9 @@ def build_visual_gui(
                     gr.update(),
                 )
 
-        def reset_to_pomdp():
+        def reset_to_pomdp() -> Any:
             """Reset all matrices to POMDP template values"""
-            default_state = {
+            default_state: dict[str, Any] = {
                 "A": {
                     "rows": 3,
                     "cols": 3,
@@ -1074,7 +1082,14 @@ def build_visual_gui(
         )
 
         # Auto-update functionality
-        def maybe_auto_update(auto_enabled, state, a_data, b_data, c_data, d_data):
+        def maybe_auto_update(
+            auto_enabled: Any,
+            state: Any,
+            a_data: Any,
+            b_data: Any,
+            c_data: Any,
+            d_data: Any,
+        ) -> Any:
             """Auto-update visualizations if enabled"""
             if auto_enabled:
                 return update_all_with_state(state, a_data, b_data, c_data, d_data)

@@ -5,10 +5,13 @@ This test suite covers all exposed functions, classes, and MCP integration
 from all modules in the GNN pipeline system.
 """
 
+from pathlib import Path
+from typing import Any
+
 import pytest
 
 # Test markers
-pytestmark = [pytest.mark.integration]
+pytestmark: list[Any] = [pytest.mark.integration]
 
 # Import all modules to test their exposed APIs - with error handling
 try:
@@ -225,9 +228,9 @@ class TestExportModule:
             assert "graph_formats" in formats
 
     @pytest.mark.skipif(not EXPORT_AVAILABLE, reason="Export module not available")
-    def test_export_gnn_model_invalid_format(self) -> None:
+    def test_export_gnn_model_invalid_format(self, tmp_path: Path) -> None:
         """Test export_gnn_model with invalid format."""
-        result = export.export_gnn_model("nonexistent.gnn", "invalid_format")
+        result = export.export_gnn_model({}, tmp_path, formats=["invalid_format"])
         assert result["success"] is False
         assert "error" in result
 
@@ -348,13 +351,15 @@ class TestWebsiteModule:
         import tempfile
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            config = {"output_dir": temp_dir}
+            config: dict[str, Any] = {"output_dir": temp_dir}
             result = website.validate_website_config(config)
+            assert isinstance(result, dict)
             assert result["valid"]
 
         # Test with invalid config
         config = {"output_dir": "/nonexistent/directory"}
         result = website.validate_website_config(config)
+        assert isinstance(result, dict)
         assert not result["valid"]
         assert len(result["errors"]) > 0
 
@@ -644,7 +649,7 @@ class TestMCPIntegration:
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
     def test_mcp_availability_flags(self) -> None:
         """Test that MCP availability flags are properly set."""
-        modules_with_mcp = [
+        modules_with_mcp: list[Any] = [
             gnn,
             export,
             render,
@@ -663,7 +668,7 @@ class TestMCPIntegration:
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
     def test_register_tools_functions(self) -> None:
         """Test that register_tools functions exist where expected."""
-        modules_with_register_tools = [
+        modules_with_register_tools: list[Any] = [
             export,
             render,
             website,
@@ -683,7 +688,7 @@ class TestModuleConsistency:
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
     def test_version_consistency(self) -> None:
         """Test that all modules have version information."""
-        modules = [
+        modules: list[Any] = [
             gnn,
             export,
             render,
@@ -701,7 +706,7 @@ class TestModuleConsistency:
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
     def test_feature_flags_consistency(self) -> None:
         """Test that all modules have consistent feature flag structure."""
-        modules_with_features = [
+        modules_with_features: list[Any] = [
             gnn,
             export,
             render,
@@ -718,7 +723,7 @@ class TestModuleConsistency:
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
     def test_module_info_consistency(self) -> None:
         """Test that all modules have consistent get_module_info structure."""
-        modules_with_info = [
+        modules_with_info: list[Any] = [
             gnn,
             export,
             render,

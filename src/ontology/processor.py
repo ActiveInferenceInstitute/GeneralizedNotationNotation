@@ -8,7 +8,7 @@ This module provides the main ontology processing functionality.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
@@ -17,7 +17,7 @@ from utils.pipeline_template import log_step_error, log_step_start, log_step_suc
 
 
 def process_ontology(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process ontology for GNN files.
@@ -41,7 +41,7 @@ def process_ontology(
 
         # Process each .md file and generate a per-file ontology report
         gnn_files = list(Path(target_dir).glob("**/*.md"))
-        results = {
+        results: dict[str, Any] = {
             "processed_files": len(gnn_files),
             "reports": [],
             "success": True,
@@ -69,7 +69,7 @@ def process_ontology(
         else:
             log_step_error(logger, "Ontology processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
         log_step_error(logger, f"Ontology processing failed: {e}")
@@ -91,7 +91,7 @@ def parse_gnn_ontology_section(content: str) -> Dict[str, Any]:
             return {}
 
         # Basic ontology parsing
-        ontology_data = {
+        ontology_data: dict[str, Any] = {
             "concepts": [],
             "relations": [],
             "properties": [],
@@ -205,7 +205,7 @@ def load_defined_ontology_terms() -> Dict[str, Any]:
     logger = logging.getLogger("ontology")
 
     # Priority order for ontology files
-    search_paths = [
+    search_paths: list[Any] = [
         Path(__file__).parent / "act_inf_ontology_terms.json",  # Module dir (canonical)
         Path("src/ontology/act_inf_ontology_terms.json"),  # From project root
     ]
@@ -221,7 +221,7 @@ def load_defined_ontology_terms() -> Dict[str, Any]:
                 # Old format: {"terms": {...}} or {"category": ["term1", "term2"]}
                 if "terms" in data:
                     # Previous format with "terms" wrapper
-                    return data["terms"]
+                    return cast("dict[str, Any]", data["terms"])
                 elif isinstance(data, dict) and data:
                     # Check if it's the ActInf format (term -> {description, uri})
                     first_value = next(iter(data.values()))
@@ -295,7 +295,7 @@ def parse_annotation(annotation: str) -> tuple:
 
 
 def validate_annotations(
-    annotations: List[str], ontology_terms: Dict[str, Any] = None
+    annotations: List[str], ontology_terms: (Dict[str, Any]) | None = None
 ) -> Dict[str, Any]:
     """
     Validate annotations against ontology terms.
@@ -316,7 +316,7 @@ def validate_annotations(
             ontology_terms = load_defined_ontology_terms()
 
         # Build lookup set of all term names (case-insensitive)
-        term_lookup = {}
+        term_lookup: dict[Any, Any] = {}
         for term_name, term_data in ontology_terms.items():
             term_lookup[term_name.lower()] = {
                 "name": term_name,
@@ -325,7 +325,7 @@ def validate_annotations(
                 else {"description": str(term_data)},
             }
 
-        validation_result = {
+        validation_result: dict[str, Any] = {
             "valid_annotations": [],
             "invalid_annotations": [],
             "matched_terms": {},  # key -> {term_name, description, uri}
@@ -401,9 +401,9 @@ def _levenshtein_distance(s1: str, s2: str) -> int:
     if len(s2) == 0:
         return len(s1)
 
-    previous_row = range(len(s2) + 1)
+    previous_row: list[int] = list(range(len(s2) + 1))
     for i, c1 in enumerate(s1):
-        current_row = [i + 1]
+        current_row: list[Any] = [i + 1]
         for j, c2 in enumerate(s2):
             insertions = previous_row[j + 1] + 1
             deletions = current_row[j] + 1
@@ -434,7 +434,7 @@ def generate_ontology_report_for_file(
             return ontology_result
 
         # Create report
-        report = {
+        report: dict[str, Any] = {
             "file_path": str(gnn_file),
             "file_name": gnn_file.name,
             "ontology_data": ontology_result["ontology_data"],

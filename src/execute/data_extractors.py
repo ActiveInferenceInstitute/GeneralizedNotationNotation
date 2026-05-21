@@ -40,7 +40,7 @@ def normalize_and_deduplicate_paths(
     if not found_files:
         return []
 
-    normalized = {}
+    normalized: dict[Any, Any] = {}
     for file_path in found_files:
         try:
             abs_path = file_path.resolve()
@@ -51,7 +51,7 @@ def normalize_and_deduplicate_paths(
             continue
 
     sorted_paths = sorted(normalized.values(), key=lambda p: len(p.parts))
-    deduplicated = []
+    deduplicated: list[Any] = []
 
     for file_path in sorted_paths:
         file_name = file_path.name
@@ -102,12 +102,17 @@ def collect_execution_outputs(
     Returns:
         Dictionary with lists of copied file paths by category
     """
-    collected = {"visualizations": [], "simulation_data": [], "traces": [], "other": []}
+    collected: dict[str, Any] = {
+        "visualizations": [],
+        "simulation_data": [],
+        "traces": [],
+        "other": [],
+    }
 
     try:
         script_dir = script_path.parent
 
-        found_files = []
+        found_files: list[Any] = []
 
         if framework == "pymdp":
             pymdp_output = script_dir / "output" / "pymdp_simulations"
@@ -272,7 +277,7 @@ def collect_execution_outputs(
 
 
 def extract_simulation_data_from_files(
-    output_dir: Path, framework: "FrameworkName", logger
+    output_dir: Path, framework: "FrameworkName", logger: Any
 ) -> Dict[str, Any]:
     """
     Extract simulation data from collected files (not just stdout/stderr).
@@ -285,7 +290,7 @@ def extract_simulation_data_from_files(
     Returns:
         Dictionary with extracted simulation data
     """
-    enhanced_data = {}
+    enhanced_data: dict[Any, Any] = {}
 
     try:
         if framework == "pymdp":
@@ -324,7 +329,7 @@ def extract_pymdp_data_from_files(
     output_dir: Path, logger: logging.Logger
 ) -> Dict[str, Any]:
     """Extract PyMDP simulation data from saved files."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     try:
         # Look for simulation_results.json
@@ -369,7 +374,7 @@ def extract_pymdp_like_data_from_files(
     output_dir: Path, logger: logging.Logger, label: str = "pymdp_like"
 ) -> Dict[str, Any]:
     """Extract simulation data from simulation_data/simulation_results.json (NumPyro, PyTorch, etc.)."""
-    data = {}
+    data: dict[Any, Any] = {}
     try:
         sim_data_dir = output_dir / "simulation_data"
         if sim_data_dir.exists():
@@ -401,7 +406,7 @@ def extract_rxinfer_data_from_files(
     output_dir: Path, logger: logging.Logger
 ) -> Dict[str, Any]:
     """Extract RxInfer.jl simulation data from saved files."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     try:
         # Look for inference data JSON files
@@ -434,7 +439,7 @@ def extract_activeinference_jl_data_from_files(
     output_dir: Path, logger: logging.Logger
 ) -> Dict[str, Any]:
     """Extract ActiveInference.jl simulation data from saved files."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     try:
         # Look for activeinference_outputs_* directories (timestamped output dirs)
@@ -543,11 +548,11 @@ def extract_discopy_data_from_files(
     output_dir: Path, logger: logging.Logger
 ) -> Dict[str, Any]:
     """Extract DisCoPy simulation data from saved files."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     try:
         # Look for circuit analysis JSON in multiple possible locations
-        search_dirs = [
+        search_dirs: list[Any] = [
             output_dir / "simulation_data",
             output_dir / "discopy_diagrams",
             output_dir / "analysis",
@@ -578,7 +583,7 @@ def extract_discopy_data_from_files(
                         )
 
         # Count diagram outputs in multiple possible locations
-        diagram_dirs = [
+        diagram_dirs: list[Any] = [
             output_dir / "discopy_diagrams",
             output_dir / "diagram_outputs",
             output_dir / "simulation_data",
@@ -627,7 +632,7 @@ def extract_simulation_data(
     Returns:
         Dictionary with extracted simulation data
     """
-    simulation_data = {
+    simulation_data: dict[str, Any] = {
         "traces": [],
         "free_energy": [],
         "states": [],
@@ -662,7 +667,7 @@ def extract_simulation_data(
 
 def extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
     """Extract PyMDP-specific simulation data from stdout/stderr."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     # Combine stdout and stderr for parsing
     combined_output = stdout + "\n" + stderr
@@ -704,7 +709,7 @@ def extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
     belief_matches = re.findall(r"belief=\[([^\]]+)\]", combined_output, re.IGNORECASE)
     if belief_matches:
         try:
-            beliefs = []
+            beliefs: list[Any] = []
             for match in belief_matches:
                 values = re.findall(r"[\d.]+", match)
                 if values:
@@ -737,7 +742,7 @@ def extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
 
 def extract_rxinfer_data(stdout: str, stderr: str) -> Dict[str, Any]:
     """Extract RxInfer.jl-specific simulation data."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     # Try to find posterior distributions
     posterior_pattern = r"posterior[:\s]+\[([^\]]+)\]"
@@ -750,7 +755,7 @@ def extract_rxinfer_data(stdout: str, stderr: str) -> Dict[str, Any]:
 
 def extract_activeinference_jl_data(stdout: str, stderr: str) -> Dict[str, Any]:
     """Extract ActiveInference.jl-specific simulation data."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     # Try to find free energy traces
     fe_pattern = r"free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)"
@@ -774,7 +779,7 @@ extract_jax_data = extract_pymdp_data
 
 def extract_discopy_data(stdout: str, stderr: str) -> Dict[str, Any]:
     """Extract DisCoPy-specific simulation data."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     # Try to find diagram information
     diagram_pattern = r"diagram[:\s]+(\w+)|circuit[:\s]+(\w+)"
@@ -787,7 +792,7 @@ def extract_discopy_data(stdout: str, stderr: str) -> Dict[str, Any]:
 
 def extract_generic_data(stdout: str, stderr: str) -> Dict[str, Any]:
     """Generic extraction for unknown frameworks."""
-    data = {}
+    data: dict[Any, Any] = {}
 
     # Try to find any numeric arrays or lists
     array_pattern = r"\[([\d.,\s]+)\]"

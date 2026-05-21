@@ -9,7 +9,7 @@ Uses watchdog if available, otherwise falls back to polling.
 import logging
 import time
 from pathlib import Path
-from typing import Callable, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ class GNNWatcher:
         on_change: Optional[Callable] = None,
         debounce_ms: int = 250,
         extensions: tuple = (".md",),
-    ):
+    ) -> None:
         self.watch_dir = Path(watch_dir)
         self.on_change = on_change or self._default_callback
         self.debounce_ms = debounce_ms
@@ -39,7 +39,7 @@ class GNNWatcher:
         self._last_fire: dict = {}
         self._running = False
 
-    def start(self):
+    def start(self) -> Any:
         """Start watching (blocking)."""
         # Try watchdog first
         try:
@@ -48,23 +48,28 @@ class GNNWatcher:
             logger.info("watchdog not installed — falling back to polling")
             self._start_polling()
 
-    def stop(self):
+    def stop(self) -> Any:
         """Signal watcher to stop."""
         self._running = False
 
-    def _start_watchdog(self):
+    def _start_watchdog(self) -> Any:
         """Use watchdog for efficient filesystem monitoring."""
         from watchdog.events import FileModifiedEvent, FileSystemEventHandler
         from watchdog.observers import Observer
 
         class _GNNChangeHandler(FileSystemEventHandler):
-            def __init__(self, gnn_watcher):
+            def __init__(self, gnn_watcher: Any) -> None:
                 super().__init__()
                 self._watcher = gnn_watcher
 
-            def on_modified(self, event):
+            def on_modified(self, event: Any) -> Any:
                 if isinstance(event, FileModifiedEvent):
-                    path = Path(event.src_path)
+                    src_path = (
+                        event.src_path.decode()
+                        if isinstance(event.src_path, bytes)
+                        else event.src_path
+                    )
+                    path = Path(src_path)
                     if path.suffix in self._watcher.extensions:
                         self._watcher._debounced_fire(path)
 
@@ -83,7 +88,7 @@ class GNNWatcher:
             observer.stop()
             observer.join()
 
-    def _start_polling(self, interval: float = 1.0):
+    def _start_polling(self, interval: float = 1.0) -> Any:
         """Recovery polling-based watcher."""
         self._running = True
         snapshots: dict = {}
@@ -101,7 +106,7 @@ class GNNWatcher:
         except KeyboardInterrupt:
             logger.debug("Polling watcher stopped by user (KeyboardInterrupt)")
 
-    def _debounced_fire(self, path: Path):
+    def _debounced_fire(self, path: Path) -> Any:
         """Fire callback with debouncing."""
         now = time.time() * 1000
         last = self._last_fire.get(str(path), 0)
@@ -118,7 +123,7 @@ class GNNWatcher:
             logger.warning(f"Could not read {path}: {e}")
 
     @staticmethod
-    def _default_callback(path: Path, content: str):
+    def _default_callback(path: Path, content: str) -> Any:
         """Default callback: run GNN validation."""
         import sys
 

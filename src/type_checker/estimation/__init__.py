@@ -5,6 +5,8 @@ Analyzes GNN models and estimates computational resources needed for
 memory usage, inference time, and storage requirements.
 """
 
+from typing import Any
+
 from .estimator import GNNResourceEstimator
 from .strategies import (
     calculate_complexity,
@@ -19,7 +21,7 @@ from .strategies import (
     estimate_storage,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "GNNResourceEstimator",
     "calculate_complexity",
     "detailed_memory_breakdown",

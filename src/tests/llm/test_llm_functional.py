@@ -51,14 +51,14 @@ class TestLLMProcessorInitialization:
     @pytest.mark.unit
     def test_custom_provider_order(self) -> None:
         """LLMProcessor should accept a custom provider ordering."""
-        order = [ProviderType.OPENAI, ProviderType.PERPLEXITY]
+        order: list[Any] = [ProviderType.OPENAI, ProviderType.PERPLEXITY]
         proc = LLMProcessor(preferred_providers=order)
         assert proc.preferred_providers == order
 
     @pytest.mark.unit
     def test_custom_api_keys(self) -> None:
         """LLMProcessor should store provided API keys."""
-        keys = {"openai": "sk-test-123", "ollama": "local"}
+        keys: dict[str, Any] = {"openai": "sk-test-123", "ollama": "local"}
         proc = LLMProcessor(api_keys=keys)
         assert proc.api_keys == keys
 
@@ -151,7 +151,7 @@ class TestModelSelection:
         """Should pick the first matching preferred model."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
-        available = ["llama2:7b", "gemma3:4b", "phi3"]
+        available: list[Any] = ["llama2:7b", "gemma3:4b", "phi3"]
         selected = _select_best_ollama_model(available, logger)
         assert selected == "gemma3:4b"
 
@@ -160,7 +160,7 @@ class TestModelSelection:
         """Should fall back to first model if none match preferences."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
-        available = ["custom-model:latest"]
+        available: list[Any] = ["custom-model:latest"]
         selected = _select_best_ollama_model(available, logger)
         assert selected == "custom-model:latest"
 

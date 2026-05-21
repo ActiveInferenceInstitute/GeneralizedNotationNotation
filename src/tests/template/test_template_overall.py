@@ -26,7 +26,7 @@ class TestTemplateModule:
         """Test that FEATURES dict is properly populated."""
         from template import FEATURES
 
-        expected_features = [
+        expected_features: list[Any] = [
             "standardized_processing",
             "correlation_id_generation",
             "safe_execution",
@@ -131,7 +131,7 @@ Static
         output_dir = safe_filesystem.create_dir("output")
 
         # process_single_file signature: (input_file, output_dir, options)
-        options = {"verbose": True}
+        options: dict[str, Any] = {"verbose": True}
         result = process_single_file(test_file, output_dir, options)
         assert result is not None
 
@@ -153,18 +153,12 @@ alpha = 0.5
         output_dir = safe_filesystem.create_dir("template_output")
         logger = logging.getLogger("test_template_standardized")
 
-        # May need logger parameter
-        try:
-            result = process_template_standardized(
-                target_dir=safe_filesystem.temp_dir,
-                output_dir=output_dir,
-                verbose=True,
-                logger=logger,
-            )
-        except TypeError:
-            result = process_template_standardized(
-                target_dir=safe_filesystem.temp_dir, output_dir=output_dir, verbose=True
-            )
+        result = process_template_standardized(
+            target_dir=safe_filesystem.temp_dir,
+            output_dir=output_dir,
+            verbose=True,
+            logger=logger,
+        )
 
         # Should return success status - True or dict with success
         assert result is True or (
@@ -222,7 +216,7 @@ class TestUtilityPatterns:
 
         # demonstrate_utility_patterns signature: (context, logger)
         logger = logging.getLogger("test_utility_patterns")
-        context = {"correlation_id": "test-123"}
+        context: dict[str, Any] = {"correlation_id": "test-123"}
         result = demonstrate_utility_patterns(context, logger)
         # Returns demonstration results dict
         assert isinstance(result, dict)
@@ -239,10 +233,10 @@ class TestUtilityPatterns:
 class TestTemplateUtils:
     """Smoke tests for template.utils sub-module."""
 
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from template import utils  # noqa: F401
 
-    def test_get_version_info_returns_dict(self):
+    def test_get_version_info_returns_dict(self) -> Any:
         from template.utils import get_version_info
 
         result = get_version_info()

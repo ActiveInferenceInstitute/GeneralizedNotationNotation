@@ -7,6 +7,7 @@ This file contains tests migrated from test_sapf.py.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -20,7 +21,7 @@ class TestSAPFCodeValidation:
     """Test SAPF code validation functionality."""
 
     @pytest.mark.unit
-    def test_validate_sapf_code_valid(self):
+    def test_validate_sapf_code_valid(self) -> Any:
         """Test validation of valid SAPF code."""
         try:
             from audio.sapf.sapf_gnn_processor import validate_sapf_code
@@ -41,7 +42,7 @@ final_audio play
         assert len(issues) == 0
 
     @pytest.mark.unit
-    def test_validate_sapf_code_invalid(self):
+    def test_validate_sapf_code_invalid(self) -> Any:
         """Test validation of invalid SAPF code."""
         try:
             from audio.sapf.sapf_gnn_processor import validate_sapf_code
@@ -79,7 +80,7 @@ class TestSAPFStandaloneFunctions:
     """Test standalone SAPF functions."""
 
     @pytest.mark.unit
-    def test_convert_gnn_to_sapf_function(self):
+    def test_convert_gnn_to_sapf_function(self) -> Any:
         """Test standalone convert_gnn_to_sapf function."""
         try:
             from audio.sapf.sapf_gnn_processor import convert_gnn_to_sapf
@@ -108,7 +109,7 @@ Static
         assert "base_freq" in sapf_code
 
     @pytest.mark.unit
-    def test_generate_oscillator_audio_function(self):
+    def test_generate_oscillator_audio_function(self) -> Any:
         """Test standalone generate_oscillator_audio function."""
         try:
             from audio.sapf.audio_generators import generate_oscillator_audio
@@ -123,7 +124,7 @@ Static
         assert audio.min() >= -0.5
 
     @pytest.mark.unit
-    def test_apply_envelope_function(self):
+    def test_apply_envelope_function(self) -> Any:
         """Test standalone apply_envelope function."""
         try:
             from audio.sapf.audio_generators import apply_envelope
@@ -142,7 +143,7 @@ Static
         assert enveloped[-1] <= 0.1  # Should end near 0
 
     @pytest.mark.unit
-    def test_mix_audio_channels_function(self):
+    def test_mix_audio_channels_function(self) -> Any:
         """Test standalone mix_audio_channels function."""
         try:
             from audio.sapf.audio_generators import mix_audio_channels
@@ -160,7 +161,7 @@ Static
         assert len(mixed) == 1000
 
         # Test mixing with weights
-        weights = [0.5, 0.3, 0.2]
+        weights: list[Any] = [0.5, 0.3, 0.2]
         mixed_weighted = mix_audio_channels([channel1, channel2, channel3], weights)
         assert isinstance(mixed_weighted, np.ndarray)
         assert len(mixed_weighted) == 1000

@@ -3,6 +3,7 @@
 import logging
 import os
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -23,7 +24,7 @@ except ImportError:
         pass
 
 
-def test_get_relative_path_if_possible():
+def test_get_relative_path_if_possible() -> Any:
     """Test path relative resolution."""
     root = Path("/project/gnn")
     path = Path("/project/gnn/input/file.md")
@@ -37,7 +38,7 @@ def test_get_relative_path_if_possible():
     assert get_relative_path_if_possible(path, None) == "/project/gnn/input/file.md"
 
 
-def test_pipeline_logger_caching():
+def test_pipeline_logger_caching() -> Any:
     """Verify that PipelineLogger caches instances."""
     logger1 = PipelineLogger.get_logger("test_module")
     logger2 = PipelineLogger.get_logger("test_module")
@@ -45,7 +46,7 @@ def test_pipeline_logger_caching():
     assert logger1.name == "test_module"
 
 
-def test_setup_step_logging():
+def test_setup_step_logging() -> Any:
     """Test step-specific logging setup."""
     logger = setup_step_logging("3_gnn", verbose=True)
     assert logger.name == "3_gnn"
@@ -55,7 +56,7 @@ def test_setup_step_logging():
     assert logger.getEffectiveLevel() == logging.DEBUG
 
 
-def test_gnn_pipeline_config_defaults():
+def test_gnn_pipeline_config_defaults() -> Any:
     """Test GNNPipelineConfig default values."""
     config = GNNPipelineConfig()
     assert config.pipeline.target_dir == Path("input/gnn_files")
@@ -70,7 +71,7 @@ def test_gnn_pipeline_config_defaults():
     not os.path.exists("src/ontology/act_inf_ontology_terms.json"),
     reason="Missing ontology file for validation test",
 )
-def test_config_validation_success():
+def test_config_validation_success() -> Any:
     """Test validation of default config."""
     config = GNNPipelineConfig()
     # Should not raise
@@ -80,16 +81,16 @@ def test_config_validation_success():
     assert isinstance(errors, list)
 
 
-def test_load_config_missing_raises(tmp_path):
+def test_load_config_missing_raises(tmp_path: Any) -> Any:
     """Test load_config raises FileNotFoundError when explicit path is missing."""
     with pytest.raises(FileNotFoundError):
         load_config(tmp_path / "nonexistent.yaml")
 
 
-def test_argument_parser_step_parsing():
+def test_argument_parser_step_parsing() -> Any:
     """Test parsing logic for a specific step."""
     # Ensure ArgumentParser is initialized
-    argv = ["--target-dir", "custom_in", "--verbose"]
+    argv: list[Any] = ["--target-dir", "custom_in", "--verbose"]
     parsed = ArgumentParser.parse_step_arguments("3_gnn.py", argv)
 
     assert parsed.target_dir == Path("custom_in")

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -20,7 +21,7 @@ def test_collects_execution_benchmark_metadata(tmp_path: Path) -> None:
     exec_root = tmp_path / "12_execute_output"
     summaries = exec_root / "summaries"
     summaries.mkdir(parents=True)
-    payload = {
+    payload: dict[str, Any] = {
         "execution_details": [
             {
                 "model_name": "pymdp_scaling_N4_T10",

@@ -60,7 +60,7 @@ import sys
 import time
 from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from utils.pipeline_template import (
     log_step_error,
@@ -82,15 +82,15 @@ project_root = Path(__file__).parent.parent.parent
 
 # psutil reference for previous code
 try:
-    import psutil as _psutil  # type: ignore
+    import psutil as _psutil
 except Exception:
-    _psutil = None  # type: ignore
+    _psutil = cast(Any, None)
 
 
 class TestRunner:
     """Test runner with comprehensive monitoring and reporting."""
 
-    def __init__(self, config: TestExecutionConfig):
+    def __init__(self, config: TestExecutionConfig) -> None:
         self.config = config
         self.logger = logging.getLogger("test_runner")
         self.resource_monitor = ResourceMonitor(
@@ -156,7 +156,7 @@ class TestRunner:
         self, test_paths: List[Path], output_dir: Path
     ) -> List[str]:
         """Build pytest command with appropriate options."""
-        cmd = [
+        cmd: list[Any] = [
             sys.executable,
             "-m",
             "pytest",
@@ -309,7 +309,7 @@ class TestRunner:
                                 break
 
             # Check for collection errors
-            collection_errors = []
+            collection_errors: list[Any] = []
             for line in lines:
                 if "ERROR collecting" in line or "ERROR: No tests collected" in line:
                     collection_errors.append(line)
@@ -357,7 +357,7 @@ class TestRunner:
 
         latest_result = self.execution_history[-1]
 
-        report = {
+        report: dict[str, Any] = {
             "execution_summary": asdict(latest_result),
             "resource_usage": self.resource_monitor.get_stats(),
             "execution_history": [asdict(result) for result in self.execution_history],
@@ -455,7 +455,7 @@ def _check_zero_tests_collected(output_dir: Path, logger: logging.Logger) -> boo
         if summary_file.exists():
             summary = json.loads(summary_file.read_text())
             tests_run = summary.get("execution_summary", {}).get("tests_run", 0)
-            return tests_run == 0
+            return cast("bool", tests_run == 0)
     except Exception as e:
         logger.debug(f"Could not check test count: {e}")
     return False

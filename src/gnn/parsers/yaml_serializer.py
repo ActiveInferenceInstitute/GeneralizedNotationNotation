@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 try:
     import yaml
@@ -16,7 +16,7 @@ class YAMLSerializer(BaseGNNSerializer):
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to YAML format."""
         # Create a cleaner structure for YAML with consistent ordering
-        data = {
+        data: dict[str, Any] = {
             "model_name": model.model_name,
             "version": model.version,
             "annotation": model.annotation,
@@ -89,13 +89,16 @@ class YAMLSerializer(BaseGNNSerializer):
         if not HAS_YAML:
             return self._dict_to_yaml_like(data)
 
-        return yaml.dump(
-            data, default_flow_style=False, allow_unicode=True, sort_keys=True
+        return cast(
+            "str",
+            yaml.dump(
+                data, default_flow_style=False, allow_unicode=True, sort_keys=True
+            ),
         )
 
     def _dict_to_yaml_like(self, data: Dict[str, Any], indent: int = 0) -> str:
         """Convert dict to YAML-like format when PyYAML is not available."""
-        lines = []
+        lines: list[Any] = []
         spaces = "  " * indent
 
         for key, value in (

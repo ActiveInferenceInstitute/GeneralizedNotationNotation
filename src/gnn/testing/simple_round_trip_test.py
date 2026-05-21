@@ -14,7 +14,7 @@ import sys
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 # Set reasonable recursion limit
 sys.setrecursionlimit(100)
@@ -32,15 +32,15 @@ class SimpleTestResult:
     warnings: List[str] = field(default_factory=list)
     test_time: float = 0.0
 
-    def add_error(self, error: str):
+    def add_error(self, error: str) -> Any:
         self.errors.append(error)
         self.success = False
 
-    def add_warning(self, warning: str):
+    def add_warning(self, warning: str) -> Any:
         self.warnings.append(warning)
 
 
-def test_json_round_trip():
+def test_json_round_trip() -> Any:
     """Test JSON round-trip conversion with minimal dependencies."""
     print("🔄 Testing JSON round-trip conversion...")
 
@@ -103,7 +103,7 @@ def test_json_round_trip():
 
         # Parse back from JSON
         parser = JSONGNNParser()
-        parsed_result = parser.parse_file(temp_file)
+        parsed_result = parser.parse_file(str(temp_file))
 
         if not parsed_result.success:
             print(f"❌ JSON parsing failed: {parsed_result.errors}")
@@ -128,7 +128,7 @@ def test_json_round_trip():
         return False
 
 
-def test_xml_round_trip():
+def test_xml_round_trip() -> Any:
     """Test XML round-trip conversion with minimal dependencies."""
     print("\n🔄 Testing XML round-trip conversion...")
 
@@ -179,7 +179,7 @@ def test_xml_round_trip():
 
         # Parse back from XML
         parser = XMLGNNParser()
-        parsed_result = parser.parse_file(temp_file)
+        parsed_result = parser.parse_file(str(temp_file))
 
         if not parsed_result.success:
             print(f"❌ XML parsing failed: {parsed_result.errors}")

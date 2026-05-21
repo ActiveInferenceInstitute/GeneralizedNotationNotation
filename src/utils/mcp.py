@@ -26,7 +26,7 @@ import psutil
 logger = logging.getLogger(__name__)
 
 
-def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
+def get_system_info(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get comprehensive system information and diagnostics.
 
@@ -35,7 +35,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         # System information
-        system_info = {
+        system_info: dict[str, Any] = {
             "platform": platform.platform(),
             "system": platform.system(),
             "release": platform.release(),
@@ -49,7 +49,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
 
         # Memory information
         memory = psutil.virtual_memory()
-        memory_info = {
+        memory_info: dict[str, Any] = {
             "total": memory.total,
             "available": memory.available,
             "used": memory.used,
@@ -59,7 +59,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
         }
 
         # CPU information
-        cpu_info = {
+        cpu_info: dict[str, Any] = {
             "count": psutil.cpu_count(),
             "count_logical": psutil.cpu_count(logical=True),
             "usage_percent": psutil.cpu_percent(interval=1),
@@ -68,7 +68,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
 
         # Disk information
         disk = psutil.disk_usage("/")
-        disk_info = {
+        disk_info: dict[str, Any] = {
             "total": disk.total,
             "used": disk.used,
             "free": disk.free,
@@ -90,7 +90,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def get_environment_info(mcp_instance_ref) -> Dict[str, Any]:
+def get_environment_info(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get environment information including Python environment and dependencies.
 
@@ -99,7 +99,7 @@ def get_environment_info(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         # Environment variables
-        env_vars = {}
+        env_vars: dict[Any, Any] = {}
         for key, value in os.environ.items():
             if not any(
                 sensitive in key.lower()
@@ -111,7 +111,7 @@ def get_environment_info(mcp_instance_ref) -> Dict[str, Any]:
         try:
             import pkg_resources
 
-            installed_packages = []
+            installed_packages: list[Any] = []
             for dist in pkg_resources.working_set:
                 installed_packages.append(
                     {
@@ -141,7 +141,7 @@ def get_environment_info(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def get_file_info(mcp_instance_ref, file_path: str) -> Dict[str, Any]:
+def get_file_info(mcp_instance_ref: Any, file_path: str) -> Dict[str, Any]:
     """
     Get detailed information about a file or directory.
 
@@ -159,7 +159,7 @@ def get_file_info(mcp_instance_ref, file_path: str) -> Dict[str, Any]:
 
         stat = path.stat()
 
-        file_info = {
+        file_info: dict[str, Any] = {
             "path": str(path),
             "name": path.name,
             "parent": str(path.parent),
@@ -196,7 +196,7 @@ def get_file_info(mcp_instance_ref, file_path: str) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
+def get_logging_info(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get current logging configuration and status.
 
@@ -208,7 +208,7 @@ def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
         root_logger = logging.getLogger()
 
         # Get all loggers
-        loggers = {}
+        loggers: dict[Any, Any] = {}
         for name in logging.root.manager.loggerDict:
             logger_obj = logging.getLogger(name)
             loggers[name] = {
@@ -218,7 +218,7 @@ def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
             }
 
         # Get current logging configuration
-        config = {
+        config: dict[str, Any] = {
             "root_level": logging.getLevelName(root_logger.level),
             "root_handlers": len(root_logger.handlers),
             "loggers_count": len(loggers),
@@ -231,7 +231,7 @@ def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def validate_dependencies(mcp_instance_ref) -> Dict[str, Any]:
+def validate_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Validate system dependencies and requirements.
 
@@ -245,7 +245,7 @@ def validate_dependencies(mcp_instance_ref) -> Dict[str, Any]:
         pipeline_validation = validate_pipeline_dependencies()
 
         # Check for common Python packages
-        required_packages = [
+        required_packages: list[Any] = [
             "numpy",
             "matplotlib",
             "networkx",
@@ -258,7 +258,7 @@ def validate_dependencies(mcp_instance_ref) -> Dict[str, Any]:
             "psutil",
         ]
 
-        package_status = {}
+        package_status: dict[Any, Any] = {}
         for package in required_packages:
             try:
                 __import__(package)
@@ -279,7 +279,7 @@ def validate_dependencies(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> Any:
     """
     Register utility tools with the MCP server.
 
@@ -289,19 +289,19 @@ def register_tools(mcp_instance):
     logger.info("Registering utils MCP tools")
 
     # Named wrappers keep MCP audit checks happy (no functools.partial names).
-    def get_system_info_tool():
+    def get_system_info_tool() -> Any:
         return get_system_info(mcp_instance)
 
-    def get_environment_info_tool():
+    def get_environment_info_tool() -> Any:
         return get_environment_info(mcp_instance)
 
-    def get_file_info_tool(file_path: str):
+    def get_file_info_tool(file_path: str) -> Any:
         return get_file_info(mcp_instance, file_path)
 
-    def get_logging_info_tool():
+    def get_logging_info_tool() -> Any:
         return get_logging_info(mcp_instance)
 
-    def validate_dependencies_tool():
+    def validate_dependencies_tool() -> Any:
         return validate_dependencies(mcp_instance)
 
     # Register tools

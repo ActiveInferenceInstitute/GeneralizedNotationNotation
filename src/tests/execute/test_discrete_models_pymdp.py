@@ -20,6 +20,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -28,7 +29,7 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 DISCRETE_DIR = REPO_ROOT / "input" / "gnn_files" / "discrete"
 
 # All discrete GNN model files
-DISCRETE_MODELS = [
+DISCRETE_MODELS: list[Any] = [
     "actinf_pomdp_agent.md",
     "bnlearn_causal_model.md",
     "deep_planning_horizon.md",

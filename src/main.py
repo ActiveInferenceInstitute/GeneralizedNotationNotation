@@ -79,107 +79,38 @@ if Path.cwd() != PROJECT_ROOT:
 # Add src to path for imports
 sys.path.insert(0, str(SCRIPT_DIR))
 
-from utils.pipeline_template import (
-    setup_step_logging as _basic_setup_step_logging,
-)
-
-try:
-    from utils.logging.logging_utils import log_step_error, log_step_start
-except ImportError:
-    from utils.logging_utils import log_step_error, log_step_start
 from dataclasses import fields
 
 from utils.argument_utils import ArgumentParser, PipelineArguments
+
+# Structured logging and visual progress tracking are maintained pipeline
+# surfaces; import errors should fail loudly during startup.
+from utils.logging.logging_utils import (
+    PipelineLogger,
+    PipelineProgressTracker,
+    log_pipeline_summary,
+    log_step_error,
+    log_step_start,
+    reset_progress_tracker,
+    rotate_logs,
+    setup_step_logging,
+)
 from utils.pipeline_config_merge import apply_input_config_defaults
 from utils.pipeline_validator import (
     validate_pipeline_step_sequence,
     validate_step_prerequisites,
 )
 from utils.resource_manager import get_current_memory_usage
+from utils.visual_logging import (
+    VisualConfig,
+    VisualLogger,
+    create_visual_logger,
+    print_completion_summary,
+    print_pipeline_banner,
+    print_step_summary,
+)
 
-# Optional structured logging and visual progress tracking.
-# setup_step_logging is resolved here; falls back to the basic version from
-# utils.pipeline_template (_basic_setup_step_logging) when unavailable.
-try:
-    from utils.logging.logging_utils import (
-        PipelineLogger,
-        PipelineProgressTracker,
-        log_pipeline_summary,
-        reset_progress_tracker,
-        rotate_logs,
-        setup_step_logging,  # structured version — preferred
-    )
-    from utils.visual_logging import (
-        VisualConfig,
-        VisualLogger,
-        create_visual_logger,
-        print_completion_summary,
-        print_pipeline_banner,
-        print_step_summary,
-    )
-
-    STRUCTURED_LOGGING_AVAILABLE = True
-except ImportError:
-    # Fall back to the basic version imported above under its alias.
-    setup_step_logging = _basic_setup_step_logging
-    STRUCTURED_LOGGING_AVAILABLE = False
-    # Provide recovery implementations when visual logging is not available
-    from dataclasses import dataclass
-
-    @dataclass
-    class VisualConfig:
-        """Recovery visual config when visual_logging is not available."""
-
-        enable_colors: bool = True
-        enable_progress_bars: bool = True
-        enable_emoji: bool = True
-        enable_animation: bool = True
-        max_width: int = 80
-        show_timestamps: bool = False
-        show_correlation_ids: bool = True
-        compact_mode: bool = False
-
-    class VisualLogger:
-        """Recovery visual logger when visual_logging is not available."""
-
-        def __init__(self, name, config=None):
-            self.name = name
-            self.config = config
-            self._correlation_id = None
-            self.logger = logging.getLogger(name)
-
-        def set_correlation_id(self, correlation_id: str) -> None:
-            self._correlation_id = correlation_id
-
-        def print_progress(self, current: int, total: int, message: str) -> None:
-            self.logger.info(f"[{current}/{total}] {message}")
-
-        def print_step_header(
-            self, step_num: int, description: str, total: int
-        ) -> None:
-            self.logger.info(f"\n=== Step {step_num}/{total}: {description} ===")
-
-    def create_visual_logger(name: str, config: Any) -> VisualLogger:
-        vl = VisualLogger(name, config)
-        return vl
-
-    def print_pipeline_banner(title: str, subtitle: str) -> None:
-        logging.getLogger("pipeline").info(
-            f"\n{'=' * 60}\n{title}\n{subtitle}\n{'=' * 60}"
-        )
-
-    def print_step_summary(
-        step: int, desc: str, status: str, duration: float, stats: Any
-    ) -> None:
-        logging.getLogger("pipeline").info(
-            f"Step {step}: {desc} - {status} ({duration:.2f}s)"
-        )
-
-    def print_completion_summary(success: bool, duration: float, stats: Any) -> None:
-        status_msg = "COMPLETED" if success else "FAILED"
-        logging.getLogger("pipeline").info(
-            f"\n{'=' * 60}\nPipeline {status_msg} in {duration:.2f}s\n{stats}\n{'=' * 60}"
-        )
+STRUCTURED_LOGGING_AVAILABLE = True
 
 
 def main(
@@ -284,10 +215,10 @@ def main(
     visual_logger.set_correlation_id(correlation_id)
 
     # Initialize steps_to_execute outside try block
-    steps_to_execute = []
+    steps_to_execute: list[Any] = []
 
     # Define pipeline steps (outside try block for proper scope)
-    pipeline_steps = [
+    pipeline_steps: list[Any] = [
         ("0_template.py", "Template initialization"),
         ("1_setup.py", "Environment setup"),
         ("2_tests.py", "Test suite execution"),
@@ -316,8 +247,8 @@ def main(
     ]
 
     # Load configuration from config.yaml or override context
-    full_config = {}
-    config_pipeline_settings = {}
+    full_config: dict[Any, Any] = {}
+    config_pipeline_settings: dict[Any, Any] = {}
 
     if override_config is not None:
         full_config = override_config
@@ -350,7 +281,7 @@ def main(
         requested_step_numbers = parse_step_list(only_steps_val)
 
         # Automatic dependency resolution
-        step_dependencies = {
+        step_dependencies: dict[Any, Any] = {
             11: [3],  # 11_render.py needs 3_gnn.py
             12: [3, 11],  # 12_execute.py needs 3_gnn.py and 11_render.py
             8: [3],  # 8_visualization.py needs 3_gnn.py
@@ -371,7 +302,7 @@ def main(
 
         # Include dependencies automatically
         resolved_step_numbers = set(requested_step_numbers)
-        added_dependencies = []
+        added_dependencies: list[Any] = []
         for step_num in requested_step_numbers:
             if step_num in step_dependencies:
                 for dep in step_dependencies[step_num]:
@@ -402,7 +333,7 @@ def main(
             script: i for i, (script, desc) in enumerate(pipeline_steps)
         }
 
-        filtered_steps = []
+        filtered_steps: list[Any] = []
         for step in steps_to_execute:
             script_name = step[0]
             original_idx = original_indices.get(script_name, -1)
@@ -423,7 +354,7 @@ def main(
     )
 
     # Initialize pipeline execution summary
-    pipeline_summary = {
+    pipeline_summary: dict[str, Any] = {
         "run_hash": run_hash,
         "file_hashes": file_hashes,
         "start_time": datetime.now().isoformat(),
@@ -591,7 +522,7 @@ def main(
             # More precise warning detection - look for actual log levels or warning symbols
 
             # Known safe warnings that should not trigger SUCCESS_WITH_WARNINGS
-            safe_warning_patterns = [
+            safe_warning_patterns: list[Any] = [
                 r"matplotlib.*?backend",  # Matplotlib backend selection messages
                 r"using agg backend",  # Headless backend in use
                 r"no display",  # No display available (expected in CI/headless)
@@ -637,7 +568,7 @@ def main(
                 pipeline_summary["performance_summary"]["failed_steps"] += 1
                 # Only mark as critical if a core processing step fails
                 # Tests, LLM, audio, research, website, GUI, analysis are non-critical
-                critical_scripts = {
+                critical_scripts: set[Any] = {
                     "0_template.py",
                     "1_setup.py",
                     "3_gnn.py",
@@ -674,7 +605,7 @@ def main(
             status_for_logging = step_result["status"]
 
             # Visual step completion summary
-            step_stats = {
+            step_stats: dict[str, Any] = {
                 "Status": status_for_logging,
                 "Duration": f"{step_duration:.2f}s",
                 "Memory": f"{step_result.get('peak_memory_mb', 0):.1f}MB",
@@ -790,10 +721,10 @@ def main(
             logger.info("Pipeline summary saved successfully")
 
             # Index completion
-            run_hash = pipeline_summary.get("run_hash")
-            if run_hash:
+            run_hash_value = pipeline_summary.get("run_hash")
+            if isinstance(run_hash_value, str) and run_hash_value:
                 index_run(
-                    run_hash=run_hash,
+                    run_hash=run_hash_value,
                     summary_path=summary_path,
                     config={
                         "args": args.to_dict(),
@@ -838,7 +769,7 @@ def main(
             logger.error(f"Failed to save pipeline summary: {e}")
             # Try to save a minimal summary as recovery
             try:
-                minimal_summary = {
+                minimal_summary: dict[str, Any] = {
                     "start_time": pipeline_summary.get("start_time"),
                     "end_time": datetime.now().isoformat(),
                     "overall_status": "FAILED",
@@ -860,7 +791,7 @@ def main(
         total_duration = pipeline_summary["total_duration_seconds"]
         perf_summary = pipeline_summary["performance_summary"]
 
-        completion_stats = {
+        completion_stats: dict[str, Any] = {
             "Total Steps": len(pipeline_summary.get("steps", [])),
             "Successful": perf_summary["successful_steps"],
             "Failed": perf_summary["failed_steps"],
@@ -917,7 +848,7 @@ def main(
 
 
 def execute_pipeline_step(
-    script_name: str, args: PipelineArguments, logger
+    script_name: str, args: PipelineArguments, logger: Any
 ) -> Dict[str, Any]:
     """Execute a single pipeline step with comprehensive monitoring."""
     import os
@@ -926,7 +857,7 @@ def execute_pipeline_step(
     start_memory = get_current_memory_usage()
     peak_memory = start_memory
 
-    step_result = {
+    step_result: dict[str, Any] = {
         "status": "UNKNOWN",
         "stdout": "",
         "stderr": "",
@@ -941,8 +872,8 @@ def execute_pipeline_step(
 
     try:
         # Load config.yaml once — used for both skip_steps (prereq validation) and testing_matrix
-        config_skip_steps = []
-        testing_matrix = {}
+        config_skip_steps: list[Any] = []
+        testing_matrix: dict[Any, Any] = {}
         input_config_path = Path("input/config.yaml")
         if input_config_path.exists():
             try:
@@ -982,7 +913,7 @@ def execute_pipeline_step(
         step_num = int(step_num_match.group(1)) if step_num_match else -1
 
         matrix_enabled = testing_matrix.get("enabled", False)
-        target_folders = []
+        target_folders: list[Any] = []
 
         # Check global_steps: if a global step (0, 1, 2) is disabled, skip it entirely
         if matrix_enabled:
@@ -1181,7 +1112,7 @@ def get_environment_info() -> Dict[str, Any]:
     """Get environment information."""
     import os
 
-    info = {
+    info: dict[str, Any] = {
         "python_version": sys.version,
         "platform": sys.platform,
         "cpu_count": os.cpu_count(),
@@ -1206,7 +1137,7 @@ def get_environment_info() -> Dict[str, Any]:
     return info
 
 
-def validate_pipeline_summary(summary: dict, logger) -> None:
+def validate_pipeline_summary(summary: dict, logger: Any) -> None:
     """
     Validate pipeline summary structure and data integrity.
 
@@ -1214,7 +1145,7 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
         summary: Pipeline summary dictionary to validate
         logger: Logger instance for validation messages
     """
-    required_fields = [
+    required_fields: list[Any] = [
         "start_time",
         "arguments",
         "steps",
@@ -1243,14 +1174,19 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
             logger.error(f"Step {i} should be a dictionary")
             continue
 
-        step_required = ["status", "step_number", "script_name", "description"]
+        step_required: list[Any] = [
+            "status",
+            "step_number",
+            "script_name",
+            "description",
+        ]
         for field in step_required:
             if field not in step:
                 logger.warning(f"Step {i} missing required field: {field}")
 
         # Validate step status values
         if "status" in step:
-            valid_statuses = [
+            valid_statuses: list[Any] = [
                 "SUCCESS",
                 "SUCCESS_WITH_WARNINGS",
                 "PARTIAL_SUCCESS",
@@ -1262,7 +1198,7 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
                 logger.warning(f"Step {i} has invalid status: {step['status']}")
 
         # Validate numeric fields
-        numeric_fields = [
+        numeric_fields: list[Any] = [
             "step_number",
             "exit_code",
             "retry_count",

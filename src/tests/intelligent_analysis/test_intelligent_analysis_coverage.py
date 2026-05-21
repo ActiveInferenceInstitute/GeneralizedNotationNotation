@@ -6,6 +6,7 @@ Uses realistic pipeline-summary shapes as fixtures.
 
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
@@ -17,29 +18,29 @@ if str(SRC) not in sys.path:
 # --- validate_pipeline_summary ------------------------------------------
 
 
-def test_validate_pipeline_summary_accepts_minimal_valid_shape():
+def test_validate_pipeline_summary_accepts_minimal_valid_shape() -> Any:
     from intelligent_analysis import validate_pipeline_summary
 
-    summary = {"steps": [{"name": "3_gnn", "status": "success"}]}
+    summary: dict[str, Any] = {"steps": [{"name": "3_gnn", "status": "success"}]}
     # Either True or False — but must not raise.
     result = validate_pipeline_summary(summary)
     assert isinstance(result, bool)
 
 
-def test_validate_pipeline_summary_rejects_non_dict():
+def test_validate_pipeline_summary_rejects_non_dict() -> Any:
     from intelligent_analysis import validate_pipeline_summary
 
-    result = validate_pipeline_summary("not-a-dict")  # type: ignore[arg-type]
+    result = validate_pipeline_summary(cast(Any, "not-a-dict"))
     assert result is False
 
 
 # --- health scoring ------------------------------------------------------
 
 
-def test_calculate_pipeline_health_score_perfect_run_is_high():
+def test_calculate_pipeline_health_score_perfect_run_is_high() -> Any:
     from intelligent_analysis.analyzer import calculate_pipeline_health_score
 
-    summary = {
+    summary: dict[str, Any] = {
         "steps": [
             {"name": f"step_{i}", "status": "success", "duration_s": 1.0}
             for i in range(25)
@@ -55,7 +56,7 @@ def test_calculate_pipeline_health_score_perfect_run_is_high():
     assert score >= 80.0, f"Perfect pipeline scored low: {score}"
 
 
-def test_calculate_pipeline_health_score_handles_empty_summary():
+def test_calculate_pipeline_health_score_handles_empty_summary() -> Any:
     """Regression: empty summary must not raise — it gets a baseline score."""
     from intelligent_analysis.analyzer import calculate_pipeline_health_score
 
@@ -66,7 +67,7 @@ def test_calculate_pipeline_health_score_handles_empty_summary():
 # --- classify_failure_severity ------------------------------------------
 
 
-def test_classify_failure_severity_returns_recognized_level():
+def test_classify_failure_severity_returns_recognized_level() -> Any:
     from intelligent_analysis.analyzer import classify_failure_severity
 
     severity = classify_failure_severity(
@@ -79,7 +80,7 @@ def test_classify_failure_severity_returns_recognized_level():
     assert isinstance(severity, str)
     # Accept the full taxonomy used by intelligent_analysis (including "minor"
     # and "major", which the module uses in its triage rubric).
-    allowed = {
+    allowed: set[Any] = {
         "critical",
         "high",
         "medium",
@@ -98,10 +99,10 @@ def test_classify_failure_severity_returns_recognized_level():
 # --- detect_performance_patterns + generate_optimization_suggestions ---
 
 
-def test_detect_performance_patterns_returns_list():
+def test_detect_performance_patterns_returns_list() -> Any:
     from intelligent_analysis.analyzer import detect_performance_patterns
 
-    summary = {
+    summary: dict[str, Any] = {
         "steps": [
             {"name": "11_render", "duration_s": 30.0, "status": "success"},
             {"name": "12_execute", "duration_s": 120.0, "status": "success"},
@@ -111,7 +112,7 @@ def test_detect_performance_patterns_returns_list():
     assert isinstance(patterns, list)
 
 
-def test_generate_optimization_suggestions_returns_list():
+def test_generate_optimization_suggestions_returns_list() -> Any:
     from intelligent_analysis.analyzer import generate_optimization_suggestions
 
     result = generate_optimization_suggestions({"steps": []})
@@ -121,7 +122,7 @@ def test_generate_optimization_suggestions_returns_list():
 # --- remediation --------------------------------------------------------
 
 
-def test_suggest_fix_accepts_violation_object():
+def test_suggest_fix_accepts_violation_object() -> Any:
     """suggest_fix expects a violation object exposing .framework and .field
     (a simple namespace-style object is enough for testing)."""
     from types import SimpleNamespace
@@ -136,7 +137,7 @@ def test_suggest_fix_accepts_violation_object():
     assert result is None or result.__class__.__name__ == "RemediationPlan"
 
 
-def test_suggest_fix_raises_on_dict_violation():
+def test_suggest_fix_raises_on_dict_violation() -> Any:
     """suggest_fix has a documented contract: the argument must be a
     violation object, not a dict. Passing a dict should raise AttributeError
     — we test this so that future API changes toward dict acceptance are
@@ -146,4 +147,4 @@ def test_suggest_fix_raises_on_dict_violation():
     from intelligent_analysis.remediation import suggest_fix
 
     with _pytest.raises(AttributeError):
-        suggest_fix({"type": "unknown", "message": "x"})  # type: ignore[arg-type]
+        suggest_fix({"type": "unknown", "message": "x"})

@@ -2,13 +2,15 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 import pytest
 
 from execute.processor import _slim_execution_detail, _summarize_collected_outputs
 
 
 def test_slim_execution_detail_strips_bulk_fields_and_keeps_lengths() -> None:
-    heavy = {
+    heavy: dict[str, Any] = {
         "script_path": "/tmp/x.py",
         "script_name": "x.py",
         "framework": "pymdp",
@@ -38,7 +40,7 @@ def test_slim_execution_detail_strips_bulk_fields_and_keeps_lengths() -> None:
 
 
 def test_slim_execution_detail_omits_missing_optional_keys() -> None:
-    minimal = {
+    minimal: dict[str, Any] = {
         "script_name": "y.py",
         "framework": "jax",
         "model_name": "m",
@@ -56,5 +58,5 @@ def test_slim_execution_detail_omits_missing_optional_keys() -> None:
         ({"a": [1], "b": {"x": 1}}, {"a": {"count": 1}, "b": {"n_keys": 1}}),
     ],
 )
-def test_summarize_collected_outputs(coll, expected) -> None:
+def test_summarize_collected_outputs(coll: Any, expected: Any) -> None:
     assert _summarize_collected_outputs(coll) == expected

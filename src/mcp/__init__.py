@@ -4,6 +4,8 @@ See ``src/mcp/AGENTS.md`` for the public API, step-21 wiring, and tool registrat
 """
 
 # Import exception classes from exceptions module
+from typing import Any
+
 from .exceptions import (
     MCPError,
     MCPInvalidParamsError,
@@ -57,7 +59,7 @@ __author__ = "Active Inference Institute"
 __description__ = "Enhanced Model Context Protocol implementation for GNN"
 
 # Feature availability flags
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "tool_registration": True,
     "resource_access": True,
     "module_discovery": True,
@@ -79,7 +81,7 @@ FEATURES = {
 # Note: process_mcp is imported from processor.py above, not redefined here
 
 
-__all__ = [
+__all__: list[Any] = [
     # Core MCP classes and functions
     "mcp_instance",
     "initialize",

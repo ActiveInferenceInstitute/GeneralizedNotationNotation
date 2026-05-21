@@ -28,7 +28,7 @@ def flatten_pipeline_test_summary(summary: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
+def generate_markdown_report(report_path: Path, summary: Dict[str, Any]) -> Any:
     """Generate markdown test report."""
     try:
         path = report_path
@@ -79,7 +79,7 @@ def generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
         logging.warning(f"Failed to generate markdown report: {e}")
 
 
-def generate_fallback_report(output_dir: Path, summary: Dict[str, Any]):
+def generate_fallback_report(output_dir: Path, summary: Dict[str, Any]) -> Any:
     """Generate recovery report when main report generation fails."""
     try:
         fallback_file = output_dir / "test_report_fallback.txt"
@@ -98,7 +98,7 @@ def generate_fallback_report(output_dir: Path, summary: Dict[str, Any]):
         logging.warning(f"Failed to generate recovery report: {e}")
 
 
-def generate_timeout_report(output_dir: Path, cmd: List[str], timeout: int):
+def generate_timeout_report(output_dir: Path, cmd: List[str], timeout: int) -> Any:
     """Generate report for timeout scenarios."""
     try:
         timeout_file = output_dir / "test_timeout_report.txt"
@@ -115,7 +115,7 @@ def generate_timeout_report(output_dir: Path, cmd: List[str], timeout: int):
         logging.warning(f"Failed to generate timeout report: {e}")
 
 
-def generate_error_report(output_dir: Path, cmd: List[str], error_msg: str):
+def generate_error_report(output_dir: Path, cmd: List[str], error_msg: str) -> Any:
     """Generate report for error scenarios."""
     try:
         error_file = output_dir / "test_error_report.txt"

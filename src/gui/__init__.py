@@ -16,8 +16,10 @@ Public API:
 - get_available_guis: list all available GUI implementations
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "form_based_constructor": True,
     "visual_matrix_editor": True,
     "state_space_studio": True,
@@ -50,7 +52,7 @@ from .processor import (
 )
 
 
-def get_available_guis():
+def get_available_guis() -> Any:
     """Get list of available GUI implementations with their info"""
     return {
         "gui_1": get_gui_1_info(),
@@ -60,7 +62,7 @@ def get_available_guis():
     }
 
 
-__all__ = [
+__all__: list[Any] = [
     "process_gui",
     "gui_1",
     "gui_2",

@@ -17,7 +17,7 @@ import numpy as np
 class SimulationTracker:
     """Generic tracker for simulation data across different frameworks."""
 
-    def __init__(self, model_name: str, framework: str, output_dir: Path):
+    def __init__(self, model_name: str, framework: str, output_dir: Path) -> None:
         self.model_name = model_name
         self.framework = framework
         self.output_dir = Path(output_dir)
@@ -30,7 +30,7 @@ class SimulationTracker:
         (self.output_dir / "execution_logs").mkdir(parents=True, exist_ok=True)
 
         # Initialize data storage
-        self.data = {
+        self.data: dict[str, Any] = {
             "metadata": {
                 "model_name": model_name,
                 "framework": framework,
@@ -64,7 +64,7 @@ class SimulationTracker:
 
     def log_step(
         self, step: int, state: Any, action: Any, observation: Any, reward: float
-    ):
+    ) -> Any:
         """Log a simulation step with all relevant data."""
         step_time = datetime.now().isoformat()
 
@@ -87,7 +87,7 @@ class SimulationTracker:
             f"Step {step}: State={state}, Action={action}, Obs={observation}, Reward={reward}"
         )
 
-    def log_matrices(self, matrices: Dict[str, Any]):
+    def log_matrices(self, matrices: Dict[str, Any]) -> Any:
         """Log model matrices (A, B, C, D, etc.)."""
         for name, matrix in matrices.items():
             if hasattr(matrix, "tolist"):
@@ -100,7 +100,7 @@ class SimulationTracker:
                 self.data["matrices"][name] = matrix
         self.logger.info(f"Logged matrices: {list(matrices.keys())}")
 
-    def calculate_summary_stats(self):
+    def calculate_summary_stats(self) -> Any:
         """Calculate summary statistics for the simulation."""
         rewards = self.data["traces"]["rewards"]
         if rewards:
@@ -114,7 +114,7 @@ class SimulationTracker:
             }
         self.logger.info(f"Summary stats: {self.data['summary_stats']}")
 
-    def generate_visualizations(self):
+    def generate_visualizations(self) -> Any:
         """Generate standard visualizations for any Active Inference simulation."""
         if not self.data["traces"]["rewards"]:
             return
@@ -142,7 +142,7 @@ class SimulationTracker:
         # Plot 3: Action distribution
         if self.data["traces"]["actions"]:
             actions = self.data["traces"]["actions"]
-            action_counts = {}
+            action_counts: dict[Any, Any] = {}
             for action in actions:
                 action_str = str(action)
                 action_counts[action_str] = action_counts.get(action_str, 0) + 1
@@ -155,7 +155,7 @@ class SimulationTracker:
         # Plot 4: Observation distribution
         if self.data["traces"]["observations"]:
             observations = self.data["traces"]["observations"]
-            obs_counts = {}
+            obs_counts: dict[Any, Any] = {}
             for obs in observations:
                 obs_str = str(obs)
                 obs_counts[obs_str] = obs_counts.get(obs_str, 0) + 1
@@ -179,7 +179,7 @@ class SimulationTracker:
         # Generate belief state evolution if available
         self._generate_belief_evolution()
 
-    def _generate_belief_evolution(self):
+    def _generate_belief_evolution(self) -> Any:
         """Generate belief state evolution visualization if data is available."""
         belief_states = self.data["traces"]["belief_states"]
         if not belief_states or not hasattr(belief_states[0], "__len__"):
@@ -210,7 +210,7 @@ class SimulationTracker:
         except Exception as e:
             self.logger.warning(f"Could not generate belief evolution plot: {e}")
 
-    def save_data(self):
+    def save_data(self) -> Any:
         """Save all collected data to JSON files."""
         self.calculate_summary_stats()
 
@@ -234,7 +234,7 @@ class SimulationTracker:
 
         self.logger.info(f"Saved data to {data_file} and {trace_file}")
 
-    def finalize(self):
+    def finalize(self) -> Any:
         """Finalize the simulation by generating all outputs."""
         self.generate_visualizations()
         self.save_data()
@@ -266,14 +266,14 @@ class SimulationTracker:
 class DiagramAnalyzer:
     """Generic analyzer for categorical diagrams and mathematical structures."""
 
-    def __init__(self, model_name: str, output_dir: Path):
+    def __init__(self, model_name: str, output_dir: Path) -> None:
         self.model_name = model_name
         self.output_dir = Path(output_dir)
 
         (self.output_dir / "diagram_outputs").mkdir(parents=True, exist_ok=True)
         (self.output_dir / "analysis").mkdir(parents=True, exist_ok=True)
 
-        self.analysis_data = {
+        self.analysis_data: dict[str, Any] = {
             "model_name": model_name,
             "timestamp": datetime.now().isoformat(),
             "diagrams": [],
@@ -283,9 +283,9 @@ class DiagramAnalyzer:
 
     def log_diagram(
         self, diagram_name: str, domain: str, codomain: str, properties: Dict[str, Any]
-    ):
+    ) -> Any:
         """Log a categorical diagram with its properties."""
-        diagram_info = {
+        diagram_info: dict[str, Any] = {
             "name": diagram_name,
             "domain": str(domain),
             "codomain": str(codomain),
@@ -300,9 +300,9 @@ class DiagramAnalyzer:
         source: str,
         target: str,
         composition_info: Dict[str, Any],
-    ):
+    ) -> Any:
         """Log a morphism with composition information."""
-        morphism_info = {
+        morphism_info: dict[str, Any] = {
             "name": morphism_name,
             "source": str(source),
             "target": str(target),
@@ -311,7 +311,7 @@ class DiagramAnalyzer:
         }
         self.analysis_data["morphisms"].append(morphism_info)
 
-    def generate_diagram_report(self):
+    def generate_diagram_report(self) -> Any:
         """Generate a comprehensive report on the categorical structure."""
         report_file = (
             self.output_dir / "analysis" / f"{self.model_name}_diagram_analysis.md"

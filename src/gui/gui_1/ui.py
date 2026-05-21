@@ -5,12 +5,12 @@ import os
 import tempfile
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, cast
 
 try:
     import gradio as gr
 except Exception:
-    gr = None  # type: ignore
+    gr = cast(Any, None)
 
 from .markdown import (
     add_component_to_markdown,
@@ -23,9 +23,14 @@ from .markdown import (
 )
 
 
+def _dimension_count(item: dict[str, object]) -> int:
+    dims = item.get("dims", [])
+    return len(dims) if isinstance(dims, list) else 0
+
+
 def build_gui(
     markdown_text: str, export_path: Path, logger: Optional[logging.Logger] = None
-) -> "gr.Blocks":  # type: ignore[name-defined]
+) -> "gr.Blocks":
     if gr is None:
         raise RuntimeError("Gradio not available")
 
@@ -34,10 +39,12 @@ def build_gui(
     initial_names = [str(i.get("name", "")) for i in initial_items if i.get("name")]
     initial_selected = initial_names[0] if initial_names else ""
 
-    def _vals_for(name: str):
+    def _vals_for(name: str) -> Any:
         for e in initial_items:
             if str(e.get("name")) == name:
-                dims_csv = ", ".join(str(d) for d in e.get("dims", []))
+                dims_value = e.get("dims", [])
+                dims = dims_value if isinstance(dims_value, list) else []
+                dims_csv = ", ".join(str(d) for d in dims)
                 typ = str(e.get("type", ""))
                 cmt = str(e.get("comment", ""))
                 return str(e.get("name", "")), dims_csv, typ, cmt
@@ -136,10 +143,8 @@ def build_gui(
                         "components": 1,
                         "state_entries": len(initial_items),
                         "total_states": sum(
-                            len(item.get("dims", [])) for item in initial_items
-                        )
-                        if initial_items
-                        else 0,
+                            _dimension_count(item) for item in initial_items
+                        ),
                     },
                 )
 
@@ -162,7 +167,7 @@ def build_gui(
         def remove_component(md: str, name: str) -> str:
             return remove_component_from_markdown(md, name)
 
-        def save_md(md: str):
+        def save_md(md: str) -> Any:
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", dir=export_path.parent, delete=False
             ) as tmp_f:
@@ -174,7 +179,7 @@ def build_gui(
 
             # Calculate updated statistics
             items = parse_state_space_from_markdown(md)
-            stats = {
+            stats: dict[str, Any] = {
                 "components": len(
                     [
                         line
@@ -183,9 +188,7 @@ def build_gui(
                     ]
                 ),
                 "state_entries": len(items),
-                "total_states": sum(len(item.get("dims", [])) for item in items)
-                if items
-                else 0,
+                "total_states": sum(_dimension_count(item) for item in items),
                 "file_size_chars": len(md),
                 "last_saved": datetime.now().strftime("%H:%M:%S"),
             }
@@ -246,16 +249,16 @@ def build_gui(
             items = parse_state_space_from_markdown(md)
             return [str(i.get("name", "")) for i in items if i.get("name")]
 
-        def refresh_states(md: str):
+        def refresh_states(md: str) -> Any:
             return gr.update(choices=_compute_state_choices(md))
 
-        def add_state(md: str, name: str, dims_csv: str, typ: str, comment: str):
+        def add_state(md: str, name: str, dims_csv: str, typ: str, comment: str) -> Any:
             dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
             return add_state_space_entry(md, name, dims, typ or None, comment or None)
 
         def update_state(
             md: str, selected: str, name: str, dims_csv: str, typ: str, comment: str
-        ):
+        ) -> Any:
             dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
             return update_state_space_entry(
                 md,
@@ -266,7 +269,7 @@ def build_gui(
                 comment or None,
             )
 
-        def remove_state(md: str, selected: str):
+        def remove_state(md: str, selected: str) -> Any:
             if not selected:
                 return md
             return remove_state_space_entry(md, selected)
@@ -300,11 +303,13 @@ def build_gui(
             outputs=[markdown_editor],
         )
 
-        def populate_fields(md: str, selected: str):
+        def populate_fields(md: str, selected: str) -> Any:
             entries = parse_state_space_from_markdown(md)
             for e in entries:
                 if str(e.get("name")) == selected:
-                    dims = ", ".join(str(d) for d in e.get("dims", []))
+                    dims_value = e.get("dims", [])
+                    dims_items = dims_value if isinstance(dims_value, list) else []
+                    dims = ", ".join(str(d) for d in dims_items)
                     typ = str(e.get("type", ""))
                     cmt = str(e.get("comment", ""))
                     return [e.get("name", ""), dims, typ, cmt]
@@ -319,7 +324,7 @@ def build_gui(
         # Real-time editing: typing in any field applies update and keeps dropdown synced
         def update_state_live(
             md: str, selected: str, name: str, dims_csv: str, typ: str, comment: str
-        ):
+        ) -> Any:
             dims = [int(x.strip()) for x in dims_csv.split(",") if x.strip().isdigit()]
             new_md = update_state_space_entry(
                 md,

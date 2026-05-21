@@ -103,7 +103,7 @@ def execute_gnn_model_mcp(
             Path(output_directory),
         )
         if isinstance(result, dict):
-            merged = {"success": bool(result.get("success", True))}
+            merged: dict[str, Any] = {"success": bool(result.get("success", True))}
             merged.update(result)
             return merged
         return {"success": bool(result), "result": result}
@@ -206,7 +206,7 @@ def get_execute_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register execute domain tools with the MCP server."""
 
     mcp_instance.register_tool(

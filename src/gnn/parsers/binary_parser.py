@@ -12,7 +12,7 @@ License: MIT
 import base64
 import logging
 import pickle  # nosec B403
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ from .common import (
 class PickleGNNParser(BaseGNNParser):
     """Parser for Python pickle binary format with enhanced round-trip support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def get_supported_extensions(self) -> List[str]:
@@ -108,7 +108,12 @@ class PickleGNNParser(BaseGNNParser):
 
     def _is_enhanced_gnn_data(self, data: Dict[str, Any]) -> bool:
         """Check if data is from our enhanced GNN serialization format."""
-        required_fields = ["model_name", "variables", "connections", "parameters"]
+        required_fields: list[Any] = [
+            "model_name",
+            "variables",
+            "connections",
+            "parameters",
+        ]
         return all(field in data for field in required_fields)
 
     def _reconstruct_model_from_enhanced_data(
@@ -195,7 +200,7 @@ class PickleGNNParser(BaseGNNParser):
 
         return model
 
-    def _parse_dict_data(self, data: Dict[str, Any], result: ParseResult):
+    def _parse_dict_data(self, data: Dict[str, Any], result: ParseResult) -> Any:
         """Parse dictionary data."""
         # Look for common GNN structure patterns
         if "model_name" in data:
@@ -217,7 +222,7 @@ class PickleGNNParser(BaseGNNParser):
                 )
                 result.model.parameters.append(parameter)
 
-    def _parse_object_data(self, obj: Any, result: ParseResult):
+    def _parse_object_data(self, obj: Any, result: ParseResult) -> Any:
         """Parse object data."""
         result.model.model_name = f"{type(obj).__name__}Model"
 
@@ -235,7 +240,7 @@ class PickleGNNParser(BaseGNNParser):
                 except (AttributeError, TypeError) as e:
                     logger.debug("Skipping non-readable attribute: %s", e)
 
-    def _parse_variables_list(self, variables: List[Any], result: ParseResult):
+    def _parse_variables_list(self, variables: List[Any], result: ParseResult) -> Any:
         """Parse variables from list."""
         for var_data in variables:
             if isinstance(var_data, dict):
@@ -252,7 +257,7 @@ class PickleGNNParser(BaseGNNParser):
                 )
                 result.model.variables.append(variable)
 
-    def _parse_parameters_dict(self, parameters: Any, result: ParseResult):
+    def _parse_parameters_dict(self, parameters: Any, result: ParseResult) -> Any:
         """Parse parameters from dictionary or list."""
         if isinstance(parameters, dict):
             for param_name, param_value in parameters.items():
@@ -283,7 +288,7 @@ class PickleGNNParser(BaseGNNParser):
 
     def _parse_variable_type(self, type_str: str) -> VariableType:
         """Parse variable type from string."""
-        type_mapping = {
+        type_mapping: dict[str, Any] = {
             "hidden_state": VariableType.HIDDEN_STATE,
             "observation": VariableType.OBSERVATION,
             "action": VariableType.ACTION,
@@ -293,11 +298,14 @@ class PickleGNNParser(BaseGNNParser):
             "preference_vector": VariableType.PREFERENCE_VECTOR,
             "prior_vector": VariableType.PRIOR_VECTOR,
         }
-        return type_mapping.get(type_str.lower(), VariableType.HIDDEN_STATE)
+        return cast(
+            "VariableType",
+            type_mapping.get(type_str.lower(), VariableType.HIDDEN_STATE),
+        )
 
     def _parse_data_type(self, type_str: str) -> DataType:
         """Parse data type from string."""
-        type_mapping = {
+        type_mapping: dict[str, Any] = {
             "categorical": DataType.CATEGORICAL,
             "continuous": DataType.CONTINUOUS,
             "binary": DataType.BINARY,
@@ -305,4 +313,6 @@ class PickleGNNParser(BaseGNNParser):
             "float": DataType.FLOAT,
             "complex": DataType.COMPLEX,
         }
-        return type_mapping.get(type_str.lower(), DataType.CATEGORICAL)
+        return cast(
+            "DataType", type_mapping.get(type_str.lower(), DataType.CATEGORICAL)
+        )

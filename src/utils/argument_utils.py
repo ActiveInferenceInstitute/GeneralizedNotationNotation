@@ -29,7 +29,7 @@ class ArgumentDefinition:
     required: bool = False
     help_text: str = ""
     choices: Optional[List[str]] = None
-    action: Optional[str] = None
+    action: str | type[argparse.Action] | None = None
     # When True with store_true/store_false, default is SUPPRESS so YAML/config can supply values
     use_suppress: bool = False
 
@@ -37,7 +37,7 @@ class ArgumentDefinition:
         """Add this argument to an ArgumentParser."""
         kwargs: Dict[str, Any] = {"help": self.help_text}
 
-        if self.action:
+        if isinstance(self.action, str):
             kwargs["action"] = self.action
             if self.action in ("store_true", "store_false"):
                 if self.use_suppress:
@@ -46,12 +46,13 @@ class ArgumentDefinition:
                     kwargs["default"] = self.default
                 else:
                     kwargs["default"] = False if self.action == "store_true" else True
-            elif self.action is argparse.BooleanOptionalAction:
-                kwargs["default"] = self.default
             else:
                 kwargs["type"] = self.arg_type
                 if self.default is not None:
                     kwargs["default"] = self.default
+        elif self.action is argparse.BooleanOptionalAction:
+            kwargs["action"] = self.action
+            kwargs["default"] = self.default
         else:
             kwargs["type"] = self.arg_type
             kwargs["default"] = self.default
@@ -70,8 +71,8 @@ class PipelineArguments:
     """Centralized argument configuration for the entire pipeline."""
 
     # Core directories
-    target_dir: Path = field(default_factory=lambda: Path("input/gnn_files"))
-    output_dir: Path = field(default_factory=lambda: Path("output"))
+    target_dir: Any = field(default_factory=lambda: Path("input/gnn_files"))
+    output_dir: Any = field(default_factory=lambda: Path("output"))
 
     # Processing options
     recursive: bool = True
@@ -93,8 +94,8 @@ class PipelineArguments:
     estimate_resources: bool = False
 
     # File references
-    ontology_terms_file: Optional[Path] = None
-    pipeline_summary_file: Optional[Path] = None
+    ontology_terms_file: Any = None
+    pipeline_summary_file: Any = None
 
     # LLM options
     llm_tasks: str = "all"
@@ -114,7 +115,7 @@ class PipelineArguments:
     # Execution options
     frameworks: str = "all"
     strict_framework_success: bool = False
-    render_output_dir: Optional[Path] = None
+    render_output_dir: Any = None
     distributed: bool = False
     execution_workers: int = 1
     backend: str = "ray"
@@ -181,7 +182,7 @@ class PipelineArguments:
 
     def validate(self) -> List[str]:
         """Validate argument values and return list of errors."""
-        errors = []
+        errors: list[Any] = []
 
         # Check that target directory exists when it is a real filesystem path.
         if not str(self.target_dir).startswith("<"):
@@ -230,7 +231,7 @@ class PipelineArguments:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary with string representation of paths."""
-        result = {}
+        result: dict[Any, Any] = {}
         for key, value in self.__dict__.items():
             if isinstance(value, Path):
                 result[key] = str(value)
@@ -1111,7 +1112,7 @@ class StepConfiguration:
     @classmethod
     def validate_step_args(cls, step_name: str, args: argparse.Namespace) -> List[str]:
         """Validate arguments for a specific step."""
-        errors = []
+        errors: list[Any] = []
         config = cls.get_step_config(step_name)
 
         if not config:
@@ -1126,7 +1127,7 @@ class StepConfiguration:
                 )
 
         # Validate path arguments exist if they should
-        path_args = ["target_dir", "output_dir", "ontology_terms_file"]
+        path_args: list[Any] = ["target_dir", "output_dir", "ontology_terms_file"]
         for arg_name in path_args:
             if hasattr(args, arg_name):
                 arg_value = getattr(args, arg_name)
@@ -1275,7 +1276,7 @@ Examples:
         if not config:
             return f"Unknown step: {step_name}"
 
-        help_text = [
+        help_text: list[Any] = [
             f"Step {step_name}: {config.get('description', 'No description available')}"
         ]
 
@@ -1336,7 +1337,7 @@ def build_step_command_args(
     if not config:
         raise ValueError(f"Unknown pipeline step: {step_name}")
 
-    cmd = [python_executable, str(script_path)]
+    cmd: list[Any] = [python_executable, str(script_path)]
 
     # Get all arguments this step supports
     # First try from StepConfiguration
@@ -1379,7 +1380,7 @@ def build_step_command_args(
                 if arg_def.action == "store_true":
                     if arg_value:
                         cmd.append(flag)
-                elif arg_def.action == argparse.BooleanOptionalAction:
+                elif arg_def.action is argparse.BooleanOptionalAction:
                     # Only pass the flag if True; omit if False (don't pass --no-flag)
                     # This ensures compatibility with steps that may not support --no-flag
                     if arg_value is True:
@@ -1394,7 +1395,7 @@ def build_step_command_args(
 # Utility for step introspection
 def get_pipeline_step_info() -> Dict[str, Any]:
     """Get comprehensive information about all pipeline steps."""
-    step_info = {}
+    step_info: dict[Any, Any] = {}
 
     for step_name, config in StepConfiguration.STEP_CONFIGS.items():
         step_info[step_name] = {
@@ -1419,7 +1420,7 @@ def parse_step_arguments(
 
 def validate_arguments(args: argparse.Namespace) -> List[str]:
     """Validate parsed arguments and return list of errors."""
-    errors = []
+    errors: list[Any] = []
 
     # Basic validation
     if hasattr(args, "target_dir") and args.target_dir:
@@ -1454,7 +1455,7 @@ def validate_pipeline_configuration(
     Returns:
         Dictionary mapping step names to lists of validation errors
     """
-    validation_results = {}
+    validation_results: dict[Any, Any] = {}
 
     for step_name in StepConfiguration.STEP_CONFIGS.keys():
         # Create a namespace from pipeline args for validation
@@ -1479,7 +1480,7 @@ def parse_step_list(step_str: str) -> List[int]:
     if not step_str:
         return []
 
-    steps = []
+    steps: list[Any] = []
     for item in step_str.split(","):
         item = item.strip()
         # Extract number from formats like "1", "1_gnn", etc.
@@ -1700,8 +1701,8 @@ def parse_arguments() -> PipelineArguments:
     return pipeline_args
 
 
-def validate_and_convert_paths(args: PipelineArguments, logger: logging.Logger):
-    path_args_to_check = [
+def validate_and_convert_paths(args: PipelineArguments, logger: logging.Logger) -> Any:
+    path_args_to_check: list[Any] = [
         "output_dir",
         "target_dir",
         "ontology_terms_file",

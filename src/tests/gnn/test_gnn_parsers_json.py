@@ -1,6 +1,7 @@
 """Tests for JSONGNNParser."""
 
 import json
+from typing import Any
 
 import pytest
 
@@ -9,7 +10,7 @@ from gnn.parsers.json_parser import JSONGNNParser
 
 
 @pytest.fixture
-def parser():
+def parser() -> Any:
     return JSONGNNParser()
 
 
@@ -21,29 +22,29 @@ def _json(obj: dict) -> str:
 
 
 class TestParseString:
-    def test_valid_minimal_json(self, parser):
+    def test_valid_minimal_json(self, parser: Any) -> Any:
         result = parser.parse_string(_json({"model_name": "M"}))
         assert result.success is True
         assert result.model.model_name == "M"
 
-    def test_non_json_content_returns_failure(self, parser):
+    def test_non_json_content_returns_failure(self, parser: Any) -> Any:
         result = parser.parse_string("## GNNSection\nActInfPOMDP")
         assert result.success is False
         assert result.errors  # at least one error message
 
-    def test_invalid_json_returns_failure(self, parser):
+    def test_invalid_json_returns_failure(self, parser: Any) -> Any:
         result = parser.parse_string("{bad json:")
         assert result.success is False
         assert any("JSON" in e for e in result.errors)
 
-    def test_version_and_annotation(self, parser):
+    def test_version_and_annotation(self, parser: Any) -> Any:
         content = _json({"model_name": "M", "version": "2.0", "annotation": "note"})
         result = parser.parse_string(content)
         assert result.success is True
         assert result.model.version == "2.0"
         assert result.model.annotation == "note"
 
-    def test_leading_whitespace_stripped(self, parser):
+    def test_leading_whitespace_stripped(self, parser: Any) -> Any:
         result = parser.parse_string("  " + _json({"model_name": "M"}))
         assert result.success is True
 
@@ -52,7 +53,7 @@ class TestParseString:
 
 
 class TestParseVariables:
-    def test_basic_variable(self, parser):
+    def test_basic_variable(self, parser: Any) -> Any:
         content = _json(
             {
                 "model_name": "M",
@@ -75,7 +76,7 @@ class TestParseVariables:
         assert v.data_type == DataType.CATEGORICAL
         assert v.dimensions == [3]
 
-    def test_malformed_variable_entry_skipped(self, parser):
+    def test_malformed_variable_entry_skipped(self, parser: Any) -> Any:
         """An entry that raises during construction should be skipped; valid entries kept."""
         # Use an unknown var_type to trigger fallback, not an exception — parser handles this.
         # To actually trigger the except clause, pass a non-dict entry which will fail
@@ -97,7 +98,7 @@ class TestParseVariables:
         # The malformed entry is skipped; the valid one is parsed
         assert any(v.name == "s" for v in result.model.variables)
 
-    def test_unknown_var_type_defaults_to_hidden_state(self, parser):
+    def test_unknown_var_type_defaults_to_hidden_state(self, parser: Any) -> Any:
         content = _json(
             {
                 "model_name": "M",
@@ -107,7 +108,7 @@ class TestParseVariables:
         result = parser.parse_string(content)
         assert result.model.variables[0].var_type == VariableType.HIDDEN_STATE
 
-    def test_unknown_data_type_defaults_to_continuous(self, parser):
+    def test_unknown_data_type_defaults_to_continuous(self, parser: Any) -> Any:
         content = _json(
             {"model_name": "M", "variables": [{"name": "x", "data_type": "nonsense"}]}
         )
@@ -119,7 +120,7 @@ class TestParseVariables:
 
 
 class TestParseConnections:
-    def test_directed_connection(self, parser):
+    def test_directed_connection(self, parser: Any) -> Any:
         content = _json(
             {
                 "model_name": "M",
@@ -139,7 +140,7 @@ class TestParseConnections:
         assert c.target_variables == ["o"]
         assert c.connection_type == ConnectionType.DIRECTED
 
-    def test_unknown_connection_type_defaults_to_directed(self, parser):
+    def test_unknown_connection_type_defaults_to_directed(self, parser: Any) -> Any:
         content = _json(
             {
                 "model_name": "M",
@@ -160,7 +161,7 @@ class TestParseConnections:
 
 
 class TestGetSupportedExtensions:
-    def test_returns_dot_json(self, parser):
+    def test_returns_dot_json(self, parser: Any) -> Any:
         assert parser.get_supported_extensions() == [".json"]
 
 
@@ -168,8 +169,8 @@ class TestGetSupportedExtensions:
 
 
 class TestFullModel:
-    def test_complete_model_parse(self, parser):
-        payload = {
+    def test_complete_model_parse(self, parser: Any) -> Any:
+        payload: dict[str, Any] = {
             "model_name": "FullModel",
             "version": "1.1",
             "annotation": "ActInfPOMDP",

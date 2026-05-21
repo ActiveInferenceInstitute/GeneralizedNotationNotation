@@ -6,8 +6,10 @@ including failure analysis, performance bottleneck identification, per-step anal
 with yellow/red flag detection, and executive report generation using LLM infrastructure.
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "pipeline_analysis": True,
     "failure_root_cause": True,
     "performance_optimization": True,
@@ -78,13 +80,13 @@ def get_supported_analysis_types() -> List[str]:
 
 def validate_pipeline_summary(summary: Dict[str, Any]) -> bool:
     """Validate that a pipeline summary has the required structure."""
-    required_fields = ["start_time", "steps", "overall_status"]
+    required_fields: list[Any] = ["start_time", "steps", "overall_status"]
     return all(field in summary for field in required_fields)
 
 
 def check_intelligent_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools and LLM backends."""
-    tools = {}
+    tools: dict[Any, Any] = {}
 
     # Check LLM processor
     try:
@@ -124,7 +126,7 @@ def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
     return check_intelligent_analysis_tools()
 
 
-__all__ = [
+__all__: list[Any] = [
     # Module info
     "__version__",
     "FEATURES",

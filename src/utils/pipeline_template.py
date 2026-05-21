@@ -11,44 +11,19 @@ import logging
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-try:
-    from pipeline.config import get_output_dir_for_script
-except ImportError:
-    from pipeline.config import get_output_dir_for_script
+from pipeline.config import get_output_dir_for_script
+from utils.pipeline import (
+    setup_step_logging,
+    validate_output_directory,
+)
+from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
+    log_step_error,
+    log_step_start,
+    log_step_success,
+    log_step_warning,
+)
 
-# Standard import pattern for all pipeline modules
-try:
-    from utils.pipeline import (
-        setup_step_logging,
-        validate_output_directory,
-    )
-    from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
-        log_step_error,
-        log_step_start,
-        log_step_success,
-        log_step_warning,
-    )
-
-    UTILS_AVAILABLE = True
-
-except ImportError:
-    # Recovery: use step_logging (always importable, no external deps)
-    from utils.logging.logging_utils import (  # noqa: F401 - standard pipeline imports
-        log_step_error,
-        log_step_start,
-        log_step_success,
-        log_step_warning,
-        setup_step_logging,
-    )
-
-    def validate_output_directory(output_dir, step_name):
-        try:
-            (output_dir / f"{step_name}_step").mkdir(parents=True, exist_ok=True)
-            return True
-        except Exception:
-            return False
-
-    UTILS_AVAILABLE = False
+UTILS_AVAILABLE = True
 
 
 def _create_fallback_parser(
@@ -174,7 +149,7 @@ def create_standardized_pipeline_script(
     code. See ``_coerce_exit_code`` for the return-value contract.
     """
 
-    def run_standardized_script():
+    def run_standardized_script() -> Any:
         try:
             _preload_step_imports(step_specific_imports)
             parsed_args = _parse_step_args(
@@ -209,7 +184,7 @@ def create_standardized_pipeline_script(
 
 
 # Common additional parameters
-CommonModuleParams = {
+CommonModuleParams: dict[str, Any] = {
     "strict": bool,  # For type checking
     "estimate_resources": bool,  # For type checking
     "duration": float,  # For SAPF
@@ -223,7 +198,7 @@ CommonModuleParams = {
 }
 
 # Standardized naming conventions for module functions
-STANDARD_MODULE_FUNCTION_NAMES = {
+STANDARD_MODULE_FUNCTION_NAMES: dict[str, Any] = {
     "1_setup": "process_setup",
     "2_tests": "run_tests",
     "3_gnn": "process_gnn_files",
@@ -251,7 +226,7 @@ STANDARD_MODULE_FUNCTION_NAMES = {
 }
 
 # Standard additional arguments for each step
-STEP_ADDITIONAL_ARGUMENTS = {
+STEP_ADDITIONAL_ARGUMENTS: dict[str, Any] = {
     "5_type_checker": {
         "strict": {"type": bool, "help": "Enable strict validation mode"},
         "estimate_resources": {

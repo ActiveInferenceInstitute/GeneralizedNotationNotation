@@ -6,6 +6,7 @@ Uses real sample GNN files and real filesystem fixtures.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -20,7 +21,7 @@ SAMPLE_GNN = REPO_ROOT / "input" / "gnn_files" / "basics" / "static_perception.m
 
 
 @pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
-def test_register_and_lookup_roundtrip(tmp_path):
+def test_register_and_lookup_roundtrip(tmp_path: Any) -> Any:
     registry_path = tmp_path / "registry.json"
     registry = ModelRegistry(registry_path)
     assert registry.register_model(SAMPLE_GNN) is True
@@ -35,7 +36,7 @@ def test_register_and_lookup_roundtrip(tmp_path):
 
 
 @pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
-def test_registry_persists_across_instances(tmp_path):
+def test_registry_persists_across_instances(tmp_path: Any) -> Any:
     registry_path = tmp_path / "registry.json"
     r1 = ModelRegistry(registry_path)
     r1.register_model(SAMPLE_GNN)
@@ -47,7 +48,7 @@ def test_registry_persists_across_instances(tmp_path):
 
 
 @pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
-def test_search_models_finds_by_name(tmp_path):
+def test_search_models_finds_by_name(tmp_path: Any) -> Any:
     registry = ModelRegistry(tmp_path / "r.json")
     registry.register_model(SAMPLE_GNN)
     # The sample is "static_perception" — search with any substring of that.
@@ -55,14 +56,14 @@ def test_search_models_finds_by_name(tmp_path):
     assert len(results) >= 1, "search_models failed to find the sample by substring"
 
 
-def test_registry_handles_empty_lookup(tmp_path):
+def test_registry_handles_empty_lookup(tmp_path: Any) -> Any:
     registry = ModelRegistry(tmp_path / "empty.json")
     assert registry.list_models() == []
     assert registry.get_model("nonexistent-id") is None
 
 
 @pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN unavailable")
-def test_registry_delete_removes_model(tmp_path):
+def test_registry_delete_removes_model(tmp_path: Any) -> Any:
     registry = ModelRegistry(tmp_path / "r.json")
     registry.register_model(SAMPLE_GNN)
     models = registry.list_models()

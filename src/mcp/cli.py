@@ -13,6 +13,7 @@ import json
 import logging
 import time
 from pathlib import Path
+from typing import Any
 
 from utils.logging.logging_utils import setup_step_logging
 
@@ -20,7 +21,7 @@ from utils.logging.logging_utils import setup_step_logging
 logger = logging.getLogger("mcp.cli")
 
 
-def import_mcp():
+def import_mcp() -> Any:
     """Import the MCP module dynamically."""
     try:
         from . import MCPError, initialize, mcp_instance
@@ -33,6 +34,10 @@ def import_mcp():
             raise ImportError("MCP module not found") from None
 
         spec = importlib.util.spec_from_file_location("mcp", mcp_path)
+        if spec is None or spec.loader is None:
+            raise ImportError(
+                f"Could not load MCP module spec from {mcp_path}"
+            ) from None
         mcp_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mcp_module)
 
@@ -43,14 +48,16 @@ def import_mcp():
         )
 
 
-def _get_mcp():
+def _get_mcp() -> Any:
     """Import and initialize the MCP module, returning (mcp_instance, MCPError)."""
     mcp_instance, initialize, MCPError = import_mcp()
     initialize()
     return mcp_instance, MCPError
 
 
-def _cli_error(operation: str, e: Exception, args, suggestions: bool = False) -> None:
+def _cli_error(
+    operation: str, e: Exception, args: Any, suggestions: bool = False
+) -> None:
     """Shared CLI error handler — logs, optionally prints traceback and suggestions, exits 1."""
     logger.error(f"Error {operation}: {e}")
     if getattr(args, "verbose", False):
@@ -67,7 +74,7 @@ def _cli_error(operation: str, e: Exception, args, suggestions: bool = False) ->
     raise SystemExit(1)
 
 
-def list_capabilities(args):
+def list_capabilities(args: Any) -> Any:
     """Enhanced listing of all available MCP capabilities with better formatting."""
     try:
         mcp_instance, MCPError = _get_mcp()
@@ -113,7 +120,7 @@ def list_capabilities(args):
             logger.info("-" * 30)
 
             # Group tools by category
-            tools_by_category = {}
+            tools_by_category: dict[Any, Any] = {}
             for tool in tools:
                 category = tool.get("category", "General")
                 if category not in tools_by_category:
@@ -170,7 +177,7 @@ def list_capabilities(args):
         _cli_error("listing capabilities", e, args, suggestions=True)
 
 
-def execute_tool(args):
+def execute_tool(args: Any) -> Any:
     """Execute an MCP tool with enhanced parameter validation and error reporting."""
     try:
         mcp_instance, MCPError = _get_mcp()
@@ -185,7 +192,7 @@ def execute_tool(args):
 
         tool = mcp_instance.tools[args.tool_name]
 
-        params = {}
+        params: dict[Any, Any] = {}
         if args.params:
             try:
                 params = json.loads(args.params)
@@ -252,7 +259,7 @@ def execute_tool(args):
         _cli_error("executing tool", e, args)
 
 
-def get_resource(args):
+def get_resource(args: Any) -> Any:
     """Retrieve an MCP resource."""
     try:
         mcp_instance, MCPError = _get_mcp()
@@ -273,7 +280,7 @@ def get_resource(args):
         _cli_error("retrieving resource", e, args)
 
 
-def get_server_status(args):
+def get_server_status(args: Any) -> Any:
     """Get detailed server status information."""
     try:
         mcp_instance, MCPError = _get_mcp()
@@ -307,7 +314,7 @@ def get_server_status(args):
         _cli_error("getting server status", e, args)
 
 
-def get_tool_info(args):
+def get_tool_info(args: Any) -> Any:
     """Get detailed information about a specific tool."""
     try:
         mcp_instance, MCPError = _get_mcp()
@@ -381,7 +388,7 @@ def get_tool_info(args):
         _cli_error("getting tool info", e, args)
 
 
-def get_diagnostics(args):
+def get_diagnostics(args: Any) -> Any:
     """Get comprehensive diagnostic information."""
     try:
         mcp_instance, MCPError = _get_mcp()
@@ -393,7 +400,11 @@ def get_diagnostics(args):
             overall_health = result.get("overall_health", "unknown")
         except (AttributeError, KeyError, TypeError):
             # Recovery to basic diagnostics
-            diagnostics = {"issues": [], "warnings": [], "recommendations": []}
+            diagnostics = {
+                "issues": [],
+                "warnings": [],
+                "recommendations": [],
+            }
             overall_health = "unknown"
 
         if args.format == "json":
@@ -471,7 +482,7 @@ def get_diagnostics(args):
         _cli_error("getting diagnostics", e, args, suggestions=True)
 
 
-def start_server(args):
+def start_server(args: Any) -> Any:
     """Start the MCP server."""
     try:
         # Import specific server implementation based on transport type
@@ -494,7 +505,7 @@ def start_server(args):
         _cli_error("starting server", e, args)
 
 
-def main():
+def main() -> Any:
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
         description="Model Context Protocol CLI for GNN",

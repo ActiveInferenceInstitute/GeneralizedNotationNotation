@@ -19,6 +19,7 @@ Date: 2024
 
 import warnings
 from datetime import datetime
+from typing import Any
 
 warnings.filterwarnings("ignore")
 
@@ -38,7 +39,7 @@ class PyMDPVisualizer:
 
     def __init__(
         self,
-        *args,
+        *args: Any,
         grid_size: Optional[int] = None,
         figsize: Tuple[int, int] = (10, 8),
         style: str = "default",
@@ -46,7 +47,7 @@ class PyMDPVisualizer:
         output_dir: Optional[Union[Path, str]] = None,
         show_plots: bool = True,
         config: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
         """
         Initialize PyMDP visualizer with configuration from GNN specifications.
 
@@ -93,7 +94,7 @@ class PyMDPVisualizer:
         }
 
         # Track visualization metadata
-        self.figures = {}
+        self.figures: dict[str, Any] = {}
         self.plot_count = 0
 
     # Public wrappers around the concrete plotting methods.
@@ -173,7 +174,7 @@ class PyMDPVisualizer:
         save_path: Optional[Union[Path, str]] = None,
     ) -> Any:
         # Create a combined visualization: states + belief + performance
-        metrics = {
+        metrics: dict[str, Any] = {
             "actions": episode_trace.get("actions", []),
             "belief_confidence": [
                 max(b)
@@ -285,7 +286,7 @@ class PyMDPVisualizer:
         plt.colorbar(im, ax=ax1, label="Belief Probability")
 
         # Plot belief entropy over time
-        entropies = []
+        entropies: list[Any] = []
         for b in beliefs:
             b_arr = np.asarray(b)
             entropies.append(-np.sum(b_arr * np.log(b_arr + 1e-10)))
@@ -401,7 +402,7 @@ class PyMDPVisualizer:
             return None
 
         # Process EFE (take min across policies if it's a list)
-        efe_summary = []
+        efe_summary: list[Any] = []
         for efe_t in efe:
             if hasattr(efe_t, "__iter__") and not isinstance(efe_t, str):
                 efe_summary.append(min(efe_t) if len(efe_t) > 0 else 0)
@@ -467,7 +468,7 @@ class PyMDPVisualizer:
         save_dir = Path(save_dir)
         save_dir.mkdir(parents=True, exist_ok=True)
 
-        saved_files = {}
+        saved_files: dict[Any, Any] = {}
 
         for plot_name, fig in self.figures.items():
             if metadata:
@@ -535,7 +536,7 @@ def save_all_visualizations(
     config = config or {}
     visualizer = create_visualizer({**config, "save_dir": output_dir})
 
-    saved_files = {}
+    saved_files: dict[Any, Any] = {}
 
     try:
         # Visualize state sequence
@@ -570,7 +571,7 @@ def save_all_visualizations(
                 )
 
         # Build metadata for plots
-        metadata = {
+        metadata: dict[str, Any] = {
             "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "PyMDP Framework Mode": "Discrete",
         }

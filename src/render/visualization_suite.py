@@ -4,6 +4,8 @@ Visualization Suite and Data Exports
 Provides comprehensive visualization and data export utilities for all frameworks
 """
 
+from typing import Any, cast
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -12,21 +14,21 @@ try:
 
     _PANDAS_AVAILABLE = True
 except ImportError:
-    pd = None  # type: ignore[assignment]
+    pd = cast(Any, None)
     _PANDAS_AVAILABLE = False
 import csv
 import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 try:
     import seaborn as sns
 
     _SNS_AVAILABLE = True
 except ImportError:
-    sns = None
+    sns = cast(Any, None)
     _SNS_AVAILABLE = False
 
 try:
@@ -34,7 +36,7 @@ try:
 
     _H5PY_AVAILABLE = True
 except ImportError:
-    h5py = None
+    h5py = cast(Any, None)
     _H5PY_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
@@ -48,7 +50,7 @@ if _SNS_AVAILABLE:
 class ComprehensiveDataExporter:
     """Exports simulation data in multiple formats for reproducibility"""
 
-    def __init__(self, output_dir: Path, simulation_name: str):
+    def __init__(self, output_dir: Path, simulation_name: str) -> None:
         self.output_dir = Path(output_dir)
         self.simulation_name = simulation_name
         self.data_dir = self.output_dir / "data_exports"
@@ -57,7 +59,7 @@ class ComprehensiveDataExporter:
     def export_all_formats(self, data_dict: Dict[str, Any]) -> List[Path]:
         """Export data in JSON, CSV, HDF5, and pickle formats"""
 
-        exported_files = []
+        exported_files: list[Any] = []
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
         # 1. JSON Export (human-readable)
@@ -88,7 +90,7 @@ class ComprehensiveDataExporter:
 
         # 4. Metadata file
         meta_file = self.data_dir / f"{self.simulation_name}_metadata_{timestamp}.json"
-        metadata = {
+        metadata: dict[str, Any] = {
             "simulation_name": self.simulation_name,
             "export_timestamp": datetime.now().isoformat(),
             "exported_files": [str(f.name) for f in exported_files],
@@ -101,7 +103,7 @@ class ComprehensiveDataExporter:
 
         return exported_files
 
-    def _make_json_serializable(self, obj):
+    def _make_json_serializable(self, obj: Any) -> Any:
         """Convert numpy arrays and other non-serializable objects"""
         if isinstance(obj, dict):
             return {k: self._make_json_serializable(v) for k, v in obj.items()}
@@ -116,17 +118,17 @@ class ComprehensiveDataExporter:
         else:
             return obj
 
-    def _export_traces_to_csv(self, traces_dict: Dict, csv_file: Path):
+    def _export_traces_to_csv(self, traces_dict: Dict, csv_file: Path) -> Any:
         """Export trace data to CSV format"""
 
         # Flatten traces into tabular format
-        rows = []
+        rows: list[Any] = []
         max_length = max(
             len(v) if isinstance(v, list) else 1 for v in traces_dict.values()
         )
 
         for i in range(max_length):
-            row = {"step": i + 1}
+            row: dict[str, Any] = {"step": i + 1}
             for key, values in traces_dict.items():
                 if isinstance(values, list) and len(values) > i:
                     if isinstance(values[i], list):
@@ -145,7 +147,7 @@ class ComprehensiveDataExporter:
                 writer.writeheader()
                 writer.writerows(rows)
 
-    def _write_dict_to_hdf5(self, data_dict: Dict, hdf5_group):
+    def _write_dict_to_hdf5(self, data_dict: Dict, hdf5_group: Any) -> Any:
         """Recursively write dictionary to HDF5 group"""
         for key, value in data_dict.items():
             if isinstance(value, dict):
@@ -170,7 +172,7 @@ class ComprehensiveDataExporter:
 class VisualizationSuite:
     """Comprehensive visualization suite with multiple chart types"""
 
-    def __init__(self, output_dir: Path, simulation_name: str):
+    def __init__(self, output_dir: Path, simulation_name: str) -> None:
         self.output_dir = Path(output_dir)
         self.simulation_name = simulation_name
         self.viz_dir = self.output_dir / "visualizations"
@@ -187,7 +189,7 @@ class VisualizationSuite:
     ) -> List[Path]:
         """Create comprehensive visualization suite"""
 
-        viz_files = []
+        viz_files: list[Any] = []
         traces = simulation_results.get("traces", {})
         summary = simulation_results.get("summary", {})
 
@@ -219,7 +221,7 @@ class VisualizationSuite:
 
     def _create_time_series_plots(self, traces: Dict) -> List[Path]:
         """Create comprehensive time series visualizations"""
-        viz_files = []
+        viz_files: list[Any] = []
 
         # Multi-panel time series
         fig, axes = plt.subplots(2, 2, figsize=(15, 12))
@@ -315,7 +317,7 @@ class VisualizationSuite:
 
     def _create_statistical_plots(self, traces: Dict) -> List[Path]:
         """Create statistical analysis plots"""
-        viz_files = []
+        viz_files: list[Any] = []
 
         # Statistical summary plots
         fig, axes = plt.subplots(2, 2, figsize=(15, 12))
@@ -405,7 +407,7 @@ class VisualizationSuite:
 
     def _create_distribution_plots(self, traces: Dict) -> List[Path]:
         """Create distribution analysis plots"""
-        viz_files = []
+        viz_files: list[Any] = []
 
         # Distribution analysis
         fig, axes = plt.subplots(2, 2, figsize=(15, 12))
@@ -486,7 +488,7 @@ class VisualizationSuite:
 
     def _create_correlation_plots(self, traces: Dict) -> List[Path]:
         """Create correlation analysis plots"""
-        viz_files = []
+        viz_files: list[Any] = []
 
         # Prepare correlation data
         numeric_traces = {
@@ -541,7 +543,7 @@ class VisualizationSuite:
         ax2 = axes[1]
         if len(numeric_traces) >= 2:
             keys = list(numeric_traces.keys())
-            colors = plt.cm.Set3(np.linspace(0, 1, len(keys)))
+            colors = plt.get_cmap("Set3")(np.linspace(0, 1, len(keys)))
 
             for i, key1 in enumerate(keys):
                 for _, key2 in enumerate(keys[i + 1 :], i + 1):
@@ -571,7 +573,7 @@ class VisualizationSuite:
 
     def _create_performance_dashboard(self, traces: Dict, summary: Dict) -> List[Path]:
         """Create comprehensive performance dashboard"""
-        viz_files = []
+        viz_files: list[Any] = []
 
         # Performance dashboard
         fig = plt.figure(figsize=(16, 12))
@@ -602,7 +604,7 @@ class VisualizationSuite:
 
         # Summary statistics
         ax_summary = fig.add_subplot(gs[0, 2])
-        summary_text = []
+        summary_text: list[Any] = []
         for key, value in summary.items():
             if isinstance(value, (int, float)):
                 summary_text.append(f"{key}: {value:.3f}")
@@ -625,7 +627,7 @@ class VisualizationSuite:
         ax_trend = fig.add_subplot(gs[1, :])
         if numeric_traces:
             # Calculate trends (simple linear regression slope)
-            trends = {}
+            trends: dict[Any, Any] = {}
             for key, values in numeric_traces.items():
                 if len(values) > 1:
                     x = np.arange(len(values))
@@ -657,7 +659,7 @@ class VisualizationSuite:
         ax_efficiency = fig.add_subplot(gs[2, :])
         if numeric_traces:
             # Calculate efficiency metrics
-            efficiency_data = []
+            efficiency_data: list[Any] = []
             for key, values in list(numeric_traces.items())[:5]:
                 if len(values) > 0:
                     mean_val = np.mean(values)
@@ -702,7 +704,7 @@ class VisualizationSuite:
 
     def _create_comparative_plots(self, traces: Dict) -> List[Path]:
         """Create comparative analysis plots"""
-        viz_files = []
+        viz_files: list[Any] = []
 
         # Comparative analysis
         fig, axes = plt.subplots(2, 2, figsize=(15, 12))
@@ -722,7 +724,7 @@ class VisualizationSuite:
             # Radar plot for multi-dimensional comparison
             ax1 = axes[0, 0]
             # Calculate summary statistics for radar plot
-            stats = {}
+            stats: dict[Any, Any] = {}
             for key, values in list(numeric_traces.items())[
                 :5
             ]:  # Limit to 5 for clarity
@@ -786,7 +788,7 @@ class VisualizationSuite:
 
             # Percentile comparison
             ax4 = axes[1, 1]
-            percentiles = [25, 50, 75]
+            percentiles: list[Any] = [25, 50, 75]
             width = 0.2
             x_pos = np.arange(len(keys))
 

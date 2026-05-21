@@ -46,7 +46,7 @@ class ScriptValidationResult:
 class PipelineScriptValidator:
     """Validator for pipeline scripts."""
 
-    def __init__(self, src_dir: Optional[Path] = None):
+    def __init__(self, src_dir: Optional[Path] = None) -> None:
         self.src_dir = src_dir or Path(__file__).parent.parent
         self.logger = logging.getLogger(__name__)
 
@@ -73,12 +73,12 @@ class PipelineScriptValidator:
 
     def validate_all_scripts(self) -> Dict[str, ScriptValidationResult]:
         """Validate all numbered pipeline scripts."""
-        results = {}
+        results: dict[Any, Any] = {}
 
         # Find all numbered scripts (0-24)
         for i in range(25):
             # Look for scripts matching the pattern
-            script_patterns = [f"{i}_*.py", f"{i:02d}_*.py"]
+            script_patterns: list[Any] = [f"{i}_*.py", f"{i:02d}_*.py"]
 
             script_found = False
             for pattern in script_patterns:
@@ -175,7 +175,7 @@ class PipelineScriptValidator:
 
         return result
 
-    def _analyze_imports(self, tree: ast.AST, result: ScriptValidationResult):
+    def _analyze_imports(self, tree: ast.AST, result: ScriptValidationResult) -> Any:
         """Analyze import statements in the script."""
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
@@ -203,7 +203,7 @@ class PipelineScriptValidator:
 
     def _analyze_error_handling(
         self, tree: ast.AST, content: str, result: ScriptValidationResult
-    ):
+    ) -> Any:
         """Analyze error handling patterns."""
         has_try_except = False
         has_general_exception = False
@@ -246,16 +246,16 @@ class PipelineScriptValidator:
 
     def _analyze_logging_patterns(
         self, tree: ast.AST, content: str, result: ScriptValidationResult
-    ):
+    ) -> Any:
         """Analyze logging patterns."""
-        logging_functions = [
+        logging_functions: list[Any] = [
             "setup_step_logging",
             "log_step_start",
             "log_step_success",
             "log_step_error",
             "log_step_warning",
         ]
-        found_logging = set()
+        found_logging: set[Any] = set()
 
         for node in ast.walk(tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
@@ -265,7 +265,7 @@ class PipelineScriptValidator:
         result.has_logging = bool(found_logging)
 
         # Check for required logging functions
-        required_logging = ["setup_step_logging", "log_step_start"]
+        required_logging: list[Any] = ["setup_step_logging", "log_step_start"]
         for func in required_logging:
             if func not in found_logging:
                 result.issues.append(
@@ -279,7 +279,9 @@ class PipelineScriptValidator:
                     )
                 )
 
-    def _analyze_function_calls(self, tree: ast.AST, result: ScriptValidationResult):
+    def _analyze_function_calls(
+        self, tree: ast.AST, result: ScriptValidationResult
+    ) -> Any:
         """Analyze function calls to detect potential missing implementations."""
         for node in ast.walk(tree):
             if isinstance(node, ast.Call):
@@ -292,10 +294,10 @@ class PipelineScriptValidator:
                             f"{node.func.value.id}.{node.func.attr}"
                         )
 
-    def _validate_module_imports(self, result: ScriptValidationResult):
+    def _validate_module_imports(self, result: ScriptValidationResult) -> Any:
         """Validate that imported modules exist and have required functions."""
         # Standard library modules that don't need to be in src/
-        stdlib_modules = {
+        stdlib_modules: set[Any] = {
             "sys",
             "os",
             "pathlib",
@@ -419,7 +421,9 @@ class PipelineScriptValidator:
                         f"Could not validate function '{function_name}' in {module_name}: {e}"
                     )
 
-    def _check_safe_fail_patterns(self, content: str, result: ScriptValidationResult):
+    def _check_safe_fail_patterns(
+        self, content: str, result: ScriptValidationResult
+    ) -> Any:
         """Check for safe-to-fail patterns."""
         has_main_function = (
             "def main():" in content
@@ -482,8 +486,8 @@ class PipelineScriptValidator:
         invalid_scripts = total_scripts - valid_scripts
 
         # Count issues by type and severity
-        issue_counts = {"error": 0, "warning": 0, "info": 0}
-        issue_types = {}
+        issue_counts: dict[str, Any] = {"error": 0, "warning": 0, "info": 0}
+        issue_types: dict[Any, Any] = {}
 
         for result in results.values():
             for issue in result.issues:
@@ -491,7 +495,7 @@ class PipelineScriptValidator:
                 issue_types[issue.issue_type] = issue_types.get(issue.issue_type, 0) + 1
 
         # Generate recommendations
-        recommendations = []
+        recommendations: list[Any] = []
         if issue_counts["error"] > 0:
             recommendations.append("Fix critical errors before deploying pipeline")
         if issue_types.get("missing_module", 0) > 0:
@@ -505,7 +509,7 @@ class PipelineScriptValidator:
         if issue_types.get("missing_error_handling", 0) > 0:
             recommendations.append("Add comprehensive try-except blocks to all scripts")
 
-        report = {
+        report: dict[str, Any] = {
             "timestamp": Path(__file__).stat().st_mtime,
             "summary": {
                 "total_scripts": total_scripts,
@@ -550,11 +554,11 @@ class PipelineScriptValidator:
         self, results: Dict[str, ScriptValidationResult]
     ) -> Dict[str, List[str]]:
         """Generate automatic fixes for common issues."""
-        fixes = {}
+        fixes: dict[Any, Any] = {}
 
         for script_name, result in results.items():
             if not result.is_valid:
-                script_fixes = []
+                script_fixes: list[Any] = []
 
                 for issue in result.issues:
                     if issue.issue_type == "missing_module":

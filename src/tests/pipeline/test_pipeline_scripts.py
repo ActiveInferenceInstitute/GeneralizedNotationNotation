@@ -27,7 +27,7 @@ from typing import Any
 
 import pytest
 
-pytestmark = [pytest.mark.pipeline]
+pytestmark: list[Any] = [pytest.mark.pipeline]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
 # Single small POMDP for subprocess smoke tests (avoids entire input/gnn_files, e.g. large scaling study dir).
@@ -41,8 +41,8 @@ class TestPipelineScriptDiscovery:
     def test_all_pipeline_scripts_exist(self) -> None:
         """Test that all expected pipeline scripts exist."""
         script_pattern = "^(\\d+)_.*\\.py$"
-        existing_scripts = []
-        missing_scripts = []
+        existing_scripts: list[Any] = []
+        missing_scripts: list[Any] = []
         for script_path in SRC_DIR.iterdir():
             if script_path.is_file() and script_path.name.endswith(".py"):
                 match = re.match(script_pattern, script_path.name)
@@ -50,7 +50,7 @@ class TestPipelineScriptDiscovery:
                     script_num = int(match.group(1))
                     existing_scripts.append((script_num, script_path.name))
         existing_scripts.sort(key=lambda x: x[0])
-        expected_scripts = [
+        expected_scripts: list[Any] = [
             (0, "0_template.py"),
             (1, "1_setup.py"),
             (2, "2_tests.py"),
@@ -83,7 +83,7 @@ class TestPipelineScriptDiscovery:
         ]
         if missing_scripts:
             logging.warning(f"Missing pipeline scripts: {missing_scripts}")
-        core_scripts = [0, 1, 2, 3, 4, 5]
+        core_scripts: list[Any] = [0, 1, 2, 3, 4, 5]
         missing_core = [num for num, _ in missing_scripts if num in core_scripts]
         assert not missing_core, f"Core pipeline scripts missing: {missing_core}"
         assert len(existing_scripts) >= 5, (
@@ -237,7 +237,7 @@ class TestPipelineScriptExecution:
                         text=True,
                         cwd=str(PROJECT_ROOT),
                     )
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 str(script_path),
                 "--target-dir",
@@ -271,7 +271,7 @@ class TestPipelineScriptExecution:
             input_dir.mkdir(parents=True)
             shutil.copy2(SMOKE_GNN, input_dir / SMOKE_GNN.name)
             output_dir = tmp / "output"
-            scripts = [
+            scripts: list[Any] = [
                 ("11_render.py", [], lambda out: (out / "11_render_output").exists()),
                 # Execute may exit 2 when optional frameworks skip; require render was found, not only exit 0.
                 ("12_execute.py", ["--frameworks", "pymdp"], lambda out: True),
@@ -392,17 +392,17 @@ class TestStep5ExportComprehensive:
         """JSON + XML exporters write files to disk from a parsed GNN spec."""
         from export import export_to_json, export_to_xml
 
-        sample_data = {
+        sample_data: dict[str, Any] = {
             "ModelName": "TestModel",
             "StateSpaceBlock": {"s_1": [2, "categorical"]},
             "Connections": ["s_1 > s_2"],
         }
         json_path = isolated_temp_dir / "test_export.json"
-        export_to_json(sample_data, str(json_path))
+        export_to_json(sample_data, json_path)
         assert json_path.exists(), "JSON export should create file"
 
         xml_path = isolated_temp_dir / "test_export.xml"
-        export_to_xml(sample_data, str(xml_path))
+        export_to_xml(sample_data, xml_path)
         assert xml_path.exists(), "XML export should create file"
 
 
@@ -594,7 +594,7 @@ class TestPipelineScriptIntegration:
     @pytest.mark.integration
     @pytest.mark.slow
     def test_pipeline_core_sequence(self) -> None:
-        scripts = ["3_gnn.py", "5_type_checker.py", "7_export.py"]
+        scripts: list[Any] = ["3_gnn.py", "5_type_checker.py", "7_export.py"]
         with tempfile.TemporaryDirectory() as td:
             tmp = Path(td)
             input_dir = PROJECT_ROOT / "input" / "gnn_files"
@@ -603,7 +603,7 @@ class TestPipelineScriptIntegration:
                 script_path = SRC_DIR / script_name
                 if not script_path.exists():
                     continue
-                cmd = [
+                cmd: list[Any] = [
                     sys.executable,
                     str(script_path),
                     "--target-dir",
@@ -621,8 +621,8 @@ class TestPipelineScriptIntegration:
     def test_pipeline_argument_consistency(self) -> None:
         """Test that scripts handle common arguments consistently."""
         logging.info("Testing pipeline argument consistency")
-        common_args = ["--target-dir", "--output-dir", "--verbose"]
-        scripts = [
+        common_args: list[Any] = ["--target-dir", "--output-dir", "--verbose"]
+        scripts: list[Any] = [
             "1_setup.py",
             "3_gnn.py",
             "2_tests.py",
@@ -664,7 +664,7 @@ def test_pipeline_script_completeness() -> None:
     from pathlib import Path
 
     src_dir = Path(__file__).parent.parent.parent
-    expected_scripts = [
+    expected_scripts: list[Any] = [
         "0_template.py",
         "1_setup.py",
         "2_tests.py",
@@ -680,7 +680,7 @@ def test_pipeline_script_completeness() -> None:
         "12_execute.py",
         "13_llm.py",
     ]
-    found_scripts = []
+    found_scripts: list[Any] = []
     for script_name in expected_scripts:
         script_path = src_dir / script_name
         if script_path.exists():
@@ -704,8 +704,8 @@ def test_pipeline_script_performance() -> None:
     from pathlib import Path
 
     _src_dir = Path(__file__).parent.parent.parent
-    modules_to_check = ["gnn", "render", "validation", "visualization"]
-    slow_imports = []
+    modules_to_check: list[Any] = ["gnn", "render", "validation", "visualization"]
+    slow_imports: list[Any] = []
     for module_name in modules_to_check:
         start = time.time()
         try:

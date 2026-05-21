@@ -6,6 +6,7 @@ This file contains comprehensive tests for the LLM module functionality.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,7 @@ class TestLLMModuleComprehensive:
     """Comprehensive tests for the LLM module."""
 
     @pytest.mark.unit
-    def test_llm_module_imports(self):
+    def test_llm_module_imports(self) -> Any:
         """Test that LLM module can be imported."""
         import llm
 
@@ -26,7 +27,7 @@ class TestLLMModuleComprehensive:
         assert hasattr(llm, "get_module_info")
 
     @pytest.mark.unit
-    def test_llm_processor_instantiation(self):
+    def test_llm_processor_instantiation(self) -> Any:
         """Test LLMProcessor class instantiation."""
         from llm import LLMProcessor
 
@@ -36,7 +37,7 @@ class TestLLMModuleComprehensive:
         assert hasattr(processor, "generate_description")
 
     @pytest.mark.unit
-    def test_llm_analyzer_instantiation(self):
+    def test_llm_analyzer_instantiation(self) -> Any:
         """Test LLMAnalyzer class instantiation."""
         from llm import LLMAnalyzer
 
@@ -46,7 +47,7 @@ class TestLLMModuleComprehensive:
         assert hasattr(analyzer, "extract_insights")
 
     @pytest.mark.unit
-    def test_llm_module_info(self):
+    def test_llm_module_info(self) -> Any:
         """Test LLM module information retrieval."""
         from llm import get_module_info
 
@@ -57,7 +58,7 @@ class TestLLMModuleComprehensive:
         assert "providers" in info
 
     @pytest.mark.unit
-    def test_llm_providers(self):
+    def test_llm_providers(self) -> Any:
         """Test LLM providers retrieval."""
         from llm import get_available_providers
 
@@ -70,7 +71,7 @@ class TestLLMFunctionality:
     """Tests for LLM functionality."""
 
     @pytest.mark.unit
-    def test_model_analysis(self, comprehensive_test_data):
+    def test_model_analysis(self, comprehensive_test_data: Any) -> Any:
         """Test model analysis functionality."""
         from llm import LLMProcessor
 
@@ -80,7 +81,7 @@ class TestLLMFunctionality:
         assert result is not None
 
     @pytest.mark.unit
-    def test_description_generation(self):
+    def test_description_generation(self) -> Any:
         """Test description generation functionality."""
         from llm import LLMProcessor
 
@@ -91,7 +92,7 @@ class TestLLMFunctionality:
         assert isinstance(result, str)
 
     @pytest.mark.unit
-    def test_content_analysis(self):
+    def test_content_analysis(self) -> Any:
         """Test content analysis functionality."""
         from llm import LLMAnalyzer
 
@@ -105,7 +106,9 @@ class TestLLMIntegration:
     """Integration tests for LLM module."""
 
     @pytest.mark.integration
-    def test_llm_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
+    def test_llm_pipeline_integration(
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         """Test LLM module integration with pipeline."""
         from llm import LLMProcessor
 
@@ -117,16 +120,16 @@ class TestLLMIntegration:
         assert result is not None
 
     @pytest.mark.integration
-    def test_llm_mcp_integration(self):
+    def test_llm_mcp_integration(self) -> Any:
         """Test LLM MCP integration."""
         from llm.mcp import register_tools
 
         assert callable(register_tools)
 
 
-def test_llm_module_completeness():
+def test_llm_module_completeness() -> Any:
     """Test that LLM module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "LLMProcessor",
         "LLMAnalyzer",
         "get_module_info",
@@ -142,7 +145,7 @@ def test_llm_module_completeness():
 
 
 @pytest.mark.slow
-def test_llm_module_performance():
+def test_llm_module_performance() -> Any:
     """Test LLM module performance characteristics."""
     import time
 

@@ -128,7 +128,7 @@ def validate_rendered_output(
             f"Known frameworks: {', '.join(sorted(CONTRACTS))}"
         )
 
-    violations = []
+    violations: list[Any] = []
 
     # Check required imports
     for imp in contract.get("required_imports", []):

@@ -16,14 +16,14 @@ import pickle  # nosec B403
 import re
 import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 try:
     import networkx as nx
 
     HAS_NETWORKX = True
 except (ImportError, RecursionError, AttributeError, ValueError):
-    nx = None
+    nx = cast(Any, None)
     HAS_NETWORKX = False
     logging.getLogger(__name__).warning(
         "NetworkX library not found. Graph export functionalities (GEXF, GraphML) will be disabled."
@@ -90,7 +90,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
     try:
         parsed_value = ast.literal_eval(processed_str)
 
-        def convert_structure(item):
+        def convert_structure(item: Any) -> Any:
             if isinstance(item, set):
                 try:
                     return sorted(item)
@@ -141,7 +141,7 @@ def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
     if not match:
         return None
     state_id_default, dimensions, attributes_str = match.groups()
-    attributes = {}
+    attributes: dict[Any, Any] = {}
     if dimensions:
         attributes["dimensions"] = dimensions
     for kv_match in re.finditer(r'([a-zA-Z0-9_]+)\s*=\s*"([^"]*)"', attributes_str):
@@ -168,7 +168,7 @@ def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
         clean_variable_list_str(source_str),
         clean_variable_list_str(target_str),
     )
-    attributes = {}
+    attributes: dict[Any, Any] = {}
     if attrs_str:
         for key_attr, value_attr in re.findall(
             r'(\w+)\s*=\s*(".*?"|\'.*?\'|\S+)', attrs_str
@@ -186,7 +186,7 @@ def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
 
 
 def _parse_list_items_section(content: str, parser: Callable) -> List[Any]:
-    items = []
+    items: list[Any] = []
     for line in content.strip().split("\n"):
         if not line or line.startswith("#"):
             continue
@@ -197,7 +197,7 @@ def _parse_list_items_section(content: str, parser: Callable) -> List[Any]:
 
 
 def _parse_initial_parameterization_section(section_content: str) -> Dict[str, Any]:
-    data = {}
+    data: dict[Any, Any] = {}
     current_key: Optional[str] = None
     current_value_lines: List[str] = []
     for line in section_content.split("\n"):
@@ -214,7 +214,7 @@ def _parse_initial_parameterization_section(section_content: str) -> Dict[str, A
     return data
 
 
-SECTION_PARSERS = {
+SECTION_PARSERS: dict[str, Any] = {
     "StateSpaceBlock": lambda c: _parse_list_items_section(c, _parse_state_line),
     "Connections": lambda c: _parse_list_items_section(c, _parse_transition_line),
     "InitialParameterization": _parse_initial_parameterization_section,
@@ -227,7 +227,7 @@ def _gnn_model_to_dict(gnn_file_path_str: str) -> Dict[str, Any]:
     if not gnn_file_path.is_file():
         raise FileNotFoundError(f"GNN file not found: {gnn_file_path_str}")
     content = gnn_file_path.read_text(encoding="utf-8")
-    model = {
+    model: dict[str, Any] = {
         "file_path": str(gnn_file_path),
         "name": gnn_file_path.stem,
         "raw_sections": {},
@@ -367,7 +367,9 @@ def _build_networkx_graph(gnn_model: Dict[str, Any]) -> "Optional[nx.DiGraph]":
     return graph
 
 
-def export_to_gexf(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_gexf(
+    gnn_model: Dict[str, Any], output_file_path: str
+) -> Tuple[bool, str]:
     """Exports the GNN model graph to a GEXF file."""
     logger.info(f"Exporting GNN model to GEXF: {output_file_path}")
     if not HAS_NETWORKX:
@@ -428,7 +430,7 @@ def export_to_json_adjacency_list(
 
 def export_to_plaintext_summary(
     gnn_model: Dict[str, Any], output_file_path: str
-) -> None:
+) -> Tuple[bool, str]:
     """Exports a human-readable plain text summary of the GNN model."""
     logger.info(f"Exporting GNN model to Plaintext Summary: {output_file_path}")
     try:
@@ -453,7 +455,9 @@ def export_to_plaintext_summary(
         return False, f"Failed to export to Plaintext Summary: {e}"
 
 
-def export_to_plaintext_dsl(gnn_model: Dict[str, Any], output_file_path: str) -> None:
+def export_to_plaintext_dsl(
+    gnn_model: Dict[str, Any], output_file_path: str
+) -> Tuple[bool, str]:
     """Exports the GNN model back to a DSL-like format using the raw sections."""
     logger.info(f"Exporting GNN model to Plaintext DSL: {output_file_path}")
     try:

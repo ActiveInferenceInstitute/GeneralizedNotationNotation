@@ -4,6 +4,8 @@ Export module for GNN Processing Pipeline.
 This module provides multi-format export capabilities for GNN files.
 """
 
+from typing import Any
+
 from .formatters import (
     export_to_gexf,
     export_to_graphml,
@@ -29,7 +31,7 @@ from .utils import get_module_info
 from .utils import get_supported_formats as _get_supported_formats_dict
 
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "json_export": True,
     "xml_export": True,
     "graphml_export": True,
@@ -49,11 +51,11 @@ def get_supported_formats() -> list:
     'pickle' over the abbreviated 'pkl' spelling.
     """
     info = _get_supported_formats_dict()
-    all_formats = set()
+    all_formats: set[Any] = set()
     for key in ("data_formats", "graph_formats", "text_formats", "all_formats"):
         for fmt in info.get(key, []):
             all_formats.add("pickle" if fmt in {"pkl", "pickle"} else fmt)
-    ordered = ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"]
+    ordered: list[Any] = ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"]
     extras = sorted(f for f in all_formats if f not in ordered)
     return [f for f in ordered if f in all_formats] + extras
 
@@ -121,7 +123,7 @@ class MultiFormatExporter:
         return get_supported_formats()
 
 
-__all__ = [
+__all__: list[Any] = [
     "generate_exports",
     "export_single_gnn_file",
     "parse_gnn_content",

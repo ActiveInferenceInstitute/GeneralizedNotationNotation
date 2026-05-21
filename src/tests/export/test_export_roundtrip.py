@@ -11,6 +11,7 @@ Tests focus on:
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -22,7 +23,7 @@ REPO_ROOT = SRC.parent
 SAMPLE = REPO_ROOT / "input" / "gnn_files" / "basics" / "static_perception.md"
 
 
-def test_export_registry_includes_canonical_formats():
+def test_export_registry_includes_canonical_formats() -> Any:
     from export import get_supported_formats
 
     formats = get_supported_formats()
@@ -35,7 +36,7 @@ def test_export_registry_includes_canonical_formats():
 
 
 @pytest.mark.skipif(not SAMPLE.exists(), reason="Sample GNN corpus unavailable")
-def test_export_to_json_roundtrip_preserves_structure(tmp_path):
+def test_export_to_json_roundtrip_preserves_structure(tmp_path: Any) -> Any:
     from export import export_to_json
     from gnn import parse_gnn_file
 
@@ -43,12 +44,7 @@ def test_export_to_json_roundtrip_preserves_structure(tmp_path):
     # parse_gnn_file may return a dataclass; normalize to dict.
     spec_dict = spec.to_dict() if hasattr(spec, "to_dict") else spec
     out = tmp_path / "static_perception.json"
-    # Signature tolerance: the formatter API historically takes either
-    # (spec, path) or (spec, str(path)).
-    try:
-        export_to_json(spec_dict, str(out))
-    except TypeError:
-        export_to_json(spec_dict, out)
+    export_to_json(spec_dict, out)
     # The file must exist and parse as JSON.
     assert out.exists(), "export_to_json did not create output file"
     loaded = json.loads(out.read_text())
@@ -59,7 +55,7 @@ def test_export_to_json_roundtrip_preserves_structure(tmp_path):
 
 
 @pytest.mark.skipif(not SAMPLE.exists(), reason="Sample GNN corpus unavailable")
-def test_process_export_handles_missing_target_dir(tmp_path):
+def test_process_export_handles_missing_target_dir(tmp_path: Any) -> Any:
     from export.processor import process_export
 
     missing = tmp_path / "definitely_not_here"

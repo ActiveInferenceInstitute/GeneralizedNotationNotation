@@ -109,7 +109,7 @@ def extract_ontology_annotations_mcp(gnn_content: str) -> Dict[str, Any]:
                     if var_name:
                         annotations[var_name] = term
 
-        standard_terms = {
+        standard_terms: set[Any] = {
             "HiddenState",
             "Observation",
             "Action",
@@ -144,7 +144,7 @@ def list_standard_ontology_terms_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with term names and their descriptions.
     """
-    terms = {
+    terms: dict[str, Any] = {
         "HiddenState": "Latent state variable s",
         "NextHiddenState": "Next latent state s'",
         "Observation": "Observable variable o",
@@ -166,7 +166,7 @@ def list_standard_ontology_terms_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register ontology tools with the MCP server."""
 
     mcp_instance.register_tool(

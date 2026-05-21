@@ -64,17 +64,17 @@ class ErrorContext:
 class ErrorRecoveryManager:
     """Manages error handling and recovery strategies."""
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         """Initialize error recovery manager."""
         self.logger = logger or logging.getLogger(__name__)
         self.error_handlers: Dict[str, Callable] = {}
         self.recovery_strategies: Dict[str, List[str]] = {}
         self._setup_default_handlers()
 
-    def _setup_default_handlers(self):
+    def _setup_default_handlers(self) -> Any:
         """Setup default error handlers and recovery strategies."""
 
-        handler_config = {
+        handler_config: dict[str, Any] = {
             "import": (
                 "Module Import",
                 ErrorSeverity.WARNING,
@@ -222,7 +222,7 @@ def format_error_message(
 ) -> str:
     """Format error message with all relevant information."""
 
-    lines = [
+    lines: list[Any] = [
         f"[{error_code}] {operation} Error",
         f"Message: {message}",
     ]
@@ -277,7 +277,7 @@ def format_and_log_error(
 class ErrorReporter:
     """Collects and reports errors during pipeline execution."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize error reporter."""
         self.errors: List[ErrorRecord] = []
         self.logger = logging.getLogger(__name__)
@@ -288,7 +288,7 @@ class ErrorReporter:
         message: str,
         details: Optional[Dict[str, Any]] = None,
         severity: ErrorSeverity = ErrorSeverity.ERROR,
-    ):
+    ) -> Any:
         """
         Collect an error for reporting.
 
@@ -298,7 +298,7 @@ class ErrorReporter:
             details: Additional error details
             severity: Error severity level
         """
-        error_record = {
+        error_record: ErrorRecord = {
             "type": error_type,
             "message": message,
             "details": details or {},
@@ -316,14 +316,14 @@ class ErrorReporter:
         """Check if any errors have been collected."""
         return bool(self.errors)
 
-    def clear_errors(self):
+    def clear_errors(self) -> Any:
         """Clear all collected errors."""
         self.errors.clear()
 
     def get_summary(self) -> Dict[str, Any]:
         """Get summary of collected errors."""
-        severity_counts = {}
-        error_type_counts = {}
+        severity_counts: dict[Any, Any] = {}
+        error_type_counts: dict[Any, Any] = {}
 
         for error in self.errors:
             severity = error.get("severity", "unknown")

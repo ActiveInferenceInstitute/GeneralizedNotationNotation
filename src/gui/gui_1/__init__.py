@@ -25,7 +25,7 @@ from .processor import run_gui
 
 
 def gui_1(
-    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Run GUI 1: Form-based Interactive GNN Constructor
@@ -58,7 +58,7 @@ def gui_1(
             open_browser=open_browser,
         )
 
-        result = {
+        result: dict[str, Any] = {
             "gui_type": "gui_1",
             "description": "Form-based Interactive GNN Constructor",
             "success": success,
@@ -108,7 +108,7 @@ def get_gui_1_info() -> Dict[str, Any]:
     }
 
 
-__all__ = [
+__all__: list[Any] = [
     "gui_1",
     "get_gui_1_info",
     "run_gui",

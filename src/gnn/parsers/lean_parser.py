@@ -11,7 +11,7 @@ License: MIT
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 class LeanGNNParser(BaseGNNParser):
     """Parser for Lean category theory specifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the Lean parser."""
         super().__init__()
         self.namespace_pattern = re.compile(r"namespace\s+(\w+)")
@@ -78,7 +78,7 @@ class LeanGNNParser(BaseGNNParser):
         import json
 
         # Look for JSON data in Lean comments
-        patterns = [
+        patterns: list[Any] = [
             r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...}
             r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
         ]
@@ -87,7 +87,7 @@ class LeanGNNParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(f"Pattern did not yield valid JSON, trying next: {e}")
                     continue
@@ -212,7 +212,7 @@ class LeanGNNParser(BaseGNNParser):
         # Default
         return "LeanGNNModel"
 
-    def _parse_imports(self, content: str, model: GNNInternalRepresentation):
+    def _parse_imports(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse import statements to understand dependencies."""
         imports = self.import_pattern.findall(content)
 
@@ -224,7 +224,7 @@ class LeanGNNParser(BaseGNNParser):
         if has_category_theory:
             model.extensions["uses_category_theory"] = True
 
-    def _parse_structures(self, content: str, model: GNNInternalRepresentation):
+    def _parse_structures(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse Lean structures to extract GNN components."""
         structure_matches = list(self.structure_pattern.finditer(content))
 
@@ -244,7 +244,7 @@ class LeanGNNParser(BaseGNNParser):
         remaining = content[start_pos:]
         lines = remaining.split("\n")
 
-        body_lines = []
+        body_lines: list[Any] = []
         indent_level = None
 
         for line in lines:
@@ -259,7 +259,8 @@ class LeanGNNParser(BaseGNNParser):
             # If we hit a line with less indentation, we've left the structure
             current_indent = len(line) - len(line.lstrip())
             if (
-                current_indent <= indent_level
+                indent_level is not None
+                and current_indent <= indent_level
                 and stripped
                 and not stripped.startswith("--")
             ):
@@ -271,7 +272,7 @@ class LeanGNNParser(BaseGNNParser):
 
     def _parse_structure_fields(
         self, structure_body: str, model: GNNInternalRepresentation, structure_name: str
-    ):
+    ) -> Any:
         """Parse fields within a structure as variables."""
         field_matches = self.variable_pattern.findall(structure_body)
 
@@ -294,7 +295,7 @@ class LeanGNNParser(BaseGNNParser):
 
             model.variables.append(variable)
 
-    def _parse_variables(self, content: str, model: GNNInternalRepresentation):
+    def _parse_variables(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse standalone variable definitions."""
         def_matches = self.def_pattern.findall(content)
 

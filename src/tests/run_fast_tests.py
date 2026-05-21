@@ -11,6 +11,7 @@ import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 
 def run_fast_tests() -> bool:
@@ -19,7 +20,7 @@ def run_fast_tests() -> bool:
     start_time = time.time()
 
     # Prepare pytest command for fast tests only
-    pytest_cmd = [
+    pytest_cmd: list[Any] = [
         sys.executable,
         "-m",
         "pytest",

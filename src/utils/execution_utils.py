@@ -58,11 +58,16 @@ def execute_command_streaming(
     process_env["PYTHONUNBUFFERED"] = "1"
 
     # buffers for captured output
-    stdout_captured = []
-    stderr_captured = []
+    stdout_captured: list[Any] = []
+    stderr_captured: list[Any] = []
 
     # detailed result structure
-    result = {"exit_code": -1, "stdout": "", "stderr": "", "status": "UNKNOWN"}
+    result: dict[str, Any] = {
+        "exit_code": -1,
+        "stdout": "",
+        "stderr": "",
+        "status": "UNKNOWN",
+    }
 
     try:
         # Start process with pipes
@@ -78,7 +83,7 @@ def execute_command_streaming(
         )
 
         # Reader threads
-        def read_stream(stream, is_stderr):
+        def read_stream(stream: Any, is_stderr: Any) -> Any:
             try:
                 for line in iter(stream.readline, ""):
                     if not line:

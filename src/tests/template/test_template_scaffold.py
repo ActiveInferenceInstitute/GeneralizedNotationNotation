@@ -6,6 +6,7 @@ Uses real filesystem tempdirs.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -14,7 +15,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 
-def test_template_module_info_has_version():
+def test_template_module_info_has_version() -> Any:
     from template import get_module_info
 
     info = get_module_info()
@@ -22,7 +23,7 @@ def test_template_module_info_has_version():
     assert "version" in info
 
 
-def test_process_template_standardized_accepts_standard_signature(tmp_path):
+def test_process_template_standardized_accepts_standard_signature(tmp_path: Any) -> Any:
     """The pipeline orchestrator calls every processor with the same
     (target_dir, output_dir, logger, ...) keyword contract. Regression
     guard: process_template_standardized must honor this without raising."""
@@ -49,7 +50,7 @@ def test_process_template_standardized_accepts_standard_signature(tmp_path):
     assert isinstance(result, (bool, int)) or result is None
 
 
-def test_validate_file_returns_structured_dict(tmp_path):
+def test_validate_file_returns_structured_dict(tmp_path: Any) -> Any:
     """validate_file must return {valid, ...} shape, not raise, for any
     readable file — including empty ones."""
     from template.processor import validate_file
@@ -62,7 +63,7 @@ def test_validate_file_returns_structured_dict(tmp_path):
     assert any(k in result for k in ("valid", "is_valid", "status", "success"))
 
 
-def test_validate_file_handles_missing_file(tmp_path):
+def test_validate_file_handles_missing_file(tmp_path: Any) -> Any:
     """validate_file on a missing path must report failure, not crash."""
     from template.processor import validate_file
 
@@ -80,7 +81,7 @@ def test_validate_file_handles_missing_file(tmp_path):
     assert invalidness, f"validate_file succeeded on missing file: {result}"
 
 
-def test_generate_correlation_id_produces_unique_ids():
+def test_generate_correlation_id_produces_unique_ids() -> Any:
     from template.processor import generate_correlation_id
 
     ids = {generate_correlation_id() for _ in range(10)}

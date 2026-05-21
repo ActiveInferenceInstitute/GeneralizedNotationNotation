@@ -44,7 +44,7 @@ class CrossFormatValidationResult:
     round_trip_compatibility: Dict[str, bool] = field(default_factory=dict)
     format_specific_issues: Dict[str, List[str]] = field(default_factory=dict)
 
-    def add_format_issue(self, format_name: str, issue: str):
+    def add_format_issue(self, format_name: str, issue: str) -> Any:
         """Add a format-specific issue."""
         if format_name not in self.format_specific_issues:
             self.format_specific_issues[format_name] = []
@@ -69,13 +69,13 @@ class CrossFormatValidator:
         self,
         gnn_module_path: Optional[Path] = None,
         enable_round_trip_testing: bool = False,
-    ):
+    ) -> None:
         if gnn_module_path is None:
             gnn_module_path = Path(__file__).parent
 
         self.gnn_path = gnn_module_path
         self.enable_round_trip_testing = enable_round_trip_testing
-        self.format_validators = {}
+        self.format_validators: dict[str, Any] = {}
         self.parsing_system = None
 
         # Defer heavy validator initialization until first use to avoid recursion and speed up tests
@@ -94,13 +94,13 @@ class CrossFormatValidator:
             # Use debug level to avoid excessive warnings
             logger.debug(f"Could not initialize parsing system: {e}")
 
-    def configure(self, output_dir: Optional[Path] = None, **kwargs):
+    def configure(self, output_dir: Optional[Path] = None, **kwargs: Any) -> Any:
         """Configure the validator."""
         self.output_dir = output_dir
 
     def validate(self, files: List[Path]) -> Dict[str, Any]:
         """Validate a list of files."""
-        results = {}
+        results: dict[Any, Any] = {}
         success = True
         for f in files:
             try:
@@ -115,13 +115,13 @@ class CrossFormatValidator:
 
         return {"success": success, "files_validated": len(files), "results": results}
 
-    def _initialize_validators(self):
+    def _initialize_validators(self) -> Any:
         """Initialize enhanced validators for different schema formats."""
         # Import here to avoid circular imports
         from .schema_validator import GNNValidator
 
         # Enhanced validation levels for different formats
-        validation_levels = {
+        validation_levels: dict[str, Any] = {
             "json": ValidationLevel.STANDARD,
             "xml": ValidationLevel.STANDARD,
             "yaml": ValidationLevel.STANDARD,
@@ -130,7 +130,11 @@ class CrossFormatValidator:
         }
 
         # Track initialization results for more thoughtful reporting
-        initialization_results = {"success": [], "failed": [], "missing_schema": []}
+        initialization_results: dict[str, Any] = {
+            "success": [],
+            "failed": [],
+            "missing_schema": [],
+        }
 
         # Initialize validators with proper exception handling
         for format_name, validation_level in validation_levels.items():
@@ -205,7 +209,7 @@ class CrossFormatValidator:
 
         # Step 1: Validate against each available format
         logger.debug(f"Starting cross-format validation for {source_format} content")
-        format_validation_results = {}
+        format_validation_results: dict[Any, Any] = {}
 
         for format_name, validator in self.format_validators.items():
             format_start = time.time()
@@ -267,10 +271,10 @@ class CrossFormatValidator:
         self,
         format_results: Dict[str, ValidationResult],
         result: CrossFormatValidationResult,
-    ):
+    ) -> Any:
         """Enhanced analysis of consistency between formats."""
-        valid_formats = []
-        invalid_formats = []
+        valid_formats: list[Any] = []
+        invalid_formats: list[Any] = []
 
         for format_name, validation_result in format_results.items():
             if validation_result.is_valid:
@@ -310,7 +314,7 @@ class CrossFormatValidator:
                     f"{format_name} warnings: {len(validation_result.warnings)}"
                 )
 
-    def _analyze_semantic_checksums(self, result: CrossFormatValidationResult):
+    def _analyze_semantic_checksums(self, result: CrossFormatValidationResult) -> Any:
         """Analyze semantic checksums for consistency."""
         checksums = result.semantic_checksums
 
@@ -334,7 +338,7 @@ class CrossFormatValidator:
             result.is_consistent = False
 
             # Analyze checksum patterns
-            checksum_groups = {}
+            checksum_groups: dict[Any, Any] = {}
             for format_name, checksum in checksums.items():
                 if checksum not in checksum_groups:
                     checksum_groups[checksum] = []
@@ -346,7 +350,7 @@ class CrossFormatValidator:
 
     def _test_round_trip_compatibility(
         self, gnn_content: str, result: CrossFormatValidationResult
-    ):
+    ) -> Any:
         """Test round-trip compatibility between formats."""
         try:
             # Import here to avoid circular imports
@@ -361,7 +365,11 @@ class CrossFormatValidator:
 
                 # If we have a parsing system, test round-trip for key formats
                 if self.parsing_system and hasattr(parsed_gnn, "model_name"):
-                    test_formats = [GNNFormat.JSON, GNNFormat.XML, GNNFormat.YAML]
+                    test_formats: list[Any] = [
+                        GNNFormat.JSON,
+                        GNNFormat.XML,
+                        GNNFormat.YAML,
+                    ]
 
                     for fmt in test_formats:
                         try:
@@ -399,7 +407,7 @@ class CrossFormatValidator:
         self, format_results: Dict[str, ValidationResult]
     ) -> List[str]:
         """Find common error patterns across formats."""
-        error_counts = {}
+        error_counts: dict[Any, Any] = {}
 
         for _, validation_result in format_results.items():
             for error in validation_result.errors:
@@ -441,7 +449,7 @@ class CrossFormatValidator:
         result: CrossFormatValidationResult,
     ) -> Dict[str, Any]:
         """Generate comprehensive metadata for the validation result."""
-        metadata = {
+        metadata: dict[str, Any] = {
             "formats_tested": len(format_results),
             "valid_formats": sum(1 for r in format_results.values() if r.is_valid),
             "invalid_formats": sum(
@@ -488,7 +496,7 @@ class CrossFormatValidator:
     def _create_temp_file(self, content: str, format_hint: str = "markdown") -> Path:
         """Create temporary file with appropriate extension for format testing."""
         # Map format names to file extensions
-        extensions = {
+        extensions: dict[str, Any] = {
             "markdown": ".md",
             "json": ".json",
             "xml": ".xml",
@@ -522,8 +530,8 @@ class CrossFormatValidator:
         result = CrossFormatValidationResult(is_consistent=True)
 
         # Load available schema definitions
-        schemas = {}
-        schema_files = {
+        schemas: dict[Any, Any] = {}
+        schema_files: dict[str, Any] = {
             "json": self.gnn_path / "schemas/json.json",
             "yaml": self.gnn_path / "schemas/yaml.yaml",
             "xsd": self.gnn_path / "schemas/xsd.xsd",
@@ -577,7 +585,7 @@ class CrossFormatValidator:
 
     def _validate_enhanced_schema_structure_consistency(
         self, schemas: Dict[str, Dict], result: CrossFormatValidationResult
-    ):
+    ) -> Any:
         """Enhanced validation of structural consistency between schema formats."""
         if len(schemas) < 2:
             result.warnings.append("Insufficient schemas for consistency comparison")
@@ -620,7 +628,7 @@ class CrossFormatValidator:
                     )
 
         # Validate schema completeness
-        expected_elements = [
+        expected_elements: list[Any] = [
             "ModelName",
             "StateSpaceBlock",
             "Connections",

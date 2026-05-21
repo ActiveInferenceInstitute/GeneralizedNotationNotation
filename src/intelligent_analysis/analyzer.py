@@ -11,7 +11,7 @@ import logging
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 
 @dataclass
@@ -58,7 +58,7 @@ class IntelligentAnalyzer:
         self,
         context: Optional[AnalysisContext] = None,
         logger: Optional[logging.Logger] = None,
-    ):
+    ) -> None:
         """
         Initialize the analyzer.
 
@@ -85,7 +85,7 @@ class IntelligentAnalyzer:
         if not self.context:
             raise ValueError("No analysis context set")
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "pipeline_name": self.context.pipeline_name,
             "overall_status": self.context.overall_status,
@@ -118,14 +118,14 @@ class IntelligentAnalyzer:
 
         failed_steps = self.context.get_failed_steps()
 
-        analysis = {
+        analysis: dict[str, Any] = {
             "failure_count": len(failed_steps),
             "failures": [],
             "common_patterns": [],
             "severity_distribution": {},
         }
 
-        severity_counts = {"critical": 0, "major": 0, "minor": 0}
+        severity_counts: dict[str, Any] = {"critical": 0, "major": 0, "minor": 0}
         error_patterns: Dict[str, int] = {}
 
         for step in failed_steps:
@@ -178,7 +178,7 @@ class IntelligentAnalyzer:
             s.get("peak_memory_mb", 0) for s in steps if s.get("peak_memory_mb")
         ]
 
-        analysis = {
+        analysis: dict[str, Any] = {
             "total_duration": self.context.total_duration,
             "step_count": len(steps),
             "peak_memory_mb": perf_summary.get("peak_memory_mb", 0),
@@ -277,7 +277,7 @@ def calculate_pipeline_health_score(summary_data: Dict[str, Any]) -> float:
     memory_score = memory_efficiency * 20
 
     total_score = success_score + warning_score + duration_score + memory_score
-    return min(100.0, max(0.0, total_score))
+    return cast("float", min(100.0, max(0.0, total_score)))
 
 
 def classify_failure_severity(step: Dict[str, Any]) -> str:
@@ -294,7 +294,7 @@ def classify_failure_severity(step: Dict[str, Any]) -> str:
     exit_code = step.get("exit_code", 0)
 
     # Critical indicators
-    critical_patterns = [
+    critical_patterns: list[Any] = [
         "memory error",
         "out of memory",
         "segmentation fault",
@@ -314,7 +314,7 @@ def classify_failure_severity(step: Dict[str, Any]) -> str:
         return "critical"
 
     # Major indicators
-    major_patterns = [
+    major_patterns: list[Any] = [
         "exception",
         "error:",
         "failed to",
@@ -341,7 +341,7 @@ def detect_performance_patterns(summary_data: Dict[str, Any]) -> List[Dict[str, 
     Returns:
         List of detected patterns with descriptions
     """
-    patterns = []
+    patterns: list[Any] = []
     steps = summary_data.get("steps", [])
 
     if not steps:
@@ -428,12 +428,12 @@ def generate_optimization_suggestions(
     Returns:
         List of optimization suggestions
     """
-    suggestions = []
+    suggestions: list[Any] = []
     steps = summary_data.get("steps", [])
     perf = summary_data.get("performance_summary", {})
 
     # Suggestion 1: Parallelization opportunities
-    independent_steps = []
+    independent_steps: list[Any] = []
     for _, step in enumerate(steps):
         if not step.get("dependency_warnings"):
             independent_steps.append(step.get("script_name"))
@@ -496,10 +496,10 @@ def generate_optimization_suggestions(
 
 def _extract_error_patterns(error_text: str) -> List[str]:
     """Extract common error patterns from error text."""
-    patterns = []
+    patterns: list[Any] = []
 
     # Common error patterns
-    pattern_regexes = [
+    pattern_regexes: list[Any] = [
         (r"ModuleNotFoundError.*?'(\w+)'", "missing_module"),
         (r"ImportError.*?(\w+)", "import_error"),
         (r"FileNotFoundError.*?'(.+?)'", "file_not_found"),

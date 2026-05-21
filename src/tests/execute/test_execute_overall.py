@@ -131,7 +131,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             "render_output/model/pymdp/script.py", "# PyMDP script"
         )
 
-        framework_dirs = {
+        framework_dirs: dict[str, Any] = {
             "pymdp": "pymdp",
             "rxinfer": "rxinfer",
             "jax": "jax",
@@ -154,7 +154,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             "# PyMDP script",
         )
 
-        framework_dirs = {
+        framework_dirs: dict[str, Any] = {
             "pymdp": "pymdp",
             "rxinfer": "rxinfer",
             "jax": "jax",
@@ -339,7 +339,7 @@ print(json.dumps(result))
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
 
-        script_info = {
+        script_info: dict[str, Any] = {
             "path": executable_python_script,
             "script_path": executable_python_script,
             "framework": "test",
@@ -368,7 +368,7 @@ print(json.dumps(result))
             "render_output/simple_mdp/jax/Simple MDP Agent_jax.py",
             "import jax\nprint('ok')",
         )
-        script_info = {
+        script_info: dict[str, Any] = {
             "path": script_path,
             "name": script_path.name,
             "framework": "jax",
@@ -404,7 +404,7 @@ time.sleep(1000)  # Sleep for a long time
 """,
         )
 
-        script_info = {
+        script_info: dict[str, Any] = {
             "path": hanging_script,
             "script_path": hanging_script,
             "framework": "test",
@@ -656,7 +656,7 @@ print("JAX Active Inference model test successful!")
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
 
-        script_info = {
+        script_info: dict[str, Any] = {
             "path": jax_render_output["jax_script"],
             "script_path": jax_render_output["jax_script"],
             "framework": "jax",
@@ -687,7 +687,7 @@ print("JAX Active Inference model test successful!")
             "render_output/model/jax/model_jax.py", "# JAX Active Inference script"
         )
 
-        framework_dirs = {
+        framework_dirs: dict[str, Any] = {
             "pymdp": "pymdp",
             "rxinfer": "rxinfer",
             "jax": "jax",
@@ -730,10 +730,10 @@ print("JAX Active Inference model test successful!")
 class TestExecuteDisCoPyTranslatorModule:
     """Smoke tests for execute.discopy_translator_module.translator sub-module."""
 
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from execute.discopy_translator_module import translator  # noqa: F401
 
-    def test_gnn_file_to_discopy_diagram_nonexistent(self, tmp_path):
+    def test_gnn_file_to_discopy_diagram_nonexistent(self, tmp_path: Any) -> Any:
         from execute.discopy_translator_module.translator import (
             gnn_file_to_discopy_diagram,
         )
@@ -742,7 +742,7 @@ class TestExecuteDisCoPyTranslatorModule:
         # Should return None on failure (no discopy or missing file)
         assert result is None or hasattr(result, "__class__")
 
-    def test_gnn_file_to_discopy_matrix_diagram_nonexistent(self, tmp_path):
+    def test_gnn_file_to_discopy_matrix_diagram_nonexistent(self, tmp_path: Any) -> Any:
         from execute.discopy_translator_module.translator import (
             gnn_file_to_discopy_matrix_diagram,
         )

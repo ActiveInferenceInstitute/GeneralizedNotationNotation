@@ -1,29 +1,17 @@
 """
 integration module for GNN Processing Pipeline.
 
-This module provides integration capabilities with recovery implementations,
-including:
+This module provides integration capabilities including:
 - System-level consistency checks and dependency graph analysis
 - Meta-analysis of parameter sweep runtime and simulation outputs
 """
 
-# Import processor functions - single source of truth
+from typing import Any
+
+from .meta_analysis import SweepDataCollector, SweepRecord, run_meta_analysis
 from .processor import process_integration
 
-# Meta-analysis submodule.
-try:
-    from .meta_analysis import SweepDataCollector, SweepRecord, run_meta_analysis
-
-    _META_ANALYSIS_AVAILABLE = True
-except ImportError as exc:
-    _META_ANALYSIS_AVAILABLE = False
-    _META_ANALYSIS_IMPORT_ERROR = exc
-
-    def run_meta_analysis(*args, **kwargs):
-        """Raise a clear dependency error when meta-analysis cannot load."""
-        raise RuntimeError(
-            "integration.meta_analysis is unavailable"
-        ) from _META_ANALYSIS_IMPORT_ERROR
+_META_ANALYSIS_AVAILABLE = True
 
 
 # Module metadata
@@ -32,15 +20,17 @@ __author__ = "Active Inference Institute"
 __description__ = "integration processing for GNN Processing Pipeline"
 
 # Feature availability flags
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "basic_processing": True,
     "meta_analysis": _META_ANALYSIS_AVAILABLE,
 }
 
 
-__all__ = [
+__all__: list[Any] = [
     "process_integration",
     "run_meta_analysis",
+    "SweepDataCollector",
+    "SweepRecord",
     "FEATURES",
     "__version__",
 ]

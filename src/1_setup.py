@@ -49,65 +49,25 @@ If you encounter errors:
 import logging
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from setup import (
+    install_optional_package_group,
+    setup_complete_environment,
+    setup_uv_environment,
+)
+from setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module functions
-try:
-    from setup import (
-        install_optional_package_group,
-        setup_complete_environment,
-        setup_uv_environment,
-    )
-    from setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
-except ImportError:
-    SETUP_DEFAULT_PIPELINE_EXTRAS = ()  # type: ignore[misc,assignment]
-
-    def setup_uv_environment(
-        verbose=False,
-        recreate=False,
-        dev=True,
-        extras=None,
-        install_all_extras=False,
-        skip_jax_test=True,
-        output_dir=None,
-    ) -> bool:
-        """Recovery setup function when module unavailable."""
-        import logging
-
-        logger = logging.getLogger(__name__)
-        logger.warning("Setup module not available - using recovery")
-        return True
-
-    def setup_complete_environment(
-        verbose=False,
-        recreate=False,
-        install_optional=False,
-        optional_groups=None,
-        output_dir=None,
-    ) -> bool:
-        """Recovery full setup function."""
-        return setup_uv_environment(
-            verbose=verbose, recreate=recreate, output_dir=output_dir
-        )
-
-    def install_optional_package_group(group_name, verbose=False) -> bool:
-        """Recovery optional package installation."""
-        import logging
-
-        logger = logging.getLogger(__name__)
-        logger.warning(f"Cannot install {group_name} - setup module not available")
-        return False
 
 
 def setup_orchestrator(
     target_dir: str, output_dir: str, logger: "logging.Logger", **kwargs: Any
 ) -> Any:
     """Orchestrate setup based on provided arguments."""
+    output_path = Path(output_dir)
     verbose = kwargs.get("verbose", False)
     recreate = kwargs.get("recreate_venv", False)
     install_optional = kwargs.get("install_optional", False)
@@ -129,7 +89,7 @@ def setup_orchestrator(
             recreate=recreate,
             install_optional=True,
             optional_groups=optional_groups,
-            output_dir=output_dir,
+            output_dir=output_path,
         )
     else:
         # Default: core deps (Step 12 backends are in core). Optional ``extras`` from constants.
@@ -145,7 +105,7 @@ def setup_orchestrator(
             extras=extras,
             install_all_extras=install_all_extras,
             skip_jax_test=skip_jax,
-            output_dir=output_dir,
+            output_dir=output_path,
         )
 
 
@@ -178,7 +138,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the setup step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

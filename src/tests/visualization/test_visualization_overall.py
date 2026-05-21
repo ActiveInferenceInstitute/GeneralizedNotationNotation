@@ -6,6 +6,7 @@ This file contains comprehensive tests for the visualization module functionalit
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,7 @@ class TestVisualizationModuleComprehensive:
     """Comprehensive tests for the visualization module."""
 
     @pytest.mark.unit
-    def test_visualization_module_imports(self):
+    def test_visualization_module_imports(self) -> Any:
         """Test that visualization module can be imported."""
         import visualization
 
@@ -26,7 +27,7 @@ class TestVisualizationModuleComprehensive:
         assert hasattr(visualization, "OntologyVisualizer")
 
     @pytest.mark.unit
-    def test_matrix_visualizer_instantiation(self):
+    def test_matrix_visualizer_instantiation(self) -> Any:
         """Test MatrixVisualizer class instantiation."""
         from visualization import MatrixVisualizer
 
@@ -36,7 +37,7 @@ class TestVisualizationModuleComprehensive:
         assert hasattr(visualizer, "create_heatmap")
 
     @pytest.mark.unit
-    def test_gnn_visualizer_instantiation(self):
+    def test_gnn_visualizer_instantiation(self) -> Any:
         """Test GNNVisualizer class instantiation."""
         from visualization import GNNVisualizer
 
@@ -46,7 +47,7 @@ class TestVisualizationModuleComprehensive:
         assert hasattr(visualizer, "create_network_diagram")
 
     @pytest.mark.unit
-    def test_ontology_visualizer_instantiation(self):
+    def test_ontology_visualizer_instantiation(self) -> Any:
         """Test OntologyVisualizer class instantiation."""
         from visualization import OntologyVisualizer
 
@@ -56,7 +57,7 @@ class TestVisualizationModuleComprehensive:
         assert hasattr(visualizer, "create_ontology_table")
 
     @pytest.mark.unit
-    def test_visualization_module_info(self):
+    def test_visualization_module_info(self) -> Any:
         """Test visualization module information retrieval."""
         from visualization import get_module_info
 
@@ -67,7 +68,7 @@ class TestVisualizationModuleComprehensive:
         assert "visualization_types" in info
 
     @pytest.mark.unit
-    def test_visualization_options(self):
+    def test_visualization_options(self) -> Any:
         """Test visualization options retrieval."""
         from visualization import get_visualization_options
 
@@ -82,7 +83,7 @@ class TestVisualizationFunctionality:
     """Tests for visualization functionality."""
 
     @pytest.mark.unit
-    def test_matrix_visualization(self, comprehensive_test_data):
+    def test_matrix_visualization(self, comprehensive_test_data: Any) -> Any:
         """Test matrix visualization functionality."""
         from visualization import MatrixVisualizer
 
@@ -92,7 +93,7 @@ class TestVisualizationFunctionality:
         assert result is not None
 
     @pytest.mark.unit
-    def test_graph_visualization(self, comprehensive_test_data):
+    def test_graph_visualization(self, comprehensive_test_data: Any) -> Any:
         """Test graph visualization functionality."""
         from visualization import GNNVisualizer
 
@@ -104,7 +105,7 @@ class TestVisualizationFunctionality:
         assert result is not None
 
     @pytest.mark.unit
-    def test_ontology_visualization(self, comprehensive_test_data):
+    def test_ontology_visualization(self, comprehensive_test_data: Any) -> Any:
         """Test ontology visualization functionality."""
         from visualization import OntologyVisualizer
 
@@ -119,8 +120,8 @@ class TestVisualizationIntegration:
 
     @pytest.mark.integration
     def test_visualization_pipeline_integration(
-        self, sample_gnn_files, isolated_temp_dir
-    ):
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         """Test visualization module integration with pipeline."""
         from visualization import MatrixVisualizer
 
@@ -128,20 +129,20 @@ class TestVisualizationIntegration:
         gnn_file = list(sample_gnn_files.values())[0]
         with open(gnn_file, "r") as f:
             f.read()
-        result = visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
+        result = visualizer.generate_matrix_analysis([[1.0, 2.0], [3.0, 4.0]])
         assert result is not None
 
     @pytest.mark.integration
-    def test_visualization_mcp_integration(self):
+    def test_visualization_mcp_integration(self) -> Any:
         """Test visualization MCP integration."""
         from visualization.mcp import register_tools
 
         assert callable(register_tools)
 
 
-def test_visualization_module_completeness():
+def test_visualization_module_completeness() -> Any:
     """Test that visualization module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "MatrixVisualizer",
         "GNNVisualizer",
         "OntologyVisualizer",
@@ -158,7 +159,7 @@ def test_visualization_module_completeness():
 
 
 @pytest.mark.slow
-def test_visualization_module_performance():
+def test_visualization_module_performance() -> Any:
     """Test visualization module performance characteristics."""
     import time
 
@@ -166,6 +167,6 @@ def test_visualization_module_performance():
 
     visualizer = MatrixVisualizer()
     start_time = time.time()
-    visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
+    visualizer.generate_matrix_analysis([[1.0, 2.0], [3.0, 4.0]])
     processing_time = time.time() - start_time
     assert processing_time < 10.0

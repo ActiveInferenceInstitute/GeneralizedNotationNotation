@@ -5,6 +5,8 @@ Test Pipeline Integration - Integration tests for pipeline with external systems
 Tests the integration between pipeline steps and external dependencies.
 """
 
+from typing import Any
+
 import pytest
 
 pytestmark = pytest.mark.pipeline
@@ -47,7 +49,7 @@ class TestPipelineStepIntegration:
         """Test data flows correctly from render to execute step."""
         from render import generate_pymdp_code
 
-        parsed_data = {
+        parsed_data: dict[str, Any] = {
             "ModelName": "TestFlow",
             "variables": [
                 {"name": "state", "dimensions": [3]},
@@ -145,7 +147,7 @@ class TestPipelineModuleIntegration:
     @pytest.mark.integration
     def test_all_modules_importable(self) -> None:
         """Test that all pipeline modules can be imported."""
-        modules = [
+        modules: list[Any] = [
             "gnn",
             "render",
             "execute",
@@ -180,7 +182,7 @@ class TestPipelineModuleIntegration:
         """Test pipeline steps are in correct order."""
         from pipeline import PipelineOrchestrator
 
-        orchestrator = PipelineOrchestrator(steps=[3])
+        orchestrator = PipelineOrchestrator(steps=["3"])
         steps = orchestrator.get_pipeline_steps()
 
         if steps:
@@ -212,7 +214,11 @@ class TestPipelineOutputIntegration:
         """Test pipeline creates summary files."""
         import json
 
-        summary = {"status": "success", "steps_completed": 5, "duration": 10.5}
+        summary: dict[str, Any] = {
+            "status": "success",
+            "steps_completed": 5,
+            "duration": 10.5,
+        }
 
         summary_file = tmp_path / "summary.json"
 
@@ -236,8 +242,8 @@ class TestPipelineErrorIntegration:
         logging.getLogger("test_pipeline")
 
         # Run with invalid step configuration - should return result, not crash
-        step_config = {"script_path": str(tmp_path / "nonexistent.py")}
-        pipeline_data = {
+        step_config: dict[str, Any] = {"script_path": str(tmp_path / "nonexistent.py")}
+        pipeline_data: dict[str, Any] = {
             "target_dir": str(tmp_path),
             "output_dir": str(tmp_path / "output"),
         }
@@ -259,7 +265,7 @@ class TestPipelineErrorIntegration:
 
         logging.getLogger("test_pipeline")
 
-        orchestrator = PipelineOrchestrator(steps=[3])
+        orchestrator = PipelineOrchestrator(steps=["3"])
 
         # Should be able to instantiate and run
         assert orchestrator is not None

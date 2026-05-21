@@ -9,14 +9,15 @@ import argparse
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 # Re-export from the estimation subpackage.
 from .estimation.estimator import GNNResourceEstimator
 
-__all__ = ["GNNResourceEstimator"]
+__all__: list[Any] = ["GNNResourceEstimator"]
 
 
-def main():
+def main() -> Any:
     """
     Main function to run the resource estimator from command line.
     """

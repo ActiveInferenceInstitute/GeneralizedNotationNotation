@@ -17,11 +17,13 @@ For complete documentation of this architectural pattern, see:
 - src/main.py: Main pipeline orchestrator
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
 __author__ = "GNN Pipeline Team"
 __description__ = "Standardized template for GNN pipeline steps"
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "standardized_processing": True,
     "correlation_id_generation": True,
     "safe_execution": True,
@@ -43,14 +45,14 @@ from .processor import (
 from .utils import get_version_info
 
 # Version information
-VERSION_INFO = {
+VERSION_INFO: dict[str, Any] = {
     "version": __version__,
     "name": "Template Step",
     "description": __description__,
     "author": __author__,
 }
 
-__all__ = [
+__all__: list[Any] = [
     "process_template_standardized",
     "process_single_file",
     "validate_file",

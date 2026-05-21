@@ -162,7 +162,7 @@ def _canonicalise_E(
 # ---------------------------------------------------------------------------
 
 
-def _require_pymdp_1():
+def _require_pymdp_1() -> Any:
     """
     Import pymdp 1.0.0 (JAX-first). We probe for the new surface explicitly so
     we fail fast with an actionable error if an old 0.x wheel is installed.
@@ -188,7 +188,7 @@ def _require_pymdp_1():
     return Agent, pymdp_utils, jnp, jr
 
 
-def _to_jax_batched(mat_np: np.ndarray, batch_size: int):
+def _to_jax_batched(mat_np: np.ndarray, batch_size: int) -> Any:
     """Add a leading batch dim and convert to jnp float32, pymdp 1.0.0 convention."""
     import jax.numpy as jnp
 
@@ -209,7 +209,7 @@ def _build_pymdp_agent(
     policy_len: int = 1,
     gamma: float = 16.0,
     alpha: float = 16.0,
-):
+) -> Any:
     """
     Build a pymdp 1.0.0 ``Agent`` from canonical GNN numpy matrices.
 
@@ -225,10 +225,10 @@ def _build_pymdp_agent(
 
     num_actions = int(B_np.shape[-1])
 
-    A_list = [_to_jax_batched(A_np, batch_size)]
-    B_list = [_to_jax_batched(B_np, batch_size)]
-    C_list = [_to_jax_batched(C_np, batch_size)]
-    D_list = [_to_jax_batched(D_np, batch_size)]
+    A_list: list[Any] = [_to_jax_batched(A_np, batch_size)]
+    B_list: list[Any] = [_to_jax_batched(B_np, batch_size)]
+    C_list: list[Any] = [_to_jax_batched(C_np, batch_size)]
+    D_list: list[Any] = [_to_jax_batched(D_np, batch_size)]
 
     agent_kwargs: Dict[str, Any] = dict(
         A=A_list,
@@ -311,7 +311,7 @@ def run_pymdp_simulation(
         "initial_parameterization", {}
     )
     model_params = gnn_spec.get("model_parameters", {}) or {}
-    required_matrices = ["A", "B", "C", "D"]
+    required_matrices: list[Any] = ["A", "B", "C", "D"]
     missing_matrices = [name for name in required_matrices if name not in init_params]
     if missing_matrices:
         return False, {
@@ -414,7 +414,7 @@ def run_pymdp_simulation(
         obs_idx = int(np_rng.choice(num_obs, p=_normalise_prob_vector(obs_probs)))
         observations.append(obs_idx)
 
-        obs_jax = [jnp.array([obs_idx], dtype=jnp.int32)]
+        obs_jax: list[Any] = [jnp.array([obs_idx], dtype=jnp.int32)]
 
         # Agent inference
         qs, info = agent.infer_states(

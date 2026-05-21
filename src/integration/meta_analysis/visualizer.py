@@ -21,7 +21,7 @@ from __future__ import annotations
 import csv
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 from .collector import SweepRecord
 
@@ -49,7 +49,7 @@ except ImportError:
 
 
 # Style Constants — Curated for ultra-bold high-contrast scientific reports
-_STYLE = {
+_STYLE: dict[str, Any] = {
     "bg_color": "white",
     "axis_bg": "#FFFFFF",
     "text_color": "#212529",
@@ -65,7 +65,7 @@ _STYLE = {
 }
 
 # Color palette — Adjusted for white background visibility
-_FRAMEWORK_COLORS = {
+_FRAMEWORK_COLORS: dict[str, Any] = {
     "pymdp": "#E63946",  # Vivid Red
     "jax": "#457B9D",  # Deep Blue-Gray
     "numpyro": "#1D3557",  # Navy
@@ -78,7 +78,7 @@ _FRAMEWORK_COLORS = {
 
 
 def _get_color(framework: str) -> str:
-    return _FRAMEWORK_COLORS.get(framework, "#AAAAAA")
+    return cast("str", _FRAMEWORK_COLORS.get(framework, "#AAAAAA"))
 
 
 def _fmt_time(val: float) -> str:
@@ -94,7 +94,7 @@ def _fmt_time(val: float) -> str:
     return f"{val / 3600:.1f}h"
 
 
-def _add_watermark(ax: plt.Axes):
+def _add_watermark(ax: plt.Axes) -> Any:
     """Add a small watermark to the plot for traceability."""
     import datetime
 
@@ -102,7 +102,10 @@ def _add_watermark(ax: plt.Axes):
     watermark = f"GNN Scaling Analysis | {timestamp} | v1.7.0"
 
     # Use figure-level text to avoid 2D/3D coordinate issues
-    ax.get_figure().text(
+    figure = ax.get_figure()
+    if figure is None:
+        return
+    figure.text(
         0.99,
         0.01,
         watermark,
@@ -123,7 +126,7 @@ class SweepVisualizer:
         output_dir: Path,
         logger: Optional[logging.Logger] = None,
         gnn_format_statistics: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
         self.records = records
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -293,7 +296,7 @@ class SweepVisualizer:
         data_dir.mkdir(parents=True, exist_ok=True)
 
         path = data_dir / "sweep_data.csv"
-        fieldnames = [
+        fieldnames: list[Any] = [
             "model_name",
             "framework",
             "num_states",
@@ -583,7 +586,7 @@ class SweepVisualizer:
             ax = axes[ax_idx]
             ax.set_facecolor(_STYLE["axis_bg"])
 
-            all_exponents = []
+            all_exponents: list[Any] = []
             for fw in frameworks:
                 fw_records = [
                     r
@@ -804,9 +807,9 @@ class SweepVisualizer:
         x = np.arange(len(models))
         bar_width = 0.8 / max(len(frameworks), 1)
 
-        all_times = []
+        all_times: list[Any] = []
         for i, fw in enumerate(frameworks):
-            times = []
+            times: list[Any] = []
             for model in models:
                 match = [
                     r
@@ -862,11 +865,13 @@ class SweepVisualizer:
         # Clean up model labels
         import re as _re
 
-        display_labels = []
+        display_labels: list[Any] = []
         for m in models:
-            match = _re.search(r"N(\d+).*T(\d+)", m)
-            if match:
-                display_labels.append(f"N={match.group(1)}\nT={match.group(2)}")
+            label_match = _re.search(r"N(\d+).*T(\d+)", m)
+            if label_match:
+                display_labels.append(
+                    f"N={label_match.group(1)}\nT={label_match.group(2)}"
+                )
             else:
                 display_labels.append(m[:20])
 
@@ -914,7 +919,7 @@ class SweepVisualizer:
             writer = csv.writer(f)
             writer.writerow(["Model"] + frameworks)
             for model in models:
-                row = [model]
+                row: list[Any] = [model]
                 for fw in frameworks:
                     match = [
                         r
@@ -939,7 +944,7 @@ class SweepVisualizer:
     ) -> Optional[Path]:
         """Per-step timing comparison grouped by framework and N."""
         # Build grouped data: for each (framework, N), compute median ms/step
-        groups = []
+        groups: list[Any] = []
         for fw in frameworks:
             fw_records = [
                 r
@@ -1076,7 +1081,7 @@ class SweepVisualizer:
                 continue
             fw_recs.sort(key=lambda r: (r.num_states or 0, r.num_timesteps or 0))
             # Create concise labels: "N2/T10"
-            labels = []
+            labels: list[Any] = []
             for r in fw_recs:
                 m = _re.search(r"N(\d+).*T(\d+)", r.model_name)
                 labels.append(
@@ -1206,7 +1211,7 @@ class SweepVisualizer:
                 continue
 
             ns = sorted({r.num_states for r in fw_recs if r.num_states is not None})
-            avg_ents = []
+            avg_ents: list[Any] = []
             for n in ns:
                 subset = [r for r in fw_recs if r.num_states == n]
                 avg_ents.append(
@@ -1663,7 +1668,7 @@ class SweepVisualizer:
             n_values = sorted(
                 {r.num_states for r in fw_records if r.num_states is not None}
             )
-            efficiencies = []
+            efficiencies: list[Any] = []
             for n in n_values:
                 subset = [r for r in fw_records if r.num_states == n]
                 # Approximation of ops: N^3 * T
@@ -1743,7 +1748,7 @@ class SweepVisualizer:
 
             # Group by N (T doesn't affect LOC usually)
             n_values = sorted({r.num_states for r in fw_records})
-            loc_values = []
+            loc_values: list[Any] = []
             for n in n_values:
                 subset = [r for r in fw_records if r.num_states == n]
                 loc_values.append(np.mean([r.lines_of_code for r in subset]))
@@ -1950,7 +1955,7 @@ class SweepVisualizer:
             if not fw_recs:
                 continue
             ns = sorted({r.num_states for r in fw_recs})
-            throughputs = []
+            throughputs: list[Any] = []
             for n in ns:
                 subset = [r for r in fw_recs if r.num_states == n]
                 throughputs.append(
@@ -2048,8 +2053,8 @@ class SweepVisualizer:
         fig.patch.set_facecolor(_STYLE["bg_color"])
         ax.set_facecolor(_STYLE["axis_bg"])
         ns = sorted({r.num_states for r in valid})
-        data_by_n = []
-        labels = []
+        data_by_n: list[Any] = []
+        labels: list[Any] = []
         for n in ns:
             runtimes = [r.execution_time for r in valid if r.num_states == n]
             if runtimes:
@@ -2061,7 +2066,7 @@ class SweepVisualizer:
         bp = ax.boxplot(
             data_by_n,
             patch_artist=True,
-            labels=labels,
+            tick_labels=labels,
             widths=0.6,
             medianprops=dict(color="black", linewidth=2),
         )
@@ -2144,7 +2149,7 @@ class SweepVisualizer:
             return None
         t_values = sorted({r.num_timesteps for r in valid})
         n_values = sorted({r.num_states for r in valid})
-        exponents = []  # (label, exponent, r_squared)
+        exponents: list[Any] = []  # (label, exponent, r_squared)
         for fw in frameworks:
             fw_recs = [r for r in valid if r.framework == fw]
             for t in t_values:
@@ -2292,7 +2297,7 @@ class SweepVisualizer:
             if not fw_recs:
                 continue
             ns = sorted({r.num_states for r in fw_recs})
-            efficiencies = []
+            efficiencies: list[Any] = []
             for n in ns:
                 subset = [r for r in fw_recs if r.num_states == n]
                 avg_loc = np.mean([r.lines_of_code for r in subset])
@@ -2555,7 +2560,7 @@ class SweepVisualizer:
         )
         n_range = f"[{min(all_n)}, {max(all_n)}]"
         t_range = f"[{min(all_t):,}, {max(all_t):,}]"
-        table_data = [
+        table_data: list[Any] = [
             ["Total Models", str(total_models)],
             ["N Range", n_range],
             ["T Range", t_range],
@@ -2617,7 +2622,7 @@ class SweepVisualizer:
         for fw in frameworks:
             fw_recs = [r for r in valid if r.framework == fw]
             ns = sorted({r.num_states for r in fw_recs})
-            cmap = plt.cm.viridis(np.linspace(0.1, 0.9, len(ns)))
+            cmap = plt.get_cmap("viridis")(np.linspace(0.1, 0.9, len(ns)))
             for idx, n in enumerate(ns):
                 subset = sorted(
                     [r for r in fw_recs if r.num_states == n],
@@ -2705,7 +2710,7 @@ class SweepVisualizer:
         fig, ax = plt.subplots(figsize=(9, 5))
         fig.patch.set_facecolor(_STYLE["bg_color"])
         ax.set_facecolor(_STYLE["axis_bg"])
-        palette = ["#457B9D", "#E63946", "#2A9D8F"]
+        palette: list[Any] = ["#457B9D", "#E63946", "#2A9D8F"]
         ax.bar(
             labels,
             sizes_mb,

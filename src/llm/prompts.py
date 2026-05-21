@@ -8,7 +8,7 @@ that help understand Active Inference generative models.
 """
 
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 
 class PromptType(Enum):
@@ -342,7 +342,9 @@ Provide constructive recommendations:
 }
 
 
-def get_prompt(prompt_type: PromptType, gnn_content: str, **kwargs) -> Dict[str, Any]:
+def get_prompt(
+    prompt_type: PromptType, gnn_content: str, **kwargs: Any
+) -> Dict[str, Any]:
     """
     Get a formatted prompt for GNN analysis.
 
@@ -374,7 +376,7 @@ def get_all_prompt_types() -> List[PromptType]:
 
 def get_prompt_title(prompt_type: PromptType) -> str:
     """Get the human-readable title for a prompt type."""
-    return GNN_ANALYSIS_PROMPTS[prompt_type]["title"]
+    return cast("str", GNN_ANALYSIS_PROMPTS[prompt_type]["title"])
 
 
 def get_default_prompt_sequence() -> List[PromptType]:

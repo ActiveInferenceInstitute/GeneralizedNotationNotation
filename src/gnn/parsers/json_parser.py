@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 class JSONGNNParser(BaseGNNParser):
     """Parser for JSON data interchange format."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the JSON parser."""
         super().__init__()
 
@@ -179,7 +179,7 @@ class JSONGNNParser(BaseGNNParser):
 
     def _parse_variables(self, variables_data: List[Dict[str, Any]]) -> List[Variable]:
         """Parse variables from JSON data."""
-        variables = []
+        variables: list[Any] = []
 
         for var_data in variables_data:
             try:
@@ -224,7 +224,7 @@ class JSONGNNParser(BaseGNNParser):
         self, connections_data: List[Dict[str, Any]]
     ) -> List[Connection]:
         """Parse connections from JSON data."""
-        connections = []
+        connections: list[Any] = []
 
         for conn_data in connections_data:
             try:
@@ -259,7 +259,7 @@ class JSONGNNParser(BaseGNNParser):
         self, parameters_data: List[Dict[str, Any]]
     ) -> List[Parameter]:
         """Parse parameters from JSON data."""
-        parameters = []
+        parameters: list[Any] = []
 
         for param_data in parameters_data:
             try:
@@ -282,7 +282,7 @@ class JSONGNNParser(BaseGNNParser):
 
     def _parse_equations(self, equations_data: List[Dict[str, Any]]) -> List[Equation]:
         """Parse equations from JSON data."""
-        equations = []
+        equations: list[Any] = []
 
         for eq_data in equations_data:
             try:
@@ -327,7 +327,7 @@ class JSONGNNParser(BaseGNNParser):
         self, mappings_data: List[Dict[str, Any]]
     ) -> List[OntologyMapping]:
         """Parse ontology mappings from JSON data."""
-        mappings = []
+        mappings: list[Any] = []
 
         for mapping_data in mappings_data:
             try:

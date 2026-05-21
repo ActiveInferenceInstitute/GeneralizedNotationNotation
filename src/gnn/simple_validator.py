@@ -9,7 +9,7 @@ when the full validation system encounters issues.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class SimpleValidator:
     This validator performs basic checks without complex dependencies.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.valid_extensions = [".md", ".json", ".xml", ".yaml", ".pkl"]
 
     def validate_file(self, file_path: Path) -> Dict[str, Any]:
@@ -34,7 +34,7 @@ class SimpleValidator:
         Returns:
             Dictionary with validation results
         """
-        result = {
+        result: dict[str, Any] = {
             "is_valid": True,
             "errors": [],
             "warnings": [],
@@ -58,7 +58,7 @@ class SimpleValidator:
             return result
 
         # Check for basic GNN markers
-        gnn_markers = [
+        gnn_markers: list[Any] = [
             "model",
             "gnn",
             "variable",
@@ -73,7 +73,7 @@ class SimpleValidator:
 
         # Check for section structure in markdown files
         if file_path.suffix.lower() == ".md":
-            sections = ["ModelName", "StateSpaceBlock", "Connections"]
+            sections: list[Any] = ["ModelName", "StateSpaceBlock", "Connections"]
             missing_sections = [
                 section for section in sections if section not in content
             ]
@@ -89,7 +89,7 @@ class SimpleValidator:
         """Detect file format from extension."""
         ext = file_path.suffix.lower()
 
-        format_map = {
+        format_map: dict[str, Any] = {
             ".md": "markdown",
             ".json": "json",
             ".xml": "xml",
@@ -99,7 +99,7 @@ class SimpleValidator:
             ".pickle": "pickle",
         }
 
-        return format_map.get(ext, "unknown")
+        return cast("str", format_map.get(ext, "unknown"))
 
     def validate_directory(
         self, directory: Path, recursive: bool = False
@@ -114,7 +114,7 @@ class SimpleValidator:
         Returns:
             Dictionary with validation results
         """
-        results = {
+        results: dict[str, Any] = {
             "directory": str(directory),
             "files_validated": 0,
             "valid_files": 0,
@@ -124,7 +124,7 @@ class SimpleValidator:
 
         # Find files to validate
         if recursive:
-            files = []
+            files: list[Any] = []
             for ext in self.valid_extensions:
                 files.extend(directory.rglob(f"*{ext}"))
         else:

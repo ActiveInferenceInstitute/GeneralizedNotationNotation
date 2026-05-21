@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import pytest
 
@@ -9,7 +10,7 @@ class TestMLIntegrationOverall:
     """Test suite for ML Integration module."""
 
     @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem):
+    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a sample GNN file for ML integration."""
         content = """
 # ML Model
@@ -22,7 +23,9 @@ StateSpaceBlock {
 """
         return safe_filesystem.create_file("ml_model.md", content)
 
-    def test_process_ml_integration_flow(self, safe_filesystem, sample_gnn_file):
+    def test_process_ml_integration_flow(
+        self, safe_filesystem: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test the ML integration workflow."""
         target_dir = sample_gnn_file.parent
         output_dir = safe_filesystem.create_dir("ml_output")
@@ -51,7 +54,7 @@ StateSpaceBlock {
         model_info = data["models_trained"][0]
         assert model_info["source"] == "ml_model.md"
 
-    def test_process_ml_integration_no_files(self, safe_filesystem):
+    def test_process_ml_integration_no_files(self, safe_filesystem: Any) -> Any:
         """Test with empty input."""
         empty_dir = safe_filesystem.create_dir("empty_input")
         output_dir = safe_filesystem.create_dir("empty_output")

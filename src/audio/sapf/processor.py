@@ -7,7 +7,7 @@ This module provides SAPF audio processing capabilities.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -35,18 +35,18 @@ def process_gnn_to_audio(
     try:
         logger.info(f"Processing GNN to audio for model: {model_name}")
 
-        # Import SAPF processor
-        from .sapf_gnn_processor import SAPFGNNProcessor, convert_gnn_to_sapf
-
-        # Create processor
-        processor = SAPFGNNProcessor()
+        from .sapf_gnn_processor import (
+            convert_gnn_to_sapf,
+            generate_audio_from_sapf,
+            validate_sapf_code,
+        )
 
         # Convert GNN to SAPF
-        sapf_code = convert_gnn_to_sapf(gnn_content)
+        sapf_code = convert_gnn_to_sapf(gnn_content, model_name)
 
         if validate_only:
-            # Only validate SAPF code
-            validation_result = processor.validate_sapf_code(sapf_code)
+            is_valid, issues = validate_sapf_code(sapf_code)
+            validation_result = {"valid": is_valid, "issues": issues}
             return {
                 "success": validation_result["valid"],
                 "validation_result": validation_result,
@@ -56,17 +56,15 @@ def process_gnn_to_audio(
 
         # Generate audio
         output_path = Path(output_dir) / f"{model_name}_sapf_audio.wav"
-        audio_result = processor.generate_audio_from_sapf(
-            sapf_code, str(output_path), duration
-        )
+        audio_success = generate_audio_from_sapf(sapf_code, output_path, duration)
 
         return {
-            "success": audio_result["success"],
+            "success": audio_success,
             "audio_file": str(output_path),
             "model_name": model_name,
             "sapf_code": sapf_code,
             "duration": duration,
-            "audio_result": audio_result,
+            "audio_result": {"success": audio_success},
         }
 
     except Exception as e:
@@ -89,12 +87,12 @@ def generate_sapf_audio(
         Dictionary with generation results
     """
     try:
-        from .sapf_gnn_processor import SAPFGNNProcessor
+        from .sapf_gnn_processor import generate_audio_from_sapf
 
-        processor = SAPFGNNProcessor()
-        result = processor.generate_audio_from_sapf(sapf_code, output_path, **kwargs)
+        duration = float(kwargs.get("duration", 10.0))
+        result = generate_audio_from_sapf(sapf_code, Path(output_path), duration)
 
-        return result
+        return {"success": result, "output_path": str(output_path)}
 
     except Exception as e:
         logger.error(f"Failed to generate SAPF audio: {e}")
@@ -116,7 +114,7 @@ def create_sapf_visualization(
     """
     try:
         # Basic visualization creation
-        visualization_data = {
+        visualization_data: dict[str, Any] = {
             "sapf_code": sapf_code,
             "components": [],
             "timeline": [],
@@ -146,7 +144,10 @@ def create_sapf_visualization(
                         {"type": "envelope", "shape": parts[1]}
                     )
 
-        result = {"success": True, "visualization_data": visualization_data}
+        result: dict[str, Any] = {
+            "success": True,
+            "visualization_data": visualization_data,
+        }
 
         if output_path:
             import json
@@ -176,7 +177,7 @@ def generate_sapf_report(
         Dictionary with report results
     """
     try:
-        report = {
+        report: dict[str, Any] = {
             "timestamp": str(Path(__file__).stat().st_mtime),
             "sapf_results": sapf_results,
             "summary": {

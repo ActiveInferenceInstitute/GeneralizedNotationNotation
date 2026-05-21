@@ -7,7 +7,7 @@ This module provides comprehensive analysis and statistical processing for GNN m
 from typing import Any, Dict
 
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "statistical_analysis": True,
     "framework_comparison": True,
     "post_simulation_analysis": True,
@@ -86,7 +86,7 @@ def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools."""
     import importlib
 
-    tools = {}
+    tools: dict[Any, Any] = {}
     for pkg_name in ("numpy", "pandas", "scipy", "matplotlib"):
         try:
             m = importlib.import_module(pkg_name)
@@ -96,7 +96,7 @@ def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
     return tools
 
 
-__all__ = [
+__all__: list[Any] = [
     "__version__",
     "FEATURES",
     "process_analysis",

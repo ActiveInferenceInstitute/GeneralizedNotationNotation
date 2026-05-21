@@ -115,6 +115,8 @@ def validate_gnn_with_round_trip(
 
     try:
         # Initialize validation level
+        assert modules.ValidationLevel is not None
+        assert modules.GNNValidator is not None
         try:
             val_level = modules.ValidationLevel(validation_level.lower())
         except ValueError:
@@ -171,7 +173,7 @@ def process_gnn_folder(
     verbose: bool = False,
     validation_level: str = "standard",
     enable_round_trip: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Enhanced GNN folder processing with comprehensive validation and testing.
@@ -208,15 +210,19 @@ def process_gnn_folder(
             target_dir, output_dir, logger, recursive, verbose, **kwargs
         )
 
+    modules = _get_testing_modules()
+    assert modules.ValidationLevel is not None
+    assert modules.GNNValidator is not None
+
     # Initialize validation level
     try:
-        val_level = _get_testing_modules().ValidationLevel(validation_level.lower())
+        val_level = modules.ValidationLevel(validation_level.lower())
     except ValueError:
         logger.warning(f"Invalid validation level '{validation_level}', using STANDARD")
-        val_level = _get_testing_modules().ValidationLevel.STANDARD
+        val_level = modules.ValidationLevel.STANDARD
 
     # Initialize enhanced validator
-    validator = _get_testing_modules().GNNValidator(
+    validator = modules.GNNValidator(
         validation_level=val_level, enable_round_trip_testing=enable_round_trip
     )
 
@@ -228,7 +234,7 @@ def process_gnn_folder(
     logger.info(f"Phase 1: Enhanced GNN file discovery (recursive: {recursive})")
     start_time = time.time()
 
-    gnn_files = []
+    gnn_files: list[Any] = []
     if recursive:
         gnn_files.extend(target_dir.rglob("*.md"))
         gnn_files.extend(target_dir.rglob("*.json"))
@@ -258,7 +264,7 @@ def process_gnn_folder(
     logger.info("Phase 2: Enhanced validation and analysis")
     processing_start = time.time()
 
-    processing_results = {
+    processing_results: dict[str, Any] = {
         "files_processed": 0,
         "files_valid": 0,
         "files_invalid": 0,
@@ -294,7 +300,7 @@ def process_gnn_folder(
             )
 
             # Store detailed results
-            file_result = {
+            file_result: dict[str, Any] = {
                 "file": str(gnn_file.relative_to(target_dir)),
                 "format": file_format,
                 "validation_level": validation_result.validation_level.value,
@@ -426,7 +432,7 @@ def _basic_gnn_processing(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Recovery basic GNN processing when enhanced testing is not available.
@@ -474,7 +480,7 @@ def _basic_gnn_processing(
 
 def _generate_performance_analysis(report: Any, test_time: float) -> str:
     """Generate performance analysis section for reports."""
-    lines = [
+    lines: list[Any] = [
         "## Performance Analysis",
         "",
         "### Test Execution Metrics",
@@ -524,7 +530,7 @@ def _is_gnn_file(file_path: Path) -> bool:
                     content = f.read(1000)  # Read first 1KB
 
                 # Look for GNN section headers
-                gnn_indicators = [
+                gnn_indicators: list[Any] = [
                     "## GNNSection",
                     "## ModelName",
                     "## StateSpaceBlock",
@@ -543,7 +549,7 @@ def _is_gnn_file(file_path: Path) -> bool:
         return False
 
 
-def _validate_binary_cross_format(file_path: Path, cross_validator) -> Any:
+def _validate_binary_cross_format(file_path: Path, cross_validator: Any) -> Any:
     """Validate binary files for cross-format consistency."""
     try:
         # Binary files need special handling for cross-format validation
@@ -615,7 +621,7 @@ def run_gnn_round_trip_tests(
     reference_file: Optional[str] = None,
     test_subset: Optional[List[str]] = None,
     enable_parallel: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Enhanced round-trip tests with performance optimization and detailed reporting.
@@ -648,6 +654,8 @@ def run_gnn_round_trip_tests(
         if modules.is_empty():
             log_step_warning(logger, "Enhanced testing modules not available")
             return False
+        assert modules.GNNRoundTripTester is not None
+        assert modules.GNNFormat is not None
 
         # Initialize enhanced round-trip tester
         temp_dir = round_trip_output_dir / "temp"
@@ -678,7 +686,7 @@ def run_gnn_round_trip_tests(
         _original_formats = tester.supported_formats.copy()
         if test_subset:
             # Filter to requested formats
-            subset_formats = []
+            subset_formats: list[Any] = []
             for fmt_name in test_subset:
                 try:
                     fmt = modules.GNNFormat(fmt_name.lower())
@@ -729,7 +737,7 @@ def run_gnn_round_trip_tests(
         logger.info(f"  📄 Report: {report_file}")
 
         # Format category performance
-        categories = [
+        categories: list[Any] = [
             ("Schema", ["json", "xml", "yaml", "xsd", "asn1", "pkl", "protobuf"]),
             ("Language", ["scala", "lean", "coq", "python", "haskell", "isabelle"]),
             ("Formal", ["tla_plus", "agda", "alloy", "z_notation", "bnf", "ebnf"]),
@@ -806,7 +814,7 @@ def validate_gnn_cross_format_consistency(
     logger: logging.Logger,
     files_to_test: Optional[List[str]] = None,
     include_binary: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Enhanced cross-format consistency validation with comprehensive analysis.
@@ -838,6 +846,9 @@ def validate_gnn_cross_format_consistency(
         if modules.is_empty():
             log_step_warning(logger, "Enhanced validation modules not available")
             return False
+        assert modules.GNNValidator is not None
+        assert modules.ValidationLevel is not None
+        assert modules.CrossFormatValidator is not None
 
         # Initialize enhanced validators
         modules.GNNValidator(validation_level=modules.ValidationLevel.STRICT)
@@ -850,7 +861,7 @@ def validate_gnn_cross_format_consistency(
             ]
         else:
             # Enhanced file discovery
-            extensions = ["*.md", "*.json", "*.xml", "*.yaml"]
+            extensions: list[Any] = ["*.md", "*.json", "*.xml", "*.yaml"]
             if include_binary:
                 extensions.extend(["*.pkl", "*.pickle"])
 
@@ -868,7 +879,7 @@ def validate_gnn_cross_format_consistency(
         logger.info(f"Testing cross-format consistency for {len(gnn_files)} files")
 
         # Enhanced validation tracking
-        validation_results = {
+        validation_results: dict[str, Any] = {
             "total_files": len(gnn_files),
             "consistent_files": 0,
             "inconsistent_files": 0,
@@ -902,7 +913,7 @@ def validate_gnn_cross_format_consistency(
                 file_time = time.time() - file_start
 
                 # Process results
-                file_result = {
+                file_result: dict[str, Any] = {
                     "file": str(gnn_file.relative_to(target_dir)),
                     "format": gnn_file.suffix.lower(),
                     "is_consistent": result.is_consistent,

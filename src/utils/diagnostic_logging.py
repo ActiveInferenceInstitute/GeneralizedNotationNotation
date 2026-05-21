@@ -13,7 +13,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, cast
 
 import psutil
 
@@ -30,10 +30,10 @@ class CorrelationContext:
         """Get current correlation ID or create a new one."""
         if not hasattr(cls._local, "correlation_id"):
             cls._local.correlation_id = str(uuid.uuid4())[:8]
-        return cls._local.correlation_id
+        return cast("str", cls._local.correlation_id)
 
     @classmethod
-    def set_correlation_id(cls, correlation_id: str):
+    def set_correlation_id(cls, correlation_id: str) -> Any:
         """Set correlation ID for current thread."""
         cls._local.correlation_id = correlation_id
 
@@ -48,7 +48,7 @@ class CorrelationContext:
 class PerformanceTracker:
     """Track performance metrics for pipeline operations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.metrics: Dict[str, List[float]] = {}
         self.active_operations: Dict[str, float] = {}
 
@@ -76,7 +76,7 @@ class PerformanceTracker:
 
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of all tracked metrics."""
-        summary = {}
+        summary: dict[Any, Any] = {}
         for operation, durations in self.metrics.items():
             if durations:
                 summary[operation] = {
@@ -92,7 +92,7 @@ class PerformanceTracker:
 class DiagnosticLogger:
     """Enhanced logger with diagnostic capabilities and correlation tracking."""
 
-    def __init__(self, step_name: str, output_dir: Optional[Path] = None):
+    def __init__(self, step_name: str, output_dir: Optional[Path] = None) -> None:
         """
         Initialize diagnostic logger.
 
@@ -139,7 +139,7 @@ class DiagnosticLogger:
                 "error": f"Could not get system info: {e}",
             }
 
-    def log_step_start(self, description: str, **context):
+    def log_step_start(self, description: str, **context: Any) -> Any:
         """Log step start with enhanced diagnostics."""
         self.diagnostics["step_start"] = {
             "description": description,
@@ -161,7 +161,7 @@ class DiagnosticLogger:
             f"Disk {self.system_info.get('disk_percent', 'unknown')}%"
         )
 
-    def log_step_success(self, message: str, **context):
+    def log_step_success(self, message: str, **context: Any) -> Any:
         """Log step success with performance metrics."""
         duration = time.time() - self.start_time
 
@@ -178,7 +178,7 @@ class DiagnosticLogger:
 
         self.logger.info(log_message)
 
-    def log_step_warning(self, message: str, **context):
+    def log_step_warning(self, message: str, **context: Any) -> Any:
         """Log step warning with context."""
         self.diagnostics.setdefault("warnings", []).append(
             {
@@ -195,10 +195,10 @@ class DiagnosticLogger:
         self.logger.warning(log_message)
 
     def log_step_error(
-        self, message: str, error: Optional[Exception] = None, **context
-    ):
+        self, message: str, error: Optional[Exception] = None, **context: Any
+    ) -> Any:
         """Log step error with full diagnostic information."""
-        error_info = {
+        error_info: dict[str, Any] = {
             "message": message,
             "context": context,
             "timestamp": datetime.now().isoformat(),
@@ -224,7 +224,7 @@ class DiagnosticLogger:
         self.logger.error(log_message)
 
     @contextmanager
-    def performance_context(self, operation_name: str):
+    def performance_context(self, operation_name: str) -> Any:
         """Context manager for performance tracking."""
         operation_key = self.performance_tracker.start_operation(operation_name)
         self.logger.debug(
@@ -239,7 +239,7 @@ class DiagnosticLogger:
                 f"[{self.correlation_id}] Completed operation: {operation_name} ({duration:.3f}s)"
             )
 
-    def log_dependency_status(self, dependencies: Dict[str, bool]):
+    def log_dependency_status(self, dependencies: Dict[str, bool]) -> Any:
         """Log dependency availability status."""
         available = [name for name, status in dependencies.items() if status]
         unavailable = [name for name, status in dependencies.items() if not status]
@@ -259,7 +259,7 @@ class DiagnosticLogger:
                 f"[{self.correlation_id}] Unavailable dependencies: {', '.join(unavailable)}"
             )
 
-    def log_file_operations(self, operations: List[Dict[str, Any]]):
+    def log_file_operations(self, operations: List[Dict[str, Any]]) -> Any:
         """Log file operation results."""
         successful = [op for op in operations if op.get("success", False)]
         failed = [op for op in operations if not op.get("success", False)]
@@ -282,7 +282,7 @@ class DiagnosticLogger:
                     f"on {op.get('file_path', 'unknown')} - {op.get('error', 'unknown error')}"
                 )
 
-    def save_diagnostic_report(self, output_path: Optional[Path] = None):
+    def save_diagnostic_report(self, output_path: Optional[Path] = None) -> Any:
         """Save comprehensive diagnostic report."""
         if output_path is None and self.output_dir:
             output_path = self.output_dir / f"{self.step_name}_diagnostic_report.json"
@@ -327,7 +327,7 @@ def create_diagnostic_logger(
     return DiagnosticLogger(step_name, output_dir)
 
 
-def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None):
+def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None) -> Any:
     """
     Decorator to add diagnostic logging to functions.
 
@@ -336,8 +336,8 @@ def with_diagnostic_logging(step_name: str, output_dir: Optional[Path] = None):
         output_dir: Optional directory for diagnostic outputs
     """
 
-    def decorator(func: Callable):
-        def wrapper(*args, **kwargs):
+    def decorator(func: Callable) -> Any:
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             diagnostic_logger = create_diagnostic_logger(step_name, output_dir)
 
             try:

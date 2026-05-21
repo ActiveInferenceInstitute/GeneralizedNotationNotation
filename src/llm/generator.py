@@ -9,7 +9,7 @@ from typing import Any, Dict
 
 def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate insights about the GNN model."""
-    insights = {
+    insights: dict[str, Any] = {
         "model_complexity": "medium",
         "recommendations": [],
         "strengths": [],
@@ -58,7 +58,7 @@ def generate_model_insights(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
 
 def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate code suggestions for the GNN model."""
-    suggestions = {
+    suggestions: dict[str, Any] = {
         "optimizations": [],
         "improvements": [],
         "best_practices": [],
@@ -77,7 +77,7 @@ def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     # Check variable patterns
     variables = file_analysis.get("variables", [])
     connections = file_analysis.get("connections", [])
-    var_types = {}
+    var_types: dict[Any, Any] = {}
     for var in variables:
         var_type = (
             var.get("definition", "").split(":")[-1].strip()
@@ -108,7 +108,7 @@ def generate_code_suggestions(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
 
 def generate_documentation(file_analysis: Dict[str, Any]) -> Dict[str, Any]:
     """Generate documentation for the GNN model."""
-    documentation = {
+    documentation: dict[str, Any] = {
         "file_path": file_analysis.get(
             "file_path", file_analysis.get("file_name", "Unknown")
         ),
@@ -139,7 +139,7 @@ This GNN model contains {len(variables)} variables and {len(connections)} connec
 
     # Document variables
     for var in variables:
-        doc = {
+        doc: dict[str, Any] = {
             "name": var.get("name", "Unknown"),
             "definition": var.get("definition", ""),
             "line": var.get("line", 0),
@@ -171,7 +171,7 @@ This GNN model contains {len(variables)} variables and {len(connections)} connec
 
     if connections:
         example_conns = connections[:2]
-        conn_examples = []
+        conn_examples: list[Any] = []
         for conn in example_conns:
             conn_examples.append(
                 f"{conn.get('source', 'source')} -> {conn.get('target', 'target')}"

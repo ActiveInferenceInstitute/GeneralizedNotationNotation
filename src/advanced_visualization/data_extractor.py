@@ -21,7 +21,7 @@ class VisualizationDataExtractor:
     Extracts visualization data from GNN files using the comprehensive parsing system.
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize the data extractor with the GNN parsing system.
 
@@ -95,7 +95,7 @@ class VisualizationDataExtractor:
             return self._empty_result(errors=[str(e)])
 
     def _empty_result(
-        self, errors: list = None, warnings: list = None
+        self, errors: (list) | None = None, warnings: (list) | None = None
     ) -> Dict[str, Any]:
         """Return a failure result with the same key shape as a success result."""
         return {
@@ -116,7 +116,7 @@ class VisualizationDataExtractor:
             "extraction_timestamp": datetime.now().isoformat(),
         }
 
-    def _extract_from_model(self, model) -> Dict[str, Any]:
+    def _extract_from_model(self, model: Any) -> Dict[str, Any]:
         """
         Extract visualization data from a parsed GNN model.
 
@@ -127,9 +127,9 @@ class VisualizationDataExtractor:
             Dictionary containing extracted visualization data
         """
         # Extract variable blocks
-        blocks = []
+        blocks: list[Any] = []
         for var in model.variables:
-            block_data = {
+            block_data: dict[str, Any] = {
                 "name": var.name,
                 "type": var.var_type.value
                 if hasattr(var.var_type, "value")
@@ -144,9 +144,9 @@ class VisualizationDataExtractor:
             blocks.append(block_data)
 
         # Extract connections
-        connections = []
+        connections: list[Any] = []
         for conn in model.connections:
-            conn_data = {
+            conn_data: dict[str, Any] = {
                 "source_variables": conn.source_variables,
                 "target_variables": conn.target_variables,
                 "type": conn.connection_type.value
@@ -158,9 +158,9 @@ class VisualizationDataExtractor:
             connections.append(conn_data)
 
         # Extract parameters
-        parameters = []
+        parameters: list[Any] = []
         for param in model.parameters:
-            param_data = {
+            param_data: dict[str, Any] = {
                 "name": param.name,
                 "value": param.value,
                 "type_hint": param.type_hint,
@@ -169,9 +169,9 @@ class VisualizationDataExtractor:
             parameters.append(param_data)
 
         # Extract equations
-        equations = []
+        equations: list[Any] = []
         for eq in model.equations:
-            eq_data = {
+            eq_data: dict[str, Any] = {
                 "label": eq.label,
                 "content": eq.content,
                 "format": eq.format,
@@ -190,9 +190,9 @@ class VisualizationDataExtractor:
             }
 
         # Extract ontology mappings
-        ontology_mappings = []
+        ontology_mappings: list[Any] = []
         for mapping in model.ontology_mappings:
-            mapping_data = {
+            mapping_data: dict[str, Any] = {
                 "variable_name": mapping.variable_name,
                 "ontology_term": mapping.ontology_term,
                 "description": mapping.description or "",
@@ -245,19 +245,19 @@ class VisualizationDataExtractor:
         connections = extracted_data.get("connections", [])
 
         # Variable type statistics
-        type_counts = {}
+        type_counts: dict[Any, Any] = {}
         for block in blocks:
             var_type = block.get("type", "unknown")
             type_counts[var_type] = type_counts.get(var_type, 0) + 1
 
         # Data type statistics
-        data_type_counts = {}
+        data_type_counts: dict[Any, Any] = {}
         for block in blocks:
             data_type = block.get("data_type", "unknown")
             data_type_counts[data_type] = data_type_counts.get(data_type, 0) + 1
 
         # Connection type statistics
-        connection_type_counts = {}
+        connection_type_counts: dict[Any, Any] = {}
         for conn in connections:
             conn_type = conn.get("type", "unknown")
             connection_type_counts[conn_type] = (
@@ -265,7 +265,7 @@ class VisualizationDataExtractor:
             )
 
         # Dimension statistics
-        dimension_counts = {}
+        dimension_counts: dict[Any, Any] = {}
         for block in blocks:
             dimensions = block.get("dimensions", [])
             dim_key = f"{len(dimensions)}D"
@@ -305,7 +305,7 @@ def extract_visualization_data(
 
     extractor = VisualizationDataExtractor(strict_validation=False)
 
-    results = {
+    results: dict[str, Any] = {
         "processed_files": 0,
         "successful_extractions": 0,
         "failed_extractions": 0,
@@ -315,8 +315,8 @@ def extract_visualization_data(
     }
 
     # Find all GNN files
-    gnn_extensions = [".md", ".gnn", ".json", ".yaml", ".yml"]
-    gnn_files = []
+    gnn_extensions: list[Any] = [".md", ".gnn", ".json", ".yaml", ".yml"]
+    gnn_files: list[Any] = []
 
     for ext in gnn_extensions:
         gnn_files.extend(target_dir.glob(f"**/*{ext}"))

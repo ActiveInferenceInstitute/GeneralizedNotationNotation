@@ -9,7 +9,7 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -64,7 +64,7 @@ def generate_exports(target_dir: Path, output_dir: Path, verbose: bool = False) 
             return True
 
         # Generate exports for each file
-        export_results = {}
+        export_results: dict[Any, Any] = {}
         for gnn_file in gnn_files:
             file_exports = export_single_gnn_file(gnn_file, exports_dir)
             export_results[gnn_file.name] = file_exports
@@ -112,7 +112,7 @@ def export_single_gnn_file(gnn_file: Path, exports_dir: Path) -> Dict[str, Any]:
         parsed_content = parse_gnn_content(content)
 
         # Generate exports
-        exports = {}
+        exports: dict[Any, Any] = {}
 
         # JSON export
         json_file = exports_dir / f"{gnn_file.stem}.json"
@@ -156,9 +156,9 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
     """
     try:
         # Basic parsing - extract sections and variables
-        sections = {}
-        variables = []
-        connections = []
+        sections: dict[Any, Any] = {}
+        variables: list[Any] = []
+        connections: list[Any] = []
 
         lines = content.split("\n")
         current_section = None
@@ -223,7 +223,12 @@ def export_model(
         if formats is None:
             formats = ["json", "xml", "graphml", "gexf", "pickle"]
 
-        results = {"success": True, "exports": {}, "errors": [], "formats": {}}
+        results: dict[str, Any] = {
+            "success": True,
+            "exports": {},
+            "errors": [],
+            "formats": {},
+        }
 
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -290,7 +295,7 @@ def _gnn_model_to_dict(gnn_content: str) -> Dict[str, Any]:
         parsed = parse_gnn_content(gnn_content)
 
         # Create structured model data
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_type": "gnn",
             "sections": parsed.get("sections", {}),
             "variables": parsed.get("variables", []),
@@ -322,7 +327,7 @@ def export_gnn_model(
         if formats is None:
             formats = ["json", "xml", "graphml", "gexf", "pickle"]
 
-        results = {"success": True, "exports": {}, "errors": []}
+        results: dict[str, Any] = {"success": True, "exports": {}, "errors": []}
 
         # Normalize formats param if passed incorrectly as a single string
         if isinstance(formats, str):
@@ -373,7 +378,9 @@ def export_gnn_model(
         return {"success": False, "error": str(e), "exports": {}, "errors": [str(e)]}
 
 
-def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> bool:
+def process_export(
+    target_dir: Any, output_dir: Any, verbose: bool = False, **kwargs: Any
+) -> bool:
     """
     Main export processing function for GNN models.
 
@@ -435,7 +442,7 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
         logger.info(f"Loaded {len(gnn_results['processed_files'])} parsed GNN files")
 
         # Export results
-        export_results = {
+        export_results: dict[str, Any] = {
             "timestamp": datetime.datetime.now().isoformat(),
             "source_directory": str(target_dir),
             "output_directory": str(output_dir),
@@ -492,7 +499,7 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
             file_output_dir = output_dir / file_name.replace(".md", "")
             file_output_dir.mkdir(exist_ok=True)
 
-            file_export_result = {
+            file_export_result: dict[str, Any] = {
                 "file_name": file_name,
                 "file_path": file_result["file_path"],
                 "exports": {},
@@ -509,7 +516,7 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
                     )
 
                     # Map format names to export functions
-                    format_function_map = {
+                    format_function_map: dict[str, Any] = {
                         "json": export_to_json,
                         "xml": export_to_xml,
                         "graphml": export_to_graphml,
@@ -584,7 +591,7 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
         )
 
         success = export_results["summary"]["successful_exports"] > 0
-        return success
+        return cast("bool", success)
 
     except Exception as e:
         logger.error(f"Export processing failed: {e}")

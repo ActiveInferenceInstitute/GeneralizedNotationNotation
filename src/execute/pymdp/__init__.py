@@ -8,6 +8,7 @@ with enhanced safety patterns and comprehensive error handling.
 """
 
 import logging
+from typing import Any
 
 from .context import create_enhanced_pymdp_context
 from .executor import execute_pymdp_simulation, execute_pymdp_simulation_from_gnn
@@ -32,7 +33,7 @@ from .pymdp_utils import (
 from .simulation import run_pymdp_simulation
 from .validator import get_pymdp_health_status, validate_pymdp_environment
 
-__all__ = [
+__all__: list[Any] = [
     # Core classes
     "PyMDPSimulation",
     "create_demo_pymdp_simulation",

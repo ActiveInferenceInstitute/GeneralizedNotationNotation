@@ -29,7 +29,7 @@ def generate_analysis_from_logs(
     Returns:
         List of generated visualization file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     try:
         # Find DisCoPy execution results in model subdirectories
@@ -109,7 +109,7 @@ def create_discopy_visualizations(
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping DisCoPy visualizations")
@@ -166,7 +166,7 @@ def create_discopy_visualizations(
         ax2 = axes[1]
 
         # Build info text from analysis and parameters
-        info_lines = []
+        info_lines: list[Any] = []
 
         if parameters:
             info_lines.append(f"States: {parameters.get('num_states', 'N/A')}")
@@ -244,7 +244,7 @@ def create_discopy_visualizations(
                 center_x, center_y = 0.5, 0.4
 
                 # Colors by component type
-                colors = []
+                colors: list[Any] = []
                 for comp in all_comps:
                     if "matrix" in comp.lower():
                         colors.append("#4CAF50")  # Green
@@ -258,7 +258,7 @@ def create_discopy_visualizations(
                         colors.append("#9C27B0")  # Purple
 
                 # Draw nodes
-                positions = []
+                positions: list[Any] = []
                 for _, (angle, comp, color) in enumerate(
                     zip(angles, all_comps, colors)
                 ):
@@ -307,7 +307,7 @@ def create_discopy_visualizations(
                         )
 
                 # Add legend
-                legend_items = [
+                legend_items: list[Any] = [
                     ("Matrix", "#4CAF50"),
                     ("Vector", "#2196F3"),
                     ("Inference", "#FF9800"),
@@ -375,7 +375,7 @@ def create_discopy_visualizations(
             ax.axis("off")
 
             # Create summary card
-            summary_lines = [
+            summary_lines: list[Any] = [
                 "╔══════════════════════════════════════════╗",
                 "║     CATEGORICAL DIAGRAM STRUCTURE        ║",
                 "╠══════════════════════════════════════════╣",
@@ -450,7 +450,7 @@ def extract_circuit_data(
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    data = {
+    data: dict[str, Any] = {
         "boxes": [],
         "wires": [],
         "types": [],
@@ -485,7 +485,7 @@ def analyze_diagram_structure(diagrams: List[Dict[str, Any]]) -> Dict[str, Any]:
     Returns:
         Structure analysis summary
     """
-    analysis = {
+    analysis: dict[str, Any] = {
         "total_diagrams": len(diagrams),
         "total_boxes": 0,
         "total_wires": 0,
@@ -508,7 +508,7 @@ def analyze_diagram_structure(diagrams: List[Dict[str, Any]]) -> Dict[str, Any]:
     return analysis
 
 
-__all__ = [
+__all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_discopy_visualizations",
     "extract_circuit_data",

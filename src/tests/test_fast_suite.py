@@ -15,10 +15,11 @@ Key Features:
 
 import logging
 import sys
+from typing import Any
 
 import pytest
 
-pytestmark = [pytest.mark.fast]
+pytestmark: list[Any] = [pytest.mark.fast]
 from . import (
     PROJECT_ROOT,
     SRC_DIR,
@@ -33,13 +34,13 @@ class TestFastEnvironment:
     """Fast environment validation tests."""
 
     @pytest.mark.unit
-    def test_python_environment(self):
+    def test_python_environment(self) -> Any:
         """Test basic Python environment."""
         assert sys.version_info >= (3, 8), "Python 3.8+ required"
         assert str(SRC_DIR) in sys.path, "Source directory in Python path"
 
     @pytest.mark.unit
-    def test_test_configuration(self):
+    def test_test_configuration(self) -> Any:
         """Test test configuration is valid."""
         config = TEST_CONFIG
         assert config["safe_mode"] is True, "Safe mode should be enabled"
@@ -51,7 +52,7 @@ class TestFastEnvironment:
         )
 
     @pytest.mark.unit
-    def test_essential_directories(self):
+    def test_essential_directories(self) -> Any:
         """Test essential directories exist."""
         assert SRC_DIR.exists(), "Source directory should exist"
         assert TEST_DIR.exists(), "Test directory should exist"
@@ -62,14 +63,14 @@ class TestFastGNNProcessing:
     """Fast GNN processing tests."""
 
     @pytest.mark.unit
-    def test_gnn_module_import(self):
+    def test_gnn_module_import(self) -> Any:
         """Test that GNN module can be imported."""
         import gnn
 
         assert gnn is not None, "GNN module should be importable"
 
     @pytest.mark.unit
-    def test_gnn_file_creation(self, isolated_temp_dir):
+    def test_gnn_file_creation(self, isolated_temp_dir: Any) -> Any:
         """Test GNN file creation and basic parsing."""
         sample_content = create_sample_gnn_content()
         valid_content = sample_content["valid_basic"]
@@ -79,7 +80,7 @@ class TestFastGNNProcessing:
         assert test_file.read_text() == valid_content, "File content should match"
 
     @pytest.mark.unit
-    def test_gnn_content_validation(self):
+    def test_gnn_content_validation(self) -> Any:
         """Test GNN content validation."""
         sample_content = create_sample_gnn_content()
         valid_content = sample_content["valid_basic"]
@@ -94,21 +95,21 @@ class TestFastPipelineComponents:
     """Fast pipeline component tests."""
 
     @pytest.mark.unit
-    def test_utils_module_import(self):
+    def test_utils_module_import(self) -> Any:
         """Test that utils module can be imported."""
         import utils
 
         assert utils is not None, "Utils module should be importable"
 
     @pytest.mark.unit
-    def test_pipeline_module_import(self):
+    def test_pipeline_module_import(self) -> Any:
         """Test that pipeline module can be imported."""
         import pipeline
 
         assert pipeline is not None, "Pipeline module should be importable"
 
     @pytest.mark.unit
-    def test_type_checker_import(self):
+    def test_type_checker_import(self) -> Any:
         """Test that type checker module can be imported."""
         import type_checker
 
@@ -119,19 +120,19 @@ class TestFastExport:
     """Fast export functionality tests."""
 
     @pytest.mark.unit
-    def test_export_module_import(self):
+    def test_export_module_import(self) -> Any:
         """Test that export module can be imported."""
         import export
 
         assert export is not None, "Export module should be importable"
 
     @pytest.mark.unit
-    def test_basic_export_functionality(self, isolated_temp_dir):
+    def test_basic_export_functionality(self, isolated_temp_dir: Any) -> Any:
         """Test basic export functionality."""
         try:
             from export import export_to_json_gnn
 
-            test_data = {
+            test_data: dict[str, Any] = {
                 "name": "TestModel",
                 "variables": [{"name": "X", "dimensions": [2]}],
                 "connections": [],
@@ -149,7 +150,7 @@ class TestFastVisualization:
     """Fast visualization tests."""
 
     @pytest.mark.unit
-    def test_visualization_module_import(self):
+    def test_visualization_module_import(self) -> Any:
         """Test that visualization module can be imported."""
         import visualization
 
@@ -160,7 +161,7 @@ class TestFastRender:
     """Fast render tests."""
 
     @pytest.mark.unit
-    def test_render_module_import(self):
+    def test_render_module_import(self) -> Any:
         """Test that render module can be imported."""
         import render
 
@@ -171,7 +172,7 @@ class TestFastExecute:
     """Fast execute tests."""
 
     @pytest.mark.unit
-    def test_execute_module_import(self):
+    def test_execute_module_import(self) -> Any:
         """Test that execute module can be imported."""
         import execute
 
@@ -182,7 +183,7 @@ class TestFastLLM:
     """Fast LLM tests."""
 
     @pytest.mark.unit
-    def test_llm_module_import(self):
+    def test_llm_module_import(self) -> Any:
         """Test that LLM module can be imported."""
         import llm
 
@@ -193,7 +194,7 @@ class TestFastMCP:
     """Fast MCP tests."""
 
     @pytest.mark.unit
-    def test_mcp_module_import(self):
+    def test_mcp_module_import(self) -> Any:
         """Test that MCP module can be imported."""
         import mcp
 
@@ -204,7 +205,7 @@ class TestFastOntology:
     """Fast ontology tests."""
 
     @pytest.mark.unit
-    def test_ontology_module_import(self):
+    def test_ontology_module_import(self) -> Any:
         """Test that ontology module can be imported."""
         import ontology
 
@@ -215,7 +216,7 @@ class TestFastSAPF:
     """Fast SAPF tests."""
 
     @pytest.mark.unit
-    def test_sapf_module_import(self):
+    def test_sapf_module_import(self) -> Any:
         """Test that SAPF module can be imported."""
         import sapf
 
@@ -226,7 +227,7 @@ class TestFastWebsite:
     """Fast website tests."""
 
     @pytest.mark.unit
-    def test_website_module_import(self):
+    def test_website_module_import(self) -> Any:
         """Test that website module can be imported."""
         import website
 
@@ -237,7 +238,7 @@ class TestFastIntegration:
     """Fast integration tests."""
 
     @pytest.mark.integration
-    def test_basic_pipeline_flow(self, isolated_temp_dir):
+    def test_basic_pipeline_flow(self, isolated_temp_dir: Any) -> Any:
         """Test basic pipeline flow with minimal components."""
         try:
             sample_content = create_sample_gnn_content()
@@ -251,7 +252,7 @@ class TestFastIntegration:
             pytest.skip(f"Basic pipeline flow test failed: {e}")
 
     @pytest.mark.integration
-    def test_test_environment_setup(self):
+    def test_test_environment_setup(self) -> Any:
         """Test that test environment is properly set up."""
         assert is_safe_mode(), "Should be in safe mode"
         temp_dir = TEST_CONFIG["temp_output_dir"]
@@ -259,7 +260,7 @@ class TestFastIntegration:
         assert temp_dir.exists(), "Temp directory should be created"
 
 
-def test_fast_suite_completeness():
+def test_fast_suite_completeness() -> Any:
     """Test that fast test suite covers essential functionality."""
     from pathlib import Path
 

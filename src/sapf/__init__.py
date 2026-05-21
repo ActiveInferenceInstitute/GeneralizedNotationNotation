@@ -1,5 +1,7 @@
 """Top-level SAPF package surface backed by ``audio.sapf``."""
 
+from typing import Any
+
 from audio import sapf as _audio_sapf
 
 convert_gnn_to_sapf = _audio_sapf.convert_gnn_to_sapf
@@ -19,7 +21,7 @@ def get_module_info() -> dict:
     return _audio_sapf.get_module_info()
 
 
-__all__ = [
+__all__: list[Any] = [
     "convert_gnn_to_sapf",
     "generate_sapf_audio",
     "generate_audio_from_sapf",

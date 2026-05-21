@@ -7,7 +7,7 @@ This module provides report processing capabilities.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 def process_report(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process report for GNN files.
@@ -38,7 +38,7 @@ def process_report(
         results_dir.mkdir(parents=True, exist_ok=True)
 
         # Basic report processing
-        results = {"processed_files": 0, "success": True, "errors": []}
+        results: dict[str, Any] = {"processed_files": 0, "success": True, "errors": []}
 
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
@@ -57,15 +57,15 @@ def process_report(
         else:
             log_step_error(logger, "report processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, "report processing failed", {"error": str(e)})
+        log_step_error(logger, "report processing failed", error=str(e))
         return False
 
 
 def generate_comprehensive_report(
-    target_dir: Path, output_dir: Path, format: str = "json", **kwargs
+    target_dir: Path, output_dir: Path, format: str = "json", **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Generate a comprehensive report for GNN files.
@@ -91,7 +91,7 @@ def generate_comprehensive_report(
         # Analyze GNN files
         gnn_files = list(target_dir.glob("*.md"))
 
-        report_data = {
+        report_data: dict[str, Any] = {
             "timestamp": str(Path(__file__).stat().st_mtime),
             "total_files": len(gnn_files),
             "files_analyzed": [],
@@ -106,7 +106,7 @@ def generate_comprehensive_report(
                     {"file": str(gnn_file), "info": file_info}
                 )
             except Exception as e:
-                error_info = {"file": str(gnn_file), "error": str(e)}
+                error_info: dict[str, Any] = {"file": str(gnn_file), "error": str(e)}
                 report_data["summary"]["errors"].append(error_info)
 
         # Generate report in specified format
@@ -156,7 +156,7 @@ def analyze_gnn_file(file_path: Path) -> Dict[str, Any]:
             content = f.read()
 
         # Basic analysis
-        analysis = {
+        analysis: dict[str, Any] = {
             "file_size": len(content),
             "lines": len(content.split("\n")),
             "sections": [],

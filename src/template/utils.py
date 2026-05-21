@@ -5,8 +5,10 @@ Template Utils module for GNN Processing Pipeline.
 This module provides template utility functions.
 """
 
+from typing import Any
 
-def get_version_info():
+
+def get_version_info() -> Any:
     """
     Get version information for the template step.
 

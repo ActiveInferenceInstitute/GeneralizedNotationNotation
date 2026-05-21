@@ -10,7 +10,7 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union, cast
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +31,9 @@ except ImportError as e:
     logger.warning(f"DisCoPy translator module not available: {e}")
     JAX_FULLY_OPERATIONAL = False
     MATPLOTLIB_AVAILABLE = False
-    gnn_file_to_discopy_diagram = None
-    gnn_file_to_discopy_matrix_diagram = None
-    plot_tensor_output = None
+    gnn_file_to_discopy_diagram = cast(Any, None)
+    gnn_file_to_discopy_matrix_diagram = cast(Any, None)
+    plot_tensor_output = cast(Any, None)
     DISCOPY_AVAILABLE = False
 
 
@@ -116,7 +116,7 @@ def execute_discopy_script(
         try:
             log_dir.mkdir(parents=True, exist_ok=True)
 
-            execution_log = {
+            execution_log: dict[str, Any] = {
                 "script": str(abs_script_path),
                 "return_code": result.returncode,
                 "success": success,
@@ -149,7 +149,7 @@ class DisCoPyExecutor:
     DisCoPy Executor for validating and analyzing rendered DisCoPy diagrams.
     """
 
-    def __init__(self, verbose: bool = False):
+    def __init__(self, verbose: bool = False) -> None:
         """
         Initialize the DisCoPy executor.
 
@@ -203,7 +203,7 @@ class DisCoPyExecutor:
         if not jax_output_path.exists():
             return False, f"JAX output file not found: {jax_output_path}", {}
 
-        analysis = {
+        analysis: dict[str, Any] = {
             "file_path": str(jax_output_path),
             "file_size_bytes": 0,
             "file_type": jax_output_path.suffix.lower(),
@@ -244,7 +244,7 @@ class DisCoPyExecutor:
         Returns:
             Dictionary with execution results
         """
-        results = {
+        results: dict[str, Any] = {
             "executions": [],
             "successes": 0,
             "failures": 0,
@@ -263,8 +263,8 @@ class DisCoPyExecutor:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Find DisCoPy diagram files
-        diagram_files = []
-        jax_files = []
+        diagram_files: list[Any] = []
+        jax_files: list[Any] = []
 
         # Look for common DisCoPy output patterns
         for pattern in ["*_diagram.png", "*_diagram.jpg", "*_diagram.svg"]:
@@ -286,7 +286,7 @@ class DisCoPyExecutor:
             try:
                 success, message = self.validate_diagram(diagram_file)
 
-                execution_result = {
+                execution_result: dict[str, Any] = {
                     "script": diagram_file.name,
                     "type": "diagram_validation",
                     "status": "SUCCESS" if success else "FAILED",
@@ -418,7 +418,7 @@ def run_discopy_analysis(
     )
 
     # Consider the overall run successful if any files were processed successfully
-    return failures == 0 or successes > 0
+    return cast("bool", failures == 0 or successes > 0)
 
 
 if __name__ == "__main__":

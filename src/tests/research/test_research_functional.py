@@ -19,6 +19,7 @@ Test Coverage:
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -31,7 +32,7 @@ class TestResearchFunctional:
     """Functional tests for the research processor module."""
 
     @pytest.fixture
-    def gnn_dir_with_high_dim(self, tmp_path):
+    def gnn_dir_with_high_dim(self, tmp_path: Any) -> Any:
         """Create a GNN file with high-dimensional matrices (dim > 10)."""
         target = tmp_path / "input"
         target.mkdir()
@@ -47,7 +48,7 @@ class TestResearchFunctional:
         return target
 
     @pytest.fixture
-    def gnn_dir_sparse(self, tmp_path):
+    def gnn_dir_sparse(self, tmp_path: Any) -> Any:
         """Create a GNN file with many variables but few connections (sparse)."""
         target = tmp_path / "input"
         target.mkdir()
@@ -67,7 +68,7 @@ class TestResearchFunctional:
         return target
 
     @pytest.fixture
-    def gnn_dir_simple(self, tmp_path):
+    def gnn_dir_simple(self, tmp_path: Any) -> Any:
         """Create a simple GNN file with small dimensions and normal connectivity."""
         target = tmp_path / "input"
         target.mkdir()
@@ -84,28 +85,30 @@ class TestResearchFunctional:
         return target
 
     @pytest.fixture
-    def output_dir(self, tmp_path):
+    def output_dir(self, tmp_path: Any) -> Any:
         """Create an output directory."""
         out = tmp_path / "output"
         out.mkdir()
         return out
 
     @pytest.mark.unit
-    def test_process_research_returns_bool(self, gnn_dir_simple, output_dir):
+    def test_process_research_returns_bool(
+        self, gnn_dir_simple: Any, output_dir: Any
+    ) -> Any:
         """process_research should always return a bool."""
         result = process_research(gnn_dir_simple, output_dir, verbose=True)
         assert isinstance(result, bool), f"Expected bool, got {type(result)}"
 
     @pytest.mark.unit
     def test_process_research_success_with_valid_files(
-        self, gnn_dir_simple, output_dir
-    ):
+        self, gnn_dir_simple: Any, output_dir: Any
+    ) -> Any:
         """process_research should return True for a valid directory with GNN files."""
         result = process_research(gnn_dir_simple, output_dir, verbose=True)
         assert result is True
 
     @pytest.mark.unit
-    def test_process_research_empty_directory(self, tmp_path):
+    def test_process_research_empty_directory(self, tmp_path: Any) -> Any:
         """process_research should handle an empty input directory gracefully."""
         empty_input = tmp_path / "empty_input"
         empty_input.mkdir()
@@ -118,7 +121,7 @@ class TestResearchFunctional:
         assert result is True
 
     @pytest.mark.unit
-    def test_process_research_nonexistent_path(self, tmp_path):
+    def test_process_research_nonexistent_path(self, tmp_path: Any) -> Any:
         """process_research should return False for a nonexistent target directory."""
         nonexistent = tmp_path / "does_not_exist"
         out = tmp_path / "output"
@@ -129,7 +132,9 @@ class TestResearchFunctional:
         # glob on nonexistent path should raise or return empty; processor handles gracefully
 
     @pytest.mark.unit
-    def test_output_artifacts_created(self, gnn_dir_simple, output_dir):
+    def test_output_artifacts_created(
+        self, gnn_dir_simple: Any, output_dir: Any
+    ) -> Any:
         """process_research should create research_results.json and research_report.md."""
         process_research(gnn_dir_simple, output_dir, verbose=True)
 
@@ -140,7 +145,7 @@ class TestResearchFunctional:
         assert report_md.exists(), "research_report.md should be created"
 
     @pytest.mark.unit
-    def test_results_json_schema(self, gnn_dir_simple, output_dir):
+    def test_results_json_schema(self, gnn_dir_simple: Any, output_dir: Any) -> Any:
         """research_results.json should have the expected schema."""
         process_research(gnn_dir_simple, output_dir, verbose=True)
 
@@ -157,8 +162,8 @@ class TestResearchFunctional:
 
     @pytest.mark.unit
     def test_high_dimension_triggers_hypothesis(
-        self, gnn_dir_with_high_dim, output_dir
-    ):
+        self, gnn_dir_with_high_dim: Any, output_dir: Any
+    ) -> Any:
         """Files with dimensions > 10 should trigger a dimensionality_reduction hypothesis."""
         process_research(gnn_dir_with_high_dim, output_dir, verbose=True)
 
@@ -176,7 +181,9 @@ class TestResearchFunctional:
         )
 
     @pytest.mark.unit
-    def test_sparse_connectivity_triggers_hypothesis(self, gnn_dir_sparse, output_dir):
+    def test_sparse_connectivity_triggers_hypothesis(
+        self, gnn_dir_sparse: Any, output_dir: Any
+    ) -> Any:
         """Files with low connection-to-variable ratio should trigger connectivity_enrichment."""
         process_research(gnn_dir_sparse, output_dir, verbose=True)
 
@@ -194,7 +201,7 @@ class TestResearchFunctional:
         )
 
     @pytest.mark.unit
-    def test_multiple_gnn_files(self, tmp_path):
+    def test_multiple_gnn_files(self, tmp_path: Any) -> Any:
         """process_research should handle multiple GNN files in one directory."""
         target = tmp_path / "multi_input"
         target.mkdir()
@@ -214,7 +221,7 @@ class TestResearchFunctional:
         assert data["processed_files"] == 3
 
     @pytest.mark.unit
-    def test_empty_gnn_file(self, tmp_path):
+    def test_empty_gnn_file(self, tmp_path: Any) -> Any:
         """process_research should handle an empty GNN file without crashing."""
         target = tmp_path / "input"
         target.mkdir()

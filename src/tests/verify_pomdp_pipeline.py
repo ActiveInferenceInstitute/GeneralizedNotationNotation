@@ -20,6 +20,7 @@ import sys
 import tempfile
 import traceback
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -28,10 +29,10 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)-7s  %(message)s")
 log = logging.getLogger("verify_pomdp")
 
 # Track results
-results = {"passed": [], "failed": [], "skipped": []}
+results: dict[str, Any] = {"passed": [], "failed": [], "skipped": []}
 
 
-def check(name, fn):
+def check(name: Any, fn: Any) -> Any:
     """Run a verification check and record the result."""
     try:
         fn()
@@ -43,7 +44,7 @@ def check(name, fn):
         traceback.print_exc()
 
 
-def _with_matrices(cfg):
+def _with_matrices(cfg: Any) -> Any:
     """Attach explicit POMDP matrices for PyMDPSimulation verification."""
     states = cfg.get("states", cfg.get("num_states", 4))
     observations = cfg.get("observations", cfg.get("num_observations", 4))
@@ -80,7 +81,7 @@ def _with_matrices(cfg):
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_demo_config():
+def test_demo_config() -> Any:
     """Named demo constructor produces a runnable gridworld."""
     from execute.pymdp.pymdp_simulation import create_demo_pymdp_simulation
 
@@ -93,11 +94,11 @@ def test_demo_config():
     assert len(r["observations"]) == 5
 
 
-def test_named_states_config():
+def test_named_states_config() -> Any:
     """Config with named states/observations/actions."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
-    cfg = {
+    cfg: dict[str, Any] = {
         "states": ["healthy", "sick", "recovered"],
         "observations": ["no_symptom", "mild_symptom", "severe_symptom"],
         "actions": ["rest", "medicate", "exercise"],
@@ -113,11 +114,11 @@ def test_named_states_config():
     assert len(r["actions"]) == 10
 
 
-def test_integer_counts_config():
+def test_integer_counts_config() -> Any:
     """Config with integer counts instead of named lists."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
-    cfg = {"states": 6, "observations": 3, "actions": 4}
+    cfg: dict[str, Any] = {"states": 6, "observations": 3, "actions": 4}
     sim = PyMDPSimulation(gnn_config=_with_matrices(cfg))
     assert sim.num_states == 6
     assert sim.num_observations == 3
@@ -126,11 +127,11 @@ def test_integer_counts_config():
     assert len(r["beliefs"]) == 8
 
 
-def test_custom_parameters():
+def test_custom_parameters() -> Any:
     """Config with custom learning rate, alpha, gamma, timesteps."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
-    cfg = {
+    cfg: dict[str, Any] = {
         "states": ["a", "b", "c", "d"],
         "observations": ["x", "y"],
         "actions": ["go", "stay"],
@@ -149,11 +150,11 @@ def test_custom_parameters():
     assert len(r["observations"]) == 25
 
 
-def test_custom_preferences_and_priors():
+def test_custom_preferences_and_priors() -> Any:
     """Config with explicit preference (C) and prior (D) vectors."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
-    cfg = {
+    cfg: dict[str, Any] = {
         "states": ["s0", "s1", "s2"],
         "observations": ["o0", "o1", "o2"],
         "actions": ["a0", "a1"],
@@ -173,11 +174,11 @@ def test_custom_preferences_and_priors():
     assert r.get("success", True)
 
 
-def test_gnn_matrix_injection():
+def test_gnn_matrix_injection() -> Any:
     """Config with explicit A/B matrices via GNN extraction path."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
-    cfg = {
+    cfg: dict[str, Any] = {
         "states": ["s0", "s1"],
         "observations": ["o0", "o1"],
         "actions": ["left", "right"],
@@ -203,7 +204,7 @@ def test_gnn_matrix_injection():
     assert len(r["observations"]) == 10
 
 
-def test_simulation_output_structure():
+def test_simulation_output_structure() -> Any:
     """Verify simulation output contains all expected fields."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
@@ -229,7 +230,7 @@ def test_simulation_output_structure():
         assert abs(b_arr.sum() - 1.0) < 0.01, f"Beliefs at t={t} don't sum to 1"
 
 
-def test_serialization():
+def test_serialization() -> Any:
     """Results should be JSON-serializable."""
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
     from execute.pymdp.pymdp_utils import safe_json_dump
@@ -257,7 +258,7 @@ def test_serialization():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_render_pymdp():
+def test_render_pymdp() -> Any:
     from render.processor import render_gnn_spec
 
     spec = _with_matrices(
@@ -276,7 +277,7 @@ def test_render_pymdp():
         )
 
 
-def test_render_rxinfer():
+def test_render_rxinfer() -> Any:
     from render.processor import render_gnn_spec
 
     spec = _with_matrices(
@@ -292,7 +293,7 @@ def test_render_rxinfer():
         assert ok, f"RxInfer render failed: {msg}"
 
 
-def test_render_activeinference_jl():
+def test_render_activeinference_jl() -> Any:
     from render.processor import render_gnn_spec
 
     spec = _with_matrices(
@@ -308,7 +309,7 @@ def test_render_activeinference_jl():
         assert ok, f"ActiveInference.jl render failed: {msg}"
 
 
-def test_render_discopy():
+def test_render_discopy() -> Any:
     from render.processor import render_gnn_spec
 
     spec = _with_matrices(
@@ -324,7 +325,7 @@ def test_render_discopy():
         assert ok, f"DisCoPy render failed: {msg}"
 
 
-def test_render_jax():
+def test_render_jax() -> Any:
     from render.processor import render_gnn_spec
 
     spec = _with_matrices(
@@ -350,7 +351,7 @@ def test_render_jax():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_shannon_entropy():
+def test_shannon_entropy() -> Any:
     from analysis.post_simulation import compute_shannon_entropy
 
     # Uniform over 4 → ln(4)
@@ -361,7 +362,7 @@ def test_shannon_entropy():
     assert compute_shannon_entropy(p) < 0.01
 
 
-def test_kl_divergence():
+def test_kl_divergence() -> Any:
     from analysis.post_simulation import compute_kl_divergence
 
     p = np.array([0.7, 0.3])
@@ -370,7 +371,7 @@ def test_kl_divergence():
     assert compute_kl_divergence(p, q) > 0  # > 0 when P ≠ Q
 
 
-def test_vfe():
+def test_vfe() -> Any:
     from analysis.post_simulation import compute_variational_free_energy
 
     A = np.array([[0.9, 0.1], [0.1, 0.9]])
@@ -382,7 +383,7 @@ def test_vfe():
     assert fe_c <= fe_w + 1e-6, "Correct belief should have lower VFE"
 
 
-def test_efe():
+def test_efe() -> Any:
     from analysis.post_simulation import compute_expected_free_energy
 
     beliefs = np.array([1.0, 0.0])
@@ -398,7 +399,7 @@ def test_efe():
     assert np.isfinite(efe0) and np.isfinite(efe1)
 
 
-def test_information_gain():
+def test_information_gain() -> Any:
     from analysis.post_simulation import compute_information_gain, compute_kl_divergence
 
     prior = np.array([0.5, 0.5])
@@ -408,7 +409,7 @@ def test_information_gain():
     assert abs(ig - kl) < 1e-6
 
 
-def test_analyze_metrics():
+def test_analyze_metrics() -> Any:
     from analysis.post_simulation import analyze_active_inference_metrics
 
     beliefs = [
@@ -434,14 +435,18 @@ def test_analyze_metrics():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_normalize_matrices():
+def test_normalize_matrices() -> Any:
     from gnn.pomdp_extractor import POMDPStateSpace
     from render.processor import normalize_matrices
 
     A = np.array([[3.0, 1.0], [1.0, 3.0]])
     B = np.ones((3, 3, 2))
     pomdp = POMDPStateSpace(
-        num_states=3, num_observations=2, num_actions=2, A_matrix=A, B_matrix=B
+        num_states=3,
+        num_observations=2,
+        num_actions=2,
+        A_matrix=A.tolist(),
+        B_matrix=B.tolist(),
     )
     result = normalize_matrices(pomdp, logging.getLogger("test"))
     # A columns should sum to 1
@@ -458,26 +463,26 @@ def test_normalize_matrices():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_visualization_creation():
+def test_visualization_creation() -> Any:
     from analysis.pymdp.visualizer import PyMDPVisualizer
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
 
     with tempfile.TemporaryDirectory() as td:
-        td = Path(td)
-        cfg = {
+        td_path = Path(td)
+        cfg: dict[str, Any] = {
             "states": ["s0", "s1", "s2", "s3"],
             "observations": ["o0", "o1"],
             "actions": ["up", "down", "left", "right"],
         }
-        sim = PyMDPSimulation(gnn_config=_with_matrices(cfg), output_dir=td)
+        sim = PyMDPSimulation(gnn_config=_with_matrices(cfg), output_dir=td_path)
         r = sim.run_simulation(num_timesteps=10)
-        viz = PyMDPVisualizer(config=cfg, output_dir=td)
+        viz = PyMDPVisualizer(config=cfg, output_dir=td_path)
         viz.plot_belief_evolution(r["beliefs"])
         viz.plot_action_sequence(r["actions"])
         viz.plot_performance_metrics(r["performance"])
 
 
-def test_post_simulation_viz():
+def test_post_simulation_viz() -> Any:
     from analysis.post_simulation import (
         generate_action_analysis,
         generate_belief_heatmaps,
@@ -486,16 +491,16 @@ def test_post_simulation_viz():
     )
 
     with tempfile.TemporaryDirectory() as td:
-        td = Path(td)
+        td_path = Path(td)
         beliefs = [np.array([0.5, 0.3, 0.2]).tolist() for _ in range(10)]
         actions = [i % 3 for i in range(10)]
         fe = [5.0 - 0.3 * t for t in range(10)]
         obs = [i % 3 for i in range(10)]
         # Functions take raw data + output path (not a dict)
-        generate_belief_heatmaps(beliefs, td / "belief_heatmap.png")
-        generate_action_analysis(actions, td / "action_analysis.png")
-        generate_free_energy_plots(fe, td / "free_energy.png")
-        generate_observation_analysis(obs, td / "obs_analysis.png")
+        generate_belief_heatmaps(beliefs, td_path / "belief_heatmap.png")
+        generate_action_analysis(actions, td_path / "action_analysis.png")
+        generate_free_energy_plots(fe, td_path / "free_energy.png")
+        generate_observation_analysis(obs, td_path / "obs_analysis.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -503,7 +508,7 @@ def test_post_simulation_viz():
 # ─────────────────────────────────────────────────────────────────────────────
 
 
-def test_full_pipeline():
+def test_full_pipeline() -> Any:
     from analysis.post_simulation import (
         analyze_active_inference_metrics,
         compute_shannon_entropy,
@@ -513,8 +518,8 @@ def test_full_pipeline():
     from render.processor import render_gnn_spec
 
     with tempfile.TemporaryDirectory() as td:
-        td = Path(td)
-        spec = {
+        td_path = Path(td)
+        spec: dict[str, Any] = {
             "model_name": "pipeline_verify",
             "states": ["s0", "s1", "s2"],
             "observations": ["o0", "o1", "o2"],
@@ -522,11 +527,11 @@ def test_full_pipeline():
         }
         spec = _with_matrices(spec)
         # 1. Render
-        ok, msg, _ = render_gnn_spec(spec, "pymdp", td / "rendered")
+        ok, msg, _ = render_gnn_spec(spec, "pymdp", td_path / "rendered")
         assert ok, f"Render: {msg}"
 
         # 2. Execute
-        sim = PyMDPSimulation(gnn_config=spec, output_dir=td / "executed")
+        sim = PyMDPSimulation(gnn_config=spec, output_dir=td_path / "executed")
         r = sim.run_simulation(num_timesteps=20)
         assert len(r["observations"]) == 20
 
@@ -564,7 +569,7 @@ if __name__ == "__main__":
     print("=" * 70)
 
     # Execute
-    checks = [
+    checks: list[Any] = [
         ("1a. Demo config simulation", test_demo_config),
         ("1b. Named states config", test_named_states_config),
         ("1c. Integer counts config", test_integer_counts_config),

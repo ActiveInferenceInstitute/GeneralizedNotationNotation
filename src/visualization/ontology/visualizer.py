@@ -6,6 +6,7 @@ from GNN models using real matplotlib functionality.
 """
 
 import re
+from typing import Any, cast
 
 import matplotlib
 
@@ -27,7 +28,7 @@ class OntologyVisualizer:
     visualizations of ontology mappings using real matplotlib functionality.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the ontology visualizer."""
         self.figure_size = (10, 8)  # Default figure size
         self.dpi = 150  # Default DPI for output files
@@ -50,7 +51,7 @@ class OntologyVisualizer:
         Returns:
             List of paths to saved visualization files
         """
-        saved_files = []
+        saved_files: list[Any] = []
 
         try:
             # Create output directory if it doesn't exist
@@ -140,7 +141,7 @@ class OntologyVisualizer:
         Returns:
             List of (variable, concept) tuples
         """
-        mappings = []
+        mappings: list[Any] = []
 
         # Split content into lines and process each line
         for line in str(ontology_content).split("\n"):
@@ -192,7 +193,7 @@ class OntologyVisualizer:
             ax.axis("off")
 
             # Prepare table data with header
-            table_data = [["Variable", "Ontological Concept"]]  # Header row
+            table_data: list[Any] = [["Variable", "Ontological Concept"]]  # Header row
             table_data.extend([[var, concept] for var, concept in mappings])
 
             # Create table with custom styling
@@ -208,7 +209,8 @@ class OntologyVisualizer:
             table.auto_set_font_size(False)
 
             # Style header cells
-            for _, cell in enumerate(table._cells[(0, j)] for j in range(2)):
+            table_cells = cast(Any, table)._cells
+            for _, cell in enumerate(table_cells[(0, j)] for j in range(2)):
                 cell.set_facecolor(self.colors["header"])
                 cell.set_text_props(weight="bold", size=self.font_size["subtitle"])
                 cell.set_edgecolor(self.colors["border"])
@@ -216,7 +218,7 @@ class OntologyVisualizer:
             # Style data cells
             for i in range(len(mappings)):
                 for j in range(2):
-                    cell = table._cells[(i + 1, j)]
+                    cell = table_cells[(i + 1, j)]
                     cell.set_facecolor(self.colors["alternate"] if i % 2 else "white")
                     cell.set_text_props(size=self.font_size["values"])
                     cell.set_edgecolor(self.colors["border"])
@@ -248,7 +250,7 @@ class OntologyVisualizer:
     def extract_ontology_mappings(
         self, ontology_content: "str | dict"
     ) -> List[Tuple[str, str]]:
-        return self._extract_ontology_mappings(ontology_content)
+        return self._extract_ontology_mappings(str(ontology_content))
 
     def create_ontology_table(
         self, mappings: List[Tuple[str, str]], output_dir: Path

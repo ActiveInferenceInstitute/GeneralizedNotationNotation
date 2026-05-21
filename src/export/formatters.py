@@ -16,7 +16,7 @@ try:
     from defusedxml.minidom import parseString as _xml_parseString
 except ImportError:
     from xml.dom.minidom import (
-        parseString as _xml_parseString,  # type: ignore[no-redef]  # nosec B408
+        parseString as _xml_parseString,  # nosec B408
     )
 
 logger = logging.getLogger(__name__)

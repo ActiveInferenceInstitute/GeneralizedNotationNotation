@@ -9,6 +9,7 @@ and identifies priority areas for test improvement.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
@@ -21,11 +22,11 @@ class TestCoverageStrategy:
     """Strategic assessment of coverage gaps and priorities."""
 
     @pytest.mark.unit
-    def test_critical_module_coverage_strategy(self):
+    def test_critical_module_coverage_strategy(self) -> Any:
         """Document coverage improvement strategy for critical modules."""
 
         # Critical modules that need >95% coverage
-        critical_modules = {
+        critical_modules: dict[str, Any] = {
             "gnn": "Parser and core GNN processing - highest impact",
             "render": "Code generation for simulations - critical path",
             "export": "Multi-format export functionality - essential API",
@@ -36,7 +37,7 @@ class TestCoverageStrategy:
         }
 
         # Core improvements needed
-        strategies = {
+        strategies: dict[str, Any] = {
             "gnn": [
                 "Add tests for all GNN file format parsers (markdown, JSON, YAML, XML)",
                 "Test edge cases in model parsing (empty files, malformed data)",
@@ -91,11 +92,11 @@ class TestCoverageStrategy:
             assert len(strategies[module]) >= 2, f"Insufficient strategies for {module}"
 
     @pytest.mark.unit
-    def test_performance_regression_test_framework(self):
+    def test_performance_regression_test_framework(self) -> Any:
         """Framework for adding performance regression tests."""
 
         # Performance test areas
-        performance_areas = {
+        performance_areas: dict[str, Any] = {
             "gnn_parsing": {
                 "metric": "Files parsed per second",
                 "baseline": 1000,  # files/sec
@@ -130,10 +131,10 @@ class TestCoverageStrategy:
         )
 
     @pytest.mark.unit
-    def test_error_scenario_coverage(self):
+    def test_error_scenario_coverage(self) -> Any:
         """Document error scenario test coverage strategy."""
 
-        error_scenarios = {
+        error_scenarios: dict[str, Any] = {
             "invalid_input": [
                 "Empty/null inputs",
                 "Malformed data structures",
@@ -171,11 +172,11 @@ class TestCoverageImprovementPriorities:
     """Prioritized list of coverage improvements."""
 
     @pytest.mark.unit
-    def test_priority_1_critical_apis(self):
+    def test_priority_1_critical_apis(self) -> Any:
         """Highest priority: Test all public APIs thoroughly."""
 
         # All public API functions should have >=95% coverage
-        critical_apis = [
+        critical_apis: list[Any] = [
             "gnn.parse_gnn_file",
             "gnn.validate_gnn_model",
             "render.render_gnn_to_pymdp",
@@ -189,10 +190,10 @@ class TestCoverageImprovementPriorities:
         assert len(critical_apis) >= 5
 
     @pytest.mark.unit
-    def test_priority_2_integration_scenarios(self):
+    def test_priority_2_integration_scenarios(self) -> Any:
         """Second priority: Integration between modules."""
 
-        integration_scenarios = [
+        integration_scenarios: list[Any] = [
             ("gnn", "type_checker", "parsing followed by type validation"),
             ("gnn", "render", "parsing followed by code generation"),
             ("gnn", "export", "parsing followed by format export"),
@@ -203,10 +204,10 @@ class TestCoverageImprovementPriorities:
         assert len(integration_scenarios) >= 3
 
     @pytest.mark.unit
-    def test_priority_3_edge_cases_and_recovery(self):
+    def test_priority_3_edge_cases_and_recovery(self) -> Any:
         """Third priority: Edge cases and error recovery."""
 
-        edge_cases = [
+        edge_cases: list[Any] = [
             "Empty input files",
             "Extremely large models (>10K nodes)",
             "Invalid/corrupted data",
@@ -219,7 +220,7 @@ class TestCoverageImprovementPriorities:
         assert len(edge_cases) >= 5
 
 
-def test_coverage_improvement_action_plan():
+def test_coverage_improvement_action_plan() -> Any:
     """Document concrete action plan for coverage improvement."""
 
     action_plan = """

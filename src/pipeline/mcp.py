@@ -21,7 +21,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 
-def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
+def get_pipeline_steps(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get information about all available pipeline steps.
 
@@ -31,7 +31,7 @@ def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
     try:
         from .config import STEP_METADATA, get_pipeline_config
 
-        steps_info = {}
+        steps_info: dict[Any, Any] = {}
         for step_name, metadata in STEP_METADATA.items():
             steps_info[step_name] = {
                 "name": step_name,
@@ -56,7 +56,7 @@ def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
+def get_pipeline_status(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get current pipeline execution status and statistics.
 
@@ -70,11 +70,11 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
         output_dir = Path(config.get("output_dir", "output"))
 
         # Check for pipeline execution summary (main.py writes to 00_pipeline_summary/ subdir)
-        summary_candidates = [
+        summary_candidates: list[Any] = [
             output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json",
             output_dir / "pipeline_execution_summary.json",
         ]
-        summary = {
+        summary: dict[str, Any] = {
             "last_execution": None,
             "total_executions": 0,
             "successful_executions": 0,
@@ -91,7 +91,7 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
 
         # Check for recent logs
         logs_dir = output_dir / "logs"
-        recent_logs = []
+        recent_logs: list[Any] = []
         if logs_dir.exists():
             log_files = list(logs_dir.glob("*.log"))
             log_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
@@ -117,7 +117,7 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
+def validate_pipeline_dependencies(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Validate pipeline step dependencies and identify any issues.
 
@@ -134,9 +134,9 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
         validation_result = validate_deps()
 
         # Additional analysis
-        dependency_graph = {}
-        missing_deps = []
-        circular_deps = []
+        dependency_graph: dict[Any, Any] = {}
+        missing_deps: list[Any] = []
+        circular_deps: list[Any] = []
 
         for step_name, metadata in STEP_METADATA.items():
             deps = metadata.get("dependencies", [])
@@ -164,7 +164,7 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
         return {"success": False, "error": str(e)}
 
 
-def get_pipeline_config_info(mcp_instance_ref) -> Dict[str, Any]:
+def get_pipeline_config_info(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get detailed pipeline configuration information.
 
@@ -200,16 +200,16 @@ def register_tools(mcp_instance: Any) -> None:
     logger.info("Registering pipeline MCP tools")
 
     # Named wrappers keep MCP audit checks happy (no functools.partial names).
-    def get_pipeline_steps_tool():
+    def get_pipeline_steps_tool() -> Any:
         return get_pipeline_steps(mcp_instance)
 
-    def get_pipeline_status_tool():
+    def get_pipeline_status_tool() -> Any:
         return get_pipeline_status(mcp_instance)
 
-    def validate_pipeline_dependencies_tool():
+    def validate_pipeline_dependencies_tool() -> Any:
         return validate_pipeline_dependencies(mcp_instance)
 
-    def get_pipeline_config_info_tool():
+    def get_pipeline_config_info_tool() -> Any:
         return get_pipeline_config_info(mcp_instance)
 
     # Register tools

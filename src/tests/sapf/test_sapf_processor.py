@@ -7,6 +7,7 @@ module's shape directly — these tests verify the delegation is wired up.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -31,7 +32,7 @@ def test_sapf_metadata() -> None:
 
 def test_sapf_exported_functions() -> None:
     """The public entry point re-exports every public function from audio.sapf."""
-    expected_funcs = [
+    expected_funcs: list[Any] = [
         "convert_gnn_to_sapf",
         "generate_sapf_audio",
         "generate_audio_from_sapf",

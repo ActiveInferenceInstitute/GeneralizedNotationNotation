@@ -201,7 +201,7 @@ def parse_state_space(
 
         # Parse comma-separated dimension entries
         parts = [p.strip() for p in raw_dims.split(",")]
-        dims = []
+        dims: list[Any] = []
         dtype = "float"
         default = None
         for part in parts:
@@ -423,7 +423,7 @@ def validate_gnn_object(obj: Dict[str, Any]) -> List[str]:
 
 # ─── Required Sections Validation ────────────────────────────────────────────────
 
-REQUIRED_SECTIONS = {
+REQUIRED_SECTIONS: set[Any] = {
     "GNNSection",
     "GNNVersionAndFlags",
     "ModelName",
@@ -438,12 +438,12 @@ def validate_required_sections(
     file_path: Optional[str] = None,
 ) -> List[GNNParseError]:
     """Check that all required sections are present."""
-    found = set()
+    found: set[Any] = set()
     for line in content.splitlines():
         if line.strip().startswith("## "):
             found.add(line.strip()[3:].strip())
 
-    errors = []
+    errors: list[Any] = []
     for section in REQUIRED_SECTIONS:
         if section not in found:
             errors.append(

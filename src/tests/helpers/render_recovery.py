@@ -32,7 +32,7 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
             Path(str(target_dir)).glob("**/*.md")
         )
         output_dir.mkdir(parents=True, exist_ok=True)
-        summary = {"rendered": 0}
+        summary: dict[str, Any] = {"rendered": 0}
 
         # Simple generation logic sufficient for recovery tests
         for fp in files:

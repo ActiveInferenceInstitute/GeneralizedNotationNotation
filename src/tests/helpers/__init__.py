@@ -7,11 +7,7 @@ Provides reusable helper functions and utilities for test execution.
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-# Import helper modules
-try:
-    from .render_recovery import RenderRecoveryHelper
-except ImportError:
-    RenderRecoveryHelper = None
+from .render_recovery import render_gnn_files
 
 
 def get_test_data_dir() -> Path:
@@ -37,7 +33,7 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
 
     # Basic parsing of GNN markdown
     content = sample_file.read_text()
-    spec = {"name": "sample_model", "raw_content": content}
+    spec: dict[str, Any] = {"name": "sample_model", "raw_content": content}
 
     # Extract model name if present
     for line in content.splitlines():
@@ -52,8 +48,8 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
     return spec
 
 
-__all__ = [
-    "RenderRecoveryHelper",
+__all__: list[Any] = [
+    "render_gnn_files",
     "get_test_data_dir",
     "get_sample_gnn_model",
     "load_sample_gnn_spec",

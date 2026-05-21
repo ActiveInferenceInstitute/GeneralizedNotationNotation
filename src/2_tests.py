@@ -16,6 +16,7 @@ Environment Variables:
 
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -23,7 +24,9 @@ sys.path.insert(0, str(Path(__file__).parent))
 from utils.pipeline_template import create_standardized_pipeline_script
 
 
-def _test_runner_wrapper(target_dir, output_dir, logger, **kwargs) -> bool:
+def _test_runner_wrapper(
+    target_dir: Any, output_dir: Any, logger: Any, **kwargs: Any
+) -> bool:
     """Wrapper to map standard pipeline args to run_tests."""
     import os
 
@@ -70,7 +73,7 @@ def _test_runner_wrapper(target_dir, output_dir, logger, **kwargs) -> bool:
         return False
 
 
-additional_args = {
+additional_args: dict[str, Any] = {
     "fast-only": {
         "action": "store_true",
         "default": True,
@@ -94,7 +97,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the tests step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

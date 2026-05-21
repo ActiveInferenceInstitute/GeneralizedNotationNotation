@@ -8,9 +8,9 @@
 
 **Category**: Governance / Policy
 
-**Status**: ✅ Production Ready
+**Status**: Maintained
 
-**Version**: 1.3.0
+**Version**: 1.6.0
 
 ---
 

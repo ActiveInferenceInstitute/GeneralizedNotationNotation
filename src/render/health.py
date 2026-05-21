@@ -10,7 +10,7 @@ Provides:
 import importlib
 import logging
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -36,7 +36,7 @@ class RendererStatus:
 
 
 # Known renderer targets and their import paths
-_RENDERERS = {
+_RENDERERS: dict[str, Any] = {
     "pymdp": "render.pymdp",
     "rxinfer": "render.rxinfer",
     "jax": "render.jax",
@@ -55,7 +55,7 @@ def check_renderers() -> Dict[str, RendererStatus]:
     Returns:
         Dict mapping renderer name → RendererStatus.
     """
-    results = {}
+    results: dict[Any, Any] = {}
 
     for name, module_path in _RENDERERS.items():
         try:

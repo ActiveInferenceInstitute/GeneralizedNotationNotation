@@ -10,6 +10,7 @@ import sys
 import time
 import tracemalloc
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -21,7 +22,9 @@ class TestRenderingSpeed:
     """Performance tests for rendering speed."""
 
     @pytest.mark.slow
-    def test_single_file_render_speed(self, sample_gnn_files, tmp_path):
+    def test_single_file_render_speed(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> Any:
         """Test single file rendering completes quickly."""
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -45,7 +48,7 @@ class TestRenderingSpeed:
         assert elapsed < 10.0, f"Render took {elapsed:.2f}s, expected < 10s"
 
     @pytest.mark.slow
-    def test_framework_render_speed(self, tmp_path):
+    def test_framework_render_speed(self, tmp_path: Any) -> Any:
         """Test framework-specific rendering speed."""
         from render import get_supported_frameworks
 
@@ -64,7 +67,7 @@ class TestRendererPerformance:
     """Performance tests for renderer classes."""
 
     @pytest.mark.slow
-    def test_renderer_instantiation_speed(self):
+    def test_renderer_instantiation_speed(self) -> Any:
         """Test renderer instantiation is fast."""
         from render import PyMDPRenderer
 
@@ -76,7 +79,7 @@ class TestRendererPerformance:
         assert elapsed < 1.0, f"100 instantiations took {elapsed:.2f}s"
 
     @pytest.mark.slow
-    def test_template_loading_speed(self):
+    def test_template_loading_speed(self) -> Any:
         """Test template loading performance."""
         from render import get_module_info
 
@@ -92,7 +95,7 @@ class TestCodeGenerationPerformance:
     """Performance tests for code generation."""
 
     @pytest.mark.slow
-    def test_pymdp_generation_speed(self, tmp_path, sample_gnn_files):
+    def test_pymdp_generation_speed(self, tmp_path: Any, sample_gnn_files: Any) -> Any:
         """Test PyMDP code generation speed."""
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -112,7 +115,9 @@ class TestCodeGenerationPerformance:
         assert elapsed < 10.0, f"10 renders took {elapsed:.2f}s"
 
     @pytest.mark.slow
-    def test_multi_framework_generation_speed(self, tmp_path, sample_gnn_files):
+    def test_multi_framework_generation_speed(
+        self, tmp_path: Any, sample_gnn_files: Any
+    ) -> Any:
         """Test rendering to multiple frameworks is efficient."""
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -140,7 +145,9 @@ class TestRenderThroughput:
     """Throughput tests for render operations."""
 
     @pytest.mark.slow
-    def test_batch_rendering_throughput(self, sample_gnn_files, tmp_path):
+    def test_batch_rendering_throughput(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> Any:
         """Test batch rendering throughput."""
         if not sample_gnn_files or len(sample_gnn_files) < 2:
             pytest.skip("Need multiple sample GNN files")
@@ -165,12 +172,12 @@ class TestRenderThroughput:
         assert elapsed < 30.0
 
     @pytest.mark.slow
-    def test_render_validation_speed(self):
+    def test_render_validation_speed(self) -> Any:
         """Test render output validation is fast."""
         from render import validate_render
 
         # Sample render output
-        render_output = {
+        render_output: dict[str, Any] = {
             "code": "import pymdp\n# Generated code",
             "framework": "pymdp",
             "status": "success",
@@ -188,9 +195,9 @@ class TestRenderBenchmarks:
     """Benchmark tests for render operations."""
 
     @pytest.mark.slow
-    def test_render_initialization_benchmark(self):
+    def test_render_initialization_benchmark(self) -> Any:
         """Benchmark render module initialization."""
-        times = []
+        times: list[Any] = []
 
         for _ in range(5):
             start = time.time()
@@ -205,7 +212,9 @@ class TestRenderBenchmarks:
         assert avg < 0.5
 
     @pytest.mark.slow
-    def test_code_generation_benchmark(self, sample_gnn_files, tmp_path):
+    def test_code_generation_benchmark(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> Any:
         """Benchmark code generation."""
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -215,7 +224,7 @@ class TestRenderBenchmarks:
         renderer = PyMDPRenderer()
         gnn_file = list(sample_gnn_files.values())[0]
 
-        times = []
+        times: list[Any] = []
         for i in range(20):
             output = tmp_path / f"bench_{i}.py"
             start = time.time()
@@ -237,7 +246,9 @@ class TestRenderMemoryPerformance:
     """Memory performance tests for render operations."""
 
     @pytest.mark.slow
-    def test_repeated_pymdp_render_memory_bounded(self, sample_gnn_files, tmp_path):
+    def test_repeated_pymdp_render_memory_bounded(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> Any:
         """
         Repeated PyMDP file renders should stay within a loose traced-memory budget.
 
@@ -255,7 +266,7 @@ class TestRenderMemoryPerformance:
         tracemalloc.start(25)
         gc.collect()
 
-        results = []
+        results: list[Any] = []
         for i in range(iterations):
             renderer = PyMDPRenderer()
             output = tmp_path / f"mem_test_{i}.py"

@@ -86,7 +86,7 @@ class TestEnvironmentFunctionality:
         """Test dependency installation functionality."""
         from setup import install_dependencies
 
-        result = install_dependencies(["pytest", "numpy"])
+        result = install_dependencies(verbose=False)
         assert isinstance(result, bool)
 
     @pytest.mark.unit
@@ -121,7 +121,7 @@ class TestEnvironmentIntegration:
 
 def test_environment_module_completeness() -> None:
     """Test that environment module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "EnvironmentManager",
         "VirtualEnvironment",
         "get_module_info",

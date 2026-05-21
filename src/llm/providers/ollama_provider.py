@@ -17,7 +17,7 @@ import logging
 import os
 import shutil
 import subprocess  # nosec B404
-from typing import Any, AsyncGenerator, Dict, List, Optional
+from typing import Any, AsyncGenerator, Dict, List, Optional, cast
 
 from ..defaults import DEFAULT_OLLAMA_MODEL
 from .base_provider import (
@@ -47,7 +47,7 @@ class OllamaProvider(BaseLLMProvider):
 
     DEFAULT_MODEL = DEFAULT_OLLAMA_MODEL
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(api_key=None, **kwargs)
         self.base_url = kwargs.get("base_url")  # optional custom host
         self.default_model_override = kwargs.get("default_model")
@@ -56,7 +56,7 @@ class OllamaProvider(BaseLLMProvider):
             self.default_timeout = float(kwargs["timeout"])
         else:
             self.default_timeout = float(os.getenv("OLLAMA_TIMEOUT", "60"))
-        self._ollama = None
+        self._ollama: Any = None
         self._use_cli = False
 
     @property
@@ -74,7 +74,7 @@ class OllamaProvider(BaseLLMProvider):
     def initialize(self) -> bool:
         # Prefer Python client
         try:
-            import ollama  # type: ignore
+            import ollama
 
             # Verify the imported module is the real ollama package and not a
             # namespace collision (e.g., a local file named ollama.py).
@@ -187,7 +187,7 @@ class OllamaProvider(BaseLLMProvider):
                                 f"Ollama CLI chat stderr: {completed.stderr[:200]}"
                             )
                         if completed.returncode == 0 and completed.stdout.strip():
-                            return json.loads(completed.stdout)
+                            return cast("dict[str, Any]", json.loads(completed.stdout))
                     except Exception as json_error:
                         logger.debug(f"JSON mode failed: {json_error}")
                     # Recovery to `ollama run`

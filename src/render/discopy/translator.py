@@ -18,23 +18,23 @@ import numpy  # For loading .npy files
 # Initialize logger early for use in error handling
 logger = logging.getLogger(__name__)
 
-# Global variables for DisCoPy components, JAX, and jax.numpy
-# These will be replaced by actual imports if available, otherwise None
-Dim, Box, Diagram, Id, Swap, Cup, Cap, Spider, Functor, Matrix = (
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-)
-Ty, Word = None, None
-jax, jnp = None, None
-discopy_backend = None  # For discopy.matrix.backend
+# Global variables for DisCoPy components, JAX, and jax.numpy.
+# Availability flags below define whether these names contain imported objects.
+Dim: Any = None
+Box: Any = None
+Diagram: Any = None
+Id: Any = None
+Swap: Any = None
+Cup: Any = None
+Cap: Any = None
+Spider: Any = None
+Functor: Any = None
+Matrix: Any = None
+Ty: Any = None
+Word: Any = None
+jax: Any = None
+jnp: Any = None
+discopy_backend: Any = None  # For discopy.matrix.backend
 
 # Availability flags
 TENSOR_COMPONENTS_AVAILABLE = False
@@ -155,7 +155,7 @@ def create_discopy_error_report(
     Returns:
         Dictionary containing error report and setup instructions
     """
-    report = {
+    report: dict[str, Any] = {
         "success": False,
         "error_type": error_type,
         "gnn_file": str(gnn_file_path),
@@ -182,7 +182,7 @@ def create_discopy_error_report(
 
 def check_discopy_availability() -> Dict[str, bool]:
     """Check availability of all DisCoPy and JAX components."""
-    availability = {
+    availability: dict[str, Any] = {
         "tensor_components": False,
         "ty_components": False,
         "jax_core": False,
@@ -421,7 +421,7 @@ def _parse_dims_str(dims_str: str | None) -> list[int]:
     if not dims_str:
         return [1]  # Default to Dim(1) if no dimensions specified
 
-    parsed_dims = []
+    parsed_dims: list[Any] = []
     # Split by comma, then attempt to convert each part to int.
     # Only add to parsed_dims if it's a valid integer.
     # This will effectively ignore parts like "type=A" or "foo=bar".
@@ -998,7 +998,7 @@ def gnn_connections_to_discopy_matrix_diagram(
         return [v.strip() for v in group_str.split(",") if v.strip()]
 
     # Initialize with an empty diagram or appropriate identity
-    diagram: Matrix = Id(Dim(1))  # Start with Identity on Dim(1) for matrix diagrams
+    diagram = Id(Dim(1))  # Start with Identity on Dim(1) for matrix diagrams
 
     tensor_definitions = parsed_gnn.get("TensorDefinitions", {})
     # Get the raw dtype definition, which might be a string or a type object
@@ -1552,7 +1552,7 @@ def gnn_file_to_discopy_matrix_diagram(
 
                     # Capture jax_random_module_local in the closure
                     def _key_provider_impl(
-                        name_suffix: str, _jrm=jax_random_module_local
+                        name_suffix: str, _jrm: Any = jax_random_module_local
                     ) -> Any:
                         hashed_suffix = hash(name_suffix) & ((1 << 32) - 1)
                         return _jrm.fold_in(

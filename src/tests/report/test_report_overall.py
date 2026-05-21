@@ -65,7 +65,7 @@ class TestReportModuleComprehensive:
         formats = get_supported_formats()
         assert isinstance(formats, list)
         assert len(formats) > 0
-        expected_formats = ["markdown", "html", "json", "pdf"]
+        expected_formats: list[Any] = ["markdown", "html", "json", "pdf"]
         for fmt in expected_formats:
             assert fmt in formats
 
@@ -99,7 +99,7 @@ class TestReportFunctionality:
         """Test report validation functionality."""
         from report import validate_report
 
-        result = validate_report("test report content")
+        result = validate_report({"content": "test report content"})
         assert isinstance(result, bool)
 
 
@@ -130,7 +130,7 @@ class TestReportIntegration:
 
 def test_report_module_completeness() -> None:
     """Test that report module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "ReportGenerator",
         "ReportFormatter",
         "get_module_info",

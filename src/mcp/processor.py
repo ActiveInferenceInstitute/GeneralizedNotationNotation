@@ -3,6 +3,7 @@
 
 import logging
 from pathlib import Path
+from typing import Any, cast
 
 from utils.pipeline_template import (
     log_step_error,
@@ -14,7 +15,7 @@ from utils.pipeline_template import (
 logger = logging.getLogger(__name__)
 
 
-def register_module_tools(module_name: str = None):
+def register_module_tools(module_name: (str) | None = None) -> Any:
     """Register tools for a specific module, or all modules if no name given.
 
     Args:
@@ -33,7 +34,7 @@ def register_module_tools(module_name: str = None):
     # --- Auto-discover mode (no module_name given) ---
     if module_name is None:
         # Known pipeline modules that expose an mcp sub-module
-        pipeline_modules = [
+        pipeline_modules: list[Any] = [
             "template",
             "setup",
             "tests",
@@ -88,7 +89,7 @@ def register_module_tools(module_name: str = None):
     try:
         logger.info(f"Registering tools for module: {module_name}")
 
-        module_paths = [f"{module_name}.mcp", f"src.{module_name}.mcp"]
+        module_paths: list[Any] = [f"{module_name}.mcp", f"src.{module_name}.mcp"]
         module = None
 
         for module_path in module_paths:
@@ -174,7 +175,7 @@ def generate_mcp_report() -> dict:
         tools = mcp_instance.list_available_tools()
         resources = mcp_instance.list_available_resources()
 
-        report = {
+        report: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "mcp_version": mcp_version,
             "tools_count": len(tools),
@@ -198,7 +199,11 @@ def generate_mcp_report() -> dict:
 
 
 def process_mcp(
-    target_dir: Path, output_dir: Path, verbose: bool = False, logger=None, **kwargs
+    target_dir: Path,
+    output_dir: Path,
+    verbose: bool = False,
+    logger: Any = None,
+    **kwargs: Any,
 ) -> bool:
     """Initialize MCP, discover modules, register tools, and save reports."""
     import json
@@ -237,7 +242,7 @@ def process_mcp(
         # so the performance_mode default is respected otherwise.
         # Map both snake-case MCP-prefixed arg names (from the pipeline CLI)
         # and bare names (direct callers) to initialize() kwargs.
-        alias_map = {
+        alias_map: dict[str, Any] = {
             "enable_caching": ("enable_caching",),
             "enable_rate_limiting": ("enable_rate_limiting",),
             "strict_validation": ("strict_validation", "mcp_strict_validation"),
@@ -285,7 +290,7 @@ def process_mcp(
                 json.dump(available_tools, f, indent=2)
             logger.info(f"🔧 Registered tools saved to: {tools_file}")
 
-        summary = {
+        summary: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target_dir": str(target_dir),
             "output_dir": str(output_dir),
@@ -343,7 +348,7 @@ def get_available_tools() -> list:
     try:
         from .mcp import mcp_instance
 
-        return mcp_instance.list_available_tools()
+        return cast(list[Any], mcp_instance.list_available_tools())
     except Exception as e:
         logger.error(f"Failed to get available tools: {e}")
         return []

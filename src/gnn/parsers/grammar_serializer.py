@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class GrammarSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to BNF format with embedded data."""
-        lines = []
+        lines: list[Any] = []
 
         # Header
         lines.append(f"# Grammar for GNN Model: {model.model_name}")
@@ -24,7 +25,7 @@ class GrammarSerializer(BaseGNNSerializer):
         if model.variables:
             lines.append("<variables> ::= <variable> | <variable> <variables>")
             lines.append("<variable> ::= <variable_name> <variable_type>")
-            var_names = []
+            var_names: list[Any] = []
             for var in sorted(model.variables, key=lambda v: v.name):
                 var_names.append(f'"{var.name}"')
             lines.append("<variable_name> ::= " + " | ".join(var_names))
@@ -41,14 +42,14 @@ class GrammarSerializer(BaseGNNSerializer):
         if model.parameters:
             lines.append("<parameters> ::= <parameter> | <parameter> <parameters>")
             lines.append("<parameter> ::= <param_name> = <param_value>")
-            param_names = []
+            param_names: list[Any] = []
             for param in sorted(model.parameters, key=lambda p: p.name):
                 param_names.append(f'"{param.name}"')
             lines.append("<param_name> ::= " + " | ".join(param_names))
             lines.append("")
 
         # Embed complete model data as BNF comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -106,7 +107,7 @@ class GrammarSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -117,7 +118,7 @@ class GrammarSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []

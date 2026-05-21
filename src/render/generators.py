@@ -5,7 +5,7 @@ Fixed Render generators module for GNN code generation with enhanced visualizati
 
 import re
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, cast
 
 
 def _validate_or_return_empty(
@@ -174,7 +174,7 @@ def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
     return name
 
 
-def _matrix_to_julia(matrix_data) -> str:
+def _matrix_to_julia(matrix_data: Any) -> str:
     """Convert Python matrix (list of lists/tuples) to Julia matrix syntax.
 
     2D matrices use semicolon row separators: [0.9 0.05; 0.05 0.9]
@@ -189,15 +189,15 @@ def _matrix_to_julia(matrix_data) -> str:
 
                 matrix_data = ast.literal_eval(matrix_data)
             except (ValueError, SyntaxError):
-                return matrix_data
+                return cast("str", matrix_data)
 
     if isinstance(matrix_data, (list, tuple)):
         if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
             if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
                 # 3D matrix (B matrix) - use cat(...; dims=3)
-                slices = []
+                slices: list[Any] = []
                 for slice_data in matrix_data:
-                    rows = []
+                    rows: list[Any] = []
                     for row in slice_data:
                         if isinstance(row, (tuple, list)):
                             row_values = " ".join(str(x) for x in row)

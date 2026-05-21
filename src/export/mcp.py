@@ -134,7 +134,7 @@ def export_single_file_mcp(
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register export tools with the MCP server."""
 
     mcp_instance.register_tool(

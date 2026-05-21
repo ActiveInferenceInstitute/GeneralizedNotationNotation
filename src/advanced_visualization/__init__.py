@@ -4,8 +4,10 @@ Advanced visualization package for GNN Processing Pipeline.
 Exports real advanced visualization components including D2 diagram generation.
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "d2_diagrams": True,
     "interactive_dashboards": True,
     "network_visualization": True,
@@ -15,6 +17,12 @@ FEATURES = {
     "mcp_integration": True,
 }
 
+from .d2_visualizer import (
+    D2DiagramSpec,
+    D2GenerationResult,
+    D2Visualizer,
+    process_gnn_file_with_d2,
+)
 from .dashboard import (
     DashboardGenerator,
     generate_dashboard,
@@ -33,27 +41,12 @@ from .visualizer import (
     create_visualization_from_data,
 )
 
-# Import D2 visualization components
-try:
-    from .d2_visualizer import (
-        D2DiagramSpec,
-        D2GenerationResult,
-        D2Visualizer,
-        process_gnn_file_with_d2,
-    )
-
-    D2_AVAILABLE = True
-except ImportError:
-    D2_AVAILABLE = False
-    D2Visualizer = None
-    D2DiagramSpec = None
-    D2GenerationResult = None
-    process_gnn_file_with_d2 = None
+D2_AVAILABLE = True
 
 # Import main processor function for thin orchestrator
 from .processor import process_advanced_viz
 
-__all__ = [
+__all__: list[Any] = [
     "AdvancedVisualizer",
     "create_visualization_from_data",
     "create_dashboard_section",

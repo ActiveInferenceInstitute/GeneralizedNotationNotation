@@ -9,6 +9,8 @@ Tests Mermaid to GNN conversion functions:
 - Connection merging
 """
 
+from typing import Any
+
 import pytest
 
 from gui.oxdraw.mermaid_parser import (
@@ -183,42 +185,42 @@ class TestLabelInference:
 
     def test_infer_dimensions_2d(self) -> None:
         """Test 2D dimension inference."""
-        label_parts = ["A", "3x3", "float"]
+        label_parts: list[Any] = ["A", "3x3", "float"]
         dims = _infer_dimensions_from_label(label_parts)
 
         assert dims == [3, 3]
 
     def test_infer_dimensions_3d(self) -> None:
         """Test 3D dimension inference."""
-        label_parts = ["B", "3x3x3", "float"]
+        label_parts: list[Any] = ["B", "3x3x3", "float"]
         dims = _infer_dimensions_from_label(label_parts)
 
         assert dims == [3, 3, 3]
 
     def test_infer_dimensions_1d(self) -> None:
         """Test 1D dimension inference."""
-        label_parts = ["C", "3", "float"]
+        label_parts: list[Any] = ["C", "3", "float"]
         dims = _infer_dimensions_from_label(label_parts)
 
         assert dims == [3]
 
     def test_infer_type_float(self) -> None:
         """Test float type inference."""
-        label_parts = ["A", "3x3", "float"]
+        label_parts: list[Any] = ["A", "3x3", "float"]
         dtype = _infer_type_from_label(label_parts)
 
         assert dtype == "float"
 
     def test_infer_type_int(self) -> None:
         """Test int type inference."""
-        label_parts = ["o", "3x1", "int"]
+        label_parts: list[Any] = ["o", "3x1", "int"]
         dtype = _infer_type_from_label(label_parts)
 
         assert dtype == "int"
 
     def test_infer_type_default(self) -> None:
         """Test default type inference."""
-        label_parts = ["x", "3"]
+        label_parts: list[Any] = ["x", "3"]
         dtype = _infer_type_from_label(label_parts)
 
         assert dtype == "float"
@@ -229,7 +231,7 @@ class TestVariableMerging:
 
     def test_merge_preserves_metadata(self) -> None:
         """Test merging preserves metadata."""
-        metadata_vars = {
+        metadata_vars: dict[str, Any] = {
             "A": {
                 "dimensions": [3, 3],
                 "data_type": "float",
@@ -237,7 +239,7 @@ class TestVariableMerging:
             }
         }
 
-        visual_nodes = {
+        visual_nodes: dict[str, Any] = {
             "A": {
                 "shape": "rectangle",
                 "label": "A<br/>3x3<br/>float",
@@ -255,9 +257,9 @@ class TestVariableMerging:
 
     def test_merge_adds_new_variables(self) -> None:
         """Test merging adds new variables from visual structure."""
-        metadata_vars = {"A": {"dimensions": [3, 3]}}
+        metadata_vars: dict[str, Any] = {"A": {"dimensions": [3, 3]}}
 
-        visual_nodes = {
+        visual_nodes: dict[str, Any] = {
             "A": {
                 "label_parts": ["A"],
                 "inferred_dimensions": [3, 3],
@@ -281,7 +283,7 @@ class TestConnectionMerging:
 
     def test_merge_connections_visual_precedence(self) -> None:
         """Test visual structure takes precedence."""
-        metadata_conns = [
+        metadata_conns: list[Any] = [
             {
                 "source": "A",
                 "target": "B",
@@ -290,7 +292,7 @@ class TestConnectionMerging:
             }
         ]
 
-        visual_edges = [
+        visual_edges: list[Any] = [
             {"source": "A", "target": "B", "symbol": "-", "description": ""}
         ]
 
@@ -304,9 +306,9 @@ class TestConnectionMerging:
 
     def test_merge_adds_new_connections(self) -> None:
         """Test new visual connections are added."""
-        metadata_conns = [{"source": "A", "target": "B", "symbol": ">"}]
+        metadata_conns: list[Any] = [{"source": "A", "target": "B", "symbol": ">"}]
 
-        visual_edges = [
+        visual_edges: list[Any] = [
             {"source": "A", "target": "B", "symbol": ">", "description": ""},
             {"source": "B", "target": "C", "symbol": "-", "description": ""},
         ]
@@ -321,12 +323,12 @@ class TestOntologyReconstruction:
 
     def test_reconstruct_ontology_mappings(self) -> None:
         """Test ontology mapping reconstruction."""
-        variables = {
+        variables: dict[str, Any] = {
             "A": {"ontology_mapping": "LikelihoodMatrix"},
             "s": {"ontology_mapping": "HiddenState"},
         }
 
-        ontology_map = {}
+        ontology_map: dict[Any, Any] = {}
 
         mappings = _reconstruct_ontology_mappings(variables, ontology_map)
 
@@ -343,7 +345,7 @@ class TestGNNMarkdownGeneration:
 
     def test_markdown_generation(self) -> None:
         """Test basic markdown generation."""
-        gnn_model = {
+        gnn_model: dict[str, Any] = {
             "model_name": "Test Model",
             "version": "1.0",
             "variables": {

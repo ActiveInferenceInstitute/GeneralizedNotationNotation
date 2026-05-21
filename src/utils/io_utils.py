@@ -30,7 +30,7 @@ def batch_write_files(
         Dictionary with write performance metrics
     """
     start_time = time.time()
-    results = []
+    results: list[Any] = []
 
     for file_data in files_data:
         file_path = output_dir / file_data["path"]
@@ -114,19 +114,20 @@ def batch_read_files(file_paths: List[Path]) -> Dict[str, Any]:
         Dictionary with read performance metrics
     """
     start_time = time.time()
-    results = []
+    results: list[Any] = []
 
     for file_path in file_paths:
         try:
             if file_path.exists():
                 # Try to read as text first
                 try:
-                    content = file_path.read_text(encoding="utf-8")
+                    text_content = file_path.read_text(encoding="utf-8")
                     content_type = "text"
+                    content_length = len(text_content)
                 except UnicodeDecodeError:
-                    # Fall back to binary
-                    content = file_path.read_bytes()
+                    binary_content = file_path.read_bytes()
                     content_type = "binary"
+                    content_length = len(binary_content)
 
                 results.append(
                     {
@@ -134,7 +135,7 @@ def batch_read_files(file_paths: List[Path]) -> Dict[str, Any]:
                         "success": True,
                         "size": file_path.stat().st_size,
                         "content_type": content_type,
-                        "content_length": len(content),
+                        "content_length": content_length,
                     }
                 )
             else:
@@ -241,7 +242,7 @@ def cleanup_temp_files(temp_files: List[Path]) -> Dict[str, Any]:
         Dictionary with cleanup metrics
     """
     start_time = time.time()
-    results = []
+    results: list[Any] = []
 
     for temp_file in temp_files:
         try:

@@ -36,7 +36,7 @@ class SweepReporter:
         validation_json_name: str = "sweep_validation.json",
         statistics_json_name: str = "meta_statistics.json",
         gnn_format_statistics: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> None:
         self.records = records
         self.plot_paths = plot_paths
         self.output_dir = Path(output_dir)
@@ -51,7 +51,7 @@ class SweepReporter:
         """Generate the meta-analysis report. Returns the report path."""
         report_path = self.output_dir / "meta_analysis_report.md"
 
-        sections = [
+        sections: list[Any] = [
             self._header(),
             self._sweep_overview(),
             self._runtime_table(),
@@ -94,7 +94,7 @@ class SweepReporter:
         if not n_values or not t_values:
             return ""
 
-        lines = [
+        lines: list[Any] = [
             "## Sweep Configuration",
             "",
             f"- **State space sizes (N)**: {', '.join(str(n) for n in n_values)}",
@@ -110,7 +110,7 @@ class SweepReporter:
             }
         )
         if repeat_vals:
-            mx = max(re.execution_benchmark_repeats for r in self.records)
+            mx = max(r.execution_benchmark_repeats for r in self.records)
             lines.append(
                 f"- **Execution benchmark repeats**: up to **{mx}** per script "
                 "(reported runtimes are **median** seconds across repeats)"
@@ -137,7 +137,7 @@ class SweepReporter:
         if not cells:
             return ""
 
-        lines = ["## Runtime Comparison", ""]
+        lines: list[Any] = ["## Runtime Comparison", ""]
 
         # Header
         header = "| N | T | " + " | ".join(frameworks) + " |"
@@ -145,7 +145,7 @@ class SweepReporter:
         lines.extend([header, sep])
 
         for n, t in cells:
-            row = [str(n), f"{t:,}"]
+            row: list[Any] = [str(n), f"{t:,}"]
             for fw in frameworks:
                 match = [
                     r
@@ -174,7 +174,7 @@ class SweepReporter:
         if not frameworks:
             return ""
 
-        lines = ["## Framework Summary", ""]
+        lines: list[Any] = ["## Framework Summary", ""]
         header = "| Framework | Runs | Avg Runtime | Min | Max | Avg ms/step |"
         sep = "|---|---|---|---|---|---|"
         lines.extend([header, sep])
@@ -196,7 +196,7 @@ class SweepReporter:
             per_step = [r.time_per_step for r in fw_recs if r.time_per_step is not None]
             avg_ps = f"{sum(per_step) / len(per_step):.2f}" if per_step else "—"
 
-            def _fmt(v):
+            def _fmt(v: Any) -> Any:
                 return f"{v:.1f}s" if v < 60 else f"{v / 60:.1f}m"
 
             lines.append(
@@ -213,7 +213,7 @@ class SweepReporter:
         if not acc_records and not ent_records:
             return ""
 
-        lines = ["## Simulation Quality Metrics", ""]
+        lines: list[Any] = ["## Simulation Quality Metrics", ""]
 
         if acc_records or ent_records:
             lines.append("### Quality-Certainty Correlation")
@@ -279,7 +279,7 @@ class SweepReporter:
         if len(pymdp_recs) < 3:
             return ""
 
-        lines = ["## Scaling Analysis", ""]
+        lines: list[Any] = ["## Scaling Analysis", ""]
 
         # Group by T, fit N scaling
         t_values = sorted({r.num_timesteps for r in pymdp_recs})
@@ -390,7 +390,7 @@ class SweepReporter:
         if not loc_recs:
             return ""
 
-        lines = ["## Resource Efficiency & Complexity", ""]
+        lines: list[Any] = ["## Resource Efficiency & Complexity", ""]
         lines.append("Analysis of generated runner complexity and compute throughput.")
 
         # Throughput Table
@@ -418,7 +418,7 @@ class SweepReporter:
         lines.extend([header, sep])
 
         for n in n_values:
-            row = [str(n)]
+            row: list[Any] = [str(n)]
             for fw in frameworks:
                 match = [r for r in loc_recs if r.num_states == n and r.framework == fw]
                 if match:
@@ -440,7 +440,7 @@ class SweepReporter:
         if not payload:
             return ""
         summary = payload.get("summary") or {}
-        lines = [
+        lines: list[Any] = [
             "## Sweep validation",
             "",
             f"- Machine-readable report: [{self._validation_json_name}]({self._validation_json_name})",
@@ -474,7 +474,7 @@ class SweepReporter:
         payload = self._statistics_payload
         if not payload or payload.get("error"):
             return ""
-        lines = [
+        lines: list[Any] = [
             "## Aggregate statistics",
             "",
             f"- Full export: [{self._statistics_json_name}]({self._statistics_json_name})",
@@ -518,8 +518,8 @@ class SweepReporter:
         stats = self._gnn_format_statistics
         if not isinstance(stats, dict):
             return ""
-        lines = ["## Step 3 serialization footprint", ""]
-        rows = []
+        lines: list[Any] = ["## Step 3 serialization footprint", ""]
+        rows: list[Any] = []
         for key in ("markdown", "python", "json"):
             block = stats.get(key)
             if not isinstance(block, dict):
@@ -544,7 +544,7 @@ class SweepReporter:
         if not self.plot_paths:
             return ""
 
-        lines = ["## Visualizations & Data Reports", ""]
+        lines: list[Any] = ["## Visualizations & Data Reports", ""]
         for p in self.plot_paths:
             path_obj = Path(p)
             name = path_obj.stem.replace("_", " ").title()
@@ -553,13 +553,13 @@ class SweepReporter:
             try:
                 rel_path = path_obj.relative_to(self.output_dir)
             except ValueError:
-                rel_path = fname
+                rel_path = Path(fname)
 
             csv_path = path_obj.with_suffix(".csv")
             try:
                 rel_csv_path = csv_path.relative_to(self.output_dir)
             except ValueError:
-                rel_csv_path = csv_path.name
+                rel_csv_path = Path(csv_path.name)
 
             if fname.endswith(".csv"):
                 lines.append(f"- **{name}**: Data Report: [{fname}]({rel_path})")

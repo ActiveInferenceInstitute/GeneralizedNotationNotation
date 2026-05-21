@@ -5,7 +5,7 @@ Provides helper functions for node/edge styling, validation, and configuration.
 """
 
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, cast
 
 
 def infer_node_shape(var_name: str, var_data: Dict[str, Any]) -> Tuple[str, str]:
@@ -73,14 +73,14 @@ def infer_edge_style(symbol: str) -> str:
     Returns:
         Mermaid edge style string
     """
-    style_map = {
+    style_map: dict[str, Any] = {
         ">": "==>",  # Generative
         "-": "-.->",  # Inference
         "*": "-..->",  # Modulation
         "~": "-->",  # Coupling
     }
 
-    return style_map.get(symbol, "-->")  # Default to normal arrow
+    return cast("str", style_map.get(symbol, "-->"))  # Default to normal arrow
 
 
 def validate_mermaid_syntax(mermaid_content: str) -> Tuple[bool, List[str]]:
@@ -99,14 +99,14 @@ def validate_mermaid_syntax(mermaid_content: str) -> Tuple[bool, List[str]]:
     Returns:
         Tuple of (is_valid, list_of_errors)
     """
-    errors = []
+    errors: list[Any] = []
 
     # Check for flowchart directive
     if not re.search(r"^\s*flowchart\s+(TD|LR|TB|RL)", mermaid_content, re.MULTILINE):
         errors.append("Missing flowchart directive (e.g., 'flowchart TD')")
 
     # Check bracket balance
-    bracket_pairs = [("[", "]"), ("(", ")"), ("{", "}")]
+    bracket_pairs: list[Any] = [("[", "]"), ("(", ")"), ("{", "}")]
 
     for open_b, close_b in bracket_pairs:
         open_count = mermaid_content.count(open_b)
@@ -182,7 +182,7 @@ def extract_node_positions(mermaid_content: str) -> Dict[str, Tuple[float, float
     Returns:
         Dictionary mapping node IDs to (x, y) positions
     """
-    positions = {}
+    positions: dict[Any, Any] = {}
 
     # Look for position comments like: %% node_id: x=100, y=200
     position_pattern = r"%%\s*(\w+):\s*x=([0-9.]+),\s*y=([0-9.]+)"
@@ -206,7 +206,7 @@ def generate_color_scheme(var_type: str) -> Dict[str, str]:
     Returns:
         Dictionary with fill and stroke colors
     """
-    color_schemes = {
+    color_schemes: dict[str, Any] = {
         "matrix": {"fill": "#e1f5ff", "stroke": "#0288d1"},
         "vector": {"fill": "#fff9e6", "stroke": "#fbc02d"},
         "state": {"fill": "#fff3e0", "stroke": "#f57c00"},
@@ -216,7 +216,10 @@ def generate_color_scheme(var_type: str) -> Dict[str, str]:
         "free_energy": {"fill": "#fce4ec", "stroke": "#c2185b"},
     }
 
-    return color_schemes.get(var_type, {"fill": "#f5f5f5", "stroke": "#9e9e9e"})
+    return cast(
+        "dict[str, str]",
+        color_schemes.get(var_type, {"fill": "#f5f5f5", "stroke": "#9e9e9e"}),
+    )
 
 
 def estimate_diagram_complexity(gnn_model: Dict[str, Any]) -> Dict[str, Any]:

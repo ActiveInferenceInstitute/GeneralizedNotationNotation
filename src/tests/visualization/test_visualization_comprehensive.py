@@ -64,7 +64,7 @@ class TestVisualizationProcessing:
         output_dir.mkdir()
         gnn_output_dir = output_dir / "3_gnn_output"
         gnn_output_dir.mkdir()
-        gnn_results = {
+        gnn_results: dict[str, Any] = {
             "processed_files": [
                 {
                     "file_name": "test_model.md",
@@ -75,7 +75,7 @@ class TestVisualizationProcessing:
             ],
             "summary": {"total_files": 1, "successful": 1},
         }
-        parsed_model = {
+        parsed_model: dict[str, Any] = {
             "model_name": "test_model",
             "parameters": [
                 {"name": "A", "type": "matrix", "shape": [3], "values": [1, 2, 3]},
@@ -152,7 +152,7 @@ class TestVisualizationProcessing:
         from visualization.matrix_visualizer import MatrixVisualizer
 
         mv = MatrixVisualizer()
-        parameters = [
+        parameters: list[Any] = [
             {"name": "A", "shape": [3, 3], "value": np.eye(3).tolist()},
             {"name": "B", "shape": [2, 2], "value": [[1, 2], [3, 4]]},
         ]
@@ -206,7 +206,7 @@ class TestVisualizationComponents:
 
     def test_network_visualization_generation(self) -> None:
         """Test network visualization with real data."""
-        test_data = {
+        test_data: dict[str, Any] = {
             "state_blocks": [
                 {"name": "A", "dimensions": [3]},
                 {"name": "B", "dimensions": [2]},
@@ -222,7 +222,7 @@ class TestVisualizationComponents:
 
     def test_combined_analysis_generation(self) -> None:
         """Test combined analysis with real data."""
-        test_data = {
+        test_data: dict[str, Any] = {
             "parameters": [{"name": "A", "shape": [3], "values": [1, 2, 3]}],
             "state_blocks": [{"name": "A", "dimensions": [3]}],
             "connections": [],

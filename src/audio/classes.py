@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class AudioGenerator:
     """Generates audio from GNN models."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the audio generator."""
         self.supported_formats = ["wav", "mp3", "flac", "ogg"]
         self.generation_types = ["tonal", "rhythmic", "ambient", "sonification"]
@@ -23,7 +23,7 @@ class AudioGenerator:
     def generate_audio(self, model_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate audio from model data."""
         try:
-            results = {"success": True, "audio_files": [], "errors": []}
+            results: dict[str, Any] = {"success": True, "audio_files": [], "errors": []}
 
             # Extract variables and connections
             variables = model_data.get("variables", [])
@@ -139,7 +139,7 @@ class AudioGenerator:
 class SAPFGNNProcessor:
     """SAPF (Sonification and Audio Processing Framework) GNN Processor."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.supported_formats = ["wav", "mp3", "flac", "ogg"]
         self.audio_engines = ["basic", "sapf", "pedalboard"]
 

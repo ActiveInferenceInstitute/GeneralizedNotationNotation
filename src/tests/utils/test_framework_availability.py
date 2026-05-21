@@ -8,6 +8,7 @@ Every check is verified against the real interpreter's
 import importlib.util
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -24,18 +25,18 @@ from utils.framework_availability import (  # noqa: E402
 
 
 @pytest.mark.parametrize("framework", list(FRAMEWORK_IMPORT_CHECK.keys()))
-def test_is_framework_available_matches_find_spec(framework):
+def test_is_framework_available_matches_find_spec(framework: Any) -> Any:
     module_name, _ = FRAMEWORK_IMPORT_CHECK[framework]
     expected = importlib.util.find_spec(module_name) is not None
     assert is_framework_available(framework) is expected
 
 
-def test_unknown_framework_returns_true():
+def test_unknown_framework_returns_true() -> Any:
     # Unknown frameworks stay available so callers do not over-skip.
     assert is_framework_available("definitely-not-a-framework") is True
 
 
-def test_check_framework_returns_structured_status_when_available():
+def test_check_framework_returns_structured_status_when_available() -> Any:
     # pick any framework that IS available in the local venv (pymdp is required core)
     status = check_framework("pymdp")
     assert isinstance(status, FrameworkStatus)
@@ -48,7 +49,7 @@ def test_check_framework_returns_structured_status_when_available():
         assert status.install_hint is not None
 
 
-def test_check_framework_populates_hint_when_unavailable():
+def test_check_framework_populates_hint_when_unavailable() -> Any:
     # Deliberately unknown module: use a unique entry that will never be installed.
     # Patch FRAMEWORK_IMPORT_CHECK locally via the public mutable dict.
     FRAMEWORK_IMPORT_CHECK["__nonexistent_test_fw__"] = (
@@ -64,14 +65,14 @@ def test_check_framework_populates_hint_when_unavailable():
         FRAMEWORK_IMPORT_CHECK.pop("__nonexistent_test_fw__", None)
 
 
-def test_unknown_framework_has_available_true_in_status():
+def test_unknown_framework_has_available_true_in_status() -> Any:
     status = check_framework("definitely-not-a-framework")
     assert status.available is True
     assert status.missing_module is None
 
 
-def test_framework_import_check_includes_required_runners():
+def test_framework_import_check_includes_required_runners() -> Any:
     # Regression guard: Phase 0.2 must include every runner from executor.py.
     # Keep this list aligned with src/execute/executor.py framework runners.
-    required = {"jax", "numpyro", "pytorch", "discopy", "bnlearn", "pymdp"}
+    required: set[Any] = {"jax", "numpyro", "pytorch", "discopy", "bnlearn", "pymdp"}
     assert required.issubset(FRAMEWORK_IMPORT_CHECK.keys())

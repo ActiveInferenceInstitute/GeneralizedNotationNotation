@@ -11,7 +11,7 @@ import logging
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -25,7 +25,7 @@ except ImportError:
 class DependencyInstaller:
     """Comprehensive dependency installer for the GNN pipeline."""
 
-    def __init__(self, use_uv: bool = True, verbose: bool = True):
+    def __init__(self, use_uv: bool = True, verbose: bool = True) -> None:
         self.use_uv = use_uv
         self.verbose = verbose
         self.logger = self._setup_logging()
@@ -77,10 +77,10 @@ class DependencyInstaller:
 
     def check_missing_dependencies(self) -> Dict[str, List[str]]:
         """Check which dependencies are missing for each category."""
-        missing = {}
+        missing: dict[Any, Any] = {}
 
         for category, deps in self.install_targets.items():
-            missing_in_category = []
+            missing_in_category: list[Any] = []
             for dep_name, description in deps.items():
                 try:
                     importlib.import_module(dep_name)
@@ -109,14 +109,14 @@ class DependencyInstaller:
         """
         try:
             if self.use_uv:
-                cmd = ["uv", "pip", "install", package_name]
+                cmd: list[Any] = ["uv", "pip", "install", package_name]
             else:
                 cmd = [sys.executable, "-m", "pip", "install", package_name]
 
             self.logger.info(f"🔧 Installing {package_name} ({category})...")
 
             # Handle special cases that need different package names
-            special_packages = {
+            special_packages: dict[str, Any] = {
                 "discopy": "discopy[all]",  # Install with all optional features
                 "jax": "jax[cpu]",  # Install CPU version by default
                 "flax": "flax",
@@ -162,7 +162,7 @@ class DependencyInstaller:
         self, category: str, missing_deps: List[str]
     ) -> Dict[str, bool]:
         """Install all missing dependencies in a category."""
-        results = {}
+        results: dict[Any, Any] = {}
 
         self.logger.info(f"📦 Installing {category} dependencies...")
 
@@ -177,7 +177,7 @@ class DependencyInstaller:
         return results
 
     def install_all_missing(
-        self, categories: List[str] = None
+        self, categories: (List[str]) | None = None
     ) -> Dict[str, Dict[str, bool]]:
         """
         Install all missing dependencies.
@@ -200,10 +200,10 @@ class DependencyInstaller:
         self.logger.info("🚀 Starting comprehensive dependency installation...")
         self.logger.info(f"📋 Categories to install: {list(missing.keys())}")
 
-        all_results = {}
+        all_results: dict[Any, Any] = {}
 
         # Install in order of importance
-        install_order = [
+        install_order: list[Any] = [
             "scientific",
             "visualization",
             "execution",
@@ -226,7 +226,7 @@ class DependencyInstaller:
 
     def verify_installations(self) -> Dict[str, bool]:
         """Verify that all installations were successful."""
-        verification_results = {}
+        verification_results: dict[Any, Any] = {}
 
         self.logger.info("🔍 Verifying installations...")
 
@@ -246,7 +246,7 @@ class DependencyInstaller:
         self, installation_results: Dict[str, Dict[str, bool]]
     ) -> Dict:
         """Generate comprehensive installation report."""
-        report = {
+        report: dict[str, Any] = {
             "timestamp": __import__("datetime").datetime.now().isoformat(),
             "installer_version": "1.0.0",
             "package_manager": "uv" if self.use_uv else "pip",
@@ -279,7 +279,7 @@ class DependencyInstaller:
 
         return report
 
-    def save_report(self, report: Dict, output_path: Path = None) -> Path:
+    def save_report(self, report: Dict, output_path: (Path) | None = None) -> Path:
         """Save installation report to file."""
         if output_path is None:
             output_path = Path("output/dependency_installation_report.json")
@@ -295,7 +295,7 @@ class DependencyInstaller:
         return output_path
 
 
-def main():
+def main() -> Any:
     """Main function to install all missing dependencies."""
     installer = DependencyInstaller(use_uv=True, verbose=True)
 
@@ -342,7 +342,7 @@ def main():
     print(f"Report saved: {report_path}")
 
     # Verify at least the critical ones are installed
-    critical_deps = ["numpy", "matplotlib", "pathlib"]
+    critical_deps: list[Any] = ["numpy", "matplotlib", "pathlib"]
     all_critical_ok = all(verification_results.get(dep, False) for dep in critical_deps)
 
     if report["summary"]["success_rate"] >= 80 and all_critical_ok:

@@ -24,7 +24,7 @@ test-full:
 
 # Run tests for a specific module (e.g., just test-mod render)
 test-mod MODULE:
-    uv run pytest src/tests/test_{{ MODULE }}*.py -v
+    uv run pytest src/tests/{{ MODULE }}/ -v
 
 # Run tests with coverage report
 test-cov:
@@ -133,9 +133,11 @@ terminology:
 # Count test files and items
 test-count:
     @echo "Test files:"
-    @find src/tests -maxdepth 1 -name 'test_*.py' | wc -l
+    @find src/tests -name 'test_*.py' | wc -l
     @echo "Collected test items:"
-    @uv run pytest src/tests/ --collect-only -q 2>/dev/null | tail -1
+    @uv run pytest --collect-only src/tests/ -q --tb=no \
+        --ignore=src/tests/llm/test_llm_ollama.py \
+        --ignore=src/tests/llm/test_llm_ollama_integration.py 2>/dev/null | tail -1
 
 # ─────────────────────────────────────────────
 # Environment Setup

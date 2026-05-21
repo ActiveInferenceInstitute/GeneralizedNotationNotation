@@ -10,6 +10,7 @@ are actually callable.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 SRC = Path(__file__).resolve().parents[2]
 if str(SRC) not in sys.path:
@@ -32,7 +33,7 @@ from execute import (  # noqa: E402
 )
 
 
-def test_public_symbols_are_callable_or_class():
+def test_public_symbols_are_callable_or_class() -> Any:
     """Every public name in the module must be a live callable or class."""
     for sym in (
         check_dependencies,
@@ -52,17 +53,17 @@ def test_public_symbols_are_callable_or_class():
     assert isinstance(GNNExecutor, type), "GNNExecutor should be a class"
 
 
-def test_validate_pymdp_environment_returns_structured_dict():
+def test_validate_pymdp_environment_returns_structured_dict() -> Any:
     """Real validator exposes at least one status field per its contract."""
     result = validate_pymdp_environment()
     assert isinstance(result, dict), f"expected dict, got {type(result).__name__}"
-    candidates = {"valid", "pymdp_available", "overall_health", "status"}
+    candidates: set[Any] = {"valid", "pymdp_available", "overall_health", "status"}
     assert candidates & set(result.keys()), (
         f"validate_pymdp_environment missing status key; got keys: {list(result.keys())}"
     )
 
 
-def test_check_network_connectivity_has_status():
+def test_check_network_connectivity_has_status() -> Any:
     result = check_network_connectivity()
     # Real validator returns a ValidationResult dataclass exposing .status.
     if isinstance(result, dict):
@@ -71,7 +72,7 @@ def test_check_network_connectivity_has_status():
         assert hasattr(result, "status")
 
 
-def test_validate_execution_environment_returns_dict():
+def test_validate_execution_environment_returns_dict() -> Any:
     result = validate_execution_environment()
     assert isinstance(result, dict)
     # Real validator reports python_version + dependencies per its API.
@@ -80,7 +81,7 @@ def test_validate_execution_environment_returns_dict():
     )
 
 
-def test_gnnexecutor_is_instantiable():
+def test_gnnexecutor_is_instantiable() -> Any:
     engine = GNNExecutor()
     assert engine is not None
     # Basic interface checks — the class must expose the public execution

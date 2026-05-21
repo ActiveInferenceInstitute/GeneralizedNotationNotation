@@ -11,13 +11,14 @@ License: MIT
 
 import logging
 import re
+from typing import Any, cast
 
 try:
     import defusedxml.ElementTree as ET
 except ImportError:
-    import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405
+    import xml.etree.ElementTree as ET  # nosec B405
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from .common import (
     BaseGNNParser,
@@ -25,8 +26,10 @@ from .common import (
     ConnectionType,
     DataType,
     GNNInternalRepresentation,
+    OntologyMapping,
     Parameter,
     ParseResult,
+    TimeSpecification,
     Variable,
     VariableType,
     extract_embedded_json_data,
@@ -35,10 +38,26 @@ from .common import (
 logger = logging.getLogger(__name__)
 
 
+def _time_specification_from_mapping(data: Dict[str, Any]) -> TimeSpecification:
+    """Build a typed time specification from embedded schema data."""
+    raw_step_size = data.get("step_size")
+    step_size = float(raw_step_size) if raw_step_size is not None else None
+    return TimeSpecification(
+        time_type=str(data.get("time_type", data.get("type", "Static"))),
+        discretization=(
+            str(data["discretization"])
+            if data.get("discretization") is not None
+            else None
+        ),
+        horizon=cast(Optional[Union[int, str]], data.get("horizon")),
+        step_size=step_size,
+    )
+
+
 class XSDParser(BaseGNNParser):
     """Parser for XML Schema Definition (XSD) files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
@@ -46,7 +65,7 @@ class XSDParser(BaseGNNParser):
         import json
 
         # Look for JSON data in comments (different formats)
-        patterns = [
+        patterns: list[Any] = [
             r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
             r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
             r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
@@ -57,7 +76,7 @@ class XSDParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in embedded data, trying next pattern: %s", e
@@ -115,18 +134,20 @@ class XSDParser(BaseGNNParser):
             if "time_specification" in data and data["time_specification"]:
                 time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
-                    from types import SimpleNamespace
-
-                    result.model.time_specification = SimpleNamespace(**time_spec_data)
+                    result.model.time_specification = _time_specification_from_mapping(
+                        time_spec_data
+                    )
 
             # Restore ontology mappings for XSD parser
             if "ontology_mappings" in data and data["ontology_mappings"]:
                 ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
-                    from types import SimpleNamespace
-
                     result.model.ontology_mappings = [
-                        SimpleNamespace(**mapping)
+                        OntologyMapping(
+                            variable_name=str(mapping.get("variable_name", "")),
+                            ontology_term=str(mapping.get("ontology_term", "")),
+                            description=mapping.get("description"),
+                        )
                         for mapping in ontology_data
                         if isinstance(mapping, dict)
                     ]
@@ -138,7 +159,7 @@ class XSDParser(BaseGNNParser):
 
         return result
 
-    def _parse_enum_value(self, enum_class, value_str: str):
+    def _parse_enum_value(self, enum_class: Any, value_str: str) -> Any:
         """Parse enum value from string."""
         try:
             # Try to get enum by value
@@ -211,7 +232,7 @@ class XSDParser(BaseGNNParser):
         return result
 
     def _map_xsd_type(self, xsd_type: str) -> DataType:
-        type_mapping = {
+        type_mapping: dict[str, Any] = {
             "string": DataType.CATEGORICAL,
             "int": DataType.INTEGER,
             "integer": DataType.INTEGER,
@@ -220,7 +241,9 @@ class XSDParser(BaseGNNParser):
             "boolean": DataType.BINARY,
             "decimal": DataType.FLOAT,
         }
-        return type_mapping.get(xsd_type.split(":")[-1], DataType.CATEGORICAL)
+        return cast(
+            "DataType", type_mapping.get(xsd_type.split(":")[-1], DataType.CATEGORICAL)
+        )
 
     def _infer_variable_type(self, name: str) -> VariableType:
         name_lower = name.lower()
@@ -235,7 +258,7 @@ class XSDParser(BaseGNNParser):
 class ASN1Parser(BaseGNNParser):
     """Parser for ASN.1 schema definition files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.module_pattern = re.compile(
             r"(\w+)\s+DEFINITIONS.*::=\s*BEGIN", re.IGNORECASE
@@ -252,7 +275,7 @@ class ASN1Parser(BaseGNNParser):
         import json
 
         # Look for JSON data in comments (different formats)
-        patterns = [
+        patterns: list[Any] = [
             r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
             r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
             r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
@@ -264,7 +287,7 @@ class ASN1Parser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in embedded data, trying next pattern: %s", e
@@ -322,18 +345,20 @@ class ASN1Parser(BaseGNNParser):
             if "time_specification" in data and data["time_specification"]:
                 time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
-                    from types import SimpleNamespace
-
-                    result.model.time_specification = SimpleNamespace(**time_spec_data)
+                    result.model.time_specification = _time_specification_from_mapping(
+                        time_spec_data
+                    )
 
             # Restore ontology mappings for ASN1 parser
             if "ontology_mappings" in data and data["ontology_mappings"]:
                 ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
-                    from types import SimpleNamespace
-
                     result.model.ontology_mappings = [
-                        SimpleNamespace(**mapping)
+                        OntologyMapping(
+                            variable_name=str(mapping.get("variable_name", "")),
+                            ontology_term=str(mapping.get("ontology_term", "")),
+                            description=mapping.get("description"),
+                        )
                         for mapping in ontology_data
                         if isinstance(mapping, dict)
                     ]
@@ -345,7 +370,7 @@ class ASN1Parser(BaseGNNParser):
 
         return result
 
-    def _parse_enum_value(self, enum_class, value_str: str):
+    def _parse_enum_value(self, enum_class: Any, value_str: str) -> Any:
         """Parse enum value from string."""
         try:
             # Try to get enum by value
@@ -448,7 +473,7 @@ class ASN1Parser(BaseGNNParser):
 class PKLParser(BaseGNNParser):
     """Parser for Apple PKL configuration files."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.class_pattern = re.compile(r"class\s+(\w+)\s*\{([^}]+)\}", re.DOTALL)
         self.property_pattern = re.compile(
@@ -466,7 +491,7 @@ class PKLParser(BaseGNNParser):
         import json
 
         # Look for JSON data in comments (different formats)
-        patterns = [
+        patterns: list[Any] = [
             r"/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/",  # /* MODEL_DATA: {...} */
             r"<!--\s*MODEL_DATA:\s*(\{.*?\})\s*-->",  # <!-- MODEL_DATA: {...} -->
             r"#\s*MODEL_DATA:\s*(\{.*?\})",  # # MODEL_DATA: {...}
@@ -477,7 +502,7 @@ class PKLParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in embedded data, trying next pattern: %s", e
@@ -535,18 +560,20 @@ class PKLParser(BaseGNNParser):
             if "time_specification" in data and data["time_specification"]:
                 time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
-                    from types import SimpleNamespace
-
-                    result.model.time_specification = SimpleNamespace(**time_spec_data)
+                    result.model.time_specification = _time_specification_from_mapping(
+                        time_spec_data
+                    )
 
             # Restore ontology mappings for PKL parser
             if "ontology_mappings" in data and data["ontology_mappings"]:
                 ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
-                    from types import SimpleNamespace
-
                     result.model.ontology_mappings = [
-                        SimpleNamespace(**mapping)
+                        OntologyMapping(
+                            variable_name=str(mapping.get("variable_name", "")),
+                            ontology_term=str(mapping.get("ontology_term", "")),
+                            description=mapping.get("description"),
+                        )
                         for mapping in ontology_data
                         if isinstance(mapping, dict)
                     ]
@@ -559,7 +586,7 @@ class PKLParser(BaseGNNParser):
 
         return result
 
-    def _parse_enum_value(self, enum_class, value_str: str):
+    def _parse_enum_value(self, enum_class: Any, value_str: str) -> Any:
         """Parse enum value from string."""
         try:
             # Try to get enum by value
@@ -649,12 +676,11 @@ class PKLParser(BaseGNNParser):
                     entry_value = entry_match.group(2).strip()
 
                     if mapping_name == "variables":
-                        # Parse variable definition from PKL
-                        variable = self._parse_pkl_variable_entry(
+                        parsed_variable = self._parse_pkl_variable_entry(
                             entry_key, entry_value
                         )
-                        if variable:
-                            result.model.variables.append(variable)
+                        if parsed_variable:
+                            result.model.variables.append(parsed_variable)
                     elif mapping_name == "parameters":
                         parameter = Parameter(
                             name=entry_key,
@@ -737,9 +763,9 @@ class PKLParser(BaseGNNParser):
     ) -> ParseResult:
         """Parse PKL content with enhanced model extraction."""
         try:
-            model = GNNInternalRepresentation()
-            errors = []
-            warnings = []
+            model = GNNInternalRepresentation(model_name="PKLGNNModel")
+            errors: list[Any] = []
+            warnings: list[Any] = []
 
             # Parse model metadata
             model_name = self._extract_pkl_model_name(content)
@@ -796,7 +822,7 @@ class PKLParser(BaseGNNParser):
 
         except Exception as e:
             return ParseResult(
-                model=None,
+                model=self.create_empty_model(),
                 success=False,
                 errors=[f"PKL parsing failed: {str(e)}"],
                 warnings=[],
@@ -824,7 +850,7 @@ class PKLParser(BaseGNNParser):
 
     def _extract_pkl_annotation(self, content: str) -> str:
         """Extract model annotation from PKL comments."""
-        annotations = []
+        annotations: list[Any] = []
 
         # Look for /// comments (doc comments)
         doc_comments = re.findall(r"///\s*(.+)", content)
@@ -851,7 +877,7 @@ class PKLParser(BaseGNNParser):
 
     def _parse_pkl_variables_enhanced(self, content: str) -> List[Variable]:
         """Parse variables with complete information preservation."""
-        variables = []
+        variables: list[Any] = []
 
         # Parse property declarations
         prop_declarations = re.findall(r"(\w+):\s*(\w+)(?:\s*=\s*([^;\n]+))?", content)
@@ -880,12 +906,14 @@ class PKLParser(BaseGNNParser):
                             VariableType,
                             var_data.get("var_type", "hidden_state"),
                             VariableType.HIDDEN_STATE,
-                        ),
+                        )
+                        or VariableType.HIDDEN_STATE,
                         data_type=safe_enum_convert(
                             DataType,
                             var_data.get("data_type", "categorical"),
                             DataType.CATEGORICAL,
-                        ),
+                        )
+                        or DataType.CATEGORICAL,
                         dimensions=var_data.get("dimensions", []),
                     )
                     # Avoid duplicates
@@ -896,7 +924,7 @@ class PKLParser(BaseGNNParser):
 
     def _parse_pkl_connections_enhanced(self, content: str) -> List[Connection]:
         """Parse connections with complete relationship preservation."""
-        connections = []
+        connections: list[Any] = []
 
         # Parse from embedded data
         embedded_data = self._extract_pkl_embedded_data(content)
@@ -929,7 +957,7 @@ class PKLParser(BaseGNNParser):
 
     def _parse_pkl_parameters_enhanced(self, content: str) -> List[Parameter]:
         """Parse parameters with complete value preservation."""
-        parameters = []
+        parameters: list[Any] = []
 
         # Parse from property declarations with default values
         prop_declarations = re.findall(r"(\w+):\s*\w+\s*=\s*([^;\n]+)", content)
@@ -940,7 +968,7 @@ class PKLParser(BaseGNNParser):
             parameter = Parameter(
                 name=name,
                 value=self._parse_pkl_value(value_str.strip()),
-                param_type="constant",
+                type_hint="constant",
             )
             parameters.append(parameter)
 
@@ -963,7 +991,7 @@ class PKLParser(BaseGNNParser):
 
     def _parse_pkl_equations(self, content: str) -> List:
         """Parse equations from PKL content."""
-        equations = []
+        equations: list[Any] = []
 
         # Parse equation comments
         eq_comments = re.findall(r"//\s*Equation:\s*(.+)", content)
@@ -972,17 +1000,19 @@ class PKLParser(BaseGNNParser):
 
         return equations
 
-    def _parse_pkl_time_specification(self, content: str) -> Optional[Dict]:
+    def _parse_pkl_time_specification(
+        self, content: str
+    ) -> Optional[TimeSpecification]:
         """Parse time specification from PKL content."""
         time_comments = re.findall(r"//\s*Time:\s*(.+)", content)
         if time_comments:
-            return {"time_type": "discrete", "description": time_comments[0]}
+            return TimeSpecification(time_type="discrete")
 
         return None
 
     def _parse_pkl_ontology_mappings(self, content: str) -> List:
         """Parse ontology mappings from PKL content."""
-        mappings = []
+        mappings: list[Any] = []
 
         onto_comments = re.findall(r"//\s*Ontology:\s*(\w+)\s*->\s*(.+)", content)
         for var_name, ontology_term in onto_comments:
@@ -1000,7 +1030,7 @@ class PKLParser(BaseGNNParser):
         json_matches = re.findall(r"//\s*JSON:\s*({.+?})", content, re.DOTALL)
         for json_str in json_matches:
             try:
-                return json.loads(json_str)
+                return cast("dict[Any, Any] | None", json.loads(json_str))
             except json.JSONDecodeError as e:
                 logger.debug("Malformed JSON in embedded data, trying next: %s", e)
                 continue
@@ -1011,7 +1041,7 @@ class PKLParser(BaseGNNParser):
         )
         for data_str in data_matches:
             try:
-                return json.loads(data_str)
+                return cast("dict[Any, Any] | None", json.loads(data_str))
             except json.JSONDecodeError as e:
                 logger.debug("Malformed JSON in embedded data, trying next: %s", e)
                 continue
@@ -1020,7 +1050,7 @@ class PKLParser(BaseGNNParser):
 
     def _apply_embedded_data_to_model(
         self, model: GNNInternalRepresentation, data: Dict
-    ):
+    ) -> Any:
         """Apply embedded data to enhance the model."""
         if "model_name" in data and data["model_name"]:
             model.model_name = data["model_name"]
@@ -1032,27 +1062,27 @@ class PKLParser(BaseGNNParser):
         if "time_specification" in data and data["time_specification"]:
             time_spec_data = data["time_specification"]
             if isinstance(time_spec_data, dict):
-                # Create a simple object with the time specification data
-                from types import SimpleNamespace
-
-                model.time_specification = SimpleNamespace(**time_spec_data)
+                model.time_specification = _time_specification_from_mapping(
+                    time_spec_data
+                )
 
         # Restore ontology mappings
         if "ontology_mappings" in data and data["ontology_mappings"]:
             ontology_data = data["ontology_mappings"]
             if isinstance(ontology_data, list):
-                # Create simple objects for ontology mappings
-                from types import SimpleNamespace
-
                 model.ontology_mappings = [
-                    SimpleNamespace(**mapping)
+                    OntologyMapping(
+                        variable_name=str(mapping.get("variable_name", "")),
+                        ontology_term=str(mapping.get("ontology_term", "")),
+                        description=mapping.get("description"),
+                    )
                     for mapping in ontology_data
                     if isinstance(mapping, dict)
                 ]
 
     def _map_pkl_type_to_variable_type(self, pkl_type: str) -> VariableType:
         """Map PKL types to GNN variable types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "String": VariableType.OBSERVATION,
             "Int": VariableType.HIDDEN_STATE,
             "Float": VariableType.HIDDEN_STATE,  # Changed from PARAMETER to more appropriate default
@@ -1060,11 +1090,11 @@ class PKLParser(BaseGNNParser):
             "List": VariableType.OBSERVATION,
             "Map": VariableType.OBSERVATION,
         }
-        return mapping.get(pkl_type, VariableType.HIDDEN_STATE)
+        return cast("VariableType", mapping.get(pkl_type, VariableType.HIDDEN_STATE))
 
     def _map_pkl_type_to_data_type(self, pkl_type: str) -> DataType:
         """Map PKL types to GNN data types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "String": DataType.CATEGORICAL,
             "Int": DataType.INTEGER,
             "Float": DataType.FLOAT,
@@ -1072,7 +1102,7 @@ class PKLParser(BaseGNNParser):
             "List": DataType.CATEGORICAL,
             "Map": DataType.COMPLEX,
         }
-        return mapping.get(pkl_type, DataType.CATEGORICAL)
+        return cast("DataType", mapping.get(pkl_type, DataType.CATEGORICAL))
 
     def _parse_pkl_value(self, value_str: str) -> Any:
         """Parse PKL value from string."""
@@ -1103,7 +1133,7 @@ class PKLParser(BaseGNNParser):
         self, model: GNNInternalRepresentation, content: str
     ) -> List[str]:
         """Validate that the PKL model was completely parsed."""
-        errors = []
+        errors: list[Any] = []
 
         if not model.model_name:
             errors.append("Model name not found in PKL content")
@@ -1118,7 +1148,7 @@ class PKLParser(BaseGNNParser):
 class AlloyParser(BaseGNNParser):
     """Parser for Alloy model specification files with embedded data support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.sig_pattern = re.compile(
             r"sig\s+(\w+)\s*\{([^}]*)\}", re.IGNORECASE | re.DOTALL
@@ -1270,7 +1300,7 @@ class AlloyParser(BaseGNNParser):
 class ZNotationParser(BaseGNNParser):
     """Parser for Z notation formal specification files with embedded data support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.schema_pattern = re.compile(r"┌─\s*(\w+)\s*─+┐\s*([^└]+)└─+┘", re.DOTALL)
         self.declaration_pattern = re.compile(r"(\w+)\s*:\s*([^\n]+)", re.MULTILINE)
@@ -1289,7 +1319,7 @@ class ZNotationParser(BaseGNNParser):
         if match:
             try:
                 json_data = match.group(1)
-                return json.loads(json_data)
+                return cast("dict[str, Any] | None", json.loads(json_data))
             except json.JSONDecodeError:
                 return None
         return None

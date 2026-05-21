@@ -5,15 +5,15 @@ This module tests the pipeline's behavior under various error conditions,
 dependency failures, and edge cases to ensure robust operation.
 """
 
-import pytest
-
-pytestmark = pytest.mark.pipeline
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
-pytestmark = [pytest.mark.integration]
+import pytest
+
+pytestmark = [pytest.mark.pipeline, pytest.mark.integration]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
@@ -23,7 +23,7 @@ class TestDependencyErrorScenarios:
     """Test pipeline behavior with missing dependencies."""
 
     @pytest.mark.unit
-    def test_pymdp_graceful_degradation_with_real_error(self):
+    def test_pymdp_graceful_degradation_with_real_error(self) -> Any:
         """PyMDP simulator handles malformed input with a real, structured error.
 
         Requires pymdp 1.0.0+ (JAX-backed). Skip when unavailable — the
@@ -45,7 +45,7 @@ class TestDependencyErrorScenarios:
             PyMDPSimulation()
 
     @pytest.mark.unit
-    def test_missing_discopy_graceful_degradation(self):
+    def test_missing_discopy_graceful_degradation(self) -> Any:
         """Test that missing DisCoPy is handled gracefully."""
         from execute.discopy_translator_module.translator import (
             DISCOPY_AVAILABLE,
@@ -53,7 +53,7 @@ class TestDependencyErrorScenarios:
             gnn_file_to_discopy_diagram,
         )
 
-        test_gnn_data = {
+        test_gnn_data: dict[str, Any] = {
             "Variables": {"test_var": {"type": "state", "dimensions": [3]}}
         }
         success, message, diagram = gnn_file_to_discopy_diagram(test_gnn_data)
@@ -66,7 +66,7 @@ class TestDependencyErrorScenarios:
             assert isinstance(message, str)
 
     @pytest.mark.unit
-    def test_matplotlib_rendering_fallbacks(self):
+    def test_matplotlib_rendering_fallbacks(self) -> Any:
         """Test visualization fallbacks when matplotlib has issues."""
         import matplotlib.pyplot as plt
 
@@ -85,7 +85,7 @@ class TestFileOperationErrorScenarios:
     """Test pipeline behavior with file operation errors."""
 
     @pytest.mark.unit
-    def test_missing_input_directory(self, temp_directories):
+    def test_missing_input_directory(self, temp_directories: Any) -> Any:
         """Test pipeline behavior when input directory is missing."""
         non_existent_dir = temp_directories["temp_dir"] / "non_existent"
         try:
@@ -101,7 +101,7 @@ class TestFileOperationErrorScenarios:
             assert "does not exist" in str(e) or "not found" in str(e)
 
     @pytest.mark.unit
-    def test_readonly_output_directory(self, temp_directories):
+    def test_readonly_output_directory(self, temp_directories: Any) -> Any:
         """Test pipeline behavior with read-only output directory."""
         readonly_dir = temp_directories["temp_dir"] / "readonly"
         readonly_dir.mkdir()
@@ -110,9 +110,8 @@ class TestFileOperationErrorScenarios:
             from gnn import process_gnn_directory
 
             result = process_gnn_directory(
-                target_dir=temp_directories["input_dir"],
+                temp_directories["input_dir"],
                 output_dir=readonly_dir,
-                verbose=True,
             )
             assert isinstance(result, (bool, dict))
         except PermissionError:
@@ -126,12 +125,12 @@ class TestFileOperationErrorScenarios:
                 pass
 
     @pytest.mark.unit
-    def test_corrupted_gnn_file_handling(self, temp_directories):
+    def test_corrupted_gnn_file_handling(self, temp_directories: Any) -> Any:
         """Test handling of corrupted or invalid GNN files."""
         corrupted_file = temp_directories["input_dir"] / "corrupted.md"
         corrupted_file.write_text("This is not a valid GNN file\n\x00\x01\x02")
         try:
-            from gnn.parser import GNNParser
+            from gnn.schema_validator import GNNParser
 
             parser = GNNParser()
             result = parser.parse_file(str(corrupted_file))
@@ -144,7 +143,7 @@ class TestResourceConstraintScenarios:
     """Test pipeline behavior under resource constraints."""
 
     @pytest.mark.unit
-    def test_large_gnn_file_handling(self, temp_directories):
+    def test_large_gnn_file_handling(self, temp_directories: Any) -> Any:
         """Test handling of unusually large GNN files."""
         large_file = temp_directories["input_dir"] / "large_model.md"
         large_content = "# Large GNN Model\n\n## StateSpaceBlock\n"
@@ -179,11 +178,11 @@ class TestResourceConstraintScenarios:
             )
 
     @pytest.mark.unit
-    def test_concurrent_pipeline_execution(self, temp_directories):
+    def test_concurrent_pipeline_execution(self, temp_directories: Any) -> Any:
         """Test behavior when multiple pipeline steps run concurrently."""
         from concurrent.futures import ThreadPoolExecutor
 
-        def run_visualization():
+        def run_visualization() -> Any:
             try:
                 from visualization import process_visualization
 
@@ -195,14 +194,13 @@ class TestResourceConstraintScenarios:
             except Exception as e:
                 return str(e)
 
-        def run_gnn_processing():
+        def run_gnn_processing() -> Any:
             try:
-                from gnn import process_gnn_main
+                from gnn import process_gnn_directory
 
-                return process_gnn_main(
-                    target_dir=temp_directories["input_dir"],
+                return process_gnn_directory(
+                    temp_directories["input_dir"],
                     output_dir=temp_directories["output_dir"] / "gnn_thread",
-                    verbose=False,
                 )
             except Exception as e:
                 return str(e)
@@ -217,7 +215,10 @@ class TestResourceConstraintScenarios:
             result1 = future1.result(timeout=30)
             result2 = future2.result(timeout=30)
             assert isinstance(result1, bool) or isinstance(result1, str)
-            assert isinstance(result2, bool) or isinstance(result2, str)
+            assert isinstance(result2, (dict, str))
+            if isinstance(result2, dict):
+                assert result2["status"] == "SUCCESS"
+                assert result2["processed_files"]
 
 
 class TestPipelineIntegrationScenarios:
@@ -225,14 +226,14 @@ class TestPipelineIntegrationScenarios:
 
     @pytest.mark.slow
     @pytest.mark.integration
-    def test_pipeline_with_missing_dependencies(self, temp_directories):
+    def test_pipeline_with_missing_dependencies(self, temp_directories: Any) -> Any:
         """Test full pipeline execution with some missing dependencies."""
         test_file = temp_directories["input_dir"] / "integration_test.md"
         test_file.write_text(
             "\n# Integration Test Model\n\n## StateSpaceBlock\nstate [2,2]\nobservation [2]\n\n## Connections\nstate > observation\n        "
         )
         try:
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 str(SRC_DIR / "main.py"),
                 "--target-dir",
@@ -258,7 +259,7 @@ class TestPipelineIntegrationScenarios:
 
     @pytest.mark.slow
     @pytest.mark.integration
-    def test_error_recovery_and_continuation(self, temp_directories):
+    def test_error_recovery_and_continuation(self, temp_directories: Any) -> Any:
         """Test pipeline's ability to recover from errors and continue."""
         problematic_file = temp_directories["input_dir"] / "problematic.md"
         problematic_file.write_text(
@@ -269,7 +270,7 @@ class TestPipelineIntegrationScenarios:
             "\n# Valid GNN Model\n\n## StateSpaceBlock  \nstate [2,2]\naction [3]\n\n## Connections\nstate > action\n        "
         )
         try:
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 str(SRC_DIR / "main.py"),
                 "--target-dir",
@@ -303,7 +304,7 @@ class TestErrorReportingAndDiagnostics:
     """
 
     @pytest.mark.unit
-    def test_dependency_validation_reporting(self):
+    def test_dependency_validation_reporting(self) -> Any:
         """Test dependency validation reporting."""
         from utils.dependency_validator import DependencyValidator
 

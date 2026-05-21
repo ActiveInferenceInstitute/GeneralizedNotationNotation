@@ -9,6 +9,7 @@ import logging
 import os
 import tempfile
 from pathlib import Path
+from typing import Any, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
@@ -16,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def process_integration(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process integration for GNN files.
@@ -42,7 +43,7 @@ def process_integration(
         results_dir = output_dir / "integration_results"
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "processed_files": 0,
             "success": True,
             "errors": [],
@@ -68,8 +69,8 @@ def process_integration(
             project_root = parent
 
         # Deduplicate by filename
-        seen_names = set()
-        unique_gnn_files = []
+        seen_names: set[Any] = set()
+        unique_gnn_files: list[Any] = []
         for f in gnn_files:
             if f.name not in seen_names:
                 seen_names.add(f.name)
@@ -88,7 +89,7 @@ def process_integration(
             has_networkx = False
             G = {}
 
-        component_locations = {}  # component_name -> filename
+        component_locations: dict[Any, Any] = {}  # component_name -> filename
 
         if verbose:
             logger.debug(
@@ -329,8 +330,8 @@ def process_integration(
         import json
 
         results_file = results_dir / "integration_results.json"
-        with open(results_file, "w") as f:
-            json.dump(results, f, indent=2, default=str)
+        with open(results_file, "w") as output_file:
+            json.dump(results, output_file, indent=2, default=str)
 
         # Generate summary
         node_count = results["system_graph_stats"].get("nodes", 0)
@@ -380,8 +381,8 @@ def process_integration(
         else:
             log_step_error(logger, "integration processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, "integration processing failed", {"error": str(e)})
+        log_step_error(logger, "integration processing failed", error=str(e))
         return False

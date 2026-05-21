@@ -56,7 +56,7 @@ def list_supported_integrations_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with integration names, descriptions, and availability.
     """
-    integrations = {
+    integrations: dict[str, Any] = {
         "activeinference_jl": {
             "description": "ActiveInference.jl Julia package",
             "output_format": "julia",
@@ -155,7 +155,7 @@ def check_integration_dependencies_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register integration tools with the MCP server."""
 
     mcp_instance.register_tool(

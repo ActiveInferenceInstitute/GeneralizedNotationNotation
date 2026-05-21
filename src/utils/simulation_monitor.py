@@ -20,7 +20,7 @@ class _CallTracker:
         self.call_count = 0
         self.called = False
 
-    def __call__(self, *a, **kw):
+    def __call__(self, *a: Any, **kw: Any) -> Any:
         self.called = True
         self.call_count += 1
         return self.func(*a, **kw)
@@ -31,14 +31,14 @@ class SimulationMonitor:
     Monitors real simulation execution with function call tracking and logging.
     """
 
-    def __init__(self, log_file: Path = None):
+    def __init__(self, log_file: (Path) | None = None) -> None:
         """Initialize simulation monitor with logging"""
         self.log_file = (
             Path(log_file) if log_file is not None else Path("simulation_execution.log")
         )
         # FileHandler requires parent dirs to exist (e.g. output/12_execute_output on import)
         self.log_file.parent.mkdir(parents=True, exist_ok=True)
-        self.execution_data = {
+        self.execution_data: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "simulations": {},
             "failures": {},
@@ -56,14 +56,14 @@ class SimulationMonitor:
         self.logger = logging.getLogger("SimulationMonitor")
         self.logger.info("🔍 SimulationMonitor initialized")
 
-    def track_simulation(self, simulation_name: str):
+    def track_simulation(self, simulation_name: str) -> Any:
         """
         Decorator to track simulation function execution.
         """
 
-        def decorator(func: Callable):
+        def decorator(func: Callable) -> Any:
             @functools.wraps(func)
-            def wrapper(*args, **kwargs):
+            def wrapper(*args: Any, **kwargs: Any) -> Any:
                 self.execution_data["total_attempted"] += 1
 
                 tracked_func = _CallTracker(func)
@@ -156,7 +156,7 @@ class SimulationMonitor:
 
     def log_simulation_step(
         self, simulation_name: str, step: int, data: Dict[str, Any]
-    ):
+    ) -> Any:
         """Log individual simulation steps for monitoring"""
         self.logger.info(f"📊 {simulation_name} Step {step}: {data}")
 
@@ -196,12 +196,12 @@ global_monitor = SimulationMonitor(
 )
 
 
-def track_simulation(simulation_name: str):
+def track_simulation(simulation_name: str) -> Any:
     """Convenience decorator using global monitor"""
     return global_monitor.track_simulation(simulation_name)
 
 
-def log_simulation_failure(simulation_name: str, error: str):
+def log_simulation_failure(simulation_name: str, error: str) -> Any:
     """Log when a simulation fails to execute"""
     global_monitor.logger.error(f"❌ SIMULATION FAILURE - {simulation_name}: {error}")
     global_monitor.execution_data["failures"][simulation_name] = {

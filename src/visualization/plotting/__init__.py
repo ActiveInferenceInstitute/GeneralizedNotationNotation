@@ -1,5 +1,7 @@
 """Matplotlib helpers shared across visualization subpackages."""
 
+from typing import Any
+
 from .utils import (
     MATPLOTLIB_AVAILABLE,
     plt,
@@ -7,7 +9,7 @@ from .utils import (
     save_plot_safely,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "MATPLOTLIB_AVAILABLE",
     "plt",
     "save_plot_safely",

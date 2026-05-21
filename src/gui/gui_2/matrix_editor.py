@@ -98,7 +98,7 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
     Returns:
         Dictionary containing parsed matrix information
     """
-    matrices = {
+    matrices: dict[str, Any] = {
         "A": {"shape": [3, 3], "values": None, "description": "Likelihood matrix"},
         "B": {"shape": [3, 3, 3], "values": None, "description": "Transition matrices"},
         "C": {"shape": [3], "values": None, "description": "Preference vector"},
@@ -122,7 +122,7 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
                     if name in matrices:
                         # Extract dimensions
                         dim_part = parts[1].split("]")[0]
-                        dims = []
+                        dims: list[Any] = []
                         for d in dim_part.split(","):
                             d = d.strip()
                             if d.isdigit():
@@ -162,7 +162,7 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
     parsed = parse_matrix_from_gnn(gnn_text)
 
     # Convert to visual representation format
-    visual_matrices = {}
+    visual_matrices: dict[Any, Any] = {}
 
     for name, info in parsed["matrices"].items():
         shape = info["shape"]
@@ -224,7 +224,7 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
     updated_gnn = template
 
     # Update state space dimensions
-    state_space_updates = []
+    state_space_updates: list[Any] = []
     for name, matrix in visual_data.get("visual_matrices", {}).items():
         if matrix["type"] == "vector":
             state_space_updates.append(
@@ -240,20 +240,20 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
             )
 
     # Update InitialParameterization with actual values
-    param_updates = []
+    param_updates: list[Any] = []
     for name, matrix in visual_data.get("visual_matrices", {}).items():
         if matrix["type"] == "vector":
             values_str = "(" + ", ".join(f"{v:.3f}" for v in matrix["values"]) + ")"
             param_updates.append(f"{name}={{{values_str}}}")
         elif matrix["type"] == "matrix":
-            rows_str = []
+            rows_str: list[Any] = []
             for row in matrix["values"]:
                 row_str = "(" + ", ".join(f"{v:.3f}" for v in row) + ")"
                 rows_str.append(row_str)
             values_str = "(\n  " + ",\n  ".join(rows_str) + "\n)"
             param_updates.append(f"{name}={{{values_str}}}")
         elif matrix["type"] == "tensor":
-            slices_str = []
+            slices_str: list[Any] = []
             for slice_data in matrix["values"]:
                 rows_str = []
                 for row in slice_data:
@@ -282,7 +282,7 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
 
 def _parse_connections(gnn_text: str) -> List[str]:
     """Parse connection information from GNN text"""
-    connections = []
+    connections: list[Any] = []
 
     conn_pattern = r"## Connections\s*\n(.*?)(?=##|$)"
     match = re.search(conn_pattern, gnn_text, re.DOTALL)
@@ -299,7 +299,7 @@ def _parse_connections(gnn_text: str) -> List[str]:
 
 def _parse_metadata(gnn_text: str) -> Dict[str, str]:
     """Parse metadata from GNN text"""
-    metadata = {}
+    metadata: dict[Any, Any] = {}
 
     # Extract model name
     name_pattern = r"## ModelName\s*\n(.*?)(?=##|$)"
@@ -323,7 +323,7 @@ def validate_visual_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
     Returns:
         List of validation error messages (empty if valid)
     """
-    errors = []
+    errors: list[Any] = []
     matrices = visual_data.get("visual_matrices", {})
 
     # Check A matrix dimensions: A should be [n_obs, n_states]

@@ -7,30 +7,32 @@ This module provides system resource monitoring during test execution.
 import logging
 import threading
 import time
-from typing import Dict
+from typing import Any, Dict, Optional, cast
 
 # psutil is optional; tests should not fail to import if it's missing
 try:
-    import psutil as _psutil  # type: ignore
+    import psutil as _psutil
 
     PSUTIL_AVAILABLE = True
 except Exception:
-    _psutil = None  # type: ignore
+    _psutil = cast(Any, None)
     PSUTIL_AVAILABLE = False
 
 
 class ResourceMonitor:
     """Monitor system resources during test execution."""
 
-    def __init__(self, memory_limit_mb: int = 2048, cpu_limit_percent: int = 80):
+    def __init__(
+        self, memory_limit_mb: int = 2048, cpu_limit_percent: int = 80
+    ) -> None:
         self.memory_limit_mb = memory_limit_mb
         self.cpu_limit_percent = cpu_limit_percent
         self.peak_memory = 0.0
         self.peak_cpu = 0.0
         self.monitoring = False
-        self.monitor_thread = None
+        self.monitor_thread: Optional[threading.Thread] = None
 
-    def start_monitoring(self):
+    def start_monitoring(self) -> Any:
         """Start resource monitoring in background thread."""
         if not PSUTIL_AVAILABLE:
             # No-op if psutil is not available
@@ -41,13 +43,13 @@ class ResourceMonitor:
         self.monitor_thread.daemon = True
         self.monitor_thread.start()
 
-    def stop_monitoring(self):
+    def stop_monitoring(self) -> Any:
         """Stop resource monitoring."""
         self.monitoring = False
         if self.monitor_thread:
             self.monitor_thread.join(timeout=1.0)
 
-    def _monitor_resources(self):
+    def _monitor_resources(self) -> Any:
         """Monitor system resources in background."""
         if not PSUTIL_AVAILABLE:
             # Passive sleep loop to avoid busy spin when psutil missing

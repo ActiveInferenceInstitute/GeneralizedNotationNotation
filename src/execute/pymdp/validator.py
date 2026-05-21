@@ -23,7 +23,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
     Returns:
         Dictionary with validation results and health status
     """
-    validation_results = {
+    validation_results: dict[str, Any] = {
         "pymdp_available": False,
         "dependencies": {},
         "errors": [],
@@ -172,7 +172,7 @@ def get_pymdp_health_status() -> Dict[str, Any]:
     """
     validation_results = validate_pymdp_environment()
 
-    health_status = {
+    health_status: dict[str, Any] = {
         "status": "unknown",
         "pymdp_available": validation_results["pymdp_available"],
         "dependencies_healthy": len(validation_results["errors"]) == 0,

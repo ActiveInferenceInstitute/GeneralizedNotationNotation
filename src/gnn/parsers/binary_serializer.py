@@ -1,5 +1,6 @@
 import base64
 import pickle  # nosec B403
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -12,7 +13,7 @@ class BinarySerializer(BaseGNNSerializer):
         """Convert GNN model to pickle format with embedded JSON data for round-trip."""
         # Create a comprehensive data structure for pickling
         # Complete model data for perfect round-trip
-        complete_model_data = {
+        complete_model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "version": model.version,
             "annotation": model.annotation,
@@ -78,7 +79,7 @@ class BinarySerializer(BaseGNNSerializer):
         self, model: GNNInternalRepresentation, file_path: str
     ) -> None:
         """Serialize directly to binary pickle file."""
-        complete_model_data = {
+        complete_model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "version": model.version,
             "annotation": model.annotation,
@@ -143,7 +144,7 @@ class BinarySerializer(BaseGNNSerializer):
         """Direct binary pickle serialization."""
         self.serialize_to_file(model, file_path)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -154,7 +155,7 @@ class BinarySerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []

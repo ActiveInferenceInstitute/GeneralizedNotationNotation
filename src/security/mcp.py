@@ -72,7 +72,7 @@ def scan_gnn_file_mcp(file_path: str) -> Dict[str, Any]:
 
         issues: List[Dict[str, Any]] = []
         # Check for dangerous patterns
-        danger_patterns = [
+        danger_patterns: list[Any] = [
             ("exec(", "Potential code execution via exec()"),
             ("eval(", "Potential code execution via eval()"),
             ("__import__", "Dynamic import call"),
@@ -123,7 +123,7 @@ def get_security_report_mcp(output_directory: str) -> Dict[str, Any]:
                 "error": f"Directory not found: {output_directory}",
             }
 
-        reports = []
+        reports: list[Any] = []
         for jf in sorted(out_dir.rglob("*security*.json"))[:5]:
             try:
                 reports.append({"file": jf.name, "data": json.loads(jf.read_text())})
@@ -148,7 +148,7 @@ def list_security_checks_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with check names, descriptions, and severity levels.
     """
-    checks = {
+    checks: dict[str, Any] = {
         "dependency_cve_scan": {
             "description": "CVE scan of Python dependencies",
             "severity": "high",
@@ -176,7 +176,7 @@ def list_security_checks_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register security tools with the MCP server."""
 
     mcp_instance.register_tool(

@@ -13,7 +13,7 @@ import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .constants import (
     LOCK_PATH,
@@ -32,7 +32,7 @@ except ImportError:
     try:
         from utils.jax_stack_validation import run_jax_stack_probe_subprocess
     except ImportError:
-        run_jax_stack_probe_subprocess = None  # type: ignore[misc,assignment]
+        run_jax_stack_probe_subprocess = cast(Any, None)
 
 
 def run_command(
@@ -95,9 +95,7 @@ def run_command(
             logger.error(f"Stdout:\n{e.stdout.strip()}")
         if e.stderr:
             logger.error(f"Stderr:\n{e.stderr.strip()}")
-        if check:
-            raise
-        return e
+        raise
     except FileNotFoundError as e:
         logger.error(
             f"Error: Command not found - {command_str_list[0]}. Ensure it is installed and in PATH."
@@ -316,7 +314,7 @@ def install_uv_dependencies(
         start_time = time.time()
 
         uv_bin = shutil.which("uv") or str(Path.home() / ".local" / "bin" / "uv")
-        sync_cmd = [uv_bin, "sync"]
+        sync_cmd: list[Any] = [uv_bin, "sync"]
 
         if verbose:
             sync_cmd.append("--verbose")
@@ -453,7 +451,14 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
             for name, version in sorted(package_dict.items()):
                 logger.info(f"  - {name}: {version}")
         else:
-            key_packages = ["pip", "pytest", "numpy", "matplotlib", "scipy", "psutil"]
+            key_packages: list[Any] = [
+                "pip",
+                "pytest",
+                "numpy",
+                "matplotlib",
+                "scipy",
+                "psutil",
+            ]
             logger.info("📋 Key installed packages:")
             for pkg in key_packages:
                 if pkg in package_dict:
@@ -572,7 +577,7 @@ def validate_uv_setup(
     # project_root is accepted for API compatibility; internal helpers use the module-level
     # PROJECT_ROOT constant which is set once at import time from constants.py.
     _ = project_root  # noqa: F841
-    validation_results = {
+    validation_results: dict[str, Any] = {
         "system_requirements": False,
         "uv_environment": False,
         "dependencies": False,
@@ -659,7 +664,7 @@ def get_uv_setup_info() -> Dict[str, Any]:
     Returns:
         Dictionary with UV setup information
     """
-    info = {
+    info: dict[str, Any] = {
         "project_root": str(PROJECT_ROOT),
         "uv_environment_path": str(VENV_PATH),
         "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
@@ -685,7 +690,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     Returns:
         Dictionary with health check results
     """
-    health = {
+    health: dict[str, Any] = {
         "overall_healthy": False,
         "uv_available": False,
         "uv_version": None,
@@ -767,7 +772,14 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
         except Exception as e:
             health["issues"].append(f"Venv Python check failed: {e}")
 
-    core_packages = ["numpy", "matplotlib", "networkx", "pandas", "scipy", "pytest"]
+    core_packages: list[Any] = [
+        "numpy",
+        "matplotlib",
+        "networkx",
+        "pandas",
+        "scipy",
+        "pytest",
+    ]
     for pkg in core_packages:
         try:
             result = subprocess.run(  # nosec B603
@@ -790,7 +802,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
         except Exception:
             health["core_packages"][pkg] = None
 
-    optional_checks = {
+    optional_checks: dict[str, Any] = {
         "llm": {"packages": ["openai"], "extra": "llm"},
         "visualization": {"packages": ["plotly"], "extra": "visualization"},
         "ml": {"packages": ["torch"], "extra": "ml-ai"},
@@ -812,7 +824,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
         except Exception:
             health["optional_packages"][group] = False
 
-    critical_checks = [
+    critical_checks: list[Any] = [
         health["uv_available"],
         health["pyproject_exists"],
         health["venv_exists"],
@@ -875,7 +887,7 @@ def save_setup_results(
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        setup_results = {
+        setup_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "validation": validation_results,
             "configuration": {
@@ -912,7 +924,7 @@ def log_system_info(logger: logging.Logger) -> Dict[str, Any]:
     try:
         logger.info("Logging system information")
 
-        system_info = {
+        system_info: dict[str, Any] = {
             "platform": platform.platform(),
             "python_version": sys.version,
             "python_executable": sys.executable,

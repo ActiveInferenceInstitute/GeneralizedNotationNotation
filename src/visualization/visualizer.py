@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 GNN Visualizer Module
 
@@ -17,14 +19,19 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 from pipeline.config import get_output_dir_for_script
+from utils import performance_tracker
 
-# Safe imports with fallbacks
+from .matrix import MatrixVisualizer
+from .ontology import OntologyVisualizer
+from .parse.gnn_file_parser import GNNParser
+
+# Optional dependency imports
 try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 try:
@@ -33,8 +40,8 @@ try:
 
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
-    plt = None
-    cm = None
+    plt = cast(Any, None)
+    cm = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 try:
@@ -42,33 +49,12 @@ try:
 
     NETWORKX_AVAILABLE = True
 except ImportError:
-    nx = None
+    nx = cast(Any, None)
     NETWORKX_AVAILABLE = False
 
-# Safe imports of local modules
-try:
-    from .parse.gnn_file_parser import GNNParser
-
-    PARSER_AVAILABLE = True
-except ImportError:
-    GNNParser = None
-    PARSER_AVAILABLE = False
-
-try:
-    from .matrix import MatrixVisualizer
-
-    MATRIX_VISUALIZER_AVAILABLE = True
-except ImportError:
-    MatrixVisualizer = None
-    MATRIX_VISUALIZER_AVAILABLE = False
-
-try:
-    from .ontology import OntologyVisualizer
-
-    ONTOLOGY_VISUALIZER_AVAILABLE = True
-except ImportError:
-    OntologyVisualizer = None
-    ONTOLOGY_VISUALIZER_AVAILABLE = False
+PARSER_AVAILABLE = True
+MATRIX_VISUALIZER_AVAILABLE = True
+ONTOLOGY_VISUALIZER_AVAILABLE = True
 
 logger = logging.getLogger(__name__)
 
@@ -86,7 +72,7 @@ class GNNVisualizer:
         self,
         output_dir: Optional[str] = None,
         project_root: Optional[Union[str, Path]] = None,
-    ):
+    ) -> None:
         """
         Initialize the GNN visualizer.
 
@@ -95,21 +81,9 @@ class GNNVisualizer:
                         If None, creates a timestamped directory in the current working directory.
             project_root: Optional path to the project root for making file paths relative.
         """
-        # Initialize components based on availability
-        if PARSER_AVAILABLE and GNNParser is not None:
-            self.parser = GNNParser()
-        else:
-            self.parser = None
-
-        if MATRIX_VISUALIZER_AVAILABLE and MatrixVisualizer is not None:
-            self.matrix_visualizer = MatrixVisualizer()
-        else:
-            self.matrix_visualizer = None
-
-        if ONTOLOGY_VISUALIZER_AVAILABLE and OntologyVisualizer is not None:
-            self.ontology_visualizer = OntologyVisualizer()
-        else:
-            self.ontology_visualizer = None
+        self.parser = GNNParser()
+        self.matrix_visualizer = MatrixVisualizer()
+        self.ontology_visualizer = OntologyVisualizer()
 
         # Track what functionality is available
         self.capabilities = {
@@ -135,9 +109,13 @@ class GNNVisualizer:
             )
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
             # Create a timestamped subdirectory inside the standardized step folder
-            output_dir = viz_step_output / f"gnn_visualization_{timestamp}"
+            resolved_output_dir: str | Path = (
+                viz_step_output / f"gnn_visualization_{timestamp}"
+            )
+        else:
+            resolved_output_dir = output_dir
 
-        self.output_dir = Path(output_dir)
+        self.output_dir = Path(resolved_output_dir)
         # Ensure parent numeric step directory exists (e.g., 8_visualization_output)
         try:
             self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -310,10 +288,10 @@ class GNNVisualizer:
         Returns:
             Path to the directory containing all generated visualizations
         """
-        dir_path = Path(dir_path)
+        directory_path = Path(dir_path)
 
         # Process all markdown files in the directory
-        for file_path in dir_path.glob("*.md"):
+        for file_path in directory_path.glob("*.md"):
             try:
                 self.visualize_file(str(file_path))
             except Exception as e:
@@ -388,7 +366,7 @@ class GNNVisualizer:
         display_file_path = Path(file_path).name  # Default to just name
         if self.project_root:
             try:
-                display_file_path = (
+                display_file_path = str(
                     Path(file_path).resolve().relative_to(self.project_root)
                 )
             except ValueError:
@@ -420,7 +398,7 @@ class GNNVisualizer:
     ) -> None:
         """Save model metadata as JSON for reference."""
         # Extract relevant metadata
-        metadata = {
+        metadata: dict[str, Any] = {
             "ModelName": parsed_data.get("ModelName", ""),
             "ModelAnnotation": parsed_data.get("ModelAnnotation", ""),
             "GNNVersionAndFlags": parsed_data.get("GNNVersionAndFlags", ""),
@@ -436,7 +414,7 @@ class GNNVisualizer:
         with open(output_dir / "full_model_data.json", "w") as f:
             # Convert to serializable format
             try:
-                serializable_data = {}
+                serializable_data: dict[Any, Any] = {}
                 for k, v in parsed_data.items():
                     if k not in ["Variables", "Edges"]:  # Skip complex objects
                         serializable_data[k] = str(v)
@@ -460,7 +438,7 @@ class GNNVisualizer:
         ax.axis("off")
 
         # Prepare table data
-        table_data = []
+        table_data: list[Any] = []
         for var_name, var_info in variables.items():
             dimensions = (
                 "x".join(str(d) for d in var_info.get("dimensions", []))
@@ -634,7 +612,7 @@ class GNNVisualizer:
             ax1.axis("off")
 
             # Prepare table data
-            table_data = []
+            table_data: list[Any] = []
             for var_name, var_info in variables.items():
                 dimensions = (
                     "x".join(str(d) for d in var_info.get("dimensions", []))
@@ -676,7 +654,7 @@ class GNNVisualizer:
             G = nx.DiGraph()
 
             # Add nodes and edges
-            valid_edges = []
+            valid_edges: list[Any] = []
             for edge in edges:
                 source = edge.get("source", "")
                 target = edge.get("target", "")
@@ -749,7 +727,7 @@ class GNNVisualizer:
             fig.suptitle(model_name, fontsize=16, fontweight="bold")
 
             # Save figure
-            plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for suptitle
+            plt.tight_layout(rect=(0, 0, 1, 0.95))  # Make room for suptitle
             plt.savefig(
                 output_dir / "combined_visualization.png", dpi=150, bbox_inches="tight"
             )
@@ -778,7 +756,7 @@ class GNNVisualizer:
         """Extract a clean model name from the parsed data."""
         if "ModelName" in parsed_data and parsed_data["ModelName"]:
             # Remove Markdown formatting and clean up
-            return parsed_data["ModelName"].replace("#", "").strip()
+            return cast("str", parsed_data["ModelName"].replace("#", "").strip())
         return "GNN Model"
 
     def _extract_parameters_from_parsed_data(
@@ -793,7 +771,7 @@ class GNNVisualizer:
         Returns:
             List of parameter dictionaries
         """
-        parameters = []
+        parameters: list[Any] = []
 
         # Extract from InitialParameterization section
         if "InitialParameterization" in parsed_data:
@@ -839,7 +817,7 @@ class GNNVisualizer:
         # Evaluate as Python expression
         matrix_data = ast.literal_eval(matrix_str)
 
-        return matrix_data
+        return cast("list[list[float]]", matrix_data)
 
 
 def generate_graph_visualization(gnn_data: Dict[str, Any], output_path: str) -> bool:
@@ -961,7 +939,7 @@ def generate_visualizations(
     output_dir: Path,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Generate visualizations for GNN models.
@@ -977,23 +955,14 @@ def generate_visualizations(
     Returns:
         True if visualization succeeded, False otherwise
     """
+    from contextlib import contextmanager
+
     from utils.logging.logging_utils import (
         log_step_error,
         log_step_start,
         log_step_success,
         log_step_warning,
     )
-
-    try:
-        from pipeline import get_output_dir_for_script
-        from utils import performance_tracker
-    except ImportError:
-
-        def get_output_dir_for_script(script: str, output_dir: Path) -> Path:
-            return output_dir / "visualization"
-
-        performance_tracker = None
-    from contextlib import contextmanager
 
     @contextmanager
     def _noop_context() -> Any:
@@ -1009,7 +978,7 @@ def generate_visualizations(
         gnn_visualizer = GNNVisualizer(output_dir=str(viz_output_dir))
 
         # Initialize results dictionary
-        results = {"success": False, "files_processed": 0}
+        results: dict[str, Any] = {"success": False, "files_processed": 0}
 
         # Use performance tracking for visualization generation
         ctx = (
@@ -1045,7 +1014,7 @@ def generate_visualizations(
             results["success"] = processed_count > 0
 
         # Generate matrix visualizations if available
-        if MatrixVisualizer:
+        if MATRIX_VISUALIZER_AVAILABLE and MatrixVisualizer is not None:
             try:
                 ctx2 = (
                     performance_tracker.track_operation(
@@ -1064,7 +1033,7 @@ def generate_visualizations(
                 log_step_warning(logger, f"Matrix visualization failed: {e}")
 
         # Generate ontology visualizations if available
-        if OntologyVisualizer:
+        if ONTOLOGY_VISUALIZER_AVAILABLE and OntologyVisualizer is not None:
             try:
                 ctx3 = (
                     performance_tracker.track_operation(
@@ -1094,7 +1063,7 @@ def generate_visualizations(
                 f"Visualization generation completed with issues. Files processed: {results.get('files_processed', 0)}",
             )
 
-        return results.get("success", False)
+        return cast("bool", results.get("success", False))
 
     except Exception as e:
         log_step_error(logger, f"Visualization generation failed: {e}")

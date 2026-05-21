@@ -6,6 +6,8 @@ These tests exercise core modules directly in isolated temp directories,
 without assuming prior pipeline steps have produced global artifacts.
 """
 
+from typing import Any
+
 import pytest
 
 pytestmark = pytest.mark.pipeline
@@ -15,7 +17,7 @@ import json
 class TestPipelineFunctionality:
     """Pre-flight checks that run each core module in isolation."""
 
-    def test_visualization_generates_images(self, isolated_temp_dir):
+    def test_visualization_generates_images(self, isolated_temp_dir: Any) -> Any:
         from visualization.processor import process_visualization
 
         # Create a minimal markdown GNN file (processor expects .md)
@@ -56,8 +58,8 @@ A = [0.5, 0.5; 0.3, 0.7]
             assert png.stat().st_size > 100
 
     def test_gnn_processing_generates_results(
-        self, sample_gnn_files, isolated_temp_dir
-    ):
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         from gnn.core_processor import process_gnn_directory
 
         gnn_dir = list(sample_gnn_files.values())[0].parent
@@ -72,7 +74,7 @@ A = [0.5, 0.5; 0.3, 0.7]
         data = json.loads(results_file.read_text())
         assert isinstance(data, dict)
 
-    def test_multi_format_export_generates_files(self, isolated_temp_dir):
+    def test_multi_format_export_generates_files(self, isolated_temp_dir: Any) -> Any:
         from export.processor import generate_exports
 
         # Create a minimal markdown GNN file for export
@@ -102,7 +104,9 @@ x -> y
         # Expect at least JSON to be present
         assert any(p.suffix == ".json" for p in produced)
 
-    def test_results_json_are_valid(self, sample_gnn_files, isolated_temp_dir):
+    def test_results_json_are_valid(
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         # Produce viz and export results on local temp files, then validate JSON summaries
         from export.processor import generate_exports
         from visualization.processor import process_visualization
@@ -126,7 +130,9 @@ x -> y
             assert isinstance(data, dict)
             assert len(data) > 0
 
-    def test_preflight_metrics(self, sample_gnn_files, isolated_temp_dir):
+    def test_preflight_metrics(
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         # Sanity metrics based on generated artifacts
         from visualization.processor import process_visualization
 

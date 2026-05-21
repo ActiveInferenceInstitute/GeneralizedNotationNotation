@@ -40,7 +40,7 @@ def extract_gnn_features(file_path: Path) -> Dict[str, Any]:
         logger.error(f"Could not read {file_path}: {e}")
         return {}
 
-    features = {
+    features: dict[str, Any] = {
         "file_name": file_path.name,
         "model_family": _detect_model_family(content),
         "num_variables": 0,
@@ -66,7 +66,7 @@ def extract_gnn_features(file_path: Path) -> Dict[str, Any]:
 
     if dims:
         # Compute dimension-based features
-        all_elements = []
+        all_elements: list[Any] = []
         for _, var_dims in dims.items():
             elements = 1
             for d in var_dims:
@@ -150,7 +150,7 @@ def _detect_model_family(content: str) -> str:
 
 def _extract_dimensions(content: str) -> Dict[str, List[int]]:
     """Extract variable dimensions from StateSpaceBlock."""
-    dims = {}
+    dims: dict[Any, Any] = {}
     in_state_space = False
     pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
 
@@ -168,7 +168,7 @@ def _extract_dimensions(content: str) -> Dict[str, List[int]]:
             if match:
                 var_name = match.group(1)
                 dim_str = match.group(2)
-                var_dims = []
+                var_dims: list[Any] = []
                 for part in dim_str.split(","):
                     part = part.strip()
                     if part.startswith("type="):
@@ -226,7 +226,7 @@ def _extract_time_type(content: str) -> str:
 
 
 # Encoding for model families
-MODEL_FAMILY_ENCODING = {
+MODEL_FAMILY_ENCODING: dict[str, Any] = {
     "pomdp": 0,
     "hmm": 1,
     "hierarchical": 2,
@@ -242,7 +242,7 @@ def process_ml_integration(
     output_dir: Path,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Process ML integration for GNN models.
@@ -257,7 +257,7 @@ def process_ml_integration(
         if verbose:
             logger.info(f"Starting ML integration: target={target_dir}")
 
-        ml_results = {
+        ml_results: dict[str, Any] = {
             "status": "completed",
             "target_dir": str(target_dir),
             "output_dir": str(output_dir),
@@ -285,7 +285,7 @@ def process_ml_integration(
             ml_results["status"] = "no_files"
 
         # Extract features from all files
-        all_features = []
+        all_features: list[Any] = []
         for gnn_file in gnn_files:
             try:
                 feats = extract_gnn_features(gnn_file)
@@ -364,7 +364,7 @@ def _train_models(
     from sklearn.tree import DecisionTreeClassifier
 
     # Build feature matrix using real GNN features
-    numeric_feature_names = [
+    numeric_feature_names: list[Any] = [
         "num_states",
         "num_observations",
         "num_actions",
@@ -426,7 +426,7 @@ def _train_models(
                 for f in all_features
             ]
         )
-        label_names = ["small", "medium", "large"]
+        label_names: list[Any] = ["small", "medium", "large"]
         task = "complexity_classification"
     else:
         label_names = list(le.classes_)
@@ -469,7 +469,7 @@ def _train_models(
             with open(model_path, "wb") as f:
                 pickle.dump(clf, f)
 
-            model_info = {
+            model_info: dict[str, Any] = {
                 "type": model_name,
                 "framework": "sklearn",
                 "task": task,
@@ -524,14 +524,14 @@ def _save_feature_analysis(
         return
 
     # Summary statistics per feature
-    numeric_keys = [
+    numeric_keys: list[Any] = [
         "num_states",
         "num_observations",
         "num_actions",
         "total_parameters",
         "connectivity_ratio",
     ]
-    stats = {}
+    stats: dict[Any, Any] = {}
 
     for key in numeric_keys:
         values = [

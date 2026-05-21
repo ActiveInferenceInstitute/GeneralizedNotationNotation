@@ -11,14 +11,14 @@ Usage:
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
 # --- Centralized matplotlib setup (shared via visualization._viz_compat) ---
 from visualization._viz_compat import MATPLOTLIB_AVAILABLE, np, plt, sns
 
-patches = None
+patches: Any = None
 try:
     import matplotlib.patches as _patches
 
@@ -69,7 +69,7 @@ def safe_savefig(
         return None
 
 
-__all__ = [
+__all__: list[Any] = [
     "plt",
     "np",
     "patches",

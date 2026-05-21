@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 OpenRouter LLM Provider
 
@@ -67,7 +69,7 @@ class OpenRouterProvider(BaseLLMProvider):
     DEFAULT_MODEL = "openai/gpt-4o-mini"
     BASE_URL = "https://openrouter.ai/api/v1"
 
-    def __init__(self, api_key: Optional[str] = None, **kwargs):
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """
         Initialize OpenRouter provider.
 
@@ -85,7 +87,7 @@ class OpenRouterProvider(BaseLLMProvider):
         )
         # Use environment variable for model selection if available
         self.preferred_model = os.getenv("OPENROUTER_MODEL", self.DEFAULT_MODEL)
-        self.session = None
+        self.session: Any = None
 
     @property
     def provider_type(self) -> ProviderType:
@@ -124,7 +126,7 @@ class OpenRouterProvider(BaseLLMProvider):
 
         try:
             # Initialize aiohttp session with proper headers
-            headers = {
+            headers: dict[str, Any] = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
                 "HTTP-Referer": self.site_url,
@@ -215,7 +217,7 @@ class OpenRouterProvider(BaseLLMProvider):
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": openrouter_messages,
             "stream": False,
@@ -312,7 +314,7 @@ class OpenRouterProvider(BaseLLMProvider):
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": openrouter_messages,
             "stream": True,
@@ -377,7 +379,7 @@ class OpenRouterProvider(BaseLLMProvider):
             async with self.session.get(f"{self.BASE_URL}/models") as response:
                 response.raise_for_status()
                 data = await response.json()
-                return data.get("data", [])
+                return cast("list[dict[str, Any]]", data.get("data", []))
 
         except Exception as e:
             logger.error(f"Failed to fetch OpenRouter models: {e}")
@@ -401,7 +403,7 @@ class OpenRouterProvider(BaseLLMProvider):
                 f"{self.BASE_URL}/generation?id={generation_id}"
             ) as response:
                 response.raise_for_status()
-                return await response.json()
+                return cast("dict[str, Any]", await response.json())
 
         except Exception as e:
             logger.error(f"Failed to fetch generation info: {e}")
@@ -422,7 +424,9 @@ class OpenRouterProvider(BaseLLMProvider):
         prompt = f"Analyze this GNN model for {task}: {content}"
 
         async def _run() -> LLMResponse:
-            return await self.generate_response([{"role": "user", "content": prompt}])
+            return await self.generate_response(
+                [LLMMessage(role="user", content=prompt)]
+            )
 
         def _extract(result: Any) -> str:
             return result.content if hasattr(result, "content") else str(result)

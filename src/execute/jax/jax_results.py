@@ -45,7 +45,7 @@ def parse_jax_output(output_path: Path) -> Optional[Dict[str, Any]]:
         with open(output_path, "r") as f:
             raw = json.load(f)
 
-        normalized = {
+        normalized: dict[str, Any] = {
             "model_name": raw.get("model_name", "unknown"),
             "framework": "JAX",
             "timesteps": raw.get("timesteps") or raw.get("T", 0),
@@ -77,7 +77,7 @@ def _extract_belief_trajectory(raw: Dict[str, Any]) -> List[List[float]]:
 
     if isinstance(beliefs, list):
         # Normalize: ensure it's a list of float lists
-        result = []
+        result: list[Any] = []
         for belief in beliefs:
             if isinstance(belief, list):
                 result.append([float(b) for b in belief])
@@ -117,7 +117,7 @@ def compute_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict with convergence statistics
     """
-    metrics = {
+    metrics: dict[str, Any] = {
         "total_timesteps": parsed.get("timesteps", 0),
         "final_free_energy": None,
         "mean_free_energy": None,
@@ -197,7 +197,7 @@ def extract_array_statistics(parsed: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dict mapping array names to their statistics
     """
-    stats = {}
+    stats: dict[Any, Any] = {}
 
     # Beliefs trajectory
     beliefs = parsed.get("beliefs", [])
@@ -228,7 +228,7 @@ def extract_array_statistics(parsed: Dict[str, Any]) -> Dict[str, Any]:
     # Actions
     actions = parsed.get("actions", [])
     if actions:
-        action_counts = {}
+        action_counts: dict[Any, Any] = {}
         for a in actions:
             key = str(a)
             action_counts[key] = action_counts.get(key, 0) + 1
@@ -241,7 +241,7 @@ def extract_array_statistics(parsed: Dict[str, Any]) -> Dict[str, Any]:
     # Observations
     obs = parsed.get("observations", [])
     if obs:
-        obs_counts = {}
+        obs_counts: dict[Any, Any] = {}
         for o in obs:
             key = str(o)
             obs_counts[key] = obs_counts.get(key, 0) + 1
@@ -263,7 +263,7 @@ def collect_jax_results(
     Returns:
         List of parsed result dicts with convergence metrics and array statistics
     """
-    results = []
+    results: list[Any] = []
 
     if not output_dir.exists():
         logger.warning(f"Output directory not found: {output_dir}")
@@ -278,8 +278,8 @@ def collect_jax_results(
     )
 
     # Deduplicate
-    seen = set()
-    unique_files = []
+    seen: set[Any] = set()
+    unique_files: list[Any] = []
     for f in json_files:
         if str(f) not in seen:
             seen.add(str(f))
@@ -325,7 +325,7 @@ def format_jax_report(results: List[Dict[str, Any]]) -> str:
     if not results:
         return "# JAX Inference Results\n\nNo results found.\n"
 
-    lines = [
+    lines: list[Any] = [
         "# JAX Active Inference Results\n",
         f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
         f"**Models analyzed**: {len(results)}\n\n",

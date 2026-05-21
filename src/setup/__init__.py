@@ -21,11 +21,13 @@ from .dependency_setup import (
 from .utils import (
     ensure_directory,
     find_gnn_files,
-    get_module_info,
     get_output_paths,
     get_setup_options,
     install_dependencies,
     setup_environment,
+)
+from .utils import (
+    get_module_info as _get_module_info,
 )
 from .uv_management import (
     check_environment_health,
@@ -55,7 +57,7 @@ __author__ = "Active Inference Institute"
 __description__ = "GNN environment setup and management with UV"
 
 # Feature availability flags
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "uv_environment_setup": True,
     "uv_dependency_management": True,
     "uv_virtual_environment": True,
@@ -72,7 +74,7 @@ FEATURES = {
 }
 
 # Main API functions
-__all__ = [
+__all__: list[Any] = [
     # Utility functions
     "ensure_directory",
     "find_gnn_files",
@@ -136,7 +138,7 @@ class EnvironmentManager:
 
 
 class VirtualEnvironment:
-    def __init__(self, name: str):
+    def __init__(self, name: str) -> None:
         self.name = name
 
     def create(self) -> bool:
@@ -170,9 +172,7 @@ def check_python_version() -> bool:
 # Ensure get_module_info exposes environment_types key as tests expect
 def get_module_info() -> Dict[str, Any]:
     """Return setup module metadata by delegating to setup.utils."""
-    from .utils import get_module_info as _gm
-
-    info = _gm()
+    info = _get_module_info()
     # Provide a top-level shorthand for environment types expected in tests
     if "environment_types" not in info:
         info["environment_types"] = ["uv", "venv", "conda", "pip"]

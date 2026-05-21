@@ -13,10 +13,10 @@ logger = logging.getLogger(__name__)
 
 
 def generate_execution_plan(
-    steps_to_execute: List[tuple], args, logger
+    steps_to_execute: List[tuple], args: Any, logger: Any
 ) -> Dict[str, Any]:
     """Generate a detailed execution plan with risk assessment and estimates."""
-    execution_plan = {
+    execution_plan: dict[str, Any] = {
         "steps": [],
         "estimated_duration_minutes": 0.0,
         "high_risk_count": 0,
@@ -25,7 +25,7 @@ def generate_execution_plan(
     }
 
     # Step duration estimates (in seconds) based on typical execution times
-    step_duration_estimates = {
+    step_duration_estimates: dict[str, Any] = {
         "0_template.py": 5,
         "1_setup.py": 30,
         "2_tests.py": 120,
@@ -53,7 +53,7 @@ def generate_execution_plan(
     }
 
     # Risk assessment for each step
-    step_risk_levels = {
+    step_risk_levels: dict[str, Any] = {
         "8_visualization.py": "medium",  # Matplotlib issues
         "12_execute.py": "medium",  # Dependency on rendered code
         "13_llm.py": "high",  # API dependencies
@@ -64,7 +64,7 @@ def generate_execution_plan(
     }
 
     # Resource usage estimates
-    step_memory_estimates = {
+    step_memory_estimates: dict[str, Any] = {
         "8_visualization.py": 200,  # Matplotlib and large plots
         "9_advanced_viz.py": 300,  # Complex visualizations
         "14_ml_integration.py": 500,  # ML model training
@@ -72,7 +72,7 @@ def generate_execution_plan(
         "13_llm.py": 100,  # LLM API processing
     }
 
-    step_disk_estimates = {
+    step_disk_estimates: dict[str, Any] = {
         "8_visualization.py": 50,  # PNG/SVG files
         "9_advanced_viz.py": 100,  # Interactive HTML plots
         "7_export.py": 25,  # Multiple export formats
@@ -81,7 +81,7 @@ def generate_execution_plan(
     }
 
     for script_name, description in steps_to_execute:
-        step_plan = {
+        step_plan: dict[str, Any] = {
             "script_name": script_name,
             "description": description,
             "estimated_duration_seconds": step_duration_estimates.get(script_name, 30),
@@ -95,7 +95,7 @@ def generate_execution_plan(
         }
 
         # Add dependencies
-        step_dependencies = {
+        step_dependencies: dict[str, Any] = {
             "11_render.py": ["3_gnn.py"],
             "12_execute.py": ["11_render.py"],
             "8_visualization.py": ["3_gnn.py"],
@@ -162,13 +162,13 @@ def estimate_pipeline_resources(steps_to_execute: List[tuple]) -> Dict[str, Any]
     base_disk = 50  # Base disk space for outputs
 
     # Resource multipliers based on step types
-    memory_intensive_steps = [
+    memory_intensive_steps: list[Any] = [
         "8_visualization.py",
         "9_advanced_viz.py",
         "14_ml_integration.py",
         "2_tests.py",
     ]
-    disk_intensive_steps = [
+    disk_intensive_steps: list[Any] = [
         "8_visualization.py",
         "9_advanced_viz.py",
         "7_export.py",
@@ -206,7 +206,7 @@ def estimate_pipeline_resources(steps_to_execute: List[tuple]) -> Dict[str, Any]
 def generate_risk_assessment(steps_to_execute: List[tuple]) -> Dict[str, Any]:
     """Generate detailed risk assessment for pipeline execution."""
 
-    risk_factors = {
+    risk_factors: dict[str, Any] = {
         "dependency_risks": [],
         "external_service_risks": [],
         "resource_risks": [],
@@ -243,7 +243,7 @@ def generate_risk_assessment(steps_to_execute: List[tuple]) -> Dict[str, Any]:
         risk_score += 15
 
     # Resource risks
-    memory_intensive = [
+    memory_intensive: list[Any] = [
         "8_visualization.py",
         "9_advanced_viz.py",
         "14_ml_integration.py",
@@ -275,11 +275,11 @@ def generate_risk_assessment(steps_to_execute: List[tuple]) -> Dict[str, Any]:
 def create_execution_timeline(steps_to_execute: List[tuple]) -> List[Dict[str, Any]]:
     """Create a detailed execution timeline with parallel execution opportunities."""
 
-    timeline = []
+    timeline: list[Any] = []
     current_time = 0
 
     # Step duration estimates
-    durations = {
+    durations: dict[str, Any] = {
         "3_gnn.py": 15,
         "5_type_checker.py": 20,
         "7_export.py": 15,
@@ -289,13 +289,13 @@ def create_execution_timeline(steps_to_execute: List[tuple]) -> List[Dict[str, A
     }
 
     # Dependencies that prevent parallel execution
-    dependencies = {
+    dependencies: dict[str, Any] = {
         "5_type_checker.py": ["3_gnn.py"],
         "8_visualization.py": ["3_gnn.py"],
         "12_execute.py": ["11_render.py"],
     }
 
-    completed_steps = set()
+    completed_steps: set[Any] = set()
 
     for script_name, description in steps_to_execute:
         step_deps = dependencies.get(script_name, [])
@@ -310,7 +310,7 @@ def create_execution_timeline(steps_to_execute: List[tuple]) -> List[Dict[str, A
 
         duration = durations.get(script_name, 30)
 
-        timeline_entry = {
+        timeline_entry: dict[str, Any] = {
             "step": script_name,
             "description": description,
             "start_time": current_time,

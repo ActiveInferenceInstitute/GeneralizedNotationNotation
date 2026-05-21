@@ -71,7 +71,7 @@ def validate_gnn_file_mcp(
 
         # Structural checks
         section_headers = [l for l in lines if l.startswith("## ")]
-        required_sections = ["ModelName", "StateSpaceBlock", "Connections"]
+        required_sections: list[Any] = ["ModelName", "StateSpaceBlock", "Connections"]
         missing = [
             s for s in required_sections if not any(s in h for h in section_headers)
         ]
@@ -132,13 +132,13 @@ def get_validation_report_mcp(output_directory: str) -> Dict[str, Any]:
                 "error": f"Directory not found: {output_directory}",
             }
 
-        reports = []
+        reports: list[Any] = []
         for jf in sorted(out_dir.rglob("*validation*.json"))[:10]:
             try:
                 reports.append({"file": jf.name, "data": json.loads(jf.read_text())})
             except (json.JSONDecodeError, OSError) as e:
                 logger.debug("Skipping unreadable validation report %s: %s", jf.name, e)
-        txt_reports = []
+        txt_reports: list[Any] = []
         for tf in sorted(out_dir.rglob("*validation*.txt"))[:5]:
             try:
                 txt_reports.append({"file": tf.name, "content": tf.read_text()[:2000]})
@@ -172,13 +172,13 @@ def check_schema_compliance_mcp(gnn_content: str) -> Dict[str, Any]:
     try:
         lines = gnn_content.splitlines()
         section_headers = {l.lstrip("# ").strip() for l in lines if l.startswith("## ")}
-        required = {
+        required: set[Any] = {
             "ModelName",
             "StateSpaceBlock",
             "Connections",
             "InitialParameterization",
         }
-        optional = {
+        optional: set[Any] = {
             "Equations",
             "Time",
             "Footer",
@@ -204,7 +204,7 @@ def check_schema_compliance_mcp(gnn_content: str) -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register validation tools with the MCP server."""
 
     mcp_instance.register_tool(

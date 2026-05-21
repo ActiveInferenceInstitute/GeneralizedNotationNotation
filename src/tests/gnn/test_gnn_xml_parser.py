@@ -5,6 +5,7 @@ Tests for gnn/parsers/xml_parser.py — XMLGNNParser and PNMLParser.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -44,7 +45,7 @@ MINIMAL_PNML = """\
 
 
 class TestXMLGNNParser:
-    def _get_parser(self):
+    def _get_parser(self) -> Any:
         try:
             from gnn.parsers.xml_parser import XMLGNNParser
 
@@ -52,30 +53,30 @@ class TestXMLGNNParser:
         except ImportError:
             pytest.skip("xml_parser not importable")
 
-    def test_parse_string_returns_parse_result(self):
+    def test_parse_string_returns_parse_result(self) -> Any:
         parser = self._get_parser()
         result = parser.parse_string(MINIMAL_XML)
         assert result is not None
 
-    def test_parse_string_with_valid_xml_no_errors(self):
+    def test_parse_string_with_valid_xml_no_errors(self) -> Any:
         parser = self._get_parser()
         result = parser.parse_string(MINIMAL_XML)
         # Should parse without crashing; errors list may be present
         assert hasattr(result, "errors") or result is not None
 
-    def test_parse_string_invalid_xml_handles_gracefully(self):
+    def test_parse_string_invalid_xml_handles_gracefully(self) -> Any:
         parser = self._get_parser()
         result = parser.parse_string("NOT XML AT ALL <<<")
         # Must not raise — should return error result or None
         # If it returns something, it should have errors
         assert result is None or hasattr(result, "errors")
 
-    def test_get_supported_extensions_includes_xml(self):
+    def test_get_supported_extensions_includes_xml(self) -> Any:
         parser = self._get_parser()
         exts = parser.get_supported_extensions()
         assert any("xml" in ext.lower() for ext in exts)
 
-    def test_parse_string_result_has_model(self):
+    def test_parse_string_result_has_model(self) -> Any:
         parser = self._get_parser()
         result = parser.parse_string(MINIMAL_XML)
         if result is None:
@@ -85,7 +86,7 @@ class TestXMLGNNParser:
 
 
 class TestPNMLParser:
-    def _get_parser(self):
+    def _get_parser(self) -> Any:
         try:
             from gnn.parsers.xml_parser import PNMLParser
 
@@ -93,17 +94,17 @@ class TestPNMLParser:
         except ImportError:
             pytest.skip("PNMLParser not importable")
 
-    def test_parse_string_returns_result(self):
+    def test_parse_string_returns_result(self) -> Any:
         parser = self._get_parser()
         result = parser.parse_string(MINIMAL_PNML)
         assert result is not None
 
-    def test_parse_string_invalid_pnml_handles_gracefully(self):
+    def test_parse_string_invalid_pnml_handles_gracefully(self) -> Any:
         parser = self._get_parser()
         result = parser.parse_string("<<INVALID>>")
         assert result is None or hasattr(result, "errors")
 
-    def test_get_supported_extensions_includes_pnml(self):
+    def test_get_supported_extensions_includes_pnml(self) -> Any:
         parser = self._get_parser()
         exts = parser.get_supported_extensions()
         assert any("pnml" in ext.lower() or "xml" in ext.lower() for ext in exts)

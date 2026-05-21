@@ -20,13 +20,13 @@ logger = logging.getLogger(__name__)
 # Basic module metadata
 __version__ = "1.0.0"
 __description__ = "API module MCP integration for GNN pipeline job management."
-__dependencies__ = []
+__dependencies__: list[Any] = []
 
 
 def gnn_submit_job_mcp(
     target_dir: str,
-    steps: list = None,
-    skip_steps: list = None,
+    steps: (list) | None = None,
+    skip_steps: (list) | None = None,
     verbose: bool = False,
     strict: bool = False,
 ) -> Dict[str, Any]:
@@ -128,7 +128,7 @@ def gnn_get_pipeline_tools_mcp() -> Dict[str, Any]:
         return {"status": "error", "message": str(e)}
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register API domain tools with the MCP server."""
 
     mcp_instance.register_tool(
@@ -230,7 +230,7 @@ def register_tools(mcp_instance) -> None:
 # We don't delete save_mcp_manifest and register_mcp_tools completely in case
 # other scripts rely on them.
 
-MCP_TOOLS = [
+MCP_TOOLS: list[Any] = [
     {
         "name": "gnn_submit_job",
         "description": "Submit a GNN pipeline processing job. Accepts a target directory and optional step selection. Returns a job ID for status polling.",

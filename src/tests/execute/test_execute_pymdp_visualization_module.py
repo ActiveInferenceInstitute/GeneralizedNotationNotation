@@ -17,6 +17,7 @@ Date: 2024
 
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -25,7 +26,7 @@ from analysis.pymdp.visualizer import PyMDPVisualizer, save_all_visualizations
 
 
 @pytest.fixture
-def test_data():
+def test_data() -> Any:
     """Create test simulation data for visualization testing."""
     num_timesteps = 50
     num_states = 9  # 3x3 grid
@@ -40,7 +41,7 @@ def test_data():
     rewards = np.random.randn(num_timesteps).tolist()
 
     # Generate synthetic belief distributions
-    beliefs = []
+    beliefs: list[Any] = []
     for _t in range(num_timesteps):
         belief = np.random.dirichlet(np.ones(num_states))
         beliefs.append(belief)
@@ -64,14 +65,14 @@ def test_data():
 
 
 @pytest.fixture
-def temp_output_dir():
+def temp_output_dir() -> Any:
     """Create a temporary directory for test outputs."""
     with tempfile.TemporaryDirectory() as temp_dir:
         yield Path(temp_dir)
 
 
 @pytest.fixture
-def visualizer(temp_output_dir):
+def visualizer(temp_output_dir: Any) -> Any:
     """Create a PyMDPVisualizer for testing."""
     return PyMDPVisualizer(output_dir=temp_output_dir, show_plots=False)
 
@@ -79,13 +80,15 @@ def visualizer(temp_output_dir):
 class TestPyMDPVisualizationModule:
     """Test suite for PyMDP visualization module."""
 
-    def test_visualizer_creation(self, temp_output_dir):
+    def test_visualizer_creation(self, temp_output_dir: Any) -> Any:
         """Test PyMDPVisualizer can be created with output directory."""
         visualizer = PyMDPVisualizer(output_dir=temp_output_dir, show_plots=False)
         assert visualizer is not None
         assert visualizer.save_dir == temp_output_dir
 
-    def test_discrete_state_visualization(self, visualizer, test_data, temp_output_dir):
+    def test_discrete_state_visualization(
+        self, visualizer: Any, test_data: Any, temp_output_dir: Any
+    ) -> Any:
         """Test discrete state visualization from test data."""
         save_path = temp_output_dir / "discrete_states.png"
 
@@ -104,8 +107,8 @@ class TestPyMDPVisualizationModule:
         plt.close(fig)
 
     def test_belief_evolution_visualization(
-        self, visualizer, test_data, temp_output_dir
-    ):
+        self, visualizer: Any, test_data: Any, temp_output_dir: Any
+    ) -> Any:
         """Test belief evolution visualization."""
         save_path = temp_output_dir / "belief_evolution.png"
 
@@ -123,8 +126,8 @@ class TestPyMDPVisualizationModule:
         plt.close(fig)
 
     def test_performance_metrics_visualization(
-        self, visualizer, test_data, temp_output_dir
-    ):
+        self, visualizer: Any, test_data: Any, temp_output_dir: Any
+    ) -> Any:
         """Test performance metrics visualization."""
         save_path = temp_output_dir / "performance_metrics.png"
 
@@ -140,8 +143,8 @@ class TestPyMDPVisualizationModule:
         plt.close(fig)
 
     def test_action_sequence_visualization(
-        self, visualizer, test_data, temp_output_dir
-    ):
+        self, visualizer: Any, test_data: Any, temp_output_dir: Any
+    ) -> Any:
         """Test action sequence visualization."""
         save_path = temp_output_dir / "action_sequence.png"
 
@@ -160,8 +163,8 @@ class TestPyMDPVisualizationModule:
         plt.close(fig)
 
     def test_observation_sequence_visualization(
-        self, visualizer, test_data, temp_output_dir
-    ):
+        self, visualizer: Any, test_data: Any, temp_output_dir: Any
+    ) -> Any:
         """Test observation sequence visualization."""
         save_path = temp_output_dir / "observation_sequence.png"
 
@@ -180,7 +183,7 @@ class TestPyMDPVisualizationModule:
         plt.close(fig)
 
 
-def test_visualizer():
+def test_visualizer() -> Any:
     """Test the PyMDPVisualizer with synthetic data."""
     with tempfile.TemporaryDirectory() as temp_dir:
         output_dir = Path(temp_dir)
@@ -190,7 +193,7 @@ def test_visualizer():
         num_timesteps = 20
         num_states = 9
 
-        test_data = {
+        test_data: dict[str, Any] = {
             "states": np.random.randint(0, num_states, num_timesteps).tolist(),
             "beliefs": [
                 np.random.dirichlet(np.ones(num_states)) for _ in range(num_timesteps)
@@ -239,7 +242,7 @@ def test_visualizer():
         visualizer.close_all_plots()
 
 
-def test_pipeline_integration():
+def test_pipeline_integration() -> Any:
     """Test integration with pipeline configuration using save_all_visualizations."""
     with tempfile.TemporaryDirectory() as temp_dir:
         output_dir = Path(temp_dir)
@@ -249,7 +252,7 @@ def test_pipeline_integration():
         num_timesteps = 20
         num_states = 9
 
-        sim_results = {
+        sim_results: dict[str, Any] = {
             "states": np.random.randint(0, num_states, num_timesteps).tolist(),
             "beliefs": [
                 np.random.dirichlet(np.ones(num_states)) for _ in range(num_timesteps)

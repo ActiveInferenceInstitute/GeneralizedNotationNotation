@@ -29,7 +29,7 @@ def generate_analysis_from_logs(
     Returns:
         List of generated visualization file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     try:
         # Find RxInfer execution results
@@ -75,7 +75,7 @@ def create_rxinfer_visualizations(
     Returns:
         List of generated file paths
     """
-    visualizations = []
+    visualizations: list[Any] = []
 
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping RxInfer visualizations")
@@ -284,7 +284,7 @@ def extract_simulation_data(
     if logger is None:
         logger = logging.getLogger(__name__)
 
-    data = {
+    data: dict[str, Any] = {
         "beliefs": [],
         "observations": [],
         "true_states": [],
@@ -308,7 +308,7 @@ def extract_simulation_data(
     return data
 
 
-__all__ = [
+__all__: list[Any] = [
     "generate_analysis_from_logs",
     "create_rxinfer_visualizations",
     "extract_simulation_data",

@@ -41,7 +41,7 @@ def process_intelligent_analysis_mcp(
         Dictionary with operation status and results.
     """
     try:
-        kwargs = {}
+        kwargs: dict[Any, Any] = {}
         if analysis_types:
             kwargs["analysis_types"] = analysis_types.split(",")
 

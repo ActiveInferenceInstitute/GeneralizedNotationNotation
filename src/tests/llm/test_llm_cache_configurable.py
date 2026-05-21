@@ -9,6 +9,7 @@ multi-workspace runs conflict on-disk. The fix accepts an explicit
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -19,14 +20,14 @@ if str(SRC) not in sys.path:
 from llm.cache import LLMCache  # noqa: E402
 
 
-def test_llm_cache_respects_explicit_cache_dir(tmp_path):
+def test_llm_cache_respects_explicit_cache_dir(tmp_path: Any) -> Any:
     target = tmp_path / "my_cache"
     cache = LLMCache(cache_dir=target)
     assert cache.cache_dir == target
     assert target.exists()
 
 
-def test_llm_cache_resolves_via_base_output_dir(tmp_path):
+def test_llm_cache_resolves_via_base_output_dir(tmp_path: Any) -> Any:
     base = tmp_path / "pipeline_out"
     cache = LLMCache(base_output_dir=base)
     # Cache dir must be inside base (never leak to CWD-relative path).
@@ -37,7 +38,7 @@ def test_llm_cache_resolves_via_base_output_dir(tmp_path):
     assert cache.cache_dir.exists()
 
 
-def test_llm_cache_explicit_overrides_base(tmp_path):
+def test_llm_cache_explicit_overrides_base(tmp_path: Any) -> Any:
     """When both are provided, cache_dir wins — explicit is always stronger."""
     explicit = tmp_path / "explicit"
     base = tmp_path / "base"
@@ -45,7 +46,7 @@ def test_llm_cache_explicit_overrides_base(tmp_path):
     assert cache.cache_dir == explicit
 
 
-def test_llm_cache_roundtrip(tmp_path):
+def test_llm_cache_roundtrip(tmp_path: Any) -> Any:
     """A put/get cycle works with any of the resolution paths."""
     cache = LLMCache(cache_dir=tmp_path / "cache")
     cache.put("hello", "modelX", "promptA", "response-bytes")
@@ -54,7 +55,7 @@ def test_llm_cache_roundtrip(tmp_path):
     assert cache.writes >= 1
 
 
-def test_llm_cache_miss_returns_none(tmp_path):
+def test_llm_cache_miss_returns_none(tmp_path: Any) -> Any:
     cache = LLMCache(cache_dir=tmp_path / "cache")
     assert cache.get("never_stored", "m", "p") is None
     assert cache.misses >= 1

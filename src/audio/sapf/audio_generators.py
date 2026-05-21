@@ -25,7 +25,7 @@ class SyntheticAudioGenerator:
     Generates synthetic audio based on SAPF code analysis.
     """
 
-    def __init__(self, sample_rate: int = 44100):
+    def __init__(self, sample_rate: int = 44100) -> None:
         self.sample_rate = sample_rate
         self.base_frequency = 261.63  # C4
 
@@ -78,7 +78,7 @@ class SyntheticAudioGenerator:
         Returns:
             Dictionary of audio parameters
         """
-        params = {
+        params: dict[str, Any] = {
             "base_frequency": self.base_frequency,
             "oscillators": [],
             "filters": [],
@@ -650,7 +650,7 @@ def mix_audio_channels(
 
     # Ensure all arrays are the same length
     max_length = max(len(audio) for audio in audio_list)
-    padded_audio = []
+    padded_audio: list[Any] = []
 
     for audio in audio_list:
         if len(audio) < max_length:

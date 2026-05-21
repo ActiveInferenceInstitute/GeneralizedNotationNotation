@@ -1,5 +1,5 @@
 import json
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -10,7 +10,7 @@ class XSDSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to XSD format."""
-        lines = []
+        lines: list[Any] = []
 
         # XML Schema header
         lines.append('<?xml version="1.0" encoding="UTF-8"?>')
@@ -55,7 +55,7 @@ class XSDSerializer(BaseGNNSerializer):
         lines.append("")
 
         # Embed complete model data as XML comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -116,7 +116,7 @@ class XSDSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec) -> Dict[str, Any]:
+    def _serialize_time_spec(self, time_spec: Any) -> Dict[str, Any]:
         """Serialize TimeSpecification object to dict."""
         if not time_spec or not hasattr(time_spec, "__dict__"):
             return {}
@@ -130,7 +130,7 @@ class XSDSerializer(BaseGNNSerializer):
 
     def _map_to_xsd_type(self, data_type: str) -> str:
         """Map GNN data types to XSD types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "xs:string",
             "continuous": "xs:double",
             "binary": "xs:boolean",
@@ -138,4 +138,4 @@ class XSDSerializer(BaseGNNSerializer):
             "float": "xs:double",
             "complex": "xs:string",
         }
-        return mapping.get(data_type, "xs:string")
+        return cast("str", mapping.get(data_type, "xs:string"))

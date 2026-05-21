@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class CoqGNNParser(BaseGNNParser):
     """Parser for Coq formal verification specifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the Coq parser."""
         super().__init__()
         self.require_pattern = re.compile(r"Require\s+Import\s+([^\n.]+)\.")
@@ -199,7 +199,7 @@ class CoqGNNParser(BaseGNNParser):
 
         return "CoqGNNModel"
 
-    def _parse_requires(self, content: str, model: GNNInternalRepresentation):
+    def _parse_requires(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse Require Import statements."""
         requires = self.require_pattern.findall(content)
         model.extensions["coq_requires"] = requires
@@ -211,7 +211,7 @@ class CoqGNNParser(BaseGNNParser):
         model.extensions["uses_reals"] = has_reals
         model.extensions["uses_lists"] = has_lists
 
-    def _parse_parameters(self, content: str, model: GNNInternalRepresentation):
+    def _parse_parameters(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse Parameter declarations."""
         parameter_matches = self.parameter_pattern.findall(content)
 
@@ -230,7 +230,7 @@ class CoqGNNParser(BaseGNNParser):
 
             model.variables.append(variable)
 
-    def _parse_variables(self, content: str, model: GNNInternalRepresentation):
+    def _parse_variables(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse Variable declarations."""
         variable_matches = self.variable_pattern.findall(content)
 
@@ -252,7 +252,7 @@ class CoqGNNParser(BaseGNNParser):
 
             model.variables.append(variable)
 
-    def _parse_definitions(self, content: str, model: GNNInternalRepresentation):
+    def _parse_definitions(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse Definition statements."""
         def_matches = self.definition_pattern.findall(content)
 
@@ -274,7 +274,7 @@ class CoqGNNParser(BaseGNNParser):
 
             model.variables.append(variable)
 
-    def _parse_theorems(self, content: str, model: GNNInternalRepresentation):
+    def _parse_theorems(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse Theorem statements as model constraints."""
         theorem_matches = self.theorem_pattern.findall(content)
 

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any
+
 """
 Base LLM Provider
 
@@ -78,7 +80,7 @@ class BaseLLMProvider(ABC):
             **kwargs: Additional provider-specific configuration
         """
         self.api_key = api_key
-        self.client = None
+        self.client: Any = None
         self._is_initialized = False
 
     @property
@@ -152,7 +154,8 @@ class BaseLLMProvider(ABC):
         Yields:
             Chunks of the response content
         """
-        pass
+        if False:
+            yield ""
 
     def construct_system_prompt(self, domain_context: str = "") -> str:
         """
@@ -193,7 +196,7 @@ class BaseLLMProvider(ABC):
             "and scientific accuracy in your analysis."
         )
 
-        task_prompts = {
+        task_prompts: dict[str, Any] = {
             "summary": (
                 "Provide a concise summary of this GNN model, highlighting:\n"
                 "- Model purpose and domain\n"

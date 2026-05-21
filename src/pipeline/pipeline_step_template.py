@@ -41,11 +41,13 @@ import datetime
 import json
 import sys
 from pathlib import Path
+from typing import Any, Dict, cast
 
 from pipeline import get_output_dir_for_script, get_pipeline_config
 
 # Standard imports for all pipeline steps
 from utils import (
+    execute_pipeline_step_template,
     log_step_error,
     log_step_start,
     log_step_success,
@@ -136,7 +138,7 @@ def process_single_file(input_file: Path, output_dir: Path, options: dict) -> bo
             content = f.read()
 
         # Perform comprehensive file analysis
-        analysis_results = {
+        analysis_results: dict[str, Any] = {
             "file_name": input_file.name,
             "file_size_bytes": len(content),
             "file_size_lines": len(content.splitlines()),
@@ -205,7 +207,7 @@ def _detect_content_type(content: str) -> str:
 
 def _extract_markdown_metadata(content: str) -> dict:
     """Extract metadata from markdown content."""
-    metadata = {}
+    metadata: dict[Any, Any] = {}
     lines = content.splitlines()
 
     # Extract headers
@@ -213,9 +215,9 @@ def _extract_markdown_metadata(content: str) -> dict:
     metadata["headers"] = headers[:10]  # First 10 headers
 
     # Extract code blocks
-    code_blocks = []
+    code_blocks: list[Any] = []
     in_code_block = False
-    current_block = []
+    current_block: list[Any] = []
 
     for line in lines:
         if line.strip().startswith("```"):
@@ -242,7 +244,7 @@ def _extract_structured_metadata(content: str, file_type: str) -> dict:
 
             data = yaml.safe_load(content)
 
-        metadata = {
+        metadata: dict[str, Any] = {
             "structure_type": "structured",
             "top_level_keys": list(data.keys())
             if isinstance(data, dict)
@@ -300,12 +302,12 @@ def _analyze_nested_structure(data: dict, max_depth: int = 3) -> dict:
         else:
             return {"type": type(obj).__name__}
 
-    return _analyze_level(data)
+    return cast("dict[Any, Any]", _analyze_level(data))
 
 
 def _generate_processed_content(content: str, analysis: dict) -> str:
     """Generate processed content with annotations."""
-    processed_lines = []
+    processed_lines: list[Any] = []
 
     # Add processing header
     processed_lines.append(f"# Processed File: {analysis['file_name']}")
@@ -328,7 +330,7 @@ def _generate_processed_content(content: str, analysis: dict) -> str:
 
 def _generate_summary_report(analysis: dict) -> str:
     """Generate a comprehensive summary report in Markdown format."""
-    report_lines = []
+    report_lines: list[Any] = []
 
     report_lines.append("# File Processing Summary")
     report_lines.append("")
@@ -383,7 +385,7 @@ def _generate_summary_report(analysis: dict) -> str:
     return "\n".join(report_lines)
 
 
-def main(parsed_args) -> int:
+def main(parsed_args: Any) -> int:
     """
     Main function for the pipeline step.
 
@@ -410,7 +412,9 @@ def main(parsed_args) -> int:
         return 1
 
     # Get configuration
-    config = get_pipeline_config()
+    from pipeline.config import PipelineConfig
+
+    config = PipelineConfig()
     # CUSTOMIZE: Replace "X_step_name.py" with your script name (e.g., "3_gnn.py")
     config.get_step_config("X_step_name.py")
 
@@ -466,7 +470,7 @@ def main(parsed_args) -> int:
     successful_files = 0
     failed_files = 0
 
-    processing_options = {
+    processing_options: dict[str, Any] = {
         "verbose": verbose,
         "recursive": recursive,
         # CUSTOMIZE: Add step-specific options to pass to process_single_file(). Examples:
@@ -504,7 +508,7 @@ def main(parsed_args) -> int:
     summary_file = step_output_dir / "processing_summary.json"
     import json
 
-    summary = {
+    summary: dict[str, Any] = {
         # CUSTOMIZE: Replace "X_step_name" with your step name (e.g., "3_gnn")
         "step_name": "X_step_name",
         "input_directory": str(input_dir),
@@ -548,7 +552,7 @@ if __name__ == "__main__":
     #   Execution: ["execute", "execute.pymdp", "numpy"]
     #   Analysis: ["analysis", "pandas", "matplotlib"]
     #   LLM: ["llm", "openai"] or ["llm", "anthropic"]
-    step_dependencies = [
+    step_dependencies: list[Any] = [
         # "your_required_module",
         # "another_dependency"
     ]

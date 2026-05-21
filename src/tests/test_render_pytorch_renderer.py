@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import py_compile
+from typing import Any
 
 
 def _small_gnn_spec() -> dict:
@@ -25,7 +26,9 @@ def _small_gnn_spec() -> dict:
     }
 
 
-def test_pytorch_renderer_generates_compilable_script_with_timestep(tmp_path) -> None:
+def test_pytorch_renderer_generates_compilable_script_with_timestep(
+    tmp_path: Any,
+) -> None:
     from render.pytorch.pytorch_renderer import render_gnn_to_pytorch
 
     output_path = tmp_path / "pytorch_smoke.py"

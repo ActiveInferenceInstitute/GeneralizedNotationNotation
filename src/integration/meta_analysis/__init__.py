@@ -21,13 +21,15 @@ Architecture:
     │   └── reporter.py      ← markdown report generation
 """
 
+from typing import Any
+
 from .collector import SweepDataCollector, SweepRecord
 from .reporter import SweepReporter
 from .statistics import compute_meta_statistics
 from .validator import validate_sweep_records
 from .visualizer import SweepVisualizer
 
-__all__ = [
+__all__: list[Any] = [
     "SweepDataCollector",
     "SweepRecord",
     "SweepVisualizer",
@@ -39,8 +41,12 @@ __all__ = [
 
 
 def run_meta_analysis(
-    execute_output_dir, output_dir, render_output_dir=None, logger=None, verbose=False
-):
+    execute_output_dir: Any,
+    output_dir: Any,
+    render_output_dir: Any = None,
+    logger: Any = None,
+    verbose: Any = False,
+) -> Any:
     """Run the full meta-analysis pipeline on execution outputs.
 
     Args:

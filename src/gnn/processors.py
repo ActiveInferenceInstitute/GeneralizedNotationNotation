@@ -12,7 +12,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 def process_gnn_folder(
     target_dir: Path,
     output_dir: Path,
-    logger: logging.Logger = None,
+    logger: (logging.Logger) | None = None,
     recursive: bool = False,
     verbose: bool = False,
     validation_level: str = "standard",
@@ -92,7 +92,7 @@ def process_gnn_folder(
         from .schema_validator import GNNValidator
         from .schema_validator import ValidationLevel as VL
 
-        _vl_map = {
+        _vl_map: dict[str, Any] = {
             "basic": VL.BASIC,
             "standard": VL.STANDARD,
             "strict": VL.STRICT,
@@ -105,7 +105,7 @@ def process_gnn_folder(
         _log.debug(f"Using GNNValidator with level={vl.value}")
     except Exception as exc:
         _log.warning(f"GNNValidator unavailable ({exc}); using lightweight validation")
-        validator = None
+        validator = cast(Any, None)
 
     for gnn_file in gnn_files:
         file_result: Dict[str, Any] = {"file": str(gnn_file)}
@@ -141,7 +141,7 @@ def process_gnn_folder(
         results.append(file_result)
 
     duration = time.time() - start_time
-    summary = {
+    summary: dict[str, Any] = {
         "status": "completed",
         "target_dir": str(target_dir),
         "validation_level": validation_level,
@@ -170,7 +170,7 @@ def process_gnn_folder(
 def run_gnn_round_trip_tests(
     target_dir: Path,
     output_dir: Path,
-    logger: logging.Logger = None,
+    logger: (logging.Logger) | None = None,
     reference_file: Optional[str] = None,
     test_subset: Optional[List[str]] = None,
     enable_parallel: bool = False,
@@ -205,7 +205,7 @@ def run_gnn_round_trip_tests(
 
     # Gather files to test
     if reference_file:
-        files_to_test = [Path(reference_file)]
+        files_to_test: list[Any] = [Path(reference_file)]
     else:
         files_to_test = list(target_dir.glob("**/*.md"))
 
@@ -238,7 +238,7 @@ def run_gnn_round_trip_tests(
         parser = GNNParser(enhanced_validation=False)
     except Exception as exc:
         _log.warning(f"GNNParser unavailable ({exc}); using basic round-trip check")
-        parser = None
+        parser = cast(Any, None)
 
     for gnn_file in files_to_test:
         file_result: Dict[str, Any] = {
@@ -330,7 +330,7 @@ def run_gnn_round_trip_tests(
 def validate_gnn_cross_format_consistency(
     target_dir: Path,
     output_dir: Path,
-    logger: logging.Logger = None,
+    logger: (logging.Logger) | None = None,
     files_to_test: Optional[List[str]] = None,
     include_binary: bool = False,
     **kwargs: Any,
@@ -392,7 +392,7 @@ def validate_gnn_cross_format_consistency(
         _log.warning(
             f"CrossFormatValidator unavailable ({exc}); using basic consistency check"
         )
-        validator = None
+        validator = cast(Any, None)
 
     overall_consistent = True
     results: List[Dict[str, Any]] = []

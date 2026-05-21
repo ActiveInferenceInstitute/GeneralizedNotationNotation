@@ -14,6 +14,8 @@ Test Coverage:
 All tests validate real function execution.
 """
 
+from typing import Any
+
 import pytest
 
 pytestmark = pytest.mark.pipeline
@@ -189,7 +191,7 @@ class TestExecuteAnalyzeIntegration:
         execute_dir = safe_filesystem.create_dir("output/12_execute_output")
 
         # Create execution summary
-        summary = {
+        summary: dict[str, Any] = {
             "timestamp": "2026-01-08T12:00:00",
             "success": True,
             "total_scripts": 1,

@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import pytest
 
@@ -9,7 +10,7 @@ class TestIntegrationOverall:
     """Test suite for Integration module."""
 
     @pytest.fixture
-    def integration_files(self, safe_filesystem):
+    def integration_files(self, safe_filesystem: Any) -> Any:
         """Create a set of files with dependencies."""
         # File 1: Defines ComponentA
         safe_filesystem.create_file(
@@ -32,7 +33,9 @@ class TestIntegrationOverall:
         )
         return safe_filesystem.temp_dir
 
-    def test_process_integration_flow(self, safe_filesystem, integration_files):
+    def test_process_integration_flow(
+        self, safe_filesystem: Any, integration_files: Any
+    ) -> Any:
         """Test the integration processing workflow."""
         target_dir = integration_files
         output_dir = safe_filesystem.create_dir("integration_output")
@@ -60,7 +63,7 @@ class TestIntegrationOverall:
             # And 1 edge (B -> A) or similar depending on implementation
             pass
 
-    def test_process_integration_circular_dependency(self, safe_filesystem):
+    def test_process_integration_circular_dependency(self, safe_filesystem: Any) -> Any:
         """Test with circular dependency if networkx available."""
         # A -> B, B -> A
         safe_filesystem.create_file(

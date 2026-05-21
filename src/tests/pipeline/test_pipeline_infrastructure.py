@@ -17,7 +17,7 @@ from typing import Any
 
 import pytest
 
-pytestmark = [pytest.mark.pipeline, pytest.mark.fast]
+pytestmark: list[Any] = [pytest.mark.pipeline, pytest.mark.fast]
 
 
 class TestPipelineDiscovery:
@@ -34,7 +34,7 @@ class TestPipelineDiscovery:
     @pytest.mark.unit
     def test_get_pipeline_scripts(self, project_root: Any) -> None:
         """Test pipeline script discovery."""
-        scripts = []
+        scripts: list[Any] = []
         try:
             from pipeline.discovery import get_pipeline_scripts
 
@@ -54,7 +54,7 @@ class TestPipelineDiscovery:
     @pytest.mark.unit
     def test_discover_steps(self, project_root: Any) -> None:
         """Test step discovery using available function."""
-        scripts = []
+        scripts: list[Any] = []
         try:
             from pipeline.discovery import get_pipeline_scripts
 
@@ -104,7 +104,7 @@ class TestPipelineStepTemplate:
         input_file.write_text("# Test GNN File\n\nSample content")
         output_dir = isolated_temp_dir / "output"
         output_dir.mkdir()
-        options = {"verbose": False}
+        options: dict[str, Any] = {"verbose": False}
         result = process_single_file(input_file, output_dir, options)
         assert isinstance(result, bool)
 
@@ -337,6 +337,7 @@ class TestPipelineInfrastructureIntegration:
         assert len(scripts) >= 1
         if scripts:
             first_script = scripts[0]["path"]
+            assert isinstance(first_script, Path)
             if first_script.exists():
                 validation = validate_module_imports(first_script)
                 assert isinstance(validation, dict)
@@ -375,7 +376,7 @@ def test_pipeline_infrastructure_performance() -> None:
 
 def test_pipeline_infrastructure_completeness() -> None:
     """Test that pipeline infrastructure modules have expected functionality."""
-    expected_modules = [
+    expected_modules: list[Any] = [
         ("pipeline", ["discovery", "pipeline_validation", "verify_pipeline"]),
         (
             "utils",
@@ -387,7 +388,7 @@ def test_pipeline_infrastructure_completeness() -> None:
             ],
         ),
     ]
-    available_modules = []
+    available_modules: list[Any] = []
     for package, modules in expected_modules:
         for module_name in modules:
             try:

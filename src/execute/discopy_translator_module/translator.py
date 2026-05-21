@@ -9,7 +9,7 @@ diagrams with optional JAX evaluation capabilities.
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Tuple, Union, cast
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +23,8 @@ try:
 except ImportError as e:
     logger.debug(f"DisCoPy not available: {e}")
     DISCOPY_AVAILABLE = False
-    Diagram = Word = Cap = Cup = None
-    Ket = Bra = X = Z = H = None
+    Diagram = Word = Cap = Cup = cast(Any, None)
+    Ket = Bra = X = Z = H = cast(Any, None)
 
 try:
     import jax
@@ -35,7 +35,7 @@ try:
 except ImportError as e:
     logger.debug(f"JAX not available: {e}")
     JAX_FULLY_OPERATIONAL = False
-    jax = jnp = None
+    jax = jnp = cast(Any, None)
 
 try:
     import matplotlib
@@ -46,7 +46,7 @@ try:
 except ImportError as e:
     logger.debug(f"Matplotlib not available: {e}")
     MATPLOTLIB_AVAILABLE = False
-    matplotlib = plt = None
+    matplotlib = plt = cast(Any, None)
 
 
 def gnn_file_to_discopy_diagram(
@@ -82,7 +82,7 @@ def gnn_file_to_discopy_diagram(
         # This is a basic implementation - can be enhanced based on specific DisCoPy patterns needed
 
         # For now, create a simple string diagram representation
-        diagram_parts = []
+        diagram_parts: list[Any] = []
 
         # Add variables as objects
         for var_name, var_info in variables.items():
@@ -150,7 +150,7 @@ def gnn_file_to_discopy_matrix_diagram(
             return False, "No variables found for matrix diagram", None
 
         # Create matrix representation from variable dimensions
-        matrix_info = {}
+        matrix_info: dict[Any, Any] = {}
         for var_name, var_info in variables.items():
             dimensions = var_info.get("dimensions", [])
             if len(dimensions) >= 2:  # Matrix-like structure
@@ -226,7 +226,7 @@ def evaluate_diagram_with_jax(
             else:
                 result_data = str(result_tensor)
 
-            evaluation_result = {
+            evaluation_result: dict[str, Any] = {
                 "status": "evaluated",
                 "backend": "jax",
                 "diagram_type": str(type(diagram)),

@@ -107,7 +107,7 @@ def validate_trace_data(trace: Dict[str, Any]) -> bool:
     Returns:
         True if valid, False otherwise
     """
-    required_keys = [
+    required_keys: list[Any] = [
         "episode",
         "true_states",
         "observations",
@@ -117,7 +117,7 @@ def validate_trace_data(trace: Dict[str, Any]) -> bool:
     ]
 
     # Optional keys that may be present in enhanced traces (documented for reference)
-    _optional_keys = [
+    _optional_keys: list[Any] = [
         "policies",
         "expected_free_energies",
         "variational_free_energies",
@@ -150,11 +150,11 @@ def clean_trace_for_serialization(trace: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Cleaned trace data ready for JSON serialization
     """
-    cleaned_trace = {}
+    cleaned_trace: dict[Any, Any] = {}
 
     for key, value in trace.items():
         if isinstance(value, list):
-            cleaned_list = []
+            cleaned_list: list[Any] = []
             for item in value:
                 if item is None:
                     cleaned_list.append(None)
@@ -189,7 +189,7 @@ def save_simulation_results(
     Returns:
         Dictionary indicating success/failure of each save operation
     """
-    results = {}
+    results: dict[Any, Any] = {}
 
     # Save configuration
     results["config"] = safe_json_dump(config, output_dir / "simulation_config.json")
@@ -231,7 +231,7 @@ def calculate_episode_statistics(trace: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dictionary of episode statistics
     """
-    stats = {
+    stats: dict[str, Any] = {
         "episode": trace.get("episode", 0),
         "total_reward": 0.0,
         "episode_length": 0,
@@ -250,7 +250,7 @@ def calculate_episode_statistics(trace: Dict[str, Any]) -> Dict[str, Any]:
 
     # Mean belief entropy
     if "beliefs" in trace and trace["beliefs"]:
-        entropies = []
+        entropies: list[Any] = []
         for belief in trace["beliefs"]:
             if belief is not None and len(belief) > 0:
                 # Calculate entropy: -sum(p * log(p))
@@ -286,7 +286,7 @@ def generate_simulation_summary(
     Returns:
         Summary dictionary
     """
-    summary = {
+    summary: dict[str, Any] = {
         "total_episodes": len(all_traces),
         "successful_episodes": 0,
         "total_steps": 0,
@@ -389,7 +389,7 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
             cleaned = cleaned[1:-1]  # Remove outer braces
 
         # Parse individual rows
-        rows = []
+        rows: list[Any] = []
         if "(" in cleaned:
             # Parse tuple format
             import re
@@ -459,7 +459,11 @@ def extract_gnn_dimensions(gnn_spec: Dict[str, Any]) -> Dict[str, int]:
     Returns:
         Dictionary containing extracted dimensions
     """
-    dimensions = {"num_states": 3, "num_observations": 3, "num_actions": 3}
+    dimensions: dict[str, Any] = {
+        "num_states": 3,
+        "num_observations": 3,
+        "num_actions": 3,
+    }
 
     # Try model parameters first
     model_params = gnn_spec.get("model_parameters", {})
@@ -499,7 +503,12 @@ def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Validation result dictionary
     """
-    result = {"valid": True, "errors": [], "warnings": [], "dimensions": {}}
+    result: dict[str, Any] = {
+        "valid": True,
+        "errors": [],
+        "warnings": [],
+        "dimensions": {},
+    }
 
     # Extract dimensions
     try:
@@ -510,7 +519,7 @@ def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 
     # Check for required POMDP matrices
     initial_params = gnn_spec.get("initial_parameterization", {})
-    required_matrices = ["A", "B", "C", "D"]
+    required_matrices: list[Any] = ["A", "B", "C", "D"]
 
     for matrix_name in required_matrices:
         if matrix_name not in initial_params:

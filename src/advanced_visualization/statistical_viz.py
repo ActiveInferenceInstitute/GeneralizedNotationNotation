@@ -10,7 +10,7 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Dict
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ def _generate_statistical_plots(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
 
-        output_files = []
+        output_files: list[Any] = []
 
         # Extract data
         variables = model_data.get("variables", [])
@@ -56,7 +56,7 @@ def _generate_statistical_plots(
             fig, axes = plt.subplots(2, 2, figsize=(12, 10))
 
             # Variable type distribution
-            var_types = {}
+            var_types: dict[Any, Any] = {}
             for var in variables:
                 if isinstance(var, dict):
                     vtype = var.get("var_type", "unknown")
@@ -69,7 +69,7 @@ def _generate_statistical_plots(
                 axes[0, 0].set_title("Variable Type Distribution")
 
             # Variable dimension distribution
-            dim_counts = {}
+            dim_counts: dict[Any, Any] = {}
             for var in variables:
                 if isinstance(var, dict):
                     dims = var.get("dimensions", [])
@@ -86,7 +86,7 @@ def _generate_statistical_plots(
                 axes[0, 1].set_ylabel("Count")
 
             # Parameter value distribution (for scalar parameters)
-            scalar_values = []
+            scalar_values: list[Any] = []
             for param in parameters:
                 if isinstance(param, dict):
                     value = param.get("value")
@@ -102,7 +102,7 @@ def _generate_statistical_plots(
                 axes[1, 0].set_ylabel("Frequency")
 
             # Matrix size distribution
-            matrix_sizes = []
+            matrix_sizes: list[Any] = []
             for param in parameters:
                 if isinstance(param, dict):
                     value = param.get("value")
@@ -184,7 +184,7 @@ def _generate_matrix_correlations(
 
         # Flatten matrices and compute correlations
         matrix_names = list(matrices.keys())
-        matrix_vectors = []
+        matrix_vectors: list[Any] = []
 
         for name in matrix_names:
             matrix = matrices[name]

@@ -251,7 +251,7 @@ class TestAnalyzeActiveInferenceMetrics:
     def sample_trajectory(self) -> Any:
         """Create a realistic belief trajectory that converges."""
         rng = np.random.default_rng(42)
-        beliefs = []
+        beliefs: list[Any] = []
         # Start uniform, converge to state 0
         for t in range(20):
             w = min(t / 15.0, 1.0)
@@ -322,7 +322,7 @@ class TestNormalizeMatrices:
 
         A = np.array([[2.0, 1.0], [2.0, 3.0]])  # Columns sum to 4
         pomdp = POMDPStateSpace(
-            num_states=2, num_observations=2, num_actions=1, A_matrix=A
+            num_states=2, num_observations=2, num_actions=1, A_matrix=A.tolist()
         )
         result = normalize_matrices(pomdp, log)
         col_sums = result.A_matrix.sum(axis=0)
@@ -336,7 +336,7 @@ class TestNormalizeMatrices:
 
         B = np.ones((3, 3, 2))  # (next_state, curr_state, action), all ones
         pomdp = POMDPStateSpace(
-            num_states=3, num_observations=3, num_actions=2, B_matrix=B
+            num_states=3, num_observations=3, num_actions=2, B_matrix=B.tolist()
         )
         result = normalize_matrices(pomdp, log)
         for a in range(2):
@@ -351,7 +351,7 @@ class TestNormalizeMatrices:
 
         A = np.array([[0.0, 1.0], [0.0, 1.0]])  # Column 0 is all zeros
         pomdp = POMDPStateSpace(
-            num_states=2, num_observations=2, num_actions=1, A_matrix=A
+            num_states=2, num_observations=2, num_actions=1, A_matrix=A.tolist()
         )
         result = normalize_matrices(pomdp, log)
         # Column 0 should now be uniform (0.5, 0.5)
@@ -365,7 +365,7 @@ class TestNormalizeMatrices:
 
         log = logging.getLogger("test")
 
-        A_list = [
+        A_list: list[Any] = [
             np.array([[3.0, 1.0], [1.0, 3.0]]),
             np.array([[2.0, 2.0], [2.0, 2.0]]),
         ]

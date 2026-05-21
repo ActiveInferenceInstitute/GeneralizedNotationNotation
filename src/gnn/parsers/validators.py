@@ -63,7 +63,7 @@ class GNNParserValidationResult:
         """Alias for ``success`` (used by parser pipeline and cross-format checks)."""
         return self.success
 
-    def add_issue(self, issue: ValidationIssue):
+    def add_issue(self, issue: ValidationIssue) -> Any:
         """Add a validation issue."""
         self.issues.append(issue)
 
@@ -96,7 +96,7 @@ class GNNParserValidationResult:
 class GNNValidator:
     """Comprehensive validator for GNN models."""
 
-    def __init__(self, strict: bool = True):
+    def __init__(self, strict: bool = True) -> None:
         """
         Initialize the GNN validator.
 
@@ -178,7 +178,7 @@ class GNNValidator:
         self, model: GNNInternalRepresentation, result: GNNParserValidationResult
     ) -> None:
         """Validate variables in the model."""
-        variable_names = set()
+        variable_names: set[Any] = set()
 
         for variable in model.variables:
             # Check for duplicate names
@@ -452,7 +452,7 @@ class GNNValidator:
         self, model: GNNInternalRepresentation, result: GNNParserValidationResult
     ) -> None:
         """Validate parameters in the model."""
-        parameter_names = set()
+        parameter_names: set[Any] = set()
 
         for parameter in model.parameters:
             # Check for duplicate names
@@ -484,7 +484,7 @@ class GNNValidator:
     ) -> None:
         """Validate semantic consistency of the model."""
         # Check for unreferenced variables
-        referenced_vars = set()
+        referenced_vars: set[Any] = set()
         for connection in model.connections:
             referenced_vars.update(connection.source_variables)
             referenced_vars.update(connection.target_variables)
@@ -519,7 +519,7 @@ class GNNValidator:
             return
 
         # Build adjacency list
-        graph = {}
+        graph: dict[Any, Any] = {}
         for var in model.variables:
             graph[var.name] = set()
 
@@ -532,10 +532,10 @@ class GNNValidator:
                             graph[target].add(source)
 
         # Find connected components
-        visited = set()
-        components = []
+        visited: set[Any] = set()
+        components: list[Any] = []
 
-        def dfs(node, component):
+        def dfs(node: Any, component: Any) -> Any:
             if node in visited:
                 return
             visited.add(node)
@@ -545,7 +545,7 @@ class GNNValidator:
 
         for var_name in graph:
             if var_name not in visited:
-                component = set()
+                component: set[Any] = set()
                 dfs(var_name, component)
                 components.append(component)
 
@@ -568,7 +568,7 @@ class GNNValidator:
     ) -> None:
         """Validate Active Inference specific constraints."""
         # Check for essential Active Inference components
-        actinf_vars = {
+        actinf_vars: dict[str, Any] = {
             "A": False,  # Likelihood matrix
             "B": False,  # Transition matrix
             "C": False,  # Preference vector
@@ -607,7 +607,7 @@ class GNNValidator:
                 actinf_vars["o"] = True
 
         # Check for core Active Inference components
-        missing_components = []
+        missing_components: list[Any] = []
 
         # For POMDP models, A and o are critical
         if not actinf_vars["A"] and not actinf_vars["o"]:

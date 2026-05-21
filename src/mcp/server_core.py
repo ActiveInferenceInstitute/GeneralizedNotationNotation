@@ -32,7 +32,7 @@ class MCPServer:
     MCP protocol requests and responses.
     """
 
-    def __init__(self, mcp_instance: Optional[MCP] = None):
+    def __init__(self, mcp_instance: Optional[MCP] = None) -> None:
         """
         Initialize the MCP server.
 
@@ -211,7 +211,7 @@ class MCPServer:
 
     def _create_success_response(self, result: Any, request_id: Any) -> Dict[str, Any]:
         """Create a successful JSON-RPC response."""
-        response = {"jsonrpc": "2.0", "result": result}
+        response: dict[str, Any] = {"jsonrpc": "2.0", "result": result}
         if request_id is not None:
             response["id"] = request_id
         return response
@@ -220,7 +220,10 @@ class MCPServer:
         self, code: int, message: str, data: Any = None, request_id: Any = None
     ) -> Dict[str, Any]:
         """Create an error JSON-RPC response."""
-        response = {"jsonrpc": "2.0", "error": {"code": code, "message": message}}
+        response: dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "error": {"code": code, "message": message},
+        }
         if data is not None:
             response["error"]["data"] = data
         if request_id is not None:

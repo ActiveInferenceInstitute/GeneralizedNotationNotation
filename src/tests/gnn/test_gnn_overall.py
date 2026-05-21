@@ -7,6 +7,7 @@ This file contains tests migrated from test_gnn_core_modules.py.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -19,7 +20,7 @@ class TestGNNCoreProcessor:
     """Test gnn.core_processor module."""
 
     @pytest.mark.unit
-    def test_core_processor_imports(self):
+    def test_core_processor_imports(self) -> Any:
         """Test that core processor can be imported."""
         from gnn import core_processor
 
@@ -27,8 +28,8 @@ class TestGNNCoreProcessor:
 
     @pytest.mark.unit
     def test_gnn_processor_basic_imports(
-        self, sample_gnn_files, comprehensive_test_data
-    ):
+        self, sample_gnn_files: Any, comprehensive_test_data: Any
+    ) -> Any:
         """Test basic GNN processor imports without heavy instantiation."""
         from gnn.core_processor import GNNProcessor
 
@@ -41,19 +42,21 @@ class TestGNNReporting:
     """Test gnn.reporting module."""
 
     @pytest.mark.unit
-    def test_reporting_imports(self):
+    def test_reporting_imports(self) -> Any:
         """Test that reporting module can be imported."""
         from gnn import generate_gnn_report
 
         assert callable(generate_gnn_report)
 
     @pytest.mark.unit
-    def test_generate_report(self, comprehensive_test_data, isolated_temp_dir):
+    def test_generate_report(
+        self, comprehensive_test_data: Any, isolated_temp_dir: Any
+    ) -> Any:
         """Test report generation functionality."""
         from gnn import generate_gnn_report
 
         # generate_gnn_report expects a processing_results dict, not a path
-        processing_results = {
+        processing_results: dict[str, Any] = {
             "target_directory": str(isolated_temp_dir),
             "files_found": 0,
             "files_processed": 0,

@@ -17,6 +17,7 @@ All tests validate real function execution.
 # Add src to path for imports
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -41,7 +42,7 @@ class TestRenderIntegration:
     """Integration tests for render module."""
 
     @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem):
+    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a sample GNN markdown file."""
         content = """
 # Active Inference POMDP Agent
@@ -65,7 +66,7 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
         return safe_filesystem.create_file("test_agent.md", content)
 
     @pytest.fixture
-    def sample_gnn_spec(self):
+    def sample_gnn_spec(self) -> Any:
         """Create a minimal GNN spec dictionary."""
         return {
             "name": "test_model",
@@ -78,14 +79,14 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
         }
 
     @pytest.mark.unit
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> Any:
         """Test that render module provides info."""
         info = get_module_info()
         assert isinstance(info, dict)
         assert "name" in info or "version" in info or "module" in info
 
     @pytest.mark.unit
-    def test_get_available_renderers(self):
+    def test_get_available_renderers(self) -> Any:
         """Test that available renderers are reported."""
         renderers = get_available_renderers()
         assert isinstance(renderers, (list, dict))
@@ -96,7 +97,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
             assert len(renderers) > 0
 
     @pytest.mark.integration
-    def test_process_render_workflow(self, safe_filesystem, sample_gnn_file):
+    def test_process_render_workflow(
+        self, safe_filesystem: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test full render processing workflow."""
         target_dir = sample_gnn_file.parent
         output_dir = safe_filesystem.create_dir("render_output")
@@ -118,7 +121,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_render_creates_executable_scripts(self, safe_filesystem, sample_gnn_spec):
+    def test_render_creates_executable_scripts(
+        self, safe_filesystem: Any, sample_gnn_spec: Any
+    ) -> Any:
         """Test that render creates executable Python scripts."""
         output_dir = safe_filesystem.create_dir("render_output")
 
@@ -149,11 +154,13 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_render_all_frameworks(self, safe_filesystem, sample_gnn_spec):
+    def test_render_all_frameworks(
+        self, safe_filesystem: Any, sample_gnn_spec: Any
+    ) -> Any:
         """Test rendering to all available frameworks."""
         renderers = get_available_renderers()
 
-        results = {}
+        results: dict[Any, Any] = {}
         for renderer in renderers if isinstance(renderers, list) else renderers.keys():
             output_dir = safe_filesystem.create_dir(f"render_{renderer}")
 
@@ -181,7 +188,9 @@ B = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_render_to_execute_handoff(self, safe_filesystem, sample_gnn_spec):
+    def test_render_to_execute_handoff(
+        self, safe_filesystem: Any, sample_gnn_spec: Any
+    ) -> Any:
         """Test that render output can be used by execute step."""
         # Create output structure matching pipeline expectations
         safe_filesystem.create_dir("output/11_render_output")
@@ -219,7 +228,7 @@ class TestRenderOutputStructure:
     """Tests for render output directory structure."""
 
     @pytest.fixture
-    def sample_gnn_spec(self):
+    def sample_gnn_spec(self) -> Any:
         """Create a minimal GNN spec dictionary."""
         return {
             "name": "test_model",
@@ -229,7 +238,9 @@ class TestRenderOutputStructure:
         }
 
     @pytest.mark.unit
-    def test_render_output_follows_conventions(self, safe_filesystem, sample_gnn_spec):
+    def test_render_output_follows_conventions(
+        self, safe_filesystem: Any, sample_gnn_spec: Any
+    ) -> Any:
         """Test that render output follows naming conventions."""
         output_dir = safe_filesystem.create_dir("render_output")
 
@@ -249,7 +260,9 @@ class TestRenderOutputStructure:
             pytest.skip(f"Render dependencies not available: {e}")
 
     @pytest.mark.unit
-    def test_render_creates_documentation(self, safe_filesystem, sample_gnn_spec):
+    def test_render_creates_documentation(
+        self, safe_filesystem: Any, sample_gnn_spec: Any
+    ) -> Any:
         """Test that render creates documentation alongside code."""
         output_dir = safe_filesystem.create_dir("render_output")
 

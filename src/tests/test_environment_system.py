@@ -8,6 +8,7 @@ Tests system-level requirements, filesystem, and OS configuration.
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -108,7 +109,7 @@ class TestSystemResources:
     @pytest.mark.fast
     def test_file_descriptors_available(self, tmp_path: Path) -> None:
         """Test file descriptors can be opened."""
-        files = []
+        files: list[Any] = []
         try:
             # Try to open several files
             for i in range(10):

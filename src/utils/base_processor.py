@@ -74,7 +74,7 @@ class BaseProcessor(ABC):
         step_name: str,
         logger: Optional[logging.Logger] = None,
         verbose: bool = False,
-    ):
+    ) -> None:
         """
         Initialize the processor.
 
@@ -88,7 +88,9 @@ class BaseProcessor(ABC):
         self.verbose = verbose
 
     @abstractmethod
-    def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
+    def process_single_file(
+        self, file_path: Path, output_dir: Path, **kwargs: Any
+    ) -> bool:
         """
         Process a single file. Must be implemented by subclasses.
 
@@ -129,7 +131,7 @@ class BaseProcessor(ABC):
                 ".md",
             ]  # common data + doc formats; callers add .gnn if needed
 
-        files = []
+        files: list[Any] = []
 
         if pattern:
             if recursive:
@@ -149,7 +151,7 @@ class BaseProcessor(ABC):
         return sorted(set(files))
 
     def process(
-        self, target_dir: Path, output_dir: Path, recursive: bool = False, **kwargs
+        self, target_dir: Path, output_dir: Path, recursive: bool = False, **kwargs: Any
     ) -> ProcessingResult:
         """
         Main processing method. Finds files and processes each one.
@@ -277,7 +279,9 @@ class _FunctionProcessor(BaseProcessor):
         super().__init__(step_name, logger, verbose)
         self._process_func = process_func
 
-    def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
+    def process_single_file(
+        self, file_path: Path, output_dir: Path, **kwargs: Any
+    ) -> bool:
         return self._process_func(file_path, output_dir)
 
 
@@ -302,7 +306,7 @@ def create_processor(
     return _FunctionProcessor(step_name, process_func, logger, verbose)
 
 
-__all__ = [
+__all__: list[Any] = [
     "BaseProcessor",
     "ProcessingResult",
     "create_processor",

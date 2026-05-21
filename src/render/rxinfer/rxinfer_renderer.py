@@ -26,7 +26,7 @@ class RxInferRenderer:
     RxInfer.jl renderer for generating Julia probabilistic programming code from GNN specifications.
     """
 
-    def __init__(self, options: Optional[Dict[str, Any]] = None):
+    def __init__(self, options: Optional[Dict[str, Any]] = None) -> None:
         """
         Initialize RxInfer renderer.
 
@@ -75,7 +75,7 @@ class RxInferRenderer:
 
     def _parse_gnn_content(self, content: str, model_name: str) -> Dict[str, Any]:
         """Parse GNN content into a structured dictionary (simplified parser)."""
-        gnn_spec = {
+        gnn_spec: dict[str, Any] = {
             "model_name": model_name,
             "variables": [],
             "model_parameters": {},
@@ -629,7 +629,7 @@ def render_gnn_to_rxinfer(
             return False, f"Error writing RxInfer.jl script: {write_error}", []
 
         message = f"Generated RxInfer.jl simulation script: {output_path}"
-        warnings = []
+        warnings: list[Any] = []
 
         # Check for potential issues
         if not gnn_spec.get("initial_parameterization"):

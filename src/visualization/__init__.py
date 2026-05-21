@@ -5,7 +5,9 @@ This module provides comprehensive visualization capabilities for GNN files,
 including matrix visualizations, network graphs, and combined analysis plots.
 """
 
-FEATURES = {
+from typing import Any
+
+FEATURES: dict[str, Any] = {
     "matrix_visualization": True,
     "network_graphs": True,
     "combined_analysis": True,
@@ -65,7 +67,7 @@ def _generate_network_statistics(
     variables: Dict[str, Any], connections: List[Dict]
 ) -> Dict[str, Any]:
     """Generate network statistics from variables and connections."""
-    node_degrees = {}
+    node_degrees: dict[Any, Any] = {}
     for conn in connections:
         source = conn.get("source", "unknown")
         target = conn.get("target", "unknown")
@@ -74,7 +76,7 @@ def _generate_network_statistics(
 
     if node_degrees:
         degrees = list(node_degrees.values())
-        stats = {
+        stats: dict[str, Any] = {
             "total_nodes": len(variables),
             "total_connections": len(connections),
             "average_degree": sum(degrees) / len(degrees),
@@ -101,7 +103,7 @@ def _generate_network_statistics(
     return stats
 
 
-__all__ = [
+__all__: list[Any] = [
     "MatrixVisualizer",
     "GNNVisualizer",
     "OntologyVisualizer",

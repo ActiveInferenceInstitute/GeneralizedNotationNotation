@@ -17,9 +17,9 @@ import importlib.util
 import logging
 import subprocess  # nosec B404
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
 
-__all__ = [
+__all__: list[Any] = [
     "FRAMEWORK_IMPORT_CHECK",
     "FrameworkStatus",
     "is_framework_available",

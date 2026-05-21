@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 from execute.executor import execute_rendered_simulators  # noqa: E402
 
-EXPECTED_FRAMEWORK_KEYS = {
+EXPECTED_FRAMEWORK_KEYS: set[Any] = {
     "pymdp_executions",
     "rxinfer_executions",
     "discopy_executions",

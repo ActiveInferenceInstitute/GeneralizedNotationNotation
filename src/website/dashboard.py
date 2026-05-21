@@ -16,7 +16,7 @@ import logging
 from datetime import datetime
 from html import escape
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +104,7 @@ def _load_json(path: Path) -> dict:
     if path.exists():
         try:
             with open(path) as f:
-                return json.load(f)
+                return cast("dict[Any, Any]", json.load(f))
         except (json.JSONDecodeError, OSError) as e:
             logger.debug("Could not load JSON from %s: %s", path, e)
     return {}
@@ -153,7 +153,7 @@ def _status_color(status: str) -> str:
 
 
 def _render_sidebar(steps: List[dict], step_dirs: List[Path]) -> str:
-    items = []
+    items: list[Any] = []
     if steps:
         for s in steps:
             name = escape(s.get("name", "?"))
@@ -187,7 +187,7 @@ def _render_timeline_svg(steps: List[dict]) -> str:
     bar_width = 500
     svg_height = len(steps) * (bar_height + padding) + 20
 
-    bars = []
+    bars: list[Any] = []
     for i, s in enumerate(steps):
         name = escape(s.get("name", "?"))
         dur = s.get("duration_seconds", 0)
@@ -209,7 +209,7 @@ def _render_timeline_svg(steps: List[dict]) -> str:
 
 
 def _render_step_details(steps: List[dict], step_dirs: List[Path]) -> str:
-    sections = []
+    sections: list[Any] = []
     dir_map = {d.name: d for d in step_dirs}
 
     for s in steps:

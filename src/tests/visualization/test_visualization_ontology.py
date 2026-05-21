@@ -7,14 +7,12 @@ This file contains tests migrated from test_visualization.py.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-try:
-    from visualization.ontology_visualizer import OntologyVisualizer
-except Exception:
-    OntologyVisualizer = None
+from visualization.ontology_visualizer import OntologyVisualizer
 
 
 # Migrated from test_visualization.py
@@ -62,7 +60,7 @@ class TestOntologyVisualizer:
     def test_create_ontology_table(self, temp_output_dir: Path) -> None:
         """Test creation of ontology visualization table."""
         visualizer = OntologyVisualizer()
-        mappings = [
+        mappings: list[Any] = [
             ("s1", "state_location_1"),
             ("s2", "state_location_2"),
             ("a1", "action_move_forward"),

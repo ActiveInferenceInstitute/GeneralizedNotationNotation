@@ -30,7 +30,7 @@ def gnn_to_mermaid(
     Returns:
         Mermaid flowchart string with embedded GNN metadata
     """
-    lines = []
+    lines: list[Any] = []
 
     # Header with flowchart directive
     lines.append("flowchart TD")
@@ -126,7 +126,7 @@ def _generate_node_definition(var_name: str, var_data: Dict[str, Any]) -> str:
     shape_open, shape_close = infer_node_shape(var_name, var_data)
 
     # Generate label with dimensions and type
-    label_parts = [var_name]
+    label_parts: list[Any] = [var_name]
 
     # Handle both 'dimensions' and nested structure
     dimensions = var_data.get("dimensions", [])
@@ -177,10 +177,10 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
 
     Returns list of style definition strings.
     """
-    styles = []
+    styles: list[Any] = []
 
     # Define style classes
-    style_classes = {
+    style_classes: dict[str, Any] = {
         "matrix": "fill:#e1f5ff,stroke:#0288d1,stroke-width:2px",
         "vector": "fill:#fff9e6,stroke:#fbc02d,stroke-width:2px",
         "state": "fill:#fff3e0,stroke:#f57c00,stroke-width:2px",
@@ -269,7 +269,7 @@ def generate_mermaid_metadata(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Metadata dictionary
     """
-    metadata = {
+    metadata: dict[str, Any] = {
         "model_name": gnn_model.get("model_name", "Untitled"),
         "version": gnn_model.get("version", "1.0"),
         "variables": {},

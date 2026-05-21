@@ -6,7 +6,7 @@ Each category has its own timeout, max failures, parallel execution settings,
 and list of test files.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 # Test category definitions for modular test execution
 MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
@@ -324,18 +324,18 @@ def get_category(name: str) -> Dict[str, Any]:
 def get_category_files(name: str) -> List[str]:
     """Get test files for a specific category."""
     category = MODULAR_TEST_CATEGORIES.get(name, {})
-    return category.get("files", [])
+    return cast("list[str]", category.get("files", []))
 
 
 def get_all_test_files() -> List[str]:
     """Get all test files across all categories."""
-    files = []
+    files: list[Any] = []
     for category in MODULAR_TEST_CATEGORIES.values():
         files.extend(category.get("files", []))
     return list(set(files))  # Deduplicate
 
 
-__all__ = [
+__all__: list[Any] = [
     "MODULAR_TEST_CATEGORIES",
     "get_category_names",
     "get_category",

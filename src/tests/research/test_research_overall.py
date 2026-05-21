@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest
 
 from research.processor import process_research
@@ -7,7 +9,7 @@ class TestResearchOverall:
     """Test suite for Research module."""
 
     @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem):
+    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a sample GNN file for research testing."""
         content = """
 # Research Model
@@ -22,7 +24,9 @@ StateSpaceBlock {
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_process_research_flow(self, safe_filesystem, sample_gnn_file):
+    def test_process_research_flow(
+        self, safe_filesystem: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test the research processing workflow."""
         target_dir = sample_gnn_file.parent
         output_dir = safe_filesystem.create_dir("research_output")
@@ -43,7 +47,7 @@ StateSpaceBlock {
             results_dir / "research_results.json"
         ).exists()
 
-    def test_process_research_no_files(self, safe_filesystem):
+    def test_process_research_no_files(self, safe_filesystem: Any) -> Any:
         """Test behavior when no GNN files are present."""
         empty_dir = safe_filesystem.create_dir("empty_input")
         output_dir = safe_filesystem.create_dir("empty_output")

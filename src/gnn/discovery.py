@@ -34,7 +34,7 @@ class FileDiscoveryStrategy:
     to identify potential GNN files.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.target_extensions = [".md", ".json", ".xml", ".yaml", ".pkl"]
         self.gnn_indicators = [
             "## ModelName",
@@ -46,7 +46,9 @@ class FileDiscoveryStrategy:
             "connections",
         ]
 
-    def configure(self, target_extensions: Optional[List[str]] = None, **kwargs):
+    def configure(
+        self, target_extensions: Optional[List[str]] = None, **kwargs: Any
+    ) -> Any:
         """Configure discovery parameters."""
         if target_extensions:
             self.target_extensions = target_extensions
@@ -65,8 +67,8 @@ class FileDiscoveryStrategy:
         start_time = time.time()
 
         # Basic file discovery
-        all_files = []
-        potential_gnn_files = []
+        all_files: list[Any] = []
+        potential_gnn_files: list[Any] = []
 
         # Recursive search for target extensions
         for ext in self.target_extensions:

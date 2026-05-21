@@ -42,7 +42,7 @@ class DependencyGraph:
 
     def to_mermaid(self) -> str:
         """Render as Mermaid flowchart."""
-        lines = ["graph TD"]
+        lines: list[Any] = ["graph TD"]
 
         for node in self.nodes:
             label = f"{node.name}\\n({node.variable_count} vars)"
@@ -56,7 +56,7 @@ class DependencyGraph:
 
     def to_adjacency_list(self) -> str:
         """Render as plain-text adjacency list."""
-        lines = ["Dependency Graph:"]
+        lines: list[Any] = ["Dependency Graph:"]
         for node in self.nodes:
             deps = [e.target_model for e in self.edges if e.source_model == node.name]
             if deps:
@@ -102,7 +102,7 @@ def build_dependency_graph(
     # Detect shared variables (cross-model references)
     var_sets: List[Set[str]] = []
     for model in models:
-        vars_ = set()
+        vars_: set[Any] = set()
         for v in model.get("variables", []):
             vname = v.get("name", "") if isinstance(v, dict) else str(v)
             vars_.add(vname)

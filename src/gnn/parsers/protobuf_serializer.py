@@ -10,7 +10,7 @@ class ProtobufSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Protocol Buffers format with embedded model data."""
-        lines = []
+        lines: list[Any] = []
 
         # Proto3 syntax
         lines.append('syntax = "proto3";')
@@ -91,7 +91,7 @@ class ProtobufSerializer(BaseGNNSerializer):
         lines.append("")
 
         # Embed complete model data as JSON in comments for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -181,7 +181,7 @@ class ProtobufSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec) -> Dict[str, Any]:
+    def _serialize_time_spec(self, time_spec: Any) -> Dict[str, Any]:
         """Serialize TimeSpecification object to dict."""
         if not time_spec or not hasattr(time_spec, "__dict__"):
             return {}

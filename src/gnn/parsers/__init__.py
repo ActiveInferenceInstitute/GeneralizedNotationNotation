@@ -41,8 +41,8 @@ License: MIT
 # system.py is the single source of truth for parser/serializer registration.
 # Re-export everything from there to avoid double-importing all 46 concrete classes.
 from pathlib import Path as _Path
+from typing import Any, Union
 from typing import Optional as _Optional
-from typing import Union
 
 from .common import ASTNode, ValidationError, ValidationWarning
 from .converters import ConversionError, FormatConverter
@@ -111,7 +111,7 @@ from .validators import GNNValidator
 
 def parse_gnn_file_structured(
     file_path: Union[str, _Path],
-    format_hint: _Optional[GNNFormat] = None,
+    format_hint: (_Optional[GNNFormat]) | None = None,
     strict_validation: bool = True,
 ) -> ParseResult:
     """Parse a GNN file using the unified parsing system, returning a structured ParseResult."""
@@ -122,7 +122,7 @@ def parse_gnn_file_structured(
 def convert_gnn_format(
     input_file: Union[str, _Path],
     output_file: Union[str, _Path],
-    target_format: _Optional[GNNFormat] = None,
+    target_format: (_Optional[GNNFormat]) | None = None,
 ) -> None:
     """Convert a GNN file from one format to another."""
     system = GNNParsingSystem()
@@ -135,7 +135,7 @@ def convert_gnn_format(
     system.serialize_to_file(result.model, output_file, target_format)
 
 
-__all__ = [
+__all__: list[Any] = [
     # Core classes
     "GNNParsingSystem",
     "UnifiedGNNParser",

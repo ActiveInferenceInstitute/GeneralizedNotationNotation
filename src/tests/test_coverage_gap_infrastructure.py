@@ -11,6 +11,7 @@ simulation_monitor, simulation_utils, visualization_optimizer. The
 import asyncio
 import logging
 from pathlib import Path
+from typing import Any
 
 # Import targets
 from utils.simulation_monitor import SimulationMonitor
@@ -30,18 +31,18 @@ from utils.visualization_optimizer import (
 
 # 1. Tests for utils/timeout_manager.py
 class TestTimeoutManager:
-    def test_sync_timeout_success(self):
+    def test_sync_timeout_success(self) -> Any:
         manager = TimeoutManager()
         config = TimeoutConfig(base_timeout=1.0, max_retries=0)
 
-        def fast_func(x):
+        def fast_func(x: Any) -> Any:
             return x * 2
 
         with manager.sync_timeout("test_sync", config, fast_func, 5) as result:
             assert result.success is True
             assert result.result == 10
 
-    def test_async_timeout_success(self):
+    def test_async_timeout_success(self) -> Any:
         """Exercise async_timeout without pytest-asyncio (core env may omit dev extras)."""
 
         async def _run() -> None:
@@ -59,28 +60,28 @@ class TestTimeoutManager:
 
         asyncio.run(_run())
 
-    def test_llm_timeout_manager(self):
+    def test_llm_timeout_manager(self) -> Any:
         manager = LLMTimeoutManager()
         assert manager.default_config.base_timeout == 60.0
 
-    def test_process_timeout_manager(self):
+    def test_process_timeout_manager(self) -> Any:
         manager = ProcessTimeoutManager()
         assert manager.default_config.base_timeout == 120.0
 
 
 # 3. Tests for utils/simulation_monitor.py
 class TestSimulationMonitor:
-    def test_monitor_initialization(self, tmp_path):
+    def test_monitor_initialization(self, tmp_path: Any) -> Any:
         log_file = tmp_path / "sim.log"
         monitor = SimulationMonitor(log_file=log_file)
         assert monitor.log_file == log_file
         assert monitor.execution_data["total_attempted"] == 0
 
-    def test_track_simulation_decorator(self, tmp_path):
+    def test_track_simulation_decorator(self, tmp_path: Any) -> Any:
         monitor = SimulationMonitor(log_file=tmp_path / "sim.log")
 
         @monitor.track_simulation("test_sim")
-        def lucky_sim(x):
+        def lucky_sim(x: Any) -> Any:
             return x + 1
 
         result = lucky_sim(10)
@@ -88,7 +89,7 @@ class TestSimulationMonitor:
         assert monitor.execution_data["total_successful"] == 1
         assert "test_sim" in monitor.execution_data["simulations"]
 
-    def test_monitor_data_collection(self, tmp_path):
+    def test_monitor_data_collection(self, tmp_path: Any) -> Any:
         monitor = SimulationMonitor(log_file=tmp_path / "sim.log")
         assert monitor.monitor_data_collection([1, 2, 3], "test") is True
         assert monitor.monitor_data_collection([], "fail") is False
@@ -96,7 +97,7 @@ class TestSimulationMonitor:
 
 # 4. Tests for utils/simulation_utils.py
 class TestSimulationUtils:
-    def test_simulation_tracker(self, tmp_path):
+    def test_simulation_tracker(self, tmp_path: Any) -> Any:
         tracker = SimulationTracker("model_a", "pymdp", tmp_path)
         tracker.log_step(0, [1, 0], [0], [1], 1.0)
         assert len(tracker.data["traces"]["rewards"]) == 1
@@ -104,7 +105,7 @@ class TestSimulationUtils:
         tracker.calculate_summary_stats()
         assert tracker.data["summary_stats"]["total_reward"] == 1.0
 
-    def test_diagram_analyzer(self, tmp_path):
+    def test_diagram_analyzer(self, tmp_path: Any) -> Any:
         analyzer = DiagramAnalyzer("test_model", tmp_path)
         analyzer.log_diagram("D1", "A", "B", {"prop": 1})
         assert len(analyzer.analysis_data["diagrams"]) == 1
@@ -115,7 +116,7 @@ class TestSimulationUtils:
 
 # 5. Tests for utils/visualization_optimizer.py
 class TestVisualizationOptimizer:
-    def test_visualization_cache(self, tmp_path):
+    def test_visualization_cache(self, tmp_path: Any) -> Any:
         cache_dir = tmp_path / "cache"
         cache = VisualizationCache(cache_dir=cache_dir)
         key = cache.get_cache_key("content", {"p": 1})
@@ -129,19 +130,19 @@ class TestVisualizationOptimizer:
         assert cache.is_cached(key) is True
         assert cache.get_cached_files(key) == [str(test_file)]
 
-    def test_data_sampler(self):
+    def test_data_sampler(self) -> Any:
         sampler = DataSampler(max_nodes=10)
-        data = {"nodes": [{"id": i} for i in range(20)]}
+        data: dict[str, Any] = {"nodes": [{"id": i} for i in range(20)]}
 
         assert sampler.should_sample(data) is True
         sampled = sampler.sample_data(data)
         assert len(sampled["nodes"]) == 10
         assert sampled["_sampling_applied"] is True
 
-    def test_optimizer_batch(self, tmp_path):
+    def test_optimizer_batch(self, tmp_path: Any) -> Any:
         optimizer = VisualizationOptimizer(cache_dir=tmp_path / "cache")
 
-        def sample_proc(file_path, **kwargs):
+        def sample_proc(file_path: Any, **kwargs: Any) -> Any:
             return {"success": True, "file": str(file_path)}
 
         files = [tmp_path / f"file_{i}.md" for i in range(3)]

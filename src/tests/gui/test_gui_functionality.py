@@ -13,13 +13,14 @@ Tests the GUI module's process_gui function and related functionality:
 import io
 import json
 import logging
+from typing import Any, cast
 
 import pytest
 
 from gui import generate_html_navigation, process_gui
 
 
-def get_real_logger():
+def get_real_logger() -> Any:
     """Create a real logger that captures output to a StringIO stream."""
     logger = logging.getLogger("test_gui_logger")
     logger.setLevel(logging.DEBUG)
@@ -33,10 +34,11 @@ def get_real_logger():
     handler.setFormatter(logging.Formatter("%(levelname)s:%(message)s"))
     logger.addHandler(handler)
 
-    logger.stream = stream
+    logger_state = cast(Any, logger)
+    logger_state.stream = stream
 
     # Helper to retrieve trapped messages exactly like the simulated
-    def get_messages(level=None):
+    def get_messages(level: Any = None) -> Any:
         content = stream.getvalue().splitlines()
         if not level:
             return [line.split(":", 1)[1] for line in content if ":" in line]
@@ -47,7 +49,7 @@ def get_real_logger():
             if line.startswith(f"{level_str}:")
         ]
 
-    logger.get_messages = get_messages
+    logger_state.get_messages = get_messages
     return logger
 
 
@@ -56,7 +58,7 @@ class TestGUIHeadlessMode:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_headless_mode_returns_success(self, isolated_temp_dir):
+    def test_headless_mode_returns_success(self, isolated_temp_dir: Any) -> Any:
         """Test that headless mode returns success for valid input."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
@@ -75,7 +77,7 @@ class TestGUIHeadlessMode:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_headless_mode_creates_summary(self, isolated_temp_dir):
+    def test_headless_mode_creates_summary(self, isolated_temp_dir: Any) -> Any:
         """Test that headless mode creates processing summary."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
@@ -90,7 +92,7 @@ class TestGUIHeadlessMode:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_headless_summary_has_correct_mode(self, isolated_temp_dir):
+    def test_headless_summary_has_correct_mode(self, isolated_temp_dir: Any) -> Any:
         """Test that processing summary reports correct mode."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
@@ -106,7 +108,7 @@ class TestGUIHeadlessMode:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_headless_mode_empty_directory(self, isolated_temp_dir):
+    def test_headless_mode_empty_directory(self, isolated_temp_dir: Any) -> Any:
         """Test headless mode with empty input directory."""
         target = isolated_temp_dir / "empty_input"
         output = isolated_temp_dir / "output"
@@ -125,7 +127,7 @@ class TestGUIConfiguration:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_gui_types_string_parsing(self, isolated_temp_dir):
+    def test_gui_types_string_parsing(self, isolated_temp_dir: Any) -> Any:
         """Test that GUI types string is parsed correctly."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
@@ -147,7 +149,7 @@ class TestGUIConfiguration:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_gui_types_list(self, isolated_temp_dir):
+    def test_gui_types_list(self, isolated_temp_dir: Any) -> Any:
         """Test that GUI types can be passed as list."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
@@ -170,7 +172,7 @@ class TestGUIConfiguration:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_unknown_gui_type_handled(self, isolated_temp_dir, caplog):
+    def test_unknown_gui_type_handled(self, isolated_temp_dir: Any, caplog: Any) -> Any:
         """Test that unknown GUI types are handled gracefully."""
         import logging
 
@@ -201,7 +203,7 @@ class TestGUIHTMLNavigation:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_generate_html_navigation_creates_file(self, isolated_temp_dir):
+    def test_generate_html_navigation_creates_file(self, isolated_temp_dir: Any) -> Any:
         """Test that HTML navigation file is created."""
         pipeline_output = isolated_temp_dir / "output"
         gui_output = pipeline_output / "22_gui_output"
@@ -220,7 +222,7 @@ class TestGUIHTMLNavigation:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_html_navigation_contains_structure(self, isolated_temp_dir):
+    def test_html_navigation_contains_structure(self, isolated_temp_dir: Any) -> Any:
         """Test that HTML navigation has proper structure."""
         pipeline_output = isolated_temp_dir / "output"
         gui_output = pipeline_output / "22_gui_output"
@@ -241,7 +243,7 @@ class TestGUIHTMLNavigation:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_html_navigation_empty_output(self, isolated_temp_dir):
+    def test_html_navigation_empty_output(self, isolated_temp_dir: Any) -> Any:
         """Test HTML navigation with no output directories."""
         pipeline_output = isolated_temp_dir / "empty_output"
         gui_output = pipeline_output / "22_gui_output"
@@ -259,7 +261,7 @@ class TestGUIOutputArtifacts:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_process_gui_creates_output_directory(self, isolated_temp_dir):
+    def test_process_gui_creates_output_directory(self, isolated_temp_dir: Any) -> Any:
         """Test that process_gui creates output directory if needed."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "nonexistent" / "output"
@@ -273,7 +275,7 @@ class TestGUIOutputArtifacts:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_summary_contains_results(self, isolated_temp_dir):
+    def test_summary_contains_results(self, isolated_temp_dir: Any) -> Any:
         """Test that summary contains results for each GUI type."""
         target = isolated_temp_dir / "input"
         output = isolated_temp_dir / "output"
@@ -301,7 +303,7 @@ class TestGUIErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_nonexistent_target_directory(self, isolated_temp_dir):
+    def test_nonexistent_target_directory(self, isolated_temp_dir: Any) -> Any:
         """Test handling of nonexistent target directory."""
         target = isolated_temp_dir / "nonexistent"
         output = isolated_temp_dir / "output"
@@ -315,7 +317,7 @@ class TestGUIErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_verbose_mode_logs_more(self, isolated_temp_dir):
+    def test_verbose_mode_logs_more(self, isolated_temp_dir: Any) -> Any:
         """Test that verbose mode produces more log messages."""
         target = isolated_temp_dir / "input"
         output_quiet = isolated_temp_dir / "output_quiet"

@@ -7,6 +7,7 @@ Add/remove/update/lock dependency operations extracted from uv_management.py.
 import logging
 import subprocess  # nosec B404
 import sys
+from typing import Any
 
 from .constants import (
     PROJECT_ROOT,
@@ -31,7 +32,7 @@ def add_uv_dependency(package: str, dev: bool = False, verbose: bool = False) ->
     sys.stdout.flush()
 
     try:
-        cmd = ["uv", "add", package]
+        cmd: list[Any] = ["uv", "add", package]
         if dev:
             cmd.append("--dev")
 
@@ -75,7 +76,7 @@ def remove_uv_dependency(package: str, verbose: bool = False) -> bool:
     sys.stdout.flush()
 
     try:
-        cmd = ["uv", "remove", package]
+        cmd: list[Any] = ["uv", "remove", package]
 
         if verbose:
             logger.debug(f"Running: {' '.join(cmd)}")
@@ -117,7 +118,7 @@ def update_uv_dependencies(verbose: bool = False, upgrade: bool = False) -> bool
     sys.stdout.flush()
 
     try:
-        cmd = ["uv", "sync"]
+        cmd: list[Any] = ["uv", "sync"]
         if upgrade:
             cmd.append("--upgrade")
 
@@ -163,7 +164,7 @@ def lock_uv_dependencies(verbose: bool = False) -> bool:
     sys.stdout.flush()
 
     try:
-        cmd = ["uv", "lock"]
+        cmd: list[Any] = ["uv", "lock"]
 
         if verbose:
             logger.debug(f"Running: {' '.join(cmd)}")

@@ -6,13 +6,14 @@ Both visualization (step 8) and analysis (step 16) import from the package-root
 """
 
 import logging
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 MATPLOTLIB_AVAILABLE = False
-plt = None
-np = None
-sns = None
+plt: Any = None
+np: Any = None
+sns: Any = None
 
 try:
     import numpy as _np

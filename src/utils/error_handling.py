@@ -110,7 +110,7 @@ class RetryConfig:
 class PipelineErrorHandler:
     """Centralized error handling and recovery system."""
 
-    def __init__(self, logger: logging.Logger, correlation_id: str):
+    def __init__(self, logger: logging.Logger, correlation_id: str) -> None:
         self.logger = logger
         self.correlation_id = correlation_id
         self.errors: List[PipelineError] = []
@@ -121,7 +121,7 @@ class PipelineErrorHandler:
         step_name: str,
         error: Exception,
         category: ErrorCategory = ErrorCategory.UNKNOWN,
-        context: Dict[str, Any] = None,
+        context: (Dict[str, Any]) | None = None,
     ) -> PipelineError:
         """Create a standardized pipeline error from an exception."""
 
@@ -188,7 +188,10 @@ class PipelineErrorHandler:
 
     def _is_recoverable(self, error: Exception, category: ErrorCategory) -> bool:
         """Determine if an error is recoverable."""
-        unrecoverable_categories = [ErrorCategory.SECURITY, ErrorCategory.CONFIGURATION]
+        unrecoverable_categories: list[Any] = [
+            ErrorCategory.SECURITY,
+            ErrorCategory.CONFIGURATION,
+        ]
         return category not in unrecoverable_categories
 
     def handle_error(self, error: PipelineError) -> int:
@@ -234,7 +237,7 @@ class PipelineErrorHandler:
             return 1  # Critical - manual intervention needed
 
     @contextmanager
-    def error_context(self, step_name: str, operation: str):
+    def error_context(self, step_name: str, operation: str) -> Any:
         """Context manager for error handling in pipeline operations."""
         try:
             self.logger.debug(
@@ -303,7 +306,7 @@ class PipelineErrorHandler:
         """Generate a comprehensive error report."""
         report_file = output_dir / f"pipeline_errors_{int(time.time())}.json"
 
-        error_summary = {
+        error_summary: dict[str, Any] = {
             "correlation_id": self.correlation_id,
             "total_errors": len(self.errors),
             "error_breakdown": {},

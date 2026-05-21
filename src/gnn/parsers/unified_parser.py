@@ -13,7 +13,7 @@ import hashlib
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 from .common import (
     BaseGNNParser,
@@ -34,7 +34,7 @@ class UnifiedGNNParser:
     appropriate format-specific parser.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the unified parser."""
         self.format_parsers: Dict[GNNFormat, BaseGNNParser] = {}
 
@@ -195,7 +195,7 @@ class UnifiedGNNParser:
         extension = file_path.suffix.lower()
 
         # Extension-based detection
-        extension_map = {
+        extension_map: dict[str, Any] = {
             ".md": GNNFormat.MARKDOWN,
             ".scala": GNNFormat.SCALA,
             ".lean": GNNFormat.LEAN,
@@ -230,7 +230,7 @@ class UnifiedGNNParser:
                 if content_detected != detected:
                     return content_detected
 
-            return detected
+            return cast("GNNFormat", detected)
 
         # Content-based detection for unknown extensions
         return self._detect_format_from_content(file_path)
@@ -503,11 +503,11 @@ class UnifiedGNNParser:
         """Get list of all supported formats."""
         return list(GNNFormat)
 
-    def clear_parser_cache(self):
+    def clear_parser_cache(self) -> Any:
         """Clear the parser cache to free memory."""
         self.format_parsers.clear()
         logger.info("Parser cache cleared")
 
 
 # Re-export for convenience
-__all__ = ["UnifiedGNNParser", "GNNFormat", "ParseResult"]
+__all__: list[Any] = ["UnifiedGNNParser", "GNNFormat", "ParseResult"]

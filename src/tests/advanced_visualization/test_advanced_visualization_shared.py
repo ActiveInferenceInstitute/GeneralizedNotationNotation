@@ -8,6 +8,7 @@ and _calculate_semantic_positions.
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -15,7 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 
 class TestNormalizeConnectionFormat:
-    def _fn(self):
+    def _fn(self) -> Any:
         try:
             from advanced_visualization._shared import normalize_connection_format
 
@@ -23,44 +24,49 @@ class TestNormalizeConnectionFormat:
         except ImportError:
             pytest.skip("advanced_visualization._shared not importable")
 
-    def test_new_format_passthrough(self):
+    def test_new_format_passthrough(self) -> Any:
         fn = self._fn()
-        conn = {"source_variables": ["A"], "target_variables": ["B"]}
+        conn: dict[str, Any] = {"source_variables": ["A"], "target_variables": ["B"]}
         result = fn(conn)
         assert result["source_variables"] == ["A"]
         assert result["target_variables"] == ["B"]
 
-    def test_old_format_converted(self):
+    def test_old_format_converted(self) -> Any:
         fn = self._fn()
-        conn = {"source": "A", "target": "B", "type": "directed"}
+        conn: dict[str, Any] = {"source": "A", "target": "B", "type": "directed"}
         result = fn(conn)
         assert result["source_variables"] == ["A"]
         assert result["target_variables"] == ["B"]
         assert result.get("type") == "directed"
 
-    def test_old_format_extra_keys_preserved(self):
+    def test_old_format_extra_keys_preserved(self) -> Any:
         fn = self._fn()
-        conn = {"source": "X", "target": "Y", "label": "prob", "weight": 0.5}
+        conn: dict[str, Any] = {
+            "source": "X",
+            "target": "Y",
+            "label": "prob",
+            "weight": 0.5,
+        }
         result = fn(conn)
         assert result.get("label") == "prob"
         assert result.get("weight") == 0.5
 
-    def test_source_not_in_result_when_converted(self):
+    def test_source_not_in_result_when_converted(self) -> Any:
         fn = self._fn()
-        conn = {"source": "X", "target": "Y"}
+        conn: dict[str, Any] = {"source": "X", "target": "Y"}
         result = fn(conn)
         assert "source" not in result
         assert "target" not in result
 
-    def test_unknown_format_returns_unchanged(self):
+    def test_unknown_format_returns_unchanged(self) -> Any:
         fn = self._fn()
-        conn = {"from": "A", "to": "B"}
+        conn: dict[str, Any] = {"from": "A", "to": "B"}
         result = fn(conn)
         assert result == conn
 
 
 class TestCalculateSemanticPositions:
-    def _fn(self):
+    def _fn(self) -> Any:
         try:
             from advanced_visualization._shared import _calculate_semantic_positions
 
@@ -68,36 +74,36 @@ class TestCalculateSemanticPositions:
         except ImportError:
             pytest.skip("advanced_visualization._shared not importable")
 
-    def test_empty_variables_returns_empty(self):
+    def test_empty_variables_returns_empty(self) -> Any:
         fn = self._fn()
         result = fn([], [])
         # Either empty list or empty array
         assert len(result) == 0
 
-    def test_single_variable_returns_one_position(self):
+    def test_single_variable_returns_one_position(self) -> Any:
         pytest.importorskip("numpy")
         fn = self._fn()
-        variables = [{"name": "s"}]
+        variables: list[Any] = [{"name": "s"}]
         result = fn(variables, [])
         assert len(result) == 1
 
-    def test_multiple_variables_correct_count(self):
+    def test_multiple_variables_correct_count(self) -> Any:
         pytest.importorskip("numpy")
         fn = self._fn()
         variables = [{"name": f"v{i}"} for i in range(4)]
         result = fn(variables, [])
         assert len(result) == 4
 
-    def test_positions_are_3d(self):
+    def test_positions_are_3d(self) -> Any:
         pytest.importorskip("numpy")
         fn = self._fn()
-        variables = [{"name": "A"}, {"name": "B"}]
+        variables: list[Any] = [{"name": "A"}, {"name": "B"}]
         result = fn(variables, [])
         assert result.shape == (2, 3)
 
 
 class TestValidateVisualizationData:
-    def _fn(self):
+    def _fn(self) -> Any:
         try:
             from advanced_visualization._shared import validate_visualization_data
 
@@ -105,17 +111,17 @@ class TestValidateVisualizationData:
         except ImportError:
             pytest.skip("advanced_visualization._shared not importable")
 
-    def _logger(self):
+    def _logger(self) -> Any:
         return logging.getLogger("test")
 
-    def test_empty_model_returns_dict(self):
+    def test_empty_model_returns_dict(self) -> Any:
         fn = self._fn()
         result = fn({}, self._logger())
         assert isinstance(result, dict)
 
-    def test_valid_model_is_valid(self):
+    def test_valid_model_is_valid(self) -> Any:
         fn = self._fn()
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": "Test",
             "variables": [{"name": "s", "dimensions": [3, 1]}],
             "connections": [],
@@ -126,9 +132,9 @@ class TestValidateVisualizationData:
         # Should have a validity indicator
         assert "is_valid" in result or "valid" in result or "errors" in result
 
-    def test_model_with_variables_passes(self):
+    def test_model_with_variables_passes(self) -> Any:
         fn = self._fn()
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": "TestModel",
             "variables": [
                 {"name": "A", "dimensions": [3, 3]},

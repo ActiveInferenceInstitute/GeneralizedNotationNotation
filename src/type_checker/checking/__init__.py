@@ -5,6 +5,8 @@ Contains the core logic for GNN type validation, dimension checking,
 and structural consistency analysis.
 """
 
+from typing import Any
+
 from .core import GNNTypeChecker, estimate_file_resources
 from .dimensions import extract_gnn_dimensions, validate_dimension_compatibility
 from .rules import (
@@ -14,7 +16,7 @@ from .rules import (
     validate_type,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "GNNTypeChecker",
     "check_type_consistency",
     "estimate_file_resources",

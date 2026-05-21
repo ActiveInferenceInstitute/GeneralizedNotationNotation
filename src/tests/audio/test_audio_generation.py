@@ -9,6 +9,7 @@ generate_oscillator_audio, mix_audio_channels, and SyntheticAudioGenerator.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -25,7 +26,7 @@ pytestmark = pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
 
 
 @pytest.fixture(autouse=True)
-def require_audio():
+def require_audio() -> Any:
     try:
         import audio.generator  # noqa: F401
     except ImportError:
@@ -33,7 +34,7 @@ def require_audio():
 
 
 class TestGenerateTonalRepresentation:
-    def test_empty_variables_returns_silence(self):
+    def test_empty_variables_returns_silence(self) -> Any:
         from audio.generator import generate_tonal_representation
 
         result = generate_tonal_representation([], [])
@@ -41,32 +42,32 @@ class TestGenerateTonalRepresentation:
         assert result.shape[0] == int(44100 * 5.0)
         assert np.all(result == 0.0)
 
-    def test_single_variable_produces_nonzero_audio(self):
+    def test_single_variable_produces_nonzero_audio(self) -> Any:
         from audio.generator import generate_tonal_representation
 
-        variables = [{"name": "s"}]
+        variables: list[Any] = [{"name": "s"}]
         result = generate_tonal_representation(variables, [])
         assert result.shape[0] > 0
         assert np.any(result != 0.0)
 
-    def test_multiple_variables_returns_correct_length(self):
+    def test_multiple_variables_returns_correct_length(self) -> Any:
         from audio.generator import generate_tonal_representation
 
         variables = [{"name": f"v{i}"} for i in range(4)]
         result = generate_tonal_representation(variables, [])
         assert result.shape[0] == int(44100 * 5.0)
 
-    def test_connections_do_not_change_output_length(self):
+    def test_connections_do_not_change_output_length(self) -> Any:
         from audio.generator import generate_tonal_representation
 
-        variables = [{"name": "s"}, {"name": "o"}]
-        connections = [{"source": "s", "target": "o"}]
+        variables: list[Any] = [{"name": "s"}, {"name": "o"}]
+        connections: list[Any] = [{"source": "s", "target": "o"}]
         result = generate_tonal_representation(variables, connections)
         assert result.shape[0] == int(44100 * 5.0)
 
 
 class TestGenerateRhythmicRepresentation:
-    def test_no_connections_returns_silence(self):
+    def test_no_connections_returns_silence(self) -> Any:
         from audio.generator import generate_rhythmic_representation
 
         result = generate_rhythmic_representation([], [])
@@ -74,14 +75,14 @@ class TestGenerateRhythmicRepresentation:
         assert result.shape[0] == int(44100 * 5.0)
         assert np.all(result == 0.0)
 
-    def test_single_connection_produces_audio(self):
+    def test_single_connection_produces_audio(self) -> Any:
         from audio.generator import generate_rhythmic_representation
 
         result = generate_rhythmic_representation([], [{"source": "a", "target": "b"}])
         assert result.shape[0] > 0
         assert np.any(result != 0.0)
 
-    def test_multiple_connections_correct_length(self):
+    def test_multiple_connections_correct_length(self) -> Any:
         from audio.generator import generate_rhythmic_representation
 
         connections = [{"source": f"a{i}", "target": f"b{i}"} for i in range(3)]
@@ -90,7 +91,7 @@ class TestGenerateRhythmicRepresentation:
 
 
 class TestGenerateAmbientRepresentation:
-    def test_empty_inputs_returns_audio_with_drone(self):
+    def test_empty_inputs_returns_audio_with_drone(self) -> Any:
         from audio.generator import generate_ambient_representation
 
         result = generate_ambient_representation([], [])
@@ -99,16 +100,16 @@ class TestGenerateAmbientRepresentation:
         # Drone always present
         assert np.any(result != 0.0)
 
-    def test_variables_add_harmonics(self):
+    def test_variables_add_harmonics(self) -> Any:
         from audio.generator import generate_ambient_representation
 
         empty_result = generate_ambient_representation([], [])
-        variables = [{"name": "s"}, {"name": "o"}]
+        variables: list[Any] = [{"name": "s"}, {"name": "o"}]
         var_result = generate_ambient_representation(variables, [])
         # Adding variables changes the output
         assert not np.allclose(empty_result, var_result)
 
-    def test_output_length_is_ten_seconds(self):
+    def test_output_length_is_ten_seconds(self) -> Any:
         from audio.generator import generate_ambient_representation
 
         result = generate_ambient_representation([{"name": "x"}], [])
@@ -116,21 +117,21 @@ class TestGenerateAmbientRepresentation:
 
 
 class TestGenerateSonificationAudio:
-    def test_empty_dynamics_returns_silence(self):
+    def test_empty_dynamics_returns_silence(self) -> Any:
         from audio.generator import generate_sonification_audio
 
         result = generate_sonification_audio([])
         assert isinstance(result, np.ndarray)
         assert np.all(result == 0.0)
 
-    def test_single_dynamic_produces_audio(self):
+    def test_single_dynamic_produces_audio(self) -> Any:
         from audio.generator import generate_sonification_audio
 
         result = generate_sonification_audio([{"state": 0.5}])
         assert result.shape[0] > 0
         assert np.any(result != 0.0)
 
-    def test_output_length_is_eight_seconds(self):
+    def test_output_length_is_eight_seconds(self) -> Any:
         from audio.generator import generate_sonification_audio
 
         result = generate_sonification_audio([{"x": 1.0}])
@@ -141,14 +142,14 @@ class TestGenerateOscillatorAudio:
     @pytest.mark.parametrize(
         "osc_type", ["sine", "square", "sawtooth", "triangle", "noise"]
     )
-    def test_oscillator_types_produce_audio(self, osc_type):
+    def test_oscillator_types_produce_audio(self, osc_type: Any) -> Any:
         from audio.generator import generate_oscillator_audio
 
         result = generate_oscillator_audio(440.0, 0.5, oscillator_type=osc_type)
         assert isinstance(result, np.ndarray)
         assert result.shape[0] == int(44100 * 0.5)
 
-    def test_unknown_type_falls_back_gracefully(self):
+    def test_unknown_type_falls_back_gracefully(self) -> Any:
         from audio.generator import generate_oscillator_audio
 
         result = generate_oscillator_audio(440.0, 0.5, oscillator_type="unknown")
@@ -157,20 +158,20 @@ class TestGenerateOscillatorAudio:
 
 
 class TestMixAudioChannels:
-    def test_empty_channels_returns_empty(self):
+    def test_empty_channels_returns_empty(self) -> Any:
         from audio.generator import mix_audio_channels
 
         result = mix_audio_channels([])
         assert len(result) == 0
 
-    def test_single_channel_passthrough(self):
+    def test_single_channel_passthrough(self) -> Any:
         from audio.generator import mix_audio_channels
 
         ch = np.ones(100)
         result = mix_audio_channels([ch])
         assert result.shape[0] == 100
 
-    def test_add_mode_sums_channels(self):
+    def test_add_mode_sums_channels(self) -> Any:
         from audio.generator import mix_audio_channels
 
         a = np.ones(100)
@@ -178,7 +179,7 @@ class TestMixAudioChannels:
         result = mix_audio_channels([a, b], mix_mode="add")
         assert np.allclose(result, 3.0)
 
-    def test_average_mode(self):
+    def test_average_mode(self) -> Any:
         from audio.generator import mix_audio_channels
 
         a = np.ones(100)
@@ -186,7 +187,7 @@ class TestMixAudioChannels:
         result = mix_audio_channels([a, b], mix_mode="average")
         assert np.allclose(result, 2.0)
 
-    def test_unequal_length_channels_padded(self):
+    def test_unequal_length_channels_padded(self) -> Any:
         from audio.generator import mix_audio_channels
 
         a = np.ones(200)
@@ -196,11 +197,11 @@ class TestMixAudioChannels:
 
 
 class TestSyntheticAudioGenerator:
-    def test_generate_sine_wave(self):
+    def test_generate_sine_wave(self) -> Any:
         from audio.generator import SyntheticAudioGenerator
 
         gen = SyntheticAudioGenerator()
-        config = {
+        config: dict[str, Any] = {
             "frequency": 440.0,
             "duration": 0.5,
             "oscillator_type": "sine",
@@ -211,7 +212,7 @@ class TestSyntheticAudioGenerator:
         assert result.shape[0] == int(44100 * 0.5)
         assert np.all(np.abs(result) <= 1.0 + 1e-6)
 
-    def test_apply_adsr_envelope_changes_amplitude(self):
+    def test_apply_adsr_envelope_changes_amplitude(self) -> Any:
         from audio.generator import SyntheticAudioGenerator
 
         gen = SyntheticAudioGenerator()
@@ -223,7 +224,7 @@ class TestSyntheticAudioGenerator:
         assert enveloped[0] < 0.5  # attack starts near 0
         assert enveloped[-1] < 0.5  # release ends near 0
 
-    def test_supported_formats_present(self):
+    def test_supported_formats_present(self) -> Any:
         from audio.generator import SyntheticAudioGenerator
 
         gen = SyntheticAudioGenerator()

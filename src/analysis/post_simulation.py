@@ -14,7 +14,9 @@ Implementation is split across sub-modules for maintainability:
 This file is the public facade for the analysis sub-modules listed above.
 """
 
-__all__ = [
+from typing import Any
+
+__all__: list[Any] = [
     # trace_analysis
     "analyze_simulation_traces",
     "analyze_free_energy",
@@ -116,7 +118,7 @@ def analyze_execution_results(
         Dictionary with comprehensive analysis results
     """
     try:
-        analysis_results = {
+        analysis_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "execution_results_dir": str(execution_results_dir),
             "framework_results": {},
@@ -133,7 +135,7 @@ def analyze_execution_results(
             return analysis_results
 
         # Group by framework
-        framework_data = {}
+        framework_data: dict[Any, Any] = {}
 
         for result_file in result_files:
             try:
@@ -170,7 +172,7 @@ def analyze_execution_results(
         # Analyze each framework's results
         for framework, results in framework_data.items():
             try:
-                framework_analysis = {
+                framework_analysis: dict[str, Any] = {
                     "framework": framework,
                     "result_count": len(results),
                     "analyses": [],
@@ -361,7 +363,7 @@ def analyze_execution_results(
 
         # Cross-framework comparison
         if len(framework_data) > 1:
-            comparison_input = {}
+            comparison_input: dict[Any, Any] = {}
             for framework, results in framework_data.items():
                 if results:
                     comparison_input[framework] = results[0]

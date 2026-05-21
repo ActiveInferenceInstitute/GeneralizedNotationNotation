@@ -26,7 +26,7 @@ class TestMCPModule:
         """Test that FEATURES dict is properly populated."""
         from mcp import FEATURES
 
-        expected_features = [
+        expected_features: list[Any] = [
             "tool_registration",
             "resource_access",
             "module_discovery",
@@ -204,7 +204,7 @@ class TestMCPProcessing:
         process_mcp(target_dir=target_dir, output_dir=output_dir, logger=logger)
 
         # Check for expected output files
-        expected_files = ["mcp_processing_summary.json", "mcp_results.json"]
+        expected_files: list[Any] = ["mcp_processing_summary.json", "mcp_results.json"]
 
         for filename in expected_files:
             file_path = output_dir / filename

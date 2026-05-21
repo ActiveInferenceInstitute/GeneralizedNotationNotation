@@ -6,6 +6,8 @@ Tests MCP tool registration, MCPServer lifecycle, tool discovery,
 tool execution, resource management, and server status.
 """
 
+from typing import Any, cast
+
 import pytest
 
 pytestmark = pytest.mark.mcp
@@ -26,13 +28,13 @@ from mcp.server import MCPServer
 
 
 @pytest.fixture
-def mcp_instance():
+def mcp_instance() -> Any:
     """Create a fresh MCP instance for each test."""
     return MCP(enable_caching=False, enable_rate_limiting=False)
 
 
 @pytest.fixture
-def sample_tool_func():
+def sample_tool_func() -> Any:
     """A simple callable for tool registration."""
 
     def add(a: int, b: int) -> dict:
@@ -45,7 +47,7 @@ class TestMCPToolRegistration:
     """Test registering tools with the MCP server."""
 
     @pytest.mark.unit
-    def test_register_basic_tool(self, mcp_instance, sample_tool_func):
+    def test_register_basic_tool(self, mcp_instance: Any, sample_tool_func: Any) -> Any:
         """Should register a tool and make it discoverable."""
         mcp_instance.register_tool(
             name="test_add",
@@ -60,7 +62,9 @@ class TestMCPToolRegistration:
         assert mcp_instance.tools["test_add"].description == "Add two numbers"
 
     @pytest.mark.unit
-    def test_register_tool_with_metadata(self, mcp_instance, sample_tool_func):
+    def test_register_tool_with_metadata(
+        self, mcp_instance: Any, sample_tool_func: Any
+    ) -> Any:
         """Should store category, version, and tags."""
         mcp_instance.register_tool(
             name="fancy_tool",
@@ -77,7 +81,9 @@ class TestMCPToolRegistration:
         assert "experimental" in tool.tags
 
     @pytest.mark.unit
-    def test_register_tool_overwrites(self, mcp_instance, sample_tool_func):
+    def test_register_tool_overwrites(
+        self, mcp_instance: Any, sample_tool_func: Any
+    ) -> Any:
         """Registering a tool with the same name should overwrite."""
         mcp_instance.register_tool(
             name="dup", func=sample_tool_func, schema={}, description="v1"
@@ -88,7 +94,9 @@ class TestMCPToolRegistration:
         assert mcp_instance.tools["dup"].description == "v2"
 
     @pytest.mark.unit
-    def test_register_tool_requires_name(self, mcp_instance, sample_tool_func):
+    def test_register_tool_requires_name(
+        self, mcp_instance: Any, sample_tool_func: Any
+    ) -> Any:
         """Should raise error if name is empty."""
         with pytest.raises(MCPInvalidParamsError):
             mcp_instance.register_tool(
@@ -96,7 +104,7 @@ class TestMCPToolRegistration:
             )
 
     @pytest.mark.unit
-    def test_register_tool_requires_callable(self, mcp_instance):
+    def test_register_tool_requires_callable(self, mcp_instance: Any) -> Any:
         """Should raise error if func is not callable."""
         with pytest.raises(MCPInvalidParamsError):
             mcp_instance.register_tool(
@@ -108,7 +116,7 @@ class TestMCPToolExecution:
     """Test executing registered tools."""
 
     @pytest.mark.unit
-    def test_execute_tool(self, mcp_instance, sample_tool_func):
+    def test_execute_tool(self, mcp_instance: Any, sample_tool_func: Any) -> Any:
         """Should execute a registered tool and return its result."""
         mcp_instance.register_tool(
             name="add",
@@ -123,15 +131,15 @@ class TestMCPToolExecution:
         assert result == {"result": 7}
 
     @pytest.mark.unit
-    def test_execute_nonexistent_tool(self, mcp_instance):
+    def test_execute_nonexistent_tool(self, mcp_instance: Any) -> Any:
         """Should raise MCPToolNotFoundError for unknown tool."""
         with pytest.raises(MCPToolNotFoundError):
             mcp_instance.execute_tool("nonexistent", {})
 
     @pytest.mark.unit
     def test_execute_tool_with_missing_required_param(
-        self, mcp_instance, sample_tool_func
-    ):
+        self, mcp_instance: Any, sample_tool_func: Any
+    ) -> Any:
         """Should raise error when required parameter is missing."""
         mcp_instance.register_tool(
             name="strict_add",
@@ -151,10 +159,10 @@ class TestMCPResourceRegistration:
     """Test resource registration and retrieval."""
 
     @pytest.mark.unit
-    def test_register_resource(self, mcp_instance):
+    def test_register_resource(self, mcp_instance: Any) -> Any:
         """Should register a resource with URI template."""
 
-        def retriever(uri):
+        def retriever(uri: Any) -> Any:
             return {"data": "test"}
 
         mcp_instance.register_resource(
@@ -165,10 +173,10 @@ class TestMCPResourceRegistration:
         assert "gnn://models/{model_name}" in mcp_instance.resources
 
     @pytest.mark.unit
-    def test_resource_metadata(self, mcp_instance):
+    def test_resource_metadata(self, mcp_instance: Any) -> Any:
         """Should store resource metadata correctly."""
 
-        def retriever(uri):
+        def retriever(uri: Any) -> Any:
             return {}
 
         mcp_instance.register_resource(
@@ -187,14 +195,14 @@ class TestMCPServerLifecycle:
     """Test MCPServer start/stop and request handling."""
 
     @pytest.mark.unit
-    def test_server_creation(self, mcp_instance):
+    def test_server_creation(self, mcp_instance: Any) -> Any:
         """Should create a server with the given MCP instance."""
         server = MCPServer(mcp_instance)
         assert server.running is False
         assert server.mcp is mcp_instance
 
     @pytest.mark.unit
-    def test_server_start_stop(self, mcp_instance):
+    def test_server_start_stop(self, mcp_instance: Any) -> Any:
         """Should start and stop cleanly."""
         server = MCPServer(mcp_instance)
         assert server.start() is True
@@ -203,7 +211,7 @@ class TestMCPServerLifecycle:
         assert server.running is False
 
     @pytest.mark.unit
-    def test_server_double_start(self, mcp_instance):
+    def test_server_double_start(self, mcp_instance: Any) -> Any:
         """Starting an already-running server should return False."""
         server = MCPServer(mcp_instance)
         server.start()
@@ -211,13 +219,13 @@ class TestMCPServerLifecycle:
         server.stop()
 
     @pytest.mark.unit
-    def test_server_double_stop(self, mcp_instance):
+    def test_server_double_stop(self, mcp_instance: Any) -> Any:
         """Stopping an already-stopped server should return False."""
         server = MCPServer(mcp_instance)
         assert server.stop() is False
 
     @pytest.mark.unit
-    def test_handle_initialize_request(self, mcp_instance):
+    def test_handle_initialize_request(self, mcp_instance: Any) -> Any:
         """Should handle JSON-RPC initialize request."""
         server = MCPServer(mcp_instance)
         response = server.handle_request(
@@ -232,7 +240,9 @@ class TestMCPServerLifecycle:
         assert "protocolVersion" in response["result"]
 
     @pytest.mark.unit
-    def test_handle_tools_list_request(self, mcp_instance, sample_tool_func):
+    def test_handle_tools_list_request(
+        self, mcp_instance: Any, sample_tool_func: Any
+    ) -> Any:
         """Should list registered tools via JSON-RPC."""
         mcp_instance.register_tool(
             name="my_tool",
@@ -254,7 +264,7 @@ class TestMCPServerLifecycle:
         assert "my_tool" in tool_names
 
     @pytest.mark.unit
-    def test_handle_invalid_method(self, mcp_instance):
+    def test_handle_invalid_method(self, mcp_instance: Any) -> Any:
         """Should return error for unknown method."""
         server = MCPServer(mcp_instance)
         response = server.handle_request(
@@ -268,7 +278,7 @@ class TestMCPServerLifecycle:
         assert response["error"]["code"] == -32601
 
     @pytest.mark.unit
-    def test_handle_invalid_jsonrpc(self, mcp_instance):
+    def test_handle_invalid_jsonrpc(self, mcp_instance: Any) -> Any:
         """Should return error for invalid jsonrpc version."""
         server = MCPServer(mcp_instance)
         response = server.handle_request(
@@ -285,7 +295,7 @@ class TestMCPCapabilities:
     """Test capabilities reporting."""
 
     @pytest.mark.unit
-    def test_get_capabilities_structure(self, mcp_instance):
+    def test_get_capabilities_structure(self, mcp_instance: Any) -> Any:
         """Should return tools, resources, and server info."""
         caps = mcp_instance.get_capabilities()
         assert "tools" in caps
@@ -294,7 +304,7 @@ class TestMCPCapabilities:
         assert caps["server"]["name"] == "GNN MCP Server"
 
     @pytest.mark.unit
-    def test_get_server_status(self, mcp_instance):
+    def test_get_server_status(self, mcp_instance: Any) -> Any:
         """Should return status with uptime and counts."""
         status = mcp_instance.get_server_status()
         assert "uptime" in status
@@ -307,7 +317,7 @@ class TestMCPToolDataclass:
     """Test the MCPTool dataclass validation."""
 
     @pytest.mark.unit
-    def test_tool_creation(self):
+    def test_tool_creation(self) -> Any:
         """Should create a valid MCPTool."""
         tool = MCPTool(
             name="test",
@@ -319,7 +329,7 @@ class TestMCPToolDataclass:
         assert tool.use_count == 0
 
     @pytest.mark.unit
-    def test_tool_mark_used(self):
+    def test_tool_mark_used(self) -> Any:
         """mark_used should increment use count."""
         tool = MCPTool(name="t", func=lambda: None, schema={}, description="t")
         tool.mark_used()
@@ -328,13 +338,18 @@ class TestMCPToolDataclass:
         assert tool.last_used is not None
 
     @pytest.mark.unit
-    def test_tool_empty_name_raises(self):
+    def test_tool_empty_name_raises(self) -> Any:
         """Should reject empty tool name."""
         with pytest.raises(ValueError, match="name cannot be empty"):
             MCPTool(name="", func=lambda: None, schema={}, description="test")
 
     @pytest.mark.unit
-    def test_tool_non_callable_raises(self):
+    def test_tool_non_callable_raises(self) -> Any:
         """Should reject non-callable func."""
         with pytest.raises(ValueError, match="callable"):
-            MCPTool(name="bad", func="not_callable", schema={}, description="test")
+            MCPTool(
+                name="bad",
+                func=cast(Any, "not_callable"),
+                schema={},
+                description="test",
+            )

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any
+
 """Programmatic pipeline execution adapters.
 
 The main orchestration engine lives in :mod:`main`. This module provides a
@@ -103,7 +105,7 @@ class StepExecutionResult:
     error: Optional[str] = None
     warnings: Optional[List[str]] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         if self.warnings is None:
             self.warnings = []
 
@@ -135,7 +137,7 @@ def run_pipeline(
     )
     step_numbers = _coerce_steps(steps, pipeline_data)
 
-    results = {
+    results: dict[str, Any] = {
         "success": False,
         "steps_executed": [],
         "errors": [],
@@ -160,7 +162,7 @@ def run_pipeline(
             only_steps=",".join(str(step) for step in step_numbers),
             verbose=verbose,
         )
-        config_override = {
+        config_override: dict[str, Any] = {
             "pipeline": {"only_steps": args.only_steps, "skip_steps": []},
             "testing_matrix": {"enabled": False},
         }
@@ -218,7 +220,7 @@ def get_pipeline_status() -> dict:
 def validate_pipeline_config(config: dict) -> bool:
     """Validate pipeline configuration."""
     try:
-        required_keys = ["steps", "output_dir"]
+        required_keys: list[Any] = ["steps", "output_dir"]
         return all(key in config for key in required_keys)
     except (TypeError, KeyError):
         return False
@@ -314,7 +316,7 @@ def execute_pipeline_steps(
     steps: List[str], pipeline_data: dict
 ) -> List[StepExecutionResult]:
     """Execute multiple pipeline steps."""
-    results = []
+    results: list[Any] = []
     for step_name in steps:
         step_config: dict[str, Any] = {}
         result = execute_pipeline_step(step_name, step_config, pipeline_data)

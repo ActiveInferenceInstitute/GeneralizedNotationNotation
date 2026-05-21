@@ -21,7 +21,7 @@ class DashboardGenerator:
     Generates comprehensive dashboards for GNN models.
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize the dashboard generator.
 
@@ -472,7 +472,7 @@ class DashboardGenerator:
 """
 
         # Add model information
-        info_items = [
+        info_items: list[Any] = [
             ("Name", model_info.get("name", "Unknown")),
             ("Version", model_info.get("version", "Unknown")),
             ("Format", model_info.get("source_format", "Unknown")),

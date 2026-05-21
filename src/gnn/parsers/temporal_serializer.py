@@ -1,4 +1,5 @@
 import json
+from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -7,7 +8,7 @@ from .common import GNNInternalRepresentation
 class TemporalSerializer(BaseGNNSerializer):
     """Serializer for temporal logic languages."""
 
-    def __init__(self, target_format: str = "tla"):
+    def __init__(self, target_format: str = "tla") -> None:
         """Initialize with target format (tla or agda)."""
         super().__init__()
         self.target_format = target_format
@@ -21,7 +22,7 @@ class TemporalSerializer(BaseGNNSerializer):
 
     def _serialize_tla(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to TLA+ format."""
-        lines = []
+        lines: list[Any] = []
 
         # Header
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
@@ -51,7 +52,7 @@ class TemporalSerializer(BaseGNNSerializer):
         lines.append("====")
 
         # Embed complete model data as TLA+ comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -109,7 +110,7 @@ class TemporalSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -120,7 +121,7 @@ class TemporalSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []
@@ -139,7 +140,7 @@ class TemporalSerializer(BaseGNNSerializer):
 
     def _map_to_tla_type(self, data_type: str) -> str:
         """Map GNN data types to TLA+ types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "Seq(Nat)",
             "continuous": "Real",
             "binary": "BOOLEAN",
@@ -147,11 +148,11 @@ class TemporalSerializer(BaseGNNSerializer):
             "float": "Real",
             "complex": "STRING",
         }
-        return mapping.get(data_type, "STRING")
+        return cast("str", mapping.get(data_type, "STRING"))
 
     def _serialize_agda(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Agda format."""
-        lines = []
+        lines: list[Any] = []
 
         # Header
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
@@ -171,7 +172,7 @@ class TemporalSerializer(BaseGNNSerializer):
             lines.append("")
 
         # Embed complete model data as Agda comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -233,7 +234,7 @@ class TemporalSerializer(BaseGNNSerializer):
 
     def _map_to_agda_type(self, data_type: str) -> str:
         """Map GNN data types to Agda types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "List ℕ",
             "continuous": "ℝ",
             "binary": "Bool",
@@ -241,18 +242,18 @@ class TemporalSerializer(BaseGNNSerializer):
             "float": "ℝ",
             "complex": "String",
         }
-        return mapping.get(data_type, "String")
+        return cast("str", mapping.get(data_type, "String"))
 
 
 class TLASerializer(TemporalSerializer):
     """Specific serializer for TLA+ format."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(target_format="tla")
 
 
 class AgdaSerializer(TemporalSerializer):
     """Specific serializer for Agda format."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(target_format="agda")

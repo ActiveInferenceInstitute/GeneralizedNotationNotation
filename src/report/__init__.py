@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 """
 report module for GNN Processing Pipeline.
 
@@ -8,7 +10,7 @@ and Markdown reports consumed by Step 23.
 """
 
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "html_reports": True,
     "markdown_reports": True,
     "comprehensive_analysis": True,
@@ -51,7 +53,7 @@ def analyze_pipeline_data(data: Dict[str, Any]) -> Dict[str, Any]:
     of the HTML/Markdown output.
     """
     try:
-        summary = {
+        summary: dict[str, Any] = {
             "keys": list(data.keys()),
             "num_keys": len(data.keys()),
             "has_errors": any("error" in str(v).lower() for v in data.values()),
@@ -115,7 +117,11 @@ def validate_report(data: Dict[str, Any]) -> bool:
 
 
 def process_report(
-    target_dir, output_dir, verbose=False, logger=None, **kwargs
+    target_dir: Any,
+    output_dir: Any,
+    verbose: Any = False,
+    logger: Any = None,
+    **kwargs: Any,
 ) -> bool:
     """
     Main processing function for report.
@@ -177,7 +183,7 @@ def process_report(
         )
 
         # Collect generated report files
-        generated_files = []
+        generated_files: list[Any] = []
         for fmt in report_formats:
             if fmt == "html":
                 html_file = output_dir / "comprehensive_analysis_report.html"
@@ -206,7 +212,7 @@ def process_report(
 
         # Validate HTML reports
         html_reports = [f for f in generated_files if f.endswith(".html")]
-        html_validation_errors = []
+        html_validation_errors: list[Any] = []
         for html_file_name in html_reports:
             html_file_path = output_dir / html_file_name
             if html_file_path.exists():
@@ -271,7 +277,7 @@ def process_report(
             logger.debug(f"Could not extract visualization count: {e}")
 
         # Create processing summary
-        summary = {
+        summary: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target_dir": str(target_dir),
             "output_dir": str(output_dir),
@@ -313,7 +319,7 @@ def process_report(
         return False
 
 
-__all__ = [
+__all__: list[Any] = [
     # Processor functions
     "process_report",
     "generate_comprehensive_report",

@@ -1,14 +1,14 @@
 # It's good practice to have a logger for utils too, if they might log errors/warnings
 import logging
 import re
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Union, cast
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
 
 
-def _numpy_array_to_string(arr: np.ndarray, indent=0) -> str:
+def _numpy_array_to_string(arr: np.ndarray, indent: Any = 0) -> str:
     """Converts a NumPy array to a string representation for Python script.
     The `indent` parameter specifies the indentation for lines *after the first* if the array string is multi-line.
     """
@@ -22,15 +22,15 @@ def _numpy_array_to_string(arr: np.ndarray, indent=0) -> str:
         return str(item)
 
     # Ensure floats are like "1.0", "2.5"
-    def float_format_func(x):
+    def float_format_func(x: Any) -> Any:
         if isinstance(x, float):
             return f"{x:.1f}" if x.is_integer() else str(x)
         return str(x)
 
-    float_formatter = {"float_kind": float_format_func, "int_kind": str}
+    float_formatter: dict[str, Any] = {"float_kind": float_format_func, "int_kind": str}
 
     array_str_raw = np.array2string(
-        arr, separator=",", formatter=float_formatter, prefix=" " * indent
+        arr, separator=",", formatter=cast(Any, float_formatter), prefix=" " * indent
     )
 
     cleaned_str = re.sub(r"\[\s+", "[", array_str_raw)
@@ -60,7 +60,7 @@ def format_list_recursive(
     data_list: list, current_indent: int, item_formatter: Callable[[Any, int], str]
 ) -> str:
     """Formats a potentially nested list of items (like NumPy arrays) into a string for Python script."""
-    lines = []
+    lines: list[Any] = []
     base_indent_str = " " * current_indent
     # Indentation for items within the list, relative to the list's own indentation
     item_block_indent = current_indent + 4
@@ -119,7 +119,7 @@ def generate_pymdp_matrix_definition(
     Handles single matrices, lists of matrices (object arrays), and vectors.
     If data is already a string (e.g. "pymdp.utils.get_A_likelihood_identity(...)"), use it directly.
     """
-    lines = []
+    lines: list[Any] = []
     base_indent_str = "    "  # Standard base indent for matrix definition lines
 
     if data is None:
@@ -142,7 +142,7 @@ def generate_pymdp_matrix_definition(
         return "\n".join(lines)
 
     if is_object_array and isinstance(data, list):
-        valid_item_strings = []
+        valid_item_strings: list[Any] = []
         for item_val in data:
             if item_val is None:  # Explicitly skip None items from the list
                 continue
@@ -252,7 +252,7 @@ def generate_pymdp_agent_instantiation(
 ) -> str:
     """Generates the Agent instantiation code string."""
     # Note: This function assumes 'Agent' is available in the scope where the generated code runs.
-    lines = [f"{agent_name} = Agent("]
+    lines: list[Any] = [f"{agent_name} = Agent("]
     indent = "    "
 
     all_params: Dict[str, Any] = {}
@@ -285,7 +285,7 @@ def generate_pymdp_agent_instantiation(
     if algorithm_params:
         all_params.update(algorithm_params)
 
-    param_lines = []
+    param_lines: list[Any] = []
     for key, value in all_params.items():
         value_str = ""
         if key in model_params or (key == "qs_initial" and isinstance(value, str)):

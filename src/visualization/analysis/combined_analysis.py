@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 import numpy as np
 
@@ -18,7 +18,7 @@ try:
 
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
-    plt = None
+    plt = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 from ..core.parsed_model import load_visualization_model
@@ -274,7 +274,7 @@ def _generate_standalone_panels(
             fig, ax = plt.subplots(figsize=(12, 6))
             section_lengths = [len(str(content)) for content in raw_sections.values()]
             section_names = list(raw_sections.keys())
-            colors = plt.cm.viridis(np.linspace(0, 1, len(section_names)))
+            colors = plt.get_cmap("viridis")(np.linspace(0, 1, len(section_names)))
             ax.bar(
                 range(len(section_names)),
                 section_lengths,
@@ -311,12 +311,17 @@ def _generate_standalone_panels(
                 type_counts: Dict[str, int] = {}
                 for var_type in var_types:
                     type_counts[var_type] = type_counts.get(var_type, 0) + 1
-                colors = plt.cm.Set3(np.linspace(0, 1, len(type_counts)))
+                pie_colors = [
+                    tuple(color)
+                    for color in plt.get_cmap("Set3")(
+                        np.linspace(0, 1, len(type_counts))
+                    )
+                ]
                 ax.pie(
-                    type_counts.values(),
-                    labels=type_counts.keys(),
+                    list(type_counts.values()),
+                    labels=list(type_counts.keys()),
                     autopct="%1.1f%%",
-                    colors=colors,
+                    colors=pie_colors,
                 )
                 ax.set_title(
                     f"{model_name} - Variable Type Distribution",
@@ -350,7 +355,7 @@ def _generate_generative_model_diagram(
         ax.set_aspect("equal")
         ax.axis("off")
 
-        positions = {
+        positions: dict[str, Any] = {
             "D": (2, 8),
             "s": (2, 6),
             "s'": (5, 6),
@@ -364,7 +369,7 @@ def _generate_generative_model_diagram(
             "u": (5, 3),
         }
 
-        node_colors = {
+        node_colors: dict[str, Any] = {
             "D": "#98D8C8",
             "s": "#7EC8E3",
             "s'": "#7EC8E3",
@@ -395,7 +400,7 @@ def _generate_generative_model_diagram(
                 zorder=3,
             )
 
-        edges = [
+        edges: list[Any] = [
             ("D", "s", "Prior"),
             ("s", "A", "Likelihood"),
             ("A", "o", "Observation"),
@@ -434,7 +439,7 @@ def _generate_generative_model_diagram(
             pad=20,
         )
 
-        legend_items = [
+        legend_items: list[Any] = [
             ("D", "Prior (Initial State Belief)", "#98D8C8"),
             ("s/s'", "Hidden State", "#7EC8E3"),
             ("A", "Likelihood Matrix", "#F7DC6F"),
@@ -525,7 +530,7 @@ def generate_combined_visualizations(
             ax1.pie(type_counts.values(), labels=type_counts.keys(), autopct="%1.1f%%")
             ax1.set_title("Overall Variable Type Distribution")
 
-        file_stats = []
+        file_stats: list[Any] = []
         for gnn_file in gnn_files:
             with open(gnn_file, encoding="utf-8") as f:
                 content = f.read()
@@ -569,7 +574,7 @@ def generate_combined_visualizations(
             ax2.legend()
 
         if all_matrices:
-            matrix_sizes = []
+            matrix_sizes: list[Any] = []
             for m in all_matrices:
                 if isinstance(m, dict) and "size" in m:
                     matrix_sizes.append(m["size"])

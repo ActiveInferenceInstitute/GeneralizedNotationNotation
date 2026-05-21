@@ -11,7 +11,7 @@ License: MIT
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 class BNFParser(BaseGNNParser):
     """Parser for BNF grammar specifications with embedded data support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the BNF parser."""
         super().__init__()
         self.rule_pattern = re.compile(r"<([^>]+)>\s*::=\s*([^\n]+)")
@@ -51,7 +51,7 @@ class BNFParser(BaseGNNParser):
         if match:
             try:
                 json_data = match.group(1)
-                return json.loads(json_data)
+                return cast("dict[str, Any] | None", json.loads(json_data))
             except json.JSONDecodeError as e:
                 logger.debug("Malformed embedded JSON: %s", e)
         return None
@@ -169,7 +169,7 @@ class BNFParser(BaseGNNParser):
     def _extract_model_name(self, content: str) -> str:
         """Extract model name from BNF content."""
         # Look for comments with model name
-        comment_patterns = [
+        comment_patterns: list[Any] = [
             r"#\s*Grammar\s+for\s+([^\n]+)",
             r"#\s*([^\n]*Model[^\n]*)",
             r"//\s*([^\n]*Model[^\n]*)",
@@ -185,11 +185,13 @@ class BNFParser(BaseGNNParser):
         if rules:
             root_rule = rules[0][0]
             if "model" in root_rule.lower():
-                return root_rule.replace("_", " ").title()
+                return cast("str", root_rule.replace("_", " ").title())
 
         return "BNFGNNModel"
 
-    def _parse_grammar_rules(self, content: str, model: GNNInternalRepresentation):
+    def _parse_grammar_rules(
+        self, content: str, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse BNF grammar rules to extract GNN components."""
         rules = self.rule_pattern.findall(content)
 
@@ -238,7 +240,7 @@ class BNFParser(BaseGNNParser):
                 return VariableType.PRIOR_VECTOR
 
         # Only return type for GNN-relevant rules
-        gnn_keywords = [
+        gnn_keywords: list[Any] = [
             "state",
             "observation",
             "action",
@@ -269,7 +271,7 @@ class BNFParser(BaseGNNParser):
 
     def _extract_connections_from_production(
         self, non_terminal: str, production: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Extract connections from production rules."""
         # Find other non-terminals referenced in the production
         referenced_nts = self.non_terminal_pattern.findall(production)
@@ -294,7 +296,7 @@ class BNFParser(BaseGNNParser):
 class EBNFParser(BNFParser):
     """Parser for EBNF (Extended BNF) grammar specifications with embedded data support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the EBNF parser."""
         super().__init__()
         # EBNF uses = instead of ::=
@@ -375,7 +377,7 @@ class EBNFParser(BNFParser):
 
         return model
 
-    def _parse_ebnf_rules(self, content: str, model: GNNInternalRepresentation):
+    def _parse_ebnf_rules(self, content: str, model: GNNInternalRepresentation) -> Any:
         """Parse EBNF rules with extended notation."""
         rules = self.rule_pattern.findall(content)
 
@@ -423,14 +425,14 @@ class EBNFParser(BNFParser):
 
     def _extract_connections_from_ebnf_production(
         self, non_terminal: str, production: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Extract connections from EBNF production rules."""
         # Find identifier patterns (non-terminals in EBNF are often just identifiers)
         identifier_pattern = re.compile(r"\b[a-zA-Z_][a-zA-Z0-9_]*\b")
         identifiers = identifier_pattern.findall(production)
 
         # Filter to keep only potential GNN variables
-        gnn_keywords = [
+        gnn_keywords: list[Any] = [
             "state",
             "observation",
             "action",

@@ -31,7 +31,7 @@ def process_oxdraw(
     launch_editor: bool = False,
     port: int = 5151,
     host: str = "127.0.0.1",
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Process GNN files through oxdraw visual interface.
@@ -75,7 +75,7 @@ def process_oxdraw(
         logger.warning("No GNN files found to process")
         return False
 
-    results = {
+    results: dict[str, Any] = {
         "mode": mode,
         "timestamp": _get_timestamp(),
         "files_processed": [],
@@ -269,7 +269,7 @@ def launch_oxdraw_editor(
         return False
 
     try:
-        cmd = [
+        cmd: list[Any] = [
             "oxdraw",
             "--input",
             str(mermaid_file),

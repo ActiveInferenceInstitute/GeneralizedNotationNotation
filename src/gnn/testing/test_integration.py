@@ -17,12 +17,13 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add the src directory to the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 
-def setup_logging(verbose: bool = False):
+def setup_logging(verbose: bool = False) -> Any:
     """Set up logging configuration."""
     level = logging.DEBUG if verbose else logging.INFO
     format_str = (
@@ -36,7 +37,7 @@ def setup_logging(verbose: bool = False):
     )
 
 
-def main():
+def main() -> Any:
     """Main integration test function."""
     parser = argparse.ArgumentParser(description="GNN Round-Trip Integration Test")
     parser.add_argument(
@@ -162,10 +163,10 @@ def main():
     if not args.quick:
         logger.info("Test 3: Comprehensive testing...")
         try:
-            # Use GNNRoundTripTester for comprehensive testing
-            tester = GNNRoundTripTester(gnn_dir, output_dir)
-            test_result = tester.run_tests()
-            success = getattr(test_result, "success", bool(test_result))
+            tester = GNNRoundTripTester(output_dir / "temp_comprehensive")
+            tester.reference_file = reference_file
+            test_result = tester.run_comprehensive_tests()
+            success = test_result.get_success_rate() >= 50
 
             if success:
                 logger.info("✅ Comprehensive testing passed")

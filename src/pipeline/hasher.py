@@ -12,7 +12,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional, Tuple, cast
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +27,8 @@ def _compute_run_hash_impl(
 
     # Hash all input files (sorted for determinism)
     target_dir = Path(target_dir)
-    file_hashes_list = []
-    file_hashes_dict = {}
+    file_hashes_list: list[Any] = []
+    file_hashes_dict: dict[Any, Any] = {}
     if target_dir.exists():
         md_files = list(target_dir.rglob("*.md"))
         gnn_files = list(target_dir.rglob("*.gnn"))
@@ -105,7 +105,7 @@ def index_run(
     index_path = history_dir / "index.json"
 
     # Load existing index
-    index = {}
+    index: dict[Any, Any] = {}
     if index_path.exists():
         try:
             with open(index_path) as f:
@@ -114,7 +114,7 @@ def index_run(
             logger.debug(f"Could not load history index {index_path}: {e}")
 
     # Add/update entry
-    entry = {
+    entry: dict[str, Any] = {
         "summary_path": str(summary_path),
         "config": config or {},
     }
@@ -156,12 +156,12 @@ def lookup_run(
 
     # Exact match first
     if run_hash_prefix in index:
-        return index[run_hash_prefix]
+        return cast("dict[str, Any] | None", index[run_hash_prefix])
 
     # Prefix match
     matches = {k: v for k, v in index.items() if k.startswith(run_hash_prefix)}
     if len(matches) == 1:
-        return next(iter(matches.values()))
+        return cast("dict[str, Any] | None", next(iter(matches.values())))
     elif len(matches) > 1:
         logger.warning(
             f"Ambiguous hash prefix '{run_hash_prefix}': {len(matches)} matches"

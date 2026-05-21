@@ -209,7 +209,7 @@ class TestStanRenderer:
         """1D float variables map to Stan vector[] type."""
         from render.stan.stan_renderer import render_stan
 
-        vars_1d = [{"name": "x", "dimensions": [3], "dtype": "float"}]
+        vars_1d: list[Any] = [{"name": "x", "dimensions": [3], "dtype": "float"}]
         code = render_stan(vars_1d, [], model_name="type_test")
 
         assert "vector[3]" in code, "1D float not mapped to vector[3]"
@@ -218,7 +218,7 @@ class TestStanRenderer:
         """2D float variables map to Stan matrix[] type."""
         from render.stan.stan_renderer import render_stan
 
-        vars_2d = [{"name": "M", "dimensions": [3, 4], "dtype": "float"}]
+        vars_2d: list[Any] = [{"name": "M", "dimensions": [3, 4], "dtype": "float"}]
         code = render_stan(vars_2d, [], model_name="matrix_test")
 
         assert "matrix[3, 4]" in code, "2D float not mapped to matrix[3, 4]"
@@ -227,7 +227,7 @@ class TestStanRenderer:
         """3D variables use Stan array[] matrix[] syntax."""
         from render.stan.stan_renderer import render_stan
 
-        vars_3d = [{"name": "T", "dimensions": [2, 3, 4], "dtype": "float"}]
+        vars_3d: list[Any] = [{"name": "T", "dimensions": [2, 3, 4], "dtype": "float"}]
         code = render_stan(vars_3d, [], model_name="array_test")
 
         assert "array[2]" in code, "3D not mapped to array syntax"

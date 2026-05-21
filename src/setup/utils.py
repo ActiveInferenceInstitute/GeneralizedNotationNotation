@@ -33,7 +33,7 @@ def find_gnn_files(directory: Path, recursive: bool = True) -> List[Path]:
     Returns:
         List of GNN file paths found
     """
-    gnn_files = []
+    gnn_files: list[Any] = []
     try:
         iterator = directory.rglob("*.md") if recursive else directory.glob("*.md")
         for file_path in iterator:
@@ -151,7 +151,7 @@ def get_setup_options() -> dict:
     }
 
 
-def setup_environment(verbose: bool = False, **kwargs) -> bool:
+def setup_environment(verbose: bool = False, **kwargs: Any) -> bool:
     """
     Set up the GNN environment using UV.
 
@@ -173,7 +173,7 @@ def setup_environment(verbose: bool = False, **kwargs) -> bool:
         return True
 
 
-def install_dependencies(verbose: bool = False, **kwargs) -> bool:
+def install_dependencies(verbose: bool = False, **kwargs: Any) -> bool:
     """
     Install GNN pipeline dependencies using UV.
 

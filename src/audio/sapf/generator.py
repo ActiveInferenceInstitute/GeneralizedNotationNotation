@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Any
 
 from pipeline import get_output_dir_for_script
 from utils import (
@@ -10,13 +11,10 @@ from utils import (
     performance_tracker,
 )
 
-# Import SAPF functionality
-try:
-    from .audio_generators import SAPFAudioGenerator
+from .audio_generators import SyntheticAudioGenerator
+from .sapf_gnn_processor import convert_gnn_to_sapf
 
-    SAPF_AVAILABLE = True
-except ImportError:
-    SAPF_AVAILABLE = False
+SAPF_AVAILABLE = True
 
 
 def generate_sapf_audio(
@@ -25,7 +23,7 @@ def generate_sapf_audio(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Generate SAPF (Sound As Pure Form) audio from GNN models.
@@ -69,7 +67,7 @@ def generate_sapf_audio(
 
     try:
         # Initialize SAPF audio generator
-        audio_generator = SAPFAudioGenerator()
+        audio_generator = SyntheticAudioGenerator()
 
         with performance_tracker.track_operation("generate_sapf_audio"):
             for gnn_file in gnn_files:
@@ -90,10 +88,11 @@ def generate_sapf_audio(
                     with performance_tracker.track_operation(
                         f"generate_audio_{gnn_file.name}"
                     ):
-                        success = audio_generator.generate_audio(
-                            gnn_content=gnn_content,
-                            output_file=str(audio_file),
-                            duration=duration,
+                        sapf_code = convert_gnn_to_sapf(gnn_content, gnn_file.stem)
+                        success = audio_generator.generate_from_sapf(
+                            sapf_code=sapf_code,
+                            output_file=audio_file,
+                            duration=float(duration),
                         )
 
                     if success:

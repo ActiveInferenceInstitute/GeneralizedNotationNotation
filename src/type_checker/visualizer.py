@@ -114,7 +114,7 @@ def generate_type_validity_mosaic(
         # Custom legend
         from matplotlib.patches import Patch
 
-        legend_elements = [
+        legend_elements: list[Any] = [
             Patch(facecolor=cmap(0.0), label="Valid"),
             Patch(facecolor=cmap(0.5), label="Warnings"),
             Patch(facecolor=cmap(1.0), label="Invalid"),
@@ -211,8 +211,8 @@ def generate_dimension_compatibility_radar(
         if not validations:
             return None
 
-        compat_scores = []
-        names = []
+        compat_scores: list[Any] = []
+        names: list[Any] = []
         for v in validations:
             dc = v.get("dimension_compatibility", {})
             total_checks = len(dc.get("variables_checked", []))
@@ -281,7 +281,7 @@ def generate_type_category_pie_chart(
             return None
 
         # Aggregate global type distribution
-        global_distribution = {}
+        global_distribution: dict[Any, Any] = {}
         for analysis in analyses:
             dist = analysis.get("type_distribution", {})
             for t, count in dist.items():
@@ -296,7 +296,7 @@ def generate_type_category_pie_chart(
         total_items = sum(global_distribution.values())
         threshold = total_items * 0.02
 
-        filtered_dist = {}
+        filtered_dist: dict[Any, Any] = {}
         other_count = 0
         for t, count in global_distribution.items():
             if count >= threshold:
@@ -313,10 +313,10 @@ def generate_type_category_pie_chart(
         fig, ax = plt.subplots(figsize=(8, 8))
         # Use a diverse colormap
         cmap = plt.cm.get_cmap("tab20", len(labels))
-        colors = cmap(np.linspace(0, 1, len(labels)))
+        colors = [tuple(color) for color in cmap(np.linspace(0, 1, len(labels)))]
 
         # Plot pie
-        wedges, texts, autotexts = ax.pie(
+        pie_result = ax.pie(
             sizes,
             labels=labels,
             autopct="%1.1f%%",
@@ -324,6 +324,9 @@ def generate_type_category_pie_chart(
             startangle=140,
             textprops=dict(color="w"),
         )
+        wedges = pie_result[0]
+        texts = pie_result[1]
+        autotexts = pie_result[2] if len(pie_result) > 2 else []
 
         ax.legend(
             wedges,
@@ -353,7 +356,7 @@ def generate_model_cards(results: Dict[str, Any], output_dir: Path) -> List[Path
     if not MATPLOTLIB_AVAILABLE:
         return []
 
-    cards_generated = []
+    cards_generated: list[Any] = []
     cards_dir = output_dir / "cards"
     cards_dir.mkdir(parents=True, exist_ok=True)
 
@@ -627,7 +630,7 @@ def generate_all_visualizations(results: Dict[str, Any], output_dir: Path) -> Li
     """Generate all visualizations for type checker results and return markdown embedding strings."""
     viz_dir = output_dir / "visualizations"
     viz_dir.mkdir(parents=True, exist_ok=True)
-    embeddings = []
+    embeddings: list[Any] = []
 
     mosaic_path = generate_type_validity_mosaic(results, viz_dir)
     if mosaic_path and mosaic_path.exists():

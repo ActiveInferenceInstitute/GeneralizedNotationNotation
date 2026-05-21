@@ -37,9 +37,9 @@ def _matrix_to_julia(matrix_data: Any) -> str:
         if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
             if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
                 # 3D matrix (B matrix)
-                slices = []
+                slices: list[Any] = []
                 for slice_data in matrix_data:
-                    rows = []
+                    rows: list[Any] = []
                     for row in slice_data:
                         if isinstance(row, (tuple, list)):
                             row_values = " ".join(str(x) for x in row)
@@ -117,7 +117,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     Extract relevant model information from GNN specification for ActiveInference.jl.
     Robustly handles GNN state space and parameter extraction from multiple sources.
     """
-    model_info = {
+    model_info: dict[str, Any] = {
         "name": gnn_spec.get("name", "gnn_model"),
         "description": gnn_spec.get(
             "description", "GNN model converted to ActiveInference.jl"
@@ -233,7 +233,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 
     # --- Final validation ---
     if n_states is None or n_obs is None or n_actions is None:
-        missing = []
+        missing: list[Any] = []
         if n_states is None:
             missing.append("n_states")
         if n_obs is None:
@@ -263,7 +263,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     model_info["E"] = initial_params.get("E")
 
     # A, B, C, D are required; E (habit/policy prior) is optional
-    required = {
+    required: dict[str, Any] = {
         "A": model_info["A"],
         "B": model_info["B"],
         "C": model_info["C"],
@@ -331,11 +331,11 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
                 and "(" in B_matrix[0][0]
             ):
                 # Reconstruct B matrix from mangled format
-                fixed_B = []
+                fixed_B: list[Any] = []
                 for slice_data in B_matrix:
                     # Each slice should be a 2D matrix (list of rows)
-                    fixed_slice = []
-                    current_row = []
+                    fixed_slice: list[Any] = []
+                    current_row: list[Any] = []
                     for item in slice_data:
                         if isinstance(item, str):
                             # Extract number from string like '(1.0' or '0.0)'

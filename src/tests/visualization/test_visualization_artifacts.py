@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -19,7 +20,7 @@ from visualization.graph.network_visualizations import generate_network_visualiz
 def test_network_stats_gnn_edge_orientation_and_ontology_legend(tmp_path: Path) -> None:
     out = tmp_path / "viz"
     out.mkdir()
-    parsed = {
+    parsed: dict[str, Any] = {
         "variables": [
             {"name": "a", "var_type": "hidden_state"},
             {"name": "b", "var_type": "hidden_state"},
@@ -69,7 +70,7 @@ def test_viz_manifest_json_after_process_single_gnn_file(tmp_path: Path) -> None
 
     step3_model = base / "3_gnn_output" / "tiny"
     step3_model.mkdir(parents=True)
-    parsed = {
+    parsed: dict[str, Any] = {
         "model_name": "tiny",
         "variables": [
             {"name": "x", "var_type": "hidden_state", "dimensions": [2]},

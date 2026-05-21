@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def add_component_to_markdown(
     Append a new component block to the markdown. Creates components section if missing.
     """
     states_list = states or []
-    block = [
+    block: list[Any] = [
         "components:",
         f"  - name: {name}",
         f"    type: {comp_type}",
@@ -27,7 +27,7 @@ def add_component_to_markdown(
     ]
     prefix = "\n" if (md_text and not md_text.endswith("\n")) else ""
     if "\ncomponents:\n" in f"\n{md_text}\n":
-        item = [
+        item: list[Any] = [
             f"  - name: {name}",
             f"    type: {comp_type}",
             f"    states: [{', '.join(states_list)}]",
@@ -205,7 +205,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                 inside = m.group(2)
                 comment = (m.group(4) or "").strip()
                 parts = [p.strip() for p in inside.split(",") if p.strip()]
-                dims: list[int] = []
+                dims = []
                 typ = None
                 for p in parts:
                     if p.startswith("type="):
@@ -215,7 +215,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                             dims.append(int(p))
                         except ValueError:
                             logger.debug("Skipping non-integer dimension token: %s", p)
-                entry: dict[str, object] = {
+                entry = {
                     "name": name,
                     "dims": dims,
                     "type": typ or "",
@@ -234,7 +234,7 @@ def _ensure_state_space_section(md_text: str) -> tuple[str, int]:
             or line.strip().lower() == "state space"
         ):
             return md_text, i + 1
-    to_add = []
+    to_add: list[Any] = []
     if lines and lines[-1].strip() != "":
         to_add.append("")
     to_add.append("## State Space")

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 Website renderer module for GNN pipeline.
 """
@@ -15,7 +17,7 @@ logger = logging.getLogger(__name__)
 class WebsiteRenderer:
     """Renders HTML content and manages website assets."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the website renderer."""
         self.css_styles = self._get_default_styles()
 
@@ -96,7 +98,7 @@ def process_website(
     output_dir: Path,
     verbose: bool = False,
     pipeline_output_root: Path | None = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Process website generation from pipeline artifacts.
@@ -121,12 +123,8 @@ def process_website(
         from .generator import generate_website
 
         if not Path(target_dir).exists():
-            return {
-                "success": False,
-                "errors": [f"Target directory not found: {target_dir}"],
-                "warnings": [],
-                "pages_created": 0,
-            }
+            logger.error("Target directory not found: %s", target_dir)
+            return False
         result = generate_website(
             logger, target_dir, website_dir, pipeline_output_root=pipeline_output_root
         )
@@ -155,7 +153,7 @@ def process_website(
             for error in result["errors"]:
                 logger.error(f"Error: {error}")
 
-        return result["success"]
+        return cast("bool", result["success"])
 
     except Exception as e:
         logger.error(f"Website processing failed: {e}")
@@ -453,10 +451,10 @@ def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, An
     """
     if isinstance(config, str):
         return True
-    validation_result = {"valid": True, "errors": [], "warnings": []}
+    validation_result: dict[str, Any] = {"valid": True, "errors": [], "warnings": []}
 
     # Check required fields
-    required_fields = ["output_dir"]  # input_dir optional per tests
+    required_fields: list[Any] = ["output_dir"]  # input_dir optional per tests
     for field in required_fields:
         if field not in config:
             validation_result["valid"] = False

@@ -24,25 +24,25 @@ class SweepRecord:
     framework: str
 
     # Sweep parameters (extracted from model_name, e.g. "pymdp_scaling_N3_T100")
-    num_states: Optional[int] = None  # N dimension
-    num_timesteps: Optional[int] = None  # T dimension
+    num_states: Any = None  # N dimension
+    num_timesteps: Any = None  # T dimension
 
     # Execution metrics
     execution_time: float = 0.0  # seconds (median when benchmark repeats > 1)
-    execution_time_std: Optional[float] = None
-    execution_time_mean: Optional[float] = None
+    execution_time_std: Any = None
+    execution_time_mean: Any = None
     execution_benchmark_repeats: int = 1
     execution_time_samples: Optional[List[float]] = None
     success: bool = False
     timed_out: bool = False
 
     # Render metrics (from 11_render_output)
-    lines_of_code: Optional[int] = None
-    total_lines: Optional[int] = None
+    lines_of_code: Any = None
+    total_lines: Any = None
 
     # Simulation metrics (from simulation_results.json)
-    final_accuracy: Optional[float] = None
-    mean_belief_entropy: Optional[float] = None
+    final_accuracy: Any = None
+    mean_belief_entropy: Any = None
     efe_trace: List[float] = field(default_factory=list)
     vfe_trace: List[float] = field(default_factory=list)
 
@@ -55,7 +55,7 @@ class SweepRecord:
     @property
     def sweep_label(self) -> str:
         """Human-readable label for this sweep cell."""
-        parts = []
+        parts: list[Any] = []
         if self.num_states is not None:
             parts.append(f"N={self.num_states}")
         if self.num_timesteps is not None:
@@ -66,7 +66,7 @@ class SweepRecord:
     def time_per_step(self) -> Optional[float]:
         """Execution time per simulation timestep (ms)."""
         if self.execution_time > 0 and self.num_timesteps and self.num_timesteps > 0:
-            return (self.execution_time / self.num_timesteps) * 1000.0
+            return float((self.execution_time / self.num_timesteps) * 1000.0)
         return None
 
 
@@ -90,7 +90,7 @@ class SweepDataCollector:
         execute_output_dir: Path,
         render_output_dir: Optional[Path] = None,
         logger: Optional[logging.Logger] = None,
-    ):
+    ) -> None:
         self.execute_output_dir = Path(execute_output_dir)
         self.render_output_dir = Path(render_output_dir) if render_output_dir else None
         self.logger = logger or logging.getLogger(__name__)
@@ -229,6 +229,8 @@ class SweepDataCollector:
         self, records: Dict[tuple[str, str], SweepRecord]
     ) -> None:
         """Harvest lines of code and other render-time metrics."""
+        if self.render_output_dir is None:
+            return
         summary_path = self.render_output_dir / "render_processing_summary.json"
         if not summary_path.exists():
             return
@@ -345,7 +347,7 @@ class SweepDataCollector:
                 import math
 
                 window = max(1, len(beliefs) // 10)
-                entropies = []
+                entropies: list[Any] = []
                 for belief in beliefs[-window:]:
                     if isinstance(belief, list):
                         h = -sum(p * math.log(p + 1e-15) for p in belief if p > 0)

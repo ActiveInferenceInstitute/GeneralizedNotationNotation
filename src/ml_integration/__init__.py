@@ -7,7 +7,7 @@ This module provides machine learning model integration capabilities.
 from typing import Any, Dict
 
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "model_training": True,
     "model_inference": True,
     "pipeline_integration": True,
@@ -22,7 +22,7 @@ def check_ml_frameworks() -> Dict[str, Any]:
     """Check availability of ML frameworks."""
     import logging
 
-    frameworks = {}
+    frameworks: dict[Any, Any] = {}
 
     # Check PyTorch
     try:
@@ -74,7 +74,12 @@ def check_ml_frameworks() -> Dict[str, Any]:
     return frameworks
 
 
-__all__ = ["process_ml_integration", "check_ml_frameworks", "FEATURES", "__version__"]
+__all__: list[Any] = [
+    "process_ml_integration",
+    "check_ml_frameworks",
+    "FEATURES",
+    "__version__",
+]
 
 
 def get_module_info() -> dict:

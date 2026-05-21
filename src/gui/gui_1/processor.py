@@ -5,15 +5,15 @@ import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, cast
 
 try:
     import gradio as gr  # Lightweight, widely available
 
     _GUI_BACKEND = "gradio"
 except Exception:
-    gr = None  # type: ignore
-    _GUI_BACKEND = None
+    gr = cast(Any, None)
+    _GUI_BACKEND = cast(Any, None)
 
 from utils.pipeline_template import (
     log_step_error,
@@ -89,7 +89,7 @@ def run_gui(
             gui_output_dir.mkdir(parents=True, exist_ok=True)
 
             # Create comprehensive recovery status report
-            fallback_status = {
+            fallback_status: dict[str, Any] = {
                 "backend": _GUI_BACKEND or "none",
                 "launched": False,
                 "export_file": str(starter_path),
@@ -139,7 +139,7 @@ def run_gui(
         import threading
         import time
 
-        def launch_gui():
+        def launch_gui() -> Any:
             logger.info("🎮 Form-based Constructor starting...")
             demo.launch(
                 share=False,

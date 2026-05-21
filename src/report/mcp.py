@@ -5,6 +5,7 @@ Exposes GNN report generation tools: comprehensive report creation,
 format listing, validation, and report inspection through MCP.
 """
 
+import json
 import logging
 from pathlib import Path
 from typing import Any, Dict
@@ -159,7 +160,7 @@ def get_report_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register report tools with the MCP server."""
 
     mcp_instance.register_tool(

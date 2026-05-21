@@ -12,7 +12,7 @@ import subprocess  # nosec B404
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from .argument_utils import parse_step_list
 from .logging_utils import PipelineLogger
@@ -42,7 +42,7 @@ class DependencyValidator:
 
     def __init__(
         self, logger: Optional[logging.Logger] = None, python_path: Optional[str] = None
-    ):
+    ) -> None:
         """Initialize the dependency validator."""
         self.logger = logger or PipelineLogger.get_logger("dependency_validator")
         self.python_path = python_path
@@ -197,7 +197,7 @@ class DependencyValidator:
             module_name = dep.module_name or dep.name
 
             # Create a subprocess to check the import
-            check_import_cmd = [
+            check_import_cmd: list[Any] = [
                 python_to_use,
                 "-c",
                 f"import {module_name}; print('OK')",
@@ -221,7 +221,7 @@ class DependencyValidator:
             if dep.version_min or dep.version_max:
                 try:
                     # Get version using subprocess
-                    version_cmd = [
+                    version_cmd: list[Any] = [
                         python_to_use,
                         "-c",
                         f"import {module_name}; "
@@ -387,7 +387,7 @@ class DependencyValidator:
 
     def get_installation_instructions(self) -> List[str]:
         """Get installation instructions for missing dependencies."""
-        instructions = []
+        instructions: list[Any] = []
 
         if self.missing_dependencies:
             instructions.append("To install missing dependencies:")
@@ -439,7 +439,7 @@ def validate_pipeline_dependencies(
     validator = DependencyValidator(logger, python_path)
 
     # Map pipeline step names to dependency groups
-    step_to_group_mapping = {
+    step_to_group_mapping: dict[str, Any] = {
         "gnn": ["core", "gnn_processing"],
         "setup": ["core"],
         "tests": ["core", "testing"],
@@ -452,12 +452,13 @@ def validate_pipeline_dependencies(
         "ontology": ["core", "gnn_processing"],
     }
 
+    required_groups: list[str] | None
     if step_names:
-        required_groups = set()
+        group_set: set[str] = set()
         for step_name in step_names:
             if step_name in step_to_group_mapping:
-                required_groups.update(step_to_group_mapping[step_name])
-        required_groups = list(required_groups)
+                group_set.update(step_to_group_mapping[step_name])
+        required_groups = list(group_set)
     else:
         required_groups = None
 
@@ -480,8 +481,8 @@ def check_optional_dependencies() -> dict:
         dict: { 'optional_dependencies': {name: status, ...}, 'missing_optional': [name, ...] }
     """
     validator = DependencyValidator()
-    optional_status = {}
-    missing_optional = []
+    optional_status: dict[Any, Any] = {}
+    missing_optional: list[Any] = []
     for _, deps in validator.dependencies.items():
         for dep in deps:
             if dep.is_optional:
@@ -507,8 +508,8 @@ def get_dependency_status() -> dict:
     """
     validator = DependencyValidator()
     validator.validate_all_dependencies()
-    required = []
-    optional = []
+    required: list[Any] = []
+    optional: list[Any] = []
     for _, deps in validator.dependencies.items():
         for dep in deps:
             if dep.is_optional:
@@ -537,15 +538,15 @@ def install_missing_dependencies() -> dict:
 
     validator = DependencyValidator()
     validator.validate_all_dependencies()
-    installed = []
-    failed = []
-    skipped = []
+    installed: list[Any] = []
+    failed: list[Any] = []
+    skipped: list[Any] = []
     for dep in validator.missing_dependencies:
         if dep.system_command:
             skipped.append(dep.name)
             continue
         try:
-            cmd = ["uv", "pip", "install", dep.name]
+            cmd: list[Any] = ["uv", "pip", "install", dep.name]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)  # nosec B603
             if result.returncode == 0:
                 installed.append(dep.name)
@@ -607,14 +608,14 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     logger.info("=== DEPENDENCY VALIDATION ===")
 
     # Determine required steps based on what will run
-    _required_steps = ["setup"]  # noqa: F841 - planned for per-step dependency validation
+    _required_steps: list[Any] = ["setup"]  # noqa: F841 - planned for per-step dependency validation
 
     # Check which steps will actually run
     skip_steps = parse_step_list(args.skip_steps) if args.skip_steps else []
     only_steps = parse_step_list(args.only_steps) if args.only_steps else []
 
     # Map step numbers to dependency groups
-    step_dependency_map = {
+    step_dependency_map: dict[Any, Any] = {
         1: "core",  # 1_setup.py - Setup step
         2: "testing",  # 2_tests.py - Testing framework
         3: "gnn_processing",  # 3_gnn.py - GNN file processing
@@ -641,7 +642,7 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     }
 
     # Determine which dependency groups we need
-    required_groups = {"core"}
+    required_groups: set[Any] = {"core"}
     for step_num in range(1, 24):  # Updated to include steps 1-23
         # Skip if in skip list
         if step_num in skip_steps or f"{step_num}_" in str(skip_steps):

@@ -12,7 +12,7 @@ and visualization should be performed separately by the analysis pipeline.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union, cast
 
 import numpy as np
 
@@ -28,7 +28,7 @@ try:
 except ImportError as e:
     logger.debug(f"Matplotlib not available: {e}")
     MATPLOTLIB_AVAILABLE = False
-    matplotlib = plt = None
+    matplotlib = plt = cast(Any, None)
 
 try:
     import jax
@@ -39,14 +39,14 @@ try:
 except ImportError as e:
     logger.debug(f"JAX not available: {e}")
     JAX_AVAILABLE = False
-    jax = jnp = None
+    jax = jnp = cast(Any, None)
 
 
 def plot_tensor_output(
     tensor_data: Union[np.ndarray, Any],
     output_path: Union[str, Path],
     title: str = "JAX Tensor Output",
-    **kwargs,
+    **kwargs: Any,
 ) -> Tuple[bool, str]:
     """
     Plot JAX tensor output with appropriate visualization based on tensor shape.
@@ -170,8 +170,8 @@ def plot_multiple_tensor_outputs(
     output_directory = Path(output_dir)
     output_directory.mkdir(parents=True, exist_ok=True)
 
-    saved_files = []
-    failed_plots = []
+    saved_files: list[Any] = []
+    failed_plots: list[Any] = []
 
     for tensor_name, tensor_data in tensor_dict.items():
         try:
@@ -234,7 +234,7 @@ def create_summary_visualization(
         fig, ax = plt.subplots(figsize=(12, 8))
 
         # Create text summary
-        summary_text = []
+        summary_text: list[Any] = []
         summary_text.append("JAX DisCoPy Evaluation Summary")
         summary_text.append("=" * 40)
 

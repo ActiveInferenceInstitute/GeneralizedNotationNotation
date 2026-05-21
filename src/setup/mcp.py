@@ -34,7 +34,7 @@ def ensure_directory_exists_mcp(directory_path: str) -> Dict[str, Any]:
         Dictionary with operation status and path.
     """
     try:
-        path_obj = ensure_directory(directory_path)
+        path_obj = ensure_directory(Path(directory_path))
         return {
             "success": True,
             "path": str(path_obj),
@@ -64,7 +64,7 @@ def find_project_gnn_files_mcp(
         Dictionary with list of found file paths or an error.
     """
     try:
-        files = find_gnn_files(search_directory, recursive)
+        files = find_gnn_files(Path(search_directory), recursive)
         return {"success": True, "files": [str(f) for f in files], "count": len(files)}
     except Exception as e:
         logger.error(
@@ -85,7 +85,7 @@ def get_standard_output_paths_mcp(base_output_directory: str) -> Dict[str, Any]:
         Dictionary of named output paths or an error.
     """
     try:
-        paths = get_output_paths(base_output_directory)
+        paths = get_output_paths(Path(base_output_directory))
         return {"success": True, "paths": {name: str(p) for name, p in paths.items()}}
     except Exception as e:
         logger.error(
@@ -176,7 +176,7 @@ def install_uv_dependency_mcp(
     try:
         import subprocess  # nosec B404
 
-        cmd = ["uv", "add", package_name]
+        cmd: list[Any] = ["uv", "add", package_name]
         if extras:
             cmd.extend(["--extras", extras])
 

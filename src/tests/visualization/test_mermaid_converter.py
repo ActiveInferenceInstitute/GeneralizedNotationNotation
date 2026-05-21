@@ -8,6 +8,8 @@ Tests GNN to Mermaid conversion functions:
 - Styling generation
 """
 
+from typing import Any
+
 import pytest
 
 from gui.oxdraw.mermaid_converter import (
@@ -24,9 +26,9 @@ from gui.oxdraw.utils import infer_edge_style, infer_node_shape
 class TestNodeShapeInference:
     """Test node shape inference from GNN variables."""
 
-    def test_matrix_shape(self):
+    def test_matrix_shape(self) -> Any:
         """Test matrix variables use rectangles."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [3, 3],
             "data_type": "float",
             "ontology_mapping": "LikelihoodMatrix",
@@ -36,9 +38,9 @@ class TestNodeShapeInference:
         assert open_b == "["
         assert close_b == "]"
 
-    def test_state_shape(self):
+    def test_state_shape(self) -> Any:
         """Test state variables use stadium shape."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [3, 1],
             "data_type": "float",
             "ontology_mapping": "HiddenState",
@@ -48,9 +50,9 @@ class TestNodeShapeInference:
         assert open_b == "(["
         assert close_b == "])"
 
-    def test_observation_shape(self):
+    def test_observation_shape(self) -> Any:
         """Test observation variables use circles."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [3, 1],
             "data_type": "int",
             "ontology_mapping": "Observation",
@@ -60,17 +62,21 @@ class TestNodeShapeInference:
         assert open_b == "(("
         assert close_b == "))"
 
-    def test_action_shape(self):
+    def test_action_shape(self) -> Any:
         """Test action variables use hexagons."""
-        var_data = {"dimensions": [1], "data_type": "int", "ontology_mapping": "Action"}
+        var_data: dict[str, Any] = {
+            "dimensions": [1],
+            "data_type": "int",
+            "ontology_mapping": "Action",
+        }
 
         open_b, close_b = infer_node_shape("u", var_data)
         assert open_b == "{{"
         assert close_b == "}}"
 
-    def test_policy_shape(self):
+    def test_policy_shape(self) -> Any:
         """Test policy variables use diamonds."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [3],
             "data_type": "float",
             "ontology_mapping": "PolicyVector",
@@ -80,9 +86,9 @@ class TestNodeShapeInference:
         assert open_b == "{"
         assert close_b == "}"
 
-    def test_free_energy_shape(self):
+    def test_free_energy_shape(self) -> Any:
         """Test free energy variables use trapezoids."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [],
             "data_type": "float",
             "ontology_mapping": "VariationalFreeEnergy",
@@ -96,27 +102,27 @@ class TestNodeShapeInference:
 class TestEdgeStyleMapping:
     """Test edge style mapping from GNN symbols."""
 
-    def test_generative_style(self):
+    def test_generative_style(self) -> Any:
         """Test generative connections use thick arrows."""
         style = infer_edge_style(">")
         assert style == "==>"
 
-    def test_inference_style(self):
+    def test_inference_style(self) -> Any:
         """Test inference connections use dashed arrows."""
         style = infer_edge_style("-")
         assert style == "-.->"
 
-    def test_modulation_style(self):
+    def test_modulation_style(self) -> Any:
         """Test modulation connections use dotted arrows."""
         style = infer_edge_style("*")
         assert style == "-..->"
 
-    def test_coupling_style(self):
+    def test_coupling_style(self) -> Any:
         """Test coupling connections use normal arrows."""
         style = infer_edge_style("~")
         assert style == "-->"
 
-    def test_default_style(self):
+    def test_default_style(self) -> Any:
         """Test unknown symbols default to normal arrows."""
         style = infer_edge_style("?")
         assert style == "-->"
@@ -125,9 +131,9 @@ class TestEdgeStyleMapping:
 class TestNodeDefinitionGeneration:
     """Test Mermaid node definition generation."""
 
-    def test_node_with_dimensions(self):
+    def test_node_with_dimensions(self) -> Any:
         """Test node definition includes dimensions."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [3, 3],
             "data_type": "float",
             "ontology_mapping": "LikelihoodMatrix",
@@ -139,9 +145,9 @@ class TestNodeDefinitionGeneration:
         assert "3x3" in node_def
         assert "float" in node_def
 
-    def test_node_without_dimensions(self):
+    def test_node_without_dimensions(self) -> Any:
         """Test node definition without dimensions."""
-        var_data = {
+        var_data: dict[str, Any] = {
             "dimensions": [],
             "data_type": "float",
             "ontology_mapping": "VariationalFreeEnergy",
@@ -156,9 +162,14 @@ class TestNodeDefinitionGeneration:
 class TestEdgeDefinitionGeneration:
     """Test Mermaid edge definition generation."""
 
-    def test_edge_without_label(self):
+    def test_edge_without_label(self) -> Any:
         """Test edge definition without label."""
-        conn = {"source": "D", "target": "s", "symbol": ">", "description": ""}
+        conn: dict[str, Any] = {
+            "source": "D",
+            "target": "s",
+            "symbol": ">",
+            "description": "",
+        }
 
         edge_def = _generate_edge_definition(conn)
 
@@ -166,9 +177,14 @@ class TestEdgeDefinitionGeneration:
         assert "==>" in edge_def
         assert "s" in edge_def
 
-    def test_edge_with_label(self):
+    def test_edge_with_label(self) -> Any:
         """Test edge definition with label."""
-        conn = {"source": "s", "target": "A", "symbol": "-", "description": "inference"}
+        conn: dict[str, Any] = {
+            "source": "s",
+            "target": "A",
+            "symbol": "-",
+            "description": "inference",
+        }
 
         edge_def = _generate_edge_definition(conn)
 
@@ -181,45 +197,57 @@ class TestEdgeDefinitionGeneration:
 class TestVariableClassification:
     """Test variable classification for styling."""
 
-    def test_classify_matrix(self):
+    def test_classify_matrix(self) -> Any:
         """Test matrix classification."""
-        var_data = {"dimensions": [3, 3], "ontology_mapping": ""}
+        var_data: dict[str, Any] = {"dimensions": [3, 3], "ontology_mapping": ""}
         var_type = _classify_variable("A", var_data)
         assert var_type == "matrix"
 
-    def test_classify_state(self):
+    def test_classify_state(self) -> Any:
         """Test state classification."""
-        var_data = {"dimensions": [3, 1], "ontology_mapping": "HiddenState"}
+        var_data: dict[str, Any] = {
+            "dimensions": [3, 1],
+            "ontology_mapping": "HiddenState",
+        }
         var_type = _classify_variable("s", var_data)
         assert var_type == "state"
 
-    def test_classify_observation(self):
+    def test_classify_observation(self) -> Any:
         """Test observation classification."""
-        var_data = {"dimensions": [3], "ontology_mapping": "Observation"}
+        var_data: dict[str, Any] = {
+            "dimensions": [3],
+            "ontology_mapping": "Observation",
+        }
         var_type = _classify_variable("o", var_data)
         assert var_type == "observation"
 
-    def test_classify_action(self):
+    def test_classify_action(self) -> Any:
         """Test action classification."""
-        var_data = {"dimensions": [1], "ontology_mapping": "Action"}
+        var_data: dict[str, Any] = {"dimensions": [1], "ontology_mapping": "Action"}
         var_type = _classify_variable("u", var_data)
         assert var_type == "action"
 
-    def test_classify_policy(self):
+    def test_classify_policy(self) -> Any:
         """Test policy classification."""
-        var_data = {"dimensions": [3], "ontology_mapping": "PolicyVector"}
+        var_data: dict[str, Any] = {
+            "dimensions": [3],
+            "ontology_mapping": "PolicyVector",
+        }
         var_type = _classify_variable("π", var_data)
         assert var_type == "policy"
 
-    def test_classify_free_energy(self):
+    def test_classify_free_energy(self) -> Any:
         """Test free energy classification."""
-        var_data = {"dimensions": [], "ontology_mapping": "VariationalFreeEnergy"}
+        var_data: dict[str, Any] = {
+            "dimensions": [],
+            "ontology_mapping": "VariationalFreeEnergy",
+        }
         var_type = _classify_variable("F", var_data)
         assert var_type == "free_energy"
 
-    def test_classify_vector_default(self):
+    def test_classify_vector_default(self) -> Any:
         """Test default vector classification."""
-        var_data = {"dimensions": [3], "ontology_mapping": ""}
+        var_data: dict[str, Any] = {"dimensions": [3], "ontology_mapping": ""}
         var_type = _classify_variable("v", var_data)
         assert var_type == "vector"
 
@@ -227,9 +255,9 @@ class TestVariableClassification:
 class TestStyleGeneration:
     """Test style directive generation."""
 
-    def test_generate_styles(self):
+    def test_generate_styles(self) -> Any:
         """Test style generation for various variable types."""
-        variables = {
+        variables: dict[str, Any] = {
             "A": {"dimensions": [3, 3], "ontology_mapping": "LikelihoodMatrix"},
             "s": {"dimensions": [3, 1], "ontology_mapping": "HiddenState"},
             "o": {"dimensions": [3, 1], "ontology_mapping": "Observation"},
@@ -252,9 +280,9 @@ class TestStyleGeneration:
 class TestMetadataGeneration:
     """Test metadata dictionary generation."""
 
-    def test_metadata_includes_all_sections(self):
+    def test_metadata_includes_all_sections(self) -> Any:
         """Test metadata includes all required sections."""
-        gnn_model = {
+        gnn_model: dict[str, Any] = {
             "model_name": "Test Model",
             "version": "1.0",
             "variables": {
@@ -284,9 +312,9 @@ class TestMetadataGeneration:
         assert "parameters" in metadata
         assert "ontology_mappings" in metadata
 
-    def test_metadata_serialization(self):
+    def test_metadata_serialization(self) -> Any:
         """Test metadata can be JSON serialized."""
-        gnn_model = {
+        gnn_model: dict[str, Any] = {
             "model_name": "Test Model",
             "version": "1.0",
             "variables": {"A": {"dimensions": [3, 3]}},
@@ -310,9 +338,9 @@ class TestMetadataGeneration:
 class TestFullConversion:
     """Test complete GNN to Mermaid conversion."""
 
-    def test_complete_conversion(self):
+    def test_complete_conversion(self) -> Any:
         """Test full conversion with all features."""
-        gnn_model = {
+        gnn_model: dict[str, Any] = {
             "model_name": "Complete Test Model",
             "version": "1.0",
             "variables": {

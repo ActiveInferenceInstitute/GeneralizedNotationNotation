@@ -14,6 +14,7 @@ import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
+from typing import Any, cast
 
 # Import from infrastructure
 from .infrastructure import (
@@ -51,7 +52,7 @@ def run_fast_pipeline_tests(
     except ImportError:
         has_timeout = False
 
-    cmd = [
+    cmd: list[Any] = [
         sys.executable,
         "-m",
         "pytest",
@@ -119,7 +120,7 @@ def run_fast_pipeline_tests(
             _parse_coverage_statistics(coverage_json) if coverage_json.is_file() else {}
         )
 
-        summary = {
+        summary: dict[str, Any] = {
             "execution_summary": {
                 "test_mode": "fast_pipeline",
                 "command": " ".join(cmd),
@@ -182,7 +183,7 @@ def run_comprehensive_tests(
     from .test_runner_modular import ModularTestRunner
 
     class ComprehensiveArgs:
-        def __init__(self, output_dir, verbose):
+        def __init__(self, output_dir: Any, verbose: Any) -> None:
             self.output_dir = str(output_dir)
             self.verbose = verbose
             self.categories = None
@@ -198,7 +199,7 @@ def run_comprehensive_tests(
     else:
         logger.warning("Comprehensive tests had some failures")
 
-    return success
+    return cast("bool", success)
 
 
 def run_fast_reliable_tests(
@@ -226,13 +227,13 @@ def run_fast_reliable_tests(
 
     logger.info(f"Running reliable fast test subset (timeout: {timeout}s)")
 
-    reliable_tests = [
+    reliable_tests: list[Any] = [
         "test_core_modules.py",
         "test_fast_suite.py",
         "test_main_orchestrator.py",
     ]
 
-    cmd = [
+    cmd: list[Any] = [
         sys.executable,
         "-m",
         "pytest",

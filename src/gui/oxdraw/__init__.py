@@ -51,7 +51,7 @@ def oxdraw_gui(
     output_dir: Path,
     logger: logging.Logger,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> Dict[str, Any]:
     """
     oxdraw GUI processing function (GUI module interface).
@@ -113,14 +113,14 @@ def oxdraw_gui(
         )
 
         # Collect outputs
-        outputs = []
+        outputs: list[Any] = []
         if oxdraw_output.exists():
             outputs = [str(f) for f in oxdraw_output.glob("*.mmd")]
             outputs.extend([str(f) for f in oxdraw_output.glob("*.json")])
 
         duration = time.time() - start_time
 
-        result = {
+        result: dict[str, Any] = {
             "gui_type": "oxdraw",
             "success": success,
             "mode": mode,
@@ -150,7 +150,7 @@ def oxdraw_gui(
         }
 
 
-__all__ = [
+__all__: list[Any] = [
     "oxdraw_gui",
     "get_oxdraw_info",
     "process_oxdraw",

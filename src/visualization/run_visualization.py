@@ -9,6 +9,7 @@ It generates comprehensive visualizations and saves them to the output directory
 import argparse
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add parent directory to sys.path to allow importing from src
 parent_dir = Path(__file__).resolve().parent.parent
@@ -56,7 +57,7 @@ def main() -> int:
 
     if input_path.is_file() and input_path.suffix.lower() == ".md":
         # If input is a single file
-        md_files = [input_path]
+        md_files: list[Any] = [input_path]
         print(f"Processing single file: {input_path}")
     else:
         # If input is a directory

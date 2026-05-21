@@ -220,7 +220,7 @@ def generate_analysis_from_logs(
             )
             continue
 
-        viz_results = {
+        viz_results: dict[str, Any] = {
             "states": true_states,
             "beliefs": beliefs,
             "actions": actions,

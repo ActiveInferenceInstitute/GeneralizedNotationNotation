@@ -110,7 +110,7 @@ def run_julia_setup_script(
 
     logger.info(f"Running Julia setup script: {setup_script}")
 
-    cmd = [julia_path, str(setup_script)]
+    cmd: list[Any] = [julia_path, str(setup_script)]
 
     if verbose:
         cmd.append("--verbose")
@@ -152,7 +152,7 @@ def setup_julia_environment(
     verbose: bool = False,
     force_reinstall: bool = False,
     validate_only: bool = False,
-    frameworks: List[str] = None,
+    frameworks: (List[str]) | None = None,
 ) -> Dict[str, Any]:
     """
     Setup Julia environment for specified frameworks.
@@ -170,7 +170,7 @@ def setup_julia_environment(
 
     # Check Julia availability
     julia_available, julia_path = check_julia_availability()
-    if not julia_available:
+    if not julia_available or julia_path is None:
         return {
             "success": False,
             "julia_available": False,
@@ -189,7 +189,7 @@ def setup_julia_environment(
         }
 
     # Define framework setup scripts
-    framework_scripts = {
+    framework_scripts: dict[str, Any] = {
         "rxinfer": "src/execute/rxinfer/setup_environment.jl",
         "activeinference_jl": "src/execute/activeinference_jl/setup_environment.jl",
     }
@@ -200,7 +200,7 @@ def setup_julia_environment(
             k: v for k, v in framework_scripts.items() if k in frameworks
         }
 
-    setup_results = {}
+    setup_results: dict[Any, Any] = {}
     overall_success = True
 
     for framework, script_path in framework_scripts.items():

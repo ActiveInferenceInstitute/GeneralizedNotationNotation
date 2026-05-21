@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from gnn.multi_format_processor import _formats_for_serialize_preset
 from gnn.parsers.common import GNNFormat
 
@@ -23,7 +25,7 @@ def test_full_preset_preserves_supported_list() -> None:
 
 
 def test_unknown_preset_defaults_to_full_behavior() -> None:
-    supported = [GNNFormat.JSON, GNNFormat.PYTHON]
+    supported: list[Any] = [GNNFormat.JSON, GNNFormat.PYTHON]
     filtered, label = _formats_for_serialize_preset("bogus", supported)
     assert label == "full"
     assert filtered == supported

@@ -9,7 +9,7 @@ and integrate symbolic mathematics capabilities into the GNN pipeline.
 import asyncio
 import logging
 import subprocess  # nosec B404
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 # Try to import httpx for HTTP client functionality
 try:
@@ -17,7 +17,7 @@ try:
 
     HTTPX_AVAILABLE = True
 except ImportError:
-    httpx = None  # type: ignore[assignment]
+    httpx = cast(Any, None)
     HTTPX_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class SymPyMCPClient:
         server_url: str = "http://127.0.0.1:8081",
         server_executable: Optional[str] = None,
         auto_start_server: bool = True,
-    ):
+    ) -> None:
         """
         Initialize SymPy MCP client.
 
@@ -69,7 +69,7 @@ class SymPyMCPClient:
         await self.connect()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> Any:
         """Async context manager exit"""
         await self.disconnect()
 
@@ -128,12 +128,12 @@ class SymPyMCPClient:
                 self.server_process.kill()
             self.server_process = None
 
-    async def _start_server(self):
+    async def _start_server(self) -> Any:
         """Start the SymPy MCP server"""
         if not self.server_executable:
             raise SymPyMCPConnectionError("Server executable not specified")
 
-        cmd = [
+        cmd: list[Any] = [
             "uv",
             "run",
             "--with",
@@ -166,7 +166,7 @@ class SymPyMCPClient:
         except Exception as e:
             raise SymPyMCPConnectionError(f"Failed to start server: {e}") from e
 
-    async def call_tool(self, tool_name: str, **kwargs) -> Any:
+    async def call_tool(self, tool_name: str, **kwargs: Any) -> Any:
         """
         Call a tool on the SymPy MCP server.
 
@@ -180,7 +180,7 @@ class SymPyMCPClient:
         if not self._client:
             raise SymPyMCPConnectionError("Not connected to server")
 
-        payload = {
+        payload: dict[str, Any] = {
             "method": "tools/call",
             "params": {"name": tool_name, "arguments": kwargs},
         }
@@ -215,18 +215,21 @@ class SymPyMCPClient:
         neg_assumptions: Optional[List[str]] = None,
     ) -> str:
         """Introduce a variable with assumptions"""
-        return await self.call_tool(
-            "intro",
-            var_name=var_name,
-            pos_assumptions=pos_assumptions or [],
-            neg_assumptions=neg_assumptions or [],
+        return cast(
+            "str",
+            await self.call_tool(
+                "intro",
+                var_name=var_name,
+                pos_assumptions=pos_assumptions or [],
+                neg_assumptions=neg_assumptions or [],
+            ),
         )
 
     async def introduce_multiple_variables(
         self, variables: List[Dict[str, Any]]
     ) -> str:
         """Introduce multiple variables simultaneously"""
-        return await self.call_tool("intro_many", variables=variables)
+        return cast("str", await self.call_tool("intro_many", variables=variables))
 
     async def introduce_expression(
         self,
@@ -235,30 +238,40 @@ class SymPyMCPClient:
         expr_var_name: Optional[str] = None,
     ) -> str:
         """Parse and introduce a mathematical expression"""
-        return await self.call_tool(
-            "introduce_expression",
-            expr_str=expr_str,
-            canonicalize=canonicalize,
-            expr_var_name=expr_var_name,
+        return cast(
+            "str",
+            await self.call_tool(
+                "introduce_expression",
+                expr_str=expr_str,
+                canonicalize=canonicalize,
+                expr_var_name=expr_var_name,
+            ),
         )
 
     async def print_latex_expression(self, expr_key: str) -> str:
         """Get LaTeX representation of an expression"""
-        return await self.call_tool("print_latex_expression", expr_key=expr_key)
+        return cast(
+            "str", await self.call_tool("print_latex_expression", expr_key=expr_key)
+        )
 
     async def simplify_expression(self, expr_key: str) -> str:
         """Simplify a mathematical expression"""
-        return await self.call_tool("simplify_expression", expr_key=expr_key)
+        return cast(
+            "str", await self.call_tool("simplify_expression", expr_key=expr_key)
+        )
 
     async def solve_algebraically(
         self, expr_key: str, solve_for_var_name: str, domain: str = "COMPLEX"
     ) -> str:
         """Solve an equation algebraically"""
-        return await self.call_tool(
-            "solve_algebraically",
-            expr_key=expr_key,
-            solve_for_var_name=solve_for_var_name,
-            domain=domain,
+        return cast(
+            "str",
+            await self.call_tool(
+                "solve_algebraically",
+                expr_key=expr_key,
+                solve_for_var_name=solve_for_var_name,
+                domain=domain,
+            ),
         )
 
     async def create_matrix(
@@ -267,31 +280,45 @@ class SymPyMCPClient:
         matrix_var_name: Optional[str] = None,
     ) -> str:
         """Create a SymPy matrix"""
-        return await self.call_tool(
-            "create_matrix", matrix_data=matrix_data, matrix_var_name=matrix_var_name
+        return cast(
+            "str",
+            await self.call_tool(
+                "create_matrix",
+                matrix_data=matrix_data,
+                matrix_var_name=matrix_var_name,
+            ),
         )
 
     async def matrix_determinant(self, matrix_key: str) -> str:
         """Calculate matrix determinant"""
-        return await self.call_tool("matrix_determinant", matrix_key=matrix_key)
+        return cast(
+            "str", await self.call_tool("matrix_determinant", matrix_key=matrix_key)
+        )
 
     async def matrix_eigenvalues(self, matrix_key: str) -> str:
         """Calculate matrix eigenvalues"""
-        return await self.call_tool("matrix_eigenvalues", matrix_key=matrix_key)
+        return cast(
+            "str", await self.call_tool("matrix_eigenvalues", matrix_key=matrix_key)
+        )
 
     async def matrix_eigenvectors(self, matrix_key: str) -> str:
         """Calculate matrix eigenvectors"""
-        return await self.call_tool("matrix_eigenvectors", matrix_key=matrix_key)
+        return cast(
+            "str", await self.call_tool("matrix_eigenvectors", matrix_key=matrix_key)
+        )
 
     async def differentiate_expression(
         self, expr_key: str, var_name: str, order: int = 1
     ) -> str:
         """Differentiate an expression"""
-        return await self.call_tool(
-            "differentiate_expression",
-            expr_key=expr_key,
-            var_name=var_name,
-            order=order,
+        return cast(
+            "str",
+            await self.call_tool(
+                "differentiate_expression",
+                expr_key=expr_key,
+                var_name=var_name,
+                order=order,
+            ),
         )
 
     async def integrate_expression(
@@ -302,23 +329,26 @@ class SymPyMCPClient:
         upper_bound: Optional[str] = None,
     ) -> str:
         """Integrate an expression"""
-        return await self.call_tool(
-            "integrate_expression",
-            expr_key=expr_key,
-            var_name=var_name,
-            lower_bound=lower_bound,
-            upper_bound=upper_bound,
+        return cast(
+            "str",
+            await self.call_tool(
+                "integrate_expression",
+                expr_key=expr_key,
+                var_name=var_name,
+                lower_bound=lower_bound,
+                upper_bound=upper_bound,
+            ),
         )
 
     async def reset_state(self) -> str:
         """Reset the SymPy server state"""
-        return await self.call_tool("reset_state")
+        return cast("str", await self.call_tool("reset_state"))
 
 
 class GNNSymPyIntegration:
     """Integration layer between GNN and SymPy MCP for mathematical validation and analysis"""
 
-    def __init__(self, sympy_client: SymPyMCPClient):
+    def __init__(self, sympy_client: SymPyMCPClient) -> None:
         """
         Initialize GNN-SymPy integration.
 
@@ -338,7 +368,7 @@ class GNNSymPyIntegration:
         self, state_space: Dict[str, Any], observation_space: Dict[str, Any]
     ) -> None:
         """Set up SymPy variables based on GNN state and observation spaces"""
-        variables_to_create = []
+        variables_to_create: list[Any] = []
 
         # Process state space variables
         for var_name, _ in state_space.items():
@@ -428,7 +458,7 @@ class GNNSymPyIntegration:
 
             # Check stochasticity: rows should sum to 1 (for row-stochastic)
             # or columns should sum to 1 (for column-stochastic transition matrices)
-            stochasticity_details = {"row_sums": [], "column_sums": []}
+            stochasticity_details: dict[str, Any] = {"row_sums": [], "column_sums": []}
 
             for row in matrix_data:
                 row_sum = sum(
@@ -492,7 +522,7 @@ class GNNSymPyIntegration:
         Returns:
             Stability analysis results
         """
-        stability_results = []
+        stability_results: list[Any] = []
 
         for i, matrix_data in enumerate(transition_matrices):
             try:
@@ -625,7 +655,7 @@ class GNNSymPyIntegration:
 
         return sympy_expr
 
-    async def cleanup(self):
+    async def cleanup(self) -> Any:
         """Clean up SymPy session"""
         try:
             await self.sympy_client.reset_state()

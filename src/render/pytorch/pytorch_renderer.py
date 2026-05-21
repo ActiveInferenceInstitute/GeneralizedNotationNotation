@@ -87,7 +87,7 @@ def _extract_matrices(
     if not params:
         params = gnn_spec.get("parameters", {})
 
-    def _parse_matrix(raw, default):
+    def _parse_matrix(raw: Any, default: Any) -> Any:
         if raw is None:
             return default
         if isinstance(raw, (list, np.ndarray)):
@@ -154,7 +154,7 @@ def _format_tensor(arr: np.ndarray, indent: int = 4) -> str:
         vals = ", ".join(f"{v:.6f}" for v in arr)
         return f"torch.tensor([{vals}], dtype=torch.float64)"
     elif arr.ndim == 2:
-        rows = []
+        rows: list[Any] = []
         for row in arr:
             vals = ", ".join(f"{v:.6f}" for v in row)
             rows.append(f"{prefix}    [{vals}]")
@@ -184,7 +184,7 @@ def _generate_pytorch_code(
 
     B_full_init = ""
     if B.ndim == 3:
-        slices = []
+        slices: list[Any] = []
         for a in range(B.shape[2]):
             slices.append(
                 f"    B_slices.append({_format_tensor(B[:, :, a], indent=4)})"

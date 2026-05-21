@@ -39,7 +39,7 @@ class AdvancedVisualizer:
     to generate a comprehensive set of artifacts per GNN file.
     """
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         self.logger = logger or logging.getLogger("advanced_visualization")
 
     def generate_visualizations(
@@ -140,7 +140,7 @@ class AdvancedVisualizer:
         # Optional JSON manifest of generated files
         if "json" in export_formats:
             try:
-                manifest = {
+                manifest: dict[str, Any] = {
                     "model": model_name,
                     "generated": generated,
                     "timestamp": datetime.now().isoformat(),
@@ -163,7 +163,7 @@ class AdvancedVisualizer:
         try:
             rel_files = [Path(f) for f in files]
             # Build HTML content with embedded previews for PNGs
-            items = []
+            items: list[Any] = []
             for f in rel_files:
                 name = f.name
                 if f.suffix.lower() in {".png", ".jpg", ".jpeg", ".svg"}:
@@ -184,10 +184,10 @@ class AdvancedVisualizer:
 {"".join(items)}
 </div>
 </body></html>
-"""
+            """
             out = model_output_dir / f"{model_name}_advanced_summary.html"
-            with open(out, "w", encoding="utf-8") as f:
-                f.write(html)
+            with open(out, "w", encoding="utf-8") as output_file:
+                output_file.write(html)
             return out
         except (OSError, ValueError, TypeError) as e:
             self.logger.debug(f"HTML summary generation failed: {e}")
@@ -197,7 +197,7 @@ class AdvancedVisualizer:
         self, content: str, model_name: str, output_dir: Path
     ) -> List[str]:
         """Generate recovery visualizations when advanced libraries aren't available"""
-        generated = []
+        generated: list[Any] = []
 
         try:
             # Create a simple text-based summary
@@ -230,7 +230,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
         self, extracted_data: Dict[str, Any], model_name: str, output_dir: Path
     ) -> List[str]:
         """Generate statistical visualizations"""
-        generated = []
+        generated: list[Any] = []
 
         try:
             # Create statistical summary plot
@@ -251,7 +251,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
         self, extracted_data: Dict[str, Any], model_name: str, output_dir: Path
     ) -> List[str]:
         """Generate network visualizations"""
-        generated = []
+        generated: list[Any] = []
 
         try:
             # Create network graph visualization
@@ -273,7 +273,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
         self, extracted_data: Dict[str, Any], model_name: str, output_dir: Path
     ) -> List[str]:
         """Generate matrix visualizations"""
-        generated = []
+        generated: list[Any] = []
 
         try:
             # Create matrix heatmap visualizations
@@ -304,7 +304,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
 
             # Create bar chart of variable types
             if blocks:
-                type_counts = {}
+                type_counts: dict[Any, Any] = {}
                 for block in blocks:
                     var_type = block.get("type", "unknown")
                     type_counts[var_type] = type_counts.get(var_type, 0) + 1
@@ -452,7 +452,7 @@ def create_visualization_from_data(data: Dict[str, Any]) -> Optional[Dict[str, A
 def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Create a dashboard section from data."""
     try:
-        section = {
+        section: dict[str, Any] = {
             "title": data.get("title", "Section"),
             "type": data.get("type", "text"),
             "content": data.get("content", ""),
@@ -473,7 +473,7 @@ def create_network_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
         edges = data.get("edges", [])
 
         # Create network visualization data
-        viz_data = {
+        viz_data: dict[str, Any] = {
             "type": "network",
             "nodes": nodes,
             "edges": edges,
@@ -498,7 +498,7 @@ def create_timeline_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
         events = data.get("events", [])
 
         # Create timeline visualization data
-        viz_data = {
+        viz_data: dict[str, Any] = {
             "type": "timeline",
             "events": events,
             "options": {"height": 400, "width": 800, "show_labels": True},
@@ -516,7 +516,7 @@ def create_heatmap_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
         matrix = data.get("matrix", [])
 
         # Create heatmap visualization data
-        viz_data = {
+        viz_data: dict[str, Any] = {
             "type": "heatmap",
             "matrix": matrix,
             "options": {
@@ -536,7 +536,7 @@ def create_default_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
     """Create a default visualization."""
     try:
         # Create a simple chart visualization
-        viz_data = {
+        viz_data: dict[str, Any] = {
             "type": "chart",
             "data": data,
             "options": {

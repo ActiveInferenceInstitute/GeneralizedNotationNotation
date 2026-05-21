@@ -100,7 +100,7 @@ def render_gnn_to_rxinfer_toml(
         with open(julia_path, "w", encoding="utf-8") as f:
             f.write(julia_code)
 
-        artifacts = [str(julia_path.resolve())]
+        artifacts: list[Any] = [str(julia_path.resolve())]
         msg = f"Successfully wrote RxInfer Julia script to {julia_path}"
 
         # Optionally generate TOML if flagged
@@ -141,7 +141,7 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
         # Split by "), (" to separate rows
         parts = matrix_str.split("), (")
         if len(parts) > 1:
-            matrix = []
+            matrix: list[Any] = []
             for i, part in enumerate(parts):
                 # Clean up outer parentheses
                 if i == 0:
@@ -155,7 +155,7 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
             return matrix
 
         # Recovery: try parsing as individual rows
-        rows = []
+        rows: list[Any] = []
         current_row = ""
         brace_count = 0
 
@@ -209,7 +209,7 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
             matrix_str = matrix_str[1:-1]
 
         # Split by action matrices (looking for ), ( pattern at the top level)
-        action_matrices = []
+        action_matrices: list[Any] = []
         current_matrix = ""
         brace_count = 0
 
@@ -227,7 +227,7 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
                 current_matrix = ""
 
         # Parse each action matrix
-        tensor = []
+        tensor: list[Any] = []
         for action_matrix in action_matrices:
             if action_matrix.strip():
                 # Parse the 2D matrix for this action
@@ -581,7 +581,7 @@ println("- E Habit: [$(join(E_vector, ", "))]")
 
 def _matrix_to_julia(matrix: List[List[float]]) -> str:
     """Convert Python matrix to Julia matrix string."""
-    rows = []
+    rows: list[Any] = []
     for row in matrix:
         row_str = "[" + ", ".join(str(x) for x in row) + "]"
         rows.append(row_str)
@@ -594,7 +594,7 @@ def _tensor_to_julia(tensor: List[List[List[float]]]) -> str:
         return "[]"
 
     # Handle 3D tensor (actions x states x states)
-    action_matrices = []
+    action_matrices: list[Any] = []
     for action_matrix in tensor:
         matrix_str = _matrix_to_julia(action_matrix)
         action_matrices.append(matrix_str)
@@ -609,7 +609,7 @@ def _vector_to_julia(vector: List[float]) -> str:
 
 def _create_dirichlet_prior(matrix: List[List[float]]) -> str:
     """Create Dirichlet prior for matrix."""
-    rows = []
+    rows: list[Any] = []
     for row in matrix:
         # Add small regularization to avoid zeros
         regularized_row = [x + 0.1 for x in row]
@@ -623,7 +623,7 @@ def _create_dirichlet_prior_3d(tensor: List[List[List[float]]]) -> str:
     if not tensor:
         return "[]"
 
-    action_matrices = []
+    action_matrices: list[Any] = []
     for action_matrix in tensor:
         matrix_str = _create_dirichlet_prior(action_matrix)
         action_matrices.append(matrix_str)
@@ -631,7 +631,7 @@ def _create_dirichlet_prior_3d(tensor: List[List[List[float]]]) -> str:
     return "[" + ", ".join(action_matrices) + "]"
 
 
-def _write_toml_with_exact_formatting(f, config):
+def _write_toml_with_exact_formatting(f: Any, config: Any) -> Any:
     """
     Write TOML with exact formatting to match the gold standard.
     This function writes sections in a specific order with comments and formatting.
@@ -845,7 +845,7 @@ def _create_toml_config_structure(
     params = gnn_spec.get("initialparameterization", {})
 
     # Start with a standard structure based on the config.toml example
-    toml_config = {
+    toml_config: dict[str, Any] = {
         "model": {
             "dt": params.get("dt", 1.0),
             "gamma": params.get("gamma", 1.0),
@@ -888,7 +888,7 @@ def _create_toml_config_structure(
 
 def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract state space matrices from the GNN specification."""
-    matrices = {}
+    matrices: dict[Any, Any] = {}
     params = gnn_spec.get("initialparameterization", {})
 
     # Use provided matrices if available, otherwise use defaults
@@ -922,7 +922,7 @@ def _extract_environments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract environment definitions from the GNN specification."""
     params = gnn_spec.get("initialparameterization", {})
 
-    environments = {
+    environments: dict[str, Any] = {
         "door": {
             "description": "Two parallel walls with a gap between them",
             "obstacles": [],
@@ -989,7 +989,7 @@ def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Extract agent configurations from the GNN specification."""
     params = gnn_spec.get("initialparameterization", {})
     nr_agents = params.get("nr_agents", 0)
-    agents = []
+    agents: list[Any] = []
 
     if nr_agents > 0:
         for i in range(1, nr_agents + 1):
@@ -1044,7 +1044,7 @@ def _extract_experiments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     params = gnn_spec.get("initialparameterization", {})
 
     # Use experiment settings from GNN spec if available, otherwise use defaults
-    experiments = {
+    experiments: dict[str, Any] = {
         "seeds": params.get("experiment_seeds", [42, 123]),
         "results_dir": params.get("results_dir", "results"),
         "animation_template": params.get(

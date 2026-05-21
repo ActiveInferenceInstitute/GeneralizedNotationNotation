@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -34,7 +34,7 @@ s>s
 ## Time
 Static
 """
-        return safe_filesystem.create_file("valid_model.md", content)
+        return cast("Path", safe_filesystem.create_file("valid_model.md", content))
 
     @pytest.fixture
     def type_error_gnn_file(self, safe_filesystem: Any) -> Path:
@@ -53,7 +53,7 @@ s[3,1]
 ## StateSpaceBlock
 s[5,1]  # Duplicate!
 """
-        return safe_filesystem.create_file("error_model.md", content)
+        return cast("Path", safe_filesystem.create_file("error_model.md", content))
 
     def test_check_file_valid(self, valid_gnn_file: Path) -> None:
         """Test checking a valid file natively using processor layer."""
@@ -83,7 +83,7 @@ s[5,1]  # Duplicate!
         assert success is True
         assert (out_dir / "type_check_results.json").exists()
 
-    def test_check_nonexistent_file_returns_error(self):
+    def test_check_nonexistent_file_returns_error(self) -> Any:
         """Checking a nonexistent file gracefully handles failure."""
         checker = GNNTypeChecker()
         result = checker.validate_single_gnn_file(Path("/nonexistent/path/model.md"))
@@ -92,7 +92,7 @@ s[5,1]  # Duplicate!
         assert len(result.get("errors", [])) > 0
 
     @pytest.mark.skipif(os.getuid() == 0, reason="root can read any file")
-    def test_check_unreadable_file_returns_error(self, safe_filesystem):
+    def test_check_unreadable_file_returns_error(self, safe_filesystem: Any) -> Any:
         """Checking a file without read permission should return invalid safely."""
         locked = safe_filesystem.create_file("locked.md", "## ModelName\nLocked\n")
         locked.chmod(0o000)

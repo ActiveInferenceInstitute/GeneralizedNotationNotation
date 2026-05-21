@@ -19,7 +19,7 @@ import numpy as np
 
 logger = logging.getLogger(__name__)
 
-FRAMEWORK_ORDER = [
+FRAMEWORK_ORDER: list[Any] = [
     "pymdp",
     "jax",
     "rxinfer",
@@ -28,7 +28,7 @@ FRAMEWORK_ORDER = [
     "pytorch",
     "numpyro",
 ]
-FRAMEWORK_LABELS = {
+FRAMEWORK_LABELS: dict[str, Any] = {
     "pymdp": "PyMDP",
     "jax": "JAX",
     "rxinfer": "RxInfer",
@@ -180,7 +180,7 @@ def _mean_efe(result: Dict[str, Any]) -> Optional[float]:
             return float(np.mean(efe_arr))
         elif efe_arr.ndim == 2 and actions:
             # Per-action EFE matrix: extract chosen action's EFE per step
-            selected = []
+            selected: list[Any] = []
             for t, a in enumerate(actions):
                 if t < len(efe_arr):
                     a_idx = int(a) if int(a) < efe_arr.shape[1] else 0
@@ -426,7 +426,7 @@ def generate_cross_model_report(
             div = _action_diversity(result)
             val = _validation_status(result)
 
-            parts_line = [f"| {FRAMEWORK_LABELS.get(fw, fw)}"]
+            parts_line: list[Any] = [f"| {FRAMEWORK_LABELS.get(fw, fw)}"]
             parts_line.append(f" {steps or '—'}")
             parts_line.append(f" {conf:.4f}" if conf is not None else " —")
             parts_line.append(f" {efe:.4f}" if efe is not None else " —")
@@ -443,8 +443,8 @@ def generate_cross_model_report(
             confs = {fw: _mean_belief_confidence(model_data[fw]) for fw in fw_with_data}
             confs_valid = {fw: c for fw, c in confs.items() if c is not None}
             if confs_valid:
-                best_fw = max(confs_valid, key=confs_valid.get)
-                worst_fw = min(confs_valid, key=confs_valid.get)
+                best_fw = max(confs_valid, key=lambda fw: confs_valid[fw])
+                worst_fw = min(confs_valid, key=lambda fw: confs_valid[fw])
                 lines.append(
                     f"**Highest confidence:** {FRAMEWORK_LABELS.get(best_fw, best_fw)} ({confs_valid[best_fw]:.4f}) | "
                     f"**Lowest:** {FRAMEWORK_LABELS.get(worst_fw, worst_fw)} ({confs_valid[worst_fw]:.4f})\n"
@@ -454,9 +454,9 @@ def generate_cross_model_report(
     lines.append("## Cross-Model Observations\n")
 
     # Find model with fastest convergence (highest confidence)
-    model_confs = {}
+    model_confs: dict[Any, Any] = {}
     for model in models:
-        all_confs = []
+        all_confs: list[Any] = []
         for fw in frameworks:
             result = sim_data.get(model, {}).get(fw)
             if result:
@@ -467,8 +467,8 @@ def generate_cross_model_report(
             model_confs[model] = np.mean(all_confs)
 
     if model_confs:
-        best_model = max(model_confs, key=model_confs.get)
-        worst_model = min(model_confs, key=model_confs.get)
+        best_model = max(model_confs, key=lambda model: model_confs[model])
+        worst_model = min(model_confs, key=lambda model: model_confs[model])
         lines.append(
             f"- **Highest avg. confidence:** {best_model} ({model_confs[best_model]:.4f})"
         )

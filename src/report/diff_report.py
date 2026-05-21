@@ -14,7 +14,7 @@ import shutil
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class DiffReport:
 
     def to_markdown(self) -> str:
         """Render diff as Markdown section for PIPELINE_REPORT.md."""
-        lines = [f"## Run Comparison ({self.overall_badge})"]
+        lines: list[Any] = [f"## Run Comparison ({self.overall_badge})"]
         lines.append("")
         lines.append(
             f"Comparing **{self.current_timestamp}** vs **{self.previous_timestamp}**"

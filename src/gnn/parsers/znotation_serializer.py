@@ -1,4 +1,5 @@
 import json
+from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class ZNotationSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Z notation format with embedded data."""
-        lines = []
+        lines: list[Any] = []
 
         # Z notation header
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
@@ -48,7 +49,7 @@ class ZNotationSerializer(BaseGNNSerializer):
         lines.append("")
 
         # Embed complete model data as Z notation comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -108,7 +109,7 @@ class ZNotationSerializer(BaseGNNSerializer):
 
     def _map_to_z_type(self, data_type: str) -> str:
         """Map GNN data types to Z notation types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "ℕ",
             "continuous": "ℝ",
             "binary": "𝔹",
@@ -116,9 +117,9 @@ class ZNotationSerializer(BaseGNNSerializer):
             "float": "ℝ",
             "complex": "ℂ",
         }
-        return mapping.get(data_type, "ℕ")
+        return cast("str", mapping.get(data_type, "ℕ"))
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -129,7 +130,7 @@ class ZNotationSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []

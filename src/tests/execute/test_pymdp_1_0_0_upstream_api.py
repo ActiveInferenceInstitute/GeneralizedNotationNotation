@@ -26,7 +26,7 @@ from typing import Any, Tuple
 import numpy as np
 import pytest
 
-pytestmark = [pytest.mark.integration]
+pytestmark: list[Any] = [pytest.mark.integration]
 
 
 def _inferactively_pymdp_version() -> str:
@@ -90,7 +90,7 @@ def _canonicalise_b_3d(b_raw: np.ndarray, num_states: int) -> np.ndarray:
     return out
 
 
-def _to_batched_jax(mat: np.ndarray, jnp_mod: Any):
+def _to_batched_jax(mat: np.ndarray, jnp_mod: Any) -> Any:
     return jnp_mod.asarray(mat, dtype=jnp_mod.float32)[None, ...]
 
 
@@ -155,7 +155,7 @@ def test_single_step_infer_states_infer_policies_sample_action() -> None:
     assert isinstance(prior, (list, tuple))
     assert prior[0].shape == (1, 2)  # (batch, num_states[0])
 
-    obs = [jnp.array([0], dtype=jnp.int32)]
+    obs: list[Any] = [jnp.array([0], dtype=jnp.int32)]
     qs, info = agent.infer_states(obs, empirical_prior=prior, return_info=True)
 
     assert isinstance(qs, (list, tuple))
@@ -181,7 +181,7 @@ def test_agent_with_e_matches_policy_count() -> None:
     """Optional E (habit) length must match the number of policies."""
     Agent, _, jnp, _, _ = _require_pymdp_1_0_0()
     agent = _minimal_agent(Agent, jnp, with_e=True)
-    obs = [jnp.array([1], dtype=jnp.int32)]
+    obs: list[Any] = [jnp.array([1], dtype=jnp.int32)]
     qs, _info = agent.infer_states(obs, empirical_prior=agent.D, return_info=True)
     q_pi, _ = agent.infer_policies(qs)
     assert q_pi.shape[-1] == int(agent.E.shape[-1])
@@ -199,7 +199,7 @@ def test_multi_step_rollout_closes_via_update_empirical_prior() -> None:
 
     for _ in range(5):
         obs_idx = int(rng_np.integers(0, 2))
-        obs = [jnp.array([obs_idx], dtype=jnp.int32)]
+        obs: list[Any] = [jnp.array([obs_idx], dtype=jnp.int32)]
         qs, info = agent.infer_states(obs, empirical_prior=prior, return_info=True)
         q_pi, neg_efe = agent.infer_policies(qs)
         jax_key, sub = jr.split(jax_key)

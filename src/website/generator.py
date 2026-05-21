@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any
+
 """
 Website generator module for GNN pipeline.
 
@@ -459,7 +461,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; backgrou
 def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
     """Wrap body in the shared page shell with sidebar and nav."""
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
-    nav_items = [
+    nav_items: list[Any] = [
         ("🏠", "Dashboard", "index.html", "index"),
         ("⚡", "Pipeline", "pipeline.html", "pipeline"),
         ("📂", "GNN Files", "gnn_files.html", "gnn_files"),
@@ -507,7 +509,7 @@ def _page(title: str, active: str, body: str, *, nav_extra: str = "") -> str:
 #  Pipeline step catalogue
 # ─────────────────────────────────────────────────────────────────────────────
 
-_PIPELINE_STEPS = [
+_PIPELINE_STEPS: list[Any] = [
     (0, "Template", "Pipeline template and initialization"),
     (1, "Setup", "Environment setup and dependency install"),
     (2, "Tests", "Test suite execution (pytest)"),
@@ -543,7 +545,7 @@ _PIPELINE_STEPS = [
 class WebsiteGenerator:
     """Generates a premium multi-page static HTML website from pipeline artifacts."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.template_dir = Path(__file__).parent / "templates"
         self.static_dir = Path(__file__).parent / "static"
 
@@ -551,7 +553,12 @@ class WebsiteGenerator:
 
     def generate_website(self, website_data: dict) -> dict:
         """Generate the complete static website."""
-        result = {"success": True, "pages_created": 0, "errors": [], "warnings": []}
+        result: dict[str, Any] = {
+            "success": True,
+            "pages_created": 0,
+            "errors": [],
+            "warnings": [],
+        }
         try:
             output_dir = Path(
                 website_data.get("output_dir", "output/20_website_output")
@@ -568,7 +575,7 @@ class WebsiteGenerator:
                 p_root, input_dir, output_dir, assets_dir, website_data
             )
 
-            pages = {
+            pages: dict[str, Any] = {
                 "index.html": self._page_index(data),
                 "pipeline.html": self._page_pipeline(data),
                 "gnn_files.html": self._page_gnn_files(data),
@@ -654,7 +661,7 @@ class WebsiteGenerator:
         self._collect_step_statuses(p_root, data)
 
         # Analysis JSON files
-        seen = set()
+        seen: set[Any] = set()
         for candidate in [
             p_root / "16_analysis_output" / "analysis_results",
             p_root / "16_analysis_output",
@@ -684,7 +691,7 @@ class WebsiteGenerator:
                 break
 
         # Visualizations — copy assets
-        viz_dirs = [
+        viz_dirs: list[Any] = [
             p_root / "08_visualization_output" / "visualization_results",
             p_root / "8_visualization_output" / "visualization_results",
             p_root / "09_advanced_viz_output",
@@ -1043,7 +1050,7 @@ def generate_website(
     try:
         generator = WebsiteGenerator()
         p_root = pipeline_output_root if pipeline_output_root else output_dir.parent
-        website_data = {
+        website_data: dict[str, Any] = {
             "input_dir": str(input_dir),
             "output_dir": str(output_dir),
             "pipeline_output_root": str(p_root),

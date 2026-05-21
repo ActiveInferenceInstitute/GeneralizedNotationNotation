@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -10,7 +11,7 @@ class JSONSerializer(BaseGNNSerializer):
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to JSON format."""
         # Manually construct the data dictionary to handle dynamic objects properly
-        data = {
+        data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "version": getattr(model, "version", "1.0"),

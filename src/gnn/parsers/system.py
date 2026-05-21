@@ -7,7 +7,7 @@ This module provides the main parsing system functionality.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type, Union, cast
 
 from .alloy_serializer import AlloySerializer
 from .asn1_serializer import ASN1Serializer
@@ -126,7 +126,7 @@ class GNNParsingSystem:
     for all supported GNN specification formats.
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize the parsing system.
 
@@ -142,7 +142,7 @@ class GNNParsingSystem:
         self._initialize_parsers()
         self._initialize_serializers()
 
-    def _initialize_parsers(self):
+    def _initialize_parsers(self) -> Any:
         """Initialize all available parsers."""
         for format_type, parser_class in PARSER_REGISTRY.items():
             try:
@@ -150,7 +150,7 @@ class GNNParsingSystem:
             except Exception as e:
                 logger.warning(f"Failed to initialize parser for {format_type}: {e}")
 
-    def _initialize_serializers(self):
+    def _initialize_serializers(self) -> Any:
         """Initialize all available serializers."""
         for format_type, serializer_class in SERIALIZER_REGISTRY.items():
             try:
@@ -188,7 +188,7 @@ class GNNParsingSystem:
             raise ValueError(f"Unsupported format: {format_hint}")
         # Ensure parsers accept either str or Path
         if hasattr(parser, "parse_file"):
-            return parser.parse_file(file_path)
+            return parser.parse_file(str(file_path))
         else:
             # Recovery: call parse_string on file content
             with open(file_path, "r", encoding="utf-8") as f:
@@ -244,7 +244,10 @@ class GNNParsingSystem:
         Returns:
             Converted model
         """
-        return self.converter.convert(model, from_format, to_format)
+        return cast(
+            "GNNInternalRepresentation",
+            self.converter.convert(model, from_format.value, to_format.value),
+        )
 
     def serialize(self, model: GNNInternalRepresentation, format: GNNFormat) -> str:
         """
@@ -263,7 +266,7 @@ class GNNParsingSystem:
         serializer = self.serializers[format]
 
         try:
-            return serializer.serialize(model)
+            return cast("str", serializer.serialize(model))
         except Exception as e:
             logger.error(f"Serialization failed for format {format}: {e}")
             raise ParseError(f"Failed to serialize to {format}: {e}") from e
@@ -273,7 +276,7 @@ class GNNParsingSystem:
         model: GNNInternalRepresentation,
         file_path: Union[str, Path],
         format: Optional[GNNFormat] = None,
-    ):
+    ) -> Any:
         """
         Serialize a model to file.
 
@@ -308,7 +311,7 @@ class GNNParsingSystem:
         """
         extension = file_path.suffix.lower()
 
-        format_map = {
+        format_map: dict[str, Any] = {
             ".md": GNNFormat.MARKDOWN,
             ".scala": GNNFormat.SCALA,
             ".lean": GNNFormat.LEAN,
@@ -335,7 +338,7 @@ class GNNParsingSystem:
         }
 
         if extension in format_map:
-            return format_map[extension]
+            return cast("GNNFormat", format_map[extension])
         else:
             raise ValueError(f"Unknown file extension: {extension}")
 

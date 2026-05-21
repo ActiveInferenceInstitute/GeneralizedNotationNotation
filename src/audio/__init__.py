@@ -50,7 +50,7 @@ __author__ = "Active Inference Institute"
 __description__ = "Audio generation and sonification for GNN Processing Pipeline"
 
 # Feature availability flags
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "tonal_generation": True,
     "rhythmic_generation": True,
     "ambient_generation": True,
@@ -62,7 +62,7 @@ FEATURES = {
 
 def check_audio_backends() -> Dict[str, Any]:
     """Check availability of audio backends."""
-    backends = {}
+    backends: dict[Any, Any] = {}
 
     # Check librosa
     try:
@@ -99,7 +99,7 @@ def check_audio_backends() -> Dict[str, Any]:
     return backends
 
 
-__all__ = [
+__all__: list[Any] = [
     "AudioGenerator",
     "process_audio",
     "generate_audio_from_gnn",

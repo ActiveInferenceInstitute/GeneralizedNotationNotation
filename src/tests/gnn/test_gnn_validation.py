@@ -7,6 +7,7 @@ This file contains tests migrated from test_gnn_core_modules.py.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -19,14 +20,14 @@ class TestGNNValidation:
     """Test gnn.validation module."""
 
     @pytest.mark.unit
-    def test_validation_imports(self):
+    def test_validation_imports(self) -> Any:
         """Test that validation module can be imported."""
         from gnn import validate_gnn_structure
 
         assert callable(validate_gnn_structure)
 
     @pytest.mark.unit
-    def test_validate_gnn_structure_basic(self, sample_gnn_files):
+    def test_validate_gnn_structure_basic(self, sample_gnn_files: Any) -> Any:
         """Test GNN structure validation."""
         from gnn import validate_gnn_structure
 
@@ -45,14 +46,14 @@ class TestGNNSimpleValidator:
     """Test gnn.simple_validator module."""
 
     @pytest.mark.unit
-    def test_simple_validator_imports(self):
+    def test_simple_validator_imports(self) -> Any:
         """Test that simple validator can be imported."""
         from gnn import simple_validator
 
         assert hasattr(simple_validator, "SimpleValidator")
 
     @pytest.mark.unit
-    def test_simple_validator_instantiation(self):
+    def test_simple_validator_instantiation(self) -> Any:
         """Test SimpleValidator instantiation."""
         from gnn.simple_validator import SimpleValidator
 
@@ -63,7 +64,7 @@ class TestGNNSimpleValidator:
         assert hasattr(validator, "validate_directory")
 
     @pytest.mark.unit
-    def test_simple_validation(self, sample_gnn_files):
+    def test_simple_validation(self, sample_gnn_files: Any) -> Any:
         """Test simple validation functionality."""
         from gnn.simple_validator import SimpleValidator
 

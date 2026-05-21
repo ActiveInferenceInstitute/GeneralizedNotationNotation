@@ -11,7 +11,7 @@ import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 # Import execution functionality
 try:
@@ -20,7 +20,7 @@ try:
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
-    run_pymdp_scripts = None
+    run_pymdp_scripts = cast(Any, None)
 
 try:
     from .rxinfer.rxinfer_runner import run_rxinfer_scripts
@@ -28,7 +28,7 @@ try:
     RXINFER_AVAILABLE = True
 except ImportError:
     RXINFER_AVAILABLE = False
-    run_rxinfer_scripts = None
+    run_rxinfer_scripts = cast(Any, None)
 
 try:
     from .discopy.discopy_executor import run_discopy_analysis
@@ -36,7 +36,7 @@ try:
     DISCOPY_AVAILABLE = True
 except ImportError:
     DISCOPY_AVAILABLE = False
-    run_discopy_analysis = None
+    run_discopy_analysis = cast(Any, None)
 
 try:
     from .activeinference_jl.activeinference_runner import run_activeinference_analysis
@@ -44,7 +44,7 @@ try:
     ACTIVEINFERENCE_AVAILABLE = True
 except ImportError:
     ACTIVEINFERENCE_AVAILABLE = False
-    run_activeinference_analysis = None
+    run_activeinference_analysis = cast(Any, None)
 
 try:
     from .jax.jax_runner import run_jax_scripts
@@ -52,7 +52,7 @@ try:
     JAX_AVAILABLE = True
 except ImportError:
     JAX_AVAILABLE = False
-    run_jax_scripts = None
+    run_jax_scripts = cast(Any, None)
 
 try:
     from .numpyro.numpyro_runner import run_numpyro_scripts
@@ -60,7 +60,7 @@ try:
     NUMPYRO_AVAILABLE = True
 except ImportError:
     NUMPYRO_AVAILABLE = False
-    run_numpyro_scripts = None
+    run_numpyro_scripts = cast(Any, None)
 
 try:
     from .pytorch.pytorch_runner import run_pytorch_scripts
@@ -68,29 +68,15 @@ try:
     PYTORCH_AVAILABLE = True
 except ImportError:
     PYTORCH_AVAILABLE = False
-    run_pytorch_scripts = None
+    run_pytorch_scripts = cast(Any, None)
 
+from utils import performance_tracker
 from utils.logging.logging_utils import (
     log_step_error,
     log_step_start,
     log_step_success,
     log_step_warning,
 )
-
-try:
-    from utils import performance_tracker
-except Exception:
-    import types as _types
-    from contextlib import contextmanager
-
-    @contextmanager
-    def _noop_cm():
-        yield _types.SimpleNamespace()
-
-    def performance_tracker():
-        return _noop_cm()
-
-
 from utils.pipeline_template import get_output_dir_for_script
 
 logger = logging.getLogger(__name__)
@@ -111,7 +97,7 @@ class GNNExecutor:
     Main executor for GNN model simulations and scripts.
     """
 
-    def __init__(self, output_dir: Optional[str] = None):
+    def __init__(self, output_dir: Optional[str] = None) -> None:
         """
         Initialize the GNN executor.
 
@@ -126,7 +112,7 @@ class GNNExecutor:
                 Path(__file__).parent.parent.parent / "output" / "12_execute_output"
             )
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.execution_log = []
+        self.execution_log: list[dict[str, Any]] = []
 
     def execute_gnn_model(
         self,
@@ -232,9 +218,11 @@ class GNNExecutor:
         """
         if not output_file:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
-            output_file = self.output_dir / f"execution_report_{timestamp}.json"
+            output_path = self.output_dir / f"execution_report_{timestamp}.json"
+        else:
+            output_path = Path(output_file)
 
-        report_data = {
+        report_data: dict[str, Any] = {
             "execution_summary": {
                 "total_executions": len(self.execution_log),
                 "successful_executions": sum(
@@ -251,14 +239,14 @@ class GNNExecutor:
         }
 
         try:
-            with open(output_file, "w") as f:
+            with open(output_path, "w") as f:
                 json.dump(report_data, f, indent=2)
         except OSError as e:
             raise RuntimeError(
-                f"Failed to write execution report to {output_file}: {e}"
+                f"Failed to write execution report to {output_path}: {e}"
             ) from e
 
-        return str(output_file)
+        return str(output_path)
 
     def _execute_pymdp_script(
         self,
@@ -383,7 +371,7 @@ class GNNExecutor:
         """Execute a simulation from a GNN file path."""
         gnn_path = Path(gnn_file) if not isinstance(gnn_file, Path) else gnn_file
         out_dir = Path(output_dir) if output_dir is not None else self.output_dir
-        sim_cfg = {
+        sim_cfg: dict[str, Any] = {
             "model_path": str(gnn_path),
             "execution_type": "pymdp",
             "options": {"output_dir": str(out_dir)},
@@ -465,7 +453,7 @@ def execute_rendered_simulators(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Execute rendered simulator scripts with enhanced error handling and dependency checking.
@@ -492,7 +480,7 @@ def execute_rendered_simulators(
     execution_output_dir.mkdir(parents=True, exist_ok=True)
 
     # Create framework-specific output directories
-    framework_dirs = {
+    framework_dirs: dict[str, Any] = {
         "pymdp": execution_output_dir / "pymdp",
         "rxinfer": execution_output_dir / "rxinfer",
         "discopy": execution_output_dir / "discopy",
@@ -507,7 +495,7 @@ def execute_rendered_simulators(
         logger.debug(f"Created framework directory: {framework_dir}")
 
     try:
-        execution_results = {
+        execution_results: dict[str, Any] = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
             "target_directory": str(target_dir),
             "framework_execution_dirs": {k: str(v) for k, v in framework_dirs.items()},
@@ -529,8 +517,8 @@ def execute_rendered_simulators(
         logger.info("🔍 Pre-execution validation and dependency checking...")
 
         # Check Python dependencies
-        python_deps = ["numpy", "pymdp", "flax", "jax", "optax"]
-        missing_python_deps = []
+        python_deps: list[Any] = ["numpy", "pymdp", "flax", "jax", "optax"]
+        missing_python_deps: list[Any] = []
         for dep in python_deps:
             try:
                 __import__(dep)
@@ -563,7 +551,7 @@ def execute_rendered_simulators(
             execution_results["dependency_issues"].append("Julia not found in PATH")
 
         # Execute PyMDP scripts if available
-        if PYMDP_AVAILABLE and run_pymdp_scripts:
+        if PYMDP_AVAILABLE:
             try:
                 with performance_tracker.track_operation("execute_pymdp_scripts"):
                     logger.info("🚀 Executing PyMDP scripts...")
@@ -640,7 +628,7 @@ def execute_rendered_simulators(
             )
 
         # Execute RxInfer scripts if available
-        if RXINFER_AVAILABLE and run_rxinfer_scripts:
+        if RXINFER_AVAILABLE:
             try:
                 with performance_tracker.track_operation("execute_rxinfer_scripts"):
                     logger.info("🚀 Executing RxInfer scripts...")
@@ -693,7 +681,7 @@ def execute_rendered_simulators(
             )
 
         # Execute DisCoPy analysis if available
-        if DISCOPY_AVAILABLE and run_discopy_analysis:
+        if DISCOPY_AVAILABLE:
             try:
                 with performance_tracker.track_operation("execute_discopy_analysis"):
                     logger.info("🚀 Executing DisCoPy analysis...")
@@ -746,7 +734,7 @@ def execute_rendered_simulators(
             )
 
         # Execute ActiveInference.jl analysis if available
-        if ACTIVEINFERENCE_AVAILABLE and run_activeinference_analysis:
+        if ACTIVEINFERENCE_AVAILABLE:
             try:
                 with performance_tracker.track_operation(
                     "execute_activeinference_analysis"
@@ -801,7 +789,7 @@ def execute_rendered_simulators(
             )
 
         # Execute JAX scripts if available
-        if JAX_AVAILABLE and run_jax_scripts:
+        if JAX_AVAILABLE:
             try:
                 with performance_tracker.track_operation("execute_jax_scripts"):
                     logger.info("🚀 Executing JAX scripts...")
@@ -854,7 +842,7 @@ def execute_rendered_simulators(
             )
 
         # Execute NumPyro scripts if available
-        if NUMPYRO_AVAILABLE and run_numpyro_scripts:
+        if NUMPYRO_AVAILABLE:
             try:
                 with performance_tracker.track_operation("execute_numpyro_scripts"):
                     logger.info("🚀 Executing NumPyro scripts...")
@@ -907,7 +895,7 @@ def execute_rendered_simulators(
             )
 
         # Execute PyTorch scripts if available
-        if PYTORCH_AVAILABLE and run_pytorch_scripts:
+        if PYTORCH_AVAILABLE:
             try:
                 with performance_tracker.track_operation("execute_pytorch_scripts"):
                     logger.info("🚀 Executing PyTorch scripts...")
@@ -1143,7 +1131,7 @@ def execute_rendered_simulators(
                     f"⚠️ Syntax errors found: {len(execution_results['syntax_errors'])}"
                 )
 
-            return execution_results["total_failures"] == 0
+            return cast("bool", execution_results["total_failures"] == 0)
         else:
             log_step_warning(
                 logger, "No simulator scripts or outputs found to execute/analyze"

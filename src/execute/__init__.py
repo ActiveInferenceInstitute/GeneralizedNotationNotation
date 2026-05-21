@@ -6,8 +6,10 @@ JAX, DisCoPy, PyTorch, and NumPyro backends, plus the dependency/environment
 validators that gate them.
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "pymdp_execution": True,
     "rxinfer_execution": True,
     "activeinference_jl_execution": True,
@@ -42,7 +44,7 @@ from .executor import (
     execute_script_safely,
     run_simulation,
 )
-from .processor import process_execute
+from .processor import execute_simulation_from_gnn, process_execute
 from .pymdp import (
     PyMDPSimulation,
     execute_pymdp_simulation,
@@ -60,14 +62,7 @@ from .validator import (
     validate_execution_environment,
 )
 
-# ``execute_simulation_from_gnn`` is the canonical name exported from the
-# processor (if defined there) or the executor — checked in that order.
-try:
-    from .processor import execute_simulation_from_gnn
-except ImportError:
-    execute_simulation_from_gnn = execute_gnn_model
-
-__all__ = [
+__all__: list[Any] = [
     "__version__",
     "FEATURES",
     "FrameworkName",

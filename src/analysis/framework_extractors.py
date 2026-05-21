@@ -90,7 +90,7 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         simulation_data["belief_confidence"] = metrics.get("belief_confidence", [])
         simulation_data["traces"] = payload.get("simulation_trace", {})
 
-    result = {
+    result: dict[str, Any] = {
         "traces": simulation_data.get("traces", []),
         "free_energy": simulation_data.get("free_energy", []),
         "states": simulation_data.get("states", []),
@@ -159,7 +159,7 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
             logger.warning(f"Error reading RxInfer files: {e}")
             simulation_data["_file_read_error"] = str(e)
 
-    result = {
+    result: dict[str, Any] = {
         "beliefs": simulation_data.get("beliefs", []),
         "true_states": simulation_data.get("true_states", []),
         "observations": simulation_data.get("observations", []),
@@ -209,10 +209,10 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                     )
                     import csv
 
-                    traces = []
-                    observations = []
-                    actions = []
-                    beliefs = []
+                    traces: list[Any] = []
+                    observations: list[Any] = []
+                    actions: list[Any] = []
+                    beliefs: list[Any] = []
 
                     with open(results_file, "r") as f:
                         # Skip comments
@@ -299,7 +299,7 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
             logger.warning(f"Error reading ActiveInference.jl files: {e}")
 
     # Extract all Active Inference-relevant fields
-    extracted = {
+    extracted: dict[str, Any] = {
         # Core state/observation/action traces
         "traces": simulation_data.get("traces", []),
         "free_energy": simulation_data.get("free_energy", []),
@@ -363,7 +363,7 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
             impl_path = Path(implementation_dir)
 
             # Read execution report
-            possible_reports = [
+            possible_reports: list[Any] = [
                 impl_path / "discopy_execution_report.json",
                 impl_path / "discopy_results" / "discopy_execution_report.json",
                 impl_path
@@ -385,7 +385,7 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                         jax_analyzed = summary.get("jax_outputs_analyzed", 0)
 
                         # Populate diagrams list
-                        diagrams = []
+                        diagrams: list[Any] = []
                         for exec_rec in executions:
                             if (
                                 exec_rec.get("type") == "diagram_validation"

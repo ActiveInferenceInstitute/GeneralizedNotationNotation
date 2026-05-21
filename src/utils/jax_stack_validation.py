@@ -14,7 +14,7 @@ from __future__ import annotations
 import os
 import subprocess  # nosec B404
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Any, Optional, Tuple
 
 _stack_ok_cache: Optional[bool] = None
 
@@ -77,7 +77,7 @@ def _verify_jax_pymdp_stack_impl() -> None:
         raise RuntimeError("XLA compile/run or block_until_ready failed")
 
     opt = optax.adam(0.01)
-    params = {"w": jnp.ones((2, 2), dtype=jnp.float32)}
+    params: dict[str, Any] = {"w": jnp.ones((2, 2), dtype=jnp.float32)}
     opt.init(params)
 
     class _Tiny(nn.Module):
@@ -89,6 +89,8 @@ def _verify_jax_pymdp_stack_impl() -> None:
     key = jax.random.PRNGKey(0)
     variables = model.init(key, jnp.ones((1, 2), dtype=jnp.float32))
     out = model.apply(variables, jnp.ones((1, 2), dtype=jnp.float32))
+    if isinstance(out, tuple):
+        out = out[0]
     if out.shape != (1, 1) or not jnp.isfinite(out).all():
         raise RuntimeError("Flax module forward pass failed")
 
@@ -125,7 +127,7 @@ def run_jax_stack_probe_subprocess(
 
     Used by setup and validation so the probe always uses the same interpreter as the lockfile.
     """
-    env = {**os.environ, "PYTHONPATH": str(project_root / "src")}
+    env: dict[Any, Any] = {**os.environ, "PYTHONPATH": str(project_root / "src")}
     proc = subprocess.run(  # nosec B603
         [
             str(venv_python),

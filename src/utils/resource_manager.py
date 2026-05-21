@@ -11,7 +11,7 @@ import logging
 import time
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional, Tuple, TypeVar
+from typing import Any, Callable, Dict, Iterator, Optional, Tuple, TypeVar, cast
 
 import psutil
 
@@ -27,7 +27,9 @@ def get_current_memory_usage() -> float:
         import psutil
 
         process = psutil.Process()
-        return process.memory_info().rss / 1024 / 1024  # Convert bytes to MB
+        return cast(
+            "float", process.memory_info().rss / 1024 / 1024
+        )  # Convert bytes to MB
     except (ImportError, Exception):
         return 0.0
 
@@ -35,19 +37,19 @@ def get_current_memory_usage() -> float:
 class ResourceTracker:
     """Tracks resource usage during operations."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.start_time = time.time()
         self.end_time: Optional[float] = None
         self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
         self.peak_memory = self.start_memory
         self.current_memory = self.start_memory
 
-    def update(self):
+    def update(self) -> Any:
         """Update current resource measurements."""
         self.current_memory = psutil.Process().memory_info().rss / 1024 / 1024
         self.peak_memory = max(self.peak_memory, self.current_memory)
 
-    def stop(self):
+    def stop(self) -> Any:
         """Stop tracking and calculate final metrics."""
         self.end_time = time.time()
         self.update()
@@ -62,12 +64,12 @@ class ResourceTracker:
     @property
     def memory_used(self) -> float:
         """Get current memory usage in MB."""
-        return self.current_memory - self.start_memory
+        return cast("float", self.current_memory - self.start_memory)
 
     @property
     def max_memory_mb(self) -> float:
         """Get peak memory usage in MB."""
-        return self.peak_memory
+        return cast("float", self.peak_memory)
 
     def to_dict(self) -> Dict[str, float]:
         """Convert metrics to dictionary."""
@@ -79,9 +81,9 @@ class ResourceTracker:
 
 
 @contextmanager
-def performance_tracker() -> ResourceTracker:
+def performance_tracker() -> Iterator[ResourceTracker]:
     """Context manager for tracking performance metrics."""
-    tracker = ResourceTracker()
+    tracker: ResourceTracker = ResourceTracker()
     try:
         yield tracker
     finally:
@@ -92,7 +94,7 @@ def track_peak_memory(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
     """Decorator to track peak memory usage of a function."""
 
     @functools.wraps(func)
-    def wrapper(*args, **kwargs) -> Tuple[T, float]:
+    def wrapper(*args: Any, **kwargs: Any) -> Tuple[T, float]:
         tracker = ResourceTracker()
         try:
             result = func(*args, **kwargs)
@@ -106,7 +108,7 @@ def track_peak_memory(func: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
 @contextmanager
 def with_resource_limits(
     max_memory_mb: Optional[float] = None, max_time_seconds: Optional[float] = None
-):
+) -> Any:
     """Context manager to enforce resource limits.
 
     - Memory limit is enforced on delta usage within the context, not absolute RSS,
@@ -207,7 +209,7 @@ def estimate_resources(model_file: Path) -> Dict[str, float]:
     }
 
 
-def log_resource_usage(logger: logging.Logger, tracker: ResourceTracker):
+def log_resource_usage(logger: logging.Logger, tracker: ResourceTracker) -> Any:
     """Log resource usage metrics."""
     metrics = tracker.to_dict()
     logger.info(

@@ -47,7 +47,7 @@ def validate_and_clean_pymdp_script(script_path: Path) -> bool:
         try:
             # Remove stray } characters at the beginning of lines
             lines = content.split("\n")
-            cleaned_lines = []
+            cleaned_lines: list[Any] = []
             for line in lines:
                 # Remove stray } at the beginning of lines (common rendering issue)
                 if line.strip().startswith("}"):
@@ -106,8 +106,8 @@ def execute_pymdp_script_with_outputs(
 
     try:
         # Check if required dependencies are available
-        required_deps = ["numpy", "pymdp", "matplotlib"]
-        missing_deps = []
+        required_deps: list[Any] = ["numpy", "pymdp", "matplotlib"]
+        missing_deps: list[Any] = []
 
         for dep in required_deps:
             try:
@@ -154,7 +154,7 @@ def execute_pymdp_script_with_outputs(
         )
 
         # Save execution logs
-        execution_log = {
+        execution_log: dict[str, Any] = {
             "script_name": script_path.name,
             "execution_time": datetime.now().isoformat(),
             "return_code": result.returncode,
@@ -189,7 +189,7 @@ def execute_pymdp_script_with_outputs(
                 script_path, result.stdout, script_output_dir
             )
 
-            execution_summary = {
+            execution_summary: dict[str, Any] = {
                 "success": True,
                 "script_name": script_path.name,
                 "return_code": result.returncode,
@@ -209,7 +209,7 @@ def execute_pymdp_script_with_outputs(
             logger.error(
                 f"Script execution failed with return code {result.returncode}: {script_path.name}"
             )
-            error_summary = {
+            error_summary: dict[str, Any] = {
                 "success": False,
                 "script_name": script_path.name,
                 "return_code": result.returncode,
@@ -244,7 +244,7 @@ def extract_execution_metadata(
     Returns:
         Dictionary containing execution metadata
     """
-    metadata = {
+    metadata: dict[str, Any] = {
         "matrices_found": False,
         "agent_instantiated": False,
         "trace_file": None,
@@ -290,7 +290,7 @@ def generate_simulation_trace(
         lines = stdout_content.split("\n")
 
         # Extract relevant execution traces
-        trace_data = {
+        trace_data: dict[str, Any] = {
             "script_name": script_name,
             "timestamp": datetime.now().isoformat(),
             "matrices_found": [],
@@ -389,7 +389,7 @@ def run_pymdp_scripts(
         return True  # Consider this a success if no scripts to run
 
     # Execute each script with comprehensive output capture
-    execution_results = []
+    execution_results: list[Any] = []
     success_count = 0
     failure_count = 0
 
@@ -432,7 +432,7 @@ def create_execution_report(
 ) -> None:
     """Create a comprehensive PyMDP execution report."""
 
-    report = {
+    report: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "framework": "PyMDP",
         "execution_summary": {
@@ -493,7 +493,7 @@ def create_execution_report(
 def create_empty_execution_report(output_dir: Path) -> None:
     """Create an empty execution report when no scripts are found."""
 
-    report = {
+    report: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "framework": "PyMDP",
         "execution_summary": {

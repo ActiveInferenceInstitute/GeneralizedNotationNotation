@@ -106,15 +106,15 @@ class GNNResourceEstimator:
         }
     )
 
-    def __init__(self, type_check_data: Optional[str] = None):
+    def __init__(self, type_check_data: Optional[str] = None) -> None:
         """
         Initialize the resource estimator.
 
         Args:
             type_check_data: Path to JSON data from type checker
         """
-        self.results = {}
-        self.detailed_metrics = {}
+        self.results: dict[str, Any] = {}
+        self.detailed_metrics: dict[str, Any] = {}
 
         if type_check_data:
             try:
@@ -144,7 +144,7 @@ class GNNResourceEstimator:
 
             # Build the parser-style dictionary consumed by estimation strategies.
             variables_with_dims = extract_gnn_dimensions(content_str)
-            vars_map = {}
+            vars_map: dict[Any, Any] = {}
             for k, v in variables_with_dims.items():
                 vars_map[k] = {"dimensions": v, "type": "float"}
 
@@ -167,7 +167,7 @@ class GNNResourceEstimator:
             )
             time_spec = "Dynamic" if "t" in content_str else "Static"
 
-            content_dict = {
+            content_dict: dict[str, Any] = {
                 "Variables": vars_map,
                 "Edges": edges,
                 "Equations": equations,
@@ -200,7 +200,7 @@ class GNNResourceEstimator:
             Dictionary mapping file paths to resource estimates
         """
         path = Path(dir_path)
-        results = {}
+        results: dict[Any, Any] = {}
 
         pattern = "**/*.md" if recursive else "*.md"
 

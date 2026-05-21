@@ -147,7 +147,7 @@ class TestMarkdownParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_empty_string(self):
+    def test_empty_string(self) -> Any:
         """Test parsing empty string."""
         parser = MarkdownGNNParser()
         result = parser.parse_string("")
@@ -278,7 +278,7 @@ class TestScalaParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_empty_string(self):
+    def test_empty_string(self) -> Any:
         """Test parsing empty string."""
         parser = ScalaGNNParser()
         result = parser.parse_string("")
@@ -333,7 +333,7 @@ class TestLeanParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_empty_string(self):
+    def test_empty_string(self) -> Any:
         """Test parsing empty string."""
         parser = LeanGNNParser()
         result = parser.parse_string("")
@@ -387,7 +387,7 @@ class TestCoqParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_empty_string(self):
+    def test_empty_string(self) -> Any:
         """Test parsing empty string."""
         from gnn.parsers.coq_parser import CoqGNNParser
 

@@ -72,7 +72,7 @@ def _generate_interactive_plotly_dashboard(
             ],
         )
 
-        var_types = {}
+        var_types: dict[Any, Any] = {}
         for var in variables:
             if isinstance(var, dict):
                 vtype = var.get("var_type", "unknown")
@@ -100,9 +100,9 @@ def _generate_interactive_plotly_dashboard(
             )
 
         if connections:
-            x_coords = []
-            y_coords = []
-            labels = []
+            x_coords: list[Any] = []
+            y_coords: list[Any] = []
+            labels: list[Any] = []
 
             for i, conn in enumerate(connections[:20]):
                 if isinstance(conn, dict):
@@ -134,7 +134,7 @@ def _generate_interactive_plotly_dashboard(
                     col=1,
                 )
 
-        stats_data = {
+        stats_data: dict[str, Any] = {
             "Metric": ["Variables", "Parameters", "Connections", "Matrices"],
             "Count": [len(variables), len(parameters), len(connections), len(matrices)],
         }

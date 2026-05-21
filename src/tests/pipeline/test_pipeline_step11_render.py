@@ -5,13 +5,14 @@ Tests for the 11_render.py thin orchestrator.
 import os
 import runpy
 import sys
+from typing import Any
 
 import pytest
 
 import render
 
 
-def test_11_render_success(monkeypatch, tmp_path):
+def test_11_render_success(monkeypatch: Any, tmp_path: Any) -> Any:
     target_dir = tmp_path / "test_input"
     output_dir = tmp_path / "test_output"
 
@@ -43,7 +44,7 @@ def test_11_render_success(monkeypatch, tmp_path):
             render.process_render = original_process
 
 
-def test_11_render_failure(monkeypatch, tmp_path):
+def test_11_render_failure(monkeypatch: Any, tmp_path: Any) -> Any:
     target_dir = tmp_path / "test_input"
 
     script_path = os.path.abspath(

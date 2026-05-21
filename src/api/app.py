@@ -24,20 +24,12 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
-# ── Graceful import ──────────────────────────────────────────────────────────────
+from fastapi import BackgroundTasks, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import PlainTextResponse, StreamingResponse
+from pydantic import BaseModel, Field
 
-try:
-    from fastapi import BackgroundTasks, FastAPI, HTTPException
-    from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import PlainTextResponse, StreamingResponse
-    from pydantic import BaseModel, Field
-
-    FASTAPI_AVAILABLE = True
-except ImportError:
-    FASTAPI_AVAILABLE = False
-    logger.debug(
-        "fastapi not installed — API unavailable. Install with: pip install fastapi uvicorn"
-    )
+FASTAPI_AVAILABLE = True
 
 # Add src to path
 _src_dir = str(Path(__file__).parent.parent)
@@ -156,7 +148,7 @@ if FASTAPI_AVAILABLE:
                     current_step=_runs[run_hash].get("current_step"),
                 )
 
-            run_entry = {
+            run_entry: dict[str, Any] = {
                 "status": "queued",
                 "started_at": datetime.now().isoformat(),
                 "request": request.model_dump(),
@@ -202,7 +194,7 @@ if FASTAPI_AVAILABLE:
             """Server-Sent Events stream for real-time pipeline progress."""
             entry = _find_run(run_hash)
 
-            async def event_generator():
+            async def event_generator() -> Any:
                 last_index = 0
                 while True:
                     for event in entry.get("events", [])[last_index:]:
@@ -299,7 +291,7 @@ if FASTAPI_AVAILABLE:
 
     # ── Background pipeline execution ────────────────────────────────────────
 
-    async def _execute_pipeline(run_hash: str, request: RunRequest):
+    async def _execute_pipeline(run_hash: str, request: RunRequest) -> Any:
         """Execute pipeline in background, updating run store via RunTracker."""
         entry = _runs[run_hash]
         entry["status"] = "running"
@@ -366,7 +358,7 @@ if FASTAPI_AVAILABLE:
 
     def _check_renderers() -> Dict[str, bool]:
         """Check which renderers are available."""
-        renderers = {}
+        renderers: dict[Any, Any] = {}
         for name in [
             "pymdp",
             "rxinfer",
@@ -386,17 +378,17 @@ if FASTAPI_AVAILABLE:
 
     # Module-scope instance for ASGI deployment (e.g. uvicorn src.api.app:app).
     # Tests should call create_app() directly to get a fresh isolated instance.
-    app = create_app()
+    app: FastAPI | None = create_app()
 
 else:
     app = None
 
-    def create_app():
+    def create_app() -> "FastAPI":
         """Report that the API server requires FastAPI."""
         raise RuntimeError("FastAPI is required to create the API application")
 
 
-def start_server(host: str = "127.0.0.1", port: int = 8000):
+def start_server(host: str = "127.0.0.1", port: int = 8000) -> Any:
     """Start the API server."""
     if not FASTAPI_AVAILABLE:
         logger.error("Cannot start server: pip install fastapi uvicorn")
@@ -404,6 +396,8 @@ def start_server(host: str = "127.0.0.1", port: int = 8000):
 
     import uvicorn
 
+    if app is None:
+        raise RuntimeError("API application was not initialized")
     logger.info(f"Starting GNN API server on {host}:{port}")
     uvicorn.run(app, host=host, port=port)
 

@@ -13,6 +13,7 @@ This module tests the integration processor functionality including:
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -20,13 +21,13 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Mark all tests
-pytestmark = [pytest.mark.integration, pytest.mark.fast]
+pytestmark: list[Any] = [pytest.mark.integration, pytest.mark.fast]
 
 
 class TestProcessIntegration:
     """Test suite for process_integration function."""
 
-    def test_process_empty_directory(self, tmp_path):
+    def test_process_empty_directory(self, tmp_path: Any) -> Any:
         """Should handle empty directories gracefully."""
         from integration.processor import process_integration
 
@@ -37,7 +38,7 @@ class TestProcessIntegration:
         # Verify results directory was created
         assert (output_dir / "integration_results").exists()
 
-    def test_process_with_gnn_files(self, tmp_path):
+    def test_process_with_gnn_files(self, tmp_path: Any) -> Any:
         """Should process GNN files and detect components."""
         # Create a test GNN file
         gnn_content = """# Test GNN File
@@ -67,7 +68,7 @@ components:
         assert results["processed_files"] == 1
         assert results["success"] is True
 
-    def test_process_multiple_files_with_references(self, tmp_path):
+    def test_process_multiple_files_with_references(self, tmp_path: Any) -> Any:
         """Should detect cross-file references."""
         # File A defines ComponentA, references ComponentB
         file_a_content = """# File A
@@ -97,7 +98,7 @@ components:
         results = json.loads(results_file.read_text())
         assert results["processed_files"] == 2
 
-    def test_circular_dependency_detection(self, tmp_path):
+    def test_circular_dependency_detection(self, tmp_path: Any) -> Any:
         """Should detect circular dependencies when networkx available."""
         pytest.importorskip("networkx")
 
@@ -134,7 +135,7 @@ components:
         results = json.loads(results_file.read_text())
         assert "system_graph_stats" in results
 
-    def test_undefined_reference_detection(self, tmp_path):
+    def test_undefined_reference_detection(self, tmp_path: Any) -> Any:
         """Should detect undefined cross-references."""
         # File with undefined $ref
         gnn_content = """# Test with undefined ref
@@ -158,7 +159,7 @@ components:
         # Should have captured the undefined reference
         assert any("UndefinedComponent" in issue for issue in results.get("issues", []))
 
-    def test_summary_generation(self, tmp_path):
+    def test_summary_generation(self, tmp_path: Any) -> Any:
         """Should generate integration summary markdown."""
         (tmp_path / "test.md").write_text("- name: TestComp")
 
@@ -180,7 +181,7 @@ components:
 class TestProcessIntegrationErrorHandling:
     """Test error handling in process_integration."""
 
-    def test_invalid_file_handling(self, tmp_path):
+    def test_invalid_file_handling(self, tmp_path: Any) -> Any:
         """Should handle files that can't be parsed."""
         # Create a binary file that looks like .md
         (tmp_path / "binary.md").write_bytes(b"\x00\x01\x02\x03")
@@ -194,7 +195,7 @@ class TestProcessIntegrationErrorHandling:
         # Processing should still succeed (graceful degradation)
         assert result is True
 
-    def test_nonexistent_target_returns_gracefully(self, tmp_path):
+    def test_nonexistent_target_returns_gracefully(self, tmp_path: Any) -> Any:
         """Should handle non-existent target directory."""
         from integration.processor import process_integration
 

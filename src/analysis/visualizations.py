@@ -183,7 +183,7 @@ def visualize_all_framework_outputs(
     framework_data: Dict[str, Dict[str, Any]] = {}
 
     # Known framework directory names for path-based detection
-    _FRAMEWORK_DIRS = {
+    _FRAMEWORK_DIRS: set[Any] = {
         "pymdp",
         "rxinfer",
         "activeinference_jl",
@@ -355,7 +355,7 @@ def visualize_all_framework_outputs(
                         import csv as csv_module
 
                         sim_data_path = Path(impl_dir) / "simulation_data"
-                        csv_candidates = []
+                        csv_candidates: list[Any] = []
                         if sim_data_path.exists():
                             csv_candidates.append(
                                 sim_data_path / "simulation_results.csv"
@@ -367,9 +367,9 @@ def visualize_all_framework_outputs(
                         for csv_file in csv_candidates:
                             if csv_file.exists():
                                 try:
-                                    beliefs = []
-                                    actions = []
-                                    observations = []
+                                    beliefs: list[Any] = []
+                                    actions: list[Any] = []
+                                    observations: list[Any] = []
                                     with open(csv_file, "r") as f:
                                         lines = [
                                             line
@@ -577,7 +577,7 @@ def generate_belief_heatmaps(
 
     # Line plot
     ax2 = axes[1]
-    colors = plt.cm.tab10(np.linspace(0, 1, n_states))
+    colors = plt.get_cmap("tab10")(np.linspace(0, 1, n_states))
     for i in range(n_states):
         ax2.plot(
             range(n_steps),
@@ -626,7 +626,7 @@ def generate_action_analysis(
     # Action histogram
     ax1 = axes[0]
     action_counts = [np.sum(actions_array == a) for a in unique_actions]
-    colors = plt.cm.Set2(np.linspace(0, 1, n_actions))
+    colors = plt.get_cmap("Set2")(np.linspace(0, 1, n_actions))
     bars = ax1.bar(unique_actions, action_counts, color=colors)
     ax1.set_xlabel("Action")
     ax1.set_ylabel("Count")
@@ -805,7 +805,7 @@ def generate_free_energy_plots(
 
     if np.isclose(fe_min, fe_max) or fe_max - fe_min < 1e-10:
         # For constant or near-constant data, use a single explicit bin range centered around the value
-        bins = [fe_min - 0.5, fe_min + 0.5]
+        bins: int | list[Any] = [fe_min - 0.5, fe_min + 0.5]
     else:
         bins = min(20, max(1, n_steps))
 
@@ -931,7 +931,7 @@ def generate_vfe_vs_efe_plot(
         raise ValueError("Need both VFE and EFE data to generate plot")
 
     # Process EFE (take min across policies if it's a list)
-    efe_summary = []
+    efe_summary: list[Any] = []
     for efe_t in efe:
         if hasattr(efe_t, "__iter__") and not isinstance(efe_t, str):
             efe_summary.append(min(efe_t) if len(efe_t) > 0 else 0)
@@ -1002,7 +1002,7 @@ def generate_observation_analysis(
     # Observation frequency
     ax1 = axes[0]
     obs_counts = [np.sum(obs_array == o) for o in unique_obs]
-    colors = plt.cm.Pastel1(np.linspace(0, 1, n_obs))
+    colors = plt.get_cmap("Pastel1")(np.linspace(0, 1, n_obs))
     ax1.bar(unique_obs, obs_counts, color=colors, edgecolor="black")
     ax1.set_xlabel("Observation")
     ax1.set_ylabel("Count")
@@ -1058,15 +1058,15 @@ def generate_unified_framework_dashboard(
     Returns:
         List of generated file paths
     """
-    generated_files = []
+    generated_files: list[Any] = []
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Extract data per framework
-    framework_beliefs = {}
-    framework_actions = {}
-    framework_efe = {}
-    framework_vfe = {}
-    framework_metrics = {}
+    framework_beliefs: dict[Any, Any] = {}
+    framework_actions: dict[Any, Any] = {}
+    framework_efe: dict[Any, Any] = {}
+    framework_vfe: dict[Any, Any] = {}
+    framework_metrics: dict[Any, Any] = {}
 
     for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
@@ -1118,7 +1118,7 @@ def generate_unified_framework_dashboard(
         fig, axes = plt.subplots(2, 3, figsize=(18, 12))
         axes = axes.flatten()
 
-        colors = plt.cm.tab10(np.linspace(0, 1, 10))
+        colors = plt.get_cmap("tab10")(np.linspace(0, 1, 10))
         _frameworks = list(framework_beliefs.keys())
 
         # Individual framework belief plots
@@ -1191,10 +1191,10 @@ def generate_unified_framework_dashboard(
 
         # Action distribution comparison
         if framework_actions:
-            all_actions = set()
+            all_action_set: set[Any] = set()
             for actions in framework_actions.values():
-                all_actions.update(actions)
-            all_actions = sorted(all_actions)
+                all_action_set.update(actions)
+            all_actions = sorted(all_action_set)
 
             ax_action = axes[0, 0] if axes.ndim > 1 else axes[0]
             bar_width = 0.8 / len(framework_actions)
@@ -1235,8 +1235,8 @@ def generate_unified_framework_dashboard(
         ax_table.axis("off")
 
         if framework_metrics:
-            table_data = []
-            headers = ["Framework", "Timesteps", "States", "Actions Used"]
+            table_data: list[Any] = []
+            headers: list[Any] = ["Framework", "Timesteps", "States", "Actions Used"]
 
             for fw, metrics in framework_metrics.items():
                 table_data.append(
@@ -1279,10 +1279,10 @@ def generate_unified_framework_dashboard(
         fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 
         # Calculate entropy for each framework
-        framework_entropy = {}
+        framework_entropy: dict[Any, Any] = {}
         for fw, beliefs in framework_beliefs.items():
             if beliefs.ndim > 1:
-                entropy = []
+                entropy: list[Any] = []
                 for t in range(len(beliefs)):
                     p = np.clip(beliefs[t], 1e-10, 1.0)
                     p = p / np.sum(p)
@@ -1306,7 +1306,7 @@ def generate_unified_framework_dashboard(
         labels = list(framework_entropy.keys())
 
         bp = ax2.boxplot(entropy_data, labels=labels, patch_artist=True)
-        colors = plt.cm.Set2(np.linspace(0, 1, len(labels)))
+        colors = plt.get_cmap("Set2")(np.linspace(0, 1, len(labels)))
         for patch, color in zip(bp["boxes"], colors):
             patch.set_facecolor(color)
 
@@ -1388,7 +1388,11 @@ def generate_cross_framework_comparison(
 
     # Build final metrics lists
     frameworks = sorted(aggregated.keys())
-    metrics = {"execution_time": [], "steps_completed": [], "success_rate": []}
+    metrics: dict[str, Any] = {
+        "execution_time": [],
+        "steps_completed": [],
+        "success_rate": [],
+    }
 
     for fw in frameworks:
         agg = aggregated[fw]
@@ -1411,7 +1415,7 @@ def generate_cross_framework_comparison(
 
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
-    colors = plt.cm.Set3(np.linspace(0, 1, len(frameworks)))
+    colors = plt.get_cmap("Set3")(np.linspace(0, 1, len(frameworks)))
 
     # Execution time comparison
     ax1 = axes[0]
@@ -1474,8 +1478,8 @@ def generate_efe_convergence_comparison(
         return []
 
     # Collect EFE data per framework
-    efe_series = {}
-    colors = {
+    efe_series: dict[Any, Any] = {}
+    colors: dict[str, Any] = {
         "jax": "#E74C3C",
         "pymdp": "#3498DB",
         "rxinfer": "#2ECC71",
@@ -1575,8 +1579,8 @@ def generate_confidence_comparison(
     if not MATPLOTLIB_AVAILABLE:
         return []
 
-    confidence_series = {}
-    colors = {
+    confidence_series: dict[Any, Any] = {}
+    colors: dict[str, Any] = {
         "jax": "#E74C3C",
         "pymdp": "#3498DB",
         "rxinfer": "#2ECC71",
@@ -1676,7 +1680,7 @@ def generate_framework_radar(
         return []
 
     # Collect per-framework metrics
-    fw_metrics = {}
+    fw_metrics: dict[Any, Any] = {}
     exec_details = exec_summary.get("execution_details", [])
 
     for detail in exec_details:
@@ -1687,7 +1691,7 @@ def generate_framework_radar(
 
         # Count data fields from framework_data
         data_richness = 0
-        belief_quality = 0
+        belief_quality = 0.0
         timesteps = 0
         for _key, data in framework_data.items():
             if data.get("framework") == fw_norm:
@@ -1741,13 +1745,19 @@ def generate_framework_radar(
         return []
 
     # Build radar chart
-    categories = ["Speed", "Data Richness", "Belief Quality", "Timesteps", "Validation"]
+    categories: list[Any] = [
+        "Speed",
+        "Data Richness",
+        "Belief Quality",
+        "Timesteps",
+        "Validation",
+    ]
     N = len(categories)
     angles = np.linspace(0, 2 * np.pi, N, endpoint=False).tolist()
     angles += angles[:1]  # Close the polygon
 
     fig, ax = plt.subplots(figsize=(10, 10), subplot_kw={"polar": True})
-    colors = {
+    colors: dict[str, Any] = {
         "jax": "#E74C3C",
         "pymdp": "#3498DB",
         "rxinfer": "#2ECC71",
@@ -1756,7 +1766,7 @@ def generate_framework_radar(
     }
 
     for fw, metrics in fw_metrics.items():
-        values = [
+        values: list[Any] = [
             metrics["speed"],
             metrics["data_richness"],
             metrics["belief_quality"],

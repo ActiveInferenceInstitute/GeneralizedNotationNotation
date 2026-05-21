@@ -12,7 +12,7 @@ import time
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, cast
 
 # Ensure src is in Python path for imports
 SRC_DIR = Path(__file__).parent.parent
@@ -22,7 +22,7 @@ if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
 
 # Test categories and markers
-TEST_CATEGORIES = {
+TEST_CATEGORIES: dict[str, Any] = {
     "fast": "Quick validation tests for core functionality",
     "standard": "Integration tests and moderate complexity",
     "slow": "Complex scenarios and benchmarks",
@@ -34,7 +34,7 @@ TEST_CATEGORIES = {
 }
 
 # Test execution stages
-TEST_STAGES = {
+TEST_STAGES: dict[str, Any] = {
     "fast": {"timeout": 180, "max_failures": 10, "parallel": True, "coverage": False},
     "standard": {
         "timeout": 600,
@@ -52,7 +52,7 @@ TEST_STAGES = {
 }
 
 # Test coverage targets
-COVERAGE_TARGETS = {
+COVERAGE_TARGETS: dict[str, Any] = {
     "overall": 85.0,
     "unit": 90.0,
     "integration": 80.0,
@@ -60,7 +60,7 @@ COVERAGE_TARGETS = {
 }
 
 # Test configuration constants
-TEST_CONFIG = {
+TEST_CONFIG: dict[str, Any] = {
     "safe_mode": True,
     "verbose": False,
     "strict": False,
@@ -103,17 +103,23 @@ TEST_CONFIG = {
 class TestRunner:
     """Basic test runner for compatibility."""
 
-    def __init__(self, config=None):
+    def __init__(self, config: Any = None) -> None:
         self.config = config or {}
         self.logger = logging.getLogger("test_runner")
 
-    def run_tests(self, test_paths, output_dir):
+    def run_tests(self, test_paths: Any, output_dir: Any) -> Any:
         """Basic test execution."""
         try:
             # Import the actual TestRunner from tests.runner
+            from tests.infrastructure.test_config import TestExecutionConfig
             from tests.runner import TestRunner as ActualTestRunner
 
-            actual_runner = ActualTestRunner(config=self.config)
+            runner_config = (
+                self.config
+                if isinstance(self.config, TestExecutionConfig)
+                else TestExecutionConfig()
+            )
+            actual_runner = ActualTestRunner(config=runner_config)
             return actual_runner.run_tests(test_paths, output_dir)
         except ImportError:
             self.logger.warning("Actual TestRunner not available, using recovery")
@@ -126,14 +132,14 @@ class TestResult:
 
     def __init__(
         self,
-        success=False,
-        tests_run=0,
-        tests_passed=0,
-        tests_failed=0,
-        tests_skipped=0,
-        execution_time=0.0,
-        error_message=None,
-    ):
+        success: Any = False,
+        tests_run: Any = 0,
+        tests_passed: Any = 0,
+        tests_failed: Any = 0,
+        tests_skipped: Any = 0,
+        execution_time: Any = 0.0,
+        error_message: Any = None,
+    ) -> None:
         self.success = success
         self.tests_run = tests_run
         self.tests_passed = tests_passed
@@ -142,7 +148,7 @@ class TestResult:
         self.execution_time = execution_time
         self.error_message = error_message
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary."""
         return {
             "success": self.success,
@@ -159,14 +165,14 @@ class TestResult:
 class TestCategory:
     """Basic test category for compatibility."""
 
-    def __init__(self, name="", description=""):
+    def __init__(self, name: Any = "", description: Any = "") -> None:
         self.name = name
         self.description = description
 
-    def __str__(self):
+    def __str__(self) -> Any:
         return f"TestCategory({self.name})"
 
-    def __repr__(self):
+    def __repr__(self) -> Any:
         return self.__str__()
 
 
@@ -175,18 +181,23 @@ class TestStage:
     """Basic test stage for compatibility."""
 
     def __init__(
-        self, name="", timeout=300, max_failures=10, parallel=True, coverage=False
-    ):
+        self,
+        name: Any = "",
+        timeout: Any = 300,
+        max_failures: Any = 10,
+        parallel: Any = True,
+        coverage: Any = False,
+    ) -> None:
         self.name = name
         self.timeout = timeout
         self.max_failures = max_failures
         self.parallel = parallel
         self.coverage = coverage
 
-    def __str__(self):
+    def __str__(self) -> Any:
         return f"TestStage({self.name})"
 
-    def __repr__(self):
+    def __repr__(self) -> Any:
         return self.__str__()
 
 
@@ -194,14 +205,14 @@ class TestStage:
 class CoverageTarget:
     """Basic coverage target for compatibility."""
 
-    def __init__(self, name="", target_percentage=0.0):
+    def __init__(self, name: Any = "", target_percentage: Any = 0.0) -> None:
         self.name = name
         self.target_percentage = target_percentage
 
-    def __str__(self):
+    def __str__(self) -> Any:
         return f"CoverageTarget({self.name}: {self.target_percentage}%)"
 
-    def __repr__(self):
+    def __repr__(self) -> Any:
         return self.__str__()
 
 
@@ -210,7 +221,7 @@ def run_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool
     """Basic test execution function."""
     try:
         # Import from tests module if available
-        from tests.runner import ModularTestRunner
+        from tests.test_runner_modular import ModularTestRunner
 
         runner = ModularTestRunner(
             type(
@@ -227,9 +238,9 @@ def run_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool
 
         # Run tests using the available method
         if hasattr(runner, "run_all_tests"):
-            return runner.run_all_tests()
+            return cast("bool", runner.run_all_tests())
         elif hasattr(runner, "run_tests"):
-            return runner.run_tests()
+            return cast("bool", runner.run_tests())
         else:
             logging.warning("No test execution method available")
             return True
@@ -257,7 +268,7 @@ def get_test_results(output_dir: Path) -> Dict[str, Any]:
     results_file = output_dir / "test_results.json"
     if results_file.exists():
         with open(results_file, "r") as f:
-            return json.load(f)
+            return cast("dict[str, Any]", json.load(f))
     return {"status": "no_results"}
 
 
@@ -461,13 +472,13 @@ def get_step_metadata_dict() -> Dict[str, Any]:
 
 def is_safe_mode() -> bool:
     """Check if tests are running in safe mode."""
-    return TEST_CONFIG.get("safe_mode", True)
+    return cast("bool", TEST_CONFIG.get("safe_mode", True))
 
 
 def create_missing_test_files() -> None:
     """Create missing test files and directories."""
     # Create test directories
-    test_dirs = [
+    test_dirs: list[Any] = [
         PROJECT_ROOT / "input" / "gnn_files",
         PROJECT_ROOT / "output" / "2_tests_output" / "artifacts",
         PROJECT_ROOT / "output" / "test_reports",
@@ -483,7 +494,7 @@ def create_missing_test_files() -> None:
         create_test_gnn_files(gnn_dir)
 
     # Create test configuration files
-    config_files = [
+    config_files: list[Any] = [
         (PROJECT_ROOT / "input" / "config.yaml", create_sample_config),
     ]
 
@@ -528,7 +539,7 @@ sapf:
 
 def create_sample_ontology(ontology_path: Path) -> None:
     """Create a sample ontology terms file."""
-    ontology_content = {
+    ontology_content: dict[str, Any] = {
         "terms": {
             "state_space": "The set of all possible states of a system",
             "observation_space": "The set of all possible observations",
@@ -547,7 +558,7 @@ def create_test_gnn_files(target_dir: Path) -> List[Path]:
     """Create test GNN files in the target directory."""
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    test_files = []
+    test_files: list[Any] = []
     gnn_content = create_sample_gnn_content()
 
     for name, content in gnn_content.items():
@@ -563,7 +574,7 @@ def create_test_files(target_dir: Path, num_files: int = 3) -> List[Path]:
     """Create generic test files in the target directory."""
     target_dir.mkdir(parents=True, exist_ok=True)
 
-    test_files = []
+    test_files: list[Any] = []
     for i in range(num_files):
         file_path = target_dir / f"test_file_{i + 1}.txt"
         content = f"This is test file {i + 1} created for testing purposes.\n"
@@ -720,7 +731,7 @@ Minimal active inference model
     }
 
 
-def get_test_filesystem_structure() -> Dict[str, List[str]]:
+def get_test_filesystem_structure() -> Dict[str, Dict[str, List[str]]]:
     """Get a test filesystem structure for testing."""
     return {
         "input": {
@@ -751,7 +762,7 @@ def run_all_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> 
         test_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Run different test categories
-        test_results = {}
+        test_results: dict[Any, Any] = {}
 
         # Run fast tests
         test_results["fast"] = run_fast_tests(target_dir, test_output_dir, verbose)
@@ -888,7 +899,7 @@ def assert_directory_structure(
 
 def validate_report_data(data: Dict[str, Any]) -> Dict[str, Any]:
     """Validate report data and return validation results."""
-    validation_results = {
+    validation_results: dict[str, Any] = {
         "is_valid": True,
         "errors": [],
         "warnings": [],
@@ -897,7 +908,7 @@ def validate_report_data(data: Dict[str, Any]) -> Dict[str, Any]:
     }
 
     # Check required fields
-    required_fields = ["timestamp", "step_name", "status"]
+    required_fields: list[Any] = ["timestamp", "step_name", "status"]
     for field in required_fields:
         if field not in data:
             validation_results["is_valid"] = False
@@ -969,7 +980,7 @@ def run_all_tests_mcp(
         }
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register test-related tools with MCP instance."""
     # This would register test tools with the MCP instance
     # Implementation depends on the specific MCP framework being used
@@ -1097,7 +1108,7 @@ def generate_comprehensive_report(
         report_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate test data
-        test_data = {
+        test_data: dict[str, Any] = {
             "success": True,
             "timestamp": datetime.now().isoformat(),
             "target_directory": str(pipeline_dir),
@@ -1136,23 +1147,25 @@ class _PerformanceTracker:
     def __init__(self, start_time: float, start_memory: float) -> None:
         self.start_time = start_time
         self.start_memory = start_memory
-        self.end_time = None
-        self.end_memory = None
-        self.duration = None
-        self.memory_delta = None
+        self.end_time: float | None = None
+        self.end_memory: float | None = None
+        self.duration: float | None = None
+        self.memory_delta: float | None = None
 
     def finalize(self) -> None:
-        self.end_time = time.time()
-        self.end_memory = get_memory_usage()
-        self.duration = self.end_time - self.start_time
-        self.memory_delta = max(0.0, self.end_memory - self.start_memory)
+        end_time = time.time()
+        end_memory = get_memory_usage()
+        self.end_time = end_time
+        self.end_memory = end_memory
+        self.duration = end_time - self.start_time
+        self.memory_delta = max(0.0, end_memory - self.start_memory)
         # Use delta for threshold comparisons; still expose peak for reference
-        self.peak_memory_mb = max(self.start_memory, self.end_memory)
+        self.peak_memory_mb = max(self.start_memory, end_memory)
         self.max_memory_mb = self.memory_delta
 
 
 @contextmanager
-def performance_tracker():
+def performance_tracker() -> Any:
     """Context manager for tracking test performance."""
     start_time = time.time()
     start_memory = get_memory_usage()
@@ -1170,15 +1183,15 @@ def get_memory_usage() -> float:
         import psutil
 
         process = psutil.Process()
-        return process.memory_info().rss / 1024 / 1024  # Convert to MB
+        return cast("float", process.memory_info().rss / 1024 / 1024)  # Convert to MB
     except ImportError:
         return 0.0  # Return 0 if psutil not available
 
 
-def track_peak_memory(func):
+def track_peak_memory(func: Any) -> Any:
     """Decorator to track peak memory usage of a function."""
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         try:
             import psutil
 
@@ -1191,8 +1204,11 @@ def track_peak_memory(func):
             peak_memory = max(initial_memory, final_memory)
 
             # Store peak memory in function attributes for testing
-            wrapper.peak_memory_mb = peak_memory / 1024 / 1024
-            wrapper.memory_delta_mb = (final_memory - initial_memory) / 1024 / 1024
+            wrapper_state = cast(Any, wrapper)
+            wrapper_state.peak_memory_mb = peak_memory / 1024 / 1024
+            wrapper_state.memory_delta_mb = (
+                (final_memory - initial_memory) / 1024 / 1024
+            )
 
             return result
 
@@ -1204,7 +1220,9 @@ def track_peak_memory(func):
 
 
 @contextmanager
-def with_resource_limits(max_memory_mb: int = None, max_cpu_percent: int = None):
+def with_resource_limits(
+    max_memory_mb: (int) | None = None, max_cpu_percent: (int) | None = None
+) -> Any:
     """Context manager for resource limit testing."""
     try:
         import psutil

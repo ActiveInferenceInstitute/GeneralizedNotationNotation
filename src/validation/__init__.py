@@ -5,8 +5,10 @@ This module provides comprehensive validation capabilities for GNN models,
 including semantic validation, performance profiling, and consistency checking.
 """
 
+from typing import Any, cast
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "semantic_validation": True,
     "performance_profiling": True,
     "consistency_checking": True,
@@ -25,7 +27,7 @@ from .semantic_validator import SemanticValidator, process_semantic_validation
 
 
 def process_validation(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Main validation processing function for GNN models.
@@ -120,7 +122,7 @@ def process_validation(
                 logger.warning(
                     f"Could not load existing validation results, starting fresh: {e}"
                 )
-                validation_results = None
+                validation_results = cast(Any, None)
 
         if not validation_results_file.exists():
             validation_results = None
@@ -173,7 +175,7 @@ def process_validation(
                 )
                 model_data = file_result
 
-            file_validation_result = {
+            file_validation_result: dict[str, Any] = {
                 "file_name": file_name,
                 "file_path": file_result["file_path"],
                 "validations": {},
@@ -275,7 +277,7 @@ def process_validation(
             logger.info(f"  Average consistency score: {avg_consistency:.2f}")
 
         success = validation_results["summary"]["successful_validations"] > 0
-        return success
+        return cast("bool", success)
 
     except Exception as e:
         logger.error(f"Validation processing failed: {e}")
@@ -283,7 +285,7 @@ def process_validation(
 
 
 # Re-export main classes and functions
-__all__ = [
+__all__: list[Any] = [
     "__version__",
     "FEATURES",
     "SemanticValidator",

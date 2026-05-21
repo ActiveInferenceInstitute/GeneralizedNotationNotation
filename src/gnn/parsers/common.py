@@ -25,6 +25,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 
 if TYPE_CHECKING:
@@ -34,6 +35,7 @@ logger = logging.getLogger(__name__)
 
 # Type variables for generic types
 T = TypeVar("T")
+E = TypeVar("E", bound=Enum)
 K = TypeVar("K")
 V = TypeVar("V")
 
@@ -51,7 +53,7 @@ class ParseError(Exception):
         line: Optional[int] = None,
         column: Optional[int] = None,
         source: Optional[str] = None,
-    ):
+    ) -> None:
         self.message = message
         self.line = line
         self.column = column
@@ -168,13 +170,13 @@ class ASTNode:
     metadata: Dict[str, Any] = field(default_factory=dict)
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         if not self.node_type:
             self.node_type = self.__class__.__name__
 
     def get_children(self) -> List["ASTNode"]:
         """Get all child nodes."""
-        children = []
+        children: list[Any] = []
         for value in self.__dict__.values():
             if isinstance(value, ASTNode):
                 children.append(value)
@@ -198,7 +200,7 @@ class Variable(ASTNode):
     description: Optional[str] = None
     constraints: Dict[str, Any] = field(default_factory=dict)
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "Variable"
 
@@ -213,7 +215,7 @@ class Connection(ASTNode):
     weight: Optional[float] = None
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "Connection"
 
@@ -227,7 +229,7 @@ class Parameter(ASTNode):
     type_hint: Optional[str] = None
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "Parameter"
 
@@ -241,7 +243,7 @@ class Equation(ASTNode):
     format: str = "latex"  # latex, mathml, ascii
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "Equation"
 
@@ -255,7 +257,7 @@ class TimeSpecification(ASTNode):
     horizon: Optional[Union[int, str]] = None
     step_size: Optional[float] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "TimeSpecification"
 
@@ -268,7 +270,7 @@ class OntologyMapping(ASTNode):
     ontology_term: str = ""
     description: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "OntologyMapping"
 
@@ -281,7 +283,7 @@ class Section(ASTNode):
     content: List[ASTNode] = field(default_factory=list)
     raw_content: Optional[str] = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         super().__post_init__()
         self.node_type = "Section"
 
@@ -336,7 +338,7 @@ class GNNInternalRepresentation:
 
     def get_connections_for_variable(self, variable_name: str) -> List[Connection]:
         """Get all connections involving a specific variable."""
-        connections = []
+        connections: list[Any] = []
         for conn in self.connections:
             if (
                 variable_name in conn.source_variables
@@ -354,7 +356,7 @@ class GNNInternalRepresentation:
 
     def validate_structure(self) -> List[str]:
         """Validate the internal structure and return any issues."""
-        issues = []
+        issues: list[Any] = []
 
         # Check required fields
         if not self.model_name:
@@ -383,12 +385,12 @@ class GNNInternalRepresentation:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
 
-        def serialize_obj(obj):
+        def serialize_obj(obj: Any) -> Any:
             """Helper to serialize objects with enums to dict."""
             if isinstance(obj, Enum):
                 return obj.value
             elif hasattr(obj, "__dict__"):
-                result = {}
+                result: dict[Any, Any] = {}
                 for key, value in obj.__dict__.items():
                     if isinstance(value, Enum):
                         result[key] = value.value
@@ -418,7 +420,7 @@ class GNNInternalRepresentation:
             else:
                 return obj
 
-        result = {
+        result: dict[str, Any] = {
             "model_name": self.model_name,
             "version": self.version,
             "annotation": self.annotation,
@@ -470,7 +472,7 @@ class ASTVisitor(ABC):
 class PrintVisitor(ASTVisitor):
     """Visitor that prints the AST structure."""
 
-    def __init__(self, indent: int = 0):
+    def __init__(self, indent: int = 0) -> None:
         self.indent = indent
 
     def visit(self, node: ASTNode) -> str:
@@ -542,6 +544,7 @@ class ParseResult:
     parse_time: Optional[float] = None
     source_file: Optional[str] = None
     validation_result: Optional["ValidationResult"] = None
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def has_errors(self) -> bool:
         """Check if there are any errors."""
@@ -551,12 +554,12 @@ class ParseResult:
         """Check if there are any warnings."""
         return bool(self.warnings)
 
-    def add_error(self, error: str):
+    def add_error(self, error: str) -> Any:
         """Add an error to the result."""
         self.errors.append(error)
         self.success = False
 
-    def add_warning(self, warning: str):
+    def add_warning(self, warning: str) -> Any:
         """Add a warning to the result."""
         self.warnings.append(warning)
 
@@ -569,7 +572,7 @@ class ParseResult:
 class BaseGNNParser(ABC):
     """Abstract base class for GNN parsers."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.current_file: Optional[str] = None
         self.current_line: int = 0
         self.current_column: int = 0
@@ -649,7 +652,7 @@ def parse_dimensions(dim_str: str) -> List[int]:
         if not dim_str:
             return []
 
-        dimensions = []
+        dimensions: list[Any] = []
         for dim in dim_str.split(","):
             dim = dim.strip()
             # Stop parsing if we encounter a type specification
@@ -667,8 +670,8 @@ def parse_dimensions(dim_str: str) -> List[int]:
 
 
 def safe_enum_convert(
-    enum_class: Type[T], value: Any, default: Optional[T] = None
-) -> Optional[T]:
+    enum_class: Type[E], value: Any, default: Optional[E] = None
+) -> Optional[E]:
     """Safely convert string to enum, handling case insensitivity.
 
     Returns the converted enum value, the provided default, or None if no
@@ -802,7 +805,7 @@ def extract_embedded_json_data(
         match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
         if match:
             try:
-                return json.loads(match.group(1))
+                return cast("dict[str, Any] | None", json.loads(match.group(1)))
             except json.JSONDecodeError as e:
                 logger.debug("Pattern did not yield valid JSON, trying next: %s", e)
                 continue
@@ -810,7 +813,7 @@ def extract_embedded_json_data(
 
 
 # Export all public classes and functions
-__all__ = [
+__all__: list[Any] = [
     "ParseError",
     "ValidationError",
     "ValidationWarning",

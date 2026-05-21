@@ -5,17 +5,15 @@ This module validates that the specific improvements made to the pipeline
 (DisCoPy module creation, visualization fixes, error handling, etc.) work correctly.
 """
 
-from typing import Any
-
-import pytest
-
-pytestmark = pytest.mark.pipeline
 import json
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
-pytestmark = [pytest.mark.integration]
+import pytest
+
+pytestmark = [pytest.mark.pipeline, pytest.mark.integration]
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
 sys.path.insert(0, str(SRC_DIR))
@@ -47,7 +45,7 @@ class TestDiScoPyModuleCreation:
                 gnn_file_to_discopy_diagram,
             )
 
-            test_gnn_data = {
+            test_gnn_data: dict[str, Any] = {
                 "Variables": {
                     "state": {
                         "type": "state",
@@ -119,7 +117,13 @@ class TestVisualizationBugFixes:
             test_path = Path(temp_dir) / "test_plot.png"
             plt.figure()
             plt.plot([1, 2, 3], [1, 4, 9])
-            corrupted_dpi_values = [28421050826, -1, 0, float("inf"), "invalid"]
+            corrupted_dpi_values: list[Any] = [
+                28421050826,
+                -1,
+                0,
+                float("inf"),
+                "invalid",
+            ]
             for bad_dpi in corrupted_dpi_values:
                 result = save_plot_safely(test_path, dpi=bad_dpi)
                 assert isinstance(result, bool)
@@ -135,7 +139,7 @@ class TestVisualizationBugFixes:
 
         with tempfile.TemporaryDirectory() as temp_dir:
             output_dir = Path(temp_dir)
-            parsed_data = {
+            parsed_data: dict[str, Any] = {
                 "matrices": [
                     {"name": "A", "values": [[0.9, 0.1], [0.1, 0.9]]},
                 ],
@@ -194,7 +198,7 @@ class TestDependencyValidationImprovements:
         from utils.dependency_validator import DependencyValidator
 
         validator = DependencyValidator()
-        optional_groups = ["discopy", "pymdp", "rxinfer"]
+        optional_groups: list[Any] = ["discopy", "pymdp", "rxinfer"]
         for group in optional_groups:
             if group in validator.dependencies:
                 validator.validate_dependency_group(group)
@@ -333,7 +337,7 @@ ModelTimeHorizon=5
 """
     )
     try:
-        cmd = [
+        cmd: list[Any] = [
             sys.executable,
             str(SRC_DIR / "main.py"),
             "--target-dir",

@@ -4,8 +4,10 @@ Security module for GNN Processing Pipeline.
 This module provides security validation and access control for GNN models.
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "vulnerability_detection": True,
     "security_scoring": True,
     "access_control": True,
@@ -23,7 +25,7 @@ from .processor import (
     process_security,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "process_security",
     "perform_security_check",
     "check_vulnerabilities",

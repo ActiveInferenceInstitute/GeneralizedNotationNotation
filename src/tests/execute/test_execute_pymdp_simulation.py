@@ -19,6 +19,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 
@@ -234,7 +235,7 @@ class TestPyMDPSimulation(unittest.TestCase):
     def test_gnn_parameter_integration(self) -> None:
         """Test that GNN parameters are properly integrated."""
         # Test with explicit state names
-        config_with_names = {
+        config_with_names: dict[str, Any] = {
             "states": ["location_00", "location_01", "location_10", "location_11"],
             "observations": ["visible", "occluded"],
             "actions": ["move_north", "move_south", "move_east", "move_west"],
@@ -269,7 +270,7 @@ class TestPyMDPUtils(unittest.TestCase):
     def test_numpy_conversion(self) -> None:
         """Test numpy to JSON conversion utilities."""
         # Test various numpy types
-        test_data = {
+        test_data: dict[str, Any] = {
             "int_array": np.array([1, 2, 3]),
             "float_array": np.array([1.5, 2.5, 3.5]),
             "nested": {

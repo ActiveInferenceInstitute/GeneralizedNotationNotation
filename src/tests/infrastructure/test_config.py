@@ -4,8 +4,8 @@ Test Configuration Classes for GNN Processing Pipeline.
 This module provides data classes for test execution configuration and results.
 """
 
-from dataclasses import asdict, dataclass
-from typing import List, Optional
+from dataclasses import asdict, dataclass, field
+from typing import Any, List, Optional
 
 
 @dataclass
@@ -17,7 +17,7 @@ class TestExecutionConfig:
     parallel: bool = True
     coverage: bool = True
     verbose: bool = False
-    markers: List[str] = None
+    markers: List[str] = field(default_factory=list)
     memory_limit_mb: int = 2048
     cpu_limit_percent: int = 80
 
@@ -38,6 +38,6 @@ class TestExecutionResult:
     stdout: str = ""
     stderr: str = ""
 
-    def to_dict(self):
+    def to_dict(self) -> Any:
         """Convert to dictionary."""
         return asdict(self)

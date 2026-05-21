@@ -18,6 +18,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 # Uses real implementations per testing policy.
 
@@ -182,7 +183,7 @@ class TestD2DiagramGeneration(unittest.TestCase):
 
     def test_generate_framework_mapping_custom_frameworks(self) -> None:
         """Test framework mapping with custom framework list"""
-        frameworks = ["pymdp", "jax"]
+        frameworks: list[Any] = ["pymdp", "jax"]
         spec = self.visualizer.generate_framework_mapping_diagram(frameworks=frameworks)
 
         self.assertIsInstance(spec, D2DiagramSpec)
@@ -237,6 +238,8 @@ class TestD2DiagramCompilation(unittest.TestCase):
 
         self.assertIsInstance(result, D2GenerationResult)
         self.assertFalse(result.success)
+        self.assertIsNotNone(result.error_message)
+        assert result.error_message is not None
         self.assertIn("not available", result.error_message.lower())
 
         # Restore original state
@@ -266,6 +269,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
         if result.success:
             self.assertTrue(len(result.output_files) > 0)
             self.assertIsNotNone(result.d2_file)
+            assert result.d2_file is not None
             self.assertTrue(result.d2_file.exists())
 
 
@@ -279,7 +283,7 @@ class TestD2HelperMethods(unittest.TestCase):
 
     def test_sanitize_name(self) -> None:
         """Test name sanitization for D2 identifiers"""
-        test_cases = {
+        test_cases: dict[str, Any] = {
             "Test Model v1": "test_model_v1",
             "POMDP-Agent@2023": "pomdp_agent2023",  # Hyphen becomes underscore
             "simple": "simple",
@@ -292,7 +296,7 @@ class TestD2HelperMethods(unittest.TestCase):
 
     def test_get_d2_shape_for_variable(self) -> None:
         """Test D2 shape determination for variables"""
-        test_cases = [
+        test_cases: list[Any] = [
             ({"dimensions": [3, 3]}, {"A": "Matrix"}, "hexagon"),
             ({"dimensions": [3]}, {"C": "Vector"}, "diamond"),
             ({"dimensions": [3, 1]}, {"s": "State"}, "cylinder"),
@@ -308,7 +312,7 @@ class TestD2HelperMethods(unittest.TestCase):
 
     def test_get_d2_arrow(self) -> None:
         """Test D2 arrow notation conversion"""
-        arrow_tests = {
+        arrow_tests: dict[str, Any] = {
             "->": "->",
             "<-": "<-",
             "<->": "<->",
@@ -323,12 +327,15 @@ class TestD2HelperMethods(unittest.TestCase):
 
     def test_is_pomdp_model(self) -> None:
         """Test POMDP model detection"""
-        pomdp_model = {
+        pomdp_model: dict[str, Any] = {
             "state_space": {"A": {}, "B": {}, "C": {}},
             "actinf_annotations": {"A": "Likelihood"},
         }
 
-        non_pomdp_model = {"state_space": {"x": {}, "y": {}}, "actinf_annotations": {}}
+        non_pomdp_model: dict[str, Any] = {
+            "state_space": {"x": {}, "y": {}},
+            "actinf_annotations": {},
+        }
 
         self.assertTrue(self.visualizer._is_pomdp_model(pomdp_model))
         self.assertFalse(self.visualizer._is_pomdp_model(non_pomdp_model))
@@ -406,7 +413,9 @@ class TestD2Documentation(unittest.TestCase):
             self.skipTest("D2 module not available")
 
         self.assertIsNotNone(D2Visualizer.__doc__)
-        self.assertTrue(len(D2Visualizer.__doc__) > 50)
+        docstring = D2Visualizer.__doc__
+        assert docstring is not None
+        self.assertTrue(len(docstring) > 50)
 
     def test_d2_diagram_spec_has_fields(self) -> None:
         """Test that D2DiagramSpec has required fields"""
@@ -418,7 +427,12 @@ class TestD2Documentation(unittest.TestCase):
 
         spec_fields = [f.name for f in fields(D2DiagramSpec)]
 
-        required_fields = ["name", "description", "d2_content", "output_formats"]
+        required_fields: list[Any] = [
+            "name",
+            "description",
+            "d2_content",
+            "output_formats",
+        ]
         for field in required_fields:
             self.assertIn(field, spec_fields)
 

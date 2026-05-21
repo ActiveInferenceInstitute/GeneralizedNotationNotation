@@ -5,13 +5,14 @@ from __future__ import annotations
 import importlib.util
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
-def _load_docs_audit():
+def _load_docs_audit() -> Any:
     path = REPO_ROOT / "doc" / "development" / "docs_audit.py"
     spec = importlib.util.spec_from_file_location("docs_audit", path)
     assert spec and spec.loader
@@ -21,7 +22,7 @@ def _load_docs_audit():
     return mod
 
 
-def _load_doc_terms():
+def _load_doc_terms() -> Any:
     path = REPO_ROOT / "scripts" / "check_maintained_doc_terms.py"
     spec = importlib.util.spec_from_file_location("check_maintained_doc_terms", path)
     assert spec and spec.loader
@@ -32,12 +33,12 @@ def _load_doc_terms():
 
 
 @pytest.fixture()
-def format_strict_issue_detail():
+def format_strict_issue_detail() -> Any:
     return _load_docs_audit().format_strict_issue_detail
 
 
 def test_format_strict_issue_detail_lists_link_issues(
-    format_strict_issue_detail,
+    format_strict_issue_detail: Any,
 ) -> None:
     detail = format_strict_issue_detail(
         link_issues=[(Path("doc/x.md"), 10, "missing.md", "missing: doc/missing.md")],
@@ -57,7 +58,7 @@ def test_format_strict_issue_detail_lists_link_issues(
 
 
 def test_format_strict_issue_detail_anchor_section_when_checked(
-    format_strict_issue_detail,
+    format_strict_issue_detail: Any,
 ) -> None:
     detail = format_strict_issue_detail(
         link_issues=[],

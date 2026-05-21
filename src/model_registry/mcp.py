@@ -13,7 +13,7 @@ from typing import Any, Dict, List
 logger = logging.getLogger(__name__)
 
 
-def register_tools(registry: Any) -> None:
+def register_tools(registry: Any) -> bool:
     """
     Register all model registry tools with the MCP registry.
 
@@ -161,25 +161,24 @@ def register_model(
     try:
         from .registry import ModelRegistry
 
-        # Convert string paths to Path objects
-        model_path = Path(model_path)
-        registry_path = Path(registry_path)
+        model_file = Path(model_path)
+        registry_file = Path(registry_path)
 
         # Ensure registry directory exists
-        registry_path.parent.mkdir(parents=True, exist_ok=True)
+        registry_file.parent.mkdir(parents=True, exist_ok=True)
 
         # Initialize registry
-        registry = ModelRegistry(registry_path)
+        registry = ModelRegistry(registry_file)
 
         # Register model
-        success = registry.register_model(model_path)
+        success = registry.register_model(model_file)
 
         if success:
             # Save registry
             registry.save()
 
             # Get model ID
-            model_id = model_path.stem
+            model_id = model_file.stem
 
             # Get model entry
             model = registry.get_model(model_id)
@@ -220,11 +219,10 @@ def get_model(
     try:
         from .registry import ModelRegistry
 
-        # Convert string path to Path object
-        registry_path = Path(registry_path)
+        registry_file = Path(registry_path)
 
         # Initialize registry
-        registry = ModelRegistry(registry_path)
+        registry = ModelRegistry(registry_file)
 
         # Get model
         model = registry.get_model(model_id)
@@ -266,11 +264,10 @@ def search_models(
     try:
         from .registry import ModelRegistry
 
-        # Convert string path to Path object
-        registry_path = Path(registry_path)
+        registry_file = Path(registry_path)
 
         # Initialize registry
-        registry = ModelRegistry(registry_path)
+        registry = ModelRegistry(registry_file)
 
         # Search models
         models = registry.search_models(query)
@@ -307,11 +304,10 @@ def list_models(
     try:
         from .registry import ModelRegistry
 
-        # Convert string path to Path object
-        registry_path = Path(registry_path)
+        registry_file = Path(registry_path)
 
         # Initialize registry
-        registry = ModelRegistry(registry_path)
+        registry = ModelRegistry(registry_file)
 
         # List models
         models = registry.list_models()

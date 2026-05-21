@@ -119,7 +119,7 @@ def get_website_status_mcp(website_directory: str) -> Dict[str, Any]:
 
         pages = sorted(wdir.glob("*.html"))
         assets = list((wdir / "assets").glob("*")) if (wdir / "assets").exists() else []
-        key_pages = [
+        key_pages: list[Any] = [
             "index.html",
             "pipeline.html",
             "gnn_files.html",
@@ -166,7 +166,7 @@ def list_generated_pages_mcp(website_directory: str) -> Dict[str, Any]:
 
         from datetime import datetime as _dt
 
-        pages = []
+        pages: list[Any] = []
         for html_file in sorted(wdir.glob("*.html")):
             stat = html_file.stat()
             pages.append(
@@ -228,7 +228,7 @@ def get_website_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register all website module tools with the MCP server."""
 
     # Generic introspection tools (namespaced)

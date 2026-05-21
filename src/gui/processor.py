@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 
 
 def process_gui(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Main processing function for GUI module.
@@ -68,7 +68,7 @@ def process_gui(
         if k not in ["logger", "target_dir", "output_dir", "verbose"]
     }
 
-    results = {}
+    results: dict[Any, Any] = {}
     overall_success = True
 
     try:
@@ -77,7 +77,7 @@ def process_gui(
         logger.info(f"Mode: {'INTERACTIVE' if not kwargs['headless'] else 'HEADLESS'}")
 
         # Map GUI types to functions
-        gui_functions = {
+        gui_functions: dict[str, Any] = {
             "gui_1": gui_1,
             "gui_2": gui_2,
             "gui_3": gui_3,
@@ -213,7 +213,7 @@ def generate_html_navigation(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Define pipeline steps and their output directories
-        pipeline_steps = [
+        pipeline_steps: list[Any] = [
             ("Template", "0_template_output", ["*.json", "*.md"]),
             ("Setup", "1_setup_output", ["*.json"]),
             ("Tests", "2_tests_output", ["*.txt", "*.json"]),
@@ -250,7 +250,7 @@ def generate_html_navigation(
         ]
 
         # Collect output information
-        output_sections = []
+        output_sections: list[Any] = []
         total_files = 0
 
         for step_name, step_dir, patterns in pipeline_steps:
@@ -258,7 +258,7 @@ def generate_html_navigation(
             if not step_path.exists():
                 continue
 
-            step_files = []
+            step_files: list[Any] = []
             for pattern in patterns:
                 for file_path in step_path.rglob(pattern):
                     if file_path.is_file():

@@ -141,7 +141,7 @@ logger = logging.getLogger(__name__)
 # Levels:
 logger.debug("Detailed trace info for troubleshooting")
 logger.info("Normal operation milestones: files found, steps completed")
-logger.warning("Recoverable issue: optional dep missing, fallback used")
+logger.warning("Recoverable issue: optional dependency missing; emitted skipped status")
 logger.error("Non-fatal failure: file failed to process, step degraded")
 logger.critical("Fatal error: pipeline cannot continue")
 
@@ -167,4 +167,4 @@ logger.error(f"Failed to parse {file_path}: {e} — check file format")
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

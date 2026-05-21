@@ -11,7 +11,7 @@ import logging
 import subprocess  # nosec B404
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 
 @dataclass
@@ -36,7 +36,7 @@ class DependencyGroup:
     dependencies: List[DependencyInfo] = field(default_factory=list)
     optional: bool = False
 
-    def add_dependency(self, dep: DependencyInfo):
+    def add_dependency(self, dep: DependencyInfo) -> Any:
         """Add a dependency to this group."""
         self.dependencies.append(dep)
 
@@ -44,12 +44,12 @@ class DependencyGroup:
 class DependencyManager:
     """Comprehensive dependency management for the GNN pipeline."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logging.getLogger(__name__)
-        self.dependency_groups = {}
+        self.dependency_groups: Dict[str, DependencyGroup] = {}
         self._setup_dependency_groups()
 
-    def _setup_dependency_groups(self):
+    def _setup_dependency_groups(self) -> Any:
         """Setup all dependency groups for the pipeline."""
 
         # Core Dependencies (always required)
@@ -411,7 +411,7 @@ class DependencyManager:
             return {"error": f"Unknown dependency group: {group_name}"}
 
         group = self.dependency_groups[group_name]
-        results = {
+        results: dict[str, Any] = {
             "group_name": group_name,
             "description": group.description,
             "optional": group.optional,
@@ -430,7 +430,7 @@ class DependencyManager:
             else:
                 available, message, version = self.check_python_dependency(dep)
 
-            dep_result = {
+            dep_result: dict[str, Any] = {
                 "name": dep.name,
                 "required": dep.required,
                 "available": available,
@@ -455,7 +455,7 @@ class DependencyManager:
 
     def check_all_dependencies(self) -> Dict[str, Any]:
         """Check all dependency groups."""
-        all_results = {
+        all_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "groups": {},
             "overall_summary": {
@@ -517,7 +517,7 @@ class DependencyManager:
 
     def _generate_recommendations(self, results: Dict[str, Any]) -> List[str]:
         """Generate installation and configuration recommendations."""
-        recommendations = []
+        recommendations: list[Any] = []
 
         # Check for missing core dependencies
         core_results = results["groups"].get("core", {})
@@ -582,7 +582,7 @@ class DependencyManager:
 
     def get_step_dependencies(self, step_name: str) -> List[str]:
         """Get required dependency groups for a specific pipeline step."""
-        step_deps = {
+        step_deps: dict[str, Any] = {
             "1_setup": ["core", "development"],
             "2_tests": ["core", "development"],
             "3_gnn": ["core"],
@@ -608,13 +608,13 @@ class DependencyManager:
             "23_report": ["core", "visualization"],
         }
 
-        return step_deps.get(step_name, ["core"])
+        return cast("list[str]", step_deps.get(step_name, ["core"]))
 
     def check_step_dependencies(self, step_name: str) -> Dict[str, Any]:
         """Check dependencies for a specific pipeline step."""
         required_groups = self.get_step_dependencies(step_name)
 
-        step_results = {
+        step_results: dict[str, Any] = {
             "step_name": step_name,
             "required_groups": required_groups,
             "group_results": {},
@@ -624,8 +624,8 @@ class DependencyManager:
             "recommendations": [],
         }
 
-        critical_missing = []
-        warnings = []
+        critical_missing: list[Any] = []
+        warnings: list[Any] = []
 
         for group_name in required_groups:
             group_results = self.check_dependency_group(group_name)
@@ -689,7 +689,7 @@ def get_dependency_status() -> Dict[str, Any]:
     return dependency_manager.check_all_dependencies()
 
 
-def log_dependency_status(step_name: str, logger: logging.Logger):
+def log_dependency_status(step_name: str, logger: logging.Logger) -> Any:
     """Log dependency status for a step."""
     results = check_dependencies_for_step(step_name)
 

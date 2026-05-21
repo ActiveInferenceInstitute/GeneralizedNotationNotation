@@ -10,7 +10,7 @@ import logging
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ try:
     from execute.julia_setup import is_julia_available
 except ImportError:
 
-    def is_julia_available() -> bool:  # type: ignore[misc]
+    def is_julia_available(min_version: tuple[Any, ...] = (1, 9, 0)) -> bool:
         """Recovery when julia_setup is unavailable: check PATH directly."""
         import shutil
 
@@ -102,7 +102,7 @@ def execute_rxinfer_script(
         # Different handling based on file type
         if script_path.suffix.lower() == ".jl":
             # For Julia files, run directly with julia
-            cmd = ["julia", str(script_path)]
+            cmd: list[Any] = ["julia", str(script_path)]
             logger.debug(f"Running command: {' '.join(cmd)}")
 
             # Execute the Julia script

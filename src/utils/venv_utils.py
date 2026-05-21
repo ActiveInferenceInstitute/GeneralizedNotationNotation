@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
 
     # Try multiple common virtual environment locations
     # Prioritize project root .venv for consistency
-    venv_candidates = [
+    venv_candidates: list[Any] = [
         script_dir.parent / ".venv",  # .venv in project root (preferred)
         script_dir.parent.parent
         / ".venv",  # .venv in grandparent (project root from src/)
@@ -36,7 +37,7 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
         if venv_path.is_dir():
             logger.debug(f"✓ Found virtual environment directory: {venv_path}")
 
-            potential_python_executables = [
+            potential_python_executables: list[Any] = [
                 venv_path / "bin" / "python",
                 venv_path / "bin" / "python3",
                 venv_path / "Scripts" / "python.exe",  # Windows

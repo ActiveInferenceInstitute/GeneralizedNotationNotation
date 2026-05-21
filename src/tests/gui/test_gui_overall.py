@@ -10,6 +10,8 @@ Tests the GUI module's core functionality including:
 - Error handling
 """
 
+from typing import Any
+
 import pytest
 
 from gui import (
@@ -132,7 +134,7 @@ class TestStateSpaceManagement:
     def test_update_state_space_entry(self) -> None:
         """Test updating a state space entry."""
         md = "## StateSpaceBlock\nA[3,3,type=float]\n"
-        md2 = update_state_space_entry(md, "A", [5, 5], "int")
+        md2 = update_state_space_entry(md, "A", "A", [5, 5], "int")
         # Should contain updated dimensions
         assert "5" in md2 or "A" in md2
 
@@ -160,7 +162,7 @@ class TestGUIDiscovery:
     def test_get_available_guis_has_expected_keys(self) -> None:
         """Test that available GUIs include expected types."""
         guis = get_available_guis()
-        expected_keys = ["gui_1", "gui_2", "gui_3", "oxdraw"]
+        expected_keys: list[Any] = ["gui_1", "gui_2", "gui_3", "oxdraw"]
         for key in expected_keys:
             assert key in guis, f"Expected GUI type '{key}' not found"
 
@@ -188,7 +190,7 @@ class TestGUIFeatures:
     @pytest.mark.fast
     def test_features_has_expected_keys(self) -> None:
         """Test that FEATURES has expected capability flags."""
-        expected_features = [
+        expected_features: list[Any] = [
             "form_based_constructor",
             "visual_matrix_editor",
             "state_space_studio",

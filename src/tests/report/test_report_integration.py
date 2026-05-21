@@ -150,7 +150,7 @@ class TestReportAnalysisIntegration:
         """Test pipeline data analysis for reporting."""
         from report import analyze_pipeline_data
 
-        pipeline_data = {
+        pipeline_data: dict[str, Any] = {
             "steps": [
                 {"name": "step1", "status": "success", "duration": 1.5},
                 {"name": "step2", "status": "success", "duration": 2.0},

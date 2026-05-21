@@ -64,7 +64,7 @@ class ParameterParsingMixin:
             if value_str.startswith("{") and value_str.endswith("}"):
                 # Remove comments from the string
                 lines = value_str.split("\n")
-                cleaned_lines = []
+                cleaned_lines: list[Any] = []
                 for line in lines:
                     # Remove comments (everything after #)
                     if "#" in line:
@@ -84,7 +84,7 @@ class ParameterParsingMixin:
                     rows = self._parse_matrix_rows(inner)
 
                     # Parse each row
-                    matrix = []
+                    matrix: list[Any] = []
                     for row in rows:
                         row = row.strip()
                         parsed_row = self._parse_matrix_row(row)
@@ -143,7 +143,7 @@ class ParameterParsingMixin:
 
     def _parse_matrix_rows(self, inner: str) -> list:
         """Parse matrix rows, handling nested structures properly."""
-        rows = []
+        rows: list[Any] = []
         current_row = ""
         paren_count = 0
         i = 0
@@ -230,7 +230,7 @@ class ParameterParsingMixin:
 
     def _extract_tuples(self, row: str) -> list:
         """Extract individual tuples from a nested tuple string."""
-        tuples = []
+        tuples: list[Any] = []
         current_tuple = ""
         paren_count = 0
 

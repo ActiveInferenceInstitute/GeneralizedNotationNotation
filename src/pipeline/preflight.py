@@ -12,7 +12,7 @@ import logging
 import shutil
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class PreflightReport:
 
     def add_issue(
         self, category: str, severity: str, msg: str, fix: Optional[str] = None
-    ):
+    ) -> Any:
         self.issues.append(
             PreflightIssue(category=category, severity=severity, message=msg, fix=fix)
         )
@@ -54,7 +54,7 @@ class PreflightReport:
         logger.warning(f"⚠️ [{category}] {msg}")
 
     def to_markdown(self) -> str:
-        lines = ["# Preflight Check Report", ""]
+        lines: list[Any] = ["# Preflight Check Report", ""]
         emoji = "🟢" if self.is_ok else "🔴"
         lines.append(
             f"{emoji} **{self.checks_passed} passed**, **{self.checks_failed} failed**"

@@ -31,7 +31,7 @@ def analyze_simulation_traces(
         Dictionary with trace analysis results
     """
     try:
-        analysis = {
+        analysis: dict[str, Any] = {
             "framework": framework,
             "model_name": model_name,
             "trace_count": len(traces),
@@ -80,7 +80,7 @@ def analyze_free_energy(
         Dictionary with free energy analysis results
     """
     try:
-        analysis = {
+        analysis: dict[str, Any] = {
             "framework": framework,
             "model_name": model_name,
             "free_energy_count": len(free_energy_values),
@@ -94,7 +94,7 @@ def analyze_free_energy(
         # Values may be nested lists, multi-dimensional arrays, or ragged
         # sequences — flatten everything and reduce each element to a scalar
         # via np.mean() so that downstream float() calls never fail.
-        raw = []
+        raw: list[Any] = []
         for val in free_energy_values:
             try:
                 arr = np.asarray(val, dtype=float)
@@ -147,7 +147,7 @@ def analyze_policy_convergence(
         Dictionary with policy convergence analysis
     """
     try:
-        analysis = {
+        analysis: dict[str, Any] = {
             "framework": framework,
             "model_name": model_name,
             "policy_count": len(policy_traces),
@@ -206,7 +206,7 @@ def analyze_state_distributions(
         Dictionary with state distribution analysis
     """
     try:
-        analysis = {
+        analysis: dict[str, Any] = {
             "framework": framework,
             "model_name": model_name,
             "state_count": len(state_traces),
@@ -261,7 +261,7 @@ def compare_framework_results(
         Dictionary with cross-framework comparison
     """
     try:
-        comparison = {
+        comparison: dict[str, Any] = {
             "model_name": model_name,
             "frameworks_compared": list(framework_results.keys()),
             "framework_count": len(framework_results),
@@ -273,7 +273,7 @@ def compare_framework_results(
             return comparison
 
         # Compare free energy if available
-        fe_comparison = {}
+        fe_comparison: dict[Any, Any] = {}
         for framework, results in framework_results.items():
             if "free_energy" in results.get("simulation_data", {}):
                 fe_values = results["simulation_data"]["free_energy"]
@@ -294,7 +294,7 @@ def compare_framework_results(
             }
 
         # Compare execution times
-        exec_times = {}
+        exec_times: dict[Any, Any] = {}
         for framework, results in framework_results.items():
             if "execution_time" in results:
                 exec_times[framework] = results["execution_time"]
@@ -308,7 +308,7 @@ def compare_framework_results(
             }
 
         # Compare success rates
-        success_rates = {}
+        success_rates: dict[Any, Any] = {}
         for framework, results in framework_results.items():
             success_rates[framework] = results.get("success", False)
 

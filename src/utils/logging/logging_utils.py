@@ -18,7 +18,7 @@ import uuid
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
@@ -33,7 +33,7 @@ except ImportError:
 class CorrelationFormatter(logging.Formatter):
     """Formatter that includes correlation IDs for tracing across pipeline steps."""
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         # Add correlation ID to log record
         correlation_id = getattr(_correlation_context, "correlation_id", "MAIN")
         step_name = getattr(_correlation_context, "step_name", "pipeline")
@@ -206,20 +206,20 @@ def setup_standalone_logging(
     return PipelineLogger.get_logger(logger_name)
 
 
-def silence_noisy_modules_in_console():
+def silence_noisy_modules_in_console() -> Any:
     """Reduce console output from verbose third-party modules."""
     for module in ["PIL", "matplotlib", "urllib3", "requests"]:
         logging.getLogger(module).setLevel(logging.WARNING)
 
 
-def set_verbose_mode(verbose: bool):
+def set_verbose_mode(verbose: bool) -> Any:
     """Set verbose mode for console output."""
     PipelineLogger.set_verbosity(verbose)
 
 
 def log_section_header(
     logger: logging.Logger, title: str, char: str = "=", length: int = 80
-):
+) -> Any:
     """Log a formatted section header."""
     border = char * length
     padded_title = f" {title} ".center(length, char)
@@ -232,26 +232,27 @@ def log_section_header(
 
 
 # Enhanced logging functionality
-logging.TRACE = 5  # Finer than DEBUG for high-volume parse/trace lines
-logging.addLevelName(logging.TRACE, "TRACE")
+_logging_any = cast(Any, logging)
+_logging_any.TRACE = 5  # Finer than DEBUG for high-volume parse/trace lines
+logging.addLevelName(_logging_any.TRACE, "TRACE")
 
-logging.STEP = 25  # Custom log level between INFO and WARNING
-logging.addLevelName(logging.STEP, "STEP")
+_logging_any.STEP = 25  # Custom log level between INFO and WARNING
+logging.addLevelName(_logging_any.STEP, "STEP")
 
 
-def step(self, message: str, *args: Any, **kwargs: Any) -> None:
+def step(self: logging.Logger, message: str, *args: Any, **kwargs: Any) -> None:
     """Log a step-level message."""
-    if self.isEnabledFor(logging.STEP):
-        self._log(logging.STEP, message, args, **kwargs)
+    if self.isEnabledFor(_logging_any.STEP):
+        self._log(_logging_any.STEP, message, args, **kwargs)
 
 
-logging.Logger.step = step
+cast(Any, logging.Logger).step = step
 
 
 class StructuredFormatter(CorrelationFormatter):
     """Formatter that handles structured logging data."""
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         # Extract structured data if present
         if hasattr(record, "structured_data"):
             structured_data = record.structured_data
@@ -276,9 +277,9 @@ class StructuredFormatter(CorrelationFormatter):
 class JSONFormatter(logging.Formatter):
     """Formatter that outputs JSON lines for structured logging."""
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         """Format the log record as a valid JSON object."""
-        log_entry = {
+        log_entry: dict[str, Any] = {
             "timestamp": datetime.fromtimestamp(record.created).isoformat(),
             "level": record.levelname,
             "logger": record.name,
@@ -315,7 +316,7 @@ class JSONFormatter(logging.Formatter):
         return json.dumps(log_entry)
 
 
-def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
+def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True) -> Any:
     """
     Rotate log files in the specified directory.
 
@@ -390,6 +391,8 @@ class PipelineLogger(BasicPipelineLogger):
             root_logger.handlers.clear()
 
         # Choose formatter based on structured logging preference
+        console_formatter: logging.Formatter
+        file_formatter: logging.Formatter
         if enable_structured:
             if log_format == "json":
                 console_formatter = JSONFormatter()
@@ -469,8 +472,8 @@ class PipelineLogger(BasicPipelineLogger):
 
     @classmethod
     def log_structured(
-        cls, logger: logging.Logger, level: int, message: str, **structured_data
-    ):
+        cls, logger: logging.Logger, level: int, message: str, **structured_data: Any
+    ) -> Any:
         """Log a message with structured data."""
         record = logging.LogRecord(
             name=logger.name,
@@ -485,7 +488,7 @@ class PipelineLogger(BasicPipelineLogger):
         logger.handle(record)
 
     @classmethod
-    def enable_json_logging(cls, log_dir: Path, level: int = logging.DEBUG):
+    def enable_json_logging(cls, log_dir: Path, level: int = logging.DEBUG) -> Any:
         """Enable dedicated JSON-formatted log file."""
         if not cls._initialized:
             # Recovery to initialize first if not ready
@@ -512,7 +515,7 @@ class PipelineLogger(BasicPipelineLogger):
         operation_name: str,
         logger: Optional[logging.Logger] = None,
         metadata: Optional[Dict[str, Any]] = None,
-    ):
+    ) -> Any:
         """Context manager for timing operations with structured logging."""
         if logger is None:
             logger = cls.get_logger("performance")
@@ -592,8 +595,9 @@ def setup_step_logging(
     logger = PipelineLogger.get_logger(step_name)
 
     # Add step-specific attributes
-    logger.step_name = step_name
-    logger.correlation_id = correlation_id
+    logger_any = cast(Any, logger)
+    logger_any.step_name = step_name
+    logger_any.correlation_id = correlation_id
 
     return logger
 
@@ -602,7 +606,7 @@ class VisualLoggingEnhancer:
     """Enhanced visual formatting for pipeline logging with progress tracking."""
 
     # Color codes for terminal output
-    COLORS = {
+    COLORS: dict[str, Any] = {
         "RESET": "\033[0m",
         "BOLD": "\033[1m",
         "DIM": "\033[2m",
@@ -619,7 +623,7 @@ class VisualLoggingEnhancer:
     }
 
     # Progress indicators
-    PROGRESS_CHARS = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
+    PROGRESS_CHARS: list[Any] = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
 
     @classmethod
     def supports_color(cls) -> bool:
@@ -735,7 +739,7 @@ class VisualLoggingEnhancer:
 class PipelineProgressTracker:
     """Track pipeline progress across steps with visual indicators."""
 
-    def __init__(self, total_steps: int):
+    def __init__(self, total_steps: int) -> None:
         self.total_steps = total_steps
         self.current_step = 0
         self.step_status: Dict[int, str] = {}
@@ -808,7 +812,7 @@ class PipelineProgressTracker:
             else "RUNNING",
         )
 
-        stats = [
+        stats: list[Any] = [
             f"✅ Success: {success_count}",
             f"⚠️ Warnings: {warning_count}",
             f"❌ Failed: {failed_count}",
@@ -821,12 +825,17 @@ class PipelineProgressTracker:
 class VisualFormatter(StructuredFormatter):
     """Formatter with visual improvements and performance context."""
 
-    def __init__(self, format_string, include_performance=True, use_colors=True):
+    def __init__(
+        self,
+        format_string: Any,
+        include_performance: Any = True,
+        use_colors: Any = True,
+    ) -> None:
         super().__init__(format_string)
         self.include_performance = include_performance
         self.use_colors = use_colors and VisualLoggingEnhancer.supports_color()
 
-    def format(self, record):
+    def format(self, record: Any) -> Any:
         # Get base formatted message
         formatted = super().format(record)
 
@@ -852,7 +861,7 @@ class VisualFormatter(StructuredFormatter):
         # Add performance context if available
         if self.include_performance and hasattr(record, "performance_context"):
             perf_data = record.performance_context
-            perf_parts = []
+            perf_parts: list[Any] = []
 
             if "duration" in perf_data:
                 duration_str = VisualLoggingEnhancer.format_duration(
@@ -876,7 +885,7 @@ class VisualFormatter(StructuredFormatter):
 _global_progress_tracker = None
 
 
-def set_global_progress_tracker(tracker) -> None:
+def set_global_progress_tracker(tracker: Any) -> None:
     """Set the global progress tracker used by log_step_* functions."""
     global _global_progress_tracker
     _global_progress_tracker = tracker
@@ -884,12 +893,12 @@ def set_global_progress_tracker(tracker) -> None:
 
 # Enhanced logging functions with visual improvements
 def log_step_start(
-    logger_or_step_name,
+    logger_or_step_name: Any,
     message: Optional[str] = None,
     step_number: Optional[int] = None,
     total_steps: Optional[int] = None,
-    **metadata,
-):
+    **metadata: Any,
+) -> Any:
     """Enhanced step start logging with visual progress indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -925,12 +934,12 @@ def log_step_start(
 
 
 def log_step_success(
-    logger_or_step_name,
+    logger_or_step_name: Any,
     message: Optional[str] = None,
     step_number: Optional[int] = None,
     duration: Optional[float] = None,
-    **metadata,
-):
+    **metadata: Any,
+) -> Any:
     """Enhanced step success logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -956,7 +965,7 @@ def log_step_success(
             message = f"{completion_summary}\n    {message}"
 
     # Add performance context to log record
-    performance_context = {}
+    performance_context: dict[Any, Any] = {}
     if duration:
         performance_context["duration"] = duration
     if "memory_mb" in metadata:
@@ -981,11 +990,11 @@ def log_step_success(
 
 
 def log_step_warning(
-    logger_or_step_name,
+    logger_or_step_name: Any,
     message: Optional[str] = None,
     step_number: Optional[int] = None,
-    **metadata,
-):
+    **metadata: Any,
+) -> Any:
     """Enhanced step warning logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -1014,11 +1023,11 @@ def log_step_warning(
 
 
 def log_step_error(
-    logger_or_step_name,
+    logger_or_step_name: Any,
     message: Optional[str] = None,
     step_number: Optional[int] = None,
-    **metadata,
-):
+    **metadata: Any,
+) -> Any:
     """Enhanced step error logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -1051,7 +1060,7 @@ def log_step_error(
     return {"status": "ERROR", "message": message}
 
 
-def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
+def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]) -> Any:
     """Enhanced pipeline summary logging with sophisticated visual formatting."""
 
     # Extract summary statistics - use performance_summary for accurate counts
@@ -1110,7 +1119,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     title_line = f"║{' ' * title_padding}{VisualLoggingEnhancer.colorize(title, status_color, True)}{' ' * (box_width - 2 - title_padding - len(title))}║"
 
     # Create content lines with enhanced formatting
-    content_lines = []
+    content_lines: list[Any] = []
 
     # Basic statistics
     stats_line = f"║ Total Steps: {VisualLoggingEnhancer.colorize(str(total_steps), 'WHITE', True)}"
@@ -1226,7 +1235,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
                     color = "YELLOW"
 
                 # Extract warning/error messages from step output
-                warning_messages = []
+                warning_messages: list[Any] = []
                 stdout = step.get("stdout", "")
                 stderr = step.get("stderr", "")
                 combined_output = f"{stdout}\n{stderr}"
@@ -1234,7 +1243,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
                 # Look for warning patterns in output
                 import re
 
-                warning_patterns = [
+                warning_patterns: list[Any] = [
                     r"WARNING[:\s]+([^\n]+)",
                     r"⚠️[:\s]+([^\n]+)",
                 ]
@@ -1272,10 +1281,10 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
 
 def get_performance_summary() -> Dict[str, Any]:
     """Get performance summary for the current pipeline run."""
-    return performance_tracker.get_summary()
+    return cast("dict[str, Any]", performance_tracker.get_summary())
 
 
-def reset_progress_tracker():
+def reset_progress_tracker() -> Any:
     """Reset the global progress tracker for a new pipeline run."""
     global _global_progress_tracker
     _global_progress_tracker = None

@@ -3,12 +3,13 @@ import io
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
-def verify_duplication():
+def verify_duplication() -> Any:
     print("Verifying logging duplication...")
 
     # Capture stdout and stderr

@@ -31,7 +31,7 @@ def generate_markdown_report(
             valid_results
         )
 
-        report_content = ["# GNN Resource Estimation Report", ""]
+        report_content: list[Any] = ["# GNN Resource Estimation Report", ""]
         report_content.append(f"Analyzed {total_files} files")
         report_content.append(f"Average Memory Usage: {avg_memory:.2f} KB")
         report_content.append(f"Average Inference Time: {avg_inference:.2f} units")

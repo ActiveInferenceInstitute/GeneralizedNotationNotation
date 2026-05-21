@@ -14,19 +14,15 @@ import sys
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 from utils.logging.logging_utils import (
+    PipelineLogger,
     log_step_error,
     log_step_start,
     log_step_success,
     log_step_warning,
 )
-
-try:
-    from utils.logging.logging_utils import PipelineLogger
-except ImportError:
-    PipelineLogger = None
 
 logger = logging.getLogger(__name__)
 
@@ -124,7 +120,7 @@ from utils.framework_availability import (
 
 
 def _is_python_framework_dependency_available(
-    framework: str, executor: str, logger
+    framework: str, executor: str, logger: Any
 ) -> bool:
     """Return True if the framework's required Python module is importable.
 
@@ -136,7 +132,11 @@ def _is_python_framework_dependency_available(
 
 
 def _make_skipped_result(
-    script_info: Dict[str, Any], framework: str, model_name: str, executor: str, logger
+    script_info: Dict[str, Any],
+    framework: str,
+    model_name: str,
+    executor: str,
+    logger: Any,
 ) -> Dict[str, Any]:
     """Build an execution result dict for a script skipped due to missing dependency."""
     module_name, install_hint = _FRAMEWORK_IMPORT_CHECK.get(framework, ("", ""))
@@ -236,7 +236,7 @@ def _run_scripts_with_local_workers(
     """Execute rendered scripts locally, using multiple processes when requested."""
     repeats = max(1, int(execution_benchmark_repeats))
     if execution_workers <= 1 or len(executable_scripts) <= 1:
-        details = []
+        details: list[Any] = []
         for script_info in executable_scripts:
             exec_result = execute_single_script(
                 script_info,
@@ -274,7 +274,7 @@ def _run_scripts_with_local_workers(
         ]
 
 
-def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
+def parse_frameworks_parameter(frameworks: str, logger: Any) -> List[str]:
     """
     Parse the frameworks parameter into a list of framework names.
 
@@ -302,7 +302,7 @@ def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
 
     # Parse comma-separated list
     framework_list = [f.strip() for f in frameworks.split(",")]
-    valid_frameworks = [
+    valid_frameworks: list[Any] = [
         "pymdp",
         "jax",
         "discopy",
@@ -542,7 +542,7 @@ def process_execute(
         execution_summary_detail = bool(kwargs.get("execution_summary_detail", False))
 
         # Initialize execution results
-        execution_results = {
+        execution_results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target_directory": str(target_dir),
             "output_directory": str(output_dir),
@@ -640,7 +640,7 @@ def process_execute(
                 execution_results["backend"] = (
                     kwargs.get("backend", "ray") if is_distributed else None
                 )
-                details = []
+                details: list[Any] = []
 
                 if is_distributed:
                     from .distributed import Dispatcher
@@ -648,7 +648,7 @@ def process_execute(
                     backend = kwargs.get("backend", "ray")
                     dispatcher = Dispatcher(backend=backend, num_cpus=execution_workers)
 
-                    def ray_script_runner(info, **kws):
+                    def ray_script_runner(info: Any, **kws: Any) -> Any:
                         """Execute a rendered simulation script using Ray for distributed processing."""
                         import logging
 
@@ -823,7 +823,7 @@ def process_execute(
             )
             return False
 
-        return failed_scripts == 0
+        return cast("bool | int", failed_scripts == 0)
 
     except Exception as e:
         log_step_error(logger, f"Execute processing failed: {e}")
@@ -831,7 +831,7 @@ def process_execute(
 
 
 def find_executable_scripts(
-    render_output_dir: Path, verbose: bool, logger, requested_frameworks: List[str]
+    render_output_dir: Path, verbose: bool, logger: Any, requested_frameworks: List[str]
 ) -> List[Dict[str, Any]]:
     """
     Find executable scripts in the render output directory.
@@ -858,16 +858,16 @@ def find_executable_scripts(
             - relative_path: Path relative to render_output_dir
             - size_bytes: File size in bytes
     """
-    executable_scripts = []
+    executable_scripts: list[Any] = []
 
     # Define supported script types and their executors
-    script_types = {
+    script_types: dict[str, Any] = {
         "*.py": {"executor": sys.executable, "framework": "python"},
         "*.jl": {"executor": "julia", "framework": "julia"},
     }
 
     # Map framework directories to framework names
-    framework_dirs = {
+    framework_dirs: dict[str, Any] = {
         "pymdp": "pymdp",
         "jax": "jax",
         "discopy": "discopy",
@@ -909,7 +909,7 @@ def find_executable_scripts(
                 continue
 
             # Check if script is executable or can be made executable
-            script_info = {
+            script_info: dict[str, Any] = {
                 "path": script_path,
                 "name": script_path.name,
                 "framework": framework,
@@ -949,7 +949,7 @@ def execute_single_script(
     script_info: Dict[str, Any],
     results_dir: Path,
     verbose: bool,
-    logger,
+    logger: Any,
     timeout: int = 3600,
     *,
     execution_benchmark_repeats: int = 1,
@@ -988,7 +988,7 @@ def execute_single_script(
         )
 
     # Prepare execution result
-    exec_result = {
+    exec_result: dict[str, Any] = {
         "script_path": str(script_path),
         "script_name": script_info["name"],
         "framework": framework,
@@ -1077,15 +1077,15 @@ def execute_single_script(
             )
             return exec_result
 
-        # Execute the script with improved error handling
-        script_name = script_path.name
-        result = None
-
         class ErrorResult:
-            def __init__(self, returncode: int, stdout: str, stderr: str):
+            def __init__(self, returncode: int, stdout: str, stderr: str) -> None:
                 self.returncode = returncode
                 self.stdout = stdout
                 self.stderr = stderr
+
+        # Execute the script with improved error handling
+        script_name = script_path.name
+        result: subprocess.CompletedProcess[str] | ErrorResult | None = None
 
         K = max(1, int(execution_benchmark_repeats))
         exec_result["execution_benchmark_repeats"] = K
@@ -1235,7 +1235,7 @@ def execute_single_script(
         exec_result["simulation_data"] = simulation_data
 
         # Save structured execution results in JSON format
-        structured_result = {
+        structured_result: dict[str, Any] = {
             "framework": framework,
             "model_name": model_name,
             "script_name": script_info["name"],

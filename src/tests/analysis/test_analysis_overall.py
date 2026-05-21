@@ -66,7 +66,7 @@ class TestAnalysisOverall:
         execution_dir = safe_filesystem.create_dir("12_execute_output")
         summaries_dir = execution_dir / "summaries"
         summaries_dir.mkdir(parents=True)
-        summary = {
+        summary: dict[str, Any] = {
             "requested_frameworks": ["pymdp"],
             "execution_details": [
                 {
@@ -121,7 +121,7 @@ class TestPostSimulationVisualization:
         """Test belief heatmap generation."""
         from analysis.post_simulation import generate_belief_heatmaps
 
-        beliefs = [
+        beliefs: list[Any] = [
             [0.8, 0.1, 0.1],
             [0.7, 0.2, 0.1],
             [0.5, 0.3, 0.2],
@@ -144,7 +144,28 @@ class TestPostSimulationVisualization:
         """Test action analysis visualization."""
         from analysis.post_simulation import generate_action_analysis
 
-        actions = [0, 1, 2, 0, 1, 1, 2, 2, 0, 0, 1, 2, 2, 1, 0, 1, 2, 0, 1, 2]
+        actions: list[Any] = [
+            0,
+            1,
+            2,
+            0,
+            1,
+            1,
+            2,
+            2,
+            0,
+            0,
+            1,
+            2,
+            2,
+            1,
+            0,
+            1,
+            2,
+            0,
+            1,
+            2,
+        ]
         output_dir = safe_filesystem.create_dir("viz_output")
         output_file = output_dir / "action_analysis.png"
         result = generate_action_analysis(actions, output_file, "Test Action Analysis")
@@ -156,7 +177,7 @@ class TestPostSimulationVisualization:
         """Test free energy plot generation."""
         from analysis.post_simulation import generate_free_energy_plots
 
-        free_energy = [
+        free_energy: list[Any] = [
             10.0,
             9.5,
             9.0,
@@ -191,7 +212,7 @@ class TestPostSimulationVisualization:
         """Test observation analysis visualization."""
         from analysis.post_simulation import generate_observation_analysis
 
-        observations = [0, 1, 0, 2, 1, 1, 2, 0, 1, 2, 0, 1, 2, 2, 1]
+        observations: list[Any] = [0, 1, 0, 2, 1, 1, 2, 0, 1, 2, 0, 1, 2, 2, 1]
         output_dir = safe_filesystem.create_dir("viz_output")
         output_file = output_dir / "observations.png"
         result = generate_observation_analysis(
@@ -205,7 +226,7 @@ class TestPostSimulationVisualization:
         """Test free energy analysis function."""
         from analysis.post_simulation import analyze_free_energy
 
-        fe_values = [10.0, 8.0, 6.0, 4.0, 3.0, 2.5, 2.2, 2.1, 2.05, 2.02]
+        fe_values: list[Any] = [10.0, 8.0, 6.0, 4.0, 3.0, 2.5, 2.2, 2.1, 2.05, 2.02]
         result = analyze_free_energy(fe_values, "pymdp", "test_model")
         assert result["framework"] == "pymdp"
         assert result["model_name"] == "test_model"
@@ -218,7 +239,7 @@ class TestPostSimulationVisualization:
         """Test simulation trace analysis function."""
         from analysis.post_simulation import analyze_simulation_traces
 
-        traces = [[0, 1, 2, 1, 0], [1, 2, 2, 0, 1, 2], [0, 0, 1, 2]]
+        traces: list[Any] = [[0, 1, 2, 1, 0], [1, 2, 2, 0, 1, 2], [0, 0, 1, 2]]
         result = analyze_simulation_traces(traces, "rxinfer", "test_model")
         assert result["framework"] == "rxinfer"
         assert result["trace_count"] == 3
@@ -229,7 +250,7 @@ class TestPostSimulationVisualization:
         """Test policy convergence analysis."""
         from analysis.post_simulation import analyze_policy_convergence
 
-        policy_traces = [
+        policy_traces: list[Any] = [
             [0.33, 0.33, 0.34],
             [0.4, 0.3, 0.3],
             [0.5, 0.25, 0.25],
@@ -246,7 +267,7 @@ class TestPostSimulationVisualization:
         """Test cross-framework comparison."""
         from analysis.post_simulation import compare_framework_results
 
-        framework_results = {
+        framework_results: dict[str, Any] = {
             "pymdp": {
                 "success": True,
                 "execution_time": 1.5,
@@ -292,16 +313,16 @@ class TestAnalysisModuleImports:
 
 
 class TestActiveInferenceJLAnalyzer:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from analysis.activeinference_jl import analyzer
 
-    def test_generate_analysis_from_logs_missing_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_missing_dir(self, tmp_path: Any) -> Any:
         from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
         assert isinstance(result, list)
 
-    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.activeinference_jl.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
@@ -309,22 +330,22 @@ class TestActiveInferenceJLAnalyzer:
 
 
 class TestDisCoPyAnalyzer:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from analysis.discopy import analyzer
 
-    def test_extract_circuit_data_empty_dir(self, tmp_path):
+    def test_extract_circuit_data_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.discopy.analyzer import extract_circuit_data
 
         result = extract_circuit_data(tmp_path)
         assert isinstance(result, dict)
 
-    def test_analyze_diagram_structure_empty(self):
+    def test_analyze_diagram_structure_empty(self) -> Any:
         from analysis.discopy.analyzer import analyze_diagram_structure
 
         result = analyze_diagram_structure([])
         assert isinstance(result, dict)
 
-    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.discopy.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
@@ -332,22 +353,22 @@ class TestDisCoPyAnalyzer:
 
 
 class TestJAXAnalyzer:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from analysis.jax import analyzer
 
-    def test_parse_raw_output_empty_string(self):
+    def test_parse_raw_output_empty_string(self) -> Any:
         from analysis.jax.analyzer import parse_raw_output
 
         result = parse_raw_output("")
         assert isinstance(result, dict)
 
-    def test_extract_simulation_data_empty_dir(self, tmp_path):
+    def test_extract_simulation_data_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.jax.analyzer import extract_simulation_data
 
         result = extract_simulation_data(tmp_path)
         assert isinstance(result, dict)
 
-    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.jax.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
@@ -355,24 +376,24 @@ class TestJAXAnalyzer:
 
 
 class TestPyMDPAnalyzer:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from analysis.pymdp import analyzer
 
-    def test_generate_analysis_from_logs_missing_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_missing_dir(self, tmp_path: Any) -> Any:
         from analysis.pymdp.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path / "nonexistent", tmp_path / "out")
         assert isinstance(result, list)
 
-    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.pymdp.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
         assert isinstance(result, list)
 
     def test_generate_analysis_prefers_current_named_results(
-        self, tmp_path, monkeypatch, caplog
-    ):
+        self, tmp_path: Any, monkeypatch: Any, caplog: Any
+    ) -> Any:
         from analysis.pymdp import analyzer
 
         exec_dir = tmp_path / "execute"
@@ -402,7 +423,7 @@ class TestPyMDPAnalyzer:
             encoding="utf-8",
         )
 
-        def _save_all_visualizations(**kwargs):
+        def _save_all_visualizations(**kwargs: Any) -> Any:
             return {"beliefs": kwargs["output_dir"] / "beliefs.png"}
 
         monkeypatch.setattr(
@@ -416,16 +437,16 @@ class TestPyMDPAnalyzer:
 
 
 class TestRxInferAnalyzer:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from analysis.rxinfer import analyzer
 
-    def test_extract_simulation_data_empty_dir(self, tmp_path):
+    def test_extract_simulation_data_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.rxinfer.analyzer import extract_simulation_data
 
         result = extract_simulation_data(tmp_path)
         assert isinstance(result, dict)
 
-    def test_generate_analysis_from_logs_empty_dir(self, tmp_path):
+    def test_generate_analysis_from_logs_empty_dir(self, tmp_path: Any) -> Any:
         from analysis.rxinfer.analyzer import generate_analysis_from_logs
 
         result = generate_analysis_from_logs(tmp_path, tmp_path / "out")
@@ -435,12 +456,12 @@ class TestRxInferAnalyzer:
 class TestAnalyzerSimulationMetrics:
     """Behavioral tests for analyzer.py private simulation metric functions."""
 
-    def _make_logger(self):
+    def _make_logger(self) -> Any:
         import logging
 
         return logging.getLogger("test_analyzer")
 
-    def test_extract_simulation_metrics_returns_dict(self, tmp_path):
+    def test_extract_simulation_metrics_returns_dict(self, tmp_path: Any) -> Any:
         """_extract_simulation_metrics returns a dict with expected keys."""
         from analysis.analyzer import _extract_simulation_metrics
 
@@ -453,7 +474,7 @@ class TestAnalyzerSimulationMetrics:
         assert "free_energy" in result
         assert "execution_times" in result
 
-    def test_extract_simulation_metrics_reads_pymdp_v1_json(self, tmp_path):
+    def test_extract_simulation_metrics_reads_pymdp_v1_json(self, tmp_path: Any) -> Any:
         """_extract_simulation_metrics loads current PyMDP schema when present."""
         import json
 
@@ -461,7 +482,7 @@ class TestAnalyzerSimulationMetrics:
 
         sim_dir = tmp_path / "sim_data"
         sim_dir.mkdir()
-        sim_results = {
+        sim_results: dict[str, Any] = {
             "schema_version": "pymdp_simulation_v1",
             "framework": "PyMDP",
             "beliefs_by_factor": {"joint_state": [[0.9, 0.1], [0.8, 0.2]]},
@@ -470,7 +491,10 @@ class TestAnalyzerSimulationMetrics:
             "expected_free_energy": [-1.5, -1.3],
         }
         (sim_dir / "simulation_results.json").write_text(json.dumps(sim_results))
-        detail = {"implementation_directory": str(sim_dir), "execution_time": 0.5}
+        detail: dict[str, Any] = {
+            "implementation_directory": str(sim_dir),
+            "execution_time": 0.5,
+        }
         logger = self._make_logger()
         result = _extract_simulation_metrics("pymdp", [detail], tmp_path, logger)
         assert result["beliefs"] == sim_results["beliefs_by_factor"]["joint_state"]
@@ -481,7 +505,9 @@ class TestAnalyzerSimulationMetrics:
         assert result["free_energy"] == sim_results["expected_free_energy"]
         assert result["execution_times"] == [0.5]
 
-    def test_extract_simulation_metrics_rejects_non_v1_pymdp_json(self, tmp_path):
+    def test_extract_simulation_metrics_rejects_non_v1_pymdp_json(
+        self, tmp_path: Any
+    ) -> Any:
         """PyMDP cross-framework metrics should not consume older JSON shapes."""
         import json
 
@@ -492,19 +518,22 @@ class TestAnalyzerSimulationMetrics:
         (sim_dir / "simulation_results.json").write_text(
             json.dumps({"framework": "PyMDP", "beliefs": [[0.9, 0.1]]})
         )
-        detail = {"implementation_directory": str(sim_dir), "execution_time": 0.5}
+        detail: dict[str, Any] = {
+            "implementation_directory": str(sim_dir),
+            "execution_time": 0.5,
+        }
         result = _extract_simulation_metrics(
             "pymdp", [detail], tmp_path, self._make_logger()
         )
         assert result["beliefs"] == []
         assert result["data_source"] is None
 
-    def test_extract_simulation_metrics_missing_dir(self, tmp_path):
+    def test_extract_simulation_metrics_missing_dir(self, tmp_path: Any) -> Any:
         """_extract_simulation_metrics handles nonexistent impl_dir gracefully."""
         from analysis.analyzer import _extract_simulation_metrics
 
         logger = self._make_logger()
-        detail = {
+        detail: dict[str, Any] = {
             "implementation_directory": str(tmp_path / "nonexistent"),
             "execution_time": 1.0,
         }
@@ -512,7 +541,9 @@ class TestAnalyzerSimulationMetrics:
         assert isinstance(result, dict)
         assert result["execution_times"] == [1.0]
 
-    def test_extract_simulation_metrics_bnlearn_execution_logs(self, tmp_path):
+    def test_extract_simulation_metrics_bnlearn_execution_logs(
+        self, tmp_path: Any
+    ) -> Any:
         """bnlearn writes execution_logs/*_results.json; metrics should still record completion."""
         import json
 
@@ -521,21 +552,26 @@ class TestAnalyzerSimulationMetrics:
         impl = tmp_path / "markov_chain" / "bnlearn"
         el = impl / "execution_logs"
         el.mkdir(parents=True)
-        structured = {
+        structured: dict[str, Any] = {
             "framework": "bnlearn",
             "model_name": "markov_chain",
             "success": True,
             "simulation_data": {"beliefs": [], "actions": [], "observations": []},
         }
         (el / "Simple_bnlearn.py_results.json").write_text(json.dumps(structured))
-        detail = {"implementation_directory": str(impl), "execution_time": 1.0}
+        detail: dict[str, Any] = {
+            "implementation_directory": str(impl),
+            "execution_time": 1.0,
+        }
         logger = self._make_logger()
         result = _extract_simulation_metrics("bnlearn", [detail], tmp_path, logger)
         assert result["model_parameters"].get("bnlearn_completed") is True
         assert result["model_parameters"].get("model_name") == "markov_chain"
         assert result["data_source"]
 
-    def test_extract_simulation_metrics_rxinfer_prefers_simulation_data(self, tmp_path):
+    def test_extract_simulation_metrics_rxinfer_prefers_simulation_data(
+        self, tmp_path: Any
+    ) -> Any:
         """simulation_data/simulation_results.json must win over sparse execution_logs."""
         import json
 
@@ -546,21 +582,24 @@ class TestAnalyzerSimulationMetrics:
         sd = impl / "simulation_data"
         el.mkdir(parents=True)
         sd.mkdir(parents=True)
-        sparse = {
+        sparse: dict[str, Any] = {
             "framework": "rxinfer",
             "model_name": "markov_chain",
             "success": True,
             "simulation_data": {"beliefs": [], "actions": [], "observations": []},
         }
         (el / "Model_rxinfer.jl_results.json").write_text(json.dumps(sparse))
-        rich = {
+        rich: dict[str, Any] = {
             "beliefs": [[0.9, 0.05, 0.05], [0.8, 0.1, 0.1]],
             "actions": [1, 1],
             "observations": [2, 3],
             "efe_history": [0.1, 0.2],
         }
         (sd / "simulation_results.json").write_text(json.dumps(rich))
-        detail = {"implementation_directory": str(impl), "execution_time": 1.0}
+        detail: dict[str, Any] = {
+            "implementation_directory": str(impl),
+            "execution_time": 1.0,
+        }
         logger = self._make_logger()
         result = _extract_simulation_metrics("rxinfer", [detail], tmp_path, logger)
         assert result["beliefs"] == rich["beliefs"]
@@ -568,8 +607,8 @@ class TestAnalyzerSimulationMetrics:
         assert "simulation_results.json" in result["data_source"].replace("\\", "/")
 
     def test_extract_simulation_metrics_discopy_supplements_circuit_info(
-        self, tmp_path
-    ):
+        self, tmp_path: Any
+    ) -> Any:
         """DisCoPy: execution log plus circuit_info.json yields circuit metrics (no empty extract)."""
         import json
 
@@ -580,7 +619,7 @@ class TestAnalyzerSimulationMetrics:
         sd = impl / "simulation_data"
         el.mkdir(parents=True)
         sd.mkdir(parents=True)
-        result_summary = {
+        result_summary: dict[str, Any] = {
             "framework": "discopy",
             "model_name": "markov_chain",
             "success": True,
@@ -592,21 +631,24 @@ class TestAnalyzerSimulationMetrics:
             },
         }
         (el / "Model_discopy.py_results.json").write_text(json.dumps(result_summary))
-        circuit_data = {
+        circuit_data: dict[str, Any] = {
             "model_name": "markov_chain",
             "components": ["A_matrix", "B_matrix"],
             "analysis": {"num_components": 8},
             "parameters": {"num_states": 3, "num_observations": 3, "num_actions": 1},
         }
         (sd / "circuit_info.json").write_text(json.dumps(circuit_data))
-        detail = {"implementation_directory": str(impl), "execution_time": 0.5}
+        detail: dict[str, Any] = {
+            "implementation_directory": str(impl),
+            "execution_time": 0.5,
+        }
         logger = self._make_logger()
         result = _extract_simulation_metrics("discopy", [detail], tmp_path, logger)
         assert result.get("circuit_info") is not None
         assert result["circuit_info"].get("num_components") == 8
         assert result.get("model_parameters", {}).get("num_states") == 3
 
-    def test_compare_framework_results_empty_input(self):
+    def test_compare_framework_results_empty_input(self) -> Any:
         """_compare_framework_results returns dict with expected keys for empty input."""
         from analysis.analyzer import _compare_framework_results
 
@@ -618,12 +660,12 @@ class TestAnalyzerSimulationMetrics:
         assert "data_coverage" in result
         assert "simulation_statistics" in result
 
-    def test_compare_framework_results_success_rates(self):
+    def test_compare_framework_results_success_rates(self) -> Any:
         """_compare_framework_results computes success rates correctly."""
         from analysis.analyzer import _compare_framework_results
 
         logger = self._make_logger()
-        framework_data = {
+        framework_data: dict[str, Any] = {
             "pymdp": {"success_count": 3, "total_count": 4, "execution_times": []},
             "jax": {"success_count": 4, "total_count": 4, "execution_times": []},
         }
@@ -631,12 +673,12 @@ class TestAnalyzerSimulationMetrics:
         assert abs(result["success_rates"]["pymdp"] - 0.75) < 1e-06
         assert abs(result["success_rates"]["jax"] - 1.0) < 1e-06
 
-    def test_compare_framework_results_execution_times(self):
+    def test_compare_framework_results_execution_times(self) -> Any:
         """_compare_framework_results computes perf stats when times present."""
         from analysis.analyzer import _compare_framework_results
 
         logger = self._make_logger()
-        framework_data = {
+        framework_data: dict[str, Any] = {
             "pymdp": {
                 "success_count": 2,
                 "total_count": 2,
@@ -649,7 +691,7 @@ class TestAnalyzerSimulationMetrics:
         assert perf["min"] == 1.0
         assert perf["max"] == 2.0
 
-    def test_visualize_simulation_results_no_details(self, tmp_path):
+    def test_visualize_simulation_results_no_details(self, tmp_path: Any) -> Any:
         """visualize_simulation_results returns list (empty) when no details."""
         from analysis.analyzer import visualize_simulation_results
 

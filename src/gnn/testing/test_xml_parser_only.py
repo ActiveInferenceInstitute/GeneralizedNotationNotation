@@ -6,6 +6,7 @@ Test to isolate the XML parser duplication issue.
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -13,12 +14,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 from gnn.parsers.xml_parser import XMLGNNParser
 
 
-def test_xml_parser_only():
+def test_xml_parser_only() -> Any:
     """Test XML parser with minimal embedded data."""
     print("🔍 Testing XML parser with minimal embedded data...")
 
     # Create minimal embedded data
-    minimal_data = {
+    minimal_data: dict[str, Any] = {
         "model_name": "Test Model",
         "annotation": "Test annotation",
         "variables": [

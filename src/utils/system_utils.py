@@ -2,6 +2,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 # Import psutil with error handling to prevent recursion
 PSUTIL_AVAILABLE = False
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 def get_system_info() -> Dict[str, Any]:
     """Gather comprehensive system information for pipeline tracking."""
     try:
-        base_info = {
+        base_info: dict[str, Any] = {
             "python_version": sys.version,
             "platform": os.name,
             "cpu_count": os.cpu_count(),

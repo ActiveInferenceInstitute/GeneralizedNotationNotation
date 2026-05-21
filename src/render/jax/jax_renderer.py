@@ -16,7 +16,7 @@ Leverages JAX's JIT, vmap, pmap, and supports Optax/Flax integration.
 import logging
 import re
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 import numpy as np
 
@@ -97,7 +97,7 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
     try:
         # Remove comments and clean up
         lines = matrix_str.split("\n")
-        cleaned_lines = []
+        cleaned_lines: list[Any] = []
         for line in lines:
             if "#" in line:
                 line = line.split("#")[0]
@@ -113,7 +113,7 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
             inner = matrix_str[1:-1].strip()
 
             # Split by commas, but be careful with nested tuples
-            rows = []
+            rows: list[Any] = []
             current_row = ""
             paren_count = 0
 
@@ -136,7 +136,7 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
                 rows.append(current_row.strip())
 
             # Parse each row
-            matrix = []
+            matrix: list[Any] = []
             for row in rows:
                 row = row.strip()
                 try:
@@ -152,7 +152,7 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
                         inner_row = row[2:-2]
                         # Split by '),('
                         nested_tuples = inner_row.split("),(")
-                        row_values = []
+                        nested_row_values: list[list[float]] = []
                         for nested_tuple in nested_tuples:
                             nested_tuple = nested_tuple.strip("()")
                             tuple_values = [
@@ -160,8 +160,8 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
                                 for x in nested_tuple.split(",")
                                 if x.strip()
                             ]
-                            row_values.append(tuple_values)
-                        matrix.append(row_values)
+                            nested_row_values.append(tuple_values)
+                        matrix.append(nested_row_values)
                     else:
                         # Try to parse as simple values
                         row_values = [
@@ -198,7 +198,7 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
 
 def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract A, B, C, D matrices from GNN specification."""
-    matrices = {}
+    matrices: dict[Any, Any] = {}
 
     # --- Primary: Handle POMDP processor format ---
     if "model_parameters" in gnn_spec:
@@ -214,7 +214,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         )
 
         # Create default matrices based on dimensions
-        default_matrices = {
+        default_matrices: dict[str, Any] = {
             "A": np.eye(n_obs, n_states),  # Identity-like likelihood matrix
             "B": np.stack(
                 [np.eye(n_states) for _ in range(n_actions)], axis=2
@@ -350,14 +350,14 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         logger.info("Extracting matrices from GNN JSON export structure")
 
         # Extract variable dimensions from statespaceblock
-        var_dims = {}
+        var_dims: dict[Any, Any] = {}
         for var_data in gnn_spec.get("statespaceblock", []):
             var_name = var_data.get("id", "")
             dimensions_str = var_data.get("dimensions", "")
             # Parse dimensions like "3,3,type=float" -> [3, 3]
             if dimensions_str:
                 dims_parts = dimensions_str.split(",")
-                dims = []
+                dims: list[Any] = []
                 for part in dims_parts:
                     part = part.strip()
                     if part.startswith("type="):
@@ -871,7 +871,7 @@ def _infer_matrix_from_context(
         matrix = np.eye(min(shape)) + 0.1 * np.random.rand(*shape)
         # Normalize rows
         matrix = matrix / matrix.sum(axis=1, keepdims=True)
-        return matrix
+        return cast(np.ndarray, matrix)
 
     elif param_name == "B":
         # Transition model - create identity-like transitions with some noise
@@ -882,28 +882,28 @@ def _infer_matrix_from_context(
                 shape[0], shape[1]
             )
             matrix[:, :, a] = action_matrix / action_matrix.sum(axis=1, keepdims=True)
-        return matrix
+        return cast(np.ndarray, matrix)
 
     elif param_name == "C":
         # Preferences - slight preference for later observations
-        shape = dims[0] if dims else 2
-        vector = np.linspace(0.1, 1.0, shape)
-        return vector
+        vector_len = int(dims[0]) if dims else 2
+        vector = np.linspace(0.1, 1.0, vector_len)
+        return cast(np.ndarray, vector)
 
     elif param_name == "D":
         # Prior - uniform
-        shape = dims[0] if dims else 2
-        return np.ones(shape) / shape
+        vector_len = int(dims[0]) if dims else 2
+        return cast(np.ndarray, np.ones(vector_len) / vector_len)
 
     elif param_name == "E":
         # Action prior - uniform
-        shape = dims[0] if dims else 2
-        return np.ones(shape) / shape
+        vector_len = int(dims[0]) if dims else 2
+        return cast(np.ndarray, np.ones(vector_len) / vector_len)
 
     else:
         # Generic recovery
-        shape = dims[0] if dims else 2
-        return np.ones(shape) / shape
+        vector_len = int(dims[0]) if dims else 2
+        return cast(np.ndarray, np.ones(vector_len) / vector_len)
 
 
 def _create_fallback_matrix(param_name: str, var_dims: dict) -> np.ndarray:
@@ -917,12 +917,12 @@ def _parse_matrix_string(matrix_str: str) -> np.ndarray:
     matrix_str = re.sub(r"\s+", " ", matrix_str.strip())
 
     # Split by rows and parse each row
-    rows = []
+    rows: list[Any] = []
     for row_str in matrix_str.split(";"):
         row_str = row_str.strip()
         if row_str:
             # Parse row as list of floats
-            row_values = []
+            row_values: list[Any] = []
             for val_str in row_str.split(","):
                 val_str = val_str.strip()
                 if val_str:
@@ -951,7 +951,7 @@ def _parse_vector_string(vector_str: str) -> np.ndarray:
     vector_str = re.sub(r"\s+", " ", vector_str.strip())
 
     # Parse as list of floats
-    values = []
+    values: list[Any] = []
     for val_str in vector_str.split(","):
         val_str = val_str.strip()
         if val_str:

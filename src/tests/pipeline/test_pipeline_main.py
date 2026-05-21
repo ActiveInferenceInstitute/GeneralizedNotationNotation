@@ -11,23 +11,24 @@ import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 # Import test utilities
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 TEST_DIR = PROJECT_ROOT / "src" / "tests"
 
 
-def assert_file_exists(path):
+def assert_file_exists(path: Any) -> Any:
     """Assert that a file exists."""
     assert Path(path).exists(), f"Expected file not found: {path}"
 
 
-def assert_directory_structure(path, expected):
+def assert_directory_structure(path: Any, expected: Any) -> Any:
     """Assert expected directory structure."""
     pass
 
 
-def create_test_files(count=3):
+def create_test_files(count: Any = 3) -> Any:
     """Create test files."""
     return []
 
@@ -40,7 +41,7 @@ pytestmark = pytest.mark.pipeline
 class TestPipelineMain:
     """Test real pipeline execution and artifact generation."""
 
-    def setup_method(self):
+    def setup_method(self) -> Any:
         """Setup test environment."""
         self.test_input_dir = PROJECT_ROOT / "input" / "test_gnn_files"
         self.test_input_dir.mkdir(parents=True, exist_ok=True)
@@ -65,7 +66,7 @@ D: 0.6 0.4
 """
         (self.test_input_dir / "test_model.md").write_text(test_content)
 
-    def teardown_method(self):
+    def teardown_method(self) -> Any:
         """Cleanup test environment."""
         # Clean up test files
         if self.test_input_dir.exists():
@@ -73,14 +74,14 @@ D: 0.6 0.4
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_pipeline_steps_3_7_8_produce_artifacts(self):
+    def test_pipeline_steps_3_7_8_produce_artifacts(self) -> Any:
         """Test that steps 3,7,8 run and produce expected output artifacts."""
         # Create temporary output directory
         with tempfile.TemporaryDirectory() as temp_output_dir:
             output_dir = Path(temp_output_dir)
 
             # Run pipeline steps 3,7,8
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 "src/main.py",
                 "--target-dir",
@@ -134,7 +135,7 @@ D: 0.6 0.4
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_pipeline_step_11_12_produce_reports(self):
+    def test_pipeline_step_11_12_produce_reports(self) -> Any:
         """Test that steps 11,12 run and produce execution reports."""
         # Create temporary output directory
         with tempfile.TemporaryDirectory() as temp_output_dir:
@@ -151,7 +152,7 @@ D: 0.6 0.4
             )
             assert step11_output.exists(), "Step 11 output directory not created"
 
-            execute_cmd = [
+            execute_cmd: list[Any] = [
                 sys.executable,
                 "src/12_execute.py",
                 "--target-dir",
@@ -190,14 +191,14 @@ D: 0.6 0.4
     @pytest.mark.slow
     @pytest.mark.integration
     @pytest.mark.timeout(600)  # 10 minute timeout for full pipeline
-    def test_full_pipeline_execution(self):
+    def test_full_pipeline_execution(self) -> Any:
         """Test full pipeline execution with real GNN model."""
         # Create temporary output directory
         with tempfile.TemporaryDirectory() as temp_output_dir:
             output_dir = Path(temp_output_dir)
 
             # Run pipeline with smaller subset of fast steps to avoid timeout
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 "src/main.py",
                 "--target-dir",

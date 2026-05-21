@@ -114,7 +114,9 @@ def analyze_audio_characteristics_mcp(audio_file_path: str) -> Dict[str, Any]:
         Dictionary with audio characteristics and analysis metadata.
     """
     try:
-        result = analyze_audio_characteristics(Path(audio_file_path))
+        result = analyze_audio_characteristics(
+            {"file_path": str(Path(audio_file_path))}
+        )
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": True, "characteristics": result}
@@ -155,7 +157,7 @@ def validate_audio_content_mcp(audio_file_path: str) -> Dict[str, Any]:
         Dictionary with validation result, diagnostics, and any error details.
     """
     try:
-        result = validate_audio_content(Path(audio_file_path))
+        result = validate_audio_content(str(audio_file_path))
         if isinstance(result, dict):
             return {"success": True, **result}
         return {"success": bool(result), "valid": bool(result)}
@@ -167,7 +169,7 @@ def validate_audio_content_mcp(audio_file_path: str) -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register audio domain tools with the MCP server."""
 
     mcp_instance.register_tool(

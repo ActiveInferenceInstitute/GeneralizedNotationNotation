@@ -10,7 +10,7 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
@@ -47,7 +47,7 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
         variables_with_dims = extract_gnn_dimensions(content)
 
         # Formulate variables map compatible with rigorous estimators
-        vars_map = {}
+        vars_map: dict[Any, Any] = {}
         for k, v in variables_with_dims.items():
             vars_map[k] = {"dimensions": v, "type": "float"}
 
@@ -111,12 +111,57 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
 class GNNTypeChecker:
     """Type checker for GNN files."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Initialize the GNN type checker."""
         self.validation_rules = get_validation_rules()
 
+    def check_file(
+        self, file_path: str | Path
+    ) -> tuple[bool, list[str], list[str], Dict[str, Any]]:
+        """Validate one GNN file and return the CLI result tuple."""
+        result = self.validate_single_gnn_file(Path(file_path))
+        return (
+            bool(result.get("valid", False)),
+            list(result.get("errors", [])),
+            list(result.get("warnings", [])),
+            result,
+        )
+
+    def generate_report(
+        self,
+        results: Dict[str, Any],
+        output_dir: Path,
+        report_md_filename: str = "TYPE_CHECK_REPORT.md",
+        project_root_path: str | None = None,
+    ) -> str:
+        """Generate the Markdown report consumed by the type-checker CLI."""
+        output_dir.mkdir(parents=True, exist_ok=True)
+        validation_results = [
+            {"file_path": path, **data} for path, data in results.items()
+        ]
+        summary_data: Dict[str, Any] = {
+            "processed_files": len(results),
+            "success": all(item.get("is_valid", False) for item in results.values()),
+            "errors": [
+                error for item in results.values() for error in item.get("errors", [])
+            ],
+            "validation_results": validation_results,
+            "type_analysis": [],
+            "project_root": project_root_path,
+        }
+        report_text = self._generate_type_check_summary(summary_data)
+        (output_dir / report_md_filename).write_text(report_text, encoding="utf-8")
+        return report_text
+
+    def generate_json_data(self, results: Dict[str, Any], output_path: Path) -> None:
+        """Write type-check results as JSON for downstream analysis."""
+        import json
+
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+
     def validate_gnn_files(
-        self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+        self, target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
     ) -> bool:
         """
         Validate GNN files for type consistency.
@@ -138,7 +183,7 @@ class GNNTypeChecker:
             output_dir.mkdir(parents=True, exist_ok=True)
 
             # Initialize results
-            results = {
+            results: dict[str, Any] = {
                 "timestamp": datetime.now().isoformat(),
                 "processed_files": 0,
                 "success": True,
@@ -170,7 +215,7 @@ class GNNTypeChecker:
                         results["type_analysis"].append(type_analysis)
 
                     except Exception as e:
-                        error_info = {
+                        error_info: dict[str, Any] = {
                             "file": str(gnn_file),
                             "error": str(e),
                             "error_type": type(e).__name__,
@@ -201,10 +246,10 @@ class GNNTypeChecker:
             else:
                 log_step_error(logger, "Type checking failed")
 
-            return results["success"]
+            return cast("bool", results["success"])
 
         except Exception as e:
-            log_step_error(logger, "Type checking failed", {"error": str(e)})
+            log_step_error(logger, "Type checking failed", error=str(e))
             return False
 
     def validate_single_gnn_file(
@@ -215,7 +260,7 @@ class GNNTypeChecker:
             with open(file_path, "r") as f:
                 content = f.read()
 
-            validation_result = {
+            validation_result: dict[str, Any] = {
                 "file_path": str(file_path),
                 "file_name": file_path.name,
                 "valid": True,
@@ -282,7 +327,7 @@ class GNNTypeChecker:
             types_found = extract_types_from_content(content)
 
             # Analyze type distribution
-            type_counts = {}
+            type_counts: dict[Any, Any] = {}
             for type_info in types_found:
                 var_type = type_info["type"]
                 type_counts[var_type] = type_counts.get(var_type, 0) + 1

@@ -10,9 +10,11 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 _module_logger = logging.getLogger(__name__)
+
+from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
 
 from ._shared import (
     MATPLOTLIB_AVAILABLE,
@@ -26,13 +28,6 @@ from ._shared import (
     sns,
     validate_visualization_data,
 )
-
-try:
-    from visualization.matrix_visualizer import (
-        MatrixVisualizer as _MatrixVisualizer,
-    )
-except ImportError:
-    _MatrixVisualizer = None
 
 
 def _generate_3d_visualization(
@@ -76,7 +71,7 @@ def _generate_3d_visualization(
                 len(variables)
                 positions = _calculate_semantic_positions(variables, connections)
 
-                type_color_map = {
+                type_color_map: dict[str, Any] = {
                     "likelihood_matrix": "#FF6B6B",
                     "transition_matrix": "#4ECDC4",
                     "preference_vector": "#45B7D1",
@@ -88,17 +83,17 @@ def _generate_3d_visualization(
                     "unknown": "#CCCCCC",
                 }
 
-                node_sizes = []
-                node_colors = []
+                node_sizes: list[Any] = []
+                node_colors: list[Any] = []
 
                 for var in variables:
                     var.get("name", "unknown")
                     var_type = var.get("var_type", "unknown")
                     dimensions = var.get("dimensions", [])
 
-                    base_size = 50
+                    base_size = 50.0
                     if isinstance(dimensions, list) and len(dimensions) > 0:
-                        dim_product = 1
+                        dim_product = 1.0
                         for dim in dimensions[:2]:
                             if isinstance(dim, (int, float)):
                                 dim_product *= dim
@@ -261,7 +256,7 @@ def _generate_interactive_dashboard(
 
             num_vars = len(variables)
             len(connections)
-            var_types = {}
+            var_types: dict[Any, Any] = {}
             for v in variables:
                 v_type = v.get("var_type", "unknown")
                 var_types[v_type] = var_types.get(v_type, 0) + 1
@@ -303,8 +298,8 @@ def _generate_interactive_dashboard(
             if np is not None and len(positions) > 0:
                 x, y, z = positions[:, 0], positions[:, 1], positions[:, 2]
 
-                colors = []
-                type_color_map = {
+                colors: list[Any] = []
+                type_color_map: dict[str, Any] = {
                     "likelihood_matrix": 1,
                     "transition_matrix": 2,
                     "preference_vector": 3,
@@ -527,7 +522,7 @@ def _generate_policy_visualization(
         variables = model_data.get("variables", [])
         parameters = model_data.get("parameters", [])
 
-        policy_data = {}
+        policy_data: dict[Any, Any] = {}
 
         for var in variables:
             if isinstance(var, dict):
@@ -629,7 +624,7 @@ def _generate_network_metrics(
             attempt.error_message = "Insufficient network data"
             return attempt
 
-        output_files = []
+        output_files: list[Any] = []
 
         if nx_available:
             G = nx.DiGraph()
@@ -648,7 +643,7 @@ def _generate_network_metrics(
                             if source and target:
                                 G.add_edge(source, target)
 
-            metrics = {
+            metrics: dict[str, Any] = {
                 "nodes": G.number_of_nodes(),
                 "edges": G.number_of_edges(),
                 "density": nx.density(G) if G.number_of_nodes() > 1 else 0,
@@ -703,7 +698,7 @@ def _generate_network_metrics(
         else:
             fig, ax = plt.subplots(figsize=(8, 6))
 
-            stats = {
+            stats: dict[str, Any] = {
                 "Variables": len(variables),
                 "Connections": len(connections),
                 "Avg Connections/Node": len(connections) / len(variables)
@@ -887,7 +882,7 @@ def _generate_pipeline_d2_diagrams_safe(
                 attempt.output_files.append(str(output_file))
             logger.info("Generated Active Inference concepts diagram")
 
-        total_results = [flow_result, framework_result, concepts_result]
+        total_results: list[Any] = [flow_result, framework_result, concepts_result]
         successful = sum(1 for r in total_results if r.success)
 
         if successful > 0:

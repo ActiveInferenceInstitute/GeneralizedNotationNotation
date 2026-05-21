@@ -78,7 +78,7 @@ def parse_multimodel(
     from .schema import parse_connections, parse_state_space
 
     model_blocks = split_models(content)
-    results = []
+    results: list[Any] = []
 
     for i, block in enumerate(model_blocks):
         model_file = f"{file_path}#model{i}" if file_path else f"model{i}"

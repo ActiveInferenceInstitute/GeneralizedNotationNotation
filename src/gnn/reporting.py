@@ -23,10 +23,12 @@ class ReportGenerator:
     metrics, validation summaries, and processing insights.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.report_formats = ["json", "markdown", "html"]
 
-    def generate_processing_report(self, context, output_dir: Path) -> Dict[str, Any]:
+    def generate_processing_report(
+        self, context: Any, output_dir: Path
+    ) -> Dict[str, Any]:
         """
         Generate comprehensive processing report.
 
@@ -49,7 +51,7 @@ class ReportGenerator:
         report_data = self._compile_report_data(context)
 
         # Generate reports in multiple formats
-        report_files = {}
+        report_files: dict[Any, Any] = {}
 
         try:
             # JSON report (detailed data)
@@ -79,11 +81,11 @@ class ReportGenerator:
             "report_data": report_data,
         }
 
-    def _compile_report_data(self, context) -> Dict[str, Any]:
+    def _compile_report_data(self, context: Any) -> Dict[str, Any]:
         """Compile comprehensive report data from processing context."""
         processing_time = context.get_processing_time()
 
-        report_data = {
+        report_data: dict[str, Any] = {
             "metadata": {
                 "timestamp": datetime.now().isoformat(),
                 "target_directory": str(context.target_dir),
@@ -133,13 +135,13 @@ class ReportGenerator:
 
         return report_data
 
-    def _calculate_validation_success_rate(self, context) -> float:
+    def _calculate_validation_success_rate(self, context: Any) -> float:
         """Calculate validation success rate."""
         total_files = len(context.discovered_files)
         valid_files = len(context.valid_files)
         return (valid_files / total_files * 100) if total_files > 0 else 0.0
 
-    def _analyze_discovered_files(self, context) -> Dict[str, Any]:
+    def _analyze_discovered_files(self, context: Any) -> Dict[str, Any]:
         """Analyze discovered files for report."""
         files = context.discovered_files
 
@@ -147,8 +149,8 @@ class ReportGenerator:
             return {"total": 0, "formats": {}, "sizes": {}}
 
         # Format analysis
-        formats = {}
-        sizes = []
+        formats: dict[Any, Any] = {}
+        sizes: list[Any] = []
 
         for file_path in files:
             try:
@@ -170,7 +172,7 @@ class ReportGenerator:
             "file_list": [str(f) for f in files],
         }
 
-    def _analyze_validation_results(self, context) -> Dict[str, Any]:
+    def _analyze_validation_results(self, context: Any) -> Dict[str, Any]:
         """Analyze validation results for report."""
         validation_results = context.processing_results.get("validation_results", {})
 
@@ -179,8 +181,8 @@ class ReportGenerator:
 
         valid_count = 0
         invalid_count = 0
-        error_patterns = {}
-        warning_patterns = {}
+        error_patterns: dict[Any, Any] = {}
+        warning_patterns: dict[Any, Any] = {}
 
         for _, result in validation_results.items():
             if result.is_valid:
@@ -254,7 +256,7 @@ class ReportGenerator:
             "common_inconsistencies": summary.get("common_inconsistencies", []),
         }
 
-    def _calculate_performance_metrics(self, context) -> Dict[str, Any]:
+    def _calculate_performance_metrics(self, context: Any) -> Dict[str, Any]:
         """Calculate performance metrics for report."""
         total_time = context.get_processing_time()
         total_files = len(context.discovered_files)
@@ -271,9 +273,9 @@ class ReportGenerator:
             },
         }
 
-    def _generate_recommendations(self, context) -> List[str]:
+    def _generate_recommendations(self, context: Any) -> List[str]:
         """Generate recommendations based on processing results."""
-        recommendations = []
+        recommendations: list[Any] = []
 
         # File discovery recommendations
         discovered_count = len(context.discovered_files)
@@ -322,13 +324,17 @@ class ReportGenerator:
 
         return recommendations
 
-    def _generate_json_report(self, report_data: Dict[str, Any], output_file: Path):
+    def _generate_json_report(
+        self, report_data: Dict[str, Any], output_file: Path
+    ) -> Any:
         """Generate detailed JSON report."""
         with open(output_file, "w", encoding="utf-8") as f:
             json.dump(report_data, f, indent=2, default=str, ensure_ascii=False)
         logger.debug(f"JSON report saved: {output_file}")
 
-    def _generate_markdown_report(self, report_data: Dict[str, Any], output_file: Path):
+    def _generate_markdown_report(
+        self, report_data: Dict[str, Any], output_file: Path
+    ) -> Any:
         """Generate human-readable Markdown report."""
         with open(output_file, "w", encoding="utf-8") as f:
             f.write("# GNN Processing Report\n\n")
@@ -416,7 +422,9 @@ class ReportGenerator:
 
         logger.debug(f"Markdown report saved: {output_file}")
 
-    def _generate_html_report(self, report_data: Dict[str, Any], output_file: Path):
+    def _generate_html_report(
+        self, report_data: Dict[str, Any], output_file: Path
+    ) -> Any:
         """Generate web-viewable HTML report."""
         html_content = self._create_html_template(report_data)
 

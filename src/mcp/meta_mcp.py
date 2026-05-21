@@ -22,7 +22,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 
-def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
+def get_mcp_server_status(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get comprehensive status information about the MCP server.
 
@@ -41,7 +41,7 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
     server_status = mcp_instance_ref.get_server_status()
 
     # Get module information
-    modules_info = {}
+    modules_info: dict[Any, Any] = {}
     for name, module_info in mcp_instance_ref.modules.items():
         modules_info[name] = {
             "name": module_info.name,
@@ -130,7 +130,7 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
     }
 
 
-def get_mcp_auth_status(mcp_instance_ref) -> Dict[str, Any]:
+def get_mcp_auth_status(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get the authentication status and configuration of the MCP server.
 
@@ -158,7 +158,7 @@ def get_mcp_auth_status(mcp_instance_ref) -> Dict[str, Any]:
     }
 
 
-def get_mcp_encryption_status(mcp_instance_ref) -> Dict[str, Any]:
+def get_mcp_encryption_status(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get the encryption status of the MCP server connections and data handling.
 
@@ -194,7 +194,7 @@ def get_mcp_encryption_status(mcp_instance_ref) -> Dict[str, Any]:
     }
 
 
-def get_mcp_module_info(mcp_instance_ref, module_name: str) -> Dict[str, Any]:
+def get_mcp_module_info(mcp_instance_ref: Any, module_name: str) -> Dict[str, Any]:
     """
     Get detailed information about a specific loaded module.
 
@@ -215,8 +215,8 @@ def get_mcp_module_info(mcp_instance_ref, module_name: str) -> Dict[str, Any]:
     module_info = mcp_instance_ref.modules[module_name]
 
     # Get tools and resources from this module
-    module_tools = []
-    module_resources = []
+    module_tools: list[Any] = []
+    module_resources: list[Any] = []
 
     for tool_name, tool in mcp_instance_ref.tools.items():
         if tool.module == module_info.name:
@@ -255,7 +255,7 @@ def get_mcp_module_info(mcp_instance_ref, module_name: str) -> Dict[str, Any]:
     }
 
 
-def get_mcp_tool_categories(mcp_instance_ref) -> Dict[str, Any]:
+def get_mcp_tool_categories(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get tools organized by category for easier discovery.
 
@@ -265,7 +265,7 @@ def get_mcp_tool_categories(mcp_instance_ref) -> Dict[str, Any]:
     Returns:
         Dictionary with tools organized by category.
     """
-    categories = {}
+    categories: dict[Any, Any] = {}
 
     for tool_name, tool in mcp_instance_ref.tools.items():
         category = tool.category or "General"
@@ -289,7 +289,7 @@ def get_mcp_tool_categories(mcp_instance_ref) -> Dict[str, Any]:
     }
 
 
-def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
+def get_mcp_performance_metrics(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get comprehensive performance metrics and statistics for the MCP server.
 
@@ -303,14 +303,14 @@ def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
     performance_metrics = mcp_instance_ref.performance_metrics
 
     # Get tool-specific performance data
-    tool_performance = {}
+    tool_performance: dict[Any, Any] = {}
     for tool_name, _ in mcp_instance_ref.tools.items():
         tool_stats = mcp_instance_ref.get_tool_performance_stats(tool_name)
         if tool_stats:
             tool_performance[tool_name] = tool_stats
 
     # Get resource access statistics
-    resource_stats = {}
+    resource_stats: dict[Any, Any] = {}
     for uri_template, resource in mcp_instance_ref.resources.items():
         resource_stats[uri_template] = resource.get_access_summary()
 
@@ -351,7 +351,7 @@ def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
     }
 
 
-def get_mcp_diagnostics(mcp_instance_ref) -> Dict[str, Any]:
+def get_mcp_diagnostics(mcp_instance_ref: Any) -> Dict[str, Any]:
     """
     Get comprehensive diagnostic information for troubleshooting and monitoring.
 
@@ -362,7 +362,7 @@ def get_mcp_diagnostics(mcp_instance_ref) -> Dict[str, Any]:
         Dictionary with diagnostic information including errors, warnings, and recommendations.
     """
     # Check for common issues and generate recommendations
-    diagnostics = {
+    diagnostics: dict[str, Any] = {
         "issues": [],
         "warnings": [],
         "recommendations": [],
@@ -433,7 +433,7 @@ def get_mcp_diagnostics(mcp_instance_ref) -> Dict[str, Any]:
     }
 
 
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> Any:
     """
     Register MCP meta-tools with the MCP server itself.
 

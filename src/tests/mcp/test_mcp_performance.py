@@ -9,6 +9,7 @@ These tests require the MCP SDK (in-repo src/mcp/sdk/) to be available; they fai
 import sys
 import time
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -48,7 +49,7 @@ class TestMCPToolRegistrationPerformance:
         from mcp import initialize
 
         _require_mcp_sdk()
-        times = []
+        times: list[Any] = []
         for _ in range(3):
             start = time.time()
             initialize()
@@ -106,8 +107,8 @@ class TestMCPThroughput:
         from mcp import list_available_tools
 
         _require_mcp_sdk()
-        results = []
-        errors = []
+        results: list[Any] = []
+        errors: list[Any] = []
 
         def access_tools() -> None:
             try:
@@ -135,7 +136,7 @@ class TestMCPThroughput:
 
         _require_mcp_sdk()
 
-        counts = []
+        counts: list[Any] = []
         for _ in range(10):
             tools = list_available_tools()
             counts.append(len(tools) if tools else 0)
@@ -202,7 +203,7 @@ class TestMCPBenchmarks:
         from mcp import initialize
 
         _require_mcp_sdk()
-        times = []
+        times: list[Any] = []
         for _ in range(5):
             start = time.time()
             initialize()

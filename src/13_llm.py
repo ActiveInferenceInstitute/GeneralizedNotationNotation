@@ -31,26 +31,13 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from llm import process_llm
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from llm import process_llm
-except ImportError:
-
-    def process_llm(target_dir, output_dir, logger=None, **kwargs) -> bool:
-        """Recovery LLM processing when module unavailable."""
-        import logging
-
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("LLM module not available - using recovery")
-        return True
-
 
 run_script = create_standardized_pipeline_script(
     "13_llm.py",
@@ -61,7 +48,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the LLM step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

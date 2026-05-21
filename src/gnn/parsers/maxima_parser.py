@@ -9,7 +9,7 @@ Date: 2025-01-11
 """
 
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -28,7 +28,7 @@ from .common import (
 class MaximaParser(BaseGNNParser):
     """Parser for Maxima symbolic computation specifications with embedded data support."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.assignment_pattern = re.compile(r"(\w+)\s*:\s*(.+?);", re.MULTILINE)
         self.function_pattern = re.compile(
@@ -218,7 +218,7 @@ class MaximaParser(BaseGNNParser):
 
     def _extract_model_name(self, content: str) -> str:
         """Extract model name from comments."""
-        comment_patterns = [
+        comment_patterns: list[Any] = [
             re.compile(r"/\*\s*Model:\s*(\w+)", re.IGNORECASE),
             re.compile(r"/\*\s*(\w+)\s*Model", re.IGNORECASE),
             re.compile(r"/\*.*?(\w+).*?\*/", re.IGNORECASE | re.DOTALL),
@@ -227,7 +227,7 @@ class MaximaParser(BaseGNNParser):
         for pattern in comment_patterns:
             match = pattern.search(content)
             if match:
-                return match.group(1)
+                return cast("str", match.group(1))
 
         return "MaximaModel"
 
@@ -297,7 +297,7 @@ class MaximaParser(BaseGNNParser):
         self, func_name: str, args: str, body: str
     ) -> List[Connection]:
         """Extract connections from function dependencies."""
-        connections = []
+        connections: list[Any] = []
 
         # Parse function arguments as source variables
         arg_vars = [arg.strip() for arg in args.split(",") if arg.strip()]

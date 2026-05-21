@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any
+
 """
 Pipeline module for centralized configuration and utilities.
 """
@@ -30,7 +32,7 @@ __author__ = "Active Inference Institute"
 __description__ = "GNN pipeline orchestration and execution"
 
 # Feature availability flags
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "pipeline_orchestration": True,
     "step_execution": True,
     "configuration_management": True,
@@ -49,7 +51,7 @@ class PipelineOrchestrator:
         output_dir: str = "output",
         steps: list[str] | str | None = "all",
         verbose: bool = False,
-    ):
+    ) -> None:
         self.target_dir = target_dir
         self.output_dir = output_dir
         self.steps = steps
@@ -98,7 +100,7 @@ class PipelineStep:
         target_dir: str = "input/gnn_files",
         output_dir: str = "output",
         verbose: bool = False,
-    ):
+    ) -> None:
         self.name = name
         self.target_dir = target_dir
         self.output_dir = output_dir
@@ -142,7 +144,7 @@ def discover_pipeline_steps() -> list[str]:
 
 
 # Main API functions
-__all__ = [
+__all__: list[Any] = [
     # Configuration
     "get_pipeline_config",
     "set_pipeline_config",

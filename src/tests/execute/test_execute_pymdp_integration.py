@@ -52,7 +52,7 @@ except ImportError as e:
 # ---------------------------------------------------------------------------
 # Helpers — build a pymdp 1.0.0 Agent using the batched JAX convention
 # ---------------------------------------------------------------------------
-def _to_batched(mat: np.ndarray):
+def _to_batched(mat: np.ndarray) -> Any:
     return jnp.asarray(mat, dtype=jnp.float32)[None, ...]
 
 
@@ -113,7 +113,7 @@ class TestPyMDPRealExecution:
 
     def test_pymdp_simulation_execution(self, tmp_path: Any) -> None:
         """End-to-end rollout via the pipeline's real pymdp 1.0.0 runner."""
-        gnn_spec = {
+        gnn_spec: dict[str, Any] = {
             "model_name": "test_pymdp_model",
             "initialparameterization": {
                 "A": [[0.9, 0.1], [0.1, 0.9]],
@@ -202,7 +202,7 @@ class TestPyMDPJAXFirstAPI:
         """A single rollout step via the JAX-first Agent."""
         agent = _build_minimal_agent(num_actions=2)
 
-        obs = [jnp.array([0], dtype=jnp.int32)]
+        obs: list[Any] = [jnp.array([0], dtype=jnp.int32)]
         qs, info = agent.infer_states(obs, empirical_prior=agent.D, return_info=True)
         assert isinstance(qs, (list, tuple))
         assert qs[0].shape == (1, 1, 2)

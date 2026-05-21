@@ -77,7 +77,7 @@ def parse_initial_value(value_str: str) -> Any:
             # Try to split by "),(" which is the separator between tuples
             parts = inner_content.split("),(")
             if len(parts) > 1:
-                tuples = []
+                tuples: list[Any] = []
                 for i, part in enumerate(parts):
                     # Clean up outer parentheses
                     if i == 0:
@@ -132,7 +132,7 @@ def parse_initial_parameterization(content: str) -> Dict[str, Any]:
     if not section:
         return {}
 
-    params = {}
+    params: dict[Any, Any] = {}
     # Split by lines, ignoring comments
     lines = [
         line.strip()
@@ -164,7 +164,7 @@ def parse_state_space_block(content: str) -> Dict[str, Dict[str, Any]]:
     if not section:
         return {}
 
-    variables = {}
+    variables: dict[Any, Any] = {}
     # Split by lines, ignoring comments
     lines = [
         line.strip()
@@ -179,7 +179,7 @@ def parse_state_space_block(content: str) -> Dict[str, Dict[str, Any]]:
             var_name = match.group(1)
             dimensions_type = match.group(2)
 
-            var_info = {"name": var_name}
+            var_info: dict[str, Any] = {"name": var_name}
 
             # Parse dimensions and type
             if "type=" in dimensions_type:
@@ -230,7 +230,7 @@ def parse_model_parameters(content: str) -> Dict[str, Any]:
     if not section:
         return {}
 
-    params = {}
+    params: dict[Any, Any] = {}
     # Split by lines, ignoring comments
     lines = [
         line.strip()

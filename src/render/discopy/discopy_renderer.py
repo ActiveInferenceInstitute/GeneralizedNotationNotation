@@ -26,7 +26,7 @@ class DisCoPyRenderer:
     DisCoPy renderer for generating categorical diagram code from GNN specifications.
     """
 
-    def __init__(self, options: Optional[Dict[str, Any]] = None):
+    def __init__(self, options: Optional[Dict[str, Any]] = None) -> None:
         """
         Initialize DisCoPy renderer.
 
@@ -75,7 +75,7 @@ class DisCoPyRenderer:
 
     def _parse_gnn_content(self, content: str, model_name: str) -> Dict[str, Any]:
         """Parse GNN content into a structured dictionary (simplified parser)."""
-        gnn_spec = {
+        gnn_spec: dict[str, Any] = {
             "model_name": model_name,
             "variables": [],
             "model_parameters": {},
@@ -88,7 +88,7 @@ class DisCoPyRenderer:
         # Simple parser for key sections
         lines = content.split("\n")
         current_section = None
-        sections_found = []
+        sections_found: list[Any] = []
 
         for line in lines:
             line = line.strip()
@@ -141,7 +141,7 @@ class DisCoPyRenderer:
 
         # Try to extract from variables if available
         variables = gnn_spec.get("variables", [])
-        variable_names = []
+        variable_names: list[Any] = []
         for var in variables:
             var_name = var.get("name", "")
             if var_name:
@@ -466,7 +466,7 @@ def render_gnn_to_discopy(
             f.write(discopy_code)
 
         message = f"Generated DisCoPy categorical diagram script: {output_path}"
-        warnings = []
+        warnings: list[Any] = []
 
         # Check for potential issues
         if not gnn_spec.get("initial_parameterization"):

@@ -16,7 +16,7 @@ import sys
 import tempfile
 import time as time_mod
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Any, List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -139,7 +139,7 @@ def execute_numpyro_script(
             ) as tmp_f:
                 tmp_f.write(result.stderr or "")
             os.replace(tmp_f.name, str(stderr_path))
-            execution_log = {
+            execution_log: dict[str, Any] = {
                 "script": str(abs_path),
                 "return_code": result.returncode,
                 "success": success,

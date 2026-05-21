@@ -32,11 +32,11 @@ def safe_to_fail_step(target_dir: Path, output_dir: Path, logger) -> bool:
     except Exception as e:
         logger.warning(f"Reduced processing failed: {e}")
 
-    # Level 3: Fallback — always generates some output
+    # Level 3: Explicit degraded status report
     try:
-        generate_fallback_report(output_dir)
-    except Exception:
-        pass
+        write_degraded_status_report(output_dir)
+    except Exception as report_error:
+        logger.error(f"Could not write degraded status report: {report_error}")
 
     return True  # ALWAYS True — never stop the pipeline
 
@@ -54,9 +54,9 @@ def main() -> int:
 ## Graceful Degradation Pattern
 
 ```python
-# Tiered functionality — try best option, fall back to simpler
-def process_with_fallback(model: Dict[str, Any]) -> ExecutionResult:
-    """Try frameworks in priority order."""
+# Tiered functionality — try requested options, report explicit outcomes
+def process_with_explicit_status(model: Dict[str, Any]) -> ExecutionResult:
+    """Run requested frameworks and report skipped/failed status with reasons."""
     frameworks = [
         ("jax", JAX_AVAILABLE, _execute_jax),
         ("pymdp", PYMDP_AVAILABLE, _execute_pymdp),
@@ -69,10 +69,9 @@ def process_with_fallback(model: Dict[str, Any]) -> ExecutionResult:
             except Exception as e:
                 logger.warning(f"{name} failed: {e}")
 
-    # Final fallback: generate code only, no execution
-    logger.warning("No frameworks available — code generation only")
-    return ExecutionResult(success=True, executed=False,
-                          message="Code generated but not executed")
+    logger.error("No requested framework executed")
+    return ExecutionResult(success=False, executed=False,
+                          message="No requested framework executed; see dependency diagnostics")
 ```
 
 ---
@@ -84,7 +83,7 @@ def process_with_fallback(model: Dict[str, Any]) -> ExecutionResult:
 | `ImportError` | Skip gracefully | Optional dep not installed |
 | `FileNotFoundError` | Log warning, continue | Missing input file |
 | `ValueError` | Log error, return False | Invalid parameter |
-| `subprocess.TimeoutExpired` | Log, return fallback | Simulation timeout |
+| `subprocess.TimeoutExpired` | Log, return failed/degraded status | Simulation timeout |
 | `MemoryError` | Log critical, return False | Model too large |
 | `Exception` | Log full traceback, continue | Unexpected error |
 
@@ -148,14 +147,14 @@ STEP_TIMEOUTS = {
 
 ---
 
-## Fallback Report Generation
+## Degraded Status Report Generation
 
 When a step fails completely, generate a meaningful HTML report:
 
 ```python
-def generate_fallback_report(output_dir: Path, error: str = "") -> None:
-    """Always create SOMETHING in the output directory."""
-    report = output_dir / "fallback_report.html"
+def write_degraded_status_report(output_dir: Path, error: str = "") -> None:
+    """Create an explicit status artifact in the output directory."""
+    report = output_dir / "degraded_status_report.html"
     report.write_text(f"""
     <html><body>
     <h1>Step Status: Degraded</h1>
@@ -167,4 +166,4 @@ def generate_fallback_report(output_dir: Path, error: str = "") -> None:
 
 ---
 
-**Last Updated**: March 2026 | **Status**: Production Standard
+**Last Updated**: 2026-05-20 | **Status**: Maintained Standard

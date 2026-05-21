@@ -7,6 +7,7 @@ Tests the MatrixVisualizer class and matrix-specific visualization features.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,7 +19,7 @@ class TestMatrixVisualizerCore:
     """Core tests for MatrixVisualizer class."""
 
     @pytest.mark.fast
-    def test_matrix_visualizer_instantiation(self):
+    def test_matrix_visualizer_instantiation(self) -> Any:
         """Test MatrixVisualizer can be instantiated."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
@@ -26,7 +27,7 @@ class TestMatrixVisualizerCore:
         assert visualizer is not None
 
     @pytest.mark.fast
-    def test_extract_matrix_data_from_parameters(self):
+    def test_extract_matrix_data_from_parameters(self) -> Any:
         """Test extraction of matrix data from GNN parameters."""
         import numpy as np
 
@@ -35,7 +36,7 @@ class TestMatrixVisualizerCore:
         visualizer = MatrixVisualizer()
 
         # Test with list of parameter dicts
-        parameters = [
+        parameters: list[Any] = [
             {"name": "A", "value": [[0.5, 0.5], [0.3, 0.7]]},
             {"name": "B", "value": [[1, 0], [0, 1]]},
         ]
@@ -49,14 +50,14 @@ class TestMatrixVisualizerCore:
         assert matrices["A"].shape == (2, 2)
 
     @pytest.mark.fast
-    def test_extract_matrix_from_dict_format(self):
+    def test_extract_matrix_from_dict_format(self) -> Any:
         """Test extraction when parameters are in dict format."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
         # Dict format (name -> value mapping)
-        parameters = {
+        parameters: dict[str, Any] = {
             "transition": [[0.9, 0.1], [0.2, 0.8]],
             "observation": [[1, 0, 0], [0, 1, 0]],
         }
@@ -68,7 +69,7 @@ class TestMatrixVisualizerCore:
         assert matrices["observation"].shape == (2, 3)
 
     @pytest.mark.fast
-    def test_convert_to_matrix_1d(self):
+    def test_convert_to_matrix_1d(self) -> Any:
         """Test conversion of 1D vectors."""
         import numpy as np
 
@@ -76,7 +77,7 @@ class TestMatrixVisualizerCore:
 
         visualizer = MatrixVisualizer()
 
-        vector = [0.1, 0.2, 0.3, 0.4]
+        vector: list[Any] = [0.1, 0.2, 0.3, 0.4]
         matrix = visualizer._convert_to_matrix(vector, "test_vector")
 
         assert matrix is not None
@@ -84,26 +85,26 @@ class TestMatrixVisualizerCore:
         assert matrix.shape == (4,)
 
     @pytest.mark.fast
-    def test_convert_to_matrix_2d(self):
+    def test_convert_to_matrix_2d(self) -> Any:
         """Test conversion of 2D matrices."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
-        matrix_data = [[1, 2, 3], [4, 5, 6]]
+        matrix_data: list[Any] = [[1, 2, 3], [4, 5, 6]]
         matrix = visualizer._convert_to_matrix(matrix_data, "test_matrix")
 
         assert matrix is not None
         assert matrix.shape == (2, 3)
 
     @pytest.mark.fast
-    def test_convert_to_matrix_3d(self):
+    def test_convert_to_matrix_3d(self) -> Any:
         """Test conversion of 3D tensors."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
-        tensor_data = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+        tensor_data: list[Any] = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
         tensor = visualizer._convert_to_matrix(tensor_data, "test_tensor")
 
         assert tensor is not None
@@ -114,7 +115,7 @@ class TestMatrixHeatmapGeneration:
     """Tests for heatmap generation functionality."""
 
     @pytest.mark.slow
-    def test_generate_matrix_heatmap(self, tmp_path):
+    def test_generate_matrix_heatmap(self, tmp_path: Any) -> Any:
         """Test heatmap generation for a 2D matrix."""
         import numpy as np
 
@@ -133,7 +134,7 @@ class TestMatrixHeatmapGeneration:
         assert output_path.exists()
 
     @pytest.mark.slow
-    def test_generate_heatmap_with_custom_colormap(self, tmp_path):
+    def test_generate_heatmap_with_custom_colormap(self, tmp_path: Any) -> Any:
         """Test heatmap generation with custom colormap."""
         import numpy as np
 
@@ -155,7 +156,9 @@ class TestMatrixHeatmapGeneration:
         assert output_path.exists()
 
     @pytest.mark.slow
-    def test_create_heatmap_convenience_method(self, tmp_path, monkeypatch):
+    def test_create_heatmap_convenience_method(
+        self, tmp_path: Any, monkeypatch: Any
+    ) -> Any:
         """Test the create_heatmap convenience method."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
@@ -165,7 +168,7 @@ class TestMatrixHeatmapGeneration:
 
         visualizer = MatrixVisualizer()
 
-        matrix = [[0.5, 0.3, 0.2], [0.1, 0.8, 0.1], [0.4, 0.4, 0.2]]
+        matrix: list[Any] = [[0.5, 0.3, 0.2], [0.1, 0.8, 0.1], [0.4, 0.4, 0.2]]
         result = visualizer.create_heatmap(matrix)
 
         assert result is True
@@ -175,7 +178,7 @@ class TestTensorVisualization:
     """Tests for 3D tensor visualization."""
 
     @pytest.mark.slow
-    def test_generate_3d_tensor_visualization(self, tmp_path):
+    def test_generate_3d_tensor_visualization(self, tmp_path: Any) -> Any:
         """Test visualization of 3D POMDP transition matrices."""
         import numpy as np
 
@@ -201,7 +204,7 @@ class TestTensorVisualization:
         assert output_path.exists()
 
     @pytest.mark.slow
-    def test_generate_pomdp_transition_analysis(self, tmp_path):
+    def test_generate_pomdp_transition_analysis(self, tmp_path: Any) -> Any:
         """Test comprehensive POMDP transition analysis."""
         import numpy as np
 
@@ -228,7 +231,7 @@ class TestMatrixExportFormats:
     """Tests for matrix export to different formats."""
 
     @pytest.mark.fast
-    def test_export_matrix_to_csv(self, tmp_path):
+    def test_export_matrix_to_csv(self, tmp_path: Any) -> Any:
         """Test CSV export of matrix data."""
         import numpy as np
 
@@ -253,7 +256,7 @@ class TestMatrixExportFormats:
         assert "2, 3" in content  # Shape info
 
     @pytest.mark.fast
-    def test_export_3d_tensor_to_csv(self, tmp_path):
+    def test_export_3d_tensor_to_csv(self, tmp_path: Any) -> Any:
         """Test CSV export of 3D tensor (first slice)."""
         import numpy as np
 
@@ -275,7 +278,7 @@ class TestMatrixStatistics:
     """Tests for matrix statistical analysis."""
 
     @pytest.mark.fast
-    def test_tensor_statistics_generation(self):
+    def test_tensor_statistics_generation(self) -> Any:
         """Test generation of tensor statistics string."""
         import numpy as np
 
@@ -302,13 +305,13 @@ class TestParsedGNNExtraction:
     """Tests for matrix extraction from parsed GNN data."""
 
     @pytest.mark.fast
-    def test_extract_from_parsed_gnn_parameters(self):
+    def test_extract_from_parsed_gnn_parameters(self) -> Any:
         """Test extraction from GNN with parameters field."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
-        parsed_data = {
+        parsed_data: dict[str, Any] = {
             "ModelName": "TestModel",
             "parameters": [
                 {"name": "A", "value": [[0.9, 0.1], [0.1, 0.9]]},
@@ -322,13 +325,13 @@ class TestParsedGNNExtraction:
         assert "D" in matrices
 
     @pytest.mark.fast
-    def test_extract_from_initial_parameterization(self):
+    def test_extract_from_initial_parameterization(self) -> Any:
         """Test extraction from InitialParameterization section."""
         from visualization.matrix_visualizer import MatrixVisualizer
 
         visualizer = MatrixVisualizer()
 
-        parsed_data = {
+        parsed_data: dict[str, Any] = {
             "ModelName": "TestModel",
             "InitialParameterization": {
                 "prior": [[0.3, 0.4, 0.3]],
@@ -364,35 +367,35 @@ s-A
 A={(0.9,0.05,0.05),(0.05,0.9,0.05),(0.05,0.05,0.9)}
 """
 
-    def test_parse_matrix_from_gnn_returns_dict(self):
+    def test_parse_matrix_from_gnn_returns_dict(self) -> Any:
         """parse_matrix_from_gnn returns a dict with expected keys."""
         from gui.gui_2.matrix_editor import parse_matrix_from_gnn
 
         result = parse_matrix_from_gnn(self.GNN_CONTENT)
         assert isinstance(result, dict)
 
-    def test_parse_matrix_from_gnn_empty_content(self):
+    def test_parse_matrix_from_gnn_empty_content(self) -> Any:
         """parse_matrix_from_gnn handles empty content without crashing."""
         from gui.gui_2.matrix_editor import parse_matrix_from_gnn
 
         result = parse_matrix_from_gnn("")
         assert isinstance(result, dict)
 
-    def test_create_matrix_from_gnn_returns_dict(self):
+    def test_create_matrix_from_gnn_returns_dict(self) -> Any:
         """create_matrix_from_gnn returns a dict."""
         from gui.gui_2.matrix_editor import create_matrix_from_gnn
 
         result = create_matrix_from_gnn(self.GNN_CONTENT)
         assert isinstance(result, dict)
 
-    def test_validate_visual_matrix_dimensions_returns_list(self):
+    def test_validate_visual_matrix_dimensions_returns_list(self) -> Any:
         """validate_visual_matrix_dimensions returns a list."""
         from gui.gui_2.matrix_editor import validate_visual_matrix_dimensions
 
         result = validate_visual_matrix_dimensions({})
         assert isinstance(result, list)
 
-    def test_get_pomdp_template_returns_string(self):
+    def test_get_pomdp_template_returns_string(self) -> Any:
         """get_pomdp_template returns a non-empty string."""
         from gui.gui_2.matrix_editor import get_pomdp_template
 

@@ -51,7 +51,7 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dictionary containing analysis results
     """
-    analysis = {
+    analysis: dict[str, Any] = {
         "overall_status": summary_data.get("overall_status", "UNKNOWN"),
         "total_duration": summary_data.get("total_duration_seconds", 0),
         "step_count": len(summary_data.get("steps", [])),
@@ -120,7 +120,7 @@ def analyze_individual_steps(
         Tuple of (list of StepAnalysis objects, dict of flags by type)
     """
     steps = summary_data.get("steps", [])
-    step_analyses = []
+    step_analyses: list[Any] = []
 
     # Calculate averages for comparison
     durations = [
@@ -138,7 +138,7 @@ def analyze_individual_steps(
     CRITICAL_MEMORY_THRESHOLD = 1000.0  # MB
     AVG_MEMORY_MULTIPLIER = 3  # flag if memory > avg * this
 
-    flags_by_type = {"red": [], "yellow": [], "green": []}
+    flags_by_type: dict[str, Any] = {"red": [], "yellow": [], "green": []}
 
     for step in steps:
         duration = step.get("duration_seconds", 0)
@@ -146,8 +146,8 @@ def analyze_individual_steps(
         status = step.get("status", "UNKNOWN")
         exit_code = step.get("exit_code", 0)
 
-        flags = []
-        flag_type = "none"
+        flags: list[Any] = []
+        flag_type: FlagType = "none"
 
         # Determine flags and severity
         if status == "FAILED" or exit_code != 0:
@@ -270,7 +270,7 @@ def _extract_meaningful_snippet(
     lines = output.strip().split("\n")
 
     # Look for important patterns
-    important_patterns = [
+    important_patterns: list[Any] = [
         "ERROR",
         "WARN",
         "FAIL",
@@ -279,7 +279,7 @@ def _extract_meaningful_snippet(
         "Processed",
         "Completed",
     ]
-    important_lines = []
+    important_lines: list[Any] = []
 
     for line in lines:
         if any(pattern in line.upper() for pattern in important_patterns):
@@ -307,7 +307,7 @@ def identify_bottlenecks(
     Returns:
         List of bottleneck descriptions
     """
-    bottlenecks = []
+    bottlenecks: list[Any] = []
     steps = summary_data.get("steps", [])
 
     # Calculate average duration
@@ -346,7 +346,7 @@ def extract_failure_context(summary_data: Dict[str, Any]) -> List[Dict[str, Any]
     Returns:
         List of failure contexts with diagnostic information
     """
-    failures = []
+    failures: list[Any] = []
     steps = summary_data.get("steps", [])
 
     for i, step in enumerate(steps):
@@ -354,7 +354,7 @@ def extract_failure_context(summary_data: Dict[str, Any]) -> List[Dict[str, Any]
             # Get preceding step for context
             preceding_step = steps[i - 1] if i > 0 else None
 
-            failure_context = {
+            failure_context: dict[str, Any] = {
                 "step_number": step.get("step_number"),
                 "step_name": step.get("script_name"),
                 "description": step.get("description"),
@@ -399,7 +399,7 @@ def generate_recommendations(
     Returns:
         List of recommendation strings
     """
-    recommendations = []
+    recommendations: list[Any] = []
 
     # Red flag recommendations (critical)
     red_flags = flags_by_type.get("red", [])
@@ -511,7 +511,7 @@ async def _run_llm_analysis(
     peak_memory = context.get("performance_metrics", {}).get("peak_memory_mb", 0)
 
     # Build step summaries for LLM
-    step_summaries = []
+    step_summaries: list[Any] = []
     for sa in step_analyses:
         flag_indicator = (
             "🔴"
@@ -580,7 +580,7 @@ Please provide analysis in EXACTLY this format:
         from llm.defaults import DEFAULT_OLLAMA_MODEL
 
         model_name = analysis_model or os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
-        messages = [LLMMessage(role="user", content=prompt)]
+        messages: list[Any] = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
             messages=messages, model_name=model_name, max_tokens=2500
         )
@@ -609,7 +609,7 @@ def _generate_rule_based_summary(
     red_flags = flags_by_type.get("red", [])
     yellow_flags = flags_by_type.get("yellow", [])
 
-    parts = []
+    parts: list[Any] = []
 
     # Executive Summary
     parts.append("### Executive Summary\n")
@@ -674,7 +674,7 @@ def _generate_rule_based_summary(
 
 def generate_recovery_plan(context: Dict[str, Any]) -> List[str]:
     """Generate a heuristic-based programmatic recovery plan for failed pipeline components."""
-    plan = []
+    plan: list[Any] = []
     health = context.get("health_score", 100)
 
     if health >= 100:
@@ -737,7 +737,7 @@ def generate_executive_report(
     Returns:
         Markdown formatted executive report
     """
-    report_parts = []
+    report_parts: list[Any] = []
 
     # Header
     status = analysis["overall_status"]
@@ -913,7 +913,7 @@ def generate_executive_report(
 
 
 def process_intelligent_analysis(
-    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
+    target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any
 ) -> bool:
     """
     Perform intelligent analysis of the pipeline execution.

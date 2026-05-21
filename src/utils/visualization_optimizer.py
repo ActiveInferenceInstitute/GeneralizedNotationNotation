@@ -15,7 +15,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, cast
 
 logger = logging.getLogger(__name__)
 
@@ -28,12 +28,12 @@ class VisualizationCache:
     max_age_hours: int = 24
     max_cache_size_mb: int = 500
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.metadata_file = self.cache_dir / "cache_metadata.json"
         self._load_metadata()
 
-    def _load_metadata(self):
+    def _load_metadata(self) -> Any:
         """Load cache metadata."""
         if self.metadata_file.exists():
             try:
@@ -44,7 +44,7 @@ class VisualizationCache:
         else:
             self.metadata = {}
 
-    def _save_metadata(self):
+    def _save_metadata(self) -> Any:
         """Save cache metadata."""
         try:
             with open(self.metadata_file, "w") as f:
@@ -83,10 +83,10 @@ class VisualizationCache:
     def get_cached_files(self, cache_key: str) -> List[str]:
         """Get list of cached visualization files."""
         if cache_key in self.metadata:
-            return self.metadata[cache_key].get("files", [])
+            return cast("list[str]", self.metadata[cache_key].get("files", []))
         return []
 
-    def cache_visualization(self, cache_key: str, files: List[str]):
+    def cache_visualization(self, cache_key: str, files: List[str]) -> Any:
         """Cache visualization results."""
         self.metadata[cache_key] = {
             "timestamp": datetime.now().isoformat(),
@@ -97,7 +97,7 @@ class VisualizationCache:
         self._save_metadata()
         self._cleanup_old_cache()
 
-    def _remove_cache_entry(self, cache_key: str):
+    def _remove_cache_entry(self, cache_key: str) -> Any:
         """Remove a cache entry and its files."""
         if cache_key in self.metadata:
             entry = self.metadata[cache_key]
@@ -109,7 +109,7 @@ class VisualizationCache:
             del self.metadata[cache_key]
             self._save_metadata()
 
-    def _cleanup_old_cache(self):
+    def _cleanup_old_cache(self) -> Any:
         """Clean up old cache entries to stay within size limits."""
         # Calculate total cache size
         total_size_mb = sum(entry.get("size_mb", 0) for entry in self.metadata.values())
@@ -190,7 +190,7 @@ class DataSampler:
 
         # Sample matrices
         if "matrices" in data:
-            sampled_matrices = []
+            sampled_matrices: list[Any] = []
             for matrix in data["matrices"]:
                 if isinstance(matrix, list) and len(matrix) > self.max_matrix_size:
                     # Sample rows and columns
@@ -207,15 +207,19 @@ class DataSampler:
 class ParallelVisualizationProcessor:
     """Parallel processing for visualization tasks."""
 
-    def __init__(self, max_workers: Optional[int] = None):
+    def __init__(self, max_workers: Optional[int] = None) -> None:
         self.max_workers = max_workers or min(4, multiprocessing.cpu_count())
         self.logger = logging.getLogger(__name__)
 
     def process_files_parallel(
-        self, files: List[Path], processing_func: Callable, output_dir: Path, **kwargs
+        self,
+        files: List[Path],
+        processing_func: Callable,
+        output_dir: Path,
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """Process multiple files in parallel."""
-        results = {
+        results: dict[str, Any] = {
             "processed_files": [],
             "failed_files": [],
             "total_time": 0,
@@ -225,9 +229,9 @@ class ParallelVisualizationProcessor:
         start_time = time.time()
 
         # Prepare tasks
-        tasks = []
+        tasks: list[Any] = []
         for file_path in files:
-            task = {
+            task: dict[Any, Any] = {
                 "file_path": file_path,
                 "output_dir": output_dir,
                 "model_name": file_path.stem,
@@ -307,7 +311,7 @@ class VisualizationOptimizer:
         max_workers: Optional[int] = None,
         enable_sampling: bool = True,
         enable_caching: bool = True,
-    ):
+    ) -> None:
         self.enable_caching = enable_caching
         self.enable_sampling = enable_sampling
         self.logger = logging.getLogger(__name__)
@@ -377,7 +381,11 @@ class VisualizationOptimizer:
             return [], False
 
     def optimize_batch_processing(
-        self, files: List[Path], output_dir: Path, processing_func: Callable, **kwargs
+        self,
+        files: List[Path],
+        output_dir: Path,
+        processing_func: Callable,
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """Optimize batch processing with parallel execution."""
 
@@ -401,7 +409,7 @@ class VisualizationOptimizer:
 
         return results
 
-    def clear_cache(self):
+    def clear_cache(self) -> Any:
         """Clear the visualization cache."""
         if self.enable_caching:
             for cache_key in list(self.cache.metadata.keys()):
@@ -413,7 +421,7 @@ class VisualizationOptimizer:
 _global_optimizer = None
 
 
-def get_visualization_optimizer(**kwargs) -> VisualizationOptimizer:
+def get_visualization_optimizer(**kwargs: Any) -> VisualizationOptimizer:
     """Get the global visualization optimizer instance."""
     global _global_optimizer
     if _global_optimizer is None:
@@ -422,7 +430,7 @@ def get_visualization_optimizer(**kwargs) -> VisualizationOptimizer:
 
 
 def optimize_visualization_processing(
-    files: List[Path], output_dir: Path, processing_func: Callable, **kwargs
+    files: List[Path], output_dir: Path, processing_func: Callable, **kwargs: Any
 ) -> Dict[str, Any]:
     """Convenience function for optimized visualization processing."""
     optimizer = get_visualization_optimizer()
@@ -435,7 +443,7 @@ def optimize_visualization_processing(
 def monitor_visualization_performance(func: Callable) -> Callable:
     """Decorator to monitor visualization performance."""
 
-    def wrapper(*args, **kwargs):
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         start_time = time.time()
         start_memory = get_memory_usage()
 
@@ -443,7 +451,7 @@ def monitor_visualization_performance(func: Callable) -> Callable:
             result = func(*args, **kwargs)
             success = True
         except Exception as e:
-            result = None
+            result = cast(Any, None)
             success = False
             str(e)
             raise
@@ -471,7 +479,7 @@ def get_memory_usage() -> float:
         import psutil
 
         process = psutil.Process()
-        return process.memory_info().rss / 1024 / 1024
+        return cast("float", process.memory_info().rss / 1024 / 1024)
     except ImportError:
         return 0.0
 

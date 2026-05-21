@@ -3,6 +3,7 @@
 LLM processor module for GNN analysis.
 """
 
+import inspect
 import json
 import logging
 import os
@@ -10,22 +11,16 @@ import shutil
 import subprocess  # nosec B404
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 try:
     import yaml
 except ImportError:  # PyYAML is a project dependency; keep processor import-safe
-    yaml = None  # type: ignore[assignment]
+    yaml = cast(Any, None)
 
 _logger = logging.getLogger(__name__)
 
-try:
-    from pipeline.config import get_pipeline_config
-except ImportError:
-
-    def get_pipeline_config() -> Dict[str, Any]:
-        """Load and return the pipeline configuration for LLM processing."""
-        return {}
+from pipeline.config import get_pipeline_config
 
 
 def _get_llm_config() -> dict:
@@ -46,13 +41,13 @@ def _get_llm_config() -> dict:
                 return {}
             with open(config_path, "r") as f:
                 full_config = yaml.safe_load(f) or {}
-            return full_config.get("llm", {})
+            return cast("dict[Any, Any]", full_config.get("llm", {}))
     except Exception as e:
         _logger.debug("LLM config YAML load failed: %s", e)
     # Recovery to pipeline config system
     try:
         config = get_pipeline_config()
-        return config.get("llm", {})
+        return cast("dict[Any, Any]", config.get("llm", {}))
     except Exception as e:
         _logger.debug("LLM pipeline config recovery failed: %s", e)
         return {}
@@ -88,7 +83,7 @@ from utils.logging.logging_utils import (
 from .defaults import DEFAULT_OLLAMA_MODEL
 
 
-def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
+def _start_ollama_if_needed(logger: Any) -> tuple[bool, list[str]]:
     """
     Check if Ollama is available and running with enhanced detection.
 
@@ -116,7 +111,7 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
             if result.returncode == 0:
                 logger.info("✅ Ollama is running and ready")
                 # Parse available models
-                models = []
+                models: list[Any] = []
                 if result.stdout:
                     lines = result.stdout.strip().split("\n")
                     if len(lines) > 1:  # Skip header
@@ -222,10 +217,12 @@ def _start_ollama_if_needed(logger) -> tuple[bool, list[str]]:
 
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.settimeout(2)
-            result = sock.connect_ex(("localhost", 11434))  # Default Ollama port
+            connect_result = sock.connect_ex(
+                ("localhost", 11434)
+            )  # Default Ollama port
             sock.close()
 
-            if result == 0:
+            if connect_result == 0:
                 logger.info("✅ Ollama server is running on localhost:11434")
                 logger.warning("⚠️ Could not list models, but server is responsive")
                 return True, []
@@ -276,7 +273,7 @@ def _select_best_ollama_model(
                 return available
 
     # 3. Preference order: prioritize smaller/faster models for reliability
-    preferred_models = [
+    preferred_models: list[Any] = [
         "smollm2",
         "tinyllama",
         "gemma3:4b",
@@ -306,7 +303,7 @@ def _select_best_ollama_model(
     default_model = llm_config.get("model", DEFAULT_OLLAMA_MODEL)
     logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
     logger.info(f"   Note: You may need to run: ollama pull {default_model}")
-    return default_model
+    return cast("str", default_model)
 
 
 from .analyzer import analyze_gnn_file_with_llm
@@ -323,7 +320,7 @@ from .providers.base_provider import LLMConfig, LLMMessage
 
 
 def process_llm(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process GNN files with LLM-enhanced analysis.
@@ -351,7 +348,7 @@ def process_llm(
 
 
 async def _process_llm_async(
-    target_dir: Path, output_dir: Path, verbose: bool, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool, **kwargs: Any
 ) -> bool:
     """Async implementation of process_llm."""
     import time as _time
@@ -372,7 +369,9 @@ async def _process_llm_async(
     budget_start = _time.monotonic()
 
     def _budget_remaining() -> float:
-        return max(0.0, TOTAL_BUDGET_SECONDS - (_time.monotonic() - budget_start))
+        return cast(
+            "float", max(0.0, TOTAL_BUDGET_SECONDS - (_time.monotonic() - budget_start))
+        )
 
     try:
         log_step_start(logger, "Processing LLM with enhanced Ollama integration")
@@ -395,7 +394,7 @@ async def _process_llm_async(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,
             "success": True,
@@ -429,7 +428,7 @@ async def _process_llm_async(
         }
 
         # Track providers with auth failures to fail-fast on subsequent calls
-        failed_auth_providers = set()
+        failed_auth_providers: set[Any] = set()
 
         # Find GNN files (recursive to handle subdirectory structure)
         gnn_files = list(target_dir.rglob("*.md"))
@@ -467,7 +466,7 @@ async def _process_llm_async(
                     f"LLM processor initialization failed: {e} - using recovery analysis"
                 )
                 processor_initialized = False
-                processor = None
+                processor = cast(Any, None)
 
             # Process each GNN file
             for file_idx, gnn_file in enumerate(gnn_files, 1):
@@ -488,8 +487,13 @@ async def _process_llm_async(
                         if ollama_available
                         else None
                     )
-                    file_analysis = await analyze_gnn_file_with_llm(
+                    analysis_candidate = analyze_gnn_file_with_llm(
                         gnn_file, verbose, ollama_model=resolved_ollama_for_summary
+                    )
+                    file_analysis = (
+                        await analysis_candidate
+                        if inspect.isawaitable(analysis_candidate)
+                        else analysis_candidate
                     )
                     results["analysis_results"].append(file_analysis)
 
@@ -530,7 +534,7 @@ async def _process_llm_async(
                                 )
                         # --- END ONTOLOGY INJECTION ---
                         # Build custom prompt sequence including user-requested prompts
-                        prompt_sequence = [
+                        prompt_sequence: list[Any] = [
                             PromptType.SUMMARIZE_CONTENT,
                             PromptType.EXPLAIN_MODEL,
                             PromptType.IDENTIFY_COMPONENTS,
@@ -561,7 +565,7 @@ async def _process_llm_async(
                         per_file_dir = results_dir / f"prompts_{gnn_file.stem}"
                         per_file_dir.mkdir(parents=True, exist_ok=True)
 
-                        prompt_outputs = {}
+                        prompt_outputs: dict[Any, Any] = {}
                         # Use selected model or recovery
                         ollama_model = (
                             selected_model if selected_model else DEFAULT_OLLAMA_MODEL
@@ -610,7 +614,7 @@ async def _process_llm_async(
                                 )
                                 break
                             prompt_cfg = get_prompt(ptype, gnn_content)
-                            messages = [
+                            messages: list[Any] = [
                                 LLMMessage(
                                     role="system", content=prompt_cfg["system_message"]
                                 ),
@@ -681,7 +685,7 @@ async def _process_llm_async(
                                             "Incorrect API key",
                                         ]
                                     ):
-                                        auth_err = {
+                                        auth_err: dict[str, Any] = {
                                             "provider": "unknown",
                                             "error": error_str[:200],
                                         }
@@ -839,7 +843,7 @@ async def _process_llm_async(
                         file_analysis["llm_prompt_outputs"] = prompt_outputs
 
                 except Exception as e:
-                    error_info = {
+                    error_info: dict[str, Any] = {
                         "file": str(gnn_file),
                         "error": str(e),
                         "error_type": type(e).__name__,
@@ -882,7 +886,7 @@ async def _process_llm_async(
         else:
             log_step_error(logger, "LLM processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
         log_step_error(logger, f"LLM processing failed: {e}")

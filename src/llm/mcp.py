@@ -146,7 +146,7 @@ def generate_llm_documentation_mcp(
                 content, file_analysis["variables"], file_analysis["connections"]
             )
             file_analysis["complexity_metrics"] = calculate_complexity_metrics(
-                content, file_analysis["variables"], file_analysis["connections"]
+                file_analysis["variables"], file_analysis["connections"]
             )
         except Exception:
             logger.debug(
@@ -264,7 +264,7 @@ def get_llm_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
-def initialize_llm_module(mcp_instance) -> None:
+def initialize_llm_module(mcp_instance: Any) -> None:
     """
     Initialize the LLM module prior to tool registration.
     Loads API keys and configures the default LLM processor.
@@ -277,6 +277,7 @@ def initialize_llm_module(mcp_instance) -> None:
         logger.info("Initializing LLM module prior to MCP registration...")
 
         # create_processor_from_env is a coroutine; must be awaited
+        processor: Any
         try:
             loop = asyncio.get_running_loop()
             # If there's an active loop, wrap in a task
@@ -292,7 +293,7 @@ def initialize_llm_module(mcp_instance) -> None:
         logger.error(f"Failed to initialize LLM module: {e}")
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register LLM domain tools with the MCP server."""
 
     mcp_instance.register_tool(

@@ -13,7 +13,7 @@ from typing import Any, Dict
 logger = logging.getLogger(__name__)
 
 
-def register_tools(registry):
+def register_tools(registry: Any) -> Any:
     """
     Register all template tools with the MCP registry.
 
@@ -131,7 +131,9 @@ def register_tools(registry):
 
 
 def process_file(
-    file_path: str, output_dir: str = "output/template", options: Dict[str, Any] = None
+    file_path: str,
+    output_dir: str = "output/template",
+    options: (Dict[str, Any]) | None = None,
 ) -> Dict[str, Any]:
     """
     Process a single file using the template processor.
@@ -145,12 +147,11 @@ def process_file(
         Processing result with status and output paths
     """
     try:
-        # Convert string paths to Path objects
-        file_path = Path(file_path)
-        output_dir = Path(output_dir)
+        input_path = Path(file_path)
+        output_path = Path(output_dir)
 
         # Ensure output directory exists
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_path.mkdir(parents=True, exist_ok=True)
 
         # Set default options if none provided
         if options is None:
@@ -160,23 +161,23 @@ def process_file(
         from .processor import process_single_file
 
         # Process the file
-        success = process_single_file(file_path, output_dir, options)
+        success = process_single_file(input_path, output_path, options)
 
         # Generate result
-        result = {
+        result: dict[str, Any] = {
             "status": "success" if success else "error",
-            "input_file": str(file_path),
-            "output_directory": str(output_dir),
+            "input_file": str(input_path),
+            "output_directory": str(output_path),
             "processing_options": options,
         }
 
         # Add output file paths if successful
         if success:
-            file_output_dir = output_dir / file_path.stem
+            file_output_dir = output_path / input_path.stem
             output_file = (
-                file_output_dir / f"{file_path.stem}_processed{file_path.suffix}"
+                file_output_dir / f"{input_path.stem}_processed{input_path.suffix}"
             )
-            report_file = file_output_dir / f"{file_path.stem}_report.json"
+            report_file = file_output_dir / f"{input_path.stem}_report.json"
 
             result["output_file"] = str(output_file)
             result["report_file"] = str(report_file)
@@ -192,7 +193,7 @@ def process_directory(
     directory_path: str,
     recursive: bool = False,
     output_dir: str = "output/template",
-    options: Dict[str, Any] = None,
+    options: (Dict[str, Any]) | None = None,
 ) -> Dict[str, Any]:
     """
     Process all files in a directory using the template processor.
@@ -207,12 +208,11 @@ def process_directory(
         Processing result with status and summary statistics
     """
     try:
-        # Convert string paths to Path objects
-        directory_path = Path(directory_path)
-        output_dir = Path(output_dir)
+        input_directory = Path(directory_path)
+        output_path = Path(output_dir)
 
         # Ensure output directory exists
-        output_dir.mkdir(parents=True, exist_ok=True)
+        output_path.mkdir(parents=True, exist_ok=True)
 
         # Set default options if none provided
         if options is None:
@@ -226,8 +226,8 @@ def process_directory(
 
         # Process the directory
         success = process_template_standardized(
-            target_dir=directory_path,
-            output_dir=output_dir,
+            target_dir=input_directory,
+            output_dir=output_path,
             logger=operation_logger,
             recursive=recursive,
             verbose=options.get("verbose", False),
@@ -235,16 +235,16 @@ def process_directory(
         )
 
         # Generate result
-        result = {
+        result: dict[str, Any] = {
             "status": "success" if success else "error",
-            "input_directory": str(directory_path),
-            "output_directory": str(output_dir),
+            "input_directory": str(input_directory),
+            "output_directory": str(output_path),
             "recursive": recursive,
             "processing_options": options,
         }
 
         # Add summary file path if it exists
-        summary_file = output_dir / "template_processing_summary.json"
+        summary_file = output_path / "template_processing_summary.json"
         if summary_file.exists():
             import json
 

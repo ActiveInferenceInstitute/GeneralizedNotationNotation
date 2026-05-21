@@ -6,11 +6,12 @@ This file contains comprehensive tests for the intelligent_analysis module funct
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-SAMPLE_PIPELINE_SUMMARY = {
+SAMPLE_PIPELINE_SUMMARY: dict[str, Any] = {
     "start_time": "2024-01-23T10:00:00",
     "end_time": "2024-01-23T10:05:30",
     "total_duration_seconds": 330.5,
@@ -63,7 +64,7 @@ SAMPLE_PIPELINE_SUMMARY = {
     },
     "environment_info": {"python_version": "3.12.0", "platform": "darwin"},
 }
-SAMPLE_FAILED_SUMMARY = {
+SAMPLE_FAILED_SUMMARY: dict[str, Any] = {
     "start_time": "2024-01-23T10:00:00",
     "end_time": "2024-01-23T10:02:30",
     "total_duration_seconds": 150.0,
@@ -110,7 +111,7 @@ class TestIntelligentAnalysisModuleComprehensive:
     """Comprehensive tests for the intelligent_analysis module."""
 
     @pytest.mark.unit
-    def test_module_imports(self):
+    def test_module_imports(self) -> Any:
         """Test that intelligent_analysis module can be imported."""
         import intelligent_analysis
 
@@ -120,18 +121,18 @@ class TestIntelligentAnalysisModuleComprehensive:
         assert hasattr(intelligent_analysis, "IntelligentAnalyzer")
 
     @pytest.mark.unit
-    def test_module_version(self):
+    def test_module_version(self) -> Any:
         """Test module version is set correctly."""
         import intelligent_analysis
 
         assert intelligent_analysis.__version__ == "1.6.0"
 
     @pytest.mark.unit
-    def test_features_dict(self):
+    def test_features_dict(self) -> Any:
         """Test FEATURES dictionary contains expected capabilities."""
         import intelligent_analysis
 
-        expected_features = [
+        expected_features: list[Any] = [
             "pipeline_analysis",
             "failure_root_cause",
             "performance_optimization",
@@ -142,7 +143,7 @@ class TestIntelligentAnalysisModuleComprehensive:
             assert feature in intelligent_analysis.FEATURES
 
     @pytest.mark.unit
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> Any:
         """Test module information retrieval."""
         from intelligent_analysis import get_module_info
 
@@ -154,14 +155,14 @@ class TestIntelligentAnalysisModuleComprehensive:
         assert "report_formats" in info
 
     @pytest.mark.unit
-    def test_get_supported_analysis_types(self):
+    def test_get_supported_analysis_types(self) -> Any:
         """Test analysis types retrieval."""
         from intelligent_analysis import get_supported_analysis_types
 
         types = get_supported_analysis_types()
         assert isinstance(types, list)
         assert len(types) > 0
-        expected_types = [
+        expected_types: list[Any] = [
             "failure_analysis",
             "performance_analysis",
             "executive_summary",
@@ -170,12 +171,12 @@ class TestIntelligentAnalysisModuleComprehensive:
             assert t in types
 
     @pytest.mark.unit
-    def test_validate_pipeline_summary(self):
+    def test_validate_pipeline_summary(self) -> Any:
         """Test pipeline summary validation."""
         from intelligent_analysis import validate_pipeline_summary
 
         assert validate_pipeline_summary(SAMPLE_PIPELINE_SUMMARY) is True
-        invalid_summary = {"foo": "bar"}
+        invalid_summary: dict[str, Any] = {"foo": "bar"}
         assert validate_pipeline_summary(invalid_summary) is False
 
 
@@ -183,7 +184,7 @@ class TestProcessorFunctions:
     """Tests for processor functions."""
 
     @pytest.mark.unit
-    def test_analyze_pipeline_summary(self):
+    def test_analyze_pipeline_summary(self) -> Any:
         """Test pipeline summary analysis."""
         from intelligent_analysis.processor import analyze_pipeline_summary
 
@@ -197,7 +198,7 @@ class TestProcessorFunctions:
         assert 0 <= analysis["health_score"] <= 100
 
     @pytest.mark.unit
-    def test_analyze_failed_summary(self):
+    def test_analyze_failed_summary(self) -> Any:
         """Test analysis of failed pipeline summary."""
         from intelligent_analysis.processor import analyze_pipeline_summary
 
@@ -207,7 +208,7 @@ class TestProcessorFunctions:
         assert analysis["health_score"] < 50
 
     @pytest.mark.unit
-    def test_identify_bottlenecks(self):
+    def test_identify_bottlenecks(self) -> Any:
         """Test bottleneck identification."""
         from intelligent_analysis.processor import identify_bottlenecks
 
@@ -217,7 +218,7 @@ class TestProcessorFunctions:
             assert any((b["step"] == "2_tests.py" for b in bottlenecks))
 
     @pytest.mark.unit
-    def test_identify_bottlenecks_custom_threshold(self):
+    def test_identify_bottlenecks_custom_threshold(self) -> Any:
         """Test bottleneck identification with custom threshold."""
         from intelligent_analysis.processor import identify_bottlenecks
 
@@ -228,7 +229,7 @@ class TestProcessorFunctions:
         assert len(bottlenecks) >= 1
 
     @pytest.mark.unit
-    def test_extract_failure_context(self):
+    def test_extract_failure_context(self) -> Any:
         """Test failure context extraction."""
         from intelligent_analysis.processor import extract_failure_context
 
@@ -241,7 +242,7 @@ class TestProcessorFunctions:
         assert "error_output" in first_failure
 
     @pytest.mark.unit
-    def test_generate_recommendations(self):
+    def test_generate_recommendations(self) -> Any:
         """Test recommendation generation."""
         from intelligent_analysis.processor import (
             analyze_individual_steps,
@@ -264,7 +265,7 @@ class TestProcessorFunctions:
         )
 
     @pytest.mark.unit
-    def test_generate_executive_report(self):
+    def test_generate_executive_report(self) -> Any:
         """Test executive report generation."""
         from intelligent_analysis.processor import (
             analyze_individual_steps,
@@ -299,7 +300,7 @@ class TestAnalyzerClass:
     """Tests for the IntelligentAnalyzer class."""
 
     @pytest.mark.unit
-    def test_analyzer_instantiation(self):
+    def test_analyzer_instantiation(self) -> Any:
         """Test IntelligentAnalyzer class instantiation."""
         from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
@@ -308,7 +309,7 @@ class TestAnalyzerClass:
         assert analyzer.context is None
 
     @pytest.mark.unit
-    def test_analyzer_with_context(self):
+    def test_analyzer_with_context(self) -> Any:
         """Test analyzer with context."""
         from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
@@ -318,7 +319,7 @@ class TestAnalyzerClass:
         assert analyzer.context.overall_status == "SUCCESS_WITH_WARNINGS"
 
     @pytest.mark.unit
-    def test_analyzer_set_context(self):
+    def test_analyzer_set_context(self) -> Any:
         """Test setting context on analyzer."""
         from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
@@ -328,7 +329,7 @@ class TestAnalyzerClass:
         assert analyzer.context is not None
 
     @pytest.mark.unit
-    def test_analyzer_analyze(self):
+    def test_analyzer_analyze(self) -> Any:
         """Test full analysis."""
         from intelligent_analysis import AnalysisContext, IntelligentAnalyzer
 
@@ -343,7 +344,7 @@ class TestAnalyzerClass:
         assert "optimizations" in results
 
     @pytest.mark.unit
-    def test_analyzer_no_context_error(self):
+    def test_analyzer_no_context_error(self) -> Any:
         """Test that analyze raises error without context."""
         from intelligent_analysis import IntelligentAnalyzer
 
@@ -356,7 +357,7 @@ class TestAnalyzerFunctions:
     """Tests for analyzer module functions."""
 
     @pytest.mark.unit
-    def test_calculate_health_score(self):
+    def test_calculate_health_score(self) -> Any:
         """Test health score calculation."""
         from intelligent_analysis import calculate_pipeline_health_score
 
@@ -366,19 +367,25 @@ class TestAnalyzerFunctions:
         assert 0 <= failed_score < healthy_score
 
     @pytest.mark.unit
-    def test_classify_failure_severity(self):
+    def test_classify_failure_severity(self) -> Any:
         """Test failure severity classification."""
         from intelligent_analysis import classify_failure_severity
 
-        critical_step = {"stderr": "MemoryError: Out of memory", "exit_code": 137}
+        critical_step: dict[str, Any] = {
+            "stderr": "MemoryError: Out of memory",
+            "exit_code": 137,
+        }
         assert classify_failure_severity(critical_step) == "critical"
-        major_step = {"stderr": "FileNotFoundError: No such file", "exit_code": 1}
+        major_step: dict[str, Any] = {
+            "stderr": "FileNotFoundError: No such file",
+            "exit_code": 1,
+        }
         assert classify_failure_severity(major_step) == "major"
-        minor_step = {"stderr": "Some warning message", "exit_code": 1}
+        minor_step: dict[str, Any] = {"stderr": "Some warning message", "exit_code": 1}
         assert classify_failure_severity(minor_step) == "minor"
 
     @pytest.mark.unit
-    def test_detect_performance_patterns(self):
+    def test_detect_performance_patterns(self) -> Any:
         """Test performance pattern detection."""
         from intelligent_analysis import detect_performance_patterns
 
@@ -390,7 +397,7 @@ class TestAnalyzerFunctions:
             assert "severity" in pattern
 
     @pytest.mark.unit
-    def test_generate_optimization_suggestions(self):
+    def test_generate_optimization_suggestions(self) -> Any:
         """Test optimization suggestion generation."""
         from intelligent_analysis import generate_optimization_suggestions
 
@@ -406,7 +413,7 @@ class TestAnalysisContext:
     """Tests for AnalysisContext dataclass."""
 
     @pytest.mark.unit
-    def test_context_creation(self):
+    def test_context_creation(self) -> Any:
         """Test AnalysisContext creation."""
         from intelligent_analysis import AnalysisContext
 
@@ -415,7 +422,7 @@ class TestAnalysisContext:
         assert context.overall_status == "SUCCESS_WITH_WARNINGS"
 
     @pytest.mark.unit
-    def test_context_properties(self):
+    def test_context_properties(self) -> Any:
         """Test AnalysisContext properties."""
         from intelligent_analysis import AnalysisContext
 
@@ -425,7 +432,7 @@ class TestAnalysisContext:
         assert isinstance(context.performance_summary, dict)
 
     @pytest.mark.unit
-    def test_context_get_steps_methods(self):
+    def test_context_get_steps_methods(self) -> Any:
         """Test step retrieval methods."""
         from intelligent_analysis import AnalysisContext
 
@@ -442,7 +449,7 @@ class TestIntegration:
     """Integration tests for intelligent_analysis module."""
 
     @pytest.mark.integration
-    def test_full_analysis_workflow(self, isolated_temp_dir):
+    def test_full_analysis_workflow(self, isolated_temp_dir: Any) -> Any:
         """Test complete analysis workflow."""
         from intelligent_analysis.processor import (
             analyze_individual_steps,
@@ -475,8 +482,8 @@ class TestIntegration:
 
     @pytest.mark.integration
     def test_process_skip_llm_uses_rule_based_summary(
-        self, isolated_temp_dir, monkeypatch
-    ):
+        self, isolated_temp_dir: Any, monkeypatch: Any
+    ) -> Any:
         """Skip-LLM mode must avoid external provider calls."""
         import json
         import logging
@@ -489,7 +496,7 @@ class TestIntegration:
         with open(summary_dir / "pipeline_execution_summary.json", "w") as f:
             json.dump(SAMPLE_PIPELINE_SUMMARY, f)
 
-        async def fail_on_llm_call(*args, **kwargs):
+        async def fail_on_llm_call(*args: Any, **kwargs: Any) -> Any:
             raise AssertionError("LLM analysis should not run when skip_llm is true")
 
         monkeypatch.setattr(processor, "_run_llm_analysis", fail_on_llm_call)
@@ -507,7 +514,7 @@ class TestIntegration:
         ).exists()
 
     @pytest.mark.integration
-    def test_check_analysis_tools(self):
+    def test_check_analysis_tools(self) -> Any:
         """Test analysis tools check."""
         from intelligent_analysis import check_analysis_tools
 
@@ -517,9 +524,9 @@ class TestIntegration:
             assert "available" in tools["numpy"]
 
 
-def test_module_completeness():
+def test_module_completeness() -> Any:
     """Test that intelligent_analysis module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "__version__",
         "FEATURES",
         "get_module_info",
@@ -543,7 +550,7 @@ def test_module_completeness():
 
 
 @pytest.mark.slow
-def test_module_performance():
+def test_module_performance() -> Any:
     """Test intelligent_analysis module performance characteristics."""
     import time
 
@@ -557,7 +564,7 @@ def test_module_performance():
 
 
 class TestIntelligentAnalysisMCP:
-    def _import_mcp(self):
+    def _import_mcp(self) -> Any:
         try:
             from intelligent_analysis import mcp
 
@@ -565,10 +572,10 @@ class TestIntelligentAnalysisMCP:
         except Exception:
             pytest.skip("intelligent_analysis.mcp not importable")
 
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         self._import_mcp()
 
-    def test_process_intelligent_analysis_mcp_nonexistent(self, tmp_path):
+    def test_process_intelligent_analysis_mcp_nonexistent(self, tmp_path: Any) -> Any:
         mcp = self._import_mcp()
         result = mcp.process_intelligent_analysis_mcp(
             str(tmp_path / "nonexistent"), str(tmp_path / "out")
@@ -576,14 +583,14 @@ class TestIntelligentAnalysisMCP:
         assert isinstance(result, dict)
         assert "success" in result or "error" in result
 
-    def test_get_module_info_mcp(self):
+    def test_get_module_info_mcp(self) -> Any:
         """Real function is get_intelligent_analysis_module_info_mcp."""
         from intelligent_analysis.mcp import get_intelligent_analysis_module_info_mcp
 
         result = get_intelligent_analysis_module_info_mcp()
         assert isinstance(result, dict)
 
-    def test_get_analysis_capabilities_mcp(self):
+    def test_get_analysis_capabilities_mcp(self) -> Any:
         """Real API: get_analysis_capabilities_mcp (not get_supported_analysis_types_mcp)."""
         from intelligent_analysis.mcp import get_analysis_capabilities_mcp
 
@@ -592,26 +599,30 @@ class TestIntelligentAnalysisMCP:
 
 
 class TestIntelligentAnalysisAnalyzer:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from intelligent_analysis import analyzer
 
-    def test_analysis_context_instantiable(self):
+    def test_analysis_context_instantiable(self) -> Any:
         from intelligent_analysis.analyzer import AnalysisContext
 
         ctx = AnalysisContext(summary_data={})
         assert ctx is not None
         assert ctx.overall_status == "UNKNOWN"
 
-    def test_analysis_context_with_data(self):
+    def test_analysis_context_with_data(self) -> Any:
         from intelligent_analysis.analyzer import AnalysisContext
 
-        data = {"overall_status": "SUCCESS", "total_duration_seconds": 1.5, "steps": []}
+        data: dict[str, Any] = {
+            "overall_status": "SUCCESS",
+            "total_duration_seconds": 1.5,
+            "steps": [],
+        }
         ctx = AnalysisContext(summary_data=data)
         assert ctx.overall_status == "SUCCESS"
         assert ctx.get_failed_steps() == []
         assert ctx.get_successful_steps() == []
 
-    def test_intelligent_analyzer_instantiable(self):
+    def test_intelligent_analyzer_instantiable(self) -> Any:
         from intelligent_analysis.analyzer import IntelligentAnalyzer
 
         ia = IntelligentAnalyzer()

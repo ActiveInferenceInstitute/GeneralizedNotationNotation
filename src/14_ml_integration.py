@@ -31,26 +31,13 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from ml_integration import process_ml_integration
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from ml_integration import process_ml_integration
-except ImportError:
-
-    def process_ml_integration(target_dir, output_dir, logger=None, **kwargs) -> bool:
-        """Recovery ml_integration processing when module unavailable."""
-        import logging
-
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("ML integration module not available - using recovery")
-        return True
-
 
 run_script = create_standardized_pipeline_script(
     "14_ml_integration.py",
@@ -61,7 +48,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the ml_integration step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

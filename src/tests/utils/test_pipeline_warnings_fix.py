@@ -16,6 +16,8 @@ get_output_dir_for_script() using real functions and filesystem operations.
 Tests use temporary directories for isolation and automatic cleanup.
 """
 
+from typing import Any
+
 import pytest
 
 pytestmark = pytest.mark.pipeline
@@ -37,7 +39,7 @@ class PipelineArgs:
     """Simulated-free replacement for pipeline arguments."""
 
     output_dir: Path
-    target_dir: Path = None
+    target_dir: Path | None = None
     verbose: bool = False
 
 
@@ -161,7 +163,7 @@ class TestPipelineWarningsFix:
         base_output_dir.mkdir()
 
         # Test all 24 pipeline steps
-        steps = [
+        steps: list[Any] = [
             ("0_template.py", "0_template_output"),
             ("1_setup.py", "1_setup_output"),
             ("2_tests.py", "2_tests_output"),

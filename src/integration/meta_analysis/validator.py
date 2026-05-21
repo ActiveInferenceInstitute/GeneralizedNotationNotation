@@ -133,7 +133,7 @@ def validate_sweep_records(records: List[SweepRecord]) -> Dict[str, Any]:
                 }
             )
 
-    summary = {"info": 0, "warning": 0, "error": 0}
+    summary: dict[str, Any] = {"info": 0, "warning": 0, "error": 0}
     for item in issues:
         sev = item.get("severity", "warning")
         if sev in summary:

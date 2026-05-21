@@ -8,6 +8,7 @@ via real sample data.
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -19,7 +20,7 @@ ONTOLOGY_TERMS = SRC / "ontology" / "act_inf_ontology_terms.json"
 
 
 @pytest.mark.skipif(not ONTOLOGY_TERMS.exists(), reason="Ontology terms file missing")
-def test_ontology_terms_file_loads_and_contains_core_concepts():
+def test_ontology_terms_file_loads_and_contains_core_concepts() -> Any:
     """The shipped ontology must contain Active Inference foundational terms.
 
     If these ever go missing, downstream steps that rely on ontology mapping
@@ -39,13 +40,13 @@ def test_ontology_terms_file_loads_and_contains_core_concepts():
     else:
         pytest.fail(f"Unexpected ontology file shape: {type(data).__name__}")
     # Core Active Inference concepts that MUST be present.
-    core = {"HiddenState", "Observation"}
+    core: set[Any] = {"HiddenState", "Observation"}
     assert core.issubset(term_names), (
         f"Core AI terms missing: {core - term_names}. Ontology file is corrupt or underspecified."
     )
 
 
-def test_load_defined_ontology_terms_returns_nonempty_dict():
+def test_load_defined_ontology_terms_returns_nonempty_dict() -> Any:
     from ontology import load_defined_ontology_terms
 
     # API takes zero args — reads from the shipped act_inf_ontology_terms.json.
@@ -60,7 +61,7 @@ def test_load_defined_ontology_terms_returns_nonempty_dict():
     )
 
 
-def test_parse_annotation_handles_valid_mapping():
+def test_parse_annotation_handles_valid_mapping() -> Any:
     from ontology import parse_annotation
 
     # parse_annotation accepts a single annotation line like "s=HiddenState".
@@ -73,7 +74,7 @@ def test_parse_annotation_handles_valid_mapping():
     assert "s" in as_text and "HiddenState" in as_text
 
 
-def test_parse_gnn_ontology_section_extracts_mappings():
+def test_parse_gnn_ontology_section_extracts_mappings() -> Any:
     from ontology import parse_gnn_ontology_section
 
     # Parser recognizes mappings under the `## ActInfOntologyAnnotation` header
@@ -95,7 +96,7 @@ def test_parse_gnn_ontology_section_extracts_mappings():
     assert any("A=RecognitionMatrix" in str(a) for a in annotations)
 
 
-def test_parse_gnn_ontology_section_returns_empty_for_bare_content():
+def test_parse_gnn_ontology_section_returns_empty_for_bare_content() -> Any:
     """Content without the header marker produces an empty result, not None.
     Regression against a silent-None bug where callers would get AttributeError.
     """

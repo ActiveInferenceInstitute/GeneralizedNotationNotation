@@ -26,7 +26,7 @@ def collect_pipeline_data(
     Returns:
         Dictionary containing collected pipeline data
     """
-    pipeline_data = {
+    pipeline_data: dict[str, Any] = {
         "report_generation_time": datetime.datetime.now().isoformat(),
         "pipeline_output_directory": str(pipeline_output_dir),
         "steps": {},
@@ -45,7 +45,7 @@ def collect_pipeline_data(
     }
 
     # Check for pipeline execution summary (main.py writes to 00_pipeline_summary/ subdir)
-    pipeline_summary_candidates = [
+    pipeline_summary_candidates: list[Any] = [
         pipeline_output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json",
         pipeline_output_dir / "pipeline_execution_summary.json",
     ]
@@ -74,7 +74,7 @@ def collect_pipeline_data(
             logger.warning(f"Failed to read pipeline summary: {e}")
 
     # Collect data from each step directory
-    step_directories = [
+    step_directories: list[Any] = [
         "0_template_output",
         "1_setup_output",
         "2_tests_output",
@@ -182,7 +182,7 @@ def analyze_step_directory(
     Returns:
         Dictionary containing step analysis data
     """
-    step_data = {
+    step_data: dict[str, Any] = {
         "directory": str(step_path),
         "exists": True,
         "file_count": 0,
@@ -265,7 +265,7 @@ def analyze_step_specific_data(
     Returns:
         Dictionary with step-specific analysis data
     """
-    step_data = {}
+    step_data: dict[Any, Any] = {}
 
     try:
         # Look for performance metrics files
@@ -282,7 +282,7 @@ def analyze_step_specific_data(
 
         # Look for error logs
         log_files = list(step_path.glob("*.log")) + list(step_path.glob("*error*.json"))
-        error_logs = []
+        error_logs: list[Any] = []
         for log_file in log_files:
             try:
                 with open(log_file, "r", encoding="utf-8") as f:
@@ -321,7 +321,7 @@ def analyze_file_types_across_steps(
     Returns:
         Dictionary with file type analysis
     """
-    file_type_analysis = {
+    file_type_analysis: dict[str, Any] = {
         "total_by_type": {},
         "largest_files_by_type": {},
         "step_distribution": {},
@@ -381,7 +381,7 @@ def analyze_step_dependencies(
     Returns:
         Dictionary with dependency analysis
     """
-    dependencies = {
+    dependencies: dict[str, Any] = {
         "step_order": [
             "0_template_output",
             "1_setup_output",
@@ -414,7 +414,7 @@ def analyze_step_dependencies(
 
     try:
         # Define step dependencies
-        step_deps = {
+        step_deps: dict[str, Any] = {
             "1_setup_output": ["0_template_output"],
             "2_tests_output": ["1_setup_output"],
             "3_gnn_output": ["1_setup_output"],
@@ -447,7 +447,7 @@ def analyze_step_dependencies(
         # Check for missing prerequisites
         for step_name, prereqs in step_deps.items():
             if step_name in steps and steps[step_name].get("exists", False):
-                missing = []
+                missing: list[Any] = []
                 for prereq in prereqs:
                     if prereq not in steps or not steps[prereq].get("exists", False):
                         missing.append(prereq)
@@ -482,7 +482,7 @@ def analyze_errors(
     Returns:
         Dictionary with error analysis
     """
-    error_analysis = {
+    error_analysis: dict[str, Any] = {
         "total_errors": len(errors),
         "error_types": {},
         "step_error_distribution": {},
@@ -528,7 +528,7 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
     Returns:
         True if the file is a key file for the step
     """
-    key_patterns = {
+    key_patterns: dict[str, Any] = {
         "0_template_output": ["template_processing_summary.json"],
         "1_setup_output": ["setup_success.json", "directory_structure.json"],
         "2_tests_output": ["pytest_report.xml", "test_summary.json", "*.txt"],
@@ -594,7 +594,7 @@ def collect_visualizations(
     Returns:
         Dictionary with visualization catalog organized by step and type
     """
-    visualizations = {
+    visualizations: dict[str, Any] = {
         "total_count": 0,
         "by_step": {},
         "by_type": {},
@@ -602,7 +602,7 @@ def collect_visualizations(
     }
 
     # Visualization output directories to scan
-    viz_directories = [
+    viz_directories: list[Any] = [
         ("8_visualization_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
         ("9_advanced_viz_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
         ("11_render_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
@@ -616,7 +616,7 @@ def collect_visualizations(
             if not step_path.exists():
                 continue
 
-            step_viz = {"step": step_dir, "count": 0, "files": []}
+            step_viz: dict[str, Any] = {"step": step_dir, "count": 0, "files": []}
 
             # Scan for visualization files
             for pattern in patterns:
@@ -637,7 +637,7 @@ def collect_visualizations(
                             # Get relative path from pipeline output directory
                             rel_path = str(viz_file.relative_to(pipeline_output_dir))
 
-                            viz_info = {
+                            viz_info: dict[str, Any] = {
                                 "name": viz_file.name,
                                 "path": str(viz_file),
                                 "relative_path": rel_path,

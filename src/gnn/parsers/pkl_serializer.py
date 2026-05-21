@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from typing import Any
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -10,7 +11,7 @@ class PKLSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to PKL format with embedded model data."""
-        lines = []
+        lines: list[Any] = []
 
         # Module header with comprehensive documentation
         lines.append("///")
@@ -185,7 +186,7 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("")
 
         # Embed complete model data as JSON comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -252,12 +253,12 @@ class PKLSerializer(BaseGNNSerializer):
 
         lines.append("// Connections:")
         for conn in model.connections:
-            sources = (
+            source_names: str = (
                 ",".join(conn.source_variables)
                 if hasattr(conn, "source_variables")
                 else "unknown"
             )
-            targets = (
+            target_names: str = (
                 ",".join(conn.target_variables)
                 if hasattr(conn, "target_variables")
                 else "unknown"
@@ -267,7 +268,9 @@ class PKLSerializer(BaseGNNSerializer):
                 if hasattr(conn, "connection_type")
                 else "directed"
             )
-            lines.append(f"// Connection: {sources} --{conn_type}--> {targets}")
+            lines.append(
+                f"// Connection: {source_names} --{conn_type}--> {target_names}"
+            )
 
         lines.append("// Parameters:")
         for param in model.parameters:
@@ -275,7 +278,7 @@ class PKLSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _format_pkl_value(self, value) -> str:
+    def _format_pkl_value(self, value: Any) -> str:
         """Format a value for PKL syntax."""
         if isinstance(value, str):
             return f'"{value}"'
@@ -284,7 +287,7 @@ class PKLSerializer(BaseGNNSerializer):
         elif isinstance(value, (int, float)):
             return str(value)
         elif isinstance(value, list):
-            formatted_items = []
+            formatted_items: list[Any] = []
             for item in value:
                 if isinstance(item, str):
                     formatted_items.append(f'"{item}"')

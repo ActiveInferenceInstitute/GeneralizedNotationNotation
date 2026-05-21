@@ -9,7 +9,7 @@ providing symbolic mathematics capabilities for GNN model validation and analysi
 import asyncio
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -187,7 +187,7 @@ async def get_sympy_integration() -> Any:
 def find_sympy_server_executable() -> Optional[str]:
     """Try to find the SymPy MCP server executable"""
     # Common locations to check
-    possible_locations = [
+    possible_locations: list[Any] = [
         "server.py",  # Local copy
         "../sympy-mcp/server.py",  # Adjacent directory
         "~/sympy-mcp/server.py",  # Home directory
@@ -385,7 +385,7 @@ def validate_equation_tool_sync(
         context = {}
 
     # Store reference to async function to avoid recursion
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await validate_equation_tool_async(equation, context)
 
     return asyncio.run(_async_wrapper())
@@ -396,7 +396,7 @@ def validate_matrix_tool_sync(
 ) -> Dict[str, Any]:
     """Synchronous wrapper for matrix validation"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await validate_matrix_tool_async(matrix_data, matrix_type)
 
     return asyncio.run(_async_wrapper())
@@ -407,7 +407,7 @@ def analyze_stability_tool_sync(
 ) -> Dict[str, Any]:
     """Synchronous wrapper for stability analysis"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await analyze_stability_tool_async(transition_matrices)
 
     return asyncio.run(_async_wrapper())
@@ -416,7 +416,7 @@ def analyze_stability_tool_sync(
 def simplify_expression_tool_sync(expression: str) -> Dict[str, Any]:
     """Synchronous wrapper for expression simplification"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await simplify_expression_tool_async(expression)
 
     return asyncio.run(_async_wrapper())
@@ -427,7 +427,7 @@ def solve_equation_tool_sync(
 ) -> Dict[str, Any]:
     """Synchronous wrapper for equation solving"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await solve_equation_tool_async(equation, variable, domain)
 
     return asyncio.run(_async_wrapper())
@@ -436,7 +436,7 @@ def solve_equation_tool_sync(
 def get_latex_tool_sync(expression: str) -> Dict[str, Any]:
     """Synchronous wrapper for LaTeX conversion"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await get_latex_tool_async(expression)
 
     return asyncio.run(_async_wrapper())
@@ -447,7 +447,7 @@ def initialize_sympy_tool_sync(
 ) -> Dict[str, Any]:
     """Synchronous wrapper for SymPy initialization"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await initialize_sympy_tool_async(server_executable)
 
     return asyncio.run(_async_wrapper())
@@ -456,7 +456,7 @@ def initialize_sympy_tool_sync(
 def cleanup_sympy_tool_sync() -> Dict[str, Any]:
     """Synchronous wrapper for SymPy cleanup"""
 
-    async def _async_wrapper():
+    async def _async_wrapper() -> Any:
         return await cleanup_sympy_tool_async()
 
     return asyncio.run(_async_wrapper())
@@ -473,11 +473,11 @@ initialize_sympy_tool_async = initialize_sympy_tool
 cleanup_sympy_tool_async = cleanup_sympy_tool
 
 # Use sync versions for MCP registration
-validate_equation_tool = validate_equation_tool_sync
-validate_matrix_tool = validate_matrix_tool_sync
-analyze_stability_tool = analyze_stability_tool_sync
-simplify_expression_tool = simplify_expression_tool_sync
-solve_equation_tool = solve_equation_tool_sync
-get_latex_tool = get_latex_tool_sync
-initialize_sympy_tool = initialize_sympy_tool_sync
-cleanup_sympy_tool = cleanup_sympy_tool_sync
+validate_equation_tool = cast(Any, validate_equation_tool_sync)
+validate_matrix_tool = cast(Any, validate_matrix_tool_sync)
+analyze_stability_tool = cast(Any, analyze_stability_tool_sync)
+simplify_expression_tool = cast(Any, simplify_expression_tool_sync)
+solve_equation_tool = cast(Any, solve_equation_tool_sync)
+get_latex_tool = cast(Any, get_latex_tool_sync)
+initialize_sympy_tool = cast(Any, initialize_sympy_tool_sync)
+cleanup_sympy_tool = cast(Any, cleanup_sympy_tool_sync)

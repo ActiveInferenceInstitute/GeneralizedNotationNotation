@@ -71,7 +71,7 @@ def _assert_dict_result(result: Any) -> Dict[str, Any]:
 
 
 def test_register_tools_emits_expected_set(registered_tools: Dict[str, Any]) -> None:
-    expected = {
+    expected: set[Any] = {
         "process_execute",
         "execute_gnn_model",
         "execute_pymdp_simulation",

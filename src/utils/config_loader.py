@@ -4,18 +4,20 @@ Configuration Loader for GNN Pipeline
 Handles loading and validation of YAML configuration files for the pipeline.
 """
 
+from typing import Any
+
 try:
     import yaml
 
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
-    yaml = None
+    yaml = cast(Any, None)
 
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +27,8 @@ class PipelineConfig:
     """Configuration for the GNN pipeline."""
 
     # Core directories
-    target_dir: Path = field(default_factory=lambda: Path("input/gnn_files"))
-    output_dir: Path = field(default_factory=lambda: Path("output"))
+    target_dir: Any = field(default_factory=lambda: Path("input/gnn_files"))
+    output_dir: Any = field(default_factory=lambda: Path("output"))
 
     # Processing options
     recursive: bool = True
@@ -44,9 +46,9 @@ class PipelineConfig:
     comprehensive: bool = False
 
     # Pipeline summary file
-    pipeline_summary_file: Optional[Path] = None
+    pipeline_summary_file: Any = None
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         """Post-initialization validation and path resolution."""
         # Ensure Path objects
         if isinstance(self.target_dir, str):
@@ -75,11 +77,11 @@ class TypeCheckerConfig:
 class OntologyConfig:
     """Configuration for ontology processing."""
 
-    terms_file: Path = field(
+    terms_file: Any = field(
         default_factory=lambda: Path("src/ontology/act_inf_ontology_terms.json")
     )
 
-    def __post_init__(self):
+    def __post_init__(self) -> Any:
         if isinstance(self.terms_file, str):
             self.terms_file = Path(self.terms_file)
 
@@ -271,7 +273,7 @@ class GNNPipelineConfig:
 
     def validate(self) -> List[str]:
         """Validate configuration and return list of errors."""
-        errors = []
+        errors: list[Any] = []
 
         # Get project root for relative path resolution
         project_root = Path(__file__).parent.parent.parent
@@ -394,7 +396,7 @@ def validate_config(config: dict) -> bool:
     return False
 
 
-def get_config_value(config: dict, key: str):
+def get_config_value(config: dict, key: str) -> Any:
     """
     Retrieve a value from a nested config dictionary using dot notation.
     Example: get_config_value(config, 'section.key')
@@ -410,7 +412,7 @@ def get_config_value(config: dict, key: str):
         return None
 
 
-def set_config_value(config: dict, key: str, value):
+def set_config_value(config: dict, key: str, value: Any) -> Any:
     """
     Set a value in a nested config dictionary using dot notation.
     Example: set_config_value(config, 'section.key', value)

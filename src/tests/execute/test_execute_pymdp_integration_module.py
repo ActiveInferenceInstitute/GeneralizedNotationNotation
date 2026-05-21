@@ -18,6 +18,7 @@ Date: 2024
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -63,7 +64,7 @@ def _explicit_three_state_config() -> dict:
 
 
 @pytest.fixture
-def gnn_file():
+def gnn_file() -> Any:
     """Get the example GNN file for testing."""
     path = project_root / "input" / "gnn_files" / "discrete" / "actinf_pomdp_agent.md"
     if path.exists():
@@ -75,7 +76,7 @@ def gnn_file():
 class TestGNNPyMDPIntegration:
     """Integration tests for GNN-PyMDP pipeline."""
 
-    def test_gnn_parsing(self, gnn_file):
+    def test_gnn_parsing(self, gnn_file: Any) -> Any:
         """Test GNN file parsing and parameter extraction."""
         if not gnn_file.exists():
             pytest.skip(f"GNN file not found: {gnn_file}")
@@ -94,7 +95,7 @@ class TestGNNPyMDPIntegration:
             # Recovery for dict returns
             assert parsed_data
 
-    def test_pymdp_renderer_exists(self, gnn_file):
+    def test_pymdp_renderer_exists(self, gnn_file: Any) -> Any:
         """Test PyMDP renderer can be instantiated and has render_file method."""
         if not gnn_file.exists():
             pytest.skip(f"GNN file not found: {gnn_file}")
@@ -110,7 +111,7 @@ class TestGNNPyMDPIntegration:
         not jax_pymdp_stack_ok(),
         reason="JAX + inferactively-pymdp>=1.0 required",
     )
-    def test_pymdp_simulation_creation(self):
+    def test_pymdp_simulation_creation(self) -> Any:
         """Test PyMDP simulation with GNN-derived parameters."""
         config = _explicit_three_state_config()
 
@@ -121,7 +122,7 @@ class TestGNNPyMDPIntegration:
         not jax_pymdp_stack_ok(),
         reason="JAX + inferactively-pymdp>=1.0 required",
     )
-    def test_pymdp_simulation_run(self):
+    def test_pymdp_simulation_run(self) -> Any:
         """Test running a PyMDP simulation."""
         config = _explicit_three_state_config()
 
@@ -135,7 +136,7 @@ class TestGNNPyMDPIntegration:
         # Check expected keys in results
         assert isinstance(results, dict)
 
-    def test_full_integration(self, gnn_file, tmp_path):
+    def test_full_integration(self, gnn_file: Any, tmp_path: Any) -> Any:
         """Test full GNN-to-PyMDP integration pipeline."""
         if not gnn_file.exists():
             pytest.skip(f"GNN file not found: {gnn_file}")

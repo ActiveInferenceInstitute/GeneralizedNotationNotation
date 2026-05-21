@@ -32,22 +32,13 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+from template import process_template_standardized
 from utils.pipeline_template import create_standardized_pipeline_script
-
-# Import module function
-try:
-    from template import process_template_standardized
-except ImportError:
-
-    def process_template_standardized(target_dir, output_dir, logger, **kwargs) -> bool:
-        """Recovery template processing when module unavailable."""
-        logger.warning("Template module not available - using recovery")
-        return True
-
 
 run_script = create_standardized_pipeline_script(
     "0_template.py",
@@ -61,7 +52,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the template step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

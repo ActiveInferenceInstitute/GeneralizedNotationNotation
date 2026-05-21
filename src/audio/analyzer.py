@@ -9,12 +9,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, cast
 
 
 def get_module_info() -> Dict[str, Any]:
     """Get comprehensive information about the audio module and its capabilities."""
-    info = {
+    info: dict[str, Any] = {
         "version": "1.0.0",
         "description": "Audio generation and sonification for GNN Processing Pipeline",
         "features": {
@@ -146,7 +146,7 @@ def convert_gnn_to_sapf(gnn_content: str, output_dir: Path) -> Dict[str, Any]:
     """
     try:
         # Create processor
-        from .processor import SAPFGNNProcessor
+        from .classes import SAPFGNNProcessor
 
         processor = SAPFGNNProcessor()
 
@@ -159,7 +159,7 @@ def convert_gnn_to_sapf(gnn_content: str, output_dir: Path) -> Dict[str, Any]:
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Create SAPF configuration file
-        sapf_config = {
+        sapf_config: dict[str, Any] = {
             "model_type": "gnn",
             "audio_engines": processor.audio_engines,
             "supported_formats": processor.supported_formats,
@@ -197,12 +197,12 @@ def generate_audio_from_sapf(
     """
     try:
         # Create processor
-        from .processor import SAPFGNNProcessor
+        from .classes import SAPFGNNProcessor
 
         processor = SAPFGNNProcessor()
 
         # Extract model data from SAPF config
-        model_data = {
+        model_data: dict[str, Any] = {
             "variables": sapf_config.get("variables", []),
             "connections": sapf_config.get("connections", []),
         }
@@ -240,8 +240,8 @@ def validate_sapf_code(sapf_code: str) -> Dict[str, Any]:
             return {"valid": False, "errors": ["Empty SAPF code provided"]}
 
         # Check for required sections
-        required_sections = ["oscillators", "envelopes", "effects"]
-        missing_sections = []
+        required_sections: list[Any] = ["oscillators", "envelopes", "effects"]
+        missing_sections: list[Any] = []
 
         for section in required_sections:
             if section not in sapf_code.lower():

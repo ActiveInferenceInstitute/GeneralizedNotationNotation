@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, cast
 
 from advanced_visualization._shared import normalize_connection_format
 from utils.logging.logging_utils import (
@@ -85,7 +85,7 @@ def process_visualization(
             except Exception as e:
                 logger_v.error("Error generating combined visualizations: %s", e)
 
-        results_summary = {
+        results_summary: dict[str, Any] = {
             "processed_files": len(gnn_files),
             "total_visualizations": len(all_visualizations),
             "visualization_files": all_visualizations,
@@ -103,7 +103,7 @@ def process_visualization(
         else:
             log_step_error(logger_v, "No visualizations generated")
 
-        return results_summary["success"]
+        return cast("bool", results_summary["success"])
 
     except Exception as e:
         log_step_error(logger_v, f"Visualization processing failed: {e}")

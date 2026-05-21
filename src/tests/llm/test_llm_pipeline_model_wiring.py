@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 import pytest
 
@@ -17,20 +18,23 @@ def test_summary_task_prefers_ollama_when_registered() -> None:
     from llm.providers.base_provider import ProviderType
 
     class ProviderProbe:
-        def __init__(self, ptype):
+        def __init__(self, ptype: Any) -> None:
             self.provider_type = ptype
 
     proc = LLMProcessor(preferred_providers=[ProviderType.OLLAMA, ProviderType.OPENAI])
     ollama_provider = ProviderProbe(ProviderType.OLLAMA)
     openai_provider = ProviderProbe(ProviderType.OPENAI)
-    proc.providers = {
-        ProviderType.OLLAMA: ollama_provider,
-        ProviderType.OPENAI: openai_provider,
-    }
+    proc.providers = cast(
+        Any,
+        {
+            ProviderType.OLLAMA: ollama_provider,
+            ProviderType.OPENAI: openai_provider,
+        },
+    )
 
     from llm.llm_processor import AnalysisType
 
-    best = proc.get_best_provider_for_task(AnalysisType.SUMMARY)
+    best = cast(Any, proc.get_best_provider_for_task(AnalysisType.SUMMARY))
     assert best is ollama_provider
 
 
@@ -49,25 +53,26 @@ async def test_async_summarize_with_ollama_model_uses_ollama_provider_and_config
     )
 
     class RecordingProcessor:
-        def __init__(self):
+        def __init__(self) -> None:
             self.called = False
-            self.call_args = {}
+            self.call_args: dict[str, Any] = {}
 
-        async def analyze_gnn(self, **kwargs):
+        async def analyze_gnn(self, **kwargs: Any) -> Any:
             self.called = True
             self.call_args = kwargs
             return response
 
     ops = LLMOperations.__new__(LLMOperations)
-    ops.processor = RecordingProcessor()
-    ops._initialized = True  # type: ignore[attr-defined]
+    ops.processor = cast(Any, RecordingProcessor())
+    ops._initialized = True
 
     out = await LLMOperations._async_summarize_gnn(
         ops, "sample gnn", max_length=100, ollama_model="smollm2:135m-instruct-q4_K_S"
     )
     assert out == "summary text"
-    assert ops.processor.called
-    call_kw = ops.processor.call_args
+    processor = cast(Any, ops.processor)
+    assert processor.called
+    call_kw = processor.call_args
     assert call_kw["provider_type"] == ProviderType.OLLAMA
     assert isinstance(call_kw["config"], LLMConfig)
     assert call_kw["config"].model == "smollm2:135m-instruct-q4_K_S"
@@ -82,7 +87,7 @@ def test_structured_prompt_get_response_passes_model_name(
 
     captured: dict = {}
 
-    async def controlled_get_response(*args, **kwargs):
+    async def controlled_get_response(*args: Any, **kwargs: Any) -> Any:
         captured.update(kwargs)
         from llm.providers.base_provider import LLMResponse
 
@@ -99,14 +104,14 @@ def test_structured_prompt_get_response_passes_model_name(
 
     with monkeypatch.context() as m:
 
-        async def controlled_init(*args, **kwargs):
+        async def controlled_init(*args: Any, **kwargs: Any) -> Any:
             return True
 
-        async def controlled_close(*args, **kwargs):
+        async def controlled_close(*args: Any, **kwargs: Any) -> Any:
             return None
 
         class InMemoryProcessor:
-            def __init__(self, *args, **kwargs):
+            def __init__(self, *args: Any, **kwargs: Any) -> None:
                 self.initialize = controlled_init
                 self.close = controlled_close
                 self.get_response = controlled_get_response
@@ -116,7 +121,7 @@ def test_structured_prompt_get_response_passes_model_name(
             "llm.processor.LLMProcessor", lambda *args, **kwargs: InMemoryProcessor()
         )
 
-        async def controlled_analyze(*args, **kwargs):
+        async def controlled_analyze(*args: Any, **kwargs: Any) -> Any:
             return {"status": "SUCCESS"}
 
         m.setattr("llm.processor.analyze_gnn_file_with_llm", controlled_analyze)
@@ -134,13 +139,13 @@ def test_structured_prompt_get_response_passes_model_name(
         )
 
         class InMemoryCache:
-            def get(self, *args, **kwargs):
+            def get(self, *args: Any, **kwargs: Any) -> Any:
                 return None
 
-            def put(self, *args, **kwargs):
+            def put(self, *args: Any, **kwargs: Any) -> Any:
                 pass
 
-            def summary(self, *args, **kwargs):
+            def summary(self, *args: Any, **kwargs: Any) -> Any:
                 return {
                     "hits": 0,
                     "misses": 0,

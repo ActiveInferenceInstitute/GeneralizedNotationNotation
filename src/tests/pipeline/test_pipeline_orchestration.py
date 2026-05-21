@@ -5,6 +5,8 @@ Test Pipeline Orchestration - Tests for pipeline orchestration and execution flo
 Tests the PipelineOrchestrator and step orchestration functionality.
 """
 
+from typing import Any
+
 import pytest
 
 pytestmark = pytest.mark.pipeline
@@ -19,7 +21,7 @@ class TestPipelineRunnerOrchestration:
     """Tests for PipelineOrchestrator orchestration."""
 
     @pytest.mark.fast
-    def test_pipeline_runner_instantiation(self, tmp_path):
+    def test_pipeline_runner_instantiation(self, tmp_path: Any) -> Any:
         """Test PipelineOrchestrator can be instantiated."""
         try:
             import logging
@@ -40,7 +42,7 @@ class TestPipelineRunnerOrchestration:
             assert info is not None
 
     @pytest.mark.fast
-    def test_pipeline_runner_configuration(self, tmp_path):
+    def test_pipeline_runner_configuration(self, tmp_path: Any) -> Any:
         """Test PipelineConfig can be created."""
         from pipeline import create_pipeline_config
 
@@ -51,7 +53,7 @@ class TestPipelineRunnerOrchestration:
         assert isinstance(config, dict)
 
     @pytest.mark.integration
-    def test_pipeline_step_registration(self, tmp_path):
+    def test_pipeline_step_registration(self, tmp_path: Any) -> Any:
         """Test pipeline steps are registered correctly."""
         from pipeline import discover_pipeline_steps
 
@@ -67,7 +69,7 @@ class TestStepOrchestration:
     """Tests for individual step orchestration."""
 
     @pytest.mark.fast
-    def test_step_discovery(self):
+    def test_step_discovery(self) -> Any:
         """Test pipeline discovers available steps."""
         from pipeline import discover_pipeline_steps
 
@@ -76,7 +78,7 @@ class TestStepOrchestration:
         assert steps is not None
 
     @pytest.mark.fast
-    def test_step_ordering(self):
+    def test_step_ordering(self) -> Any:
         """Test steps metadata is available."""
         from pipeline import STEP_METADATA
 
@@ -86,7 +88,7 @@ class TestStepOrchestration:
             assert len(STEP_METADATA) > 0
 
     @pytest.mark.integration
-    def test_step_dependency_resolution(self):
+    def test_step_dependency_resolution(self) -> Any:
         """Test pipeline execution ordering."""
         from pipeline import execute_pipeline_steps
 
@@ -98,13 +100,16 @@ class TestPipelineExecution:
     """Tests for pipeline execution flow."""
 
     @pytest.mark.integration
-    def test_single_step_execution(self, tmp_path):
+    def test_single_step_execution(self, tmp_path: Any) -> Any:
         """Test executing a single pipeline step."""
         from pipeline import execute_pipeline_step
 
         # Build step config and pipeline data
-        step_config = {"output_dir": str(tmp_path), "verbose": False}
-        pipeline_data = {"target_dir": str(tmp_path), "output_dir": str(tmp_path)}
+        step_config: dict[str, Any] = {"output_dir": str(tmp_path), "verbose": False}
+        pipeline_data: dict[str, Any] = {
+            "target_dir": str(tmp_path),
+            "output_dir": str(tmp_path),
+        }
 
         result = execute_pipeline_step(
             step_name="setup", step_config=step_config, pipeline_data=pipeline_data
@@ -114,7 +119,7 @@ class TestPipelineExecution:
         assert result is not None
 
     @pytest.mark.integration
-    def test_step_skip_functionality(self, tmp_path):
+    def test_step_skip_functionality(self, tmp_path: Any) -> Any:
         """Test skipping specific steps via config."""
         from pipeline import create_pipeline_config
 
@@ -129,7 +134,7 @@ class TestPipelineExecution:
         assert config["skip_steps"] == [1, 2, 3]
 
     @pytest.mark.integration
-    def test_only_steps_functionality(self, tmp_path):
+    def test_only_steps_functionality(self, tmp_path: Any) -> Any:
         """Test running only specific steps via config."""
         from pipeline import create_pipeline_config
 
@@ -144,7 +149,7 @@ class TestPipelineStateManagement:
     """Tests for pipeline state management during orchestration."""
 
     @pytest.mark.fast
-    def test_pipeline_state_initialization(self, tmp_path):
+    def test_pipeline_state_initialization(self, tmp_path: Any) -> Any:
         """Test pipeline config state is initialized correctly."""
         from pipeline import PipelineConfig, get_pipeline_config
 
@@ -164,7 +169,7 @@ class TestPipelineStateManagement:
         assert isinstance(retrieved, dict)
 
     @pytest.mark.fast
-    def test_pipeline_info_available(self):
+    def test_pipeline_info_available(self) -> Any:
         """Test pipeline info can be retrieved."""
         from pipeline import get_module_info, get_pipeline_info
 
@@ -175,7 +180,7 @@ class TestPipelineStateManagement:
         assert module_info is not None
 
     @pytest.mark.fast
-    def test_pipeline_validation(self):
+    def test_pipeline_validation(self) -> Any:
         """Test pipeline configuration validation."""
         from pipeline import create_pipeline_config, validate_pipeline_config
 

@@ -1,5 +1,7 @@
 """Tests for the GNN API endpoints."""
 
+from typing import Any
+
 import pytest
 
 # Import the API app factory
@@ -13,7 +15,7 @@ except ImportError:
 
 
 @pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
-def test_api_health_endpoint():
+def test_api_health_endpoint() -> Any:
     """Test the health check endpoint."""
     from fastapi.testclient import TestClient
 
@@ -29,7 +31,7 @@ def test_api_health_endpoint():
 
 
 @pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
-def test_api_list_runs_empty():
+def test_api_list_runs_empty() -> Any:
     """Test listing runs when none have been submitted."""
     from fastapi.testclient import TestClient
 
@@ -45,7 +47,7 @@ def test_api_list_runs_empty():
 
 
 @pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
-def test_api_submit_run_invalid_payload():
+def test_api_submit_run_invalid_payload() -> Any:
     """Test submitting a run with invalid JSON."""
     from fastapi.testclient import TestClient
 
@@ -58,7 +60,7 @@ def test_api_submit_run_invalid_payload():
 
 
 @pytest.mark.skipif(not FASTAPI_AVAILABLE, reason="FastAPI not installed")
-def test_api_submit_run_success():
+def test_api_submit_run_success() -> Any:
     """Test successful run submission."""
     from fastapi.testclient import TestClient
 
@@ -71,9 +73,12 @@ def test_api_submit_run_success():
     orig_hasher = getattr(pipeline.hasher, "compute_run_hash", None)
     orig_execute = getattr(api_app, "_execute_pipeline", None)
 
+    async def _complete_pipeline_immediately(*args: Any, **kwargs: Any) -> None:
+        return None
+
     # Replace the reference directly for this endpoint wiring test.
     pipeline.hasher.compute_run_hash = lambda *args, **kwargs: "test_hash_123"
-    api_app._execute_pipeline = lambda *args, **kwargs: None
+    api_app._execute_pipeline = _complete_pipeline_immediately
 
     try:
         response = client.post(
@@ -96,7 +101,7 @@ def test_api_submit_run_success():
             api_app._execute_pipeline = orig_execute
 
 
-def test_api_availability_flag():
+def test_api_availability_flag() -> Any:
     """Verify that the availability flag matches reality."""
     try:
         import fastapi

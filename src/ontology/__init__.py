@@ -6,7 +6,7 @@ This module provides ontology capabilities with recovery implementations.
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 from utils.pipeline_template import (
     log_step_error,
@@ -45,7 +45,7 @@ def validate_ontology_terms(terms: Optional[Union[List[str], str]] = None) -> bo
 
 
 # Feature flags expected by tests
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "parsing": True,
     "validation": True,
     "reporting": True,
@@ -59,10 +59,10 @@ __version__ = "1.6.0"
 class OntologyProcessor:
     """Ontology processor with methods expected by tests."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logging.getLogger(__name__)
 
-    def run(self, *args, **kwargs) -> bool:
+    def run(self, *args: Any, **kwargs: Any) -> bool:
         return True
 
     def process_ontology(self, data: Union[Dict[str, Any], str]) -> Dict[str, Any]:
@@ -90,7 +90,7 @@ class OntologyProcessor:
 class OntologyValidator:
     """Ontology validator exposing validate_ontology as required by tests."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logging.getLogger(__name__)
 
     def validate(self, annotations: Optional[List[str]] = None) -> Dict[str, Any]:
@@ -108,14 +108,14 @@ class OntologyValidator:
         parsed = parse_gnn_ontology_section(content)
         result = self.validate(parsed.get("annotations", []))
         # Some tests expect a boolean True/False
-        return result.get("valid", False)
+        return cast("bool | dict[str, Any]", result.get("valid", False))
 
     # Additional method expected by tests
     def check_consistency(self, annotations: Optional[List[str]] = None) -> bool:
-        return self.validate(annotations).get("valid", False)
+        return cast("bool", self.validate(annotations).get("valid", False))
 
 
-__all__ = [
+__all__: list[Any] = [
     # Core processing functions
     "process_ontology",
     "parse_gnn_ontology_section",

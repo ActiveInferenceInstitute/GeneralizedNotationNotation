@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import warnings
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import matplotlib
 
@@ -16,7 +16,7 @@ try:
 
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
-    plt = None
+    plt = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 logger = logging.getLogger(__name__)

@@ -91,16 +91,16 @@ ModelName: Invalid
 
 
 class TestConsistencyChecker:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from validation import consistency_checker  # noqa: F401
 
-    def test_class_instantiable(self):
+    def test_class_instantiable(self) -> Any:
         from validation.consistency_checker import ConsistencyChecker
 
         checker = ConsistencyChecker()
         assert checker is not None
 
-    def test_check_consistency_with_dict(self):
+    def test_check_consistency_with_dict(self) -> Any:
         from validation.consistency_checker import check_consistency
 
         result = check_consistency(
@@ -109,7 +109,7 @@ class TestConsistencyChecker:
         assert isinstance(result, dict)
         assert "consistent" in result or "is_consistent" in result
 
-    def test_check_consistency_empty_dict(self):
+    def test_check_consistency_empty_dict(self) -> Any:
         from validation.consistency_checker import check_consistency
 
         result = check_consistency({})
@@ -117,17 +117,17 @@ class TestConsistencyChecker:
 
 
 class TestValidationMCP:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from validation import mcp  # noqa: F401
 
-    def test_validate_gnn_file_mcp_nonexistent(self, tmp_path):
+    def test_validate_gnn_file_mcp_nonexistent(self, tmp_path: Any) -> Any:
         from validation.mcp import validate_gnn_file_mcp
 
         result = validate_gnn_file_mcp(str(tmp_path / "nonexistent.md"))
         assert isinstance(result, dict)
         assert "success" in result or "error" in result
 
-    def test_check_schema_compliance_mcp_empty(self):
+    def test_check_schema_compliance_mcp_empty(self) -> Any:
         from validation.mcp import check_schema_compliance_mcp
 
         result = check_schema_compliance_mcp("")
@@ -135,23 +135,23 @@ class TestValidationMCP:
 
 
 class TestPerformanceProfiler:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from validation import performance_profiler  # noqa: F401
 
-    def test_class_instantiable(self):
+    def test_class_instantiable(self) -> Any:
         from validation.performance_profiler import PerformanceProfiler
 
         profiler = PerformanceProfiler()
         assert profiler is not None
 
-    def test_profile_performance_with_string(self):
+    def test_profile_performance_with_string(self) -> Any:
         from validation.performance_profiler import profile_performance
 
         result = profile_performance("## ModelName\nTestModel\n")
         assert isinstance(result, dict)
         assert "performance_score" in result or "error" in result
 
-    def test_profile_performance_empty(self):
+    def test_profile_performance_empty(self) -> Any:
         from validation.performance_profiler import profile_performance
 
         result = profile_performance("")
@@ -159,10 +159,10 @@ class TestPerformanceProfiler:
 
 
 class TestValidationInit:
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         import validation  # noqa: F401
 
-    def test_process_validation_empty_dir(self, tmp_path):
+    def test_process_validation_empty_dir(self, tmp_path: Any) -> Any:
         from validation import process_validation
 
         result = process_validation(tmp_path, tmp_path / "out")

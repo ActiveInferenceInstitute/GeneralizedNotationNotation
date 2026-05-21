@@ -11,7 +11,7 @@ import os
 import re
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +62,7 @@ def mermaid_to_gnn(
             logger.debug(f"Ontology module not available for validation: {e}")
 
     # Construct GNN model dictionary
-    gnn_model = {
+    gnn_model: dict[str, Any] = {
         "model_name": metadata.get("model_name", "Untitled Model"),
         "version": metadata.get("version", "1.0"),
         "variables": variables,
@@ -95,7 +95,7 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
     if match:
         try:
             metadata_json = match.group(1).strip()
-            return json.loads(metadata_json)
+            return cast("dict[str, Any]", json.loads(metadata_json))
         except json.JSONDecodeError as e:
             logger.debug(f"Failed to parse GNN metadata JSON (multi-line format): {e}")
 
@@ -105,7 +105,7 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
 
     if match:
         try:
-            return json.loads(match.group(1))
+            return cast("dict[str, Any]", json.loads(match.group(1)))
         except json.JSONDecodeError as e:
             logger.debug(f"Failed to parse GNN metadata JSON (single-line format): {e}")
 
@@ -128,10 +128,10 @@ def _extract_nodes(mermaid_content: str) -> Dict[str, Dict[str, Any]]:
     Returns:
         Dictionary mapping node IDs to node metadata
     """
-    nodes = {}
+    nodes: dict[Any, Any] = {}
 
     # Pattern definitions for various node shapes
-    patterns = [
+    patterns: list[Any] = [
         (r"(\w+)\[([^\]]+)\]", "rectangle"),  # [A] - must come before stadium
         (r"(\w+)\(\[([^\]]+)\]\)", "stadium"),  # ([s])
         (r"(\w+)\(\(([^)]+)\)\)", "circle"),  # ((o))
@@ -178,9 +178,9 @@ def _extract_edges(mermaid_content: str) -> List[Dict[str, Any]]:
     Returns:
         List of edge dictionaries
     """
-    edges = []
+    edges: list[Any] = []
 
-    edge_patterns = [
+    edge_patterns: list[Any] = [
         (r"(\w+)\s*==>\|([^\|]+)\|\s*(\w+)", ">", True),  # Generative with label
         (r"(\w+)\s*==>\s*(\w+)", ">", False),  # Generative
         (r"(\w+)\s*-\.\->\|([^\|]+)\|\s*(\w+)", "-", True),  # Inference with label
@@ -236,7 +236,7 @@ def _infer_type_from_label(label_parts: List[str]) -> str:
 
     Looks for type hints like "float", "int", "categorical" in label parts.
     """
-    type_keywords = ["float", "int", "categorical", "bool"]
+    type_keywords: list[Any] = ["float", "int", "categorical", "bool"]
 
     for part in label_parts:
         part_lower = part.strip().lower()
@@ -255,7 +255,7 @@ def _merge_variables(
     Preserves metadata dimensions/types while respecting visual layout changes.
     Visual structure takes precedence for topology.
     """
-    merged = {}
+    merged: dict[Any, Any] = {}
 
     # Start with metadata (preserves complete information)
     for var_name, var_data in metadata_vars.items():
@@ -288,7 +288,7 @@ def _merge_connections(
 
     Visual edits (adding/removing edges in oxdraw) take precedence over metadata.
     """
-    merged = []
+    merged: list[Any] = []
 
     for edge in visual_edges:
         # Find matching metadata connection
@@ -325,7 +325,7 @@ def _reconstruct_ontology_mappings(
 
     Returns list of {variable, ontology_term} mappings.
     """
-    mappings = []
+    mappings: list[Any] = []
 
     for var_name, var_data in variables.items():
         ontology_term = var_data.get("ontology_mapping") or ontology_map.get(var_name)
@@ -373,7 +373,7 @@ def _gnn_model_to_markdown(gnn_model: Dict[str, Any]) -> str:
 
     Generates a valid GNN specification file.
     """
-    lines = []
+    lines: list[Any] = []
 
     # Header
     lines.append(f"# GNN Model: {gnn_model.get('model_name', 'Untitled')}")

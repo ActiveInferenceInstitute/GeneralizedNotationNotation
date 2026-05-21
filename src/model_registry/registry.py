@@ -16,7 +16,9 @@ from typing import Any, Dict, List, Optional, Union
 class ModelVersion:
     """Represents a specific version of a model."""
 
-    def __init__(self, version: str, file_path: Path, created_at: Optional[str] = None):
+    def __init__(
+        self, version: str, file_path: Path, created_at: Optional[str] = None
+    ) -> None:
         """
         Initialize a model version.
 
@@ -66,7 +68,7 @@ class ModelVersion:
 class ModelEntry:
     """Represents a model entry in the registry."""
 
-    def __init__(self, model_id: str, name: Optional[str] = None):
+    def __init__(self, model_id: str, name: Optional[str] = None) -> None:
         """
         Initialize a model entry.
 
@@ -178,7 +180,7 @@ class ModelEntry:
 class ModelRegistry:
     """Centralized registry for GNN models."""
 
-    def __init__(self, registry_path: Union[str, Path]):
+    def __init__(self, registry_path: Union[str, Path]) -> None:
         """
         Initialize the model registry.
 
@@ -205,7 +207,7 @@ class ModelRegistry:
         """Save the registry to file."""
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
 
-        data = {
+        data: dict[str, Any] = {
             "version": "1.0.0",
             "updated_at": datetime.datetime.now().isoformat(),
             "models": {
@@ -301,7 +303,7 @@ class ModelRegistry:
             List of matching ModelEntry objects
         """
         query = query.lower()
-        results = []
+        results: list[Any] = []
 
         for model in self.models.values():
             if (
@@ -376,7 +378,7 @@ class ModelRegistry:
         # Try to find the first paragraph after the title
         lines = content.split("\n")
         in_paragraph = False
-        paragraph_lines = []
+        paragraph_lines: list[Any] = []
 
         for line in lines:
             if line.startswith("#"):
@@ -397,7 +399,7 @@ class ModelRegistry:
 
     def _extract_metadata(self, content: str) -> Dict[str, Any]:
         """Extract metadata from content."""
-        metadata = {}
+        metadata: dict[Any, Any] = {}
 
         # Extract author
         author_match = re.search(r"Author:\s*([^\n]+)", content)
@@ -418,7 +420,7 @@ class ModelRegistry:
 
 
 def process_model_registry(
-    target_dir: Path, output_dir: Path, **kwargs
+    target_dir: Path, output_dir: Path, **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Process model registry for GNN files in the target directory.
@@ -438,8 +440,8 @@ def process_model_registry(
     successful_registrations = 0
 
     # Find all GNN files
-    gnn_extensions = [".md", ".gnn", ".json", ".yaml", ".yml"]
-    gnn_files = []
+    gnn_extensions: list[Any] = [".md", ".gnn", ".json", ".yaml", ".yml"]
+    gnn_files: list[Any] = []
 
     for ext in gnn_extensions:
         gnn_files.extend(target_dir.glob(f"**/*{ext}"))
@@ -453,7 +455,7 @@ def process_model_registry(
     registry.save()
 
     # Create summary
-    results = {
+    results: dict[str, Any] = {
         "success": True,
         "processed_files": processed_files,
         "successful_registrations": successful_registrations,

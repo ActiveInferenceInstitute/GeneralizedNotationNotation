@@ -12,7 +12,7 @@ and analysis.
 import asyncio
 import logging
 import os
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 # Import the LLM system directly to avoid circular imports
 from .llm_processor import (
@@ -22,7 +22,7 @@ from .llm_processor import (
     load_api_keys_from_env,
 )
 from .llm_processor import get_processor as get_global_processor
-from .providers.base_provider import LLMConfig, ProviderType
+from .providers.base_provider import LLMConfig, LLMMessage, ProviderType
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class LLMOperations:
     This class uses the multi-provider LLM system internally.
     """
 
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key: Optional[str] = None) -> None:
         """
         Initialize LLM operations.
 
@@ -76,14 +76,20 @@ class LLMOperations:
 
         return self._initialized
 
-    def _run_async(self, coro):
+    def _require_processor(self) -> LLMProcessor:
+        """Return the initialized processor or raise a clear runtime error."""
+        if self.processor is None:
+            raise RuntimeError("LLM processor not initialized")
+        return self.processor
+
+    def _run_async(self, coro: Any) -> Any:
         """Run a coroutine from synchronous context, handling already-running event loops."""
         import concurrent.futures
 
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:
-            loop = None
+            loop = cast(Any, None)
 
         if loop and loop.is_running():
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
@@ -103,7 +109,7 @@ class LLMOperations:
         Returns:
             Formatted prompt string
         """
-        prompt_parts = [
+        prompt_parts: list[Any] = [
             "You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications.",
             "",
             f"Task: {task_description}",
@@ -141,7 +147,10 @@ class LLMOperations:
             LLM response or error message
         """
         try:
-            return self._run_async(self._get_async_response(prompt, model, max_tokens))
+            return cast(
+                "str",
+                self._run_async(self._get_async_response(prompt, model, max_tokens)),
+            )
         except Exception as e:
             logger.error(f"Async LLM call failed: {e}")
             return f"Error: LLM call failed - {str(e)}"
@@ -158,8 +167,8 @@ class LLMOperations:
 
         try:
             # Use the new processor system
-            response = await self.processor.get_response(
-                messages=[{"role": "user", "content": prompt}],
+            response = await self._require_processor().get_response(
+                messages=[LLMMessage(role="user", content=prompt)],
                 model_name=model,
                 max_tokens=max_tokens,
                 temperature=0.3,
@@ -189,8 +198,11 @@ class LLMOperations:
             Summary text
         """
         try:
-            return self._run_async(
-                self._async_summarize_gnn(gnn_content, max_length, ollama_model)
+            return cast(
+                "str",
+                self._run_async(
+                    self._async_summarize_gnn(gnn_content, max_length, ollama_model)
+                ),
             )
         except Exception as e:
             logger.error(f"Async summarization failed: {e}")
@@ -207,14 +219,14 @@ class LLMOperations:
             raise Exception("Processor not initialized")
 
         if ollama_model:
-            response = await self.processor.analyze_gnn(
+            response = await self._require_processor().analyze_gnn(
                 gnn_content=gnn_content,
                 analysis_type=AnalysisType.SUMMARY,
                 provider_type=ProviderType.OLLAMA,
                 config=LLMConfig(model=ollama_model),
             )
         else:
-            response = await self.processor.analyze_gnn(
+            response = await self._require_processor().analyze_gnn(
                 gnn_content=gnn_content,
                 analysis_type=AnalysisType.SUMMARY,
             )
@@ -232,7 +244,9 @@ class LLMOperations:
             Structured analysis
         """
         try:
-            return self._run_async(self._async_analyze_structure(gnn_content))
+            return cast(
+                "str", self._run_async(self._async_analyze_structure(gnn_content))
+            )
         except Exception as e:
             logger.error(f"Async structure analysis failed: {e}")
             return f"Error: Structure analysis failed - {str(e)}"
@@ -242,7 +256,7 @@ class LLMOperations:
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
 
-        response = await self.processor.analyze_gnn(
+        response = await self._require_processor().analyze_gnn(
             gnn_content=gnn_content, analysis_type=AnalysisType.STRUCTURE
         )
 
@@ -260,8 +274,11 @@ class LLMOperations:
             List of generated questions
         """
         try:
-            return self._run_async(
-                self._async_generate_questions(gnn_content, num_questions)
+            return cast(
+                "list[str]",
+                self._run_async(
+                    self._async_generate_questions(gnn_content, num_questions)
+                ),
             )
         except Exception as e:
             logger.error(f"Async question generation failed: {e}")
@@ -274,7 +291,7 @@ class LLMOperations:
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
 
-        response = await self.processor.analyze_gnn(
+        response = await self._require_processor().analyze_gnn(
             gnn_content=gnn_content,
             analysis_type=AnalysisType.QUESTIONS,
             additional_context={"num_questions": num_questions},
@@ -287,7 +304,7 @@ class LLMOperations:
     ) -> List[str]:
         """Extract questions from LLM response."""
         lines = response.split("\n")
-        questions = []
+        questions: list[Any] = []
 
         for line in lines:
             line = line.strip()
@@ -313,7 +330,7 @@ class LLMOperations:
             Enhancement suggestions
         """
         try:
-            return self._run_async(self._async_enhance_gnn(gnn_content))
+            return cast("str", self._run_async(self._async_enhance_gnn(gnn_content)))
         except Exception as e:
             logger.error(f"Async enhancement failed: {e}")
             return f"Error: Enhancement failed - {str(e)}"
@@ -323,7 +340,7 @@ class LLMOperations:
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
 
-        response = await self.processor.analyze_gnn(
+        response = await self._require_processor().analyze_gnn(
             gnn_content=gnn_content, analysis_type=AnalysisType.ENHANCEMENT
         )
 
@@ -340,7 +357,7 @@ class LLMOperations:
             Validation results
         """
         try:
-            return self._run_async(self._async_validate_gnn(gnn_content))
+            return cast("str", self._run_async(self._async_validate_gnn(gnn_content)))
         except Exception as e:
             logger.error(f"Async validation failed: {e}")
             return f"Error: Validation failed - {str(e)}"
@@ -350,7 +367,7 @@ class LLMOperations:
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
 
-        response = await self.processor.analyze_gnn(
+        response = await self._require_processor().analyze_gnn(
             gnn_content=gnn_content, analysis_type=AnalysisType.VALIDATION
         )
 
@@ -463,7 +480,7 @@ O1: [Observation] dimension(2) # {Obs_Hot, Obs_Cold}
 S1 -> O1
         """
 
-        contexts = [
+        contexts: list[Any] = [
             "Context: This is a GNN file describing a simple model.",
             f"GNN File Content:\n{example_gnn_content}",
         ]

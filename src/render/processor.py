@@ -14,7 +14,7 @@ import logging
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, cast
 
 if TYPE_CHECKING:
     from gnn.types import GNNInternalRepresentation
@@ -24,7 +24,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore[assignment]
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 # Ensure src and project root are on the path for cross-module imports
@@ -72,7 +72,7 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
     Returns:
         Tuple of (is_valid, error_messages)
     """
-    errors = []
+    errors: list[Any] = []
 
     # Check basic dimensions
     if not hasattr(pomdp_space, "num_states") or pomdp_space.num_states is None:
@@ -129,7 +129,7 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
             uniform = np.ones(m.shape[0], dtype=np.float64) / m.shape[0]
             for col_idx in np.where(zero_mask.flatten())[0]:
                 m[:, col_idx] = uniform
-        return m
+        return cast(np.ndarray, m)
 
     try:
         # Normalize A matrix (Observation model)
@@ -140,7 +140,8 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
                 # Factorial structure: list of per-modality arrays
                 pomdp_space.A_matrix = [_normalize_columns(a) for a in A]
                 logger.debug(f"Normalized {len(A)} A-matrix modalities")
-            elif isinstance(A, np.ndarray):
+            else:
+                A = np.asarray(A, dtype=np.float64)
                 if A.ndim == 2:
                     pomdp_space.A_matrix = _normalize_columns(A)
                 elif A.ndim == 3:
@@ -156,7 +157,7 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
             B = pomdp_space.B_matrix
             if isinstance(B, list) and len(B) > 0 and isinstance(B[0], np.ndarray):
                 # Factorial structure: list of per-factor transition arrays
-                normalized_B = []
+                normalized_B: list[Any] = []
                 for b in B:
                     b = np.asarray(b, dtype=np.float64)
                     if b.ndim == 3:
@@ -168,7 +169,7 @@ def normalize_matrices(pomdp_space: Any, logger: logging.Logger) -> Any:
                     normalized_B.append(b)
                 pomdp_space.B_matrix = normalized_B
                 logger.debug(f"Normalized {len(B)} B-matrix factors")
-            elif isinstance(B, np.ndarray):
+            else:
                 B = np.asarray(B, dtype=np.float64)
                 if B.ndim == 3:
                     # (next_state, current_state, action)
@@ -250,7 +251,7 @@ def process_render(
             pomdp_available = False
 
         # Find GNN files
-        gnn_files = []
+        gnn_files: list[Any] = []
         for pattern in ["*.md", "*.json", "*.yaml", "*.yml"]:
             gnn_files.extend(target_dir.glob(pattern))
 
@@ -277,7 +278,7 @@ def process_render(
         else:
             logger.info("Target frameworks: all available")
 
-        results = {}
+        results: dict[Any, Any] = {}
         success_count = 0
         total_framework_successes = 0
         total_framework_attempts = 0
@@ -405,7 +406,7 @@ def process_render(
                     results[str(gnn_file)] = {"success": False, "error": error_msg}
 
         # Create overall processing summary
-        summary = {
+        summary: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processing_type": "POMDP-aware rendering"
             if pomdp_available
@@ -473,7 +474,7 @@ def process_render(
 
 
 def _process_single_gnn_file_basic(
-    gnn_file: Path, output_dir: Path, verbose: bool, **kwargs
+    gnn_file: Path, output_dir: Path, verbose: bool, **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Basic processing for a single GNN file without POMDP extraction.
@@ -498,16 +499,20 @@ def _process_single_gnn_file_basic(
         )
 
         # Create basic model data from filename
-        model_data = {"model_name": gnn_file.stem, "variables": [], "connections": []}
+        model_data: dict[str, Any] = {
+            "model_name": gnn_file.stem,
+            "variables": [],
+            "connections": [],
+        }
 
         # Create file-specific output directory
         file_output_dir = output_dir / gnn_file.stem
         file_output_dir.mkdir(parents=True, exist_ok=True)
 
-        generated_files = []
+        generated_files: list[Any] = []
 
         # Generate code for each framework
-        frameworks = {
+        frameworks: dict[str, Any] = {
             "pymdp": (generate_pymdp_code, ".py"),
             "rxinfer": (generate_rxinfer_code, ".jl"),
             "activeinference_jl": (generate_activeinference_jl_code, ".jl"),
@@ -674,7 +679,7 @@ def render_gnn_spec(
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Generator-based renderers: target → (generator_name, file_suffix)
-        _GENERATOR_TARGETS = {
+        _GENERATOR_TARGETS: dict[str, Any] = {
             "pymdp": ("generate_pymdp_code", "_pymdp.py"),
             "rxinfer": ("generate_rxinfer_code", "_rxinfer.jl"),
             "activeinference_jl": (
@@ -686,8 +691,18 @@ def render_gnn_spec(
         }
 
         target_lower = target.lower()
-        model_name = gnn_spec.get("model_name", "model")
-        files = []
+        if isinstance(gnn_spec, dict):
+            model_name = str(gnn_spec.get("model_name", "model"))
+            gnn_spec_mapping = gnn_spec
+        else:
+            model_name = gnn_spec.model_name or "model"
+            gnn_spec_mapping = {
+                "model_name": gnn_spec.model_name,
+                "variables": gnn_spec.variables,
+                "connections": gnn_spec.connections,
+                "parameters": gnn_spec.parameters,
+            }
+        files: list[Any] = []
 
         if target_lower in _GENERATOR_TARGETS:
             gen_name, suffix = _GENERATOR_TARGETS[target_lower]
@@ -704,7 +719,9 @@ def render_gnn_spec(
             try:
                 from .rxinfer import render_gnn_to_rxinfer_toml
 
-                success, msg, art = render_gnn_to_rxinfer_toml(gnn_spec, output_dir)
+                success, msg, art = render_gnn_to_rxinfer_toml(
+                    gnn_spec_mapping, output_dir
+                )
                 if success:
                     return True, msg, art
             except ImportError:
@@ -715,7 +732,9 @@ def render_gnn_spec(
                 from .discopy import render_gnn_to_discopy
 
                 output_file = output_dir / f"{model_name}_discopy.py"
-                success, msg, _warnings = render_gnn_to_discopy(gnn_spec, output_file)
+                success, msg, _warnings = render_gnn_to_discopy(
+                    gnn_spec_mapping, output_file
+                )
                 return (True, msg, [str(output_file)]) if success else (False, msg, [])
             except ImportError:
                 return False, "DisCoPy renderer not available", []
@@ -725,7 +744,7 @@ def render_gnn_spec(
                 from .jax.jax_renderer import render_gnn_to_jax
 
                 output_file = output_dir / f"{model_name}_jax.py"
-                success, msg, art = render_gnn_to_jax(gnn_spec, output_file)
+                success, msg, art = render_gnn_to_jax(gnn_spec_mapping, output_file)
                 if success:
                     return True, msg, art
             except ImportError:

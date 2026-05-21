@@ -14,6 +14,8 @@ Usage:
     python src/main.py --only-steps 21  # MCP step also registers API tools
 """
 
+from typing import Any
+
 __version__ = "1.6.0"
 
 
@@ -31,14 +33,14 @@ try:
 except ImportError:
     FASTAPI_AVAILABLE = False
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "rest_api": FASTAPI_AVAILABLE,
     "job_management": FASTAPI_AVAILABLE,
     "async_execution": FASTAPI_AVAILABLE,
     "mcp_tool_registration": True,
 }
 
-__all__ = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
+__all__: list[Any] = ["MODULE_NAME", "MODULE_VERSION", "FASTAPI_AVAILABLE", "FEATURES"]
 
 
 def get_module_info() -> dict:

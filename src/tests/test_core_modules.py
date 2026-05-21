@@ -16,17 +16,18 @@ All tests execute real methods and file operations; tests may skip if optional b
 
 import logging
 from pathlib import Path
+from typing import Any
 
 import pytest
 
-pytestmark = [pytest.mark.core, pytest.mark.fast]
+pytestmark: list[Any] = [pytest.mark.core, pytest.mark.fast]
 
 
 class TestGNNModuleComprehensive:
     """Comprehensive tests for the GNN processing module."""
 
     @pytest.mark.unit
-    def test_gnn_module_imports(self):
+    def test_gnn_module_imports(self) -> Any:
         """Test that GNN module can be imported and has expected structure."""
         from gnn import (
             discover_gnn_files,
@@ -48,7 +49,7 @@ class TestGNNModuleComprehensive:
         logging.info("GNN module imports validated")
 
     @pytest.mark.unit
-    def test_gnn_file_discovery(self, sample_gnn_files):
+    def test_gnn_file_discovery(self, sample_gnn_files: Any) -> Any:
         """Test GNN file discovery functionality."""
         from gnn import discover_gnn_files
 
@@ -68,7 +69,7 @@ class TestGNNModuleComprehensive:
         )
 
     @pytest.mark.unit
-    def test_gnn_file_parsing(self, sample_gnn_files):
+    def test_gnn_file_parsing(self, sample_gnn_files: Any) -> Any:
         """parse_gnn_file returns a structured dict for every sample fixture.
 
         Shape (see src/gnn/processor.py): success, file_path, file_name,
@@ -86,7 +87,7 @@ class TestGNNModuleComprehensive:
             assert isinstance(parsed["variables"], list)
 
     @pytest.mark.unit
-    def test_gnn_validation(self, sample_gnn_files):
+    def test_gnn_validation(self, sample_gnn_files: Any) -> Any:
         """Lightweight GNN structure validation against the sample fixtures."""
         for file_path in sample_gnn_files.values():
             content = file_path.read_text()
@@ -102,7 +103,7 @@ class TestRenderModuleComprehensive:
     """Comprehensive tests for the render module."""
 
     @pytest.mark.unit
-    def test_render_module_imports(self):
+    def test_render_module_imports(self) -> Any:
         """Test that render module can be imported and has expected structure."""
         from render import (
             process_render,
@@ -126,7 +127,7 @@ class TestRenderModuleComprehensive:
         logging.info("Render module imports validated")
 
     @pytest.mark.unit
-    def test_pymdp_rendering_callable(self):
+    def test_pymdp_rendering_callable(self) -> Any:
         """render_gnn_to_pymdp resolves to a real callable.
 
         Full pipeline-level rendering (parsed GNN spec → PyMDP script on
@@ -139,7 +140,7 @@ class TestRenderModuleComprehensive:
         assert callable(render_gnn_to_pymdp)
 
     @pytest.mark.unit
-    def test_rxinfer_rendering_callable(self):
+    def test_rxinfer_rendering_callable(self) -> Any:
         """render_gnn_to_rxinfer is callable; POMDP content validated elsewhere.
 
         src/tests/render/test_render_cli_targets.py parametrizes every
@@ -150,11 +151,11 @@ class TestRenderModuleComprehensive:
         assert callable(render_gnn_to_rxinfer)
 
     @pytest.mark.unit
-    def test_discopy_rendering(self, sample_gnn_files):
+    def test_discopy_rendering(self, sample_gnn_files: Any) -> Any:
         """Test DisCoPy rendering functionality."""
         from render import render_gnn_to_discopy
 
-        sample_spec = {
+        sample_spec: dict[str, Any] = {
             "model_name": "TestModel",
             "variables": [{"name": "A", "dimensions": [2, 2]}],
             "model_parameters": {},
@@ -180,7 +181,7 @@ class TestExecuteModuleComprehensive:
     """Comprehensive tests for the execute module."""
 
     @pytest.mark.unit
-    def test_execute_module_imports(self):
+    def test_execute_module_imports(self) -> Any:
         """Test that execute module can be imported and has expected functions."""
         from execute import (
             GNNExecutor,
@@ -197,7 +198,7 @@ class TestExecuteModuleComprehensive:
         )
 
     @pytest.mark.unit
-    def test_execution_environment_validation(self):
+    def test_execution_environment_validation(self) -> Any:
         """validate_execution_environment returns a structured status dict."""
         from execute import validate_execution_environment
 
@@ -207,7 +208,7 @@ class TestExecuteModuleComprehensive:
         assert "dependencies" in env_status
 
     @pytest.mark.unit
-    def test_safe_script_execution(self, isolated_temp_dir):
+    def test_safe_script_execution(self, isolated_temp_dir: Any) -> Any:
         """Test safe script execution functionality."""
         from execute import GNNExecutor
 
@@ -221,7 +222,7 @@ class TestLLMModuleComprehensive:
     """Comprehensive tests for the LLM module."""
 
     @pytest.mark.unit
-    def test_llm_module_imports(self):
+    def test_llm_module_imports(self) -> Any:
         """Test that LLM module can be imported and has expected functions."""
         from llm import (
             analyze_gnn_file_with_llm,
@@ -243,7 +244,7 @@ class TestLLMModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.slow
-    def test_llm_model_analysis(self, sample_gnn_files):
+    def test_llm_model_analysis(self, sample_gnn_files: Any) -> Any:
         """Test LLM-based model analysis functionality."""
         from llm import analyze_gnn_file_with_llm
 
@@ -254,11 +255,11 @@ class TestLLMModuleComprehensive:
             break
 
     @pytest.mark.unit
-    def test_llm_description_generation(self, sample_gnn_files):
+    def test_llm_description_generation(self, sample_gnn_files: Any) -> Any:
         """Test LLM description generation functionality."""
         from llm import generate_documentation
 
-        sample_analysis = {
+        sample_analysis: dict[str, Any] = {
             "file_path": "test.md",
             "file_name": "test.md",
             "semantic_analysis": {"model_type": "POMDP", "complexity_level": "simple"},
@@ -274,7 +275,7 @@ class TestMCPModuleComprehensive:
     """Comprehensive tests for the MCP module."""
 
     @pytest.mark.unit
-    def test_mcp_module_imports(self):
+    def test_mcp_module_imports(self) -> Any:
         """Test that MCP module can be imported and has expected structure."""
         from mcp import generate_mcp_report, get_available_tools, handle_mcp_request
         from mcp import register_module_tools as register_tools
@@ -286,7 +287,7 @@ class TestMCPModuleComprehensive:
         logging.info("MCP module imports validated")
 
     @pytest.mark.unit
-    def test_mcp_tool_registration(self):
+    def test_mcp_tool_registration(self) -> Any:
         """register_module_tools() returns a non-empty list + get_available_tools is a list."""
         from mcp import get_available_tools
         from mcp import register_module_tools as register_tools
@@ -300,11 +301,11 @@ class TestMCPModuleComprehensive:
         assert isinstance(available_tools, list)
 
     @pytest.mark.unit
-    def test_mcp_request_handling(self):
+    def test_mcp_request_handling(self) -> Any:
         """handle_mcp_request returns a dict with the request id echoed back."""
         from mcp import handle_mcp_request
 
-        sample_request = {"method": "tools/list", "params": {}, "id": 1}
+        sample_request: dict[str, Any] = {"method": "tools/list", "params": {}, "id": 1}
         response = handle_mcp_request(sample_request)
         assert isinstance(response, dict)
         assert "id" in response
@@ -314,7 +315,7 @@ class TestOntologyModuleComprehensive:
     """Comprehensive tests for the ontology module."""
 
     @pytest.mark.unit
-    def test_ontology_module_imports(self):
+    def test_ontology_module_imports(self) -> Any:
         """Test that ontology module can be imported and has expected functions."""
         from ontology import FEATURES, process_ontology
 
@@ -325,7 +326,7 @@ class TestOntologyModuleComprehensive:
         )
 
     @pytest.mark.unit
-    def test_ontology_term_validation(self, isolated_temp_dir):
+    def test_ontology_term_validation(self, isolated_temp_dir: Any) -> Any:
         """Test ontology processing functionality."""
         from ontology import process_ontology
 
@@ -347,7 +348,7 @@ class TestWebsiteModuleComprehensive:
     """Comprehensive tests for the website module."""
 
     @pytest.mark.unit
-    def test_website_module_imports(self):
+    def test_website_module_imports(self) -> Any:
         """Test that website module can be imported and has expected functions."""
         from website import FEATURES, process_website
 
@@ -358,7 +359,7 @@ class TestWebsiteModuleComprehensive:
         )
 
     @pytest.mark.unit
-    def test_website_generation(self, isolated_temp_dir):
+    def test_website_generation(self, isolated_temp_dir: Any) -> Any:
         """Test website generation functionality."""
         from website import process_website
 
@@ -374,7 +375,7 @@ class TestWebsiteModuleComprehensive:
         assert (output_dir / "index.html").exists(), "Index file should be created"
 
     @pytest.mark.unit
-    def test_html_report_creation(self, isolated_temp_dir):
+    def test_html_report_creation(self, isolated_temp_dir: Any) -> Any:
         """Test HTML report creation functionality."""
         from website import process_website
 
@@ -398,7 +399,7 @@ class TestSAPFModuleComprehensive:
     """Comprehensive tests for the SAPF module."""
 
     @pytest.mark.unit
-    def test_sapf_module_imports(self):
+    def test_sapf_module_imports(self) -> Any:
         """Test that SAPF module can be imported and has expected structure."""
         from audio.sapf import (
             convert_gnn_to_sapf,
@@ -414,7 +415,7 @@ class TestSAPFModuleComprehensive:
         logging.info("SAPF module imports validated successfully")
 
     @pytest.mark.unit
-    def test_gnn_to_sapf_conversion(self):
+    def test_gnn_to_sapf_conversion(self) -> Any:
         """convert_gnn_to_sapf turns a GNN markdown string into SAPF code."""
         from audio.sapf import convert_gnn_to_sapf
 
@@ -431,7 +432,7 @@ class TestSAPFModuleComprehensive:
         assert len(sapf_code) > 0, "convert_gnn_to_sapf produced empty output"
 
     @pytest.mark.unit
-    def test_sapf_validation(self):
+    def test_sapf_validation(self) -> Any:
         """validate_sapf_code returns (bool, list) for any input string."""
         from audio.sapf import validate_sapf_code
 
@@ -444,7 +445,7 @@ class TestSAPFModuleComprehensive:
         assert isinstance(issues, list)
 
     @pytest.mark.unit
-    def test_sapf_audio_generation_callable(self):
+    def test_sapf_audio_generation_callable(self) -> Any:
         """generate_sapf_audio resolves to a real callable.
 
         Full audio synthesis exercised in src/tests/audio/. Here we guard the
@@ -459,7 +460,7 @@ class TestCoreModuleIntegration:
     """Integration tests for core module coordination."""
 
     @pytest.mark.integration
-    def test_cross_module_public_surface(self):
+    def test_cross_module_public_surface(self) -> Any:
         """Cross-module public APIs are importable together without circular-import issues.
 
         Full end-to-end flow (parse → render → execute → report) is covered by
@@ -483,10 +484,16 @@ class TestCoreModuleIntegration:
         assert isinstance(LLMProcessor, type)
 
 
-def test_core_module_completeness():
+def test_core_module_completeness() -> Any:
     """Test that all core modules are complete and functional."""
-    core_modules = ["gnn", "render", "execute", "validation", "visualization"]
-    imported = []
+    core_modules: list[Any] = [
+        "gnn",
+        "render",
+        "execute",
+        "validation",
+        "visualization",
+    ]
+    imported: list[Any] = []
     for module_name in core_modules:
         try:
             module = __import__(module_name)
@@ -505,11 +512,11 @@ def test_core_module_completeness():
 
 
 @pytest.mark.slow
-def test_core_module_performance():
+def test_core_module_performance() -> Any:
     """Test performance characteristics of core modules."""
     import time
 
-    modules_to_time = ["gnn", "render", "validation"]
+    modules_to_time: list[Any] = ["gnn", "render", "validation"]
     for module_name in modules_to_time:
         start = time.time()
         try:

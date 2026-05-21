@@ -18,7 +18,7 @@ import sys
 import threading
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 # --- Configuration ---
 # Adjust these paths if your project structure is different
@@ -29,12 +29,12 @@ PYTHON_EXECUTABLE = sys.executable  # Use the same python interpreter
 # --- Helper Functions ---
 
 
-def print_mcp_response(data):
+def print_mcp_response(data: Any) -> Any:
     """Prints JSON data with indentation."""
     print(json.dumps(data, indent=2, sort_keys=True))
 
 
-def read_server_output(process, output_queue, error_queue):
+def read_server_output(process: Any, output_queue: Any, error_queue: Any) -> Any:
     """Reads stdout from the server process and puts lines into a queue."""
     if process.stdout:
         for line in iter(process.stdout.readline, ""):
@@ -42,7 +42,7 @@ def read_server_output(process, output_queue, error_queue):
         process.stdout.close()
 
 
-def read_server_errors(process, error_queue):
+def read_server_errors(process: Any, error_queue: Any) -> Any:
     """Reads stderr from the server process and puts lines into a queue."""
     if process.stderr:
         for line in iter(process.stderr.readline, ""):
@@ -53,12 +53,12 @@ def read_server_errors(process, error_queue):
 class StdioMCPClient:
     """A simple client to interact with an MCP server over stdio."""
 
-    def __init__(self, process):
+    def __init__(self, process: Any) -> None:
         self.process = process
         self.request_id_counter = 1
         self.response_timeout = 10  # seconds
-        self.server_stdout_queue = queue.Queue()
-        self.server_stderr_queue = queue.Queue()
+        self.server_stdout_queue: queue.Queue[str] = queue.Queue()
+        self.server_stderr_queue: queue.Queue[str] = queue.Queue()
 
         self.stdout_thread = threading.Thread(
             target=read_server_output, args=(self.process, self.server_stdout_queue)
@@ -80,7 +80,11 @@ class StdioMCPClient:
         request_id = f"inspector-{self.request_id_counter}"
         self.request_id_counter += 1
 
-        rpc_request = {"jsonrpc": "2.0", "method": method, "id": request_id}
+        rpc_request: dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "method": method,
+            "id": request_id,
+        }
         if params is not None:
             rpc_request["params"] = params
 
@@ -110,7 +114,7 @@ class StdioMCPClient:
                 print(f"SERVER -> INSPECTOR: {line.strip()}", file=sys.stderr)
                 response = json.loads(line)
                 if response.get("id") == request_id:
-                    return response
+                    return cast("dict[str, Any]", response)
                 else:
                     # Might be a notification or unrelated message, log it and continue
                     print(
@@ -165,7 +169,7 @@ class StdioMCPClient:
 # --- CLI Subcommands ---
 
 
-def handle_list_capabilities(client: StdioMCPClient, args):
+def handle_list_capabilities(client: StdioMCPClient, args: Any) -> Any:
     """Handles the 'list-capabilities' command."""
     print("Inspector: Requesting server capabilities...", file=sys.stderr)
     try:
@@ -177,7 +181,7 @@ def handle_list_capabilities(client: StdioMCPClient, args):
             print(f"Cause: {e.__cause__}", file=sys.stderr)
 
 
-def handle_execute_tool(client: StdioMCPClient, args):
+def handle_execute_tool(client: StdioMCPClient, args: Any) -> Any:
     """Handles the 'execute-tool' command."""
     tool_name = args.tool_name
     try:
@@ -197,7 +201,7 @@ def handle_execute_tool(client: StdioMCPClient, args):
         print(f"Error executing tool '{tool_name}': {e}", file=sys.stderr)
 
 
-def handle_get_resource(client: StdioMCPClient, args):
+def handle_get_resource(client: StdioMCPClient, args: Any) -> Any:
     """Handles the 'get-resource' command."""
     uri = args.uri
     print(f"Inspector: Attempting to get resource '{uri}'...", file=sys.stderr)

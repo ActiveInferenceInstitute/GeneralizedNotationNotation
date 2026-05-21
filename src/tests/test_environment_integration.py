@@ -63,7 +63,13 @@ class TestEnvironmentModuleIntegration:
     @pytest.mark.integration
     def test_all_modules_have_info(self) -> None:
         """Test all modules provide info."""
-        modules_with_info = ["gnn", "render", "report", "audio", "visualization"]
+        modules_with_info: list[Any] = [
+            "gnn",
+            "render",
+            "report",
+            "audio",
+            "visualization",
+        ]
 
         for module_name in modules_with_info:
             try:

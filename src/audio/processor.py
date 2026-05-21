@@ -12,7 +12,7 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 # Optional numpy import with recovery
 try:
@@ -20,7 +20,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 try:
@@ -44,7 +44,7 @@ from .generator import (
 
 
 def process_audio(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process GNN files with audio generation and sonification.
@@ -66,7 +66,7 @@ def process_audio(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,
             "success": True,
@@ -103,7 +103,7 @@ def process_audio(
                     results["audio_analysis"].append(analysis)
 
                 except Exception as e:
-                    error_info = {
+                    error_info: dict[str, Any] = {
                         "file": str(gnn_file),
                         "error": str(e),
                         "error_type": type(e).__name__,
@@ -127,15 +127,15 @@ def process_audio(
         else:
             log_step_error(logger, "Audio processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, "Audio processing failed", {"error": str(e)})
+        log_step_error(logger, "Audio processing failed", context={"error": str(e)})
         return False
 
 
 def generate_audio_from_gnn(
-    file_path_or_content, output_dir: Path | None = None, verbose: bool = False
+    file_path_or_content: Any, output_dir: Path | None = None, verbose: bool = False
 ) -> Dict[str, Any]:
     """
     Generate audio from a GNN model.
@@ -167,7 +167,7 @@ def generate_audio_from_gnn(
         connections = extract_connections_for_audio(content)
 
         # Generate different types of audio
-        audio_files = {}
+        audio_files: dict[Any, Any] = {}
 
         # 1. Generate tonal representation
         tonal_audio = generate_tonal_representation(variables, connections)
@@ -205,10 +205,10 @@ def generate_audio_from_gnn(
 
 def extract_variables_for_audio(content: str) -> List[Dict[str, Any]]:
     """Extract variables from GNN content for audio generation."""
-    variables = []
+    variables: list[Any] = []
 
     # Look for variable definitions
-    var_patterns = [
+    var_patterns: list[Any] = [
         r"(\w+)\s*:\s*(\w+)",  # name: type
         r"(\w+)\s*=\s*([^;\n]+)",  # name = value
         r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
@@ -230,10 +230,10 @@ def extract_variables_for_audio(content: str) -> List[Dict[str, Any]]:
 
 def extract_connections_for_audio(content: str) -> List[Dict[str, Any]]:
     """Extract connections from GNN content for audio generation."""
-    connections = []
+    connections: list[Any] = []
 
     # Look for connection patterns
-    conn_patterns = [
+    conn_patterns: list[Any] = [
         r"(\w+)\s*->\s*(\w+)",  # source -> target
         r"(\w+)\s*→\s*(\w+)",  # source → target
         r"(\w+)\s*connects\s*(\w+)",  # source connects target
@@ -266,7 +266,7 @@ def save_audio_file(
         write_basic_wav(audio, file_path, sample_rate)
 
 
-def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int):
+def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int) -> Any:
     """Write basic WAV file without external dependencies."""
     import struct
 
@@ -297,6 +297,7 @@ def create_sonification(
 ) -> Dict[str, Any]:
     """Create sonification of the GNN model."""
     try:
+        file_path = Path(file_path)
         with open(file_path, "r") as f:
             content = f.read()
 
@@ -322,10 +323,10 @@ def create_sonification(
 
 def extract_model_dynamics(content: str) -> List[Dict[str, Any]]:
     """Extract model dynamics for sonification."""
-    dynamics = []
+    dynamics: list[Any] = []
 
     # Look for dynamic elements
-    dynamic_patterns = [
+    dynamic_patterns: list[Any] = [
         r"(\w+)\s*evolves",  # variable evolves
         r"(\w+)\s*changes",  # variable changes
         r"(\w+)\s*updates",  # variable updates
@@ -350,7 +351,7 @@ def analyze_audio_characteristics(
     audio_result: Dict[str, Any], verbose: bool = False
 ) -> Dict[str, Any]:
     """Analyze characteristics of generated audio."""
-    analysis = {
+    analysis: dict[str, Any] = {
         "file_path": audio_result["file_path"],
         "audio_characteristics": {},
         "spectral_analysis": {},

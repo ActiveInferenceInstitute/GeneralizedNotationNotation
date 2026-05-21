@@ -6,6 +6,7 @@ Uses pytest parametrizations for deterministic adversarial coverage.
 """
 
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -17,7 +18,7 @@ from gnn.processor import (
 )
 
 # Deterministic adversarial permutations to emulate Hypothesis coverage
-ADVERSARIAL_PAYLOADS = [
+ADVERSARIAL_PAYLOADS: list[Any] = [
     "",  # Empty
     "   \n  \t ",  # Whitespace only
     "# Single Heading",  # Single headless
@@ -35,7 +36,7 @@ ADVERSARIAL_PAYLOADS = [
 
 @pytest.mark.unit
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
-def test_extract_sections_lightweight_resilience(content: str):
+def test_extract_sections_lightweight_resilience(content: str) -> Any:
     """Ensure section extraction never crashes on completely arbitrary text."""
     sections = _extract_sections_lightweight(content)
     assert isinstance(sections, list)
@@ -45,7 +46,7 @@ def test_extract_sections_lightweight_resilience(content: str):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
-def test_extract_variables_lightweight_resilience(content: str):
+def test_extract_variables_lightweight_resilience(content: str) -> Any:
     """Ensure variable extraction never crashes on completely arbitrary text."""
     variables = _extract_variables_lightweight(content)
     assert isinstance(variables, list)
@@ -55,7 +56,7 @@ def test_extract_variables_lightweight_resilience(content: str):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
-def test_parse_gnn_file_resilience(content: str):
+def test_parse_gnn_file_resilience(content: str) -> Any:
     """Ensure full GNN parsing never crashes on pseudo-valid/chaotic content."""
     sample_file = Path("sample.gnn")
     result = parse_gnn_file(sample_file, content=content)
@@ -77,7 +78,7 @@ def test_parse_gnn_file_resilience(content: str):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("content", ADVERSARIAL_PAYLOADS)
-def test_validate_gnn_structure_resilience(content: str):
+def test_validate_gnn_structure_resilience(content: str) -> Any:
     """Ensure validation logic handles adversarial brackets and missing properties cleanly."""
     sample_file = Path("sample.gnn")
     result = validate_gnn_structure(sample_file, content=content)

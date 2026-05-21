@@ -10,6 +10,7 @@ Contract under test (src/utils/pipeline_template.py::_coerce_exit_code):
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -26,23 +27,23 @@ def logger() -> logging.Logger:
     return logging.getLogger("test_pipeline_template_exit_codes")
 
 
-def test_bool_true_maps_to_zero(logger):
+def test_bool_true_maps_to_zero(logger: Any) -> Any:
     assert _coerce_exit_code(True, "test_step", logger) == 0
 
 
-def test_bool_false_maps_to_one(logger):
+def test_bool_false_maps_to_one(logger: Any) -> Any:
     assert _coerce_exit_code(False, "test_step", logger) == 1
 
 
-def test_int_zero_passes_through(logger):
+def test_int_zero_passes_through(logger: Any) -> Any:
     assert _coerce_exit_code(0, "test_step", logger) == 0
 
 
-def test_int_one_passes_through(logger):
+def test_int_one_passes_through(logger: Any) -> Any:
     assert _coerce_exit_code(1, "test_step", logger) == 1
 
 
-def test_int_two_passes_through_and_warns(caplog, logger):
+def test_int_two_passes_through_and_warns(caplog: Any, logger: Any) -> Any:
     caplog.set_level(logging.WARNING)
     assert _coerce_exit_code(2, "test_step", logger) == 2
     # The exact wording is not contracted, but a warning MUST be emitted
@@ -50,19 +51,19 @@ def test_int_two_passes_through_and_warns(caplog, logger):
     assert any(r.levelno >= logging.WARNING for r in caplog.records)
 
 
-def test_int_three_passes_through(logger):
+def test_int_three_passes_through(logger: Any) -> Any:
     # Unusual but valid — the contract says "int passthrough".
     assert _coerce_exit_code(3, "test_step", logger) == 3
 
 
-def test_none_coerces_to_one(logger):
+def test_none_coerces_to_one(logger: Any) -> Any:
     # None is falsy, so it maps to exit-code 1.
     assert _coerce_exit_code(None, "test_step", logger) == 1
 
 
-def test_truthy_string_coerces_to_zero(logger):
+def test_truthy_string_coerces_to_zero(logger: Any) -> Any:
     assert _coerce_exit_code("ok", "test_step", logger) == 0
 
 
-def test_empty_string_coerces_to_one(logger):
+def test_empty_string_coerces_to_one(logger: Any) -> Any:
     assert _coerce_exit_code("", "test_step", logger) == 1

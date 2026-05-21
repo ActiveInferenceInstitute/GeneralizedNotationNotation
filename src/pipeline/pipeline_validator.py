@@ -36,7 +36,7 @@ class PipelineValidator:
         self.verbose = verbose
         self.logger = self._setup_logging()
         self.dependency_manager = get_pipeline_dependency_manager()
-        self.validation_results = {}
+        self.validation_results: dict[str, Any] = {}
 
     def _setup_logging(self) -> logging.Logger:
         """Set up logging for the validator."""
@@ -55,7 +55,7 @@ class PipelineValidator:
         """Validate that code generation issues have been fixed."""
         self.logger.info("🔧 Validating code generation fixes...")
 
-        fixes_validation = {
+        fixes_validation: dict[str, Any] = {
             "pymdp_import_fix": False,
             "jax_flax_fix": False,
             "julia_matrix_fix": False,
@@ -117,8 +117,13 @@ class PipelineValidator:
 
         try:
             # Test key pipeline steps
-            test_steps = ["8_visualization", "11_render", "12_execute", "15_audio"]
-            step_results = {}
+            test_steps: list[Any] = [
+                "8_visualization",
+                "11_render",
+                "12_execute",
+                "15_audio",
+            ]
+            step_results: dict[Any, Any] = {}
 
             for step in test_steps:
                 result = self.dependency_manager.check_step_dependencies(step)
@@ -169,14 +174,16 @@ class PipelineValidator:
         else:
             return "degraded"
 
-    def test_pipeline_execution(self, steps: List[str] = None) -> Dict[str, Any]:
+    def test_pipeline_execution(
+        self, steps: (List[str]) | None = None
+    ) -> Dict[str, Any]:
         """Test actual pipeline execution with improvements."""
         self.logger.info("🚀 Testing pipeline execution...")
 
         if steps is None:
             steps = ["3", "5", "7", "8", "11", "15"]  # Key steps for testing
 
-        test_results = {
+        test_results: dict[str, Any] = {
             "execution_successful": False,
             "step_results": {},
             "execution_time": 0,
@@ -189,7 +196,7 @@ class PipelineValidator:
             start_time = datetime.now()
 
             # Use main.py to execute pipeline steps
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 "src/main.py",
                 "--target-dir",
@@ -230,7 +237,7 @@ class PipelineValidator:
 
             # Parse individual step results if summary file exists
             # (main.py writes to 00_pipeline_summary/ subdir; check both locations)
-            summary_candidates = [
+            summary_candidates: list[Any] = [
                 Path("output/00_pipeline_summary/pipeline_execution_summary.json"),
                 Path("output/pipeline_execution_summary.json"),
             ]
@@ -273,7 +280,7 @@ class PipelineValidator:
         """Validate that pipeline steps achieve SUCCESS status instead of SUCCESS_WITH_WARNINGS."""
         self.logger.info("📊 Validating SUCCESS status achievement...")
 
-        validation = {
+        validation: dict[str, Any] = {
             "success_rate_improved": False,
             "warnings_reduced": False,
             "no_critical_failures": False,
@@ -330,7 +337,7 @@ class PipelineValidator:
         """Generate comprehensive validation and improvement report."""
         self.logger.info("📋 Generating comprehensive validation report...")
 
-        report = {
+        report: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "validator_version": "1.0.0",
             "improvements_validated": False,
@@ -370,7 +377,7 @@ class PipelineValidator:
 
             # 6. Calculate pipeline health
             if execution_test.get("step_results"):
-                health_scores = []
+                health_scores: list[Any] = []
                 for result in execution_test["step_results"].values():
                     if result["status"] == "SUCCESS":
                         health_scores.append(1.0)
@@ -392,7 +399,7 @@ class PipelineValidator:
                     report["pipeline_health"] = "poor"
 
             # 7. Generate recommendations
-            recommendations = []
+            recommendations: list[Any] = []
 
             if not code_fixes_success:
                 recommendations.append("Complete remaining code generation fixes")
@@ -438,7 +445,7 @@ class PipelineValidator:
         return report
 
     def save_validation_report(
-        self, report: Dict[str, Any], output_path: Path = None
+        self, report: Dict[str, Any], output_path: (Path) | None = None
     ) -> Path:
         """Save validation report to file."""
         if output_path is None:

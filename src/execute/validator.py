@@ -9,20 +9,21 @@ to ensure safe and reliable execution of GNN pipeline simulations.
 import platform
 import subprocess  # nosec B404
 import sys
+from typing import Any
 
 # psutil is optional; fall back gracefully if unavailable
 try:
-    import psutil  # type: ignore
+    import psutil
 
     _PSUTIL_AVAILABLE = True
 except Exception:
-    psutil = None  # type: ignore
+    psutil = cast(Any, None)
     _PSUTIL_AVAILABLE = False
 import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 
 @dataclass
@@ -45,7 +46,7 @@ class EnvironmentValidation:
     results: List[ValidationResult] = field(default_factory=list)
     summary: Dict[str, int] = field(default_factory=dict)
 
-    def add_result(self, result: ValidationResult):
+    def add_result(self, result: ValidationResult) -> Any:
         """Add a validation result."""
         self.results.append(result)
         self.summary[result.status] = self.summary.get(result.status, 0) + 1
@@ -99,7 +100,7 @@ def check_python_environment() -> ValidationResult:
 
 def check_system_resources() -> List[ValidationResult]:
     """Validate system resources (memory, disk, CPU)."""
-    results = []
+    results: list[Any] = []
 
     try:
         # Memory check (only if psutil available)
@@ -263,9 +264,9 @@ def check_system_resources() -> List[ValidationResult]:
 
 def check_dependencies() -> List[ValidationResult]:
     """Check for required Python packages."""
-    results = []
+    results: list[Any] = []
 
-    required_packages = [
+    required_packages: list[Any] = [
         ("numpy", "1.19.0"),
         ("matplotlib", "3.3.0"),
         ("networkx", "2.5"),
@@ -276,7 +277,7 @@ def check_dependencies() -> List[ValidationResult]:
     ]
 
     # Optional execution-time dependencies (do not fail overall if missing)
-    optional_packages = [("pymdp", "0.0.8")]
+    optional_packages: list[Any] = [("pymdp", "0.0.8")]
 
     for package, min_version in required_packages:
         try:
@@ -366,7 +367,7 @@ def check_dependencies() -> List[ValidationResult]:
 
 def check_file_permissions() -> List[ValidationResult]:
     """Check file system permissions for execution."""
-    results = []
+    results: list[Any] = []
 
     try:
         # Check write permissions in current directory
@@ -546,7 +547,9 @@ def validate_execution_environment() -> Dict[str, Any]:
     }
 
 
-def log_validation_results(validation_results: Dict[str, Any], logger: logging.Logger):
+def log_validation_results(
+    validation_results: Dict[str, Any], logger: logging.Logger
+) -> Any:
     """Log validation results in a structured format."""
     logger.info(
         f"Environment validation completed: {validation_results['overall_status']}"

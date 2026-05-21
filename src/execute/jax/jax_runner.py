@@ -108,9 +108,9 @@ def execute_jax_script(
 
     # Check JAX and related dependencies
     # Only jax and numpy are required — generated scripts use pure JAX
-    required_deps = ["jax", "numpy"]
-    optional_deps = ["flax", "optax"]
-    missing_deps = []
+    required_deps: list[Any] = ["jax", "numpy"]
+    optional_deps: list[Any] = ["flax", "optax"]
+    missing_deps: list[Any] = []
 
     for dep in required_deps:
         try:
@@ -201,7 +201,7 @@ def execute_jax_script(
                 f.write(result.stderr or "")
 
             # Save execution log JSON
-            execution_log = {
+            execution_log: dict[str, Any] = {
                 "script": str(abs_script_path),
                 "return_code": result.returncode,
                 "success": success,

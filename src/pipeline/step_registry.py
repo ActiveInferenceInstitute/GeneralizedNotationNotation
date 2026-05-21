@@ -48,7 +48,7 @@ class StepInfo:
 def pipeline_step(
     name: str,
     step_num: int,
-    depends_on: List[int] = None,
+    depends_on: (List[int]) | None = None,
     phase: str = "core",
 ) -> Callable:
     """

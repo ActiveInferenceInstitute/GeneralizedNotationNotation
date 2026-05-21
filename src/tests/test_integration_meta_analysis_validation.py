@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -21,7 +22,7 @@ def test_validate_empty_records() -> None:
 
 
 def test_validate_full_grid_no_grid_issues() -> None:
-    records = [
+    records: list[Any] = [
         SweepRecord(
             "pymdp_scaling_N2_T10",
             "pymdp",
@@ -58,7 +59,7 @@ def test_validate_full_grid_no_grid_issues() -> None:
 
 
 def test_validate_grid_missing_cell() -> None:
-    records = [
+    records: list[Any] = [
         SweepRecord(
             "pymdp_scaling_N2_T10",
             "pymdp",
@@ -93,7 +94,7 @@ def test_validate_timestep_mismatch(tmp_path: Path) -> None:
         json.dumps({"observations": [1, 1, 1, 1, 1], "num_timesteps": 5}),
         encoding="utf-8",
     )
-    records = [
+    records: list[Any] = [
         SweepRecord(
             "pymdp_scaling_N4_T10",
             "pymdp",
@@ -167,7 +168,7 @@ def test_validate_sim_json_unreadable(tmp_path: Path) -> None:
 
 def test_compute_meta_statistics_smoke() -> None:
     pytest.importorskip("numpy")
-    records = [
+    records: list[Any] = [
         SweepRecord(
             "p_N2_T10",
             "pymdp",
@@ -199,7 +200,7 @@ def test_compute_meta_statistics_smoke() -> None:
 def test_compute_meta_statistics_loglog_pymdp_by_t() -> None:
     """At least two N values at fixed T yields a slope entry for that T."""
     pytest.importorskip("numpy")
-    records = [
+    records: list[Any] = [
         SweepRecord(
             "pymdp_scaling_N2_T100",
             "pymdp",
@@ -237,7 +238,7 @@ def test_run_meta_analysis_writes_artifacts_and_returns_paths(tmp_path: Path) ->
     exec_root = tmp_path / "12_execute_output"
     summaries = exec_root / "summaries"
     summaries.mkdir(parents=True)
-    payload = {
+    payload: dict[str, Any] = {
         "execution_details": [
             {
                 "model_name": "pymdp_scaling_N4_T10",
@@ -285,7 +286,7 @@ def test_collect_slim_execution_summary_preserves_timing_for_collector(
     exec_root = tmp_path / "12_execute_output"
     summaries = exec_root / "summaries"
     summaries.mkdir(parents=True)
-    detail = {
+    detail: dict[str, Any] = {
         "model_name": "pymdp_scaling_N16_T50",
         "framework": "pymdp",
         "success": True,
@@ -297,7 +298,10 @@ def test_collect_slim_execution_summary_preserves_timing_for_collector(
         "execution_time_samples": [3.2, 3.3, 3.4],
         "stdout_length": 42,
     }
-    payload = {"execution_summary_format": "slim_v1", "execution_details": [detail]}
+    payload: dict[str, Any] = {
+        "execution_summary_format": "slim_v1",
+        "execution_details": [detail],
+    }
     (summaries / "execution_summary.json").write_text(
         json.dumps(payload), encoding="utf-8"
     )

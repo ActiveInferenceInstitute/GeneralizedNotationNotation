@@ -7,6 +7,7 @@ Tests the ReportGenerator class and report generation pipeline.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,7 +19,7 @@ class TestReportGeneratorCore:
     """Core tests for ReportGenerator class."""
 
     @pytest.mark.fast
-    def test_report_generator_instantiation(self):
+    def test_report_generator_instantiation(self) -> Any:
         """Test ReportGenerator can be instantiated."""
         from report import ReportGenerator
 
@@ -26,7 +27,7 @@ class TestReportGeneratorCore:
         assert generator is not None
 
     @pytest.mark.fast
-    def test_report_generator_generate(self):
+    def test_report_generator_generate(self) -> Any:
         """Test basic report generation."""
         from report import ReportGenerator
 
@@ -36,13 +37,13 @@ class TestReportGeneratorCore:
         assert result is not None
 
     @pytest.mark.fast
-    def test_report_generator_generate_report(self):
+    def test_report_generator_generate_report(self) -> Any:
         """Test generate_report with sample data."""
         from report import ReportGenerator
 
         generator = ReportGenerator()
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Test Report",
             "sections": ["Analysis", "Results"],
             "metrics": {"accuracy": 0.95},
@@ -56,11 +57,11 @@ class TestReportGeneration:
     """Tests for report generation functions."""
 
     @pytest.mark.fast
-    def test_generate_html_report(self, tmp_path):
+    def test_generate_html_report(self, tmp_path: Any) -> Any:
         """Test HTML report generation."""
         from report import generate_html_report
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Test HTML Report",
             "content": "This is test content",
             "sections": [],
@@ -77,11 +78,11 @@ class TestReportGeneration:
             assert "html" in content.lower()
 
     @pytest.mark.fast
-    def test_generate_markdown_report(self, tmp_path):
+    def test_generate_markdown_report(self, tmp_path: Any) -> Any:
         """Test Markdown report generation."""
         from report import generate_markdown_report
 
-        data = {
+        data: dict[str, Any] = {
             "title": "Test Markdown Report",
             "content": "This is test content",
             "sections": [],
@@ -95,7 +96,7 @@ class TestReportGeneration:
         assert content is not None
 
     @pytest.mark.integration
-    def test_generate_comprehensive_report(self, tmp_path):
+    def test_generate_comprehensive_report(self, tmp_path: Any) -> Any:
         """Test comprehensive report generation."""
         import logging
 
@@ -124,7 +125,7 @@ class TestReportProcessing:
     """Tests for report processing functionality."""
 
     @pytest.mark.integration
-    def test_process_report_with_empty_directory(self, tmp_path):
+    def test_process_report_with_empty_directory(self, tmp_path: Any) -> Any:
         """Test report processing with empty input directory."""
         import logging
 
@@ -144,7 +145,9 @@ class TestReportProcessing:
         assert result is True or result is False
 
     @pytest.mark.integration
-    def test_process_report_with_sample_data(self, tmp_path, sample_gnn_files):
+    def test_process_report_with_sample_data(
+        self, tmp_path: Any, sample_gnn_files: Any
+    ) -> Any:
         """Test report processing with sample GNN files."""
         import logging
 
@@ -166,7 +169,7 @@ class TestReportProcessing:
         assert result is not None
 
     @pytest.mark.fast
-    def test_analyze_gnn_file(self, sample_gnn_files):
+    def test_analyze_gnn_file(self, sample_gnn_files: Any) -> Any:
         """Test GNN file analysis for reporting."""
         from report import analyze_gnn_file
 
@@ -183,11 +186,11 @@ class TestReportValidation:
     """Tests for report validation functionality."""
 
     @pytest.mark.fast
-    def test_validate_report_valid_data(self):
+    def test_validate_report_valid_data(self) -> Any:
         """Test validation with valid report data."""
         from report import validate_report
 
-        valid_data = {
+        valid_data: dict[str, Any] = {
             "title": "Test Report",
             "generated_at": "2026-01-23T12:00:00",
             "sections": ["Overview", "Analysis"],
@@ -197,7 +200,7 @@ class TestReportValidation:
         assert result is True or result is None
 
     @pytest.mark.fast
-    def test_validate_report_empty_data(self):
+    def test_validate_report_empty_data(self) -> Any:
         """Test validation with empty data."""
         from report import validate_report
 
@@ -210,7 +213,7 @@ class TestReportModuleInfo:
     """Tests for report module information."""
 
     @pytest.mark.fast
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> Any:
         """Test module info retrieval."""
         from report import get_module_info
 
@@ -221,7 +224,7 @@ class TestReportModuleInfo:
         assert "name" in info or "module" in info or len(info) > 0
 
     @pytest.mark.fast
-    def test_get_supported_formats(self):
+    def test_get_supported_formats(self) -> Any:
         """Test supported formats retrieval."""
         from report import get_supported_formats
 
@@ -235,7 +238,7 @@ class TestReportAPICompleteness:
     """Tests to verify all expected report APIs are available."""
 
     @pytest.mark.fast
-    def test_report_formatter_instantiation(self):
+    def test_report_formatter_instantiation(self) -> Any:
         """Test ReportFormatter can be instantiated."""
         from report import ReportFormatter
 
@@ -243,35 +246,35 @@ class TestReportAPICompleteness:
         assert formatter is not None
 
     @pytest.mark.fast
-    def test_report_formatter_format(self):
+    def test_report_formatter_format(self) -> Any:
         """Test ReportFormatter.format method."""
         from report import ReportFormatter
 
         formatter = ReportFormatter()
 
-        data = {"key": "value", "nested": {"a": 1}}
+        data: dict[str, Any] = {"key": "value", "nested": {"a": 1}}
         result = formatter.format(data, kind="markdown")
 
         assert result is not None
 
     @pytest.mark.fast
-    def test_report_formatter_format_markdown(self):
+    def test_report_formatter_format_markdown(self) -> Any:
         """Test ReportFormatter markdown formatting."""
         from report import ReportFormatter
 
         formatter = ReportFormatter()
-        content = {"title": "Test", "body": "Content here"}
+        content: dict[str, Any] = {"title": "Test", "body": "Content here"}
 
         result = formatter.format_markdown(content)
         assert result is not None
 
     @pytest.mark.fast
-    def test_report_formatter_format_html(self):
+    def test_report_formatter_format_html(self) -> Any:
         """Test ReportFormatter HTML formatting."""
         from report import ReportFormatter
 
         formatter = ReportFormatter()
-        content = {"title": "Test", "body": "Content here"}
+        content: dict[str, Any] = {"title": "Test", "body": "Content here"}
 
         result = formatter.format_html(content)
         assert result is not None

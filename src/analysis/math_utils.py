@@ -211,7 +211,7 @@ def analyze_active_inference_metrics(
     Returns:
         Dictionary with Active Inference analysis metrics
     """
-    analysis = {
+    analysis: dict[str, Any] = {
         "model_name": model_name,
         "num_timesteps": len(beliefs_trajectory),
         "metrics": {},
@@ -224,7 +224,9 @@ def analyze_active_inference_metrics(
     beliefs_array = np.array(beliefs_trajectory)
 
     # Belief entropy over time
-    entropy_trajectory = [compute_shannon_entropy(b) for b in beliefs_trajectory]
+    entropy_trajectory = [
+        compute_shannon_entropy(np.asarray(b)) for b in beliefs_trajectory
+    ]
     analysis["metrics"]["belief_entropy"] = {
         "trajectory": entropy_trajectory,
         "mean": float(np.mean(entropy_trajectory)),
@@ -238,7 +240,7 @@ def analyze_active_inference_metrics(
 
     # Information gain between consecutive timesteps
     if len(beliefs_trajectory) > 1:
-        info_gain = []
+        info_gain: list[Any] = []
         for t in range(1, len(beliefs_trajectory)):
             ig = compute_information_gain(
                 np.array(beliefs_trajectory[t - 1]), np.array(beliefs_trajectory[t])
@@ -270,7 +272,7 @@ def analyze_active_inference_metrics(
 
     # Action analysis
     if actions:
-        action_counts = {}
+        action_counts: dict[Any, Any] = {}
         for a in actions:
             action_counts[str(a)] = action_counts.get(str(a), 0) + 1
         analysis["metrics"]["action_distribution"] = action_counts

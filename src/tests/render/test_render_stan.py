@@ -2,12 +2,14 @@
 Tests for the Stan renderer component of GNN.
 """
 
+from typing import Any
+
 import pytest
 
 from render.stan.stan_renderer import _stan_type, render_stan
 
 
-def test_stan_type_mapping():
+def test_stan_type_mapping() -> Any:
     """Test mapping of GNN types and dimensions to Stan types."""
     assert _stan_type("real", []) == "real"
     assert _stan_type("int", []) == "int"
@@ -16,13 +18,13 @@ def test_stan_type_mapping():
     assert _stan_type("real", [2, 3, 4]) == "array[2] matrix[3, 4]"
 
 
-def test_render_stan_basic():
+def test_render_stan_basic() -> Any:
     """Test generation of basic Stan code."""
-    variables = [
+    variables: list[Any] = [
         {"name": "obs1", "dimensions": [5], "dtype": "real"},
         {"name": "theta", "dimensions": [3], "dtype": "real"},
     ]
-    connections = [{"source": "theta", "target": "obs1", "directed": True}]
+    connections: list[Any] = [{"source": "theta", "target": "obs1", "directed": True}]
 
     code = render_stan(variables, connections, model_name="test_stan_model")
 
@@ -35,7 +37,7 @@ def test_render_stan_basic():
     assert "test_stan_model" in code
 
 
-def test_render_stan_empty():
+def test_render_stan_empty() -> Any:
     """Test generating Stan code with empty data."""
     code = render_stan([], [])
 

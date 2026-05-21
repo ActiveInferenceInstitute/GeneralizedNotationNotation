@@ -10,7 +10,7 @@ selection, recovery mechanisms, and provides high-level methods for GNN analysis
 import logging
 import os
 from enum import Enum
-from typing import Any, AsyncGenerator, Dict, List, Optional, Union
+from typing import Any, AsyncGenerator, Dict, List, Optional, Union, cast
 
 from .defaults import DEFAULT_OLLAMA_MODEL
 from .providers import (
@@ -68,7 +68,7 @@ def load_api_keys_from_env() -> Dict[str, str]:
     except Exception as e:
         logger.warning(f"Error loading .env file: {e}")
 
-    api_keys = {}
+    api_keys: dict[Any, Any] = {}
 
     # OpenAI
     if openai_key := os.getenv("OPENAI_API_KEY"):
@@ -103,7 +103,7 @@ def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
     Returns:
         Dictionary with provider-specific configurations
     """
-    configs = {
+    configs: dict[str, Any] = {
         "openai": {
             "organization": os.getenv("OPENAI_ORG_ID"),
             "base_url": os.getenv("OPENAI_BASE_URL"),
@@ -154,10 +154,10 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
     """
     default_provider = os.getenv("DEFAULT_PROVIDER", "ollama").lower()
 
-    known_providers = {"openai", "openrouter", "perplexity", "ollama"}
+    known_providers: set[Any] = {"openai", "openrouter", "perplexity", "ollama"}
 
     # Prioritize Ollama as the default since it doesn't require API keys
-    preferred = []
+    preferred: list[Any] = []
 
     # Always put Ollama first if available, then others
     if default_provider == "ollama" or default_provider not in known_providers:
@@ -189,7 +189,7 @@ class LLMProcessor:
         preferred_providers: Optional[List[ProviderType]] = None,
         api_keys: Optional[Dict[str, str]] = None,
         provider_configs: Optional[Dict[str, Dict[str, Any]]] = None,
-    ):
+    ) -> None:
         """
         Initialize the LLM processor.
 
@@ -267,14 +267,25 @@ class LLMProcessor:
 
         try:
             if provider_type == ProviderType.OPENAI:
-                return get_openai_provider_class()(api_key=api_key, **config)
+                return cast(
+                    "BaseLLMProvider | None",
+                    get_openai_provider_class()(api_key=api_key, **config),
+                )
             elif provider_type == ProviderType.OPENROUTER:
-                return get_openrouter_provider_class()(api_key=api_key, **config)
+                return cast(
+                    "BaseLLMProvider | None",
+                    get_openrouter_provider_class()(api_key=api_key, **config),
+                )
             elif provider_type == ProviderType.PERPLEXITY:
-                return get_perplexity_provider_class()(api_key=api_key, **config)
+                return cast(
+                    "BaseLLMProvider | None",
+                    get_perplexity_provider_class()(api_key=api_key, **config),
+                )
             elif provider_type == ProviderType.OLLAMA:
                 # Ollama doesn't need an API key, just configuration
-                return get_ollama_provider_class()(**config)
+                return cast(
+                    "BaseLLMProvider | None", get_ollama_provider_class()(**config)
+                )
             else:
                 logger.error(f"Unknown provider type: {provider_type}")
                 return None
@@ -314,7 +325,7 @@ class LLMProcessor:
             return None
 
         # Provider preferences based on task type
-        task_preferences = {
+        task_preferences: dict[Any, Any] = {
             AnalysisType.SEARCH_ENHANCED: [
                 ProviderType.PERPLEXITY,
                 ProviderType.OPENROUTER,
@@ -410,6 +421,7 @@ class LLMProcessor:
         analysis_type: AnalysisType = AnalysisType.SUMMARY,
         provider_type: Optional[ProviderType] = None,
         config: Optional[LLMConfig] = None,
+        additional_context: Optional[Dict[str, Any]] = None,
     ) -> LLMResponse:
         """
         Analyze GNN content using the appropriate provider.
@@ -437,6 +449,13 @@ class LLMProcessor:
 
         # Format messages based on analysis type
         messages = provider.format_gnn_analysis_prompt(gnn_content, analysis_type.value)
+        if additional_context:
+            messages.append(
+                LLMMessage(
+                    role="user",
+                    content=f"Additional analysis context: {additional_context}",
+                )
+            )
 
         try:
             return await provider.generate_response(messages, config)
@@ -515,7 +534,7 @@ class LLMProcessor:
         Returns:
             Dictionary mapping provider names to their responses
         """
-        results = {}
+        results: dict[Any, Any] = {}
 
         provider_names = [pt.value for pt in self.providers]
         coros = [
@@ -734,7 +753,7 @@ class GNNLLMProcessor:
     natural language explanations.
     """
 
-    def __init__(self, base_processor: Optional[LLMProcessor] = None):
+    def __init__(self, base_processor: Optional[LLMProcessor] = None) -> None:
         """
         Initialize the GNN LLM processor.
 
@@ -797,7 +816,7 @@ class GNNLLMProcessor:
                 "analysis_type": analysis_type,
                 "response": response.content,
                 "provider": response.provider if response.provider else "unknown",
-                "model": response.model,
+                "model": response.model_used,
                 "usage": response.usage,
             }
 
@@ -872,7 +891,7 @@ class GNNLLMProcessor:
                 "analysis_type": "comparison",
                 "response": response.content,
                 "provider": response.provider if response.provider else "unknown",
-                "model": response.model,
+                "model": response.model_used,
                 "usage": response.usage,
             }
 
@@ -947,7 +966,12 @@ def analyze_gnn_model(
     import asyncio
 
     try:
-        result = asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_type))
+        analysis_name = (
+            analysis_type.value
+            if isinstance(analysis_type, AnalysisType)
+            else analysis_type
+        )
+        result = asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_name))
         return result
 
     except Exception as e:

@@ -31,7 +31,7 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         Dictionary mapping package label to availability (``pytest`` required for the
         test step; ``pytest-cov``, ``pytest-xdist``, ``psutil``, ``coverage`` optional).
     """
-    dependencies = {
+    dependencies: dict[str, Any] = {
         "pytest": False,
         "pytest-cov": False,
         "pytest-xdist": False,
@@ -96,7 +96,7 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
 
 
 def build_pytest_command(
-    test_markers: List[str] = None,
+    test_markers: (List[str]) | None = None,
     timeout_seconds: int = 600,
     max_failures: int = 20,
     parallel: bool = True,
@@ -133,7 +133,7 @@ def build_pytest_command(
         )
         # Returns: ['python', '-m', 'pytest', '--verbose', '--tb=short', ...]
     """
-    cmd = [
+    cmd: list[Any] = [
         sys.executable,
         "-m",
         "pytest",
@@ -196,11 +196,11 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
         errors = extract_collection_errors(pytest_stdout, pytest_stderr)
         # Returns: ["test_file.py: ImportError: No module named 'missing_module'"]
     """
-    errors = []
+    errors: list[Any] = []
     combined_output = stdout + "\n" + stderr
 
     # Look for ERROR collecting patterns
-    error_patterns = [
+    error_patterns: list[Any] = [
         r"ERROR collecting ([^\n]+)\n([^\n]+: [^\n]+)",
         r"NameError: name \'([^\']+)\' is not defined",
         r"ImportError: ([^\n]+)",
@@ -247,8 +247,8 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
                 errors.append(f"{file_path}: {error_msg}")
 
     # Remove duplicates while preserving order
-    seen = set()
-    unique_errors = []
+    seen: set[Any] = set()
+    unique_errors: list[Any] = []
     for error in errors:
         if error not in seen:
             seen.add(error)
@@ -358,7 +358,7 @@ def parse_coverage_statistics(
         total_coverage = coverage_data.get("totals", {}).get("percent_covered", 0.0)
 
         # Extract per-file coverage
-        files_coverage = {}
+        files_coverage: dict[Any, Any] = {}
         for file_path, file_data in coverage_data.get("files", {}).items():
             files_coverage[file_path] = file_data.get("summary", {}).get(
                 "percent_covered", 0.0

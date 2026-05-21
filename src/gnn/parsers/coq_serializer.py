@@ -1,4 +1,5 @@
 import json
+from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class CoqSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Coq format."""
-        lines = []
+        lines: list[Any] = []
 
         # Header
         lines.append(f"(* GNN Model: {model.model_name} *)")
@@ -35,7 +36,7 @@ class CoqSerializer(BaseGNNSerializer):
         lines.append(f"End {model_name_clean}.")
 
         # Embed complete model data as Coq comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -95,7 +96,7 @@ class CoqSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -106,7 +107,7 @@ class CoqSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []
@@ -125,7 +126,7 @@ class CoqSerializer(BaseGNNSerializer):
 
     def _map_to_coq_type(self, data_type: str) -> str:
         """Map GNN data types to Coq types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "list nat",
             "continuous": "R",
             "binary": "bool",
@@ -133,4 +134,4 @@ class CoqSerializer(BaseGNNSerializer):
             "float": "R",
             "complex": "string",
         }
-        return mapping.get(data_type, "string")
+        return cast("str", mapping.get(data_type, "string"))

@@ -19,11 +19,12 @@ import shutil
 import subprocess  # nosec B404
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 # Test markers
-pytestmark = [pytest.mark.integration, pytest.mark.uv]
+pytestmark: list[Any] = [pytest.mark.integration, pytest.mark.uv]
 
 # Get project root
 PROJECT_ROOT = Path(__file__).parent.parent.parent.absolute()
@@ -74,7 +75,7 @@ class TestUVAvailability:
         not SETUP_AVAILABLE,
         reason=f"Setup module not available: {IMPORT_ERROR if not SETUP_AVAILABLE else ''}",
     )
-    def test_uv_cli_available(self):
+    def test_uv_cli_available(self) -> Any:
         """Test that UV CLI is available in PATH."""
         result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "--version"], capture_output=True, text=True, timeout=10
@@ -83,7 +84,7 @@ class TestUVAvailability:
         assert "uv" in result.stdout.lower(), "Unexpected UV version output"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_check_uv_availability_function(self):
+    def test_check_uv_availability_function(self) -> Any:
         """Test the check_uv_availability function."""
         available = check_uv_availability(verbose=False)
         assert available is True, (
@@ -91,7 +92,7 @@ class TestUVAvailability:
         )
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_uv_version_compatible(self):
+    def test_uv_version_compatible(self) -> Any:
         """Test that UV version is compatible (0.9.x or higher)."""
         result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "--version"], capture_output=True, text=True, timeout=10
@@ -114,17 +115,17 @@ class TestVirtualEnvironment:
     """Test virtual environment management."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_venv_exists(self):
+    def test_venv_exists(self) -> Any:
         """Test that virtual environment exists."""
         assert VENV_PATH.exists(), f"Virtual environment not found at {VENV_PATH}"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_venv_python_exists(self):
+    def test_venv_python_exists(self) -> Any:
         """Test that virtual environment Python exists."""
         assert VENV_PYTHON.exists(), f"Venv Python not found at {VENV_PYTHON}"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_venv_python_executable(self):
+    def test_venv_python_executable(self) -> Any:
         """Test that virtual environment Python is executable."""
         result = subprocess.run(  # nosec B603
             [str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=10
@@ -133,7 +134,7 @@ class TestVirtualEnvironment:
         assert "Python" in result.stdout, "Unexpected Python version output"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_venv_python_version_compatible(self):
+    def test_venv_python_version_compatible(self) -> Any:
         """Test that Python version is >= 3.11 as per pyproject.toml."""
         result = subprocess.run(  # nosec B603
             [
@@ -156,17 +157,17 @@ class TestVirtualEnvironment:
 class TestProjectFiles:
     """Test UV project files exist and are valid."""
 
-    def test_pyproject_toml_exists(self):
+    def test_pyproject_toml_exists(self) -> Any:
         """Test that pyproject.toml exists."""
         pyproject_path = PROJECT_ROOT / "pyproject.toml"
         assert pyproject_path.exists(), f"pyproject.toml not found at {pyproject_path}"
 
-    def test_uv_lock_exists(self):
+    def test_uv_lock_exists(self) -> Any:
         """Test that uv.lock exists."""
         lock_path = PROJECT_ROOT / "uv.lock"
         assert lock_path.exists(), f"uv.lock not found at {lock_path}"
 
-    def test_pyproject_toml_valid(self):
+    def test_pyproject_toml_valid(self) -> Any:
         """Test that pyproject.toml is valid TOML."""
         import tomllib
 
@@ -181,7 +182,7 @@ class TestProjectFiles:
             "pyproject.toml missing dependencies"
         )
 
-    def test_uv_lock_not_empty(self):
+    def test_uv_lock_not_empty(self) -> Any:
         """Test that uv.lock is not empty."""
         lock_path = PROJECT_ROOT / "uv.lock"
         assert lock_path.stat().st_size > 0, "uv.lock is empty"
@@ -191,7 +192,7 @@ class TestDependencyManagement:
     """Test dependency installation and management."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_get_installed_package_versions(self):
+    def test_get_installed_package_versions(self) -> Any:
         """Test getting installed package versions."""
         packages = get_installed_package_versions(verbose=False)
         assert isinstance(packages, dict), (
@@ -205,12 +206,12 @@ class TestDependencyManagement:
             )
 
         # Check for core packages (pytest is dev-extra; guarded above)
-        core_packages = ["numpy", "pytest", "matplotlib", "scipy"]
+        core_packages: list[Any] = ["numpy", "pytest", "matplotlib", "scipy"]
         for pkg in core_packages:
             assert pkg in packages, f"Core package {pkg} not found"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_uv_tree_works(self):
+    def test_uv_tree_works(self) -> Any:
         """``uv tree`` is the modern replacement for ``uv pip list``.
 
             The ``uv pip`` interface is rejected by newer uv releases and
@@ -230,7 +231,7 @@ class TestDependencyManagement:
         assert result.stdout.strip(), "uv tree produced no output"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_uv_sync_check(self):
+    def test_uv_sync_check(self) -> Any:
         """Test that uv sync --dry-run reports no changes needed."""
         result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "sync", "--frozen", "--check"],
@@ -251,13 +252,13 @@ class TestSystemRequirements:
     """Test system requirements validation."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_check_system_requirements(self):
+    def test_check_system_requirements(self) -> Any:
         """Test system requirements check function."""
         result = check_system_requirements(verbose=False)
         assert result is True, "System requirements should pass"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_validate_system_function(self):
+    def test_validate_system_function(self) -> Any:
         """Test validate_system function from validator."""
         result = validate_system()
         assert isinstance(result, dict), "validate_system should return a dict"
@@ -271,13 +272,13 @@ class TestUVSetupValidation:
     """Test UV setup validation functions."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_validate_uv_setup(self):
+    def test_validate_uv_setup(self) -> Any:
         """Test validate_uv_setup function."""
         result = validate_uv_setup()
         assert isinstance(result, dict), "validate_uv_setup should return a dict"
 
         # Check expected keys
-        expected_keys = [
+        expected_keys: list[Any] = [
             "system_requirements",
             "uv_environment",
             "dependencies",
@@ -304,13 +305,13 @@ class TestUVSetupValidation:
         assert result["overall_status"] is True, "Overall status should be True"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_get_uv_setup_info(self):
+    def test_get_uv_setup_info(self) -> Any:
         """Test get_uv_setup_info function."""
         info = get_uv_setup_info()
         assert isinstance(info, dict), "get_uv_setup_info should return a dict"
 
         # Check expected keys
-        expected_keys = [
+        expected_keys: list[Any] = [
             "project_root",
             "uv_environment_path",
             "python_version",
@@ -325,7 +326,7 @@ class TestUVSetupValidation:
         assert Path(info["uv_environment_path"]) == VENV_PATH, "Venv path mismatch"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_get_uv_status(self):
+    def test_get_uv_status(self) -> Any:
         """Test get_uv_status function."""
         result = get_uv_status()
         assert isinstance(result, dict), "get_uv_status should return a dict"
@@ -338,13 +339,13 @@ class TestEnvironmentHealth:
     """Test environment health check functionality."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_check_environment_health(self):
+    def test_check_environment_health(self) -> Any:
         """Test comprehensive environment health check."""
         health = check_environment_health(verbose=False)
         assert isinstance(health, dict), "check_environment_health should return a dict"
 
         # Check expected keys
-        expected_keys = [
+        expected_keys: list[Any] = [
             "overall_healthy",
             "uv_available",
             "uv_version",
@@ -374,7 +375,14 @@ class TestEnvironmentHealth:
         assert isinstance(health["core_packages"], dict), (
             "core_packages should be a dict"
         )
-        core_expected = ["numpy", "matplotlib", "networkx", "pandas", "scipy", "pytest"]
+        core_expected: list[Any] = [
+            "numpy",
+            "matplotlib",
+            "networkx",
+            "pandas",
+            "scipy",
+            "pytest",
+        ]
         if health["core_packages"].get("pytest") is None:
             pytest.skip(
                 "pytest not installed in project venv; full health check needs: uv sync --extra dev"
@@ -389,7 +397,7 @@ class TestEnvironmentHealth:
         assert len(health["issues"]) == 0, f"Unexpected issues: {health['issues']}"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_get_environment_info(self):
+    def test_get_environment_info(self) -> Any:
         """Test get_environment_info function."""
         info = get_environment_info()
         assert isinstance(info, dict), "get_environment_info should return a dict"
@@ -403,13 +411,13 @@ class TestOptionalGroups:
     """Test optional dependency groups configuration."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_optional_groups_defined(self):
+    def test_optional_groups_defined(self) -> Any:
         """Test that OPTIONAL_GROUPS constant is defined."""
         assert isinstance(OPTIONAL_GROUPS, dict), "OPTIONAL_GROUPS should be a dict"
         assert len(OPTIONAL_GROUPS) > 0, "OPTIONAL_GROUPS should not be empty"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_optional_groups_have_descriptions(self):
+    def test_optional_groups_have_descriptions(self) -> Any:
         """Test that all optional groups have descriptions."""
         for group, description in OPTIONAL_GROUPS.items():
             assert isinstance(group, str), f"Group name should be string: {group}"
@@ -419,9 +427,9 @@ class TestOptionalGroups:
             assert len(description) > 0, f"Group {group} has empty description"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_expected_optional_groups_exist(self):
+    def test_expected_optional_groups_exist(self) -> Any:
         """Test that expected optional groups are defined."""
-        expected_groups = ["dev", "llm", "visualization", "audio", "all"]
+        expected_groups: list[Any] = ["dev", "llm", "visualization", "audio", "all"]
         for group in expected_groups:
             assert group in OPTIONAL_GROUPS, (
                 f"Expected optional group '{group}' not found"
@@ -432,15 +440,15 @@ class TestFeatureFlags:
     """Test feature flags configuration."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_features_defined(self):
+    def test_features_defined(self) -> Any:
         """Test that FEATURES constant is defined."""
         assert isinstance(FEATURES, dict), "FEATURES should be a dict"
         assert len(FEATURES) > 0, "FEATURES should not be empty"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_critical_features_enabled(self):
+    def test_critical_features_enabled(self) -> Any:
         """Test that critical features are enabled."""
-        critical_features = [
+        critical_features: list[Any] = [
             "uv_environment_setup",
             "uv_dependency_management",
             "uv_virtual_environment",
@@ -458,24 +466,24 @@ class TestNativeUVFunctions:
     """Test native UV functions (add, remove, update, lock)."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_add_uv_dependency_function_exists(self):
+    def test_add_uv_dependency_function_exists(self) -> Any:
         """Test that add_uv_dependency function exists and is callable."""
         assert callable(add_uv_dependency), "add_uv_dependency should be callable"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_remove_uv_dependency_function_exists(self):
+    def test_remove_uv_dependency_function_exists(self) -> Any:
         """Test that remove_uv_dependency function exists and is callable."""
         assert callable(remove_uv_dependency), "remove_uv_dependency should be callable"
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_update_uv_dependencies_function_exists(self):
+    def test_update_uv_dependencies_function_exists(self) -> Any:
         """Test that update_uv_dependencies function exists and is callable."""
         assert callable(update_uv_dependencies), (
             "update_uv_dependencies should be callable"
         )
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_lock_uv_dependencies_function_exists(self):
+    def test_lock_uv_dependencies_function_exists(self) -> Any:
         """Test that lock_uv_dependencies function exists and is callable."""
         assert callable(lock_uv_dependencies), "lock_uv_dependencies should be callable"
 
@@ -483,7 +491,7 @@ class TestNativeUVFunctions:
 class TestUVRunIntegration:
     """Test UV run command integration."""
 
-    def test_uv_run_python(self):
+    def test_uv_run_python(self) -> Any:
         """Test that uv run python works."""
         result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "run", "python", "-c", "print('Hello from UV')"],
@@ -495,7 +503,7 @@ class TestUVRunIntegration:
         assert result.returncode == 0, f"uv run python failed: {result.stderr}"
         assert "Hello from UV" in result.stdout, "Unexpected output"
 
-    def test_uv_run_module_import(self):
+    def test_uv_run_module_import(self) -> Any:
         """Test that uv run can import project modules."""
         result = subprocess.run(  # nosec B607 B603
             [
@@ -516,7 +524,7 @@ class TestUVRunIntegration:
     @pytest.mark.xfail(
         reason="uv's tool resolution strategy may install pytest in a tool cache rather than the venv's site-packages"
     )
-    def test_uv_run_pytest(self):
+    def test_uv_run_pytest(self) -> Any:
         """Test that pytest is available in the UV-managed environment.
 
         Marked ``xfail`` because ``uv``'s tool resolution strategy may
@@ -541,7 +549,7 @@ class TestUVRunIntegration:
 class TestUVCacheAndPerformance:
     """Test UV cache and performance features."""
 
-    def test_uv_cache_dir_accessible(self):
+    def test_uv_cache_dir_accessible(self) -> Any:
         """Test that UV cache directory is accessible."""
         result = subprocess.run(  # nosec B607 B603
             [UV_BIN, "cache", "dir"], capture_output=True, text=True, timeout=10
@@ -551,7 +559,7 @@ class TestUVCacheAndPerformance:
         # Cache dir may not exist if nothing has been cached
         # Just verify the command works
 
-    def test_uv_sync_fast(self):
+    def test_uv_sync_fast(self) -> Any:
         """Test that ``uv sync --frozen`` is fast (lock-respecting, no network churn when cache is warm)."""
         import time
 

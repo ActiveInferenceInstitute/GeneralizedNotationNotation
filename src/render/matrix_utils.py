@@ -12,7 +12,7 @@ Addresses improvement items:
 """
 
 import logging
-from typing import Tuple
+from typing import Any, Tuple
 
 import numpy as np
 
@@ -62,7 +62,7 @@ def validate_abcd_shapes(
     Returns:
         Tuple of (is_valid, message). message is "ok" if valid.
     """
-    issues = []
+    issues: list[Any] = []
 
     if A.ndim != 2:
         issues.append(f"A should be 2D, got {A.ndim}D shape {A.shape}")

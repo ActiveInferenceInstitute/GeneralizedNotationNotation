@@ -9,13 +9,15 @@ import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
+logger = logging.getLogger(__name__)
+
 
 def process_security(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process security validation for GNN files.
@@ -29,15 +31,15 @@ def process_security(
     Returns:
         True if processing successful, False otherwise
     """
-    logger = logging.getLogger("security")
+    step_logger = logging.getLogger("security")
 
     try:
-        log_step_start(logger, "Processing security")
+        log_step_start(step_logger, "Processing security")
 
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,
             "success": True,
@@ -50,7 +52,7 @@ def process_security(
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
         if not gnn_files:
-            logger.warning("No GNN files found for security processing")
+            step_logger.warning("No GNN files found for security processing")
             results["success"] = False
             results["errors"].append("No GNN files found")
         else:
@@ -74,13 +76,13 @@ def process_security(
                     results["recommendations"].extend(recommendations)
 
                 except Exception as e:
-                    error_info = {
+                    error_info: dict[str, Any] = {
                         "file": str(gnn_file),
                         "error": str(e),
                         "error_type": type(e).__name__,
                     }
                     results["errors"].append(error_info)
-                    logger.error(f"Error processing {gnn_file}: {e}")
+                    step_logger.error(f"Error processing {gnn_file}: {e}")
 
         # Save detailed results
         results_file = results_dir / "security_results.json"
@@ -94,14 +96,14 @@ def process_security(
             f.write(summary)
 
         if results["success"]:
-            log_step_success(logger, "Security processing completed successfully")
+            log_step_success(step_logger, "Security processing completed successfully")
         else:
-            log_step_error(logger, "Security processing failed")
+            log_step_error(step_logger, "Security processing failed")
 
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, "Security processing failed", {"error": str(e)})
+        log_step_error(step_logger, "Security processing failed", error=str(e))
         return False
 
 
@@ -115,7 +117,7 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
         file_hash = hashlib.sha256(content.encode()).hexdigest()
 
         # Check for sensitive patterns
-        sensitive_patterns = [
+        sensitive_patterns: list[Any] = [
             r"password\s*[:=]",
             r"secret\s*[:=]",
             r"api_key\s*[:=]",
@@ -123,7 +125,7 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
             r"private_key\s*[:=]",
         ]
 
-        found_patterns = []
+        found_patterns: list[Any] = []
         for pattern in sensitive_patterns:
             matches = re.finditer(pattern, content, re.IGNORECASE)
             for match in matches:
@@ -163,14 +165,14 @@ def check_vulnerabilities(
     1. Regex pattern matching for GNN markdown files
     2. Python AST analysis for generated .py files (eval, exec, os.system detection)
     """
-    vulnerabilities = []
+    vulnerabilities: list[Any] = []
 
     try:
         with open(file_path, "r") as f:
             content = f.read()
 
         # -- Technique 1: Regex patterns (for GNN markdown and all files) --
-        vuln_patterns = [
+        vuln_patterns: list[Any] = [
             (r"eval\s*\(", "Code injection vulnerability"),
             (r"exec\s*\(", "Code execution vulnerability"),
             (r"import\s+os\s*", "OS command injection risk"),
@@ -202,7 +204,7 @@ def check_vulnerabilities(
                 )
 
         # Check for hardcoded credentials
-        credential_patterns = [
+        credential_patterns: list[Any] = [
             r'password\s*[:=]\s*["\'][^"\']{4,}["\']',
             r'secret\s*[:=]\s*["\'][^"\']{4,}["\']',
             r'api_key\s*[:=]\s*["\'][^"\']{8,}["\']',
@@ -297,7 +299,7 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
     """
     import ast
 
-    vulns = []
+    vulns: list[Any] = []
 
     try:
         tree = ast.parse(content, filename=str(file_path))
@@ -315,7 +317,7 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
         ]
 
     # Dangerous function call patterns
-    DANGEROUS_CALLS = {
+    DANGEROUS_CALLS: dict[str, Any] = {
         "eval": ("Code injection via eval()", "high"),
         "exec": ("Code injection via exec()", "high"),
         "compile": ("Dynamic code compilation", "medium"),
@@ -323,7 +325,7 @@ def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
     }
 
     # Dangerous attribute access patterns: obj.method()
-    DANGEROUS_METHODS = {
+    DANGEROUS_METHODS: dict[Any, Any] = {
         ("os", "system"): ("OS command injection via os.system()", "high"),
         ("os", "popen"): ("OS command injection via os.popen()", "high"),
         ("subprocess", "call"): ("Subprocess execution", "medium"),
@@ -386,7 +388,7 @@ def generate_security_recommendations(
     file_path: Path, verbose: bool = False
 ) -> List[Dict[str, Any]]:
     """Generate security recommendations for a GNN file."""
-    recommendations = []
+    recommendations: list[Any] = []
 
     try:
         with open(file_path, "r") as f:
@@ -461,7 +463,7 @@ def calculate_security_score(vulnerabilities: List[Dict]) -> float:
         return 100.0
 
     # Weight vulnerabilities by severity
-    severity_weights = {"high": 10.0, "medium": 5.0, "low": 1.0}
+    severity_weights: dict[str, Any] = {"high": 10.0, "medium": 5.0, "low": 1.0}
 
     total_score = 0.0
     for vuln in vulnerabilities:

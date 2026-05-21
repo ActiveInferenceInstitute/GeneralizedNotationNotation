@@ -10,14 +10,14 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 try:
     import numpy as np
 
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore[assignment]
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 try:
@@ -29,22 +29,27 @@ try:
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
-    plt = None  # type: ignore[assignment]
+    plt = cast(Any, None)
 
 try:
     import seaborn as sns
 
     SEABORN_AVAILABLE = True
 except ImportError:
-    sns = None  # type: ignore[assignment]
+    sns = cast(Any, None)
     SEABORN_AVAILABLE = False
 
-try:
-    from visualization.matrix_visualizer import (
-        MatrixVisualizer as _MatrixVisualizer,
-    )
-except ImportError:
-    _MatrixVisualizer = None  # type: ignore[assignment,misc]
+
+class _LazyMatrixVisualizer:
+    """Defer MatrixVisualizer import until advanced visualization actually needs it."""
+
+    def __call__(self) -> Any:
+        from visualization.matrix_visualizer import MatrixVisualizer
+
+        return MatrixVisualizer()
+
+
+_MatrixVisualizer = _LazyMatrixVisualizer()
 
 
 @dataclass
@@ -89,7 +94,9 @@ def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
         return conn_info
 
 
-def _calculate_semantic_positions(variables: List[Dict], connections: List[Dict]):
+def _calculate_semantic_positions(
+    variables: List[Dict], connections: List[Dict]
+) -> Any:
     """
     Calculate meaningful 3D positions for variables based on semantic relationships.
 
@@ -167,7 +174,7 @@ def _generate_fallback_report(
     output_dir: Path,
     model_data: Dict,
     logger: logging.Logger,
-):
+) -> Any:
     """Generate recovery HTML report when advanced libraries unavailable"""
     html_content = f"""<!DOCTYPE html>
 <html>
@@ -214,7 +221,7 @@ def validate_visualization_data(
     Returns:
         Validation results dictionary
     """
-    validation_results = {
+    validation_results: dict[str, Any] = {
         "overall_valid": True,
         "warnings": [],
         "errors": [],
@@ -228,7 +235,7 @@ def validate_visualization_data(
             validation_results["overall_valid"] = False
             return validation_results
 
-        required_keys = ["variables", "connections"]
+        required_keys: list[Any] = ["variables", "connections"]
         for key in required_keys:
             if key not in model_data:
                 validation_results["warnings"].append(f"Missing key: {key}")
@@ -281,7 +288,7 @@ def validate_visualization_data(
                 valid_connections / len(connections)
             )
 
-        pomdp_indicators = {
+        pomdp_indicators: dict[str, Any] = {
             "likelihood_matrix": 0,
             "transition_matrix": 0,
             "preference_vector": 0,

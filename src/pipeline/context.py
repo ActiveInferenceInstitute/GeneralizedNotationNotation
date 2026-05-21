@@ -63,7 +63,7 @@ class PipelineContext:
         self,
         output_dir: Optional[Path] = None,
         target_dir: Optional[Path] = None,
-    ):
+    ) -> None:
         self.output_dir = Path(output_dir) if output_dir else Path("output")
         self.target_dir = Path(target_dir) if target_dir else Path("input/gnn_files")
         self.start_time = datetime.now()

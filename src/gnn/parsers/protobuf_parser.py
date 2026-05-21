@@ -13,7 +13,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +23,10 @@ from .common import (
     ConnectionType,
     DataType,
     GNNInternalRepresentation,
+    OntologyMapping,
     Parameter,
     ParseResult,
+    TimeSpecification,
     Variable,
     VariableType,
 )
@@ -33,9 +35,9 @@ from .common import (
 class ProtobufGNNParser(BaseGNNParser):
     """Enhanced parser for Protocol Buffer (.proto) files containing GNN models."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
-        self.model_cache = {}
+        self.model_cache: dict[str, GNNInternalRepresentation] = {}
 
     def get_supported_extensions(self) -> List[str]:
         return [".proto"]
@@ -67,8 +69,8 @@ class ProtobufGNNParser(BaseGNNParser):
                 return self._parse_from_embedded_data(embedded_data, result)
 
             model = GNNInternalRepresentation(model_name="ProtobufGNNModel")
-            errors = []
-            warnings = []
+            errors: list[Any] = []
+            warnings: list[Any] = []
 
             # Parse model metadata
             model_name = self._extract_model_name(content)
@@ -155,7 +157,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
     def _extract_model_annotation(self, content: str) -> str:
         """Extract model annotation from comments."""
-        annotations = []
+        annotations: list[Any] = []
 
         # Look for file-level comments
         file_comments = re.findall(r"//\s*(.+)", content)
@@ -173,7 +175,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
     def _parse_variables_enhanced(self, content: str) -> List[Variable]:
         """Parse variables with complete information preservation."""
-        variables = []
+        variables: list[Any] = []
 
         # Parse from Variable messages
         variable_messages = re.findall(
@@ -232,12 +234,14 @@ class ProtobufGNNParser(BaseGNNParser):
                             VariableType,
                             var_data.get("var_type", "hidden_state"),
                             VariableType.HIDDEN_STATE,
-                        ),
+                        )
+                        or VariableType.HIDDEN_STATE,
                         data_type=safe_enum_convert(
                             DataType,
                             var_data.get("data_type", "categorical"),
                             DataType.CATEGORICAL,
-                        ),
+                        )
+                        or DataType.CATEGORICAL,
                         dimensions=var_data.get("dimensions", []),
                     )
                     # Avoid duplicates
@@ -248,7 +252,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
     def _parse_connections_enhanced(self, content: str) -> List[Connection]:
         """Parse connections with complete relationship preservation."""
-        connections = []
+        connections: list[Any] = []
 
         # Parse from Connection messages
         connection_messages = re.findall(
@@ -300,7 +304,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
     def _parse_parameters_enhanced(self, content: str) -> List[Parameter]:
         """Parse parameters with complete value preservation."""
-        parameters = []
+        parameters: list[Any] = []
 
         # Parse from Parameter messages
         re.findall(r"message\s+Parameter\s*{([^}]+)}", content, re.DOTALL)
@@ -333,7 +337,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
     def _parse_equations(self, content: str) -> List:
         """Parse equations from protobuf content."""
-        equations = []
+        equations: list[Any] = []
 
         # Parse equation comments
         eq_comments = re.findall(r"//\s*Equation:\s*(.+)", content)
@@ -342,24 +346,24 @@ class ProtobufGNNParser(BaseGNNParser):
 
         return equations
 
-    def _parse_time_specification(self, content: str) -> Optional[Dict]:
+    def _parse_time_specification(self, content: str) -> Optional[TimeSpecification]:
         """Parse time specification from protobuf content."""
         # Look for time-related messages or comments
         time_messages = re.findall(
             r"message\s+TimeSpecification\s*{([^}]+)}", content, re.DOTALL
         )
         if time_messages:
-            return {"time_type": "discrete", "steps": 1}
+            return TimeSpecification(time_type="discrete", horizon=1)
 
         time_comments = re.findall(r"//\s*Time:\s*(.+)", content)
         if time_comments:
-            return {"time_type": "discrete", "description": time_comments[0]}
+            return TimeSpecification(time_type="discrete")
 
         return None
 
     def _parse_ontology_mappings(self, content: str) -> List:
         """Parse ontology mappings from protobuf content."""
-        mappings = []
+        mappings: list[Any] = []
 
         # Parse ontology comments
         onto_comments = re.findall(r"//\s*Ontology:\s*(\w+)\s*->\s*(.+)", content)
@@ -376,7 +380,7 @@ class ProtobufGNNParser(BaseGNNParser):
         json_matches = re.findall(r"//\s*JSON:\s*({.+?})", content, re.DOTALL)
         for json_str in json_matches:
             try:
-                return json.loads(json_str)
+                return cast("dict[Any, Any] | None", json.loads(json_str))
             except json.JSONDecodeError as e:
                 logger.debug("Malformed JSON in comment, trying next: %s", e)
                 continue
@@ -387,7 +391,7 @@ class ProtobufGNNParser(BaseGNNParser):
         )
         for data_str in data_matches:
             try:
-                return json.loads(data_str)
+                return cast("dict[Any, Any] | None", json.loads(data_str))
             except json.JSONDecodeError as e:
                 logger.debug("Malformed MODEL_DATA JSON, trying next: %s", e)
                 continue
@@ -414,12 +418,14 @@ class ProtobufGNNParser(BaseGNNParser):
                         VariableType,
                         var_data.get("var_type", "hidden_state"),
                         VariableType.HIDDEN_STATE,
-                    ),
+                    )
+                    or VariableType.HIDDEN_STATE,
                     data_type=safe_enum_convert(
                         DataType,
                         var_data.get("data_type", "categorical"),
                         DataType.CATEGORICAL,
-                    ),
+                    )
+                    or DataType.CATEGORICAL,
                     dimensions=var_data.get("dimensions", []),
                     description=var_data.get("description", ""),
                 )
@@ -451,18 +457,37 @@ class ProtobufGNNParser(BaseGNNParser):
             if "time_specification" in data and data["time_specification"]:
                 time_spec_data = data["time_specification"]
                 if isinstance(time_spec_data, dict):
-                    from types import SimpleNamespace
-
-                    result.model.time_specification = SimpleNamespace(**time_spec_data)
+                    result.model.time_specification = TimeSpecification(
+                        time_type=str(
+                            time_spec_data.get(
+                                "time_type", time_spec_data.get("type", "Static")
+                            )
+                        ),
+                        discretization=(
+                            str(time_spec_data["discretization"])
+                            if time_spec_data.get("discretization") is not None
+                            else None
+                        ),
+                        horizon=cast(
+                            Optional[int | str], time_spec_data.get("horizon")
+                        ),
+                        step_size=(
+                            float(time_spec_data["step_size"])
+                            if time_spec_data.get("step_size") is not None
+                            else None
+                        ),
+                    )
 
             # Restore ontology mappings for Protobuf parser
             if "ontology_mappings" in data and data["ontology_mappings"]:
                 ontology_data = data["ontology_mappings"]
                 if isinstance(ontology_data, list):
-                    from types import SimpleNamespace
-
                     result.model.ontology_mappings = [
-                        SimpleNamespace(**mapping)
+                        OntologyMapping(
+                            variable_name=str(mapping.get("variable_name", "")),
+                            ontology_term=str(mapping.get("ontology_term", "")),
+                            description=mapping.get("description"),
+                        )
                         for mapping in ontology_data
                         if isinstance(mapping, dict)
                     ]
@@ -477,7 +502,7 @@ class ProtobufGNNParser(BaseGNNParser):
 
     def _map_protobuf_type_to_variable_type(self, proto_type: str) -> VariableType:
         """Map protobuf types to GNN variable types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "string": VariableType.OBSERVATION,
             "int32": VariableType.HIDDEN_STATE,
             "int64": VariableType.HIDDEN_STATE,
@@ -486,11 +511,13 @@ class ProtobufGNNParser(BaseGNNParser):
             "bool": VariableType.POLICY,
             "bytes": VariableType.OBSERVATION,
         }
-        return mapping.get(proto_type.lower(), VariableType.HIDDEN_STATE)
+        return cast(
+            "VariableType", mapping.get(proto_type.lower(), VariableType.HIDDEN_STATE)
+        )
 
     def _map_protobuf_type_to_data_type(self, proto_type: str) -> DataType:
         """Map protobuf types to GNN data types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "string": DataType.CATEGORICAL,
             "int32": DataType.INTEGER,
             "int64": DataType.INTEGER,
@@ -499,7 +526,7 @@ class ProtobufGNNParser(BaseGNNParser):
             "bool": DataType.BINARY,
             "bytes": DataType.COMPLEX,
         }
-        return mapping.get(proto_type.lower(), DataType.CATEGORICAL)
+        return cast("DataType", mapping.get(proto_type.lower(), DataType.CATEGORICAL))
 
     def _parse_parameter_value(self, value_str: str) -> Any:
         """Parse parameter value from string."""
@@ -527,7 +554,7 @@ class ProtobufGNNParser(BaseGNNParser):
         self, model: GNNInternalRepresentation, content: str
     ) -> List[str]:
         """Validate that the model was completely parsed."""
-        errors = []
+        errors: list[Any] = []
 
         if not model.model_name:
             errors.append("Model name not found in protobuf content")
@@ -536,7 +563,7 @@ class ProtobufGNNParser(BaseGNNParser):
             errors.append("No variables found in protobuf content")
 
         # Check for presence of expected sections
-        expected_sections = ["message", "package", "syntax"]
+        expected_sections: list[Any] = ["message", "package", "syntax"]
         found_sections = [
             section for section in expected_sections if section in content.lower()
         ]

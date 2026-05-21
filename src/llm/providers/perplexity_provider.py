@@ -10,7 +10,7 @@ import asyncio
 import json
 import logging
 import os
-from typing import AsyncGenerator, List, Optional
+from typing import Any, AsyncGenerator, List, Optional
 
 try:
     import aiohttp
@@ -49,7 +49,7 @@ class PerplexityProvider(BaseLLMProvider):
     DEFAULT_MODEL = "llama-3.1-sonar-large-128k-online"
     BASE_URL = "https://api.perplexity.ai"
 
-    def __init__(self, api_key: Optional[str] = None, **kwargs):
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """
         Initialize Perplexity provider.
 
@@ -59,7 +59,7 @@ class PerplexityProvider(BaseLLMProvider):
         """
         super().__init__(api_key, **kwargs)
         self.api_key = api_key or os.getenv("PERPLEXITY_API_KEY")
-        self.session = None
+        self.session: Any = None
 
     @property
     def provider_type(self) -> ProviderType:
@@ -98,7 +98,7 @@ class PerplexityProvider(BaseLLMProvider):
 
         try:
             # Initialize aiohttp session with proper headers
-            headers = {
+            headers: dict[str, Any] = {
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json",
                 "Accept": "application/json",
@@ -183,7 +183,7 @@ class PerplexityProvider(BaseLLMProvider):
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": perplexity_messages,
             "stream": False,
@@ -271,7 +271,7 @@ class PerplexityProvider(BaseLLMProvider):
         ]
 
         # Prepare request payload
-        payload = {
+        payload: dict[str, Any] = {
             "model": config.model or self.default_model,
             "messages": perplexity_messages,
             "stream": True,
@@ -389,7 +389,9 @@ class PerplexityProvider(BaseLLMProvider):
         prompt = f"Analyze this GNN model for {task}: {content}"
 
         async def _run() -> LLMResponse:
-            return await self.generate_response([{"role": "user", "content": prompt}])
+            return await self.generate_response(
+                [LLMMessage(role="user", content=prompt)]
+            )
 
         def _extract(result: Any) -> str:
             return result.content if hasattr(result, "content") else str(result)

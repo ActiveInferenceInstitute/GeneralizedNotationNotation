@@ -34,10 +34,11 @@ pytest -m slow          # slow/performance tests only
 ## Test Statistics
 
 - **Total test files**: 166 (138 in subdirectories + 28 at root)
-- **Test collection baseline**: 2,271 collected with the command-of-record
+- **Test collection baseline**: 2,258 collected with the command-of-record
   collect pass and the two local Ollama integration files ignored
-- **Pass/skip baseline**: use the latest full-suite run output; optional
-  backends and local services affect skips
+- **Pass/skip baseline**: the latest command-of-record full run with the
+  two local Ollama integration files ignored passed on 2026-05-20:
+  2,250 passed, 7 skipped, 1 xpassed in 722.10s
 - **Fast-test duration**: 1-3 minutes
 - **Full-suite duration**: 2-3 minutes
 
@@ -55,7 +56,7 @@ src/tests/
 ├── test_data/             # on-disk fixtures consumed by tests
 │
 ├── <module>/test_*.py     # per-module tests mirroring src/<module>/
-│   (33 first-level subdirectories; 31 contain direct test files)
+│   (34 first-level subdirectories; 31 contain direct test files)
 │
 └── test_*.py              # cross-cutting / meta-tests at root
     (coverage assessments, environment probes, runner self-tests,
@@ -645,7 +646,8 @@ If issues persist:
 ### Test Coverage
 
 - **166 test files** across root and module-specific directories
-- **2,271 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
+- **2,258 collected tests** in the current command-of-record collect pass with Ollama integration tests ignored
+- **Latest full suite** passed on 2026-05-20 with the same Ollama integration excludes: 2,250 passed, 7 skipped, 1 xpassed in 722.10s
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
 - **Integration tests** for cross-module functionality
@@ -680,7 +682,7 @@ Module coverage mirrors the maintained source tree. Use `rg --files src/tests -g
 
 ## Test Execution Results
 
-Latest measured collect-only inventory (2026-05-14): 166 `test_*.py` files and 2,256 collected tests with the Ollama integration files excluded. Re-run the full command for current pass, skip, fail, and duration counts:
+Latest measured collect-only inventory (2026-05-20): 166 `test_*.py` files and 2,258 collected tests with the Ollama integration files excluded. Latest full command-of-record run with the same excludes passed on 2026-05-20: 2,250 passed, 7 skipped, 1 xpassed in 722.10s.
 
 ```bash
 uv run pytest src/tests/ -q --tb=no \

@@ -1,6 +1,7 @@
 """Tests for BaseGNNSerializer shared utility methods."""
 
 import json
+from typing import Any, cast
 
 import pytest
 
@@ -25,8 +26,8 @@ class _MinimalSerializer(BaseGNNSerializer):
         return ""
 
 
-def _make_model(**kwargs) -> GNNInternalRepresentation:
-    defaults = {"model_name": "TestModel", "annotation": "ActInfPOMDP"}
+def _make_model(**kwargs: Any) -> GNNInternalRepresentation:
+    defaults: dict[str, Any] = {"model_name": "TestModel", "annotation": "ActInfPOMDP"}
     defaults.update(kwargs)
     return GNNInternalRepresentation(**defaults)
 
@@ -35,16 +36,16 @@ def _make_model(**kwargs) -> GNNInternalRepresentation:
 
 
 class TestSerializeTimeSpec:
-    def setup_method(self):
+    def setup_method(self) -> Any:
         self.s = _MinimalSerializer()
 
-    def test_none_returns_empty_dict(self):
+    def test_none_returns_empty_dict(self) -> Any:
         assert self.s._serialize_time_spec(None) == {}
 
-    def test_empty_string_returns_empty_dict(self):
+    def test_empty_string_returns_empty_dict(self) -> Any:
         assert self.s._serialize_time_spec("") == {}
 
-    def test_populated_time_spec(self):
+    def test_populated_time_spec(self) -> Any:
         ts = TimeSpecification(
             time_type="Dynamic",
             discretization="DiscreteTime",
@@ -57,7 +58,7 @@ class TestSerializeTimeSpec:
         assert result["horizon"] == 10
         assert result["step_size"] == pytest.approx(0.1)
 
-    def test_defaults_via_getattr(self):
+    def test_defaults_via_getattr(self) -> Any:
         """Objects without explicit attrs fall back to defaults."""
 
         class Minimal:
@@ -72,16 +73,16 @@ class TestSerializeTimeSpec:
 
 
 class TestSerializeOntologyMappings:
-    def setup_method(self):
+    def setup_method(self) -> Any:
         self.s = _MinimalSerializer()
 
-    def test_none_returns_empty_list(self):
+    def test_none_returns_empty_list(self) -> Any:
         assert self.s._serialize_ontology_mappings(None) == []
 
-    def test_empty_list_returns_empty_list(self):
+    def test_empty_list_returns_empty_list(self) -> Any:
         assert self.s._serialize_ontology_mappings([]) == []
 
-    def test_mapping_with_dict_protocol(self):
+    def test_mapping_with_dict_protocol(self) -> Any:
         om = OntologyMapping(
             variable_name="s", ontology_term="HiddenState", description="latent state"
         )
@@ -91,7 +92,7 @@ class TestSerializeOntologyMappings:
         assert result[0]["ontology_term"] == "HiddenState"
         assert result[0]["description"] == "latent state"
 
-    def test_non_dict_protocol_stringified(self):
+    def test_non_dict_protocol_stringified(self) -> Any:
         result = self.s._serialize_ontology_mappings(["plain-string"])
         assert result == ["plain-string"]
 
@@ -100,10 +101,10 @@ class TestSerializeOntologyMappings:
 
 
 class TestCreateEmbeddedModelData:
-    def setup_method(self):
+    def setup_method(self) -> Any:
         self.s = _MinimalSerializer()
 
-    def test_empty_model(self):
+    def test_empty_model(self) -> Any:
         model = _make_model()
         data = self.s._create_embedded_model_data(model)
         assert data["model_name"] == "TestModel"
@@ -114,7 +115,7 @@ class TestCreateEmbeddedModelData:
         assert data["time_specification"] == {}
         assert data["ontology_mappings"] == []
 
-    def test_model_with_variable(self):
+    def test_model_with_variable(self) -> Any:
         var = Variable(
             name="s",
             var_type=VariableType.HIDDEN_STATE,
@@ -130,7 +131,7 @@ class TestCreateEmbeddedModelData:
         assert v["data_type"] == "categorical"
         assert v["dimensions"] == [3]
 
-    def test_model_with_connection(self):
+    def test_model_with_connection(self) -> Any:
         conn = Connection(
             source_variables=["s"],
             target_variables=["o"],
@@ -144,7 +145,7 @@ class TestCreateEmbeddedModelData:
         assert c["target_variables"] == ["o"]
         assert c["connection_type"] == "directed"
 
-    def test_model_with_parameter(self):
+    def test_model_with_parameter(self) -> Any:
         param = Parameter(name="alpha", value=0.5, type_hint="float")
         model = _make_model(parameters=[param])
         data = self.s._create_embedded_model_data(model)
@@ -154,7 +155,7 @@ class TestCreateEmbeddedModelData:
         assert p["value"] == pytest.approx(0.5)
         assert p["type_hint"] == "float"
 
-    def test_model_with_time_spec(self):
+    def test_model_with_time_spec(self) -> Any:
         ts = TimeSpecification(time_type="Dynamic", horizon=5)
         model = _make_model(time_specification=ts)
         data = self.s._create_embedded_model_data(model)
@@ -166,7 +167,7 @@ class TestCreateEmbeddedModelData:
 
 
 class TestAddEmbeddedModelData:
-    def setup_method(self):
+    def setup_method(self) -> Any:
         self.s = _MinimalSerializer()
 
     def _roundtrip_data(self, content: str, model: GNNInternalRepresentation) -> dict:
@@ -178,24 +179,24 @@ class TestAddEmbeddedModelData:
         json_str = last_line[len(prefix) :]
         if suffix:
             json_str = json_str[: -len(suffix)]
-        return json.loads(json_str)
+        return cast("dict[Any, Any]", json.loads(json_str))
 
-    def test_appends_to_content(self):
+    def test_appends_to_content(self) -> Any:
         model = _make_model()
         result = self.s._add_embedded_model_data("body", model)
         assert result.startswith("body")
         assert "MODEL_DATA:" in result
 
-    def test_embedded_json_is_valid(self):
+    def test_embedded_json_is_valid(self) -> Any:
         model = _make_model()
         data = self._roundtrip_data("body", model)
         assert data["model_name"] == "TestModel"
 
-    def test_format_name_affects_prefix(self):
+    def test_format_name_affects_prefix(self) -> Any:
         """Subclass with format_name 'python' gets # prefix."""
 
         class PythonSerializer(_MinimalSerializer):
-            def __init__(self):
+            def __init__(self) -> None:
                 super().__init__()
                 self.format_name = "python"
 
@@ -204,11 +205,11 @@ class TestAddEmbeddedModelData:
         result = s._add_embedded_model_data("", model)
         assert "# MODEL_DATA:" in result
 
-    def test_format_name_affects_suffix(self):
+    def test_format_name_affects_suffix(self) -> Any:
         """Subclass with format_name 'xml' gets <!-- prefix and --> suffix."""
 
         class XmlSerializer(_MinimalSerializer):
-            def __init__(self):
+            def __init__(self) -> None:
                 super().__init__()
                 self.format_name = "xml"
 

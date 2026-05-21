@@ -6,6 +6,7 @@ This file contains comprehensive tests for the audio module functionality.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,7 @@ class TestAudioModuleComprehensive:
     """Comprehensive tests for the audio module."""
 
     @pytest.mark.unit
-    def test_audio_module_imports(self):
+    def test_audio_module_imports(self) -> Any:
         """Test that audio module can be imported."""
         import audio
 
@@ -25,7 +26,7 @@ class TestAudioModuleComprehensive:
         assert hasattr(audio, "SAPFGNNProcessor")
 
     @pytest.mark.unit
-    def test_audio_generator_instantiation(self):
+    def test_audio_generator_instantiation(self) -> Any:
         """Test AudioGenerator class instantiation."""
         from audio import AudioGenerator
 
@@ -35,7 +36,7 @@ class TestAudioModuleComprehensive:
         assert hasattr(generator, "process_gnn_to_audio")
 
     @pytest.mark.unit
-    def test_sapf_gnn_processor_instantiation(self):
+    def test_sapf_gnn_processor_instantiation(self) -> Any:
         """Test SAPFGNNProcessor class instantiation."""
         from audio import SAPFGNNProcessor
 
@@ -45,7 +46,7 @@ class TestAudioModuleComprehensive:
         assert hasattr(processor, "generate_audio")
 
     @pytest.mark.unit
-    def test_audio_module_info(self):
+    def test_audio_module_info(self) -> Any:
         """Test audio module information retrieval."""
         from audio import get_module_info
 
@@ -56,7 +57,7 @@ class TestAudioModuleComprehensive:
         assert "features" in info
 
     @pytest.mark.unit
-    def test_audio_generation_options(self):
+    def test_audio_generation_options(self) -> Any:
         """Test audio generation options retrieval."""
         from audio import get_audio_generation_options
 
@@ -71,7 +72,7 @@ class TestAudioProcessing:
     """Tests for audio processing functionality."""
 
     @pytest.mark.unit
-    def test_gnn_to_audio_conversion(self, sample_gnn_files):
+    def test_gnn_to_audio_conversion(self, sample_gnn_files: Any) -> Any:
         """Test GNN to audio conversion."""
         from audio import AudioGenerator
 
@@ -81,7 +82,7 @@ class TestAudioProcessing:
         assert result is not None
 
     @pytest.mark.unit
-    def test_audio_validation(self):
+    def test_audio_validation(self) -> Any:
         """Test audio validation functionality."""
         from audio import validate_audio_content
 
@@ -89,7 +90,7 @@ class TestAudioProcessing:
         assert isinstance(result, bool)
 
     @pytest.mark.unit
-    def test_audio_generation(self, safe_filesystem):
+    def test_audio_generation(self, safe_filesystem: Any) -> Any:
         """Test audio generation functionality."""
         from audio import generate_audio_from_gnn
 
@@ -105,7 +106,9 @@ class TestAudioIntegration:
     """Integration tests for audio module."""
 
     @pytest.mark.integration
-    def test_audio_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
+    def test_audio_pipeline_integration(
+        self, sample_gnn_files: Any, isolated_temp_dir: Any
+    ) -> Any:
         """Test audio module integration with pipeline."""
         from audio import AudioGenerator
 
@@ -117,16 +120,16 @@ class TestAudioIntegration:
         assert result is not None
 
     @pytest.mark.integration
-    def test_audio_mcp_integration(self):
+    def test_audio_mcp_integration(self) -> Any:
         """Test audio MCP integration."""
         from audio.mcp import register_tools
 
         assert callable(register_tools)
 
 
-def test_audio_module_completeness():
+def test_audio_module_completeness() -> Any:
     """Test that audio module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "AudioGenerator",
         "SAPFGNNProcessor",
         "get_module_info",
@@ -142,7 +145,7 @@ def test_audio_module_completeness():
 
 
 @pytest.mark.slow
-def test_audio_module_performance():
+def test_audio_module_performance() -> Any:
     """Test audio module performance characteristics."""
     import time
 

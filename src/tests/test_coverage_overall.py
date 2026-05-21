@@ -8,12 +8,13 @@ without relying on prior pipeline steps.
 
 import importlib
 import inspect
+from typing import Any
 
 
 class TestCoverageOverall:
     """Importability and minimal invocation checks per module."""
 
-    def _smoke_functions(self, module_name: str, selectors: list[str]):
+    def _smoke_functions(self, module_name: str, selectors: list[str]) -> Any:
         mod = importlib.import_module(module_name)
         for sel in selectors:
             if not hasattr(mod, sel):
@@ -38,7 +39,7 @@ class TestCoverageOverall:
                         # Tolerate failures for non-critical helpers
                         pass
 
-    def test_gnn_core_imports(self):
+    def test_gnn_core_imports(self) -> Any:
         import gnn
 
         assert hasattr(gnn, "__all__")
@@ -46,25 +47,25 @@ class TestCoverageOverall:
 
         assert callable(process_gnn_directory_lightweight)
 
-    def test_audio_imports(self):
+    def test_audio_imports(self) -> Any:
         import audio
 
         assert hasattr(audio, "__all__")
         self._smoke_functions("audio", ["get_module_info"])
 
-    def test_export_imports(self):
+    def test_export_imports(self) -> Any:
         import export
 
         assert hasattr(export, "__all__")
         self._smoke_functions("export", ["get_module_info"])
 
-    def test_visualization_imports(self):
+    def test_visualization_imports(self) -> Any:
         import visualization
 
         assert hasattr(visualization, "__all__")
         self._smoke_functions("visualization", ["get_module_info"])
 
-    def test_llm_imports(self):
+    def test_llm_imports(self) -> Any:
         import llm
 
         assert hasattr(llm, "__version__")

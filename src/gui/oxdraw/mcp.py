@@ -14,7 +14,7 @@ from .mermaid_parser import convert_mermaid_file_to_gnn
 from .processor import check_oxdraw_installed, get_module_info, launch_oxdraw_editor
 
 
-def register_mcp_tools():
+def register_mcp_tools() -> Any:
     """
     Register oxdraw MCP tools.
 
@@ -25,7 +25,7 @@ def register_mcp_tools():
     - oxdraw.check_installation: Check oxdraw CLI availability
     - oxdraw.get_info: Get module information
     """
-    tools = []
+    tools: list[Any] = []
 
     # Tool 1: Convert GNN to Mermaid
     tools.append(
@@ -135,7 +135,7 @@ def register_mcp_tools():
     return tools
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register oxdraw tools with the MCP server using the universal protocol."""
     for tool in register_mcp_tools():
         mcp_instance.register_tool(
@@ -158,7 +158,8 @@ def tool_convert_to_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
     """
     try:
         gnn_file_path = Path(args["gnn_file_path"])
-        output_path = Path(args.get("output_path")) if args.get("output_path") else None
+        output_arg = args.get("output_path")
+        output_path = Path(output_arg) if isinstance(output_arg, (str, Path)) else None
         include_metadata = args.get("include_metadata", True)
 
         if not gnn_file_path.exists():
@@ -192,7 +193,8 @@ def tool_convert_from_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
     """
     try:
         mermaid_file_path = Path(args["mermaid_file_path"])
-        output_path = Path(args.get("output_path")) if args.get("output_path") else None
+        output_arg = args.get("output_path")
+        output_path = Path(output_arg) if isinstance(output_arg, (str, Path)) else None
         validate_ontology = args.get("validate_ontology", False)
 
         if not mermaid_file_path.exists():

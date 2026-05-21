@@ -7,7 +7,7 @@ from __future__ import annotations
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 from advanced_visualization._shared import normalize_connection_format
 
@@ -36,7 +36,7 @@ try:
 
     MATPLOTLIB_AVAILABLE = True
 except (ImportError, RecursionError):
-    plt = None
+    plt = cast(Any, None)
     MATPLOTLIB_AVAILABLE = False
 
 try:
@@ -50,7 +50,7 @@ try:
 
     NETWORKX_AVAILABLE = True
 except (ImportError, RecursionError, AttributeError, ValueError):
-    nx = None
+    nx = cast(Any, None)
     NETWORKX_AVAILABLE = False
 
 try:
@@ -58,7 +58,7 @@ try:
 
     PLOTLY_AVAILABLE = True
 except ImportError:
-    go = None
+    go = cast(Any, None)
     PLOTLY_AVAILABLE = False
 
 from ..plotting.utils import safe_tight_layout
@@ -170,7 +170,7 @@ def generate_network_visualizations(
             G_layout.nodes[node].get("type", "unknown") for node in G_layout.nodes()
         ]
 
-        type_colors = {
+        type_colors: dict[str, Any] = {
             "hidden_state": "#5B9BD5",
             "observation": "#70C1B3",
             "policy": "#E07A5F",
@@ -353,7 +353,7 @@ def _determine_connection_type(
 
 
 def _get_edge_style(connection_type: str) -> Dict[str, Any]:
-    style_map = {
+    style_map: dict[str, Any] = {
         "state_transition": {
             "color": "#3B5998",
             "width": 3,
@@ -421,7 +421,9 @@ def _get_edge_style(connection_type: str) -> Dict[str, Any]:
             "style": "solid",
         },
     }
-    return style_map.get(connection_type, style_map["generic_causal"])
+    return cast(
+        "dict[str, Any]", style_map.get(connection_type, style_map["generic_causal"])
+    )
 
 
 def _generate_network_statistics(variables: list, connections: list) -> Dict[str, Any]:
@@ -517,9 +519,9 @@ def _generate_interactive_network(G: Any, output_path: Path) -> bool:
             mode="lines",
         )
 
-        node_x = []
-        node_y = []
-        node_info = []
+        node_x: list[Any] = []
+        node_y: list[Any] = []
+        node_info: list[Any] = []
         node_types = nx.get_node_attributes(G, "type")
 
         for node in G.nodes():

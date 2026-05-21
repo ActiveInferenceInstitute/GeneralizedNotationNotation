@@ -11,7 +11,7 @@ License: MIT
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ from .common import (
 class HaskellGNNParser(BaseGNNParser):
     """Parser for Haskell functional specifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.module_pattern = re.compile(
             r"module\s+([\w.]+)\s*(?:\([^)]*\))?\s*where", re.IGNORECASE
@@ -90,7 +90,7 @@ class HaskellGNNParser(BaseGNNParser):
                 result.model.variables.append(variable)
 
             # Parse type signatures and functions
-            type_sigs = {}
+            type_sigs: dict[Any, Any] = {}
             for match in self.type_pattern.finditer(content):
                 func_name = match.group(1)
                 func_type = match.group(2).strip()
@@ -133,7 +133,7 @@ class HaskellGNNParser(BaseGNNParser):
         import json
 
         # Look for JSON data in Haskell comments
-        patterns = [
+        patterns: list[Any] = [
             r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...}
             r"\{-\s*MODEL_DATA:\s*(\{.+?\})\s*-\}",  # {- MODEL_DATA: {...} -}
         ]
@@ -142,7 +142,7 @@ class HaskellGNNParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in Haskell embedded data, trying next pattern: %s",

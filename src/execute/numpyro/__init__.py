@@ -1,5 +1,7 @@
 """NumPyro executor package for GNN pipeline."""
 
+from typing import Any
+
 from .numpyro_runner import (
     execute_numpyro_script,
     find_numpyro_scripts,
@@ -7,7 +9,7 @@ from .numpyro_runner import (
     run_numpyro_scripts,
 )
 
-__all__ = [
+__all__: list[Any] = [
     "is_numpyro_available",
     "find_numpyro_scripts",
     "execute_numpyro_script",

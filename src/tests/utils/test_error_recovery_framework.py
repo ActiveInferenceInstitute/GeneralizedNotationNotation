@@ -10,6 +10,7 @@ and error handling improvements.
 import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 SRC_DIR = PROJECT_ROOT / "src"
@@ -22,7 +23,7 @@ class TestErrorRecoveryFramework:
     """Test error recovery framework functionality."""
 
     @pytest.mark.unit
-    def test_error_context_creation(self):
+    def test_error_context_creation(self) -> Any:
         """Test ErrorContext dataclass creation and conversion."""
         from utils.error_recovery import ErrorContext, ErrorSeverity
 
@@ -48,7 +49,7 @@ class TestErrorRecoveryFramework:
         assert len(d["recovery_suggestions"]) == 2
 
     @pytest.mark.unit
-    def test_error_recovery_manager_initialization(self):
+    def test_error_recovery_manager_initialization(self) -> Any:
         """Test ErrorRecoveryManager initialization and setup."""
         from utils.error_recovery import ErrorRecoveryManager
 
@@ -66,7 +67,7 @@ class TestErrorRecoveryFramework:
         assert "file" in manager.recovery_strategies
 
     @pytest.mark.unit
-    def test_error_code_registry(self):
+    def test_error_code_registry(self) -> Any:
         """Test error code registry contains expected codes."""
         from utils.error_recovery import ErrorCodeRegistry
 
@@ -90,7 +91,7 @@ class TestErrorRecoveryFramework:
         assert ErrorCodeRegistry.EXECUTION_FAILED == "E401"
 
     @pytest.mark.unit
-    def test_error_message_formatting(self):
+    def test_error_message_formatting(self) -> Any:
         """Test error message formatting."""
         from utils.error_recovery import format_error_message
 
@@ -109,7 +110,7 @@ class TestErrorRecoveryFramework:
         assert "pip install" in message
 
     @pytest.mark.unit
-    def test_error_handling_with_severity_levels(self):
+    def test_error_handling_with_severity_levels(self) -> Any:
         """Test error handling respects severity levels."""
         from utils.error_recovery import (
             ErrorContext,
@@ -156,7 +157,7 @@ class TestErrorRecoveryFramework:
         assert manager.handle_error(context) is False
 
     @pytest.mark.unit
-    def test_format_and_log_error_function(self):
+    def test_format_and_log_error_function(self) -> Any:
         """Test format_and_log_error convenience function."""
         from utils.error_recovery import ErrorSeverity, format_and_log_error
 
@@ -172,14 +173,14 @@ class TestErrorRecoveryFramework:
         assert context.error_code == "E101"
         assert context.operation == "File Loading"
         assert "File not found" in context.message
-        assert len(context.recovery_suggestions) == 2
+        assert len(context.recovery_suggestions or []) == 2
 
 
 class TestErrorRecoveryStrategies:
     """Test specific error recovery strategies."""
 
     @pytest.mark.unit
-    def test_import_error_recovery_suggestions(self):
+    def test_import_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for import errors."""
         from utils.error_recovery import ErrorRecoveryManager
 
@@ -195,7 +196,7 @@ class TestErrorRecoveryStrategies:
         )
 
     @pytest.mark.unit
-    def test_file_error_recovery_suggestions(self):
+    def test_file_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for file errors."""
         from utils.error_recovery import ErrorRecoveryManager
 
@@ -211,7 +212,7 @@ class TestErrorRecoveryStrategies:
         assert any("disk" in s.lower() or "space" in s.lower() for s in strategies)
 
     @pytest.mark.unit
-    def test_resource_error_recovery_suggestions(self):
+    def test_resource_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for resource errors."""
         from utils.error_recovery import ErrorRecoveryManager
 
@@ -227,7 +228,7 @@ class TestErrorRecoveryStrategies:
         )
 
     @pytest.mark.unit
-    def test_validation_error_recovery_suggestions(self):
+    def test_validation_error_recovery_suggestions(self) -> Any:
         """Test recovery suggestions for validation errors."""
         from utils.error_recovery import ErrorRecoveryManager
 
@@ -246,7 +247,7 @@ class TestErrorHandlingIntegration:
     """Integration tests for error handling across components."""
 
     @pytest.mark.unit
-    def test_error_context_roundtrip(self):
+    def test_error_context_roundtrip(self) -> Any:
         """Test ErrorContext serialization and deserialization."""
         from utils.error_recovery import ErrorContext, ErrorSeverity
 
@@ -271,7 +272,7 @@ class TestErrorHandlingIntegration:
         assert len(data["recovery_suggestions"]) == 1
 
     @pytest.mark.unit
-    def test_error_recovery_manager_is_singleton(self):
+    def test_error_recovery_manager_is_singleton(self) -> Any:
         """Test that get_recovery_manager returns consistent instance."""
         from utils.error_recovery import get_recovery_manager
 
@@ -282,7 +283,7 @@ class TestErrorHandlingIntegration:
         assert manager1 is manager2
 
 
-def test_error_recovery_documentation():
+def test_error_recovery_documentation() -> Any:
     """Test that error recovery framework components exist and have docstrings."""
     from utils.error_recovery import (
         ErrorCodeRegistry,
@@ -306,7 +307,7 @@ def test_error_recovery_documentation():
 
     # Verify error code registry has expected categories
     registry = ErrorCodeRegistry
-    expected_attrs = [
+    expected_attrs: list[Any] = [
         "IMPORT_NOT_FOUND",
         "FILE_NOT_FOUND",
         "RESOURCE_MEMORY_EXCEEDED",

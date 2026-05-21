@@ -8,7 +8,7 @@ structure validation, type checking, and consistency verification.
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, cast
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 class SemanticValidator:
     """Validator for semantic aspects of GNN models."""
 
-    def __init__(self, validation_level: str = "standard"):
+    def __init__(self, validation_level: str = "standard") -> None:
         """
         Initialize the semantic validator.
 
@@ -36,8 +36,8 @@ class SemanticValidator:
         Returns:
             Validation result with errors and warnings
         """
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Apply validation rules based on level
         for rule in self.validation_rules:
@@ -55,8 +55,10 @@ class SemanticValidator:
 
     def _get_level_value(self) -> int:
         """Convert validation level string to numeric value."""
-        levels = {"basic": 1, "standard": 2, "strict": 3, "research": 4}
-        return levels.get(self.validation_level.lower(), 2)  # Default to standard
+        levels: dict[str, Any] = {"basic": 1, "standard": 2, "strict": 3, "research": 4}
+        return cast(
+            "int", levels.get(self.validation_level.lower(), 2)
+        )  # Default to standard
 
     def _get_validation_rules(self) -> List[Dict[str, Any]]:
         """Get validation rules based on validation level."""
@@ -100,8 +102,8 @@ class SemanticValidator:
 
     def _validate_basic_structure(self, content: str) -> Dict[str, Any]:
         """Validate basic structure of the GNN model."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Check for required elements
         if not re.search(r"ModelName:", content):
@@ -125,8 +127,8 @@ class SemanticValidator:
 
     def _validate_state_space_definitions(self, content: str) -> Dict[str, Any]:
         """Validate state space definitions."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Extract state blocks
         state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
@@ -158,15 +160,15 @@ class SemanticValidator:
 
     def _validate_connection_integrity(self, content: str) -> Dict[str, Any]:
         """Validate connection integrity."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Extract state blocks and connections
         state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
         connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Extract block names
-        block_names = []
+        block_names: list[Any] = []
         for block in state_blocks:
             name_match = re.search(r"Name:\s*([^\n]+)", block)
             if name_match:
@@ -196,7 +198,7 @@ class SemanticValidator:
                 )
 
         # Check for isolated blocks
-        connected_blocks = set()
+        connected_blocks: set[Any] = set()
         for conn in connections:
             from_match = re.search(r"From:\s*([^\n]+)", conn)
             to_match = re.search(r"To:\s*([^\n]+)", conn)
@@ -216,15 +218,15 @@ class SemanticValidator:
 
     def _validate_mathematical_consistency(self, content: str) -> Dict[str, Any]:
         """Validate mathematical consistency."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Extract state blocks and connections
         state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
         connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Extract block dimensions
-        block_dims = {}
+        block_dims: dict[Any, Any] = {}
         for block in state_blocks:
             name_match = re.search(r"Name:\s*([^\n]+)", block)
             dim_match = re.search(r"Dimensions:\s*([^\n]+)", block)
@@ -260,7 +262,7 @@ class SemanticValidator:
                     if mapping_match:
                         mapping = mapping_match.group(1).strip()
                         # Validate mapping specification
-                        valid_mappings = [
+                        valid_mappings: list[Any] = [
                             "identity",
                             "transpose",
                             "reshape",
@@ -331,8 +333,8 @@ class SemanticValidator:
 
     def _validate_active_inference_principles(self, content: str) -> Dict[str, Any]:
         """Validate compliance with Active Inference principles."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Check for required components in Active Inference models
         has_observation = bool(
@@ -369,14 +371,14 @@ class SemanticValidator:
 
     def _validate_causal_relationships(self, content: str) -> Dict[str, Any]:
         """Validate causal relationships in the model."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         # Extract connections
         connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Check for circular dependencies
-        graph = {}
+        graph: dict[Any, Any] = {}
         for conn in connections:
             from_match = re.search(r"From:\s*([^\n]+)", conn)
             to_match = re.search(r"To:\s*([^\n]+)", conn)
@@ -390,10 +392,10 @@ class SemanticValidator:
                 graph[from_block].append(to_block)
 
         # Check for cycles
-        visited = set()
-        path = set()
+        visited: set[Any] = set()
+        path: set[Any] = set()
 
-        def has_cycle(node):
+        def has_cycle(node: Any) -> Any:
             if node in path:
                 return True
             if node in visited:
@@ -409,7 +411,7 @@ class SemanticValidator:
             path.remove(node)
             return False
 
-        cycles = []
+        cycles: list[Any] = []
         for node in graph:
             if has_cycle(node):
                 cycles.append(node)
@@ -425,8 +427,8 @@ class SemanticValidator:
         self, content: str
     ) -> Dict[str, Any]:
         """Validate advanced mathematical properties."""
-        errors = []
-        warnings = []
+        errors: list[Any] = []
+        warnings: list[Any] = []
 
         pass
         # In a real implementation, this would include:
@@ -457,7 +459,7 @@ class SemanticValidator:
 
 
 def process_semantic_validation(
-    model_data: Union[str, Path, Dict[str, Any]], **kwargs
+    model_data: Union[str, Path, Dict[str, Any]], **kwargs: Any
 ) -> Dict[str, Any]:
     """
     Process semantic validation for a GNN model.
@@ -525,7 +527,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
     raw_sections = model_data.get("raw_sections", {})
     if raw_sections:
         # Reconstruct the original content from raw sections
-        content_parts = []
+        content_parts: list[Any] = []
 
         # Add model name
         if "ModelName" in raw_sections:
@@ -556,7 +558,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add variables
         if variables:
-            var_lines = []
+            var_lines: list[Any] = []
             for var in variables:
                 name = var.get("name", "Unknown")
                 var_type = var.get("var_type", "unknown")
@@ -569,7 +571,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add connections
         if connections:
-            conn_lines = []
+            conn_lines: list[Any] = []
             for conn in connections:
                 source = (
                     conn.get("source_variables", ["?"])[0]

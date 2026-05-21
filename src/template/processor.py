@@ -11,33 +11,12 @@ import logging
 from pathlib import Path
 from typing import Any, Dict
 
+from utils import performance_tracker
 from utils.logging.logging_utils import (
     log_step_error,
     log_step_success,
     log_step_warning,
 )
-
-try:
-    from utils import performance_tracker
-except ImportError:
-
-    class _NoOpContext:
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *args):
-            pass
-
-    class _MinimalPerformanceTracker:
-        def track_operation(self, name, metadata=None):
-            """Track a named operation for performance monitoring."""
-            return _NoOpContext()
-
-        def get_summary(self):
-            """Return a summary of all tracked operations and their timings."""
-            return {}
-
-    performance_tracker = _MinimalPerformanceTracker()
 
 # Initialize logger
 logger = logging.getLogger(__name__)
@@ -54,7 +33,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def safe_template_execution(logger, correlation_id: str):
+def safe_template_execution(logger: Any, correlation_id: str) -> Any:
     """
     Context manager for safe template execution with comprehensive error handling.
 
@@ -64,18 +43,21 @@ def safe_template_execution(logger, correlation_id: str):
     import traceback
 
     start_time = time.time()
-    error_recovery = None
+    error_manager = None
     resource_tracker = None
 
     try:
         # Try to import enhanced infrastructure
         try:
-            from utils.error_recovery import ErrorRecoverySystem
+            from utils.error_recovery import (
+                ErrorContext,
+                ErrorRecoveryManager,
+                ErrorSeverity,
+            )
             from utils.logging.logging_utils import set_correlation_context
             from utils.resource_manager import ResourceTracker, get_system_info
 
-            # Initialize error recovery system
-            error_recovery = ErrorRecoverySystem()
+            error_manager = ErrorRecoveryManager(logger)
 
             # Initialize resource tracking
             resource_tracker = ResourceTracker()
@@ -94,7 +76,7 @@ def safe_template_execution(logger, correlation_id: str):
             )
 
         yield {
-            "error_recovery": error_recovery,
+            "error_manager": error_manager,
             "resource_tracker": resource_tracker,
             "correlation_id": correlation_id,
         }
@@ -102,16 +84,18 @@ def safe_template_execution(logger, correlation_id: str):
     except Exception as e:
         execution_time = time.time() - start_time
 
-        if error_recovery:
-            # Demonstrate error recovery capabilities
-            error_analysis = error_recovery.analyze_error(
-                str(e), traceback.format_exc()
-            )
-            recovery_actions = error_recovery.suggest_recovery_actions(error_analysis)
-
+        if error_manager:
             logger.error(f"Template execution failed after {execution_time:.2f}s")
-            logger.error(f"Error: {str(e)}")
-            logger.error(f"Recovery actions: {recovery_actions}")
+            error_manager.handle_error(
+                ErrorContext(
+                    operation="template",
+                    severity=ErrorSeverity.ERROR,
+                    message=str(e),
+                    error_code="TEMPLATE_EXECUTION_ERROR",
+                    details={"traceback": traceback.format_exc()},
+                    original_exception=e,
+                )
+            )
         else:
             logger.error(f"Template execution failed after {execution_time:.2f}s")
             logger.error(f"Error: {str(e)}")
@@ -119,7 +103,9 @@ def safe_template_execution(logger, correlation_id: str):
         raise
 
 
-def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, Any]:
+def demonstrate_utility_patterns(
+    context: Dict[str, Any], logger: Any
+) -> Dict[str, Any]:
     """
     Demonstrate various utility patterns and infrastructure capabilities.
 
@@ -130,7 +116,7 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
     import time
     from datetime import datetime
 
-    demonstration_results = {
+    demonstration_results: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "correlation_id": context.get("correlation_id", "unknown"),
         "patterns_demonstrated": [],
@@ -138,27 +124,34 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
         "performance_metrics": {},
     }
 
-    # Demonstrate error recovery system
-    if context.get("error_recovery"):
+    # Demonstrate structured error manager
+    if context.get("error_manager"):
         try:
-            # Simulate an error for demonstration
-            error_recovery = context["error_recovery"]
-            test_error = "Demonstration error for pattern testing"
-            error_analysis = error_recovery.analyze_error(test_error, "Test traceback")
-            recovery_actions = error_recovery.suggest_recovery_actions(error_analysis)
+            from utils.error_recovery import ErrorContext, ErrorSeverity
 
-            demonstration_results["patterns_demonstrated"].append("error_recovery")
-            demonstration_results["infrastructure_status"]["error_recovery"] = {
+            error_manager = context["error_manager"]
+            test_error = "Demonstration error for pattern testing"
+            handled = error_manager.handle_error(
+                ErrorContext(
+                    operation="template_demo",
+                    severity=ErrorSeverity.WARNING,
+                    message=test_error,
+                    error_code="TEMPLATE_DEMO_WARNING",
+                    details={"traceback": "Test traceback"},
+                )
+            )
+
+            demonstration_results["patterns_demonstrated"].append("error_manager")
+            demonstration_results["infrastructure_status"]["error_manager"] = {
                 "available": True,
-                "analysis_capabilities": len(error_analysis),
-                "recovery_actions": len(recovery_actions),
+                "handled": handled,
             }
 
             logger.info("✅ Error recovery system demonstrated")
 
         except Exception as e:
             logger.warning(f"⚠️ Error recovery demonstration failed: {e}")
-            demonstration_results["infrastructure_status"]["error_recovery"] = {
+            demonstration_results["infrastructure_status"]["error_manager"] = {
                 "available": False,
                 "error": str(e),
             }
@@ -252,7 +245,7 @@ def process_template_standardized(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Process files in a directory using the template processor.
@@ -305,8 +298,13 @@ def process_template_standardized(
             logger.info(f"Found {len(input_files)} files to process")
 
             # Filter out binary and system files (.DS_Store, etc.)
-            SKIP_PATTERNS = {".DS_Store", "Thumbs.db", ".gitkeep", ".gitignore"}
-            SKIP_EXTENSIONS = {
+            SKIP_PATTERNS: set[Any] = {
+                ".DS_Store",
+                "Thumbs.db",
+                ".gitkeep",
+                ".gitignore",
+            }
+            SKIP_EXTENSIONS: set[Any] = {
                 ".pyc",
                 ".pyo",
                 ".so",
@@ -333,7 +331,7 @@ def process_template_standardized(
             successful_files = 0
             failed_files = 0
 
-            processing_options = {
+            processing_options: dict[str, Any] = {
                 "verbose": verbose,
                 "recursive": recursive,
                 "example_param": example_param,
@@ -359,7 +357,7 @@ def process_template_standardized(
 
             # Generate summary report
             summary_file = output_dir / "template_processing_summary.json"
-            summary = {
+            summary: dict[str, Any] = {
                 "timestamp": datetime.datetime.now().isoformat(),
                 "step_name": "template",
                 "input_directory": str(target_dir),
@@ -445,7 +443,7 @@ def process_single_file(
             f.write(processed_content)
 
         # Generate processing report
-        report = {
+        report: dict[str, Any] = {
             "input_file": str(input_file),
             "output_file": str(output_file),
             "timestamp": datetime.datetime.now().isoformat(),
@@ -506,7 +504,7 @@ def validate_file(input_file: Path) -> Dict[str, Any]:
 
         # Validate file format (example: check for specific markers)
         is_valid = True
-        validation_messages = []
+        validation_messages: list[Any] = []
 
         # Return validation result
         return {

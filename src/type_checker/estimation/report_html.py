@@ -4,6 +4,7 @@ HTML report generation for the resource estimator.
 
 import json
 import os
+from typing import Any
 
 from utils.matplotlib_setup import apply_env_backend_if_set
 
@@ -104,7 +105,7 @@ def generate_html_report(
         <div class="visualizations">
     """
 
-    viz_files = [
+    viz_files: list[Any] = [
         ("memory_usage_html.png", "Memory Usage"),
         ("inference_time_html.png", "Inference Time"),
         ("storage_requirements_html.png", "Storage Requirements"),

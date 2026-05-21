@@ -146,7 +146,7 @@ learning_rate = 0.01
         except Exception as e:
             pytest.skip(f"Data extraction failed: {e}")
 
-    def test_extract_from_file_failure_returns_full_shape(self, tmp_path):
+    def test_extract_from_file_failure_returns_full_shape(self, tmp_path: Any) -> Any:
         """Failure path returns all 13 keys matching the success shape."""
         from advanced_visualization.data_extractor import VisualizationDataExtractor
 
@@ -155,7 +155,7 @@ learning_rate = 0.01
         result = extractor.extract_from_file(missing)
 
         assert result["success"] is False
-        expected_keys = {
+        expected_keys: set[Any] = {
             "success",
             "errors",
             "warnings",
@@ -176,7 +176,7 @@ learning_rate = 0.01
             f"Missing keys: {expected_keys - result.keys()}"
         )
 
-    def test_connection_keys_use_source_target_variables(self, tmp_path):
+    def test_connection_keys_use_source_target_variables(self, tmp_path: Any) -> Any:
         """Connections extracted from model use source_variables/target_variables keys."""
         from advanced_visualization.data_extractor import VisualizationDataExtractor
 
@@ -204,7 +204,7 @@ learning_rate = 0.01
                 assert "from" not in conn
                 assert "to" not in conn
 
-    def test_extract_from_content_failure_returns_full_shape(self):
+    def test_extract_from_content_failure_returns_full_shape(self) -> Any:
         """extract_from_content failure path returns all 13 keys."""
         from advanced_visualization.data_extractor import VisualizationDataExtractor
 
@@ -328,7 +328,7 @@ s[3]
 
         logger = logging.getLogger("test_viz_types")
 
-        viz_types = ["all", "dashboard", "d2", "network"]
+        viz_types: list[Any] = ["all", "dashboard", "d2", "network"]
 
         for viz_type in viz_types:
             try:
@@ -356,7 +356,7 @@ class TestVisualizationCreation:
         """Test default visualization creation."""
         from advanced_visualization import create_default_visualization
 
-        data = {"name": "test", "values": [1, 2, 3]}
+        data: dict[str, Any] = {"name": "test", "values": [1, 2, 3]}
 
         try:
             result = create_default_visualization(data)
@@ -369,7 +369,10 @@ class TestVisualizationCreation:
         """Test network visualization creation."""
         from advanced_visualization import create_network_visualization
 
-        data = {"nodes": ["A", "B", "C"], "edges": [("A", "B"), ("B", "C")]}
+        data: dict[str, Any] = {
+            "nodes": ["A", "B", "C"],
+            "edges": [("A", "B"), ("B", "C")],
+        }
 
         try:
             result = create_network_visualization(data)

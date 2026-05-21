@@ -12,7 +12,9 @@ from typing import Any, List, Optional, Tuple
 logger = logging.getLogger(__name__)
 
 
-def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) -> Path:
+def get_output_dir_for_script(
+    script_name: str, base_output_dir: (Path) | None = None
+) -> Path:
     """Get output directory for a script, delegating to pipeline.config to avoid circular imports."""
     try:
         from pipeline.config import get_output_dir_for_script as _get_output_dir
@@ -32,7 +34,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) ->
         return base_output_dir / f"{normalized}_output"
 
 
-def setup_step_logging(step_name: str, verbose: bool = False):
+def setup_step_logging(step_name: str, verbose: bool = False) -> Any:
     """Set up logging for a pipeline step, delegating to logging_utils."""
     try:
         from .logging.logging_utils import setup_step_logging as _setup_step_logging
@@ -63,7 +65,7 @@ class RecoveryArgumentParser:
     """
 
     @staticmethod
-    def parse_step_arguments(step_name):
+    def parse_step_arguments(step_name: Any) -> Any:
         """Return default args (verbose=False, output_dir='output')."""
         return _DefaultStepArgs(step_name)
 
@@ -79,22 +81,11 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
     Returns:
         Tuple of pipeline utilities
     """
-    try:
-        # Try to import actual utilities
-        from .argument_utils import ArgumentParser
-        from .logging.logging_utils import setup_step_logging
+    from .argument_utils import ArgumentParser
+    from .logging.logging_utils import setup_step_logging
 
-        logger = setup_step_logging(step_name, verbose)
-        parser = ArgumentParser
-
-        return logger, parser
-
-    except ImportError:
-        # Recovery to default utilities
-        logger = setup_step_logging(step_name, verbose)
-        parser = RecoveryArgumentParser()
-
-        return logger, parser
+    logger = setup_step_logging(step_name, verbose)
+    return logger, ArgumentParser
 
 
 def validate_output_directory(output_dir: Path, step_name: str) -> bool:
@@ -139,9 +130,9 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
 def execute_pipeline_step_template(
     step_name: str,
     step_description: str,
-    main_function,
+    main_function: Any,
     import_dependencies: Optional[List[str]] = None,
-):
+) -> Any:
     """
     Execute a pipeline step using the standard template.
 

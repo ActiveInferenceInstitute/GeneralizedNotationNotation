@@ -37,7 +37,7 @@ def create_enhanced_pymdp_context(
         )
 
         # Base context
-        context = {
+        context: dict[str, Any] = {
             "gnn_spec": gnn_spec,
             "output_dir": output_dir,
             "correlation_id": correlation_id,
@@ -54,7 +54,7 @@ def create_enhanced_pymdp_context(
             context["config"].update(config_overrides)
 
         # Set default configuration
-        default_config = {
+        default_config: dict[str, Any] = {
             "simulation_steps": 100,
             "visualization_enabled": True,
             "save_results": True,

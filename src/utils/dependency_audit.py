@@ -59,7 +59,9 @@ class AuditResult:
 class DependencyAuditor:
     """Comprehensive dependency auditor for Python projects."""
 
-    def __init__(self, project_root: Path, logger: Optional[logging.Logger] = None):
+    def __init__(
+        self, project_root: Path, logger: Optional[logging.Logger] = None
+    ) -> None:
         self.project_root = project_root
         self.logger = logger or logging.getLogger(__name__)
         self.dependencies: Dict[str, DependencyInfo] = {}
@@ -115,7 +117,7 @@ class DependencyAuditor:
         )
         return self.audit_result
 
-    def _load_project_dependencies(self):
+    def _load_project_dependencies(self) -> Any:
         """Load dependencies from project files."""
         # Load from pyproject.toml (primary source with UV)
         pyproject_path = self.project_root / "pyproject.toml"
@@ -130,7 +132,7 @@ class DependencyAuditor:
         # Load installed packages
         self._load_installed_packages()
 
-    def _load_from_pyproject_toml(self, pyproject_path: Path):
+    def _load_from_pyproject_toml(self, pyproject_path: Path) -> Any:
         """Load dependencies from pyproject.toml."""
         try:
             with open(pyproject_path, "rb") as f:
@@ -158,7 +160,7 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error parsing pyproject.toml: {e}")
 
-    def _load_from_uv_lock(self, uv_lock_path: Path):
+    def _load_from_uv_lock(self, uv_lock_path: Path) -> Any:
         """Load dependencies from uv.lock file."""
         try:
             with open(uv_lock_path, "rb") as f:
@@ -181,7 +183,7 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error parsing uv.lock: {e}")
 
-    def _load_installed_packages(self):
+    def _load_installed_packages(self) -> Any:
         """Load information about installed packages."""
         try:
             result = subprocess.run(
@@ -226,7 +228,7 @@ class DependencyAuditor:
             return name, version.strip()
         return "", ""
 
-    def _check_outdated_packages(self):
+    def _check_outdated_packages(self) -> Any:
         """Check for outdated packages."""
         try:
             result = subprocess.run(
@@ -259,7 +261,7 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error checking outdated packages: {e}")
 
-    def _scan_security_vulnerabilities(self):
+    def _scan_security_vulnerabilities(self) -> Any:
         """Scan for security vulnerabilities."""
         try:
             # Use pip-audit if available
@@ -287,7 +289,7 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error during security scan: {e}")
 
-    def _analyze_dependency_graph(self):
+    def _analyze_dependency_graph(self) -> Any:
         """Analyze dependency relationships."""
         try:
             result = subprocess.run(
@@ -309,7 +311,7 @@ class DependencyAuditor:
         except Exception as e:
             self.logger.error(f"Error analyzing dependency graph: {e}")
 
-    def _parse_pip_show_output(self, output: str):
+    def _parse_pip_show_output(self, output: str) -> Any:
         """Parse output from pip show command."""
         sections = output.split("---")
         for section in sections:
@@ -320,7 +322,7 @@ class DependencyAuditor:
             if not lines:
                 continue
 
-            package_info = {}
+            package_info: dict[Any, Any] = {}
             for line in lines:
                 if ":" in line:
                     key, value = line.split(":", 1)
@@ -344,7 +346,7 @@ class DependencyAuditor:
                         d.strip() for d in requires.split(",") if d.strip()
                     ]
 
-    def _find_unused_dependencies(self):
+    def _find_unused_dependencies(self) -> Any:
         """Find potentially unused dependencies."""
         # This would require static analysis of the codebase
         # For now, we'll use a simple heuristic
@@ -354,7 +356,7 @@ class DependencyAuditor:
 
     def _generate_recommendations(self) -> List[str]:
         """Generate improvement recommendations."""
-        recommendations = []
+        recommendations: list[Any] = []
 
         # Outdated package recommendations
         outdated = [name for name, dep in self.dependencies.items() if dep.is_outdated]
@@ -439,7 +441,7 @@ class DependencyAuditor:
         if not self.audit_result:
             raise ValueError("Run audit_dependencies() first")
 
-        report_data = {
+        report_data: dict[str, Any] = {
             "audit_timestamp": self.audit_result.timestamp.isoformat(),
             "summary": {
                 "total_dependencies": self.audit_result.total_dependencies,
@@ -475,7 +477,7 @@ class DependencyAuditor:
 
     def optimize_dependencies(self) -> Dict[str, Any]:
         """Suggest dependency optimizations."""
-        optimizations = {
+        optimizations: dict[str, Any] = {
             "updates_available": [],
             "security_fixes": [],
             "consolidation_opportunities": [],
@@ -509,7 +511,9 @@ class DependencyAuditor:
 class DependencyOptimizer:
     """Tools for optimizing dependency management."""
 
-    def __init__(self, project_root: Path, logger: Optional[logging.Logger] = None):
+    def __init__(
+        self, project_root: Path, logger: Optional[logging.Logger] = None
+    ) -> None:
         self.project_root = project_root
         self.logger = logger or logging.getLogger(__name__)
 
@@ -520,10 +524,10 @@ class DependencyOptimizer:
 
     def update_dependencies(self, dry_run: bool = True) -> Dict[str, Any]:
         """Update outdated dependencies."""
-        result = {"updated": [], "failed": [], "skipped": []}
+        result: dict[str, Any] = {"updated": [], "failed": [], "skipped": []}
 
         try:
-            cmd = ["uv", "pip", "install", "--upgrade"]
+            cmd: list[Any] = ["uv", "pip", "install", "--upgrade"]
             if dry_run:
                 cmd.append("--dry-run")
 

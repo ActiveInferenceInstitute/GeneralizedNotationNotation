@@ -30,7 +30,7 @@ class ConsistencyChecker:
         reference_result = self._check_reference_consistency(content)
 
         # Combine warnings
-        warnings = []
+        warnings: list[Any] = []
         warnings.extend(naming_result.get("warnings", []))
         warnings.extend(style_result.get("warnings", []))
         warnings.extend(structure_result.get("warnings", []))
@@ -57,11 +57,11 @@ class ConsistencyChecker:
 
     def _check_naming_conventions(self, content: str) -> Dict[str, Any]:
         """Check naming conventions."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Extract named elements
         state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
-        block_names = []
+        block_names: list[Any] = []
 
         for block in state_blocks:
             name_match = re.search(r"Name:\s*([^\n]+)", block)
@@ -80,7 +80,7 @@ class ConsistencyChecker:
         )
 
         # Determine dominant naming convention
-        naming_styles = {
+        naming_styles: dict[str, Any] = {
             "camelCase": camel_case,
             "snake_case": snake_case,
             "PascalCase": pascal_case,
@@ -121,11 +121,11 @@ class ConsistencyChecker:
 
     def _check_style_consistency(self, content: str) -> Dict[str, Any]:
         """Check style consistency."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Check for consistent indentation
         lines = content.split("\n")
-        indentation_patterns = {}
+        indentation_patterns: dict[Any, Any] = {}
 
         for line in lines:
             if line.strip() and line.startswith(" "):
@@ -141,7 +141,7 @@ class ConsistencyChecker:
             )
 
         # Check for consistent block formatting
-        state_block_formats = set()
+        state_block_formats: set[Any] = set()
         state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
 
         for block in state_blocks:
@@ -161,7 +161,7 @@ class ConsistencyChecker:
             )
 
         # Check for consistent field ordering
-        field_orders = []
+        field_orders: list[Any] = []
         for block in state_blocks:
             fields = re.findall(r"([A-Za-z]+):", block)
             if fields:
@@ -181,7 +181,7 @@ class ConsistencyChecker:
 
     def _check_structural_integrity(self, content: str) -> Dict[str, Any]:
         """Check structural integrity."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Check for balanced braces
         open_braces = content.count("{")
@@ -205,10 +205,10 @@ class ConsistencyChecker:
             warnings.append(f"Empty Connection definitions found: {empty_connections}")
 
         # Check for consistent field presence
-        required_state_fields = ["Name", "Dimensions"]
-        required_connection_fields = ["From", "To"]
+        required_state_fields: list[Any] = ["Name", "Dimensions"]
+        required_connection_fields: list[Any] = ["From", "To"]
 
-        missing_state_fields = []
+        missing_state_fields: list[Any] = []
         for i, block in enumerate(state_blocks):
             for field in required_state_fields:
                 if not re.search(f"{field}:", block):
@@ -222,7 +222,7 @@ class ConsistencyChecker:
                 f"Missing required fields in StateSpaceBlocks: {', '.join(field_warnings)}"
             )
 
-        missing_connection_fields = []
+        missing_connection_fields: list[Any] = []
         for i, conn in enumerate(connections):
             for field in required_connection_fields:
                 if not re.search(f"{field}:", conn):
@@ -249,21 +249,21 @@ class ConsistencyChecker:
 
     def _check_reference_consistency(self, content: str) -> Dict[str, Any]:
         """Check reference consistency."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Extract state blocks and connections
         state_blocks = re.findall(r"StateSpaceBlock\s*\{([^}]*)\}", content)
         connections = re.findall(r"Connection\s*\{([^}]*)\}", content)
 
         # Extract block names
-        block_names = []
+        block_names: list[Any] = []
         for block in state_blocks:
             name_match = re.search(r"Name:\s*([^\n]+)", block)
             if name_match:
                 block_names.append(name_match.group(1).strip())
 
         # Check for references to non-existent blocks
-        invalid_references = []
+        invalid_references: list[Any] = []
         for i, conn in enumerate(connections):
             from_match = re.search(r"From:\s*([^\n]+)", conn)
             to_match = re.search(r"To:\s*([^\n]+)", conn)
@@ -282,7 +282,7 @@ class ConsistencyChecker:
             warnings.append(f"Invalid block references: {', '.join(ref_warnings)}")
 
         # Check for isolated blocks (no incoming or outgoing connections)
-        connected_blocks = set()
+        connected_blocks: set[Any] = set()
         for conn in connections:
             from_match = re.search(r"From:\s*([^\n]+)", conn)
             to_match = re.search(r"To:\s*([^\n]+)", conn)
@@ -299,7 +299,7 @@ class ConsistencyChecker:
             )
 
         # Check for circular references
-        graph = {}
+        graph: dict[Any, Any] = {}
         for conn in connections:
             from_match = re.search(r"From:\s*([^\n]+)", conn)
             to_match = re.search(r"To:\s*([^\n]+)", conn)
@@ -313,10 +313,10 @@ class ConsistencyChecker:
                 graph[from_block].append(to_block)
 
         # Check for cycles
-        visited = set()
-        path = set()
+        visited: set[Any] = set()
+        path: set[Any] = set()
 
-        def has_cycle(node):
+        def has_cycle(node: Any) -> Any:
             if node in path:
                 return True
             if node in visited:
@@ -332,7 +332,7 @@ class ConsistencyChecker:
             path.remove(node)
             return False
 
-        cycles = []
+        cycles: list[Any] = []
         for node in graph:
             if has_cycle(node):
                 cycles.append(node)
@@ -413,7 +413,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
     raw_sections = model_data.get("raw_sections", {})
     if raw_sections:
         # Reconstruct the original content from raw sections
-        content_parts = []
+        content_parts: list[Any] = []
 
         # Add model name
         if "ModelName" in raw_sections:
@@ -444,7 +444,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add variables
         if variables:
-            var_lines = []
+            var_lines: list[Any] = []
             for var in variables:
                 name = var.get("name", "Unknown")
                 var_type = var.get("var_type", "unknown")
@@ -457,7 +457,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add connections
         if connections:
-            conn_lines = []
+            conn_lines: list[Any] = []
             for conn in connections:
                 source = (
                     conn.get("source_variables", ["?"])[0]

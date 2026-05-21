@@ -19,14 +19,14 @@ import tempfile
 # tests which do `from tests.conftest import X` continue to resolve.
 import types as _types
 from pathlib import Path
-from typing import Any, Dict, Generator
+from typing import Any, Dict, Generator, cast
 
 import pytest
 
 _pkg = _types.ModuleType("tests")
-_pkg.__path__ = [str(Path(__file__).parent)]  # type: ignore[attr-defined]
+_pkg.__path__ = [str(Path(__file__).parent)]
 sys.modules.setdefault("tests", _pkg)
-sys.modules["tests.conftest"] = sys.modules.get(__name__)
+sys.modules["tests.conftest"] = sys.modules[__name__]
 
 
 # -----------------------------------------------------------------------------
@@ -126,13 +126,13 @@ def safe_filesystem() -> Generator[Any, None, None]:
             full.parent.mkdir(parents=True, exist_ok=True)
             full.write_text(content)
             self.created_files.append(full)
-            return full
+            return cast("Path", full)
 
         def create_dir(self, path: Any) -> Path:
             full = self.temp_dir / path
             full.mkdir(parents=True, exist_ok=True)
             self.created_dirs.append(full)
-            return full
+            return cast("Path", full)
 
         def cleanup(self) -> None:
             import shutil
@@ -216,9 +216,9 @@ D = [0.34, 0.33, 0.33]
 
 
 @pytest.fixture
-def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
+def sample_gnn_files(safe_filesystem: Any) -> Dict[str, Path]:
     """Pair of on-disk GNN files sharing a minimal coherent POMDP schema."""
-    files = {
+    files: dict[str, Any] = {
         "simple": safe_filesystem.create_file("simple.gnn", _SAMPLE_GNN_CONTENT),
         "second": safe_filesystem.create_file(
             "second.gnn",

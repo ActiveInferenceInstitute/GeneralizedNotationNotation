@@ -16,7 +16,7 @@ from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union, cast
 
 # Configure logging
 logger = logging.getLogger("mcp")
@@ -65,7 +65,7 @@ class MCP:
         enable_rate_limiting: bool = True,
         strict_validation: bool = False,
         max_workers: int = 4,
-    ):
+    ) -> None:
         """Initialize the enhanced MCP server with configurable features."""
         self.tools: Dict[str, MCPTool] = {}
         self.resources: Dict[str, MCPResource] = {}
@@ -95,6 +95,7 @@ class MCP:
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._result_cache_lock = threading.Lock()
 
+        self._executor: Optional[ThreadPoolExecutor]
         try:
             self._executor = ThreadPoolExecutor(
                 max_workers=max_workers, thread_name_prefix="MCP"
@@ -243,7 +244,7 @@ class MCP:
                 self._discovery_cache.clear()
 
         # Get list of directories to scan
-        discovery_excluded_dirs = {"tests"}
+        discovery_excluded_dirs: set[Any] = {"tests"}
         directories = [
             d
             for d in root_dir.iterdir()
@@ -257,7 +258,7 @@ class MCP:
 
         # Use thread pool if available, otherwise load sequentially
         if self._executor is not None:
-            module_load_futures = {}
+            module_load_futures: dict[Any, Any] = {}
             for directory in directories:
                 mcp_file = directory / "mcp.py"
                 if not mcp_file.exists():
@@ -610,7 +611,7 @@ class MCP:
             if parameters and not schema:
                 props: Dict[str, Any] = {}
                 required_fields: List[str] = []
-                type_map = {
+                type_map: dict[str, Any] = {
                     "string": "string",
                     "boolean": "boolean",
                     "integer": "integer",
@@ -619,7 +620,7 @@ class MCP:
                     "object": "object",
                 }
                 for p in parameters:
-                    pname = p.get("name") or p.get("param")
+                    pname = str(p.get("name") or p.get("param"))
                     ptype = type_map.get(p.get("type", "string"), "string")
                     prop: Dict[str, Any] = {"type": ptype}
                     if "description" in p:
@@ -675,7 +676,7 @@ class MCP:
         cache_ttl: Optional[float] = None,
         compression: bool = False,
         encryption: bool = False,
-    ):
+    ) -> Any:
         """
         Register a new resource with the MCP server.
 
@@ -775,7 +776,7 @@ class MCP:
                 if tool.output_validation:
                     self._validate_output(result)
                 logger.debug(f"Tool {tool_name} executed successfully")
-                return result
+                return cast("dict[str, Any]", result)
             except Exception as e:
                 execution_time = time.time() - start_time
                 self._performance_metrics.failed_requests += 1
@@ -837,7 +838,7 @@ class MCP:
                 content = matching_resource.retriever(uri)
 
                 # Add metadata
-                result = {
+                result: dict[str, Any] = {
                     "content": content,
                     "uri": uri,
                     "mime_type": matching_resource.mime_type,
@@ -855,7 +856,7 @@ class MCP:
     def get_capabilities(self) -> Dict[str, Any]:
         """Get server capabilities including all available tools and resources."""
         with self._lock:
-            tools_list = []
+            tools_list: list[Any] = []
             for tool in self.tools.values():
                 tools_list.append(
                     {
@@ -878,7 +879,7 @@ class MCP:
                     }
                 )
 
-            resources_list = []
+            resources_list: list[Any] = []
             for resource in self.resources.values():
                 resources_list.append(
                     {
@@ -920,12 +921,12 @@ class MCP:
             uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
             # Calculate tool categories
-            categories = defaultdict(int)
+            categories: Any = defaultdict(int)
             for tool in self.tools.values():
                 categories[tool.category or "uncategorized"] += 1
 
             # Calculate resource categories
-            resource_categories = defaultdict(int)
+            resource_categories: Any = defaultdict(int)
             for resource in self.resources.values():
                 resource_categories[resource.category or "uncategorized"] += 1
 
@@ -1304,7 +1305,7 @@ class MCP:
         return False
 
     @contextmanager
-    def _track_performance(self, operation: str):
+    def _track_performance(self, operation: str) -> Any:
         """Context manager for tracking operation performance."""
         start_time = time.time()
         try:
@@ -1313,7 +1314,7 @@ class MCP:
             execution_time = time.time() - start_time
             logger.debug(f"Operation '{operation}' completed in {execution_time:.4f}s")
 
-    def _validate_output(self, result: Any):
+    def _validate_output(self, result: Any) -> Any:
         """Validate tool output (basic validation)."""
         if result is None:
             raise MCPValidationError("Tool output cannot be None")
@@ -1348,7 +1349,7 @@ class MCP:
             active_executions = dict(self._active_executions)
 
             # Get rate limit status
-            rate_limit_status = {}
+            rate_limit_status: dict[Any, Any] = {}
             with self._rate_limit_lock:
                 for tool_name, timestamps in self._rate_limit_timestamps.items():
                     current_time = time.time()
@@ -1515,7 +1516,7 @@ class MCP:
         cache_stats = self.clear_cache()
 
         # Get final statistics
-        final_stats = {
+        final_stats: dict[str, Any] = {
             "uptime": self.uptime,
             "total_requests": self._performance_metrics.total_requests,
             "successful_requests": self._performance_metrics.successful_requests,
@@ -1527,7 +1528,7 @@ class MCP:
         logger.info(f"MCP server shutdown complete: {final_stats}")
         return final_stats
 
-    def set_performance_mode(self, mode: str = "low"):
+    def set_performance_mode(self, mode: str = "low") -> Any:
         """Set performance mode to optimize resource usage."""
         if mode == "low":
             self._enable_caching = False
@@ -1553,7 +1554,7 @@ class _LazyMCP:
     without silently shadowing the attribute on the proxy itself.
     """
 
-    _PROXY_ONLY = frozenset()  # reserved for internal proxy state
+    _PROXY_ONLY: Any = frozenset()  # reserved for internal proxy state
 
     def _target(self) -> "MCP":
         global _mcp_instance
@@ -1561,17 +1562,17 @@ class _LazyMCP:
             _mcp_instance = MCP()
         return _mcp_instance
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> Any:
         return getattr(self._target(), name)
 
-    def __setattr__(self, name: str, value) -> None:
+    def __setattr__(self, name: str, value: Any) -> None:
         if name in self._PROXY_ONLY:
             object.__setattr__(self, name, value)
             return
         setattr(self._target(), name, value)
 
 
-mcp_instance: "MCP" = _LazyMCP()  # type: ignore[assignment]  # _LazyMCP proxies all MCP attributes via __getattr__/__setattr__
+mcp_instance: Any = _LazyMCP()
 
 
 # --- Initialization Function ---
@@ -1672,17 +1673,17 @@ def get_mcp_instance() -> MCP:
 
 def list_available_tools() -> List[Dict[str, Any]]:
     """List all available tools with metadata."""
-    return mcp_instance.list_available_tools()
+    return cast(List[Dict[str, Any]], mcp_instance.list_available_tools())
 
 
 def list_available_resources() -> List[Dict[str, Any]]:
     """List all available resources with metadata."""
-    return mcp_instance.list_available_resources()
+    return cast(List[Dict[str, Any]], mcp_instance.list_available_resources())
 
 
 def get_tool_info(tool_name: str) -> Optional[Dict[str, Any]]:
     """Get information about a specific tool."""
-    return mcp_instance.get_tool_info(tool_name)
+    return cast(Optional[Dict[str, Any]], mcp_instance.get_tool_info(tool_name))
 
 
 def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
@@ -1702,7 +1703,7 @@ def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
     return None
 
 
-def register_tools(server):
+def register_tools(server: Any) -> Any:
     """Register core MCP introspection tools."""
 
     def list_core_tools() -> List[Dict[str, Any]]:

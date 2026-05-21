@@ -11,7 +11,7 @@ Architecture:
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 logger = logging.getLogger("analysis.activeinference_jl")
 
@@ -33,14 +33,14 @@ def generate_analysis_from_logs(
     Returns:
         List of generated visualization file paths
     """
-    generated_files = []
+    generated_files: list[Any] = []
     output_dir.mkdir(parents=True, exist_ok=True)
 
     # Search locations for ActiveInference.jl outputs:
     # 1. The execution_results_dir (12_execute_output)
     # 2. The sibling render output (11_render_output) - where Julia actually writes visualizations
 
-    search_dirs = [execution_results_dir]
+    search_dirs: list[Any] = [execution_results_dir]
 
     # Add sibling render output directory
     render_output = execution_results_dir.parent / "11_render_output"
@@ -49,7 +49,7 @@ def generate_analysis_from_logs(
         if verbose:
             logger.info(f"Also searching render output: {render_output}")
 
-    target_dirs = []
+    target_dirs: list[Any] = []
 
     for search_dir in search_dirs:
         # Look for timestamped output directories
@@ -271,7 +271,7 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
             # Check for 3D matrix (contains ;;;)
             if ";;;" in s:
                 slices = s.split(";;;")
-                matrices = []
+                matrices: list[Any] = []
                 for sl in slices:
                     sl = sl.strip()
                     if not sl:
@@ -306,7 +306,7 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
     E = parse_julia_vector(params.get("E_vector", ""))
 
     # Count available panels
-    panels = []
+    panels: list[Any] = []
     if A is not None and A.ndim == 2:
         panels.append(("A (Observation)", A, "Reds"))
     if B is not None:

@@ -32,7 +32,7 @@ If you encounter errors:
 import logging
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -63,7 +63,7 @@ run_script = create_standardized_pipeline_script(
 
 def main() -> int:
     """Main entry point for the type checker step."""
-    return run_script()
+    return cast("int", run_script())
 
 
 if __name__ == "__main__":

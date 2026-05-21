@@ -28,12 +28,12 @@ from .categories import MODULAR_TEST_CATEGORIES
 class ModularTestRunner:
     """Test runner with comprehensive error handling and reporting."""
 
-    def __init__(self, args, logger: logging.Logger):
+    def __init__(self, args: Any, logger: logging.Logger) -> None:
         self.args = args
         self.logger = logger
         self.project_root = Path(__file__).parent.parent.parent
         self.test_dir = self.project_root / "src" / "tests"
-        self.results = {}
+        self.results: dict[str, Any] = {}
         self.start_time = time.time()
 
         # Error tracking
@@ -46,23 +46,23 @@ class ModularTestRunner:
         self.categories_failed = 0
 
         # Performance tracking
-        self.category_times = {}
-        self.slowest_tests = []
+        self.category_times: dict[str, float] = {}
+        self.slowest_tests: list[Any] = []
 
         # Resource monitoring
-        self.resource_usage = {}
+        self.resource_usage: dict[str, Any] = {}
 
         # Error categorization
-        self.import_errors = []
-        self.runtime_errors = []
-        self.pathlib_errors = []
-        self.sapf_errors = []
+        self.import_errors: list[str] = []
+        self.runtime_errors: list[str] = []
+        self.pathlib_errors: list[str] = []
+        self.sapf_errors: list[str] = []
 
         self.logger.info(
             f"Initialized ModularTestRunner with {len(MODULAR_TEST_CATEGORIES)} categories"
         )
 
-    def _monitor_resources_during_test(self):
+    def _monitor_resources_during_test(self) -> Any:
         """Monitor system resources during test execution."""
         try:
             import psutil
@@ -158,7 +158,7 @@ class ModularTestRunner:
 
     def discover_test_files(self, category: str, config: Dict[str, Any]) -> List[str]:
         """Discover test files for a category with enhanced error handling."""
-        test_files = []
+        test_files: list[Any] = []
 
         for file_pattern in config.get("files", []):
             exact_file = self.test_dir / file_pattern
@@ -308,7 +308,7 @@ class ModularTestRunner:
         )
         category_output_dir.mkdir(parents=True, exist_ok=True)
 
-        cmd = [
+        cmd: list[Any] = [
             python_executable,
             "-m",
             "pytest",
@@ -407,10 +407,14 @@ class ModularTestRunner:
 
                 collected_stdout: List[str] = []
                 collected_stderr: List[str] = []
-                progress_counts = {"passed": 0, "failed": 0, "skipped": 0}
+                progress_counts: dict[str, Any] = {
+                    "passed": 0,
+                    "failed": 0,
+                    "skipped": 0,
+                }
                 last_output_time = time.time()
 
-                def _log_progress_line(line: str):
+                def _log_progress_line(line: str) -> Any:
                     nonlocal progress_counts
                     # Only count pytest outcome lines (avoid counting arbitrary log messages
                     # that contain words like "error" or "failed").
@@ -446,7 +450,7 @@ class ModularTestRunner:
                 f_err = open(stderr_path, "w")
                 try:
 
-                    def _stream(pipe, sink, is_err: bool):
+                    def _stream(pipe: Any, sink: Any, is_err: bool) -> Any:
                         nonlocal last_output_time
                         try:
                             for raw in iter(pipe.readline, ""):
@@ -541,7 +545,7 @@ class ModularTestRunner:
                 final_resources = self._monitor_resources_during_test()
                 self.logger.info(f"Final resource usage: {final_resources}")
 
-                resource_usage = {
+                resource_usage: dict[str, Any] = {
                     "memory_mb": final_resources.get("memory_mb", 0),
                     "cpu_percent": final_resources.get("cpu_percent", 0),
                     "threads": final_resources.get("threads", 0),
@@ -749,7 +753,7 @@ class ModularTestRunner:
             else 0,
         }
 
-    def _save_intermediate_results(self):
+    def _save_intermediate_results(self) -> Any:
         """Save intermediate results to JSON files."""
         output_dir = Path(self.args.output_dir) / "test_reports"
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -780,13 +784,13 @@ class ModularTestRunner:
                     )
                     f.write(f"CPU Usage: {resource_data.get('cpu_percent', 0):.1f}%\n")
 
-    def _generate_final_report(self):
+    def _generate_final_report(self) -> Any:
         """Generate comprehensive final test report."""
         output_dir = Path(self.args.output_dir) / "test_reports"
 
         success_rate = (self.total_tests_passed / max(self.total_tests_run, 1)) * 100
 
-        summary = {
+        summary: dict[str, Any] = {
             "total_categories": self.categories_run,
             "successful_categories": self.categories_successful,
             "failed_categories": self.categories_failed,
@@ -812,7 +816,7 @@ class ModularTestRunner:
         with open(output_dir / "modular_test_results.json", "w") as f:
             json.dump(self.results, f, indent=2)
 
-    def _log_final_summary(self, success: bool):
+    def _log_final_summary(self, success: bool) -> Any:
         """Log comprehensive final summary."""
         self.logger.info(f"\n{'=' * 80}")
         self.logger.info("COMPREHENSIVE TEST SUITE EXECUTION COMPLETE")
@@ -863,12 +867,12 @@ class ModularTestRunner:
         self.logger.info(f"{'=' * 80}")
 
 
-def create_test_runner(args, logger: logging.Logger) -> ModularTestRunner:
+def create_test_runner(args: Any, logger: logging.Logger) -> ModularTestRunner:
     """Factory function to create a ModularTestRunner instance."""
     return ModularTestRunner(args, logger)
 
 
-def monitor_memory(logger: logging.Logger, threshold_mb: int = 2000):
+def monitor_memory(logger: logging.Logger, threshold_mb: int = 2000) -> Any:
     """Monitor memory usage and log warnings if threshold exceeded."""
     try:
         import psutil as _ps

@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+from typing import Any
 
 from pipeline import get_output_dir_for_script
 from utils import log_step_error, log_step_start, log_step_success, log_step_warning
@@ -31,7 +32,7 @@ def export_gnn_files(
     logger: logging.Logger,
     recursive: bool = False,
     verbose: bool = False,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Export GNN files to multiple formats.
@@ -75,7 +76,7 @@ def export_gnn_files(
             logger.debug(f"Processing file: {gnn_file}")
 
             # Parse GNN file to dictionary
-            gnn_dict = _gnn_model_to_dict(gnn_file)
+            gnn_dict = _gnn_model_to_dict(str(gnn_file))
 
             # Create file-specific output directory
             file_output_dir = export_output_dir / gnn_file.stem
@@ -83,7 +84,7 @@ def export_gnn_files(
 
             # Export to various formats (functions raise exceptions on failure)
             export_success = True
-            export_errors = []
+            export_errors: list[Any] = []
 
             # JSON export
             try:
@@ -102,7 +103,7 @@ def export_gnn_files(
             # Plaintext exports
             try:
                 export_to_plaintext_summary(
-                    gnn_dict, file_output_dir / f"{gnn_file.stem}_summary.txt"
+                    gnn_dict, str(file_output_dir / f"{gnn_file.stem}_summary.txt")
                 )
             except Exception as e:
                 export_success = False
@@ -110,7 +111,7 @@ def export_gnn_files(
 
             try:
                 export_to_plaintext_dsl(
-                    gnn_dict, file_output_dir / f"{gnn_file.stem}_dsl.txt"
+                    gnn_dict, str(file_output_dir / f"{gnn_file.stem}_dsl.txt")
                 )
             except Exception as e:
                 export_success = False
@@ -119,14 +120,16 @@ def export_gnn_files(
             # Graph exports (if NetworkX available)
             if HAS_NETWORKX:
                 try:
-                    export_to_gexf(gnn_dict, file_output_dir / f"{gnn_file.stem}.gexf")
+                    export_to_gexf(
+                        gnn_dict, str(file_output_dir / f"{gnn_file.stem}.gexf")
+                    )
                 except Exception as e:
                     export_success = False
                     export_errors.append(f"GEXF: {e}")
 
                 try:
                     export_to_graphml(
-                        gnn_dict, file_output_dir / f"{gnn_file.stem}.graphml"
+                        gnn_dict, str(file_output_dir / f"{gnn_file.stem}.graphml")
                     )
                 except Exception as e:
                     export_success = False
@@ -134,7 +137,8 @@ def export_gnn_files(
 
                 try:
                     export_to_json_adjacency_list(
-                        gnn_dict, file_output_dir / f"{gnn_file.stem}_adjacency.json"
+                        gnn_dict,
+                        str(file_output_dir / f"{gnn_file.stem}_adjacency.json"),
                     )
                 except Exception as e:
                     export_success = False

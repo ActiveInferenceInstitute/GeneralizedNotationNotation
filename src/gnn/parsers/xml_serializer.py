@@ -1,5 +1,6 @@
 import json
 import xml.etree.ElementTree as ET  # nosec B405
+from typing import Any
 from xml.dom import (
     minidom,  # nosec B408
 )
@@ -119,7 +120,7 @@ class XMLSerializer(BaseGNNSerializer):
                     mapping_elem.set("description", mapping.description)
 
         # Add embedded complete model data as XML comment for perfect round-trip
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -190,7 +191,7 @@ class XMLSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -201,7 +202,7 @@ class XMLSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []

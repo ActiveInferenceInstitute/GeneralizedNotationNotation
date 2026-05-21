@@ -14,22 +14,21 @@ Key test areas:
 6. Resource scaling characteristics
 """
 
-import pytest
-
-pytestmark = pytest.mark.pipeline
 import tempfile
 import time
 from pathlib import Path
+from typing import Any, cast
 
 import psutil
+import pytest
 
 from utils.test_utils import performance_tracker
 
 # Test markers
-pytestmark = [pytest.mark.performance]
+pytestmark = [pytest.mark.pipeline, pytest.mark.performance]
 
 # Performance thresholds
-THRESHOLDS = {
+THRESHOLDS: dict[str, Any] = {
     "small_model": {
         "processing_time": 1.0,  # seconds
         "memory_usage": 100,  # MB
@@ -52,7 +51,7 @@ THRESHOLDS = {
 
 
 @pytest.fixture
-def isolated_environment():
+def isolated_environment() -> Any:
     """Create an isolated environment for testing."""
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
@@ -63,18 +62,18 @@ def isolated_environment():
 
 
 @pytest.fixture
-def create_model_file(isolated_environment):
+def create_model_file(isolated_environment: Any) -> Any:
     """Create a GNN model file of specified size."""
 
     def _create_file(size: str = "small") -> Path:
-        sizes = {
+        sizes: dict[str, Any] = {
             "small": 10,  # 10 states
             "medium": 100,  # 100 states
             "large": 1000,  # 1000 states
         }
         num_states = sizes[size]
 
-        content = [
+        content: list[Any] = [
             f"# Test {size.capitalize()} Model",
             "",
             "## GNNSection",
@@ -101,7 +100,7 @@ def create_model_file(isolated_environment):
 
         file_path = isolated_environment / "input" / f"test_model_{size}.md"
         file_path.write_text("\n".join(content))
-        return file_path
+        return cast("Path", file_path)
 
     return _create_file
 
@@ -111,8 +110,8 @@ class TestGNNProcessingPerformance:
 
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_processing_scaling(
-        self, isolated_environment, create_model_file, model_size
-    ):
+        self, isolated_environment: Any, create_model_file: Any, model_size: Any
+    ) -> Any:
         """Test GNN processing performance scaling."""
         from gnn import process_gnn_directory
 
@@ -135,7 +134,9 @@ class TestGNNProcessingPerformance:
                 < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
             )
 
-    def test_parallel_processing(self, isolated_environment, create_model_file):
+    def test_parallel_processing(
+        self, isolated_environment: Any, create_model_file: Any
+    ) -> Any:
         """Test parallel GNN processing performance."""
         from gnn import process_gnn_directory
 
@@ -160,8 +161,8 @@ class TestVisualizationPerformance:
 
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
     def test_visualization_scaling(
-        self, isolated_environment, create_model_file, model_size
-    ):
+        self, isolated_environment: Any, create_model_file: Any, model_size: Any
+    ) -> Any:
         """Test visualization generation performance scaling."""
         import logging
 
@@ -194,7 +195,9 @@ class TestVisualizationPerformance:
                 < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
             )
 
-    def test_visualization_caching(self, isolated_environment, create_model_file):
+    def test_visualization_caching(
+        self, isolated_environment: Any, create_model_file: Any
+    ) -> Any:
         """Test visualization caching performance."""
         import logging
 
@@ -232,7 +235,9 @@ class TestVisualizationPerformance:
 class TestMemoryUsagePatterns:
     """Test suite for memory usage patterns."""
 
-    def test_memory_cleanup(self, isolated_environment, create_model_file):
+    def test_memory_cleanup(
+        self, isolated_environment: Any, create_model_file: Any
+    ) -> Any:
         """Python-level allocation delta for `process_gnn_directory` must be bounded.
 
         Uses ``tracemalloc`` rather than process RSS: RSS is dominated by the state of
@@ -280,12 +285,14 @@ class TestMemoryUsagePatterns:
             f"process_gnn_directory (peak during call: {peak_mb:.1f} MB)"
         )
 
-    def test_peak_memory_tracking(self, isolated_environment, create_model_file):
+    def test_peak_memory_tracking(
+        self, isolated_environment: Any, create_model_file: Any
+    ) -> Any:
         """Test peak memory usage tracking."""
         from utils.resource_manager import track_peak_memory
 
         @track_peak_memory
-        def memory_intensive_operation():
+        def memory_intensive_operation() -> Any:
             # Simulate memory-intensive operation
             [0] * (1024 * 1024 * 10)  # 10MB
             time.sleep(0.1)  # Allow tracking to measure
@@ -301,7 +308,7 @@ class TestMemoryUsagePatterns:
 class TestDiskIOPerformance:
     """Test suite for disk I/O performance."""
 
-    def test_file_write_performance(self, isolated_environment):
+    def test_file_write_performance(self, isolated_environment: Any) -> Any:
         """Test file write performance with different file sizes."""
         from utils.io_utils import batch_write_files
 
@@ -321,7 +328,9 @@ class TestDiskIOPerformance:
         assert result["successful_writes"] == 10
         assert result["write_time_seconds"] < 1.0  # Should be fast
 
-    def test_export_performance(self, isolated_environment, create_model_file):
+    def test_export_performance(
+        self, isolated_environment: Any, create_model_file: Any
+    ) -> Any:
         """Test export performance for different formats."""
         from export import export_model
 
@@ -332,7 +341,7 @@ class TestDiskIOPerformance:
             model_content = f.read()
 
         # Create model data dictionary
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": "TestMediumModel",
             "model_annotation": "Test model for performance testing",
             "variables": ["s0", "s1", "s2"],
@@ -362,7 +371,7 @@ class TestNetworkOperationTiming:
     """Test suite for network operation timing using real network requests."""
 
     @pytest.mark.integration
-    def test_api_request_timing(self, isolated_environment):
+    def test_api_request_timing(self, isolated_environment: Any) -> Any:
         """Test API request timing and performance with real requests."""
         pytest.importorskip("requests")
         import requests
@@ -388,7 +397,7 @@ class TestNetworkOperationTiming:
             pytest.skip("Network unavailable, skipping real network test")
 
     @pytest.mark.integration
-    def test_batch_request_performance(self, isolated_environment):
+    def test_batch_request_performance(self, isolated_environment: Any) -> Any:
         """Test batch request performance with real requests."""
         pytest.importorskip("requests")
         import requests
@@ -396,7 +405,7 @@ class TestNetworkOperationTiming:
         from utils.network_utils import batch_request
 
         # Use reliable public APIs
-        urls = [
+        urls: list[Any] = [
             "https://www.google.com",
             "https://www.github.com",
             "https://www.python.org",
@@ -424,8 +433,8 @@ class TestResourceScaling:
 
     @pytest.mark.parametrize("model_count", [1, 3, 10])
     def test_pipeline_scaling(
-        self, isolated_environment, create_model_file, model_count
-    ):
+        self, isolated_environment: Any, create_model_file: Any, model_count: Any
+    ) -> Any:
         """Test pipeline scaling with different model counts."""
         from pipeline.execution import run_pipeline
 
@@ -437,14 +446,16 @@ class TestResourceScaling:
             result = run_pipeline(
                 target_dir=isolated_environment / "input",
                 output_dir=isolated_environment / "output",
-                steps=[3],
+                steps=["3"],
             )
 
         assert result["success"]
         max_time_per_model = 300
         assert tracker.duration < (model_count * max_time_per_model)
 
-    def test_resource_estimation(self, isolated_environment, create_model_file):
+    def test_resource_estimation(
+        self, isolated_environment: Any, create_model_file: Any
+    ) -> Any:
         """Test resource estimation accuracy."""
         from pipeline.execution import run_pipeline
         from utils.resource_manager import estimate_resources
@@ -457,7 +468,7 @@ class TestResourceScaling:
             run_pipeline(
                 target_dir=isolated_environment / "input",
                 output_dir=isolated_environment / "output",
-                steps=[3],
+                steps=["3"],
             )
 
         # Resource estimates are heuristics; this test verifies shape and sanity

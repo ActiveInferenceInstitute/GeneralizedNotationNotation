@@ -14,13 +14,13 @@ import logging
 import os
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from utils.pipeline_template import log_step_error, log_step_start, log_step_success
 
 logger = logging.getLogger(__name__)
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "fallback_mode": True,  # Rule-based mode; LLM used opportunistically when available
     "model_family_detection": True,
     "dimension_aware_analysis": True,
@@ -88,7 +88,7 @@ def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
     Extract variable dimensions from GNN StateSpaceBlock.
     Only extracts integer dimensions (not symbolic like pi).
     """
-    dims = {}
+    dims: dict[Any, Any] = {}
     pattern = r"^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]"
 
     in_state_space = False
@@ -106,7 +106,7 @@ def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
             if match:
                 var_name = match.group(1)
                 dim_str = match.group(2)
-                var_dims = []
+                var_dims: list[Any] = []
                 for part in dim_str.split(","):
                     part = part.strip()
                     if part.startswith("type="):
@@ -158,11 +158,11 @@ def generate_rule_based_hypotheses(
 
     Rules are domain-specific to Active Inference / generative model research.
     """
-    hypotheses = []
+    hypotheses: list[Any] = []
 
     # Rule 1: High-Dimensionality -- only flag actual matrix variables, not arbitrary integers
     max_dim = 0
-    large_vars = []
+    large_vars: list[Any] = []
     for name, var_dims in dims.items():
         total = 1
         for d in var_dims:
@@ -350,14 +350,14 @@ JSON only, no prose:"""
         from llm.defaults import DEFAULT_OLLAMA_MODEL
 
         model_name = os.getenv("OLLAMA_MODEL") or DEFAULT_OLLAMA_MODEL
-        messages = [LLMMessage(role="user", content=prompt)]
+        messages: list[Any] = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
             messages=messages, model_name=model_name, max_tokens=800
         )
         # Parse JSON response
         json_match = re.search(r"\[.*\]", response.content, re.DOTALL)
         if json_match:
-            return json.loads(json_match.group(0))
+            return cast("list[dict[str, Any]] | None", json.loads(json_match.group(0)))
         return None
     except Exception as e:
         logger.debug(f"LLM hypothesis generation failed: {e}")
@@ -365,7 +365,7 @@ JSON only, no prose:"""
 
 
 def process_research(
-    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs
+    target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs: Any
 ) -> bool:
     """
     Process research for GNN files.
@@ -381,7 +381,7 @@ def process_research(
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        results = {
+        results: dict[str, Any] = {
             "processed_files": 0,
             "success": True,
             "hypotheses_generated": [],
@@ -460,7 +460,7 @@ def process_research(
             json.dump(results, f, indent=2)
 
         # Generate markdown report
-        report_lines = ["# Research Hypotheses Report\n"]
+        report_lines: list[Any] = ["# Research Hypotheses Report\n"]
         report_lines.append(f"**Analysis mode**: {results['analysis_mode']}\n\n")
 
         for entry in results["hypotheses_generated"]:
@@ -494,8 +494,8 @@ def process_research(
         _os.replace(_tmp.name, str(_report_path))
 
         log_step_success(logger, "Research processing completed successfully")
-        return results["success"]
+        return cast("bool", results["success"])
 
     except Exception as e:
-        log_step_error(logger, "Research processing failed", {"error": str(e)})
+        log_step_error(logger, "Research processing failed", error=str(e))
         return False

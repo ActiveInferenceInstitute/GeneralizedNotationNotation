@@ -33,7 +33,7 @@ def run_test_configuration(
     """Run a predefined test configuration."""
 
     # Define test configurations
-    configurations = {
+    configurations: dict[str, Any] = {
         "fast": {
             "args": ["--fast-only"],
             "description": "Run only fast tests (< 3 minutes) for quick validation",
@@ -82,7 +82,7 @@ def run_test_configuration(
 
     # Build command
     test_script = Path(__file__).parent.parent / "2_tests.py"
-    cmd = [
+    cmd: list[Any] = [
         sys.executable,
         str(test_script),
         "--target-dir",
@@ -133,7 +133,7 @@ def run_test_configuration(
 
 def list_configurations() -> None:
     """List all available test configurations."""
-    configurations = {
+    configurations: dict[str, Any] = {
         "fast": "Quick validation tests (< 3 minutes)",
         "standard": "Fast and standard tests (5-10 minutes)",
         "full": "All tests including slow integration (15-25 minutes)",
@@ -159,7 +159,7 @@ def run_custom_tests(
 ) -> bool:
     """Run tests with custom configuration."""
     test_script = Path(__file__).parent.parent / "2_tests.py"
-    cmd = [sys.executable, str(test_script)]
+    cmd: list[Any] = [sys.executable, str(test_script)]
 
     # Add standard arguments
     for key, value in kwargs.items():

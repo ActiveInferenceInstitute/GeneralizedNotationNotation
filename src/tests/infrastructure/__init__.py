@@ -6,6 +6,8 @@ All components are re-exported for convenient access.
 """
 
 # Re-export public classes and functions for test infrastructure callers.
+from typing import Any
+
 from .report_generator import (
     _generate_error_report,
     _generate_fallback_report,
@@ -32,7 +34,7 @@ from .utils import (
     parse_test_statistics,
 )
 
-__all__ = [
+__all__: list[Any] = [
     # Configuration
     "TestExecutionConfig",
     "TestExecutionResult",

@@ -13,12 +13,14 @@ Date: 2025-01-17
 License: MIT
 """
 
+from typing import Any, cast
+
 # =============================================================================
 # TEST CONFIGURATION - Modify these settings to control test behavior
 # =============================================================================
 
 # Logging Configuration
-LOGGING_CONFIG = {
+LOGGING_CONFIG: dict[str, Any] = {
     "enable_debug": False,  # Disable debug logging for cleaner output
     "enable_detailed_output": False,  # Show concise test progress for final confirmation
     "enable_format_groups": True,  # Group formats by category in output
@@ -27,7 +29,7 @@ LOGGING_CONFIG = {
 }
 
 # Format Testing Configuration
-FORMAT_TEST_CONFIG = {
+FORMAT_TEST_CONFIG: dict[str, Any] = {
     # Test all formats (set to False for methodical testing)
     "test_all_formats": False,
     # Selective format testing - only test these formats when test_all_formats=False
@@ -73,7 +75,7 @@ FORMAT_TEST_CONFIG = {
 }
 
 # Test Behavior Configuration
-TEST_BEHAVIOR_CONFIG = {
+TEST_BEHAVIOR_CONFIG: dict[str, Any] = {
     "strict_validation": False,  # Disable strict validation to avoid recursion issues
     "fail_fast": False,  # Stop testing on first failure
     "save_converted_files": False,  # Don't save converted files for cleaner output
@@ -85,7 +87,7 @@ TEST_BEHAVIOR_CONFIG = {
 }
 
 # Output Configuration
-OUTPUT_CONFIG = {
+OUTPUT_CONFIG: dict[str, Any] = {
     "generate_detailed_report": True,  # Generate detailed markdown report
     "save_test_artifacts": False,  # Don't save test files for cleaner output
     "show_progress_bar": False,  # Don't show progress bar for cleaner output
@@ -94,7 +96,7 @@ OUTPUT_CONFIG = {
 }
 
 # Reference Model Configuration
-REFERENCE_CONFIG = {
+REFERENCE_CONFIG: dict[str, Any] = {
     "reference_file": "input/gnn_files/actinf_pomdp_agent.md",  # Relative to project root
     "fallback_reference_files": [
         "src/gnn/gnn_examples/actinf_pomdp_agent.md",
@@ -107,7 +109,7 @@ REFERENCE_CONFIG = {
 # ENHANCED TEST CONFIGURATION - Real functionality
 # =============================================================================
 
-ENHANCED_TEST_CONFIG = {
+ENHANCED_TEST_CONFIG: dict[str, Any] = {
     "graceful_parser_fallback": True,  # Fall back gracefully when parsers fail
     "isolated_serializer_testing": True,  # Test serializers independently
     "robust_error_handling": True,  # Enhanced error handling and reporting
@@ -167,14 +169,14 @@ class RoundTripResult:
     warnings: List[str] = field(default_factory=list)
     differences: List[str] = field(default_factory=list)
 
-    def add_error(self, error: str):
+    def add_error(self, error: str) -> Any:
         self.errors.append(error)
         self.success = False
 
-    def add_warning(self, warning: str):
+    def add_warning(self, warning: str) -> Any:
         self.warnings.append(warning)
 
-    def add_difference(self, difference: str):
+    def add_difference(self, difference: str) -> Any:
         self.differences.append(difference)
 
 
@@ -185,7 +187,7 @@ class ComprehensiveTestReport:
     round_trip_results: List[RoundTripResult] = field(default_factory=list)
     critical_errors: List[str] = field(default_factory=list)
 
-    def add_result(self, result: RoundTripResult):
+    def add_result(self, result: RoundTripResult) -> Any:
         self.round_trip_results.append(result)
 
     @property
@@ -208,7 +210,7 @@ class ComprehensiveTestReport:
         )
 
     def get_format_summary(self) -> Dict[Any, Dict[str, int]]:
-        summary = {}
+        summary: dict[Any, Any] = {}
         for result in self.round_trip_results:
             fmt = result.target_format
             if fmt not in summary:
@@ -236,7 +238,15 @@ try:
     from gnn.parsers.alloy_serializer import AlloySerializer
     from gnn.parsers.asn1_serializer import ASN1Serializer
     from gnn.parsers.binary_serializer import BinarySerializer
-    from gnn.parsers.common import GNNFormat, GNNInternalRepresentation, ParseResult
+    from gnn.parsers.common import (
+        Connection,
+        ConnectionType,
+        DataType,
+        GNNFormat,
+        GNNInternalRepresentation,
+        ParseResult,
+        Variable,
+    )
     from gnn.parsers.coq_serializer import CoqSerializer
     from gnn.parsers.functional_serializer import FunctionalSerializer
     from gnn.parsers.grammar_serializer import GrammarSerializer
@@ -256,37 +266,14 @@ try:
 
     GNN_AVAILABLE = True
 
-    # Import schema validator and testing types
-    GNNParser = None  # Will be imported when needed
-    GNNValidator = None
+    from gnn.cross_format_validator import (
+        CrossFormatValidator,
+        validate_cross_format_consistency,
+    )
+    from gnn.schema_validator import GNNValidator
+    from gnn.types import ParsedGNN, ValidationResult
 
-    # Import additional types if available
-    try:
-        from gnn.types import ParsedGNN, ValidationResult
-    except ImportError:
-        ValidationResult = None
-        ParsedGNN = None
-
-    # Try to import cross-format validator if available
-    try:
-        from gnn.cross_format_validator import (
-            CrossFormatValidator,
-            validate_cross_format_consistency,
-        )
-
-        CROSS_FORMAT_AVAILABLE = True
-    except ImportError:
-        CROSS_FORMAT_AVAILABLE = False
-
-        # Create a minimal simulated cross-format validator
-        class CrossFormatValidator:
-            def validate_cross_format_consistency(self, content: str):
-                return type(
-                    "Result", (), {"is_consistent": True, "inconsistencies": []}
-                )()
-
-        def validate_cross_format_consistency(content: str):
-            return type("Result", (), {"is_consistent": True, "inconsistencies": []})()
+    CROSS_FORMAT_AVAILABLE = True
 
 except ImportError as e:
     if LOGGING_CONFIG["enable_debug"]:
@@ -368,7 +355,7 @@ class _DirectMarkdownParser:
 
     def _parse_variables(self, content: str) -> List[Any]:
         """Parse variables from StateSpaceBlock content."""
-        variables = []
+        variables: list[Any] = []
         var_pattern = re.compile(r"(\w+)\[([^\]]+)\](?:\s*#\s*(.*))?")
         for line in content.split("\n"):
             line = line.strip()
@@ -385,7 +372,7 @@ class _DirectMarkdownParser:
                 for part in dims_parts:
                     if part.startswith("type="):
                         raw_type = part[5:]
-                        type_mapping = {
+                        type_mapping: dict[str, Any] = {
                             "int": "integer",
                             "float": "float",
                             "bool": "binary",
@@ -431,7 +418,7 @@ class _DirectMarkdownParser:
 
     def _parse_connections(self, content: str) -> List[Any]:
         """Parse connections from Connections content."""
-        connections = []
+        connections: list[Any] = []
         for line in content.split("\n"):
             line = line.strip()
             if not line or line.startswith("#"):
@@ -457,7 +444,7 @@ class _DirectMarkdownParser:
 
     def _parse_parameters(self, content: str) -> List[Any]:
         """Parse parameters from InitialParameterization content."""
-        parameters = []
+        parameters: list[Any] = []
         for line in content.split("\n"):
             line = line.strip()
             if not line or line.startswith("#"):
@@ -494,7 +481,7 @@ class _DirectMarkdownParser:
 
     def _parse_ontology(self, content: str) -> List[Any]:
         """Parse ontology mappings."""
-        mappings = []
+        mappings: list[Any] = []
         for line in content.split("\n"):
             line = line.strip()
             if not line or line.startswith("#"):
@@ -518,9 +505,10 @@ class _DirectMarkdownParser:
 class GNNRoundTripTester:
     """Comprehensive round-trip testing system for GNN formats."""
 
-    def __init__(self, temp_dir: Optional[Path] = None):
+    def __init__(self, temp_dir: Optional[Path] = None) -> None:
         """Initialize the round-trip tester."""
         self.temp_dir = temp_dir or Path(tempfile.mkdtemp())
+        self.parsing_system: Optional[GNNParsingSystem]
 
         # Initialize parsing system with enhanced error handling
         if ENHANCED_TEST_CONFIG["graceful_parser_fallback"]:
@@ -559,7 +547,8 @@ class GNNRoundTripTester:
         try:
             self.cross_validator = (
                 CrossFormatValidator()
-                if TEST_BEHAVIOR_CONFIG.get("run_cross_format_validation", False)
+                if CROSS_FORMAT_AVAILABLE
+                and TEST_BEHAVIOR_CONFIG.get("run_cross_format_validation", False)
                 else None
             )
         except Exception as e:
@@ -578,7 +567,7 @@ class GNNRoundTripTester:
                 f"Round-trip tester initialized with {len(self.supported_formats)} formats: {[f.value for f in self.supported_formats]}"
             )
 
-    def _create_direct_markdown_parser(self):
+    def _create_direct_markdown_parser(self) -> Any:
         """Create a direct, dependency-free markdown parser for the reference file."""
         return _DirectMarkdownParser()
 
@@ -589,7 +578,7 @@ class GNNRoundTripTester:
         try:
             # Comprehensive serializer map with all available formats
             try:
-                serializer_map = {
+                serializer_map: dict[Any, Any] = {
                     GNNFormat.JSON: JSONSerializer(),
                     GNNFormat.XML: XMLSerializer(),
                     GNNFormat.YAML: YAMLSerializer(),
@@ -617,7 +606,7 @@ class GNNRoundTripTester:
             # Use enum value for comparison to handle different enum instances
             for fmt, serializer in serializer_map.items():
                 if fmt.value == target_format.value:
-                    return serializer.serialize(model)
+                    return cast("str | None", serializer.serialize(model))
             else:
                 if LOGGING_CONFIG["enable_debug"]:
                     logger.warning(
@@ -646,13 +635,13 @@ class GNNRoundTripTester:
         # Try configured primary reference file
         primary_ref = project_root / REFERENCE_CONFIG["reference_file"]
         if primary_ref.exists():
-            return primary_ref
+            return cast("Path", primary_ref)
 
         # Try recovery files
         for recovery in REFERENCE_CONFIG["fallback_reference_files"]:
             fallback_path = project_root / recovery
             if fallback_path.exists():
-                return fallback_path
+                return cast("Path", fallback_path)
 
         # Default recovery
         default_path = (
@@ -662,10 +651,10 @@ class GNNRoundTripTester:
 
     def _determine_test_formats(self) -> List[GNNFormat]:
         """Determine which formats to test based on configuration."""
-        all_formats = [GNNFormat.MARKDOWN]  # Always include markdown
+        all_formats: list[Any] = [GNNFormat.MARKDOWN]  # Always include markdown
 
         # Define format categories
-        format_categories = {
+        format_categories: dict[str, Any] = {
             "schema_formats": [
                 GNNFormat.JSON,
                 GNNFormat.XML,
@@ -689,7 +678,7 @@ class GNNRoundTripTester:
         }
 
         # Add individual serializer format mapping
-        available_individual_formats = {
+        available_individual_formats: dict[str, Any] = {
             "json": GNNFormat.JSON,
             "xml": GNNFormat.XML,
             "yaml": GNNFormat.YAML,
@@ -757,7 +746,7 @@ class GNNRoundTripTester:
 
         # Check if parsing system has initialized parsers/serializers properly
         if self.parsing_system:
-            working_formats = [GNNFormat.MARKDOWN]  # Always include markdown
+            working_formats: list[Any] = [GNNFormat.MARKDOWN]  # Always include markdown
 
             # Check if any parsers/serializers are available
             available_parsers = self.parsing_system.parsers
@@ -791,7 +780,7 @@ class GNNRoundTripTester:
                     else:
                         # For formats without full parser/serializer, still add them for individual serializer testing
                         # Expand the list of known serializable formats
-                        serializable_formats = [
+                        serializable_formats: list[Any] = [
                             GNNFormat.JSON,
                             GNNFormat.XML,
                             GNNFormat.YAML,
@@ -834,7 +823,7 @@ class GNNRoundTripTester:
                 )
             return all_formats
 
-    def _print_format_groups(self):
+    def _print_format_groups(self) -> Any:
         """Print format groups for organized display."""
         schema_formats = [
             f
@@ -873,7 +862,9 @@ class GNNRoundTripTester:
         if other_formats:
             print(f"   🔧 Other formats: {', '.join([f.value for f in other_formats])}")
 
-    def _print_detailed_test_result(self, test_result: RoundTripResult, fmt: GNNFormat):
+    def _print_detailed_test_result(
+        self, test_result: RoundTripResult, fmt: GNNFormat
+    ) -> Any:
         """Print detailed test result information."""
         if test_result.success:
             print(
@@ -967,7 +958,7 @@ class GNNRoundTripTester:
                     logger.warning(
                         f"Full parsing system failed, using recovery: {parse_error}"
                     )
-                reference_result = None
+                reference_result = cast(Any, None)
 
         # Use direct parser recovery if main parsing failed or unavailable
         if not reference_result or not reference_result.success:
@@ -1048,7 +1039,7 @@ class GNNRoundTripTester:
             and f != GNNFormat.MARKDOWN
         ]
 
-        format_groups = [
+        format_groups: list[Any] = [
             ("Schema Formats", schema_formats),
             ("Language Formats", language_formats),
             ("Formal Specification Formats", formal_formats),
@@ -1234,14 +1225,51 @@ class GNNRoundTripTester:
         return report
 
     def _convert_parsed_gnn_to_parse_result(self, parsed_gnn: ParsedGNN) -> ParseResult:
-        """Convert ParsedGNN to ParseResult for compatibility."""
-        # Create a basic GNNInternalRepresentation from ParsedGNN
+        """Convert ParsedGNN to the parser representation used by serializers."""
+        variables = [
+            Variable(
+                name=variable.name,
+                dimensions=[
+                    dim if isinstance(dim, int) else 1 for dim in variable.dimensions
+                ],
+                data_type=(
+                    DataType(variable.data_type)
+                    if variable.data_type in {item.value for item in DataType}
+                    else DataType.CATEGORICAL
+                ),
+                description=variable.description,
+            )
+            for variable in parsed_gnn.variables.values()
+        ]
+        connections = [
+            Connection(
+                source_variables=(
+                    [connection.source]
+                    if isinstance(connection.source, str)
+                    else list(connection.source)
+                ),
+                target_variables=(
+                    [connection.target]
+                    if isinstance(connection.target, str)
+                    else list(connection.target)
+                ),
+                connection_type=(
+                    ConnectionType(connection.connection_type)
+                    if connection.connection_type
+                    in {item.value for item in ConnectionType}
+                    else ConnectionType.DIRECTED
+                ),
+                weight=connection.weight,
+                description=connection.description,
+            )
+            for connection in parsed_gnn.connections
+        ]
         model = GNNInternalRepresentation(
-            model_name=parsed_gnn.sections.get("ModelName", "Unknown Model"),
-            annotation=parsed_gnn.sections.get("ModelAnnotation", ""),
-            variables=parsed_gnn.variables,
-            connections=parsed_gnn.connections,
-            parameters=[],  # Would need to extract from parsed_gnn
+            model_name=parsed_gnn.model_name or "Unknown Model",
+            annotation=parsed_gnn.model_annotation,
+            variables=variables,
+            connections=connections,
+            parameters=[],
         )
 
         result = ParseResult(model=model, success=True)
@@ -1268,6 +1296,7 @@ class GNNRoundTripTester:
             if LOGGING_CONFIG["enable_detailed_output"]:
                 print(f"      ➤ Serializing to {target_format.value}...")
 
+            converted_content: str | None = None
             if self.parsing_system:
                 try:
                     converted_content = self.parsing_system.serialize(
@@ -1383,7 +1412,7 @@ class GNNRoundTripTester:
                         # Find the actual parser instance
                         for fmt, parser in available_parsers.items():
                             if fmt.value == target_format.value:
-                                parsed_result = parser.parse_file(temp_file)
+                                parsed_result = parser.parse_file(str(temp_file))
                                 break
                     else:
                         raise ValueError(
@@ -1515,7 +1544,7 @@ class GNNRoundTripTester:
         original: GNNInternalRepresentation,
         converted: GNNInternalRepresentation,
         result: RoundTripResult,
-    ):
+    ) -> Any:
         """Compare two models for semantic equivalence."""
 
         # Compare basic metadata
@@ -1551,7 +1580,7 @@ class GNNRoundTripTester:
 
     def _compare_variables(
         self, orig_vars: List, conv_vars: List, result: RoundTripResult
-    ):
+    ) -> Any:
         """Compare variable lists."""
         orig_dict = {var.name: var for var in orig_vars}
         conv_dict = {var.name: var for var in conv_vars}
@@ -1613,7 +1642,7 @@ class GNNRoundTripTester:
 
     def _compare_connections(
         self, orig_conns: List, conv_conns: List, result: RoundTripResult
-    ):
+    ) -> Any:
         """Compare connection lists."""
         if len(orig_conns) != len(conv_conns):
             result.add_difference(
@@ -1621,8 +1650,8 @@ class GNNRoundTripTester:
             )
 
         # Compare connections by content (simplified)
-        orig_conn_strs = set()
-        conv_conn_strs = set()
+        orig_conn_strs: set[Any] = set()
+        conv_conn_strs: set[Any] = set()
 
         for conn in orig_conns:
             if (
@@ -1665,7 +1694,7 @@ class GNNRoundTripTester:
 
     def _compare_parameters(
         self, orig_params: List, conv_params: List, result: RoundTripResult
-    ):
+    ) -> Any:
         """Compare parameter lists."""
         orig_dict = {param.name: param for param in orig_params}
         conv_dict = {param.name: param for param in conv_params}
@@ -1691,7 +1720,7 @@ class GNNRoundTripTester:
 
     def _compare_equations(
         self, orig_eqs: List, conv_eqs: List, result: RoundTripResult
-    ):
+    ) -> Any:
         """Compare equation lists."""
         if len(orig_eqs) != len(conv_eqs):
             result.add_difference(
@@ -1699,8 +1728,8 @@ class GNNRoundTripTester:
             )
 
     def _compare_time_specification(
-        self, orig_time, conv_time, result: RoundTripResult
-    ):
+        self, orig_time: Any, conv_time: Any, result: RoundTripResult
+    ) -> Any:
         """Compare time specifications."""
         if (orig_time is None) != (conv_time is None):
             result.add_difference("Time specification presence mismatch")
@@ -1713,7 +1742,7 @@ class GNNRoundTripTester:
 
     def _compare_ontology_mappings(
         self, orig_mappings: List, conv_mappings: List, result: RoundTripResult
-    ):
+    ) -> Any:
         """Compare ontology mappings."""
         orig_dict = {
             mapping.variable_name: mapping.ontology_term for mapping in orig_mappings
@@ -1729,11 +1758,11 @@ class GNNRoundTripTester:
         self,
         reference_model: GNNInternalRepresentation,
         report: ComprehensiveTestReport,
-    ):
+    ) -> Any:
         """Test cross-format consistency validation."""
         try:
             # Convert to multiple formats and test consistency
-            format_contents = {}
+            format_contents: dict[Any, Any] = {}
 
             print("   ➤ Generating content for all formats...")
             for fmt in self.supported_formats:
@@ -1810,7 +1839,7 @@ class GNNRoundTripTester:
     def _compute_model_checksum(self, model: GNNInternalRepresentation) -> str:
         """Compute a semantic checksum for a model."""
         # Create a normalized representation for checksumming
-        checksum_data = {
+        checksum_data: dict[str, Any] = {
             "model_name": model.model_name,
             "variables": sorted(
                 [
@@ -1861,7 +1890,7 @@ class GNNRoundTripTester:
 
     def _get_file_extension(self, format: GNNFormat) -> str:
         """Get file extension for a format."""
-        extensions = {
+        extensions: dict[Any, Any] = {
             GNNFormat.MARKDOWN: "md",
             GNNFormat.JSON: "json",
             GNNFormat.XML: "xml",
@@ -1881,13 +1910,13 @@ class GNNRoundTripTester:
             GNNFormat.PICKLE: "pkl",
             GNNFormat.Z_NOTATION: "zed",
         }
-        return extensions.get(format, "txt")
+        return cast("str", extensions.get(format, "txt"))
 
     def generate_report(
         self, report: ComprehensiveTestReport, output_file: Optional[Path] = None
     ) -> str:
         """Generate a comprehensive test report."""
-        lines = []
+        lines: list[Any] = []
 
         lines.append("# GNN Round-Trip Testing Report")
         lines.append(
@@ -1990,21 +2019,21 @@ class GNNRoundTripTester:
 class TestGNNRoundTrip(unittest.TestCase):
     """Unit tests for the round-trip testing system."""
 
-    def setUp(self):
+    def setUp(self) -> Any:
         """Set up test environment."""
         if not GNN_AVAILABLE:
             self.skipTest("GNN module not available")
 
         self.tester = GNNRoundTripTester()
 
-    def test_reference_file_exists(self):
+    def test_reference_file_exists(self) -> Any:
         """Test that the reference file exists and is readable."""
         self.assertTrue(
             self.tester.reference_file.exists(),
             f"Reference file not found: {self.tester.reference_file}",
         )
 
-    def test_reference_file_validation(self):
+    def test_reference_file_validation(self) -> Any:
         """Test that the reference file validates correctly."""
         if self.tester.validator:
             result = self.tester.validator.validate_file(self.tester.reference_file)
@@ -2014,7 +2043,7 @@ class TestGNNRoundTrip(unittest.TestCase):
         else:
             self.skipTest("Validator not available")
 
-    def test_comprehensive_round_trip(self):
+    def test_comprehensive_round_trip(self) -> Any:
         """Test comprehensive round-trip conversion."""
         report = self.tester.run_comprehensive_tests()
 
@@ -2038,7 +2067,7 @@ class TestGNNRoundTrip(unittest.TestCase):
                 if not result.success:
                     print(f"  - {result.target_format.value}: {result.errors}")
 
-    def test_specific_format_round_trip(self):
+    def test_specific_format_round_trip(self) -> Any:
         """Test round-trip for a specific format (JSON)."""
         if not self.tester.parsing_system:
             self.skipTest("Parsing system not available")

@@ -34,10 +34,12 @@ from llm import (
     AnalysisType,
     LLMConfig,
     LLMMessage,
-    LLMProcessor,
+    UnifiedLLMProcessor,
     get_default_provider_configs,
     load_api_keys_from_env,
 )
+
+LLMProcessor = UnifiedLLMProcessor
 
 # Configure logging
 logging.basicConfig(
@@ -95,7 +97,7 @@ ModelTimeHorizon: 10
 """
 
 
-def test_environment_setup() -> None:
+def test_environment_setup() -> tuple[dict[str, str], dict[str, Any]]:
     """Test that environment variables are properly loaded."""
     print("🔧 Testing Environment Setup...")
 
@@ -180,7 +182,7 @@ def test_different_analysis_types() -> None:
     """Test different analysis types."""
     print("\n🔍 Testing Different Analysis Types...")
 
-    analysis_types = [
+    analysis_types: list[Any] = [
         AnalysisType.STRUCTURE,
         AnalysisType.QUESTIONS,
         AnalysisType.VALIDATION,
@@ -199,7 +201,7 @@ def test_provider_specific_calls() -> None:
     """Test calling specific providers."""
     print("\n🎯 Testing Provider-Specific Calls...")
 
-    available_providers = []
+    available_providers: list[Any] = []
 
     for provider_type in available_providers:
         try:
@@ -218,7 +220,7 @@ def test_custom_configurations() -> None:
     print("\n⚙️ Testing Custom Configurations...")
 
     # Test different configurations
-    configs = [
+    configs: list[Any] = [
         LLMConfig(model="gpt-4o-mini", max_tokens=500, temperature=0.1),
         LLMConfig(
             model="openai/gpt-4o",  # OpenRouter format
@@ -269,7 +271,7 @@ def test_streaming_responses() -> None:
         LLMConfig(max_tokens=500, temperature=0.3)
 
         print("✅ Starting stream...")
-        response_chunks = []
+        response_chunks: list[Any] = []
 
         # Skip streaming in offline test environment; simulate chunks
         response_chunks = ["chunk1", "chunk2"]
@@ -285,7 +287,7 @@ def test_provider_comparison() -> None:
     print("\n🔄 Testing Provider Comparison...")
 
     try:
-        results = {}
+        results: dict[Any, Any] = {}
 
         print(f"✅ Comparison completed for {len(results)} providers")
 

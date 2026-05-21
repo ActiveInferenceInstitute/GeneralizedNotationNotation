@@ -122,6 +122,8 @@ async def submit_process_job(
     background_tasks.add_task(job_mgr.execute_job_async, job_id)
 
     job = job_mgr.get_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=500, detail=f"Job {job_id} was not registered")
     return JobResponse(
         job_id=job_id,
         status=JobStatus.PENDING,
@@ -138,7 +140,7 @@ async def get_job_status(job_id: str) -> JobStatusResponse:
     if job is None:
         raise HTTPException(status_code=404, detail=f"Job not found: {job_id}")
 
-    def _dt(s):
+    def _dt(s: Any) -> Any:
         return datetime.fromisoformat(s) if s else None
 
     return JobStatusResponse(
@@ -233,7 +235,7 @@ async def invoke_tool(
     )
 
 
-def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False):
+def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False) -> Any:
     """Start the API server."""
     if host not in ("127.0.0.1", "localhost"):
         logger.warning(

@@ -21,17 +21,17 @@ Tests cover:
 All tests execute real methods and subprocesses.
 """
 
-import pytest
-
-pytestmark = pytest.mark.pipeline
 import logging
 import subprocess  # nosec B404
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
+
+import pytest
 
 # Test markers
-pytestmark = [pytest.mark.main_orchestrator]
+pytestmark = [pytest.mark.pipeline, pytest.mark.main_orchestrator]
 
 # Local paths
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
@@ -86,13 +86,13 @@ class TestMainOrchestratorImport:
     def test_main_orchestrator_component_availability(self) -> None:
         """Test that main orchestrator components are available."""
         # Test that main components exist
-        components = {
+        components: dict[str, Any] = {
             "utils_package": SRC_DIR / "utils" / "__init__.py",
             "pipeline_package": SRC_DIR / "pipeline" / "__init__.py",
             "main_script": SRC_DIR / "main.py",
         }
 
-        missing_components = []
+        missing_components: list[Any] = []
         for name, path in components.items():
             if not path.exists():
                 missing_components.append(f"{name}: {path}")
@@ -127,7 +127,7 @@ class TestPipelineScriptDiscovery:
         # Test script discovery pattern
         expected_pattern = r"^(\d+)_.*\.py$"
 
-        test_scripts = [
+        test_scripts: list[Any] = [
             ("1_setup.py", True, 1),
             ("3_gnn.py", True, 3),  # Fixed: regex extracts 3, not 2
             ("20_website.py", True, 20),
@@ -159,7 +159,7 @@ class TestPipelineScriptDiscovery:
     def test_pipeline_script_sorting(self) -> None:
         """Test pipeline script sorting logic."""
         # Test script sorting by number and name
-        sample_scripts = [
+        sample_scripts: list[Any] = [
             {"num": 3, "basename": "3_gnn.py"},
             {"num": 1, "basename": "1_setup.py"},
             {"num": 13, "basename": "13_llm.py"},
@@ -171,7 +171,7 @@ class TestPipelineScriptDiscovery:
         sorted_scripts = sorted(sample_scripts, key=lambda x: (x["num"], x["basename"]))
 
         # Verify correct order - include all scripts that exist
-        expected_order = [1, 2, 3, 13, 14]
+        expected_order: list[Any] = [1, 2, 3, 13, 14]
         actual_order = [script["num"] for script in sorted_scripts]
 
         assert actual_order == expected_order, (
@@ -197,7 +197,7 @@ class TestStepExecution:
             pytest.skip("3_gnn.py missing")
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 str(script),
                 "--target-dir",
@@ -218,7 +218,7 @@ class TestPipelineCoordination:
         main_py = SRC_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 str(main_py),
                 "--only-steps",
@@ -265,7 +265,7 @@ class TestEndToEndIntegration:
         main_py = SRC_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
-            cmd = [
+            cmd: list[Any] = [
                 sys.executable,
                 str(main_py),
                 "--only-steps",
@@ -291,7 +291,7 @@ class TestEndToEndIntegration:
         logger = logging.getLogger("test_logger")
 
         # Test valid summary
-        valid_summary = {
+        valid_summary: dict[str, Any] = {
             "start_time": "2025-01-01T00:00:00",
             "arguments": {"target_dir": "input"},
             "steps": [
@@ -321,7 +321,7 @@ class TestEndToEndIntegration:
         validate_pipeline_summary(valid_summary, logger)
 
         # Test invalid summary
-        invalid_summary = {"start_time": None, "steps": "not_a_list"}
+        invalid_summary: dict[str, Any] = {"start_time": None, "steps": "not_a_list"}
 
         # Should log warnings/errors but not raise exceptions
         validate_pipeline_summary(invalid_summary, logger)
@@ -350,7 +350,7 @@ class TestEndToEndIntegration:
     def test_pipeline_summary_step_numbering(self) -> None:
         """Test that pipeline summary uses correct step numbering."""
         # Test that step numbers reflect execution order, not script names
-        summary = {
+        summary: dict[str, Any] = {
             "steps": [
                 {
                     "script_name": "3_gnn.py",
@@ -389,7 +389,7 @@ class TestEndToEndIntegration:
         logger = logging.getLogger("test_logger")
 
         # Test with valid summary
-        valid_summary = {
+        valid_summary: dict[str, Any] = {
             "start_time": "2025-01-01T00:00:00",
             "end_time": "2025-01-01T00:01:00",
             "total_duration_seconds": 60.0,
@@ -419,7 +419,7 @@ class TestEndToEndIntegration:
         validate_pipeline_summary(valid_summary, logger)
 
         # Test with invalid summary
-        invalid_summary = {
+        invalid_summary: dict[str, Any] = {
             "start_time": None,
             "steps": "not_a_list",
             "overall_status": "INVALID_STATUS",
@@ -445,7 +445,7 @@ class TestEndToEndIntegration:
         # 6_validation.py should depend on 3_gnn.py and 5_type_checker.py
         # etc.
 
-        expected_dependencies = {
+        expected_dependencies: dict[Any, Any] = {
             5: [3],  # 5_type_checker.py needs 3_gnn.py
             6: [3, 5],  # 6_validation.py needs 3_gnn.py and 5_type_checker.py
             7: [3],  # 7_export.py needs 3_gnn.py
@@ -461,7 +461,7 @@ class TestEndToEndIntegration:
 
     def test_pipeline_summary_metadata_completeness(self) -> None:
         """Test that pipeline summary includes all required metadata."""
-        summary = {
+        summary: dict[str, Any] = {
             "start_time": "2025-01-01T00:00:00",
             "arguments": {"target_dir": "input"},
             "steps": [
@@ -494,7 +494,7 @@ class TestEndToEndIntegration:
         }
 
         # Test that all required fields are present
-        required_step_fields = [
+        required_step_fields: list[Any] = [
             "status",
             "step_number",
             "script_name",
@@ -511,7 +511,7 @@ class TestEndToEndIntegration:
 
         # Test performance summary completeness
         perf = summary["performance_summary"]
-        required_perf_fields = [
+        required_perf_fields: list[Any] = [
             "peak_memory_mb",
             "total_steps",
             "failed_steps",

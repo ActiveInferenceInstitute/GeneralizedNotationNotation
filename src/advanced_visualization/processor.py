@@ -23,7 +23,7 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 # Import matplotlib for plotting (with recovery for headless environments)
 try:
@@ -36,8 +36,8 @@ try:
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
-    plt = None
-    np = None
+    plt = cast(Any, None)
+    np = cast(Any, None)
 
 # Import performance tracker.
 from utils.performance_tracker import PerformanceTracker
@@ -51,16 +51,16 @@ from ._shared import (
 class SafeAdvancedVisualizationManager:
     """Context manager for safe advanced visualization with automatic cleanup"""
 
-    def __init__(self, logger: logging.Logger):
+    def __init__(self, logger: logging.Logger) -> None:
         self.logger = logger
         self.tracker = PerformanceTracker()
-        self.start_time = None
+        self.start_time: float | None = None
 
-    def __enter__(self):
+    def __enter__(self) -> Any:
         self.start_time = time.time()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(self, exc_type: Any, exc_val: Any, exc_tb: Any) -> Any:
         if exc_type is not None:
             self.logger.warning(f"Advanced visualization encountered error: {exc_val}")
         return False  # Don't suppress exceptions
@@ -89,13 +89,13 @@ try:
 
     SEABORN_AVAILABLE = True
 except ImportError:
-    sns = None
+    sns = cast(Any, None)
 
 
 def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     """Check availability of visualization dependencies"""
     global MATPLOTLIB_AVAILABLE, SEABORN_AVAILABLE
-    dependencies = {
+    dependencies: dict[str, Any] = {
         "matplotlib": MATPLOTLIB_AVAILABLE,
         "plotly": False,
         "seaborn": SEABORN_AVAILABLE,
@@ -169,7 +169,7 @@ def _load_gnn_models(
         logger.info(f"Found {len(parsed_files)} parsed files in {gnn_output_dir}")
         if parsed_files:
             logger.info(f"Found {len(parsed_files)} parsed files, loading directly")
-            models = {}
+            models: dict[Any, Any] = {}
             for parsed_file in parsed_files:
                 logger.info(f"Processing parsed file: {parsed_file}")
                 try:
@@ -259,10 +259,10 @@ def _load_gnn_models(
 
 def _save_results(
     output_dir: Path, results: AdvancedVisualizationResults, logger: logging.Logger
-):
+) -> Any:
     """Save visualization results to JSON with detailed skipped feature tracking"""
     # Categorize skipped visualizations by reason
-    skipped_by_reason = {}
+    skipped_by_reason: dict[Any, Any] = {}
     for attempt in results.attempts:
         if attempt.status == "skipped":
             reason = attempt.error_message or "Unknown reason"
@@ -271,7 +271,7 @@ def _save_results(
             skipped_by_reason[reason].append(f"{attempt.viz_type}:{attempt.model_name}")
 
     # Build the summary
-    summary = {
+    summary: dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "total_attempts": results.total_attempts,
         "successful": results.successful,
@@ -334,7 +334,7 @@ def process_advanced_viz(
     viz_type: str = "all",
     interactive: bool = True,
     export_formats: Optional[List[str]] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> bool:
     """
     Main advanced visualization processing function.
@@ -390,7 +390,7 @@ def process_advanced_viz(
                 logger.info(f"Processing advanced visualizations for: {model_name}")
 
                 # Helper to track attempt results
-                def _track(attempt):
+                def _track(attempt: Any) -> Any:
                     results.attempts.append(attempt)
                     results.total_attempts += 1
                     if attempt.status == "success":

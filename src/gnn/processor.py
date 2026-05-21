@@ -55,7 +55,7 @@ def process_gnn_directory_lightweight(
         # Discover GNN files
         gnn_files = discover_gnn_files(target_dir, recursive)
 
-        results = {
+        results: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "target_directory": str(target_dir),
             "files_found": len(gnn_files),
@@ -127,7 +127,7 @@ def _extract_sections_lightweight(content: str) -> List[str]:
     Returns:
         List of section header strings found in the content.
     """
-    sections = []
+    sections: list[Any] = []
 
     # Look for markdown headers
     header_pattern = r"^#+\s+(.+)$"
@@ -155,10 +155,10 @@ def _extract_variables_lightweight(content: str) -> List[str]:
     Returns:
         List of unique variable names found in the content.
     """
-    variables = []
+    variables: list[Any] = []
 
     # Look for variable definitions
-    var_patterns = [
+    var_patterns: list[Any] = [
         r"(\w+)\s*:\s*(\w+)",  # name: type
         r"(\w+)\s*=\s*([^;\n]+)",  # name = value
         r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
@@ -191,13 +191,13 @@ def discover_gnn_files(
         List of discovered GNN file paths
     """
     directory = Path(directory)
-    gnn_files = []
+    gnn_files: list[Any] = []
 
     if not directory.exists():
         return gnn_files
 
     # Define GNN file patterns
-    gnn_patterns = ["*.md", "*.gnn", "*.txt"]
+    gnn_patterns: list[Any] = ["*.md", "*.gnn", "*.txt"]
 
     for pattern in gnn_patterns:
         if recursive:
@@ -206,7 +206,7 @@ def discover_gnn_files(
             gnn_files.extend(directory.glob(pattern))
 
     # Filter out common non-GNN files
-    excluded_patterns = [
+    excluded_patterns: list[Any] = [
         "README.md",
         "CHANGELOG.md",
         "LICENSE.md",
@@ -250,7 +250,7 @@ def parse_gnn_file(
         char_count = len(content)
 
         # Basic structure analysis
-        structure_info = {
+        structure_info: dict[str, Any] = {
             "has_variables": len(variables) > 0,
             "has_sections": len(sections) > 0,
             "variable_count": len(variables),
@@ -301,7 +301,7 @@ def validate_gnn_structure(
             with open(file_path, "r") as f:
                 content = f.read()
 
-        validation_result = {
+        validation_result: dict[str, Any] = {
             "file_path": str(file_path),
             "file_name": file_path.name,
             "valid": True,
@@ -395,7 +395,7 @@ def process_gnn_directory(
         }
     # Use lightweight processing and wrap into status dict expected by tests
     lightweight_result = process_gnn_directory_lightweight(
-        directory,
+        _dir_path,
         recursive=recursive,
         parallel=parallel,
     )
@@ -430,7 +430,7 @@ def process_gnn_directory(
 
 
 def generate_gnn_report(
-    processing_results: Dict[str, Any], output_path: Union[str, Path] = None
+    processing_results: Dict[str, Any], output_path: (Union[str, Path]) | None = None
 ) -> str:
     """
     Generate a report from GNN processing results.

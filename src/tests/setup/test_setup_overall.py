@@ -4,17 +4,19 @@ Test suite for Setup module.
 Tests environment setup, UV integration, and dependency management.
 """
 
+from typing import Any
+
 
 class TestSetupModule:
     """Test suite for Setup module functionality."""
 
-    def test_default_pipeline_extras_empty(self):
+    def test_default_pipeline_extras_empty(self) -> Any:
         """Step 12 backends are core deps; step 1 does not require a default extra group."""
         from setup.constants import SETUP_DEFAULT_PIPELINE_EXTRAS
 
         assert SETUP_DEFAULT_PIPELINE_EXTRAS == ()
 
-    def test_pyproject_core_lists_step12_backends(self):
+    def test_pyproject_core_lists_step12_backends(self) -> Any:
         import tomllib
         from pathlib import Path
 
@@ -29,7 +31,7 @@ class TestSetupModule:
         assert "plotly" in blob
         assert "bnlearn" in blob
 
-    def test_build_step_command_passes_setup_core_only(self):
+    def test_build_step_command_passes_setup_core_only(self) -> Any:
         """main.py forwards --setup-core-only to 1_setup when set on pipeline args."""
         from pathlib import Path
 
@@ -45,7 +47,7 @@ class TestSetupModule:
         )
         assert "--setup-core-only" in cmd
 
-    def test_module_imports(self):
+    def test_module_imports(self) -> Any:
         """Test that setup module can be imported."""
         from setup import (
             FEATURES,
@@ -61,11 +63,11 @@ class TestSetupModule:
         assert callable(validate_uv_setup)
         assert callable(check_uv_availability)
 
-    def test_features_available(self):
+    def test_features_available(self) -> Any:
         """Test that FEATURES dict is properly populated."""
         from setup import FEATURES
 
-        expected_features = [
+        expected_features: list[Any] = [
             "uv_environment_setup",
             "uv_dependency_management",
             "system_validation",
@@ -75,7 +77,7 @@ class TestSetupModule:
         for feature in expected_features:
             assert feature in FEATURES, f"Missing feature: {feature}"
 
-    def test_version_format(self):
+    def test_version_format(self) -> Any:
         """Test version string format."""
         from setup import __version__
 
@@ -84,14 +86,14 @@ class TestSetupModule:
         assert len(parts) >= 2, "Version should have at least major.minor"
         assert all(p.isdigit() for p in parts[:2]), "Major and minor should be numeric"
 
-    def test_check_uv_availability(self):
+    def test_check_uv_availability(self) -> Any:
         """Test UV availability check."""
         from setup import check_uv_availability
 
         result = check_uv_availability()
         assert isinstance(result, bool)
 
-    def test_validate_uv_setup(self):
+    def test_validate_uv_setup(self) -> Any:
         """Test UV setup validation."""
         from setup import validate_uv_setup
 
@@ -103,7 +105,7 @@ class TestSetupModule:
             or isinstance(result.get("uv_available"), bool)
         )
 
-    def test_environment_manager_class(self):
+    def test_environment_manager_class(self) -> Any:
         """Test EnvironmentManager class exists and works."""
         from setup import EnvironmentManager
 
@@ -115,7 +117,7 @@ class TestSetupModule:
         assert callable(manager.setup_environment)
         assert callable(manager.validate_environment)
 
-    def test_virtual_environment_class(self):
+    def test_virtual_environment_class(self) -> Any:
         """Test VirtualEnvironment class exists."""
         from setup import VirtualEnvironment
 
@@ -124,7 +126,7 @@ class TestSetupModule:
         assert hasattr(venv, "create")
         assert hasattr(venv, "activate")
 
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> Any:
         """Test get_module_info function."""
         from setup import get_module_info
 
@@ -133,14 +135,14 @@ class TestSetupModule:
         # Should have environment_types per the module definition
         assert "environment_types" in info
 
-    def test_check_python_version(self):
+    def test_check_python_version(self) -> Any:
         """Test Python version check."""
         from setup import check_python_version
 
         result = check_python_version()
         assert result is True  # We're running Python 3+
 
-    def test_optional_groups_constant(self):
+    def test_optional_groups_constant(self) -> Any:
         """Test OPTIONAL_GROUPS constant exists."""
         from setup import OPTIONAL_GROUPS
 
@@ -150,7 +152,7 @@ class TestSetupModule:
 class TestSetupUtilities:
     """Test setup utility functions."""
 
-    def test_ensure_directory(self, safe_filesystem):
+    def test_ensure_directory(self, safe_filesystem: Any) -> Any:
         """Test directory creation utility."""
         from setup import ensure_directory
 
@@ -158,7 +160,7 @@ class TestSetupUtilities:
         ensure_directory(test_dir)
         assert test_dir.exists()
 
-    def test_find_gnn_files(self, safe_filesystem):
+    def test_find_gnn_files(self, safe_filesystem: Any) -> Any:
         """Test GNN file discovery."""
         from setup import find_gnn_files
 
@@ -172,7 +174,7 @@ s[3]
         files = find_gnn_files(safe_filesystem.temp_dir)
         assert isinstance(files, list)
 
-    def test_get_output_paths(self, safe_filesystem):
+    def test_get_output_paths(self, safe_filesystem: Any) -> Any:
         """Test output path generation."""
         from setup import get_output_paths
 
@@ -184,7 +186,7 @@ s[3]
 class TestSetupIntegration:
     """Integration tests for setup module."""
 
-    def test_setup_environment_function(self):
+    def test_setup_environment_function(self) -> Any:
         """Test setup_environment utility."""
         from setup import setup_environment
 
@@ -192,7 +194,7 @@ class TestSetupIntegration:
         result = setup_environment()
         assert result is not None
 
-    def test_install_dependencies_function(self):
+    def test_install_dependencies_function(self) -> Any:
         """Test install_dependencies utility."""
         from setup import install_dependencies
 

@@ -77,7 +77,7 @@ def generate_comprehensive_report(
         }
 
         # Generate reports in requested formats
-        generated_files = []
+        generated_files: list[Any] = []
 
         for format_type in report_formats:
             try:
@@ -243,7 +243,7 @@ def generate_summary_report(
         generated_files: List of generated report files
     """
     try:
-        summary = {
+        summary: dict[str, Any] = {
             "report_generation_summary": {
                 "generation_time": datetime.now().isoformat(),
                 "pipeline_directory": str(
@@ -314,7 +314,7 @@ def generate_custom_report(
 
         # Filter steps if specified
         if step_filter or exclude_steps:
-            filtered_steps = {}
+            filtered_steps: dict[Any, Any] = {}
             for step_name, step_data in pipeline_data.get("steps", {}).items():
                 if step_filter and step_name not in step_filter:
                     continue
@@ -359,11 +359,11 @@ def validate_report_data(pipeline_data: Dict[str, Any]) -> Dict[str, Any]:
     Returns:
         Dictionary with validation results
     """
-    validation_results = {"valid": True, "warnings": [], "errors": []}
+    validation_results: dict[str, Any] = {"valid": True, "warnings": [], "errors": []}
 
     try:
         # Check required fields
-        required_fields = ["steps", "summary", "report_generation_time"]
+        required_fields: list[Any] = ["steps", "summary", "report_generation_time"]
         for field in required_fields:
             if field not in pipeline_data:
                 validation_results["errors"].append(f"Missing required field: {field}")

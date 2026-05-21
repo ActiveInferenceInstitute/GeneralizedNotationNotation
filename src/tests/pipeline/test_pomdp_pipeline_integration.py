@@ -8,6 +8,7 @@ Validates that a GNN specification with explicit POMDP matrices can be:
 """
 
 import json
+from typing import Any
 
 import numpy as np
 import pytest
@@ -34,7 +35,7 @@ _skip_no_pymdp = pytest.mark.skipif(
 
 
 @pytest.fixture
-def pomdp_gnn_spec():
+def pomdp_gnn_spec() -> Any:
     """A GNN spec representing a simple 3-state, 3-obs, 2-action POMDP."""
     return {
         "name": "test_pomdp_model",
@@ -66,7 +67,7 @@ def pomdp_gnn_spec():
 
 
 @pytest.fixture
-def pymdp_gnn_config():
+def pymdp_gnn_config() -> Any:
     """A GNN config dict suitable for PyMDPSimulation initialization.
     Uses the same format as the existing passing tests in test_execute_pymdp_simulation.py.
     """
@@ -120,7 +121,7 @@ def pymdp_gnn_config():
 class TestRenderPOMDP:
     """Test that GNN POMDP specs can be rendered to framework code."""
 
-    def test_render_to_pymdp(self, pomdp_gnn_spec, tmp_path):
+    def test_render_to_pymdp(self, pomdp_gnn_spec: Any, tmp_path: Any) -> Any:
         """Rendering a POMDP spec to PyMDP should produce a Python file."""
         success, msg, artifacts = render_gnn_spec(pomdp_gnn_spec, "pymdp", tmp_path)
         assert success is True, f"PyMDP rendering failed: {msg}"
@@ -129,17 +130,19 @@ class TestRenderPOMDP:
         py_files = list(tmp_path.rglob("*.py"))
         assert len(py_files) > 0, "No .py files generated"
 
-    def test_render_to_discopy(self, pomdp_gnn_spec, tmp_path):
+    def test_render_to_discopy(self, pomdp_gnn_spec: Any, tmp_path: Any) -> Any:
         """Rendering a POMDP spec to DisCoPy should succeed."""
         success, msg, artifacts = render_gnn_spec(pomdp_gnn_spec, "discopy", tmp_path)
         assert success is True, f"DisCoPy rendering failed: {msg}"
 
-    def test_render_to_rxinfer(self, pomdp_gnn_spec, tmp_path):
+    def test_render_to_rxinfer(self, pomdp_gnn_spec: Any, tmp_path: Any) -> Any:
         """Rendering a POMDP spec to RxInfer should succeed."""
         success, msg, artifacts = render_gnn_spec(pomdp_gnn_spec, "rxinfer", tmp_path)
         assert success is True, f"RxInfer rendering failed: {msg}"
 
-    def test_render_to_activeinference_jl(self, pomdp_gnn_spec, tmp_path):
+    def test_render_to_activeinference_jl(
+        self, pomdp_gnn_spec: Any, tmp_path: Any
+    ) -> Any:
         """Rendering a POMDP spec to ActiveInference.jl should succeed."""
         success, msg, artifacts = render_gnn_spec(
             pomdp_gnn_spec, "activeinference_jl", tmp_path
@@ -156,7 +159,7 @@ class TestRenderPOMDP:
 class TestExecutePOMDP:
     """Test that POMDP simulations run and produce valid results."""
 
-    def test_simulation_creation(self, pymdp_gnn_config, tmp_path):
+    def test_simulation_creation(self, pymdp_gnn_config: Any, tmp_path: Any) -> Any:
         """PyMDPSimulation should initialize from GNN config."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         assert sim is not None
@@ -165,7 +168,9 @@ class TestExecutePOMDP:
         assert sim.num_actions == 4
         assert sim.agent is not None
 
-    def test_simulation_run_produces_results(self, pymdp_gnn_config, tmp_path):
+    def test_simulation_run_produces_results(
+        self, pymdp_gnn_config: Any, tmp_path: Any
+    ) -> Any:
         """Running a simulation should produce observations, actions, and beliefs."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         results = sim.run_simulation(num_timesteps=10)
@@ -178,7 +183,9 @@ class TestExecutePOMDP:
         assert len(results["observations"]) == 10
         assert len(results["actions"]) == 10
 
-    def test_simulation_beliefs_valid(self, pymdp_gnn_config, tmp_path):
+    def test_simulation_beliefs_valid(
+        self, pymdp_gnn_config: Any, tmp_path: Any
+    ) -> Any:
         """Beliefs at each timestep should be valid probability distributions."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         results = sim.run_simulation(num_timesteps=10)
@@ -193,7 +200,7 @@ class TestExecutePOMDP:
                 f"Beliefs at t={t} sum to {total}, expected ~1.0"
             )
 
-    def test_serialization_roundtrip(self, pymdp_gnn_config, tmp_path):
+    def test_serialization_roundtrip(self, pymdp_gnn_config: Any, tmp_path: Any) -> Any:
         """Simulation results should be JSON-serializable via safe_json_dump."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         results = sim.run_simulation(num_timesteps=5)
@@ -217,7 +224,9 @@ class TestExecutePOMDP:
 class TestAnalyzePOMDP:
     """Test the analysis pipeline on simulation results."""
 
-    def test_analyze_simulation_output(self, pymdp_gnn_config, tmp_path):
+    def test_analyze_simulation_output(
+        self, pymdp_gnn_config: Any, tmp_path: Any
+    ) -> Any:
         """Running analyze_active_inference_metrics on sim results should produce
         meaningful statistics."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
@@ -236,7 +245,9 @@ class TestAnalyzePOMDP:
         assert "metrics" in analysis
         assert "belief_entropy" in analysis["metrics"]
 
-    def test_entropy_computation_on_sim_beliefs(self, pymdp_gnn_config, tmp_path):
+    def test_entropy_computation_on_sim_beliefs(
+        self, pymdp_gnn_config: Any, tmp_path: Any
+    ) -> Any:
         """Shannon entropy should be computable on simulation beliefs."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         results = sim.run_simulation(num_timesteps=10)
@@ -247,12 +258,14 @@ class TestAnalyzePOMDP:
             assert entropy >= 0, "Entropy should be non-negative"
             assert np.isfinite(entropy), "Entropy should be finite"
 
-    def test_extract_pymdp_data_structure(self, pymdp_gnn_config, tmp_path):
+    def test_extract_pymdp_data_structure(
+        self, pymdp_gnn_config: Any, tmp_path: Any
+    ) -> Any:
         """extract_pymdp_data should return a well-structured dict."""
         sim = PyMDPSimulation(gnn_config=pymdp_gnn_config, output_dir=tmp_path)
         results = sim.run_simulation(num_timesteps=10)
 
-        execution_result = {
+        execution_result: dict[str, Any] = {
             "framework": "pymdp",
             "simulation_data": results,
             "implementation_directory": str(tmp_path),
@@ -281,7 +294,9 @@ class TestAnalyzePOMDP:
 class TestEndToEndPOMDPPipeline:
     """Full pipeline: render → execute → analyze."""
 
-    def test_full_pipeline_flow(self, pomdp_gnn_spec, pymdp_gnn_config, tmp_path):
+    def test_full_pipeline_flow(
+        self, pomdp_gnn_spec: Any, pymdp_gnn_config: Any, tmp_path: Any
+    ) -> Any:
         """Exercise the complete render → execute → analyze path."""
         # 1. Render
         render_dir = tmp_path / "rendered"

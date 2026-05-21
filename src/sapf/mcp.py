@@ -35,10 +35,21 @@ def process_sapf_mcp(
     try:
         out_dir = Path(output_directory)
         out_dir.mkdir(parents=True, exist_ok=True)
-        success = process_gnn_to_audio(
-            target_dir=Path(target_directory),
-            output_dir=out_dir,
-            verbose=verbose,
+        target_dir = Path(target_directory)
+        gnn_files = sorted(target_dir.rglob("*.md"))
+        results: list[Dict[str, Any]] = []
+        for gnn_file in gnn_files:
+            content = gnn_file.read_text(encoding="utf-8")
+            results.append(
+                process_gnn_to_audio(
+                    content,
+                    gnn_file.stem,
+                    str(out_dir),
+                    validate_only=False,
+                )
+            )
+        success = bool(gnn_files) and all(
+            bool(result.get("success")) for result in results
         )
         audio_files = (
             list(out_dir.rglob("*.wav"))
@@ -49,6 +60,7 @@ def process_sapf_mcp(
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
+            "models_processed": len(results),
             "audio_files_generated": len(audio_files),
             "message": f"SAPF audio generation {'completed successfully' if success else 'completed with issues'}",
         }
@@ -132,7 +144,7 @@ def check_audio_backends_mcp() -> Dict[str, Any]:
         Dictionary with backend names and availability flags.
     """
     try:
-        from . import check_audio_backends
+        from audio import check_audio_backends
 
         result = check_audio_backends()
         return {"success": True, "backends": result}
@@ -167,7 +179,7 @@ def check_audio_backends_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register SAPF audio tools with the MCP server."""
 
     mcp_instance.register_tool(

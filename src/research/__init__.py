@@ -5,19 +5,21 @@ Rule-based static analysis (no external LLM required). All dependencies
 are core Python / stdlib — imports are unconditional per Phase 6.
 """
 
+from typing import Any
+
 from .processor import process_research
 
 __version__ = "1.6.0"
 __author__ = "Active Inference Institute"
 __description__ = "research processing for GNN Processing Pipeline"
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "basic_processing": True,
     "fallback_mode": True,  # Documented in CLAUDE.md: rule-based, no LLM required
 }
 
 
-__all__ = ["process_research", "FEATURES", "__version__"]
+__all__: list[Any] = ["process_research", "FEATURES", "__version__"]
 
 
 def get_module_info() -> dict:

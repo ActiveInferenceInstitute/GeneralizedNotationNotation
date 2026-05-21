@@ -12,7 +12,7 @@ License: MIT
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +34,7 @@ from .common import (
 class TLAParser(BaseGNNParser):
     """Parser for TLA+ (Temporal Logic of Actions) specifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.module_pattern = re.compile(r"MODULE\s+(\w+)", re.IGNORECASE)
         self.variable_pattern = re.compile(r"VARIABLES?\s+([\w\s,]+)", re.IGNORECASE)
@@ -151,7 +151,7 @@ class TLAParser(BaseGNNParser):
         import json
 
         # Look for JSON data in TLA+ comments
-        patterns = [
+        patterns: list[Any] = [
             r"\\\*\s*MODEL_DATA:\s*(\{.+\})",  # \* MODEL_DATA: {...}
             r"\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)",  # (* MODEL_DATA: {...} *)
         ]
@@ -160,7 +160,7 @@ class TLAParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in TLA+ embedded data, trying next pattern: %s",
@@ -253,12 +253,12 @@ class TLAParser(BaseGNNParser):
         self, op_name: str, op_def: str, variables: List[Variable]
     ) -> List[Connection]:
         """Extract variable dependencies from TLA+ operator definition."""
-        connections = []
+        connections: list[Any] = []
         var_names = {var.name for var in variables}
 
         # Find variable references in the operator definition
         var_pattern = re.compile(r"\b([a-zA-Z_]\w*)\b")
-        referenced_vars = []
+        referenced_vars: list[Any] = []
 
         for match in var_pattern.finditer(op_def):
             var_ref = match.group(1)
@@ -295,7 +295,7 @@ class TLAParser(BaseGNNParser):
 class AgdaParser(BaseGNNParser):
     """Parser for Agda dependently typed functional programming language."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.module_pattern = re.compile(r"module\s+([\w.]+)\s+where", re.IGNORECASE)
         self.data_pattern = re.compile(
@@ -395,7 +395,7 @@ class AgdaParser(BaseGNNParser):
         import json
 
         # Look for JSON data in Agda comments
-        patterns = [
+        patterns: list[Any] = [
             r"--\s*MODEL_DATA:\s*(\{.+\})",  # -- MODEL_DATA: {...}
             r"\{-\s*MODEL_DATA:\s*(\{.+?\})\s*-\}",  # {- MODEL_DATA: {...} -}
         ]
@@ -404,7 +404,7 @@ class AgdaParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in Agda embedded data, trying next pattern: %s",
@@ -516,7 +516,7 @@ class AgdaParser(BaseGNNParser):
     def _is_agda_parameter(self, func_type: str, func_body: str) -> bool:
         """Check if function definition represents a parameter."""
         # Simple heuristics for parameter detection
-        return func_body and (
+        return bool(func_body) and (
             func_body.replace(" ", "").isdigit()
             or any(const in func_body for const in ["true", "false", "zero", "suc"])
             or func_type in ["ℕ", "Nat", "Bool", "ℝ"]
@@ -543,7 +543,7 @@ class AgdaParser(BaseGNNParser):
         self, func_name: str, func_type: str, func_body: str
     ) -> List[Connection]:
         """Extract dependencies from Agda function."""
-        connections = []
+        connections: list[Any] = []
 
         # Simple pattern to find type/function references
         ref_pattern = re.compile(r"\b([A-Z][a-zA-Z0-9]*)\b")

@@ -16,6 +16,7 @@ All tests validate real render function execution.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -40,7 +41,9 @@ class TestRenderTargets:
     """
 
     @pytest.mark.unit
-    def test_render_to_pymdp(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_pymdp(
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to PyMDP format."""
         # Call real render function with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -59,8 +62,8 @@ class TestRenderTargets:
 
     @pytest.mark.unit
     def test_render_to_rxinfer_toml(
-        self, tmp_path, sample_gnn_spec, test_render_module
-    ):
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to RxInfer TOML format."""
         # Call real render function with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -78,7 +81,9 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
     @pytest.mark.unit
-    def test_render_to_discopy(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_discopy(
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to DisCoPy format."""
         # Call real render function with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -97,8 +102,8 @@ class TestRenderTargets:
 
     @pytest.mark.unit
     def test_render_to_discopy_combined(
-        self, tmp_path, sample_gnn_spec, test_render_module
-    ):
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to DisCoPy combined format using real rendering."""
         # Use real rendering call with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -117,8 +122,8 @@ class TestRenderTargets:
 
     @pytest.mark.unit
     def test_render_to_activeinference_jl(
-        self, tmp_path, sample_gnn_spec, test_render_module
-    ):
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to ActiveInference.jl format using real rendering."""
         # Use real rendering call with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -136,7 +141,9 @@ class TestRenderTargets:
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
 
     @pytest.mark.unit
-    def test_render_to_jax(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_jax(
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to JAX format using real rendering with content validation."""
         # Use real rendering call with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -167,7 +174,9 @@ class TestRenderTargets:
             compile(content, jax_artifacts[0], "exec")
 
     @pytest.mark.unit
-    def test_render_to_jax_pomdp(self, tmp_path, sample_gnn_spec, test_render_module):
+    def test_render_to_jax_pomdp(
+        self, tmp_path: Any, sample_gnn_spec: Any, test_render_module: Any
+    ) -> Any:
         """Test rendering to JAX POMDP format using real rendering."""
         # Use real rendering call with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(
@@ -188,7 +197,7 @@ class TestRenderTargets:
 class TestRenderDisCoPyTranslator:
     """Smoke tests for render.discopy.translator sub-module."""
 
-    def _import_translator(self):
+    def _import_translator(self) -> Any:
         try:
             from render.discopy import translator
 
@@ -196,20 +205,20 @@ class TestRenderDisCoPyTranslator:
         except Exception:
             pytest.skip("render.discopy.translator not importable")
 
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         self._import_translator()
 
-    def test_check_discopy_availability(self):
+    def test_check_discopy_availability(self) -> Any:
         translator = self._import_translator()
         result = translator.check_discopy_availability()
         assert isinstance(result, dict)
 
-    def test_generate_setup_report(self):
+    def test_generate_setup_report(self) -> Any:
         translator = self._import_translator()
         result = translator.generate_setup_report()
         assert isinstance(result, str)
 
-    def test_parse_gnn_content_empty(self):
+    def test_parse_gnn_content_empty(self) -> Any:
         translator = self._import_translator()
         result = translator.parse_gnn_content("")
         assert isinstance(result, dict)

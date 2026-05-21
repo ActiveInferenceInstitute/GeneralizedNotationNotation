@@ -17,7 +17,7 @@ import logging
 import tempfile
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union, cast
 
 import yaml
 
@@ -67,7 +67,7 @@ def get_gnn_documentation(
 
     base_path = Path(__file__).parent
 
-    file_map = {
+    file_map: dict[str, Any] = {
         "file_structure": "documentation/file_structure.md",
         "punctuation": "documentation/punctuation.md",
         "schema_json": "schemas/json.json",
@@ -199,7 +199,7 @@ def parse_gnn_content(
         parsed_gnn = parser.parse_content(content, format_hint=format_hint)
 
         # Convert to JSON-serializable format
-        variables_dict = {}
+        variables_dict: dict[Any, Any] = {}
         for var_name, var in parsed_gnn.variables.items():
             variables_dict[var_name] = {
                 "name": var.name,
@@ -210,7 +210,7 @@ def parse_gnn_content(
                 "line_number": var.line_number,
             }
 
-        connections_list = []
+        connections_list: list[Any] = []
         for conn in parsed_gnn.connections:
             connections_list.append(
                 {
@@ -273,7 +273,7 @@ def validate_cross_format_consistency_content(
         result = validate_cross_format_consistency(content, enable_round_trip)
 
         # Convert result to JSON-serializable format
-        format_results_dict = {}
+        format_results_dict: dict[Any, Any] = {}
         for format_name, validation_result in result.format_results.items():
             format_results_dict[format_name] = {
                 "is_valid": validation_result.is_valid,
@@ -636,7 +636,7 @@ def _retrieve_gnn_doc_resource(uri: str) -> Dict[str, Any]:
 
     doc_name_part = uri.replace("gnn://documentation/", "")
 
-    allowed_docs = [
+    allowed_docs: list[Any] = [
         "file_structure",
         "punctuation",
         "schema_json",
@@ -648,8 +648,12 @@ def _retrieve_gnn_doc_resource(uri: str) -> Dict[str, Any]:
         logger.error(f"_retrieve_gnn_doc_resource: {error_msg}")
         raise ValueError(error_msg)
 
-    # Type casting for Literal
-    doc_name_literal = doc_name_part  # type: Literal["file_structure", "punctuation", "schema_json", "schema_yaml", "grammar"]
+    doc_name_literal = cast(
+        Literal[
+            "file_structure", "punctuation", "schema_json", "schema_yaml", "grammar"
+        ],
+        doc_name_part,
+    )
 
     result = get_gnn_documentation(doc_name=doc_name_literal)
     if not result["success"]:
@@ -660,7 +664,7 @@ def _retrieve_gnn_doc_resource(uri: str) -> Dict[str, Any]:
 
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> Any:
     """Register comprehensive GNN tools and resources with the MCP."""
 
     # Documentation tools

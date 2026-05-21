@@ -10,6 +10,7 @@ import logging
 import os  # Added for os.environ
 import sys
 from pathlib import Path
+from typing import Any
 
 from .output_utils import (
     complexity_analysis_csv,
@@ -36,7 +37,7 @@ from .resource_estimator import GNNResourceEstimator
 logger = logging.getLogger(__name__)
 
 
-def main(cmd_args=None):
+def main(cmd_args: Any = None) -> Any:
     """
     Main function to run the type checker from command line.
 
@@ -87,7 +88,7 @@ def main(cmd_args=None):
     allow_any_output_dir = bool(
         os.environ.get("GNN_TYPE_CHECKER_ALLOW_ANY_OUTPUT_DIR", False)
     )
-    forbidden_dirs = ["output", "output/artifacts"]
+    forbidden_dirs: list[Any] = ["output", "output/artifacts"]
     if not allow_any_output_dir:
         # Only allow output dirs ending with 'type_check' (case-insensitive)
         if str(actual_output_dir).rstrip("/\\").lower() in [
@@ -124,8 +125,8 @@ def main(cmd_args=None):
 
     checker = GNNTypeChecker(strict_mode=parsed_args.strict)
     input_path_obj = Path(parsed_args.input_path)
-    results = {}
-    details_dict = {}
+    results: dict[Any, Any] = {}
+    details_dict: dict[Any, Any] = {}
     try:
         if input_path_obj.is_file():
             is_valid, errors, warnings, details = checker.check_file(
@@ -196,7 +197,7 @@ def main(cmd_args=None):
     )
 
     # Artifacts: variables table and section presence
-    all_sections = [
+    all_sections: list[Any] = [
         "GNNSection",
         "GNNVersionAndFlags",
         "ModelName",

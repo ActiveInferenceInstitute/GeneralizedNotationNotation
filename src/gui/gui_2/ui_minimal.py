@@ -5,6 +5,7 @@ Ultra-minimal Visual Matrix Editor UI for debugging gray screen issue
 
 import logging
 from pathlib import Path
+from typing import Any
 
 try:
     import gradio as gr
@@ -33,7 +34,7 @@ def build_debug_visual_gui(
         text_output = gr.Textbox(label="Test Output", value="Ready")
         test_button = gr.Button("Test Button")
 
-        def simple_test(input_text):
+        def simple_test(input_text: Any) -> Any:
             return f"Processed: {input_text}"
 
         test_button.click(simple_test, inputs=[text_input], outputs=[text_output])

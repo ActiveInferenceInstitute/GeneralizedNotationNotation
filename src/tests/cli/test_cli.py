@@ -3,6 +3,7 @@
 import sys
 from io import StringIO
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -17,16 +18,16 @@ except ImportError:
 
 
 class CallTracker:
-    def __init__(self):
+    def __init__(self) -> None:
         self.called = False
-        self.call_args = None
+        self.call_args: tuple[Any, ...] | None = None
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
         self.called = True
         self.call_args = args
 
 
-def test_cli_help():
+def test_cli_help() -> Any:
     """Test that 'gnn --help' works and returns success."""
     orig_stdout = sys.stdout
     captured_out = StringIO()
@@ -45,7 +46,7 @@ def test_cli_help():
         sys.stdout = orig_stdout
 
 
-def test_cli_invalid_command():
+def test_cli_invalid_command() -> Any:
     """Test that an invalid command returns an error or help."""
     orig_stderr = sys.stderr
     sys.stderr = StringIO()
@@ -56,7 +57,7 @@ def test_cli_invalid_command():
         sys.stderr = orig_stderr
 
 
-def test_cli_validate_parser(tmp_path):
+def test_cli_validate_parser(tmp_path: Any) -> Any:
     """Test the 'validate' subcommand parser."""
     test_file = tmp_path / "test.md"
     test_file.touch()
@@ -73,7 +74,7 @@ def test_cli_validate_parser(tmp_path):
             cli._cmd_validate = orig_validate
 
 
-def test_cli_verbose_flag(tmp_path):
+def test_cli_verbose_flag(tmp_path: Any) -> Any:
     """Test that the --verbose flag is correctly handled."""
     orig_health = getattr(cli, "_cmd_health", None)
     tracker = CallTracker()
@@ -81,6 +82,7 @@ def test_cli_verbose_flag(tmp_path):
 
     try:
         main(["--verbose", "health"])
+        assert tracker.call_args is not None
         args = tracker.call_args[0]
         assert getattr(args, "verbose", False) is True
     finally:
@@ -88,9 +90,9 @@ def test_cli_verbose_flag(tmp_path):
             cli._cmd_health = orig_health
 
 
-def test_cli_subcommand_routing(tmp_path):
+def test_cli_subcommand_routing(tmp_path: Any) -> Any:
     """Test that subcommands are routed to the correct handlers."""
-    commands = [
+    commands: list[Any] = [
         ("run", "_cmd_run"),
         ("validate", "_cmd_validate"),
         ("parse", "_cmd_parse"),

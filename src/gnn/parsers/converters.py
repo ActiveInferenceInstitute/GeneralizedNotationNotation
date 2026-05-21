@@ -21,9 +21,9 @@ class FormatConverter:
     Converts GNN models between different formats.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the format converter."""
-        self.supported_conversions = {}
+        self.supported_conversions: dict[tuple[str, str], Any] = {}
 
     def convert(self, model: Any, from_format: str, to_format: str) -> Any:
         """
@@ -52,7 +52,9 @@ class FormatConverter:
         except Exception as e:  # noqa: BLE001 - converter functions may raise arbitrary exceptions
             raise ConversionError(f"Conversion failed: {e}") from e
 
-    def register_conversion(self, from_format: str, to_format: str, converter_func):
+    def register_conversion(
+        self, from_format: str, to_format: str, converter_func: Any
+    ) -> Any:
         """
         Register a conversion function.
 

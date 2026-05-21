@@ -35,7 +35,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
     Supports both standard MCP methods and direct tool invocation.
     """
 
-    def do_POST(self):
+    def do_POST(self) -> Any:
         """Handle POST requests (JSON-RPC 2.0)."""
         urllib.parse.urlparse(self.path)
         content_length = int(self.headers.get("Content-Length", 0))
@@ -57,7 +57,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
                 400, "Invalid request format (missing or invalid jsonrpc field)"
             )
 
-    def _handle_jsonrpc(self, request: Dict[str, Any]):
+    def _handle_jsonrpc(self, request: Dict[str, Any]) -> Any:
         """
         Process a JSON-RPC message, supporting both standard MCP methods and direct tool invocation.
         """
@@ -117,24 +117,32 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
             logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_jsonrpc_error(request_id, -32603, f"Internal error: {str(e)}")
 
-    def _send_jsonrpc_result(self, request_id: Optional[str], result: Any):
+    def _send_jsonrpc_result(self, request_id: Optional[str], result: Any) -> Any:
         """Send a successful JSON-RPC response."""
-        response = {"jsonrpc": "2.0", "id": request_id, "result": result}
+        response: dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "result": result,
+        }
         logger.debug(f"HTTP OUT: {response}")
         self._send_json_response(200, response)
 
     def _send_jsonrpc_error(
         self, request_id: Optional[str], code: int, message: str, data: Any = None
-    ):
+    ) -> Any:
         """Send a JSON-RPC error response, including optional data."""
-        error_obj = {"code": code, "message": message}
+        error_obj: dict[str, Any] = {"code": code, "message": message}
         if data is not None:
             error_obj["data"] = data
-        response = {"jsonrpc": "2.0", "id": request_id, "error": error_obj}
+        response: dict[str, Any] = {
+            "jsonrpc": "2.0",
+            "id": request_id,
+            "error": error_obj,
+        }
         logger.debug(f"HTTP OUT (error): {response}")
         self._send_json_response(200, response)
 
-    def _send_json_response(self, status_code: int, data: Any):
+    def _send_json_response(self, status_code: int, data: Any) -> Any:
         """Send a JSON response."""
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
@@ -142,7 +150,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         response_body = json.dumps(data).encode("utf-8")
         self.wfile.write(response_body)
 
-    def _send_error(self, status_code: int, message: str):
+    def _send_error(self, status_code: int, message: str) -> Any:
         """Send an HTTP error response."""
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
@@ -150,7 +158,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
         error_body = json.dumps({"error": message}).encode("utf-8")
         self.wfile.write(error_body)
 
-    def log_message(self, format, *args):
+    def log_message(self, format: Any, *args: Any) -> Any:
         """Override log_message to use our logger."""
         logger.info(
             "%s - - [%s] %s"
@@ -163,14 +171,14 @@ class MCPHTTPServer:
     HTTP server for MCP. Runs in a background thread and supports graceful shutdown.
     """
 
-    def __init__(self, host: str = "127.0.0.1", port: int = 8080):
+    def __init__(self, host: str = "127.0.0.1", port: int = 8080) -> None:
         self.host = host
         self.port = port
-        self.server = None
-        self.server_thread = None
+        self.server: Optional[HTTPServer] = None
+        self.server_thread: Optional[threading.Thread] = None
         self.running = False
 
-    def start(self):
+    def start(self) -> Any:
         """Start the HTTP server."""
         # Initialize MCP
         initialize()
@@ -189,15 +197,17 @@ class MCPHTTPServer:
             logger.info("Keyboard interrupt received, stopping server")
             self.stop()
 
-    def _server_thread(self):
+    def _server_thread(self) -> Any:
         """Thread function that runs the HTTP server."""
         try:
+            if self.server is None:
+                raise RuntimeError("HTTP server has not been initialized")
             self.server.serve_forever()
         except Exception as e:
             logger.error(f"Error in HTTP server: {str(e)}")
             self.running = False
 
-    def stop(self):
+    def stop(self) -> Any:
         """Stop the HTTP server."""
         if self.server:
             logger.info("Stopping HTTP server")
@@ -206,7 +216,7 @@ class MCPHTTPServer:
             self.running = False
 
 
-def start_http_server(host: str = "127.0.0.1", port: int = 8080):
+def start_http_server(host: str = "127.0.0.1", port: int = 8080) -> Any:
     """Start an MCP server using HTTP transport."""
     server = MCPHTTPServer(host, port)
     server.start()

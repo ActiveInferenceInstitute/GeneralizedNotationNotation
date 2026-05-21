@@ -11,7 +11,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, cast
 
 import numpy as np
 
@@ -99,7 +99,7 @@ class POMDPRenderProcessor:
     - Validation of POMDP-renderer compatibility
     """
 
-    def __init__(self, base_output_dir: Path):
+    def __init__(self, base_output_dir: Path) -> None:
         """
         Initialize POMDP render processor.
 
@@ -182,7 +182,7 @@ class POMDPRenderProcessor:
         pomdp_space: "POMDPStateSpace",
         gnn_file_path: Optional[Path] = None,
         frameworks: Optional[List[str]] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """
         Process POMDP state space for all or specified frameworks.
@@ -199,14 +199,14 @@ class POMDPRenderProcessor:
         if frameworks is None:
             frameworks = list(self.framework_configs.keys())
 
-        results = {}
+        results: dict[Any, Any] = {}
         overall_success = True
 
         # Create base output directory
         self.base_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Create processing summary
-        processing_summary = {
+        processing_summary: dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "source_file": str(gnn_file_path) if gnn_file_path else None,
             "model_name": pomdp_space.model_name,
@@ -283,7 +283,7 @@ class POMDPRenderProcessor:
         pomdp_space: "POMDPStateSpace",
         framework: str,
         gnn_file_path: Optional[Path] = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> Dict[str, Any]:
         """
         Process POMDP state space for a single framework.
@@ -320,7 +320,7 @@ class POMDPRenderProcessor:
             }
 
         # Create framework-specific output directory
-        framework_output_dir = self.base_output_dir / config["output_subdir"]
+        framework_output_dir = self.base_output_dir / str(config["output_subdir"])
         framework_output_dir.mkdir(parents=True, exist_ok=True)
 
         # Convert POMDP to GNN spec format expected by renderers
@@ -339,7 +339,7 @@ class POMDPRenderProcessor:
                 )
 
                 # Calculate code metrics for generated files
-                code_metrics = {}
+                code_metrics: dict[Any, Any] = {}
                 for output_file in renderer_result.get("artifacts", []):
                     file_path = Path(output_file)
                     if file_path.exists():
@@ -384,12 +384,13 @@ class POMDPRenderProcessor:
             Validation result dictionary
         """
         config = self.framework_configs[framework]
-        warnings = []
+        warnings: list[Any] = []
 
         # Check required matrices are present, allowing factored matrices when
         # they can be composed into a canonical execution contract.
-        missing_matrices = []
-        for required_matrix in config["requires_matrices"]:
+        missing_matrices: list[Any] = []
+        required_matrices = cast(list[str], config["requires_matrices"])
+        for required_matrix in required_matrices:
             if not self._has_matrix_or_factored_matrix(pomdp_space, required_matrix):
                 missing_matrices.append(required_matrix)
 
@@ -549,7 +550,7 @@ class POMDPRenderProcessor:
             )
             for obs_flat, obs_tuple in enumerate(obs_tuples):
                 for state_flat, state_tuple in enumerate(state_tuples):
-                    matrix_index = [obs_tuple[obs_index]]
+                    matrix_index: list[Any] = [obs_tuple[obs_index]]
                     matrix_index.extend(state_tuple[index] for index in state_indices)
                     A_joint[obs_flat, state_flat] *= float(matrix[tuple(matrix_index)])
         A_joint = _normalise_columns(A_joint)
@@ -599,7 +600,7 @@ class POMDPRenderProcessor:
                 D_joint[state_flat] *= float(vector[state_tuple[factor_index]])
         D_joint = _normalise_prob_vector(D_joint)
 
-        provenance = {
+        provenance: dict[str, Any] = {
             "A": {
                 "source": "factored_joint_composition",
                 "source_keys": a_keys,
@@ -745,7 +746,7 @@ class POMDPRenderProcessor:
         return indices
 
     def _pomdp_to_gnn_spec(
-        self, pomdp_space: "POMDPStateSpace", **kwargs
+        self, pomdp_space: "POMDPStateSpace", **kwargs: Any
     ) -> Dict[str, Any]:
         """
         Convert POMDP state space to GNN spec format expected by renderers.
@@ -783,7 +784,7 @@ class POMDPRenderProcessor:
         )
         control_factors = getattr(pomdp_space, "control_factors", None) or []
 
-        gnn_spec = {
+        gnn_spec: dict[str, Any] = {
             "name": pomdp_space.model_name or "POMDP_Model",
             "model_name": pomdp_space.model_name or "POMDP_Model",
             "description": pomdp_space.model_annotation or "Extracted POMDP model",
@@ -839,7 +840,7 @@ class POMDPRenderProcessor:
         return gnn_spec
 
     def _call_framework_renderer(
-        self, framework: str, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, framework: str, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """
         Call the appropriate framework renderer.
@@ -879,7 +880,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_pymdp_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call PyMDP renderer."""
         try:
@@ -927,7 +928,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_rxinfer_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call RxInfer renderer."""
         try:
@@ -975,7 +976,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_activeinference_jl_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call ActiveInference.jl renderer."""
         try:
@@ -990,7 +991,7 @@ class POMDPRenderProcessor:
             validation_result = self._validate_state_spaces_in_spec(
                 gnn_spec, "activeinference_jl"
             )
-            warnings = []
+            warnings: list[Any] = []
             if not validation_result["valid"]:
                 warnings = validation_result.get("warnings", [])
                 if validation_result.get("critical", False):
@@ -1028,7 +1029,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_jax_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call JAX renderer."""
         try:
@@ -1039,7 +1040,7 @@ class POMDPRenderProcessor:
 
             # Pre-render validation: verify state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, "jax")
-            warnings = []
+            warnings: list[Any] = []
             if not validation_result["valid"]:
                 warnings = validation_result.get("warnings", [])
                 if validation_result.get("critical", False):
@@ -1077,7 +1078,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_discopy_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call DisCoPy renderer."""
         try:
@@ -1105,7 +1106,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_bnlearn_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call bnlearn renderer."""
         try:
@@ -1133,7 +1134,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_pytorch_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call PyTorch renderer."""
         try:
@@ -1143,7 +1144,7 @@ class POMDPRenderProcessor:
             output_file = output_dir / f"{model_name}_pytorch.py"
 
             # Build options dict with timesteps if available
-            options = {}
+            options: dict[Any, Any] = {}
             model_params = gnn_spec.get("model_parameters", {})
             if "num_timesteps" in model_params:
                 options["num_timesteps"] = model_params["num_timesteps"]
@@ -1167,7 +1168,7 @@ class POMDPRenderProcessor:
             }
 
     def _call_numpyro_renderer(
-        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs
+        self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs: Any
     ) -> Dict[str, Any]:
         """Call NumPyro renderer."""
         try:
@@ -1177,7 +1178,7 @@ class POMDPRenderProcessor:
             output_file = output_dir / f"{model_name}_numpyro.py"
 
             # Build options dict with timesteps if available
-            options = {}
+            options: dict[Any, Any] = {}
             model_params = gnn_spec.get("model_parameters", {})
             if "num_timesteps" in model_params:
                 options["num_timesteps"] = model_params["num_timesteps"]
@@ -1213,13 +1214,14 @@ class POMDPRenderProcessor:
         Returns:
             Validation result dictionary
         """
-        warnings = []
+        warnings: list[Any] = []
         initial_params = gnn_spec.get("initialparameterization", {})
         config = self.framework_configs[framework]
 
         # Check required matrices
-        missing_required = []
-        for required_matrix in config["requires_matrices"]:
+        missing_required: list[Any] = []
+        required_matrices = cast(list[str], config["requires_matrices"])
+        for required_matrix in required_matrices:
             if required_matrix not in initial_params:
                 missing_required.append(required_matrix)
 
@@ -1232,7 +1234,8 @@ class POMDPRenderProcessor:
             }
 
         # Check optional matrices
-        for optional_matrix in config.get("optional_matrices", []):
+        optional_matrices = cast(list[str], config.get("optional_matrices", []))
+        for optional_matrix in optional_matrices:
             if optional_matrix not in initial_params:
                 warnings.append(f"Optional matrix {optional_matrix} not found")
 
@@ -1251,7 +1254,7 @@ class POMDPRenderProcessor:
         Returns:
             Validation result dictionary
         """
-        warnings = []
+        warnings: list[Any] = []
 
         try:
             with open(script_path, "r", encoding="utf-8") as f:
@@ -1297,6 +1300,34 @@ class POMDPRenderProcessor:
             # Get model annotation safely
             model_annotation = getattr(pomdp_space, "model_annotation", None) or "N/A"
 
+            def _shape_text(value: Any) -> str | None:
+                if value is None:
+                    return None
+                try:
+                    array = np.asarray(value)
+                    if array.size == 0:
+                        return None
+                    return "×".join(str(dim) for dim in array.shape)
+                except (TypeError, ValueError):
+                    if isinstance(value, (list, tuple)) and value:
+                        nested_shapes: list[str] = []
+                        for item in value:
+                            nested_shape = _shape_text(item)
+                            if nested_shape is not None:
+                                nested_shapes.append(nested_shape)
+                        if nested_shapes:
+                            unique_shapes = sorted(set(nested_shapes))
+                            return f"{len(value)} blocks ({', '.join(unique_shapes)})"
+                    return None
+
+            def _vector_length(value: Any) -> int | None:
+                if value is None:
+                    return None
+                array = np.asarray(value)
+                if array.size == 0:
+                    return None
+                return int(array.size)
+
             doc_content = f"""# {framework.upper()} Rendering Results
 
 Generated from GNN POMDP Model: **{pomdp_space.model_name}**
@@ -1320,28 +1351,30 @@ Generated from GNN POMDP Model: **{pomdp_space.model_name}**
 
             # Safely check for matrices/vectors
             A_matrix = getattr(pomdp_space, "A_matrix", None)
-            if A_matrix and len(A_matrix) > 0 and len(A_matrix[0]) > 0:
-                doc_content += f"- **A Matrix (Likelihood)**: {len(A_matrix)}×{len(A_matrix[0])} - Maps hidden states to observations\n"
+            A_shape = _shape_text(A_matrix)
+            if A_shape is not None:
+                doc_content += f"- **A Matrix (Likelihood)**: {A_shape} - Maps hidden states to observations\n"
 
             B_matrix = getattr(pomdp_space, "B_matrix", None)
-            if B_matrix and len(B_matrix) > 0 and len(B_matrix[0]) > 0:
-                try:
-                    doc_content += f"- **B Matrix (Transition)**: {len(B_matrix[0])}×{len(B_matrix[0][0])}×{len(B_matrix)} - State transitions given actions\n"
-                except (IndexError, TypeError):
-                    doc_content += "- **B Matrix (Transition)**: Present - State transitions given actions\n"
+            B_shape = _shape_text(B_matrix)
+            if B_shape is not None:
+                doc_content += f"- **B Matrix (Transition)**: {B_shape} - State transitions given actions\n"
 
             C_vector = getattr(pomdp_space, "C_vector", None)
-            if C_vector and len(C_vector) > 0:
-                doc_content += f"- **C Vector (Preferences)**: Length {len(C_vector)} - Preferences over observations\n"
+            C_length = _vector_length(C_vector)
+            if C_length is not None:
+                doc_content += f"- **C Vector (Preferences)**: Length {C_length} - Preferences over observations\n"
 
             D_vector = getattr(pomdp_space, "D_vector", None)
-            if D_vector and len(D_vector) > 0:
-                doc_content += f"- **D Vector (Prior)**: Length {len(D_vector)} - Prior beliefs over states\n"
+            D_length = _vector_length(D_vector)
+            if D_length is not None:
+                doc_content += f"- **D Vector (Prior)**: Length {D_length} - Prior beliefs over states\n"
 
             E_vector = getattr(pomdp_space, "E_vector", None)
-            if E_vector and len(E_vector) > 0:
+            E_length = _vector_length(E_vector)
+            if E_length is not None:
                 doc_content += (
-                    f"- **E Vector (Habits)**: Length {len(E_vector)} - Policy priors\n"
+                    f"- **E Vector (Habits)**: Length {E_length} - Policy priors\n"
                 )
 
             doc_content += """
@@ -1393,7 +1426,7 @@ def process_pomdp_for_frameworks(
     output_dir: Union[str, Path],
     frameworks: Optional[List[str]] = None,
     gnn_file_path: Optional[Path] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Dict[str, Any]:
     """
     Convenience function to process POMDP for multiple frameworks.

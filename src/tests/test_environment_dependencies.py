@@ -7,6 +7,7 @@ Tests verification and management of Python package dependencies.
 import importlib.util
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -17,7 +18,7 @@ class TestCoreDependencies:
     """Tests for core Python dependencies."""
 
     @pytest.mark.fast
-    def test_numpy_available(self):
+    def test_numpy_available(self) -> Any:
         """Test NumPy is installed and functional."""
         import numpy as np
 
@@ -26,7 +27,7 @@ class TestCoreDependencies:
         assert np.sum(arr) == 6
 
     @pytest.mark.fast
-    def test_pathlib_available(self):
+    def test_pathlib_available(self) -> Any:
         """Test pathlib is available (stdlib)."""
         from pathlib import Path
 
@@ -34,17 +35,17 @@ class TestCoreDependencies:
         assert p.exists()
 
     @pytest.mark.fast
-    def test_json_available(self):
+    def test_json_available(self) -> Any:
         """Test json is available (stdlib)."""
         import json
 
-        data = {"key": "value"}
+        data: dict[str, Any] = {"key": "value"}
         encoded = json.dumps(data)
         decoded = json.loads(encoded)
         assert decoded == data
 
     @pytest.mark.fast
-    def test_logging_available(self):
+    def test_logging_available(self) -> Any:
         """Test logging is available (stdlib)."""
         import logging
 
@@ -56,7 +57,7 @@ class TestVisualizationDependencies:
     """Tests for visualization dependencies."""
 
     @pytest.mark.fast
-    def test_matplotlib_available(self):
+    def test_matplotlib_available(self) -> Any:
         """Test matplotlib is installed."""
         import matplotlib
         import matplotlib.pyplot as plt
@@ -65,7 +66,7 @@ class TestVisualizationDependencies:
         assert hasattr(plt, "figure"), "matplotlib.pyplot missing figure function"
 
     @pytest.mark.fast
-    def test_seaborn_available(self):
+    def test_seaborn_available(self) -> Any:
         """Test seaborn is installed."""
         import seaborn as sns
 
@@ -77,7 +78,7 @@ class TestAudioDependencies:
     """Tests for audio processing dependencies."""
 
     @pytest.mark.fast
-    def test_audio_backends(self):
+    def test_audio_backends(self) -> Any:
         """Test audio backend availability."""
         from audio import check_audio_backends
 
@@ -87,7 +88,7 @@ class TestAudioDependencies:
         assert backends["numpy"]["available"] is True
 
     @pytest.mark.fast
-    def test_librosa_availability(self):
+    def test_librosa_availability(self) -> Any:
         """Test librosa availability."""
         try:
             import librosa
@@ -97,7 +98,7 @@ class TestAudioDependencies:
             pytest.skip("librosa not installed")
 
     @pytest.mark.fast
-    def test_soundfile_availability(self):
+    def test_soundfile_availability(self) -> Any:
         """Test soundfile availability."""
         try:
             import soundfile
@@ -111,14 +112,14 @@ class TestMLDependencies:
     """Tests for machine learning dependencies."""
 
     @pytest.mark.fast
-    def test_scipy_available(self):
+    def test_scipy_available(self) -> Any:
         """Test scipy is installed."""
         import scipy
 
         assert hasattr(scipy, "__version__")
 
     @pytest.mark.fast
-    def test_pymdp_available(self):
+    def test_pymdp_available(self) -> Any:
         """Test pymdp is installed for Active Inference."""
         try:
             try:
@@ -143,14 +144,14 @@ class TestDependencyVersions:
     """Tests for dependency version requirements."""
 
     @pytest.mark.fast
-    def test_python_version(self):
+    def test_python_version(self) -> Any:
         """Test Python version meets requirements."""
         import sys
 
         assert sys.version_info >= (3, 9)
 
     @pytest.mark.fast
-    def test_numpy_version(self):
+    def test_numpy_version(self) -> Any:
         """Test NumPy version."""
         import numpy as np
 
@@ -163,7 +164,7 @@ class TestDependencyConflicts:
     """Tests for dependency conflict detection."""
 
     @pytest.mark.fast
-    def test_no_import_conflicts(self):
+    def test_no_import_conflicts(self) -> Any:
         """Test core imports don't conflict."""
         import json
         import logging
@@ -177,7 +178,7 @@ class TestDependencyConflicts:
         assert np.array([1, 2, 3]).sum() == 6
 
     @pytest.mark.fast
-    def test_visualization_imports_compatible(self):
+    def test_visualization_imports_compatible(self) -> Any:
         """Test visualization imports are compatible."""
         try:
             import matplotlib
@@ -198,12 +199,12 @@ class TestOptionalDependencies:
     """Tests for optional dependency handling."""
 
     @pytest.mark.fast
-    def test_optional_deps_graceful_import(self):
+    def test_optional_deps_graceful_import(self) -> Any:
         """Test optional dependencies fail gracefully."""
         assert importlib.util.find_spec("nonexistent_package") is None
 
     @pytest.mark.fast
-    def test_feature_flags_reflect_deps(self):
+    def test_feature_flags_reflect_deps(self) -> Any:
         """Test feature flags reflect dependency availability."""
         from audio import FEATURES, check_audio_backends
 
@@ -215,7 +216,7 @@ class TestDependencyDiscovery:
     """Tests for dependency discovery functionality."""
 
     @pytest.mark.fast
-    def test_list_installed_packages(self):
+    def test_list_installed_packages(self) -> Any:
         """Test we can list installed packages."""
         from importlib.metadata import distributions
 
@@ -223,7 +224,7 @@ class TestDependencyDiscovery:
         assert len(packages) > 0
 
     @pytest.mark.fast
-    def test_pyproject_toml_exists(self):
+    def test_pyproject_toml_exists(self) -> Any:
         """Test pyproject.toml dependency file exists (uv-managed)."""
         from pathlib import Path
 

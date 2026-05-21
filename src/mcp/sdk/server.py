@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from typing import Any
 
 _parent = Path(__file__).resolve().parent.parent
 if str(_parent) not in sys.path:
@@ -14,4 +15,4 @@ if str(_parent) not in sys.path:
 
 from mcp.server import MCPServer
 
-__all__ = ["MCPServer"]
+__all__: list[Any] = ["MCPServer"]

@@ -65,7 +65,7 @@ class TestExportModuleComprehensive:
         formats = get_supported_formats()
         assert isinstance(formats, list)
         assert len(formats) > 0
-        expected_formats = ["json", "xml", "graphml", "gexf", "pickle"]
+        expected_formats: list[Any] = ["json", "xml", "graphml", "gexf", "pickle"]
         for fmt in expected_formats:
             assert fmt in formats
 
@@ -102,7 +102,7 @@ class TestExportFunctionality:
 
         exporter = MultiFormatExporter()
         gnn_data = comprehensive_test_data.get("gnn_content", "test content")
-        formats = ["json", "xml"]
+        formats: list[Any] = ["json", "xml"]
         result = exporter.export_to_multiple_formats(gnn_data, formats)
         assert result is not None
         assert isinstance(result, dict)
@@ -135,7 +135,7 @@ class TestExportIntegration:
 
 def test_export_module_completeness() -> None:
     """Test that export module has all required components."""
-    required_components = [
+    required_components: list[Any] = [
         "Exporter",
         "MultiFormatExporter",
         "get_module_info",
@@ -168,16 +168,16 @@ def test_export_module_performance() -> None:
 class TestExportUtils:
     """Smoke tests for export.utils sub-module."""
 
-    def test_module_importable(self):
+    def test_module_importable(self) -> Any:
         from export import utils
 
-    def test_get_module_info_returns_dict(self):
+    def test_get_module_info_returns_dict(self) -> Any:
         from export.utils import get_module_info
 
         result = get_module_info()
         assert isinstance(result, dict)
 
-    def test_get_supported_formats_returns_dict(self):
+    def test_get_supported_formats_returns_dict(self) -> Any:
         from export.utils import get_supported_formats
 
         result = get_supported_formats()

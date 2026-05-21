@@ -83,7 +83,7 @@ class GNNProcessor:
     and reporting in a structured, extensible manner.
     """
 
-    def __init__(self, logger: Optional[logging.Logger] = None):
+    def __init__(self, logger: Optional[logging.Logger] = None) -> None:
         self.logger = logger or logging.getLogger("gnn.core_processor")
 
         # Initialize processing strategies
@@ -274,7 +274,7 @@ def process_gnn_directory(
 
     if full_success:
         processed = [str(p) for p in context.discovered_files]
-        result = {
+        result: dict[str, Any] = {
             "status": "SUCCESS",
             "files": processed,
             "processed_files": processed,
@@ -308,7 +308,7 @@ def _scan_files_lightweight(target_dir: Path) -> Dict[str, Any]:
     """Internal: scan files without heavy deps, returns {path: status} mapping."""
     target_path = Path(target_dir)
     if target_path.is_file() and target_path.suffix.lower() == ".md":
-        files = [target_path]
+        files: list[Any] = [target_path]
     else:
         files = list(target_path.glob("**/*.md"))
     return {

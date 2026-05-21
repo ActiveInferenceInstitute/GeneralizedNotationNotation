@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 import pytest
 
@@ -76,15 +76,15 @@ def mcp_initialized() -> Any:
 
 
 @pytest.fixture(scope="module")
-def all_tools(mcp_initialized) -> Dict[str, Any]:
+def all_tools(mcp_initialized: Any) -> Dict[str, Any]:
     """Return the full tools dictionary from the initialized MCP instance."""
     return dict(mcp_initialized.tools)  # copy snapshot after recovery wait
 
 
 @pytest.fixture(scope="module")
-def all_modules(mcp_initialized) -> Dict[str, Any]:
+def all_modules(mcp_initialized: Any) -> Dict[str, Any]:
     """Return the full modules dictionary from the initialized MCP instance."""
-    return mcp_initialized.modules
+    return cast("dict[str, Any]", mcp_initialized.modules)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -170,7 +170,7 @@ class TestMCPToolRealness:
 
     def test_all_tools_have_callable_funcs(self, all_tools: Dict[str, Any]) -> None:
         """Every tool must have a callable backing function (not None)."""
-        not_callable = []
+        not_callable: list[Any] = []
         for name, tool in all_tools.items():
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
             if not callable(func):
@@ -181,7 +181,7 @@ class TestMCPToolRealness:
 
     def test_no_lambda_tools(self, all_tools: Dict[str, Any]) -> None:
         """No tool may be backed by an anonymous lambda."""
-        lambdas = []
+        lambdas: list[Any] = []
         for name, tool in all_tools.items():
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
             fn = getattr(func, "__name__", "") if func else ""
@@ -191,7 +191,7 @@ class TestMCPToolRealness:
 
     def test_all_tools_have_named_functions(self, all_tools: Dict[str, Any]) -> None:
         """Every tool's backing function must have a proper __name__ attribute."""
-        unnamed = []
+        unnamed: list[Any] = []
         for name, tool in all_tools.items():
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
             fn = getattr(func, "__name__", "") if func else ""
@@ -201,7 +201,7 @@ class TestMCPToolRealness:
 
     def test_all_tools_have_descriptions(self, all_tools: Dict[str, Any]) -> None:
         """Every tool must have a non-empty description string."""
-        undocumented = []
+        undocumented: list[Any] = []
         for name, tool in all_tools.items():
             desc = (getattr(tool, "description", "") or "").strip()
             if not desc:
@@ -421,7 +421,7 @@ class TestMCPLoggingCoverage:
     def test_all_register_tools_have_logger_info(self) -> None:
         """Every register_tools() implementation must call logger.info."""
         files = self._get_mcp_files()
-        no_log = []
+        no_log: list[Any] = []
         for mcp_file in files:
             src = mcp_file.read_text(encoding="utf-8", errors="replace")
             # Find register_tools body and check for logger.info
@@ -440,7 +440,7 @@ class TestMCPLoggingCoverage:
     def test_all_mcp_files_have_module_logging(self) -> None:
         """Every mcp.py must define a module-level logger."""
         files = self._get_mcp_files()
-        no_logger = []
+        no_logger: list[Any] = []
         for mcp_file in files:
             src = mcp_file.read_text(encoding="utf-8", errors="replace")
             if (
@@ -466,7 +466,7 @@ class TestMCPAuditReport:
         loaded = [n for n, i in all_modules.items() if i.status == "loaded"]
         errored = [n for n, i in all_modules.items() if i.status == "error"]
 
-        tools_list = []
+        tools_list: list[Any] = []
         for name, tool in sorted(all_tools.items()):
             func = getattr(tool, "func", None) or getattr(tool, "function", None)
             fn = getattr(func, "__name__", "?") if func else "NONE"
@@ -483,7 +483,7 @@ class TestMCPAuditReport:
                 }
             )
 
-        report = {
+        report: dict[str, Any] = {
             "generated_at": "2026-02-24T06:51:00",
             "modules_total": len(all_modules),
             "modules_loaded": len(loaded),

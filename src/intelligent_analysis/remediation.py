@@ -9,7 +9,7 @@ Provides:
 
 import logging
 from dataclasses import dataclass
-from typing import Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class RemediationPlan:
 
 
 # Known fix templates per violation type
-_FIX_TEMPLATES = {
+_FIX_TEMPLATES: dict[Any, Any] = {
     ("pymdp", "import"): {
         "code": "import numpy as np\nfrom pymdp import utils\nfrom pymdp.agent import Agent",
         "point": "top",
@@ -69,7 +69,7 @@ _FIX_TEMPLATES = {
 }
 
 
-def suggest_fix(violation) -> Optional[RemediationPlan]:
+def suggest_fix(violation: Any) -> Optional[RemediationPlan]:
     """
     Propose a fix for a given ContractViolation.
 

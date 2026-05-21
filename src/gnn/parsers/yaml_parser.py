@@ -41,7 +41,7 @@ logger = logging.getLogger(__name__)
 class YAMLGNNParser(BaseGNNParser):
     """Parser for YAML configuration format."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the YAML parser."""
         super().__init__()
         if not HAS_YAML:
@@ -104,7 +104,7 @@ class YAMLGNNParser(BaseGNNParser):
         """Recovery YAML parser when PyYAML is not available."""
         logger.info("Using recovery YAML parser")
 
-        data = {}
+        data: dict[Any, Any] = {}
         current_section = None
         lines = content.split("\n")
 
@@ -132,7 +132,7 @@ class YAMLGNNParser(BaseGNNParser):
                 item_content = line[1:].strip()
                 if ":" in item_content:
                     # Dictionary item
-                    item_dict = {}
+                    item_dict: dict[Any, Any] = {}
                     parts = item_content.split(",")
                     for part in parts:
                         if ":" in part:
@@ -288,7 +288,7 @@ class YAMLGNNParser(BaseGNNParser):
         self, variables_data: Union[List, Dict]
     ) -> List[Variable]:
         """Parse variables from YAML data."""
-        variables = []
+        variables: list[Any] = []
 
         if isinstance(variables_data, list):
             # List format
@@ -343,6 +343,7 @@ class YAMLGNNParser(BaseGNNParser):
                     description=description,
                     constraints=constraints,
                 )
+            return None
 
         except Exception as e:
             logger.warning(f"Failed to parse YAML variable {var_data}: {e}")
@@ -378,6 +379,7 @@ class YAMLGNNParser(BaseGNNParser):
                     data_type=data_type,
                     description=description,
                 )
+            return None
 
         except Exception as e:
             logger.warning(f"Failed to parse YAML variable {name}: {spec}, {e}")
@@ -400,7 +402,7 @@ class YAMLGNNParser(BaseGNNParser):
             type_part = parts[1].strip()
 
             # Extract dimensions if present
-            dimensions = []
+            dimensions: list[Any] = []
             if "[" in name_part and "]" in name_part:
                 name, dim_str = name_part.split("[", 1)
                 dim_str = dim_str.rstrip("]")
@@ -435,7 +437,7 @@ class YAMLGNNParser(BaseGNNParser):
         self, connections_data: List[Union[Dict, str]]
     ) -> List[Connection]:
         """Parse connections from YAML data."""
-        connections = []
+        connections: list[Any] = []
 
         for conn_data in connections_data:
             connection = self._parse_yaml_connection(conn_data)
@@ -501,7 +503,7 @@ class YAMLGNNParser(BaseGNNParser):
             from .common import parse_connection_operator
 
             # Find the operator
-            operators = [">", "->", "-"]
+            operators: list[Any] = [">", "->", "-"]
             operator = None
             source = None
             target = None
@@ -532,7 +534,7 @@ class YAMLGNNParser(BaseGNNParser):
 
     def _parse_yaml_parameters(self, params_data: Union[List, Dict]) -> List[Parameter]:
         """Parse parameters from YAML data."""
-        parameters = []
+        parameters: list[Any] = []
 
         if isinstance(params_data, list):
             for param_data in params_data:
@@ -570,7 +572,7 @@ class YAMLGNNParser(BaseGNNParser):
         self, equations_data: List[Union[Dict, str]]
     ) -> List[Equation]:
         """Parse equations from YAML data."""
-        equations = []
+        equations: list[Any] = []
 
         for eq_data in equations_data:
             equation = self._parse_yaml_equation(eq_data)
@@ -600,9 +602,9 @@ class YAMLGNNParser(BaseGNNParser):
 
                 return Equation(
                     label=label,
-                    content=content,
-                    format=format_type,
-                    description=description,
+                    content=str(content or ""),
+                    format=str(format_type),
+                    description=str(description) if description is not None else None,
                 )
 
         except Exception as e:
@@ -636,7 +638,7 @@ class YAMLGNNParser(BaseGNNParser):
         self, mappings_data: Union[List, Dict]
     ) -> List[OntologyMapping]:
         """Parse ontology mappings from YAML data."""
-        mappings = []
+        mappings: list[Any] = []
 
         if isinstance(mappings_data, list):
             for mapping_data in mappings_data:

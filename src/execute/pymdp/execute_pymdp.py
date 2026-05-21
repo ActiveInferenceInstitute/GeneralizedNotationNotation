@@ -125,7 +125,7 @@ def batch_execute_pymdp(
     return batch_results
 
 
-__all__ = [
+__all__: list[Any] = [
     "execute_pymdp_simulation",
     "execute_pymdp_simulation_from_gnn",
     "execute_from_gnn_file",

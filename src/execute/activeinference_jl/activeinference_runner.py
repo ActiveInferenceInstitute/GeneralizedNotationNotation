@@ -28,7 +28,7 @@ try:
     from execute.julia_setup import is_julia_available
 except ImportError:
 
-    def is_julia_available() -> bool:  # type: ignore[misc]
+    def is_julia_available(min_version: tuple[Any, ...] = (1, 9, 0)) -> bool:
         """Recovery when julia_setup is unavailable: check PATH directly."""
         import shutil
 
@@ -64,7 +64,7 @@ def setup_julia_environment(
         return _fallback_environment_setup(project_dir)
 
     # Prepare setup command
-    setup_args = []
+    setup_args: list[Any] = []
     if verbose:
         setup_args.append("--verbose")
     if force_setup:
@@ -129,7 +129,7 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
 
     try:
         # Basic package instantiation
-        instantiate_cmd = [
+        instantiate_cmd: list[Any] = [
             "julia",
             f"--project={project_dir}",
             "-e",
@@ -150,7 +150,11 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
             logger.info("✅ Recovery environment setup completed")
 
             # Try to validate core packages
-            core_packages = ["ActiveInference", "Distributions", "LinearAlgebra"]
+            core_packages: list[Any] = [
+                "ActiveInference",
+                "Distributions",
+                "LinearAlgebra",
+            ]
             validation_success = True
 
             for package in core_packages:
@@ -188,7 +192,7 @@ def _validate_package(project_dir: Path, package_name: str) -> bool:
         bool: True if package loads successfully, False otherwise
     """
     try:
-        cmd = [
+        cmd: list[Any] = [
             "julia",
             f"--project={project_dir}",
             "-e",
@@ -217,7 +221,7 @@ def get_environment_status(project_dir: Path) -> Dict[str, Any]:
     Returns:
         Dict containing environment status information
     """
-    status = {
+    status: dict[str, Any] = {
         "julia_available": is_julia_available(),
         "project_toml_exists": (project_dir / "Project.toml").exists(),
         "manifest_toml_exists": (project_dir / "Manifest.toml").exists(),
@@ -228,7 +232,7 @@ def get_environment_status(project_dir: Path) -> Dict[str, Any]:
     }
 
     # Check core packages
-    core_packages = [
+    core_packages: list[Any] = [
         "ActiveInference",
         "Distributions",
         "LinearAlgebra",
@@ -312,7 +316,7 @@ def execute_activeinference_script(
         abs_script_path = script_path.resolve()
 
         # Prepare Julia command
-        cmd = ["julia", f"--project={project_dir}", str(abs_script_path)]
+        cmd: list[Any] = ["julia", f"--project={project_dir}", str(abs_script_path)]
 
         # Add output directory argument if provided
         if output_dir:
@@ -381,7 +385,7 @@ def execute_activeinference_script(
 def find_activeinference_scripts(
     search_dir: Union[str, Path],
     recursive: bool = True,
-    include_patterns: List[str] = None,
+    include_patterns: (List[str]) | None = None,
 ) -> List[Path]:
     """
     Find ActiveInference.jl scripts in a directory.
@@ -398,7 +402,7 @@ def find_activeinference_scripts(
         include_patterns = ["*.jl"]
 
     # Accept either str or Path and normalize
-    script_files = []
+    script_files: list[Any] = []
     search_dir = Path(search_dir) if not isinstance(search_dir, Path) else search_dir
 
     if not search_dir.exists():
@@ -414,7 +418,7 @@ def find_activeinference_scripts(
                 script_files.extend(search_dir.glob(pattern))
 
         # Filter out setup and utility scripts
-        filtered_scripts = []
+        filtered_scripts: list[Any] = []
         for script in script_files:
             if script.name.startswith("setup_") or script.name.startswith("_"):
                 logger.debug(f"Skipping utility script: {script.name}")
@@ -501,8 +505,8 @@ def run_activeinference_analysis(
         return True  # Not necessarily an error
 
     # Execute scripts
-    successful_scripts = []
-    failed_scripts = []
+    successful_scripts: list[Any] = []
+    failed_scripts: list[Any] = []
 
     logger.info(f"Executing {len(script_files)} ActiveInference.jl scripts...")
 
@@ -537,7 +541,7 @@ def run_activeinference_analysis(
             logger.warning(f"  - {script.name}")
 
     # Save execution report
-    execution_report = {
+    execution_report: dict[str, Any] = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
         "environment_setup": {
             "force_setup": force_setup,

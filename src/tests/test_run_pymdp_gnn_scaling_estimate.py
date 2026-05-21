@@ -5,6 +5,7 @@ from __future__ import annotations
 import errno
 import importlib.util
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -16,7 +17,7 @@ _SCRIPT = (
 
 
 @pytest.fixture(scope="module")
-def scaling_mod():
+def scaling_mod() -> Any:
     # The script imports `from pymdp_spec_generator import ...` — a sibling
     # module in the same `scripts/` directory.  When Python runs a script
     # directly it adds the script's directory to ``sys.path[0]``, but
@@ -39,7 +40,7 @@ def scaling_mod():
             sys.path.remove(scripts_dir)
 
 
-def test_estimate_upper_bounds_generated_size(scaling_mod) -> None:
+def test_estimate_upper_bounds_generated_size(scaling_mod: Any) -> None:
     for n, t in ((2, 10), (8, 100), (16, 500)):
         body = scaling_mod.generate_gnn_file(n, t, 0.85, 0.8)
         actual = len(body.encode("utf-8"))
@@ -47,28 +48,28 @@ def test_estimate_upper_bounds_generated_size(scaling_mod) -> None:
         assert est >= actual, (n, t, est, actual)
 
 
-def test_skip_reason_matches_max_n(scaling_mod) -> None:
+def test_skip_reason_matches_max_n(scaling_mod: Any) -> None:
     r = scaling_mod._skip_reason(
         512, 10, max_n=256, max_file_bytes=None, a_signal=0.85, b_signal=0.8
     )
     assert r == "max_n"
 
 
-def test_skip_reason_timeout_pair(scaling_mod) -> None:
+def test_skip_reason_timeout_pair(scaling_mod: Any) -> None:
     r = scaling_mod._skip_reason(
         16, 3000, max_n=1024, max_file_bytes=None, a_signal=0.85, b_signal=0.8
     )
     assert r == "timeout_bounds"
 
 
-def test_relative_output_dir_resolves_from_project_root(scaling_mod) -> None:
+def test_relative_output_dir_resolves_from_project_root(scaling_mod: Any) -> None:
     out_dir = scaling_mod._resolve_output_dir("input/gnn_files/pymdp_scaling_study")
 
     assert out_dir == scaling_mod.PROJECT_ROOT / "input/gnn_files/pymdp_scaling_study"
 
 
 def test_pipeline_invocation_uses_project_root_python_and_frameworks(
-    scaling_mod, tmp_path
+    scaling_mod: Any, tmp_path: Any
 ) -> None:
     cmd, cwd = scaling_mod._build_pipeline_invocation(
         tmp_path,
@@ -89,7 +90,7 @@ def test_pipeline_invocation_uses_project_root_python_and_frameworks(
 
 
 def test_pipeline_invocation_forwards_local_execution_workers(
-    scaling_mod, tmp_path
+    scaling_mod: Any, tmp_path: Any
 ) -> None:
     cmd, cwd = scaling_mod._build_pipeline_invocation(
         tmp_path,
@@ -105,7 +106,7 @@ def test_pipeline_invocation_forwards_local_execution_workers(
 
 
 def test_pipeline_invocation_forwards_distributed_backend(
-    scaling_mod, tmp_path
+    scaling_mod: Any, tmp_path: Any
 ) -> None:
     cmd, cwd = scaling_mod._build_pipeline_invocation(
         tmp_path,
@@ -124,7 +125,7 @@ def test_pipeline_invocation_forwards_distributed_backend(
 
 
 def test_pipeline_invocations_split_integration_after_execution_by_default(
-    scaling_mod, tmp_path
+    scaling_mod: Any, tmp_path: Any
 ) -> None:
     phases = scaling_mod._build_pipeline_invocations(
         tmp_path,
@@ -141,7 +142,7 @@ def test_pipeline_invocations_split_integration_after_execution_by_default(
 
 
 def test_pipeline_invocations_can_keep_single_partial_pipeline_mode(
-    scaling_mod, tmp_path
+    scaling_mod: Any, tmp_path: Any
 ) -> None:
     phases = scaling_mod._build_pipeline_invocations(
         tmp_path,
@@ -156,7 +157,9 @@ def test_pipeline_invocations_can_keep_single_partial_pipeline_mode(
     assert phases[0].cmd[phases[0].cmd.index("--only-steps") + 1] == "3,11,12,17"
 
 
-def test_run_manifest_records_config_and_planned_pairs(scaling_mod, tmp_path) -> None:
+def test_run_manifest_records_config_and_planned_pairs(
+    scaling_mod: Any, tmp_path: Any
+) -> None:
     plan = scaling_mod.build_sweep_plan(
         [2, 4],
         [10],
@@ -196,9 +199,9 @@ def test_run_manifest_records_config_and_planned_pairs(scaling_mod, tmp_path) ->
 
 
 def test_resource_gate_write_returns_none_when_volume_full(
-    scaling_mod, monkeypatch
+    scaling_mod: Any, monkeypatch: Any
 ) -> None:
-    def fail_with_enospc(self, *args, **kwargs):
+    def fail_with_enospc(self: Any, *args: Any, **kwargs: Any) -> Any:
         raise OSError(errno.ENOSPC, "No space left on device")
 
     monkeypatch.setattr(scaling_mod.Path, "write_text", fail_with_enospc)

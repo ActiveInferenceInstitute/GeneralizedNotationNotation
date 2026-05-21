@@ -5,6 +5,8 @@ This module provides tools for converting GNN models to SAPF audio representatio
 enabling auditory exploration and debugging of Active Inference generative models.
 """
 
+from typing import Any
+
 from .audio_generators import (
     SyntheticAudioGenerator,
     apply_envelope,
@@ -29,37 +31,22 @@ from .sapf_gnn_processor import (
     validate_sapf_code,
 )
 
-# MCP integration
-try:
-    from mcp import (
-        handle_analyze_gnn_for_audio,
-        handle_convert_gnn_to_sapf_audio,
-        handle_generate_audio_from_sapf,
-        handle_generate_sapf_code,
-        handle_validate_sapf_syntax,
-        register_sapf_tools,
-    )
-
-    MCP_AVAILABLE = True
-except ImportError:
-    MCP_AVAILABLE = False
-
 # Module metadata
 __version__ = "1.1.3"
 __author__ = "Active Inference Institute"
 __description__ = "SAPF audio generation from GNN models"
 
 # Feature availability flags
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "gnn_to_sapf_conversion": True,
     "audio_generation": True,
     "sapf_validation": True,
     "synthetic_audio": True,
-    "mcp_integration": MCP_AVAILABLE,
+    "mcp_integration": True,
 }
 
 # Main API functions
-__all__ = [
+__all__: list[Any] = [
     # Core SAPF processing
     "SAPFGNNProcessor",
     "convert_gnn_to_sapf",
@@ -79,23 +66,7 @@ __all__ = [
     "get_module_info",
     "get_audio_generation_options",
     "register_tools",
-    # MCP integration (if available)
-    "register_sapf_tools",
-    "handle_convert_gnn_to_sapf_audio",
-    "handle_generate_sapf_code",
-    "handle_validate_sapf_syntax",
-    "handle_generate_audio_from_sapf",
-    "handle_analyze_gnn_for_audio",
     # Metadata
     "FEATURES",
     "__version__",
 ]
-
-# Add conditional exports
-if not MCP_AVAILABLE:
-    __all__.remove("register_sapf_tools")
-    __all__.remove("handle_convert_gnn_to_sapf_audio")
-    __all__.remove("handle_generate_sapf_code")
-    __all__.remove("handle_validate_sapf_syntax")
-    __all__.remove("handle_generate_audio_from_sapf")
-    __all__.remove("handle_analyze_gnn_for_audio")

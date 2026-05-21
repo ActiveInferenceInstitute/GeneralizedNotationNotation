@@ -20,6 +20,7 @@ Test Coverage:
 import json
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -42,7 +43,7 @@ class TestIntegrationFunctional:
     """Functional tests for the integration processor module."""
 
     @pytest.fixture
-    def single_gnn_dir(self, tmp_path):
+    def single_gnn_dir(self, tmp_path: Any) -> Any:
         """Create a directory with one simple GNN file."""
         target = tmp_path / "input"
         target.mkdir()
@@ -57,7 +58,7 @@ class TestIntegrationFunctional:
         return target
 
     @pytest.fixture
-    def multi_gnn_dir(self, tmp_path):
+    def multi_gnn_dir(self, tmp_path: Any) -> Any:
         """Create a directory with multiple GNN files that cross-reference each other."""
         target = tmp_path / "input"
         target.mkdir()
@@ -82,7 +83,7 @@ class TestIntegrationFunctional:
         return target
 
     @pytest.fixture
-    def gnn_dir_with_refs(self, tmp_path):
+    def gnn_dir_with_refs(self, tmp_path: Any) -> Any:
         """Create GNN files containing $ref: and type: references."""
         target = tmp_path / "input"
         target.mkdir()
@@ -98,7 +99,7 @@ class TestIntegrationFunctional:
         return target
 
     @pytest.fixture
-    def output_dir(self, tmp_path):
+    def output_dir(self, tmp_path: Any) -> Any:
         """Create an output directory."""
         out = tmp_path / "output"
         out.mkdir()
@@ -107,19 +108,23 @@ class TestIntegrationFunctional:
     # -- Basic process_integration() tests --
 
     @pytest.mark.unit
-    def test_process_integration_returns_bool(self, single_gnn_dir, output_dir):
+    def test_process_integration_returns_bool(
+        self, single_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """process_integration should always return a bool."""
         result = process_integration(single_gnn_dir, output_dir, verbose=True)
         assert isinstance(result, bool)
 
     @pytest.mark.unit
-    def test_process_integration_success(self, single_gnn_dir, output_dir):
+    def test_process_integration_success(
+        self, single_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """process_integration should return True for valid input."""
         result = process_integration(single_gnn_dir, output_dir, verbose=True)
         assert result is True
 
     @pytest.mark.unit
-    def test_process_integration_empty_directory(self, tmp_path):
+    def test_process_integration_empty_directory(self, tmp_path: Any) -> Any:
         """process_integration should handle an empty directory gracefully."""
         empty_input = tmp_path / "empty"
         empty_input.mkdir()
@@ -132,7 +137,7 @@ class TestIntegrationFunctional:
         assert result is True
 
     @pytest.mark.unit
-    def test_process_integration_nonexistent_path(self, tmp_path):
+    def test_process_integration_nonexistent_path(self, tmp_path: Any) -> Any:
         """process_integration should return False for a nonexistent directory."""
         nonexistent = tmp_path / "does_not_exist"
         out = tmp_path / "output"
@@ -144,7 +149,9 @@ class TestIntegrationFunctional:
     # -- Output artifact tests --
 
     @pytest.mark.unit
-    def test_output_directory_created(self, single_gnn_dir, output_dir):
+    def test_output_directory_created(
+        self, single_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """process_integration should create integration_results subdirectory."""
         process_integration(single_gnn_dir, output_dir, verbose=True)
 
@@ -152,7 +159,9 @@ class TestIntegrationFunctional:
         assert results_dir.exists(), "integration_results directory should be created"
 
     @pytest.mark.unit
-    def test_output_artifacts_created(self, single_gnn_dir, output_dir):
+    def test_output_artifacts_created(
+        self, single_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """process_integration should create JSON results and markdown summary."""
         process_integration(single_gnn_dir, output_dir, verbose=True)
 
@@ -161,7 +170,7 @@ class TestIntegrationFunctional:
         assert (results_dir / "integration_summary.md").exists()
 
     @pytest.mark.unit
-    def test_results_json_schema(self, single_gnn_dir, output_dir):
+    def test_results_json_schema(self, single_gnn_dir: Any, output_dir: Any) -> Any:
         """integration_results.json should contain expected top-level keys."""
         process_integration(single_gnn_dir, output_dir, verbose=True)
 
@@ -169,7 +178,7 @@ class TestIntegrationFunctional:
         with open(results_file) as f:
             data = json.load(f)
 
-        required_keys = ["processed_files", "success", "errors", "issues"]
+        required_keys: list[Any] = ["processed_files", "success", "errors", "issues"]
         for key in required_keys:
             assert key in data, f"Missing required key: {key}"
         assert isinstance(data["processed_files"], int)
@@ -178,7 +187,7 @@ class TestIntegrationFunctional:
     # -- Multiple file and graph tests --
 
     @pytest.mark.unit
-    def test_multiple_files_processed(self, multi_gnn_dir, output_dir):
+    def test_multiple_files_processed(self, multi_gnn_dir: Any, output_dir: Any) -> Any:
         """process_integration should count all GNN files processed."""
         process_integration(multi_gnn_dir, output_dir, verbose=True)
 
@@ -190,7 +199,9 @@ class TestIntegrationFunctional:
 
     @pytest.mark.unit
     @pytest.mark.skipif(not _has_networkx(), reason="networkx not installed")
-    def test_graph_stats_with_networkx(self, multi_gnn_dir, output_dir):
+    def test_graph_stats_with_networkx(
+        self, multi_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """When networkx is available, system_graph_stats should have node/edge counts."""
         process_integration(multi_gnn_dir, output_dir, verbose=True)
 
@@ -206,7 +217,9 @@ class TestIntegrationFunctional:
 
     @pytest.mark.unit
     @pytest.mark.skipif(not _has_networkx(), reason="networkx not installed")
-    def test_cross_references_between_files(self, multi_gnn_dir, output_dir):
+    def test_cross_references_between_files(
+        self, multi_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """Intra-file connections from ## Connections should produce graph edges."""
         process_integration(multi_gnn_dir, output_dir, verbose=True)
 
@@ -224,7 +237,9 @@ class TestIntegrationFunctional:
     # -- Undefined reference detection --
 
     @pytest.mark.unit
-    def test_undefined_ref_detection(self, gnn_dir_with_refs, output_dir):
+    def test_undefined_ref_detection(
+        self, gnn_dir_with_refs: Any, output_dir: Any
+    ) -> Any:
         """Should detect undefined $ref: references."""
         process_integration(gnn_dir_with_refs, output_dir, verbose=True)
 
@@ -239,7 +254,9 @@ class TestIntegrationFunctional:
         )
 
     @pytest.mark.unit
-    def test_undefined_type_detection(self, gnn_dir_with_refs, output_dir):
+    def test_undefined_type_detection(
+        self, gnn_dir_with_refs: Any, output_dir: Any
+    ) -> Any:
         """Should detect undefined CamelCase type references, ignoring builtins."""
         process_integration(gnn_dir_with_refs, output_dir, verbose=True)
 
@@ -260,7 +277,7 @@ class TestIntegrationFunctional:
     # -- Edge cases --
 
     @pytest.mark.unit
-    def test_empty_gnn_file(self, tmp_path):
+    def test_empty_gnn_file(self, tmp_path: Any) -> Any:
         """process_integration should handle empty GNN files without crashing."""
         target = tmp_path / "input"
         target.mkdir()
@@ -273,7 +290,7 @@ class TestIntegrationFunctional:
         assert result is True
 
     @pytest.mark.unit
-    def test_file_with_no_components(self, tmp_path):
+    def test_file_with_no_components(self, tmp_path: Any) -> Any:
         """A GNN file with no name: definitions should produce zero graph nodes."""
         target = tmp_path / "input"
         target.mkdir()
@@ -294,7 +311,9 @@ class TestIntegrationFunctional:
             assert stats["nodes"] == 0
 
     @pytest.mark.unit
-    def test_verbose_flag_does_not_break(self, single_gnn_dir, output_dir):
+    def test_verbose_flag_does_not_break(
+        self, single_gnn_dir: Any, output_dir: Any
+    ) -> Any:
         """Both verbose=True and verbose=False should work identically."""
         r1 = process_integration(single_gnn_dir, output_dir, verbose=True)
         # Reset output for second run

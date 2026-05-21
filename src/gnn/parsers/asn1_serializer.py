@@ -1,3 +1,5 @@
+from typing import Any
+
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
 
@@ -5,13 +7,13 @@ from .common import GNNInternalRepresentation
 class ASN1Serializer(BaseGNNSerializer):
     """Serializer for ASN.1 format."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.format_name = "asn1"
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to ASN.1 format."""
-        lines = []
+        lines: list[Any] = []
 
         # Module header
         model_name_clean = self._sanitize_asn1_name(model.model_name)

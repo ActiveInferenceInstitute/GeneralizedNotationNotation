@@ -14,19 +14,21 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 
-def write_markdown(path: Path, content: str):
+def write_markdown(path: Path, content: str) -> Any:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         f.write(content)
 
 
-def write_json(path: Path, data: Any):
+def write_json(path: Path, data: Any) -> Any:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         json.dump(data, f, indent=2)
 
 
-def write_csv(path: Path, rows: List[List[Any]], header: Optional[List[str]] = None):
+def write_csv(
+    path: Path, rows: List[List[Any]], header: Optional[List[str]] = None
+) -> Any:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", newline="") as f:
         writer = csv.writer(f)
@@ -37,7 +39,7 @@ def write_csv(path: Path, rows: List[List[Any]], header: Optional[List[str]] = N
 
 def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
     """Generate a detailed Markdown report for a single file's type check result."""
-    lines = [f"# Type Check Report: {filename}"]
+    lines: list[Any] = [f"# Type Check Report: {filename}"]
     lines.append(f"Status: {'✅ VALID' if result['is_valid'] else '❌ INVALID'}")
     lines.append(f"File: {result.get('file_path', 'Unknown')}\n")
 
@@ -66,7 +68,7 @@ def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
     # Section presence
     if "sections" in result:
         lines.append("## Section Presence:")
-        required_sections = [
+        required_sections: list[Any] = [
             "GNNSection",
             "GNNVersionAndFlags",
             "ModelName",
@@ -75,7 +77,7 @@ def per_file_markdown_report(filename: str, result: Dict[str, Any]) -> str:
             "Footer",
             "Signature",
         ]
-        optional_sections = [
+        optional_sections: list[Any] = [
             "ModelAnnotation",
             "InitialParameterization",
             "Equations",
@@ -173,7 +175,7 @@ def per_file_json_report(filename: str, result: Dict[str, Any]) -> Dict[str, Any
 
 def summary_markdown_report(all_results: Dict[str, Dict[str, Any]]) -> str:
     """Generate a Markdown summary for all files."""
-    lines = ["# GNN Type Check Summary\n"]
+    lines: list[Any] = ["# GNN Type Check Summary\n"]
 
     # Overall statistics
     total_files = len(all_results)
@@ -223,7 +225,7 @@ def summary_markdown_report(all_results: Dict[str, Dict[str, Any]]) -> str:
 
 def summary_json_report(all_results: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
     """Return a JSON-serializable summary for all files."""
-    summary = {
+    summary: dict[str, Any] = {
         "files_checked": len(all_results),
         "valid": sum(1 for r in all_results.values() if r["is_valid"]),
         "invalid": sum(1 for r in all_results.values() if not r["is_valid"]),
@@ -234,7 +236,7 @@ def summary_json_report(all_results: Dict[str, Dict[str, Any]]) -> Dict[str, Any
 
 def variables_table_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List[Any]]:
     """Return rows for a CSV table of all variables across all files."""
-    rows = []
+    rows: list[Any] = []
     for fname, res in all_results.items():
         for v in res.get("variables", []):
             rows.append(
@@ -248,9 +250,9 @@ def section_presence_matrix_csv(
 ) -> List[List[Any]]:
     """Return rows for a CSV matrix of section presence (files × sections)."""
     header = ["File"] + section_list
-    rows = [header]
+    rows: list[Any] = [header]
     for fname, res in all_results.items():
-        row = [os.path.basename(fname)]
+        row: list[Any] = [os.path.basename(fname)]
         for sec in section_list:
             row.append(1 if res.get("sections", {}).get(sec, False) else 0)
         rows.append(row)
@@ -259,7 +261,7 @@ def section_presence_matrix_csv(
 
 def connections_table_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List[Any]]:
     """Return rows for a CSV table of all connections across all files."""
-    rows = []
+    rows: list[Any] = []
     for fname, res in all_results.items():
         for conn in res.get("connections", []):
             rows.append(
@@ -276,7 +278,7 @@ def connections_table_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List[A
 
 def complexity_analysis_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List[Any]]:
     """Return rows for a CSV table of complexity analysis across all files."""
-    rows = []
+    rows: list[Any] = []
     for fname, res in all_results.items():
         complexity = res.get("model_complexity", {})
         rows.append(
@@ -295,7 +297,7 @@ def complexity_analysis_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List
 
 def type_distribution_csv(all_results: Dict[str, Dict[str, Any]]) -> List[List[Any]]:
     """Return rows for a CSV table of type distribution across all files."""
-    rows = []
+    rows: list[Any] = []
     for fname, res in all_results.items():
         type_dist = res.get("type_distribution", {})
         for var_type, count in type_dist.items():

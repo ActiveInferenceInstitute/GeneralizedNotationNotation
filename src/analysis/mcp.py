@@ -184,7 +184,7 @@ def list_analysis_tools_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register analysis tools with the MCP server."""
 
     mcp_instance.register_tool(

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
-from typing import List
+from typing import Any, List, cast
 
 import pytest
 
@@ -53,8 +53,8 @@ def _parse_sample() -> dict:
 
     spec = parse_gnn_file(SAMPLE_GNN)
     if hasattr(spec, "to_dict"):
-        return spec.to_dict()
-    return spec  # type: ignore[return-value]
+        return cast("dict[Any, Any]", spec.to_dict())
+    return spec
 
 
 @pytest.mark.skipif(not SAMPLE_GNN.exists(), reason="Sample GNN not available")
@@ -92,6 +92,7 @@ def test_cli_choices_are_dispatched_subset() -> None:
     # Grab choices the easy way: inspect main by running with --help handling
     # disabled is clunky; instead rely on the explicit CLI_TARGETS list being
     # authoritative and compare it to the module's declared list.
+    assert render_module.__file__ is not None
     source = Path(render_module.__file__).read_text()
     for target in CLI_TARGETS:
         assert f'"{target}"' in source, (
@@ -122,7 +123,7 @@ def test_cli_main_rejects_unknown_target(
         "generate_rxinfer_code",
     ],
 )
-def test_generators_reject_none_model_data(generator_name):
+def test_generators_reject_none_model_data(generator_name: Any) -> Any:
     """Before Phase 1.3, passing None to a generator crashed deep inside the
     template with an opaque AttributeError. After the fix, the validate_model_data
     guard catches it and the generator returns "" (empty string = no code emitted).
@@ -144,7 +145,7 @@ def test_generators_reject_none_model_data(generator_name):
         "generate_discopy_code",
     ],
 )
-def test_generators_reject_non_dict_model_data(generator_name):
+def test_generators_reject_non_dict_model_data(generator_name: Any) -> Any:
     from render import generators
 
     fn = getattr(generators, generator_name)
@@ -153,7 +154,7 @@ def test_generators_reject_non_dict_model_data(generator_name):
     assert result == ""
 
 
-def test_generator_accepts_minimal_valid_model_data():
+def test_generator_accepts_minimal_valid_model_data() -> Any:
     """Smoke test: with the required key present, a generator should not error out
     at the validation stage (it may still have downstream issues, but validation
     itself must pass).

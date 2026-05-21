@@ -48,7 +48,7 @@ class PerformanceProfiler:
         self, state_blocks: List[str]
     ) -> Dict[str, List[int]]:
         """Extract dimensions from state blocks."""
-        block_dims = {}
+        block_dims: dict[Any, Any] = {}
 
         for block in state_blocks:
             name_match = re.search(r"Name:\s*([^\n]+)", block)
@@ -68,7 +68,7 @@ class PerformanceProfiler:
 
     def _extract_block_types(self, state_blocks: List[str]) -> Dict[str, str]:
         """Extract block types from state blocks."""
-        block_types = {}
+        block_types: dict[Any, Any] = {}
 
         for block in state_blocks:
             name_match = re.search(r"Name:\s*([^\n]+)", block)
@@ -83,7 +83,7 @@ class PerformanceProfiler:
 
     def _extract_connection_types(self, connections: List[str]) -> List[str]:
         """Extract connection types from connections."""
-        connection_types = []
+        connection_types: list[Any] = []
 
         for conn in connections:
             type_match = re.search(r"Type:\s*([^\n]+)", conn)
@@ -101,14 +101,14 @@ class PerformanceProfiler:
         connection_types: List[str],
     ) -> Dict[str, Any]:
         """Calculate performance metrics."""
-        metrics = {}
+        metrics: dict[Any, Any] = {}
 
         # Basic counts
         metrics["state_block_count"] = len(block_dims)
         metrics["connection_count"] = len(connection_types)
 
         # Dimension statistics
-        all_dims = []
+        all_dims: list[Any] = []
         for dims in block_dims.values():
             all_dims.extend(dims)
 
@@ -143,7 +143,7 @@ class PerformanceProfiler:
     ) -> Dict[str, Any]:
         """Estimate computational complexity of the model."""
         # Initialize complexity metrics
-        complexity = {
+        complexity: dict[str, Any] = {
             "inference_operations": 0,
             "learning_operations": 0,
             "complexity_class": "Unknown",
@@ -152,7 +152,7 @@ class PerformanceProfiler:
         }
 
         # Calculate operations for each block
-        block_operations = {}
+        block_operations: dict[Any, Any] = {}
         for name, dims in block_dims.items():
             block_type = block_types.get(name, "Generic")
 
@@ -206,7 +206,7 @@ class PerformanceProfiler:
     ) -> Dict[str, Any]:
         """Estimate parallelization potential of the model."""
         # Initialize parallelization metrics
-        parallelization = {
+        parallelization: dict[str, Any] = {
             "parallelizable_blocks": 0,
             "sequential_dependencies": 0,
             "parallel_efficiency": 0.0,
@@ -253,7 +253,7 @@ class PerformanceProfiler:
 
     def _generate_warnings(self, metrics: Dict[str, Any]) -> List[str]:
         """Generate warnings based on performance metrics."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Memory usage warnings
         memory_mb = metrics.get("estimated_memory_mb", 0)
@@ -354,7 +354,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
     raw_sections = model_data.get("raw_sections", {})
     if raw_sections:
         # Reconstruct the original content from raw sections
-        content_parts = []
+        content_parts: list[Any] = []
 
         # Add model name
         if "ModelName" in raw_sections:
@@ -385,7 +385,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add variables
         if variables:
-            var_lines = []
+            var_lines: list[Any] = []
             for var in variables:
                 name = var.get("name", "Unknown")
                 var_type = var.get("var_type", "unknown")
@@ -398,7 +398,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         # Add connections
         if connections:
-            conn_lines = []
+            conn_lines: list[Any] = []
             for conn in connections:
                 source = (
                     conn.get("source_variables", ["?"])[0]

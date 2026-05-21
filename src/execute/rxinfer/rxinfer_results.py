@@ -46,7 +46,7 @@ def parse_rxinfer_output(output_path: Path) -> Optional[Dict[str, Any]]:
             raw = json.load(f)
 
         # Normalize: handle both snake_case and camelCase keys from Julia output
-        normalized = {
+        normalized: dict[str, Any] = {
             "model_name": raw.get("model_name") or raw.get("modelName", "unknown"),
             "iterations": raw.get("iterations") or raw.get("n_iterations", 0),
             "converged": raw.get("converged", False),
@@ -93,7 +93,7 @@ def _extract_posteriors(raw: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
     as output by RxInfer.jl's standard inference routines.
     """
     raw_posteriors = raw.get("posteriors") or raw.get("q") or {}
-    result = {}
+    result: dict[Any, Any] = {}
 
     for var_name, dist_data in raw_posteriors.items():
         if not isinstance(dist_data, dict):
@@ -106,7 +106,7 @@ def _extract_posteriors(raw: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
 
         dist_type = dist_data.get("type") or dist_data.get("distribution", "unknown")
 
-        parsed = {"type": dist_type}
+        parsed: dict[str, Any] = {"type": dist_type}
 
         # NormalMeanVariance (Gaussian)
         if any(k in dist_data for k in ["mean", "μ", "mu"]):
@@ -156,7 +156,7 @@ def _to_float_list(value: Any) -> List[float]:
     if isinstance(value, (int, float)):
         return [float(value)]
     if isinstance(value, list):
-        result = []
+        result: list[Any] = []
         for item in value:
             if isinstance(item, (int, float)):
                 result.append(float(item))
@@ -184,7 +184,7 @@ def extract_convergence_metrics(parsed: Dict[str, Any]) -> Dict[str, Any]:
         - relative_change: float (|change| / |first_fe|)
         - iterations_to_convergence: int or None
     """
-    metrics = {
+    metrics: dict[str, Any] = {
         "converged": parsed.get("converged", False),
         "total_iterations": parsed.get("iterations", 0),
         "final_free_energy": None,
@@ -235,10 +235,10 @@ def summarize_posteriors(parsed: Dict[str, Any]) -> Dict[str, Any]:
         Summary dict mapping variable names to their posterior statistics
     """
     posteriors = parsed.get("posteriors", {})
-    summary = {}
+    summary: dict[Any, Any] = {}
 
     for var_name, dist in posteriors.items():
-        var_summary = {"type": dist.get("type", "unknown")}
+        var_summary: dict[str, Any] = {"type": dist.get("type", "unknown")}
 
         mean = dist.get("mean")
         if mean:
@@ -280,7 +280,7 @@ def collect_rxinfer_results(
     Returns:
         List of parsed result dicts with added file metadata
     """
-    results = []
+    results: list[Any] = []
 
     if not output_dir.exists():
         logger.warning(f"Output directory not found: {output_dir}")
@@ -330,7 +330,7 @@ def format_rxinfer_report(results: List[Dict[str, Any]]) -> str:
     if not results:
         return "# RxInfer.jl Results\n\nNo results found.\n"
 
-    lines = [
+    lines: list[Any] = [
         "# RxInfer.jl Inference Results\n",
         f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
         f"**Models analyzed**: {len(results)}\n\n",

@@ -9,7 +9,7 @@ memory, inference, storage, FLOPS, and complexity estimates for GNN models.
 import logging
 import math
 import re
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, Dict, List, Mapping, Sequence, TypedDict, Union
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ VariableMap = Dict[str, VariableSpec]
 
 def estimate_memory(
     variables: VariableMap,
-    memory_factors: Dict[str, int],
+    memory_factors: Mapping[str, int],
 ) -> float:
     """
     Estimate memory requirements based on variables.
@@ -38,7 +38,7 @@ def estimate_memory(
 
     for var_name, var_info in variables.items():
         var_type = var_info.get("type", "float")
-        dims = var_info.get("dimensions", [1])
+        dims: Sequence[int | str] = var_info.get("dimensions", [1])
 
         size_factor = memory_factors.get(var_type, memory_factors["float"])
 
@@ -56,7 +56,7 @@ def estimate_memory(
 
 def detailed_memory_breakdown(
     variables: VariableMap,
-    memory_factors: Dict[str, int],
+    memory_factors: Mapping[str, int],
 ) -> Dict[str, Any]:
     """Create detailed memory breakdown by variable and type."""
     breakdown: Dict[str, Any] = {
@@ -68,7 +68,7 @@ def detailed_memory_breakdown(
 
     for var_name, var_info in variables.items():
         var_type = var_info.get("type", "float")
-        dims = var_info.get("dimensions", [1])
+        dims: Sequence[int | str] = var_info.get("dimensions", [1])
         size_factor = memory_factors.get(var_type, memory_factors["float"])
 
         try:
@@ -104,7 +104,7 @@ def estimate_flops(
     edges: List[Dict[str, Any]],
     equations: str,
     model_type: str,
-    operation_costs: Dict[str, int],
+    operation_costs: Mapping[str, int],
 ) -> Dict[str, Any]:
     """Estimate floating-point operations (FLOPS) required for inference."""
     flops_estimate: Dict[str, Any] = {
@@ -114,11 +114,11 @@ def estimate_flops(
         "nonlinear_operations": 0,
     }
 
-    matrices: Dict[str, list] = {}
+    matrices: Dict[str, List[int]] = {}
     for var_name, var_info in variables.items():
-        dims = var_info.get("dimensions", [1])
+        dims: Sequence[int | str] = var_info.get("dimensions", [1])
         if len(dims) >= 2:
-            matrices[var_name] = dims
+            matrices[var_name] = [_safe_dim_int(d) for d in dims]
 
     for edge in edges:
         source = edge.get("source", "")
@@ -172,7 +172,7 @@ def estimate_flops(
 
 def estimate_inference_time(
     flops_estimate: Dict[str, Any],
-    hardware_specs: Dict[str, float],
+    hardware_specs: Mapping[str, float],
 ) -> Dict[str, float]:
     """Estimate inference time based on FLOPS and hardware specs."""
     total_flops = flops_estimate["total_flops"]
@@ -188,11 +188,11 @@ def estimate_batched_inference(
     variables: VariableMap,
     model_type: str,
     flops_estimate: Dict[str, Any],
-    hardware_specs: Dict[str, float],
+    hardware_specs: Mapping[str, float],
 ) -> Dict[str, Any]:
     """Estimate batched inference performance."""
     total_flops = flops_estimate["total_flops"]
-    batch_sizes = [1, 8, 32, 128, 512]
+    batch_sizes: list[Any] = [1, 8, 32, 128, 512]
     batch_estimates: Dict[str, Any] = {}
 
     for batch_size in batch_sizes:
@@ -218,7 +218,7 @@ def estimate_matrix_operation_costs(
     variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
-    operation_costs: Dict[str, int],
+    operation_costs: Mapping[str, int],
 ) -> Dict[str, Any]:
     """Provide detailed estimates of matrix operation costs."""
     costs: Dict[str, Any] = {
@@ -229,7 +229,7 @@ def estimate_matrix_operation_costs(
         "total_matrix_flops": 0,
     }
 
-    matrices: Dict[str, list] = {}
+    matrices: Dict[str, List[int]] = {}
     for var_name, var_info in variables.items():
         dims = var_info.get("dimensions", [1])
         if len(dims) >= 2:
@@ -323,7 +323,7 @@ def estimate_inference(
     model_type: str,
     edges: List[Dict[str, Any]],
     equations: str,
-    inference_factors: Dict[str, float],
+    inference_factors: Mapping[str, float],
 ) -> float:
     """Estimate inference time requirements based on model complexity."""
     base_time = inference_factors.get(model_type, inference_factors["Static"])
@@ -377,7 +377,7 @@ def estimate_storage(
     variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
-    memory_factors: Dict[str, int],
+    memory_factors: Mapping[str, int],
 ) -> float:
     """Estimate storage requirements in KB."""
     memory_est = estimate_memory(variables, memory_factors)
@@ -385,7 +385,8 @@ def estimate_storage(
     structural_overhead_kb = 1.0
     var_overhead_kb = 0.0
     for var_name, var_info in variables.items():
-        var_desc_length = len(var_info.get("comment", ""))
+        comment = var_info.get("comment", "")
+        var_desc_length = len(comment) if isinstance(comment, str) else 0
         var_overhead_kb += (len(var_name) + 24 + var_desc_length) / 1024.0
 
     edge_overhead_kb = len(edges) * 0.1
@@ -529,7 +530,7 @@ def _parse_single_dim(d: Any) -> int:
     return 1
 
 
-def _parse_dimensions(dims: List[Union[int, str]]) -> List[int]:
+def _parse_dimensions(dims: Sequence[Union[int, str]]) -> List[int]:
     """Parse a list of dimension values to ints."""
     return [_parse_single_dim(d) for d in dims]
 

@@ -16,25 +16,24 @@ Key test areas:
 
 import asyncio
 import inspect
-
-import pytest
-
-pytestmark = pytest.mark.pipeline
 import os
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
+
+import pytest
 
 # Uses real implementations per testing policy.
 
 # Import test utilities
 
 # Test markers
-pytestmark = [pytest.mark.recovery]
+pytestmark = [pytest.mark.pipeline, pytest.mark.recovery]
 
 
 @pytest.fixture
-def test_environment():
+def test_environment() -> Any:
     """Create an isolated environment for testing."""
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
@@ -45,7 +44,7 @@ def test_environment():
 
 
 @pytest.fixture
-def sample_gnn_file(test_environment):
+def sample_gnn_file(test_environment: Any) -> Any:
     """Create a sample GNN file for testing."""
     file_path = test_environment / "input" / "test_model.md"
     file_path.write_text("""
@@ -64,7 +63,7 @@ def sample_gnn_file(test_environment):
 class TestRecursionErrorRecovery:
     """Test suite for NumPy recursion error recovery."""
 
-    def test_numpy_import_recovery(self, test_environment):
+    def test_numpy_import_recovery(self, test_environment: Any) -> Any:
         """Test recovery from NumPy import recursion error.
 
         Patch numpy.typing module import itself to raise RecursionError first,
@@ -76,7 +75,7 @@ class TestRecursionErrorRecovery:
             sys.setrecursionlimit(1000)
             with pytest.raises(RecursionError):
                 # Force a recursion via a small function to simulate failure scenario
-                def _recur(n):
+                def _recur(n: Any) -> Any:
                     return 1 if n == 0 else _recur(n - 1) + _recur(n - 1)
 
                 _recur(2000)
@@ -91,7 +90,9 @@ class TestRecursionErrorRecovery:
 
         assert "numpy" in sys.modules
 
-    def test_render_step_recovery(self, test_environment, sample_gnn_file):
+    def test_render_step_recovery(
+        self, test_environment: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test render step recovery from recursion errors."""
         from tests.helpers.render_recovery import render_gnn_files
 
@@ -109,7 +110,9 @@ class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
 
     @pytest.mark.slow
-    def test_llm_analysis_recovery(self, test_environment, sample_gnn_file):
+    def test_llm_analysis_recovery(
+        self, test_environment: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test LLM analysis with proper async/await handling."""
         from llm.analyzer import analyze_gnn_file_with_llm
 
@@ -129,7 +132,9 @@ class TestAsyncAwaitRecovery:
         assert "analysis" in result
 
     @pytest.mark.slow
-    def test_sync_wrapper_recovery(self, test_environment, sample_gnn_file):
+    def test_sync_wrapper_recovery(
+        self, test_environment: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test synchronous wrapper for async LLM analysis."""
         from llm.analyzer import analyze_gnn_file_with_llm
 
@@ -140,6 +145,7 @@ class TestAsyncAwaitRecovery:
             pytest.skip("No LLM providers available (no API keys and Ollama disabled)")
         result = analyze_gnn_file_with_llm(sample_gnn_file)
 
+        assert isinstance(result, dict)
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
 
@@ -147,7 +153,9 @@ class TestAsyncAwaitRecovery:
 class TestLightweightProcessingRecovery:
     """Test suite for lightweight processing recovery."""
 
-    def test_gnn_lightweight_fallback(self, test_environment, sample_gnn_file):
+    def test_gnn_lightweight_fallback(
+        self, test_environment: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test recovery to lightweight GNN processing."""
         from gnn.core_processor import process_gnn_directory
 
@@ -160,7 +168,9 @@ class TestLightweightProcessingRecovery:
         assert result["processing_mode"] == "lightweight"
         assert str(sample_gnn_file) in result["processed_files"]
 
-    def test_lightweight_processing_output(self, test_environment, sample_gnn_file):
+    def test_lightweight_processing_output(
+        self, test_environment: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test output quality of lightweight processing."""
         from gnn.core_processor import process_gnn_directory_lightweight
 
@@ -175,7 +185,7 @@ class TestLightweightProcessingRecovery:
 class TestHardwareInitialization:
     """Test suite for hardware initialization."""
 
-    def test_jax_devices(self, test_environment):
+    def test_jax_devices(self, test_environment: Any) -> Any:
         """Test real JAX device discovery."""
         from execute.jax.jax_runner import initialize_jax_devices
 
@@ -185,7 +195,9 @@ class TestHardwareInitialization:
             pytest.skip("JAX devices unavailable in this environment")
         assert str(devices[0])
 
-    def test_execution_hardware_recovery(self, test_environment, sample_gnn_file):
+    def test_execution_hardware_recovery(
+        self, test_environment: Any, sample_gnn_file: Any
+    ) -> Any:
         """Test execution with hardware recovery."""
         from execute.executor import execute_gnn_model
 
@@ -198,12 +210,12 @@ class TestHardwareInitialization:
 class TestResourceManagementRecovery:
     """Test suite for resource management recovery."""
 
-    def test_memory_limit_recovery(self, test_environment):
+    def test_memory_limit_recovery(self, test_environment: Any) -> Any:
         """Test recovery from memory limit issues."""
         from utils.resource_manager import with_resource_limits
 
         @with_resource_limits(max_memory_mb=100)
-        def memory_intensive_operation():
+        def memory_intensive_operation() -> Any:
             # Simulate memory-intensive operation
             [0] * (1024 * 1024)  # 1MB
             return "Success"
@@ -211,7 +223,7 @@ class TestResourceManagementRecovery:
         result = memory_intensive_operation()
         assert result == "Success"
 
-    def test_disk_space_recovery(self, test_environment):
+    def test_disk_space_recovery(self, test_environment: Any) -> Any:
         """Test recovery from disk space issues."""
         from utils.resource_manager import check_disk_space
 
@@ -225,7 +237,7 @@ class TestResourceManagementRecovery:
 class TestErrorReportingRecovery:
     """Test suite for error reporting mechanisms."""
 
-    def test_error_collection(self, test_environment):
+    def test_error_collection(self, test_environment: Any) -> Any:
         """Test error collection and reporting."""
         from utils.error_recovery import ErrorReporter
 
@@ -239,7 +251,7 @@ class TestErrorReportingRecovery:
         assert errors[0]["type"] == "test_error"
         assert errors[0]["message"] == "Test error message"
 
-    def test_error_recovery_logging(self, test_environment):
+    def test_error_recovery_logging(self, test_environment: Any) -> Any:
         """Test error recovery logging functionality."""
         import logging
 

@@ -9,10 +9,12 @@ Date: 2025-01-11
 License: MIT
 """
 
+from typing import Any, cast
+
 try:
     import defusedxml.ElementTree as ET
 except ImportError:
-    import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405
+    import xml.etree.ElementTree as ET  # nosec B405
 import logging
 from typing import Any, Dict, List, Optional
 
@@ -37,7 +39,7 @@ logger = logging.getLogger(__name__)
 class XMLGNNParser(BaseGNNParser):
     """Parser for XML format GNN specifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the XML parser."""
         super().__init__()
 
@@ -175,7 +177,7 @@ class XMLGNNParser(BaseGNNParser):
 
         return model
 
-    def _parse_metadata(self, root: Any, model: GNNInternalRepresentation):
+    def _parse_metadata(self, root: Any, model: GNNInternalRepresentation) -> Any:
         """Parse metadata from XML."""
         metadata_elem = root.find(".//metadata")
         if metadata_elem is not None:
@@ -183,10 +185,10 @@ class XMLGNNParser(BaseGNNParser):
             if annotation_elem is not None and annotation_elem.text:
                 model.annotation = annotation_elem.text
 
-    def _parse_xml_variables(self, root: Any, model: GNNInternalRepresentation):
+    def _parse_xml_variables(self, root: Any, model: GNNInternalRepresentation) -> Any:
         """Parse variables from XML."""
         # Look for variables in multiple possible locations
-        variables_containers = [
+        variables_containers: list[Any] = [
             root.findall(".//variables/variable"),
             root.findall(".//variable"),
             root.findall(".//state"),
@@ -219,7 +221,7 @@ class XMLGNNParser(BaseGNNParser):
                 data_type = DataType.CONTINUOUS
 
             # Get dimensions
-            dimensions = []
+            dimensions: list[Any] = []
             dims_str = var_elem.get("dimensions")
             if dims_str:
                 try:
@@ -250,10 +252,12 @@ class XMLGNNParser(BaseGNNParser):
             logger.warning(f"Failed to parse XML variable {var_elem.tag}: {e}")
             return None
 
-    def _parse_xml_connections(self, root: Any, model: GNNInternalRepresentation):
+    def _parse_xml_connections(
+        self, root: Any, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse connections from XML."""
         # Look for connections in prioritized order to avoid duplicates
-        connection_elements = []
+        connection_elements: list[Any] = []
 
         # First try structured format
         connections_in_container = root.findall(".//connections/connection")
@@ -276,8 +280,8 @@ class XMLGNNParser(BaseGNNParser):
         """Parse a single connection from XML element."""
         try:
             # Get source and target variables
-            source_vars = []
-            target_vars = []
+            source_vars: list[Any] = []
+            target_vars: list[Any] = []
 
             # Multiple ways to specify sources and targets
             source_attr = conn_elem.get("source") or conn_elem.get("from")
@@ -331,10 +335,10 @@ class XMLGNNParser(BaseGNNParser):
             logger.warning(f"Failed to parse XML connection {conn_elem.tag}: {e}")
             return None
 
-    def _parse_xml_parameters(self, root: Any, model: GNNInternalRepresentation):
+    def _parse_xml_parameters(self, root: Any, model: GNNInternalRepresentation) -> Any:
         """Parse parameters from XML."""
         # Look for parameters in multiple locations
-        params_containers = [
+        params_containers: list[Any] = [
             root.findall(".//parameters/parameter"),
             root.findall(".//parameter"),
             root.findall(".//param"),
@@ -380,9 +384,9 @@ class XMLGNNParser(BaseGNNParser):
 
         return VariableType.HIDDEN_STATE
 
-    def _parse_xml_equations(self, root: Any, model: GNNInternalRepresentation):
+    def _parse_xml_equations(self, root: Any, model: GNNInternalRepresentation) -> Any:
         """Parse equations from XML."""
-        equations_containers = [
+        equations_containers: list[Any] = [
             root.findall(".//equations/equation"),
             root.findall(".//equation"),
         ]
@@ -414,7 +418,7 @@ class XMLGNNParser(BaseGNNParser):
 
     def _parse_xml_time_specification(
         self, root: Any, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse time specification from XML."""
         time_elem = root.find(".//time_specification")
         if time_elem is not None:
@@ -436,9 +440,11 @@ class XMLGNNParser(BaseGNNParser):
                 time_type=time_type, discretization=discretization, horizon=horizon
             )
 
-    def _parse_xml_ontology_mappings(self, root: Any, model: GNNInternalRepresentation):
+    def _parse_xml_ontology_mappings(
+        self, root: Any, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse ontology mappings from XML."""
-        ontology_containers = [
+        ontology_containers: list[Any] = [
             root.findall(".//ontology_mappings/mapping"),
             root.findall(".//ontology/mapping"),
             root.findall(".//mapping"),
@@ -489,7 +495,7 @@ class XMLGNNParser(BaseGNNParser):
         if match:
             try:
                 json_data = match.group(1)
-                return json.loads(json_data)
+                return cast("dict[str, Any] | None", json.loads(json_data))
             except json.JSONDecodeError:
                 logger.debug(
                     "Embedded MODEL_DATA JSON is malformed, falling back to XML parsing"
@@ -558,7 +564,7 @@ class XMLGNNParser(BaseGNNParser):
 class PNMLParser(XMLGNNParser):
     """Parser for PNML (Petri Net Markup Language) format."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the PNML parser."""
         super().__init__()
 
@@ -580,7 +586,7 @@ class PNMLParser(XMLGNNParser):
 
         return model
 
-    def _parse_pnml_net(self, net_elem: Any, model: GNNInternalRepresentation):
+    def _parse_pnml_net(self, net_elem: Any, model: GNNInternalRepresentation) -> Any:
         """Parse a PNML net element."""
         # Parse places as variables
         places = net_elem.findall(".//place")

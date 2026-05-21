@@ -84,7 +84,7 @@ def list_ml_integration_targets_mcp() -> Dict[str, Any]:
     """
     import importlib.util
 
-    targets = {
+    targets: dict[str, Any] = {
         "pymdp": importlib.util.find_spec("pymdp") is not None,
         "numpy": importlib.util.find_spec("numpy") is not None,
         "jax": importlib.util.find_spec("jax") is not None,

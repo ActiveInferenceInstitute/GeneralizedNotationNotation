@@ -12,7 +12,7 @@ import subprocess  # nosec B404
 import sys
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional, cast
 
 
 @dataclass
@@ -41,9 +41,9 @@ class PipelineDependencyManager:
     Pipeline dependency manager with graceful degradation support.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.logger = logging.getLogger(__name__)
-        self.dependency_cache = {}
+        self.dependency_cache: Dict[str, DependencyResult] = {}
         self.step_configs = self._initialize_step_configs()
 
     # ... (omitting middle lines for brevity in thought process, but tool needs exact match.
@@ -115,7 +115,7 @@ class PipelineDependencyManager:
             result.available = True
 
             # Try to get version information
-            version_attrs = ["__version__", "version", "VERSION"]
+            version_attrs: list[Any] = ["__version__", "version", "VERSION"]
             for attr in version_attrs:
                 if hasattr(module, attr):
                     result.version = str(getattr(module, attr))
@@ -153,7 +153,7 @@ class PipelineDependencyManager:
             }
 
         config = self.step_configs[step_name]
-        results = {
+        results: dict[str, Any] = {
             "step": step_name,
             "status": "healthy",
             "required": {},
@@ -165,7 +165,7 @@ class PipelineDependencyManager:
         }
 
         # Check required dependencies
-        critical_missing = []
+        critical_missing: list[Any] = []
         for dep in config.required:
             dep_result = self.check_dependency(dep)
             results["required"][dep] = dep_result
@@ -175,7 +175,7 @@ class PipelineDependencyManager:
                 results["errors"].append(f"Required dependency missing: {dep}")
 
         # Check optional dependencies
-        optional_missing = []
+        optional_missing: list[Any] = []
         for dep in config.optional:
             dep_result = self.check_dependency(dep)
             results["optional"][dep] = dep_result
@@ -233,7 +233,7 @@ class PipelineDependencyManager:
             return False
 
     @contextmanager
-    def graceful_import(self, module_name: str, step_name: Optional[str] = None):
+    def graceful_import(self, module_name: str, step_name: Optional[str] = None) -> Any:
         """
         Context manager for graceful imports with recovery handling.
 
@@ -261,7 +261,9 @@ class PipelineDependencyManager:
 
             yield None
 
-    def generate_dependency_report(self, steps: List[str] = None) -> Dict[str, Any]:
+    def generate_dependency_report(
+        self, steps: (List[str]) | None = None
+    ) -> Dict[str, Any]:
         """
         Generate comprehensive dependency report for pipeline steps.
 
@@ -274,7 +276,7 @@ class PipelineDependencyManager:
         if steps is None:
             steps = list(self.step_configs.keys())
 
-        report = {
+        report: dict[str, Any] = {
             "timestamp": __import__("datetime").datetime.now().isoformat(),
             "python_version": sys.version,
             "steps": {},
@@ -302,7 +304,10 @@ class PipelineDependencyManager:
                 report["summary"]["failed_steps"] += 1
 
             # Count dependencies
-            all_deps = {**step_result["required"], **step_result["optional"]}
+            all_deps: dict[Any, Any] = {
+                **step_result["required"],
+                **step_result["optional"],
+            }
             report["summary"]["total_dependencies"] += len(all_deps)
             report["summary"]["available_dependencies"] += sum(
                 1 for dep in all_deps.values() if dep.available
@@ -330,7 +335,7 @@ class PipelineDependencyManager:
             return {}
 
         config = self.step_configs[step_name]
-        installation_results = {}
+        installation_results: dict[Any, Any] = {}
 
         # Get dependencies to install
         deps_to_install = config.required.copy()
@@ -342,7 +347,7 @@ class PipelineDependencyManager:
             if not dep_result.available:
                 try:
                     # Try to install using uv
-                    cmd = ["uv", "pip", "install", dep]
+                    cmd: list[Any] = ["uv", "pip", "install", dep]
                     result = subprocess.run(  # nosec B603
                         cmd, capture_output=True, text=True, timeout=300
                     )
@@ -368,8 +373,12 @@ class PipelineDependencyManager:
         return installation_results
 
 
+_PIPELINE_DEPENDENCY_MANAGER: PipelineDependencyManager | None = None
+
+
 def get_pipeline_dependency_manager() -> PipelineDependencyManager:
     """Get singleton instance of pipeline dependency manager."""
-    if not hasattr(get_pipeline_dependency_manager, "_instance"):
-        get_pipeline_dependency_manager._instance = PipelineDependencyManager()
-    return get_pipeline_dependency_manager._instance
+    global _PIPELINE_DEPENDENCY_MANAGER
+    if _PIPELINE_DEPENDENCY_MANAGER is None:
+        _PIPELINE_DEPENDENCY_MANAGER = PipelineDependencyManager()
+    return _PIPELINE_DEPENDENCY_MANAGER

@@ -1,6 +1,6 @@
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from .common import GNNInternalRepresentation
 
@@ -8,7 +8,7 @@ from .common import GNNInternalRepresentation
 class BaseGNNSerializer(ABC):
     """Base class for all GNN serializers with common utility methods."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.format_name = self.__class__.__name__.replace("Serializer", "").lower()
 
     @abstractmethod
@@ -24,7 +24,7 @@ class BaseGNNSerializer(ABC):
         with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
 
-    def _serialize_time_spec(self, time_spec) -> Dict[str, Any]:
+    def _serialize_time_spec(self, time_spec: Any) -> Dict[str, Any]:
         """Serialize TimeSpecification object to dict."""
         if not time_spec:
             return {}
@@ -36,12 +36,12 @@ class BaseGNNSerializer(ABC):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings) -> List[Dict[str, Any]]:
+    def _serialize_ontology_mappings(self, mappings: Any) -> List[Any]:
         """Serialize ontology mappings to list of dicts."""
         if not mappings:
             return []
 
-        result = []
+        result: list[Any] = []
         for mapping in mappings:
             if hasattr(mapping, "variable_name"):
                 result.append(
@@ -115,7 +115,7 @@ class BaseGNNSerializer(ABC):
 
     def _get_embedded_comment_prefix(self, format_name: str) -> str:
         """Get the comment prefix for embedding data in different formats."""
-        comment_prefixes = {
+        comment_prefixes: dict[str, Any] = {
             "json": "// MODEL_DATA: ",
             "xml": "<!-- MODEL_DATA: ",
             "yaml": "# MODEL_DATA: ",
@@ -135,11 +135,11 @@ class BaseGNNSerializer(ABC):
             "bnf": "; MODEL_DATA: ",
             "ebnf": "(* MODEL_DATA: ",
         }
-        return comment_prefixes.get(format_name.lower(), "# MODEL_DATA: ")
+        return cast("str", comment_prefixes.get(format_name.lower(), "# MODEL_DATA: "))
 
     def _get_embedded_comment_suffix(self, format_name: str) -> str:
         """Get the comment suffix for embedding data in different formats."""
-        comment_suffixes = {
+        comment_suffixes: dict[str, Any] = {
             "xml": " -->",
             "coq": " *)",
             "alloy": " */",
@@ -147,7 +147,7 @@ class BaseGNNSerializer(ABC):
             "maxima": " */",
             "ebnf": " *)",
         }
-        return comment_suffixes.get(format_name.lower(), "")
+        return cast("str", comment_suffixes.get(format_name.lower(), ""))
 
     def _add_embedded_model_data(
         self, content: str, model: GNNInternalRepresentation

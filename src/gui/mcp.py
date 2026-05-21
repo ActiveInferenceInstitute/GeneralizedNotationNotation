@@ -111,7 +111,7 @@ def get_gui_module_info_mcp() -> Dict[str, Any]:
 
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> Any:
     """Register GUI domain tools with the MCP."""
 
     mcp_instance.register_tool(

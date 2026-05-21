@@ -7,6 +7,7 @@ diagnostic, and hover paths. Skips cleanly when pygls / LSP deps absent.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -15,7 +16,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 
-def test_lsp_module_exports_expected_surface():
+def test_lsp_module_exports_expected_surface() -> Any:
     import lsp
 
     # Core expected names per src/lsp/__init__.py.
@@ -24,7 +25,7 @@ def test_lsp_module_exports_expected_surface():
     assert hasattr(lsp, "get_module_info")
 
 
-def test_get_module_info_returns_populated_dict():
+def test_get_module_info_returns_populated_dict() -> Any:
     from lsp import get_module_info
 
     info = get_module_info()
@@ -33,7 +34,7 @@ def test_get_module_info_returns_populated_dict():
     assert info["name"].lower() in {"lsp", "gnn-lsp"}
 
 
-def test_word_at_position_extracts_token():
+def test_word_at_position_extracts_token() -> Any:
     from lsp import _word_at_position
 
     # Cursor inside "StateSpaceBlock"
@@ -42,7 +43,7 @@ def test_word_at_position_extracts_token():
     assert "State" in word or "StateSpace" in word or word == "StateSpaceBlock"
 
 
-def test_word_at_position_whitespace_returns_none_or_empty():
+def test_word_at_position_whitespace_returns_none_or_empty() -> Any:
     from lsp import _word_at_position
 
     word = _word_at_position("   ", 1)
@@ -50,7 +51,7 @@ def test_word_at_position_whitespace_returns_none_or_empty():
     assert word is None or word == ""
 
 
-def test_extract_line_from_attribute_error():
+def test_extract_line_from_attribute_error() -> Any:
     from types import SimpleNamespace
 
     from lsp import _extract_line
@@ -60,7 +61,7 @@ def test_extract_line_from_attribute_error():
     assert _extract_line(err) == 5
 
 
-def test_extract_line_from_string_representation():
+def test_extract_line_from_string_representation() -> Any:
     from lsp import _extract_line
 
     # When no .line attribute, falls back to regex extraction from str(error).
@@ -68,7 +69,7 @@ def test_extract_line_from_string_representation():
     assert line == 42
 
 
-def test_extract_line_defaults_to_1_when_nothing_matches():
+def test_extract_line_defaults_to_1_when_nothing_matches() -> Any:
     from lsp import _extract_line
 
     # Regression: arbitrary shapes should return the safe default (1), not raise.
@@ -76,7 +77,7 @@ def test_extract_line_defaults_to_1_when_nothing_matches():
     assert line == 1
 
 
-def test_create_server_without_pygls_returns_something_or_skips():
+def test_create_server_without_pygls_returns_something_or_skips() -> Any:
     """If pygls is unavailable, create_server either returns None or
     raises a clean ImportError. A TypeError or uncaught exception would be
     a regression."""

@@ -9,6 +9,7 @@ GNN integration functionality within the pipeline.
 import json
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import pytest
@@ -38,7 +39,7 @@ except ImportError:
 
 
 @pytest.fixture
-def test_trace():
+def test_trace() -> Any:
     """Create test data that mimics PyMDP simulation traces."""
     return {
         "episode": 1,
@@ -51,7 +52,7 @@ def test_trace():
 
 
 @pytest.fixture
-def test_gnn_spec():
+def test_gnn_spec() -> Any:
     """Create test GNN specification."""
     return {
         "model_parameters": {"num_hidden_states": 3, "num_obs": 3, "num_actions": 3},
@@ -66,7 +67,7 @@ def test_gnn_spec():
 class TestNumpySerialization:
     """Test numpy type serialization functionality."""
 
-    def test_convert_numpy_for_json(self, test_trace):
+    def test_convert_numpy_for_json(self, test_trace: Any) -> Any:
         """Test convert_numpy_for_json function."""
         converted = convert_numpy_for_json(test_trace)
 
@@ -75,7 +76,7 @@ class TestNumpySerialization:
         assert json_str is not None
         assert len(json_str) > 0
 
-    def test_clean_trace_for_serialization(self, test_trace):
+    def test_clean_trace_for_serialization(self, test_trace: Any) -> Any:
         """Test clean_trace_for_serialization function."""
         cleaned = clean_trace_for_serialization(test_trace)
 
@@ -84,7 +85,7 @@ class TestNumpySerialization:
         assert json_str is not None
         assert "episode" in cleaned
 
-    def test_safe_json_dump(self, test_trace):
+    def test_safe_json_dump(self, test_trace: Any) -> Any:
         """Test safe_json_dump function."""
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
@@ -103,7 +104,7 @@ class TestNumpySerialization:
 class TestGNNParsing:
     """Test GNN parsing utilities."""
 
-    def test_parse_gnn_matrix_string(self):
+    def test_parse_gnn_matrix_string(self) -> Any:
         """Test GNN matrix string parsing."""
         matrix_str = "{(0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9)}"
 
@@ -112,7 +113,7 @@ class TestGNNParsing:
         assert matrix is not None
         assert matrix.shape == (3, 3), f"Expected shape (3,3), got {matrix.shape}"
 
-    def test_parse_gnn_vector_string(self):
+    def test_parse_gnn_vector_string(self) -> Any:
         """Test GNN vector string parsing."""
         vector_str = "{(0.33333, 0.33333, 0.33333)}"
 
@@ -121,7 +122,7 @@ class TestGNNParsing:
         assert vector is not None
         assert len(vector) == 3, f"Expected length 3, got {len(vector)}"
 
-    def test_extract_gnn_dimensions(self, test_gnn_spec):
+    def test_extract_gnn_dimensions(self, test_gnn_spec: Any) -> Any:
         """Test GNN dimension extraction."""
         dimensions = extract_gnn_dimensions(test_gnn_spec)
 
@@ -129,7 +130,7 @@ class TestGNNParsing:
         assert dimensions["num_observations"] == 3, "Observations dimension mismatch"
         assert dimensions["num_actions"] == 3, "Actions dimension mismatch"
 
-    def test_validate_gnn_pomdp_structure(self, test_gnn_spec):
+    def test_validate_gnn_pomdp_structure(self, test_gnn_spec: Any) -> Any:
         """Test POMDP structure validation."""
         validation = validate_gnn_pomdp_structure(test_gnn_spec)
 
@@ -139,9 +140,9 @@ class TestGNNParsing:
 class TestIntegration:
     """Test full integration with simulated data."""
 
-    def test_save_simulation_results(self):
+    def test_save_simulation_results(self) -> Any:
         """Test saving simulation results."""
-        test_traces = [
+        test_traces: list[Any] = [
             {
                 "episode": 0,
                 "true_states": [0, 1, 2],
@@ -152,14 +153,14 @@ class TestIntegration:
             }
         ]
 
-        test_metrics = {
+        test_metrics: dict[str, Any] = {
             "episode_rewards": [0.9],
             "episode_lengths": [3],
             "belief_entropies": [1.5],
             "success_rates": [1.0],
         }
 
-        test_config = {
+        test_config: dict[str, Any] = {
             "num_states": 3,
             "num_observations": 3,
             "num_actions": 3,
@@ -180,7 +181,7 @@ class TestIntegration:
             assert save_results is not None
 
             # Check files were created
-            expected_files = [
+            expected_files: list[Any] = [
                 "simulation_config.json",
                 "performance_metrics.json",
                 "simulation_traces.pkl",

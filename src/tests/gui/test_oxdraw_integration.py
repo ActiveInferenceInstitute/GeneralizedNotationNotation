@@ -12,6 +12,7 @@ import json
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -67,7 +68,7 @@ num_actions: 3
 
 
 @pytest.fixture
-def temp_dir():
+def temp_dir() -> Any:
     """Create temporary directory for test files."""
     tmpdir = tempfile.mkdtemp()
     yield Path(tmpdir)
@@ -75,7 +76,7 @@ def temp_dir():
 
 
 @pytest.fixture
-def sample_gnn_file(temp_dir):
+def sample_gnn_file(temp_dir: Any) -> Any:
     """Create sample GNN file for testing."""
     gnn_file = temp_dir / "test_model.md"
     gnn_file.write_text(SAMPLE_GNN_CONTENT)
@@ -83,7 +84,7 @@ def sample_gnn_file(temp_dir):
 
 
 @pytest.fixture
-def sample_gnn_model():
+def sample_gnn_model() -> Any:
     """Create sample parsed GNN model."""
     return {
         "model_name": "Simple Active Inference Agent",
@@ -180,7 +181,7 @@ def sample_gnn_model():
 class TestModuleInfo:
     """Test module information and capabilities."""
 
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> Any:
         """Test module info retrieval."""
         info = get_module_info()
 
@@ -192,7 +193,7 @@ class TestModuleInfo:
         assert isinstance(info["capabilities"], list)
         assert len(info["capabilities"]) > 0
 
-    def test_check_oxdraw_installed(self):
+    def test_check_oxdraw_installed(self) -> Any:
         """Test oxdraw CLI availability check."""
         result = check_oxdraw_installed()
         assert isinstance(result, bool)
@@ -202,7 +203,7 @@ class TestModuleInfo:
 class TestGNNToMermaidConversion:
     """Test GNN to Mermaid conversion functionality."""
 
-    def test_gnn_to_mermaid_basic(self, sample_gnn_model):
+    def test_gnn_to_mermaid_basic(self, sample_gnn_model: Any) -> Any:
         """Test basic GNN to Mermaid conversion."""
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=True)
 
@@ -218,7 +219,7 @@ class TestGNNToMermaidConversion:
         assert "D ==>" in mermaid_content  # Generative
         assert "s -.->" in mermaid_content  # Inference
 
-    def test_gnn_to_mermaid_with_metadata(self, sample_gnn_model):
+    def test_gnn_to_mermaid_with_metadata(self, sample_gnn_model: Any) -> Any:
         """Test metadata embedding in Mermaid."""
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=True)
 
@@ -232,14 +233,16 @@ class TestGNNToMermaidConversion:
         assert "variables" in metadata
         assert "connections" in metadata
 
-    def test_gnn_to_mermaid_without_metadata(self, sample_gnn_model):
+    def test_gnn_to_mermaid_without_metadata(self, sample_gnn_model: Any) -> Any:
         """Test conversion without metadata."""
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=False)
 
         assert "flowchart TD" in mermaid_content
         assert "GNN_METADATA" not in mermaid_content
 
-    def test_convert_gnn_file_to_mermaid(self, sample_gnn_file, temp_dir):
+    def test_convert_gnn_file_to_mermaid(
+        self, sample_gnn_file: Any, temp_dir: Any
+    ) -> Any:
         """Test file-based GNN to Mermaid conversion."""
         output_file = temp_dir / "test_model.mmd"
 
@@ -257,7 +260,7 @@ class TestGNNToMermaidConversion:
 class TestMermaidToGNNConversion:
     """Test Mermaid to GNN conversion functionality."""
 
-    def test_mermaid_to_gnn_basic(self, sample_gnn_model):
+    def test_mermaid_to_gnn_basic(self, sample_gnn_model: Any) -> Any:
         """Test basic Mermaid to GNN conversion."""
         # First convert to Mermaid
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=True)
@@ -276,7 +279,7 @@ class TestMermaidToGNNConversion:
         # Check connections preserved
         assert len(gnn_model["connections"]) == len(sample_gnn_model["connections"])
 
-    def test_extract_gnn_metadata(self, sample_gnn_model):
+    def test_extract_gnn_metadata(self, sample_gnn_model: Any) -> Any:
         """Test metadata extraction from Mermaid."""
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=True)
         metadata = extract_gnn_metadata(mermaid_content)
@@ -286,7 +289,9 @@ class TestMermaidToGNNConversion:
         assert "variables" in metadata
         assert len(metadata["variables"]) == len(sample_gnn_model["variables"])
 
-    def test_convert_mermaid_file_to_gnn(self, sample_gnn_file, temp_dir):
+    def test_convert_mermaid_file_to_gnn(
+        self, sample_gnn_file: Any, temp_dir: Any
+    ) -> Any:
         """Test file-based Mermaid to GNN conversion."""
         # First create Mermaid file
         mermaid_file = temp_dir / "test_model.mmd"
@@ -305,7 +310,7 @@ class TestMermaidToGNNConversion:
 class TestRoundTripConversion:
     """Test round-trip conversion: GNN → Mermaid → GNN."""
 
-    def test_round_trip_preserves_structure(self, sample_gnn_model):
+    def test_round_trip_preserves_structure(self, sample_gnn_model: Any) -> Any:
         """Test that round-trip conversion preserves model structure."""
         # GNN → Mermaid
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=True)
@@ -324,7 +329,7 @@ class TestRoundTripConversion:
         recovered_vars = set(recovered_model["variables"].keys())
         assert original_vars == recovered_vars
 
-    def test_round_trip_preserves_ontology(self, sample_gnn_model):
+    def test_round_trip_preserves_ontology(self, sample_gnn_model: Any) -> Any:
         """Test that ontology mappings are preserved."""
         # GNN → Mermaid
         mermaid_content = gnn_to_mermaid(sample_gnn_model, include_metadata=True)
@@ -351,7 +356,9 @@ class TestRoundTripConversion:
 class TestProcessOxdraw:
     """Test main processing function."""
 
-    def test_process_oxdraw_headless(self, sample_gnn_file, temp_dir, capsys):
+    def test_process_oxdraw_headless(
+        self, sample_gnn_file: Any, temp_dir: Any, capsys: Any
+    ) -> Any:
         """Test headless processing mode."""
         import logging
 
@@ -383,7 +390,7 @@ class TestProcessOxdraw:
         assert "gnn_to_mermaid_conversions" in results
         assert len(results["gnn_to_mermaid_conversions"]) > 0
 
-    def test_process_oxdraw_no_files(self, temp_dir, capsys):
+    def test_process_oxdraw_no_files(self, temp_dir: Any, capsys: Any) -> Any:
         """Test processing with no GNN files."""
         import logging
 
@@ -403,7 +410,7 @@ class TestProcessOxdraw:
 class TestMetadataGeneration:
     """Test metadata generation utilities."""
 
-    def test_generate_mermaid_metadata(self, sample_gnn_model):
+    def test_generate_mermaid_metadata(self, sample_gnn_model: Any) -> Any:
         """Test metadata generation."""
         metadata = generate_mermaid_metadata(sample_gnn_model)
 

@@ -7,6 +7,7 @@ Tests the integration between audio generation, GNN parsing, and pipeline orches
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -18,7 +19,7 @@ class TestAudioGNNIntegration:
     """Tests for audio module integration with GNN processing."""
 
     @pytest.mark.integration
-    def test_audio_module_gnn_data_flow(self, sample_gnn_files):
+    def test_audio_module_gnn_data_flow(self, sample_gnn_files: Any) -> Any:
         """Test that audio module correctly receives and processes GNN data."""
         from audio import get_module_info
         from gnn import parse_gnn_file
@@ -35,7 +36,9 @@ class TestAudioGNNIntegration:
             assert gnn_result is not None
 
     @pytest.mark.integration
-    def test_audio_generation_from_parsed_gnn(self, sample_gnn_files, tmp_path):
+    def test_audio_generation_from_parsed_gnn(
+        self, sample_gnn_files: Any, tmp_path: Any
+    ) -> Any:
         """Test audio generation from parsed GNN data."""
         from audio import AudioGenerator, generate_audio_from_gnn
         from gnn import parse_gnn_file
@@ -56,7 +59,7 @@ class TestAudioGNNIntegration:
             assert result is not None
 
     @pytest.mark.integration
-    def test_audio_backends_availability(self):
+    def test_audio_backends_availability(self) -> Any:
         """Test that audio backend checking works correctly."""
         from audio import check_audio_backends
 
@@ -64,19 +67,19 @@ class TestAudioGNNIntegration:
         assert isinstance(backends, dict)
 
         # Check expected backend keys
-        expected_backends = ["numpy", "librosa", "soundfile", "pedalboard"]
+        expected_backends: list[Any] = ["numpy", "librosa", "soundfile", "pedalboard"]
         for backend in expected_backends:
             assert backend in backends
             assert "available" in backends[backend]
             assert "version" in backends[backend]
 
     @pytest.mark.integration
-    def test_audio_features_availability(self):
+    def test_audio_features_availability(self) -> Any:
         """Test that audio feature flags are properly exposed."""
         from audio import FEATURES
 
         assert isinstance(FEATURES, dict)
-        expected_features = [
+        expected_features: list[Any] = [
             "tonal_generation",
             "rhythmic_generation",
             "ambient_generation",
@@ -91,7 +94,7 @@ class TestAudioPipelineIntegration:
     """Tests for audio module integration with pipeline execution."""
 
     @pytest.mark.integration
-    def test_audio_step_execution(self, tmp_path):
+    def test_audio_step_execution(self, tmp_path: Any) -> Any:
         """Test that audio step can execute within pipeline context."""
         import logging
 
@@ -114,7 +117,7 @@ class TestAudioPipelineIntegration:
         assert result is True or result is False  # Both valid outcomes
 
     @pytest.mark.integration
-    def test_audio_sonification(self, tmp_path):
+    def test_audio_sonification(self, tmp_path: Any) -> Any:
         """Test sonification creation."""
         from audio import create_sonification
 
@@ -142,7 +145,7 @@ class TestAudioExportIntegration:
     """Tests for audio export functionality integration."""
 
     @pytest.mark.integration
-    def test_audio_file_writing(self, tmp_path):
+    def test_audio_file_writing(self, tmp_path: Any) -> Any:
         """Test that audio files can be written correctly."""
         import numpy as np
 

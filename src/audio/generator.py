@@ -5,7 +5,7 @@ Audio generator module for GNN Processing Pipeline.
 This module provides audio generation functionality.
 """
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 # Optional numpy import with recovery
 try:
@@ -13,7 +13,7 @@ try:
 
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None  # type: ignore
+    np = cast(Any, None)
     NUMPY_AVAILABLE = False
 
 
@@ -152,7 +152,7 @@ def generate_oscillator_audio(
         generator = SyntheticAudioGenerator()
 
         # Generate audio
-        config = {
+        config: dict[str, Any] = {
             "frequency": frequency,
             "duration": duration,
             "oscillator_type": oscillator_type,
@@ -204,7 +204,7 @@ def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = "add") -> np.
 
         # Ensure all channels have the same length
         max_length = max(len(channel) for channel in channels)
-        padded_channels = []
+        padded_channels: list[Any] = []
 
         for channel in channels:
             if len(channel) < max_length:
@@ -225,7 +225,7 @@ def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = "add") -> np.
         else:
             mixed = np.sum(padded_channels, axis=0)  # Default to add
 
-        return mixed
+        return cast(np.ndarray, mixed)
 
     except Exception:
         # Return first channel or empty array on error
@@ -235,7 +235,7 @@ def mix_audio_channels(channels: List[np.ndarray], mix_mode: str = "add") -> np.
 class SyntheticAudioGenerator:
     """Synthetic Audio Generator for creating artificial sounds."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.supported_formats = ["wav", "mp3", "flac", "ogg"]
         self.oscillator_types = ["sine", "square", "sawtooth", "triangle", "noise"]
         self.envelope_types = ["ADSR", "AR", "ASR", "AD", "custom"]
@@ -268,11 +268,14 @@ class SyntheticAudioGenerator:
             else:
                 audio = np.sin(2 * np.pi * frequency * t)  # Default to sine
 
-            return audio
+            return cast(np.ndarray, audio)
 
         except Exception:
-            return np.zeros(
-                int(config.get("sample_rate", 44100) * config.get("duration", 1.0))
+            return cast(
+                np.ndarray,
+                np.zeros(
+                    int(config.get("sample_rate", 44100) * config.get("duration", 1.0))
+                ),
             )
 
     def apply_envelope(

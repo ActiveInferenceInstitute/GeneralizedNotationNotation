@@ -116,7 +116,7 @@ def run_integration_tests_mcp(
 
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> Any:
     """Register tests utility tools with the MCP."""
 
     mcp_instance.register_tool(

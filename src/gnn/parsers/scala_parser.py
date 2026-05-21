@@ -13,7 +13,7 @@ License: MIT
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, cast
 
 from .common import (
     BaseGNNParser,
@@ -41,7 +41,7 @@ class ScalaGNNParser(BaseGNNParser):
     and monads.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.variable_patterns = {
             "case_class": re.compile(r"case class\s+(\w+)\s*\([^)]*\)"),
@@ -67,13 +67,13 @@ class ScalaGNNParser(BaseGNNParser):
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a Scala GNN file."""
         self.current_file = file_path
-        file_path = Path(file_path)
+        path = Path(file_path)
 
         try:
-            content = file_path.read_text(encoding="utf-8")
+            content = path.read_text(encoding="utf-8")
             return self.parse_string(content)
         except Exception as e:
-            raise ParseError(f"Failed to read file {file_path}: {e}") from e
+            raise ParseError(f"Failed to read file {path}: {e}") from e
 
     def parse_string(self, content: str) -> ParseResult:
         """Parse Scala GNN content from string."""
@@ -117,7 +117,7 @@ class ScalaGNNParser(BaseGNNParser):
         import json
 
         # Look for JSON data in Scala comments
-        patterns = [
+        patterns: list[Any] = [
             r"//\s*MODEL_DATA:\s*(\{.+\})",  # // MODEL_DATA: {...}
             r"/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/",  # /* MODEL_DATA: {...} */
         ]
@@ -126,7 +126,7 @@ class ScalaGNNParser(BaseGNNParser):
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
                 try:
-                    return json.loads(match.group(1))
+                    return cast("dict[str, Any] | None", json.loads(match.group(1)))
                 except json.JSONDecodeError as e:
                     logger.debug(
                         "Malformed JSON in Scala embedded data, trying next pattern: %s",
@@ -234,7 +234,9 @@ class ScalaGNNParser(BaseGNNParser):
 
         return "Scala GNN Model"
 
-    def _parse_scala_constructs(self, content: str, model: GNNInternalRepresentation):
+    def _parse_scala_constructs(
+        self, content: str, model: GNNInternalRepresentation
+    ) -> Any:
         """Parse general Scala constructs for variables and types."""
         lines = content.split("\n")
 
@@ -329,7 +331,7 @@ class ScalaGNNParser(BaseGNNParser):
             logger.warning(f"Failed to parse val definition '{line}': {e}")
             return None
 
-    def _parse_type_alias(self, line: str, model: GNNInternalRepresentation):
+    def _parse_type_alias(self, line: str, model: GNNInternalRepresentation) -> Any:
         """Parse a type alias definition."""
         try:
             match = re.match(r"type\s+(\w+)\s*=\s*(.+)", line)
@@ -345,7 +347,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_active_inference_components(
         self, content: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse Active Inference specific components."""
         for component, pattern in self.active_inference_patterns.items():
             matches = pattern.finditer(content)
@@ -356,7 +358,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _process_ai_component(
         self, component_type: str, params_str: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Process a specific Active Inference component."""
         try:
             if component_type == "state_space":
@@ -378,7 +380,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_state_space_scala(
         self, params_str: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse StateSpace definition from Scala."""
         # Extract factors and dimensions
         factors_match = re.search(r"factors\s*=\s*List\(([^)]+)\)", params_str)
@@ -400,7 +402,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_observation_space_scala(
         self, params_str: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse ObservationSpace definition from Scala."""
         # Extract modalities
         modalities_match = re.search(r"modalities\s*=\s*List\(([^)]+)\)", params_str)
@@ -422,7 +424,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_action_space_scala(
         self, params_str: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse ActionSpace definition from Scala."""
         # Extract controls
         controls_match = re.search(r"controls\s*=\s*List\(([^)]+)\)", params_str)
@@ -444,7 +446,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_ai_mapping(
         self, mapping_type: str, params_str: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse Active Inference mapping (A, B, C, D matrices)."""
         # Store mapping information as parameters
         parameter = Parameter(
@@ -456,7 +458,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_categorical_structures(
         self, content: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse categorical theory structures from Scala code."""
         # Look for functor definitions
         functor_pattern = re.compile(
@@ -486,7 +488,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _parse_equations_from_scala(
         self, content: str, model: GNNInternalRepresentation
-    ):
+    ) -> Any:
         """Parse mathematical equations from Scala comments and definitions."""
         lines = content.split("\n")
 
@@ -519,13 +521,24 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _contains_equation(self, text: str) -> bool:
         """Check if text contains mathematical equations."""
-        equation_indicators = ["=", "∝", "∀", "∃", "∈", "→", "⟹", "∑", "∏", "∫"]
+        equation_indicators: list[Any] = [
+            "=",
+            "∝",
+            "∀",
+            "∃",
+            "∈",
+            "→",
+            "⟹",
+            "∑",
+            "∏",
+            "∫",
+        ]
         return any(indicator in text for indicator in equation_indicators)
 
     def _extract_dimensions_from_params(self, params_str: str) -> List[int]:
         """Extract dimensions from case class parameters."""
         # Look for dimension-related parameters
-        dim_patterns = [
+        dim_patterns: list[Any] = [
             r"dim\s*:\s*Int",
             r"dimensions\s*:\s*List\[Int\]",
             r"size\s*:\s*Int",
@@ -580,7 +593,7 @@ class ScalaGNNParser(BaseGNNParser):
 
     def _is_ai_related_name(self, name: str) -> bool:
         """Check if a name is related to Active Inference."""
-        ai_keywords = [
+        ai_keywords: list[Any] = [
             "s_f",
             "o_m",
             "u_c",
@@ -608,4 +621,4 @@ class ScalaGNNParser(BaseGNNParser):
 
 
 # Export the parser class
-__all__ = ["ScalaGNNParser"]
+__all__: list[Any] = ["ScalaGNNParser"]

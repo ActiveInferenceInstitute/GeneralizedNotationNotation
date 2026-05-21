@@ -7,17 +7,18 @@ batch operations, and network timing measurements.
 
 import logging
 import time
+from typing import Any
 
 try:
     import httpx
 except ImportError:
-    httpx = None  # type: ignore[assignment]
-from typing import Any, Dict, List
+    httpx = cast(Any, None)
+from typing import Any, Dict, List, cast
 
 logger = logging.getLogger(__name__)
 
 
-def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
+def timed_request(url: str, method: str = "GET", **kwargs: Any) -> Dict[str, Any]:
     """
     Make a timed HTTP request and return timing information.
 
@@ -58,7 +59,7 @@ def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
 
 
 def batch_request(
-    urls: List[str], method: str = "GET", **kwargs
+    urls: List[str], method: str = "GET", **kwargs: Any
 ) -> List[Dict[str, Any]]:
     """
     Make batch HTTP requests and return results.
@@ -71,7 +72,7 @@ def batch_request(
     Returns:
         List of response dictionaries
     """
-    results = []
+    results: list[Any] = []
 
     for url in urls:
         result = timed_request(url, method, **kwargs)
@@ -93,7 +94,7 @@ def validate_api_endpoint(url: str, expected_status: int = 200) -> Dict[str, Any
     """
     result = timed_request(url)
 
-    validation_result = {
+    validation_result: dict[str, Any] = {
         "url": url,
         "accessible": result["success"],
         "status_code": result.get("status_code"),
@@ -121,7 +122,7 @@ def get_network_performance_metrics(urls: List[str]) -> Dict[str, Any]:
 
     response_times = [r["response_time"] for r in successful_requests]
 
-    metrics = {
+    metrics: dict[str, Any] = {
         "total_requests": len(results),
         "successful_requests": len(successful_requests),
         "failed_requests": len(failed_requests),

@@ -1,4 +1,5 @@
 import json
+from typing import Any, cast
 
 from .base_serializer import BaseGNNSerializer
 from .common import GNNInternalRepresentation
@@ -9,7 +10,7 @@ class IsabelleSerializer(BaseGNNSerializer):
 
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Isabelle/HOL format."""
-        lines = []
+        lines: list[Any] = []
 
         # Theory header
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
@@ -33,7 +34,7 @@ class IsabelleSerializer(BaseGNNSerializer):
         lines.append("end")
 
         # Embed complete model data as Isabelle comment for round-trip fidelity
-        model_data = {
+        model_data: dict[str, Any] = {
             "model_name": model.model_name,
             "annotation": model.annotation,
             "variables": [
@@ -93,7 +94,7 @@ class IsabelleSerializer(BaseGNNSerializer):
 
         return "\n".join(lines)
 
-    def _serialize_time_spec(self, time_spec):
+    def _serialize_time_spec(self, time_spec: Any) -> Any:
         """Serialize time specification object."""
         if not time_spec:
             return None
@@ -104,7 +105,7 @@ class IsabelleSerializer(BaseGNNSerializer):
             "step_size": getattr(time_spec, "step_size", None),
         }
 
-    def _serialize_ontology_mappings(self, mappings):
+    def _serialize_ontology_mappings(self, mappings: Any) -> Any:
         """Serialize ontology mappings."""
         if not mappings:
             return []
@@ -123,7 +124,7 @@ class IsabelleSerializer(BaseGNNSerializer):
 
     def _map_to_isabelle_type(self, data_type: str) -> str:
         """Map GNN data types to Isabelle types."""
-        mapping = {
+        mapping: dict[str, Any] = {
             "categorical": "nat list",
             "continuous": "real",
             "binary": "bool",
@@ -131,4 +132,4 @@ class IsabelleSerializer(BaseGNNSerializer):
             "float": "real",
             "complex": "string",
         }
-        return mapping.get(data_type, "string")
+        return cast("str", mapping.get(data_type, "string"))

@@ -3,7 +3,7 @@
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 # Import the structured logging implementation.
 from .logging.logging_utils import (
@@ -45,7 +45,7 @@ class PipelineLogger:
         return NewPipelineLogger.get_logger(name)
 
     @classmethod
-    def setup(cls, log_dir: Path = None, verbose: bool = False):
+    def setup(cls, log_dir: (Path) | None = None, verbose: bool = False) -> Any:
         """Setup the logging system via the new implementation."""
         NewPipelineLogger.initialize(log_dir=log_dir)
         NewPipelineLogger.set_verbosity(verbose)
@@ -61,45 +61,53 @@ def setup_main_logging(verbose: bool = False) -> logging.Logger:
     return new_setup_main_logging(verbose=verbose)
 
 
-def log_step_start(logger: logging.Logger, message: str):
+def log_step_start(logger: logging.Logger, message: str) -> Any:
     """Log the start of a step."""
     new_log_step_start(logger, message)
 
 
-def log_step_success(logger: logging.Logger, message: str):
+def log_step_success(logger: logging.Logger, message: str) -> Any:
     """Log a successful step completion."""
     new_log_step_success(logger, message)
 
 
-def log_step_warning(logger: logging.Logger, message: str):
+def log_step_warning(logger: logging.Logger, message: str) -> Any:
     """Log a warning during step execution."""
     new_log_step_warning(logger, message)
 
 
-def log_step_error(logger: logging.Logger, message: str):
+def log_step_error(
+    logger: logging.Logger,
+    message: str,
+    context: Optional[Dict[str, Any]] = None,
+    **metadata: Any,
+) -> Any:
     """Log an error during step execution."""
-    new_log_step_error(logger, message)
+    details = dict(metadata)
+    if context:
+        details.update(context)
+    new_log_step_error(logger, message, **details)
 
 
-def log_section_header(logger: logging.Logger, title: str, char: str = "="):
+def log_section_header(logger: logging.Logger, title: str, char: str = "=") -> Any:
     """Log a section header."""
     new_log_section_header(logger, title, char)
 
 
 def get_performance_summary() -> Dict[str, Any]:
     """Get a summary of performance metrics."""
-    return performance_tracker.get_summary()
+    return cast("dict[str, Any]", performance_tracker.get_summary())
 
 
 def setup_correlation_context(
     correlation_id: Optional[str] = None, step_name: Optional[str] = None
-):
+) -> Any:
     """Set up correlation context for logging."""
     new_setup_correlation_context(step_name or "unknown", correlation_id)
 
 
 # Export all public symbols for compatibility
-__all__ = [
+__all__: list[Any] = [
     "PipelineLogger",
     "setup_step_logging",
     "setup_main_logging",

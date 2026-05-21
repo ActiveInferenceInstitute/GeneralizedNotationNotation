@@ -57,7 +57,7 @@ def list_research_topics_mcp() -> Dict[str, Any]:
     Returns:
         Dictionary with topic names, descriptions, and related GNN constructs.
     """
-    topics = {
+    topics: dict[str, Any] = {
         "active_inference": "Free Energy Principle / Active Inference agents",
         "pomdp": "Partially Observable Markov Decision Processes",
         "bayesian_mechanics": "Bayesian mechanics and path integral formulation",
@@ -132,7 +132,7 @@ def get_research_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ────────────────────────────────────────────────────────
 
 
-def register_tools(mcp_instance) -> None:
+def register_tools(mcp_instance: Any) -> None:
     """Register research tools with the MCP server."""
 
     mcp_instance.register_tool(

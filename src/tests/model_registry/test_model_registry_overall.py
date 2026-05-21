@@ -48,9 +48,11 @@ Author: Me
         assert model.current_version == "1.2.3"
         assert "tag1" in model.tags
         # Author may be in model metadata or version metadata
-        author = model.metadata.get("author") or model.get_version().metadata.get(
-            "author", ""
+        version = model.get_version()
+        version_author = (
+            version.metadata.get("author", "") if version is not None else ""
         )
+        author = model.metadata.get("author") or version_author
         assert "Me" in author, f"Expected 'Me' in author, got: {author}"
 
         # Verify persistence

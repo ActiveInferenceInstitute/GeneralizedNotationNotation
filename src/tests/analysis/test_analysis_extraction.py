@@ -44,7 +44,7 @@ def temp_discopy_output(tmp_path: Any) -> Any:
 
     report_file = impl_dir / "discopy_execution_report.json"
 
-    data = {
+    data: dict[str, Any] = {
         "analysis_summary": {
             "total_files_processed": 5,
             "jax_outputs_analyzed": 2,
@@ -74,7 +74,7 @@ def temp_discopy_output(tmp_path: Any) -> Any:
 
 def test_extract_activeinference_jl_data(temp_activeinference_output: Any) -> None:
     """Test extracting data from ActiveInference.jl CSV."""
-    execution_result = {
+    execution_result: dict[str, Any] = {
         "implementation_directory": str(temp_activeinference_output),
         "simulation_data": {},  # Initial empty data
     }
@@ -92,7 +92,7 @@ def test_extract_activeinference_jl_data(temp_activeinference_output: Any) -> No
 
 def test_extract_discopy_data(temp_discopy_output: Any) -> None:
     """Test extracting data from DisCoPy report."""
-    execution_result = {
+    execution_result: dict[str, Any] = {
         "implementation_directory": str(temp_discopy_output),
         "simulation_data": {},
     }

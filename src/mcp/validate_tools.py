@@ -99,7 +99,7 @@ def main() -> int:
 
     # ── 4. Light callability verification ────────────────────────────────────
     print("\n[4] Callability spot-checks (no-arg tools)...")
-    no_arg_tools = [
+    no_arg_tools: list[Any] = [
         "list_analysis_tools",
         "list_render_frameworks",
         "list_export_formats",
@@ -201,7 +201,7 @@ def main() -> int:
     print("=" * 72)
 
     # ── 7. Save report ───────────────────────────────────────────────────────
-    report = {
+    report: dict[str, Any] = {
         "modules_total": len(m.modules),
         "modules_loaded": len(loaded),
         "modules_errored": len(errored),

@@ -16,7 +16,7 @@ Usage:
 
 import argparse
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 # Import centralized utilities
 from utils import log_step_start, log_step_success, setup_step_logging
@@ -24,7 +24,7 @@ from utils import log_step_start, log_step_success, setup_step_logging
 logger = setup_step_logging("pipeline_validation", verbose=True)
 
 # Expected output patterns for each step
-EXPECTED_OUTPUTS = {
+EXPECTED_OUTPUTS: dict[str, Any] = {
     "0_template": ["template_processing_summary.json"],
     "1_setup": ["setup_artifacts/installed_packages.json"],
     "2_tests": ["test_reports/pytest_report.xml"],
@@ -59,7 +59,7 @@ EXPECTED_OUTPUTS = {
 
 def validate_module_imports(module_path: Path) -> Dict[str, List[str]]:
     """Validate that modules properly import and use centralized utilities."""
-    issues = {"errors": [], "warnings": [], "suggestions": []}
+    issues: dict[str, Any] = {"errors": [], "warnings": [], "suggestions": []}
 
     try:
         with open(module_path, "r", encoding="utf-8") as f:
@@ -83,7 +83,7 @@ def validate_module_imports(module_path: Path) -> Dict[str, List[str]]:
             issues["warnings"].append("Contains redundant recovery logging functions")
 
         # Check log function calling patterns (be more tolerant)
-        log_functions = [
+        log_functions: list[Any] = [
             "log_step_start",
             "log_step_success",
             "log_step_warning",
@@ -107,7 +107,7 @@ def validate_module_imports(module_path: Path) -> Dict[str, List[str]]:
 
 def validate_output_structure(output_dir: Path) -> Dict[str, List[str]]:
     """Validate that expected outputs are being generated."""
-    issues = {"missing": [], "present": [], "unexpected": []}
+    issues: dict[str, Any] = {"missing": [], "present": [], "unexpected": []}
 
     if not output_dir.exists():
         issues["missing"].append("Output directory does not exist")
@@ -126,7 +126,7 @@ def validate_output_structure(output_dir: Path) -> Dict[str, List[str]]:
 
 def get_pipeline_modules(src_dir: Path) -> List[Path]:
     """Get all numbered pipeline modules."""
-    modules = []
+    modules: list[Any] = []
     for i in range(1, 15):  # Steps 1-14
         src_dir / f"{i}_*.py"
         matching = list(src_dir.glob(f"{i}_*.py"))
@@ -143,7 +143,12 @@ def get_pipeline_modules(src_dir: Path) -> List[Path]:
 
 def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
     """Enhanced validation to check for proper centralized imports."""
-    issues = {"errors": [], "warnings": [], "suggestions": [], "improvements": []}
+    issues: dict[str, Any] = {
+        "errors": [],
+        "warnings": [],
+        "suggestions": [],
+        "improvements": [],
+    }
 
     try:
         with open(module_path, "r", encoding="utf-8") as f:
@@ -154,7 +159,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
             issues["errors"].append("Missing centralized utils import")
         else:
             # Check for specific required imports
-            required_imports = [
+            required_imports: list[Any] = [
                 "setup_step_logging",
                 "log_step_start",
                 "log_step_success",
@@ -162,7 +167,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 "log_step_error",
             ]
 
-            missing_imports = []
+            missing_imports: list[Any] = []
             for imp in required_imports:
                 if imp not in content:
                     missing_imports.append(imp)
@@ -196,7 +201,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 )
 
         # Check for hardcoded paths
-        hardcoded_patterns = [
+        hardcoded_patterns: list[Any] = [
             r'Path\(["\'](?:src/|output/|\.\.)',  # Hardcoded relative paths
             r'["\'](?:/[^"\']*|[A-Za-z]:[^"\']*)["\']',  # Absolute paths
         ]
@@ -256,13 +261,13 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
 
 def validate_configuration_consistency() -> Dict[str, List[str]]:
     """Validate that configuration is consistent across the pipeline."""
-    issues = {"errors": [], "warnings": [], "suggestions": []}
+    issues: dict[str, Any] = {"errors": [], "warnings": [], "suggestions": []}
 
     try:
-        from pipeline.config import STEP_METADATA, get_pipeline_config
+        from pipeline.config import STEP_METADATA, PipelineConfig
 
         # Get the centralized configuration
-        config = get_pipeline_config()
+        config = PipelineConfig()
 
         # Check that all configured steps have metadata
         configured_steps = set(config.steps.keys())
@@ -310,7 +315,7 @@ def validate_configuration_consistency() -> Dict[str, List[str]]:
 
 def generate_improvement_recommendations(report: Dict) -> List[str]:
     """Generate specific improvement recommendations based on validation results."""
-    recommendations = []
+    recommendations: list[Any] = []
 
     # Module-specific recommendations
     module_issues = report.get("module_issues", {})
@@ -358,7 +363,7 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
                 recommendations.append(f"   - {warning}")
 
     # Performance recommendations
-    performance_modules = []
+    performance_modules: list[Any] = []
     for module, issues in module_issues.items():
         if any(
             "performance_tracker" in suggestion
@@ -418,10 +423,12 @@ def generate_improvement_recommendations(report: Dict) -> List[str]:
 
 def validate_argument_consistency() -> Dict[str, List[str]]:
     """Validate that argument parsing is consistent across pipeline steps."""
-    issues = {"errors": [], "warnings": [], "inconsistencies": []}
+    issues: dict[str, Any] = {"errors": [], "warnings": [], "inconsistencies": []}
 
     try:
-        from utils.argument_utils import STEP_ARGUMENTS
+        from utils.argument_utils import ArgumentParser
+
+        STEP_ARGUMENTS = ArgumentParser.STEP_ARGUMENTS
 
         # Check that all steps define their supported arguments
         expected_steps = [
@@ -446,7 +453,7 @@ def validate_argument_consistency() -> Dict[str, List[str]]:
             )
         ]
 
-        missing_definitions = []
+        missing_definitions: list[Any] = []
         for step in expected_steps:
             if step not in STEP_ARGUMENTS:
                 missing_definitions.append(step)
@@ -457,8 +464,8 @@ def validate_argument_consistency() -> Dict[str, List[str]]:
             )
 
         # Check for argument consistency across similar steps
-        common_args = ["target_dir", "output_dir", "recursive", "verbose"]
-        inconsistent_steps = []
+        common_args: list[Any] = ["target_dir", "output_dir", "recursive", "verbose"]
+        inconsistent_steps: list[Any] = []
 
         for step_name, step_args in STEP_ARGUMENTS.items():
             missing_common = [arg for arg in common_args if arg not in step_args]
@@ -479,15 +486,15 @@ def validate_argument_consistency() -> Dict[str, List[str]]:
 
 def validate_dependency_cycles() -> Dict[str, List[str]]:
     """Check for circular dependencies in pipeline step configuration."""
-    issues = {"errors": [], "warnings": [], "cycles": []}
+    issues: dict[str, Any] = {"errors": [], "warnings": [], "cycles": []}
 
     try:
-        from pipeline.config import get_pipeline_config
+        from pipeline.config import PipelineConfig
 
-        config = get_pipeline_config()
+        config = PipelineConfig()
 
         # Build dependency graph
-        dependencies = {}
+        dependencies: dict[Any, Any] = {}
         for step_name, step_config in config.steps.items():
             dependencies[step_name] = step_config.dependencies
 
@@ -511,7 +518,7 @@ def validate_dependency_cycles() -> Dict[str, List[str]]:
             rec_stack.remove(node)
             return None
 
-        visited = set()
+        visited: set[Any] = set()
         for step in dependencies:
             if step not in visited:
                 cycle = find_cycles(step, [step], visited, set())
@@ -520,7 +527,7 @@ def validate_dependency_cycles() -> Dict[str, List[str]]:
 
         # Check for missing dependencies
         all_steps = set(dependencies.keys())
-        missing_deps = []
+        missing_deps: list[Any] = []
         for step, deps in dependencies.items():
             for dep in deps:
                 if dep not in all_steps:
@@ -539,15 +546,15 @@ def validate_dependency_cycles() -> Dict[str, List[str]]:
 
 def validate_output_naming_conventions() -> Dict[str, List[str]]:
     """Validate that output directory naming follows conventions."""
-    issues = {"errors": [], "warnings": [], "naming_violations": []}
+    issues: dict[str, Any] = {"errors": [], "warnings": [], "naming_violations": []}
 
     try:
-        from pipeline.config import get_pipeline_config
+        from pipeline.config import PipelineConfig
 
-        config = get_pipeline_config()
+        config = PipelineConfig()
 
         # Expected naming pattern: step name + descriptive suffix (matching config.py)
-        expected_patterns = {
+        expected_patterns: dict[str, Any] = {
             "0_template.py": "0_template_output",
             "1_setup.py": "1_setup_output",
             "2_tests.py": "2_tests_output",
@@ -575,7 +582,7 @@ def validate_output_naming_conventions() -> Dict[str, List[str]]:
             "24_intelligent_analysis.py": "24_intelligent_analysis_output",
         }
 
-        violations = []
+        violations: list[Any] = []
         for step_name, expected_pattern in expected_patterns.items():
             step_config = config.get_step_config(step_name)
             if step_config and step_config.output_subdir != expected_pattern:
@@ -595,15 +602,15 @@ def validate_output_naming_conventions() -> Dict[str, List[str]]:
 
 def validate_performance_tracking_coverage() -> Dict[str, List[str]]:
     """Check which steps have performance tracking enabled."""
-    issues = {"warnings": [], "missing_tracking": [], "suggestions": []}
+    issues: dict[str, Any] = {"warnings": [], "missing_tracking": [], "suggestions": []}
 
     try:
-        from pipeline.config import get_pipeline_config
+        from pipeline.config import PipelineConfig
 
-        config = get_pipeline_config()
+        config = PipelineConfig()
 
         # Steps that should have performance tracking (compute-intensive)
-        should_have_tracking = [
+        should_have_tracking: list[Any] = [
             "3_gnn.py",
             "2_tests.py",
             "5_type_checker.py",
@@ -619,7 +626,7 @@ def validate_performance_tracking_coverage() -> Dict[str, List[str]]:
             "23_report.py",
         ]
 
-        missing_tracking = []
+        missing_tracking: list[Any] = []
         for step_name in should_have_tracking:
             step_config = config.get_step_config(step_name)
             if step_config and not step_config.performance_tracking:
@@ -643,7 +650,7 @@ def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
     """Generate a comprehensive validation report."""
     log_step_start(logger, "Generating pipeline validation report")
 
-    report = {
+    report: dict[str, Any] = {
         "timestamp": Path(__file__).stat().st_mtime,
         "modules_checked": 0,
         "modules_with_issues": 0,

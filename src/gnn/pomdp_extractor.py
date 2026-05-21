@@ -11,7 +11,7 @@ import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +98,7 @@ class POMDPExtractor:
     - Validates POMDP structural consistency
     """
 
-    def __init__(self, strict_validation: bool = True):
+    def __init__(self, strict_validation: bool = True) -> None:
         """
         Initialize POMDP extractor.
 
@@ -188,7 +188,7 @@ class POMDPExtractor:
             C_vector = initial_params.get("C")
             D_vector = initial_params.get("D")
             E_vector = initial_params.get("E")
-            adapter_notes = []
+            adapter_notes: list[Any] = []
 
             if C_vector is None and passive_model and num_observations > 0:
                 C_vector = [0.0] * num_observations
@@ -272,9 +272,9 @@ class POMDPExtractor:
 
     def _parse_sections(self, content: str) -> Dict[str, str]:
         """Parse GNN content into sections."""
-        sections = {}
+        sections: dict[Any, Any] = {}
         current_section = None
-        current_content = []
+        current_content: list[Any] = []
 
         for line in content.split("\n"):
             line = line.strip()
@@ -310,7 +310,7 @@ class POMDPExtractor:
 
     def _parse_state_space_block(self, content: str) -> Dict[str, Any]:
         """Parse StateSpaceBlock section."""
-        variables = {
+        variables: dict[str, Any] = {
             "state_variables": [],
             "observation_variables": [],
             "action_variables": [],
@@ -329,7 +329,7 @@ class POMDPExtractor:
                 comment = match.group(4)
 
                 # Parse dimensions
-                dimensions = []
+                dimensions: list[Any] = []
                 for dim in dimensions_str.split(","):
                     dim = dim.strip()
                     if "=" not in dim:  # Skip type specifications
@@ -341,7 +341,7 @@ class POMDPExtractor:
                         except ValueError:
                             dimensions.append(dim)  # Keep as string if not integer
 
-                var_info = {
+                var_info: dict[str, Any] = {
                     "name": var_name,
                     "dimensions": dimensions,
                     "type": var_type,
@@ -429,7 +429,7 @@ class POMDPExtractor:
 
         # Priority 2: Infer from B matrix dimensions if still None
         if num_actions is None and initial_params:
-            action_candidates = []
+            action_candidates: list[Any] = []
             for key, matrix in initial_params.items():
                 if key == "B" or key.startswith("B_"):
                     shape = self._nested_shape(matrix)
@@ -533,7 +533,7 @@ class POMDPExtractor:
 
     def _nested_shape(self, value: Any) -> List[int]:
         """Return a best-effort shape for nested Python matrix data."""
-        shape = []
+        shape: list[Any] = []
         current = value
         while isinstance(current, (list, tuple)):
             shape.append(len(current))
@@ -548,7 +548,7 @@ class POMDPExtractor:
         fallback_prefix: str,
     ) -> List[Dict[str, Any]]:
         """Create factor/modality/control descriptors from parsed variables."""
-        descriptors = []
+        descriptors: list[Any] = []
         for index, variable in enumerate(variables or []):
             name = variable.get("name") or f"{fallback_prefix}_{index}"
             name_lower = str(name).lower()
@@ -599,7 +599,7 @@ class POMDPExtractor:
 
     def _parse_initial_parameterization(self, content: str) -> Dict[str, Any]:
         """Parse InitialParameterization section."""
-        params = {}
+        params: dict[Any, Any] = {}
 
         # Split content into lines and process each parameter block
         lines = content.split("\n")
@@ -686,7 +686,7 @@ class POMDPExtractor:
                 # Handle cases like ( (1,2), (3,4) ) -> [ [1,2], [3,4] ]
                 # Remove extra commas if any (e.g., from trailing commas in GNN)
                 clean_str = re.sub(r",\s*\]", "]", clean_str)
-                return ast.literal_eval(clean_str)
+                return cast("list[Any] | float | int", ast.literal_eval(clean_str))
             except (ValueError, SyntaxError) as e:
                 self.logger.warning(
                     f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing."
@@ -694,7 +694,7 @@ class POMDPExtractor:
                 return self._parse_nested_structure_safe(value_str)
 
         # Recovery for simple comma-separated values without brackets
-        values = []
+        values: list[Any] = []
         for item in value_str.split(","):
             item = item.strip()
             if not item:
@@ -718,7 +718,7 @@ class POMDPExtractor:
         if not value_str:
             return []
 
-        result = []
+        result: list[Any] = []
         current = ""
         depth = 0
 
@@ -772,7 +772,7 @@ class POMDPExtractor:
 
     def _parse_connections(self, content: str) -> List[Tuple[str, str, str]]:
         """Parse Connections section."""
-        connections = []
+        connections: list[Any] = []
 
         for line in content.split("\n"):
             line = line.strip()
@@ -790,7 +790,7 @@ class POMDPExtractor:
 
     def _parse_ontology_annotations(self, content: str) -> Dict[str, str]:
         """Parse ActInfOntologyAnnotation section."""
-        mapping = {}
+        mapping: dict[Any, Any] = {}
 
         for line in content.split("\n"):
             line = line.strip()
@@ -808,7 +808,7 @@ class POMDPExtractor:
 
     def _validate_pomdp_structure(self, pomdp_space: POMDPStateSpace) -> Dict[str, Any]:
         """Validate POMDP structure for consistency."""
-        warnings = []
+        warnings: list[Any] = []
 
         # Check dimension consistency
         try:

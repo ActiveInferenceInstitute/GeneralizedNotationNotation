@@ -10,6 +10,7 @@ comparison.
 
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -250,7 +251,7 @@ class TestExtractPymdpData:
     @pytest.mark.unit
     def test_with_simulation_data(self) -> None:
         """Should extract current pymdp_simulation_v1 data when present."""
-        result = {
+        result: dict[str, Any] = {
             "simulation_data": {
                 "schema_version": "pymdp_simulation_v1",
                 "beliefs_by_factor": {"joint_state": [[0.5, 0.5], [0.6, 0.4]]},
@@ -281,7 +282,7 @@ class TestExtractRxinferData:
     @pytest.mark.unit
     def test_with_simulation_data(self) -> None:
         """Should extract RxInfer-specific fields."""
-        result = {
+        result: dict[str, Any] = {
             "simulation_data": {
                 "beliefs": [[0.3, 0.7]],
                 "true_states": [1],
@@ -341,7 +342,7 @@ class TestAnalyzeSimulationTraces:
     @pytest.mark.unit
     def test_list_traces(self) -> None:
         """Should calculate trace lengths for list-based traces."""
-        traces = [[1, 2, 3], [4, 5]]
+        traces: list[Any] = [[1, 2, 3], [4, 5]]
         result = analyze_simulation_traces(traces, "pymdp", "test_model")
         assert result["trace_count"] == 2
         assert result["trace_lengths"] == [3, 2]
@@ -350,7 +351,7 @@ class TestAnalyzeSimulationTraces:
     @pytest.mark.unit
     def test_dict_traces(self) -> None:
         """Should handle dict-based traces with states key."""
-        traces = [
+        traces: list[Any] = [
             {"states": [0, 1, 2]},
             {"states": [0, 1]},
         ]
@@ -378,7 +379,7 @@ class TestAnalyzeFreeEnergy:
     @pytest.mark.unit
     def test_basic_statistics(self) -> None:
         """Should compute mean, std, min, max of free energy."""
-        values = [5.0, 4.0, 3.0, 2.0, 1.0]
+        values: list[Any] = [5.0, 4.0, 3.0, 2.0, 1.0]
         result = analyze_free_energy(values, "pymdp", "test")
         assert abs(result["mean_free_energy"] - 3.0) < 1e-6
         assert result["min_free_energy"] == 1.0
@@ -387,7 +388,7 @@ class TestAnalyzeFreeEnergy:
     @pytest.mark.unit
     def test_decreasing_trend(self) -> None:
         """Should detect a decreasing free energy trend."""
-        values = [10.0, 8.0, 6.0, 4.0, 2.0, 1.0]
+        values: list[Any] = [10.0, 8.0, 6.0, 4.0, 2.0, 1.0]
         result = analyze_free_energy(values, "pymdp", "test")
         assert result["free_energy_decreasing"]
         assert result["free_energy_trend"] < 0
@@ -395,7 +396,7 @@ class TestAnalyzeFreeEnergy:
     @pytest.mark.unit
     def test_convergence_detection(self) -> None:
         """Should detect convergence when late values have low variance."""
-        values = [10.0, 5.0, 2.5, 1.2, 1.1, 1.05, 1.02, 1.01, 1.005, 1.001]
+        values: list[Any] = [10.0, 5.0, 2.5, 1.2, 1.1, 1.05, 1.02, 1.01, 1.005, 1.001]
         result = analyze_free_energy(values, "pymdp", "test")
         assert "converged" in result
 
@@ -413,7 +414,7 @@ class TestAnalyzePolicyConvergence:
     @pytest.mark.unit
     def test_deterministic_policies(self) -> None:
         """Near-deterministic policies should have low entropy."""
-        policies = [
+        policies: list[Any] = [
             [0.99, 0.005, 0.005],
             [0.99, 0.005, 0.005],
         ]
@@ -425,7 +426,7 @@ class TestAnalyzePolicyConvergence:
     @pytest.mark.unit
     def test_uniform_policies(self) -> None:
         """Uniform policies should have high entropy."""
-        policies = [
+        policies: list[Any] = [
             [1.0 / 3, 1.0 / 3, 1.0 / 3],
             [1.0 / 3, 1.0 / 3, 1.0 / 3],
         ]
@@ -447,7 +448,7 @@ class TestAnalyzeStateDistributions:
     @pytest.mark.unit
     def test_state_entropy_calculation(self) -> None:
         """Should compute entropy for each state distribution."""
-        states = [
+        states: list[Any] = [
             [0.5, 0.5],
             [0.9, 0.1],
         ]
@@ -459,7 +460,7 @@ class TestAnalyzeStateDistributions:
     @pytest.mark.unit
     def test_diversity_metrics(self) -> None:
         """Should compute mean and std of state entropy."""
-        states = [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]
+        states: list[Any] = [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]
         result = analyze_state_distributions(states, "pymdp", "test")
         assert "mean_entropy" in result["state_diversity"]
         assert "std_entropy" in result["state_diversity"]
@@ -472,14 +473,14 @@ class TestCompareFrameworkResults:
     @pytest.mark.unit
     def test_single_framework(self) -> None:
         """Should note that comparison needs at least 2 frameworks."""
-        results = {"pymdp": {"success": True}}
+        results: dict[str, Any] = {"pymdp": {"success": True}}
         comparison = compare_framework_results(results, "test_model")
         assert "Need at least 2 frameworks" in comparison.get("message", "")
 
     @pytest.mark.unit
     def test_two_frameworks(self) -> None:
         """Should compare two frameworks and identify fastest."""
-        results = {
+        results: dict[str, Any] = {
             "pymdp": {"success": True, "execution_time": 1.5},
             "jax": {"success": True, "execution_time": 0.8},
         }
@@ -492,7 +493,7 @@ class TestCompareFrameworkResults:
     @pytest.mark.unit
     def test_success_rates_comparison(self) -> None:
         """Should compare success rates across frameworks."""
-        results = {
+        results: dict[str, Any] = {
             "pymdp": {"success": True, "execution_time": 1.0},
             "rxinfer": {"success": False, "execution_time": 2.0},
         }

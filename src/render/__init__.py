@@ -7,6 +7,9 @@ target languages and simulation environments.
 """
 
 # Phase 6: render submodules are in-tree; unconditional imports.
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
 from .activeinference_jl import render_gnn_to_activeinference_jl
 from .discopy import render_gnn_to_discopy
 from .generators import (
@@ -34,14 +37,18 @@ class JAXRenderer:
     want polymorphic dispatch. The real rendering work is in
     ``render/jax/jax_renderer.py`` — this class forwards ``render`` to it."""
 
-    def render(self, spec) -> str:
+    def render(
+        self,
+        spec: Dict[str, Any],
+        output_path: Path,
+        options: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[bool, str, List[str]]:
         from .jax.jax_renderer import render_gnn_to_jax
 
-        result = render_gnn_to_jax(spec)
-        return result if isinstance(result, str) else str(result)
+        return render_gnn_to_jax(spec, output_path, options)
 
 
-def get_supported_frameworks():
+def get_supported_frameworks() -> Any:
     """Return list of supported rendering frameworks.
 
     Returns:
@@ -58,7 +65,7 @@ def get_supported_frameworks():
     ]
 
 
-def validate_render(result, framework=None):
+def validate_render(result: Any, framework: Any = None) -> Any:
     """Validate render output.
 
     Args:
@@ -78,7 +85,7 @@ def validate_render(result, framework=None):
     return True
 
 
-__all__ = [
+__all__: list[Any] = [
     # Core functions
     "process_render",
     "render_gnn_spec",
@@ -110,7 +117,7 @@ __all__ = [
 
 
 __version__ = "1.6.0"
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "pymdp_rendering": True,
     "rxinfer_rendering": True,
     "activeinference_jl_rendering": True,

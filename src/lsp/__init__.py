@@ -9,9 +9,11 @@ Provides:
 Requires `pygls` package. Falls back gracefully when not installed.
 """
 
+from typing import Any, cast
+
 __version__ = "1.6.0"
 
-FEATURES = {
+FEATURES: dict[str, Any] = {
     "diagnostics": True,
     "hover_info": True,
     "completion": True,
@@ -67,20 +69,20 @@ def create_server() -> Any:
     server = LanguageServer("gnn-lsp", "0.1.0")
 
     @server.feature(TEXT_DOCUMENT_DID_OPEN)
-    def did_open(params: DidOpenTextDocumentParams):
+    def did_open(params: DidOpenTextDocumentParams) -> Any:
         """Publish diagnostics when a GNN file is opened."""
         _publish_diagnostics(
             server, params.text_document.uri, params.text_document.text
         )
 
     @server.feature(TEXT_DOCUMENT_DID_SAVE)
-    def did_save(params: DidSaveTextDocumentParams):
+    def did_save(params: DidSaveTextDocumentParams) -> Any:
         """Re-publish diagnostics on save."""
         doc = server.workspace.get_text_document(params.text_document.uri)
         _publish_diagnostics(server, params.text_document.uri, doc.source)
 
     @server.feature(TEXT_DOCUMENT_HOVER)
-    def hover(params: HoverParams):
+    def hover(params: HoverParams) -> Any:
         """Show variable info on hover."""
         doc = server.workspace.get_text_document(params.text_document.uri)
         return _get_hover(doc.source, params.position)
@@ -233,16 +235,16 @@ def _word_at_position(line: str, char: int) -> Optional[str]:
     return word if word else None
 
 
-def _extract_line(error) -> int:
+def _extract_line(error: Any) -> int:
     """Extract line number from a GNNParseError or string."""
     if hasattr(error, "line") and error.line:
-        return error.line
+        return cast("int", error.line)
     # Try to extract from string representation
     m = re.search(r":(\d+)", str(error))
     return int(m.group(1)) if m else 1
 
 
-def start_server():
+def start_server() -> Any:
     """Start the LSP server on stdio."""
     server = create_server()
     if server:

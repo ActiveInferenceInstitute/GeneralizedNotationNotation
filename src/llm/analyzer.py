@@ -83,7 +83,7 @@ async def _analyze_gnn_file_with_llm(
             # Recovery: if a provider class is patched (tests), try using it directly
             try:
                 provider = OpenAIProvider()  # tests may monkeypatch this symbol
-                candidate = provider.analyze(content)
+                candidate = provider.analyze(content, "summary")
                 if hasattr(candidate, "__await__"):
                     summary_text = await candidate
                 else:
@@ -132,10 +132,10 @@ def analyze_gnn_file_with_llm(
 
 def extract_variables(content: str) -> List[Dict[str, Any]]:
     """Extract variables from GNN content."""
-    variables = []
+    variables: list[Any] = []
 
     # Look for variable definitions
-    var_patterns = [
+    var_patterns: list[Any] = [
         r"(\w+)\s*:\s*(\w+)",  # name: type
         r"(\w+)\s*=\s*([^;\n]+)",  # name = value
         r"(\w+)\s*\[([^\]]+)\]",  # name[dimensions]
@@ -161,7 +161,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
     Parses the ## Connections section for GNN operators (>, -, <)
     and falls back to previous patterns (->. →, connects).
     """
-    connections = []
+    connections: list[Any] = []
 
     # Primary: parse ## Connections section for GNN-specific operators
     conn_section = re.search(
@@ -201,7 +201,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
 
     # Recovery: previous patterns throughout the entire file
     if not connections:
-        conn_patterns = [
+        conn_patterns: list[Any] = [
             r"(\w+)\s*->\s*(\w+)",  # source -> target
             r"(\w+)\s*→\s*(\w+)",  # source → target
             r"(\w+)\s*connects\s*(\w+)",  # source connects target
@@ -225,7 +225,7 @@ def perform_semantic_analysis(
     content: str, variables: List[Dict], connections: List[Dict]
 ) -> Dict[str, Any]:
     """Perform semantic analysis of GNN content."""
-    analysis = {
+    analysis: dict[str, Any] = {
         "variable_count": len(variables),
         "connection_count": len(connections),
         "complexity_score": len(variables) + len(connections),
@@ -233,7 +233,7 @@ def perform_semantic_analysis(
     }
 
     # Analyze variable types
-    var_types = {}
+    var_types: dict[Any, Any] = {}
     for var in variables:
         var_type = (
             var.get("definition", "").split(":")[-1].strip()
@@ -245,7 +245,7 @@ def perform_semantic_analysis(
     analysis["variable_types"] = var_types
 
     # Analyze connection patterns
-    connection_types = {}
+    connection_types: dict[Any, Any] = {}
     for conn in connections:
         conn_type = (
             conn.get("connection", "").split()[1]
@@ -263,7 +263,7 @@ def calculate_complexity_metrics(
     variables: List[Dict], connections: List[Dict]
 ) -> Dict[str, Any]:
     """Calculate complexity metrics for the GNN model."""
-    metrics = {
+    metrics: dict[str, Any] = {
         "total_elements": len(variables) + len(connections),
         "variable_complexity": len(variables),
         "connection_complexity": len(connections),
@@ -278,7 +278,7 @@ def identify_patterns(
     content: str, variables: List[Dict], connections: List[Dict]
 ) -> Dict[str, Any]:
     """Identify patterns and anti-patterns in GNN content."""
-    patterns = {"patterns": [], "anti_patterns": [], "suggestions": []}
+    patterns: dict[str, Any] = {"patterns": [], "anti_patterns": [], "suggestions": []}
 
     # Check for common patterns
     if len(variables) > 10:

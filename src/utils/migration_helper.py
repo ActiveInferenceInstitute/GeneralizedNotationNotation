@@ -16,7 +16,7 @@ import logging
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -24,13 +24,13 @@ logger = logging.getLogger(__name__)
 class PipelineMigrationHelper:
     """Helper class for migrating pipeline modules to new patterns."""
 
-    def __init__(self, src_dir: Path):
+    def __init__(self, src_dir: Path) -> None:
         self.src_dir = src_dir
-        self.changes_made = []
+        self.changes_made: List[str] = []
 
     def analyze_module(self, module_path: Path) -> Dict[str, List[str]]:
         """Analyze a module for potential improvements."""
-        issues = {
+        issues: dict[str, Any] = {
             "redundant_fallbacks": [],
             "missing_enhanced_imports": [],
             "hardcoded_paths": [],
@@ -67,7 +67,7 @@ class PipelineMigrationHelper:
 
     def apply_improvements(self, module_path: Path, dry_run: bool = True) -> List[str]:
         """Apply automatic improvements to a module."""
-        changes = []
+        changes: list[Any] = []
 
         try:
             with open(module_path, "r", encoding="utf-8") as f:
@@ -111,7 +111,7 @@ class PipelineMigrationHelper:
 
     def _has_redundant_fallbacks(self, content: str) -> bool:
         """Check if module has redundant recovery imports."""
-        patterns = [
+        patterns: list[Any] = [
             r"try:\s+from utils import.*?except ImportError.*?def setup_step_logging",
             r"except ImportError as e:.*?logging\.basicConfig",
             r"try:\s+.*?UTILS_AVAILABLE.*?except ImportError.*?UTILS_AVAILABLE = False",
@@ -157,10 +157,10 @@ class PipelineMigrationHelper:
 
     def _find_hardcoded_paths(self, content: str) -> List[str]:
         """Find hardcoded path patterns."""
-        issues = []
+        issues: list[Any] = []
 
         # Look for hardcoded relative paths
-        hardcoded_patterns = [
+        hardcoded_patterns: list[Any] = [
             (r'Path\(["\']src/', "Hardcoded 'src/' path"),
             (r'Path\(["\']output/', "Hardcoded 'output/' path"),
             (r'["\']input/gnn_files["\']', "Hardcoded input GNN files path"),
@@ -178,7 +178,7 @@ class PipelineMigrationHelper:
 
     def _needs_performance_tracking(self, module_path: Path) -> bool:
         """Check if module should have performance tracking."""
-        compute_intensive = [
+        compute_intensive: list[Any] = [
             "7_export.py",
             "8_visualization.py",
             "11_render.py",
@@ -189,12 +189,12 @@ class PipelineMigrationHelper:
 
     def _remove_redundant_fallbacks(self, content: str) -> Tuple[str, List[str]]:
         """Remove redundant recovery import patterns."""
-        changes = []
+        changes: list[Any] = []
 
         # Pattern 1: Remove try/except around utils import with custom fallbacks
         pattern1 = r"try:\s+(from utils import[^}]+})\s+except ImportError as e:.*?(?=\n\w|\n#|\nif|\ndef|\nclass|\Z)"
 
-        def replace_fallback(match):
+        def replace_fallback(match: Any) -> Any:
             utils_import = match.group(1)
             changes.append(
                 "Removed redundant import recovery - utils provides graceful fallbacks"
@@ -215,7 +215,7 @@ class PipelineMigrationHelper:
         self, content: str, module_path: Path
     ) -> Tuple[str, List[str]]:
         """Add missing standard imports."""
-        changes = []
+        changes: list[Any] = []
 
         # For main.py, suggest enhanced imports
         if module_path.name == "main.py":
@@ -227,7 +227,7 @@ class PipelineMigrationHelper:
 
     def _fix_hardcoded_paths(self, content: str) -> Tuple[str, List[str]]:
         """Fix simple hardcoded path patterns."""
-        changes = []
+        changes: list[Any] = []
 
         # Replace hardcoded input/gnn_files with DEFAULT_PATHS reference
         if 'src" / "gnn" / "examples"' in content and "DEFAULT_PATHS" not in content:
@@ -238,7 +238,7 @@ class PipelineMigrationHelper:
         return content, changes
 
 
-def main():
+def main() -> Any:
     parser = argparse.ArgumentParser(description="Pipeline Migration Helper")
     parser.add_argument(
         "--analyze",
@@ -271,7 +271,7 @@ def main():
 
     # Get modules to process
     if args.module:
-        modules = [src_dir / args.module]
+        modules: list[Any] = [src_dir / args.module]
         if not modules[0].exists():
             logger.error(f"Module not found: {modules[0]}")
             return 1

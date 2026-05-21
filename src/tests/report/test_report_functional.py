@@ -216,7 +216,7 @@ class TestHtmlReport:
     @pytest.mark.unit
     def test_generate_html_report_basic(self) -> None:
         """generate_html_report should return valid HTML with summary data."""
-        report_data = {
+        report_data: dict[str, Any] = {
             "timestamp": "2026-01-01",
             "total_files": 2,
             "files_analyzed": [
@@ -245,7 +245,7 @@ class TestMarkdownReport:
     @pytest.mark.unit
     def test_generate_markdown_report_basic(self) -> None:
         """generate_markdown_report should produce Markdown with file list."""
-        report_data = {
+        report_data: dict[str, Any] = {
             "timestamp": "2026-01-01",
             "total_files": 1,
             "files_analyzed": [{"file": "test.md", "info": {}}],

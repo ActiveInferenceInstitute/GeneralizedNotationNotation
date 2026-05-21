@@ -9,6 +9,7 @@ import argparse
 import logging
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 # Import renderers with proper error handling
 try:
@@ -17,7 +18,7 @@ try:
     PYMDP_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"PyMDP renderer not available: {e}")
-    render_gnn_to_pymdp = None
+    render_gnn_to_pymdp = cast(Any, None)
     PYMDP_AVAILABLE = False
 
 try:
@@ -26,7 +27,7 @@ try:
     RXINFER_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"RxInfer renderer not available: {e}")
-    render_gnn_to_rxinfer_toml = None
+    render_gnn_to_rxinfer_toml = cast(Any, None)
     RXINFER_AVAILABLE = False
 
 try:
@@ -35,7 +36,7 @@ try:
     DISCOPY_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"DisCoPy renderer not available: {e}")
-    render_gnn_to_discopy = None
+    render_gnn_to_discopy = cast(Any, None)
     DISCOPY_AVAILABLE = False
 
 try:
@@ -44,7 +45,7 @@ try:
     ACTIVEINFERENCE_JL_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"ActiveInference.jl renderer not available: {e}")
-    render_gnn_to_activeinference_jl = None
+    render_gnn_to_activeinference_jl = cast(Any, None)
     ACTIVEINFERENCE_JL_AVAILABLE = False
 
 try:
@@ -53,8 +54,8 @@ try:
     JAX_AVAILABLE = True
 except ImportError as e:
     logging.warning(f"JAX renderer not available: {e}")
-    render_gnn_to_jax = None
-    render_gnn_to_jax_pomdp = None
+    render_gnn_to_jax = cast(Any, None)
+    render_gnn_to_jax_pomdp = cast(Any, None)
     JAX_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
@@ -62,7 +63,7 @@ logger = logging.getLogger(__name__)
 from .processor import render_gnn_spec
 
 
-def main(cli_args=None):
+def main(cli_args: Any = None) -> Any:
     """Command-line entry point for the renderer."""
     parser = argparse.ArgumentParser(
         description="Render GNN specifications to various target platforms"

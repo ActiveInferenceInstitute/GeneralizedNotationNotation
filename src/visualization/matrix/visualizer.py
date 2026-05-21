@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+from typing import Any, cast
+
 """
 Matrix Visualization Module for GNN Processing Pipeline
 
@@ -26,14 +28,14 @@ logger = logging.getLogger(__name__)
 try:
     from matplotlib import cm
 except ImportError:
-    cm = None
+    cm = cast(Any, None)
 
 NUMPY_AVAILABLE = np is not None
 SEABORN_AVAILABLE = sns is not None
 
 import ast
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Union, cast
 
 # Maximum figure dimension (inches) to prevent RendererAgg pixel overflow.
 # At 300 DPI, 200 inches = 60,000 pixels — well within safe 32-bit limits.
@@ -164,7 +166,7 @@ class MatrixVisualizer:
         Returns:
             Dictionary mapping matrix names to numpy arrays
         """
-        matrices = {}
+        matrices: dict[Any, Any] = {}
 
         # Primary: Extract from parameters field
         parameters = parsed_data.get("parameters", [])
@@ -724,17 +726,17 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         Returns:
             bool: True if analysis was generated successfully
         """
+        if output_path is None:
+            base_dir = Path.cwd() / "output" / "2_tests_output"
+            base_dir.mkdir(parents=True, exist_ok=True)
+            output_path = base_dir / "matrix_analysis.png"
+
         # Convenience: if called with raw matrix-like and no output_path
         if (
             isinstance(parameters, list)
             and parameters
             and isinstance(parameters[0], list)
-            and output_path is None
         ):
-            # Default to project output/test_artifacts directory
-            base_dir = Path.cwd() / "output" / "2_tests_output"
-            base_dir.mkdir(parents=True, exist_ok=True)
-            output_path = base_dir / "matrix_analysis.png"
             try:
                 arr = np.array(parameters, dtype=float)
                 return self.generate_matrix_heatmap("matrix", arr, output_path)
@@ -744,6 +746,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         if not MATPLOTLIB_AVAILABLE or not NUMPY_AVAILABLE:
             # Create a simple text report instead
             try:
+                parameter_records = cast(List[Dict], parameters)
                 with open(output_path.with_suffix(".txt"), "w") as f:
                     f.write("Matrix Analysis Report\n")
                     f.write("=====================\n\n")
@@ -751,13 +754,13 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     f.write(f"- Matplotlib: {MATPLOTLIB_AVAILABLE}\n")
                     f.write(f"- NumPy: {NUMPY_AVAILABLE}\n")
                     f.write(f"- Seaborn: {SEABORN_AVAILABLE}\n\n")
-                    f.write(f"Parameters found: {len(parameters)}\n")
-                    for i, param in enumerate(parameters[:10]):  # Show first 10
+                    f.write(f"Parameters found: {len(parameter_records)}\n")
+                    for i, param in enumerate(parameter_records[:10]):  # Show first 10
                         f.write(
                             f"  {i + 1}. {param.get('name', 'unnamed')}: {param.get('type', 'unknown')}\n"
                         )
-                    if len(parameters) > 10:
-                        f.write(f"  ... and {len(parameters) - 10} more\n")
+                    if len(parameter_records) > 10:
+                        f.write(f"  ... and {len(parameter_records) - 10} more\n")
                 return True
             except Exception:
                 return False
@@ -765,7 +768,9 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         try:
             # Extract matrix data from parameters
             matrices = (
-                self.extract_matrix_data_from_parameters(parameters)
+                self.extract_matrix_data_from_parameters(
+                    cast(list[dict[Any, Any]], parameters)
+                )
                 if isinstance(parameters, list)
                 and parameters
                 and isinstance(parameters[0], dict)
@@ -855,7 +860,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.close()
 
             # Export CSV data for each matrix
-            csv_exports = []
+            csv_exports: list[Any] = []
             for name, matrix in matrices.items():
                 csv_success = self.export_matrix_to_csv(matrix, name, output_path)
                 if csv_success:
@@ -1041,7 +1046,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 return True
 
             # Calculate statistics for each matrix
-            matrix_stats = {}
+            matrix_stats: dict[Any, Any] = {}
             for matrix_name, matrix in matrices.items():
                 matrix_stats[matrix_name] = {
                     "shape": matrix.shape,
@@ -1132,7 +1137,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         Returns:
             List of generated visualization file paths
         """
-        generated_files = []
+        generated_files: list[Any] = []
 
         try:
             # Create output directory if it doesn't exist
@@ -1199,7 +1204,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         """
         import re
 
-        parsed_data = {"parameters": []}
+        parsed_data: dict[str, Any] = {"parameters": []}
 
         # Extract initial parameterization section
         init_match = re.search(
@@ -1504,7 +1509,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         # Evaluate as Python expression
         matrix_data = ast.literal_eval(matrix_str)
 
-        return matrix_data
+        return cast("list[list[float]]", matrix_data)
 
 
 def generate_matrix_visualizations(
@@ -1522,7 +1527,7 @@ def generate_matrix_visualizations(
         List of generated visualization file paths
     """
     visualizer = MatrixVisualizer()
-    generated_files = []
+    generated_files: list[Any] = []
 
     # Create model-specific output directory
     model_output_dir = output_dir / model_name
@@ -1554,7 +1559,7 @@ def generate_matrix_visualizations(
 
 
 def process_matrix_visualization(
-    parameters: List[Dict], output_path: Path, **kwargs
+    parameters: List[Dict], output_path: Path, **kwargs: Any
 ) -> bool:
     """
     Process matrix visualization using the MatrixVisualizer class.

@@ -11,7 +11,7 @@ belief trajectory, action distribution, and EFE analysis plots.
 import json
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 
 import numpy as np
 
@@ -83,7 +83,7 @@ def generate_analysis_from_logs(
         efe = np.array(results.get("efe_history", []))
         validation = results.get("validation", {})
 
-        analysis = {
+        analysis: dict[str, Any] = {
             "framework": "pytorch",
             "model_name": model_name,
             "num_timesteps": len(actions),

@@ -12,7 +12,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Sequence, Tuple, cast
 
 from utils import log_step_error, log_step_start, log_step_success
 
@@ -25,7 +25,7 @@ def _formats_for_serialize_preset(
     if label not in {"full", "minimal"}:
         label = "full"
     if label == "minimal":
-        minimal_allow = {"markdown", "json", "python"}
+        minimal_allow: set[Any] = {"markdown", "json", "python"}
         filtered = [
             f
             for f in supported_formats
@@ -65,13 +65,13 @@ def process_gnn_multi_format(
 
     # Import the comprehensive GNN parsing system
     try:
-        from gnn.parsers import GNNFormat, GNNParsingSystem  # type: ignore
+        from gnn.parsers import GNNFormat, GNNParsingSystem
     except Exception as e:  # pragma: no cover - defensive
         log_step_error(logger, f"Failed to import GNN parsing system: {e}")
         return False
 
     try:
-        parsing_system = GNNParsingSystem(strict_validation=True)  # type: ignore[arg-type]
+        parsing_system = GNNParsingSystem(strict_validation=True)
         supported_formats = parsing_system.get_supported_formats()
         preset_raw = str(kwargs.get("serialize_preset") or "full")
         raw_norm = preset_raw.strip().lower()
@@ -94,7 +94,7 @@ def process_gnn_multi_format(
         # Discover GNN files
         target_path = Path(target_dir)
         gnn_files: List[Path] = []
-        extensions = [
+        extensions: list[Any] = [
             ".md",
             ".markdown",
             ".json",
@@ -343,7 +343,7 @@ def process_gnn_multi_format(
         else:
             log_step_error(logger, "No files were successfully processed")
 
-        return success
+        return cast("bool", success)
 
     except Exception as e:  # pragma: no cover - outer guard
         log_step_error(logger, f"GNN processing failed: {e}")
